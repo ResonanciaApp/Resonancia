@@ -79,7 +79,7 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
 export default function PlayerScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { currentSession, isPlaying, isLoading, progress, elapsed, pauseResume, stop, isFavorite, toggleFavorite, seekTo } =
+  const { currentSession, isPlaying, isLoading, progress, elapsed, actualDurationSeconds, pauseResume, stop, isFavorite, toggleFavorite, seekTo } =
     usePlayer();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -99,7 +99,8 @@ export default function PlayerScreen() {
     );
   }
 
-  const totalSeconds = currentSession.duration * 60;
+  // Use actual file duration (set by expo-av); falls back to declared duration until loaded
+  const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
 
