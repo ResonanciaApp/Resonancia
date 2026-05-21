@@ -18,10 +18,10 @@ export type Session = {
 export const SESSIONS: Session[] = [
   {
     id: "1",
-    title: "Inner Journey",
-    subtitle: "Tibetan Bowl Session",
-    categoryId: "tibetan-bowls",
-    categoryLabel: "Tibetan Bowls",
+    title: "Comenzando a Despertar",
+    subtitle: "Meditación Primordial",
+    categoryId: "guided-meditations",
+    categoryLabel: "Meditaciones Guiadas",
     duration: 30,
     durationLabel: "30 min",
     description:
@@ -45,7 +45,6 @@ export const SESSIONS: Session[] = [
     instruments: ["Crystal singing bowls", "Drone harmonics", "Soft nature sounds"],
     image: require("@/assets/images/crystal-bowls.png"),
     isFeatured: true,
-    isNew: false,
   },
   {
     id: "3",
