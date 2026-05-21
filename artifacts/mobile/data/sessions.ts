@@ -10,6 +10,20 @@ export type Session = {
   benefits: string[];
   instruments: string[];
   image: ReturnType<typeof require>;
+  /**
+   * Optional MP3 audio file for this session.
+   *
+   * HOW TO ADD AUDIO:
+   *   1. Drop your .mp3 file into  artifacts/mobile/assets/audio/
+   *      Use a descriptive filename, e.g. inner-journey.mp3
+   *   2. Add the field to the session below:
+   *        audioFile: require("@/assets/audio/inner-journey.mp3"),
+   *   3. Save — the player will immediately use real audio.
+   *
+   * When audioFile is omitted the player runs in simulation mode
+   * (progress animates, no actual sound). Everything else works normally.
+   */
+  audioFile?: ReturnType<typeof require>;
   isFeatured?: boolean;
   isNew?: boolean;
   frequency?: string;

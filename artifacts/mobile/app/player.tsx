@@ -79,7 +79,7 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
 export default function PlayerScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { currentSession, isPlaying, progress, elapsed, pauseResume, stop, isFavorite, toggleFavorite, seekTo } =
+  const { currentSession, isPlaying, isLoading, progress, elapsed, pauseResume, stop, isFavorite, toggleFavorite, seekTo } =
     usePlayer();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -230,13 +230,18 @@ export default function PlayerScreen() {
 
         <Pressable
           onPress={handlePlayPause}
-          style={[styles.playButton, { backgroundColor: colors.primary }]}
+          disabled={isLoading}
+          style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
         >
-          <Feather
-            name={isPlaying ? "pause" : "play"}
-            size={32}
-            color={colors.primaryForeground}
-          />
+          {isLoading ? (
+            <Feather name="loader" size={32} color={colors.primaryForeground} />
+          ) : (
+            <Feather
+              name={isPlaying ? "pause" : "play"}
+              size={32}
+              color={colors.primaryForeground}
+            />
+          )}
         </Pressable>
 
         <Pressable onPress={skipForward} style={styles.controlSide}>
