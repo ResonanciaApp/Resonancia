@@ -43,6 +43,7 @@ export const SESSIONS: Session[] = [
     benefits: ["Deep relaxation", "Mental clarity", "Stress release", "Energetic balance"],
     instruments: ["Tibetan singing bowls", "Hand pan", "Bell"],
     image: require("@/assets/images/tibetan-bowl.png"),
+    audioFile: require("@/assets/audio/62 CM.mp3"),
     isFeatured: true,
   },
   {
