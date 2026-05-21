@@ -59,7 +59,7 @@ export const SESSIONS: Session[] = [
       "Immerse yourself in the primordial vibration of the gong. Waves of deep resonance wash through every cell, releasing what no longer serves.",
     benefits: ["Deep emotional release", "Nervous system reset", "Trauma healing", "Expanded awareness"],
     instruments: ["Paiste gong", "Tibetan bowls", "Chimes"],
-    image: require("@/assets/images/gong-session.png"),
+    image: require("@/assets/images/8b.jpg"),
     isFeatured: true,
   },
   {
