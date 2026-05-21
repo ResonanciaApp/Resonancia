@@ -1,5 +1,6 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AUDIO_MAP } from "@/config/audio-map";
 import React, {
   createContext,
   useCallback,
@@ -109,12 +110,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setProgress(0);
       setElapsed(0);
 
-      if (session.audioFile) {
+      const audioFile = AUDIO_MAP[session.id];
+
+      if (audioFile) {
         // ── Real audio via expo-av ──────────────────────────────────────────
         setIsLoading(true);
         try {
           const { sound } = await Audio.Sound.createAsync(
-            session.audioFile,
+            audioFile,
             { shouldPlay: true, progressUpdateIntervalMillis: 500 },
             onPlaybackStatusUpdate
           );
