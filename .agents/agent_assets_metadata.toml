@@ -1,0 +1,44 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "molZwDztEfwkN_ajzVkVK"
+uri = "file://artifacts/mobile/assets/images/icon.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "DSUOuldC0IQNkIrZAaHjE"
+uri = "file://artifacts/mobile/assets/images/hero-bowl.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ZRgiLp6L_XWQpM-wqllzQ"
+uri = "file://artifacts/mobile/assets/images/crystal-bowls.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "TC3o_RK9J_61Jzs2KEt4j"
+uri = "file://artifacts/mobile/assets/images/gong-session.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "METq9hOAejGdZr1juN0ka"
+uri = "file://artifacts/mobile/assets/images/tibetan-bowl.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "GaaLBXWMImgQAfoY0W65L"
+uri = "file://artifacts/mobile/assets/images/cosmic-bg.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ABV-G-b981pgxFHoFONIe"
+uri = "file://artifacts/mobile/assets/images/meditation-person.png"
+type = "image"
+title = "generated_image"
