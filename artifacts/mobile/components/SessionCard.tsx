@@ -86,11 +86,6 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           colors={["transparent", "rgba(24,17,12,0.85)"]}
           style={[StyleSheet.absoluteFill, { borderRadius: colors.radius - 4 }]}
         />
-        {session.isNew && (
-          <View style={[styles.newBadge, { backgroundColor: colors.primary }]}>
-            <Text style={[styles.newBadgeText, { color: colors.primaryForeground }]}>NEW</Text>
-          </View>
-        )}
         <Pressable
           onPress={() => toggleFavorite(session.id)}
           style={styles.favBtn}
@@ -103,9 +98,6 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
         </Pressable>
         <View style={styles.cardBottom}>
           <View>
-            <Text style={[styles.cardCategory, { color: colors.accent }]}>
-              {session.categoryLabel}
-            </Text>
             <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
               {session.title}
             </Text>
@@ -122,6 +114,9 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
         <Feather name="clock" size={11} color={colors.mutedForeground} />
         <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
           {" "}{session.durationLabel}
+        </Text>
+        <Text style={[styles.metaCategory, { color: colors.accent }]}>
+          {"  ·  "}{session.categoryLabel}
         </Text>
       </View>
     </Pressable>
@@ -201,6 +196,10 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 11,
+  },
+  metaCategory: {
+    fontSize: 11,
+    letterSpacing: 0.2,
   },
   hRow: {
     flexDirection: "row",
