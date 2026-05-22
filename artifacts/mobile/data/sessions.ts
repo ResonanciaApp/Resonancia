@@ -18,7 +18,7 @@ export type Session = {
 export const SESSIONS: Session[] = [
   {
     id: "1",
-    title: "Comenzando a Despertar",
+    title: "Hola",
     subtitle: "Meditación Primordial",
     categoryId: "guided-meditations",
     categoryLabel: "Meditaciones Guiadas",
