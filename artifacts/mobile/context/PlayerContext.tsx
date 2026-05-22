@@ -12,6 +12,11 @@ import React, {
 
 import { type Session } from "@/data/sessions";
 
+export interface HistoryEntry {
+  sessionId: string;
+  playedAt: string;
+}
+
 type PlayerContextType = {
   currentSession: Session | null;
   isPlaying: boolean;
@@ -20,6 +25,7 @@ type PlayerContextType = {
   actualDurationSeconds: number;
   isLoading: boolean;
   favorites: string[];
+  history: HistoryEntry[];
   isFavorite: (id: string) => boolean;
   toggleFavorite: (id: string) => void;
   playSession: (session: Session) => void;
@@ -35,6 +41,8 @@ type PlayerContextType = {
 const PlayerContext = createContext<PlayerContextType | null>(null);
 
 const FAVORITES_KEY = "@resonance_favorites";
+const HISTORY_KEY = "@resonance_history";
+const HISTORY_LIMIT = 50;
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
@@ -44,6 +52,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [actualDurationSeconds, setActualDurationSeconds] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
 
   const soundRef = useRef<Audio.Sound | null>(null);
@@ -56,6 +65,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     AsyncStorage.getItem(FAVORITES_KEY).then((val) => {
       if (val) setFavorites(JSON.parse(val));
+    });
+    AsyncStorage.getItem(HISTORY_KEY).then((val) => {
+      if (val) setHistory(JSON.parse(val));
     });
   }, []);
 
@@ -165,6 +177,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }, 1000);
   };
 
+  const addToHistory = useCallback(async (session: Session) => {
+    setHistory((prev) => {
+      const filtered = prev.filter((e) => e.sessionId !== session.id);
+      const updated = [
+        { sessionId: session.id, playedAt: new Date().toISOString() },
+        ...filtered,
+      ].slice(0, HISTORY_LIMIT);
+      AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   const playSession = useCallback(
     async (session: Session) => {
       await unloadSound();
@@ -174,6 +198,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setProgress(0);
       setElapsed(0);
       setActualDurationSeconds(session.duration * 60);
+      void addToHistory(session);
 
       const audioFile = AUDIO_MAP[session.id];
 
@@ -291,6 +316,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         actualDurationSeconds,
         isLoading,
         favorites,
+        history,
         isFavorite,
         toggleFavorite,
         playSession,

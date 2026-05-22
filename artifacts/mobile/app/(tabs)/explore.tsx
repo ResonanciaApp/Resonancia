@@ -21,6 +21,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
 import { TAG_CARDS } from "@/data/tags";
+import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -28,6 +29,8 @@ const H_PAD = 20;
 const GAP = 10;
 const PRIMARY_W = (width - H_PAD * 2 - GAP) / 2;
 const SEC_W = 88;
+const TAG_W = (width - H_PAD * 2 - GAP) / 2;
+const TAG_H = 130;
 
 
 const TIME_BUCKETS = [
@@ -43,6 +46,15 @@ export default function ExploreScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
+  const { history, playSession } = usePlayer();
+
+  const historySessions = history
+    .map((entry) => ({
+      session: SESSIONS.find((s) => s.id === entry.sessionId),
+      playedAt: entry.playedAt,
+    }))
+    .filter((e): e is { session: NonNullable<typeof e.session>; playedAt: string } => !!e.session)
+    .slice(0, 20);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -224,9 +236,13 @@ export default function ExploreScreen() {
                     onPress={() => router.push(`/tag/${tag.id}` as never)}
                     style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.85 : 1 }]}
                   >
-                    <Image source={tag.image} style={styles.tagImage} resizeMode="cover" />
+                    <Image
+                      source={tag.image}
+                      style={{ position: "absolute", width: TAG_W, height: TAG_H }}
+                      resizeMode="cover"
+                    />
                     <LinearGradient
-                      colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.68)"]}
+                      colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.72)"]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
                     />
                     <View style={[StyleSheet.absoluteFill, { borderRadius: 16, borderWidth: 1, borderColor: "rgba(198,155,79,0.2)" }]} />
@@ -234,6 +250,47 @@ export default function ExploreScreen() {
                   </Pressable>
                 ))}
               </View>
+            </View>
+
+            {/* ── Historial ── */}
+            <View style={[styles.section, { marginBottom: 12 }]}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 6 }]}>
+                Historial
+              </Text>
+              <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+                Las sesiones que has escuchado
+              </Text>
+
+              {historySessions.length === 0 ? (
+                <View style={[styles.historyEmpty, { borderColor: "rgba(198,155,79,0.15)", backgroundColor: colors.card }]}>
+                  <Feather name="clock" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
+                  <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>
+                    Aún no hay sesiones
+                  </Text>
+                  <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
+                    Cuando empieces a escuchar, tu historial aparecerá aquí.
+                  </Text>
+                </View>
+              ) : (
+                <View style={{ gap: 10 }}>
+                  {historySessions.map(({ session, playedAt }) => {
+                    const date = new Date(playedAt);
+                    const dateLabel = date.toLocaleDateString("es", { day: "numeric", month: "short" });
+                    const timeLabel = date.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
+                    return (
+                      <View key={`${session.id}-${playedAt}`} style={styles.historyRow}>
+                        <View style={[styles.historyDateBadge, { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.2)" }]}>
+                          <Text style={[styles.historyDateText, { color: colors.primary }]}>{dateLabel}</Text>
+                          <Text style={[styles.historyTimeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <SessionCard session={session} />
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
             </View>
           </>
         )}
@@ -333,20 +390,14 @@ const styles = StyleSheet.create({
     gap: GAP,
   },
   tagCard: {
-    width: (width - H_PAD * 2 - GAP) / 2,
-    height: 130,
+    width: TAG_W,
+    height: TAG_H,
     borderRadius: 16,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 12,
   },
-  tagImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: undefined,
-    height: undefined,
-    borderRadius: 16,
-  } as object,
   tagLabel: {
     color: "#F5EDD8",
     fontSize: 14,
@@ -357,6 +408,35 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
   },
+
+  // Historial
+  historyEmpty: {
+    borderRadius: 18,
+    borderWidth: 1,
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    marginTop: 4,
+  },
+  historyEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
+  historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
+  historyRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  historyDateBadge: {
+    width: 54,
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 4,
+  },
+  historyDateText: { fontSize: 11, fontWeight: "700", textAlign: "center" },
+  historyTimeText: { fontSize: 10, textAlign: "center", marginTop: 2 },
 
   // Time buckets
   timeGrid: {

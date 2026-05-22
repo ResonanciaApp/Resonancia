@@ -42,6 +42,54 @@ uri = "file://artifacts/mobile/assets/images/meditation-person.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "Zt25TCeIOiGWTli2mGLky"
+uri = "file://artifacts/mobile/assets/images/tag-ultimos-estrenos.png"
+type = "image"
+title = "woman headphones golden light"
+
+[[generated]]
+id = "ejBZp4cDB-H_rITdrBWrw"
+uri = "file://artifacts/mobile/assets/images/tag-ansiedad.png"
+type = "image"
+title = "woman peaceful garden meditation"
+
+[[generated]]
+id = "jC5meXjf70tSdFmqIiUQl"
+uri = "file://artifacts/mobile/assets/images/tag-energizar.png"
+type = "image"
+title = "person sunrise hilltop energy"
+
+[[generated]]
+id = "7aIMg2GJIhvbm3MkCk_QG"
+uri = "file://artifacts/mobile/assets/images/tag-aceptacion.png"
+type = "image"
+title = "hands holding wildflower gratitude"
+
+[[generated]]
+id = "C2fPjSY7yDInFVR5mqqAZ"
+uri = "file://artifacts/mobile/assets/images/tag-foco.png"
+type = "image"
+title = "man focused desk morning light"
+
+[[generated]]
+id = "hrcEw3rdVOs1pfOwg2B-c"
+uri = "file://artifacts/mobile/assets/images/tag-loops.png"
+type = "image"
+title = "person contemplative forest light"
+
+[[generated]]
+id = "FhSD_ooMzqDcY12aUIdpX"
+uri = "file://artifacts/mobile/assets/images/tag-autorealizacion.png"
+type = "image"
+title = "woman mountaintop expansive view"
+
+[[generated]]
+id = "8_vE5j_LOLfsfupYTWyLV"
+uri = "file://artifacts/mobile/assets/images/tag-rabia.png"
+type = "image"
+title = "person releasing emotion ocean cliff"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
