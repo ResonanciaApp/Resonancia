@@ -1,0 +1,103 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCallback, useEffect, useState } from "react";
+
+import { type DiarioEntry, type DiarioSection } from "./useDiario";
+
+const FAV_KEY = "@diario_favorites";
+
+const SECTION_META: Record<DiarioSection, { title: string; accentColor: string }> = {
+  aprendizaje: { title: "Qué aprendí hoy", accentColor: "#C69B4F" },
+  suenos: { title: "Materializo mis sueños", accentColor: "#E0B882" },
+  reflexiones: { title: "Reflexiones profundas", accentColor: "#8AAAD4" },
+};
+
+export type FavoriteDiarioEntry = DiarioEntry & {
+  sectionKey: DiarioSection;
+  sectionTitle: string;
+  accentColor: string;
+};
+
+export function useDiarioFavorites() {
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [favoriteEntries, setFavoriteEntries] = useState<FavoriteDiarioEntry[]>([]);
+
+  const loadFavorites = useCallback(async () => {
+    try {
+      const raw = await AsyncStorage.getItem(FAV_KEY);
+      const ids: string[] = raw ? JSON.parse(raw) : [];
+      setFavoriteIds(ids);
+
+      if (ids.length === 0) {
+        setFavoriteEntries([]);
+        return;
+      }
+
+      const sections: DiarioSection[] = ["aprendizaje", "suenos", "reflexiones"];
+      const all: FavoriteDiarioEntry[] = [];
+
+      for (const section of sections) {
+        const sectionRaw = await AsyncStorage.getItem(`@diario_${section}`);
+        if (!sectionRaw) continue;
+        const entries: DiarioEntry[] = JSON.parse(sectionRaw);
+        for (const entry of entries) {
+          if (ids.includes(entry.id)) {
+            all.push({
+              ...entry,
+              sectionKey: section,
+              sectionTitle: SECTION_META[section].title,
+              accentColor: SECTION_META[section].accentColor,
+            });
+          }
+        }
+      }
+
+      all.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      setFavoriteEntries(all);
+    } catch {
+      setFavoriteIds([]);
+      setFavoriteEntries([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadFavorites();
+  }, [loadFavorites]);
+
+  const isFavorited = useCallback(
+    (id: string) => favoriteIds.includes(id),
+    [favoriteIds]
+  );
+
+  const toggleFavorite = useCallback(
+    async (entry: DiarioEntry, sectionKey: DiarioSection) => {
+      const alreadyFav = favoriteIds.includes(entry.id);
+      const updatedIds = alreadyFav
+        ? favoriteIds.filter((id) => id !== entry.id)
+        : [...favoriteIds, entry.id];
+
+      setFavoriteIds(updatedIds);
+      await AsyncStorage.setItem(FAV_KEY, JSON.stringify(updatedIds));
+
+      if (alreadyFav) {
+        setFavoriteEntries((prev) => prev.filter((e) => e.id !== entry.id));
+      } else {
+        const newFav: FavoriteDiarioEntry = {
+          ...entry,
+          sectionKey,
+          sectionTitle: SECTION_META[sectionKey].title,
+          accentColor: SECTION_META[sectionKey].accentColor,
+        };
+        setFavoriteEntries((prev) =>
+          [newFav, ...prev].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+        );
+      }
+    },
+    [favoriteIds]
+  );
+
+  return { favoriteIds, favoriteEntries, isFavorited, toggleFavorite };
+}

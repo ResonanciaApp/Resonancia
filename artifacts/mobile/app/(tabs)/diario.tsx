@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { type DiarioSection, useDiario } from "@/hooks/useDiario";
+import { useDiarioFavorites } from "@/hooks/useDiarioFavorites";
 import { useColors } from "@/hooks/useColors";
 
 const MAX_CHARS = 1000;
@@ -71,15 +72,18 @@ function formatDate(iso: string) {
 function EntryCard({
   entry,
   accentColor,
+  isFavorited,
+  onToggleFavorite,
   onDelete,
 }: {
   entry: { id: string; text: string; createdAt: string };
   accentColor: string;
+  isFavorited: boolean;
+  onToggleFavorite: () => void;
   onDelete: () => void;
 }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
-  // Heights: fullHeight = text without limit, lineHeight ≈ 22 (fontSize 13, lineHeight 20 + padding)
   const [fullHeight, setFullHeight] = useState<number | null>(null);
   const SINGLE_LINE_H = 22;
 
@@ -118,9 +122,20 @@ function EntryCard({
           Toca para leer más
         </Text>
       )}
-      <Pressable onPress={onDelete} style={styles.deleteBtn} hitSlop={8}>
-        <Feather name="trash-2" size={13} color={colors.mutedForeground} />
-      </Pressable>
+
+      {/* Action buttons: favorite + delete */}
+      <View style={styles.entryActions}>
+        <Pressable onPress={onToggleFavorite} hitSlop={8} style={styles.actionBtn}>
+          <Feather
+            name="heart"
+            size={13}
+            color={isFavorited ? "#E07070" : colors.mutedForeground}
+          />
+        </Pressable>
+        <Pressable onPress={onDelete} hitSlop={8} style={styles.actionBtn}>
+          <Feather name="trash-2" size={13} color={colors.mutedForeground} />
+        </Pressable>
+      </View>
     </Pressable>
   );
 }
@@ -128,6 +143,7 @@ function EntryCard({
 function SectionPanel({ meta }: { meta: SectionMeta }) {
   const colors = useColors();
   const { entries, saveEntry, deleteEntry } = useDiario(meta.key);
+  const { isFavorited, toggleFavorite } = useDiarioFavorites();
   const [text, setText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const remaining = MAX_CHARS - text.length;
@@ -225,6 +241,8 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
               key={entry.id}
               entry={entry}
               accentColor={meta.accentColor}
+              isFavorited={isFavorited(entry.id)}
+              onToggleFavorite={() => toggleFavorite(entry, meta.key)}
               onDelete={() => handleDelete(entry.id)}
             />
           ))}
@@ -376,10 +394,13 @@ const styles = StyleSheet.create({
   entryDate: { fontSize: 10, letterSpacing: 0.5, marginBottom: 6, fontWeight: "600" },
   entryText: { fontSize: 13, lineHeight: 20 },
   expandHint: { fontSize: 10, marginTop: 4, letterSpacing: 0.3 },
-  deleteBtn: {
-    position: "absolute",
-    top: 10,
-    right: 10,
+  entryActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 4,
+    marginTop: 8,
+  },
+  actionBtn: {
     padding: 6,
   },
 });

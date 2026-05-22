@@ -22,6 +22,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
+import { useDiarioFavorites } from "@/hooks/useDiarioFavorites";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -36,6 +37,9 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
+
+  const { favoriteEntries } = useDiarioFavorites();
+  const topDiarioFavs = favoriteEntries.slice(0, 5);
 
   const featured = getFeaturedSessions();
   const featuredSession = featured[0];
@@ -187,6 +191,48 @@ export default function HomeScreen() {
             <SessionCard key={s.id} session={s} horizontal />
           ))}
         </View>
+
+        {/* ── 6. REFLEXIONES FAVORITAS (top 5) ── */}
+        {topDiarioFavs.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionRow}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                Reflexiones favoritas
+              </Text>
+              <Pressable onPress={() => router.push("/(tabs)/favorites" as never)}>
+                <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
+              </Pressable>
+            </View>
+            <View style={styles.diarioList}>
+              {topDiarioFavs.map((entry) => (
+                <View
+                  key={entry.id}
+                  style={[styles.diarioCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+                >
+                  <View style={styles.diarioCardTop}>
+                    <View
+                      style={[
+                        styles.diarioBadge,
+                        { backgroundColor: entry.accentColor + "20", borderColor: entry.accentColor + "55" },
+                      ]}
+                    >
+                      <Text style={[styles.diarioBadgeText, { color: entry.accentColor }]}>
+                        {entry.sectionTitle}
+                      </Text>
+                    </View>
+                    <Feather name="heart" size={11} color="#E07070" />
+                  </View>
+                  <Text
+                    style={[styles.diarioText, { color: colors.foreground }]}
+                    numberOfLines={2}
+                  >
+                    {entry.text}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -286,4 +332,26 @@ const styles = StyleSheet.create({
 
   // Horizontal scroll
   hScroll: { paddingRight: 20 },
+
+  // Diary favorites
+  diarioList: { gap: 10 },
+  diarioCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 14,
+    gap: 8,
+  },
+  diarioCardTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  diarioBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  diarioBadgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
+  diarioText: { fontSize: 13, lineHeight: 20 },
 });
