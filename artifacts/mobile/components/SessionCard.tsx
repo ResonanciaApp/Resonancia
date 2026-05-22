@@ -97,17 +97,9 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           />
         </Pressable>
         <View style={styles.cardBottom}>
-          <View>
-            <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
-              {session.title}
-            </Text>
-          </View>
-          <Pressable
-            onPress={() => playSession(session)}
-            style={[styles.playBtn, { backgroundColor: colors.primary }]}
-          >
-            <Feather name="play" size={16} color={colors.primaryForeground} style={{ paddingLeft: 2 }} />
-          </Pressable>
+          <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+            {session.title}
+          </Text>
         </View>
       </View>
       <View style={styles.cardMeta}>
@@ -181,13 +173,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     maxWidth: 120,
   },
-  playBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   cardMeta: {
     flexDirection: "row",
     alignItems: "center",
