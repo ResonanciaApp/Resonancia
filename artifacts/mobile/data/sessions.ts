@@ -108,6 +108,21 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/8b.jpg"),
     isNew: true,
   },
+  {
+    id: "7",
+    title: "Prueba",
+    subtitle: "Meditación Guiada",
+    categoryId: "meditaciones-guiadas",
+    categoryLabel: "Meditaciones Guiadas",
+    duration: 20,
+    durationLabel: "20 min",
+    description:
+      "Una sesión de meditación guiada para explorar tu mundo interior. Los sonidos de cuencos tibetanos te acompañan en un viaje de atención plena y presencia consciente.",
+    benefits: ["Relajación profunda", "Presencia plena", "Claridad mental", "Paz interior"],
+    instruments: ["Cuencos tibetanos", "Voz guía", "Campanilla"],
+    image: require("@/assets/images/meditation-person.png"),
+    isNew: true,
+  },
 ];
 
 export function getSessionsByCategory(categoryId: string): Session[] {
