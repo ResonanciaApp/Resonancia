@@ -262,8 +262,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logoImage: {
-    width: 160,
-    height: 40,
+    width: 190,
+    height: 47,
   },
   avatarBtn: {
     width: 40,
