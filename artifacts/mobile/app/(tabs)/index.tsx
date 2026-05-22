@@ -21,7 +21,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
-import { SESSIONS, getFeaturedSessions } from "@/data/sessions";
+import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -41,6 +41,15 @@ export default function HomeScreen() {
   const featuredSession = featured[0];
   // Last 5 sessions (most recently added = highest index)
   const newSessions = [...SESSIONS].reverse().slice(0, 5);
+  // 6 random sessions — shuffled once on mount via useMemo
+  const recommended = React.useMemo<Session[]>(() => {
+    const pool = [...SESSIONS];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 6);
+  }, []);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -162,6 +171,21 @@ export default function HomeScreen() {
               <SessionCard key={s.id} session={s} width={175} />
             ))}
           </ScrollView>
+        </View>
+
+        {/* ── 5. RECOMENDADAS PARA TI ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              Recomendadas para ti
+            </Text>
+            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
+              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
+            </Pressable>
+          </View>
+          {recommended.map((s) => (
+            <SessionCard key={s.id} session={s} horizontal />
+          ))}
         </View>
       </ScrollView>
     </View>
