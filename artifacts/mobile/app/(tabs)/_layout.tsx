@@ -3,7 +3,7 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,6 +23,7 @@ function NativeTabLayout() {
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="explore">
           <Icon sf={{ default: "books.vertical", selected: "books.vertical.fill" }} />
+          <Label>Biblioteca</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="favorites">
           <Icon sf={{ default: "heart", selected: "heart.fill" }} />
@@ -105,12 +106,11 @@ function ClassicTabLayout() {
           name="explore"
           options={{
             title: "Biblioteca",
-            tabBarShowLabel: false,
             tabBarIcon: ({ color }) =>
               isIOS ? (
                 <SymbolView name="books.vertical" tintColor={color} size={22} />
               ) : (
-                <MaterialCommunityIcons name="bookshelf" size={22} color={color} />
+                <Feather name="book-open" size={22} color={color} />
               ),
           }}
         />
