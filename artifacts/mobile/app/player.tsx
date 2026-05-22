@@ -521,6 +521,7 @@ const styles = StyleSheet.create({
   },
   timerChips: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
   },
   timerChip: {
