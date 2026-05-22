@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useState } from "react";
 import {
+  Dimensions,
   Pressable,
   StyleSheet,
   Text,
@@ -17,32 +18,65 @@ import Animated, {
 
 import { DAILY_MESSAGES } from "@/data/messages";
 
-const CARD_W = 240;
-const CARD_H = 340;
+const { width } = Dimensions.get("window");
+const CARD_W = width - 48;
+const CARD_H = 192;
 
-// Fan angles for the decorative stack behind the active card
-const FAN_ANGLES = [-14, -7, -1, 5, 11];
-const FAN_OPACITY = [0.38, 0.52, 0.62, 0.72, 0.82];
+// Corner ornament — thin L-shaped bracket
+function Corner({
+  position,
+}: {
+  position: "tl" | "tr" | "bl" | "br";
+}) {
+  const s = 14;
+  const off = 12;
+  const borderColor = "#7A5228";
+  const bw = 0.8;
 
-type Phase = "idle" | "flipping-in" | "revealed" | "flipping-out";
+  const pos: Record<string, object> = {
+    tl: { top: off, left: off, borderTopWidth: bw, borderLeftWidth: bw },
+    tr: { top: off, right: off, borderTopWidth: bw, borderRightWidth: bw },
+    bl: { bottom: off, left: off, borderBottomWidth: bw, borderLeftWidth: bw },
+    br: { bottom: off, right: off, borderBottomWidth: bw, borderRightWidth: bw },
+  };
+
+  return (
+    <View
+      style={[
+        styles.corner,
+        { width: s, height: s, borderColor },
+        pos[position],
+      ]}
+      pointerEvents="none"
+    />
+  );
+}
 
 function CardBack() {
   return (
     <LinearGradient
-      colors={["#2E1B0A", "#18110C"]}
+      colors={["#221209", "#18100A", "#221209"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.cardFace}
     >
-      <View style={styles.cardBorder} pointerEvents="none" />
-      <View style={styles.cardBackContent}>
-        <Text style={styles.backOrnamentTop}>✦  ◈  ✦</Text>
-        <View style={styles.backCenterBlock}>
-          <Text style={styles.backMoonSymbols}>☽  ✧  ☾</Text>
-          <View style={styles.backDividerLine} />
-          <Text style={styles.backTitle}>RESONANCIA</Text>
-          <View style={styles.backDividerLine} />
-          <Text style={styles.backSubLabel}>mensaje del día</Text>
-        </View>
-        <Text style={styles.backOrnamentBottom}>❋  ◈  ❋</Text>
+      {/* Outer border */}
+      <View style={styles.outerBorder} pointerEvents="none" />
+      {/* Inner border */}
+      <View style={styles.innerBorder} pointerEvents="none" />
+
+      {/* Corner ornaments */}
+      <Corner position="tl" />
+      <Corner position="tr" />
+      <Corner position="bl" />
+      <Corner position="br" />
+
+      {/* Center content */}
+      <View style={styles.backCenter}>
+        <View style={styles.thinRule} />
+        <Text style={styles.backTitle}>UNA SEÑAL DIVINA</Text>
+        <Text style={styles.backSub}>mensaje del día</Text>
+        <View style={styles.thinRule} />
       </View>
     </LinearGradient>
   );
@@ -53,28 +87,45 @@ function CardFront({ message }: { message: string }) {
     day: "numeric",
     month: "long",
   });
+
   return (
     <LinearGradient
-      colors={["#2A1508", "#18110C"]}
+      colors={["#261509", "#1C1008", "#261509"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.cardFace}
     >
-      <View style={[styles.cardBorder, { borderColor: "#C69B4F" }]} pointerEvents="none" />
-      <View style={styles.cardFrontContent}>
-        <Text style={styles.frontTopLabel}>✦  Un mensaje para ti  ✦</Text>
-        <View style={styles.frontDivider} />
-        <Text style={styles.frontQuoteSymbol}>"</Text>
-        <Text style={styles.frontMessage}>{message}"</Text>
-        <View style={styles.frontDivider} />
-        <Text style={styles.frontDate}>RESONANCIA · {today}</Text>
+      {/* Outer border — warmer on front */}
+      <View style={[styles.outerBorder, { borderColor: "#8A6030" }]} pointerEvents="none" />
+      <View style={[styles.innerBorder, { borderColor: "rgba(138,96,48,0.3)" }]} pointerEvents="none" />
+
+      <Corner position="tl" />
+      <Corner position="tr" />
+      <Corner position="bl" />
+      <Corner position="br" />
+
+      {/* Top label */}
+      <Text style={styles.frontTopLabel}>Un mensaje para ti</Text>
+
+      {/* Message */}
+      <View style={styles.frontBody}>
+        <View style={[styles.thinRule, { width: 40 }]} />
+        <Text style={styles.frontMessage}>"{message}"</Text>
+        <View style={[styles.thinRule, { width: 40 }]} />
       </View>
+
+      {/* Date footer */}
+      <Text style={styles.frontDate}>Casa del Cuenco  ·  {today}</Text>
     </LinearGradient>
   );
 }
 
+type Phase = "idle" | "flipping-in" | "revealed" | "flipping-out";
+
 export function MessageDeck() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [message, setMessage] = useState("");
-  const flip = useSharedValue(0); // 0 = back, 1 = front
+  const flip = useSharedValue(0);
 
   const pickRandom = useCallback(
     () => DAILY_MESSAGES[Math.floor(Math.random() * DAILY_MESSAGES.length)],
@@ -83,15 +134,12 @@ export function MessageDeck() {
 
   const revealCard = useCallback(() => {
     if (phase !== "idle") return;
-    const msg = pickRandom();
-    setMessage(msg);
+    setMessage(pickRandom());
     setPhase("flipping-in");
     flip.value = withTiming(
       1,
-      { duration: 650, easing: Easing.inOut(Easing.cubic) },
-      (done) => {
-        if (done) runOnJS(setPhase)("revealed");
-      }
+      { duration: 680, easing: Easing.inOut(Easing.cubic) },
+      (done) => { if (done) runOnJS(setPhase)("revealed"); }
     );
   }, [phase, pickRandom, flip]);
 
@@ -100,26 +148,22 @@ export function MessageDeck() {
     setPhase("flipping-out");
     flip.value = withTiming(
       0,
-      { duration: 500, easing: Easing.inOut(Easing.cubic) },
-      (done) => {
-        if (done) runOnJS(setPhase)("idle");
-      }
+      { duration: 520, easing: Easing.inOut(Easing.cubic) },
+      (done) => { if (done) runOnJS(setPhase)("idle"); }
     );
   }, [phase, flip]);
 
-  // Back face: rotates from 0 → 90 and fades out at midpoint
   const backStyle = useAnimatedStyle(() => ({
     transform: [
-      { perspective: 1200 },
+      { perspective: 1400 },
       { rotateY: `${interpolate(flip.value, [0, 0.5], [0, 90])}deg` },
     ],
     opacity: interpolate(flip.value, [0.3, 0.5], [1, 0], "clamp"),
   }));
 
-  // Front face: rotates from -90 → 0 and fades in at midpoint
   const frontStyle = useAnimatedStyle(() => ({
     transform: [
-      { perspective: 1200 },
+      { perspective: 1400 },
       { rotateY: `${interpolate(flip.value, [0.5, 1], [-90, 0])}deg` },
     ],
     opacity: interpolate(flip.value, [0.5, 0.7], [0, 1], "clamp"),
@@ -129,45 +173,31 @@ export function MessageDeck() {
 
   return (
     <View style={styles.wrapper}>
-      {/* Deck container: fan + active card stacked */}
-      <View style={styles.deckContainer}>
-        {/* Decorative fan cards behind */}
-        {FAN_ANGLES.map((angle, i) => (
-          <View
-            key={i}
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                transform: [{ rotate: `${angle}deg` }],
-                opacity: FAN_OPACITY[i],
-                borderRadius: 20,
-                overflow: "hidden",
-              },
-            ]}
-            pointerEvents="none"
-          >
-            <LinearGradient
-              colors={["#2A1608", "#18110C"]}
-              style={StyleSheet.absoluteFill}
-            />
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                {
-                  borderRadius: 20,
-                  borderWidth: 1.5,
-                  borderColor: "#7A5228",
-                  alignItems: "center",
-                  justifyContent: "center",
-                },
-              ]}
-            >
-              <Text style={{ color: "#6A4018", fontSize: 18 }}>◈</Text>
-            </View>
-          </View>
-        ))}
+      {/* Shadow cards behind — two barely-visible copies */}
+      {[4, 8].map((offset, i) => (
+        <View
+          key={i}
+          style={[
+            styles.shadowCard,
+            {
+              top: offset,
+              left: offset / 2,
+              right: offset / 2,
+              opacity: i === 0 ? 0.45 : 0.28,
+            },
+          ]}
+          pointerEvents="none"
+        >
+          <LinearGradient
+            colors={["#1C0E07", "#130C06"]}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={[StyleSheet.absoluteFill, { borderWidth: 0.8, borderColor: "#4A2C10", borderRadius: 10 }]} />
+        </View>
+      ))}
 
-        {/* Active card — back face */}
+      {/* Active card */}
+      <View style={styles.cardContainer}>
         <Animated.View style={[StyleSheet.absoluteFill, backStyle]}>
           <Pressable
             onPress={revealCard}
@@ -178,24 +208,23 @@ export function MessageDeck() {
           </Pressable>
         </Animated.View>
 
-        {/* Active card — front face */}
         <Animated.View style={[StyleSheet.absoluteFill, frontStyle]} pointerEvents="none">
           <CardFront message={message} />
         </Animated.View>
       </View>
 
-      {/* Action area below the deck */}
+      {/* Action area */}
       <View style={styles.actionArea}>
         {phase === "idle" && (
-          <Text style={styles.hintText}>Toca la baraja para revelar tu mensaje</Text>
+          <Text style={styles.hintText}>Toca para revelar tu mensaje</Text>
         )}
-        {isFlipping && <View style={{ height: 36 }} />}
+        {isFlipping && <View style={{ height: 32 }} />}
         {phase === "revealed" && (
           <Pressable
             onPress={resetDeck}
-            style={({ pressed }) => [styles.newCardBtn, { opacity: pressed ? 0.75 : 1 }]}
+            style={({ pressed }) => [styles.newBtn, { opacity: pressed ? 0.72 : 1 }]}
           >
-            <Text style={styles.newCardBtnText}>✦  Elegir otra carta</Text>
+            <Text style={styles.newBtnText}>Revelar otro mensaje</Text>
           </Pressable>
         )}
       </View>
@@ -206,144 +235,139 @@ export function MessageDeck() {
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: "center",
-    paddingVertical: 8,
-  },
-  deckContainer: {
-    width: CARD_W,
-    height: CARD_H,
+    paddingVertical: 4,
   },
 
-  // ── Card shell ──────────────────────────────────────────────
+  // Shadow cards
+  shadowCard: {
+    position: "absolute",
+    height: CARD_H,
+    borderRadius: 10,
+    overflow: "hidden",
+    zIndex: 0,
+  },
+
+  // Active card
+  cardContainer: {
+    width: CARD_W,
+    height: CARD_H,
+    zIndex: 1,
+  },
+
   cardFace: {
     width: CARD_W,
     height: CARD_H,
-    borderRadius: 20,
+    borderRadius: 10,
     overflow: "hidden",
-  },
-  cardBorder: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: "#8A5A28",
-  },
-
-  // ── Card back ───────────────────────────────────────────────
-  cardBackContent: {
-    flex: 1,
-    alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 28,
-    paddingHorizontal: 20,
-  },
-  backOrnamentTop: {
-    color: "#8A6030",
-    fontSize: 13,
-    letterSpacing: 4,
-  },
-  backCenterBlock: {
     alignItems: "center",
-    gap: 10,
-  },
-  backMoonSymbols: {
-    color: "#C69B4F",
-    fontSize: 22,
-    letterSpacing: 6,
-  },
-  backDividerLine: {
-    width: 80,
-    height: 1,
-    backgroundColor: "#8A6030",
-    opacity: 0.6,
-  },
-  backTitle: {
-    color: "#C69B4F",
-    fontSize: 13,
-    fontWeight: "700",
-    letterSpacing: 5,
-  },
-  backSubLabel: {
-    color: "#7A5828",
-    fontSize: 10,
-    letterSpacing: 2.5,
-  },
-  backOrnamentBottom: {
-    color: "#8A6030",
-    fontSize: 13,
-    letterSpacing: 4,
+    paddingVertical: 18,
+    paddingHorizontal: 28,
   },
 
-  // ── Card front ──────────────────────────────────────────────
-  cardFrontContent: {
+  outerBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 10,
+    borderWidth: 0.8,
+    borderColor: "#5A3418",
+  },
+  innerBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 8,
+    margin: 6,
+    borderWidth: 0.5,
+    borderColor: "rgba(90,52,24,0.4)",
+  },
+
+  // Corner L-brackets
+  corner: {
+    position: "absolute",
+  },
+
+  // Card back
+  backCenter: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 28,
-    paddingHorizontal: 22,
-    gap: 0,
+    gap: 10,
   },
-  frontTopLabel: {
-    color: "#C69B4F",
-    fontSize: 9,
-    letterSpacing: 1.5,
-    fontWeight: "600",
+  thinRule: {
+    width: 56,
+    height: 0.8,
+    backgroundColor: "#7A5228",
+    opacity: 0.7,
+  },
+  backTitle: {
+    color: "#C4944A",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 4,
     textAlign: "center",
-    marginBottom: 12,
   },
-  frontDivider: {
-    width: 60,
-    height: 1,
-    backgroundColor: "#C69B4F",
-    opacity: 0.4,
-    marginVertical: 14,
-  },
-  frontQuoteSymbol: {
-    color: "#C69B4F",
-    fontSize: 42,
-    lineHeight: 36,
-    fontFamily: "serif",
-    opacity: 0.6,
-    alignSelf: "flex-start",
-  },
-  frontMessage: {
-    color: "#EDE1D3",
-    fontSize: 14,
-    lineHeight: 22,
-    textAlign: "center",
+  backSub: {
+    color: "#8A6030",
+    fontSize: 10,
+    letterSpacing: 2.5,
     fontStyle: "italic",
-    flexShrink: 1,
-  },
-  frontDate: {
-    color: "#7A5828",
-    fontSize: 9,
-    letterSpacing: 1.5,
     textAlign: "center",
   },
 
-  // ── Action area ─────────────────────────────────────────────
-  actionArea: {
-    marginTop: 24,
+  // Card front
+  frontTopLabel: {
+    color: "#8A6030",
+    fontSize: 9,
+    letterSpacing: 2,
+    textAlign: "center",
+    alignSelf: "center",
+  },
+  frontBody: {
+    flex: 1,
     alignItems: "center",
-    minHeight: 48,
+    justifyContent: "center",
+    gap: 14,
+    paddingHorizontal: 8,
+  },
+  frontMessage: {
+    color: "#D4B483",
+    fontSize: 13,
+    lineHeight: 21,
+    textAlign: "center",
+    fontStyle: "italic",
+    fontFamily: "serif",
+  },
+  frontDate: {
+    color: "#6A4820",
+    fontSize: 8,
+    letterSpacing: 1.2,
+    textAlign: "center",
+  },
+
+  // Action area
+  actionArea: {
+    marginTop: 20,
+    alignItems: "center",
+    minHeight: 40,
     justifyContent: "center",
   },
   hintText: {
-    color: "#7A5828",
-    fontSize: 12,
-    letterSpacing: 0.5,
+    color: "#6A4820",
+    fontSize: 11,
+    letterSpacing: 0.8,
     textAlign: "center",
+    fontStyle: "italic",
   },
-  newCardBtn: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "#C69B4F",
-    backgroundColor: "rgba(198,155,79,0.08)",
+  newBtn: {
+    paddingHorizontal: 22,
+    paddingVertical: 9,
+    borderRadius: 6,
+    borderWidth: 0.8,
+    borderColor: "#7A5228",
+    backgroundColor: "rgba(122,82,40,0.08)",
   },
-  newCardBtnText: {
-    color: "#C69B4F",
-    fontSize: 13,
-    fontWeight: "600",
-    letterSpacing: 1,
+  newBtnText: {
+    color: "#A07840",
+    fontSize: 11,
+    letterSpacing: 1.5,
+    textAlign: "center",
   },
 });
