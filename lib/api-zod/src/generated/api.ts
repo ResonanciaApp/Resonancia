@@ -52,6 +52,19 @@ export const CreateMessageBody = zod.object({
 
 
 /**
+ * @summary Get today's top message by likes
+ */
+export const GetTopMessageResponse = zod.object({
+  "message": zod.union([zod.object({
+  "id": zod.number(),
+  "content": zod.string(),
+  "createdAt": zod.coerce.date(),
+  "likes": zod.number()
+}),zod.null()])
+})
+
+
+/**
  * @summary Like a message
  */
 export const LikeMessageParams = zod.object({

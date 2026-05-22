@@ -31,6 +31,10 @@ export interface CreateMessageBody {
   content: string;
 }
 
+export interface TopMessageResponse {
+  message: CommunityMessage | null;
+}
+
 export interface ErrorResponse {
   error: string;
 }

@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, sql, desc, lt } from "drizzle-orm";
+import { sql, desc, lt } from "drizzle-orm";
 import { db, messagesTable } from "@workspace/db";
 import {
   CreateMessageBody,
@@ -56,6 +56,22 @@ router.get("/messages", async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al obtener mensajes" });
+  }
+});
+
+router.get("/messages/top", async (req, res) => {
+  try {
+    const start = windowStart();
+    const [top] = await db
+      .select()
+      .from(messagesTable)
+      .where(sql`${messagesTable.createdAt} > ${start}`)
+      .orderBy(desc(messagesTable.likes), desc(messagesTable.createdAt))
+      .limit(1);
+    res.json({ message: top ?? null });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al obtener el mensaje más popular" });
   }
 });
 

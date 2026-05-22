@@ -25,7 +25,8 @@ import type {
   ErrorResponse,
   GetMessagesParams,
   HealthStatus,
-  MessagesPage
+  MessagesPage,
+  TopMessageResponse
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -272,6 +273,83 @@ export const useCreateMessage = <TError = ErrorType<ErrorResponse>,
       > => {
       return useMutation(getCreateMessageMutationOptions(options));
     }
+
+export const getGetTopMessageUrl = () => {
+
+
+
+
+  return `/api/messages/top`
+}
+
+/**
+ * @summary Get today's top message by likes
+ */
+export const getTopMessage = async ( options?: RequestInit): Promise<TopMessageResponse> => {
+
+  return customFetch<TopMessageResponse>(getGetTopMessageUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTopMessageQueryKey = () => {
+    return [
+    `/api/messages/top`
+    ] as const;
+    }
+
+
+export const getGetTopMessageQueryOptions = <TData = Awaited<ReturnType<typeof getTopMessage>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTopMessage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTopMessageQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTopMessage>>> = ({ signal }) => getTopMessage({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTopMessage>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTopMessageQueryResult = NonNullable<Awaited<ReturnType<typeof getTopMessage>>>
+export type GetTopMessageQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get today's top message by likes
+ */
+
+export function useGetTopMessage<TData = Awaited<ReturnType<typeof getTopMessage>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTopMessage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTopMessageQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getLikeMessageUrl = (id: number,) => {
 

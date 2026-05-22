@@ -1,0 +1,105 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+const STORAGE_KEY = "cdc_user_profile";
+
+interface UserProfile {
+  username: string;
+  photoUri: string | null;
+  sentMessageIds: number[];
+  earnedCrowns: number;
+  lastCrownDate: string | null;
+}
+
+const DEFAULT_PROFILE: UserProfile = {
+  username: "Explorador de Sonido",
+  photoUri: null,
+  sentMessageIds: [],
+  earnedCrowns: 0,
+  lastCrownDate: null,
+};
+
+interface UserProfileContextValue extends UserProfile {
+  setUsername: (name: string) => void;
+  setPhotoUri: (uri: string | null) => void;
+  recordSentMessage: (id: number) => void;
+  /** Call with today's top message ID. Awards a crown if the user owns it and hasn't been awarded today. */
+  checkAndAwardCrown: (topMessageId: number | null) => void;
+}
+
+const UserProfileContext = createContext<UserProfileContextValue | null>(null);
+
+export function UserProfileProvider({ children }: { children: React.ReactNode }) {
+  const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
+
+  useEffect(() => {
+    AsyncStorage.getItem(STORAGE_KEY).then((raw) => {
+      if (!raw) return;
+      try {
+        const saved = JSON.parse(raw) as Partial<UserProfile>;
+        setProfile((p) => ({ ...p, ...saved }));
+      } catch {}
+    });
+  }, []);
+
+  const persist = useCallback((next: UserProfile) => {
+    setProfile(next);
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  }, []);
+
+  const setUsername = useCallback(
+    (name: string) => persist({ ...profile, username: name.trim() || DEFAULT_PROFILE.username }),
+    [profile, persist],
+  );
+
+  const setPhotoUri = useCallback(
+    (uri: string | null) => persist({ ...profile, photoUri: uri }),
+    [profile, persist],
+  );
+
+  const recordSentMessage = useCallback(
+    (id: number) => {
+      const updated = [...profile.sentMessageIds, id].slice(-50); // keep last 50
+      persist({ ...profile, sentMessageIds: updated });
+    },
+    [profile, persist],
+  );
+
+  const checkAndAwardCrown = useCallback(
+    (topMessageId: number | null) => {
+      if (!topMessageId) return;
+      const isOwner = profile.sentMessageIds.includes(topMessageId);
+      if (!isOwner) return;
+
+      const todayStr = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+      if (profile.lastCrownDate === todayStr) return; // already awarded today
+
+      persist({
+        ...profile,
+        earnedCrowns: profile.earnedCrowns + 1,
+        lastCrownDate: todayStr,
+      });
+    },
+    [profile, persist],
+  );
+
+  return (
+    <UserProfileContext.Provider
+      value={{ ...profile, setUsername, setPhotoUri, recordSentMessage, checkAndAwardCrown }}
+    >
+      {children}
+    </UserProfileContext.Provider>
+  );
+}
+
+export function useUserProfile() {
+  const ctx = useContext(UserProfileContext);
+  if (!ctx) throw new Error("useUserProfile must be used inside UserProfileProvider");
+  return ctx;
+}

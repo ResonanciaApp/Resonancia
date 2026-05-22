@@ -23,6 +23,7 @@ import {
   useLikeMessage,
 } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
@@ -65,6 +66,7 @@ function todayLabel(): string {
 export function MensajesAnonimosPanel() {
   const colors = useColors();
   const queryClient = useQueryClient();
+  const { recordSentMessage } = useUserProfile();
   const [text, setText] = useState("");
   const [showFeed, setShowFeed] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
@@ -82,8 +84,9 @@ export function MensajesAnonimosPanel() {
 
   const { mutate: submit, isPending: isSubmitting } = useCreateMessage({
     mutation: {
-      onSuccess: () => {
+      onSuccess: (created) => {
         setText("");
+        recordSentMessage(created.id);
         queryClient.invalidateQueries({ queryKey: getGetMessagesQueryKey() });
       },
       onError: () => {

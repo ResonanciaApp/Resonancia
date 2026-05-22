@@ -24,6 +24,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
+import { UserProfileProvider } from "@/context/UserProfileContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
@@ -139,6 +140,7 @@ export default function RootLayout() {
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <PlayerProvider>
+            <UserProfileProvider>
             <IntencionProvider>
               <DiarioFavoritesProvider>
                 <GestureHandlerRootView>
@@ -148,6 +150,7 @@ export default function RootLayout() {
                 </GestureHandlerRootView>
               </DiarioFavoritesProvider>
             </IntencionProvider>
+            </UserProfileProvider>
           </PlayerProvider>
         </QueryClientProvider>
       </ErrorBoundary>
