@@ -27,7 +27,6 @@ const MAX_CHARS = 280;
 const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
 const ACCENT = "#D4709A";
 const WINDOW_MS = 24 * 60 * 60 * 1000;
-const PREVIEW_COUNT = 5;
 
 function timeAgo(iso: string | Date): string {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -48,11 +47,21 @@ function expiresIn(iso: string | Date): string {
   return `${mins} min`;
 }
 
+function todayLabel(): string {
+  const now = new Date();
+  const day = now.getDate();
+  const month = now
+    .toLocaleDateString("es-ES", { month: "short" })
+    .toUpperCase()
+    .replace(".", "");
+  return `${day} ${month}`;
+}
+
 export function MensajesAnonimosPanel() {
   const colors = useColors();
   const queryClient = useQueryClient();
   const [text, setText] = useState("");
-  const [showAll, setShowAll] = useState(false);
+  const [showFeed, setShowFeed] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
   const { data, isLoading, refetch, isRefetching } = useGetMessages(
@@ -108,8 +117,10 @@ export function MensajesAnonimosPanel() {
   const total = data?.total ?? 0;
 
   const sortedByLikes = [...allMessages].sort((a, b) => b.likes - a.likes);
-  const visibleMessages = showAll ? sortedByLikes : sortedByLikes.slice(0, PREVIEW_COUNT);
-  const hasMore = sortedByLikes.length > PREVIEW_COUNT;
+
+  const feedLabel = isLoading
+    ? "CARGANDO..."
+    : `HOY · ${todayLabel()} · ${total} ${total === 1 ? "MENSAJE" : "MENSAJES"}`;
 
   return (
     <View
@@ -118,7 +129,7 @@ export function MensajesAnonimosPanel() {
         { backgroundColor: colors.card, borderColor: "rgba(212,112,154,0.2)" },
       ]}
     >
-      {/* Header */}
+      {/* ── Header ── */}
       <LinearGradient
         colors={GRADIENT}
         style={styles.header}
@@ -138,11 +149,7 @@ export function MensajesAnonimosPanel() {
               </View>
             </View>
             <Text style={styles.headerSubtitle}>
-              {isLoading
-                ? "Cargando mensajes..."
-                : total > 0
-                  ? `${total} ${total === 1 ? "mensaje" : "mensajes"} hoy · anónimos`
-                  : "Anónimo · se borran solos cada día"}
+              Anónimo · se borran solos cada día
             </Text>
           </View>
         </View>
@@ -155,7 +162,7 @@ export function MensajesAnonimosPanel() {
         </Pressable>
       </LinearGradient>
 
-      {/* Compose area */}
+      {/* ── Compose ── */}
       <View style={styles.composeArea}>
         <TextInput
           value={text}
@@ -214,44 +221,50 @@ export function MensajesAnonimosPanel() {
         </View>
       </View>
 
-      {/* Messages feed — always visible */}
-      <View style={[styles.feed, { borderTopColor: colors.border }]}>
-        <View style={styles.feedHeader}>
-          <Text style={[styles.feedTitle, { color: colors.mutedForeground }]}>
-            {isLoading
-              ? "CARGANDO..."
-              : total > 0
-                ? `HOY · ${total} ${total === 1 ? "MENSAJE" : "MENSAJES"} · POR MÁS ❤️`
-                : "HOY · SIN MENSAJES AÚN"}
-          </Text>
-          <Pressable onPress={() => refetch()} hitSlop={8}>
-            <Feather
-              name="refresh-cw"
-              size={13}
-              color={isRefetching ? ACCENT : colors.mutedForeground}
-            />
-          </Pressable>
+      {/* ── Feed toggle row ── */}
+      <Pressable
+        onPress={() => setShowFeed((v) => !v)}
+        style={({ pressed }) => [
+          styles.feedToggleRow,
+          {
+            borderTopColor: colors.border,
+            backgroundColor: pressed ? "rgba(212,112,154,0.06)" : "transparent",
+          },
+        ]}
+      >
+        <Text style={[styles.feedToggleLabel, { color: colors.mutedForeground }]}>
+          {feedLabel}
+        </Text>
+        <View style={styles.feedToggleRight}>
+          {isRefetching && <ActivityIndicator size="small" color={ACCENT} style={{ marginRight: 6 }} />}
+          <Feather
+            name={showFeed ? "chevron-up" : "chevron-down"}
+            size={16}
+            color={ACCENT}
+          />
         </View>
+      </Pressable>
 
-        {isLoading ? (
-          <ActivityIndicator color={ACCENT} style={{ marginVertical: 20 }} />
-        ) : allMessages.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Feather name="wind" size={28} color={colors.mutedForeground} />
-            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-              Sé la primera persona en compartir algo hoy
-            </Text>
-            <Text style={[styles.emptyHint, { color: colors.mutedForeground }]}>
-              Los mensajes duran 24 h y luego desaparecen
-            </Text>
-          </View>
-        ) : (
-          <>
+      {/* ── Expandable feed ── */}
+      {showFeed && (
+        <View style={[styles.feed, { borderTopColor: colors.border }]}>
+          {isLoading ? (
+            <ActivityIndicator color={ACCENT} style={{ marginVertical: 24 }} />
+          ) : sortedByLikes.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Feather name="wind" size={28} color={colors.mutedForeground} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                Sé la primera persona en compartir algo hoy
+              </Text>
+              <Text style={[styles.emptyHint, { color: colors.mutedForeground }]}>
+                Los mensajes duran 24 h y luego desaparecen
+              </Text>
+            </View>
+          ) : (
             <ScrollView
               nestedScrollEnabled
               showsVerticalScrollIndicator={false}
               style={styles.messagesList}
-              scrollEnabled={showAll}
               refreshControl={
                 <RefreshControl
                   refreshing={isRefetching}
@@ -260,8 +273,9 @@ export function MensajesAnonimosPanel() {
                 />
               }
             >
-              {visibleMessages.map((msg) => {
-                const msLeft = new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
+              {sortedByLikes.map((msg) => {
+                const msLeft =
+                  new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
                 const isExpiringSoon = msLeft < 3 * 60 * 60 * 1000;
                 return (
                   <View
@@ -281,7 +295,9 @@ export function MensajesAnonimosPanel() {
                     </Text>
                     <View style={styles.messageMeta}>
                       <View style={styles.messageMetaLeft}>
-                        <Text style={[styles.messageTime, { color: colors.mutedForeground }]}>
+                        <Text
+                          style={[styles.messageTime, { color: colors.mutedForeground }]}
+                        >
                           {timeAgo(msg.createdAt)}
                         </Text>
                         {isExpiringSoon && (
@@ -301,7 +317,9 @@ export function MensajesAnonimosPanel() {
                         <Feather
                           name="heart"
                           size={12}
-                          color={likedIds.has(msg.id) ? "#E07070" : colors.mutedForeground}
+                          color={
+                            likedIds.has(msg.id) ? "#E07070" : colors.mutedForeground
+                          }
                         />
                         {msg.likes > 0 && (
                           <Text
@@ -323,30 +341,9 @@ export function MensajesAnonimosPanel() {
                 );
               })}
             </ScrollView>
-
-            {hasMore && (
-              <Pressable
-                onPress={() => setShowAll((v) => !v)}
-                style={({ pressed }) => [
-                  styles.verMasBtn,
-                  { borderColor: `${ACCENT}44`, opacity: pressed ? 0.75 : 1 },
-                ]}
-              >
-                <Feather
-                  name={showAll ? "chevron-up" : "chevron-down"}
-                  size={14}
-                  color={ACCENT}
-                />
-                <Text style={[styles.verMasText, { color: ACCENT }]}>
-                  {showAll
-                    ? "Ver menos"
-                    : `Ver todos los mensajes (${sortedByLikes.length})`}
-                </Text>
-              </Pressable>
-            )}
-          </>
-        )}
-      </View>
+          )}
+        </View>
+      )}
     </View>
   );
 }
@@ -357,6 +354,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: "hidden",
   },
+
+  // Header
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -404,7 +403,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(255,214,235,0.8)",
+    color: "rgba(255,214,235,0.7)",
     fontSize: 11,
     marginTop: 2,
   },
@@ -416,6 +415,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 
+  // Compose
   composeArea: { padding: 14 },
   textInput: {
     minHeight: 88,
@@ -445,16 +445,29 @@ const styles = StyleSheet.create({
   },
   sendBtnText: { fontSize: 13, fontWeight: "700" },
 
-  feed: { borderTopWidth: 1, padding: 14 },
-  feedHeader: {
+  // Feed toggle row
+  feedToggleRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 12,
+    borderTopWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  feedTitle: { fontSize: 10, letterSpacing: 1.2, fontWeight: "600" },
+  feedToggleLabel: {
+    fontSize: 10,
+    letterSpacing: 1.4,
+    fontWeight: "700",
+  },
+  feedToggleRight: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
-  messagesList: { maxHeight: 400 },
+  // Feed
+  feed: { padding: 14 },
+
+  messagesList: { maxHeight: 370 },
 
   emptyState: { alignItems: "center", paddingVertical: 24, gap: 8 },
   emptyText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
@@ -487,16 +500,4 @@ const styles = StyleSheet.create({
   expiringText: { fontSize: 9, color: "#E07060", letterSpacing: 0.2 },
   likeBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   likeCount: { fontSize: 11, fontWeight: "600" },
-
-  verMasBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingVertical: 12,
-    marginTop: 4,
-  },
-  verMasText: { fontSize: 13, fontWeight: "600" },
 });
