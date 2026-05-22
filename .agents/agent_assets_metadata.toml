@@ -53,3 +53,9 @@ id = "wetHSCI9rAVQySxatZDy-"
 uri = "file://artifacts/mobile/assets/audio/sesion_cuencos_mix.mp3"
 type = "audio"
 title = "Mix Cuencos — 3 minutos completos"
+
+[[outputs]]
+id = "j8rjFkdYppFltRV8JhkFV"
+uri = "file://artifacts/mobile/assets/audio/gong90cm.mp3"
+type = "audio"
+title = "Gong 90cm — golpe de maza (62 Hz, 50s decay)"
