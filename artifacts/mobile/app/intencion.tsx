@@ -254,9 +254,9 @@ export default function IntencionScreen() {
                     <Pressable
                       onPress={() => removeFavorite(fav)}
                       hitSlop={8}
-                      style={[styles.actionBtn, { backgroundColor: colors.primary + "18", borderColor: colors.primary + "44" }]}
+                      style={[styles.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                     >
-                      <Feather name="heart" size={15} color={colors.primary} />
+                      <Feather name="trash-2" size={14} color={colors.mutedForeground} />
                     </Pressable>
                   </View>
                 ))}
