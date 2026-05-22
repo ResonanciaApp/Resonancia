@@ -251,8 +251,49 @@ export default function PlayerScreen() {
         </View>
       </View>
 
+      {/* Controls */}
+      <View style={[styles.controlsWrapper, { paddingBottom: 8 }]}>
+        {Platform.OS !== "web" ? (
+          <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(24,17,12,0.55)" }]} />
+        )}
+        <View style={styles.controls}>
+          <Pressable onPress={skipBackward} style={styles.controlSide}>
+            <Feather name="skip-back" size={24} color={colors.foreground} />
+            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
+          </Pressable>
+
+          {/* Play button with outer glow ring */}
+          <View style={styles.playOuter}>
+            <View style={[styles.playRing, { borderColor: "rgba(198,155,79,0.25)" }]} />
+            <Pressable
+              onPress={handlePlayPause}
+              disabled={isLoading}
+              style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
+            >
+              {isLoading ? (
+                <Feather name="loader" size={32} color={colors.primaryForeground} />
+              ) : (
+                <Feather
+                  name={isPlaying ? "pause" : "play"}
+                  size={32}
+                  color={colors.primaryForeground}
+                  style={isPlaying ? undefined : { paddingLeft: 4 }}
+                />
+              )}
+            </Pressable>
+          </View>
+
+          <Pressable onPress={skipForward} style={styles.controlSide}>
+            <Feather name="skip-forward" size={24} color={colors.foreground} />
+            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
+          </Pressable>
+        </View>
+      </View>
+
       {/* Sleep Timer */}
-      <View style={styles.timerSection}>
+      <View style={[styles.timerSection, { paddingTop: 16 }]}>
         <View style={styles.timerHeader}>
           <Feather name="moon" size={13} color={colors.mutedForeground} />
           <Text style={[styles.timerLabel, { color: colors.mutedForeground }]}>
@@ -297,49 +338,8 @@ export default function PlayerScreen() {
         </View>
       </View>
 
-      {/* Controls */}
-      <View style={[styles.controlsWrapper, { paddingBottom: bottomPad + 24 }]}>
-        {Platform.OS !== "web" ? (
-          <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(24,17,12,0.55)" }]} />
-        )}
-        <View style={styles.controls}>
-          <Pressable onPress={skipBackward} style={styles.controlSide}>
-            <Feather name="skip-back" size={24} color={colors.foreground} />
-            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
-          </Pressable>
-
-          {/* Play button with outer glow ring */}
-          <View style={styles.playOuter}>
-            <View style={[styles.playRing, { borderColor: "rgba(198,155,79,0.25)" }]} />
-            <Pressable
-              onPress={handlePlayPause}
-              disabled={isLoading}
-              style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
-            >
-              {isLoading ? (
-                <Feather name="loader" size={32} color={colors.primaryForeground} />
-              ) : (
-                <Feather
-                  name={isPlaying ? "pause" : "play"}
-                  size={32}
-                  color={colors.primaryForeground}
-                  style={isPlaying ? undefined : { paddingLeft: 4 }}
-                />
-              )}
-            </Pressable>
-          </View>
-
-          <Pressable onPress={skipForward} style={styles.controlSide}>
-            <Feather name="skip-forward" size={24} color={colors.foreground} />
-            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
-          </Pressable>
-        </View>
-      </View>
-
       {/* Bottom Extras */}
-      <View style={[styles.extras, { paddingBottom: bottomPad + 10 }]}>
+      <View style={[styles.extras, { paddingBottom: bottomPad + 10, paddingTop: 16 }]}>
         <Pressable style={styles.extraBtn}>
           <Feather name="volume-2" size={18} color={colors.mutedForeground} />
           <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Volume</Text>
