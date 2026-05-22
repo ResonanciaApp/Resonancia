@@ -6,61 +6,67 @@ export type Category = {
   sessionCount: number;
   color: string;
   gradient: [string, string];
+  primary?: boolean;
 };
 
 export const CATEGORIES: Category[] = [
+  {
+    id: "sonidos-ancestrales",
+    title: "Sonidos Ancestrales",
+    subtitle: "Cuencos, gongs y frecuencias sagradas",
+    icon: "disc",
+    sessionCount: 4,
+    color: "#E8C87A",
+    gradient: ["#7A5520", "#3E2208"],
+    primary: true,
+  },
   {
     id: "meditaciones-guiadas",
     title: "Meditaciones Guiadas",
     subtitle: "Viajes interiores guiados por el sonido",
     icon: "wind",
-    sessionCount: 1,
+    sessionCount: 3,
     color: "#EDD9B8",
-    gradient: ["#BF9B70", "#8A6E48"],
+    gradient: ["#BF9B70", "#6B4E28"],
+    primary: true,
   },
   {
-    id: "cuencos-gongs",
-    title: "Sesiones de Cuencos y Gongs",
-    subtitle: "Resonancia ancestral para sanar profundo",
-    icon: "disc",
+    id: "musica-sonidos",
+    title: "Música y Sonidos",
+    subtitle: "Atmósferas sonoras para meditar",
+    icon: "music",
+    sessionCount: 2,
+    color: "#C8B4E0",
+    gradient: ["#4A3260", "#251633"],
+  },
+  {
+    id: "sabiduria-dia",
+    title: "Sabiduría para tu día",
+    subtitle: "Una semilla de consciencia cada día",
+    icon: "sun",
     sessionCount: 1,
-    color: "#D4905A",
-    gradient: ["#6B3D1C", "#3A1E0A"],
+    color: "#F0CC82",
+    gradient: ["#C49A52", "#7A5C20"],
   },
   {
-    id: "asmr-expansivos",
-    title: "ASMR Expansivos",
-    subtitle: "Sonidos íntimos que expanden la conciencia",
-    icon: "headphones",
-    sessionCount: 1,
-    color: "#C89060",
-    gradient: ["#47301E", "#241508"],
-  },
-  {
-    id: "gran-despertar-podcast",
-    title: "\"El Gran Despertar\" PodCast",
+    id: "podcast",
+    title: "PodCast",
     subtitle: "Conversaciones que despiertan el alma",
     icon: "mic",
     sessionCount: 1,
     color: "#8AAAD4",
-    gradient: ["#243350", "#131E33"],
+    gradient: ["#243350", "#101A28"],
   },
   {
-    id: "consejo-del-dia",
-    title: "Consejo del día",
-    subtitle: "Una semilla de sabiduría para tu jornada",
-    icon: "sun",
+    id: "diario-expansivo",
+    title: "Diario Expansivo",
+    subtitle: "Registra tu viaje interior",
+    icon: "feather",
     sessionCount: 1,
-    color: "#F0CC82",
-    gradient: ["#C49A52", "#8A6C2A"],
-  },
-  {
-    id: "pausas-meditativas",
-    title: "Pausas Meditativas",
-    subtitle: "Instantes de silencio en medio del día",
-    icon: "pause-circle",
-    sessionCount: 1,
-    color: "#C8D4A8",
-    gradient: ["#626B52", "#3C4230"],
+    color: "#A8C4A8",
+    gradient: ["#3A5438", "#1E2E1C"],
   },
 ];
+
+export const getPrimaryCategories = () => CATEGORIES.filter((c) => c.primary);
+export const getSecondaryCategories = () => CATEGORIES.filter((c) => !c.primary);

@@ -22,7 +22,7 @@ import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
-import { CATEGORIES } from "@/data/categories";
+import { getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useColors } from "@/hooks/useColors";
@@ -93,8 +93,38 @@ export default function HomeScreen() {
               <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
             </Pressable>
           </View>
+
+          {/* Primarias — banners anchos */}
+          <View style={styles.primaryCats}>
+            {getPrimaryCategories().map((cat) => (
+              <Pressable
+                key={cat.id}
+                onPress={() => router.push(`/category/${cat.id}` as never)}
+                style={({ pressed }) => [styles.primaryCard, { opacity: pressed ? 0.82 : 1 }]}
+              >
+                <LinearGradient
+                  colors={cat.gradient as [string, string]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                />
+                <View style={styles.primaryBorder} />
+                <View style={[styles.primaryIconWrap, { backgroundColor: "rgba(255,255,255,0.14)", borderColor: "rgba(255,255,255,0.22)" }]}>
+                  <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={22} color={cat.color} />
+                </View>
+                <View style={styles.primaryText}>
+                  <Text style={styles.primaryLabel}>PRINCIPAL</Text>
+                  <Text style={styles.primaryTitle} numberOfLines={1}>{cat.title}</Text>
+                  <Text style={styles.primarySub} numberOfLines={1}>{cat.subtitle}</Text>
+                </View>
+                <Feather name="chevron-right" size={18} color="rgba(255,237,195,0.5)" style={styles.primaryChevron} />
+              </Pressable>
+            ))}
+          </View>
+
+          {/* Secundarias — grid 2×2 */}
           <View style={styles.grid}>
-            {CATEGORIES.map((cat) => (
+            {getSecondaryCategories().map((cat) => (
               <Pressable
                 key={cat.id}
                 onPress={() => router.push(`/category/${cat.id}` as never)}
@@ -102,16 +132,13 @@ export default function HomeScreen() {
               >
                 <LinearGradient
                   colors={cat.gradient as [string, string]}
-                  style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
+                  style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
                 />
                 <View style={[styles.gridIconBg, { backgroundColor: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.18)" }]}>
-                  <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={18} color={cat.color} />
+                  <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={16} color={cat.color} />
                 </View>
                 <Text style={[styles.gridTitle, { color: "#F5EDD8" }]} numberOfLines={2}>
                   {cat.title}
-                </Text>
-                <Text style={[styles.gridCount, { color: "rgba(255,237,195,0.7)" }]}>
-                  {cat.sessionCount} {cat.sessionCount === 1 ? "sesión" : "sesiones"}
                 </Text>
               </Pressable>
             ))}
@@ -262,7 +289,53 @@ const styles = StyleSheet.create({
   sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
   seeAll: { fontSize: 13 },
 
-  // Category grid
+  // Primary categories (full-width banners)
+  primaryCats: { gap: 10, marginBottom: 10 },
+  primaryCard: {
+    width: "100%",
+    height: 76,
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    overflow: "hidden",
+  },
+  primaryBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,220,140,0.18)",
+  },
+  primaryIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  primaryText: { flex: 1, marginLeft: 14 },
+  primaryLabel: {
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 1.8,
+    color: "rgba(255,220,140,0.7)",
+    marginBottom: 2,
+  },
+  primaryTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#F5EDD8",
+    letterSpacing: 0.2,
+  },
+  primarySub: {
+    fontSize: 11,
+    color: "rgba(245,237,216,0.6)",
+    marginTop: 2,
+  },
+  primaryChevron: { marginLeft: 8 },
+
+  // Secondary category grid
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -270,21 +343,21 @@ const styles = StyleSheet.create({
   },
   gridCard: {
     width: CARD_W,
-    height: CARD_H,
-    borderRadius: 18,
-    padding: 14,
+    height: CARD_H * 0.88,
+    borderRadius: 16,
+    padding: 12,
     justifyContent: "space-between",
     overflow: "hidden",
   },
   gridIconBg: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 9,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  gridTitle: { fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 8 },
+  gridTitle: { fontSize: 12, fontWeight: "700", lineHeight: 17, marginTop: 6 },
   gridCount: { fontSize: 11, marginTop: 2 },
 
   // Hero
