@@ -73,7 +73,7 @@ export default function HomeScreen() {
         {/* ── 1. LOGO ── */}
         <View style={styles.header}>
           <Image
-            source={require("@/assets/images/logo-resonancia-gold.png")}
+            source={require("@/assets/images/logo-cdc-dark.png")}
             style={styles.logoImage}
             resizeMode="contain"
           />
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
     marginBottom: 24,
   },
-  logoImage: { width: 190, height: 47 },
+  logoImage: { width: 260, height: 65 },
   avatarBtn: {
     width: 40,
     height: 40,
