@@ -118,18 +118,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* ── 3. MENSAJE DEL DÍA ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-            Un mensaje para ti
-          </Text>
-          <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
-            Deja que el universo te hable hoy
-          </Text>
-          <MessageDeck />
-        </View>
-
-        {/* ── 4. SESIÓN DESTACADA ── */}
+        {/* ── 3. SESIÓN DESTACADA ── */}
         {featuredSession && (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
@@ -171,7 +160,18 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 4. NUEVAS SESIONES ── */}
+        {/* ── 4. MENSAJE DEL DÍA ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            Un mensaje para ti
+          </Text>
+          <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+            Deja que el universo te hable hoy
+          </Text>
+          <MessageDeck />
+        </View>
+
+        {/* ── 5. NUEVAS SESIONES ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
