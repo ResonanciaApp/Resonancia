@@ -69,7 +69,7 @@ export default function ExploreScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Explorar</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Biblioteca</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Descubre tu santuario sonoro
           </Text>
