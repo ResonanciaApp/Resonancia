@@ -77,7 +77,7 @@ export default function CategoryScreen() {
             <View style={styles.heroMeta}>
               <View style={[styles.metaBadge, { backgroundColor: "rgba(198,155,79,0.15)" }]}>
                 <Text style={[styles.metaBadgeText, { color: colors.accent }]}>
-                  {allSessions.length} Sessions
+                  {allSessions.length} Sesiones
                 </Text>
               </View>
             </View>
@@ -87,7 +87,7 @@ export default function CategoryScreen() {
         {/* Sessions */}
         <View style={styles.sessionsSection}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-            {allSessions.length} Sessions
+            {allSessions.length} Sesiones
           </Text>
           {allSessions.map((s) => (
             <SessionCard key={s.id} session={s} horizontal />
@@ -96,7 +96,7 @@ export default function CategoryScreen() {
             <View style={styles.emptyState}>
               <Feather name="music" size={40} color={colors.border} />
               <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                Sessions coming soon
+                Próximamente
               </Text>
             </View>
           )}

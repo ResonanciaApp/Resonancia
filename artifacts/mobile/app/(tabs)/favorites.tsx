@@ -43,9 +43,9 @@ export default function FavoritesScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Favorites</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Favoritos</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Your saved sound journeys
+            Tus viajes sonoros guardados
           </Text>
         </View>
 
@@ -55,24 +55,24 @@ export default function FavoritesScreen() {
               <Feather name="heart" size={32} color={colors.border} />
             </View>
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              Your sanctuary awaits
+              Tu santuario te espera
             </Text>
             <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-              Save sessions you love to return to them whenever you need stillness.
+              Guarda las sesiones que más te gusten para volver a ellas cuando necesites silencio interior.
             </Text>
             <Pressable
               onPress={() => router.push("/(tabs)/explore" as never)}
               style={[styles.exploreBtn, { backgroundColor: colors.primary }]}
             >
               <Text style={[styles.exploreBtnText, { color: colors.primaryForeground }]}>
-                Explore Sessions
+                Explorar Sesiones
               </Text>
             </Pressable>
           </View>
         ) : (
           <View>
             <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>
-              {favSessions.length} saved session{favSessions.length !== 1 ? "s" : ""}
+              {favSessions.length} sesión{favSessions.length !== 1 ? "es" : ""} guardada{favSessions.length !== 1 ? "s" : ""}
             </Text>
             {favSessions.map((s) => (
               <SessionCard key={s.id} session={s} horizontal />

@@ -19,19 +19,19 @@ function NativeTabLayout() {
       <NativeTabs>
         <NativeTabs.Trigger name="index">
           <Icon sf={{ default: "house", selected: "house.fill" }} />
-          <Label>Home</Label>
+          <Label>Inicio</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="explore">
           <Icon sf={{ default: "safari", selected: "safari.fill" }} />
-          <Label>Explore</Label>
+          <Label>Explorar</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="favorites">
           <Icon sf={{ default: "heart", selected: "heart.fill" }} />
-          <Label>Favorites</Label>
+          <Label>Favoritos</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
           <Icon sf={{ default: "person", selected: "person.fill" }} />
-          <Label>Profile</Label>
+          <Label>Perfil</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
       {currentSession && (
@@ -89,7 +89,7 @@ function ClassicTabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Home",
+            title: "Inicio",
             tabBarIcon: ({ color }) =>
               isIOS ? (
                 <SymbolView name="house" tintColor={color} size={22} />
@@ -101,7 +101,7 @@ function ClassicTabLayout() {
         <Tabs.Screen
           name="explore"
           options={{
-            title: "Explore",
+            title: "Explorar",
             tabBarIcon: ({ color }) =>
               isIOS ? (
                 <SymbolView name="safari" tintColor={color} size={22} />
@@ -113,7 +113,7 @@ function ClassicTabLayout() {
         <Tabs.Screen
           name="favorites"
           options={{
-            title: "Favorites",
+            title: "Favoritos",
             tabBarIcon: ({ color }) =>
               isIOS ? (
                 <SymbolView name="heart" tintColor={color} size={22} />
@@ -125,7 +125,7 @@ function ClassicTabLayout() {
         <Tabs.Screen
           name="profile"
           options={{
-            title: "Profile",
+            title: "Perfil",
             tabBarIcon: ({ color }) =>
               isIOS ? (
                 <SymbolView name="person" tintColor={color} size={22} />

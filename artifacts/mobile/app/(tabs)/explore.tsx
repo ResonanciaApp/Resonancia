@@ -35,7 +35,7 @@ export default function ExploreScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const filters = ["All", "Short", "Sleep", "Healing", "Guided"];
+  const filters = ["Todos", "Cortas", "Sueño", "Sanación", "Guiadas"];
 
   const filteredSessions = SESSIONS.filter((s) => {
     const matchQuery =
@@ -44,11 +44,11 @@ export default function ExploreScreen() {
       s.categoryLabel.toLowerCase().includes(query.toLowerCase());
     const matchFilter =
       !activeFilter ||
-      activeFilter === "All" ||
-      (activeFilter === "Short" && s.duration <= 15) ||
-      (activeFilter === "Sleep" && s.categoryId === "sleep-rest") ||
-      (activeFilter === "Healing" && s.categoryId === "sound-healing") ||
-      (activeFilter === "Guided" && s.categoryId === "guided-meditations");
+      activeFilter === "Todos" ||
+      (activeFilter === "Cortas" && s.duration <= 15) ||
+      (activeFilter === "Sueño" && s.categoryId === "sleep-rest") ||
+      (activeFilter === "Sanación" && s.categoryId === "sound-healing") ||
+      (activeFilter === "Guiadas" && s.categoryId === "guided-meditations");
     return matchQuery && matchFilter;
   });
 
@@ -68,9 +68,9 @@ export default function ExploreScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Explore</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Explorar</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Discover your sound sanctuary
+            Descubre tu santuario sonoro
           </Text>
         </View>
 
@@ -80,7 +80,7 @@ export default function ExploreScreen() {
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder="Search sessions, bowls, gongs..."
+            placeholder="Buscar sesiones, cuencos, gongs..."
             placeholderTextColor={colors.mutedForeground}
             style={[styles.searchInput, { color: colors.foreground }]}
           />
@@ -98,11 +98,11 @@ export default function ExploreScreen() {
           contentContainerStyle={styles.filterScroll}
         >
           {filters.map((f) => {
-            const active = activeFilter === f || (f === "All" && !activeFilter);
+            const active = activeFilter === f || (f === "Todos" && !activeFilter);
             return (
               <Pressable
                 key={f}
-                onPress={() => setActiveFilter(f === "All" ? null : f)}
+                onPress={() => setActiveFilter(f === "Todos" ? null : f)}
                 style={[
                   styles.filterChip,
                   active
@@ -127,7 +127,7 @@ export default function ExploreScreen() {
           /* Search Results */
           <View style={styles.section}>
             <Text style={[styles.resultsLabel, { color: colors.mutedForeground }]}>
-              {filteredSessions.length} session{filteredSessions.length !== 1 ? "s" : ""} found
+              {filteredSessions.length} sesión{filteredSessions.length !== 1 ? "es" : ""} encontrada{filteredSessions.length !== 1 ? "s" : ""}
             </Text>
             {filteredSessions.map((s) => (
               <SessionCard key={s.id} session={s} horizontal />
@@ -136,10 +136,10 @@ export default function ExploreScreen() {
               <View style={styles.emptyState}>
                 <Feather name="search" size={40} color={colors.border} />
                 <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-                  No sessions found
+                  Sin resultados
                 </Text>
                 <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-                  Try a different search or filter
+                  Prueba con otro término o filtro
                 </Text>
               </View>
             )}
@@ -149,7 +149,7 @@ export default function ExploreScreen() {
             {/* Categories Grid */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Browse by Category
+                Explorar por Categoría
               </Text>
               <View style={styles.grid}>
                 {CATEGORIES.map((cat) => (
@@ -181,7 +181,7 @@ export default function ExploreScreen() {
                       {cat.title}
                     </Text>
                     <Text style={[styles.gridCount, { color: colors.accent }]}>
-                      {cat.sessionCount} sessions
+                      {cat.sessionCount} sesiones
                     </Text>
                   </Pressable>
                 ))}
@@ -191,7 +191,7 @@ export default function ExploreScreen() {
             {/* All Sessions */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                All Sessions
+                Todas las Sesiones
               </Text>
               <ScrollView
                 horizontal

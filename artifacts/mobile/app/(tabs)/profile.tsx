@@ -19,13 +19,13 @@ import { useColors } from "@/hooks/useColors";
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
 const SETTINGS: { icon: FeatherIconName; label: string; sub: string }[] = [
-  { icon: "bell", label: "Daily Reminders", sub: "Set your practice time" },
-  { icon: "moon", label: "Sleep Timer", sub: "Auto-stop after session" },
-  { icon: "download", label: "Offline Library", sub: "Download for offline use" },
-  { icon: "volume-2", label: "Audio Quality", sub: "High fidelity · Lossless" },
-  { icon: "globe", label: "Language", sub: "English" },
-  { icon: "shield", label: "Privacy", sub: "Your data, protected" },
-  { icon: "info", label: "About RESONANCE", sub: "Version 1.0.0" },
+  { icon: "bell", label: "Recordatorios Diarios", sub: "Define tu horario de práctica" },
+  { icon: "moon", label: "Temporizador de Sueño", sub: "Detener al finalizar la sesión" },
+  { icon: "download", label: "Biblioteca Sin Conexión", sub: "Descarga para escuchar offline" },
+  { icon: "volume-2", label: "Calidad de Audio", sub: "Alta fidelidad · Sin pérdidas" },
+  { icon: "globe", label: "Idioma", sub: "Español" },
+  { icon: "shield", label: "Privacidad", sub: "Tus datos, protegidos" },
+  { icon: "info", label: "Acerca de RESONANCE", sub: "Versión 1.0.0" },
 ];
 
 export default function ProfileScreen() {
@@ -41,9 +41,9 @@ export default function ProfileScreen() {
   const sessionCount = SESSIONS.length;
 
   const stats = [
-    { label: "Sessions", value: sessionCount.toString(), icon: "disc" as FeatherIconName },
-    { label: "Minutes", value: totalMinutesListened > 0 ? totalMinutesListened.toString() : "—", icon: "clock" as FeatherIconName },
-    { label: "Saved", value: favCount.toString(), icon: "heart" as FeatherIconName },
+    { label: "Sesiones", value: sessionCount.toString(), icon: "disc" as FeatherIconName },
+    { label: "Minutos", value: totalMinutesListened > 0 ? totalMinutesListened.toString() : "—", icon: "clock" as FeatherIconName },
+    { label: "Guardadas", value: favCount.toString(), icon: "heart" as FeatherIconName },
   ];
 
   return (
@@ -62,7 +62,7 @@ export default function ProfileScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Profile</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Perfil</Text>
         </View>
 
         {/* Profile Card */}
@@ -74,9 +74,9 @@ export default function ProfileScreen() {
           <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: colors.primary }]}>
             <Feather name="user" size={28} color={colors.primary} />
           </View>
-          <Text style={[styles.userName, { color: colors.foreground }]}>Sound Explorer</Text>
+          <Text style={[styles.userName, { color: colors.foreground }]}>Explorador de Sonido</Text>
           <Text style={[styles.userSub, { color: colors.mutedForeground }]}>
-            Member since 2024 · Resonance Journey
+            Miembro desde 2024 · Viaje Resonance
           </Text>
         </View>
 
@@ -107,7 +107,7 @@ export default function ProfileScreen() {
               RESONANCE Premium
             </Text>
             <Text style={[styles.premiumSub, { color: colors.mutedForeground }]}>
-              Unlock all sessions, offline access, and more
+              Accede a todas las sesiones, modo offline y más
             </Text>
           </View>
           <View style={[styles.premiumBadge, { backgroundColor: colors.primary }]}>
@@ -118,7 +118,7 @@ export default function ProfileScreen() {
         {/* Settings */}
         <View style={styles.settingsSection}>
           <Text style={[styles.settingsTitle, { color: colors.mutedForeground }]}>
-            SETTINGS
+            AJUSTES
           </Text>
           {SETTINGS.map((item, i) => (
             <View
@@ -148,7 +148,7 @@ export default function ProfileScreen() {
         </View>
 
         <Text style={[styles.footer, { color: colors.border }]}>
-          RESONANCE · Sounds that bring you back to yourself.
+          RESONANCE · Sonidos que te regresan a ti mismo.
         </Text>
       </ScrollView>
     </View>

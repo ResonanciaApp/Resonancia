@@ -59,7 +59,7 @@ export default function HomeScreen() {
           <View>
             <Text style={[styles.logoText, { color: colors.primary }]}>RESONANCE</Text>
             <Text style={[styles.tagline, { color: colors.mutedForeground }]}>
-              Sounds that bring you back to yourself.
+              Sonidos que te regresan a ti mismo.
             </Text>
           </View>
           <Pressable
@@ -88,7 +88,7 @@ export default function HomeScreen() {
             <GlowRing size={240} color="rgba(198,155,79,0.07)" delay={1000} duration={3500} />
           </View>
           <View style={styles.heroContent}>
-            <Text style={[styles.heroLabel, { color: colors.accent }]}>FEATURED SESSION</Text>
+            <Text style={[styles.heroLabel, { color: colors.accent }]}>SESIÓN DESTACADA</Text>
             <Text style={[styles.heroTitle, { color: colors.foreground }]}>
               {featured[0]?.title}
             </Text>
@@ -104,7 +104,7 @@ export default function HomeScreen() {
             >
               <Feather name="play" size={16} color={colors.primaryForeground} />
               <Text style={[styles.heroBtnText, { color: colors.primaryForeground }]}>
-                Begin Listening
+                Comenzar a Escuchar
               </Text>
             </Pressable>
           </View>
@@ -113,7 +113,7 @@ export default function HomeScreen() {
         {/* Daily Ritual */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-            Daily Ritual
+            Ritual Diario
           </Text>
           <Pressable
             onPress={() => router.push(`/session/${dailySession.id}` as never)}
@@ -128,7 +128,7 @@ export default function HomeScreen() {
             </View>
             <View style={styles.ritualInfo}>
               <Text style={[styles.ritualLabel, { color: colors.accent }]}>
-                SUGGESTED FOR TODAY
+                SUGERIDO PARA HOY
               </Text>
               <Text style={[styles.ritualTitle, { color: colors.foreground }]}>
                 {dailySession.title}
@@ -150,10 +150,10 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Featured Sessions
+              Sesiones Destacadas
             </Text>
             <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>See all</Text>
+              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
             </Pressable>
           </View>
           <ScrollView
@@ -171,7 +171,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Sleep & Deep Rest
+              Sueño & Descanso Profundo
             </Text>
             <Feather name="moon" size={14} color={colors.accent} />
           </View>
@@ -190,10 +190,10 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Quick Pauses
+              Pausas Rápidas
             </Text>
             <Text style={[styles.seeAll, { color: colors.mutedForeground }]}>
-              Under 15 min
+              Menos de 15 min
             </Text>
           </View>
           {shortSessions.map((s) => (
@@ -205,10 +205,10 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Explore
+              Explorar
             </Text>
             <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>All categories</Text>
+              <Text style={[styles.seeAll, { color: colors.accent }]}>Todas las categorías</Text>
             </Pressable>
           </View>
           <ScrollView

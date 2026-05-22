@@ -38,9 +38,9 @@ export default function SessionDetailScreen() {
   if (!session) {
     return (
       <View style={[styles.root, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center" }]}>
-        <Text style={{ color: colors.mutedForeground }}>Session not found</Text>
+        <Text style={{ color: colors.mutedForeground }}>Sesión no encontrada</Text>
         <Pressable onPress={() => router.back()} style={{ marginTop: 16 }}>
-          <Text style={{ color: colors.primary }}>Go back</Text>
+          <Text style={{ color: colors.primary }}>Volver</Text>
         </Pressable>
       </View>
     );
@@ -106,7 +106,7 @@ export default function SessionDetailScreen() {
             </View>
             {session.isNew && (
               <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NEW</Text>
+                <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
               </View>
             )}
           </View>
@@ -133,7 +133,7 @@ export default function SessionDetailScreen() {
             <View style={styles.metaItem}>
               <Feather name="music" size={14} color={colors.mutedForeground} />
               <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                {session.instruments.length} instruments
+                {session.instruments.length} instrumentos
               </Text>
             </View>
           </View>
@@ -145,7 +145,7 @@ export default function SessionDetailScreen() {
 
           {/* Benefits */}
           <View style={styles.block}>
-            <Text style={[styles.blockTitle, { color: colors.foreground }]}>Benefits</Text>
+            <Text style={[styles.blockTitle, { color: colors.foreground }]}>Beneficios</Text>
             <View style={styles.pillsRow}>
               {session.benefits.map((b) => (
                 <View
@@ -161,7 +161,7 @@ export default function SessionDetailScreen() {
 
           {/* Instruments */}
           <View style={styles.block}>
-            <Text style={[styles.blockTitle, { color: colors.foreground }]}>Instruments</Text>
+            <Text style={[styles.blockTitle, { color: colors.foreground }]}>Instrumentos</Text>
             {session.instruments.map((inst) => (
               <View
                 key={inst}
@@ -177,7 +177,7 @@ export default function SessionDetailScreen() {
           {related.length > 0 && (
             <View style={styles.block}>
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>
-                More in {session.categoryLabel}
+                Más en {session.categoryLabel}
               </Text>
               {related.map((s) => (
                 <Pressable
@@ -222,7 +222,7 @@ export default function SessionDetailScreen() {
             color={colors.primaryForeground}
           />
           <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
-            {isCurrentlyPlaying ? "Now Playing" : "Play Session"}
+            {isCurrentlyPlaying ? "Reproduciendo" : "Reproducir"}
           </Text>
         </Pressable>
       </View>
