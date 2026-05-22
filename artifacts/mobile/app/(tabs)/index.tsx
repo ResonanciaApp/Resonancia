@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { DiarioEntryCard } from "@/components/DiarioEntryCard";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
@@ -205,30 +206,7 @@ export default function HomeScreen() {
             </View>
             <View style={styles.diarioList}>
               {topDiarioFavs.map((entry) => (
-                <View
-                  key={entry.id}
-                  style={[styles.diarioCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                >
-                  <View style={styles.diarioCardTop}>
-                    <View
-                      style={[
-                        styles.diarioBadge,
-                        { backgroundColor: entry.accentColor + "20", borderColor: entry.accentColor + "55" },
-                      ]}
-                    >
-                      <Text style={[styles.diarioBadgeText, { color: entry.accentColor }]}>
-                        {entry.sectionTitle}
-                      </Text>
-                    </View>
-                    <Feather name="heart" size={11} color="#E07070" />
-                  </View>
-                  <Text
-                    style={[styles.diarioText, { color: colors.foreground }]}
-                    numberOfLines={2}
-                  >
-                    {entry.text}
-                  </Text>
-                </View>
+                <DiarioEntryCard key={entry.id} entry={entry} showHeart />
               ))}
             </View>
           </View>
@@ -335,23 +313,4 @@ const styles = StyleSheet.create({
 
   // Diary favorites
   diarioList: { gap: 10 },
-  diarioCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 14,
-    gap: 8,
-  },
-  diarioCardTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  diarioBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  diarioBadgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
-  diarioText: { fontSize: 13, lineHeight: 20 },
 });

@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useRef, useState } from "react";
+import React from "react";
 import {
   Platform,
   Pressable,
@@ -14,7 +14,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { useDiarioFavoritesCtx, type FavoriteDiarioEntry } from "@/context/DiarioFavoritesContext";
+import { DiarioEntryCard } from "@/components/DiarioEntryCard";
+import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -26,69 +27,6 @@ function formatDate(iso: string) {
     month: "short",
     year: "numeric",
   });
-}
-
-const LINE_H = 20; // matches entryText lineHeight
-const MAX_LINES = 3;
-
-function DiarioEntryCard({ entry }: { entry: FavoriteDiarioEntry }) {
-  const colors = useColors();
-  const [expanded, setExpanded] = useState(false);
-  const [fullHeight, setFullHeight] = useState<number | null>(null);
-  // useRef so the guard is never stale in closures (unlike checking fullHeight===null)
-  const hasMeasured = useRef(false);
-
-  const isTruncated = fullHeight !== null && fullHeight > LINE_H * MAX_LINES + 4;
-  const numberOfLines = !hasMeasured.current || expanded || !isTruncated ? undefined : MAX_LINES;
-
-  return (
-    <Pressable
-      onPress={() => isTruncated && setExpanded((v) => !v)}
-      style={[styles.entryCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-    >
-      <View style={styles.entryCardTop}>
-        <View style={[styles.sectionBadge, { borderColor: entry.accentColor + "55", backgroundColor: entry.accentColor + "18" }]}>
-          <Text style={[styles.sectionBadgeText, { color: entry.accentColor }]}>
-            {entry.sectionTitle}
-          </Text>
-        </View>
-        <Text style={[styles.entryDate, { color: colors.mutedForeground }]}>
-          {formatDate(entry.createdAt)}
-        </Text>
-      </View>
-
-      <View
-        onLayout={(e) => {
-          // hasMeasured.current is always fresh (ref, not closure value)
-          // Only accept the first positive-height reading — that's the full-text height
-          const h = e.nativeEvent.layout.height;
-          if (!hasMeasured.current && h > 0) {
-            hasMeasured.current = true;
-            setFullHeight(h);
-          }
-        }}
-      >
-        <Text
-          style={[styles.entryText, { color: colors.foreground }]}
-          numberOfLines={numberOfLines}
-          ellipsizeMode="tail"
-        >
-          {entry.text}
-        </Text>
-      </View>
-
-      {isTruncated && !expanded && (
-        <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
-          Toca para leer más
-        </Text>
-      )}
-      {isTruncated && expanded && (
-        <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
-          Toca para colapsar
-        </Text>
-      )}
-    </Pressable>
-  );
 }
 
 export default function FavoritesScreen() {
@@ -225,27 +163,4 @@ const styles = StyleSheet.create({
   emptyLinkText: { fontSize: 12, fontWeight: "600" },
 
   entriesList: { gap: 10 },
-  entryCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 14,
-    gap: 8,
-    position: "relative",
-  },
-  entryCardTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-  },
-  sectionBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  sectionBadgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.5 },
-  entryDate: { fontSize: 10 },
-  entryText: { fontSize: 13, lineHeight: 20 },
-  expandHint: { fontSize: 10, marginTop: 2, letterSpacing: 0.3 },
 });
