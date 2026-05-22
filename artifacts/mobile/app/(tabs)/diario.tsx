@@ -68,6 +68,45 @@ function formatDate(iso: string) {
   });
 }
 
+function EntryCard({
+  entry,
+  accentColor,
+  onDelete,
+}: {
+  entry: { id: string; text: string; createdAt: string };
+  accentColor: string;
+  onDelete: () => void;
+}) {
+  const colors = useColors();
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <Pressable
+      onPress={() => setExpanded((v) => !v)}
+      style={[styles.entryCard, { backgroundColor: colors.background, borderColor: colors.border }]}
+    >
+      <Text style={[styles.entryDate, { color: accentColor }]}>
+        {formatDate(entry.createdAt)}
+      </Text>
+      <Text
+        style={[styles.entryText, { color: colors.foreground }]}
+        numberOfLines={expanded ? undefined : 1}
+        ellipsizeMode="tail"
+      >
+        {entry.text}
+      </Text>
+      {!expanded && (
+        <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
+          Toca para leer más
+        </Text>
+      )}
+      <Pressable onPress={onDelete} style={styles.deleteBtn} hitSlop={8}>
+        <Feather name="trash-2" size={13} color={colors.mutedForeground} />
+      </Pressable>
+    </Pressable>
+  );
+}
+
 function SectionPanel({ meta }: { meta: SectionMeta }) {
   const colors = useColors();
   const { entries, saveEntry, deleteEntry } = useDiario(meta.key);
@@ -164,18 +203,12 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
             HISTORIAL · {entries.length} {entries.length === 1 ? "entrada" : "entradas"}
           </Text>
           {entries.map((entry) => (
-            <View
+            <EntryCard
               key={entry.id}
-              style={[styles.entryCard, { backgroundColor: colors.background, borderColor: colors.border }]}
-            >
-              <Text style={[styles.entryDate, { color: meta.accentColor }]}>
-                {formatDate(entry.createdAt)}
-              </Text>
-              <Text style={[styles.entryText, { color: colors.foreground }]}>{entry.text}</Text>
-              <Pressable onPress={() => handleDelete(entry.id)} style={styles.deleteBtn}>
-                <Feather name="trash-2" size={13} color={colors.mutedForeground} />
-              </Pressable>
-            </View>
+              entry={entry}
+              accentColor={meta.accentColor}
+              onDelete={() => handleDelete(entry.id)}
+            />
           ))}
         </View>
       )}
@@ -324,6 +357,7 @@ const styles = StyleSheet.create({
   },
   entryDate: { fontSize: 10, letterSpacing: 0.5, marginBottom: 6, fontWeight: "600" },
   entryText: { fontSize: 13, lineHeight: 20 },
+  expandHint: { fontSize: 10, marginTop: 4, letterSpacing: 0.3 },
   deleteBtn: {
     position: "absolute",
     top: 10,
