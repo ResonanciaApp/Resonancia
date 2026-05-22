@@ -1,0 +1,409 @@
+import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useEffect } from "react";
+import {
+  Alert,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
+
+import { type VozEntry, useVozInterior } from "@/hooks/useVozInterior";
+import { useColors } from "@/hooks/useColors";
+
+const BAR_COUNT = 7;
+const ACCENT = "#9B6FD4";
+const GRADIENT: [string, string] = ["#3D1F5E", "#1E0F32"];
+
+function formatMs(ms: number): string {
+  const totalSec = Math.floor(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function WaveformBar({ index, active }: { index: number; active: boolean }) {
+  const height = useSharedValue(4);
+
+  useEffect(() => {
+    if (active) {
+      const delay = index * 80;
+      const minH = 4 + Math.random() * 6;
+      const maxH = 18 + Math.random() * 22;
+      height.value = withRepeat(
+        withSequence(
+          withTiming(maxH, { duration: 250 + delay, easing: Easing.inOut(Easing.sine) }),
+          withTiming(minH, { duration: 300 + delay, easing: Easing.inOut(Easing.sine) }),
+        ),
+        -1,
+        true,
+      );
+    } else {
+      height.value = withTiming(4, { duration: 300 });
+    }
+  }, [active, index, height]);
+
+  const style = useAnimatedStyle(() => ({ height: height.value }));
+
+  return (
+    <Animated.View
+      style={[
+        styles.waveBar,
+        style,
+        { backgroundColor: active ? ACCENT : "rgba(155,111,212,0.35)" },
+      ]}
+    />
+  );
+}
+
+function RecordButton({
+  isRecording,
+  onPress,
+}: {
+  isRecording: boolean;
+  onPress: () => void;
+}) {
+  const pulse = useSharedValue(1);
+
+  useEffect(() => {
+    if (isRecording) {
+      pulse.value = withRepeat(
+        withSequence(
+          withTiming(1.15, { duration: 700, easing: Easing.inOut(Easing.ease) }),
+          withTiming(1, { duration: 700, easing: Easing.inOut(Easing.ease) }),
+        ),
+        -1,
+        true,
+      );
+    } else {
+      pulse.value = withTiming(1, { duration: 300 });
+    }
+  }, [isRecording, pulse]);
+
+  const pulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulse.value }],
+    opacity: isRecording ? 0.35 : 0,
+  }));
+
+  return (
+    <Pressable onPress={onPress} style={styles.recordBtnWrapper}>
+      <Animated.View
+        style={[
+          styles.recordPulse,
+          { backgroundColor: isRecording ? "#D4304A" : ACCENT },
+          pulseStyle,
+        ]}
+      />
+      <View
+        style={[
+          styles.recordBtn,
+          {
+            backgroundColor: isRecording ? "#D4304A" : ACCENT,
+            shadowColor: isRecording ? "#D4304A" : ACCENT,
+          },
+        ]}
+      >
+        <Feather
+          name={isRecording ? "square" : "mic"}
+          size={26}
+          color="#FFF"
+        />
+      </View>
+    </Pressable>
+  );
+}
+
+function RecordingEntry({
+  entry,
+  isPlaying,
+  positionMs,
+  onPlay,
+  onDelete,
+}: {
+  entry: VozEntry;
+  isPlaying: boolean;
+  positionMs: number;
+  onPlay: () => void;
+  onDelete: () => void;
+}) {
+  const colors = useColors();
+  const progress = entry.durationMs > 0 ? Math.min(positionMs / entry.durationMs, 1) : 0;
+
+  return (
+    <View style={[styles.entryCard, { backgroundColor: colors.background, borderColor: colors.border }]}>
+      <View style={styles.entryRow}>
+        <Pressable onPress={onPlay} style={[styles.playBtn, { backgroundColor: `${ACCENT}22`, borderColor: `${ACCENT}55` }]}>
+          <Feather name={isPlaying ? "pause" : "play"} size={14} color={ACCENT} />
+        </Pressable>
+
+        <View style={styles.entryMeta}>
+          <Text style={[styles.entryDate, { color: ACCENT }]}>{formatDate(entry.createdAt)}</Text>
+          <Text style={[styles.entryDuration, { color: colors.mutedForeground }]}>
+            {isPlaying ? `${formatMs(positionMs)} / ${formatMs(entry.durationMs)}` : formatMs(entry.durationMs)}
+          </Text>
+        </View>
+
+        <Pressable onPress={onDelete} hitSlop={8} style={styles.deleteBtn}>
+          <Feather name="trash-2" size={13} color={colors.mutedForeground} />
+        </Pressable>
+      </View>
+
+      {isPlaying && (
+        <View style={[styles.progressTrack, { backgroundColor: colors.border }]}>
+          <View style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: ACCENT }]} />
+        </View>
+      )}
+    </View>
+  );
+}
+
+export function VozInteriorPanel() {
+  const colors = useColors();
+  const {
+    entries,
+    isRecording,
+    elapsedMs,
+    playingId,
+    playingPositionMs,
+    startRecording,
+    stopRecording,
+    deleteEntry,
+    playEntry,
+  } = useVozInterior();
+
+  const [showHistory, setShowHistory] = React.useState(false);
+
+  const handleRecord = async () => {
+    if (isRecording) {
+      await stopRecording();
+      setShowHistory(true);
+    } else {
+      const ok = await startRecording();
+      if (!ok) {
+        Alert.alert(
+          "Permiso requerido",
+          "RESONANCIA necesita acceso al micrófono para grabar tu Voz Interior.",
+          [{ text: "Entendido" }],
+        );
+      }
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    Alert.alert(
+      "Eliminar grabación",
+      "¿Querés borrar esta nota de voz?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Eliminar", style: "destructive", onPress: () => deleteEntry(id) },
+      ],
+    );
+  };
+
+  return (
+    <View style={[styles.panel, { backgroundColor: colors.card, borderColor: "rgba(155,111,212,0.2)" }]}>
+      {/* Header */}
+      <LinearGradient colors={GRADIENT} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+        <View style={styles.headerLeft}>
+          <View style={styles.headerIconBg}>
+            <Feather name="mic" size={18} color="#E8D8FF" />
+          </View>
+          <View>
+            <Text style={styles.headerTitle}>Voz Interior</Text>
+            <Text style={styles.headerSubtitle}>Graba tus pensamientos y emociones</Text>
+          </View>
+        </View>
+        {entries.length > 0 && (
+          <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#E8D8FF" />
+            <Text style={styles.historyCount}>{entries.length}</Text>
+          </Pressable>
+        )}
+      </LinearGradient>
+
+      {/* Record Area */}
+      <View style={styles.recordArea}>
+        {/* Waveform */}
+        <View style={styles.waveform}>
+          {Array.from({ length: BAR_COUNT }).map((_, i) => (
+            <WaveformBar key={i} index={i} active={isRecording} />
+          ))}
+        </View>
+
+        <RecordButton isRecording={isRecording} onPress={handleRecord} />
+
+        <View style={styles.timerWrapper}>
+          {isRecording ? (
+            <>
+              <View style={styles.recDot} />
+              <Text style={[styles.timerText, { color: "#D4304A" }]}>{formatMs(elapsedMs)}</Text>
+            </>
+          ) : (
+            <Text style={[styles.timerHint, { color: colors.mutedForeground }]}>
+              {Platform.OS === "web" ? "Disponible en la app" : "Toca para grabar"}
+            </Text>
+          )}
+        </View>
+      </View>
+
+      {/* History */}
+      {showHistory && entries.length > 0 && (
+        <View style={[styles.history, { borderTopColor: colors.border }]}>
+          <Text style={[styles.historyTitle, { color: colors.mutedForeground }]}>
+            HISTORIAL · {entries.length} {entries.length === 1 ? "grabación" : "grabaciones"}
+          </Text>
+          {entries.map((entry) => (
+            <RecordingEntry
+              key={entry.id}
+              entry={entry}
+              isPlaying={playingId === entry.id}
+              positionMs={playingId === entry.id ? playingPositionMs : 0}
+              onPlay={() => playEntry(entry)}
+              onDelete={() => handleDelete(entry.id)}
+            />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  panel: {
+    borderRadius: 20,
+    borderWidth: 1,
+    overflow: "hidden",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+  },
+  headerLeft: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
+  headerIconBg: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerTitle: { color: "#E8D8FF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  headerSubtitle: { color: "rgba(232,216,255,0.7)", fontSize: 11, marginTop: 1 },
+  historyToggle: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  historyCount: { color: "#E8D8FF", fontSize: 12, fontWeight: "600" },
+
+  recordArea: {
+    alignItems: "center",
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+  waveform: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    height: 48,
+  },
+  waveBar: {
+    width: 4,
+    borderRadius: 3,
+  },
+
+  recordBtnWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 80,
+    height: 80,
+  },
+  recordPulse: {
+    position: "absolute",
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  recordBtn: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.45,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+
+  timerWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    minHeight: 20,
+  },
+  recDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: "#D4304A",
+  },
+  timerText: { fontSize: 18, fontWeight: "700", letterSpacing: 2, fontVariant: ["tabular-nums"] },
+  timerHint: { fontSize: 12, letterSpacing: 0.3 },
+
+  history: { borderTopWidth: 1, padding: 14, gap: 10 },
+  historyTitle: { fontSize: 10, letterSpacing: 1.5, fontWeight: "600", marginBottom: 4 },
+
+  entryCard: { borderWidth: 1, borderRadius: 14, padding: 12 },
+  entryRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  playBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  entryMeta: { flex: 1 },
+  entryDate: { fontSize: 10, fontWeight: "600", letterSpacing: 0.4 },
+  entryDuration: { fontSize: 13, fontWeight: "600", marginTop: 2, fontVariant: ["tabular-nums"] },
+  deleteBtn: { padding: 6 },
+
+  progressTrack: {
+    height: 3,
+    borderRadius: 2,
+    marginTop: 10,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: 3,
+    borderRadius: 2,
+  },
+});
