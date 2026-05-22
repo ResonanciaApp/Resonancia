@@ -79,12 +79,11 @@ function EntryCard({
 }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
-  // null = not yet measured; number = real line count from first full render
-  const [realLines, setRealLines] = useState<number | null>(null);
+  // Heights: fullHeight = text without limit, lineHeight ≈ 22 (fontSize 13, lineHeight 20 + padding)
+  const [fullHeight, setFullHeight] = useState<number | null>(null);
+  const SINGLE_LINE_H = 22;
 
-  const isTruncated = realLines !== null && realLines > 1;
-  // Show full text when: not measured yet, expanded, or it fits in 1 line
-  const showFull = realLines === null || expanded || !isTruncated;
+  const isTruncated = fullHeight !== null && fullHeight > SINGLE_LINE_H + 4;
 
   return (
     <Pressable
@@ -95,16 +94,21 @@ function EntryCard({
         {formatDate(entry.createdAt)}
       </Text>
 
+      {/* Hidden full-text to measure natural height */}
+      {fullHeight === null && (
+        <View
+          style={{ opacity: 0, position: "absolute", left: 14, right: 14 }}
+          onLayout={(e) => setFullHeight(e.nativeEvent.layout.height)}
+        >
+          <Text style={styles.entryText}>{entry.text}</Text>
+        </View>
+      )}
+
+      {/* Visible text — truncated or full */}
       <Text
         style={[styles.entryText, { color: colors.foreground }]}
-        numberOfLines={showFull ? undefined : 1}
+        numberOfLines={!expanded && isTruncated ? 1 : undefined}
         ellipsizeMode="tail"
-        onTextLayout={(e) => {
-          // Only capture on the first unrestricted render
-          if (realLines === null) {
-            setRealLines(e.nativeEvent.lines.length);
-          }
-        }}
       >
         {entry.text}
       </Text>
