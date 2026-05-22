@@ -38,19 +38,25 @@ export function useVozInterior() {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   }, []);
 
-  const startRecording = useCallback(async () => {
+  const startRecording = useCallback(async (): Promise<boolean> => {
     try {
-      const { status } = await Audio.requestPermissionsAsync();
-      if (status !== "granted") return false;
+      const perm = await Audio.requestPermissionsAsync();
+      if (!perm.granted) return false;
 
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
+      // setAudioMode can fail on some devices — don't let it abort recording
+      try {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+      } catch {
+        // continue even if mode setting fails
+      }
 
       const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY,
+        Audio.RecordingOptionsPresets.LOW_QUALITY,
       );
+
       recordingRef.current = recording;
       startTimeRef.current = Date.now();
       setElapsedMs(0);
@@ -61,25 +67,31 @@ export function useVozInterior() {
       }, 100);
 
       return true;
-    } catch {
+    } catch (e) {
+      console.error("[VozInterior] startRecording error:", e);
+      setIsRecording(false);
       return false;
     }
   }, []);
 
   const stopRecording = useCallback(async () => {
     if (!recordingRef.current) return;
+
     timerRef.current && clearInterval(timerRef.current);
     timerRef.current = null;
 
-    try {
-      await recordingRef.current.stopAndUnloadAsync();
-      const uri = recordingRef.current.getURI();
-      const recStatus = await recordingRef.current.getStatusAsync();
-      const durationMs =
-        recStatus.isRecording === false && "durationMillis" in recStatus
-          ? (recStatus as { durationMillis: number }).durationMillis
-          : Date.now() - startTimeRef.current;
+    // Capture duration from our own timer — avoids calling getStatusAsync
+    // on an already-stopped recording which throws on native
+    const durationMs = Date.now() - startTimeRef.current;
+    const rec = recordingRef.current;
+    recordingRef.current = null;
 
+    setIsRecording(false);
+    setElapsedMs(0);
+
+    try {
+      await rec.stopAndUnloadAsync();
+      const uri = rec.getURI();
       if (uri) {
         const entry: VozEntry = {
           id: Date.now().toString(),
@@ -87,45 +99,68 @@ export function useVozInterior() {
           durationMs,
           createdAt: new Date().toISOString(),
         };
-        await persist([entry, ...entries]);
+        setEntries((prev) => {
+          const updated = [entry, ...prev];
+          AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(() => {});
+          return updated;
+        });
       }
-    } catch {
-    } finally {
-      recordingRef.current = null;
-      setIsRecording(false);
-      setElapsedMs(0);
+    } catch (e) {
+      console.error("[VozInterior] stopRecording error:", e);
     }
-  }, [entries, persist]);
+
+    // Restore audio mode for normal playback
+    try {
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+      });
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const deleteEntry = useCallback(
     async (id: string) => {
-      await persist(entries.filter((e) => e.id !== id));
+      setEntries((prev) => {
+        const updated = prev.filter((e) => e.id !== id);
+        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(() => {});
+        return updated;
+      });
       if (playingId === id) {
-        await soundRef.current?.stopAsync();
-        await soundRef.current?.unloadAsync();
+        await soundRef.current?.stopAsync().catch(() => {});
+        await soundRef.current?.unloadAsync().catch(() => {});
         soundRef.current = null;
         setPlayingId(null);
         setPlayingPositionMs(0);
       }
     },
-    [entries, persist, playingId],
+    [playingId],
   );
 
   const playEntry = useCallback(
     async (entry: VozEntry) => {
       try {
         if (soundRef.current) {
-          await soundRef.current.stopAsync();
-          await soundRef.current.unloadAsync();
+          await soundRef.current.stopAsync().catch(() => {});
+          await soundRef.current.unloadAsync().catch(() => {});
           soundRef.current = null;
         }
+
         if (playingId === entry.id) {
           setPlayingId(null);
           setPlayingPositionMs(0);
           return;
         }
 
-        await Audio.setAudioModeAsync({ allowsRecordingIOS: false, playsInSilentModeIOS: true });
+        try {
+          await Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            playsInSilentModeIOS: true,
+          });
+        } catch {
+          // ignore
+        }
 
         const { sound } = await Audio.Sound.createAsync(
           { uri: entry.uri },
@@ -144,7 +179,8 @@ export function useVozInterior() {
         soundRef.current = sound;
         setPlayingId(entry.id);
         setPlayingPositionMs(0);
-      } catch {
+      } catch (e) {
+        console.error("[VozInterior] playEntry error:", e);
         setPlayingId(null);
       }
     },

@@ -14,10 +14,14 @@
       "backgroundColor": "#18110C"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "RESONANCIA necesita acceso al micrófono para grabar tu Voz Interior."
+      }
     },
     "android": {
-      "backgroundColor": "#18110C"
+      "backgroundColor": "#18110C",
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "favicon": "./assets/images/icon.png"
