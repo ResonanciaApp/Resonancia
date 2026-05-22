@@ -28,7 +28,7 @@ export const SESSIONS: Session[] = [
       "Harmonize your energy and reconnect with stillness through deep vibrational resonance. Ancient Tibetan bowls guide you inward toward profound inner peace.",
     benefits: ["Deep relaxation", "Mental clarity", "Stress release", "Energetic balance"],
     instruments: ["Tibetan singing bowls", "Hand pan", "Bell"],
-    image: require("@/assets/images/tibetan-bowl.png"),
+    image: require("@/assets/images/4b.jpg"),
     isFeatured: true,
   },
   {
