@@ -89,16 +89,26 @@ function EntryCard({
       <Text style={[styles.entryDate, { color: accentColor }]}>
         {formatDate(entry.createdAt)}
       </Text>
+
+      {/* Invisible full render to detect real line count */}
+      <Text
+        style={[styles.entryText, { position: "absolute", opacity: 0, left: 14, right: 14 }]}
+        onTextLayout={(e) => setIsTruncated(e.nativeEvent.lines.length > 1)}
+        pointerEvents="none"
+        aria-hidden
+      >
+        {entry.text}
+      </Text>
+
+      {/* Visible (possibly truncated) text */}
       <Text
         style={[styles.entryText, { color: colors.foreground }]}
         numberOfLines={expanded ? undefined : 1}
         ellipsizeMode="tail"
-        onTextLayout={(e) => {
-          if (!expanded) setIsTruncated(e.nativeEvent.lines.length > 1);
-        }}
       >
         {entry.text}
       </Text>
+
       {isTruncated && !expanded && (
         <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
           Toca para leer más
