@@ -10,11 +10,12 @@ import {
   PlayfairDisplay_700Bold,
   PlayfairDisplay_900Black,
 } from "@expo-google-fonts/playfair-display";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setBaseUrl } from "@workspace/api-client-react";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -30,10 +31,16 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
+const ONBOARDING_KEY = "cdc_onboarding_done";
+
 function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="onboarding"
+        options={{ headerShown: false, animation: "fade", gestureEnabled: false }}
+      />
       <Stack.Screen
         name="player"
         options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
@@ -61,10 +68,20 @@ export default function RootLayout() {
     PlayfairDisplay_900Black,
   });
 
+  const onboardingChecked = useRef(false);
+
   useEffect(() => {
-    if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
-    }
+    if (!fontsLoaded && !fontError) return;
+    if (onboardingChecked.current) return;
+    onboardingChecked.current = true;
+
+    SplashScreen.hideAsync();
+
+    AsyncStorage.getItem(ONBOARDING_KEY).then((done) => {
+      if (!done) {
+        router.replace("/onboarding");
+      }
+    });
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) return null;
