@@ -35,24 +35,8 @@ type SectionMeta = {
 
 const SECTIONS: SectionMeta[] = [
   {
-    key: "aprendizaje",
-    title: "Qué aprendí hoy",
-    subtitle: "Recuerda las enseñanzas de la vida",
-    icon: "sunrise",
-    accentColor: "#C69B4F",
-    gradientColors: ["#BF9B70", "#8A6E48"],
-  },
-  {
-    key: "suenos",
-    title: "Materializo mis sueños",
-    subtitle: "Guarda tus ideas sobre tus proyectos",
-    icon: "star",
-    accentColor: "#E0B882",
-    gradientColors: ["#C49A52", "#8A6C2A"],
-  },
-  {
     key: "reflexiones",
-    title: "Reflexiones profundas",
+    title: "Mis reflexiones",
     subtitle: "Mis más increíbles descubrimientos",
     icon: "moon",
     accentColor: "#8AAAD4",
