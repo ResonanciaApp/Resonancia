@@ -35,7 +35,7 @@ export default function HomeScreen() {
   const featured = getFeaturedSessions();
   const sleepSessions = getSleepSessions();
   const shortSessions = getShortSessions();
-  const dailySession = SESSIONS[7] ?? SESSIONS[0];
+  const dailySession = SESSIONS[5] ?? SESSIONS[0];
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -171,7 +171,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Sueño & Descanso Profundo
+              Cuencos Tibetanos
             </Text>
             <Feather name="moon" size={14} color={colors.accent} />
           </View>
@@ -190,10 +190,10 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Pausas Rápidas
+              Para Reflexionar
             </Text>
             <Text style={[styles.seeAll, { color: colors.mutedForeground }]}>
-              Menos de 15 min
+              Sesiones cortas
             </Text>
           </View>
           {shortSessions.map((s) => (
