@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useState } from "react";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -26,6 +27,7 @@ const MAX_CHARS = 280;
 const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
 const ACCENT = "#D4709A";
 const WINDOW_MS = 24 * 60 * 60 * 1000;
+const PREVIEW_COUNT = 5;
 
 function timeAgo(iso: string | Date): string {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -36,7 +38,6 @@ function timeAgo(iso: string | Date): string {
   return `hace ${hrs} h`;
 }
 
-/** Returns "expira en X h Y min" for a message given its createdAt */
 function expiresIn(iso: string | Date): string {
   const msLeft = new Date(iso).getTime() + WINDOW_MS - Date.now();
   if (msLeft <= 0) return "expirado";
@@ -47,45 +48,22 @@ function expiresIn(iso: string | Date): string {
   return `${mins} min`;
 }
 
-/** Countdown hook: re-renders every minute */
-function useCountdown(targetMs: number | null): string {
-  const [label, setLabel] = useState("");
-
-  useEffect(() => {
-    if (targetMs === null) return;
-    const tick = () => {
-      const msLeft = targetMs - Date.now();
-      if (msLeft <= 0) { setLabel("en breve"); return; }
-      const totalMins = Math.floor(msLeft / 60000);
-      const hrs = Math.floor(totalMins / 60);
-      const mins = totalMins % 60;
-      setLabel(hrs > 0 ? `${hrs} h ${mins} min` : `${mins} min`);
-    };
-    tick();
-    const id = setInterval(tick, 60_000);
-    return () => clearInterval(id);
-  }, [targetMs]);
-
-  return label;
-}
-
 export function MensajesAnonimosPanel() {
   const colors = useColors();
   const queryClient = useQueryClient();
   const [text, setText] = useState("");
-  const [showFeed, setShowFeed] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
   const { data, isLoading, refetch, isRefetching } = useGetMessages(
     { page: 1 },
-    { query: { enabled: showFeed, refetchInterval: 5 * 60_000 } },
+    { query: { refetchInterval: 5 * 60_000 } },
   );
 
   const { mutate: submit, isPending: isSubmitting } = useCreateMessage({
     mutation: {
       onSuccess: () => {
         setText("");
-        setShowFeed(true);
         queryClient.invalidateQueries({ queryKey: getGetMessagesQueryKey() });
       },
       onError: () => {
@@ -126,15 +104,12 @@ export function MensajesAnonimosPanel() {
   };
 
   const remaining = MAX_CHARS - text.length;
-  const messages = data?.messages ?? [];
+  const allMessages = data?.messages ?? [];
   const total = data?.total ?? 0;
 
-  // The oldest message in the feed expires soonest — its expiry = the "next clear"
-  const oldestMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-  const nextClearMs = oldestMessage
-    ? new Date(oldestMessage.createdAt).getTime() + WINDOW_MS
-    : null;
-  const nextClearLabel = useCountdown(nextClearMs);
+  const sortedByLikes = [...allMessages].sort((a, b) => b.likes - a.likes);
+  const visibleMessages = showAll ? sortedByLikes : sortedByLikes.slice(0, PREVIEW_COUNT);
+  const hasMore = sortedByLikes.length > PREVIEW_COUNT;
 
   return (
     <View
@@ -163,23 +138,21 @@ export function MensajesAnonimosPanel() {
               </View>
             </View>
             <Text style={styles.headerSubtitle}>
-              Anónimo · se borran solos cada día
+              {isLoading
+                ? "Cargando mensajes..."
+                : total > 0
+                  ? `${total} ${total === 1 ? "mensaje" : "mensajes"} hoy · anónimos`
+                  : "Anónimo · se borran solos cada día"}
             </Text>
           </View>
         </View>
-        {total > 0 && (
-          <Pressable
-            onPress={() => setShowFeed((v) => !v)}
-            style={styles.feedToggle}
-          >
-            <Feather
-              name={showFeed ? "chevron-up" : "globe"}
-              size={16}
-              color="#FFD6EB"
-            />
-            <Text style={styles.feedCount}>{total}</Text>
-          </Pressable>
-        )}
+        <Pressable
+          onPress={() => router.push("/mensajes-del-alma" as never)}
+          style={styles.infoBtn}
+          hitSlop={8}
+        >
+          <Feather name="info" size={15} color="rgba(255,214,235,0.7)" />
+        </Pressable>
       </LinearGradient>
 
       {/* Compose area */}
@@ -241,49 +214,44 @@ export function MensajesAnonimosPanel() {
         </View>
       </View>
 
-      {/* Community feed */}
-      {showFeed && (
-        <View style={[styles.feed, { borderTopColor: colors.border }]}>
-          <View style={styles.feedHeader}>
-            <Text style={[styles.feedTitle, { color: colors.mutedForeground }]}>
-              HOY · {total} {total === 1 ? "mensaje" : "mensajes"}
-            </Text>
-            <View style={styles.feedHeaderRight}>
-              {nextClearLabel ? (
-                <View style={styles.clearBadge}>
-                  <Feather name="trash-2" size={9} color={colors.mutedForeground} />
-                  <Text style={[styles.clearLabel, { color: colors.mutedForeground }]}>
-                    borrar en {nextClearLabel}
-                  </Text>
-                </View>
-              ) : null}
-              <Pressable onPress={() => refetch()} hitSlop={8}>
-                <Feather
-                  name="refresh-cw"
-                  size={13}
-                  color={isRefetching ? ACCENT : colors.mutedForeground}
-                />
-              </Pressable>
-            </View>
-          </View>
+      {/* Messages feed — always visible */}
+      <View style={[styles.feed, { borderTopColor: colors.border }]}>
+        <View style={styles.feedHeader}>
+          <Text style={[styles.feedTitle, { color: colors.mutedForeground }]}>
+            {isLoading
+              ? "CARGANDO..."
+              : total > 0
+                ? `HOY · ${total} ${total === 1 ? "MENSAJE" : "MENSAJES"} · POR MÁS ❤️`
+                : "HOY · SIN MENSAJES AÚN"}
+          </Text>
+          <Pressable onPress={() => refetch()} hitSlop={8}>
+            <Feather
+              name="refresh-cw"
+              size={13}
+              color={isRefetching ? ACCENT : colors.mutedForeground}
+            />
+          </Pressable>
+        </View>
 
-          {isLoading ? (
-            <ActivityIndicator color={ACCENT} style={{ marginVertical: 20 }} />
-          ) : messages.length === 0 ? (
-            <View style={styles.emptyState}>
-              <Feather name="wind" size={28} color={colors.mutedForeground} />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                Sé la primera persona en compartir algo hoy
-              </Text>
-              <Text style={[styles.emptyHint, { color: colors.mutedForeground }]}>
-                Los mensajes duran 24 h y luego desaparecen
-              </Text>
-            </View>
-          ) : (
+        {isLoading ? (
+          <ActivityIndicator color={ACCENT} style={{ marginVertical: 20 }} />
+        ) : allMessages.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Feather name="wind" size={28} color={colors.mutedForeground} />
+            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+              Sé la primera persona en compartir algo hoy
+            </Text>
+            <Text style={[styles.emptyHint, { color: colors.mutedForeground }]}>
+              Los mensajes duran 24 h y luego desaparecen
+            </Text>
+          </View>
+        ) : (
+          <>
             <ScrollView
               nestedScrollEnabled
               showsVerticalScrollIndicator={false}
               style={styles.messagesList}
+              scrollEnabled={showAll}
               refreshControl={
                 <RefreshControl
                   refreshing={isRefetching}
@@ -292,9 +260,9 @@ export function MensajesAnonimosPanel() {
                 />
               }
             >
-              {messages.map((msg) => {
+              {visibleMessages.map((msg) => {
                 const msLeft = new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
-                const isExpiringSoon = msLeft < 3 * 60 * 60 * 1000; // < 3 h
+                const isExpiringSoon = msLeft < 3 * 60 * 60 * 1000;
                 return (
                   <View
                     key={msg.id}
@@ -355,9 +323,30 @@ export function MensajesAnonimosPanel() {
                 );
               })}
             </ScrollView>
-          )}
-        </View>
-      )}
+
+            {hasMore && (
+              <Pressable
+                onPress={() => setShowAll((v) => !v)}
+                style={({ pressed }) => [
+                  styles.verMasBtn,
+                  { borderColor: `${ACCENT}44`, opacity: pressed ? 0.75 : 1 },
+                ]}
+              >
+                <Feather
+                  name={showAll ? "chevron-up" : "chevron-down"}
+                  size={14}
+                  color={ACCENT}
+                />
+                <Text style={[styles.verMasText, { color: ACCENT }]}>
+                  {showAll
+                    ? "Ver menos"
+                    : `Ver todos los mensajes (${sortedByLikes.length})`}
+                </Text>
+              </Pressable>
+            )}
+          </>
+        )}
+      </View>
     </View>
   );
 }
@@ -415,24 +404,16 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(255,214,235,0.7)",
+    color: "rgba(255,214,235,0.8)",
     fontSize: 11,
     marginTop: 2,
   },
-  feedToggle: {
-    flexDirection: "row",
+  infoBtn: {
+    width: 32,
+    height: 32,
     alignItems: "center",
-    gap: 4,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    justifyContent: "center",
     marginLeft: 8,
-  },
-  feedCount: {
-    color: "#FFD6EB",
-    fontSize: 12,
-    fontWeight: "600",
   },
 
   composeArea: { padding: 14 },
@@ -471,20 +452,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 12,
   },
-  feedTitle: { fontSize: 10, letterSpacing: 1.5, fontWeight: "600" },
-  feedHeaderRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  clearBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
-  clearLabel: { fontSize: 9, letterSpacing: 0.3 },
+  feedTitle: { fontSize: 10, letterSpacing: 1.2, fontWeight: "600" },
 
-  messagesList: { maxHeight: 320 },
+  messagesList: { maxHeight: 400 },
 
   emptyState: { alignItems: "center", paddingVertical: 24, gap: 8 },
   emptyText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
@@ -517,4 +487,16 @@ const styles = StyleSheet.create({
   expiringText: { fontSize: 9, color: "#E07060", letterSpacing: 0.2 },
   likeBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   likeCount: { fontSize: 11, fontWeight: "600" },
+
+  verMasBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingVertical: 12,
+    marginTop: 4,
+  },
+  verMasText: { fontSize: 13, fontWeight: "600" },
 });
