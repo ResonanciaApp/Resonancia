@@ -139,8 +139,8 @@ export default function HomeScreen() {
             </Pressable>
           </View>
 
-          {/* Primarias — banners anchos */}
-          <View style={styles.primaryCats}>
+          {/* Primarias — 2 columnas, ícono centrado grande */}
+          <View style={styles.primaryRow}>
             {getPrimaryCategories().map((cat) => (
               <Pressable
                 key={cat.id}
@@ -149,45 +149,33 @@ export default function HomeScreen() {
               >
                 <LinearGradient
                   colors={cat.gradient as [string, string]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                  style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
                 />
-                <View style={styles.primaryBorder} />
-                <View style={[styles.primaryIconWrap, { backgroundColor: "rgba(255,255,255,0.14)", borderColor: "rgba(255,255,255,0.22)" }]}>
-                  <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={22} color={cat.color} />
-                </View>
-                <View style={styles.primaryText}>
-                  <Text style={styles.primaryLabel}>PRINCIPAL</Text>
-                  <Text style={styles.primaryTitle} numberOfLines={1}>{cat.title}</Text>
-                  <Text style={styles.primarySub} numberOfLines={1}>{cat.subtitle}</Text>
-                </View>
-                <Feather name="chevron-right" size={18} color="rgba(255,237,195,0.5)" style={styles.primaryChevron} />
+                <View style={[StyleSheet.absoluteFill, { borderRadius: 18, borderWidth: 1, borderColor: "rgba(255,220,140,0.15)" }]} />
+                <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={38} color={cat.color} style={{ marginBottom: 12 }} />
+                <Text style={styles.primaryCardLabel} numberOfLines={2}>{cat.title}</Text>
               </Pressable>
             ))}
           </View>
 
-          {/* Secundarias — grid 2×2 */}
-          <View style={styles.grid}>
+          {/* Secundarias — scroll horizontal, tarjetas compactas */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.secondaryScroll}>
             {getSecondaryCategories().map((cat) => (
               <Pressable
                 key={cat.id}
                 onPress={() => router.push(`/category/${cat.id}` as never)}
-                style={({ pressed }) => [styles.gridCard, { opacity: pressed ? 0.82 : 1 }]}
+                style={({ pressed }) => [styles.secondaryCard, { opacity: pressed ? 0.82 : 1 }]}
               >
                 <LinearGradient
                   colors={cat.gradient as [string, string]}
-                  style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+                  style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
                 />
-                <View style={[styles.gridIconBg, { backgroundColor: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.18)" }]}>
-                  <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={16} color={cat.color} />
-                </View>
-                <Text style={[styles.gridTitle, { color: "#F5EDD8" }]} numberOfLines={2}>
-                  {cat.title}
-                </Text>
+                <View style={[StyleSheet.absoluteFill, { borderRadius: 14, borderWidth: 1, borderColor: "rgba(255,220,140,0.12)" }]} />
+                <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={26} color={cat.color} style={{ marginBottom: 8 }} />
+                <Text style={styles.secondaryCardLabel} numberOfLines={2}>{cat.title}</Text>
               </Pressable>
             ))}
-          </View>
+          </ScrollView>
         </View>
 
         {/* ── 3. SESIÓN DESTACADA ── */}
@@ -356,76 +344,49 @@ const styles = StyleSheet.create({
   sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
   seeAll: { fontSize: 13 },
 
-  // Primary categories (full-width banners)
-  primaryCats: { gap: 10, marginBottom: 10 },
-  primaryCard: {
-    width: "100%",
-    height: 76,
-    borderRadius: 20,
+  // Primary categories — 2 cols, icon centered
+  primaryRow: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    overflow: "hidden",
-  },
-  primaryBorder: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,220,140,0.18)",
-  },
-  primaryIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  primaryText: { flex: 1, marginLeft: 14 },
-  primaryLabel: {
-    fontSize: 9,
-    fontWeight: "700",
-    letterSpacing: 1.8,
-    color: "rgba(255,220,140,0.7)",
-    marginBottom: 2,
-  },
-  primaryTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#F5EDD8",
-    letterSpacing: 0.2,
-  },
-  primarySub: {
-    fontSize: 11,
-    color: "rgba(245,237,216,0.6)",
-    marginTop: 2,
-  },
-  primaryChevron: { marginLeft: 8 },
-
-  // Secondary category grid
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     gap: GRID_GAP,
+    marginBottom: 10,
   },
-  gridCard: {
-    width: CARD_W,
-    height: CARD_H * 0.88,
-    borderRadius: 16,
-    padding: 12,
-    justifyContent: "space-between",
+  primaryCard: {
+    flex: 1,
+    height: 148,
+    borderRadius: 18,
     overflow: "hidden",
-  },
-  gridIconBg: {
-    width: 32,
-    height: 32,
-    borderRadius: 9,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 16,
   },
-  gridTitle: { fontSize: 12, fontWeight: "700", lineHeight: 17, marginTop: 6 },
-  gridCount: { fontSize: 11, marginTop: 2 },
+  primaryCardLabel: {
+    color: "#F5EDD8",
+    fontSize: 13,
+    fontWeight: "700",
+    textAlign: "center",
+    lineHeight: 18,
+  },
+
+  // Secondary categories — horizontal scroll
+  secondaryScroll: { gap: GRID_GAP, paddingRight: 4 },
+  secondaryCard: {
+    width: 88,
+    height: 100,
+    borderRadius: 14,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 6,
+    paddingVertical: 12,
+  },
+  secondaryCardLabel: {
+    color: "#F5EDD8",
+    fontSize: 11,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 15,
+  },
 
   // Hero
   heroCard: {
