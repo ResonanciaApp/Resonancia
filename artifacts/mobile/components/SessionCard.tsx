@@ -62,12 +62,6 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
             ) : null}
           </View>
         </View>
-        <Pressable
-          onPress={() => playSession(session)}
-          style={[styles.hPlayBtn, { backgroundColor: colors.primary }]}
-        >
-          <Feather name="play" size={14} color={colors.primaryForeground} style={{ paddingLeft: 2 }} />
-        </Pressable>
       </Pressable>
     );
   }
@@ -243,13 +237,5 @@ const styles = StyleSheet.create({
   freqText: {
     fontSize: 9,
     letterSpacing: 0.5,
-  },
-  hPlayBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 16,
   },
 });

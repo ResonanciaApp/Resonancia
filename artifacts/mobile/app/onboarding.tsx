@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     backgroundColor: "rgba(198,155,79,0.06)",
   },
-  welcomeLogo: { width: 260, height: 260 },
+  welcomeLogo: { width: 130, height: 130 },
   welcomeTitle: {
     color: FG,
     fontSize: 26,
