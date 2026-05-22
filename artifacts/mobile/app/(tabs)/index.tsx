@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DiarioEntryCard } from "@/components/DiarioEntryCard";
+import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
@@ -117,7 +118,18 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* ── 3. SESIÓN DESTACADA ── */}
+        {/* ── 3. MENSAJE DEL DÍA ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            Un mensaje para ti
+          </Text>
+          <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+            Deja que el universo te hable hoy
+          </Text>
+          <MessageDeck />
+        </View>
+
+        {/* ── 4. SESIÓN DESTACADA ── */}
         {featuredSession && (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
@@ -247,6 +259,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
+  sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
   seeAll: { fontSize: 13 },
 
   // Category grid
