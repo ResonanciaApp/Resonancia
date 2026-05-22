@@ -222,12 +222,6 @@ export default function HomeScreen() {
 
         {/* ── 4. MENSAJE DEL DÍA ── */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-            Un mensaje para ti
-          </Text>
-          <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
-            Deja que el universo te hable hoy
-          </Text>
           <MessageDeck />
         </View>
 
