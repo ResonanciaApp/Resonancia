@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Dimensions,
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -166,11 +165,6 @@ export default function ExploreScreen() {
                       },
                     ]}
                   >
-                    <Image
-                      source={cat.image}
-                      style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                      resizeMode="cover"
-                    />
                     <LinearGradient
                       colors={cat.gradient as [string, string]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}

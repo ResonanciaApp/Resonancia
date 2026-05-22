@@ -28,7 +28,7 @@ export const SESSIONS: Session[] = [
       "Un viaje guiado hacia el centro de tu ser. El sonido de los cuencos te acompaña suavemente mientras te sumerges en las capas más profundas de tu interior, encontrando quietud y claridad.",
     benefits: ["Relajación profunda", "Claridad mental", "Conexión interior", "Paz duradera"],
     instruments: ["Cuencos tibetanos", "Campana", "Voz guía"],
-    image: require("@/assets/images/cat1-meditaciones.jpg"),
+    image: require("@/assets/images/meditation-person.png"),
     isFeatured: true,
   },
   {
@@ -43,7 +43,7 @@ export const SESSIONS: Session[] = [
       "Las frecuencias profundas de cuencos tibetanos y gong guían tu mente hacia el descanso más reparador. Cada vibración disuelve la tensión acumulada y prepara tu cuerpo para un sueño sagrado.",
     benefits: ["Sueño profundo", "Alivio del estrés", "Relajación total", "Descanso reparador"],
     instruments: ["Cuencos tibetanos martillados", "Gong Paiste", "Tingsha"],
-    image: require("@/assets/images/cat2-cuencos-gongs.jpg"),
+    image: require("@/assets/images/tibetan-bowl.png"),
     isFeatured: true,
     frequency: "Delta 0.5–4 Hz",
   },
@@ -59,7 +59,7 @@ export const SESSIONS: Session[] = [
       "Sonidos íntimos y envolventes que disuelven los límites del cuerpo y la mente. Una experiencia ASMR diseñada para expandir tu percepción interior más allá de lo conocido.",
     benefits: ["Relajación profunda", "Expansión sensorial", "Presencia plena", "Calma instantánea"],
     instruments: ["Cuencos de cuarzo", "Campanas suaves", "Sonidos de la naturaleza"],
-    image: require("@/assets/images/cat3-asmr.jpg"),
+    image: require("@/assets/images/crystal-bowls.png"),
     frequency: "432 Hz",
     isNew: true,
   },
@@ -75,7 +75,7 @@ export const SESSIONS: Session[] = [
       "Una conversación profunda sobre el despertar de la conciencia y el camino hacia el autoconocimiento. Reflexiones que invitan a mirar adentro con honestidad y compasión.",
     benefits: ["Autoconocimiento", "Inspiración profunda", "Claridad de vida", "Perspectiva nueva"],
     instruments: ["Voz", "Cuenco tibetano de apertura", "Silencio consciente"],
-    image: require("@/assets/images/cat4-podcast.jpg"),
+    image: require("@/assets/images/cosmic-bg.png"),
     isNew: true,
   },
   {
@@ -90,7 +90,7 @@ export const SESSIONS: Session[] = [
       "Una pequeña semilla de sabiduría para plantar en tu jornada. El sonido del cuenco abre el espacio, y la reflexión que le sigue puede cambiar el rumbo de tu día.",
     benefits: ["Inspiración diaria", "Intención clara", "Perspectiva fresca", "Momento de pausa"],
     instruments: ["Cuenco tibetano", "Voz guía"],
-    image: require("@/assets/images/cat5-consejo.jpg"),
+    image: require("@/assets/images/hero-bowl.png"),
     isFeatured: true,
   },
   {
@@ -105,7 +105,7 @@ export const SESSIONS: Session[] = [
       "Una invitación a observar la mente desde adentro. El sonido crea el espacio; tú aportas la atención. Juntos exploran los movimientos del pensamiento y la quietud que subyace a todo.",
     benefits: ["Observación de la mente", "Presencia plena", "Insight interior", "Reset rápido"],
     instruments: ["Cuenco tibetano", "Silencio consciente", "Campanillas suaves"],
-    image: require("@/assets/images/cat6-pausas.jpg"),
+    image: require("@/assets/images/8b.jpg"),
     isNew: true,
   },
 ];
