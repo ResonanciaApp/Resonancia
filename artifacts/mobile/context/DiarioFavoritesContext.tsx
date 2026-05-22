@@ -52,7 +52,12 @@ export function DiarioFavoritesProvider({ children }: { children: React.ReactNod
         const entries: DiarioEntry[] = JSON.parse(sr);
         for (const entry of entries) {
           if (ids.includes(entry.id)) {
-            all.push({ ...entry, sectionKey: section, ...SECTION_META[section] });
+            all.push({
+              ...entry,
+              sectionKey: section,
+              sectionTitle: SECTION_META[section].title,
+              accentColor: SECTION_META[section].accentColor,
+            });
           }
         }
       }
@@ -84,7 +89,8 @@ export function DiarioFavoritesProvider({ children }: { children: React.ReactNod
         const newFav: FavoriteDiarioEntry = {
           ...entry,
           sectionKey,
-          ...SECTION_META[sectionKey],
+          sectionTitle: SECTION_META[sectionKey].title,
+          accentColor: SECTION_META[sectionKey].accentColor,
         };
         setFavoriteEntries((prev) =>
           [newFav, ...prev].sort(
