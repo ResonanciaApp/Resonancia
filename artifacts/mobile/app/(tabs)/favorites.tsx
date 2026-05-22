@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   Platform,
   Pressable,
@@ -14,9 +14,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { useDiarioFavoritesCtx, type FavoriteDiarioEntry } from "@/context/DiarioFavoritesContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
-import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useColors } from "@/hooks/useColors";
 
 function formatDate(iso: string) {
@@ -26,6 +26,61 @@ function formatDate(iso: string) {
     month: "short",
     year: "numeric",
   });
+}
+
+function DiarioEntryCard({ entry }: { entry: FavoriteDiarioEntry }) {
+  const colors = useColors();
+  const [expanded, setExpanded] = useState(false);
+  const [fullHeight, setFullHeight] = useState<number | null>(null);
+  const SINGLE_LINE_H = 22;
+  const isTruncated = fullHeight !== null && fullHeight > SINGLE_LINE_H * 3 + 4;
+
+  return (
+    <Pressable
+      onPress={() => isTruncated && setExpanded((v) => !v)}
+      style={[styles.entryCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+    >
+      <View style={styles.entryCardTop}>
+        <View style={[styles.sectionBadge, { borderColor: entry.accentColor + "55", backgroundColor: entry.accentColor + "18" }]}>
+          <Text style={[styles.sectionBadgeText, { color: entry.accentColor }]}>
+            {entry.sectionTitle}
+          </Text>
+        </View>
+        <Text style={[styles.entryDate, { color: colors.mutedForeground }]}>
+          {formatDate(entry.createdAt)}
+        </Text>
+      </View>
+
+      {/* Invisible full render to measure natural height */}
+      {fullHeight === null && (
+        <View
+          style={{ opacity: 0, position: "absolute", left: 14, right: 14 }}
+          onLayout={(e) => setFullHeight(e.nativeEvent.layout.height)}
+        >
+          <Text style={styles.entryText}>{entry.text}</Text>
+        </View>
+      )}
+
+      <Text
+        style={[styles.entryText, { color: colors.foreground }]}
+        numberOfLines={!expanded && isTruncated ? 3 : undefined}
+        ellipsizeMode="tail"
+      >
+        {entry.text}
+      </Text>
+
+      {isTruncated && !expanded && (
+        <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
+          Toca para leer más
+        </Text>
+      )}
+      {expanded && (
+        <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
+          Toca para colapsar
+        </Text>
+      )}
+    </Pressable>
+  );
 }
 
 export default function FavoritesScreen() {
@@ -116,24 +171,7 @@ export default function FavoritesScreen() {
                 {favoriteEntries.length} reflexión{favoriteEntries.length !== 1 ? "es" : ""} guardada{favoriteEntries.length !== 1 ? "s" : ""}
               </Text>
               {favoriteEntries.map((entry) => (
-                <View
-                  key={entry.id}
-                  style={[styles.entryCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                >
-                  <View style={styles.entryCardTop}>
-                    <View style={[styles.sectionBadge, { borderColor: entry.accentColor + "55", backgroundColor: entry.accentColor + "18" }]}>
-                      <Text style={[styles.sectionBadgeText, { color: entry.accentColor }]}>
-                        {entry.sectionTitle}
-                      </Text>
-                    </View>
-                    <Text style={[styles.entryDate, { color: colors.mutedForeground }]}>
-                      {formatDate(entry.createdAt)}
-                    </Text>
-                  </View>
-                  <Text style={[styles.entryText, { color: colors.foreground }]} numberOfLines={3}>
-                    {entry.text}
-                  </Text>
-                </View>
+                <DiarioEntryCard key={entry.id} entry={entry} />
               ))}
             </View>
           )}
@@ -184,6 +222,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 14,
     gap: 8,
+    position: "relative",
   },
   entryCardTop: {
     flexDirection: "row",
@@ -200,4 +239,5 @@ const styles = StyleSheet.create({
   sectionBadgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.5 },
   entryDate: { fontSize: 10 },
   entryText: { fontSize: 13, lineHeight: 20 },
+  expandHint: { fontSize: 10, marginTop: 2, letterSpacing: 0.3 },
 });
