@@ -193,13 +193,14 @@ export default function ExploreScreen() {
               </ScrollView>
             </View>
 
-            {/* ── ¿Cuánto tiempo tienes? ── */}
+            {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes?</Text>
-              <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
-                Elige y te mostraremos las sesiones que encajan
-              </Text>
-              <View style={styles.timeGrid}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.timeRow}
+              >
                 {TIME_BUCKETS.map((bucket) => (
                   <Pressable
                     key={bucket.label}
@@ -217,11 +218,11 @@ export default function ExploreScreen() {
                       colors={["rgba(198,155,79,0.1)", "rgba(198,155,79,0.03)"]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
                     />
-                    <Feather name="clock" size={14} color={colors.primary} style={styles.timeIcon} />
+                    <Feather name="clock" size={13} color={colors.primary} style={styles.timeIcon} />
                     <Text style={[styles.timeLabel, { color: colors.foreground }]}>{bucket.label}</Text>
                   </Pressable>
                 ))}
-              </View>
+              </ScrollView>
             </View>
 
             {/* ── Otras Categorías ── */}
@@ -464,22 +465,22 @@ const styles = StyleSheet.create({
   verTodoText: { fontSize: 14, fontWeight: "600" },
 
   // Time buckets
-  timeGrid: {
+  timeRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
+    gap: 8,
+    paddingRight: 4,
+    marginTop: 6,
   },
   timeChip: {
-    borderRadius: 14,
+    borderRadius: 20,
     borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 13,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     flexDirection: "row",
     alignItems: "center",
     overflow: "hidden",
-    minWidth: (width - H_PAD * 2 - 10) / 3,
     justifyContent: "center",
   },
-  timeIcon: { marginRight: 6 },
-  timeLabel: { fontSize: 14, fontWeight: "600" },
+  timeIcon: { marginRight: 5 },
+  timeLabel: { fontSize: 13, fontWeight: "600" },
 });
