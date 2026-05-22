@@ -25,9 +25,9 @@ function NativeTabLayout() {
           <Icon sf={{ default: "books.vertical", selected: "books.vertical.fill" }} />
           <Label>Biblioteca</Label>
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="favorites">
-          <Icon sf={{ default: "heart", selected: "heart.fill" }} />
-          <Label>Favoritos</Label>
+        <NativeTabs.Trigger name="descanzo">
+          <Icon sf={{ default: "moon.stars", selected: "moon.stars.fill" }} />
+          <Label>Descanzo</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="diario">
           <Icon sf={{ default: "pencil.line", selected: "pencil.line" }} />
@@ -73,15 +73,9 @@ function ClassicTabLayout() {
           },
           tabBarBackground: () =>
             isIOS ? (
-              <BlurView
-                intensity={90}
-                tint="dark"
-                style={StyleSheet.absoluteFill}
-              />
+              <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
             ) : (
-              <View
-                style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]}
-              />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]} />
             ),
           tabBarLabelStyle: {
             fontSize: 10,
@@ -95,11 +89,7 @@ function ClassicTabLayout() {
           options={{
             title: "Inicio",
             tabBarIcon: ({ color }) =>
-              isIOS ? (
-                <SymbolView name="house" tintColor={color} size={22} />
-              ) : (
-                <Feather name="home" size={22} color={color} />
-              ),
+              isIOS ? <SymbolView name="house" tintColor={color} size={22} /> : <Feather name="home" size={22} color={color} />,
           }}
         />
         <Tabs.Screen
@@ -107,23 +97,23 @@ function ClassicTabLayout() {
           options={{
             title: "Biblioteca",
             tabBarIcon: ({ color }) =>
-              isIOS ? (
-                <SymbolView name="books.vertical" tintColor={color} size={22} />
-              ) : (
-                <Feather name="book-open" size={22} color={color} />
-              ),
+              isIOS ? <SymbolView name="books.vertical" tintColor={color} size={22} /> : <Feather name="book-open" size={22} color={color} />,
           }}
         />
+        <Tabs.Screen
+          name="descanzo"
+          options={{
+            title: "Descanzo",
+            tabBarIcon: ({ color }) =>
+              isIOS ? <SymbolView name="moon.stars" tintColor={color} size={22} /> : <Feather name="moon" size={22} color={color} />,
+          }}
+        />
+        {/* Favoritos — oculto del menú, código conservado */}
         <Tabs.Screen
           name="favorites"
           options={{
             title: "Favoritos",
-            tabBarIcon: ({ color }) =>
-              isIOS ? (
-                <SymbolView name="heart" tintColor={color} size={22} />
-              ) : (
-                <Feather name="heart" size={22} color={color} />
-              ),
+            href: null,
           }}
         />
         <Tabs.Screen
@@ -131,11 +121,7 @@ function ClassicTabLayout() {
           options={{
             title: "Diario",
             tabBarIcon: ({ color }) =>
-              isIOS ? (
-                <SymbolView name="pencil.line" tintColor={color} size={22} />
-              ) : (
-                <Feather name="feather" size={22} color={color} />
-              ),
+              isIOS ? <SymbolView name="pencil.line" tintColor={color} size={22} /> : <Feather name="feather" size={22} color={color} />,
           }}
         />
         <Tabs.Screen
@@ -143,16 +129,11 @@ function ClassicTabLayout() {
           options={{
             title: "Perfil",
             tabBarIcon: ({ color }) =>
-              isIOS ? (
-                <SymbolView name="person" tintColor={color} size={22} />
-              ) : (
-                <Feather name="user" size={22} color={color} />
-              ),
+              isIOS ? <SymbolView name="person" tintColor={color} size={22} /> : <Feather name="user" size={22} color={color} />,
           }}
         />
       </Tabs>
 
-      {/* Mini Player floats above tab bar */}
       {currentSession && (
         <View style={[styles.miniPlayerFloat, { bottom: tabBarHeight + 8 }]}>
           <MiniPlayer />
