@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CATEGORIES } from "@/data/categories";
-import { getSessionsByCategory, SESSIONS } from "@/data/sessions";
+import { getSessionsByCategory } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 export default function CategoryScreen() {
@@ -28,8 +28,7 @@ export default function CategoryScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const category = CATEGORIES.find((c) => c.id === id);
-  const sessions = getSessionsByCategory(id ?? "");
-  const allSessions = sessions.length > 0 ? sessions : SESSIONS.slice(0, 6);
+  const allSessions = getSessionsByCategory(id ?? "");
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -78,7 +77,7 @@ export default function CategoryScreen() {
             <View style={styles.heroMeta}>
               <View style={[styles.metaBadge, { backgroundColor: "rgba(198,155,79,0.15)" }]}>
                 <Text style={[styles.metaBadgeText, { color: colors.accent }]}>
-                  {category.sessionCount} Sessions
+                  {allSessions.length} Sessions
                 </Text>
               </View>
             </View>
