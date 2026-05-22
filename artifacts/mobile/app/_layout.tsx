@@ -11,6 +11,7 @@ import {
   PlayfairDisplay_900Black,
 } from "@expo-google-fonts/playfair-display";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { setBaseUrl } from "@workspace/api-client-react";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
@@ -21,6 +22,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { PlayerProvider } from "@/context/PlayerContext";
+
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+if (apiUrl) setBaseUrl(apiUrl);
 
 SplashScreen.preventAutoHideAsync();
 

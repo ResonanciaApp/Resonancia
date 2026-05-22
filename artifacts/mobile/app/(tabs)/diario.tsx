@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { VozInteriorPanel } from "@/components/VozInteriorPanel";
+import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { type DiarioSection, useDiario } from "@/hooks/useDiario";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useColors } from "@/hooks/useColors";
@@ -291,6 +292,7 @@ export default function DiarioScreen() {
 
         {/* Sections */}
         <View style={styles.sections}>
+          <MensajesAnonimosPanel />
           <VozInteriorPanel />
           {SECTIONS.map((s) => (
             <SectionPanel key={s.key} meta={s} />

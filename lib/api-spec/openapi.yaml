@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: messages
+    description: Anonymous community messages
 paths:
   /healthz:
     get:
@@ -24,6 +26,71 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /messages:
+    get:
+      operationId: getMessages
+      tags: [messages]
+      summary: Get anonymous messages
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Paginated list of messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessagesPage"
+    post:
+      operationId: createMessage
+      tags: [messages]
+      summary: Post an anonymous message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMessageBody"
+      responses:
+        "201":
+          description: Message created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityMessage"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /messages/{id}/like:
+    post:
+      operationId: likeMessage
+      tags: [messages]
+      summary: Like a message
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated like count
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityMessage"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +100,44 @@ components:
           type: string
       required:
         - status
-
+    CommunityMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        likes:
+          type: integer
+      required: [id, content, createdAt, likes]
+    MessagesPage:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/CommunityMessage"
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+      required: [messages, total, page, pageSize]
+    CreateMessageBody:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 300
+      required: [content]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
