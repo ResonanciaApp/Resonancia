@@ -35,7 +35,13 @@ const IDEAS: string[] = [
   "Recibir el día con gratitud y apertura",
 ];
 
-type Tab = "ideas" | "guardados";
+type Tab = "ideas" | "guardados" | "favoritos";
+
+const TAB_LABELS: Record<Tab, string> = {
+  ideas: "Ideas",
+  guardados: "Guardados",
+  favoritos: "Favoritos",
+};
 
 export default function IntencionScreen() {
   const colors = useColors();
@@ -47,7 +53,8 @@ export default function IntencionScreen() {
   const [tab, setTab] = useState<Tab>("ideas");
   const inputRef = useRef<TextInput>(null);
 
-  const { saved, addSaved, removeSaved, isSaved } = useIntencion();
+  const { savedEntries, favorites, addSaved, removeSaved, addFavorite, removeFavorite, isFavorite } =
+    useIntencion();
 
   function handleIdeaTap(idea: string) {
     setText(idea);
@@ -55,9 +62,15 @@ export default function IntencionScreen() {
   }
 
   function handleSave() {
-    if (text.trim()) {
-      addSaved(text.trim());
-    }
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    addSaved(trimmed);
+    setTab("guardados");
+  }
+
+  function handleHeartInSaved(entryText: string) {
+    addFavorite(entryText);
+    setTab("favoritos");
   }
 
   return (
@@ -66,7 +79,7 @@ export default function IntencionScreen() {
         <StatusBar barStyle="light-content" />
         <SacredBackground />
 
-        {/* ── Header row ── */}
+        {/* ── Header ── */}
         <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
           <Pressable
             onPress={() => router.back()}
@@ -77,7 +90,7 @@ export default function IntencionScreen() {
           </Pressable>
         </View>
 
-        {/* ── Intención input area ── */}
+        {/* ── Input area ── */}
         <View style={styles.inputSection}>
           <Text style={[styles.hoyLabel, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
 
@@ -96,50 +109,41 @@ export default function IntencionScreen() {
               onSubmitEditing={Keyboard.dismiss}
             />
 
-            {/* Save button (shown when there's text) */}
             {text.trim().length > 0 && (
               <Pressable
                 onPress={handleSave}
                 style={({ pressed }) => [
                   styles.saveBtn,
-                  { backgroundColor: isSaved(text) ? colors.primary + "22" : colors.primary, opacity: pressed ? 0.8 : 1 },
+                  { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
                 ]}
               >
-                <Feather
-                  name="heart"
-                  size={14}
-                  color={isSaved(text) ? colors.primary : "#18110C"}
-                />
-                <Text style={[styles.saveBtnText, { color: isSaved(text) ? colors.primary : "#18110C" }]}>
-                  {isSaved(text) ? "Guardada" : "Guardar"}
-                </Text>
+                <Text style={styles.saveBtnText}>Guardar</Text>
               </Pressable>
             )}
           </View>
         </View>
 
-        {/* ── Tab switcher ── */}
+        {/* ── Tabs ── */}
         <View style={[styles.tabRow, { borderBottomColor: colors.border }]}>
-          {(["ideas", "guardados"] as Tab[]).map((t) => (
+          {(["ideas", "guardados", "favoritos"] as Tab[]).map((t) => (
             <Pressable key={t} onPress={() => setTab(t)} style={styles.tabBtn}>
               <Text style={[styles.tabLabel, { color: tab === t ? colors.primary : colors.mutedForeground }]}>
-                {t === "ideas" ? "Ideas" : "Guardados"}
+                {TAB_LABELS[t]}
               </Text>
-              {tab === t && (
-                <View style={[styles.tabUnderline, { backgroundColor: colors.primary }]} />
-              )}
+              {tab === t && <View style={[styles.tabUnderline, { backgroundColor: colors.primary }]} />}
             </Pressable>
           ))}
         </View>
 
-        {/* ── Tab content ── */}
+        {/* ── Content ── */}
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={{ padding: 20, paddingBottom: 40 + bottomPad }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {tab === "ideas" ? (
+          {/* IDEAS */}
+          {tab === "ideas" && (
             <View style={styles.ideasGrid}>
               {IDEAS.map((idea) => (
                 <Pressable
@@ -174,32 +178,90 @@ export default function IntencionScreen() {
                 </Pressable>
               ))}
             </View>
-          ) : saved.length === 0 ? (
-            <View style={styles.emptyState}>
-              <Feather name="heart" size={32} color={colors.mutedForeground} />
-              <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Aún no hay guardados</Text>
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                Escribe una intención y tócala para guardarla aquí.
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.savedList}>
-              {saved.map((s) => (
-                <View key={s} style={[styles.savedCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Pressable style={styles.savedCardLeft} onPress={() => handleIdeaTap(s)}>
-                    <Text style={[styles.hoyLabelSmall, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
-                    <Text style={[styles.savedText, { color: colors.foreground }]}>{s}</Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={() => removeSaved(s)}
-                    hitSlop={8}
-                    style={[styles.savedHeart, { backgroundColor: colors.primary + "20" }]}
+          )}
+
+          {/* GUARDADOS — expiran en 24hrs */}
+          {tab === "guardados" && (
+            savedEntries.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Feather name="clock" size={32} color={colors.mutedForeground} />
+                <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Nada guardado aún</Text>
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  Las intenciones guardadas duran 24 horas.{"\n"}Toca el ♥ para pasarlas a Favoritos.
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.savedList}>
+                {savedEntries.map((entry) => (
+                  <View
+                    key={entry.text + entry.savedAt}
+                    style={[styles.savedCard, { backgroundColor: colors.card, borderColor: colors.border }]}
                   >
-                    <Feather name="heart" size={16} color={colors.primary} />
-                  </Pressable>
-                </View>
-              ))}
-            </View>
+                    <Pressable style={styles.savedCardLeft} onPress={() => handleIdeaTap(entry.text)}>
+                      <Text style={[styles.hoyLabelSmall, { color: colors.mutedForeground }]}>
+                        Hoy voy a...
+                      </Text>
+                      <Text style={[styles.savedText, { color: colors.foreground }]}>{entry.text}</Text>
+                      <Text style={[styles.expiryLabel, { color: colors.mutedForeground }]}>
+                        Expira en {Math.max(0, Math.ceil((entry.savedAt + 24 * 60 * 60 * 1000 - Date.now()) / (60 * 60 * 1000)))}h
+                      </Text>
+                    </Pressable>
+                    <View style={styles.savedActions}>
+                      <Pressable
+                        onPress={() => handleHeartInSaved(entry.text)}
+                        hitSlop={8}
+                        style={[styles.actionBtn, { backgroundColor: colors.primary + "18", borderColor: colors.primary + "44" }]}
+                      >
+                        <Feather name="heart" size={15} color={colors.primary} />
+                      </Pressable>
+                      <Pressable
+                        onPress={() => removeSaved(entry.text)}
+                        hitSlop={8}
+                        style={[styles.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                      >
+                        <Feather name="trash-2" size={14} color={colors.mutedForeground} />
+                      </Pressable>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )
+          )}
+
+          {/* FAVORITOS — permanentes */}
+          {tab === "favoritos" && (
+            favorites.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Feather name="heart" size={32} color={colors.mutedForeground} />
+                <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Sin favoritos aún</Text>
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  En Guardados, toca el ♥ para guardar una{"\n"}intención aquí de forma permanente.
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.savedList}>
+                {favorites.map((fav) => (
+                  <View
+                    key={fav}
+                    style={[styles.savedCard, { backgroundColor: colors.card, borderColor: colors.primary + "30" }]}
+                  >
+                    <Pressable style={styles.savedCardLeft} onPress={() => handleIdeaTap(fav)}>
+                      <Text style={[styles.hoyLabelSmall, { color: colors.mutedForeground }]}>
+                        Hoy voy a...
+                      </Text>
+                      <Text style={[styles.savedText, { color: colors.foreground }]}>{fav}</Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => removeFavorite(fav)}
+                      hitSlop={8}
+                      style={[styles.actionBtn, { backgroundColor: colors.primary + "18", borderColor: colors.primary + "44" }]}
+                    >
+                      <Feather name="heart" size={15} color={colors.primary} />
+                    </Pressable>
+                  </View>
+                ))}
+              </View>
+            )
           )}
         </ScrollView>
       </View>
@@ -252,16 +314,13 @@ const styles = StyleSheet.create({
     minHeight: 60,
   },
   saveBtn: {
-    flexDirection: "row",
-    alignItems: "center",
     alignSelf: "flex-end",
     borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    gap: 5,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
     marginTop: 10,
   },
-  saveBtnText: { fontSize: 13, fontWeight: "700" },
+  saveBtnText: { fontSize: 13, fontWeight: "700", color: "#18110C" },
 
   tabRow: {
     flexDirection: "row",
@@ -271,7 +330,7 @@ const styles = StyleSheet.create({
   },
   tabBtn: {
     paddingVertical: 12,
-    marginRight: 28,
+    marginRight: 24,
     position: "relative",
   },
   tabLabel: { fontSize: 14, fontWeight: "600" },
@@ -315,12 +374,21 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   savedCardLeft: { flex: 1 },
-  hoyLabelSmall: { fontSize: 10, fontWeight: "600", letterSpacing: 0.8, textTransform: "uppercase", marginBottom: 4 },
-  savedText: { fontSize: 14, lineHeight: 20 },
-  savedHeart: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
+  hoyLabelSmall: {
+    fontSize: 10,
+    fontWeight: "600",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 4,
+  },
+  savedText: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
+  expiryLabel: { fontSize: 11 },
+  savedActions: { flexDirection: "column", gap: 8 },
+  actionBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },

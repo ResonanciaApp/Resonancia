@@ -113,21 +113,17 @@ export default function HomeScreen() {
             <Feather name="user" size={18} color={colors.accent} />
           </Pressable>
 
-          {/* Widget de intención — centrado */}
+          {/* Widget de intención — centrado, sin fondo */}
           <Pressable
             onPress={handleIntentionPress}
-            style={({ pressed }) => [styles.intentionCard, { backgroundColor: colors.card, borderColor: colors.primary + "38", opacity: pressed ? 0.88 : 1 }]}
+            style={({ pressed }) => [styles.intentionCard, { opacity: pressed ? 0.75 : 1 }]}
           >
-            <LinearGradient
-              colors={["rgba(198,155,79,0.07)", "rgba(198,155,79,0.0)"]}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-            />
             <Text style={[styles.intentionLabel, { color: colors.mutedForeground }]}>
-              Hoy voy a...
+              Hoy voy a ...
             </Text>
             <View style={styles.intentionRow}>
               <BlinkingCursor color={colors.primary} />
-              <Text style={[styles.intentionPlaceholder, { color: colors.mutedForeground + "88" }]}>
+              <Text style={[styles.intentionPlaceholder, { color: "#FFFFFF" }]}>
                 Establece tu intención aquí
               </Text>
             </View>
@@ -324,28 +320,28 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   intentionCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    overflow: "hidden",
+    paddingVertical: 10,
+    alignItems: "center",
   },
   intentionLabel: {
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 0.6,
+    fontSize: 11,
+    fontWeight: "500",
+    letterSpacing: 0.5,
     textTransform: "uppercase",
-    marginBottom: 8,
+    marginBottom: 6,
+    textAlign: "center",
   },
   intentionRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 4,
   },
   intentionPlaceholder: {
-    fontSize: 17,
-    fontWeight: "400",
-    letterSpacing: 0.2,
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.1,
+    textAlign: "center",
   },
 
   // Section
