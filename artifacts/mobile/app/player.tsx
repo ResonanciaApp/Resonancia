@@ -10,6 +10,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
@@ -351,7 +352,16 @@ export default function PlayerScreen() {
           <Feather name="volume-2" size={18} color={colors.mutedForeground} />
           <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Volume</Text>
         </Pressable>
-        <Pressable style={styles.extraBtn}>
+        <Pressable
+          style={styles.extraBtn}
+          onPress={async () => {
+            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            Share.share({
+              title: currentSession.title,
+              message: `🎵 Estoy escuchando "${currentSession.title}" en RESONANCIA — meditación y sanación con sonidos. ¿Te unes?`,
+            });
+          }}
+        >
           <Feather name="share" size={18} color={colors.mutedForeground} />
           <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Share</Text>
         </Pressable>
