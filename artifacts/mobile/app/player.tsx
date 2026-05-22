@@ -79,7 +79,7 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
 export default function PlayerScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { currentSession, isPlaying, isLoading, progress, elapsed, actualDurationSeconds, pauseResume, stop, isFavorite, toggleFavorite, seekTo } =
+  const { currentSession, isPlaying, isLoading, progress, elapsed, actualDurationSeconds, pauseResume, stop, isFavorite, toggleFavorite, seekTo, sleepTimerRemaining, setSleepTimer } =
     usePlayer();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -100,6 +100,35 @@ export default function PlayerScreen() {
   }
 
   // Use actual file duration (set by expo-av); falls back to declared duration until loaded
+  const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
+    { label: "Sin timer", minutes: null },
+    { label: "10 min", minutes: 10 },
+    { label: "20 min", minutes: 20 },
+    { label: "30 min", minutes: 30 },
+    { label: "50 min", minutes: 50 },
+  ];
+
+  // Track which option the user selected (for chip highlighting)
+  const [selectedTimerMinutes, setSelectedTimerMinutes] = React.useState<number | null>(null);
+
+  const formatRemaining = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
+  const handleSelectTimer = (minutes: number | null) => {
+    setSelectedTimerMinutes(minutes);
+    setSleepTimer(minutes);
+  };
+
+  // When timer naturally expires, reset the chip selection
+  React.useEffect(() => {
+    if (sleepTimerRemaining === null && selectedTimerMinutes !== null) {
+      setSelectedTimerMinutes(null);
+    }
+  }, [sleepTimerRemaining]);
+
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
@@ -222,6 +251,52 @@ export default function PlayerScreen() {
         </View>
       </View>
 
+      {/* Sleep Timer */}
+      <View style={styles.timerSection}>
+        <View style={styles.timerHeader}>
+          <Feather name="moon" size={13} color={colors.mutedForeground} />
+          <Text style={[styles.timerLabel, { color: colors.mutedForeground }]}>
+            Apagar en
+          </Text>
+          {sleepTimerRemaining !== null && (
+            <Text style={[styles.timerCountdown, { color: colors.accent }]}>
+              · {formatRemaining(sleepTimerRemaining)}
+            </Text>
+          )}
+        </View>
+        <View style={styles.timerChips}>
+          {TIMER_OPTIONS.map((opt) => {
+            const selected = opt.minutes === selectedTimerMinutes;
+            return (
+              <Pressable
+                key={String(opt.minutes)}
+                onPress={() => handleSelectTimer(opt.minutes)}
+                style={[
+                  styles.timerChip,
+                  {
+                    backgroundColor: selected
+                      ? colors.primary
+                      : "rgba(198,155,79,0.08)",
+                    borderColor: selected
+                      ? colors.primary
+                      : "rgba(198,155,79,0.2)",
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.timerChipText,
+                    { color: selected ? colors.primaryForeground : colors.mutedForeground },
+                  ]}
+                >
+                  {opt.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
       {/* Controls */}
       <View style={[styles.controlsWrapper, { paddingBottom: bottomPad + 24 }]}>
         {Platform.OS !== "web" ? (
@@ -265,10 +340,6 @@ export default function PlayerScreen() {
 
       {/* Bottom Extras */}
       <View style={[styles.extras, { paddingBottom: bottomPad + 10 }]}>
-        <Pressable style={styles.extraBtn}>
-          <Feather name="moon" size={18} color={colors.mutedForeground} />
-          <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Sleep</Text>
-        </Pressable>
         <Pressable style={styles.extraBtn}>
           <Feather name="volume-2" size={18} color={colors.mutedForeground} />
           <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Volume</Text>
@@ -427,6 +498,42 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 16,
     elevation: 10,
+  },
+  timerSection: {
+    paddingHorizontal: 32,
+    marginBottom: 12,
+  },
+  timerHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 10,
+  },
+  timerLabel: {
+    fontSize: 11,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  timerCountdown: {
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  timerChips: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  timerChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timerChipText: {
+    fontSize: 13,
+    fontWeight: "600",
   },
   extras: {
     flexDirection: "row",
