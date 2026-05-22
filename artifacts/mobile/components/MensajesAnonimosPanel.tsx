@@ -1,10 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -23,10 +25,13 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { useQueryClient } from "@tanstack/react-query";
 
-const MAX_CHARS = 280;
+const MAX_CHARS = 369;
 const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
 const ACCENT = "#D4709A";
 const WINDOW_MS = 24 * 60 * 60 * 1000;
+const LIST_MAX_H = 370;
+const TRACK_W = 3;
+const THUMB_MIN_H = 32;
 
 function timeAgo(iso: string | Date): string {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -63,6 +68,12 @@ export function MensajesAnonimosPanel() {
   const [text, setText] = useState("");
   const [showFeed, setShowFeed] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
+
+  // Scrollbar state
+  const [scrollY, setScrollY] = useState(0);
+  const [contentH, setContentH] = useState(0);
+  const [listH, setListH] = useState(LIST_MAX_H);
+  const scrollRef = useRef<ScrollView>(null);
 
   const { data, isLoading, refetch, isRefetching } = useGetMessages(
     { page: 1 },
@@ -112,10 +123,24 @@ export function MensajesAnonimosPanel() {
     like({ id });
   };
 
+  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setScrollY(e.nativeEvent.contentOffset.y);
+  };
+
+  // Thumb geometry
+  const scrollable = contentH > listH;
+  const thumbH = scrollable
+    ? Math.max(THUMB_MIN_H, (listH / contentH) * listH)
+    : listH;
+  const maxThumbOffset = listH - thumbH;
+  const maxScroll = contentH - listH;
+  const thumbTop = scrollable && maxScroll > 0
+    ? (scrollY / maxScroll) * maxThumbOffset
+    : 0;
+
   const remaining = MAX_CHARS - text.length;
   const allMessages = data?.messages ?? [];
   const total = data?.total ?? 0;
-
   const sortedByLikes = [...allMessages].sort((a, b) => b.likes - a.likes);
 
   const feedLabel = isLoading
@@ -236,7 +261,13 @@ export function MensajesAnonimosPanel() {
           {feedLabel}
         </Text>
         <View style={styles.feedToggleRight}>
-          {isRefetching && <ActivityIndicator size="small" color={ACCENT} style={{ marginRight: 6 }} />}
+          {isRefetching && (
+            <ActivityIndicator
+              size="small"
+              color={ACCENT}
+              style={{ marginRight: 6 }}
+            />
+          )}
           <Feather
             name={showFeed ? "chevron-up" : "chevron-down"}
             size={16}
@@ -261,86 +292,110 @@ export function MensajesAnonimosPanel() {
               </Text>
             </View>
           ) : (
-            <ScrollView
-              nestedScrollEnabled
-              showsVerticalScrollIndicator={false}
-              style={styles.messagesList}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isRefetching}
-                  onRefresh={refetch}
-                  tintColor={ACCENT}
-                />
-              }
-            >
-              {sortedByLikes.map((msg) => {
-                const msLeft =
-                  new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
-                const isExpiringSoon = msLeft < 3 * 60 * 60 * 1000;
-                return (
+            <View style={styles.listWrapper}>
+              {/* Scroll track + thumb */}
+              {scrollable && (
+                <View style={[styles.scrollTrack, { backgroundColor: `${ACCENT}20` }]}>
                   <View
-                    key={msg.id}
                     style={[
-                      styles.messageCard,
-                      {
-                        backgroundColor: colors.background,
-                        borderColor: isExpiringSoon
-                          ? "rgba(224,112,96,0.3)"
-                          : colors.border,
-                      },
+                      styles.scrollThumb,
+                      { backgroundColor: `${ACCENT}90`, top: thumbTop, height: thumbH },
                     ]}
-                  >
-                    <Text style={[styles.messageText, { color: colors.foreground }]}>
-                      {msg.content}
-                    </Text>
-                    <View style={styles.messageMeta}>
-                      <View style={styles.messageMetaLeft}>
-                        <Text
-                          style={[styles.messageTime, { color: colors.mutedForeground }]}
-                        >
-                          {timeAgo(msg.createdAt)}
-                        </Text>
-                        {isExpiringSoon && (
-                          <View style={styles.expiringTag}>
-                            <Feather name="clock" size={8} color="#E07060" />
-                            <Text style={styles.expiringText}>
-                              {expiresIn(msg.createdAt)}
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                      <Pressable
-                        onPress={() => handleLike(msg.id)}
-                        style={styles.likeBtn}
-                        hitSlop={8}
-                      >
-                        <Feather
-                          name="heart"
-                          size={12}
-                          color={
-                            likedIds.has(msg.id) ? "#E07070" : colors.mutedForeground
-                          }
-                        />
-                        {msg.likes > 0 && (
+                  />
+                </View>
+              )}
+
+              <ScrollView
+                ref={scrollRef}
+                nestedScrollEnabled
+                showsVerticalScrollIndicator={false}
+                style={styles.messagesList}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                onContentSizeChange={(_, h) => setContentH(h)}
+                onLayout={(e) => setListH(e.nativeEvent.layout.height)}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefetching}
+                    onRefresh={refetch}
+                    tintColor={ACCENT}
+                  />
+                }
+              >
+                {sortedByLikes.map((msg) => {
+                  const msLeft =
+                    new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
+                  const isExpiringSoon = msLeft < 3 * 60 * 60 * 1000;
+                  return (
+                    <View
+                      key={msg.id}
+                      style={[
+                        styles.messageCard,
+                        {
+                          backgroundColor: colors.background,
+                          borderColor: isExpiringSoon
+                            ? "rgba(224,112,96,0.3)"
+                            : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.messageText, { color: colors.foreground }]}>
+                        {msg.content}
+                      </Text>
+                      <View style={styles.messageMeta}>
+                        <View style={styles.messageMetaLeft}>
                           <Text
                             style={[
-                              styles.likeCount,
-                              {
-                                color: likedIds.has(msg.id)
-                                  ? "#E07070"
-                                  : colors.mutedForeground,
-                              },
+                              styles.messageTime,
+                              { color: colors.mutedForeground },
                             ]}
                           >
-                            {msg.likes}
+                            {timeAgo(msg.createdAt)}
                           </Text>
-                        )}
-                      </Pressable>
+                          {isExpiringSoon && (
+                            <View style={styles.expiringTag}>
+                              <Feather name="clock" size={8} color="#E07060" />
+                              <Text style={styles.expiringText}>
+                                {expiresIn(msg.createdAt)}
+                              </Text>
+                            </View>
+                          )}
+                        </View>
+                        <Pressable
+                          onPress={() => handleLike(msg.id)}
+                          style={styles.likeBtn}
+                          hitSlop={8}
+                        >
+                          <Feather
+                            name="heart"
+                            size={12}
+                            color={
+                              likedIds.has(msg.id)
+                                ? "#E07070"
+                                : colors.mutedForeground
+                            }
+                          />
+                          {msg.likes > 0 && (
+                            <Text
+                              style={[
+                                styles.likeCount,
+                                {
+                                  color: likedIds.has(msg.id)
+                                    ? "#E07070"
+                                    : colors.mutedForeground,
+                                },
+                              ]}
+                            >
+                              {msg.likes}
+                            </Text>
+                          )}
+                        </Pressable>
+                      </View>
                     </View>
-                  </View>
-                );
-              })}
-            </ScrollView>
+                  );
+                })}
+              </ScrollView>
+            </View>
           )}
         </View>
       )}
@@ -467,7 +522,27 @@ const styles = StyleSheet.create({
   // Feed
   feed: { padding: 14 },
 
-  messagesList: { maxHeight: 370 },
+  listWrapper: {
+    position: "relative",
+  },
+
+  // Custom scrollbar
+  scrollTrack: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: TRACK_W,
+    borderRadius: TRACK_W / 2,
+    zIndex: 10,
+  },
+  scrollThumb: {
+    position: "absolute",
+    width: TRACK_W,
+    borderRadius: TRACK_W / 2,
+  },
+
+  messagesList: { maxHeight: LIST_MAX_H, paddingRight: 10 },
 
   emptyState: { alignItems: "center", paddingVertical: 24, gap: 8 },
   emptyText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
