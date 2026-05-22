@@ -171,25 +171,29 @@ export default function Onboarding() {
   const [step, setStep] = useState(-1);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
 
-  const opacity   = useRef(new Animated.Value(0)).current;
-  const slideY    = useRef(new Animated.Value(30)).current;
-  const logoScale = useRef(new Animated.Value(0.8)).current;
-  const ripple    = useRef(new Animated.Value(0)).current;
+  // Welcome screen only: fades in from 0
+  const welcomeOpacity = useRef(new Animated.Value(0)).current;
+  const logoScale      = useRef(new Animated.Value(0.85)).current;
+  // Survey/closing: always visible, only slides up
+  const stepSlideY     = useRef(new Animated.Value(0)).current;
+  const ripple         = useRef(new Animated.Value(0)).current;
 
-  // Animate in on step change
+  // Welcome fade-in — runs once on mount
   useEffect(() => {
-    opacity.setValue(0);
-    slideY.setValue(step === -1 ? 0 : 30);
-    logoScale.setValue(step === -1 ? 0.85 : 1);
-
     Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: step === -1 ? 1000 : 350, useNativeDriver: ND }),
-      Animated.timing(slideY, { toValue: 0, duration: 350, useNativeDriver: ND }),
+      Animated.timing(welcomeOpacity, { toValue: 1, duration: 900, useNativeDriver: ND }),
       Animated.timing(logoScale, { toValue: 1, duration: 800, useNativeDriver: ND }),
     ]).start();
+  }, []);
+
+  // Slide-in for survey steps — content always visible, just slides up
+  useEffect(() => {
+    if (step < 0) return;
+    stepSlideY.setValue(32);
+    Animated.timing(stepSlideY, { toValue: 0, duration: 300, useNativeDriver: ND }).start();
 
     if (step === QUESTIONS.length) {
-      // closing ripple
+      ripple.setValue(0);
       Animated.loop(
         Animated.timing(ripple, { toValue: 1, duration: 3000, useNativeDriver: ND })
       ).start();
@@ -247,7 +251,7 @@ export default function Onboarding() {
       >
         <StatusBar barStyle="light-content" />
         <Animated.View
-          style={[styles.welcomeContent, { opacity, transform: [{ scale: logoScale }] }]}
+          style={[styles.welcomeContent, { opacity: welcomeOpacity, transform: [{ scale: logoScale }] }]}
         >
           <View style={styles.welcomeGlow}>
             <View style={styles.glowRing} />
@@ -258,17 +262,17 @@ export default function Onboarding() {
             />
           </View>
 
-          <Animated.View style={{ opacity, transform: [{ translateY: slideY }] }}>
+          <View>
             <Text style={styles.welcomeTitle}>Bienvenido/a a tu refugio</Text>
             <Text style={styles.welcomeSubtitle}>
               Un espacio de sonido, silencio y presencia.{"\n"}
               Estamos aquí para acompañarte.
             </Text>
-          </Animated.View>
+          </View>
         </Animated.View>
 
         <Animated.View
-          style={[styles.welcomeBottom, { paddingBottom: insets.bottom + 24, opacity }]}
+          style={[styles.welcomeBottom, { paddingBottom: insets.bottom + 24, opacity: welcomeOpacity }]}
         >
           <Text style={styles.welcomeHint}>
             Te haremos unas preguntas para personalizar tu experiencia
@@ -294,7 +298,7 @@ export default function Onboarding() {
         end={{ x: 0.7, y: 1 }}
       >
         <StatusBar barStyle="light-content" />
-        <Animated.View style={[styles.closingContent, { opacity }]}>
+        <Animated.View style={[styles.closingContent, { transform: [{ translateY: stepSlideY }] }]}>
           {/* Animated ripple */}
           <View style={styles.rippleContainer}>
             <Animated.View
@@ -361,7 +365,7 @@ export default function Onboarding() {
       </View>
 
       <Animated.View
-        style={[styles.questionContent, { opacity, transform: [{ translateY: slideY }] }]}
+        style={[styles.questionContent, { transform: [{ translateY: stepSlideY }] }]}
       >
         <Text style={styles.stepCounter}>
           {step + 1} / {QUESTIONS.length}
@@ -377,7 +381,7 @@ export default function Onboarding() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View style={{ opacity, transform: [{ translateY: slideY }] }}>
+        <Animated.View style={{ transform: [{ translateY: stepSlideY }] }}>
           {q.options.map((opt) => (
             <OptionCard
               key={opt.value}
