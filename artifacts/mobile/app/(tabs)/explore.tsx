@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Dimensions,
+  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -19,6 +20,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
+import { TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -26,6 +28,7 @@ const H_PAD = 20;
 const GAP = 10;
 const PRIMARY_W = (width - H_PAD * 2 - GAP) / 2;
 const SEC_W = 88;
+
 
 const TIME_BUCKETS = [
   { label: "5 min",  min: 0,   max: 5   },
@@ -208,6 +211,30 @@ export default function ExploreScreen() {
                 ))}
               </View>
             </View>
+
+            {/* ── Otras Categorías ── */}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+                Otras Categorías
+              </Text>
+              <View style={styles.tagGrid}>
+                {TAG_CARDS.map((tag) => (
+                  <Pressable
+                    key={tag.id}
+                    onPress={() => router.push(`/tag/${tag.id}` as never)}
+                    style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.85 : 1 }]}
+                  >
+                    <Image source={tag.image} style={styles.tagImage} resizeMode="cover" />
+                    <LinearGradient
+                      colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.68)"]}
+                      style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+                    />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 16, borderWidth: 1, borderColor: "rgba(198,155,79,0.2)" }]} />
+                    <Text style={styles.tagLabel}>{tag.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
           </>
         )}
       </ScrollView>
@@ -297,6 +324,38 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     lineHeight: 15,
+  },
+
+  // Tag cards — "Otras Categorías"
+  tagGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: GAP,
+  },
+  tagCard: {
+    width: (width - H_PAD * 2 - GAP) / 2,
+    height: 130,
+    borderRadius: 16,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 12,
+  },
+  tagImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: undefined,
+    height: undefined,
+    borderRadius: 16,
+  } as object,
+  tagLabel: {
+    color: "#F5EDD8",
+    fontSize: 14,
+    fontWeight: "700",
+    textAlign: "center",
+    lineHeight: 20,
+    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
 
   // Time buckets

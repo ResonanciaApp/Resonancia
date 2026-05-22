@@ -91,6 +91,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="tag/[id]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="intencion-onboarding"
           options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
         />
