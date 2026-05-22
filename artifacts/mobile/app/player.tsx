@@ -223,32 +223,44 @@ export default function PlayerScreen() {
       </View>
 
       {/* Controls */}
-      <View style={[styles.controls, { paddingBottom: bottomPad + 24 }]}>
-        <Pressable onPress={skipBackward} style={styles.controlSide}>
-          <Feather name="skip-back" size={24} color={colors.foreground} />
-          <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
-        </Pressable>
+      <View style={[styles.controlsWrapper, { paddingBottom: bottomPad + 24 }]}>
+        {Platform.OS !== "web" ? (
+          <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(24,17,12,0.55)" }]} />
+        )}
+        <View style={styles.controls}>
+          <Pressable onPress={skipBackward} style={styles.controlSide}>
+            <Feather name="skip-back" size={24} color={colors.foreground} />
+            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
+          </Pressable>
 
-        <Pressable
-          onPress={handlePlayPause}
-          disabled={isLoading}
-          style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
-        >
-          {isLoading ? (
-            <Feather name="loader" size={32} color={colors.primaryForeground} />
-          ) : (
-            <Feather
-              name={isPlaying ? "pause" : "play"}
-              size={32}
-              color={colors.primaryForeground}
-            />
-          )}
-        </Pressable>
+          {/* Play button with outer glow ring */}
+          <View style={styles.playOuter}>
+            <View style={[styles.playRing, { borderColor: "rgba(198,155,79,0.25)" }]} />
+            <Pressable
+              onPress={handlePlayPause}
+              disabled={isLoading}
+              style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
+            >
+              {isLoading ? (
+                <Feather name="loader" size={32} color={colors.primaryForeground} />
+              ) : (
+                <Feather
+                  name={isPlaying ? "pause" : "play"}
+                  size={32}
+                  color={colors.primaryForeground}
+                  style={isPlaying ? undefined : { paddingLeft: 4 }}
+                />
+              )}
+            </Pressable>
+          </View>
 
-        <Pressable onPress={skipForward} style={styles.controlSide}>
-          <Feather name="skip-forward" size={24} color={colors.foreground} />
-          <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
-        </Pressable>
+          <Pressable onPress={skipForward} style={styles.controlSide}>
+            <Feather name="skip-forward" size={24} color={colors.foreground} />
+            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Bottom Extras */}
@@ -371,6 +383,12 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 12,
   },
+  controlsWrapper: {
+    overflow: "hidden",
+    borderTopWidth: 1,
+    borderTopColor: "rgba(198,155,79,0.12)",
+    paddingTop: 20,
+  },
   controls: {
     flexDirection: "row",
     alignItems: "center",
@@ -387,6 +405,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     letterSpacing: 0.5,
   },
+  playOuter: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  playRing: {
+    position: "absolute",
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    borderWidth: 1.5,
+  },
   playButton: {
     width: 76,
     height: 76,
@@ -395,9 +424,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     shadowColor: "#C69B4F",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
+    elevation: 10,
   },
   extras: {
     flexDirection: "row",
