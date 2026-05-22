@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { MessageDeck } from "@/components/MessageDeck";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CATEGORIES } from "@/data/categories";
@@ -188,6 +189,17 @@ export default function ExploreScreen() {
               </View>
             </View>
 
+            {/* Un mensaje para ti */}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                Un mensaje para ti
+              </Text>
+              <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+                Deja que el universo te hable hoy
+              </Text>
+              <MessageDeck />
+            </View>
+
             {/* All Sessions */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
@@ -263,7 +275,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.3,
-    marginBottom: 16,
+    marginBottom: 6,
+  },
+  sectionSub: {
+    fontSize: 12,
+    marginBottom: 20,
   },
   resultsLabel: {
     fontSize: 12,
