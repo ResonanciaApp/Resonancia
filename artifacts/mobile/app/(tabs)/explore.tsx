@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Dimensions,
+  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -165,6 +166,11 @@ export default function ExploreScreen() {
                       },
                     ]}
                   >
+                    <Image
+                      source={cat.image}
+                      style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                      resizeMode="cover"
+                    />
                     <LinearGradient
                       colors={cat.gradient as [string, string]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
@@ -172,7 +178,7 @@ export default function ExploreScreen() {
                     <View
                       style={[
                         styles.gridIconBg,
-                        { backgroundColor: "rgba(198,155,79,0.12)", borderColor: "rgba(198,155,79,0.2)" },
+                        { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.3)" },
                       ]}
                     >
                       <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={20} color={cat.color} />

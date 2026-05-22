@@ -6,6 +6,7 @@ export type Category = {
   sessionCount: number;
   color: string;
   gradient: [string, string];
+  image: ReturnType<typeof require>;
 };
 
 export const CATEGORIES: Category[] = [
@@ -16,7 +17,8 @@ export const CATEGORIES: Category[] = [
     icon: "wind",
     sessionCount: 1,
     color: "#C69B4F",
-    gradient: ["#3C2415", "#24160F"],
+    gradient: ["rgba(60,36,21,0.55)", "rgba(24,17,12,0.92)"],
+    image: require("@/assets/images/cat1-meditaciones.jpg"),
   },
   {
     id: "cuencos-gongs",
@@ -25,7 +27,8 @@ export const CATEGORIES: Category[] = [
     icon: "disc",
     sessionCount: 1,
     color: "#D4A853",
-    gradient: ["#3A2010", "#24160F"],
+    gradient: ["rgba(58,32,16,0.55)", "rgba(24,17,12,0.92)"],
+    image: require("@/assets/images/cat2-cuencos-gongs.jpg"),
   },
   {
     id: "asmr-expansivos",
@@ -34,7 +37,8 @@ export const CATEGORIES: Category[] = [
     icon: "headphones",
     sessionCount: 1,
     color: "#A8D8E8",
-    gradient: ["#1A2C3C", "#24160F"],
+    gradient: ["rgba(26,44,60,0.55)", "rgba(24,17,12,0.92)"],
+    image: require("@/assets/images/cat3-asmr.jpg"),
   },
   {
     id: "gran-despertar-podcast",
@@ -43,7 +47,8 @@ export const CATEGORIES: Category[] = [
     icon: "mic",
     sessionCount: 1,
     color: "#C4B89A",
-    gradient: ["#2A1E10", "#24160F"],
+    gradient: ["rgba(42,30,16,0.55)", "rgba(24,17,12,0.92)"],
+    image: require("@/assets/images/cat4-podcast.jpg"),
   },
   {
     id: "consejo-del-dia",
@@ -52,7 +57,8 @@ export const CATEGORIES: Category[] = [
     icon: "sun",
     sessionCount: 1,
     color: "#F0C96E",
-    gradient: ["#2A1E00", "#24160F"],
+    gradient: ["rgba(42,30,0,0.55)", "rgba(24,17,12,0.92)"],
+    image: require("@/assets/images/cat5-consejo.jpg"),
   },
   {
     id: "pausas-meditativas",
@@ -61,6 +67,7 @@ export const CATEGORIES: Category[] = [
     icon: "pause-circle",
     sessionCount: 1,
     color: "#7BB8D4",
-    gradient: ["#0D1B2A", "#24160F"],
+    gradient: ["rgba(13,27,42,0.55)", "rgba(24,17,12,0.92)"],
+    image: require("@/assets/images/cat6-pausas.jpg"),
   },
 ];

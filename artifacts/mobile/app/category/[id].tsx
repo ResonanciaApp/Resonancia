@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -54,6 +55,11 @@ export default function CategoryScreen() {
         {/* Category Hero */}
         {category && (
           <View style={[styles.heroCard, { borderColor: "rgba(198,155,79,0.2)" }]}>
+            <Image
+              source={category.image}
+              style={[StyleSheet.absoluteFill, { borderRadius: 22 }]}
+              resizeMode="cover"
+            />
             <LinearGradient
               colors={category.gradient as [string, string]}
               style={[StyleSheet.absoluteFill, { borderRadius: 22 }]}
