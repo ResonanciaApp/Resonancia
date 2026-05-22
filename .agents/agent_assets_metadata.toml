@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "molZwDztEfwkN_ajzVkVK"
@@ -42,3 +41,9 @@ id = "ABV-G-b981pgxFHoFONIe"
 uri = "file://artifacts/mobile/assets/images/meditation-person.png"
 type = "image"
 title = "generated_image"
+
+[[outputs]]
+id = "cS7DXlbngE0YcmglyoOWl"
+uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
+type = "audio"
+title = "Sesión 2 — Pad Mi Mayor (Para dormir bien)"

@@ -33,7 +33,7 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
   "1": require("@/assets/audio/62 CM.mp3"),
 
   // Agrega más aquí — descomenta y completa el nombre del archivo:
-  "2": require("@/assets/audio/62 CM.mp3"),
+  "2": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "3": require("@/assets/audio/62 CM.mp3"),
   // "4": require("@/assets/audio/62 cm.mp3"),
   // "5": require("@/assets/audio/crystal-clarity.mp3"),

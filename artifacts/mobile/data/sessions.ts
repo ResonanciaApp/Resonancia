@@ -10,6 +10,7 @@ export type Session = {
   benefits: string[];
   instruments: string[];
   image: ReturnType<typeof require>;
+  audio?: ReturnType<typeof require>;
   isFeatured?: boolean;
   isNew?: boolean;
   frequency?: string;
@@ -44,6 +45,7 @@ export const SESSIONS: Session[] = [
     benefits: ["Sueño profundo", "Alivio del estrés", "Relajación total", "Descanso reparador"],
     instruments: ["Cuencos tibetanos martillados", "Gong Paiste", "Tingsha"],
     image: require("@/assets/images/tibetan-bowl.png"),
+    audio: require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
     isFeatured: true,
     frequency: "Delta 0.5–4 Hz",
   },
