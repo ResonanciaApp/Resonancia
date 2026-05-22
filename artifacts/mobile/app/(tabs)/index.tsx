@@ -144,7 +144,7 @@ export default function HomeScreen() {
                     { backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
-                  <Feather name="play" size={15} color={colors.primaryForeground} />
+                  <Feather name="play" size={15} color={colors.primaryForeground} style={{ paddingLeft: 2 }} />
                   <Text style={[styles.heroBtnText, { color: colors.primaryForeground }]}>
                     Comenzar a Escuchar
                   </Text>

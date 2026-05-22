@@ -66,7 +66,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           onPress={() => playSession(session)}
           style={[styles.hPlayBtn, { backgroundColor: colors.primary }]}
         >
-          <Feather name="play" size={14} color={colors.primaryForeground} />
+          <Feather name="play" size={14} color={colors.primaryForeground} style={{ paddingLeft: 2 }} />
         </Pressable>
       </Pressable>
     );
@@ -114,7 +114,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
             onPress={() => playSession(session)}
             style={[styles.playBtn, { backgroundColor: colors.primary }]}
           >
-            <Feather name="play" size={16} color={colors.primaryForeground} />
+            <Feather name="play" size={16} color={colors.primaryForeground} style={{ paddingLeft: 2 }} />
           </Pressable>
         </View>
       </View>
