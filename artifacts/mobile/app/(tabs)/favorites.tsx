@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -34,14 +34,12 @@ const MAX_LINES = 3;
 function DiarioEntryCard({ entry }: { entry: FavoriteDiarioEntry }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
-  // fullHeight: natural height of the text (measured on first render without line limit)
   const [fullHeight, setFullHeight] = useState<number | null>(null);
+  // useRef so the guard is never stale in closures (unlike checking fullHeight===null)
+  const hasMeasured = useRef(false);
 
   const isTruncated = fullHeight !== null && fullHeight > LINE_H * MAX_LINES + 4;
-
-  // On first render numberOfLines is undefined → text is full → onLayout captures real height
-  // After measurement, apply MAX_LINES if truncated
-  const numberOfLines = fullHeight === null || expanded || !isTruncated ? undefined : MAX_LINES;
+  const numberOfLines = !hasMeasured.current || expanded || !isTruncated ? undefined : MAX_LINES;
 
   return (
     <Pressable
@@ -61,9 +59,12 @@ function DiarioEntryCard({ entry }: { entry: FavoriteDiarioEntry }) {
 
       <View
         onLayout={(e) => {
-          // Only capture the first measurement (full-height render)
-          if (fullHeight === null) {
-            setFullHeight(e.nativeEvent.layout.height);
+          // hasMeasured.current is always fresh (ref, not closure value)
+          // Only accept the first positive-height reading — that's the full-text height
+          const h = e.nativeEvent.layout.height;
+          if (!hasMeasured.current && h > 0) {
+            hasMeasured.current = true;
+            setFullHeight(h);
           }
         }}
       >
