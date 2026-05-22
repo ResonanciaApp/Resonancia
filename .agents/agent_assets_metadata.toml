@@ -47,3 +47,9 @@ id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
 type = "audio"
 title = "Sesión 2 — Pad Mi Mayor (Para dormir bien)"
+
+[[outputs]]
+id = "wetHSCI9rAVQySxatZDy-"
+uri = "file://artifacts/mobile/assets/audio/sesion_cuencos_mix.mp3"
+type = "audio"
+title = "Mix Cuencos — 3 minutos (EQ + Reverb)"
