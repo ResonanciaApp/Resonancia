@@ -28,12 +28,20 @@ function formatDate(iso: string) {
   });
 }
 
+const LINE_H = 20; // matches entryText lineHeight
+const MAX_LINES = 3;
+
 function DiarioEntryCard({ entry }: { entry: FavoriteDiarioEntry }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
+  // fullHeight: natural height of the text (measured on first render without line limit)
   const [fullHeight, setFullHeight] = useState<number | null>(null);
-  const SINGLE_LINE_H = 22;
-  const isTruncated = fullHeight !== null && fullHeight > SINGLE_LINE_H * 3 + 4;
+
+  const isTruncated = fullHeight !== null && fullHeight > LINE_H * MAX_LINES + 4;
+
+  // On first render numberOfLines is undefined → text is full → onLayout captures real height
+  // After measurement, apply MAX_LINES if truncated
+  const numberOfLines = fullHeight === null || expanded || !isTruncated ? undefined : MAX_LINES;
 
   return (
     <Pressable
@@ -51,30 +59,29 @@ function DiarioEntryCard({ entry }: { entry: FavoriteDiarioEntry }) {
         </Text>
       </View>
 
-      {/* Invisible full render to measure natural height */}
-      {fullHeight === null && (
-        <View
-          style={{ opacity: 0, position: "absolute", left: 14, right: 14 }}
-          onLayout={(e) => setFullHeight(e.nativeEvent.layout.height)}
-        >
-          <Text style={styles.entryText}>{entry.text}</Text>
-        </View>
-      )}
-
-      <Text
-        style={[styles.entryText, { color: colors.foreground }]}
-        numberOfLines={!expanded && isTruncated ? 3 : undefined}
-        ellipsizeMode="tail"
+      <View
+        onLayout={(e) => {
+          // Only capture the first measurement (full-height render)
+          if (fullHeight === null) {
+            setFullHeight(e.nativeEvent.layout.height);
+          }
+        }}
       >
-        {entry.text}
-      </Text>
+        <Text
+          style={[styles.entryText, { color: colors.foreground }]}
+          numberOfLines={numberOfLines}
+          ellipsizeMode="tail"
+        >
+          {entry.text}
+        </Text>
+      </View>
 
       {isTruncated && !expanded && (
         <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
           Toca para leer más
         </Text>
       )}
-      {expanded && (
+      {isTruncated && expanded && (
         <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
           Toca para colapsar
         </Text>
