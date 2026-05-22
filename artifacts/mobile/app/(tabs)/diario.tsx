@@ -79,10 +79,11 @@ function EntryCard({
 }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
 
   return (
     <Pressable
-      onPress={() => setExpanded((v) => !v)}
+      onPress={() => isTruncated && setExpanded((v) => !v)}
       style={[styles.entryCard, { backgroundColor: colors.background, borderColor: colors.border }]}
     >
       <Text style={[styles.entryDate, { color: accentColor }]}>
@@ -92,10 +93,13 @@ function EntryCard({
         style={[styles.entryText, { color: colors.foreground }]}
         numberOfLines={expanded ? undefined : 1}
         ellipsizeMode="tail"
+        onTextLayout={(e) => {
+          if (!expanded) setIsTruncated(e.nativeEvent.lines.length > 1);
+        }}
       >
         {entry.text}
       </Text>
-      {!expanded && (
+      {isTruncated && !expanded && (
         <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
           Toca para leer más
         </Text>
