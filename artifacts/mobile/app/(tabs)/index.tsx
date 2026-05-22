@@ -58,12 +58,11 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <View>
-            <Text style={[styles.logoText, { color: colors.primary, fontFamily: fontsLoaded ? "Cinzel_900Black" : undefined }]}>RESONANCIA</Text>
-            <Text style={[styles.tagline, { color: colors.mutedForeground, fontFamily: fontsLoaded ? "Cinzel_400Regular" : undefined }]}>
-              Meditación y sonidos que te regresan a ti mismo.
-            </Text>
-          </View>
+          <Image
+            source={require("@/assets/images/logo-resonancia-gold.png")}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
           <Pressable
             onPress={() => router.push("/(tabs)/profile" as never)}
             style={[styles.avatarBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -262,14 +261,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 20,
   },
-  logoText: {
-    fontSize: 20,
-    letterSpacing: 6,
-  },
-  tagline: {
-    fontSize: 10,
-    letterSpacing: 0.8,
-    marginTop: 3,
+  logoImage: {
+    width: 160,
+    height: 40,
   },
   avatarBtn: {
     width: 40,
