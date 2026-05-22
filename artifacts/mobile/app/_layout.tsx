@@ -22,6 +22,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
+import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -85,6 +86,14 @@ function RootLayoutNav() {
           name="category/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
+        <Stack.Screen
+          name="intencion-onboarding"
+          options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
+        />
+        <Stack.Screen
+          name="intencion"
+          options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
+        />
       </Stack>
     </>
   );
@@ -114,13 +123,15 @@ export default function RootLayout() {
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <PlayerProvider>
-            <DiarioFavoritesProvider>
-              <GestureHandlerRootView>
-                <KeyboardProvider>
-                  <RootLayoutNav />
-                </KeyboardProvider>
-              </GestureHandlerRootView>
-            </DiarioFavoritesProvider>
+            <IntencionProvider>
+              <DiarioFavoritesProvider>
+                <GestureHandlerRootView>
+                  <KeyboardProvider>
+                    <RootLayoutNav />
+                  </KeyboardProvider>
+                </GestureHandlerRootView>
+              </DiarioFavoritesProvider>
+            </IntencionProvider>
           </PlayerProvider>
         </QueryClientProvider>
       </ErrorBoundary>

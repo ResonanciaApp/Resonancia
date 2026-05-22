@@ -1,9 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
+  Animated,
   Dimensions,
   Image,
   Platform,
@@ -34,11 +36,42 @@ const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 320;
 
+const INTENCION_SEEN_KEY = "cdc_intencion_onboarding_seen";
+const ND = Platform.OS !== "web";
+
+function BlinkingCursor({ color }: { color: string }) {
+  const opacity = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    const anim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, { toValue: 0, duration: 480, useNativeDriver: ND }),
+        Animated.timing(opacity, { toValue: 1, duration: 480, useNativeDriver: ND }),
+      ]),
+    );
+    anim.start();
+    return () => anim.stop();
+  }, [opacity]);
+  return (
+    <Animated.Text style={{ opacity, color, fontSize: 17, lineHeight: 24, fontWeight: "300" }}>
+      |
+    </Animated.Text>
+  );
+}
+
 export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
+
+  async function handleIntentionPress() {
+    const seen = await AsyncStorage.getItem(INTENCION_SEEN_KEY);
+    if (seen === "true") {
+      router.push("/intencion" as never);
+    } else {
+      router.push("/intencion-onboarding" as never);
+    }
+  }
 
   const { favoriteEntries } = useDiarioFavoritesCtx();
   const topDiarioFavs = favoriteEntries.slice(0, 5);
@@ -70,18 +103,34 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── 1. LOGO ── */}
+        {/* ── 1. INTENCIÓN DEL DÍA ── */}
         <View style={styles.header}>
-          <Image
-            source={require("@/assets/images/logo-cdc-dark.png")}
-            style={styles.logoImage}
-            resizeMode="contain"
-          />
+          {/* Avatar — esquina derecha */}
           <Pressable
             onPress={() => router.push("/(tabs)/profile" as never)}
             style={[styles.avatarBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
           >
             <Feather name="user" size={18} color={colors.accent} />
+          </Pressable>
+
+          {/* Widget de intención — centrado */}
+          <Pressable
+            onPress={handleIntentionPress}
+            style={({ pressed }) => [styles.intentionCard, { backgroundColor: colors.card, borderColor: colors.primary + "38", opacity: pressed ? 0.88 : 1 }]}
+          >
+            <LinearGradient
+              colors={["rgba(198,155,79,0.07)", "rgba(198,155,79,0.0)"]}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+            />
+            <Text style={[styles.intentionLabel, { color: colors.mutedForeground }]}>
+              Hoy voy a...
+            </Text>
+            <View style={styles.intentionRow}>
+              <BlinkingCursor color={colors.primary} />
+              <Text style={[styles.intentionPlaceholder, { color: colors.mutedForeground + "88" }]}>
+                Establece tu intención aquí
+              </Text>
+            </View>
           </Pressable>
         </View>
 
@@ -152,7 +201,7 @@ export default function HomeScreen() {
               Sesión Destacada
             </Text>
             <View style={[styles.heroCard, { borderColor: "rgba(198,155,79,0.22)" }]}>
-              <Image source={featuredSession.image} style={styles.heroImage} />
+              <Image source={featuredSession.image as number} style={styles.heroImage} />
               <LinearGradient
                 colors={["transparent", "rgba(24,17,12,0.65)", colors.background]}
                 locations={[0, 0.5, 1]}
@@ -261,20 +310,42 @@ const styles = StyleSheet.create({
 
   // Header
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: GRID_PAD,
-    marginBottom: 24,
+    marginBottom: 20,
   },
-  logoImage: { width: 260, height: 65 },
   avatarBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 12,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "flex-end",
+    marginBottom: 14,
+  },
+  intentionCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    overflow: "hidden",
+  },
+  intentionLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+    marginBottom: 8,
+  },
+  intentionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  intentionPlaceholder: {
+    fontSize: 17,
+    fontWeight: "400",
+    letterSpacing: 0.2,
   },
 
   // Section
