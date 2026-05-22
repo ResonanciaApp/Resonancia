@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useRef } from "react";
@@ -31,6 +32,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { currentSession, playSession } = usePlayer();
   const scrollRef = useRef<ScrollView>(null);
+  const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const featured = getFeaturedSessions();
   const sleepSessions = getSleepSessions();
@@ -57,8 +59,8 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={[styles.logoText, { color: colors.primary }]}>RESONANCIA</Text>
-            <Text style={[styles.tagline, { color: colors.mutedForeground }]}>
+            <Text style={[styles.logoText, { color: colors.primary, fontFamily: fontsLoaded ? "Cinzel_900Black" : undefined }]}>RESONANCIA</Text>
+            <Text style={[styles.tagline, { color: colors.mutedForeground, fontFamily: fontsLoaded ? "Cinzel_400Regular" : undefined }]}>
               Meditación y sonidos que te regresan a ti mismo.
             </Text>
           </View>
@@ -261,14 +263,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logoText: {
-    fontSize: 22,
-    fontWeight: "800",
-    letterSpacing: 5,
+    fontSize: 20,
+    letterSpacing: 6,
   },
   tagline: {
-    fontSize: 11,
-    letterSpacing: 0.5,
-    marginTop: 2,
+    fontSize: 10,
+    letterSpacing: 0.8,
+    marginTop: 3,
   },
   avatarBtn: {
     width: 40,
