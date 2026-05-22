@@ -30,7 +30,7 @@ function NativeTabLayout() {
           <Label>Favoritos</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="diario">
-          <Icon sf={{ default: "book", selected: "book.fill" }} />
+          <Icon sf={{ default: "pencil.line", selected: "pencil.line" }} />
           <Label>Diario</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
@@ -132,9 +132,9 @@ function ClassicTabLayout() {
             title: "Diario",
             tabBarIcon: ({ color }) =>
               isIOS ? (
-                <SymbolView name="book" tintColor={color} size={22} />
+                <SymbolView name="pencil.line" tintColor={color} size={22} />
               ) : (
-                <Feather name="book-open" size={22} color={color} />
+                <Feather name="feather" size={22} color={color} />
               ),
           }}
         />
