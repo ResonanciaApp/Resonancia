@@ -67,7 +67,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (val) setFavorites(JSON.parse(val));
     });
     AsyncStorage.getItem(HISTORY_KEY).then((val) => {
-      if (val) setHistory(JSON.parse(val));
+      if (!val) return;
+      const parsed: HistoryEntry[] = JSON.parse(val);
+      const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      const filtered = parsed.filter((e) => new Date(e.playedAt).getTime() > cutoff);
+      if (filtered.length !== parsed.length) {
+        AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(filtered));
+      }
+      setHistory(filtered);
     });
   }, []);
 

@@ -272,8 +272,8 @@ export default function ExploreScreen() {
                   </Text>
                 </View>
               ) : (
-                <View style={{ gap: 10 }}>
-                  {historySessions.map(({ session, playedAt }) => {
+                <View style={{ gap: 8 }}>
+                  {historySessions.slice(0, 10).map(({ session, playedAt }) => {
                     const date = new Date(playedAt);
                     const dateLabel = date.toLocaleDateString("es", { day: "numeric", month: "short" });
                     const timeLabel = date.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
@@ -284,11 +284,25 @@ export default function ExploreScreen() {
                           <Text style={[styles.historyTimeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                          <SessionCard session={session} />
+                          <SessionCard session={session} horizontal />
                         </View>
                       </View>
                     );
                   })}
+
+                  {historySessions.length >= 10 && (
+                    <Pressable
+                      onPress={() => router.push("/historial" as never)}
+                      style={({ pressed }) => [
+                        styles.verTodoBtn,
+                        { borderColor: colors.primary + "55", backgroundColor: colors.card, opacity: pressed ? 0.78 : 1 },
+                      ]}
+                    >
+                      <Feather name="clock" size={15} color={colors.primary} />
+                      <Text style={[styles.verTodoText, { color: colors.primary }]}>Ver todo el historial</Text>
+                      <Feather name="chevron-right" size={15} color={colors.primary} />
+                    </Pressable>
+                  )}
                 </View>
               )}
             </View>
@@ -437,6 +451,17 @@ const styles = StyleSheet.create({
   },
   historyDateText: { fontSize: 11, fontWeight: "700", textAlign: "center" },
   historyTimeText: { fontSize: 10, textAlign: "center", marginTop: 2 },
+  verTodoBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingVertical: 14,
+    marginTop: 4,
+  },
+  verTodoText: { fontSize: 14, fontWeight: "600" },
 
   // Time buckets
   timeGrid: {
