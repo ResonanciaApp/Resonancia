@@ -57,9 +57,9 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={[styles.logoText, { color: colors.primary }]}>RESONANCE</Text>
+            <Text style={[styles.logoText, { color: colors.primary }]}>RESONANCIA</Text>
             <Text style={[styles.tagline, { color: colors.mutedForeground }]}>
-              Sonidos que te regresan a ti mismo.
+              Meditación y sonidos que te regresan a ti mismo.
             </Text>
           </View>
           <Pressable
