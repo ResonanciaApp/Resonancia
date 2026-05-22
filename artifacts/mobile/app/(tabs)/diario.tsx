@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { type DiarioSection, useDiario } from "@/hooks/useDiario";
-import { useDiarioFavorites } from "@/hooks/useDiarioFavorites";
+import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useColors } from "@/hooks/useColors";
 
 const MAX_CHARS = 1000;
@@ -143,7 +143,7 @@ function EntryCard({
 function SectionPanel({ meta }: { meta: SectionMeta }) {
   const colors = useColors();
   const { entries, saveEntry, deleteEntry } = useDiario(meta.key);
-  const { isFavorited, toggleFavorite } = useDiarioFavorites();
+  const { isFavorited, toggleFavorite } = useDiarioFavoritesCtx();
   const [text, setText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const remaining = MAX_CHARS - text.length;

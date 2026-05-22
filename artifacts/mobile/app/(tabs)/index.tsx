@@ -22,7 +22,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
-import { useDiarioFavorites } from "@/hooks/useDiarioFavorites";
+import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -38,7 +38,7 @@ export default function HomeScreen() {
   const { playSession } = usePlayer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
-  const { favoriteEntries } = useDiarioFavorites();
+  const { favoriteEntries } = useDiarioFavoritesCtx();
   const topDiarioFavs = favoriteEntries.slice(0, 5);
 
   const featured = getFeaturedSessions();

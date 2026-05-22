@@ -16,7 +16,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
-import { useDiarioFavorites } from "@/hooks/useDiarioFavorites";
+import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useColors } from "@/hooks/useColors";
 
 function formatDate(iso: string) {
@@ -32,7 +32,7 @@ export default function FavoritesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { favorites } = usePlayer();
-  const { favoriteEntries } = useDiarioFavorites();
+  const { favoriteEntries } = useDiarioFavoritesCtx();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
