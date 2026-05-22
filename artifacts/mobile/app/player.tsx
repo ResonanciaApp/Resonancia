@@ -9,6 +9,7 @@ import {
   Image,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -180,6 +181,12 @@ export default function PlayerScreen() {
           <Feather name="heart" size={22} color={fav ? colors.primary : colors.mutedForeground} />
         </Pressable>
       </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        contentContainerStyle={styles.scrollContent}
+      >
 
       {/* Art + Glow */}
       <View style={styles.artSection}>
@@ -356,6 +363,8 @@ export default function PlayerScreen() {
           <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Stop</Text>
         </Pressable>
       </View>
+
+      </ScrollView>
     </View>
   );
 }
@@ -383,11 +392,13 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontWeight: "700",
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   artSection: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
-    minHeight: ART_SIZE + 60,
+    height: ART_SIZE + 60,
   },
   artFrame: {
     borderRadius: ART_SIZE / 2,
