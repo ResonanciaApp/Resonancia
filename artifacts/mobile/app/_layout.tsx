@@ -13,9 +13,9 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setBaseUrl } from "@workspace/api-client-react";
-import { router, Stack } from "expo-router";
+import { router, Stack, useRootNavigationState, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -30,30 +30,63 @@ if (apiUrl) setBaseUrl(apiUrl);
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
-
 const ONBOARDING_KEY = "cdc_onboarding_done";
+
+/** Handles first-launch redirect once navigation is mounted and ready. */
+function OnboardingGate() {
+  const rootNavState = useRootNavigationState();
+  const segments = useSegments();
+  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
+  const redirected = useRef(false);
+
+  // Check AsyncStorage once
+  useEffect(() => {
+    AsyncStorage.getItem(ONBOARDING_KEY).then((val) => {
+      setOnboardingDone(val === "true");
+    });
+  }, []);
+
+  // Redirect only after both navigation is ready AND we know the onboarding status
+  useEffect(() => {
+    if (!rootNavState?.key) return;       // navigator not mounted yet
+    if (onboardingDone === null) return;  // still loading from AsyncStorage
+    if (redirected.current) return;       // already redirected this session
+
+    const inOnboarding = segments[0] === "onboarding";
+
+    if (!onboardingDone && !inOnboarding) {
+      redirected.current = true;
+      router.replace("/onboarding");
+    }
+  }, [rootNavState?.key, onboardingDone, segments]);
+
+  return null;
+}
 
 function RootLayoutNav() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="onboarding"
-        options={{ headerShown: false, animation: "fade", gestureEnabled: false }}
-      />
-      <Stack.Screen
-        name="player"
-        options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
-      />
-      <Stack.Screen
-        name="session/[id]"
-        options={{ headerShown: false, animation: "slide_from_right" }}
-      />
-      <Stack.Screen
-        name="category/[id]"
-        options={{ headerShown: false, animation: "slide_from_right" }}
-      />
-    </Stack>
+    <>
+      <OnboardingGate />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="onboarding"
+          options={{ headerShown: false, animation: "fade", gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="player"
+          options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
+        />
+        <Stack.Screen
+          name="session/[id]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="category/[id]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+      </Stack>
+    </>
   );
 }
 
@@ -68,20 +101,10 @@ export default function RootLayout() {
     PlayfairDisplay_900Black,
   });
 
-  const onboardingChecked = useRef(false);
-
   useEffect(() => {
-    if (!fontsLoaded && !fontError) return;
-    if (onboardingChecked.current) return;
-    onboardingChecked.current = true;
-
-    SplashScreen.hideAsync();
-
-    AsyncStorage.getItem(ONBOARDING_KEY).then((done) => {
-      if (!done) {
-        router.replace("/onboarding");
-      }
-    });
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) return null;

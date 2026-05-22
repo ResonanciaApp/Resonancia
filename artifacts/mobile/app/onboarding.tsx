@@ -252,7 +252,7 @@ export default function Onboarding() {
           <View style={styles.welcomeGlow}>
             <View style={styles.glowRing} />
             <Image
-              source={require("@/assets/images/logo-cdc-dark.png")}
+              source={require("@/assets/images/logo-cdc-square.png")}
               style={styles.welcomeLogo}
               resizeMode="contain"
             />
@@ -434,12 +434,12 @@ const styles = StyleSheet.create({
   welcomeGlow: { alignItems: "center", justifyContent: "center" },
   glowRing: {
     position: "absolute",
-    width: 260,
-    height: 260,
-    borderRadius: 130,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
     backgroundColor: "rgba(198,155,79,0.06)",
   },
-  welcomeLogo: { width: 300, height: 76 },
+  welcomeLogo: { width: 260, height: 260 },
   welcomeTitle: {
     color: FG,
     fontSize: 26,
