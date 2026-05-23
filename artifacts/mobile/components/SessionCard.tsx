@@ -76,33 +76,24 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
         <Image source={session.image} style={styles.cardImage} />
-        <LinearGradient
-          colors={["transparent", "rgba(24,17,12,0.85)"]}
-          style={[StyleSheet.absoluteFill, { borderRadius: colors.radius - 4 }]}
-        />
         <Pressable
           onPress={() => toggleFavorite(session.id)}
           style={styles.favBtn}
         >
           <Feather
-            name={fav ? "heart" : "heart"}
+            name="heart"
             size={16}
             color={fav ? colors.primary : "rgba(237,225,211,0.6)"}
           />
         </Pressable>
-        <View style={styles.cardBottom}>
-          <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
-            {session.title}
-          </Text>
-        </View>
       </View>
+      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+        {session.title}
+      </Text>
       <View style={styles.cardMeta}>
         <Feather name="clock" size={11} color={colors.mutedForeground} />
         <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
           {" "}{session.durationLabel}
-        </Text>
-        <Text style={[styles.metaCategory, { color: colors.accent }]}>
-          {"  ·  "}{session.categoryLabel}
         </Text>
       </View>
     </Pressable>
@@ -123,19 +114,6 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "cover",
   },
-  newBadge: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 20,
-  },
-  newBadgeText: {
-    fontSize: 9,
-    fontWeight: "700",
-    letterSpacing: 1,
-  },
   favBtn: {
     position: "absolute",
     top: 10,
@@ -145,41 +123,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  cardBottom: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 12,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-  },
-  cardCategory: {
-    fontSize: 10,
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-    marginBottom: 2,
-  },
   cardTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
     lineHeight: 18,
-    maxWidth: 120,
+    marginTop: 8,
+    paddingHorizontal: 2,
   },
-
   cardMeta: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 4,
     paddingHorizontal: 2,
   },
   metaText: {
     fontSize: 11,
-  },
-  metaCategory: {
-    fontSize: 11,
-    letterSpacing: 0.2,
   },
   hRow: {
     flexDirection: "row",

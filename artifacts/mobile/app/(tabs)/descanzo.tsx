@@ -4,6 +4,7 @@ import React from "react";
 import {
   Dimensions,
   Platform,
+  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -88,15 +89,11 @@ export default function DescanzoScreen() {
             <View key={cat.id} style={styles.section}>
               {/* Título de categoría */}
               <View style={styles.catHeader}>
-                <View style={[styles.catIconDot, { backgroundColor: cat.accent + "28", borderColor: cat.accent + "55" }]}>
-                  <Feather name={cat.icon} size={14} color={cat.accent} />
-                </View>
-                <View style={styles.catTitles}>
-                  <Text style={[styles.catTitle, { color: colors.foreground }]}>{cat.title}</Text>
-                  <Text style={[styles.catSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                    {cat.subtitle}
-                  </Text>
-                </View>
+                <Text style={[styles.catTitle, { color: colors.foreground }]}>{cat.title}</Text>
+                <Pressable style={styles.verTodosBtn}>
+                  <Text style={[styles.verTodosText, { color: colors.accent }]}>Ver todos</Text>
+                  <Feather name="arrow-right" size={13} color={colors.accent} />
+                </Pressable>
               </View>
 
               {/* Carrusel de sesiones */}
@@ -107,7 +104,7 @@ export default function DescanzoScreen() {
                   contentContainerStyle={styles.carousel}
                 >
                   {sessions.map((s) => (
-                    <SessionCard key={s.id} session={s} width={170} />
+                    <SessionCard key={s.id} session={s} width={148} />
                   ))}
                 </ScrollView>
               ) : (
@@ -163,28 +160,25 @@ const styles = StyleSheet.create({
   catHeader: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 22,
     marginBottom: 14,
-    gap: 12,
   },
-  catIconDot: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
-  catTitles: { flex: 1 },
   catTitle: {
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.2,
+    flex: 1,
+    marginRight: 8,
   },
-  catSub: {
-    fontSize: 12,
-    marginTop: 2,
+  verTodosBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+  },
+  verTodosText: {
+    fontSize: 13,
+    fontWeight: "500",
   },
 
   carousel: {
