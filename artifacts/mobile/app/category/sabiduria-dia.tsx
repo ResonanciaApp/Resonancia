@@ -147,8 +147,10 @@ export default function SabiduriaDiaScreen() {
             {nuevasSessions.length > 0 && (
               <View style={styles.nuevasSection}>
                 <View style={styles.nuevasHeader}>
-                  <Feather name="zap" size={14} color="#F0CC82" style={{ marginRight: 6 }} />
                   <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
+                  <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
+                    <Text style={[styles.verTodas, { color: "#F0CC82" }]}>Ver todas</Text>
+                  </Pressable>
                 </View>
                 <ScrollView
                   horizontal
@@ -261,7 +263,8 @@ const styles = StyleSheet.create({
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
   emptyText: { fontSize: 14, textAlign: "center" },
   nuevasSection: { marginTop: 32, marginBottom: 8 },
-  nuevasHeader: { flexDirection: "row", alignItems: "center", paddingHorizontal: H_PAD, marginBottom: 14 },
+  nuevasHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, marginBottom: 14 },
   nuevasTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2 },
+  verTodas: { fontSize: 13, fontWeight: "600" },
   nuevasCarousel: { paddingLeft: H_PAD, paddingRight: 12, gap: 12 },
 });

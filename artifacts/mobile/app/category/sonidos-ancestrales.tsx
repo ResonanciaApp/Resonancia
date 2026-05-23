@@ -159,8 +159,10 @@ export default function SonidosAncestalesScreen() {
             {nuevasSessions.length > 0 && (
               <View style={styles.nuevasSection}>
                 <View style={styles.nuevasHeader}>
-                  <Feather name="zap" size={14} color="#E8C87A" style={{ marginRight: 6 }} />
                   <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
+                  <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
+                    <Text style={[styles.verTodas, { color: "#E8C87A" }]}>Ver todas</Text>
+                  </Pressable>
                 </View>
                 <ScrollView
                   horizontal
@@ -406,6 +408,7 @@ const styles = StyleSheet.create({
   nuevasHeader: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     marginBottom: 14,
   },
@@ -413,6 +416,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.2,
+  },
+  verTodas: {
+    fontSize: 13,
+    fontWeight: "600",
   },
   nuevasCarousel: {
     paddingLeft: H_PAD,
