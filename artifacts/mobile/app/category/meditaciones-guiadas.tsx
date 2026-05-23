@@ -153,6 +153,9 @@ export default function MeditacionesGuiadasScreen() {
           >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
+          <View style={[styles.catIconCircle, { backgroundColor: "rgba(237,217,184,0.12)", borderColor: "rgba(237,217,184,0.28)" }]}>
+            <Feather name="wind" size={18} color="#EDD9B8" />
+          </View>
           <View style={{ flex: 1 }}>
             <Text style={[styles.pageTitle, { color: colors.foreground }]}>
               {selectedTag ?? "Meditaciones Guiadas"}
@@ -314,6 +317,15 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 40,
     height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 2,
+  },
+  catIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 2,

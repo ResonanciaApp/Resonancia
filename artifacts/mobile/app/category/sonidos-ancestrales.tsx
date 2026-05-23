@@ -126,6 +126,9 @@ export default function SonidosAncestalesScreen() {
           >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
+          <View style={[styles.catIconCircle, { backgroundColor: "rgba(232,200,122,0.12)", borderColor: "rgba(232,200,122,0.28)" }]}>
+            <Feather name="disc" size={18} color="#E8C87A" />
+          </View>
           <View style={{ flex: 1 }}>
             <Text style={[styles.pageTitle, { color: colors.foreground }]}>
               {selectedTag ?? "Sonidos Ancestrales"}
@@ -299,6 +302,15 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 40,
     height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 2,
+  },
+  catIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 2,
