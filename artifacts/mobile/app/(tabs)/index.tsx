@@ -26,7 +26,7 @@ import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
-import { getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
+import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useVozInterior } from "@/hooks/useVozInterior";
@@ -178,48 +178,34 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 2. CATEGORÍAS ── */}
-        <View style={styles.section}>
+        <View style={[styles.section, { marginBottom: 20 }]}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Categorías</Text>
             <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
               <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
             </Pressable>
           </View>
-
-          {/* Primarias — 2 columnas, ícono centrado grande */}
-          <View style={styles.primaryRow}>
-            {getPrimaryCategories().map((cat) => (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.catPillRow}
+          >
+            {CATEGORIES.map((cat) => (
               <Pressable
                 key={cat.id}
                 onPress={() => router.push(`/category/${cat.id}` as never)}
-                style={({ pressed }) => [styles.primaryCard, { opacity: pressed ? 0.82 : 1 }]}
+                style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
               >
-                <LinearGradient
-                  colors={cat.gradient as [string, string]}
-                  style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
-                />
-                <View style={[StyleSheet.absoluteFill, { borderRadius: 18, borderWidth: 1, borderColor: "rgba(255,220,140,0.15)" }]} />
-                <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={38} color={cat.color} style={{ marginBottom: 12 }} />
-                <Text style={styles.primaryCardLabel} numberOfLines={2}>{cat.title}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {/* Secundarias — scroll horizontal, tarjetas compactas */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.secondaryScroll}>
-            {getSecondaryCategories().map((cat) => (
-              <Pressable
-                key={cat.id}
-                onPress={() => router.push(`/category/${cat.id}` as never)}
-                style={({ pressed }) => [styles.secondaryCard, { opacity: pressed ? 0.82 : 1 }]}
-              >
-                <LinearGradient
-                  colors={cat.gradient as [string, string]}
-                  style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
-                />
-                <View style={[StyleSheet.absoluteFill, { borderRadius: 14, borderWidth: 1, borderColor: "rgba(255,220,140,0.12)" }]} />
-                <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={26} color={cat.color} style={{ marginBottom: 8 }} />
-                <Text style={styles.secondaryCardLabel} numberOfLines={2}>{cat.title}</Text>
+                <View style={[styles.catPillCircle, { backgroundColor: cat.gradient[1] + "CC" }]}>
+                  <Feather
+                    name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
+                    size={20}
+                    color={cat.color}
+                  />
+                </View>
+                <Text style={[styles.catPillLabel, { color: cat.color }]} numberOfLines={2}>
+                  {cat.title}
+                </Text>
               </Pressable>
             ))}
           </ScrollView>
@@ -482,48 +468,29 @@ const styles = StyleSheet.create({
   sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
   seeAll: { fontSize: 13 },
 
-  // Primary categories — 2 cols, icon centered
-  primaryRow: {
-    flexDirection: "row",
-    gap: GRID_GAP,
-    marginBottom: 10,
+  // Categories — pill icons row
+  catPillRow: {
+    gap: 16,
+    paddingRight: 20,
   },
-  primaryCard: {
-    flex: 1,
-    height: 148,
-    borderRadius: 18,
-    overflow: "hidden",
+  catPillItem: {
+    alignItems: "center",
+    width: 62,
+    gap: 6,
+  },
+  catPillCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 16,
   },
-  primaryCardLabel: {
-    color: "#F5EDD8",
-    fontSize: 13,
-    fontWeight: "700",
-    textAlign: "center",
-    lineHeight: 18,
-  },
-
-  // Secondary categories — horizontal scroll
-  secondaryScroll: { gap: GRID_GAP, paddingRight: 4 },
-  secondaryCard: {
-    width: 88,
-    height: 100,
-    borderRadius: 14,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 6,
-    paddingVertical: 12,
-  },
-  secondaryCardLabel: {
-    color: "#F5EDD8",
-    fontSize: 11,
+  catPillLabel: {
+    fontSize: 10,
     fontWeight: "600",
     textAlign: "center",
-    lineHeight: 15,
+    lineHeight: 13,
+    letterSpacing: 0.1,
   },
 
   // Hero
