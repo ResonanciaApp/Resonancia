@@ -11,8 +11,7 @@ export type AncestralTag =
   | "Cuencos de Cuarzo"
   | "Mix de Cuencos Tibetanos y de Cuarzo"
   | "Gongs"
-  | "Cuencos y Gongs"
-  | "Sonidos de la Selva";
+  | "Cuencos y Gongs";
 
 export type Session = {
   id: string;

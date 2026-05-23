@@ -20,7 +20,6 @@ import {
   IconCuencosYGongs,
   IconGong,
   IconMixCuencos,
-  IconSelva,
 } from "@/components/AncestralIcons";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SESSIONS, type AncestralTag } from "@/data/sessions";
@@ -42,7 +41,6 @@ const CATEGORIES: CategoryDef[] = [
   { tag: "Mix de Cuencos Tibetanos y de Cuarzo", Icon: IconMixCuencos,     description: "Lo mejor de ambos mundos sonoros" },
   { tag: "Gongs",                                Icon: IconGong,           description: "Ondas expansivas de transformación" },
   { tag: "Cuencos y Gongs",                      Icon: IconCuencosYGongs,  description: "Combinación sagrada de instrumentos" },
-  { tag: "Sonidos de la Selva",                  Icon: IconSelva,          description: "Naturaleza viva y sanadora" },
 ];
 
 export default function SonidosAncestalesScreen() {
