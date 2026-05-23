@@ -221,3 +221,9 @@ id = "j8rjFkdYppFltRV8JhkFV"
 uri = "file://artifacts/mobile/assets/audio/gong90cm.mp3"
 type = "audio"
 title = "Gong 90cm — golpe de maza (62 Hz, 50s decay)"
+
+[[outputs]]
+id = "PuMZUnnqoyoTFZFFbIxi7"
+uri = "file://attached_assets/generated_audio/mi_voz_prueba.mp3"
+type = "audio"
+title = "Mi Voz Clonada — Prueba RESONANCIA"
