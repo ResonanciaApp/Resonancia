@@ -1,7 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Image,
   Platform,
@@ -28,8 +27,6 @@ import { SESSIONS, type AncestralTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const RECENTS_KEY = "@resonance_recents_ancestral";
-const MAX_RECENTS = 10;
 
 const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
 
@@ -53,27 +50,10 @@ export default function SonidosAncestalesScreen() {
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
   const [query, setQuery] = useState("");
-  const [recentIds, setRecentIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    AsyncStorage.getItem(RECENTS_KEY).then((val) => {
-      if (val) setRecentIds(JSON.parse(val) as string[]);
-    });
-  }, []);
-
-  const recentSessions = useMemo(
-    () =>
-      recentIds
-        .map((id) => ANCESTRAL_SESSIONS.find((s) => s.id === id))
-        .filter(Boolean) as typeof ANCESTRAL_SESSIONS,
-    [recentIds]
+  const nuevasSessions = useMemo(
+    () => [...ANCESTRAL_SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 8),
+    []
   );
-
-  const recordRecent = async (id: string) => {
-    const updated = [id, ...recentIds.filter((r) => r !== id)].slice(0, MAX_RECENTS);
-    setRecentIds(updated);
-    await AsyncStorage.setItem(RECENTS_KEY, JSON.stringify(updated));
-  };
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -177,19 +157,19 @@ export default function SonidosAncestalesScreen() {
               })}
             </View>
 
-            {/* ── Recientes ── */}
-            {recentSessions.length > 0 && (
-              <View style={styles.recentsSection}>
-                <View style={styles.recentsHeader}>
-                  <Feather name="clock" size={14} color={colors.primary} style={{ marginRight: 6 }} />
-                  <Text style={[styles.recentsTitle, { color: colors.foreground }]}>Recientes</Text>
+            {/* ── Nuevas Sesiones ── */}
+            {nuevasSessions.length > 0 && (
+              <View style={styles.nuevasSection}>
+                <View style={styles.nuevasHeader}>
+                  <Feather name="zap" size={14} color={colors.primary} style={{ marginRight: 6 }} />
+                  <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
                 </View>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.recentsCarousel}
+                  contentContainerStyle={styles.nuevasCarousel}
                 >
-                  {recentSessions.map((s) => (
+                  {nuevasSessions.map((s) => (
                     <SessionCard key={s.id} session={s} width={148} />
                   ))}
                 </ScrollView>
@@ -237,10 +217,7 @@ export default function SonidosAncestalesScreen() {
                 filteredSessions.map((session) => (
                   <Pressable
                     key={session.id}
-                    onPress={() => {
-                      void recordRecent(session.id);
-                      router.push(`/session/${session.id}` as never);
-                    }}
+                    onPress={() => router.push(`/session/${session.id}` as never)}
                     style={({ pressed }) => [
                       styles.card,
                       {
@@ -422,22 +399,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  recentsSection: {
+  nuevasSection: {
     marginTop: 32,
     marginBottom: 8,
   },
-  recentsHeader: {
+  nuevasHeader: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: H_PAD,
     marginBottom: 14,
   },
-  recentsTitle: {
+  nuevasTitle: {
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
-  recentsCarousel: {
+  nuevasCarousel: {
     paddingLeft: H_PAD,
     paddingRight: 12,
     gap: 12,

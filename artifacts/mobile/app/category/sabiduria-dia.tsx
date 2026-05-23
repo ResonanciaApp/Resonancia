@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type SabiduriaTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -67,6 +68,11 @@ export default function SabiduriaDiaScreen() {
 
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
+  const nuevasSessions = useMemo(
+    () => [...SABIDURÍA_SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 8),
+    []
+  );
+
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
@@ -110,33 +116,54 @@ export default function SabiduriaDiaScreen() {
 
         {/* ── CATEGORY LIST ── */}
         {!selectedTag && (
-          <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
-            {CATEGORIES.map((cat, idx) => {
-              const isLast = idx === CATEGORIES.length - 1;
-              return (
-                <Pressable
-                  key={cat.tag}
-                  onPress={() => setSelectedTag(cat.tag)}
-                  style={({ pressed }) => [
-                    styles.catRow,
-                    !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(198,155,79,0.1)" },
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
+          <>
+            <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
+              {CATEGORIES.map((cat, idx) => {
+                const isLast = idx === CATEGORIES.length - 1;
+                return (
+                  <Pressable
+                    key={cat.tag}
+                    onPress={() => setSelectedTag(cat.tag)}
+                    style={({ pressed }) => [
+                      styles.catRow,
+                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(198,155,79,0.1)" },
+                      { opacity: pressed ? 0.75 : 1 },
+                    ]}
+                  >
+                    <View style={[styles.iconCircle, { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" }]}>
+                      <Feather name={cat.icon} size={20} color={colors.primary} />
+                    </View>
+                    <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
+                    <View style={styles.catRight}>
+                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                        {countByTag[cat.tag] ?? 0}
+                      </Text>
+                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {/* ── Nuevas Sesiones ── */}
+            {nuevasSessions.length > 0 && (
+              <View style={styles.nuevasSection}>
+                <View style={styles.nuevasHeader}>
+                  <Feather name="zap" size={14} color={colors.primary} style={{ marginRight: 6 }} />
+                  <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
+                </View>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.nuevasCarousel}
                 >
-                  <View style={[styles.iconCircle, { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" }]}>
-                    <Feather name={cat.icon} size={20} color={colors.primary} />
-                  </View>
-                  <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
-                  <View style={styles.catRight}>
-                    <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
-                      {countByTag[cat.tag] ?? 0}
-                    </Text>
-                    <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
-                  </View>
-                </Pressable>
-              );
-            })}
-          </View>
+                  {nuevasSessions.map((s) => (
+                    <SessionCard key={s.id} session={s} width={148} />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </>
         )}
 
         {/* ── SESSIONS LIST ── */}
@@ -243,4 +270,8 @@ const styles = StyleSheet.create({
   metaText: { fontSize: 11 },
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
   emptyText: { fontSize: 14, textAlign: "center" },
+  nuevasSection: { marginTop: 32, marginBottom: 8 },
+  nuevasHeader: { flexDirection: "row", alignItems: "center", paddingHorizontal: H_PAD, marginBottom: 14 },
+  nuevasTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2 },
+  nuevasCarousel: { paddingLeft: H_PAD, paddingRight: 12, gap: 12 },
 });
