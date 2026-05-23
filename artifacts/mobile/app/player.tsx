@@ -85,12 +85,27 @@ export default function PlayerScreen() {
   const { currentSession, isPlaying, isLoading, progress, elapsed, actualDurationSeconds, pauseResume, stop, isFavorite, toggleFavorite, seekTo, sleepTimerRemaining, setSleepTimer, hasVoiceTrack, voiceVolume, setVoiceVolume } =
     usePlayer();
 
+  // ── All hooks must be called before any early return ────────────────────
   const voiceTrackWidth = useRef(0);
+  const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
 
   const handleVoiceSlider = useCallback((locationX: number) => {
     const vol = Math.max(0, Math.min(1, locationX / voiceTrackWidth.current));
     setVoiceVolume(vol);
   }, [setVoiceVolume]);
+
+  const handleSelectTimer = useCallback((minutes: number | null) => {
+    setSelectedTimerMinutes(minutes);
+    setSleepTimer(minutes);
+  }, [setSleepTimer]);
+
+  // When timer naturally expires, reset the chip selection
+  useEffect(() => {
+    if (sleepTimerRemaining === null && selectedTimerMinutes !== null) {
+      setSelectedTimerMinutes(null);
+    }
+  }, [sleepTimerRemaining]);
+  // ─────────────────────────────────────────────────────────────────────────
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -109,7 +124,6 @@ export default function PlayerScreen() {
     );
   }
 
-  // Use actual file duration (set by expo-av); falls back to declared duration until loaded
   const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
     { label: "Sin timer", minutes: null },
     { label: "10 min", minutes: 10 },
@@ -118,26 +132,11 @@ export default function PlayerScreen() {
     { label: "50 min", minutes: 50 },
   ];
 
-  // Track which option the user selected (for chip highlighting)
-  const [selectedTimerMinutes, setSelectedTimerMinutes] = React.useState<number | null>(null);
-
   const formatRemaining = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
-
-  const handleSelectTimer = (minutes: number | null) => {
-    setSelectedTimerMinutes(minutes);
-    setSleepTimer(minutes);
-  };
-
-  // When timer naturally expires, reset the chip selection
-  React.useEffect(() => {
-    if (sleepTimerRemaining === null && selectedTimerMinutes !== null) {
-      setSelectedTimerMinutes(null);
-    }
-  }, [sleepTimerRemaining]);
 
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = totalSeconds - elapsed;
