@@ -31,20 +31,15 @@
 
 export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> = {
   "1": require("@/assets/audio/62 CM.mp3"),
-
-  // Agrega más aquí — descomenta y completa el nombre del archivo:
   "2": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "3": require("@/assets/audio/62 CM.mp3"),
-  // "4": require("@/assets/audio/62 cm.mp3"),
-  // "5": require("@/assets/audio/crystal-clarity.mp3"),
-  // "6": require("@/assets/audio/breath-of-peace.mp3"),
-  // "7": require("@/assets/audio/anxiety-dissolve.mp3"),
-  // "8": require("@/assets/audio/still-waters.mp3"),
-  // "9": require("@/assets/audio/deep-delta-sleep.mp3"),
-  // "10": require("@/assets/audio/grounded-clarity.mp3"),
-  // "11": require("@/assets/audio/sound-healing-journey.mp3"),
-  // "12": require("@/assets/audio/moonrise-rest.mp3"),
-  // "13": require("@/assets/audio/tibetan-sunrise.mp3"),
-  // "14": require("@/assets/audio/harmonic-release.mp3"),
-  // "15": require("@/assets/audio/sacred-pause.mp3"),
+  "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
+};
+
+/**
+ * VOICE_MAP — audio de voz guiada superpuesto al fondo musical.
+ * El usuario puede ajustar el volumen de la voz independientemente.
+ */
+export const VOICE_MAP: Record<string, ReturnType<typeof require> | undefined> = {
+  "20": require("@/assets/audio/sonidos_naturaleza_voz.mp3"),
 };

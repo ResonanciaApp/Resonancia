@@ -3,10 +3,11 @@ import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
+  LayoutChangeEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -81,8 +82,15 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
 export default function PlayerScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { currentSession, isPlaying, isLoading, progress, elapsed, actualDurationSeconds, pauseResume, stop, isFavorite, toggleFavorite, seekTo, sleepTimerRemaining, setSleepTimer } =
+  const { currentSession, isPlaying, isLoading, progress, elapsed, actualDurationSeconds, pauseResume, stop, isFavorite, toggleFavorite, seekTo, sleepTimerRemaining, setSleepTimer, hasVoiceTrack, voiceVolume, setVoiceVolume } =
     usePlayer();
+
+  const voiceTrackWidth = useRef(0);
+
+  const handleVoiceSlider = useCallback((locationX: number) => {
+    const vol = Math.max(0, Math.min(1, locationX / voiceTrackWidth.current));
+    setVoiceVolume(vol);
+  }, [setVoiceVolume]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -346,6 +354,47 @@ export default function PlayerScreen() {
         </View>
       </View>
 
+      {/* Voice Volume Slider — only for dual-track sessions */}
+      {hasVoiceTrack && (
+        <View style={[styles.voiceSection, { paddingHorizontal: 32, marginBottom: 12 }]}>
+          <View style={styles.voiceHeader}>
+            <Feather name="mic" size={13} color={colors.mutedForeground} />
+            <Text style={[styles.voiceLabel, { color: colors.mutedForeground }]}>
+              Voz guiada
+            </Text>
+            <Text style={[styles.voicePercent, { color: colors.accent }]}>
+              {Math.round(voiceVolume * 100)}%
+            </Text>
+          </View>
+          <View
+            style={[styles.voiceTrack, { backgroundColor: colors.secondary }]}
+            onLayout={(e: LayoutChangeEvent) => {
+              voiceTrackWidth.current = e.nativeEvent.layout.width;
+            }}
+            onStartShouldSetResponder={() => true}
+            onResponderGrant={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
+            onResponderMove={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
+          >
+            <View
+              style={[
+                styles.voiceFill,
+                { width: `${voiceVolume * 100}%`, backgroundColor: colors.accent },
+              ]}
+            />
+            <View
+              style={[
+                styles.voiceThumb,
+                { left: `${voiceVolume * 100}%`, backgroundColor: colors.accent },
+              ]}
+            />
+          </View>
+          <View style={styles.voiceHints}>
+            <Text style={[styles.voiceHintText, { color: colors.mutedForeground }]}>Sin voz</Text>
+            <Text style={[styles.voiceHintText, { color: colors.mutedForeground }]}>Máximo</Text>
+          </View>
+        </View>
+      )}
+
       {/* Bottom Extras */}
       <View style={[styles.extras, { paddingBottom: bottomPad + 10, paddingTop: 16 }]}>
         <Pressable style={styles.extraBtn}>
@@ -580,5 +629,54 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
+  },
+
+  // Voice volume slider
+  voiceSection: {
+    marginBottom: 12,
+  },
+  voiceHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 10,
+  },
+  voiceLabel: {
+    fontSize: 11,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    flex: 1,
+  },
+  voicePercent: {
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  voiceTrack: {
+    height: 6,
+    borderRadius: 3,
+    overflow: "visible",
+    position: "relative",
+  },
+  voiceFill: {
+    height: 6,
+    borderRadius: 3,
+  },
+  voiceThumb: {
+    position: "absolute",
+    top: -6,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    marginLeft: -9,
+  },
+  voiceHints: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
+  voiceHintText: {
+    fontSize: 10,
+    letterSpacing: 0.3,
   },
 });

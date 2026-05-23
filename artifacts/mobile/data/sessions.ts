@@ -304,6 +304,25 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-18.png"),
     isNew: true,
   },
+  // ── Música y Sonidos ──────────────────────────────────────────────────────
+  {
+    id: "20",
+    title: "Sonidos de la Naturaleza",
+    subtitle: "Música y Sonidos · Voz Guiada",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 10,
+    durationLabel: "10 min",
+    description:
+      "Un paisaje sonoro envuelto en el pad cálido de Mi mayor, sobre el que descansa una voz guiada que te invita a soltar la tensión y habitar el momento presente. Ajusta el volumen de la voz según tu preferencia.",
+    benefits: ["Presencia plena", "Alivio de ansiedad", "Relajación instantánea", "Claridad mental"],
+    instruments: ["Pad Mi mayor", "Voz guiada", "Atmósfera natural"],
+    image: require("@/assets/images/sessions/session-20.png"),
+    audio: require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
+    isNew: true,
+    isFeatured: false,
+  },
+
   {
     id: "19",
     title: "La Tortuga y el Gong",

@@ -1,6 +1,6 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AUDIO_MAP } from "@/config/audio-map";
+import { AUDIO_MAP, VOICE_MAP } from "@/config/audio-map";
 import React, {
   createContext,
   useCallback,
@@ -38,6 +38,12 @@ type PlayerContextType = {
   setSleepTimer: (minutes: number | null) => void;
   /** Wipe the full listening history */
   clearHistory: () => Promise<void>;
+  /** Whether the current session has a voice track */
+  hasVoiceTrack: boolean;
+  /** Voice track volume 0–1 */
+  voiceVolume: number;
+  /** Set voice track volume 0–1 */
+  setVoiceVolume: (volume: number) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -57,7 +63,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
 
+  const [voiceVolume, setVoiceVolumeState] = useState(0.8);
+
   const soundRef = useRef<Audio.Sound | null>(null);
+  const voiceSoundRef = useRef<Audio.Sound | null>(null);
   const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Keep latest isPlaying in a ref so timer callbacks see the current value
@@ -91,6 +100,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     return () => {
       unloadSound();
+      unloadVoiceSound();
       clearSim();
       clearSleepInterval();
     };
@@ -133,7 +143,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const unloadVoiceSound = async () => {
+    if (voiceSoundRef.current) {
+      try { await voiceSoundRef.current.unloadAsync(); } catch (_) {}
+      voiceSoundRef.current = null;
+    }
+  };
+
   const unloadSound = async () => {
+    await unloadVoiceSound();
     if (soundRef.current) {
       try {
         await soundRef.current.unloadAsync();
@@ -215,11 +233,26 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(true);
         try {
           const { sound } = await Audio.Sound.createAsync(
-            audioFile,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            audioFile as any,
             { shouldPlay: true, progressUpdateIntervalMillis: 500 },
             onPlaybackStatusUpdate
           );
           soundRef.current = sound;
+
+          // Load voice track if available (plays simultaneously)
+          const voiceFile = VOICE_MAP[session.id];
+          if (voiceFile) {
+            try {
+              const { sound: voiceSound } = await Audio.Sound.createAsync(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                voiceFile as any,
+                { shouldPlay: true, volume: voiceVolume, isLooping: false }
+              );
+              voiceSoundRef.current = voiceSound;
+            } catch (_) {}
+          }
+
           setIsPlaying(true);
         } catch (err) {
           console.warn("[RESONANCE] Audio load failed:", err);
@@ -240,9 +273,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (!status.isLoaded) return;
       if (status.isPlaying) {
         await soundRef.current.pauseAsync();
+        if (voiceSoundRef.current) {
+          try { await voiceSoundRef.current.pauseAsync(); } catch (_) {}
+        }
         setIsPlaying(false);
       } else {
         await soundRef.current.playAsync();
+        if (voiceSoundRef.current) {
+          try { await voiceSoundRef.current.playAsync(); } catch (_) {}
+        }
         setIsPlaying(true);
       }
     } else {
@@ -304,6 +343,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.removeItem(HISTORY_KEY);
   }, []);
 
+  const setVoiceVolume = useCallback(async (volume: number) => {
+    const clamped = Math.max(0, Math.min(1, volume));
+    setVoiceVolumeState(clamped);
+    if (voiceSoundRef.current) {
+      try { await voiceSoundRef.current.setVolumeAsync(clamped); } catch (_) {}
+    }
+  }, []);
+
   const toggleFavorite = useCallback(
     async (id: string) => {
       const updated = favorites.includes(id)
@@ -340,6 +387,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         sleepTimerRemaining,
         setSleepTimer,
         clearHistory,
+        hasVoiceTrack: !!VOICE_MAP[currentSession?.id ?? ""],
+        voiceVolume,
+        setVoiceVolume,
       }}
     >
       {children}
