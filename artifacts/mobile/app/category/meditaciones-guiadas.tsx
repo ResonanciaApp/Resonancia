@@ -3,7 +3,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Dimensions,
   Image,
   Platform,
   Pressable,
@@ -23,18 +22,21 @@ import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
 
-type Tab = "Todos" | MeditationTag;
-
-const TABS: Tab[] = [
-  "Todos",
-  "Visualización",
-  "Escáner Corporal",
-  "Soy Consciencia",
-  "Mantras",
-  "Manifestación",
-];
-
 const GUIADAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
+
+type CategoryDef = {
+  tag: MeditationTag;
+  icon: React.ComponentProps<typeof Feather>["name"];
+  description: string;
+};
+
+const CATEGORIES: CategoryDef[] = [
+  { tag: "Visualización",    icon: "eye",       description: "Guías para visualizar y crear" },
+  { tag: "Escáner Corporal", icon: "user",       description: "Conexión y presencia en el cuerpo" },
+  { tag: "Soy Consciencia",  icon: "sun",        description: "Despertar y observación del ser" },
+  { tag: "Mantras",          icon: "radio",      description: "Vibración y repetición sagrada" },
+  { tag: "Manifestación",    icon: "zap",        description: "Intención, foco y creación" },
+];
 
 function StarRow({ sessionId }: { sessionId: string }) {
   const [rating, setRating] = useState(0);
@@ -61,7 +63,6 @@ function StarRow({ sessionId }: { sessionId: string }) {
     </View>
   );
 }
-
 const starStyles = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 2, marginBottom: 3 },
   noRating: { fontSize: 9, color: "rgba(198,155,79,0.5)", marginLeft: 4, letterSpacing: 0.3 },
@@ -71,28 +72,35 @@ export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
 
-  const [activeTab, setActiveTab] = useState<Tab>("Todos");
+  const [selectedTag, setSelectedTag] = useState<MeditationTag | null>(null);
   const [query, setQuery] = useState("");
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const filtered = useMemo(() => {
+  // Sessions filtered by selected tag (+ search within tag view)
+  const filteredSessions = useMemo(() => {
     let list = GUIADAS_SESSIONS;
-    if (activeTab !== "Todos") {
-      list = list.filter((s) => s.meditationTag === activeTab);
-    }
+    if (selectedTag) list = list.filter((s) => s.meditationTag === selectedTag);
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter(
-        (s) =>
-          s.title.toLowerCase().includes(q) ||
-          s.subtitle.toLowerCase().includes(q) ||
-          (s.meditationTag ?? "").toLowerCase().includes(q)
+        (s) => s.title.toLowerCase().includes(q) || s.subtitle.toLowerCase().includes(q)
       );
     }
     return list;
-  }, [activeTab, query]);
+  }, [selectedTag, query]);
+
+  // Count per tag
+  const countByTag = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const cat of CATEGORIES) {
+      map[cat.tag] = GUIADAS_SESSIONS.filter((s) => s.meditationTag === cat.tag).length;
+    }
+    return map;
+  }, []);
+
+  const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -107,122 +115,138 @@ export default function MeditacionesGuiadasScreen() {
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn}>
+          <Pressable
+            onPress={() => {
+              if (selectedTag) {
+                setSelectedTag(null);
+                setQuery("");
+              } else {
+                router.back();
+              }
+            }}
+            style={styles.backBtn}
+          >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={{ flex: 1 }}>
             <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-              Meditaciones Guiadas
+              {selectedTag ?? "Meditaciones Guiadas"}
             </Text>
             <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-              Déjate llevar por la voz y el sonido
+              {selectedTag
+                ? selectedCat?.description ?? ""
+                : "Déjate llevar por la voz y el sonido"}
             </Text>
           </View>
         </View>
 
-        {/* Search bar */}
-        <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-          <View
-            style={[
-              styles.searchBar,
-              { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.18)" },
-            ]}
-          >
-            <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder={`Busca entre ${GUIADAS_SESSIONS.length} meditaciones`}
-              placeholderTextColor={colors.mutedForeground}
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color={colors.mutedForeground} />
-              </Pressable>
-            )}
-          </View>
-        </View>
-
-        {/* Filter Tabs */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[styles.tabsRow, { paddingHorizontal: H_PAD }]}
-          style={{ marginBottom: 20 }}
-        >
-          {TABS.map((tab) => {
-            const active = tab === activeTab;
-            return (
-              <Pressable
-                key={tab}
-                onPress={() => setActiveTab(tab)}
-                style={[
-                  styles.tab,
-                  {
-                    backgroundColor: active ? colors.primary : colors.card,
-                    borderColor: active ? colors.primary : "rgba(198,155,79,0.2)",
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    { color: active ? colors.primaryForeground : colors.mutedForeground },
+        {/* ── CATEGORY LIST view ── */}
+        {!selectedTag && (
+          <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
+            {CATEGORIES.map((cat, idx) => {
+              const isLast = idx === CATEGORIES.length - 1;
+              return (
+                <Pressable
+                  key={cat.tag}
+                  onPress={() => setSelectedTag(cat.tag)}
+                  style={({ pressed }) => [
+                    styles.catRow,
+                    !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(198,155,79,0.1)" },
+                    { opacity: pressed ? 0.75 : 1 },
                   ]}
                 >
-                  {tab}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {/* Session list — horizontal cards */}
-        <View style={{ paddingHorizontal: H_PAD }}>
-          {filtered.length === 0 ? (
-            <View style={styles.emptyWrap}>
-              <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                Sin resultados{query ? ` para "${query}"` : ""}
-              </Text>
-            </View>
-          ) : (
-            filtered.map((session) => (
-              <Pressable
-                key={session.id}
-                onPress={() => router.push(`/session/${session.id}` as never)}
-                style={({ pressed }) => [
-                  styles.card,
-                  {
-                    backgroundColor: colors.card,
-                    borderColor: "rgba(198,155,79,0.18)",
-                    opacity: pressed ? 0.82 : 1,
-                  },
-                ]}
-              >
-                <Image
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  source={session.image as any}
-                  style={styles.cardImage}
-                />
-                <View style={styles.cardContent}>
-                  <StarRow sessionId={session.id} />
-                  <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
-                    {session.title}
-                  </Text>
-                  <View style={styles.metaRow}>
-                    <Feather name="clock" size={11} color={colors.mutedForeground} />
-                    <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                      {" "}{session.durationLabel}
-                    </Text>
+                  {/* Icon circle */}
+                  <View style={[styles.iconCircle, { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" }]}>
+                    <Feather name={cat.icon} size={20} color={colors.primary} />
                   </View>
+
+                  {/* Name */}
+                  <Text style={[styles.catName, { color: colors.foreground }]}>
+                    {cat.tag}
+                  </Text>
+
+                  {/* Count + chevron */}
+                  <View style={styles.catRight}>
+                    <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                      {countByTag[cat.tag] ?? 0}
+                    </Text>
+                    <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
+
+        {/* ── SESSIONS LIST view ── */}
+        {selectedTag && (
+          <>
+            {/* Search bar */}
+            <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
+              <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.18)" }]}>
+                <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+                <TextInput
+                  value={query}
+                  onChangeText={setQuery}
+                  placeholder="Buscar..."
+                  placeholderTextColor={colors.mutedForeground}
+                  style={[styles.searchInput, { color: colors.foreground }]}
+                  returnKeyType="search"
+                />
+                {query.length > 0 && (
+                  <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                    <Feather name="x" size={14} color={colors.mutedForeground} />
+                  </Pressable>
+                )}
+              </View>
+            </View>
+
+            {/* Sessions */}
+            <View style={{ paddingHorizontal: H_PAD }}>
+              {filteredSessions.length === 0 ? (
+                <View style={styles.emptyWrap}>
+                  <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                    Sin resultados{query ? ` para "${query}"` : ""}
+                  </Text>
                 </View>
-              </Pressable>
-            ))
-          )}
-        </View>
+              ) : (
+                filteredSessions.map((session) => (
+                  <Pressable
+                    key={session.id}
+                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    style={({ pressed }) => [
+                      styles.card,
+                      {
+                        backgroundColor: colors.card,
+                        borderColor: "rgba(198,155,79,0.18)",
+                        opacity: pressed ? 0.82 : 1,
+                      },
+                    ]}
+                  >
+                    <Image
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      source={session.image as any}
+                      style={styles.cardImage}
+                    />
+                    <View style={styles.cardContent}>
+                      <StarRow sessionId={session.id} />
+                      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+                        {session.title}
+                      </Text>
+                      <View style={styles.metaRow}>
+                        <Feather name="clock" size={11} color={colors.mutedForeground} />
+                        <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
+                          {" "}{session.durationLabel}
+                        </Text>
+                      </View>
+                    </View>
+                  </Pressable>
+                ))
+              )}
+            </View>
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -236,7 +260,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 12,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   backBtn: {
     width: 40,
@@ -256,6 +280,39 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
+  // Category list
+  catList: {},
+  catRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 18,
+    gap: 16,
+  },
+  iconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  catName: {
+    flex: 1,
+    fontSize: 17,
+    fontWeight: "600",
+    letterSpacing: 0.1,
+  },
+  catRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  catCount: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+
+  // Search bar
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -271,22 +328,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
 
-  tabsRow: {
-    flexDirection: "row",
-    gap: 8,
-    paddingBottom: 2,
-  },
-  tab: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 24,
-    borderWidth: 1,
-  },
-  tabText: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-
+  // Session cards
   card: {
     flexDirection: "row",
     alignItems: "center",
@@ -301,20 +343,6 @@ const styles = StyleSheet.create({
     height: 96,
     resizeMode: "cover",
   },
-  tagBadge: {
-    position: "absolute",
-    left: 78,
-    top: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  tagText: {
-    fontSize: 8,
-    fontWeight: "700",
-    letterSpacing: 0.3,
-  },
   cardContent: {
     flex: 1,
     paddingHorizontal: 14,
@@ -325,10 +353,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
-    marginBottom: 2,
-  },
-  cardSub: {
-    fontSize: 11,
     marginBottom: 4,
   },
   metaRow: {
@@ -337,26 +361,6 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 11,
-  },
-  cardActions: {
-    paddingRight: 14,
-    alignItems: "center",
-    gap: 10,
-  },
-  favBtn: {
-    padding: 4,
-  },
-  playBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#C69B4F",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 4,
   },
 
   emptyWrap: {
