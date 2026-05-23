@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DiarioEntryCard } from "@/components/DiarioEntryCard";
+import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
@@ -28,6 +29,7 @@ import { getPrimaryCategories, getSecondaryCategories } from "@/data/categories"
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useDiario } from "@/hooks/useDiario";
+import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -76,11 +78,34 @@ export default function HomeScreen() {
 
   const { favoriteEntries } = useDiarioFavoritesCtx();
   const { entries: reflexionesEntries } = useDiario("reflexiones");
-  const topReflexiones = reflexionesEntries.slice(0, 5).map((e) => ({
-    ...e,
-    sectionTitle: "Mis reflexiones",
-    accentColor: "#8AAAD4",
-  }));
+  const { entries: vozEntries } = useVozInterior();
+
+  function formatVozMs(ms: number) {
+    const s = Math.floor(ms / 1000);
+    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  }
+
+  const noOlvidarItems = React.useMemo(() => {
+    const reflexiones = reflexionesEntries.map((e) => ({
+      id: `ref-${e.id}`,
+      text: e.text,
+      createdAt: e.createdAt,
+      sectionTitle: "A no olvidar",
+      accentColor: "#8AAAD4",
+    }));
+    const vozFavs = vozEntries
+      .filter((e) => e.isFavorite)
+      .map((e) => ({
+        id: `voz-${e.id}`,
+        text: e.title?.trim() || `Nota de voz · ${formatVozMs(e.durationMs)}`,
+        createdAt: e.createdAt,
+        sectionTitle: "Voz Interior",
+        accentColor: "#D4709A",
+      }));
+    return [...reflexiones, ...vozFavs]
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 4);
+  }, [reflexionesEntries, vozEntries]);
 
   const featured = getFeaturedSessions();
   const featuredSession = featured[0];
@@ -231,6 +256,11 @@ export default function HomeScreen() {
           <MessageDeck />
         </View>
 
+        {/* ── 4b. MENSAJES DEL ALMA ── */}
+        <View style={styles.section}>
+          <MensajesAnonimosPanel />
+        </View>
+
         {/* ── 5. NUEVAS SESIONES ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
@@ -265,19 +295,19 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* ── 6. MIS REFLEXIONES (top 5) ── */}
-        {topReflexiones.length > 0 && (
+        {/* ── 6. A NO OLVIDAR ── */}
+        {noOlvidarItems.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionRow}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Mis reflexiones
+                A no olvidar
               </Text>
               <Pressable onPress={() => router.push("/(tabs)/diario" as never)}>
                 <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
               </Pressable>
             </View>
             <View style={styles.diarioList}>
-              {topReflexiones.map((entry) => (
+              {noOlvidarItems.map((entry) => (
                 <DiarioEntryCard key={entry.id} entry={entry} showDate />
               ))}
             </View>

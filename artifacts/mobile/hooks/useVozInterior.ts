@@ -7,6 +7,8 @@ export type VozEntry = {
   uri: string;
   durationMs: number;
   createdAt: string;
+  title?: string;
+  isFavorite?: boolean;
 };
 
 const STORAGE_KEY = "@voz_interior";
@@ -43,15 +45,12 @@ export function useVozInterior() {
       const perm = await Audio.requestPermissionsAsync();
       if (!perm.granted) return false;
 
-      // setAudioMode can fail on some devices — don't let it abort recording
       try {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
         });
-      } catch {
-        // continue even if mode setting fails
-      }
+      } catch {}
 
       const { recording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.LOW_QUALITY,
@@ -68,7 +67,6 @@ export function useVozInterior() {
 
       return true;
     } catch (e) {
-      console.error("[VozInterior] startRecording error:", e);
       setIsRecording(false);
       return false;
     }
@@ -80,8 +78,6 @@ export function useVozInterior() {
     timerRef.current && clearInterval(timerRef.current);
     timerRef.current = null;
 
-    // Capture duration from our own timer — avoids calling getStatusAsync
-    // on an already-stopped recording which throws on native
     const durationMs = Date.now() - startTimeRef.current;
     const rec = recordingRef.current;
     recordingRef.current = null;
@@ -98,6 +94,8 @@ export function useVozInterior() {
           uri,
           durationMs,
           createdAt: new Date().toISOString(),
+          title: "",
+          isFavorite: false,
         };
         setEntries((prev) => {
           const updated = [entry, ...prev];
@@ -105,19 +103,14 @@ export function useVozInterior() {
           return updated;
         });
       }
-    } catch (e) {
-      console.error("[VozInterior] stopRecording error:", e);
-    }
+    } catch {}
 
-    // Restore audio mode for normal playback
     try {
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
         playsInSilentModeIOS: true,
       });
-    } catch {
-      // ignore
-    }
+    } catch {}
   }, []);
 
   const deleteEntry = useCallback(
@@ -136,6 +129,17 @@ export function useVozInterior() {
       }
     },
     [playingId],
+  );
+
+  const updateEntry = useCallback(
+    async (id: string, patch: Partial<Pick<VozEntry, "title" | "isFavorite">>) => {
+      setEntries((prev) => {
+        const updated = prev.map((e) => (e.id === id ? { ...e, ...patch } : e));
+        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(() => {});
+        return updated;
+      });
+    },
+    [],
   );
 
   const playEntry = useCallback(
@@ -158,9 +162,7 @@ export function useVozInterior() {
             allowsRecordingIOS: false,
             playsInSilentModeIOS: true,
           });
-        } catch {
-          // ignore
-        }
+        } catch {}
 
         const { sound } = await Audio.Sound.createAsync(
           { uri: entry.uri },
@@ -179,8 +181,7 @@ export function useVozInterior() {
         soundRef.current = sound;
         setPlayingId(entry.id);
         setPlayingPositionMs(0);
-      } catch (e) {
-        console.error("[VozInterior] playEntry error:", e);
+      } catch {
         setPlayingId(null);
       }
     },
@@ -196,6 +197,7 @@ export function useVozInterior() {
     startRecording,
     stopRecording,
     deleteEntry,
+    updateEntry,
     playEntry,
   };
 }

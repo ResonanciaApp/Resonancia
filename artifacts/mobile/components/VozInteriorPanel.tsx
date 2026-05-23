@@ -1,12 +1,13 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Platform,
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import Animated, {
@@ -23,6 +24,7 @@ import { useColors } from "@/hooks/useColors";
 
 const BAR_COUNT = 7;
 const ACCENT = "#9B6FD4";
+const PINK = "#D4709A";
 const GRADIENT: [string, string] = ["#3D1F5E", "#1E0F32"];
 
 function formatMs(ms: number): string {
@@ -76,13 +78,7 @@ function WaveformBar({ index, active }: { index: number; active: boolean }) {
   );
 }
 
-function RecordButton({
-  isRecording,
-  onPress,
-}: {
-  isRecording: boolean;
-  onPress: () => void;
-}) {
+function RecordButton({ isRecording, onPress }: { isRecording: boolean; onPress: () => void }) {
   const pulse = useSharedValue(1);
 
   useEffect(() => {
@@ -123,11 +119,7 @@ function RecordButton({
           },
         ]}
       >
-        <Feather
-          name={isRecording ? "square" : "mic"}
-          size={26}
-          color="#FFF"
-        />
+        <Feather name={isRecording ? "square" : "mic"} size={26} color="#FFF" />
       </View>
     </Pressable>
   );
@@ -139,18 +131,73 @@ function RecordingEntry({
   positionMs,
   onPlay,
   onDelete,
+  onUpdateEntry,
 }: {
   entry: VozEntry;
   isPlaying: boolean;
   positionMs: number;
   onPlay: () => void;
   onDelete: () => void;
+  onUpdateEntry: (patch: Partial<Pick<VozEntry, "title" | "isFavorite">>) => void;
 }) {
   const colors = useColors();
   const progress = entry.durationMs > 0 ? Math.min(positionMs / entry.durationMs, 1) : 0;
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleInput, setTitleInput] = useState(entry.title ?? "");
+  const inputRef = useRef<TextInput>(null);
+
+  const confirmTitle = () => {
+    onUpdateEntry({ title: titleInput.trim() });
+    setEditingTitle(false);
+  };
+
+  const isFav = entry.isFavorite ?? false;
 
   return (
     <View style={[styles.entryCard, { backgroundColor: colors.background, borderColor: colors.border }]}>
+      {/* Title row */}
+      <View style={styles.titleRow}>
+        {editingTitle ? (
+          <View style={styles.titleEditRow}>
+            <TextInput
+              ref={inputRef}
+              value={titleInput}
+              onChangeText={setTitleInput}
+              onSubmitEditing={confirmTitle}
+              onBlur={confirmTitle}
+              placeholder="Agregar título..."
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.titleInput, { color: colors.foreground, borderColor: `${ACCENT}55` }]}
+              maxLength={60}
+              returnKeyType="done"
+            />
+          </View>
+        ) : (
+          <Pressable onPress={() => { setTitleInput(entry.title ?? ""); setEditingTitle(true); setTimeout(() => inputRef.current?.focus(), 60); }} style={styles.titlePressable}>
+            {entry.title?.trim() ? (
+              <Text style={[styles.titleText, { color: colors.foreground }]} numberOfLines={1}>
+                {entry.title}
+              </Text>
+            ) : (
+              <Text style={[styles.titlePlaceholder, { color: colors.mutedForeground }]}>
+                Toca para agregar título...
+              </Text>
+            )}
+            <Feather name="edit-2" size={10} color={colors.mutedForeground} style={{ marginLeft: 6 }} />
+          </Pressable>
+        )}
+
+        {/* Favorite toggle */}
+        <Pressable
+          onPress={() => onUpdateEntry({ isFavorite: !isFav })}
+          hitSlop={8}
+          style={styles.favBtn}
+        >
+          <Feather name="heart" size={14} color={isFav ? PINK : colors.mutedForeground} />
+        </Pressable>
+      </View>
+
+      {/* Playback row */}
       <View style={styles.entryRow}>
         <Pressable onPress={onPlay} style={[styles.playBtn, { backgroundColor: `${ACCENT}22`, borderColor: `${ACCENT}55` }]}>
           <Feather name={isPlaying ? "pause" : "play"} size={14} color={ACCENT} />
@@ -173,6 +220,14 @@ function RecordingEntry({
           <View style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: ACCENT }]} />
         </View>
       )}
+
+      {/* Favorite badge */}
+      {isFav && (
+        <View style={styles.favBadge}>
+          <Feather name="heart" size={9} color={PINK} />
+          <Text style={[styles.favBadgeText, { color: PINK }]}>En "A no olvidar"</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -188,6 +243,7 @@ export function VozInteriorPanel() {
     startRecording,
     stopRecording,
     deleteEntry,
+    updateEntry,
     playEntry,
   } = useVozInterior();
 
@@ -243,7 +299,6 @@ export function VozInteriorPanel() {
 
       {/* Record Area */}
       <View style={styles.recordArea}>
-        {/* Waveform */}
         <View style={styles.waveform}>
           {Array.from({ length: BAR_COUNT }).map((_, i) => (
             <WaveformBar key={i} index={i} active={isRecording} />
@@ -280,6 +335,7 @@ export function VozInteriorPanel() {
               positionMs={playingId === entry.id ? playingPositionMs : 0}
               onPlay={() => playEntry(entry)}
               onDelete={() => handleDelete(entry.id)}
+              onUpdateEntry={(patch) => updateEntry(entry.id, patch)}
             />
           ))}
         </View>
@@ -338,7 +394,6 @@ const styles = StyleSheet.create({
     width: 4,
     borderRadius: 3,
   },
-
   recordBtnWrapper: {
     alignItems: "center",
     justifyContent: "center",
@@ -362,7 +417,6 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
   },
-
   timerWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -381,7 +435,43 @@ const styles = StyleSheet.create({
   history: { borderTopWidth: 1, padding: 14, gap: 10 },
   historyTitle: { fontSize: 10, letterSpacing: 1.5, fontWeight: "600", marginBottom: 4 },
 
-  entryCard: { borderWidth: 1, borderRadius: 14, padding: 12 },
+  // Entry card
+  entryCard: { borderWidth: 1, borderRadius: 14, padding: 12, gap: 8 },
+
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  titlePressable: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  titleText: {
+    fontSize: 13,
+    fontWeight: "600",
+    flex: 1,
+  },
+  titlePlaceholder: {
+    fontSize: 12,
+    fontStyle: "italic",
+    flex: 1,
+  },
+  titleEditRow: {
+    flex: 1,
+  },
+  titleInput: {
+    fontSize: 13,
+    fontWeight: "600",
+    borderBottomWidth: 1,
+    paddingBottom: 3,
+    paddingHorizontal: 2,
+  },
+  favBtn: {
+    padding: 4,
+  },
+
   entryRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   playBtn: {
     width: 34,
@@ -399,11 +489,26 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 3,
     borderRadius: 2,
-    marginTop: 10,
     overflow: "hidden",
   },
   progressFill: {
     height: 3,
     borderRadius: 2,
+  },
+
+  favBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    alignSelf: "flex-start",
+    backgroundColor: `${PINK}18`,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  favBadgeText: {
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 0.4,
   },
 });
