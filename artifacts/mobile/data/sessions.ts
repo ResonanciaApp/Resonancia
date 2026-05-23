@@ -1,3 +1,5 @@
+export type SoundTag = "Binaural" | "Música" | "Sonidos Naturales";
+
 export type Session = {
   id: string;
   title: string;
@@ -14,6 +16,7 @@ export type Session = {
   isFeatured?: boolean;
   isNew?: boolean;
   frequency?: string;
+  soundTag?: SoundTag;
 };
 
 export const SESSIONS: Session[] = [
@@ -308,19 +311,117 @@ export const SESSIONS: Session[] = [
   {
     id: "20",
     title: "Sonidos de la Naturaleza",
-    subtitle: "Música y Sonidos · Voz Guiada",
+    subtitle: "Atmósfera Natural",
     categoryId: "musica-sonidos",
     categoryLabel: "Música y Sonidos",
     duration: 10,
     durationLabel: "10 min",
     description:
-      "Un paisaje sonoro envuelto en el pad cálido de Mi mayor, sobre el que descansa una voz guiada que te invita a soltar la tensión y habitar el momento presente. Ajusta el volumen de la voz según tu preferencia.",
+      "Un paisaje sonoro envuelto en el pad cálido de Mi mayor. Cierra los ojos y habita el momento presente.",
     benefits: ["Presencia plena", "Alivio de ansiedad", "Relajación instantánea", "Claridad mental"],
-    instruments: ["Pad Mi mayor", "Voz guiada", "Atmósfera natural"],
+    instruments: ["Pad Mi mayor", "Atmósfera natural"],
     image: require("@/assets/images/sessions/session-20.png"),
     audio: require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
     isNew: true,
-    isFeatured: false,
+    soundTag: "Sonidos Naturales",
+  },
+  {
+    id: "21",
+    title: "Lluvia de Bosque",
+    subtitle: "Sonidos Naturales",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 15,
+    durationLabel: "15 min",
+    description:
+      "El sonido suave de la lluvia cayendo sobre hojas de bosque antiguo. Una experiencia sonora que disuelve el ruido mental y devuelve la calma natural.",
+    benefits: ["Relajación profunda", "Sueño suave", "Calma instantánea", "Presencia plena"],
+    instruments: ["Lluvia", "Viento suave", "Naturaleza"],
+    image: require("@/assets/images/sessions/session-3.png"),
+    isNew: true,
+    soundTag: "Sonidos Naturales",
+  },
+  {
+    id: "22",
+    title: "Orilla del Mar",
+    subtitle: "Sonidos Naturales",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 20,
+    durationLabel: "20 min",
+    description:
+      "Las olas llegando y retirándose sobre la arena. Cada ciclo del mar es un recordatorio de que todo pasa y todo vuelve. Suéltate al ritmo del océano.",
+    benefits: ["Descanso mental", "Reducción del estrés", "Ritmo natural", "Sueño reparador"],
+    instruments: ["Olas del mar", "Brisa marina", "Naturaleza costera"],
+    image: require("@/assets/images/sessions/session-5.png"),
+    isNew: true,
+    soundTag: "Sonidos Naturales",
+  },
+  {
+    id: "23",
+    title: "Binaural Alpha 8Hz",
+    subtitle: "Ondas Cerebrales",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 30,
+    durationLabel: "30 min",
+    description:
+      "Frecuencias binaurales en la banda Alpha (8–12 Hz). Ideal para estados de calma alerta, creatividad fluida y reducción de ansiedad. Usar con auriculares.",
+    benefits: ["Estado alpha", "Creatividad", "Calma alerta", "Anti-estrés"],
+    instruments: ["Frecuencias binaurales alpha", "Tono base suave"],
+    image: require("@/assets/images/sessions/session-8.png"),
+    isNew: true,
+    frequency: "Alpha 8–12 Hz",
+    soundTag: "Binaural",
+  },
+  {
+    id: "24",
+    title: "Binaural Theta Nocturno",
+    subtitle: "Ondas Cerebrales",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 45,
+    durationLabel: "45 min",
+    description:
+      "Frecuencias theta (4–8 Hz) para inducir estados de meditación profunda y sueño lúcido. Una transición suave hacia el descanso más reparador de tu noche.",
+    benefits: ["Meditación profunda", "Sueño lúcido", "Creatividad nocturna", "Descanso total"],
+    instruments: ["Frecuencias binaurales theta", "Ambiente nocturno"],
+    image: require("@/assets/images/sessions/session-9.png"),
+    isNew: true,
+    frequency: "Theta 4–8 Hz",
+    soundTag: "Binaural",
+  },
+  {
+    id: "25",
+    title: "Música Ambient Dorada",
+    subtitle: "Música Meditativa",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 25,
+    durationLabel: "25 min",
+    description:
+      "Capas de sintetizadores cálidos y cuencos de cuarzo crean una atmósfera dorada perfecta para meditar, leer o simplemente estar presente sin hacer nada.",
+    benefits: ["Ambiente meditativo", "Foco suave", "Presencia sin esfuerzo", "Calma creativa"],
+    instruments: ["Sintetizadores ambient", "Cuencos de cuarzo", "Pad armónico"],
+    image: require("@/assets/images/sessions/session-6.png"),
+    isNew: true,
+    soundTag: "Música",
+  },
+  {
+    id: "26",
+    title: "Piano y Cuencos",
+    subtitle: "Música Meditativa",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 20,
+    durationLabel: "20 min",
+    description:
+      "Notas de piano minimalistas entretejidas con el resonar de cuencos tibetanos. Una composición para abrir el corazón y soltar lo que ya no se necesita llevar.",
+    benefits: ["Apertura emocional", "Claridad interior", "Calma profunda", "Bienestar general"],
+    instruments: ["Piano acústico", "Cuencos tibetanos", "Silencio consciente"],
+    image: require("@/assets/images/sessions/session-7.png"),
+    isNew: true,
+    soundTag: "Música",
   },
 
   {

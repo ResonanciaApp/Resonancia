@@ -38,8 +38,8 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
 
 /**
  * VOICE_MAP — audio de voz guiada superpuesto al fondo musical.
- * El usuario puede ajustar el volumen de la voz independientemente.
+ * Solo para sesiones de Meditaciones Guiadas.
  */
 export const VOICE_MAP: Record<string, ReturnType<typeof require> | undefined> = {
-  "20": require("@/assets/audio/sonidos_naturaleza_voz.mp3"),
+  // "20": require("@/assets/audio/sonidos_naturaleza_voz.mp3"), // movido a Meditaciones Guiadas
 };

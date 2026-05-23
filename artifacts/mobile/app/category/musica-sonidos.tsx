@@ -1,0 +1,382 @@
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useMemo, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { SacredBackground } from "@/components/SacredBackground";
+import { usePlayer } from "@/context/PlayerContext";
+import { SESSIONS, type SoundTag } from "@/data/sessions";
+import { useColors } from "@/hooks/useColors";
+
+const { width } = Dimensions.get("window");
+const H_PAD = 20;
+const GAP = 10;
+const COLS = 3;
+const CARD_WIDTH = (width - H_PAD * 2 - GAP * (COLS - 1)) / COLS;
+const IMG_SIZE = CARD_WIDTH - 10;
+
+type Tab = "Todos" | SoundTag;
+
+const TABS: Tab[] = ["Todos", "Binaural", "Música", "Sonidos Naturales"];
+
+const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
+  Binaural: { bg: "#4A3280", text: "#C4A8F0" },
+  Música: { bg: "#5A3A10", text: "#E8B96A" },
+  "Sonidos Naturales": { bg: "#1A4A2E", text: "#6EC899" },
+};
+
+const TAG_ICONS: Record<SoundTag, React.ComponentProps<typeof Feather>["name"]> = {
+  Binaural: "headphones",
+  Música: "music",
+  "Sonidos Naturales": "wind",
+};
+
+const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
+
+export default function MusicaSonidosScreen() {
+  const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const { isFavorite, toggleFavorite, playSession } = usePlayer();
+
+  const [activeTab, setActiveTab] = useState<Tab>("Todos");
+  const [query, setQuery] = useState("");
+
+  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const filtered = useMemo(() => {
+    let list = MUSICA_SESSIONS;
+    if (activeTab !== "Todos") {
+      list = list.filter((s) => s.soundTag === activeTab);
+    }
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      list = list.filter(
+        (s) =>
+          s.title.toLowerCase().includes(q) ||
+          s.subtitle.toLowerCase().includes(q) ||
+          (s.soundTag ?? "").toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [activeTab, query]);
+
+  return (
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <StatusBar barStyle="light-content" />
+      <SacredBackground />
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{
+          paddingBottom: 120 + bottomPad,
+          paddingTop: topPad + 8,
+        }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header */}
+        <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
+          <Pressable onPress={() => router.back()} style={styles.backBtn}>
+            <Feather name="arrow-left" size={22} color={colors.foreground} />
+          </Pressable>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.pageTitle, { color: colors.foreground }]}>
+              Música y Sonidos
+            </Text>
+            <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+              Elige un sonido y conecta con el momento presente
+            </Text>
+          </View>
+        </View>
+
+        {/* Search bar */}
+        <View style={[styles.searchWrap, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
+          <View
+            style={[
+              styles.searchBar,
+              { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.18)" },
+            ]}
+          >
+            <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder={`Busca +${MUSICA_SESSIONS.length} sonidos`}
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.searchInput, { color: colors.foreground }]}
+              returnKeyType="search"
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                <Feather name="x" size={14} color={colors.mutedForeground} />
+              </Pressable>
+            )}
+          </View>
+        </View>
+
+        {/* Filter Tabs */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={[styles.tabsRow, { paddingHorizontal: H_PAD }]}
+          style={{ marginBottom: 20 }}
+        >
+          {TABS.map((tab) => {
+            const active = tab === activeTab;
+            return (
+              <Pressable
+                key={tab}
+                onPress={() => setActiveTab(tab)}
+                style={[
+                  styles.tab,
+                  {
+                    backgroundColor: active ? colors.primary : colors.card,
+                    borderColor: active ? colors.primary : "rgba(198,155,79,0.2)",
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    { color: active ? colors.primaryForeground : colors.mutedForeground },
+                  ]}
+                >
+                  {tab}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
+        {/* Grid */}
+        <View style={[styles.grid, { paddingHorizontal: H_PAD }]}>
+          {filtered.length === 0 ? (
+            <View style={styles.emptyWrap}>
+              <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                Sin resultados para "{query}"
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.gridRow}>
+              {filtered.map((session) => {
+                const fav = isFavorite(session.id);
+                const tag = session.soundTag;
+                const tagStyle = tag ? TAG_COLORS[tag] : null;
+                const tagIcon = tag ? TAG_ICONS[tag] : null;
+
+                return (
+                  <Pressable
+                    key={session.id}
+                    style={({ pressed }) => [
+                      styles.card,
+                      {
+                        width: CARD_WIDTH,
+                        backgroundColor: colors.card,
+                        borderColor: "rgba(198,155,79,0.15)",
+                        opacity: pressed ? 0.85 : 1,
+                      },
+                    ]}
+                    onPress={() => playSession(session)}
+                  >
+                    {/* Favorite button */}
+                    <Pressable
+                      style={styles.favBtn}
+                      onPress={() => toggleFavorite(session.id)}
+                      hitSlop={8}
+                    >
+                      <Feather
+                        name={fav ? "heart" : "heart"}
+                        size={13}
+                        color={fav ? "#E8A44A" : colors.mutedForeground}
+                      />
+                    </Pressable>
+
+                    {/* Circular image */}
+                    <View style={[styles.imgWrap, { width: IMG_SIZE, height: IMG_SIZE }]}>
+                      <Image
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        source={session.image as any}
+                        style={[styles.img, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: IMG_SIZE / 2 }]}
+                      />
+                      {/* Tag badge on image */}
+                      {tag && tagStyle && tagIcon && (
+                        <View
+                          style={[
+                            styles.tagBadge,
+                            { backgroundColor: tagStyle.bg },
+                          ]}
+                        >
+                          <Feather name={tagIcon} size={9} color={tagStyle.text} />
+                          <Text style={[styles.tagText, { color: tagStyle.text }]}>
+                            {tag}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+
+                    {/* Title */}
+                    <Text
+                      style={[styles.cardTitle, { color: colors.foreground }]}
+                      numberOfLines={2}
+                    >
+                      {session.title}
+                    </Text>
+
+                    {/* Duration */}
+                    <Text style={[styles.cardDuration, { color: colors.mutedForeground }]}>
+                      {session.durationLabel}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  scroll: { flex: 1 },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+    marginBottom: 20,
+  },
+  backBtn: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 2,
+  },
+  pageTitle: {
+    fontSize: 26,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    marginBottom: 4,
+  },
+  pageSub: {
+    fontSize: 12,
+    lineHeight: 18,
+  },
+
+  searchWrap: {},
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === "ios" ? 12 : 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    padding: 0,
+    margin: 0,
+  },
+
+  tabsRow: {
+    flexDirection: "row",
+    gap: 8,
+    paddingBottom: 2,
+  },
+  tab: {
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    borderRadius: 24,
+    borderWidth: 1,
+  },
+  tabText: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+
+  grid: {},
+  gridRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: GAP,
+  },
+
+  card: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 8,
+    alignItems: "center",
+    position: "relative",
+    marginBottom: 4,
+  },
+  favBtn: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    zIndex: 10,
+    padding: 2,
+  },
+  imgWrap: {
+    position: "relative",
+    marginBottom: 8,
+    marginTop: 4,
+  },
+  img: {
+    resizeMode: "cover",
+  },
+  tagBadge: {
+    position: "absolute",
+    bottom: 0,
+    left: "50%",
+    transform: [{ translateX: -30 }],
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  tagText: {
+    fontSize: 8,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  cardTitle: {
+    fontSize: 11,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 15,
+    marginBottom: 3,
+  },
+  cardDuration: {
+    fontSize: 9,
+    letterSpacing: 0.3,
+  },
+
+  emptyWrap: {
+    alignItems: "center",
+    paddingVertical: 60,
+    width: "100%",
+  },
+  emptyText: {
+    fontSize: 14,
+    textAlign: "center",
+  },
+});
