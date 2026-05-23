@@ -126,6 +126,7 @@ export default function HomeScreen() {
   }, []);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [noOlvidarOpen, setNoOlvidarOpen] = useState(false);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -308,45 +309,105 @@ export default function HomeScreen() {
         {/* ── 6. A NO OLVIDAR ── */}
         {noOlvidarItems.length > 0 && (
           <View style={styles.section}>
-            <View style={styles.sectionRow}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                A no olvidar
-              </Text>
-              <Pressable onPress={() => router.push("/(tabs)/diario" as never)}>
-                <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
+            {/* Cabecera tappable */}
+            <Pressable
+              onPress={() => setNoOlvidarOpen((v) => !v)}
+              style={({ pressed }) => [styles.noOlvidarHeader, { opacity: pressed ? 0.75 : 1 }]}
+            >
+              <View style={styles.noOlvidarTitleRow}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                  A no olvidar
+                </Text>
+                {!noOlvidarOpen && (
+                  <View style={[styles.countBadge, { backgroundColor: colors.primary + "22" }]}>
+                    <Text style={[styles.countText, { color: colors.primary }]}>
+                      {noOlvidarItems.length}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              <View style={styles.noOlvidarRight}>
+                {noOlvidarOpen && (
+                  <Pressable onPress={() => router.push("/(tabs)/diario" as never)}>
+                    <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
+                  </Pressable>
+                )}
+                <Feather
+                  name={noOlvidarOpen ? "chevron-up" : "chevron-down"}
+                  size={18}
+                  color={colors.accent}
+                />
+              </View>
+            </Pressable>
+
+            {/* Peek colapsado */}
+            {!noOlvidarOpen && (
+              <Pressable
+                onPress={() => setNoOlvidarOpen(true)}
+                style={[styles.noOlvidarPeek, { backgroundColor: colors.card, borderColor: colors.border }]}
+              >
+                {/* Mini apilado de tarjetas */}
+                <View style={styles.peekStack}>
+                  {noOlvidarItems.slice(0, 3).map((_, i) => (
+                    <View
+                      key={i}
+                      style={[
+                        styles.peekCard,
+                        {
+                          backgroundColor: colors.card,
+                          borderColor: colors.border,
+                          left: i * 6,
+                          top: i === 0 ? 0 : -i * 2,
+                          zIndex: 3 - i,
+                          opacity: 1 - i * 0.25,
+                        },
+                      ]}
+                    />
+                  ))}
+                </View>
+                <Text style={[styles.peekLabel, { color: colors.mutedForeground }]}>
+                  {noOlvidarItems.length === 1
+                    ? "1 nota guardada — toca para ver"
+                    : `${noOlvidarItems.length} notas guardadas — toca para ver`}
+                </Text>
+                <Feather name="chevron-down" size={15} color={colors.accent} />
               </Pressable>
-            </View>
-            <View style={styles.diarioList}>
-              {noOlvidarItems.map((item) => {
-                const vozEntry =
-                  item.kind === "voz"
-                    ? vozEntries.find((e) => e.id === item.rawId)
-                    : undefined;
-                return (
-                  <NoOlvidarCard
-                    key={item.id}
-                    item={item}
-                    isPlaying={item.kind === "voz" && playingId === item.rawId}
-                    positionMs={item.kind === "voz" && playingId === item.rawId ? playingPositionMs : 0}
-                    onPlay={
-                      item.kind === "voz" && vozEntry
-                        ? () => playEntry(vozEntry)
-                        : undefined
-                    }
-                    onRemove={() => {
-                      if (item.kind === "voz") {
-                        updateVozEntry(item.rawId, { isFavorite: false });
-                      } else {
-                        toggleFavorite(
-                          { id: item.rawId, text: item.text, createdAt: item.createdAt },
-                          item.sectionKey,
-                        );
+            )}
+
+            {/* Lista expandida */}
+            {noOlvidarOpen && (
+              <View style={styles.diarioList}>
+                {noOlvidarItems.map((item) => {
+                  const vozEntry =
+                    item.kind === "voz"
+                      ? vozEntries.find((e) => e.id === item.rawId)
+                      : undefined;
+                  return (
+                    <NoOlvidarCard
+                      key={item.id}
+                      item={item}
+                      isPlaying={item.kind === "voz" && playingId === item.rawId}
+                      positionMs={item.kind === "voz" && playingId === item.rawId ? playingPositionMs : 0}
+                      onPlay={
+                        item.kind === "voz" && vozEntry
+                          ? () => playEntry(vozEntry)
+                          : undefined
                       }
-                    }}
-                  />
-                );
-              })}
-            </View>
+                      onRemove={() => {
+                        if (item.kind === "voz") {
+                          updateVozEntry(item.rawId, { isFavorite: false });
+                        } else {
+                          toggleFavorite(
+                            { id: item.rawId, text: item.text, createdAt: item.createdAt },
+                            item.sectionKey,
+                          );
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </View>
+            )}
           </View>
         )}
 
@@ -504,4 +565,57 @@ const styles = StyleSheet.create({
 
   // Diary favorites
   diarioList: { gap: 10 },
+
+  // A no olvidar colapsable
+  noOlvidarHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  noOlvidarTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  noOlvidarRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  countBadge: {
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  countText: {
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  noOlvidarPeek: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+  },
+  peekStack: {
+    width: 32,
+    height: 22,
+    position: "relative",
+  },
+  peekCard: {
+    position: "absolute",
+    width: 22,
+    height: 16,
+    borderRadius: 5,
+    borderWidth: 1,
+  },
+  peekLabel: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: "500",
+  },
 });
