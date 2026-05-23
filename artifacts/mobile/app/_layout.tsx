@@ -55,7 +55,7 @@ function OnboardingGate() {
 
     const inOnboarding = segments[0] === "onboarding";
 
-    if (!onboardingDone && !inOnboarding) {
+    if (!inOnboarding) {
       redirected.current = true;
       router.replace("/onboarding");
     }

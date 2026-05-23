@@ -327,6 +327,9 @@ export default function Onboarding() {
           <Pressable onPress={goNext} style={styles.primaryBtn}>
             <Text style={styles.primaryBtnText}>Comenzar   →</Text>
           </Pressable>
+          <Pressable onPress={finish} style={styles.skipBtn}>
+            <Text style={styles.skipBtnText}>SKIP</Text>
+          </Pressable>
         </Animated.View>
       </LinearGradient>
     );
@@ -672,6 +675,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   primaryBtnDisabled: { backgroundColor: "rgba(198,155,79,0.2)" },
+  skipBtn: {
+    alignItems: "center",
+    paddingVertical: 10,
+    marginTop: 4,
+  },
+  skipBtnText: {
+    color: "rgba(198,155,79,0.5)",
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+    letterSpacing: 2,
+  },
   primaryBtnText: {
     color: "#1A0E08",
     fontSize: 16,
