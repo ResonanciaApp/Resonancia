@@ -299,3 +299,9 @@ id = "E5y0wD6-a5XPoKd_AAOzO"
 uri = "file://attached_assets/generated_audio/om_mani_padme_hum.mp3"
 type = "audio"
 title = "Om Mani Padme Hum — Pad · Voz Tibetana · Melodía"
+
+[[outputs]]
+id = "8EmymekbqaX_8L1uvce14"
+uri = "file://attached_assets/co_1_1779554092766_D5.WAV"
+type = "audio"
+title = "co_1_1779554092766_D5.WAV"
