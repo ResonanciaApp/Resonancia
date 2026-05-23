@@ -30,6 +30,8 @@ export type AncestralTag =
   | "Cuencos y Gongs"
   | "Full Instrumentos";
 
+import type { ThemeTag } from "@/data/tags";
+
 export type Session = {
   id: string;
   title: string;
@@ -51,6 +53,7 @@ export type Session = {
   ancestralTag?: AncestralTag;
   sabiduriaTag?: SabiduriaTag;
   podcastTag?: PodcastTag;
+  themeTag?: ThemeTag[];
 };
 
 export const SESSIONS: Session[] = [
