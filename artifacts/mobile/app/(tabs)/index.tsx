@@ -254,17 +254,32 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 4. MENSAJE DEL DÍA ── */}
+        {/* ── 4. RECOMENDADAS PARA TI ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              Recomendadas para ti
+            </Text>
+            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
+              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
+            </Pressable>
+          </View>
+          {recommended.slice(0, 4).map((s) => (
+            <SessionCard key={s.id} session={s} horizontal />
+          ))}
+        </View>
+
+        {/* ── 5. MENSAJE DEL DÍA ── */}
         <View style={styles.section}>
           <MessageDeck />
         </View>
 
-        {/* ── 4b. MENSAJES DEL ALMA ── */}
+        {/* ── 5b. MENSAJES DEL ALMA ── */}
         <View style={styles.section}>
           <MensajesAnonimosPanel />
         </View>
 
-        {/* ── 5. NUEVAS SESIONES ── */}
+        {/* ── 6. NUEVAS SESIONES ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
@@ -278,24 +293,9 @@ export default function HomeScreen() {
             contentContainerStyle={styles.hScroll}
           >
             {newSessions.map((s) => (
-              <SessionCard key={s.id} session={s} width={175} />
+              <SessionCard key={s.id} session={s} width={110} />
             ))}
           </ScrollView>
-        </View>
-
-        {/* ── 5. RECOMENDADAS PARA TI ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Recomendadas para ti
-            </Text>
-            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
-            </Pressable>
-          </View>
-          {recommended.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal />
-          ))}
         </View>
 
         {/* ── 6. A NO OLVIDAR ── */}
