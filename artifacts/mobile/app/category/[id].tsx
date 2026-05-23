@@ -71,7 +71,7 @@ export default function CategoryScreen() {
               />
             </View>
             <Text style={[styles.heroTitle, { color: colors.foreground }]}>{category.title}</Text>
-            <Text style={[styles.heroSub, { color: colors.mutedForeground }]}>
+            <Text style={[styles.heroSub, { color: colors.foreground }]}>
               {category.subtitle}
             </Text>
             <View style={styles.heroMeta}>
