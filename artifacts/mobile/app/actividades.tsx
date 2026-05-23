@@ -131,12 +131,10 @@ export default function ActividadesScreen() {
           {filtered.map((act) => (
             <Pressable
               key={act.id}
+              onPress={() => router.push(`/actividad/${act.id}` as never)}
               style={({ pressed }) => [styles.card, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 }]}
             >
               <LinearGradient colors={act.gradient} style={styles.cardAccent} />
-              <View style={[styles.cardIcon, { backgroundColor: act.color + "22" }]}>
-                <Feather name={act.icon} size={22} color={act.color} />
-              </View>
               <View style={styles.cardBody}>
                 <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                   {act.title}
@@ -169,7 +167,7 @@ export default function ActividadesScreen() {
       {/* FAB */}
       <Pressable
         style={[styles.fab, { bottom: bottomPad + 24 }]}
-        onPress={() => {}}
+        onPress={() => router.push("/crear-actividad" as never)}
       >
         <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.fabGrad}>
           <Feather name="plus" size={22} color="#1A0E06" />
@@ -210,7 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 14,
   },
-  cardBody: { flex: 1, paddingVertical: 14, gap: 4 },
+  cardBody: { flex: 1, paddingVertical: 14, paddingLeft: 14, gap: 4 },
   cardTitle: { fontSize: 14, fontWeight: "700", lineHeight: 19 },
   cardOrg: { fontSize: 11, fontWeight: "600" },
   cardMeta: { flexDirection: "row", alignItems: "center", gap: 4, flexWrap: "wrap" },

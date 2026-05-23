@@ -125,6 +125,7 @@ export default function GruposScreen() {
           {GRUPOS.map((g) => (
             <Pressable
               key={g.id}
+              onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [styles.card, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 }]}
             >
               {/* Icon */}
