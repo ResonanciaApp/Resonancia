@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
@@ -21,21 +22,22 @@ const ND = Platform.OS !== "web";
 type MenuItem = {
   label: string;
   icon: React.ComponentProps<typeof Feather>["name"];
+  route: string;
 };
 
 const MAIN_ITEMS: MenuItem[] = [
-  { label: "Regístrate", icon: "user-plus" },
-  { label: "Membresía", icon: "star" },
-  { label: "Tu perfil", icon: "user" },
-  { label: "Actividades", icon: "activity" },
-  { label: "Amigos", icon: "users" },
-  { label: "Grupos", icon: "globe" },
+  { label: "Regístrate", icon: "user-plus", route: "/registro" },
+  { label: "Membresía", icon: "star", route: "/membresia" },
+  { label: "Tu perfil", icon: "user", route: "/(tabs)/profile" },
+  { label: "Actividades Expansivas", icon: "activity", route: "/actividades" },
+  { label: "Amigos", icon: "users", route: "/amigos" },
+  { label: "Grupos", icon: "globe", route: "/grupos" },
 ];
 
 const SECONDARY_ITEMS: MenuItem[] = [
-  { label: "Invitar a un amigo", icon: "share-2" },
-  { label: "Ayuda", icon: "help-circle" },
-  { label: "Configuraciones", icon: "settings" },
+  { label: "Invitar a un amigo", icon: "share-2", route: "/invitar" },
+  { label: "Ayuda", icon: "help-circle", route: "/ayuda" },
+  { label: "Configuraciones", icon: "settings", route: "/configuraciones" },
 ];
 
 interface Props {
@@ -122,6 +124,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
             {MAIN_ITEMS.map((item) => (
               <Pressable
                 key={item.label}
+                onPress={() => { onClose(); router.push(item.route as never); }}
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
                 <View style={styles.itemIcon}>
@@ -140,6 +143,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
             {SECONDARY_ITEMS.map((item) => (
               <Pressable
                 key={item.label}
+                onPress={() => { onClose(); router.push(item.route as never); }}
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
                 <View style={styles.itemIcon}>
