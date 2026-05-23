@@ -255,12 +255,16 @@ export default function ExploreScreen() {
 
             {/* ── Historial ── */}
             <View style={[styles.section, { marginBottom: 12 }]}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 6 }]}>
-                Historial
-              </Text>
-              <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
-                Las sesiones que has escuchado
-              </Text>
+              <View style={styles.sectionRow}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                  Historial
+                </Text>
+                {historySessions.length > 5 && (
+                  <Pressable onPress={() => router.push("/historial" as never)} hitSlop={8}>
+                    <Text style={[styles.verTodasLink, { color: colors.primary }]}>Ver todas →</Text>
+                  </Pressable>
+                )}
+              </View>
 
               {historySessions.length === 0 ? (
                 <View style={[styles.historyEmpty, { borderColor: "rgba(198,155,79,0.15)", backgroundColor: colors.card }]}>
@@ -274,7 +278,7 @@ export default function ExploreScreen() {
                 </View>
               ) : (
                 <View style={{ gap: 8 }}>
-                  {historySessions.slice(0, 10).map(({ session, playedAt }) => {
+                  {historySessions.slice(0, 5).map(({ session, playedAt }) => {
                     const date = new Date(playedAt);
                     const dateLabel = date.toLocaleDateString("es", { day: "numeric", month: "short" });
                     const timeLabel = date.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
@@ -290,20 +294,6 @@ export default function ExploreScreen() {
                       </View>
                     );
                   })}
-
-                  {historySessions.length >= 10 && (
-                    <Pressable
-                      onPress={() => router.push("/historial" as never)}
-                      style={({ pressed }) => [
-                        styles.verTodoBtn,
-                        { borderColor: colors.primary + "55", backgroundColor: colors.card, opacity: pressed ? 0.78 : 1 },
-                      ]}
-                    >
-                      <Feather name="clock" size={15} color={colors.primary} />
-                      <Text style={[styles.verTodoText, { color: colors.primary }]}>Ver todo el historial</Text>
-                      <Feather name="chevron-right" size={15} color={colors.primary} />
-                    </Pressable>
-                  )}
                 </View>
               )}
             </View>
@@ -463,6 +453,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   verTodoText: { fontSize: 14, fontWeight: "600" },
+  sectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  verTodasLink: { fontSize: 13, fontWeight: "600" },
 
   // Time buckets
   timeRow: {
