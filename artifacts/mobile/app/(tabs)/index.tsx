@@ -3,7 +3,7 @@ import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { DrawerMenu } from "@/components/DrawerMenu";
 import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
 import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { MessageDeck } from "@/components/MessageDeck";
@@ -124,6 +125,8 @@ export default function HomeScreen() {
     return pool.slice(0, 6);
   }, []);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -139,13 +142,22 @@ export default function HomeScreen() {
       >
         {/* ── 1. INTENCIÓN DEL DÍA ── */}
         <View style={styles.header}>
-          {/* Avatar — esquina derecha */}
-          <Pressable
-            onPress={() => router.push("/(tabs)/profile" as never)}
-            style={[styles.avatarBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <Feather name="user" size={18} color={colors.accent} />
-          </Pressable>
+          {/* Fila superior: hamburger izquierda + avatar derecha */}
+          <View style={styles.headerTopRow}>
+            <Pressable
+              onPress={() => setDrawerOpen(true)}
+              hitSlop={12}
+              style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            >
+              <Feather name="menu" size={18} color={colors.accent} />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push("/(tabs)/profile" as never)}
+              style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            >
+              <Feather name="user" size={18} color={colors.accent} />
+            </Pressable>
+          </View>
 
           {/* Widget de intención — centrado, sin fondo */}
           <Pressable
@@ -343,6 +355,8 @@ export default function HomeScreen() {
           <MensajesAnonimosPanel />
         </View>
       </ScrollView>
+
+      <DrawerMenu visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </View>
   );
 }
@@ -356,15 +370,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
     marginBottom: 20,
   },
-  avatarBtn: {
+  headerTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
+  iconBtn: {
     width: 38,
     height: 38,
     borderRadius: 12,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    alignSelf: "flex-end",
-    marginBottom: 14,
   },
   intentionCard: {
     paddingVertical: 10,
