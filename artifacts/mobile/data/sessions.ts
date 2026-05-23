@@ -32,6 +32,11 @@ export type AncestralTag =
 
 import type { ThemeTag } from "@/data/tags";
 
+export type SessionGuide = {
+  name: string;
+  country: string;
+};
+
 export type Session = {
   id: string;
   title: string;
@@ -54,6 +59,7 @@ export type Session = {
   sabiduriaTag?: SabiduriaTag;
   podcastTag?: PodcastTag;
   themeTag?: ThemeTag[];
+  guide?: SessionGuide;
 };
 
 export const SESSIONS: Session[] = [
@@ -72,6 +78,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-1.png"),
     isFeatured: true,
     meditationTag: "Visualizaciones",
+    guide: { name: "Sofía Ramírez", country: "Argentina" },
   },
   {
     id: "2",

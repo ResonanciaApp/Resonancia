@@ -18,13 +18,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { GlowRing } from "@/components/GlowRing";
 import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
-const HEADER_H = 320;
+const HEADER_H = 300;
 const RATINGS_KEY = "@resonance_ratings";
 
 export default function SessionDetailScreen() {
@@ -36,9 +35,7 @@ export default function SessionDetailScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
-  // ── Rating — hooks before early return ──────────────────────────────────
   const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -61,15 +58,12 @@ export default function SessionDetailScreen() {
     },
     [id]
   );
-  // ────────────────────────────────────────────────────────────────────────
 
   const session = getSessionById(id ?? "");
 
   if (!session) {
     return (
-      <View
-        style={[styles.root, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center" }]}
-      >
+      <View style={[styles.root, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center" }]}>
         <Text style={{ color: colors.mutedForeground }}>Sesión no encontrada</Text>
         <Pressable onPress={() => router.back()} style={{ marginTop: 16 }}>
           <Text style={{ color: colors.primary }}>Volver</Text>
@@ -78,6 +72,7 @@ export default function SessionDetailScreen() {
     );
   }
 
+  const isMusica = session.categoryId === "musica-sonidos";
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isSabiduría = session.categoryId === "sabiduria-dia";
@@ -103,216 +98,109 @@ export default function SessionDetailScreen() {
     });
   };
 
+  const handleFav = () => {
+    toggleFavorite(session.id);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  // ── Guide initials ──────────────────────────────────────────────────────────
+  const guideInitials = session.guide
+    ? session.guide.name.split(" ").map((w) => w[0]).slice(0, 2).join("")
+    : "";
+
+  // ── Badge block helper ──────────────────────────────────────────────────────
+  const renderBadges = () => {
+    let tag: string | undefined;
+    let tagColor = colors.accent;
+    let tagBg = "rgba(198,155,79,0.15)";
+    let tagBorder = "rgba(198,155,79,0.3)";
+
+    if (isGuiada && session.meditationTag) tag = session.meditationTag;
+    else if (isAncestral && session.ancestralTag) tag = session.ancestralTag;
+    else if (isPodcast && session.podcastTag) {
+      tag = session.podcastTag;
+      tagColor = "#8AAAD4";
+      tagBg = "rgba(138,170,212,0.15)";
+      tagBorder = "rgba(138,170,212,0.35)";
+    } else if (isSabiduría && session.sabiduriaTag) tag = session.sabiduriaTag;
+    else if (!isGuiada && !isAncestral && !isSabiduría && !isPodcast && !isMusica) {
+      tag = session.categoryLabel;
+    }
+
+    if (!tag && !session.isNew) return null;
+    return (
+      <View style={styles.badges}>
+        {tag && (
+          <View style={[styles.badge, { backgroundColor: tagBg, borderColor: tagBorder }]}>
+            <Text style={[styles.badgeText, { color: tagColor }]}>{tag.toUpperCase()}</Text>
+          </View>
+        )}
+        {session.isNew && (
+          <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+            <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
+          </View>
+        )}
+      </View>
+    );
+  };
+
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 120 + bottomPad }}
+        contentContainerStyle={{ paddingBottom: 110 + bottomPad }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Image */}
-        <View style={[styles.imageHeader, { height: HEADER_H + topPad }]}>
-          <Image
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            source={session.image as any}
-            style={StyleSheet.absoluteFill as object}
-            resizeMode="cover"
-          />
+        {/* ── Hero image ──────────────────────────────────────────────────── */}
+        <View style={[styles.hero, { height: HEADER_H + topPad }]}>
+          <Image source={session.image as never} style={StyleSheet.absoluteFill as object} resizeMode="cover" />
           <LinearGradient
-            colors={["rgba(24,17,12,0.3)", "transparent", colors.background]}
-            locations={[0, 0.4, 1]}
+            colors={["rgba(24,17,12,0.25)", "transparent", colors.background]}
+            locations={[0, 0.45, 1]}
             style={StyleSheet.absoluteFill}
           />
-          <View style={styles.glowCenter}>
-            <GlowRing size={160} color="rgba(198,155,79,0.15)" delay={0} duration={4000} />
-            <GlowRing size={220} color="rgba(198,155,79,0.08)" delay={600} duration={4000} />
-          </View>
-
-          {/* Nav */}
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <Pressable
-              onPress={() => router.back()}
-              style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}
-            >
-              <Feather name="arrow-left" size={20} color={colors.foreground} />
+            <Pressable onPress={() => router.back()} style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}>
+              <Feather name="arrow-left" size={20} color="#FFF" />
             </Pressable>
-            <View style={styles.navRight}>
-              {isGuiada && (
-                <Pressable
-                  onPress={handleShare}
-                  style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}
-                >
-                  <Feather name="share" size={20} color={colors.foreground} />
-                </Pressable>
-              )}
-              <Pressable
-                onPress={() => {
-                  toggleFavorite(session.id);
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                }}
-                style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}
-              >
-                <Feather name="heart" size={20} color={fav ? colors.primary : colors.foreground} />
-              </Pressable>
-            </View>
           </View>
         </View>
 
-        {/* Content */}
-        <View style={[styles.content, { marginTop: -40 }]}>
-          {/* Category badge — hidden for categories that show their own tag */}
-          {!isGuiada && !isAncestral && !isSabiduría && !isPodcast && (
-            <View style={styles.badges}>
-              <View
-                style={[
-                  styles.badge,
-                  { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.3)" },
-                ]}
-              >
-                <Text style={[styles.badgeText, { color: colors.accent }]}>
-                  {session.categoryLabel.toUpperCase()}
-                </Text>
-              </View>
-              {session.isNew && (
-                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-                </View>
-              )}
-            </View>
-          )}
+        {/* ── Content ─────────────────────────────────────────────────────── */}
+        <View style={[styles.content, { marginTop: -36 }]}>
 
-          {/* Sonidos Ancestrales: show ancestralTag badge */}
-          {isAncestral && (
-            <View style={[styles.badges, { marginBottom: 10 }]}>
-              {session.ancestralTag && (
-                <View style={[styles.badge, { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.35)" }]}>
-                  <Text style={[styles.badgeText, { color: colors.accent }]}>
-                    {session.ancestralTag.toUpperCase()}
-                  </Text>
-                </View>
-              )}
-              {session.isNew && (
-                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-                </View>
-              )}
-            </View>
-          )}
+          {/* Badges */}
+          {renderBadges()}
 
-          {/* PodCast: show podcastTag badge */}
-          {isPodcast && (
-            <View style={[styles.badges, { marginBottom: 10 }]}>
-              {session.podcastTag && (
-                <View style={[styles.badge, { backgroundColor: "rgba(138,170,212,0.15)", borderColor: "rgba(138,170,212,0.35)" }]}>
-                  <Text style={[styles.badgeText, { color: "#8AAAD4" }]}>
-                    {session.podcastTag.toUpperCase()}
-                  </Text>
-                </View>
-              )}
-              {session.isNew && (
-                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-                </View>
-              )}
-            </View>
-          )}
-
-          {/* Sabiduría para tu día: show sabiduriaTag badge */}
-          {isSabiduría && (
-            <View style={[styles.badges, { marginBottom: 10 }]}>
-              {session.sabiduriaTag && (
-                <View style={[styles.badge, { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.35)" }]}>
-                  <Text style={[styles.badgeText, { color: colors.accent }]}>
-                    {session.sabiduriaTag.toUpperCase()}
-                  </Text>
-                </View>
-              )}
-              {session.isNew && (
-                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-                </View>
-              )}
-            </View>
-          )}
-
-          {/* For guided meditations: show tag + NEW badge */}
-          {isGuiada && (
-            <View style={[styles.badges, { marginBottom: 10 }]}>
-              {session.meditationTag && (
-                <View style={[styles.badge, { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.35)" }]}>
-                  <Text style={[styles.badgeText, { color: colors.accent }]}>
-                    {session.meditationTag.toUpperCase()}
-                  </Text>
-                </View>
-              )}
-              {session.isNew && (
-                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-                </View>
-              )}
-            </View>
-          )}
-
+          {/* Title */}
           <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
-          <Text style={[styles.subtitle, { color: colors.accent }]}>{session.subtitle}</Text>
 
-          {/* 5-star rating — only for Meditaciones Guiadas */}
-          {isGuiada && (
-            <View style={styles.ratingWrap}>
-              <View style={styles.stars}>
-                {[1, 2, 3, 4, 5].map((star) => {
-                  const filled = star <= (hoverRating || rating);
-                  return (
-                    <Pressable
-                      key={star}
-                      onPress={() => handleRate(star)}
-                      onPressIn={() => setHoverRating(star)}
-                      onPressOut={() => setHoverRating(0)}
-                      hitSlop={6}
-                    >
-                      <Feather
-                        name="star"
-                        size={28}
-                        color={filled ? "#E8B96A" : "rgba(198,155,79,0.25)"}
-                      />
-                    </Pressable>
-                  );
-                })}
-              </View>
-              <Text style={[styles.ratingLabel, { color: colors.mutedForeground }]}>
-                {rating === 0
-                  ? "Valora esta meditación"
-                  : rating === 1
-                  ? "Necesita mejorar"
-                  : rating === 2
-                  ? "Regular"
-                  : rating === 3
-                  ? "Buena"
-                  : rating === 4
-                  ? "Muy buena"
-                  : "¡Excelente!"}
-              </Text>
-            </View>
-          )}
-
-          {/* Meta row */}
+          {/* Meta row: duration · frequency · small stars */}
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>
-              <Feather name="clock" size={14} color={colors.mutedForeground} />
-              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                {session.durationLabel}
-              </Text>
+              <Feather name="clock" size={13} color={colors.mutedForeground} />
+              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{session.durationLabel}</Text>
             </View>
             {session.frequency && (
               <View style={styles.metaItem}>
-                <Feather name="radio" size={14} color={colors.mutedForeground} />
-                <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                  {session.frequency}
-                </Text>
+                <Feather name="radio" size={13} color={colors.mutedForeground} />
+                <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{session.frequency}</Text>
               </View>
             )}
+            {/* Small inline rating */}
+            <View style={styles.metaItem}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Pressable key={star} onPress={() => handleRate(star)} hitSlop={4}>
+                  <Feather
+                    name="star"
+                    size={13}
+                    color={star <= rating ? "#E8B96A" : "rgba(198,155,79,0.28)"}
+                  />
+                </Pressable>
+              ))}
+            </View>
           </View>
 
           {/* Description */}
@@ -320,10 +208,54 @@ export default function SessionDetailScreen() {
             {session.description}
           </Text>
 
+          {/* ── Action row ──────────────────────────────────────────────── */}
+          <View style={styles.actionRow}>
+            <Pressable
+              onPress={handleFav}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+            >
+              <Feather name="bookmark" size={20} color={fav ? colors.primary : colors.mutedForeground} />
+              <Text style={[styles.actionLabel, { color: fav ? colors.primary : colors.mutedForeground }]}>Guardar</Text>
+            </Pressable>
 
-          {/* Related */}
+            <Pressable
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+            >
+              <Feather name="download-cloud" size={20} color={colors.mutedForeground} />
+              <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Descargar</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={handleShare}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+            >
+              <Feather name="share-2" size={20} color={colors.mutedForeground} />
+              <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Compartir</Text>
+            </Pressable>
+          </View>
+
+          {/* ── Sobre la voz guía ────────────────────────────────────────── */}
+          {!isMusica && session.guide && (
+            <View style={styles.guideBlock}>
+              <Text style={[styles.blockTitle, { color: colors.foreground }]}>Sobre la voz guía</Text>
+              <View style={[styles.guideCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <View style={[styles.guideAvatar, { backgroundColor: "rgba(198,155,79,0.18)", borderColor: "rgba(198,155,79,0.35)" }]}>
+                  <Text style={[styles.guideInitials, { color: colors.primary }]}>{guideInitials}</Text>
+                </View>
+                <View style={styles.guideMeta}>
+                  <Text style={[styles.guideName, { color: colors.foreground }]}>{session.guide.name}</Text>
+                  <View style={styles.guideCountryRow}>
+                    <Feather name="map-pin" size={11} color={colors.mutedForeground} />
+                    <Text style={[styles.guideCountry, { color: colors.mutedForeground }]}>{session.guide.country}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {/* ── Más en … ─────────────────────────────────────────────────── */}
           {related.length > 0 && (
-            <View style={styles.block}>
+            <View style={styles.relatedBlock}>
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>
                 Más en {session.categoryLabel}
               </Text>
@@ -336,11 +268,7 @@ export default function SessionDetailScreen() {
                     { borderColor: colors.border, backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
-                  <Image
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    source={s.image as any}
-                    style={styles.relatedImg}
-                  />
+                  <Image source={s.image as never} style={styles.relatedImg} resizeMode="cover" />
                   <View style={styles.relatedInfo}>
                     <Text style={[styles.relatedTitle, { color: colors.foreground }]}>{s.title}</Text>
                     <Text style={[styles.relatedSub, { color: colors.mutedForeground }]}>
@@ -355,8 +283,8 @@ export default function SessionDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* Sticky Play Button */}
-      <View style={[styles.stickyPlay, { paddingBottom: bottomPad + 10, backgroundColor: "transparent" }]}>
+      {/* ── Sticky "Escuchar ahora" ──────────────────────────────────────── */}
+      <View style={[styles.stickyPlay, { paddingBottom: bottomPad + 10 }]}>
         <LinearGradient colors={["transparent", colors.background]} style={StyleSheet.absoluteFill} />
         <Pressable
           onPress={handlePlay}
@@ -365,13 +293,8 @@ export default function SessionDetailScreen() {
             { backgroundColor: colors.primary, opacity: pressed ? 0.88 : 1 },
           ]}
         >
-          <Feather
-            name={isCurrentlyPlaying ? "pause" : "play"}
-            size={20}
-            color={colors.primaryForeground}
-          />
           <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
-            {isCurrentlyPlaying ? "Reproduciendo" : "Reproducir"}
+            {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
           </Text>
         </Pressable>
       </View>
@@ -382,25 +305,15 @@ export default function SessionDetailScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
-  imageHeader: {
-    width: "100%",
-    overflow: "hidden",
-  },
-  glowCenter: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
+  // Hero
+  hero: { width: "100%", overflow: "hidden" },
   navBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingBottom: 12,
-  },
-  navRight: {
-    flexDirection: "row",
-    gap: 10,
   },
   navBtn: {
     width: 40,
@@ -409,102 +322,104 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  content: {
-    paddingHorizontal: 20,
-  },
-  badges: {
-    flexDirection: "row",
-    gap: 8,
-    marginBottom: 12,
-  },
+
+  // Content
+  content: { paddingHorizontal: 20 },
+
+  // Badges
+  badges: { flexDirection: "row", gap: 8, marginBottom: 12 },
   badge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
     borderWidth: 1,
   },
-  badgeText: {
-    fontSize: 9,
-    letterSpacing: 1.5,
-    fontWeight: "700",
-  },
+  badgeText: { fontSize: 9, letterSpacing: 1.5, fontWeight: "700" },
+
+  // Title
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: "700",
-    marginBottom: 4,
-    lineHeight: 36,
+    lineHeight: 34,
+    marginBottom: 12,
   },
-  subtitle: {
-    fontSize: 15,
-    marginBottom: 16,
-  },
-  ratingWrap: {
-    marginBottom: 20,
-    gap: 8,
-  },
-  stars: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  ratingLabel: {
-    fontSize: 12,
-    letterSpacing: 0.3,
-  },
+
+  // Meta
   metaRow: {
     flexDirection: "row",
-    gap: 20,
-    marginBottom: 20,
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 18,
     flexWrap: "wrap",
   },
-  metaItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  metaText: {
-    fontSize: 13,
-  },
+  metaItem: { flexDirection: "row", alignItems: "center", gap: 4 },
+  metaText: { fontSize: 13 },
+
+  // Description
   description: {
     fontSize: 15,
-    lineHeight: 24,
+    lineHeight: 25,
+    marginBottom: 24,
+  },
+
+  // Action row
+  actionRow: {
+    flexDirection: "row",
+    gap: 10,
     marginBottom: 28,
   },
-  block: {
-    marginBottom: 28,
+  actionCard: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    gap: 6,
   },
+  actionLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
+
+  // Guide
+  guideBlock: { marginBottom: 28 },
+  guideCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    padding: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  guideAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  guideInitials: {
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  guideMeta: { flex: 1 },
+  guideName: { fontSize: 15, fontWeight: "600", marginBottom: 4 },
+  guideCountryRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  guideCountry: { fontSize: 12 },
+
   blockTitle: {
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.3,
     marginBottom: 14,
   },
-  pillsRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  pill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  pillText: {
-    fontSize: 13,
-  },
-  instrRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  instrText: {
-    fontSize: 14,
-  },
+
+  // Related
+  relatedBlock: { marginBottom: 10 },
   relatedRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -519,28 +434,19 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 10,
-    resizeMode: "cover",
   },
-  relatedInfo: {
-    flex: 1,
-  },
-  relatedTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 2,
-  },
-  relatedSub: {
-    fontSize: 12,
-  },
+  relatedInfo: { flex: 1 },
+  relatedTitle: { fontSize: 14, fontWeight: "600", marginBottom: 2 },
+  relatedSub: { fontSize: 12 },
+
+  // Sticky play
   stickyPlay: {
     paddingHorizontal: 20,
     paddingTop: 16,
   },
   playBtn: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
     paddingVertical: 16,
     borderRadius: 30,
     shadowColor: "#C69B4F",
