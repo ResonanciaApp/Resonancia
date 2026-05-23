@@ -1,6 +1,6 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
+import { AMBIENT_MAP, AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
 import React, {
   createContext,
   useCallback,
@@ -46,6 +46,12 @@ type PlayerContextType = {
   voiceVolume: number;
   /** Set voice track volume 0–1 */
   setVoiceVolume: (volume: number) => void;
+  /** Whether the current session has an ambient sound layer (e.g. birds) */
+  hasAmbientTrack: boolean;
+  /** Ambient layer volume 0–1 */
+  ambientVolume: number;
+  /** Set ambient layer volume 0–1 */
+  setAmbientVolume: (volume: number) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -66,9 +72,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
 
   const [voiceVolume, setVoiceVolumeState] = useState(0.8);
+  const [ambientVolume, setAmbientVolumeState] = useState(0.7);
 
   const soundRef = useRef<Audio.Sound | null>(null);
   const voiceSoundRef = useRef<Audio.Sound | null>(null);
+  const ambientSoundRef = useRef<Audio.Sound | null>(null);
   const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Keep latest isPlaying in a ref so timer callbacks see the current value
@@ -152,8 +160,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const unloadAmbientSound = async () => {
+    if (ambientSoundRef.current) {
+      try { await ambientSoundRef.current.unloadAsync(); } catch (_) {}
+      ambientSoundRef.current = null;
+    }
+  };
+
   const unloadSound = async () => {
     await unloadVoiceSound();
+    await unloadAmbientSound();
     if (soundRef.current) {
       try {
         await soundRef.current.unloadAsync();
@@ -300,6 +316,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             { shouldPlay: true, isLooping: isLoopSession }
           );
           soundRef.current = sound;
+
+          // Load ambient layer (e.g. birds) if available
+          const ambientFile = AMBIENT_MAP[session.id];
+          if (ambientFile) {
+            try {
+              const { sound: ambientSound } = await Audio.Sound.createAsync(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ambientFile as any,
+                { shouldPlay: true, isLooping: true, volume: ambientVolume }
+              );
+              ambientSoundRef.current = ambientSound;
+            } catch (_) {}
+          }
+
           setIsPlaying(true);
 
           // Drive progress with a countdown interval (audio loops indefinitely)
@@ -311,6 +341,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 void sound.stopAsync().catch(() => {});
                 void sound.unloadAsync().catch(() => {});
                 soundRef.current = null;
+                if (ambientSoundRef.current) {
+                  void ambientSoundRef.current.stopAsync().catch(() => {});
+                  void ambientSoundRef.current.unloadAsync().catch(() => {});
+                  ambientSoundRef.current = null;
+                }
                 setIsPlaying(false);
                 setProgress(1);
                 return totalSeconds;
@@ -329,7 +364,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         startSimulation(sessionOverride);
       }
     },
-    [addToHistory]
+    [addToHistory, ambientVolume]
   );
 
   const pauseResume = useCallback(async () => {
@@ -416,6 +451,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const setAmbientVolume = useCallback(async (volume: number) => {
+    const clamped = Math.max(0, Math.min(1, volume));
+    setAmbientVolumeState(clamped);
+    if (ambientSoundRef.current) {
+      try { await ambientSoundRef.current.setVolumeAsync(clamped); } catch (_) {}
+    }
+  }, []);
+
   const toggleFavorite = useCallback(
     async (id: string) => {
       const updated = favorites.includes(id)
@@ -456,6 +499,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         hasVoiceTrack: !!VOICE_MAP[currentSession?.id ?? ""],
         voiceVolume,
         setVoiceVolume,
+        hasAmbientTrack: !!AMBIENT_MAP[currentSession?.id ?? ""],
+        ambientVolume,
+        setAmbientVolume,
       }}
     >
       {children}

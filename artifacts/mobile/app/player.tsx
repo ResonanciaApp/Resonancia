@@ -31,7 +31,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const ART_SIZE = width * 0.72;
 
 function formatTime(seconds: number): string {
@@ -82,22 +82,44 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
 export default function PlayerScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { currentSession, isPlaying, isLoading, progress, elapsed, actualDurationSeconds, pauseResume, stop, isFavorite, toggleFavorite, seekTo, sleepTimerRemaining, setSleepTimer, hasVoiceTrack, voiceVolume, setVoiceVolume } =
-    usePlayer();
+  const {
+    currentSession,
+    isPlaying,
+    isLoading,
+    progress,
+    elapsed,
+    actualDurationSeconds,
+    pauseResume,
+    stop,
+    isFavorite,
+    toggleFavorite,
+    seekTo,
+    sleepTimerRemaining,
+    setSleepTimer,
+    hasAmbientTrack,
+    ambientVolume,
+    setAmbientVolume,
+  } = usePlayer();
 
   // ── All hooks must be called before any early return ────────────────────
-  const voiceTrackWidth = useRef(0);
+  const ambientTrackWidth = useRef(0);
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
 
-  const handleVoiceSlider = useCallback((locationX: number) => {
-    const vol = Math.max(0, Math.min(1, locationX / voiceTrackWidth.current));
-    setVoiceVolume(vol);
-  }, [setVoiceVolume]);
+  const handleAmbientSlider = useCallback(
+    (locationX: number) => {
+      const vol = Math.max(0, Math.min(1, locationX / ambientTrackWidth.current));
+      setAmbientVolume(vol);
+    },
+    [setAmbientVolume]
+  );
 
-  const handleSelectTimer = useCallback((minutes: number | null) => {
-    setSelectedTimerMinutes(minutes);
-    setSleepTimer(minutes);
-  }, [setSleepTimer]);
+  const handleSelectTimer = useCallback(
+    (minutes: number | null) => {
+      setSelectedTimerMinutes(minutes);
+      setSleepTimer(minutes);
+    },
+    [setSleepTimer]
+  );
 
   // When timer naturally expires, reset the chip selection
   useEffect(() => {
@@ -112,17 +134,22 @@ export default function PlayerScreen() {
 
   if (!currentSession) {
     return (
-      <View style={[styles.root, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" }]}>
+      <View
+        style={[
+          styles.root,
+          { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" },
+        ]}
+      >
         <Feather name="music" size={40} color={colors.border} />
-        <Text style={[styles.noSession, { color: colors.mutedForeground }]}>
-          No session playing
-        </Text>
+        <Text style={[styles.noSession, { color: colors.mutedForeground }]}>No session playing</Text>
         <Pressable onPress={() => router.back()} style={[styles.backBtnSolo, { borderColor: colors.border }]}>
           <Text style={{ color: colors.mutedForeground }}>Go back</Text>
         </Pressable>
       </View>
     );
   }
+
+  const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
 
   const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
     { label: "Sin timer", minutes: null },
@@ -166,7 +193,8 @@ export default function PlayerScreen() {
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <Image
-        source={currentSession.image}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        source={currentSession.image as any}
         style={[StyleSheet.absoluteFill, { opacity: 0.12, resizeMode: "cover" }]}
         blurRadius={20}
       />
@@ -185,243 +213,215 @@ export default function PlayerScreen() {
         <View style={styles.navCenter}>
           <Text style={[styles.navLabel, { color: colors.accent }]}>NOW PLAYING</Text>
         </View>
-        <Pressable onPress={() => { toggleFavorite(currentSession.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={styles.iconBtn}>
+        <Pressable
+          onPress={() => {
+            toggleFavorite(currentSession.id);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }}
+          style={styles.iconBtn}
+        >
           <Feather name="heart" size={22} color={fav ? colors.primary : colors.mutedForeground} />
         </Pressable>
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-
-      {/* Art + Glow */}
-      <View style={styles.artSection}>
-        <GlowRing size={ART_SIZE + 80} color="rgba(198,155,79,0.12)" delay={0} duration={4000} />
-        <GlowRing size={ART_SIZE + 120} color="rgba(198,155,79,0.07)" delay={700} duration={4000} />
-        <BreathingPulse isPlaying={isPlaying} />
-        <View style={[styles.artFrame, { borderColor: "rgba(198,155,79,0.25)" }]}>
-          <Image
-            source={currentSession.image}
-            style={[styles.artImage, { width: ART_SIZE, height: ART_SIZE }]}
-          />
-          <LinearGradient
-            colors={["transparent", "rgba(24,17,12,0.4)"]}
-            style={[StyleSheet.absoluteFill, { borderRadius: ART_SIZE / 2 }]}
-          />
-        </View>
-      </View>
-
-      {/* Info */}
-      <View style={styles.infoSection}>
-        <Text style={[styles.category, { color: colors.accent }]}>
-          {currentSession.categoryLabel}
-        </Text>
-        <Text style={[styles.sessionTitle, { color: colors.foreground }]}>
-          {currentSession.title}
-        </Text>
-        <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>
-          {currentSession.subtitle}
-        </Text>
-      </View>
-
-      {/* Progress */}
-      <View style={styles.progressSection}>
-        <Pressable
-          style={styles.progressTrack}
-          onPress={(e) => {
-            const BAR_WIDTH = width - 64;
-            handleSeek(e, BAR_WIDTH);
-          }}
-        >
-          <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
-            <View
-              style={[
-                styles.progressFill,
-                {
-                  width: `${progress * 100}%`,
-                  backgroundColor: colors.primary,
-                },
-              ]}
+      <ScrollView showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={styles.scrollContent}>
+        {/* Art + Glow */}
+        <View style={styles.artSection}>
+          <GlowRing size={ART_SIZE + 80} color="rgba(198,155,79,0.12)" delay={0} duration={4000} />
+          <GlowRing size={ART_SIZE + 120} color="rgba(198,155,79,0.07)" delay={700} duration={4000} />
+          <BreathingPulse isPlaying={isPlaying} />
+          <View style={[styles.artFrame, { borderColor: "rgba(198,155,79,0.25)" }]}>
+            <Image
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              source={currentSession.image as any}
+              style={[styles.artImage, { width: ART_SIZE, height: ART_SIZE }]}
             />
-            <View
-              style={[
-                styles.progressThumb,
-                {
-                  left: `${progress * 100}%`,
-                  backgroundColor: colors.primary,
-                },
-              ]}
+            <LinearGradient
+              colors={["transparent", "rgba(24,17,12,0.4)"]}
+              style={[StyleSheet.absoluteFill, { borderRadius: ART_SIZE / 2 }]}
             />
           </View>
-        </Pressable>
-        <View style={styles.timeRow}>
-          <Text style={[styles.timeText, { color: colors.mutedForeground }]}>
-            {formatTime(elapsed)}
-          </Text>
-          <Text style={[styles.timeText, { color: colors.mutedForeground }]}>
-            -{formatTime(remaining)}
-          </Text>
         </View>
-      </View>
 
-      {/* Controls */}
-      <View style={[styles.controlsWrapper, { paddingBottom: 8 }]}>
-        {Platform.OS !== "web" ? (
-          <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(24,17,12,0.55)" }]} />
-        )}
-        <View style={styles.controls}>
-          <Pressable onPress={skipBackward} style={styles.controlSide}>
-            <Feather name="skip-back" size={24} color={colors.foreground} />
-            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
+        {/* Info */}
+        <View style={styles.infoSection}>
+          <Text style={[styles.category, { color: colors.accent }]}>{currentSession.categoryLabel}</Text>
+          <Text style={[styles.sessionTitle, { color: colors.foreground }]}>{currentSession.title}</Text>
+          <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>{currentSession.subtitle}</Text>
+        </View>
+
+        {/* Progress */}
+        <View style={styles.progressSection}>
+          <Pressable
+            style={styles.progressTrack}
+            onPress={(e) => {
+              const BAR_WIDTH = width - 64;
+              handleSeek(e, BAR_WIDTH);
+            }}
+          >
+            <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
+              <View
+                style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: colors.primary }]}
+              />
+              <View
+                style={[
+                  styles.progressThumb,
+                  { left: `${progress * 100}%`, backgroundColor: colors.primary },
+                ]}
+              />
+            </View>
           </Pressable>
+          <View style={styles.timeRow}>
+            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{formatTime(elapsed)}</Text>
+            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>-{formatTime(remaining)}</Text>
+          </View>
+        </View>
 
-          {/* Play button with outer glow ring */}
-          <View style={styles.playOuter}>
-            <View style={[styles.playRing, { borderColor: "rgba(198,155,79,0.25)" }]} />
-            <Pressable
-              onPress={handlePlayPause}
-              disabled={isLoading}
-              style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
-            >
-              {isLoading ? (
-                <Feather name="loader" size={32} color={colors.primaryForeground} />
-              ) : (
-                <Feather
-                  name={isPlaying ? "pause" : "play"}
-                  size={32}
-                  color={colors.primaryForeground}
-                  style={isPlaying ? undefined : { paddingLeft: 4 }}
-                />
-              )}
+        {/* Controls */}
+        <View style={[styles.controlsWrapper, { paddingBottom: 8 }]}>
+          {Platform.OS !== "web" ? (
+            <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(24,17,12,0.55)" }]} />
+          )}
+          <View style={styles.controls}>
+            <Pressable onPress={skipBackward} style={styles.controlSide}>
+              <Feather name="skip-back" size={24} color={colors.foreground} />
+              <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
+            </Pressable>
+
+            <View style={styles.playOuter}>
+              <View style={[styles.playRing, { borderColor: "rgba(198,155,79,0.25)" }]} />
+              <Pressable
+                onPress={handlePlayPause}
+                disabled={isLoading}
+                style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
+              >
+                {isLoading ? (
+                  <Feather name="loader" size={32} color={colors.primaryForeground} />
+                ) : (
+                  <Feather
+                    name={isPlaying ? "pause" : "play"}
+                    size={32}
+                    color={colors.primaryForeground}
+                    style={isPlaying ? undefined : { paddingLeft: 4 }}
+                  />
+                )}
+              </Pressable>
+            </View>
+
+            <Pressable onPress={skipForward} style={styles.controlSide}>
+              <Feather name="skip-forward" size={24} color={colors.foreground} />
+              <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
             </Pressable>
           </View>
+        </View>
 
-          <Pressable onPress={skipForward} style={styles.controlSide}>
-            <Feather name="skip-forward" size={24} color={colors.foreground} />
-            <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
+        {/* Sleep Timer — hidden for Música y Sonidos (duration was chosen upfront) */}
+        {!isMusicaYSonidos && (
+          <View style={[styles.timerSection, { paddingTop: 16 }]}>
+            <View style={styles.timerHeader}>
+              <Feather name="moon" size={13} color={colors.mutedForeground} />
+              <Text style={[styles.timerLabel, { color: colors.mutedForeground }]}>Apagar en</Text>
+              {sleepTimerRemaining !== null && (
+                <Text style={[styles.timerCountdown, { color: colors.accent }]}>
+                  · {formatRemaining(sleepTimerRemaining)}
+                </Text>
+              )}
+            </View>
+            <View style={styles.timerChips}>
+              {TIMER_OPTIONS.map((opt) => {
+                const selected = opt.minutes === selectedTimerMinutes;
+                return (
+                  <Pressable
+                    key={String(opt.minutes)}
+                    onPress={() => handleSelectTimer(opt.minutes)}
+                    style={[
+                      styles.timerChip,
+                      {
+                        backgroundColor: selected ? colors.primary : "rgba(198,155,79,0.08)",
+                        borderColor: selected ? colors.primary : "rgba(198,155,79,0.2)",
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.timerChipText,
+                        { color: selected ? colors.primaryForeground : colors.mutedForeground },
+                      ]}
+                    >
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
+        {/* Ambient volume slider — shown for sessions with a layered ambient track (e.g. birds) */}
+        {hasAmbientTrack && (
+          <View style={[styles.sliderSection, { paddingHorizontal: 32, marginBottom: 12 }]}>
+            <View style={styles.sliderHeader}>
+              <Feather name="wind" size={13} color={colors.mutedForeground} />
+              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>Pájaros</Text>
+              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
+                {Math.round(ambientVolume * 100)}%
+              </Text>
+            </View>
+            <View
+              style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
+              onLayout={(e: LayoutChangeEvent) => {
+                ambientTrackWidth.current = e.nativeEvent.layout.width;
+              }}
+              onStartShouldSetResponder={() => true}
+              onResponderGrant={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
+              onResponderMove={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
+            >
+              <View
+                style={[
+                  styles.sliderFill,
+                  { width: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" },
+                ]}
+              />
+              <View
+                style={[
+                  styles.sliderThumb,
+                  { left: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" },
+                ]}
+              />
+            </View>
+            <View style={styles.sliderHints}>
+              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Sin pájaros</Text>
+              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Bottom action row */}
+        <View style={[styles.extras, { paddingBottom: bottomPad + 10, paddingTop: 16 }]}>
+          <Pressable style={styles.extraBtn}>
+            <Feather name="volume-2" size={18} color={colors.mutedForeground} />
+            <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Volumen</Text>
+          </Pressable>
+          <Pressable
+            style={styles.extraBtn}
+            onPress={async () => {
+              await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              Share.share({
+                title: currentSession.title,
+                message: `🎵 Estoy escuchando "${currentSession.title}" en RESONANCIA — meditación y sanación con sonidos. ¿Te unes?`,
+              });
+            }}
+          >
+            <Feather name="share" size={18} color={colors.mutedForeground} />
+            <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Compartir</Text>
+          </Pressable>
+          <Pressable onPress={() => { stop(); router.back(); }} style={styles.extraBtn}>
+            <Feather name="x-circle" size={18} color={colors.mutedForeground} />
+            <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Detener</Text>
           </Pressable>
         </View>
-      </View>
-
-      {/* Sleep Timer */}
-      <View style={[styles.timerSection, { paddingTop: 16 }]}>
-        <View style={styles.timerHeader}>
-          <Feather name="moon" size={13} color={colors.mutedForeground} />
-          <Text style={[styles.timerLabel, { color: colors.mutedForeground }]}>
-            Apagar en
-          </Text>
-          {sleepTimerRemaining !== null && (
-            <Text style={[styles.timerCountdown, { color: colors.accent }]}>
-              · {formatRemaining(sleepTimerRemaining)}
-            </Text>
-          )}
-        </View>
-        <View style={styles.timerChips}>
-          {TIMER_OPTIONS.map((opt) => {
-            const selected = opt.minutes === selectedTimerMinutes;
-            return (
-              <Pressable
-                key={String(opt.minutes)}
-                onPress={() => handleSelectTimer(opt.minutes)}
-                style={[
-                  styles.timerChip,
-                  {
-                    backgroundColor: selected
-                      ? colors.primary
-                      : "rgba(198,155,79,0.08)",
-                    borderColor: selected
-                      ? colors.primary
-                      : "rgba(198,155,79,0.2)",
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.timerChipText,
-                    { color: selected ? colors.primaryForeground : colors.mutedForeground },
-                  ]}
-                >
-                  {opt.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
-
-      {/* Voice Volume Slider — only for dual-track sessions */}
-      {hasVoiceTrack && (
-        <View style={[styles.voiceSection, { paddingHorizontal: 32, marginBottom: 12 }]}>
-          <View style={styles.voiceHeader}>
-            <Feather name="mic" size={13} color={colors.mutedForeground} />
-            <Text style={[styles.voiceLabel, { color: colors.mutedForeground }]}>
-              Voz guiada
-            </Text>
-            <Text style={[styles.voicePercent, { color: colors.accent }]}>
-              {Math.round(voiceVolume * 100)}%
-            </Text>
-          </View>
-          <View
-            style={[styles.voiceTrack, { backgroundColor: colors.secondary }]}
-            onLayout={(e: LayoutChangeEvent) => {
-              voiceTrackWidth.current = e.nativeEvent.layout.width;
-            }}
-            onStartShouldSetResponder={() => true}
-            onResponderGrant={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
-            onResponderMove={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
-          >
-            <View
-              style={[
-                styles.voiceFill,
-                { width: `${voiceVolume * 100}%`, backgroundColor: colors.accent },
-              ]}
-            />
-            <View
-              style={[
-                styles.voiceThumb,
-                { left: `${voiceVolume * 100}%`, backgroundColor: colors.accent },
-              ]}
-            />
-          </View>
-          <View style={styles.voiceHints}>
-            <Text style={[styles.voiceHintText, { color: colors.mutedForeground }]}>Sin voz</Text>
-            <Text style={[styles.voiceHintText, { color: colors.mutedForeground }]}>Máximo</Text>
-          </View>
-        </View>
-      )}
-
-      {/* Bottom Extras */}
-      <View style={[styles.extras, { paddingBottom: bottomPad + 10, paddingTop: 16 }]}>
-        <Pressable style={styles.extraBtn}>
-          <Feather name="volume-2" size={18} color={colors.mutedForeground} />
-          <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Volume</Text>
-        </Pressable>
-        <Pressable
-          style={styles.extraBtn}
-          onPress={async () => {
-            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            Share.share({
-              title: currentSession.title,
-              message: `🎵 Estoy escuchando "${currentSession.title}" en RESONANCIA — meditación y sanación con sonidos. ¿Te unes?`,
-            });
-          }}
-        >
-          <Feather name="share" size={18} color={colors.mutedForeground} />
-          <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Share</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => { stop(); router.back(); }}
-          style={styles.extraBtn}
-        >
-          <Feather name="x-circle" size={18} color={colors.mutedForeground} />
-          <Text style={[styles.extraLabel, { color: colors.mutedForeground }]}>Stop</Text>
-        </Pressable>
-      </View>
-
       </ScrollView>
     </View>
   );
@@ -605,6 +605,56 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
   },
+
+  // Generic slider (ambient / voice)
+  sliderSection: {
+    marginBottom: 12,
+  },
+  sliderHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 10,
+  },
+  sliderLabel: {
+    fontSize: 11,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    flex: 1,
+  },
+  sliderPercent: {
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  sliderTrack: {
+    height: 6,
+    borderRadius: 3,
+    overflow: "visible",
+    position: "relative",
+  },
+  sliderFill: {
+    height: 6,
+    borderRadius: 3,
+  },
+  sliderThumb: {
+    position: "absolute",
+    top: -6,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    marginLeft: -9,
+  },
+  sliderHints: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
+  sliderHintText: {
+    fontSize: 10,
+    letterSpacing: 0.3,
+  },
+
   extras: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -628,54 +678,5 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-  },
-
-  // Voice volume slider
-  voiceSection: {
-    marginBottom: 12,
-  },
-  voiceHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 10,
-  },
-  voiceLabel: {
-    fontSize: 11,
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
-    flex: 1,
-  },
-  voicePercent: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  voiceTrack: {
-    height: 6,
-    borderRadius: 3,
-    overflow: "visible",
-    position: "relative",
-  },
-  voiceFill: {
-    height: 6,
-    borderRadius: 3,
-  },
-  voiceThumb: {
-    position: "absolute",
-    top: -6,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    marginLeft: -9,
-  },
-  voiceHints: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
-  voiceHintText: {
-    fontSize: 10,
-    letterSpacing: 0.3,
   },
 });

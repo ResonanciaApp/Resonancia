@@ -251,3 +251,9 @@ id = "U6T0G7L-JXxiBKjvpOSE2"
 uri = "file://attached_assets/generated_audio/meditacion_sarah.mp3"
 type = "audio"
 title = "Opción B — Sarah (madura, reconfortante)"
+
+[[outputs]]
+id = "TxYiHFux0itAC_fZjmBRt"
+uri = "file://artifacts/mobile/assets/audio/pajaros_ambiente.mp3"
+type = "audio"
+title = "pajaros_ambiente"

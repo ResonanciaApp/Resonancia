@@ -34,7 +34,16 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
   "2": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "3": require("@/assets/audio/62 CM.mp3"),
   "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
-  "27": require("@/assets/audio/riachuelo_pajaros.wav"),
+  "27": require("@/assets/audio/riachuelo_stream.mp3"),
+};
+
+/**
+ * AMBIENT_MAP — capa de sonido ambiente superpuesta al audio base.
+ * El usuario puede ajustar el volumen de esta capa independientemente.
+ * Ejemplo: pájaros sobre el riachuelo.
+ */
+export const AMBIENT_MAP: Record<string, ReturnType<typeof require> | undefined> = {
+  "27": require("@/assets/audio/pajaros_ambiente.mp3"),
 };
 
 /**
