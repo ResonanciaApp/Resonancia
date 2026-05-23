@@ -183,12 +183,6 @@ export default function SessionDetailScreen() {
               <Feather name="clock" size={13} color={colors.mutedForeground} />
               <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{session.durationLabel}</Text>
             </View>
-            {session.frequency && (
-              <View style={styles.metaItem}>
-                <Feather name="radio" size={13} color={colors.mutedForeground} />
-                <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{session.frequency}</Text>
-              </View>
-            )}
             {/* Small inline rating */}
             <View style={styles.metaItem}>
               {[1, 2, 3, 4, 5].map((star) => (
@@ -214,7 +208,7 @@ export default function SessionDetailScreen() {
               onPress={handleFav}
               style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
             >
-              <Feather name="bookmark" size={20} color={fav ? colors.primary : colors.mutedForeground} />
+              <Feather name="heart" size={20} color={fav ? colors.primary : colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: fav ? colors.primary : colors.mutedForeground }]}>Guardar</Text>
             </Pressable>
 
