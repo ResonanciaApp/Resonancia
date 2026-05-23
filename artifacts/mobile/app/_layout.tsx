@@ -9,12 +9,11 @@ import {
   PlayfairDisplay_400Regular,
   PlayfairDisplay_700Bold,
 } from "@expo-google-fonts/playfair-display";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setBaseUrl } from "@workspace/api-client-react";
-import { router, Stack, useRootNavigationState, useSegments } from "expo-router";
+import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -31,34 +30,21 @@ if (apiUrl) setBaseUrl(apiUrl);
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
-const ONBOARDING_KEY = "cdc_onboarding_done";
 
-/** Handles first-launch redirect once navigation is mounted and ready. */
+/** Always redirects to onboarding once navigation is mounted. */
 function OnboardingGate() {
-  const rootNavState = useRootNavigationState();
   const segments = useSegments();
-  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
   const redirected = useRef(false);
 
-  // Check AsyncStorage once
   useEffect(() => {
-    AsyncStorage.getItem(ONBOARDING_KEY).then((val) => {
-      setOnboardingDone(val === "true");
-    });
-  }, []);
-
-  // Redirect only after both navigation is ready AND we know the onboarding status
-  useEffect(() => {
-    if (!rootNavState?.key) return;       // navigator not mounted yet
-    if (redirected.current) return;       // already redirected this session
-
-    const inOnboarding = segments[0] === "onboarding";
-
-    if (!inOnboarding) {
+    if (redirected.current) return;
+    if (segments[0] === "onboarding") return;
+    const t = setTimeout(() => {
       redirected.current = true;
       router.replace("/onboarding");
-    }
-  }, [rootNavState?.key, onboardingDone, segments]);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [segments]);
 
   return null;
 }
