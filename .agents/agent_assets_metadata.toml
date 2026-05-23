@@ -263,3 +263,9 @@ id = "TxYiHFux0itAC_fZjmBRt"
 uri = "file://artifacts/mobile/assets/audio/pajaros_ambiente.mp3"
 type = "audio"
 title = "pajaros_ambiente"
+
+[[outputs]]
+id = "E5y0wD6-a5XPoKd_AAOzO"
+uri = "file://attached_assets/generated_audio/om_mani_padme_hum.mp3"
+type = "audio"
+title = "Om Mani Padme Hum — Pad · Voz Tibetana · Melodía"
