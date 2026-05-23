@@ -1,160 +1,206 @@
 import { BlurView } from "expo-blur";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { Tabs } from "expo-router";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
+import { Tabs, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
-import React from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import React, { useEffect, useRef } from "react";
+import {
+  Animated,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
-import { useColors } from "@/hooks/useColors";
 
-function NativeTabLayout() {
-  const { currentSession } = usePlayer();
+const ACTIVE_COLOR = "#FFFFFF";
+const INACTIVE_COLOR = "rgba(255,255,255,0.42)";
+const PILL_BG = "rgba(255,255,255,0.13)";
+const BAR_BORDER = "rgba(198,155,79,0.18)";
+
+const TAB_CONFIG: Record<
+  string,
+  {
+    label: string;
+    sfIcon: string;
+    sfIconFill: string;
+    featherIcon: string;
+  }
+> = {
+  index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
+  explore: { label: "Biblioteca", sfIcon: "books.vertical", sfIconFill: "books.vertical.fill", featherIcon: "book-open" },
+  descanzo:{ label: "Descanzo",   sfIcon: "moon.stars",     sfIconFill: "moon.stars.fill",     featherIcon: "moon" },
+  diario:  { label: "Diario",     sfIcon: "pencil.line",    sfIconFill: "pencil.line",         featherIcon: "feather" },
+  profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
+};
+
+function TabItem({
+  route,
+  isFocused,
+  onPress,
+}: {
+  route: { key: string; name: string };
+  isFocused: boolean;
+  onPress: () => void;
+}) {
+  const conf = TAB_CONFIG[route.name];
+  if (!conf) return null;
+
+  const pillOpacity = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(pillOpacity, {
+      toValue: isFocused ? 1 : 0,
+      duration: 180,
+      useNativeDriver: true,
+    }).start();
+  }, [isFocused]);
+
+  const isIOS = Platform.OS === "ios";
+  const iconColor = isFocused ? ACTIVE_COLOR : INACTIVE_COLOR;
+
   return (
-    <View style={{ flex: 1 }}>
-      <NativeTabs>
-        <NativeTabs.Trigger name="index">
-          <Icon sf={{ default: "house", selected: "house.fill" }} />
-          <Label>Inicio</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="explore">
-          <Icon sf={{ default: "books.vertical", selected: "books.vertical.fill" }} />
-          <Label>Biblioteca</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="descanzo">
-          <Icon sf={{ default: "moon.stars", selected: "moon.stars.fill" }} />
-          <Label>Descanzo</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="diario">
-          <Icon sf={{ default: "pencil.line", selected: "pencil.line" }} />
-          <Label>Diario</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="profile">
-          <Icon sf={{ default: "person", selected: "person.fill" }} />
-          <Label>Perfil</Label>
-        </NativeTabs.Trigger>
-      </NativeTabs>
-      {currentSession && (
-        <View style={styles.miniPlayerFloat}>
-          <MiniPlayer />
-        </View>
+    <Pressable
+      onPress={onPress}
+      style={styles.tab}
+      accessibilityRole="button"
+      accessibilityState={{ selected: isFocused }}
+    >
+      <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
+      {isIOS ? (
+        <SymbolView
+          name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
+          tintColor={iconColor}
+          size={22}
+        />
+      ) : (
+        <Feather name={conf.featherIcon as never} size={22} color={iconColor} />
       )}
-    </View>
+      <Text style={[styles.label, { color: iconColor }]}>{conf.label}</Text>
+    </Pressable>
   );
 }
 
-function ClassicTabLayout() {
-  const colors = useColors();
+type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>["tabBar"]>>[0];
+
+function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
-  const { currentSession } = usePlayer();
   const isIOS = Platform.OS === "ios";
   const isWeb = Platform.OS === "web";
-
-  const tabBarHeight = 50 + (isWeb ? 34 : insets.bottom);
+  const pb = isWeb ? 8 : insets.bottom;
 
   return (
-    <View style={{ flex: 1 }}>
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.mutedForeground,
-          tabBarStyle: {
-            position: "absolute",
-            backgroundColor: isIOS ? "transparent" : colors.background,
-            borderTopWidth: 1,
-            borderTopColor: colors.border,
-            elevation: 0,
-            height: tabBarHeight,
-          },
-          tabBarBackground: () =>
-            isIOS ? (
-              <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
-            ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]} />
-            ),
-          tabBarLabelStyle: {
-            fontSize: 10,
-            letterSpacing: 0.5,
-            marginBottom: isWeb ? 8 : 0,
-          },
-        }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "Inicio",
-            tabBarIcon: ({ color }) =>
-              isIOS ? <SymbolView name="house" tintColor={color} size={22} /> : <Feather name="home" size={22} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="explore"
-          options={{
-            title: "Biblioteca",
-            tabBarIcon: ({ color }) =>
-              isIOS ? <SymbolView name="books.vertical" tintColor={color} size={22} /> : <Feather name="book-open" size={22} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="descanzo"
-          options={{
-            title: "Descanzo",
-            tabBarIcon: ({ color }) =>
-              isIOS ? <SymbolView name="moon.stars" tintColor={color} size={22} /> : <Feather name="moon" size={22} color={color} />,
-          }}
-        />
-        {/* Favoritos — oculto del menú, código conservado */}
-        <Tabs.Screen
-          name="favorites"
-          options={{
-            title: "Favoritos",
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="diario"
-          options={{
-            title: "Diario",
-            tabBarIcon: ({ color }) =>
-              isIOS ? <SymbolView name="pencil.line" tintColor={color} size={22} /> : <Feather name="feather" size={22} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Perfil",
-            tabBarIcon: ({ color }) =>
-              isIOS ? <SymbolView name="person" tintColor={color} size={22} /> : <Feather name="user" size={22} color={color} />,
-          }}
-        />
-      </Tabs>
-
-      {currentSession && (
-        <View style={[styles.miniPlayerFloat, { bottom: tabBarHeight + 8 }]}>
-          <MiniPlayer />
-        </View>
+    <View style={[styles.bar, { paddingBottom: pb }]}>
+      {isIOS ? (
+        <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
+      ) : (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#18110C" }]} />
       )}
+      <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
+      <View style={styles.row}>
+        {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
+          const { options } = descriptors[route.key];
+          if ((options as { href?: null }).href === null) return null;
+
+          const isFocused = state.index === index;
+          const onPress = () => {
+            const event = navigation.emit({
+              type: "tabPress",
+              target: route.key,
+              canPreventDefault: true,
+            });
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name, route.params as never);
+            }
+          };
+
+          return (
+            <TabItem
+              key={route.key}
+              route={route}
+              isFocused={isFocused}
+              onPress={onPress}
+            />
+          );
+        })}
+      </View>
     </View>
   );
 }
 
 export default function TabLayout() {
-  if (isLiquidGlassAvailable()) {
-    return <NativeTabLayout />;
-  }
-  return <ClassicTabLayout />;
+  const { currentSession } = usePlayer();
+  const insets = useSafeAreaInsets();
+  const isWeb = Platform.OS === "web";
+  const tabBarHeight = 56 + (isWeb ? 34 : insets.bottom);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Tabs
+        screenOptions={{ headerShown: false }}
+        tabBar={(props) => <CustomTabBar {...props} />}
+      >
+        <Tabs.Screen name="index"    options={{ title: "Inicio" }} />
+        <Tabs.Screen name="explore"  options={{ title: "Biblioteca" }} />
+        <Tabs.Screen name="descanzo" options={{ title: "Descanzo" }} />
+        <Tabs.Screen name="favorites" options={{ title: "Favoritos", href: null }} />
+        <Tabs.Screen name="diario"   options={{ title: "Diario" }} />
+        <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
+      </Tabs>
+
+      {currentSession && (
+        <View style={[styles.miniPlayerFloat, { bottom: tabBarHeight + 6 }]}>
+          <MiniPlayer />
+        </View>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  bar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  barBorder: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  row: {
+    flexDirection: "row",
+    paddingTop: 8,
+    paddingHorizontal: 8,
+    height: 56,
+  },
+  tab: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+  },
+  pill: {
+    position: "absolute",
+    width: 52,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: PILL_BG,
+  },
+  label: {
+    fontSize: 10,
+    letterSpacing: 0.3,
+    fontWeight: "500",
+  },
   miniPlayerFloat: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 90,
   },
 });
