@@ -80,6 +80,7 @@ export default function SessionDetailScreen() {
 
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
+  const isSabiduría = session.categoryId === "sabiduria-dia";
   const fav = isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
 
@@ -160,8 +161,8 @@ export default function SessionDetailScreen() {
 
         {/* Content */}
         <View style={[styles.content, { marginTop: -40 }]}>
-          {/* Category badge — hidden for meditaciones-guiadas and sonidos-ancestrales (tag shown instead) */}
-          {!isGuiada && !isAncestral && (
+          {/* Category badge — hidden for categories that show their own tag */}
+          {!isGuiada && !isAncestral && !isSabiduría && (
             <View style={styles.badges}>
               <View
                 style={[
@@ -188,6 +189,24 @@ export default function SessionDetailScreen() {
                 <View style={[styles.badge, { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.35)" }]}>
                   <Text style={[styles.badgeText, { color: colors.accent }]}>
                     {session.ancestralTag.toUpperCase()}
+                  </Text>
+                </View>
+              )}
+              {session.isNew && (
+                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+                  <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Sabiduría para tu día: show sabiduriaTag badge */}
+          {isSabiduría && (
+            <View style={[styles.badges, { marginBottom: 10 }]}>
+              {session.sabiduriaTag && (
+                <View style={[styles.badge, { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.35)" }]}>
+                  <Text style={[styles.badgeText, { color: colors.accent }]}>
+                    {session.sabiduriaTag.toUpperCase()}
                   </Text>
                 </View>
               )}

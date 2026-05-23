@@ -6,6 +6,12 @@ export type MeditationTag =
   | "Mantras"
   | "Manifestación";
 
+export type SabiduriaTag =
+  | "Silencio Interior"
+  | "Aceptación y flujo"
+  | "Atención Plena"
+  | "Observación sin juicio";
+
 export type AncestralTag =
   | "Cuencos Tibetanos"
   | "Cuencos de Cuarzo"
@@ -32,6 +38,7 @@ export type Session = {
   soundTag?: SoundTag;
   meditationTag?: MeditationTag;
   ancestralTag?: AncestralTag;
+  sabiduriaTag?: SabiduriaTag;
 };
 
 export const SESSIONS: Session[] = [
@@ -104,8 +111,9 @@ export const SESSIONS: Session[] = [
     id: "5",
     title: "Más allá del sonido",
     subtitle: "Consejo del Día",
-    categoryId: "consejo-del-dia",
-    categoryLabel: "Consejo del día",
+    categoryId: "sabiduria-dia",
+    categoryLabel: "Sabiduría para tu día",
+    sabiduriaTag: "Silencio Interior" as const,
     duration: 5,
     durationLabel: "5 min",
     description:
