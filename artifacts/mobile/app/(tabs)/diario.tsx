@@ -41,6 +41,14 @@ const SECTIONS: SectionMeta[] = [
     accentColor: "#8AAAD4",
     gradientColors: ["#243350", "#131E33"],
   },
+  {
+    key: "ideas",
+    title: "Ideas Brillantes",
+    subtitle: "Las chispas que no quiero perder",
+    icon: "zap",
+    accentColor: "#F0CC82",
+    gradientColors: ["#3D2E00", "#231A00"],
+  },
 ];
 
 function formatDate(iso: string) {

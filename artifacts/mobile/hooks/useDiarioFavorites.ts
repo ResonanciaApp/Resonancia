@@ -6,9 +6,10 @@ import { type DiarioEntry, type DiarioSection } from "./useDiario";
 const FAV_KEY = "@diario_favorites";
 
 const SECTION_META: Record<DiarioSection, { title: string; accentColor: string }> = {
-  aprendizaje: { title: "Qué aprendí hoy", accentColor: "#C69B4F" },
-  suenos: { title: "Materializo mis sueños", accentColor: "#E0B882" },
-  reflexiones: { title: "Reflexiones profundas", accentColor: "#8AAAD4" },
+  aprendizaje: { title: "Qué aprendí hoy",       accentColor: "#C69B4F" },
+  suenos:      { title: "Materializo mis sueños", accentColor: "#E0B882" },
+  reflexiones: { title: "Mis reflexiones",        accentColor: "#8AAAD4" },
+  ideas:       { title: "Ideas Brillantes",       accentColor: "#F0CC82" },
 };
 
 export type FavoriteDiarioEntry = DiarioEntry & {
@@ -32,7 +33,7 @@ export function useDiarioFavorites() {
         return;
       }
 
-      const sections: DiarioSection[] = ["aprendizaje", "suenos", "reflexiones"];
+      const sections: DiarioSection[] = ["aprendizaje", "suenos", "reflexiones", "ideas"];
       const all: FavoriteDiarioEntry[] = [];
 
       for (const section of sections) {

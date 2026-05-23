@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useState } from "react";
 
-export type DiarioSection = "aprendizaje" | "suenos" | "reflexiones";
+export type DiarioSection = "aprendizaje" | "suenos" | "reflexiones" | "ideas";
 
 export type DiarioEntry = {
   id: string;
