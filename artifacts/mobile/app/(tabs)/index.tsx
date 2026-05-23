@@ -39,7 +39,6 @@ const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 320;
 
-const INTENCION_SEEN_KEY = "cdc_intencion_onboarding_seen";
 const ND = Platform.OS !== "web";
 
 function BlinkingCursor({ color }: { color: string }) {
@@ -67,13 +66,8 @@ export default function HomeScreen() {
   const { playSession } = usePlayer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
-  async function handleIntentionPress() {
-    const seen = await AsyncStorage.getItem(INTENCION_SEEN_KEY);
-    if (seen === "true") {
-      router.push("/intencion" as never);
-    } else {
-      router.push("/intencion-onboarding" as never);
-    }
+  function handleIntentionPress() {
+    router.push("/intencion-onboarding" as never);
   }
 
   const { favoriteEntries, toggleFavorite } = useDiarioFavoritesCtx();
