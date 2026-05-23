@@ -8,7 +8,6 @@ import {
 import {
   PlayfairDisplay_400Regular,
   PlayfairDisplay_700Bold,
-  PlayfairDisplay_900Black,
 } from "@expo-google-fonts/playfair-display";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -136,16 +135,20 @@ export default function RootLayout() {
     Inter_700Bold,
     PlayfairDisplay_400Regular,
     PlayfairDisplay_700Bold,
-    PlayfairDisplay_900Black,
   });
 
+  // Hide splash when fonts are ready
   useEffect(() => {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) return null;
+  // Fallback: hide splash after 800ms max — never block the user
+  useEffect(() => {
+    const t = setTimeout(() => SplashScreen.hideAsync(), 800);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <SafeAreaProvider>
