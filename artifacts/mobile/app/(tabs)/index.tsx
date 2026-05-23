@@ -77,7 +77,6 @@ export default function HomeScreen() {
   }
 
   const { favoriteEntries } = useDiarioFavoritesCtx();
-  const { entries: reflexionesEntries } = useDiario("reflexiones");
   const { entries: vozEntries } = useVozInterior();
 
   function formatVozMs(ms: number) {
@@ -86,12 +85,13 @@ export default function HomeScreen() {
   }
 
   const noOlvidarItems = React.useMemo(() => {
-    const reflexiones = reflexionesEntries.map((e) => ({
+    // Only favorited diary entries (all sections)
+    const diarioFavs = favoriteEntries.map((e) => ({
       id: `ref-${e.id}`,
       text: e.text,
       createdAt: e.createdAt,
-      sectionTitle: "A no olvidar",
-      accentColor: "#8AAAD4",
+      sectionTitle: e.sectionTitle,
+      accentColor: e.accentColor,
     }));
     const vozFavs = vozEntries
       .filter((e) => e.isFavorite)
@@ -102,10 +102,10 @@ export default function HomeScreen() {
         sectionTitle: "Voz Interior",
         accentColor: "#D4709A",
       }));
-    return [...reflexiones, ...vozFavs]
+    return [...diarioFavs, ...vozFavs]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 4);
-  }, [reflexionesEntries, vozEntries]);
+  }, [favoriteEntries, vozEntries]);
 
   const featured = getFeaturedSessions();
   const featuredSession = featured[0];

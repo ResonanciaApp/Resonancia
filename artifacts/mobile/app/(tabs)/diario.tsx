@@ -108,13 +108,21 @@ function EntryCard({
         </Text>
       )}
 
+      {/* Favorite badge */}
+      {isFavorited && (
+        <View style={styles.favBadge}>
+          <Feather name="heart" size={9} color="#D4709A" />
+          <Text style={styles.favBadgeText}>En "A no olvidar"</Text>
+        </View>
+      )}
+
       {/* Action buttons: favorite + delete */}
       <View style={styles.entryActions}>
         <Pressable onPress={onToggleFavorite} hitSlop={8} style={styles.actionBtn}>
           <Feather
             name="heart"
             size={13}
-            color={isFavorited ? "#E07070" : colors.mutedForeground}
+            color={isFavorited ? "#D4709A" : colors.mutedForeground}
           />
         </Pressable>
         <Pressable onPress={onDelete} hitSlop={8} style={styles.actionBtn}>
@@ -388,5 +396,22 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     padding: 6,
+  },
+  favBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(212,112,154,0.12)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginTop: 6,
+  },
+  favBadgeText: {
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 0.4,
+    color: "#D4709A",
   },
 });
