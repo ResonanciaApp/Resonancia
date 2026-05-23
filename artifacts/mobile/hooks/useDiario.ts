@@ -55,5 +55,10 @@ export function useDiario(section: DiarioSection) {
     [entries, section],
   );
 
-  return { entries, loading, saveEntry, deleteEntry };
+  const deleteAll = useCallback(async () => {
+    setEntries([]);
+    await AsyncStorage.setItem(KEY(section), JSON.stringify([]));
+  }, [section]);
+
+  return { entries, loading, saveEntry, deleteEntry, deleteAll };
 }

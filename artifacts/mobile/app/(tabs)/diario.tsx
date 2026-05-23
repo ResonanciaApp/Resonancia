@@ -143,7 +143,7 @@ function EntryCard({
 
 function SectionPanel({ meta }: { meta: SectionMeta }) {
   const colors = useColors();
-  const { entries, saveEntry, deleteEntry } = useDiario(meta.key);
+  const { entries, saveEntry, deleteEntry, deleteAll } = useDiario(meta.key);
   const { isFavorited, toggleFavorite } = useDiarioFavoritesCtx();
   const [text, setText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
@@ -158,10 +158,21 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   const handleDelete = (id: string) => {
     Alert.alert(
       "Eliminar entrada",
-      "¿Seguro que querés borrar esta reflexión?",
+      "¿Seguro que querés borrar esta entrada?",
       [
         { text: "Cancelar", style: "cancel" },
         { text: "Eliminar", style: "destructive", onPress: () => deleteEntry(id) },
+      ],
+    );
+  };
+
+  const handleDeleteAll = () => {
+    Alert.alert(
+      "Borrar todo",
+      `¿Querés eliminar las ${entries.length} entradas de "${meta.title}"? Esta acción no se puede deshacer.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Borrar todo", style: "destructive", onPress: () => deleteAll() },
       ],
     );
   };
@@ -234,9 +245,15 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
       {/* History */}
       {showHistory && entries.length > 0 && (
         <View style={[styles.history, { borderTopColor: colors.border }]}>
-          <Text style={[styles.historyTitle, { color: colors.mutedForeground }]}>
-            HISTORIAL · {entries.length} {entries.length === 1 ? "entrada" : "entradas"}
-          </Text>
+          <View style={styles.historyHeader}>
+            <Text style={[styles.historyTitle, { color: colors.mutedForeground }]}>
+              HISTORIAL · {entries.length} {entries.length === 1 ? "entrada" : "entradas"}
+            </Text>
+            <Pressable onPress={handleDeleteAll} hitSlop={8} style={styles.deleteAllBtn}>
+              <Feather name="trash-2" size={11} color="#E07060" />
+              <Text style={styles.deleteAllText}>Borrar todo</Text>
+            </Pressable>
+          </View>
           {entries.map((entry) => (
             <EntryCard
               key={entry.id}
@@ -386,7 +403,23 @@ const styles = StyleSheet.create({
 
   // History
   history: { borderTopWidth: 1, padding: 14, gap: 10 },
-  historyTitle: { fontSize: 10, letterSpacing: 1.5, fontWeight: "600", marginBottom: 4 },
+  historyHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  historyTitle: { fontSize: 10, letterSpacing: 1.5, fontWeight: "600" },
+  deleteAllBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    backgroundColor: "rgba(224,112,96,0.1)",
+  },
+  deleteAllText: { fontSize: 10, fontWeight: "700", color: "#E07060", letterSpacing: 0.3 },
   entryCard: {
     borderWidth: 1,
     borderRadius: 14,
