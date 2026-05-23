@@ -57,15 +57,7 @@ export const CATEGORIES: Category[] = [
     color: "#8AAAD4",
     gradient: ["#243350", "#101A28"],
   },
-  {
-    id: "diario-expansivo",
-    title: "Diario Expansivo",
-    subtitle: "Registra tu viaje interior",
-    icon: "feather",
-    sessionCount: 1,
-    color: "#A8C4A8",
-    gradient: ["#3A5438", "#1E2E1C"],
-  },
+
 ];
 
 export const getPrimaryCategories = () => CATEGORIES.filter((c) => c.primary);
