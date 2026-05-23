@@ -27,6 +27,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
+import { useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -74,7 +75,12 @@ export default function HomeScreen() {
   }
 
   const { favoriteEntries } = useDiarioFavoritesCtx();
-  const topDiarioFavs = favoriteEntries.slice(0, 5);
+  const { entries: reflexionesEntries } = useDiario("reflexiones");
+  const topReflexiones = reflexionesEntries.slice(0, 5).map((e) => ({
+    ...e,
+    sectionTitle: "Mis reflexiones",
+    accentColor: "#8AAAD4",
+  }));
 
   const featured = getFeaturedSessions();
   const featuredSession = featured[0];
@@ -259,20 +265,20 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* ── 6. REFLEXIONES FAVORITAS (top 5) ── */}
-        {topDiarioFavs.length > 0 && (
+        {/* ── 6. MIS REFLEXIONES (top 5) ── */}
+        {topReflexiones.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionRow}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Reflexiones favoritas
+                Mis reflexiones
               </Text>
-              <Pressable onPress={() => router.push("/(tabs)/favorites" as never)}>
+              <Pressable onPress={() => router.push("/(tabs)/diario" as never)}>
                 <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
               </Pressable>
             </View>
             <View style={styles.diarioList}>
-              {topDiarioFavs.map((entry) => (
-                <DiarioEntryCard key={entry.id} entry={entry} showHeart />
+              {topReflexiones.map((entry) => (
+                <DiarioEntryCard key={entry.id} entry={entry} showDate />
               ))}
             </View>
           </View>
