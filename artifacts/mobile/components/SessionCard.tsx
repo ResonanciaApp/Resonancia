@@ -41,9 +41,11 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           style={styles.hGradient}
         />
         <View style={styles.hContent}>
-          <Text style={[styles.hCategory, { color: colors.accent }]}>
-            {session.categoryLabel}
-          </Text>
+          {session.categoryId !== "meditaciones-guiadas" && (
+            <Text style={[styles.hCategory, { color: colors.accent }]}>
+              {session.categoryLabel}
+            </Text>
+          )}
           <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
