@@ -6,6 +6,14 @@ export type MeditationTag =
   | "Mantras"
   | "Manifestación";
 
+export type AncestralTag =
+  | "Cuencos Tibetanos"
+  | "Cuencos de Cuarzo"
+  | "Mix de Cuencos Tibetanos y de Cuarzo"
+  | "Gongs"
+  | "Cuencos y Gongs"
+  | "Sonidos de la Selva";
+
 export type Session = {
   id: string;
   title: string;
@@ -24,6 +32,7 @@ export type Session = {
   frequency?: string;
   soundTag?: SoundTag;
   meditationTag?: MeditationTag;
+  ancestralTag?: AncestralTag;
 };
 
 export const SESSIONS: Session[] = [
@@ -47,8 +56,9 @@ export const SESSIONS: Session[] = [
     id: "2",
     title: "Para dormir bien",
     subtitle: "Baño de Cuencos y Gongs",
-    categoryId: "cuencos-gongs",
-    categoryLabel: "Sesiones de Cuencos y Gongs",
+    categoryId: "sonidos-ancestrales",
+    categoryLabel: "Sonidos Ancestrales",
+    ancestralTag: "Cuencos y Gongs" as const,
     duration: 45,
     durationLabel: "45 min",
     description:
@@ -143,8 +153,9 @@ export const SESSIONS: Session[] = [
     id: "8",
     title: "Ondas Delta para Dormir",
     subtitle: "Sonidos Binaurales con Cuencos",
-    categoryId: "binaurales-cuencos",
-    categoryLabel: "Sonidos Binaurales con Cuencos",
+    categoryId: "sonidos-ancestrales",
+    categoryLabel: "Sonidos Ancestrales",
+    ancestralTag: "Cuencos Tibetanos" as const,
     duration: 45,
     durationLabel: "45 min",
     description:
@@ -159,8 +170,9 @@ export const SESSIONS: Session[] = [
     id: "9",
     title: "Theta Profundo con Cuencos",
     subtitle: "Sonidos Binaurales con Cuencos",
-    categoryId: "binaurales-cuencos",
-    categoryLabel: "Sonidos Binaurales con Cuencos",
+    categoryId: "sonidos-ancestrales",
+    categoryLabel: "Sonidos Ancestrales",
+    ancestralTag: "Cuencos de Cuarzo" as const,
     duration: 30,
     durationLabel: "30 min",
     description:
@@ -175,8 +187,9 @@ export const SESSIONS: Session[] = [
     id: "10",
     title: "Sincronización Gamma 40Hz",
     subtitle: "Sonidos Binaurales con Cuencos",
-    categoryId: "binaurales-cuencos",
-    categoryLabel: "Sonidos Binaurales con Cuencos",
+    categoryId: "sonidos-ancestrales",
+    categoryLabel: "Sonidos Ancestrales",
+    ancestralTag: "Cuencos de Cuarzo" as const,
     duration: 20,
     durationLabel: "20 min",
     description:
