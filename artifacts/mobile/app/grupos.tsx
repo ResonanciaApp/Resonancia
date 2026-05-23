@@ -26,8 +26,8 @@ const GRUPOS = [
     lastTime: "hace 5 min",
     unread: 12,
     icon: "wind" as const,
-    color: "#EDD9B8",
-    gradient: ["#BF9B70", "#6B4E28"] as [string, string],
+    color: "#A8C4A8",
+    gradient: ["#3A5438", "#1E2E1C"] as [string, string],
     moderator: "Sofía H.",
   },
   {

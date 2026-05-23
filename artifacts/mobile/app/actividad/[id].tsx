@@ -51,7 +51,7 @@ const ACTIVITIES: Record<string, {
     type: "Presencial",
     description:
       "Arrancá el domingo con una meditación guiada al aire libre en uno de los parques más hermosos de Córdoba. Combinamos técnicas de respiración consciente, visualización y silencio compartido.\n\nLlevá esterilla o manta. Se recomienda llegar 10 minutos antes.",
-    gradient: ["#BF9B70", "#6B4E28"],
+    gradient: ["#3A5438", "#1E2E1C"],
     orgColor: "#A8C4A8",
     orgInitials: "MP",
     tags: ["Meditación", "Respiración", "Comunidad"],

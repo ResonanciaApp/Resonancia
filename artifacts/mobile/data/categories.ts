@@ -26,8 +26,8 @@ export const CATEGORIES: Category[] = [
     subtitle: "Viajes interiores guiados por el sonido",
     icon: "wind",
     sessionCount: 3,
-    color: "#EDD9B8",
-    gradient: ["#BF9B70", "#6B4E28"],
+    color: "#A8C4A8",
+    gradient: ["#3A5438", "#1E2E1C"],
     primary: true,
   },
   {
