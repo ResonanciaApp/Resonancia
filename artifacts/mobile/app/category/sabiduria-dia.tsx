@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type SabiduriaTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -163,6 +164,33 @@ export default function SabiduriaDiaScreen() {
                 </ScrollView>
               </View>
             )}
+
+            <CategoryInfoPanel
+              accentColor="#F0CC82"
+              heading="¿Qué es la sabiduría del día?"
+              items={[
+                {
+                  icon: "sun",
+                  title: "Una semilla por día",
+                  body: "Cada jornada trae una enseñanza breve para reflexionar, integrar y llevar en el corazón durante toda la jornada.",
+                },
+                {
+                  icon: "book-open",
+                  title: "Filosofías universales",
+                  body: "Desde el budismo hasta el estoicismo, conectamos con la sabiduría atemporal de la humanidad en pocas palabras.",
+                },
+                {
+                  icon: "trending-up",
+                  title: "Crecimiento gradual",
+                  body: "No se trata de leer, sino de sentir. Una idea bien integrada cambia más que mil leídas a la ligera.",
+                },
+              ]}
+              quote="La sabiduría no es saber más, es vivir mejor con lo que ya sabés."
+              whyItems={[
+                { icon: "star", text: "Porque el crecimiento real sucede en pequeños momentos de conciencia." },
+                { icon: "compass", text: "Porque todos necesitamos un norte cuando la vida se nubla." },
+              ]}
+            />
           </>
         )}
 

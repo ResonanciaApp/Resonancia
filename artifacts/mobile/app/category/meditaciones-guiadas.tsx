@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type MeditationTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -204,6 +205,33 @@ export default function MeditacionesGuiadasScreen() {
                 </ScrollView>
               </View>
             )}
+
+            <CategoryInfoPanel
+              accentColor="#A8C4A8"
+              heading="¿Qué es la meditación guiada?"
+              items={[
+                {
+                  icon: "mic",
+                  title: "Una voz te acompaña",
+                  body: "No estás solo/a. Cada sesión tiene una guía de audio que conduce tu atención paso a paso, sin necesidad de experiencia previa.",
+                },
+                {
+                  icon: "activity",
+                  title: "Entrena tu mente",
+                  body: "La práctica regular reduce el estrés, mejora el foco y calma el sistema nervioso. Con cada sesión, el silencio interior se hace más accesible.",
+                },
+                {
+                  icon: "clock",
+                  title: "Para cualquier momento",
+                  body: "Desde 5 minutos hasta una hora, hay sesiones para integrar en cualquier rutina del día.",
+                },
+              ]}
+              quote="La meditación no es vaciar la mente, es aprender a observarla sin juzgarla."
+              whyItems={[
+                { icon: "heart", text: "Porque todos merecemos un espacio de silencio interior." },
+                { icon: "sun", text: "Porque la paz no viene de afuera — se cultiva desde adentro." },
+              ]}
+            />
           </>
         )}
 

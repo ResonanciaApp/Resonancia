@@ -22,6 +22,7 @@ import {
   IconMixCuencos,
 } from "@/components/AncestralIcons";
 import { SacredBackground } from "@/components/SacredBackground";
+import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type AncestralTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -175,6 +176,33 @@ export default function SonidosAncestalesScreen() {
                 </ScrollView>
               </View>
             )}
+
+            <CategoryInfoPanel
+              accentColor="#E8C87A"
+              heading="¿Qué son los sonidos ancestrales?"
+              items={[
+                {
+                  icon: "radio",
+                  title: "Frecuencias que sanan",
+                  body: "Cuencos tibetanos, campanas y tonos puros que resuenan en el cuerpo a nivel celular, liberando tensión acumulada.",
+                },
+                {
+                  icon: "zap",
+                  title: "Entrás en coherencia",
+                  body: "El cerebro se sincroniza con las ondas sonoras, induciendo estados de relajación profunda y mayor claridad mental.",
+                },
+                {
+                  icon: "globe",
+                  title: "Tradición milenaria",
+                  body: "Estas técnicas se usaron durante siglos en tradiciones chamánicas y budistas para ceremonias de sanación y rituales de paso.",
+                },
+              ]}
+              quote="El sonido es el puente entre el mundo visible y el invisible."
+              whyItems={[
+                { icon: "music", text: "Porque el cuerpo recuerda lo que la mente olvidó." },
+                { icon: "wind", text: "Porque la sabiduría ancestral sigue siendo necesaria hoy." },
+              ]}
+            />
           </>
         )}
 
