@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
 import {
   Alert,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -60,11 +61,16 @@ function DiaryCard({ item, onRemove }: { item: DiaryNoOlvidar; onRemove: () => v
   const LINE_H = 20;
   const isTruncated = fullH !== null && fullH > LINE_H + 6;
 
-  const confirmRemove = () =>
-    Alert.alert("Eliminar de A no olvidar", "¿Querés quitar esta nota?", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Eliminar", style: "destructive", onPress: onRemove },
-    ]);
+  const confirmRemove = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("¿Querés quitar esta nota de A no olvidar?")) onRemove();
+    } else {
+      Alert.alert("Eliminar de A no olvidar", "¿Querés quitar esta nota?", [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Eliminar", style: "destructive", onPress: onRemove },
+      ]);
+    }
+  };
 
   return (
     <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -132,11 +138,16 @@ function VozCard({
   const colors = useColors();
   const progress = item.durationMs > 0 ? Math.min(positionMs / item.durationMs, 1) : 0;
 
-  const confirmRemove = () =>
-    Alert.alert("Eliminar de A no olvidar", "¿Querés quitar esta nota de voz?", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Eliminar", style: "destructive", onPress: onRemove },
-    ]);
+  const confirmRemove = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("¿Querés quitar esta nota de voz de A no olvidar?")) onRemove();
+    } else {
+      Alert.alert("Eliminar de A no olvidar", "¿Querés quitar esta nota de voz?", [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Eliminar", style: "destructive", onPress: onRemove },
+      ]);
+    }
+  };
 
   return (
     <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
