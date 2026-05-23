@@ -34,7 +34,14 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
   "2": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "3": require("@/assets/audio/62 CM.mp3"),
   "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
+  "27": require("@/assets/audio/riachuelo_pajaros.wav"),
 };
+
+/**
+ * LOOP_SESSIONS — IDs de sesiones que deben reproducirse en loop indefinido.
+ * El usuario elige la duración total antes de reproducir.
+ */
+export const LOOP_SESSIONS = new Set(["20", "21", "22", "23", "24", "25", "26", "27"]);
 
 /**
  * VOICE_MAP — audio de voz guiada superpuesto al fondo musical.

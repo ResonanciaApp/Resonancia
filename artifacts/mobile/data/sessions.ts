@@ -423,6 +423,23 @@ export const SESSIONS: Session[] = [
     isNew: true,
     soundTag: "Música",
   },
+  {
+    id: "27",
+    title: "Riachuelo con Pájaros",
+    subtitle: "Sonidos Naturales",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 10,
+    durationLabel: "10 min",
+    description:
+      "El suave murmullo de un riachuelo de montaña acompañado por el canto de los pájaros. Un refugio sonoro que devuelve a la mente su ritmo natural, disuelve la tensión y abre el corazón a la presencia.",
+    benefits: ["Calma instantánea", "Conexión con la naturaleza", "Reducción del estrés", "Presencia plena"],
+    instruments: ["Agua corriente", "Canto de pájaros", "Ambiente natural"],
+    image: require("@/assets/images/sessions/session-27.png"),
+    audio: require("@/assets/audio/riachuelo_pajaros.wav"),
+    isNew: true,
+    soundTag: "Sonidos Naturales",
+  },
 
   {
     id: "19",

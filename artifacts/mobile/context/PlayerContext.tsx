@@ -1,6 +1,6 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AUDIO_MAP, VOICE_MAP } from "@/config/audio-map";
+import { AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
 import React, {
   createContext,
   useCallback,
@@ -29,6 +29,8 @@ type PlayerContextType = {
   isFavorite: (id: string) => boolean;
   toggleFavorite: (id: string) => void;
   playSession: (session: Session) => void;
+  /** Play a looping session for a specific number of minutes */
+  playSessionWithDuration: (session: Session, minutes: number) => void;
   pauseResume: () => void;
   stop: () => void;
   seekTo: (progress: number) => void;
@@ -267,6 +269,69 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     [onPlaybackStatusUpdate]
   );
 
+  /** Play a looping ambient/nature session for a chosen number of minutes */
+  const playSessionWithDuration = useCallback(
+    async (session: Session, minutes: number) => {
+      await unloadSound();
+      clearSim();
+
+      const totalSeconds = minutes * 60;
+      const sessionOverride: Session = {
+        ...session,
+        duration: minutes,
+        durationLabel: `${minutes} min`,
+      };
+
+      setCurrentSession(sessionOverride);
+      setProgress(0);
+      setElapsed(0);
+      setActualDurationSeconds(totalSeconds);
+      void addToHistory(session);
+
+      const audioFile = AUDIO_MAP[session.id];
+      const isLoopSession = LOOP_SESSIONS.has(session.id);
+
+      if (audioFile) {
+        setIsLoading(true);
+        try {
+          const { sound } = await Audio.Sound.createAsync(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            audioFile as any,
+            { shouldPlay: true, isLooping: isLoopSession }
+          );
+          soundRef.current = sound;
+          setIsPlaying(true);
+
+          // Drive progress with a countdown interval (audio loops indefinitely)
+          simIntervalRef.current = setInterval(() => {
+            setElapsed((prev) => {
+              const next = prev + 1;
+              if (next >= totalSeconds) {
+                clearSim();
+                void sound.stopAsync().catch(() => {});
+                void sound.unloadAsync().catch(() => {});
+                soundRef.current = null;
+                setIsPlaying(false);
+                setProgress(1);
+                return totalSeconds;
+              }
+              setProgress(next / totalSeconds);
+              return next;
+            });
+          }, 1000);
+        } catch (err) {
+          console.warn("[RESONANCE] Loop audio load failed:", err);
+          startSimulation(sessionOverride);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        startSimulation(sessionOverride);
+      }
+    },
+    [addToHistory]
+  );
+
   const pauseResume = useCallback(async () => {
     if (soundRef.current) {
       const status = await soundRef.current.getStatusAsync();
@@ -381,6 +446,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         isFavorite,
         toggleFavorite,
         playSession,
+        playSessionWithDuration,
         pauseResume,
         stop,
         seekTo,

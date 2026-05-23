@@ -204,6 +204,12 @@ uri = "file://artifacts/mobile/assets/images/sessions/session-19.png"
 type = "image"
 title = "turtle gong sunset beach"
 
+[[generated]]
+id = "oqIs5xcJOU1-yrwlLXD9j"
+uri = "file://artifacts/mobile/assets/images/sessions/session-27.png"
+type = "image"
+title = "riachuelo_pajaros_naturaleza"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
