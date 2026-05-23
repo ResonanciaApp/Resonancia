@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
 import {
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -40,7 +40,7 @@ function getDayKey(isoDate: string): string {
 export default function HistorialScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { history } = usePlayer();
+  const { history, clearHistory } = usePlayer();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -61,6 +61,23 @@ export default function HistorialScreen() {
       entries,
     }));
   }, [history]);
+
+  const handleClearAll = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("¿Borrar todo el historial de escucha?")) {
+        clearHistory();
+      }
+      return;
+    }
+    Alert.alert(
+      "Borrar historial",
+      "¿Querés eliminar todo el historial de escucha? Esta acción no se puede deshacer.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Borrar todo", style: "destructive", onPress: () => clearHistory() },
+      ]
+    );
+  };
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -87,6 +104,17 @@ export default function HistorialScreen() {
               Últimos 30 días
             </Text>
           </View>
+          {grouped.length > 0 && (
+            <Pressable
+              onPress={handleClearAll}
+              hitSlop={12}
+              style={({ pressed }) => [styles.clearBtn, { opacity: pressed ? 0.6 : 1 }]}
+            >
+              <Text style={[styles.clearBtnText, { color: colors.mutedForeground }]}>
+                Borrar todo
+              </Text>
+            </Pressable>
+          )}
         </View>
 
         {grouped.length === 0 ? (
@@ -102,7 +130,6 @@ export default function HistorialScreen() {
         ) : (
           grouped.map(({ dayLabel, entries }) => (
             <View key={dayLabel} style={styles.group}>
-              {/* Day separator */}
               <View style={styles.dayRow}>
                 <View style={[styles.dayLine, { backgroundColor: "rgba(198,155,79,0.18)" }]} />
                 <View style={[styles.dayPill, { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.25)" }]}>
@@ -145,7 +172,6 @@ export default function HistorialScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -160,9 +186,9 @@ const styles = StyleSheet.create({
   },
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
   pageSub: { fontSize: 12, marginTop: 2 },
-
+  clearBtn: { paddingVertical: 6, paddingHorizontal: 4 },
+  clearBtnText: { fontSize: 13, fontWeight: "600" },
   group: { marginBottom: 24 },
-
   dayRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -177,7 +203,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   dayText: { fontSize: 12, fontWeight: "600" },
-
   entryRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -190,7 +215,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     flexShrink: 0,
   },
-
   emptyWrap: {
     borderRadius: 20,
     borderWidth: 1,
@@ -201,7 +225,6 @@ const styles = StyleSheet.create({
   },
   emptyTitle: { fontSize: 18, fontWeight: "700", marginBottom: 10 },
   emptySub: { fontSize: 13, textAlign: "center", lineHeight: 20 },
-
   footerNote: {
     flexDirection: "row",
     alignItems: "center",

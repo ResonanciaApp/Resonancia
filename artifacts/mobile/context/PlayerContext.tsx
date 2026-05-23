@@ -36,6 +36,8 @@ type PlayerContextType = {
   sleepTimerRemaining: number | null;
   /** Set timer to N minutes (null = cancel) */
   setSleepTimer: (minutes: number | null) => void;
+  /** Wipe the full listening history */
+  clearHistory: () => Promise<void>;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -297,6 +299,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setSleepTimerRemaining(minutes * 60);
   }, []);
 
+  const clearHistory = useCallback(async () => {
+    setHistory([]);
+    await AsyncStorage.removeItem(HISTORY_KEY);
+  }, []);
+
   const toggleFavorite = useCallback(
     async (id: string) => {
       const updated = favorites.includes(id)
@@ -332,6 +339,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         seekTo,
         sleepTimerRemaining,
         setSleepTimer,
+        clearHistory,
       }}
     >
       {children}
