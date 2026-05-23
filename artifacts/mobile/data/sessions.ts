@@ -1,4 +1,10 @@
 export type SoundTag = "Binaural" | "Música" | "Sonidos Naturales";
+export type MeditationTag =
+  | "Visualización"
+  | "Escáner Corporal"
+  | "Soy Consciencia"
+  | "Mantras"
+  | "Manifestación";
 
 export type Session = {
   id: string;
@@ -17,6 +23,7 @@ export type Session = {
   isNew?: boolean;
   frequency?: string;
   soundTag?: SoundTag;
+  meditationTag?: MeditationTag;
 };
 
 export const SESSIONS: Session[] = [
@@ -34,6 +41,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuencos tibetanos", "Campana", "Voz guía"],
     image: require("@/assets/images/sessions/session-1.png"),
     isFeatured: true,
+    meditationTag: "Visualización",
   },
   {
     id: "2",
@@ -127,6 +135,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuencos tibetanos", "Voz guía", "Campanilla"],
     image: require("@/assets/images/sessions/session-7.png"),
     isNew: true,
+    meditationTag: "Escáner Corporal",
   },
 
   // ── Sonidos Binaurales con Cuencos ────────────────────────────────────────
@@ -438,6 +447,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuencos tibetanos", "Voz guiada"],
     image: require("@/assets/images/sessions/session-28.png"),
     isNew: true,
+    meditationTag: "Visualización",
   },
 
   {
