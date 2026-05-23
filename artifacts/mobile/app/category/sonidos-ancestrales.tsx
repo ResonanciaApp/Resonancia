@@ -14,6 +14,14 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import {
+  IconCuencoCuarzo,
+  IconCuencoTibetano,
+  IconCuencosYGongs,
+  IconGong,
+  IconMixCuencos,
+  IconSelva,
+} from "@/components/AncestralIcons";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SESSIONS, type AncestralTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -24,17 +32,17 @@ const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ance
 
 type CategoryDef = {
   tag: AncestralTag;
-  icon: React.ComponentProps<typeof Feather>["name"];
+  Icon: React.FC<{ size?: number; color?: string }>;
   description: string;
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Cuencos Tibetanos",                   icon: "disc",       description: "Vibraciones milenarias del Himalaya" },
-  { tag: "Cuencos de Cuarzo",                   icon: "circle",     description: "Frecuencias cristalinas de alta pureza" },
-  { tag: "Mix de Cuencos Tibetanos y de Cuarzo", icon: "layers",    description: "Lo mejor de ambos mundos sonoros" },
-  { tag: "Gongs",                               icon: "zap",        description: "Ondas expansivas de transformación" },
-  { tag: "Cuencos y Gongs",                     icon: "activity",   description: "Combinación sagrada de instrumentos" },
-  { tag: "Sonidos de la Selva",                 icon: "wind",       description: "Naturaleza viva y sanadora" },
+  { tag: "Cuencos Tibetanos",                    Icon: IconCuencoTibetano, description: "Vibraciones milenarias del Himalaya" },
+  { tag: "Cuencos de Cuarzo",                    Icon: IconCuencoCuarzo,   description: "Frecuencias cristalinas de alta pureza" },
+  { tag: "Mix de Cuencos Tibetanos y de Cuarzo", Icon: IconMixCuencos,     description: "Lo mejor de ambos mundos sonoros" },
+  { tag: "Gongs",                                Icon: IconGong,           description: "Ondas expansivas de transformación" },
+  { tag: "Cuencos y Gongs",                      Icon: IconCuencosYGongs,  description: "Combinación sagrada de instrumentos" },
+  { tag: "Sonidos de la Selva",                  Icon: IconSelva,          description: "Naturaleza viva y sanadora" },
 ];
 
 export default function SonidosAncestalesScreen() {
@@ -128,7 +136,7 @@ export default function SonidosAncestalesScreen() {
                       { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" },
                     ]}
                   >
-                    <Feather name={cat.icon} size={20} color={colors.primary} />
+                    <cat.Icon size={22} color={colors.primary} />
                   </View>
                   <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                   <View style={styles.catRight}>
