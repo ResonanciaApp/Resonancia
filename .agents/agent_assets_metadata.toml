@@ -227,3 +227,9 @@ id = "PuMZUnnqoyoTFZFFbIxi7"
 uri = "file://attached_assets/generated_audio/mi_voz_prueba.mp3"
 type = "audio"
 title = "Mi Voz Clonada — Prueba RESONANCIA"
+
+[[outputs]]
+id = "snBqQiLEK3UqJBBb6Rp0_"
+uri = "file://attached_assets/generated_audio/meditacion_voz_profunda.mp3"
+type = "audio"
+title = "Meditación — Voz Profunda y Meditativa"
