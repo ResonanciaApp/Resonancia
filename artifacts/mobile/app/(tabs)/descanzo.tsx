@@ -51,7 +51,7 @@ const SLEEP_CATEGORIES = [
   },
 ];
 
-export default function DescanzoScreen() {
+export default function DescansoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -76,7 +76,7 @@ export default function DescanzoScreen() {
           <View style={styles.headerIcon}>
             <Feather name="moon" size={20} color="#8AAAD4" />
           </View>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Descanzo</Text>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Descanso</Text>
           <Text style={[styles.headerSub, { color: colors.mutedForeground }]}>
             Sonidos y relatos para acompañar tu noche
           </Text>

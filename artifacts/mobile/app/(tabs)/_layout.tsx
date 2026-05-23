@@ -32,7 +32,7 @@ const TAB_CONFIG: Record<
 > = {
   index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
   explore: { label: "Biblioteca", sfIcon: "books.vertical", sfIconFill: "books.vertical.fill", featherIcon: "book-open" },
-  descanzo:{ label: "Descanzo",   sfIcon: "moon.stars",     sfIconFill: "moon.stars.fill",     featherIcon: "moon" },
+  descanzo:{ label: "Descanso",   sfIcon: "moon.stars",     sfIconFill: "moon.stars.fill",     featherIcon: "moon" },
   diario:  { label: "Diario",     sfIcon: "pencil.line",    sfIconFill: "pencil.line",         featherIcon: "feather" },
   profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
 };
@@ -147,7 +147,7 @@ export default function TabLayout() {
       >
         <Tabs.Screen name="index"    options={{ title: "Inicio" }} />
         <Tabs.Screen name="explore"  options={{ title: "Biblioteca" }} />
-        <Tabs.Screen name="descanzo" options={{ title: "Descanzo" }} />
+        <Tabs.Screen name="descanzo" options={{ title: "Descanso" }} />
         <Tabs.Screen name="favorites" options={{ title: "Favoritos", href: null }} />
         <Tabs.Screen name="diario"   options={{ title: "Diario" }} />
         <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
