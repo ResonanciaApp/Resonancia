@@ -50,7 +50,6 @@ function OnboardingGate() {
   // Redirect only after both navigation is ready AND we know the onboarding status
   useEffect(() => {
     if (!rootNavState?.key) return;       // navigator not mounted yet
-    if (onboardingDone === null) return;  // still loading from AsyncStorage
     if (redirected.current) return;       // already redirected this session
 
     const inOnboarding = segments[0] === "onboarding";

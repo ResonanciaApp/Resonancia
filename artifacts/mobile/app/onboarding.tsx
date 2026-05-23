@@ -213,8 +213,8 @@ export default function Onboarding() {
   // Welcome fade-in — runs once on mount
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(welcomeOpacity, { toValue: 1, duration: 900, useNativeDriver: ND }),
-      Animated.timing(logoScale, { toValue: 1, duration: 800, useNativeDriver: ND }),
+      Animated.timing(welcomeOpacity, { toValue: 1, duration: 400, useNativeDriver: ND }),
+      Animated.timing(logoScale, { toValue: 1, duration: 350, useNativeDriver: ND }),
     ]).start();
   }, []);
 
