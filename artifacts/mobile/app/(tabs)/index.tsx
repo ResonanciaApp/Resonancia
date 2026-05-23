@@ -86,7 +86,7 @@ export default function HomeScreen() {
   } = useVozInterior();
 
   const noOlvidarItems = React.useMemo<NoOlvidarItem[]>(() => {
-    const diarioFavs: NoOlvidarItem[] = favoriteEntries.map((e) => ({
+    const diarioFavs: NoOlvidarItem[] = favoriteEntries.filter((e) => e.sectionKey !== "aprendizaje").map((e) => ({
       kind: "diary" as const,
       id: `ref-${e.id}`,
       rawId: e.id,
