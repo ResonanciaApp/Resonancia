@@ -12,6 +12,13 @@ export type SabiduriaTag =
   | "Atención Plena"
   | "Observación sin juicio";
 
+export type PodcastTag =
+  | "Espiritualidad"
+  | "Salud y Bienestar"
+  | "Disciplinas"
+  | "Psicología Transpersonal"
+  | "Psicodélicos y Enteógenos";
+
 export type AncestralTag =
   | "Cuencos Tibetanos"
   | "Cuencos de Cuarzo"
@@ -39,6 +46,7 @@ export type Session = {
   meditationTag?: MeditationTag;
   ancestralTag?: AncestralTag;
   sabiduriaTag?: SabiduriaTag;
+  podcastTag?: PodcastTag;
 };
 
 export const SESSIONS: Session[] = [
@@ -96,8 +104,9 @@ export const SESSIONS: Session[] = [
     id: "4",
     title: "Dentro de uno",
     subtitle: "El Gran Despertar · Episodio 1",
-    categoryId: "gran-despertar-podcast",
-    categoryLabel: "\"El Gran Despertar\" PodCast",
+    categoryId: "podcast",
+    categoryLabel: "PodCast",
+    podcastTag: "Espiritualidad" as const,
     duration: 35,
     durationLabel: "35 min",
     description:
