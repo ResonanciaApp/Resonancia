@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { DiarioEntryCard } from "@/components/DiarioEntryCard";
+import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
 import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -28,7 +28,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
-import { useDiario } from "@/hooks/useDiario";
 import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 
@@ -76,31 +75,35 @@ export default function HomeScreen() {
     }
   }
 
-  const { favoriteEntries } = useDiarioFavoritesCtx();
-  const { entries: vozEntries } = useVozInterior();
+  const { favoriteEntries, toggleFavorite } = useDiarioFavoritesCtx();
+  const {
+    entries: vozEntries,
+    playEntry,
+    playingId,
+    playingPositionMs,
+    updateEntry: updateVozEntry,
+  } = useVozInterior();
 
-  function formatVozMs(ms: number) {
-    const s = Math.floor(ms / 1000);
-    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-  }
-
-  const noOlvidarItems = React.useMemo(() => {
-    // Only favorited diary entries (all sections)
-    const diarioFavs = favoriteEntries.map((e) => ({
+  const noOlvidarItems = React.useMemo<NoOlvidarItem[]>(() => {
+    const diarioFavs: NoOlvidarItem[] = favoriteEntries.map((e) => ({
+      kind: "diary" as const,
       id: `ref-${e.id}`,
+      rawId: e.id,
       text: e.text,
       createdAt: e.createdAt,
       sectionTitle: e.sectionTitle,
       accentColor: e.accentColor,
+      sectionKey: e.sectionKey,
     }));
-    const vozFavs = vozEntries
+    const vozFavs: NoOlvidarItem[] = vozEntries
       .filter((e) => e.isFavorite)
       .map((e) => ({
+        kind: "voz" as const,
         id: `voz-${e.id}`,
-        text: e.title?.trim() || `Nota de voz · ${formatVozMs(e.durationMs)}`,
+        rawId: e.id,
+        title: e.title?.trim() ?? "",
+        durationMs: e.durationMs,
         createdAt: e.createdAt,
-        sectionTitle: "Voz Interior",
-        accentColor: "#D4709A",
       }));
     return [...diarioFavs, ...vozFavs]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -307,9 +310,35 @@ export default function HomeScreen() {
               </Pressable>
             </View>
             <View style={styles.diarioList}>
-              {noOlvidarItems.map((entry) => (
-                <DiarioEntryCard key={entry.id} entry={entry} showDate />
-              ))}
+              {noOlvidarItems.map((item) => {
+                const vozEntry =
+                  item.kind === "voz"
+                    ? vozEntries.find((e) => e.id === item.rawId)
+                    : undefined;
+                return (
+                  <NoOlvidarCard
+                    key={item.id}
+                    item={item}
+                    isPlaying={item.kind === "voz" && playingId === item.rawId}
+                    positionMs={item.kind === "voz" && playingId === item.rawId ? playingPositionMs : 0}
+                    onPlay={
+                      item.kind === "voz" && vozEntry
+                        ? () => playEntry(vozEntry)
+                        : undefined
+                    }
+                    onRemove={() => {
+                      if (item.kind === "voz") {
+                        updateVozEntry(item.rawId, { isFavorite: false });
+                      } else {
+                        toggleFavorite(
+                          { id: item.rawId, text: item.text, createdAt: item.createdAt },
+                          item.sectionKey,
+                        );
+                      }
+                    }}
+                  />
+                );
+              })}
             </View>
           </View>
         )}
