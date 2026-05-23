@@ -138,10 +138,10 @@ export default function SonidosAncestalesScreen() {
                     <View
                       style={[
                         styles.iconCircle,
-                        { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" },
+                        { backgroundColor: "rgba(232,200,122,0.1)", borderColor: "rgba(232,200,122,0.22)" },
                       ]}
                     >
-                      <cat.Icon size={22} color={colors.primary} />
+                      <cat.Icon size={22} color="#E8C87A" />
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
@@ -159,7 +159,7 @@ export default function SonidosAncestalesScreen() {
             {nuevasSessions.length > 0 && (
               <View style={styles.nuevasSection}>
                 <View style={styles.nuevasHeader}>
-                  <Feather name="zap" size={14} color={colors.primary} style={{ marginRight: 6 }} />
+                  <Feather name="zap" size={14} color="#E8C87A" style={{ marginRight: 6 }} />
                   <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
                 </View>
                 <ScrollView

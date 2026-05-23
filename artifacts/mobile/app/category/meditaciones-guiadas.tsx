@@ -163,8 +163,8 @@ export default function MeditacionesGuiadasScreen() {
                     ]}
                   >
                     {/* Icon circle */}
-                    <View style={[styles.iconCircle, { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" }]}>
-                      <Feather name={cat.icon} size={20} color={colors.primary} />
+                    <View style={[styles.iconCircle, { backgroundColor: "rgba(168,196,168,0.1)", borderColor: "rgba(168,196,168,0.22)" }]}>
+                      <Feather name={cat.icon} size={20} color="#A8C4A8" />
                     </View>
 
                     {/* Name */}
@@ -188,7 +188,7 @@ export default function MeditacionesGuiadasScreen() {
             {nuevasSessions.length > 0 && (
               <View style={styles.nuevasSection}>
                 <View style={styles.nuevasHeader}>
-                  <Feather name="zap" size={14} color={colors.primary} style={{ marginRight: 6 }} />
+                  <Feather name="zap" size={14} color="#A8C4A8" style={{ marginRight: 6 }} />
                   <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
                 </View>
                 <ScrollView

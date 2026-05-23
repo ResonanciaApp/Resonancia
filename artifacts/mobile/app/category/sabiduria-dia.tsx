@@ -128,8 +128,8 @@ export default function SabiduriaDiaScreen() {
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    <View style={[styles.iconCircle, { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" }]}>
-                      <Feather name={cat.icon} size={20} color={colors.primary} />
+                    <View style={[styles.iconCircle, { backgroundColor: "rgba(240,204,130,0.1)", borderColor: "rgba(240,204,130,0.22)" }]}>
+                      <Feather name={cat.icon} size={20} color="#F0CC82" />
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
@@ -147,7 +147,7 @@ export default function SabiduriaDiaScreen() {
             {nuevasSessions.length > 0 && (
               <View style={styles.nuevasSection}>
                 <View style={styles.nuevasHeader}>
-                  <Feather name="zap" size={14} color={colors.primary} style={{ marginRight: 6 }} />
+                  <Feather name="zap" size={14} color="#F0CC82" style={{ marginRight: 6 }} />
                   <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
                 </View>
                 <ScrollView
