@@ -28,7 +28,6 @@ const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const GAP = 10;
 const PRIMARY_W = (width - H_PAD * 2 - GAP) / 2;
-const SEC_W = 88;
 const TAG_W = (width - H_PAD * 2 - GAP) / 2;
 const TAG_H = 130;
 
@@ -164,17 +163,13 @@ export default function ExploreScreen() {
                 ))}
               </View>
 
-              {/* Secundarias — scroll horizontal, tarjetas compactas */}
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.secondaryScroll}
-              >
+              {/* Secundarias — fila que reparte el ancho equitativamente */}
+              <View style={styles.secondaryRow}>
                 {secondaryCats.map((cat) => (
                   <Pressable
                     key={cat.id}
                     onPress={() => router.push(`/category/${cat.id}` as never)}
-                    style={({ pressed }) => [styles.secondaryCard, { width: SEC_W, opacity: pressed ? 0.82 : 1 }]}
+                    style={({ pressed }) => [styles.secondaryCard, { opacity: pressed ? 0.82 : 1 }]}
                   >
                     <LinearGradient
                       colors={cat.gradient as [string, string]}
@@ -190,7 +185,7 @@ export default function ExploreScreen() {
                     <Text style={styles.secondaryLabel} numberOfLines={2}>{cat.title}</Text>
                   </Pressable>
                 ))}
-              </ScrollView>
+              </View>
             </View>
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
@@ -364,8 +359,12 @@ const styles = StyleSheet.create({
   },
 
   // Secondary categories
-  secondaryScroll: { gap: GAP, paddingRight: 4 },
+  secondaryRow: {
+    flexDirection: "row",
+    gap: GAP,
+  },
   secondaryCard: {
+    flex: 1,
     height: 100,
     borderRadius: 14,
     overflow: "hidden",
