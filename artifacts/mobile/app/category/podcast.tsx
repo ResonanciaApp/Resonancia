@@ -15,7 +15,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type PodcastTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -67,8 +66,8 @@ export default function PodcastScreen() {
     return map;
   }, []);
 
-  const nuevasSessions = useMemo(
-    () => [...PODCAST_SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 8),
+  const episodios = useMemo(
+    () => [...PODCAST_SESSIONS].sort((a, b) => parseInt(a.id) - parseInt(b.id)),
     []
   );
 
@@ -144,22 +143,57 @@ export default function PodcastScreen() {
               })}
             </View>
 
-            {/* ── Nuevas Sesiones ── */}
-            {nuevasSessions.length > 0 && (
-              <View style={styles.nuevasSection}>
-                <View style={styles.nuevasHeader}>
-                  <Feather name="zap" size={14} color="#8AAAD4" style={{ marginRight: 6 }} />
-                  <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
+            {/* ── Episodios ── */}
+            {episodios.length > 0 && (
+              <View style={styles.episodiosSection}>
+                <View style={styles.episodiosHeader}>
+                  <Feather name="mic" size={14} color="#8AAAD4" style={{ marginRight: 6 }} />
+                  <Text style={[styles.episodiosTitle, { color: colors.foreground }]}>Episodios</Text>
+                  <Text style={[styles.episodiosCount, { color: colors.mutedForeground }]}>
+                    {episodios.length}
+                  </Text>
                 </View>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.nuevasCarousel}
-                >
-                  {nuevasSessions.map((s) => (
-                    <SessionCard key={s.id} session={s} width={148} />
+                <View style={{ paddingHorizontal: H_PAD }}>
+                  {episodios.map((s, idx) => (
+                    <Pressable
+                      key={s.id}
+                      onPress={() => router.push(`/session/${s.id}` as never)}
+                      style={({ pressed }) => [
+                        styles.episodeCard,
+                        { backgroundColor: colors.card, borderColor: "rgba(138,170,212,0.18)", opacity: pressed ? 0.82 : 1 },
+                      ]}
+                    >
+                      <Image source={s.image as never} style={styles.episodeImage} />
+                      <View style={styles.episodeBody}>
+                        <View style={styles.episodeNumRow}>
+                          <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(138,170,212,0.15)" }]}>
+                            <Text style={[styles.episodeNum, { color: "#8AAAD4" }]}>
+                              EP {idx + 1}
+                            </Text>
+                          </View>
+                          {s.isNew && (
+                            <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(198,155,79,0.18)" }]}>
+                              <Text style={[styles.episodeNum, { color: colors.primary }]}>NUEVO</Text>
+                            </View>
+                          )}
+                        </View>
+                        <Text style={[styles.episodeTitle, { color: colors.foreground }]} numberOfLines={2}>
+                          {s.title}
+                        </Text>
+                        <Text style={[styles.episodeSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                          {s.subtitle}
+                        </Text>
+                        <View style={styles.episodeMeta}>
+                          <Feather name="clock" size={11} color={colors.mutedForeground} />
+                          <Text style={[styles.episodeMetaText, { color: colors.mutedForeground }]}>
+                            {" "}{s.durationLabel}
+                          </Text>
+                        </View>
+                      </View>
+                      <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
+                    </Pressable>
                   ))}
-                </ScrollView>
+                </View>
               </View>
             )}
           </>
@@ -368,24 +402,76 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  nuevasSection: {
+  episodiosSection: {
     marginTop: 32,
     marginBottom: 8,
   },
-  nuevasHeader: {
+  episodiosHeader: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: H_PAD,
     marginBottom: 14,
   },
-  nuevasTitle: {
+  episodiosTitle: {
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.2,
+    flex: 1,
   },
-  nuevasCarousel: {
-    paddingLeft: H_PAD,
-    paddingRight: 12,
-    gap: 12,
+  episodiosCount: {
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  episodeCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 18,
+    borderWidth: 1,
+    overflow: "hidden",
+    marginBottom: 12,
+    minHeight: 110,
+  },
+  episodeImage: {
+    width: 110,
+    height: 110,
+    resizeMode: "cover",
+  },
+  episodeBody: {
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    justifyContent: "center",
+    gap: 4,
+  },
+  episodeNumRow: {
+    flexDirection: "row",
+    gap: 6,
+    marginBottom: 2,
+  },
+  episodeNumBadge: {
+    borderRadius: 6,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+  },
+  episodeNum: {
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  episodeTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 20,
+  },
+  episodeSub: {
+    fontSize: 11,
+  },
+  episodeMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 2,
+  },
+  episodeMetaText: {
+    fontSize: 11,
   },
 });
