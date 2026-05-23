@@ -17,11 +17,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { usePlayer } from "@/context/PlayerContext";
-import { SESSIONS, type MeditationTag, type Session } from "@/data/sessions";
+import { SESSIONS, type MeditationTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
-const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
 
@@ -72,7 +70,6 @@ const starStyles = StyleSheet.create({
 export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { playSession, isFavorite, toggleFavorite } = usePlayer();
 
   const [activeTab, setActiveTab] = useState<Tab>("Todos");
   const [query, setQuery] = useState("");
@@ -96,11 +93,6 @@ export default function MeditacionesGuiadasScreen() {
     }
     return list;
   }, [activeTab, query]);
-
-  const handlePlay = (session: Session) => {
-    playSession(session);
-    router.push("/player" as never);
-  };
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -197,72 +189,38 @@ export default function MeditacionesGuiadasScreen() {
               </Text>
             </View>
           ) : (
-            filtered.map((session) => {
-              const fav = isFavorite(session.id);
-              return (
-                <Pressable
-                  key={session.id}
-                  onPress={() => handlePlay(session)}
-                  style={({ pressed }) => [
-                    styles.card,
-                    {
-                      backgroundColor: colors.card,
-                      borderColor: "rgba(198,155,79,0.18)",
-                      opacity: pressed ? 0.82 : 1,
-                    },
-                  ]}
-                >
-                  <Image
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    source={session.image as any}
-                    style={styles.cardImage}
-                  />
-
-                  {/* Tag badge */}
-                  {session.meditationTag && (
-                    <View style={[styles.tagBadge, { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.3)" }]}>
-                      <Text style={[styles.tagText, { color: colors.accent }]}>
-                        {session.meditationTag}
-                      </Text>
-                    </View>
-                  )}
-
-                  <View style={styles.cardContent}>
-                    <StarRow sessionId={session.id} />
-                    <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
-                      {session.title}
+            filtered.map((session) => (
+              <Pressable
+                key={session.id}
+                onPress={() => router.push(`/session/${session.id}` as never)}
+                style={({ pressed }) => [
+                  styles.card,
+                  {
+                    backgroundColor: colors.card,
+                    borderColor: "rgba(198,155,79,0.18)",
+                    opacity: pressed ? 0.82 : 1,
+                  },
+                ]}
+              >
+                <Image
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  source={session.image as any}
+                  style={styles.cardImage}
+                />
+                <View style={styles.cardContent}>
+                  <StarRow sessionId={session.id} />
+                  <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+                    {session.title}
+                  </Text>
+                  <View style={styles.metaRow}>
+                    <Feather name="clock" size={11} color={colors.mutedForeground} />
+                    <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
+                      {" "}{session.durationLabel}
                     </Text>
-                    <Text style={[styles.cardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {session.subtitle}
-                    </Text>
-                    <View style={styles.metaRow}>
-                      <Feather name="clock" size={11} color={colors.mutedForeground} />
-                      <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                        {" "}{session.durationLabel}
-                      </Text>
-                    </View>
                   </View>
-
-                  {/* Fav + Play */}
-                  <View style={styles.cardActions}>
-                    <Pressable
-                      onPress={() => toggleFavorite(session.id)}
-                      hitSlop={8}
-                      style={styles.favBtn}
-                    >
-                      <Feather
-                        name="heart"
-                        size={16}
-                        color={fav ? colors.primary : colors.mutedForeground}
-                      />
-                    </Pressable>
-                    <View style={[styles.playBtn, { backgroundColor: colors.primary }]}>
-                      <Feather name="play" size={14} color={colors.primaryForeground} style={{ paddingLeft: 2 }} />
-                    </View>
-                  </View>
-                </Pressable>
-              );
-            })
+                </View>
+              </Pressable>
+            ))
           )}
         </View>
       </ScrollView>
