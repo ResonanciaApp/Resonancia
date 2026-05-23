@@ -19,7 +19,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
-import { usePlayer } from "@/context/PlayerContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -38,7 +37,7 @@ export default function TagScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { playSession } = usePlayer();
+
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -219,7 +218,7 @@ export default function TagScreen() {
                   {topSessions.map((session) => (
                     <Pressable
                       key={session.id}
-                      onPress={() => playSession(session)}
+                      onPress={() => router.push(`/session/${session.id}` as never)}
                       style={({ pressed }) => [styles.hCard, { opacity: pressed ? 0.82 : 1 }]}
                     >
                       <View style={[styles.hCardImg, { backgroundColor: colors.card }]}>
@@ -228,11 +227,6 @@ export default function TagScreen() {
                           style={StyleSheet.absoluteFill}
                           resizeMode="cover"
                         />
-                        {session.isFeatured && (
-                          <View style={styles.starBadge}>
-                            <Text style={{ fontSize: 12 }}>⭐</Text>
-                          </View>
-                        )}
                         <View style={styles.durationBadge}>
                           <Text style={styles.durationText}>{session.durationLabel}</Text>
                         </View>
@@ -256,7 +250,7 @@ export default function TagScreen() {
                 {filteredSessions.map((session) => (
                   <Pressable
                     key={session.id}
-                    onPress={() => playSession(session)}
+                    onPress={() => router.push(`/session/${session.id}` as never)}
                     style={({ pressed }) => [
                       styles.listRow,
                       { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.14)", opacity: pressed ? 0.82 : 1 },
@@ -268,11 +262,6 @@ export default function TagScreen() {
                         style={StyleSheet.absoluteFill}
                         resizeMode="cover"
                       />
-                      {session.isFeatured && (
-                        <View style={styles.starBadge}>
-                          <Text style={{ fontSize: 10 }}>⭐</Text>
-                        </View>
-                      )}
                       <View style={styles.durationBadge}>
                         <Text style={styles.durationText}>{session.durationLabel}</Text>
                       </View>
@@ -438,11 +427,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "600",
   },
-  starBadge: {
-    position: "absolute",
-    top: 6,
-    right: 6,
-  },
+
 
   // Todos list
   list: {
