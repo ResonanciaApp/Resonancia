@@ -101,7 +101,7 @@ export function MensajesAnonimosPanel() {
   const queryClient = useQueryClient();
   const { recordSentMessage } = useUserProfile();
   const [text, setText] = useState("");
-  const [showFeed, setShowFeed] = useState(false);
+  const [showFeed, setShowFeed] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
