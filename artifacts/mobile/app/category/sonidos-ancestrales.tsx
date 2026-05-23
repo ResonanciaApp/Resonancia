@@ -1,6 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Image,
   Platform,
@@ -22,10 +23,13 @@ import {
   IconMixCuencos,
 } from "@/components/AncestralIcons";
 import { SacredBackground } from "@/components/SacredBackground";
+import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type AncestralTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
+const RECENTS_KEY = "@resonance_recents_ancestral";
+const MAX_RECENTS = 10;
 
 const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
 
@@ -49,6 +53,27 @@ export default function SonidosAncestalesScreen() {
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
   const [query, setQuery] = useState("");
+  const [recentIds, setRecentIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    AsyncStorage.getItem(RECENTS_KEY).then((val) => {
+      if (val) setRecentIds(JSON.parse(val) as string[]);
+    });
+  }, []);
+
+  const recentSessions = useMemo(
+    () =>
+      recentIds
+        .map((id) => ANCESTRAL_SESSIONS.find((s) => s.id === id))
+        .filter(Boolean) as typeof ANCESTRAL_SESSIONS,
+    [recentIds]
+  );
+
+  const recordRecent = async (id: string) => {
+    const updated = [id, ...recentIds.filter((r) => r !== id)].slice(0, MAX_RECENTS);
+    setRecentIds(updated);
+    await AsyncStorage.setItem(RECENTS_KEY, JSON.stringify(updated));
+  };
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -115,38 +140,59 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── CATEGORY LIST ── */}
         {!selectedTag && (
-          <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
-            {CATEGORIES.map((cat, idx) => {
-              const isLast = idx === CATEGORIES.length - 1;
-              return (
-                <Pressable
-                  key={cat.tag}
-                  onPress={() => setSelectedTag(cat.tag)}
-                  style={({ pressed }) => [
-                    styles.catRow,
-                    !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(198,155,79,0.1)" },
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.iconCircle,
-                      { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" },
+          <>
+            <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
+              {CATEGORIES.map((cat, idx) => {
+                const isLast = idx === CATEGORIES.length - 1;
+                return (
+                  <Pressable
+                    key={cat.tag}
+                    onPress={() => setSelectedTag(cat.tag)}
+                    style={({ pressed }) => [
+                      styles.catRow,
+                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(198,155,79,0.1)" },
+                      { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    <cat.Icon size={22} color={colors.primary} />
-                  </View>
-                  <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
-                  <View style={styles.catRight}>
-                    <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
-                      {countByTag[cat.tag] ?? 0}
-                    </Text>
-                    <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
-                  </View>
-                </Pressable>
-              );
-            })}
-          </View>
+                    <View
+                      style={[
+                        styles.iconCircle,
+                        { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.2)" },
+                      ]}
+                    >
+                      <cat.Icon size={22} color={colors.primary} />
+                    </View>
+                    <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
+                    <View style={styles.catRight}>
+                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                        {countByTag[cat.tag] ?? 0}
+                      </Text>
+                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {/* ── Recientes ── */}
+            {recentSessions.length > 0 && (
+              <View style={styles.recentsSection}>
+                <View style={styles.recentsHeader}>
+                  <Feather name="clock" size={14} color={colors.primary} style={{ marginRight: 6 }} />
+                  <Text style={[styles.recentsTitle, { color: colors.foreground }]}>Recientes</Text>
+                </View>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.recentsCarousel}
+                >
+                  {recentSessions.map((s) => (
+                    <SessionCard key={s.id} session={s} width={148} />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </>
         )}
 
         {/* ── SESSIONS LIST ── */}
@@ -188,7 +234,10 @@ export default function SonidosAncestalesScreen() {
                 filteredSessions.map((session) => (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    onPress={() => {
+                      void recordRecent(session.id);
+                      router.push(`/session/${session.id}` as never);
+                    }}
                     style={({ pressed }) => [
                       styles.card,
                       {
@@ -359,5 +408,26 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     textAlign: "center",
+  },
+
+  recentsSection: {
+    marginTop: 32,
+    marginBottom: 8,
+  },
+  recentsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: H_PAD,
+    marginBottom: 14,
+  },
+  recentsTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  recentsCarousel: {
+    paddingLeft: H_PAD,
+    paddingRight: 12,
+    gap: 12,
   },
 });
