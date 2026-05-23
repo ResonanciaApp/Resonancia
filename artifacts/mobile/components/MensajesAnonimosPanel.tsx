@@ -29,6 +29,39 @@ import { useQueryClient } from "@tanstack/react-query";
 const MAX_CHARS = 369;
 const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
 const ACCENT = "#D4709A";
+
+const HOW_IT_WORKS = [
+  {
+    icon: "edit-3" as const,
+    title: "Escribís desde el corazón",
+    body: "Compartís lo que sentís, pensás o querés soltar. Sin nombre, sin juicio.",
+  },
+  {
+    icon: "globe" as const,
+    title: "La comunidad lo recibe",
+    body: "Tu mensaje aparece en el feed de quienes abrieron Diario hoy. Podés dar ❤️ a los que te resuenen.",
+  },
+  {
+    icon: "clock" as const,
+    title: "Se va solo a las 24 horas",
+    body: "Cada mensaje tiene 24 horas de vida. Después desaparece para siempre. Sin rastro, sin historial.",
+  },
+];
+
+const WHY_ITEMS = [
+  {
+    icon: "heart" as const,
+    text: "Porque a veces necesitamos soltar algo sin que nadie lo sepa, pero sintiendo que alguien lo recibe.",
+  },
+  {
+    icon: "users" as const,
+    text: "Porque la soledad se disuelve cuando descubrís que otros sienten lo mismo que vos.",
+  },
+  {
+    icon: "wind" as const,
+    text: "Porque lo que escribimos y luego soltamos nos libera más que lo que guardamos.",
+  },
+];
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 const LIST_MAX_H = 370;
 const TRACK_W = 3;
@@ -69,6 +102,7 @@ export function MensajesAnonimosPanel() {
   const { recordSentMessage } = useUserProfile();
   const [text, setText] = useState("");
   const [showFeed, setShowFeed] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
   // Scrollbar state
@@ -278,6 +312,74 @@ export function MensajesAnonimosPanel() {
           />
         </View>
       </Pressable>
+
+      {/* ── Descubre más ── */}
+      <Pressable
+        onPress={() => setShowInfo((v) => !v)}
+        style={({ pressed }) => [
+          styles.discoverRow,
+          { borderTopColor: "rgba(212,112,154,0.2)", backgroundColor: pressed ? "rgba(212,112,154,0.06)" : "transparent" },
+        ]}
+      >
+        <Feather name={showInfo ? "chevron-up" : "star"} size={13} color={ACCENT} />
+        <Text style={[styles.discoverLabel, { color: ACCENT }]}>
+          {showInfo ? "Cerrar" : "Descubre más sobre este espacio"}
+        </Text>
+      </Pressable>
+
+      {showInfo && (
+        <View style={[styles.infoSection, { borderTopColor: "rgba(212,112,154,0.15)" }]}>
+          {/* Intro */}
+          <Text style={[styles.infoIntro, { color: "rgba(255,214,235,0.85)" }]}>
+            Un espacio anónimo para soltar, compartir y conectar con la comunidad. Cada mensaje vive 24 horas y luego desaparece.
+          </Text>
+
+          {/* Cómo funciona */}
+          <Text style={[styles.infoSubtitle, { color: "#FFD6EB" }]}>¿Cómo funciona?</Text>
+          <View style={styles.infoList}>
+            {HOW_IT_WORKS.map((step, i) => (
+              <View key={i} style={[styles.infoStepCard, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(212,112,154,0.18)" }]}>
+                <View style={[styles.infoStepIcon, { backgroundColor: `${ACCENT}22` }]}>
+                  <Feather name={step.icon} size={15} color={ACCENT} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.infoStepTitle, { color: "#FFD6EB" }]}>{step.title}</Text>
+                  <Text style={[styles.infoStepBody, { color: "rgba(255,214,235,0.7)" }]}>{step.body}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* Por qué existe */}
+          <Text style={[styles.infoSubtitle, { color: "#FFD6EB", marginTop: 16 }]}>¿Por qué existe?</Text>
+          <View style={[styles.infoQuote, { borderLeftColor: ACCENT, backgroundColor: "rgba(255,255,255,0.06)" }]}>
+            <Text style={[styles.infoQuoteText, { color: "rgba(255,214,235,0.85)" }]}>
+              "¿Qué pasaría si pudieras soltar algo hoy, sin que nadie sepa que fuiste vos, pero sintiendo que alguien lo recibió?"
+            </Text>
+          </View>
+          <View style={styles.infoList}>
+            {WHY_ITEMS.map((item, i) => (
+              <View key={i} style={styles.infoWhyRow}>
+                <View style={[styles.infoWhyIcon, { backgroundColor: `${ACCENT}18`, borderColor: `${ACCENT}30` }]}>
+                  <Feather name={item.icon} size={12} color={ACCENT} />
+                </View>
+                <Text style={[styles.infoWhyText, { color: "rgba(255,214,235,0.75)" }]}>{item.text}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Espacio seguro */}
+          <View style={[styles.infoRules, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(198,155,79,0.2)" }]}>
+            <View style={styles.infoRulesHeader}>
+              <Feather name="shield" size={13} color="rgba(255,214,235,0.6)" />
+              <Text style={[styles.infoRulesTitle, { color: "#FFD6EB" }]}>Espacio seguro</Text>
+            </View>
+            <Text style={[styles.infoRulesBody, { color: "rgba(255,214,235,0.65)" }]}>
+              Este es un espacio de respeto y cuidado. Los mensajes que contengan violencia, discriminación o contenido dañino serán eliminados. Compartí desde la vulnerabilidad, no desde el ataque.
+            </Text>
+          </View>
+        </View>
+      )}
 
       {/* ── Expandable feed ── */}
       {showFeed && (
@@ -578,4 +680,74 @@ const styles = StyleSheet.create({
   expiringText: { fontSize: 9, color: "#E07060", letterSpacing: 0.2 },
   likeBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   likeCount: { fontSize: 11, fontWeight: "600" },
+
+  // Descubre más
+  discoverRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderTopWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  discoverLabel: { fontSize: 12, fontWeight: "700", letterSpacing: 0.3 },
+
+  infoSection: {
+    borderTopWidth: 1,
+    padding: 16,
+    gap: 12,
+  },
+  infoIntro: { fontSize: 13, lineHeight: 20 },
+  infoSubtitle: { fontSize: 14, fontWeight: "700", letterSpacing: 0.2 },
+  infoList: { gap: 8 },
+  infoStepCard: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 12,
+  },
+  infoStepIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  infoStepTitle: { fontSize: 13, fontWeight: "700", marginBottom: 3 },
+  infoStepBody: { fontSize: 12, lineHeight: 18 },
+
+  infoQuote: {
+    borderLeftWidth: 3,
+    paddingLeft: 14,
+    paddingVertical: 10,
+    paddingRight: 10,
+    borderRadius: 4,
+  },
+  infoQuoteText: { fontSize: 13, lineHeight: 20, fontStyle: "italic" },
+
+  infoWhyRow: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
+  infoWhyIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    marginTop: 1,
+  },
+  infoWhyText: { fontSize: 12, lineHeight: 19, flex: 1 },
+
+  infoRules: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 14,
+    marginTop: 4,
+  },
+  infoRulesHeader: { flexDirection: "row", alignItems: "center", gap: 7, marginBottom: 8 },
+  infoRulesTitle: { fontSize: 13, fontWeight: "700" },
+  infoRulesBody: { fontSize: 12, lineHeight: 19 },
 });

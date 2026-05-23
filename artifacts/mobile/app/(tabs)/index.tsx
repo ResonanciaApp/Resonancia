@@ -274,11 +274,6 @@ export default function HomeScreen() {
           <MessageDeck />
         </View>
 
-        {/* ── 5b. MENSAJES DEL ALMA ── */}
-        <View style={styles.section}>
-          <MensajesAnonimosPanel />
-        </View>
-
         {/* ── 6. NUEVAS SESIONES ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
@@ -342,6 +337,11 @@ export default function HomeScreen() {
             </View>
           </View>
         )}
+
+        {/* ── 7. MENSAJES DEL ALMA ── */}
+        <View style={styles.section}>
+          <MensajesAnonimosPanel />
+        </View>
       </ScrollView>
     </View>
   );
