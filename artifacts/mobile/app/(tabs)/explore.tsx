@@ -220,10 +220,10 @@ export default function ExploreScreen() {
               </ScrollView>
             </View>
 
-            {/* ── Otras Categorías ── */}
+            {/* ── Otras Temáticas ── */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
-                Otras Categorías
+                Otras Temáticas
               </Text>
               <View style={styles.tagGrid}>
                 {TAG_CARDS.map((tag) => (
