@@ -55,7 +55,7 @@ export function CategoryCard({ category, wide = false }: Props) {
           {category.title}
         </Text>
         {wide ? (
-          <Text style={[styles.subtitle, { color: colors.mutedForeground }]} numberOfLines={1}>
+          <Text style={[styles.subtitle, { color: colors.foreground }]} numberOfLines={1}>
             {category.subtitle}
           </Text>
         ) : null}

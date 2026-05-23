@@ -22,8 +22,7 @@ type Props = {
 
 export function SessionCard({ session, width = 200, horizontal = false }: Props) {
   const colors = useColors();
-  const { isFavorite, toggleFavorite, playSession } = usePlayer();
-  const fav = isFavorite(session.id);
+  const { playSession } = usePlayer();
 
   if (horizontal) {
     return (
@@ -76,16 +75,6 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
         <Image source={session.image} style={styles.cardImage} />
-        <Pressable
-          onPress={() => toggleFavorite(session.id)}
-          style={styles.favBtn}
-        >
-          <Feather
-            name="heart"
-            size={16}
-            color={fav ? colors.primary : "rgba(237,225,211,0.6)"}
-          />
-        </Pressable>
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
