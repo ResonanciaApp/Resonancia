@@ -100,18 +100,16 @@ export default function SabiduriaDiaScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "rgba(240,204,130,0.12)", borderColor: "rgba(240,204,130,0.28)" }]}>
-            <Feather name="sun" size={18} color="#F0CC82" />
+            <Feather name="sun" size={22} color="#F0CC82" />
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-              {selectedTag ?? "Sabiduría para tu día"}
-            </Text>
-            <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-              {selectedTag
-                ? selectedCat?.description ?? ""
-                : "Una semilla de consciencia cada día"}
-            </Text>
-          </View>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>
+            {selectedTag ?? "Sabiduría para tu día"}
+          </Text>
+          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+            {selectedTag
+              ? selectedCat?.description ?? ""
+              : "Una semilla de consciencia cada día"}
+          </Text>
         </View>
 
         {/* ── CATEGORY LIST ── */}
@@ -240,19 +238,11 @@ export default function SabiduriaDiaScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
-  header: { flexDirection: "row", alignItems: "flex-start", gap: 12, marginBottom: 24 },
-  backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center", marginTop: 2 },
-  catIconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 2,
-  },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4 },
-  pageSub: { fontSize: 12, lineHeight: 18 },
+  header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
+  backBtn: { alignSelf: "flex-start", width: 40, height: 40, alignItems: "center", justifyContent: "center", marginBottom: 16 },
+  catIconCircle: { width: 56, height: 56, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center", marginBottom: 14 },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 6, textAlign: "center" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 18, gap: 16 },
   iconCircle: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: "center", justifyContent: "center" },
