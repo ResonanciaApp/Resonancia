@@ -35,6 +35,7 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
   "3": require("@/assets/audio/62 CM.mp3"),
   "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "27": require("@/assets/audio/riachuelo_stream.mp3"),
+  "28": require("@/assets/audio/sesion_cuencos_mix.mp3"),
 };
 
 /**
@@ -57,5 +58,5 @@ export const LOOP_SESSIONS = new Set(["20", "21", "22", "23", "24", "25", "26", 
  * Solo para sesiones de Meditaciones Guiadas.
  */
 export const VOICE_MAP: Record<string, ReturnType<typeof require> | undefined> = {
-  // "20": require("@/assets/audio/sonidos_naturaleza_voz.mp3"), // movido a Meditaciones Guiadas
+  "28": require("@/assets/audio/meditacion_voz_profunda.mp3"),
 };

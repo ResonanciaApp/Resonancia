@@ -423,6 +423,23 @@ export const SESSIONS: Session[] = [
     isNew: true,
     soundTag: "Música",
   },
+  // ── Meditaciones Guiadas ─────────────────────────────────────────────────
+  {
+    id: "28",
+    title: "Prueba 1",
+    subtitle: "Meditación Guiada con Cuencos",
+    categoryId: "meditaciones-guiadas",
+    categoryLabel: "Meditaciones Guiadas",
+    duration: 10,
+    durationLabel: "10 min",
+    description:
+      "Una meditación guiada con la voz de Casa del Cuenco acompañada de un fondo de cuencos tibetanos. Permítete soltar, respirar y volver a ti.",
+    benefits: ["Calma profunda", "Presencia plena", "Conexión interior", "Relajación"],
+    instruments: ["Cuencos tibetanos", "Voz guiada"],
+    image: require("@/assets/images/sessions/session-28.png"),
+    isNew: true,
+  },
+
   {
     id: "27",
     title: "Riachuelo con Pájaros",

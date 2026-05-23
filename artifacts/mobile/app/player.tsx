@@ -95,14 +95,26 @@ export default function PlayerScreen() {
     seekTo,
     sleepTimerRemaining,
     setSleepTimer,
+    hasVoiceTrack,
+    voiceVolume,
+    setVoiceVolume,
     hasAmbientTrack,
     ambientVolume,
     setAmbientVolume,
   } = usePlayer();
 
-  // ── All hooks must be called before any early return ────────────────────
+  // ── All hooks before early return ────────────────────────────────────────
+  const voiceTrackWidth = useRef(0);
   const ambientTrackWidth = useRef(0);
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
+
+  const handleVoiceSlider = useCallback(
+    (locationX: number) => {
+      const vol = Math.max(0, Math.min(1, locationX / voiceTrackWidth.current));
+      setVoiceVolume(vol);
+    },
+    [setVoiceVolume]
+  );
 
   const handleAmbientSlider = useCallback(
     (locationX: number) => {
@@ -120,7 +132,6 @@ export default function PlayerScreen() {
     [setSleepTimer]
   );
 
-  // When timer naturally expires, reset the chip selection
   useEffect(() => {
     if (sleepTimerRemaining === null && selectedTimerMinutes !== null) {
       setSelectedTimerMinutes(null);
@@ -140,9 +151,9 @@ export default function PlayerScreen() {
         ]}
       >
         <Feather name="music" size={40} color={colors.border} />
-        <Text style={[styles.noSession, { color: colors.mutedForeground }]}>No session playing</Text>
+        <Text style={[styles.noSession, { color: colors.mutedForeground }]}>No hay sesión activa</Text>
         <Pressable onPress={() => router.back()} style={[styles.backBtnSolo, { borderColor: colors.border }]}>
-          <Text style={{ color: colors.mutedForeground }}>Go back</Text>
+          <Text style={{ color: colors.mutedForeground }}>Volver</Text>
         </Pressable>
       </View>
     );
@@ -263,10 +274,7 @@ export default function PlayerScreen() {
                 style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: colors.primary }]}
               />
               <View
-                style={[
-                  styles.progressThumb,
-                  { left: `${progress * 100}%`, backgroundColor: colors.primary },
-                ]}
+                style={[styles.progressThumb, { left: `${progress * 100}%`, backgroundColor: colors.primary }]}
               />
             </View>
           </Pressable>
@@ -316,9 +324,75 @@ export default function PlayerScreen() {
           </View>
         </View>
 
-        {/* Sleep Timer — hidden for Música y Sonidos (duration was chosen upfront) */}
+        {/* Voice slider — for sessions with guided voice track */}
+        {hasVoiceTrack && (
+          <View style={[styles.sliderSection, { paddingHorizontal: 32, marginTop: 20, marginBottom: 8 }]}>
+            <View style={styles.sliderHeader}>
+              <Feather name="mic" size={13} color={colors.mutedForeground} />
+              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>Voz guiada</Text>
+              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
+                {Math.round(voiceVolume * 100)}%
+              </Text>
+            </View>
+            <View
+              style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
+              onLayout={(e: LayoutChangeEvent) => {
+                voiceTrackWidth.current = e.nativeEvent.layout.width;
+              }}
+              onStartShouldSetResponder={() => true}
+              onResponderGrant={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
+              onResponderMove={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
+            >
+              <View
+                style={[styles.sliderFill, { width: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
+              />
+              <View
+                style={[styles.sliderThumb, { left: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
+              />
+            </View>
+            <View style={styles.sliderHints}>
+              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Sin voz</Text>
+              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Ambient slider — for sessions with layered ambient track (e.g. birds) */}
+        {hasAmbientTrack && (
+          <View style={[styles.sliderSection, { paddingHorizontal: 32, marginTop: 20, marginBottom: 8 }]}>
+            <View style={styles.sliderHeader}>
+              <Feather name="wind" size={13} color={colors.mutedForeground} />
+              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>Pájaros</Text>
+              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
+                {Math.round(ambientVolume * 100)}%
+              </Text>
+            </View>
+            <View
+              style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
+              onLayout={(e: LayoutChangeEvent) => {
+                ambientTrackWidth.current = e.nativeEvent.layout.width;
+              }}
+              onStartShouldSetResponder={() => true}
+              onResponderGrant={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
+              onResponderMove={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
+            >
+              <View
+                style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
+              />
+              <View
+                style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
+              />
+            </View>
+            <View style={styles.sliderHints}>
+              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Sin pájaros</Text>
+              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Sleep Timer — at the bottom, hidden for Música y Sonidos */}
         {!isMusicaYSonidos && (
-          <View style={[styles.timerSection, { paddingTop: 16 }]}>
+          <View style={[styles.timerSection, { paddingTop: 24, marginTop: 8 }]}>
             <View style={styles.timerHeader}>
               <Feather name="moon" size={13} color={colors.mutedForeground} />
               <Text style={[styles.timerLabel, { color: colors.mutedForeground }]}>Apagar en</Text>
@@ -358,47 +432,7 @@ export default function PlayerScreen() {
           </View>
         )}
 
-        {/* Ambient volume slider — shown for sessions with a layered ambient track (e.g. birds) */}
-        {hasAmbientTrack && (
-          <View style={[styles.sliderSection, { paddingHorizontal: 32, marginBottom: 12 }]}>
-            <View style={styles.sliderHeader}>
-              <Feather name="wind" size={13} color={colors.mutedForeground} />
-              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>Pájaros</Text>
-              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
-                {Math.round(ambientVolume * 100)}%
-              </Text>
-            </View>
-            <View
-              style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
-              onLayout={(e: LayoutChangeEvent) => {
-                ambientTrackWidth.current = e.nativeEvent.layout.width;
-              }}
-              onStartShouldSetResponder={() => true}
-              onResponderGrant={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
-              onResponderMove={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
-            >
-              <View
-                style={[
-                  styles.sliderFill,
-                  { width: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" },
-                ]}
-              />
-              <View
-                style={[
-                  styles.sliderThumb,
-                  { left: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" },
-                ]}
-              />
-            </View>
-            <View style={styles.sliderHints}>
-              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Sin pájaros</Text>
-              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
-            </View>
-          </View>
-        )}
-
-        {/* Bottom spacing */}
-        <View style={{ paddingBottom: bottomPad + 16 }} />
+        <View style={{ paddingBottom: bottomPad + 20 }} />
       </ScrollView>
     </View>
   );
@@ -545,48 +579,9 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 10,
   },
-  timerSection: {
-    paddingHorizontal: 32,
-    marginBottom: 12,
-  },
-  timerHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 10,
-  },
-  timerLabel: {
-    fontSize: 11,
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
-  },
-  timerCountdown: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  timerChips: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  timerChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  timerChipText: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
 
-  // Generic slider (ambient / voice)
-  sliderSection: {
-    marginBottom: 12,
-  },
+  // Generic slider styles (voice / ambient)
+  sliderSection: {},
   sliderHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -632,19 +627,47 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  extras: {
+  // Sleep timer
+  timerSection: {
+    paddingHorizontal: 32,
+    marginBottom: 12,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(198,155,79,0.1)",
+  },
+  timerHeader: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    paddingHorizontal: 20,
-  },
-  extraBtn: {
     alignItems: "center",
-    gap: 4,
+    gap: 6,
+    marginBottom: 12,
   },
-  extraLabel: {
-    fontSize: 10,
+  timerLabel: {
+    fontSize: 11,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  timerCountdown: {
+    fontSize: 11,
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
+  timerChips: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  timerChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timerChipText: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+
   noSession: {
     fontSize: 16,
     marginTop: 16,

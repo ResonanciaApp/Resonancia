@@ -210,6 +210,12 @@ uri = "file://artifacts/mobile/assets/images/sessions/session-27.png"
 type = "image"
 title = "riachuelo_pajaros_naturaleza"
 
+[[generated]]
+id = "FWjSdoO8h3bs4Cm_f33ww"
+uri = "file://artifacts/mobile/assets/images/sessions/session-28.png"
+type = "image"
+title = "prueba_meditacion_guiada"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
