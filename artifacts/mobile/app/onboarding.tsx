@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Audio } from "expo-av";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
@@ -171,6 +172,37 @@ export default function Onboarding() {
   const [step, setStep] = useState(-1);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
 
+  // ── Audio ─────────────────────────────────────────────────────────────────
+  const soundRef = useRef<Audio.Sound | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+        const { sound } = await Audio.Sound.createAsync(
+          require("@/assets/audio/om_mani_padme_hum.mp3"),
+          { isLooping: true, volume: 0, shouldPlay: true }
+        );
+        if (!mounted) { await sound.unloadAsync(); return; }
+        soundRef.current = sound;
+        // Fade in over 4 seconds
+        let vol = 0;
+        const step = 0.05;
+        const interval = setInterval(async () => {
+          vol = Math.min(vol + step, 0.55);
+          try { await sound.setVolumeAsync(vol); } catch {}
+          if (vol >= 0.55) clearInterval(interval);
+        }, 350);
+      } catch {}
+    })();
+    return () => {
+      mounted = false;
+      soundRef.current?.unloadAsync().catch(() => {});
+      soundRef.current = null;
+    };
+  }, []);
+
   // Welcome screen only: fades in from 0
   const welcomeOpacity = useRef(new Animated.Value(0)).current;
   const logoScale      = useRef(new Animated.Value(0.85)).current;
@@ -237,6 +269,21 @@ export default function Onboarding() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     await AsyncStorage.setItem(STORAGE_KEY, "true");
     await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(answers));
+    // Fade out audio before navigating
+    const sound = soundRef.current;
+    if (sound) {
+      let vol = 0.55;
+      const interval = setInterval(async () => {
+        vol = Math.max(vol - 0.07, 0);
+        try { await sound.setVolumeAsync(vol); } catch {}
+        if (vol <= 0) {
+          clearInterval(interval);
+          sound.unloadAsync().catch(() => {});
+          soundRef.current = null;
+        }
+      }, 120);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
     router.replace("/(tabs)");
   };
 
