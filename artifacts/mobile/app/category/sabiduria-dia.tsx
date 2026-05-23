@@ -31,10 +31,11 @@ type CategoryDef = {
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Silencio Interior",       icon: "moon",         description: "Encuentra el espacio entre los pensamientos" },
-  { tag: "Aceptación y flujo",      icon: "droplet",      description: "Suelta y deja que la vida fluya" },
-  { tag: "Atención Plena",          icon: "eye",          description: "Presencia total en el momento que es" },
-  { tag: "Observación sin juicio",  icon: "feather",      description: "Mira sin etiquetar, siente sin resistir" },
+  { tag: "Silencio Interior",            icon: "moon",     description: "Encuentra el espacio entre los pensamientos" },
+  { tag: "Aceptación y flujo",           icon: "droplet",  description: "Suelta y deja que la vida fluya" },
+  { tag: "Atención plena",               icon: "eye",      description: "Presencia total en el momento que es" },
+  { tag: "Observo mi oscuridad",         icon: "feather",  description: "Mira sin etiquetar, siente sin resistir" },
+  { tag: "Condicionamiento y creencias", icon: "layers",   description: "Despierta los patrones que te limitan" },
 ];
 
 export default function SabiduriaDiaScreen() {
@@ -104,7 +105,7 @@ export default function SabiduriaDiaScreen() {
             <Feather name="sun" size={22} color="#F0CC82" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-            {selectedTag ?? "Sabiduría para tu día"}
+            {selectedTag ?? "3 Minutos de Sabiduría"}
           </Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             {selectedTag
@@ -167,7 +168,7 @@ export default function SabiduriaDiaScreen() {
 
             <CategoryInfoPanel
               accentColor="#F0CC82"
-              heading="¿Qué es la sabiduría del día?"
+              heading="¿Qué son los 3 Minutos de Sabiduría?"
               items={[
                 {
                   icon: "sun",

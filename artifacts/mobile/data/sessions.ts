@@ -1,30 +1,34 @@
-export type SoundTag = "Binaural" | "Música" | "Sonidos Naturales";
+export type SoundTag = "Binaural" | "Música" | "Sonidos Naturaleza";
 export type MeditationTag =
-  | "Visualización"
-  | "Escáner Corporal"
-  | "Soy Consciencia"
+  | "No Duales"
+  | "Visualizaciones"
   | "Mantras"
+  | "Escaneo Corporal"
   | "Manifestación";
 
 export type SabiduriaTag =
   | "Silencio Interior"
   | "Aceptación y flujo"
-  | "Atención Plena"
-  | "Observación sin juicio";
+  | "Atención plena"
+  | "Observo mi oscuridad"
+  | "Condicionamiento y creencias";
 
 export type PodcastTag =
   | "Espiritualidad"
   | "Salud y Bienestar"
   | "Disciplinas"
   | "Psicología Transpersonal"
-  | "Psicodélicos y Enteógenos";
+  | "Enteógenos"
+  | "Sobrenatural"
+  | "Neurociencia";
 
 export type AncestralTag =
   | "Cuencos Tibetanos"
   | "Cuencos de Cuarzo"
-  | "Mix de Cuencos Tibetanos y de Cuarzo"
+  | "Mix de Cuencos"
   | "Gongs"
-  | "Cuencos y Gongs";
+  | "Cuencos y Gongs"
+  | "Full Instrumentos";
 
 export type Session = {
   id: string;
@@ -64,7 +68,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuencos tibetanos", "Campana", "Voz guía"],
     image: require("@/assets/images/sessions/session-1.png"),
     isFeatured: true,
-    meditationTag: "Visualización",
+    meditationTag: "Visualizaciones",
   },
   {
     id: "2",
@@ -121,7 +125,7 @@ export const SESSIONS: Session[] = [
     title: "Más allá del sonido",
     subtitle: "Consejo del Día",
     categoryId: "sabiduria-dia",
-    categoryLabel: "Sabiduría para tu día",
+    categoryLabel: "3 Minutos de Sabiduría",
     sabiduriaTag: "Silencio Interior" as const,
     duration: 5,
     durationLabel: "5 min",
@@ -161,7 +165,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuencos tibetanos", "Voz guía", "Campanilla"],
     image: require("@/assets/images/sessions/session-7.png"),
     isNew: true,
-    meditationTag: "Escáner Corporal",
+    meditationTag: "Escaneo Corporal",
   },
 
   // ── Sonidos Binaurales con Cuencos ────────────────────────────────────────
@@ -361,7 +365,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-20.png"),
     audio: require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
     isNew: true,
-    soundTag: "Sonidos Naturales",
+    soundTag: "Sonidos Naturaleza",
   },
   {
     id: "21",
@@ -377,7 +381,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Lluvia", "Viento suave", "Naturaleza"],
     image: require("@/assets/images/sessions/session-3.png"),
     isNew: true,
-    soundTag: "Sonidos Naturales",
+    soundTag: "Sonidos Naturaleza",
   },
   {
     id: "22",
@@ -393,7 +397,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Olas del mar", "Brisa marina", "Naturaleza costera"],
     image: require("@/assets/images/sessions/session-5.png"),
     isNew: true,
-    soundTag: "Sonidos Naturales",
+    soundTag: "Sonidos Naturaleza",
   },
   {
     id: "23",
@@ -476,7 +480,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuencos tibetanos", "Voz guiada"],
     image: require("@/assets/images/sessions/session-28.png"),
     isNew: true,
-    meditationTag: "Visualización",
+    meditationTag: "Visualizaciones",
   },
 
   {
@@ -494,7 +498,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-27.png"),
     audio: require("@/assets/audio/riachuelo_pajaros.wav"),
     isNew: true,
-    soundTag: "Sonidos Naturales",
+    soundTag: "Sonidos Naturaleza",
   },
 
   {

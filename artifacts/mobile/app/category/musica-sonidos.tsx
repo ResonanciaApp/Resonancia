@@ -31,20 +31,20 @@ const IMG_SIZE = CARD_WIDTH - 10;
 
 type Tab = "Todos" | SoundTag;
 
-const TABS: Tab[] = ["Todos", "Binaural", "Música", "Sonidos Naturales"];
+const TABS: Tab[] = ["Todos", "Binaural", "Música", "Sonidos Naturaleza"];
 
 const DURATION_OPTIONS = [5, 10, 15, 20, 30, 45];
 
 const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
   Binaural: { bg: "#4A3280", text: "#C4A8F0" },
   Música: { bg: "#5A3A10", text: "#E8B96A" },
-  "Sonidos Naturales": { bg: "#1A4A2E", text: "#6EC899" },
+  "Sonidos Naturaleza": { bg: "#1A4A2E", text: "#6EC899" },
 };
 
 const TAG_ICONS: Record<SoundTag, React.ComponentProps<typeof Feather>["name"]> = {
   Binaural: "headphones",
   Música: "music",
-  "Sonidos Naturales": "wind",
+  "Sonidos Naturaleza": "wind",
 };
 
 const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
@@ -235,7 +235,7 @@ export default function MusicaSonidosScreen() {
                         >
                           <Feather name={tagIcon} size={9} color={tagStyle.text} />
                           <Text style={[styles.tagText, { color: tagStyle.text }]}>
-                            {tag === "Sonidos Naturales" ? "Natural" : tag}
+                            {tag === "Sonidos Naturaleza" ? "Natural" : tag}
                           </Text>
                         </View>
                       )}

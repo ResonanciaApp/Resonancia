@@ -38,11 +38,12 @@ type CategoryDef = {
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Cuencos Tibetanos",                    Icon: IconCuencoTibetano, description: "Vibraciones milenarias del Himalaya" },
-  { tag: "Cuencos de Cuarzo",                    Icon: IconCuencoCuarzo,   description: "Frecuencias cristalinas de alta pureza" },
-  { tag: "Mix de Cuencos Tibetanos y de Cuarzo", Icon: IconMixCuencos,     description: "Lo mejor de ambos mundos sonoros" },
-  { tag: "Gongs",                                Icon: IconGong,           description: "Ondas expansivas de transformación" },
-  { tag: "Cuencos y Gongs",                      Icon: IconCuencosYGongs,  description: "Combinación sagrada de instrumentos" },
+  { tag: "Cuencos Tibetanos",  Icon: IconCuencoTibetano, description: "Vibraciones milenarias del Himalaya" },
+  { tag: "Cuencos de Cuarzo", Icon: IconCuencoCuarzo,   description: "Frecuencias cristalinas de alta pureza" },
+  { tag: "Mix de Cuencos",    Icon: IconMixCuencos,     description: "Lo mejor de ambos mundos sonoros" },
+  { tag: "Gongs",             Icon: IconGong,           description: "Ondas expansivas de transformación" },
+  { tag: "Cuencos y Gongs",   Icon: IconCuencosYGongs,  description: "Combinación sagrada de instrumentos" },
+  { tag: "Full Instrumentos", Icon: IconMixCuencos,     description: "Todos los instrumentos ancestrales" },
 ];
 
 export default function SonidosAncestalesScreen() {

@@ -33,10 +33,10 @@ type CategoryDef = {
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Visualización",    icon: "eye",       description: "Guías para visualizar y crear" },
-  { tag: "Escáner Corporal", icon: "user",       description: "Conexión y presencia en el cuerpo" },
-  { tag: "Soy Consciencia",  icon: "sun",        description: "Despertar y observación del ser" },
+  { tag: "No Duales",        icon: "sun",        description: "Despertar y observación del ser" },
+  { tag: "Visualizaciones",  icon: "eye",        description: "Guías para visualizar y crear" },
   { tag: "Mantras",          icon: "radio",      description: "Vibración y repetición sagrada" },
+  { tag: "Escaneo Corporal", icon: "user",       description: "Conexión y presencia en el cuerpo" },
   { tag: "Manifestación",    icon: "zap",        description: "Intención, foco y creación" },
 ];
 

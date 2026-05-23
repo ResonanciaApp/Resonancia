@@ -29,11 +29,13 @@ type CategoryDef = {
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Espiritualidad",             icon: "sun",       description: "Exploración del ser y lo sagrado" },
-  { tag: "Salud y Bienestar",          icon: "heart",     description: "Cuerpo, mente y vida en equilibrio" },
-  { tag: "Disciplinas",                icon: "compass",   description: "Prácticas y caminos de transformación" },
-  { tag: "Psicología Transpersonal",   icon: "eye",       description: "Más allá del ego, hacia la totalidad" },
-  { tag: "Psicodélicos y Enteógenos",  icon: "zap",       description: "Conciencia expandida y medicina ancestral" },
+  { tag: "Espiritualidad",           icon: "sun",       description: "Exploración del ser y lo sagrado" },
+  { tag: "Salud y Bienestar",        icon: "heart",     description: "Cuerpo, mente y vida en equilibrio" },
+  { tag: "Disciplinas",              icon: "compass",   description: "Prácticas y caminos de transformación" },
+  { tag: "Psicología Transpersonal", icon: "eye",       description: "Más allá del ego, hacia la totalidad" },
+  { tag: "Enteógenos",               icon: "zap",       description: "Conciencia expandida y medicina ancestral" },
+  { tag: "Sobrenatural",             icon: "star",      description: "Lo que existe más allá del velo" },
+  { tag: "Neurociencia",             icon: "activity",  description: "Ciencia al servicio del despertar" },
 ];
 
 export default function PodcastScreen() {

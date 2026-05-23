@@ -41,8 +41,8 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "sabiduria-dia",
-    title: "Sabiduría para tu día",
-    subtitle: "Una semilla de consciencia cada día",
+    title: "3 Minutos de Sabiduría",
+    subtitle: "Sabiduría condensada en 3 minutos",
     icon: "sun",
     sessionCount: 1,
     color: "#F0CC82",
