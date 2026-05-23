@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -14,6 +15,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
+const RATINGS_KEY = "@resonance_ratings";
+
 type Props = {
   session: Session;
   width?: number;
@@ -23,6 +26,19 @@ type Props = {
 export function SessionCard({ session, width = 200, horizontal = false }: Props) {
   const colors = useColors();
   const { playSession } = usePlayer();
+
+  const [rating, setRating] = useState(0);
+
+  useEffect(() => {
+    if (session.categoryId !== "meditaciones-guiadas") return;
+    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
+      if (!val) return;
+      const map: Record<string, number> = JSON.parse(val);
+      if (map[session.id]) setRating(map[session.id]);
+    });
+  }, [session.id, session.categoryId]);
+
+  const isGuiada = session.categoryId === "meditaciones-guiadas";
 
   if (horizontal) {
     return (
@@ -41,7 +57,23 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           style={styles.hGradient}
         />
         <View style={styles.hContent}>
-          {session.categoryId !== "meditaciones-guiadas" && (
+          {isGuiada ? (
+            <View style={styles.starsRow}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Feather
+                  key={star}
+                  name="star"
+                  size={11}
+                  color={star <= rating ? "#E8B96A" : "rgba(198,155,79,0.22)"}
+                />
+              ))}
+              {rating === 0 && (
+                <Text style={[styles.noRatingText, { color: colors.mutedForeground }]}>
+                  Sin valorar
+                </Text>
+              )}
+            </View>
+          ) : (
             <Text style={[styles.hCategory, { color: colors.accent }]}>
               {session.categoryLabel}
             </Text>
@@ -162,6 +194,17 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textTransform: "uppercase",
     marginBottom: 3,
+  },
+  starsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    marginBottom: 3,
+  },
+  noRatingText: {
+    fontSize: 9,
+    letterSpacing: 0.3,
+    marginLeft: 4,
   },
   hTitle: {
     fontSize: 15,
