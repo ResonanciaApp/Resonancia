@@ -20,7 +20,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
-import { TAG_CARDS } from "@/data/tags";
+import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -222,11 +222,16 @@ export default function ExploreScreen() {
 
             {/* ── Otras Temáticas ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
-                Otras Temáticas
-              </Text>
-              <View style={styles.tagGrid}>
-                {TAG_CARDS.map((tag) => (
+              <View style={styles.sectionRow}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                  Otras Temáticas
+                </Text>
+                <Pressable onPress={() => router.push("/todas-las-tematicas" as never)} hitSlop={8}>
+                  <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todas</Text>
+                </Pressable>
+              </View>
+              <View style={[styles.tagGrid, { marginTop: 14 }]}>
+                {TAG_CARDS.slice(0, TAGS_PREVIEW_COUNT).map((tag) => (
                   <Pressable
                     key={tag.id}
                     onPress={() => router.push(`/tag/${tag.id}` as never)}

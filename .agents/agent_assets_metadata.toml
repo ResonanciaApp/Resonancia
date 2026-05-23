@@ -216,6 +216,36 @@ uri = "file://artifacts/mobile/assets/images/sessions/session-28.png"
 type = "image"
 title = "prueba_meditacion_guiada"
 
+[[generated]]
+id = "jD54a5mkr_xer-fELy8JV"
+uri = "file://artifacts/mobile/assets/images/tag-crecimiento.png"
+type = "image"
+title = "personal growth meditation"
+
+[[generated]]
+id = "Yldy5_yeYv3cHKSNYPAgN"
+uri = "file://artifacts/mobile/assets/images/tag-armonia.png"
+type = "image"
+title = "family harmony warm light"
+
+[[generated]]
+id = "iHQg6oipbdQ4e7P0DjwBx"
+uri = "file://artifacts/mobile/assets/images/tag-respiracion.png"
+type = "image"
+title = "conscious breathing nature"
+
+[[generated]]
+id = "CQZzJLA3-_IAF0MzqpLjt"
+uri = "file://artifacts/mobile/assets/images/tag-meditaciones-activas.png"
+type = "image"
+title = "active meditation movement"
+
+[[generated]]
+id = "MEeZsfD6nf2NNzDagy_jB"
+uri = "file://artifacts/mobile/assets/images/tag-astrologia.png"
+type = "image"
+title = "astrology night sky cosmos"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
