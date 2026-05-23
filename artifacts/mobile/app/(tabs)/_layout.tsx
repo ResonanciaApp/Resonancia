@@ -69,16 +69,18 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
-      {isIOS ? (
-        <SymbolView
-          name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
-          tintColor={iconColor}
-          size={22}
-        />
-      ) : (
-        <Feather name={conf.featherIcon as never} size={22} color={iconColor} />
-      )}
+      <View style={styles.iconWrap}>
+        <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
+        {isIOS ? (
+          <SymbolView
+            name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
+            tintColor={iconColor}
+            size={22}
+          />
+        ) : (
+          <Feather name={conf.featherIcon as never} size={22} color={iconColor} />
+        )}
+      </View>
       <Text style={[styles.label, { color: iconColor }]}>{conf.label}</Text>
     </Pressable>
   );
@@ -186,11 +188,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 3,
   },
-  pill: {
-    position: "absolute",
+  iconWrap: {
     width: 52,
-    height: 44,
-    borderRadius: 12,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pill: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 10,
     backgroundColor: PILL_BG,
   },
   label: {
