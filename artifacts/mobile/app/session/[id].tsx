@@ -180,12 +180,21 @@ export default function SessionDetailScreen() {
             </View>
           )}
 
-          {/* For guided meditations: just show NEW badge if applicable */}
-          {isGuiada && session.isNew && (
+          {/* For guided meditations: show tag + NEW badge */}
+          {isGuiada && (
             <View style={[styles.badges, { marginBottom: 10 }]}>
-              <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-              </View>
+              {session.meditationTag && (
+                <View style={[styles.badge, { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.35)" }]}>
+                  <Text style={[styles.badgeText, { color: colors.accent }]}>
+                    {session.meditationTag.toUpperCase()}
+                  </Text>
+                </View>
+              )}
+              {session.isNew && (
+                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+                  <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
+                </View>
+              )}
             </View>
           )}
 
