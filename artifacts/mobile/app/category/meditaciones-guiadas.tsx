@@ -134,8 +134,8 @@ export default function MeditacionesGuiadasScreen() {
           >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: "rgba(168,196,168,0.12)", borderColor: "rgba(168,196,168,0.28)" }]}>
-            <Feather name="wind" size={22} color="#A8C4A8" />
+          <View style={[styles.catIconCircle, { backgroundColor: "rgba(200,180,224,0.12)", borderColor: "rgba(200,180,224,0.28)" }]}>
+            <Feather name="wind" size={22} color="#C8B4E0" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Meditaciones Guiadas"}
@@ -164,8 +164,8 @@ export default function MeditacionesGuiadasScreen() {
                     ]}
                   >
                     {/* Icon circle */}
-                    <View style={[styles.iconCircle, { backgroundColor: "rgba(168,196,168,0.1)", borderColor: "rgba(168,196,168,0.22)" }]}>
-                      <Feather name={cat.icon} size={20} color="#A8C4A8" />
+                    <View style={[styles.iconCircle, { backgroundColor: "rgba(200,180,224,0.1)", borderColor: "rgba(200,180,224,0.22)" }]}>
+                      <Feather name={cat.icon} size={20} color="#C8B4E0" />
                     </View>
 
                     {/* Name */}
@@ -191,7 +191,7 @@ export default function MeditacionesGuiadasScreen() {
                 <View style={styles.nuevasHeader}>
                   <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
                   <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
-                    <Text style={[styles.verTodas, { color: "#A8C4A8" }]}>Ver todas</Text>
+                    <Text style={[styles.verTodas, { color: "#C8B4E0" }]}>Ver todas</Text>
                   </Pressable>
                 </View>
                 <ScrollView
@@ -207,7 +207,7 @@ export default function MeditacionesGuiadasScreen() {
             )}
 
             <CategoryInfoPanel
-              accentColor="#A8C4A8"
+              accentColor="#C8B4E0"
               heading="¿Qué es la meditación guiada?"
               items={[
                 {

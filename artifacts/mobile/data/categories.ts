@@ -26,8 +26,8 @@ export const CATEGORIES: Category[] = [
     subtitle: "Viajes interiores guiados por el sonido",
     icon: "wind",
     sessionCount: 3,
-    color: "#A8C4A8",
-    gradient: ["#3A5438", "#1E2E1C"],
+    color: "#C8B4E0",
+    gradient: ["#4A3260", "#251633"],
     primary: true,
   },
   {
@@ -36,8 +36,8 @@ export const CATEGORIES: Category[] = [
     subtitle: "Atmósferas sonoras para meditar",
     icon: "music",
     sessionCount: 2,
-    color: "#C8B4E0",
-    gradient: ["#4A3260", "#251633"],
+    color: "#A8C4A8",
+    gradient: ["#3A5438", "#1E2E1C"],
   },
   {
     id: "sabiduria-dia",
