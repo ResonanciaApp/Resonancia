@@ -313,14 +313,6 @@ export default function SessionDetailScreen() {
                 </Text>
               </View>
             )}
-            {!isGuiada && (
-              <View style={styles.metaItem}>
-                <Feather name="music" size={14} color={colors.mutedForeground} />
-                <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                  {session.instruments.length} instrumentos
-                </Text>
-              </View>
-            )}
           </View>
 
           {/* Description */}
@@ -328,36 +320,6 @@ export default function SessionDetailScreen() {
             {session.description}
           </Text>
 
-          {/* Benefits — hidden for Meditaciones Guiadas */}
-          {!isGuiada && (
-            <View style={styles.block}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]}>Beneficios</Text>
-              <View style={styles.pillsRow}>
-                {session.benefits.map((b) => (
-                  <View
-                    key={b}
-                    style={[styles.pill, { backgroundColor: colors.secondary, borderColor: colors.border }]}
-                  >
-                    <Feather name="check" size={11} color={colors.accent} />
-                    <Text style={[styles.pillText, { color: colors.foreground }]}>{b}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-
-          {/* Instruments — hidden for Meditaciones Guiadas */}
-          {!isGuiada && (
-            <View style={styles.block}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]}>Instrumentos</Text>
-              {session.instruments.map((inst) => (
-                <View key={inst} style={[styles.instrRow, { borderBottomColor: colors.border }]}>
-                  <Feather name="disc" size={14} color={colors.accent} />
-                  <Text style={[styles.instrText, { color: colors.foreground }]}>{inst}</Text>
-                </View>
-              ))}
-            </View>
-          )}
 
           {/* Related */}
           {related.length > 0 && (
