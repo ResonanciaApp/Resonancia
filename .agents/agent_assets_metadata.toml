@@ -233,3 +233,15 @@ id = "snBqQiLEK3UqJBBb6Rp0_"
 uri = "file://attached_assets/generated_audio/meditacion_voz_profunda.mp3"
 type = "audio"
 title = "Meditación — Voz Profunda y Meditativa"
+
+[[outputs]]
+id = "kUi_vp_EyR3KbTti6AmNz"
+uri = "file://attached_assets/generated_audio/meditacion_bella.mp3"
+type = "audio"
+title = "Opción A — Bella (cálida, profesional)"
+
+[[outputs]]
+id = "U6T0G7L-JXxiBKjvpOSE2"
+uri = "file://attached_assets/generated_audio/meditacion_sarah.mp3"
+type = "audio"
+title = "Opción B — Sarah (madura, reconfortante)"
