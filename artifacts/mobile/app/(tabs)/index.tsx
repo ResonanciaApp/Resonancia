@@ -247,7 +247,22 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 4. A NO OLVIDAR ── */}
+        {/* ── 4. RECOMENDADAS PARA TI ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              Recomendadas para ti
+            </Text>
+            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
+              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
+            </Pressable>
+          </View>
+          {recommended.slice(0, 4).map((s) => (
+            <SessionCard key={s.id} session={s} horizontal />
+          ))}
+        </View>
+
+        {/* ── 5. A NO OLVIDAR ── */}
         {noOlvidarItems.length > 0 && (
           <View style={styles.section}>
             {/* Cabecera tappable */}
@@ -351,21 +366,6 @@ export default function HomeScreen() {
             )}
           </View>
         )}
-
-        {/* ── 5. RECOMENDADAS PARA TI ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Recomendadas para ti
-            </Text>
-            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
-            </Pressable>
-          </View>
-          {recommended.slice(0, 4).map((s) => (
-            <SessionCard key={s.id} session={s} horizontal />
-          ))}
-        </View>
 
         {/* ── 6. MENSAJE DEL DÍA ── */}
         <View style={styles.section}>
