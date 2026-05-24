@@ -252,6 +252,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuenco tibetano pequeño", "Fricciones suaves", "Agua y cristal"],
     image: require("@/assets/images/sessions/session-11.png"),
     frequency: "432 Hz",
+    sleepTag: "ASMR Expansivos",
     isNew: true,
   },
   {
@@ -267,6 +268,7 @@ export const SESSIONS: Session[] = [
     benefits: ["Calma instantánea", "Relajación muscular", "Mente quieta", "Desconexión del ruido"],
     instruments: ["Cuencos de bronce", "Baqueta de cuero", "Sonidos circulares"],
     image: require("@/assets/images/sessions/session-12.png"),
+    sleepTag: "ASMR Expansivos",
     isNew: true,
   },
   {
@@ -283,6 +285,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Cuencos tibetanos variados", "Tingsha", "Silencios conscientes"],
     image: require("@/assets/images/sessions/session-13.png"),
     frequency: "528 Hz",
+    sleepTag: "ASMR Expansivos",
     isNew: true,
   },
 
