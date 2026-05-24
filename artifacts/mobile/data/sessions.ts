@@ -541,6 +541,25 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-19.png"),
     isNew: true,
   },
+
+  // ── Prueba Maestra 1 ───────────────────────────────────────────────────────
+  {
+    id: "29",
+    title: "Prueba Maestra 1",
+    subtitle: "Cuencos Tibetanos",
+    categoryId: "sonidos-ancestrales",
+    categoryLabel: "Sonidos Ancestrales",
+    duration: 20,
+    durationLabel: "20 min",
+    description: "Esta es una prueba maestra.",
+    benefits: ["Relajación profunda", "Calma interior", "Vibración ancestral", "Presencia plena"],
+    instruments: ["Cuencos Tibetanos"],
+    image: require("@/assets/images/sessions/session-2.png"),
+    ancestralTag: "Cuencos Tibetanos" as const,
+    themeTag: ["Para la ansiedad"] as const,
+    sleepTag: "Sonidos Binaurales" as const,
+    isNew: true,
+  },
 ];
 
 export function getSessionsByCategory(categoryId: string): Session[] {
