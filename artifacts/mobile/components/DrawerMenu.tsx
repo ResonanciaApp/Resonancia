@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useRef } from "react";
@@ -13,6 +14,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -25,19 +28,25 @@ type MenuItem = {
   route: string;
 };
 
-const MAIN_ITEMS: MenuItem[] = [
-  { label: "Regístrate", icon: "user-plus", route: "/registro" },
-  { label: "Membresía", icon: "star", route: "/membresia" },
-  { label: "Tu perfil", icon: "user", route: "/(tabs)/profile" },
-  { label: "Actividades Expansivas", icon: "activity", route: "/actividades" },
-  { label: "Amigos", icon: "users", route: "/amigos" },
-  { label: "Grupos", icon: "globe", route: "/grupos" },
+const LOGGED_OUT_ITEMS: MenuItem[] = [
+  { label: "Regístrate",  icon: "user-plus", route: "/registro" },
+  { label: "Membresía",   icon: "star",      route: "/membresia" },
+  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/profile" },
+  { label: "Amigos",      icon: "users",     route: "/amigos" },
+  { label: "Grupos",      icon: "globe",     route: "/grupos" },
+];
+
+const LOGGED_IN_ITEMS: MenuItem[] = [
+  { label: "Membresía",   icon: "star",      route: "/membresia" },
+  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/profile" },
+  { label: "Amigos",      icon: "users",     route: "/amigos" },
+  { label: "Grupos",      icon: "globe",     route: "/grupos" },
 ];
 
 const SECONDARY_ITEMS: MenuItem[] = [
-  { label: "Invitar a un amigo", icon: "share-2", route: "/invitar" },
-  { label: "Ayuda", icon: "help-circle", route: "/ayuda" },
-  { label: "Configuraciones", icon: "settings", route: "/configuraciones" },
+  { label: "Invitar a un amigo", icon: "share-2",    route: "/invitar" },
+  { label: "Ayuda",              icon: "help-circle", route: "/ayuda" },
+  { label: "Configuraciones",    icon: "settings",    route: "/configuraciones" },
 ];
 
 interface Props {
@@ -48,6 +57,9 @@ interface Props {
 export function DrawerMenu({ visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { isRegistered } = useAuth();
+  const { username, lastName, photoUri } = useUserProfile();
+
   const translateX = useRef(new Animated.Value(-DRAWER_W)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
 
@@ -87,9 +99,16 @@ export function DrawerMenu({ visible, onClose }: Props) {
 
   if (!visible) return null;
 
+  const mainItems = isRegistered ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
+  const fullName = [username, lastName].filter(Boolean).join(" ");
+
+  const navigate = (route: string) => {
+    onClose();
+    router.push(route as never);
+  };
+
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      {/* Overlay oscuro */}
       <Animated.View
         style={[styles.overlay, { opacity: overlayOpacity }]}
         pointerEvents={visible ? "auto" : "none"}
@@ -97,18 +116,12 @@ export function DrawerMenu({ visible, onClose }: Props) {
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
       </Animated.View>
 
-      {/* Panel lateral */}
-      <Animated.View
-        style={[
-          styles.drawer,
-          { transform: [{ translateX }] },
-        ]}
-      >
+      <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <LinearGradient
           colors={["#241408", "#1A0E06"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
-          {/* Header del drawer */}
+          {/* Header */}
           <View style={styles.drawerHeader}>
             <Text style={styles.brandText}>RESONANCIA</Text>
             <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
@@ -116,15 +129,37 @@ export function DrawerMenu({ visible, onClose }: Props) {
             </Pressable>
           </View>
 
-          {/* Separador */}
           <View style={[styles.divider, { backgroundColor: "#C69B4F22" }]} />
+
+          {/* Perfil del usuario (si está logueado) */}
+          {isRegistered && (
+            <View style={styles.profileSection}>
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={styles.profilePhoto} contentFit="cover" />
+              ) : (
+                <View style={styles.profilePhotoFallback}>
+                  <Feather name="user" size={22} color="#C69B4F" />
+                </View>
+              )}
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName} numberOfLines={1}>{fullName || "Explorador"}</Text>
+                <Pressable
+                  onPress={() => navigate("/(tabs)/profile")}
+                  style={styles.verPerfilBtn}
+                >
+                  <Text style={styles.verPerfilText}>Ver Perfil</Text>
+                  <Feather name="chevron-right" size={11} color="#C69B4F" />
+                </Pressable>
+              </View>
+            </View>
+          )}
 
           {/* Items principales */}
           <View style={styles.itemGroup}>
-            {MAIN_ITEMS.map((item) => (
+            {mainItems.map((item) => (
               <Pressable
                 key={item.label}
-                onPress={() => { onClose(); router.push(item.route as never); }}
+                onPress={() => navigate(item.route)}
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
                 <View style={styles.itemIcon}>
@@ -135,7 +170,6 @@ export function DrawerMenu({ visible, onClose }: Props) {
             ))}
           </View>
 
-          {/* Separador */}
           <View style={[styles.divider, { backgroundColor: "#C69B4F22", marginVertical: 16 }]} />
 
           {/* Items secundarios */}
@@ -143,7 +177,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
             {SECONDARY_ITEMS.map((item) => (
               <Pressable
                 key={item.label}
-                onPress={() => { onClose(); router.push(item.route as never); }}
+                onPress={() => navigate(item.route)}
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
                 <View style={styles.itemIcon}>
@@ -202,9 +236,58 @@ const styles = StyleSheet.create({
     height: 1,
     marginBottom: 8,
   },
-  itemGroup: {
-    gap: 2,
+
+  // Perfil
+  profileSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 4,
+    marginBottom: 4,
   },
+  profilePhoto: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: "#C69B4F",
+  },
+  profilePhotoFallback: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: "#C69B4F",
+    backgroundColor: "rgba(198,155,79,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  profileInfo: {
+    flex: 1,
+    gap: 4,
+  },
+  profileName: {
+    color: "#EDE1D3",
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  verPerfilBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    alignSelf: "flex-start",
+  },
+  verPerfilText: {
+    color: "#C69B4F",
+    fontSize: 12,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+  },
+
+  // Items
+  itemGroup: { gap: 2 },
   item: {
     flexDirection: "row",
     alignItems: "center",
@@ -213,13 +296,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  itemPressed: {
-    backgroundColor: "rgba(198,155,79,0.1)",
-  },
-  itemIcon: {
-    width: 26,
-    alignItems: "center",
-  },
+  itemPressed: { backgroundColor: "rgba(198,155,79,0.1)" },
+  itemIcon: { width: 26, alignItems: "center" },
   itemLabel: {
     color: "#EDE1D3",
     fontSize: 15,
