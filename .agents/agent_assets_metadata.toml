@@ -455,3 +455,9 @@ id = "zB8tzfUAPEE0VHqep29tF"
 uri = "file://artifacts/mobile/assets/audio/voz_5_oraculo_cosmico.mp3"
 type = "audio"
 title = "5. Oráculo Cósmico — susurros y cristales"
+
+[[outputs]]
+id = "A7KGTGONOt6acmPx5n9zN"
+uri = "file://artifacts/mobile/assets/audio/voz_ser_celestial_divino.mp3"
+type = "audio"
+title = "Voz Ser Celestial Divino — Consciencia Cósmica Ancestral"
