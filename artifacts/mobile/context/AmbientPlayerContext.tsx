@@ -85,8 +85,15 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const soundRef = useRef<Audio.Sound | null>(null);
-  // Track the scene that is actually loaded in the sound object
   const loadedSceneRef = useRef<SceneId | null>(null);
+  // Refs so callbacks can read latest state without re-creating
+  const isPlayingRef = useRef(false);
+  const isMutedRef = useRef(false);
+  const currentSceneIdRef = useRef<SceneId>("universo");
+
+  isPlayingRef.current = isPlaying;
+  isMutedRef.current = isMuted;
+  currentSceneIdRef.current = currentSceneId;
 
   const currentScene = AMBIENT_SCENES.find((s) => s.id === currentSceneId)!;
 
@@ -99,72 +106,101 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     }
   }, []);
 
-  const loadAndPlay = useCallback(async (sceneId: SceneId) => {
+  // Pre-load a scene without playing it yet (instant start later)
+  const preload = useCallback(async (sceneId: SceneId) => {
+    if (loadedSceneRef.current === sceneId) return; // already loaded
     await unload();
     try {
       const { sound } = await Audio.Sound.createAsync(
         SCENE_AUDIO[sceneId] as Parameters<typeof Audio.Sound.createAsync>[0],
-        { shouldPlay: true, isLooping: true, volume: 0.65 }
+        { shouldPlay: false, isLooping: true, volume: 0.65 }
       );
       soundRef.current = sound;
       loadedSceneRef.current = sceneId;
     } catch (e) {
-      console.warn("[Ambient] load failed:", e);
+      console.warn("[Ambient] preload failed:", e);
     }
   }, [unload]);
 
-  // Load saved scene preference (no auto-start — caller triggers startAmbient)
-  useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((val) => {
-      if (val && AMBIENT_SCENES.find((s) => s.id === val)) {
-        setCurrentSceneId(val as SceneId);
+  const loadAndPlay = useCallback(async (sceneId: SceneId) => {
+    if (loadedSceneRef.current !== sceneId) {
+      await unload();
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          SCENE_AUDIO[sceneId] as Parameters<typeof Audio.Sound.createAsync>[0],
+          { shouldPlay: true, isLooping: true, volume: 0.65 }
+        );
+        soundRef.current = sound;
+        loadedSceneRef.current = sceneId;
+      } catch (e) {
+        console.warn("[Ambient] load failed:", e);
       }
-    });
-  }, []);
+    } else {
+      // Already loaded — just play
+      try { await soundRef.current?.playAsync(); } catch {}
+    }
+  }, [unload]);
 
-  // Cleanup on unmount
+  // On mount: configure audio mode + pre-load the default scene immediately
   useEffect(() => {
+    Audio.setAudioModeAsync({
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: false,
+      shouldDuckAndroid: true,
+    }).catch(() => {});
+
+    // Load saved scene preference then pre-load it
+    AsyncStorage.getItem(STORAGE_KEY).then((val) => {
+      const savedId = val && AMBIENT_SCENES.find((s) => s.id === val) ? (val as SceneId) : "universo";
+      setCurrentSceneId(savedId);
+      preload(savedId);
+    });
+
     return () => {
       soundRef.current?.unloadAsync().catch(() => {});
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setScene = useCallback(async (id: SceneId) => {
     setCurrentSceneId(id);
     await AsyncStorage.setItem(STORAGE_KEY, id);
-    if (isPlaying && !isMuted) {
+    if (isPlayingRef.current && !isMutedRef.current) {
       await loadAndPlay(id);
+    } else {
+      // Pre-load silently so next play is instant
+      await preload(id);
     }
-  }, [isPlaying, isMuted, loadAndPlay]);
+  }, [loadAndPlay, preload]);
 
   const togglePlayback = useCallback(async () => {
-    if (!isPlaying) {
+    if (!isPlayingRef.current) {
       setIsPlaying(true);
       setIsMuted(false);
-      await loadAndPlay(currentSceneId);
-    } else if (!isMuted) {
+      await loadAndPlay(currentSceneIdRef.current);
+    } else if (!isMutedRef.current) {
       setIsMuted(true);
       try { await soundRef.current?.pauseAsync(); } catch {}
     } else {
       setIsMuted(false);
       try { await soundRef.current?.playAsync(); } catch {}
     }
-  }, [isPlaying, isMuted, currentSceneId, loadAndPlay]);
+  }, [loadAndPlay]);
 
   const stopAmbient = useCallback(async () => {
-    if (!isPlaying) return;
+    if (!isPlayingRef.current) return;
     setIsPlaying(false);
     setIsMuted(false);
     await unload();
-  }, [isPlaying, unload]);
+  }, [unload]);
 
-  // Call once when the home screen mounts (after onboarding)
+  // Called from HomeScreen after onboarding — sound is already pre-loaded, plays instantly
   const startAmbient = useCallback(async () => {
-    if (isPlaying) return; // already running
+    if (isPlayingRef.current) return;
     setIsPlaying(true);
     setIsMuted(false);
-    await loadAndPlay(currentSceneId);
-  }, [isPlaying, currentSceneId, loadAndPlay]);
+    await loadAndPlay(currentSceneIdRef.current);
+  }, [loadAndPlay]);
 
   return (
     <AmbientContext.Provider
