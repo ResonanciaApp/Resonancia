@@ -19,6 +19,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { AuthProvider } from "@/context/AuthContext";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
@@ -107,6 +108,10 @@ function RootLayoutNav() {
           name="intencion"
           options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
         />
+        <Stack.Screen
+          name="registro"
+          options={{ headerShown: false, animation: "slide_from_bottom", presentation: "modal" }}
+        />
       </Stack>
     </>
   );
@@ -139,6 +144,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
+          <AuthProvider>
           <PlayerProvider>
             <UserProfileProvider>
             <IntencionProvider>
@@ -152,6 +158,7 @@ export default function RootLayout() {
             </IntencionProvider>
             </UserProfileProvider>
           </PlayerProvider>
+          </AuthProvider>
         </QueryClientProvider>
       </ErrorBoundary>
     </SafeAreaProvider>
