@@ -33,22 +33,22 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-/** Redirects to onboarding only for new (unregistered) users. */
+/** Redirects to onboarding only for new (unregistered) users.
+ *  Waits for authLoading to resolve before deciding — prevents false
+ *  redirects when isRegistered starts as false before AsyncStorage loads. */
 function OnboardingGate() {
   const segments = useSegments();
   const redirected = useRef(false);
-  const { isRegistered } = useAuth();
+  const { isRegistered, authLoading } = useAuth();
 
   useEffect(() => {
+    if (authLoading) return;            // wait until AsyncStorage resolved
     if (redirected.current) return;
-    if (isRegistered) return;           // already done — stay on home tabs
+    if (isRegistered) return;           // returning user — stay on home tabs
     if (segments[0] === "onboarding") return;
-    const t = setTimeout(() => {
-      redirected.current = true;
-      router.replace("/onboarding");
-    }, 0);
-    return () => clearTimeout(t);
-  }, [segments, isRegistered]);
+    redirected.current = true;
+    router.replace("/onboarding");
+  }, [segments, isRegistered, authLoading]);
 
   return null;
 }

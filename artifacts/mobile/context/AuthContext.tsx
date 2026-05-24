@@ -14,6 +14,7 @@ interface AuthState {
 }
 
 interface AuthContextValue extends AuthState {
+  authLoading: boolean;
   register: (data: Omit<AuthState, "isRegistered">) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -30,13 +31,16 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>(DEFAULT);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     AsyncStorage.getItem(AUTH_KEY).then((raw) => {
-      if (!raw) return;
-      try {
-        setState({ ...DEFAULT, ...JSON.parse(raw) });
-      } catch {}
+      if (raw) {
+        try {
+          setState({ ...DEFAULT, ...JSON.parse(raw) });
+        } catch {}
+      }
+      setAuthLoading(false);
     });
   }, []);
 
@@ -52,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, register, logout }}>
+    <AuthContext.Provider value={{ ...state, authLoading, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
