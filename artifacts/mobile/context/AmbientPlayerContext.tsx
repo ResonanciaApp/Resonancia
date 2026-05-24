@@ -57,6 +57,18 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   },
 ];
 
+const TARGET_VOLUME = 0.49; // 0.65 − 25%
+const FADE_STEPS = 25;
+const FADE_MS = 1000;
+
+async function fadeIn(sound: Audio.Sound) {
+  const stepMs = FADE_MS / FADE_STEPS;
+  for (let i = 1; i <= FADE_STEPS; i++) {
+    await new Promise<void>((r) => setTimeout(r, stepMs));
+    try { await sound.setVolumeAsync((i / FADE_STEPS) * TARGET_VOLUME); } catch { break; }
+  }
+}
+
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
   universo:   require("@/assets/audio/pad_la.mp3"),
@@ -113,7 +125,7 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     try {
       const { sound } = await Audio.Sound.createAsync(
         SCENE_AUDIO[sceneId] as Parameters<typeof Audio.Sound.createAsync>[0],
-        { shouldPlay: false, isLooping: true, volume: 0.65 }
+        { shouldPlay: false, isLooping: true, volume: 0 }
       );
       soundRef.current = sound;
       loadedSceneRef.current = sceneId;
@@ -128,16 +140,22 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
       try {
         const { sound } = await Audio.Sound.createAsync(
           SCENE_AUDIO[sceneId] as Parameters<typeof Audio.Sound.createAsync>[0],
-          { shouldPlay: true, isLooping: true, volume: 0.65 }
+          { shouldPlay: true, isLooping: true, volume: 0 }
         );
         soundRef.current = sound;
         loadedSceneRef.current = sceneId;
+        fadeIn(sound);
       } catch (e) {
         console.warn("[Ambient] load failed:", e);
       }
     } else {
-      // Already loaded — just play
-      try { await soundRef.current?.playAsync(); } catch {}
+      // Already pre-loaded — fade in from silence
+      const sound = soundRef.current;
+      if (sound) {
+        try { await sound.setVolumeAsync(0); } catch {}
+        try { await sound.playAsync(); } catch {}
+        fadeIn(sound);
+      }
     }
   }, [unload]);
 
