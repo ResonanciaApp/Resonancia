@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { File, Paths } from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
@@ -102,7 +103,16 @@ export default function ProfileScreen() {
       quality: 0.8,
     });
     if (!result.canceled && result.assets[0]) {
-      setPhotoUri(result.assets[0].uri);
+      const tempUri = result.assets[0].uri;
+      try {
+        const ext = tempUri.split(".").pop()?.split("?")[0] ?? "jpg";
+        const src = new File(tempUri);
+        const dest = new File(Paths.document, `profile_photo.${ext}`);
+        src.copy(dest);
+        setPhotoUri(dest.uri);
+      } catch {
+        setPhotoUri(tempUri);
+      }
     }
   };
 
