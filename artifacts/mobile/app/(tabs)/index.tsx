@@ -2,8 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -71,13 +71,15 @@ export default function HomeScreen() {
   const { isRegistered } = useAuth();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
-  // Start ambient only when home screen mounts AND the user already completed onboarding
-  useEffect(() => {
-    if (isRegistered) {
-      startAmbient();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRegistered]);
+  // Start ambient only when this screen is actually focused AND user is registered.
+  // useFocusEffect + delay: if navigation redirects away before 400ms, cleanup cancels the timer.
+  useFocusEffect(
+    useCallback(() => {
+      if (!isRegistered) return;
+      const t = setTimeout(() => { startAmbient(); }, 400);
+      return () => clearTimeout(t);
+    }, [isRegistered, startAmbient])
+  );
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
