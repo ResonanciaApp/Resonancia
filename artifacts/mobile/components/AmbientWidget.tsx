@@ -66,14 +66,6 @@ export function AmbientWidget() {
             style={styles.thumbnailImg}
             contentFit="cover"
           />
-          {/* Overlay icon */}
-          <View style={styles.thumbnailOverlay}>
-            <Feather
-              name={currentScene.icon as React.ComponentProps<typeof Feather>["name"]}
-              size={11}
-              color="rgba(255,255,255,0.85)"
-            />
-          </View>
           {isActive && <View style={styles.activeDot} />}
         </Pressable>
 
@@ -134,7 +126,7 @@ export function AmbientWidget() {
 }
 
 const THUMB = 32;
-const SCENE_THUMB = 40;
+const SCENE_THUMB = 32;
 
 const styles = StyleSheet.create({
   root: {
