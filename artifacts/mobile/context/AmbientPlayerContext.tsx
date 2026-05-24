@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 
-export type SceneId = "mar" | "naturaleza" | "bosque" | "lluvia" | "viento";
+export type SceneId = "universo" | "mar" | "naturaleza" | "bosque" | "lluvia" | "viento";
 
 export type AmbientScene = {
   id: SceneId;
@@ -20,6 +20,13 @@ export type AmbientScene = {
 };
 
 export const AMBIENT_SCENES: AmbientScene[] = [
+  {
+    id: "universo",
+    label: "Universo",
+    colors: ["#1A0A3C", "#6B3FA0"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/universo.jpg"),
+  },
   {
     id: "mar",
     label: "Mar",
@@ -59,6 +66,7 @@ export const AMBIENT_SCENES: AmbientScene[] = [
 
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
+  universo:   require("@/assets/audio/pad_la.mp3"),
   mar:        require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with mar.mp3
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
   bosque:     require("@/assets/audio/riachuelo_pajaros.wav"),
@@ -81,7 +89,7 @@ const AmbientContext = createContext<AmbientCtx | null>(null);
 const STORAGE_KEY = "@ambient_scene";
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
-  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("mar");
+  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("universo");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const soundRef = useRef<Audio.Sound | null>(null);
