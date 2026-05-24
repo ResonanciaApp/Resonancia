@@ -371,3 +371,15 @@ id = "HCx6ttdlKJYZJOON-DO1S"
 uri = "file://artifacts/mobile/assets/audio/goa_trance_viaje_interdimensional_HD.mp3"
 type = "audio"
 title = "Goa Trance HD — Viaje Interdimensional (MP3 192kbps)"
+
+[[outputs]]
+id = "e7L2pGUGcEeDtyzKQveP1"
+uri = "file://artifacts/mobile/assets/audio/goa_trance_continuacion.mp3"
+type = "audio"
+title = "Goa Trance Continuación (2 min, standalone)"
+
+[[outputs]]
+id = "Gzzb-KmS4R0yF0nJmlQKA"
+uri = "file://artifacts/mobile/assets/audio/goa_trance_dj_mix.mp3"
+type = "audio"
+title = "DJ Mix — Transición Goa Trance → Continuación (2:15)"
