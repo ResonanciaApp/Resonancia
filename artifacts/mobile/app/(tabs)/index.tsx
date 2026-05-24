@@ -2,8 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { router } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -68,30 +68,18 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
   const { startAmbient } = useAmbientPlayer();
-  const { isRegistered } = useAuth();
+  const { isRegistered, authLoading } = useAuth();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
+  const ambientStarted = useRef(false);
 
-  // Track focus state in a ref so useEffect can read it without stale closures
-  const isFocusedRef = useRef(false);
-  useFocusEffect(
-    useCallback(() => {
-      isFocusedRef.current = true;
-      // Case A: isRegistered already true when screen gains focus
-      if (isRegistered) {
-        const t = setTimeout(() => { startAmbient(); }, 400);
-        return () => { isFocusedRef.current = false; clearTimeout(t); };
-      }
-      return () => { isFocusedRef.current = false; };
-    }, [isRegistered, startAmbient])
-  );
-
-  // Case B: isRegistered resolves from AsyncStorage while screen is already focused
+  // Start ambient once: after auth resolves and user is registered.
+  // authLoading ensures we never run before AsyncStorage finishes.
   useEffect(() => {
-    if (!isRegistered || !isFocusedRef.current) return;
-    const t = setTimeout(() => { startAmbient(); }, 400);
-    return () => clearTimeout(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRegistered]);
+    if (authLoading || !isRegistered) return;
+    if (ambientStarted.current) return;
+    ambientStarted.current = true;
+    startAmbient();
+  }, [authLoading, isRegistered, startAmbient]);
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
