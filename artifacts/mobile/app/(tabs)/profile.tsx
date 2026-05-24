@@ -54,10 +54,7 @@ export default function ProfileScreen() {
     photoUri,
     earnedCrowns,
     sentMessageIds,
-    setUsername,
-    setLastName,
-    setLocation,
-    setDescription,
+    updateProfile,
     setPhotoUri,
     checkAndAwardCrown,
   } = useUserProfile();
@@ -81,10 +78,12 @@ export default function ProfileScreen() {
   };
 
   const saveEdit = () => {
-    if (editNombre.trim()) setUsername(editNombre.trim());
-    setLastName(editApellido);
-    setLocation(editLocation);
-    setDescription(editDesc);
+    updateProfile({
+      username: editNombre,
+      lastName: editApellido,
+      location: editLocation,
+      description: editDesc,
+    });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setEditVisible(false);
   };

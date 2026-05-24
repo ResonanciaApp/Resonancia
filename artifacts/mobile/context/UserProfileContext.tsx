@@ -31,11 +31,19 @@ const DEFAULT_PROFILE: UserProfile = {
   lastCrownDate: null,
 };
 
+interface ProfileUpdate {
+  username?: string;
+  lastName?: string;
+  location?: string;
+  description?: string;
+}
+
 interface UserProfileContextValue extends UserProfile {
   setUsername: (name: string) => void;
   setLastName: (v: string) => void;
   setLocation: (v: string) => void;
   setDescription: (v: string) => void;
+  updateProfile: (fields: ProfileUpdate) => void;
   setPhotoUri: (uri: string | null) => void;
   recordSentMessage: (id: number) => void;
   checkAndAwardCrown: (topMessageId: number | null) => void;
@@ -81,6 +89,19 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
     [profile, persist],
   );
 
+  const updateProfile = useCallback(
+    (fields: ProfileUpdate) => {
+      persist({
+        ...profile,
+        ...(fields.username !== undefined ? { username: fields.username.trim() || DEFAULT_PROFILE.username } : {}),
+        ...(fields.lastName !== undefined ? { lastName: fields.lastName.trim() } : {}),
+        ...(fields.location !== undefined ? { location: fields.location.trim() } : {}),
+        ...(fields.description !== undefined ? { description: fields.description.trim() } : {}),
+      });
+    },
+    [profile, persist],
+  );
+
   const setPhotoUri = useCallback(
     (uri: string | null) => persist({ ...profile, photoUri: uri }),
     [profile, persist],
@@ -118,6 +139,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         setLastName,
         setLocation,
         setDescription,
+        updateProfile,
         setPhotoUri,
         recordSentMessage,
         checkAndAwardCrown,
