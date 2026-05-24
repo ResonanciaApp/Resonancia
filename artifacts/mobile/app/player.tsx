@@ -221,7 +221,7 @@ export default function PlayerScreen() {
           <Feather name="chevron-down" size={26} color={colors.foreground} />
         </Pressable>
         <View style={styles.navCenter}>
-          <Text style={[styles.navLabel, { color: colors.accent }]}>NOW PLAYING</Text>
+          <Text style={[styles.navLabel, { color: colors.accent }]}>AHORA SONANDO</Text>
         </View>
         <Pressable
           onPress={() => {
