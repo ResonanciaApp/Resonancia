@@ -207,7 +207,10 @@ export default function HomeScreen() {
             <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
               Sesión Destacada
             </Text>
-            <View style={[styles.heroCard, { borderColor: "rgba(198,155,79,0.22)" }]}>
+            <Pressable
+              style={[styles.heroCard, { borderColor: "rgba(198,155,79,0.22)" }]}
+              onPress={() => router.push(`/session/${featuredSession.id}` as never)}
+            >
               <Image source={featuredSession.image as number} style={styles.heroImage} />
               <LinearGradient
                 colors={["transparent", "rgba(24,17,12,0.65)", colors.background]}
@@ -233,13 +236,12 @@ export default function HomeScreen() {
                     { backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
-                  <Feather name="play" size={15} color={colors.primaryForeground} style={{ paddingLeft: 2 }} />
                   <Text style={[styles.heroBtnText, { color: colors.primaryForeground }]}>
-                    Comenzar a Escuchar
+                    Escuchar ahora
                   </Text>
                 </Pressable>
               </View>
-            </View>
+            </Pressable>
           </View>
         )}
 
