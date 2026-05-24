@@ -78,7 +78,20 @@ function EntryCard({
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
   const [fullHeight, setFullHeight] = useState<number | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const confirmTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const SINGLE_LINE_H = 22;
+
+  const handleTrashPress = () => {
+    if (confirmingDelete) {
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+      setConfirmingDelete(false);
+      onDelete();
+    } else {
+      setConfirmingDelete(true);
+      confirmTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
+    }
+  };
 
   const isTruncated = fullHeight !== null && fullHeight > SINGLE_LINE_H + 4;
 
@@ -133,8 +146,11 @@ function EntryCard({
             color={isFavorited ? "#D4709A" : colors.mutedForeground}
           />
         </Pressable>
-        <Pressable onPress={onDelete} hitSlop={8} style={styles.actionBtn}>
-          <Feather name="trash-2" size={13} color={colors.mutedForeground} />
+        <Pressable onPress={handleTrashPress} hitSlop={8} style={[styles.actionBtn, confirmingDelete && styles.actionBtnConfirm]}>
+          {confirmingDelete
+            ? <Text style={styles.confirmDeleteText}>¿Borrar?</Text>
+            : <Feather name="trash-2" size={13} color={colors.mutedForeground} />
+          }
         </Pressable>
       </View>
     </Pressable>
@@ -147,6 +163,8 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   const { isFavorited, toggleFavorite } = useDiarioFavoritesCtx();
   const [text, setText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
+  const [confirmingDeleteAll, setConfirmingDeleteAll] = useState(false);
+  const deleteAllTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const remaining = MAX_CHARS - text.length;
 
   const handleSave = async () => {
@@ -155,26 +173,15 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
     setText("");
   };
 
-  const handleDelete = (id: string) => {
-    Alert.alert(
-      "Eliminar entrada",
-      "¿Seguro que querés borrar esta entrada?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => deleteEntry(id) },
-      ],
-    );
-  };
-
   const handleDeleteAll = () => {
-    Alert.alert(
-      "Borrar todo",
-      `¿Querés eliminar las ${entries.length} entradas de "${meta.title}"? Esta acción no se puede deshacer.`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Borrar todo", style: "destructive", onPress: () => deleteAll() },
-      ],
-    );
+    if (confirmingDeleteAll) {
+      if (deleteAllTimerRef.current) clearTimeout(deleteAllTimerRef.current);
+      setConfirmingDeleteAll(false);
+      deleteAll();
+    } else {
+      setConfirmingDeleteAll(true);
+      deleteAllTimerRef.current = setTimeout(() => setConfirmingDeleteAll(false), 3000);
+    }
   };
 
   return (
@@ -249,9 +256,11 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
             <Text style={[styles.historyTitle, { color: colors.mutedForeground }]}>
               HISTORIAL · {entries.length} {entries.length === 1 ? "entrada" : "entradas"}
             </Text>
-            <Pressable onPress={handleDeleteAll} hitSlop={8} style={styles.deleteAllBtn}>
+            <Pressable onPress={handleDeleteAll} hitSlop={8} style={[styles.deleteAllBtn, confirmingDeleteAll && styles.deleteAllBtnConfirm]}>
               <Feather name="trash-2" size={11} color="#E07060" />
-              <Text style={styles.deleteAllText}>Borrar todo</Text>
+              <Text style={styles.deleteAllText}>
+                {confirmingDeleteAll ? "¿Confirmar?" : "Borrar todo"}
+              </Text>
             </Pressable>
           </View>
           {entries.map((entry) => (
@@ -261,7 +270,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
               accentColor={meta.accentColor}
               isFavorited={isFavorited(entry.id)}
               onToggleFavorite={() => toggleFavorite(entry, meta.key)}
-              onDelete={() => handleDelete(entry.id)}
+              onDelete={() => deleteEntry(entry.id)}
             />
           ))}
         </View>
@@ -437,6 +446,19 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     padding: 6,
+  },
+  actionBtnConfirm: {
+    backgroundColor: "rgba(224,112,96,0.12)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  confirmDeleteText: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#E07060",
+  },
+  deleteAllBtnConfirm: {
+    backgroundColor: "rgba(224,112,96,0.22)",
   },
   favBadge: {
     flexDirection: "row",

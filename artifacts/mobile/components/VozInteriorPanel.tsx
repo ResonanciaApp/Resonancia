@@ -144,6 +144,19 @@ function RecordingEntry({
   const progress = entry.durationMs > 0 ? Math.min(positionMs / entry.durationMs, 1) : 0;
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState(entry.title ?? "");
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const confirmTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleTrashPress = () => {
+    if (confirmingDelete) {
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+      setConfirmingDelete(false);
+      onDelete();
+    } else {
+      setConfirmingDelete(true);
+      confirmTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
+    }
+  };
   const inputRef = useRef<TextInput>(null);
 
   const confirmTitle = () => {
@@ -210,8 +223,15 @@ function RecordingEntry({
           </Text>
         </View>
 
-        <Pressable onPress={onDelete} hitSlop={8} style={styles.deleteBtn}>
-          <Feather name="trash-2" size={13} color={colors.mutedForeground} />
+        <Pressable
+          onPress={handleTrashPress}
+          hitSlop={8}
+          style={[styles.deleteBtn, confirmingDelete && styles.deleteBtnConfirm]}
+        >
+          {confirmingDelete
+            ? <Text style={styles.confirmDeleteText}>¿Borrar?</Text>
+            : <Feather name="trash-2" size={13} color={colors.mutedForeground} />
+          }
         </Pressable>
       </View>
 
@@ -265,15 +285,19 @@ export function VozInteriorPanel() {
     }
   };
 
+  const [confirmingDeleteId, setConfirmingDeleteId] = React.useState<string | null>(null);
+  const confirmDeleteTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleDelete = (id: string) => {
-    Alert.alert(
-      "Eliminar grabación",
-      "¿Querés borrar esta nota de voz?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => deleteEntry(id) },
-      ],
-    );
+    if (confirmingDeleteId === id) {
+      if (confirmDeleteTimerRef.current) clearTimeout(confirmDeleteTimerRef.current);
+      setConfirmingDeleteId(null);
+      deleteEntry(id);
+    } else {
+      if (confirmDeleteTimerRef.current) clearTimeout(confirmDeleteTimerRef.current);
+      setConfirmingDeleteId(id);
+      confirmDeleteTimerRef.current = setTimeout(() => setConfirmingDeleteId(null), 3000);
+    }
   };
 
   return (
@@ -485,6 +509,16 @@ const styles = StyleSheet.create({
   entryDate: { fontSize: 10, fontWeight: "600", letterSpacing: 0.4 },
   entryDuration: { fontSize: 13, fontWeight: "600", marginTop: 2, fontVariant: ["tabular-nums"] },
   deleteBtn: { padding: 6 },
+  deleteBtnConfirm: {
+    backgroundColor: "rgba(224,112,96,0.12)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  confirmDeleteText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    color: "#E07060",
+  },
 
   progressTrack: {
     height: 3,
