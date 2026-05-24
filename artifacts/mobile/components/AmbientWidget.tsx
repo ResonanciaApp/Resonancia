@@ -124,14 +124,6 @@ export function AmbientWidget() {
                     contentFit="cover"
                   />
                 </View>
-                <Text
-                  style={[
-                    styles.sceneLabel,
-                    selected && styles.sceneLabelSelected,
-                  ]}
-                >
-                  {scene.label}
-                </Text>
               </Pressable>
             );
           })}
