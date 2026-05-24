@@ -425,3 +425,33 @@ id = "MT2SqDppHzm5q8Z1ZoRWW"
 uri = "file://artifacts/mobile/assets/audio/voz_galactica_mistica.mp3"
 type = "audio"
 title = "Voz Galáctica Mística — Interdimensional"
+
+[[outputs]]
+id = "TdplbkXXWPaWtmp6dL0HV"
+uri = "file://artifacts/mobile/assets/audio/voz_1_ser_galactico_etereo.mp3"
+type = "audio"
+title = "1. Ser Galáctico Etéreo — voz celestial brillante"
+
+[[outputs]]
+id = "3a-QgCRYSVHmyNaCbFM84"
+uri = "file://artifacts/mobile/assets/audio/voz_2_ente_interdimensional.mp3"
+type = "audio"
+title = "2. Ente Interdimensional — phaser y movimiento dimensional"
+
+[[outputs]]
+id = "Trcwvcq9ZamoCpm1qJrB2"
+uri = "file://artifacts/mobile/assets/audio/voz_3_espiritu_ancestral.mp3"
+type = "audio"
+title = "3. Espíritu Ancestral — monástico profundo con octavas"
+
+[[outputs]]
+id = "mqAJKttWEpi9uBV88a9uI"
+uri = "file://artifacts/mobile/assets/audio/voz_4_smaug_desolador.mp3"
+type = "audio"
+title = "4. 🐉 SMAUG EL DESOLADOR — dragón en su caverna"
+
+[[outputs]]
+id = "zB8tzfUAPEE0VHqep29tF"
+uri = "file://artifacts/mobile/assets/audio/voz_5_oraculo_cosmico.mp3"
+type = "audio"
+title = "5. Oráculo Cósmico — susurros y cristales"
