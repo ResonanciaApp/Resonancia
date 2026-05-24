@@ -58,7 +58,7 @@ const WHY_ITEMS = [
     text: "Porque la soledad se disuelve cuando descubrís que otros sienten lo mismo que vos.",
   },
   {
-    icon: "wind" as const,
+    icon: "edit-2" as const,
     text: "Porque lo que escribimos y luego soltamos nos libera más que lo que guardamos.",
   },
 ];
@@ -185,6 +185,7 @@ export function MensajesAnonimosPanel() {
     : `HOY · ${todayLabel()} · ${total} ${total === 1 ? "MENSAJE" : "MENSAJES"}`;
 
   return (
+    <>
     <View
       style={[
         styles.panel,
@@ -313,20 +314,6 @@ export function MensajesAnonimosPanel() {
         </View>
       </Pressable>
 
-      {/* ── Descubre más ── */}
-      <Pressable
-        onPress={() => setShowInfo((v) => !v)}
-        style={({ pressed }) => [
-          styles.discoverRow,
-          { borderTopColor: "rgba(212,112,154,0.2)", backgroundColor: pressed ? "rgba(212,112,154,0.06)" : "transparent" },
-        ]}
-      >
-        <Feather name={showInfo ? "chevron-up" : "star"} size={13} color={ACCENT} />
-        <Text style={[styles.discoverLabel, { color: ACCENT }]}>
-          {showInfo ? "Cerrar" : "Descubre más sobre este espacio"}
-        </Text>
-      </Pressable>
-
       {showInfo && (
         <View style={[styles.infoSection, { borderTopColor: "rgba(212,112,154,0.15)" }]}>
           {/* Intro */}
@@ -388,7 +375,7 @@ export function MensajesAnonimosPanel() {
             <ActivityIndicator color={ACCENT} style={{ marginVertical: 24 }} />
           ) : sortedByLikes.length === 0 ? (
             <View style={styles.emptyState}>
-              <Feather name="wind" size={28} color={colors.mutedForeground} />
+              <Feather name="edit-2" size={28} color={colors.mutedForeground} />
               <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                 Sé la primera persona en compartir algo hoy
               </Text>
@@ -505,6 +492,21 @@ export function MensajesAnonimosPanel() {
         </View>
       )}
     </View>
+
+    {/* ── Descubre más ── */}
+    <Pressable
+      onPress={() => setShowInfo((v) => !v)}
+      style={({ pressed }) => [
+        styles.discoverRow,
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
+    >
+      <Feather name="info" size={14} color={ACCENT} />
+      <Text style={[styles.discoverLabel, { color: ACCENT }]}>
+        {showInfo ? "Cerrar" : "Descubre más sobre este espacio"}
+      </Text>
+    </Pressable>
+    </>
   );
 }
 
@@ -685,10 +687,11 @@ const styles = StyleSheet.create({
   discoverRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    borderTopWidth: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    gap: 6,
+    marginTop: 10,
+    paddingHorizontal: 4,
+    paddingVertical: 6,
+    alignSelf: "flex-start",
   },
   discoverLabel: { fontSize: 12, fontWeight: "700", letterSpacing: 0.3 },
 
