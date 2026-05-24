@@ -364,7 +364,7 @@ export default function PlayerScreen() {
             </View>
             <View
               ref={voiceTrackRef}
-              style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
+              style={styles.sliderHitArea}
               onLayout={(e: LayoutChangeEvent) => {
                 voiceTrackWidth.current = e.nativeEvent.layout.width;
               }}
@@ -373,14 +373,16 @@ export default function PlayerScreen() {
               onResponderGrant={handleVoiceGrant}
               onResponderMove={handleVoiceMove}
             >
-              <View
-                pointerEvents="none"
-                style={[styles.sliderFill, { width: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
-              />
-              <View
-                pointerEvents="none"
-                style={[styles.sliderThumb, { left: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
-              />
+              <View style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}>
+                <View
+                  pointerEvents="none"
+                  style={[styles.sliderFill, { width: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
+                />
+                <View
+                  pointerEvents="none"
+                  style={[styles.sliderThumb, { left: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
+                />
+              </View>
             </View>
             <View style={styles.sliderHints}>
               <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Sin voz</Text>
@@ -405,7 +407,7 @@ export default function PlayerScreen() {
             </View>
             <View
               ref={ambientTrackRef}
-              style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
+              style={styles.sliderHitArea}
               onLayout={(e: LayoutChangeEvent) => {
                 ambientTrackWidth.current = e.nativeEvent.layout.width;
               }}
@@ -414,14 +416,16 @@ export default function PlayerScreen() {
               onResponderGrant={handleAmbientGrant}
               onResponderMove={handleAmbientMove}
             >
-              <View
-                pointerEvents="none"
-                style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
-              />
-              <View
-                pointerEvents="none"
-                style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
-              />
+              <View style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}>
+                <View
+                  pointerEvents="none"
+                  style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
+                />
+                <View
+                  pointerEvents="none"
+                  style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
+                />
+              </View>
             </View>
             <View style={styles.sliderHints}>
               <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>
@@ -640,6 +644,11 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.5,
+  },
+  sliderHitArea: {
+    height: 44,
+    justifyContent: "center",
+    overflow: "visible",
   },
   sliderTrack: {
     height: 6,
