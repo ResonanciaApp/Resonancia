@@ -30,7 +30,7 @@ export type AncestralTag =
   | "Cuencos y Gongs"
   | "Full Instrumentos";
 
-import type { ThemeTag } from "@/data/tags";
+import type { SleepTag, ThemeTag } from "@/data/tags";
 
 export type SessionGuide = {
   name: string;
@@ -59,6 +59,7 @@ export type Session = {
   sabiduriaTag?: SabiduriaTag;
   podcastTag?: PodcastTag;
   themeTag?: ThemeTag[];
+  sleepTag?: SleepTag;
   guide?: SessionGuide;
 };
 
@@ -87,6 +88,7 @@ export const SESSIONS: Session[] = [
     categoryId: "sonidos-ancestrales",
     categoryLabel: "Sonidos Ancestrales",
     ancestralTag: "Cuencos y Gongs" as const,
+    sleepTag: "Sonidos Ancestrales" as const,
     duration: 45,
     durationLabel: "45 min",
     description:
@@ -103,6 +105,7 @@ export const SESSIONS: Session[] = [
     title: "Descanz en ti",
     subtitle: "ASMR Expansivo",
     categoryId: "asmr-expansivos",
+    sleepTag: "ASMR Expansivos" as const,
     categoryLabel: "ASMR Expansivos",
     duration: 20,
     durationLabel: "20 min",
@@ -186,6 +189,7 @@ export const SESSIONS: Session[] = [
     categoryId: "sonidos-ancestrales",
     categoryLabel: "Sonidos Ancestrales",
     ancestralTag: "Cuencos Tibetanos" as const,
+    sleepTag: "Sonidos Ancestrales" as const,
     duration: 45,
     durationLabel: "45 min",
     description:
@@ -203,6 +207,7 @@ export const SESSIONS: Session[] = [
     categoryId: "sonidos-ancestrales",
     categoryLabel: "Sonidos Ancestrales",
     ancestralTag: "Cuencos de Cuarzo" as const,
+    sleepTag: "Sonidos Ancestrales" as const,
     duration: 30,
     durationLabel: "30 min",
     description:
@@ -220,6 +225,7 @@ export const SESSIONS: Session[] = [
     categoryId: "sonidos-ancestrales",
     categoryLabel: "Sonidos Ancestrales",
     ancestralTag: "Cuencos de Cuarzo" as const,
+    sleepTag: "Sonidos Ancestrales" as const,
     duration: 20,
     durationLabel: "20 min",
     description:
@@ -286,6 +292,7 @@ export const SESSIONS: Session[] = [
     title: "El Lago de Cristal",
     subtitle: "Historias para Dormir",
     categoryId: "historias-dormir",
+    sleepTag: "Historias para Dormir" as const,
     categoryLabel: "Historias para Dormir",
     duration: 30,
     durationLabel: "30 min",
@@ -301,6 +308,7 @@ export const SESSIONS: Session[] = [
     title: "Camino entre Bosques",
     subtitle: "Historias para Dormir",
     categoryId: "historias-dormir",
+    sleepTag: "Historias para Dormir" as const,
     categoryLabel: "Historias para Dormir",
     duration: 40,
     durationLabel: "40 min",
@@ -316,6 +324,7 @@ export const SESSIONS: Session[] = [
     title: "La Caverna del Sonido",
     subtitle: "Historias para Dormir",
     categoryId: "historias-dormir",
+    sleepTag: "Historias para Dormir" as const,
     categoryLabel: "Historias para Dormir",
     duration: 35,
     durationLabel: "35 min",
@@ -334,6 +343,7 @@ export const SESSIONS: Session[] = [
     title: "El Cuenco Mágico",
     subtitle: "Historias Infantiles",
     categoryId: "historias-infantiles",
+    sleepTag: "Historias Infantiles" as const,
     categoryLabel: "Historias Infantiles",
     duration: 15,
     durationLabel: "15 min",
@@ -349,6 +359,7 @@ export const SESSIONS: Session[] = [
     title: "Viaje al Reino de los Sueños",
     subtitle: "Historias Infantiles",
     categoryId: "historias-infantiles",
+    sleepTag: "Historias Infantiles" as const,
     categoryLabel: "Historias Infantiles",
     duration: 20,
     durationLabel: "20 min",
@@ -516,6 +527,7 @@ export const SESSIONS: Session[] = [
     title: "La Tortuga y el Gong",
     subtitle: "Historias Infantiles",
     categoryId: "historias-infantiles",
+    sleepTag: "Historias Infantiles" as const,
     categoryLabel: "Historias Infantiles",
     duration: 12,
     durationLabel: "12 min",
@@ -530,6 +542,10 @@ export const SESSIONS: Session[] = [
 
 export function getSessionsByCategory(categoryId: string): Session[] {
   return SESSIONS.filter((s) => s.categoryId === categoryId);
+}
+
+export function getSessionsBySleepTag(sleepTag: SleepTag): Session[] {
+  return SESSIONS.filter((s) => s.sleepTag === sleepTag);
 }
 
 export function getFeaturedSessions(): Session[] {

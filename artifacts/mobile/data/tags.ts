@@ -74,3 +74,58 @@ export const TAG_CARDS: TagCard[] = [
 ];
 
 export const TAGS_PREVIEW_COUNT = 6;
+
+// ── Sleep Tags ───────────────────────────────────────────────────────────────
+
+export type SleepTag =
+  | "Sonidos Binaurales"
+  | "Sonidos Ancestrales"
+  | "ASMR Expansivos"
+  | "Historias para Dormir"
+  | "Historias Infantiles";
+
+export interface SleepTagCard {
+  id: string;
+  label: SleepTag;
+  description: string;
+  icon: string;
+  accent: string;
+}
+
+export const SLEEP_TAG_CARDS: SleepTagCard[] = [
+  {
+    id: "sonidos-binaurales",
+    label: "Sonidos Binaurales",
+    description: "Frecuencias que sincronizan tu cerebro para el descanso más profundo. Usa auriculares para la experiencia completa.",
+    icon: "radio",
+    accent: "#8AAAD4",
+  },
+  {
+    id: "sonidos-ancestrales",
+    label: "Sonidos Ancestrales",
+    description: "Cuencos tibetanos, gongs y cristales que llevan tu cuerpo al descanso a través de la vibración ancestral.",
+    icon: "disc",
+    accent: "#D4B896",
+  },
+  {
+    id: "asmr-expansivos",
+    label: "ASMR Expansivos",
+    description: "Sonidos íntimos y envolventes que disuelven los límites del cuerpo y la mente, expandiendo tu percepción interior.",
+    icon: "headphones",
+    accent: "#C8B4E0",
+  },
+  {
+    id: "historias-dormir",
+    label: "Historias para Dormir",
+    description: "Relatos narrados con voz suave para soltar el día, calmar la mente y entrar en un sueño profundo y reparador.",
+    icon: "book",
+    accent: "#A8C4B8",
+  },
+  {
+    id: "historias-infantiles",
+    label: "Historias Infantiles",
+    description: "Para que los más pequeños duerman en paz y con amor. Historias que nutren la imaginación y el corazón.",
+    icon: "star",
+    accent: "#F0CC82",
+  },
+];

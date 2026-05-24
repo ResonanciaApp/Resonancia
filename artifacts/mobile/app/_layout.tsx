@@ -85,6 +85,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="sleep-tag/[id]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="historial"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

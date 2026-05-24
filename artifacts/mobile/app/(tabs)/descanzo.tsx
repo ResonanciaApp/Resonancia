@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React from "react";
 import {
   Dimensions,
@@ -15,41 +16,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { getSessionsByCategory } from "@/data/sessions";
+import { getSessionsBySleepTag } from "@/data/sessions";
+import { SLEEP_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
-
-const SLEEP_CATEGORIES = [
-  {
-    id: "binaurales-cuencos",
-    title: "Sonidos Binaurales con Cuencos",
-    subtitle: "Frecuencias que sincronizan tu cerebro para el descanso",
-    icon: "radio" as const,
-    accent: "#8AAAD4",
-  },
-  {
-    id: "meditaciones-asmr",
-    title: "Meditaciones ASMR",
-    subtitle: "Sonidos íntimos que disuelven el ruido interior",
-    icon: "headphones" as const,
-    accent: "#C8B4E0",
-  },
-  {
-    id: "historias-dormir",
-    title: "Historias para Dormir",
-    subtitle: "Relatos narrados para soltar el día y entrar al sueño",
-    icon: "book" as const,
-    accent: "#A8C4B8",
-  },
-  {
-    id: "historias-infantiles",
-    title: "Historias Infantiles",
-    subtitle: "Para que los más pequeños duerman en paz y con amor",
-    icon: "star" as const,
-    accent: "#F0CC82",
-  },
-];
 
 export default function DescansoScreen() {
   const colors = useColors();
@@ -82,16 +53,19 @@ export default function DescansoScreen() {
           </Text>
         </View>
 
-        {/* ── Categorías con carrusel ── */}
-        {SLEEP_CATEGORIES.map((cat) => {
-          const sessions = getSessionsByCategory(cat.id);
+        {/* ── Módulos por etiqueta ── */}
+        {SLEEP_TAG_CARDS.map((tag) => {
+          const sessions = getSessionsBySleepTag(tag.label);
           return (
-            <View key={cat.id} style={styles.section}>
-              {/* Título de categoría */}
+            <View key={tag.id} style={styles.section}>
+              {/* Título de la etiqueta */}
               <View style={styles.catHeader}>
-                <Text style={[styles.catTitle, { color: colors.foreground }]}>{cat.title}</Text>
-                <Pressable style={styles.verTodosBtn}>
-                  <Text style={[styles.verTodosText, { color: colors.accent }]}>Ver todos</Text>
+                <Text style={[styles.catTitle, { color: colors.foreground }]}>{tag.label}</Text>
+                <Pressable
+                  style={styles.verTodosBtn}
+                  onPress={() => router.push(`/sleep-tag/${tag.id}` as never)}
+                >
+                  <Text style={[styles.verTodosText, { color: colors.accent }]}>Ver todas</Text>
                   <Feather name="arrow-right" size={13} color={colors.accent} />
                 </Pressable>
               </View>
