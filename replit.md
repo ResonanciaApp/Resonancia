@@ -1,6 +1,6 @@
-# [Project name]
+# RESONANCIA — Casa del Cuenco
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+App de meditación y sueño en español (Expo SDK 54). Estética oscura y cálida (bronce/dorado).
 
 ## Run & Operate
 
@@ -14,6 +14,7 @@ _Replace the heading above with the project's name, and this line with one sente
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- Mobile: Expo SDK 54, React Native, expo-av para audio
 - API: Express 5
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
@@ -22,23 +23,74 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/mobile/data/sessions.ts` — todas las sesiones, tipos de tags, helper functions
+- `artifacts/mobile/data/tags.ts` — ThemeTag, SleepTag, TagCard, SleepTagCard
+- `artifacts/mobile/config/audio-map.ts` — AUDIO_MAP, VOICE_MAP, AMBIENT_MAP, LOOP_SESSIONS
+- `artifacts/mobile/context/PlayerContext.tsx` — reproductor de audio, timer, favoritos
+- `artifacts/mobile/context/AuthContext.tsx` — registro e isRegistered
+- `artifacts/mobile/context/UserProfileContext.tsx` — perfil del usuario (nombre, apellido, locación, descripción, foto)
+- `artifacts/mobile/assets/audio/` — archivos MP3
+- `artifacts/mobile/assets/images/sessions/` — imágenes de sesiones (session-1.png … session-28.png)
 
-## Architecture decisions
+## Subir una nueva sesión
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+El usuario envía los datos con este formato:
 
-## Product
+```
+Categoria:
+Subcategoria:
+Titulo:
+Descripción:
+Duración:
+Grupo 1:      ← ThemeTag (ej: "Para la ansiedad") — dejar vacío si no aplica
+Grupo 2:      ← SleepTag (ej: "Sonidos Binaurales") — dejar vacío si no aplica
+Nombre Audio 1:
+Nombre Audio 2:  ← dejar vacío si no aplica
+```
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+El usuario adjunta los archivos de audio. Los pasos para agregarla:
+
+1. **Copiar audios** → `artifacts/mobile/assets/audio/`
+2. **Copiar imagen** (si la hay) → `artifacts/mobile/assets/images/sessions/session-N.png`
+3. **Agregar sesión** a `artifacts/mobile/data/sessions.ts` con el próximo ID disponible
+4. **Actualizar `artifacts/mobile/config/audio-map.ts`**:
+   - `AUDIO_MAP` → audio 1 siempre
+   - Audio 2 según categoría:
+     - Meditaciones Guiadas → `VOICE_MAP` (voz regulable)
+     - Música y Sonidos / Sonidos Ancestrales (loop) → `AMBIENT_MAP` (capa ambiente)
+     - Sonidos Ancestrales (duración fija) → `VOICE_MAP` (se superpone al principal)
+   - `LOOP_SESSIONS` → agregar ID si la sesión debe repetirse (Música y Sonidos)
+
+### Reglas de audio por categoría
+
+| Categoría | Timer en player | Audio 2 va en | Loop |
+|---|---|---|---|
+| Sonidos Ancestrales | ✅ sí | VOICE_MAP | No (duración fija) |
+| Música y Sonidos | ❌ (usa picker previo) | AMBIENT_MAP | ✅ Sí → LOOP_SESSIONS |
+| Meditaciones Guiadas | ❌ | VOICE_MAP | No |
+| ASMR / Historias / Podcast | ❌ | — | No |
+
+### Mapeo de campos a tipos
+
+| Campo del formulario | Campo en Session |
+|---|---|
+| Categoria | `categoryId` + `categoryLabel` |
+| Subcategoria | `ancestralTag` / `soundTag` / `meditationTag` / etc. |
+| Grupo 1 | `themeTag: [...]` |
+| Grupo 2 | `sleepTag` |
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Idioma: español en toda la UI
+- Colores: bg `#18110C`, primary `#C69B4F`, accent `#D6A85B`, card `#24160F`, fg `#EDE1D3`
+- Pre-existing TS errors (ignorar): VozInterior, MensajesAnon, MiniPlayer, session/[id], SessionCard, PlayerContext, player.tsx
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- El próximo ID de sesión disponible es el número más alto en `sessions.ts` + 1. Verificar con `grep -n '"id":' sessions.ts | tail -10`
+- Si no se adjunta imagen, reutilizar `session-2.png` como placeholder y notificarlo
+- NEVER agregar sesiones fuera del array `SESSIONS = [...]` — siempre antes del `];` de cierre
+- LOOP_SESSIONS usa IDs como strings: `"20"`, no `20`
 
 ## Pointers
 
