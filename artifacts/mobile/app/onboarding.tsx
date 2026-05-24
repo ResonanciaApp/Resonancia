@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     gap: 40,
   },
-  welcomeGlow: { alignItems: "center", justifyContent: "center" },
+  welcomeGlow: { alignItems: "center", justifyContent: "center", width: "100%", alignSelf: "center" },
   glowRing: {
     position: "absolute",
     width: 300,
