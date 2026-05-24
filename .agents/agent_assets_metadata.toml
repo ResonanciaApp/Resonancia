@@ -365,3 +365,9 @@ id = "8MlaUjWLoCB9NTjz8cbkO"
 uri = "file://artifacts/mobile/assets/audio/goa_trance_viaje_interdimensional.mp3"
 type = "audio"
 title = "Goa Trance — Viaje Interdimensional (7 min)"
+
+[[outputs]]
+id = "HCx6ttdlKJYZJOON-DO1S"
+uri = "file://artifacts/mobile/assets/audio/goa_trance_viaje_interdimensional_HD.mp3"
+type = "audio"
+title = "Goa Trance HD — Viaje Interdimensional (MP3 192kbps)"
