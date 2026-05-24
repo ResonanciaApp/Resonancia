@@ -112,10 +112,10 @@ export default function PlayerScreen() {
   const ambientTrackPageX = useRef(0);
   const ambientTrackRef = useRef<View>(null);
   const progressBarRef = useRef<View>(null);
-  const progressBarWidth = useRef(0);
   const progressBarPageX = useRef(0);
-  const [isSeeking, setIsSeeking] = useState(false);
-  const [seekProgress, setSeekProgress] = useState(0);
+  const isSeekingRef = useRef(false);
+  const progressShared = useSharedValue(0);
+  const progressBarWidthShared = useSharedValue(0);
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
 
 
@@ -170,6 +170,20 @@ export default function PlayerScreen() {
       setSelectedTimerMinutes(null);
     }
   }, [sleepTimerRemaining]);
+
+  useEffect(() => {
+    if (!isSeekingRef.current) {
+      progressShared.value = progress;
+    }
+  }, [progress, progressShared]);
+
+  const fillAnimStyle = useAnimatedStyle(() => ({
+    width: progressShared.value * progressBarWidthShared.value,
+  }));
+
+  const thumbAnimStyle = useAnimatedStyle(() => ({
+    left: progressShared.value * progressBarWidthShared.value,
+  }));
   // ─────────────────────────────────────────────────────────────────────────
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -211,32 +225,32 @@ export default function PlayerScreen() {
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
-  const displayProgress = isSeeking ? seekProgress : progress;
 
   const handleProgressGrant = useCallback(
     (e: GestureResponderEvent) => {
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidth.current));
-      setSeekProgress(p);
-      setIsSeeking(true);
+      isSeekingRef.current = true;
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+      progressShared.value = p;
     },
-    []
+    [progressShared, progressBarWidthShared]
   );
 
   const handleProgressMove = useCallback(
     (e: GestureResponderEvent) => {
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidth.current));
-      setSeekProgress(p);
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+      progressShared.value = p;
     },
-    []
+    [progressShared, progressBarWidthShared]
   );
 
   const handleProgressRelease = useCallback(
     (e: GestureResponderEvent) => {
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidth.current));
-      setIsSeeking(false);
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+      progressShared.value = p;
+      isSeekingRef.current = false;
       seekTo(p);
     },
-    [seekTo]
+    [progressShared, progressBarWidthShared, seekTo]
   );
 
   const handlePlayPause = () => {
@@ -320,7 +334,7 @@ export default function PlayerScreen() {
             ref={progressBarRef}
             style={styles.progressTrack}
             onLayout={(e: LayoutChangeEvent) => {
-              progressBarWidth.current = e.nativeEvent.layout.width;
+              progressBarWidthShared.value = e.nativeEvent.layout.width;
               progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
                 progressBarPageX.current = px;
               });
@@ -333,11 +347,11 @@ export default function PlayerScreen() {
             onResponderTerminate={handleProgressRelease}
           >
             <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
-              <View
-                style={[styles.progressFill, { width: `${displayProgress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
+              <Animated.View
+                style={[styles.progressFill, fillAnimStyle, { backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
               />
-              <View
-                style={[styles.progressThumb, { left: `${displayProgress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
+              <Animated.View
+                style={[styles.progressThumb, thumbAnimStyle, { backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
               />
             </View>
           </View>
