@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     gap: 10,
   },
-  fieldInput: { flex: 1, fontSize: 15 },
+  fieldInput: { flex: 1, fontSize: 15, backgroundColor: "transparent" },
   saveBtn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 8 },
   saveBtnText: { fontSize: 16, fontWeight: "700" },
 });
