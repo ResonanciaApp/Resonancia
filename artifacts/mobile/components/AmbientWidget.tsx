@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "expo-image";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -20,8 +20,8 @@ import { usePlayer } from "@/context/PlayerContext";
 const ND = Platform.OS !== "web";
 
 export function AmbientWidget() {
-  const { currentScene, isPlaying, isMuted, setScene, togglePlayback } = useAmbientPlayer();
-  const { stopAmbient } = useAmbientPlayer();
+  const { currentScene, isPlaying, isMuted, setScene, togglePlayback, stopAmbient } =
+    useAmbientPlayer();
   const { isPlaying: sessionIsPlaying } = usePlayer();
   const [expanded, setExpanded] = useState(false);
   const expandAnim = useRef(new Animated.Value(0)).current;
@@ -39,16 +39,17 @@ export function AmbientWidget() {
     Animated.spring(expandAnim, {
       toValue: expanded ? 1 : 0,
       useNativeDriver: ND,
-      damping: 18,
-      stiffness: 200,
+      damping: 20,
+      stiffness: 220,
     }).start();
   }, [expanded, expandAnim]);
 
   const isActive = isPlaying && !isMuted;
 
-  const pickerTranslateY = expandAnim.interpolate({
+  const pickerOpacity = expandAnim;
+  const pickerTranslateX = expandAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [-8, 0],
+    outputRange: [8, 0],
   });
 
   return (
@@ -60,18 +61,19 @@ export function AmbientWidget() {
           onPress={() => setExpanded((v) => !v)}
           style={styles.thumbnail}
         >
-          <LinearGradient
-            colors={currentScene.colors as [string, string]}
-            style={styles.thumbnailGrad}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
+          <Image
+            source={currentScene.image}
+            style={styles.thumbnailImg}
+            contentFit="cover"
+          />
+          {/* Overlay icon */}
+          <View style={styles.thumbnailOverlay}>
             <Feather
               name={currentScene.icon as React.ComponentProps<typeof Feather>["name"]}
-              size={13}
-              color="rgba(255,255,255,0.92)"
+              size={11}
+              color="rgba(255,255,255,0.85)"
             />
-          </LinearGradient>
+          </View>
           {isActive && <View style={styles.activeDot} />}
         </Pressable>
 
@@ -85,12 +87,15 @@ export function AmbientWidget() {
         </Pressable>
       </View>
 
-      {/* ── Expanded scene picker ── */}
+      {/* ── Expanded scene picker — opens to the LEFT ── */}
       {expanded && (
         <Animated.View
           style={[
             styles.picker,
-            { opacity: expandAnim, transform: [{ translateY: pickerTranslateY }] },
+            {
+              opacity: pickerOpacity,
+              transform: [{ translateX: pickerTranslateX }],
+            },
           ]}
         >
           {AMBIENT_SCENES.map((scene) => {
@@ -100,7 +105,6 @@ export function AmbientWidget() {
                 key={scene.id}
                 onPress={async () => {
                   await setScene(scene.id as SceneId);
-                  // Auto-start if not yet playing
                   if (!isPlaying) {
                     await togglePlayback();
                   }
@@ -108,19 +112,24 @@ export function AmbientWidget() {
                 }}
                 style={styles.sceneBtn}
               >
-                <LinearGradient
-                  colors={scene.colors as [string, string]}
-                  style={[styles.sceneThumb, selected && styles.sceneThumbSelected]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
+                <View
+                  style={[
+                    styles.sceneThumb,
+                    selected && styles.sceneThumbSelected,
+                  ]}
                 >
-                  <Feather
-                    name={scene.icon as React.ComponentProps<typeof Feather>["name"]}
-                    size={12}
-                    color="rgba(255,255,255,0.95)"
+                  <Image
+                    source={scene.image}
+                    style={styles.sceneImg}
+                    contentFit="cover"
                   />
-                </LinearGradient>
-                <Text style={[styles.sceneLabel, selected && styles.sceneLabelSelected]}>
+                </View>
+                <Text
+                  style={[
+                    styles.sceneLabel,
+                    selected && styles.sceneLabelSelected,
+                  ]}
+                >
                   {scene.label}
                 </Text>
               </Pressable>
@@ -131,6 +140,9 @@ export function AmbientWidget() {
     </View>
   );
 }
+
+const THUMB = 32;
+const SCENE_THUMB = 40;
 
 const styles = StyleSheet.create({
   root: {
@@ -143,20 +155,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#24160F",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(198,155,79,0.2)",
+    borderColor: "rgba(198,155,79,0.22)",
     paddingHorizontal: 6,
     paddingVertical: 5,
   },
   thumbnail: {
-    width: 32,
-    height: 32,
+    width: THUMB,
+    height: THUMB,
     borderRadius: 8,
     overflow: "visible",
   },
-  thumbnailGrad: {
-    width: 32,
-    height: 32,
+  thumbnailImg: {
+    width: THUMB,
+    height: THUMB,
     borderRadius: 8,
+  },
+  thumbnailOverlay: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 16,
+    height: 16,
+    borderRadius: 5,
+    backgroundColor: "rgba(0,0,0,0.45)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -178,46 +199,49 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // Picker
+  // Picker — positioned to the LEFT of the widget
   picker: {
     position: "absolute",
-    top: 50,
-    right: 0,
+    top: 0,
+    right: 66, // widget row width + gap
     flexDirection: "row",
-    gap: 8,
+    gap: 6,
     backgroundColor: "#1E1108",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(198,155,79,0.18)",
-    padding: 10,
+    padding: 8,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.45,
     shadowRadius: 12,
     elevation: 10,
     zIndex: 100,
   },
   sceneBtn: {
     alignItems: "center",
-    gap: 5,
+    gap: 4,
   },
   sceneThumb: {
-    width: 38,
-    height: 38,
+    width: SCENE_THUMB,
+    height: SCENE_THUMB,
     borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
   },
   sceneThumbSelected: {
     borderColor: "#C69B4F",
   },
+  sceneImg: {
+    width: SCENE_THUMB,
+    height: SCENE_THUMB,
+  },
   sceneLabel: {
     color: "#7A6040",
     fontSize: 9,
     fontWeight: "500",
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
   sceneLabelSelected: {
     color: "#C69B4F",

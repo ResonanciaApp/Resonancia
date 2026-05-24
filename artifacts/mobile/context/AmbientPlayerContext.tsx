@@ -16,18 +16,48 @@ export type AmbientScene = {
   label: string;
   colors: readonly [string, string];
   icon: string;
+  image: number;
 };
 
 export const AMBIENT_SCENES: AmbientScene[] = [
-  { id: "mar",        label: "Mar",        colors: ["#0D4F8A", "#4BA3D3"] as const, icon: "anchor" },
-  { id: "naturaleza", label: "Naturaleza", colors: ["#1A5C2A", "#6AB46D"] as const, icon: "sun" },
-  { id: "bosque",     label: "Bosque",     colors: ["#1C3A1C", "#4A7A4A"] as const, icon: "feather" },
-  { id: "lluvia",     label: "Lluvia",     colors: ["#2C3E50", "#7F8C8D"] as const, icon: "cloud-rain" },
-  { id: "viento",     label: "Viento",     colors: ["#6E8FA8", "#C5D9E8"] as const, icon: "wind" },
+  {
+    id: "mar",
+    label: "Mar",
+    colors: ["#0D4F8A", "#4BA3D3"] as const,
+    icon: "anchor",
+    image: require("@/assets/images/ambient/mar.jpg"),
+  },
+  {
+    id: "naturaleza",
+    label: "Naturaleza",
+    colors: ["#1A5C2A", "#6AB46D"] as const,
+    icon: "sun",
+    image: require("@/assets/images/ambient/naturaleza.jpg"),
+  },
+  {
+    id: "bosque",
+    label: "Bosque",
+    colors: ["#1C3A1C", "#4A7A4A"] as const,
+    icon: "feather",
+    image: require("@/assets/images/ambient/bosque.jpg"),
+  },
+  {
+    id: "lluvia",
+    label: "Lluvia",
+    colors: ["#2C3E50", "#7F8C8D"] as const,
+    icon: "cloud-rain",
+    image: require("@/assets/images/ambient/lluvia.jpg"),
+  },
+  {
+    id: "viento",
+    label: "Viento",
+    colors: ["#6E8FA8", "#C5D9E8"] as const,
+    icon: "wind",
+    image: require("@/assets/images/ambient/viento.jpg"),
+  },
 ];
 
 // ── Audio sources per scene ───────────────────────────────────────────────────
-// Replace each require() with the real file when available
 const SCENE_AUDIO: Record<SceneId, unknown> = {
   mar:        require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with mar.mp3
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
@@ -54,30 +84,17 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const soundRef = useRef<Audio.Sound | null>(null);
+  // Track the scene that is actually loaded in the sound object
+  const loadedSceneRef = useRef<SceneId | null>(null);
 
   const currentScene = AMBIENT_SCENES.find((s) => s.id === currentSceneId)!;
-
-  // Load saved scene
-  useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((val) => {
-      if (val && AMBIENT_SCENES.find((s) => s.id === val)) {
-        setCurrentSceneId(val as SceneId);
-      }
-    });
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      soundRef.current?.unloadAsync().catch(() => {});
-    };
-  }, []);
 
   const unload = useCallback(async () => {
     if (soundRef.current) {
       try { await soundRef.current.stopAsync(); } catch {}
       try { await soundRef.current.unloadAsync(); } catch {}
       soundRef.current = null;
+      loadedSceneRef.current = null;
     }
   }, []);
 
@@ -89,10 +106,37 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
         { shouldPlay: true, isLooping: true, volume: 0.65 }
       );
       soundRef.current = sound;
+      loadedSceneRef.current = sceneId;
     } catch (e) {
       console.warn("[Ambient] load failed:", e);
     }
   }, [unload]);
+
+  // Load saved scene preference, then auto-start
+  useEffect(() => {
+    let cancelled = false;
+    AsyncStorage.getItem(STORAGE_KEY).then(async (val) => {
+      const scene: SceneId =
+        val && AMBIENT_SCENES.find((s) => s.id === val)
+          ? (val as SceneId)
+          : "mar";
+      if (!cancelled) {
+        setCurrentSceneId(scene);
+        setIsPlaying(true);
+        setIsMuted(false);
+        await loadAndPlay(scene);
+      }
+    });
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      soundRef.current?.unloadAsync().catch(() => {});
+    };
+  }, []);
 
   const setScene = useCallback(async (id: SceneId) => {
     setCurrentSceneId(id);

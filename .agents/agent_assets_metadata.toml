@@ -246,6 +246,36 @@ uri = "file://artifacts/mobile/assets/images/tag-astrologia.png"
 type = "image"
 title = "astrology night sky cosmos"
 
+[[generated]]
+id = "vJZIP_AZr7P04KMIC_ynR"
+uri = "file://artifacts/mobile/assets/images/ambient/mar.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "m4W6dfRiLdLuaTpe3TVPz"
+uri = "file://artifacts/mobile/assets/images/ambient/naturaleza.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EgJUAXAH47Q_ZxtJONlMu"
+uri = "file://artifacts/mobile/assets/images/ambient/bosque.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "W0yKf70xH562seXrpCtqF"
+uri = "file://artifacts/mobile/assets/images/ambient/lluvia.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "tPVW-fAuRmAi1_6SvB-J-"
+uri = "file://artifacts/mobile/assets/images/ambient/viento.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
