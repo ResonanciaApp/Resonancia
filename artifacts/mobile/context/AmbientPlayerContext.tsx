@@ -73,7 +73,7 @@ async function fadeIn(sound: Audio.Sound) {
 const SCENE_AUDIO: Record<SceneId, unknown> = {
   universo:   require("@/assets/audio/pad_la.mp3"),
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
-  bosque:     require("@/assets/audio/riachuelo_pajaros.wav"),
+  bosque:     require("@/assets/audio/riachuelo_pajaros.mp3"),
   lluvia:     require("@/assets/audio/riachuelo_stream.mp3"),   // → replace with lluvia.mp3
   viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
 };

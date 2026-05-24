@@ -520,7 +520,7 @@ export const SESSIONS: Session[] = [
     benefits: ["Calma instantánea", "Conexión con la naturaleza", "Reducción del estrés", "Presencia plena"],
     instruments: ["Agua corriente", "Canto de pájaros", "Ambiente natural"],
     image: require("@/assets/images/sessions/session-27.jpg"),
-    audio: require("@/assets/audio/riachuelo_pajaros.wav"),
+    audio: require("@/assets/audio/riachuelo_pajaros.mp3"),
     isNew: true,
     soundTag: "Sonidos Naturaleza",
   },
