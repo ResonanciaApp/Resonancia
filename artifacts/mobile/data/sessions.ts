@@ -542,6 +542,25 @@ export const SESSIONS: Session[] = [
     isNew: true,
   },
 
+  // ── Prueba Maestra 2 ───────────────────────────────────────────────────────
+  {
+    id: "30",
+    title: "Prueba Maestra 2",
+    subtitle: "Binaural",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música y Sonidos",
+    duration: 20,
+    durationLabel: "20 min",
+    description: "Esta es una prueba maestra 2.",
+    benefits: ["Energía matutina", "Claridad mental", "Activación suave", "Foco natural"],
+    instruments: ["Binaural", "Sonido ambiente"],
+    image: require("@/assets/images/sessions/session-2.png"),
+    soundTag: "Binaural" as const,
+    themeTag: ["Energiza tus mañanas"] as const,
+    sleepTag: "ASMR Expansivos" as const,
+    isNew: true,
+  },
+
   // ── Prueba Maestra 1 ───────────────────────────────────────────────────────
   {
     id: "29",

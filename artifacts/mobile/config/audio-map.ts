@@ -37,6 +37,7 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
   "27": require("@/assets/audio/riachuelo_stream.mp3"),
   "28": require("@/assets/audio/sesion_cuencos_mix.mp3"),
   "29": require("@/assets/audio/prueba1.mp3"),
+  "30": require("@/assets/audio/prueba1.mp3"),
 };
 
 /**
@@ -46,13 +47,14 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
  */
 export const AMBIENT_MAP: Record<string, ReturnType<typeof require> | undefined> = {
   "27": require("@/assets/audio/pajaros_ambiente.mp3"),
+  "30": require("@/assets/audio/voz.mp3"),
 };
 
 /**
  * LOOP_SESSIONS — IDs de sesiones que deben reproducirse en loop indefinido.
  * El usuario elige la duración total antes de reproducir.
  */
-export const LOOP_SESSIONS = new Set(["20", "21", "22", "23", "24", "25", "26", "27"]);
+export const LOOP_SESSIONS = new Set(["20", "21", "22", "23", "24", "25", "26", "27", "30"]);
 
 /**
  * VOICE_MAP — audio de voz guiada superpuesto al fondo musical.
