@@ -687,11 +687,10 @@ const styles = StyleSheet.create({
   discoverRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 6,
     marginTop: 10,
-    paddingHorizontal: 4,
     paddingVertical: 6,
-    alignSelf: "flex-start",
   },
   discoverLabel: { fontSize: 12, fontWeight: "700", letterSpacing: 0.3 },
 
