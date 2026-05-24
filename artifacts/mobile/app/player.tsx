@@ -215,12 +215,9 @@ export default function PlayerScreen() {
 
   const handleProgressGrant = useCallback(
     (e: GestureResponderEvent) => {
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidth.current));
+      setSeekProgress(p);
       setIsSeeking(true);
-      progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
-        progressBarPageX.current = px;
-        const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / progressBarWidth.current));
-        setSeekProgress(p);
-      });
     },
     []
   );
@@ -324,6 +321,9 @@ export default function PlayerScreen() {
             style={styles.progressTrack}
             onLayout={(e: LayoutChangeEvent) => {
               progressBarWidth.current = e.nativeEvent.layout.width;
+              progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
+                progressBarPageX.current = px;
+              });
             }}
             onStartShouldSetResponder={() => true}
             onMoveShouldSetResponder={() => true}
