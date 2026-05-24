@@ -261,18 +261,17 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 5. A NO OLVIDAR ── */}
-        {noOlvidarItems.length > 0 && (
-          <View style={styles.section}>
+        <View style={styles.section}>
             {/* Cabecera tappable */}
             <Pressable
-              onPress={() => setNoOlvidarOpen((v) => !v)}
+              onPress={() => noOlvidarItems.length > 0 && setNoOlvidarOpen((v) => !v)}
               style={({ pressed }) => [styles.noOlvidarHeader, { opacity: pressed ? 0.75 : 1 }]}
             >
               <View style={styles.noOlvidarTitleRow}>
                 <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
                   A no olvidar
                 </Text>
-                {!noOlvidarOpen && (
+                {!noOlvidarOpen && noOlvidarItems.length > 0 && (
                   <View style={[styles.countBadge, { backgroundColor: colors.primary + "22" }]}>
                     <Text style={[styles.countText, { color: colors.primary }]}>
                       {noOlvidarItems.length}
@@ -280,22 +279,33 @@ export default function HomeScreen() {
                   </View>
                 )}
               </View>
-              <View style={styles.noOlvidarRight}>
-                {noOlvidarOpen && (
-                  <Pressable onPress={() => router.push("/(tabs)/diario" as never)}>
-                    <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
-                  </Pressable>
-                )}
-                <Feather
-                  name={noOlvidarOpen ? "chevron-up" : "chevron-down"}
-                  size={18}
-                  color={colors.accent}
-                />
-              </View>
+              {noOlvidarItems.length > 0 && (
+                <View style={styles.noOlvidarRight}>
+                  {noOlvidarOpen && (
+                    <Pressable onPress={() => router.push("/(tabs)/diario" as never)}>
+                      <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
+                    </Pressable>
+                  )}
+                  <Feather
+                    name={noOlvidarOpen ? "chevron-up" : "chevron-down"}
+                    size={18}
+                    color={colors.accent}
+                  />
+                </View>
+              )}
             </Pressable>
 
+            {/* Estado vacío */}
+            {noOlvidarItems.length === 0 && (
+              <View style={[styles.noOlvidarPeek, { backgroundColor: colors.card, borderColor: colors.border, justifyContent: "center" }]}>
+                <Text style={[styles.peekLabel, { color: colors.mutedForeground, textAlign: "center" }]}>
+                  Aún no has guardado nada de tu diario
+                </Text>
+              </View>
+            )}
+
             {/* Peek colapsado */}
-            {!noOlvidarOpen && (
+            {noOlvidarItems.length > 0 && !noOlvidarOpen && (
               <Pressable
                 onPress={() => setNoOlvidarOpen(true)}
                 style={[styles.noOlvidarPeek, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -329,7 +339,7 @@ export default function HomeScreen() {
             )}
 
             {/* Lista expandida */}
-            {noOlvidarOpen && (
+            {noOlvidarItems.length > 0 && noOlvidarOpen && (
               <View style={styles.diarioList}>
                 {noOlvidarItems.map((item) => {
                   const vozEntry =
@@ -363,7 +373,6 @@ export default function HomeScreen() {
               </View>
             )}
           </View>
-        )}
 
         {/* ── 6. MENSAJE DEL DÍA ── */}
         <View style={styles.section}>
