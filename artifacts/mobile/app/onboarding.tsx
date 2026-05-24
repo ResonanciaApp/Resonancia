@@ -303,7 +303,7 @@ export default function Onboarding() {
           <View style={styles.welcomeGlow}>
             <View style={styles.glowRing} />
             <Image
-              source={require("@/assets/images/logo-cdc-square.png")}
+              source={require("@/assets/images/logo-cuenco.png")}
               style={styles.welcomeLogo}
               resizeMode="contain"
             />
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     backgroundColor: "rgba(198,155,79,0.06)",
   },
-  welcomeLogo: { width: 130, height: 130 },
+  welcomeLogo: { width: 220, height: 220 },
   welcomeTitle: {
     color: FG,
     fontSize: 26,
