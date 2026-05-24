@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/resonancia-deck/"
+title = "RESONANCIA — Brochure"
+version = "1.0.0"
+id = "artifacts/resonancia-deck"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/resonancia-deck/" ]
+localPort = 23342
+
+[services.development]
+run = "pnpm --filter @workspace/resonancia-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/resonancia-deck", "run", "build" ]
+publicDir = "artifacts/resonancia-deck/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23342"
+BASE_PATH = "/resonancia-deck/"
