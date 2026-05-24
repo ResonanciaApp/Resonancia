@@ -271,10 +271,10 @@ export default function PlayerScreen() {
           >
             <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
               <View
-                style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: colors.primary }]}
+                style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
               />
               <View
-                style={[styles.progressThumb, { left: `${progress * 100}%`, backgroundColor: colors.primary }]}
+                style={[styles.progressThumb, { left: `${progress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
               />
             </View>
           </Pressable>
@@ -357,13 +357,17 @@ export default function PlayerScreen() {
           </View>
         )}
 
-        {/* Ambient slider — for sessions with layered ambient track (e.g. birds) */}
+        {/* Ambient slider — for sessions with layered ambient track */}
         {hasAmbientTrack && (
           <View style={[styles.sliderSection, { paddingHorizontal: 32, marginTop: 20, marginBottom: 8 }]}>
             <View style={styles.sliderHeader}>
-              <Feather name="wind" size={13} color={colors.mutedForeground} />
-              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>Pájaros</Text>
-              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
+              {!isMusicaYSonidos && (
+                <Feather name="wind" size={13} color={colors.mutedForeground} />
+              )}
+              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>
+                {isMusicaYSonidos ? "Sonidos Ambiente" : "Pájaros"}
+              </Text>
+              <Text style={[styles.sliderPercent, { color: "#6EC899" }]}>
                 {Math.round(ambientVolume * 100)}%
               </Text>
             </View>
@@ -384,7 +388,9 @@ export default function PlayerScreen() {
               />
             </View>
             <View style={styles.sliderHints}>
-              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Sin pájaros</Text>
+              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>
+                {isMusicaYSonidos ? "Sin ambiente" : "Sin pájaros"}
+              </Text>
               <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
             </View>
           </View>
