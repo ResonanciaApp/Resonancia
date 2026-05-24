@@ -20,7 +20,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
@@ -33,20 +33,22 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-/** Always redirects to onboarding once navigation is mounted. */
+/** Redirects to onboarding only for new (unregistered) users. */
 function OnboardingGate() {
   const segments = useSegments();
   const redirected = useRef(false);
+  const { isRegistered } = useAuth();
 
   useEffect(() => {
     if (redirected.current) return;
+    if (isRegistered) return;           // already done — stay on home tabs
     if (segments[0] === "onboarding") return;
     const t = setTimeout(() => {
       redirected.current = true;
       router.replace("/onboarding");
     }, 0);
     return () => clearTimeout(t);
-  }, [segments]);
+  }, [segments, isRegistered]);
 
   return null;
 }
