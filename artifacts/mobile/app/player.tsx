@@ -4,9 +4,9 @@ import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Image as ExpoImage } from "expo-image";
 import {
   Dimensions,
-  Image,
   LayoutChangeEvent,
   Platform,
   Pressable,
@@ -279,10 +279,10 @@ export default function PlayerScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <Image
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      <ExpoImage
         source={currentSession.image as any}
-        style={[StyleSheet.absoluteFill, { opacity: 0.12, resizeMode: "cover" }]}
+        style={[StyleSheet.absoluteFill, { opacity: 0.12 }]}
+        contentFit="cover"
         blurRadius={20}
       />
       <LinearGradient
@@ -318,10 +318,10 @@ export default function PlayerScreen() {
           <GlowRing size={ART_SIZE + 120} color="rgba(198,155,79,0.07)" delay={700} duration={4000} />
           <BreathingPulse isPlaying={isPlaying} />
           <View style={[styles.artFrame, { borderColor: "rgba(198,155,79,0.25)" }]}>
-            <Image
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <ExpoImage
               source={currentSession.image as any}
-              style={[styles.artImage, { width: ART_SIZE, height: ART_SIZE }]}
+              style={styles.artImage}
+              contentFit="cover"
             />
             <LinearGradient
               colors={["transparent", "rgba(24,17,12,0.4)"]}
@@ -574,13 +574,16 @@ const styles = StyleSheet.create({
     height: ART_SIZE + 60,
   },
   artFrame: {
+    width: ART_SIZE,
+    height: ART_SIZE,
     borderRadius: ART_SIZE / 2,
     borderWidth: 1.5,
     overflow: "hidden",
   },
   artImage: {
+    width: ART_SIZE,
+    height: ART_SIZE,
     borderRadius: ART_SIZE / 2,
-    resizeMode: "cover",
   },
   infoSection: {
     alignItems: "center",
