@@ -135,26 +135,27 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   }, [unload]);
 
   const loadAndPlay = useCallback(async (sceneId: SceneId) => {
+    console.warn(`[Ambient] loadAndPlay scene=${sceneId} loaded=${loadedSceneRef.current}`);
     if (loadedSceneRef.current !== sceneId) {
       await unload();
       try {
         const { sound } = await Audio.Sound.createAsync(
           SCENE_AUDIO[sceneId] as Parameters<typeof Audio.Sound.createAsync>[0],
-          { shouldPlay: true, isLooping: true, volume: 0 }
+          { shouldPlay: true, isLooping: true, volume: TARGET_VOLUME }
         );
         soundRef.current = sound;
         loadedSceneRef.current = sceneId;
-        fadeIn(sound);
+        console.warn(`[Ambient] playing new sound for ${sceneId}`);
       } catch (e) {
         console.warn("[Ambient] load failed:", e);
       }
     } else {
-      // Already pre-loaded — fade in from silence
+      // Already pre-loaded — play at full volume
       const sound = soundRef.current;
       if (sound) {
-        try { await sound.setVolumeAsync(0); } catch {}
+        try { await sound.setVolumeAsync(TARGET_VOLUME); } catch {}
         try { await sound.playAsync(); } catch {}
-        fadeIn(sound);
+        console.warn(`[Ambient] playing preloaded sound for ${sceneId}`);
       }
     }
   }, [unload]);
@@ -214,6 +215,7 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
 
   // Called from HomeScreen after onboarding — sound is already pre-loaded, plays instantly
   const startAmbient = useCallback(async () => {
+    console.warn(`[Ambient] startAmbient called isPlaying=${isPlayingRef.current} scene=${currentSceneIdRef.current}`);
     if (isPlayingRef.current) return;
     setIsPlaying(true);
     setIsMuted(false);

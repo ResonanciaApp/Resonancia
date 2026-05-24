@@ -26,7 +26,6 @@ import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { useAmbientPlayer } from "@/context/AmbientPlayerContext";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
@@ -67,19 +66,8 @@ export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
-  const { startAmbient } = useAmbientPlayer();
-  const { isRegistered, authLoading } = useAuth();
+  const { isRegistered } = useAuth();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
-  const ambientStarted = useRef(false);
-
-  // Start ambient once: after auth resolves and user is registered.
-  // authLoading ensures we never run before AsyncStorage finishes.
-  useEffect(() => {
-    if (authLoading || !isRegistered) return;
-    if (ambientStarted.current) return;
-    ambientStarted.current = true;
-    startAmbient();
-  }, [authLoading, isRegistered, startAmbient]);
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);

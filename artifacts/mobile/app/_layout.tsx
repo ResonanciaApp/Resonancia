@@ -19,7 +19,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
+import { AmbientPlayerProvider, useAmbientPlayer } from "@/context/AmbientPlayerContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
@@ -53,10 +53,29 @@ function OnboardingGate() {
   return null;
 }
 
+/** Starts ambient sound once, as soon as auth resolves and user is registered.
+ *  Lives at layout level so it fires regardless of which screen is active. */
+function AmbientAutoStart() {
+  const { startAmbient } = useAmbientPlayer();
+  const { isRegistered, authLoading } = useAuth();
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (authLoading || !isRegistered) return;
+    if (started.current) return;
+    started.current = true;
+    console.warn("[Ambient] AmbientAutoStart firing startAmbient");
+    startAmbient();
+  }, [authLoading, isRegistered, startAmbient]);
+
+  return null;
+}
+
 function RootLayoutNav() {
   return (
     <>
       <OnboardingGate />
+      <AmbientAutoStart />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
