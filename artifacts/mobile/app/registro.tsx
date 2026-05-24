@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import {
   Animated,
-  FlatList,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -447,15 +446,20 @@ function NameStep({ topPad, bottomPad, colors, displayName, setDisplayName, onCo
 // ── Step: Birth year + terms ─────────────────────────────────────────────────
 
 function BirthYearStep({ topPad, bottomPad, colors, birthYear, setBirthYear, agreed, setAgreed, loading, onCreateAccount }: any) {
-  const flatRef = useRef<FlatList>(null);
-  const initialIndex = YEARS.indexOf(birthYear);
+  const scrollRef = useRef<ScrollView>(null);
+  const [selIdx, setSelIdx] = useState(() => YEARS.indexOf(birthYear));
 
-  const onMomentumScrollEnd = useCallback(
+  // Scroll to initial position after layout
+  const onLayout = useCallback(() => {
+    scrollRef.current?.scrollTo({ y: selIdx * ITEM_H, animated: false });
+  }, [selIdx]);
+
+  const onScrollEnd = useCallback(
     (e: any) => {
-      const offset = e.nativeEvent.contentOffset.y;
-      const idx = Math.round(offset / ITEM_H);
-      const clamped = Math.max(0, Math.min(idx, YEARS.length - 1));
-      setBirthYear(YEARS[clamped]);
+      const y = e.nativeEvent.contentOffset.y;
+      const idx = Math.max(0, Math.min(Math.round(y / ITEM_H), YEARS.length - 1));
+      setSelIdx(idx);
+      setBirthYear(YEARS[idx]);
     },
     [setBirthYear]
   );
@@ -472,38 +476,37 @@ function BirthYearStep({ topPad, bottomPad, colors, birthYear, setBirthYear, agr
       </View>
 
       {/* Year picker drum roll */}
-      <View style={[styles.pickerWrap]}>
-        {/* Selection highlight */}
+      <View style={styles.pickerWrap}>
+        {/* Selection highlight bar */}
         <View
           pointerEvents="none"
-          style={[styles.pickerHighlight, { borderColor: "rgba(198,155,79,0.2)", backgroundColor: "rgba(198,155,79,0.04)" }]}
+          style={[styles.pickerHighlight, { borderColor: "rgba(198,155,79,0.22)", backgroundColor: "rgba(198,155,79,0.05)" }]}
         />
-        <FlatList
-          ref={flatRef}
-          data={YEARS}
-          keyExtractor={(y) => String(y)}
+        <ScrollView
+          ref={scrollRef}
           showsVerticalScrollIndicator={false}
           snapToInterval={ITEM_H}
           decelerationRate="fast"
+          onLayout={onLayout}
+          onMomentumScrollEnd={onScrollEnd}
+          onScrollEndDrag={onScrollEnd}
           contentContainerStyle={{ paddingVertical: ITEM_H * 2 }}
-          initialScrollIndex={initialIndex}
-          getItemLayout={(_, i) => ({ length: ITEM_H, offset: ITEM_H * i, index: i })}
-          onMomentumScrollEnd={onMomentumScrollEnd}
-          renderItem={({ item, index }) => {
-            const dist = Math.abs(YEARS.indexOf(birthYear) - index);
-            const opacity = dist === 0 ? 1 : dist === 1 ? 0.45 : 0.18;
-            const fontSize = dist === 0 ? 32 : dist === 1 ? 24 : 18;
-            const fontWeight = dist === 0 ? "700" : "400";
+          style={{ height: PICKER_H }}
+        >
+          {YEARS.map((year, index) => {
+            const dist = Math.abs(index - selIdx);
+            const opacity = dist === 0 ? 1 : dist === 1 ? 0.45 : dist === 2 ? 0.2 : 0.08;
+            const fontSize = dist === 0 ? 34 : dist === 1 ? 24 : 18;
+            const fontWeight: "700" | "400" = dist === 0 ? "700" : "400";
             return (
-              <View style={[styles.yearItem, { height: ITEM_H }]}>
+              <View key={year} style={[styles.yearItem, { height: ITEM_H }]}>
                 <Text style={{ color: colors.foreground, fontSize, fontWeight, opacity }}>
-                  {item}
+                  {year}
                 </Text>
               </View>
             );
-          }}
-          style={{ height: PICKER_H }}
-        />
+          })}
+        </ScrollView>
       </View>
 
       {/* Terms + button */}
