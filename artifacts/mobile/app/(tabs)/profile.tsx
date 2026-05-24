@@ -30,6 +30,26 @@ import { useColors } from "@/hooks/useColors";
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
 
+function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("no ctx")); return; }
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL("image/jpeg", 0.75));
+    };
+    img.onerror = reject;
+    img.src = uri;
+  });
+}
+
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -90,13 +110,8 @@ export default function ProfileScreen() {
       const tempUri = result.assets[0].uri;
       if (Platform.OS === "web") {
         try {
-          const response = await fetch(tempUri);
-          const blob = await response.blob();
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            if (typeof reader.result === "string") setPhotoUri(reader.result);
-          };
-          reader.readAsDataURL(blob);
+          const dataUrl = await resizeImageForWeb(tempUri, 320);
+          setPhotoUri(dataUrl);
         } catch {
           setPhotoUri(tempUri);
         }
