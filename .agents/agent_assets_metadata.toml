@@ -282,6 +282,12 @@ uri = "file://artifacts/mobile/assets/images/ambient/universo.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "QfqST9l1g734NBt2Ykc50"
+uri = "file://artifacts/resonancia-deck/public/hero-atmosphere.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
