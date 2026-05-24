@@ -189,7 +189,7 @@ export const SESSIONS: Session[] = [
     categoryId: "sonidos-ancestrales",
     categoryLabel: "Sonidos Ancestrales",
     ancestralTag: "Cuencos Tibetanos" as const,
-    sleepTag: "Sonidos Ancestrales" as const,
+    sleepTag: "Sonidos Binaurales" as const,
     duration: 45,
     durationLabel: "45 min",
     description:
@@ -207,7 +207,7 @@ export const SESSIONS: Session[] = [
     categoryId: "sonidos-ancestrales",
     categoryLabel: "Sonidos Ancestrales",
     ancestralTag: "Cuencos de Cuarzo" as const,
-    sleepTag: "Sonidos Ancestrales" as const,
+    sleepTag: "Sonidos Binaurales" as const,
     duration: 30,
     durationLabel: "30 min",
     description:
@@ -225,7 +225,7 @@ export const SESSIONS: Session[] = [
     categoryId: "sonidos-ancestrales",
     categoryLabel: "Sonidos Ancestrales",
     ancestralTag: "Cuencos de Cuarzo" as const,
-    sleepTag: "Sonidos Ancestrales" as const,
+    sleepTag: "Sonidos Binaurales" as const,
     duration: 20,
     durationLabel: "20 min",
     description:
