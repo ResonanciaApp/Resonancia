@@ -168,12 +168,11 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
       shouldDuckAndroid: true,
     }).catch(() => {});
 
-    // Load saved scene preference then pre-load it
-    AsyncStorage.getItem(STORAGE_KEY).then((val) => {
-      const savedId = val && AMBIENT_SCENES.find((s) => s.id === val) ? (val as SceneId) : "universo";
-      setCurrentSceneId(savedId);
-      preload(savedId);
-    });
+    // Always start on "universo" (first scene) — ignore saved preference on cold start.
+    // User can still switch scenes during the session.
+    AsyncStorage.setItem(STORAGE_KEY, "universo").catch(() => {});
+    setCurrentSceneId("universo");
+    preload("universo");
 
     return () => {
       soundRef.current?.unloadAsync().catch(() => {});
