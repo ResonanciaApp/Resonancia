@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { File, Paths } from "expo-file-system";
+import { File as FSFile, Paths } from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
@@ -88,14 +88,28 @@ export default function ProfileScreen() {
     });
     if (!result.canceled && result.assets[0]) {
       const tempUri = result.assets[0].uri;
-      try {
-        const ext = tempUri.split(".").pop()?.split("?")[0] ?? "jpg";
-        const src = new File(tempUri);
-        const dest = new File(Paths.document, `profile_photo.${ext}`);
-        src.copy(dest);
-        setPhotoUri(dest.uri);
-      } catch {
-        setPhotoUri(tempUri);
+      if (Platform.OS === "web") {
+        try {
+          const response = await fetch(tempUri);
+          const blob = await response.blob();
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (typeof reader.result === "string") setPhotoUri(reader.result);
+          };
+          reader.readAsDataURL(blob);
+        } catch {
+          setPhotoUri(tempUri);
+        }
+      } else {
+        try {
+          const ext = tempUri.split(".").pop()?.split("?")[0] ?? "jpg";
+          const src = new FSFile(tempUri);
+          const dest = new FSFile(Paths.document, `profile_photo.${ext}`);
+          src.copy(dest);
+          setPhotoUri(dest.uri);
+        } catch {
+          setPhotoUri(tempUri);
+        }
       }
     }
   };
