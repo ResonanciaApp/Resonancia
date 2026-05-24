@@ -491,3 +491,9 @@ id = "CIpXQ9nSeYFZichRY72B6"
 uri = "file://artifacts/mobile/assets/audio/voz_sutil_5_susurro_cosmico.mp3"
 type = "audio"
 title = "5. Susurro Cósmico — íntimo y cercano"
+
+[[outputs]]
+id = "sGDzBFioMU0D69ufpysd9"
+uri = "file://artifacts/mobile/assets/audio/voz_limpia_profesional.mp3"
+type = "audio"
+title = "Voz limpia profesional — EBU R128 + MP3 192kbps"
