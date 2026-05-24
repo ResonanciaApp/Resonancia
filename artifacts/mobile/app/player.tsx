@@ -14,6 +14,7 @@ import {
   StyleSheet,
   Text,
   View,
+  type GestureResponderEvent,
 } from "react-native";
 import Animated, {
   Easing,
@@ -105,20 +106,47 @@ export default function PlayerScreen() {
 
   // ── All hooks before early return ────────────────────────────────────────
   const voiceTrackWidth = useRef(0);
+  const voiceTrackPageX = useRef(0);
+  const voiceTrackRef = useRef<View>(null);
   const ambientTrackWidth = useRef(0);
+  const ambientTrackPageX = useRef(0);
+  const ambientTrackRef = useRef<View>(null);
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
 
-  const handleVoiceSlider = useCallback(
-    (locationX: number) => {
-      const vol = Math.max(0, Math.min(1, locationX / voiceTrackWidth.current));
+
+  const handleVoiceGrant = useCallback(
+    (e: GestureResponderEvent) => {
+      voiceTrackRef.current?.measure((_x, _y, _w, _h, px) => {
+        voiceTrackPageX.current = px;
+        const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / voiceTrackWidth.current));
+        setVoiceVolume(vol);
+      });
+    },
+    [setVoiceVolume]
+  );
+
+  const handleVoiceMove = useCallback(
+    (e: GestureResponderEvent) => {
+      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - voiceTrackPageX.current) / voiceTrackWidth.current));
       setVoiceVolume(vol);
     },
     [setVoiceVolume]
   );
 
-  const handleAmbientSlider = useCallback(
-    (locationX: number) => {
-      const vol = Math.max(0, Math.min(1, locationX / ambientTrackWidth.current));
+  const handleAmbientGrant = useCallback(
+    (e: GestureResponderEvent) => {
+      ambientTrackRef.current?.measure((_x, _y, _w, _h, px) => {
+        ambientTrackPageX.current = px;
+        const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / ambientTrackWidth.current));
+        setAmbientVolume(vol);
+      });
+    },
+    [setAmbientVolume]
+  );
+
+  const handleAmbientMove = useCallback(
+    (e: GestureResponderEvent) => {
+      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - ambientTrackPageX.current) / ambientTrackWidth.current));
       setAmbientVolume(vol);
     },
     [setAmbientVolume]
@@ -335,18 +363,22 @@ export default function PlayerScreen() {
               </Text>
             </View>
             <View
+              ref={voiceTrackRef}
               style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
               onLayout={(e: LayoutChangeEvent) => {
                 voiceTrackWidth.current = e.nativeEvent.layout.width;
               }}
               onStartShouldSetResponder={() => true}
-              onResponderGrant={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
-              onResponderMove={(e) => handleVoiceSlider(e.nativeEvent.locationX)}
+              onMoveShouldSetResponder={() => true}
+              onResponderGrant={handleVoiceGrant}
+              onResponderMove={handleVoiceMove}
             >
               <View
+                pointerEvents="none"
                 style={[styles.sliderFill, { width: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
               />
               <View
+                pointerEvents="none"
                 style={[styles.sliderThumb, { left: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
               />
             </View>
@@ -372,18 +404,22 @@ export default function PlayerScreen() {
               </Text>
             </View>
             <View
+              ref={ambientTrackRef}
               style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}
               onLayout={(e: LayoutChangeEvent) => {
                 ambientTrackWidth.current = e.nativeEvent.layout.width;
               }}
               onStartShouldSetResponder={() => true}
-              onResponderGrant={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
-              onResponderMove={(e) => handleAmbientSlider(e.nativeEvent.locationX)}
+              onMoveShouldSetResponder={() => true}
+              onResponderGrant={handleAmbientGrant}
+              onResponderMove={handleAmbientMove}
             >
               <View
+                pointerEvents="none"
                 style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
               />
               <View
+                pointerEvents="none"
                 style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
               />
             </View>
