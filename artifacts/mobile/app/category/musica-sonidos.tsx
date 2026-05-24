@@ -297,7 +297,7 @@ export default function MusicaSonidosScreen() {
                     </View>
 
                     <Text style={[styles.modalHint, { color: colors.mutedForeground }]}>
-                      El audio se reproducirá en loop durante el tiempo elegido
+                      El audio tendrá la duración que elijas
                     </Text>
 
                     {/* Duration options */}
