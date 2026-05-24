@@ -11,6 +11,9 @@ const STORAGE_KEY = "cdc_user_profile";
 
 interface UserProfile {
   username: string;
+  lastName: string;
+  location: string;
+  description: string;
   photoUri: string | null;
   sentMessageIds: number[];
   earnedCrowns: number;
@@ -19,6 +22,9 @@ interface UserProfile {
 
 const DEFAULT_PROFILE: UserProfile = {
   username: "Explorador de Sonido",
+  lastName: "",
+  location: "",
+  description: "",
   photoUri: null,
   sentMessageIds: [],
   earnedCrowns: 0,
@@ -27,9 +33,11 @@ const DEFAULT_PROFILE: UserProfile = {
 
 interface UserProfileContextValue extends UserProfile {
   setUsername: (name: string) => void;
+  setLastName: (v: string) => void;
+  setLocation: (v: string) => void;
+  setDescription: (v: string) => void;
   setPhotoUri: (uri: string | null) => void;
   recordSentMessage: (id: number) => void;
-  /** Call with today's top message ID. Awards a crown if the user owns it and hasn't been awarded today. */
   checkAndAwardCrown: (topMessageId: number | null) => void;
 }
 
@@ -58,6 +66,21 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
     [profile, persist],
   );
 
+  const setLastName = useCallback(
+    (v: string) => persist({ ...profile, lastName: v.trim() }),
+    [profile, persist],
+  );
+
+  const setLocation = useCallback(
+    (v: string) => persist({ ...profile, location: v.trim() }),
+    [profile, persist],
+  );
+
+  const setDescription = useCallback(
+    (v: string) => persist({ ...profile, description: v.trim() }),
+    [profile, persist],
+  );
+
   const setPhotoUri = useCallback(
     (uri: string | null) => persist({ ...profile, photoUri: uri }),
     [profile, persist],
@@ -65,7 +88,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
 
   const recordSentMessage = useCallback(
     (id: number) => {
-      const updated = [...profile.sentMessageIds, id].slice(-50); // keep last 50
+      const updated = [...profile.sentMessageIds, id].slice(-50);
       persist({ ...profile, sentMessageIds: updated });
     },
     [profile, persist],
@@ -76,10 +99,8 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
       if (!topMessageId) return;
       const isOwner = profile.sentMessageIds.includes(topMessageId);
       if (!isOwner) return;
-
-      const todayStr = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
-      if (profile.lastCrownDate === todayStr) return; // already awarded today
-
+      const todayStr = new Date().toISOString().slice(0, 10);
+      if (profile.lastCrownDate === todayStr) return;
       persist({
         ...profile,
         earnedCrowns: profile.earnedCrowns + 1,
@@ -91,7 +112,16 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
 
   return (
     <UserProfileContext.Provider
-      value={{ ...profile, setUsername, setPhotoUri, recordSentMessage, checkAndAwardCrown }}
+      value={{
+        ...profile,
+        setUsername,
+        setLastName,
+        setLocation,
+        setDescription,
+        setPhotoUri,
+        recordSentMessage,
+        checkAndAwardCrown,
+      }}
     >
       {children}
     </UserProfileContext.Provider>

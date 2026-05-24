@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 
 type Step = "choose" | "email-form" | "verify-email" | "name" | "birthyear";
@@ -33,6 +34,7 @@ export default function RegistroScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { register } = useAuth();
+  const { setUsername } = useUserProfile();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -90,14 +92,16 @@ export default function RegistroScreen() {
     if (!agreed) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setLoading(true);
+    const trimmedName = displayName.trim();
     await register({
       email: method === "email" ? email : null,
-      displayName: displayName.trim(),
+      displayName: trimmedName,
       birthYear,
       method,
     });
+    setUsername(trimmedName);
     setLoading(false);
-    router.replace("/(tabs)" as never);
+    router.replace("/(tabs)/profile" as never);
   };
 
   return (
