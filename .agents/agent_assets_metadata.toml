@@ -413,3 +413,9 @@ id = "U3iCopQw2PAGtgotSjOGR"
 uri = "file://artifacts/mobile/assets/audio/pad_mi_armonico_chelos_truenos.mp3"
 type = "audio"
 title = "4. Pad Mi menor armónico — Chelos + Truenos + Om"
+
+[[outputs]]
+id = "MUBOJRMQBGyKdaJSSGa9B"
+uri = "file://artifacts/mobile/assets/audio/gael_extraterrestres_gatos.mp3"
+type = "audio"
+title = "GAEL — Humanos Extraterrestres con Gatos Cósmicos"
