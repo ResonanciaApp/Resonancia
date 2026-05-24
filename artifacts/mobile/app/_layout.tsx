@@ -19,6 +19,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
@@ -150,6 +151,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
           <PlayerProvider>
+            <AmbientPlayerProvider>
             <UserProfileProvider>
             <IntencionProvider>
               <DiarioFavoritesProvider>
@@ -161,6 +163,7 @@ export default function RootLayout() {
               </DiarioFavoritesProvider>
             </IntencionProvider>
             </UserProfileProvider>
+            </AmbientPlayerProvider>
           </PlayerProvider>
           </AuthProvider>
         </QueryClientProvider>

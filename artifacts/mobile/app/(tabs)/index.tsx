@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { AmbientWidget } from "@/components/AmbientWidget";
 import { DrawerMenu } from "@/components/DrawerMenu";
 import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
 import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
@@ -146,12 +147,7 @@ export default function HomeScreen() {
             >
               <Feather name="menu" size={18} color={colors.accent} />
             </Pressable>
-            <Pressable
-              onPress={() => router.push("/(tabs)/profile" as never)}
-              style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-            >
-              <Feather name="user" size={18} color={colors.accent} />
-            </Pressable>
+            <AmbientWidget />
           </View>
 
           {/* Widget de intención — centrado, sin fondo */}
