@@ -121,17 +121,8 @@ export function DrawerMenu({ visible, onClose }: Props) {
           colors={["#241408", "#1A0E06"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
-          {/* Header */}
-          <View style={styles.drawerHeader}>
-            <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-              <Feather name="x" size={20} color="#C69B4F" />
-            </Pressable>
-          </View>
-
-          <View style={[styles.divider, { backgroundColor: "#C69B4F22" }]} />
-
-          {/* Perfil del usuario (si está logueado) */}
-          {isRegistered && (
+          {/* Perfil del usuario (si está logueado) — con X a la derecha */}
+          {isRegistered ? (
             <View style={styles.profileSection}>
               {photoUri ? (
                 <Image source={{ uri: photoUri }} style={styles.profilePhoto} contentFit="cover" />
@@ -150,6 +141,15 @@ export function DrawerMenu({ visible, onClose }: Props) {
                   <Feather name="chevron-right" size={11} color="#C69B4F" />
                 </Pressable>
               </View>
+              <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
+                <Feather name="x" size={20} color="#C69B4F" />
+              </Pressable>
+            </View>
+          ) : (
+            <View style={styles.closeBtnRow}>
+              <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
+                <Feather name="x" size={20} color="#C69B4F" />
+              </Pressable>
             </View>
           )}
 
@@ -213,17 +213,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-  drawerHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  brandText: {
-    color: "#C69B4F",
-    fontSize: 13,
-    fontWeight: "700",
-    letterSpacing: 2.5,
+  closeBtnRow: {
+    alignItems: "flex-end",
+    marginBottom: 8,
   },
   closeBtn: {
     width: 32,
