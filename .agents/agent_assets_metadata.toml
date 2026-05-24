@@ -419,3 +419,9 @@ id = "MUBOJRMQBGyKdaJSSGa9B"
 uri = "file://artifacts/mobile/assets/audio/gael_extraterrestres_gatos.mp3"
 type = "audio"
 title = "GAEL — Humanos Extraterrestres con Gatos Cósmicos"
+
+[[outputs]]
+id = "MT2SqDppHzm5q8Z1ZoRWW"
+uri = "file://artifacts/mobile/assets/audio/voz_galactica_mistica.mp3"
+type = "audio"
+title = "Voz Galáctica Mística — Interdimensional"
