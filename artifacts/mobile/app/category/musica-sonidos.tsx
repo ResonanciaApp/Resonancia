@@ -36,9 +36,9 @@ const TABS: Tab[] = ["Todos", "Binaural", "Música", "Sonidos Naturaleza"];
 const DURATION_OPTIONS = [5, 10, 15, 20, 30, 45];
 
 const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
-  Binaural: { bg: "#4A3280", text: "#C4A8F0" },
-  Música: { bg: "#5A3A10", text: "#E8B96A" },
-  "Sonidos Naturaleza": { bg: "#1A4A2E", text: "#6EC899" },
+  Binaural: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
+  Música: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
+  "Sonidos Naturaleza": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
 };
 
 const TAG_ICONS: Record<SoundTag, React.ComponentProps<typeof Feather>["name"]> = {
