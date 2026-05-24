@@ -353,3 +353,9 @@ id = "NMsCE4liHzLpbMqQITJTH"
 uri = "file://artifacts/mobile/assets/audio/pad_la.mp3"
 type = "audio"
 title = "pad_la_cosmos"
+
+[[outputs]]
+id = "Sn_4n06dZg55Ld15d-3PP"
+uri = "file://artifacts/mobile/assets/audio/pad_sol_sostenido_extraterrestre.mp3"
+type = "audio"
+title = "pad_sol_sostenido_voces_extraterrestres_om"
