@@ -232,7 +232,7 @@ export default function PodcastScreen() {
                   </Text>
                 </View>
               ) : (
-                filteredSessions.map((session) => (
+                filteredSessions.map((session, idx) => (
                   <Pressable
                     key={session.id}
                     onPress={() => router.push(`/session/${session.id}` as never)}
@@ -247,6 +247,13 @@ export default function PodcastScreen() {
                       style={styles.cardImage}
                     />
                     <View style={styles.cardContent}>
+                      <View style={styles.episodeNumRow}>
+                        <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(138,170,212,0.15)" }]}>
+                          <Text style={[styles.episodeNum, { color: "#8AAAD4" }]}>
+                            EP{idx + 1}
+                          </Text>
+                        </View>
+                      </View>
                       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
                       </Text>
