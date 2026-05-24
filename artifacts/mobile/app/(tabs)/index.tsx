@@ -27,6 +27,7 @@ import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { useAmbientPlayer } from "@/context/AmbientPlayerContext";
+import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
@@ -67,13 +68,16 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
   const { startAmbient } = useAmbientPlayer();
+  const { isRegistered } = useAuth();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
-  // Start ambient sound once the home screen mounts (after onboarding)
+  // Start ambient only when home screen mounts AND the user already completed onboarding
   useEffect(() => {
-    startAmbient();
+    if (isRegistered) {
+      startAmbient();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isRegistered]);
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
