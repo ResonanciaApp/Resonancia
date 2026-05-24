@@ -461,3 +461,33 @@ id = "A7KGTGONOt6acmPx5n9zN"
 uri = "file://artifacts/mobile/assets/audio/voz_ser_celestial_divino.mp3"
 type = "audio"
 title = "Voz Ser Celestial Divino — Consciencia Cósmica Ancestral"
+
+[[outputs]]
+id = "NYOaE1SIgk2XGFP7M1LKF"
+uri = "file://artifacts/mobile/assets/audio/voz_sutil_1_sabio_ancestral.mp3"
+type = "audio"
+title = "1. Sabio Ancestral — cálido y profundo"
+
+[[outputs]]
+id = "VMgpNYp_5e2nV11pkdm8D"
+uri = "file://artifacts/mobile/assets/audio/voz_sutil_2_guia_celestial.mp3"
+type = "audio"
+title = "2. Guía Celestial — brillante con aire sutil"
+
+[[outputs]]
+id = "AwfKAqryEiKsoCJ6mv9FS"
+uri = "file://artifacts/mobile/assets/audio/voz_sutil_3_maestro_zen.mp3"
+type = "audio"
+title = "3. Maestro Zen — voz natural, presencia cálida"
+
+[[outputs]]
+id = "0WUVFhuMmudoMFOBga505"
+uri = "file://artifacts/mobile/assets/audio/voz_sutil_4_voz_del_templo.mp3"
+type = "audio"
+title = "4. Voz del Templo — profundidad sagrada"
+
+[[outputs]]
+id = "CIpXQ9nSeYFZichRY72B6"
+uri = "file://artifacts/mobile/assets/audio/voz_sutil_5_susurro_cosmico.mp3"
+type = "audio"
+title = "5. Susurro Cósmico — íntimo y cercano"
