@@ -502,10 +502,10 @@ title = "Voz limpia — sin ruido de fondo"
 id = "D4rBuoxW-nLEWnqe6Y-J5"
 uri = "file://artifacts/mobile/assets/audio/canto_sagrado_la.mp3"
 type = "audio"
-title = "Canto Sagrado — en La (más claro)"
+title = "Canto Sagrado — en La (-3 semitonos)"
 
 [[outputs]]
 id = "Wbs9AgXpdqxWVNrx-Ylff"
 uri = "file://artifacts/mobile/assets/audio/canto_cosmico_mi.mp3"
 type = "audio"
-title = "Canto Cósmico — en Mi (más grave + chorus)"
+title = "Canto Cósmico — en Mi (-7 semitonos + coro)"
