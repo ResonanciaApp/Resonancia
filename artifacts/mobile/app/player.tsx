@@ -184,6 +184,32 @@ export default function PlayerScreen() {
   const thumbAnimStyle = useAnimatedStyle(() => ({
     left: progressShared.value * progressBarWidthShared.value,
   }));
+  const handleProgressGrant = useCallback(
+    (e: GestureResponderEvent) => {
+      isSeekingRef.current = true;
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+      progressShared.value = p;
+    },
+    [progressShared, progressBarWidthShared]
+  );
+
+  const handleProgressMove = useCallback(
+    (e: GestureResponderEvent) => {
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+      progressShared.value = p;
+    },
+    [progressShared, progressBarWidthShared]
+  );
+
+  const handleProgressRelease = useCallback(
+    (e: GestureResponderEvent) => {
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+      progressShared.value = p;
+      isSeekingRef.current = false;
+      seekTo(p);
+    },
+    [progressShared, progressBarWidthShared, seekTo]
+  );
   // ─────────────────────────────────────────────────────────────────────────
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -225,33 +251,6 @@ export default function PlayerScreen() {
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
-
-  const handleProgressGrant = useCallback(
-    (e: GestureResponderEvent) => {
-      isSeekingRef.current = true;
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
-      progressShared.value = p;
-    },
-    [progressShared, progressBarWidthShared]
-  );
-
-  const handleProgressMove = useCallback(
-    (e: GestureResponderEvent) => {
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
-      progressShared.value = p;
-    },
-    [progressShared, progressBarWidthShared]
-  );
-
-  const handleProgressRelease = useCallback(
-    (e: GestureResponderEvent) => {
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
-      progressShared.value = p;
-      isSeekingRef.current = false;
-      seekTo(p);
-    },
-    [progressShared, progressBarWidthShared, seekTo]
-  );
 
   const handlePlayPause = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
