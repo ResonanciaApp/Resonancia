@@ -383,3 +383,33 @@ id = "Gzzb-KmS4R0yF0nJmlQKA"
 uri = "file://artifacts/mobile/assets/audio/goa_trance_dj_mix.mp3"
 type = "audio"
 title = "DJ Mix — Transición Goa Trance → Continuación (2:15)"
+
+[[outputs]]
+id = "aS8JIuF0TupzgVoWsLToD"
+uri = "file://artifacts/mobile/assets/audio/pad_fa_sostenido_dorian_handpan.mp3"
+type = "audio"
+title = "3. Pad Fa# Dorian — Handpan + Flauta Nativa + Om"
+
+[[outputs]]
+id = "MkXnFpMklCRNPLSE1c4ge"
+uri = "file://artifacts/mobile/assets/audio/pad_re_menor_cuencos_tibetanos.mp3"
+type = "audio"
+title = "1. Pad Re menor — Cuencos Tibetanos + Om"
+
+[[outputs]]
+id = "89yeY6jAXEf96frkvSAYs"
+uri = "file://artifacts/mobile/assets/audio/pad_la_frigio_sitar_tabla.mp3"
+type = "audio"
+title = "2. Pad La Frigio Dominante — Sitar + Tabla + Om"
+
+[[outputs]]
+id = "hb8fKN6XDGBdKa-V8PPqe"
+uri = "file://artifacts/mobile/assets/audio/pad_do_sostenido_locrian_campanas.mp3"
+type = "audio"
+title = "5. Pad Do# Locrian — Campanas de Catedral + Susurros + Om"
+
+[[outputs]]
+id = "U3iCopQw2PAGtgotSjOGR"
+uri = "file://artifacts/mobile/assets/audio/pad_mi_armonico_chelos_truenos.mp3"
+type = "audio"
+title = "4. Pad Mi menor armónico — Chelos + Truenos + Om"
