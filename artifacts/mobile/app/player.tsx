@@ -111,6 +111,11 @@ export default function PlayerScreen() {
   const ambientTrackWidth = useRef(0);
   const ambientTrackPageX = useRef(0);
   const ambientTrackRef = useRef<View>(null);
+  const progressBarRef = useRef<View>(null);
+  const progressBarWidth = useRef(0);
+  const progressBarPageX = useRef(0);
+  const [isSeeking, setIsSeeking] = useState(false);
+  const [seekProgress, setSeekProgress] = useState(0);
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
 
 
@@ -206,12 +211,36 @@ export default function PlayerScreen() {
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
+  const displayProgress = isSeeking ? seekProgress : progress;
 
-  const handleSeek = (event: { nativeEvent: { locationX: number } }, barWidth: number) => {
-    const x = event.nativeEvent.locationX;
-    const p = Math.max(0, Math.min(1, x / barWidth));
-    seekTo(p);
-  };
+  const handleProgressGrant = useCallback(
+    (e: GestureResponderEvent) => {
+      setIsSeeking(true);
+      progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
+        progressBarPageX.current = px;
+        const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / progressBarWidth.current));
+        setSeekProgress(p);
+      });
+    },
+    []
+  );
+
+  const handleProgressMove = useCallback(
+    (e: GestureResponderEvent) => {
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidth.current));
+      setSeekProgress(p);
+    },
+    []
+  );
+
+  const handleProgressRelease = useCallback(
+    (e: GestureResponderEvent) => {
+      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidth.current));
+      setIsSeeking(false);
+      seekTo(p);
+    },
+    [seekTo]
+  );
 
   const handlePlayPause = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -290,22 +319,28 @@ export default function PlayerScreen() {
 
         {/* Progress */}
         <View style={styles.progressSection}>
-          <Pressable
+          <View
+            ref={progressBarRef}
             style={styles.progressTrack}
-            onPress={(e) => {
-              const BAR_WIDTH = width - 64;
-              handleSeek(e, BAR_WIDTH);
+            onLayout={(e: LayoutChangeEvent) => {
+              progressBarWidth.current = e.nativeEvent.layout.width;
             }}
+            onStartShouldSetResponder={() => true}
+            onMoveShouldSetResponder={() => true}
+            onResponderGrant={handleProgressGrant}
+            onResponderMove={handleProgressMove}
+            onResponderRelease={handleProgressRelease}
+            onResponderTerminate={handleProgressRelease}
           >
             <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
               <View
-                style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
+                style={[styles.progressFill, { width: `${displayProgress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
               />
               <View
-                style={[styles.progressThumb, { left: `${progress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
+                style={[styles.progressThumb, { left: `${displayProgress * 100}%`, backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
               />
             </View>
-          </Pressable>
+          </View>
           <View style={styles.timeRow}>
             <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{formatTime(elapsed)}</Text>
             <Text style={[styles.timeText, { color: colors.mutedForeground }]}>-{formatTime(remaining)}</Text>
