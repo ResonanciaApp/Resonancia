@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 
-export type SceneId = "universo" | "mar" | "naturaleza" | "bosque" | "lluvia" | "viento";
+export type SceneId = "universo" | "naturaleza" | "bosque" | "lluvia" | "viento";
 
 export type AmbientScene = {
   id: SceneId;
@@ -26,13 +26,6 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     colors: ["#1A0A3C", "#6B3FA0"] as const,
     icon: "star",
     image: require("@/assets/images/ambient/universo.jpg"),
-  },
-  {
-    id: "mar",
-    label: "Mar",
-    colors: ["#0D4F8A", "#4BA3D3"] as const,
-    icon: "anchor",
-    image: require("@/assets/images/ambient/mar.jpg"),
   },
   {
     id: "naturaleza",
@@ -67,7 +60,6 @@ export const AMBIENT_SCENES: AmbientScene[] = [
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
   universo:   require("@/assets/audio/pad_la.mp3"),
-  mar:        require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with mar.mp3
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
   bosque:     require("@/assets/audio/riachuelo_pajaros.wav"),
   lluvia:     require("@/assets/audio/riachuelo_stream.mp3"),   // → replace with lluvia.mp3
