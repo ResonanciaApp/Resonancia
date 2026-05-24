@@ -71,15 +71,27 @@ export default function HomeScreen() {
   const { isRegistered } = useAuth();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
-  // Start ambient only when this screen is actually focused AND user is registered.
-  // useFocusEffect + delay: if navigation redirects away before 400ms, cleanup cancels the timer.
+  // Track focus state in a ref so useEffect can read it without stale closures
+  const isFocusedRef = useRef(false);
   useFocusEffect(
     useCallback(() => {
-      if (!isRegistered) return;
-      const t = setTimeout(() => { startAmbient(); }, 400);
-      return () => clearTimeout(t);
+      isFocusedRef.current = true;
+      // Case A: isRegistered already true when screen gains focus
+      if (isRegistered) {
+        const t = setTimeout(() => { startAmbient(); }, 400);
+        return () => { isFocusedRef.current = false; clearTimeout(t); };
+      }
+      return () => { isFocusedRef.current = false; };
     }, [isRegistered, startAmbient])
   );
+
+  // Case B: isRegistered resolves from AsyncStorage while screen is already focused
+  useEffect(() => {
+    if (!isRegistered || !isFocusedRef.current) return;
+    const t = setTimeout(() => { startAmbient(); }, 400);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRegistered]);
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
