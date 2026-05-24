@@ -103,7 +103,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
       staysActiveInBackground: true,
-      shouldDuckAndroid: true,
+      shouldDuckAndroid: false,
     });
   }, []);
 
