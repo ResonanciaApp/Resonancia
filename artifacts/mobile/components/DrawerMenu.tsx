@@ -123,7 +123,6 @@ export function DrawerMenu({ visible, onClose }: Props) {
         >
           {/* Header */}
           <View style={styles.drawerHeader}>
-            <Text style={styles.brandText}>RESONANCIA</Text>
             <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
               <Feather name="x" size={20} color="#C69B4F" />
             </Pressable>
