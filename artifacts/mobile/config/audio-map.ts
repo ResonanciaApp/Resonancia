@@ -46,7 +46,6 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
  */
 export const AMBIENT_MAP: Record<string, ReturnType<typeof require> | undefined> = {
   "27": require("@/assets/audio/pajaros_ambiente.mp3"),
-  "29": require("@/assets/audio/voz.mp3"),
 };
 
 /**
@@ -61,4 +60,5 @@ export const LOOP_SESSIONS = new Set(["20", "21", "22", "23", "24", "25", "26", 
  */
 export const VOICE_MAP: Record<string, ReturnType<typeof require> | undefined> = {
   "28": require("@/assets/audio/meditacion_voz_profunda.mp3"),
+  "29": require("@/assets/audio/voz.mp3"),
 };
