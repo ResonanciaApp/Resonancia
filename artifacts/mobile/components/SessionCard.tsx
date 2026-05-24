@@ -2,9 +2,9 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import {
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -49,7 +49,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
         ]}
       >
-        <Image source={session.image} style={styles.hImage} />
+        <Image source={session.image} style={styles.hImage} contentFit="cover" />
         <LinearGradient
           colors={["transparent", colors.card]}
           start={{ x: 0, y: 0.5 }}
@@ -108,7 +108,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
       ]}
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
-        <Image source={session.image} style={styles.cardImage} />
+        <Image source={session.image} style={styles.cardImage} contentFit="cover" />
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}

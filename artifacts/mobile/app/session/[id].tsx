@@ -4,9 +4,9 @@ import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
+import { Image } from "expo-image";
 import {
   Dimensions,
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -77,7 +77,8 @@ export default function SessionDetailScreen() {
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isSabiduría = session.categoryId === "sabiduria-dia";
   const isPodcast = session.categoryId === "podcast";
-  const fav = isFavorite(session.id);
+  const [localFav, setLocalFav] = useState<boolean | null>(null);
+  const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
 
   const related = SESSIONS.filter(
@@ -99,6 +100,8 @@ export default function SessionDetailScreen() {
   };
 
   const handleFav = () => {
+    const next = !fav;
+    setLocalFav(next);
     toggleFavorite(session.id);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
@@ -155,7 +158,7 @@ export default function SessionDetailScreen() {
       >
         {/* ── Hero image ──────────────────────────────────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
-          <Image source={session.image as never} style={StyleSheet.absoluteFill as object} resizeMode="cover" />
+          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" />
           <LinearGradient
             colors={["rgba(24,17,12,0.25)", "transparent", colors.background]}
             locations={[0, 0.45, 1]}
