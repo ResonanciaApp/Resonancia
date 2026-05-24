@@ -73,6 +73,7 @@ type AmbientCtx = {
   setScene: (id: SceneId) => Promise<void>;
   togglePlayback: () => Promise<void>;
   stopAmbient: () => Promise<void>;
+  startAmbient: () => Promise<void>;
 };
 
 const AmbientContext = createContext<AmbientCtx | null>(null);
@@ -112,23 +113,13 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     }
   }, [unload]);
 
-  // Load saved scene preference, then auto-start
+  // Load saved scene preference (no auto-start — caller triggers startAmbient)
   useEffect(() => {
-    let cancelled = false;
-    AsyncStorage.getItem(STORAGE_KEY).then(async (val) => {
-      const scene: SceneId =
-        val && AMBIENT_SCENES.find((s) => s.id === val)
-          ? (val as SceneId)
-          : "mar";
-      if (!cancelled) {
-        setCurrentSceneId(scene);
-        setIsPlaying(true);
-        setIsMuted(false);
-        await loadAndPlay(scene);
+    AsyncStorage.getItem(STORAGE_KEY).then((val) => {
+      if (val && AMBIENT_SCENES.find((s) => s.id === val)) {
+        setCurrentSceneId(val as SceneId);
       }
     });
-    return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Cleanup on unmount
@@ -167,9 +158,17 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     await unload();
   }, [isPlaying, unload]);
 
+  // Call once when the home screen mounts (after onboarding)
+  const startAmbient = useCallback(async () => {
+    if (isPlaying) return; // already running
+    setIsPlaying(true);
+    setIsMuted(false);
+    await loadAndPlay(currentSceneId);
+  }, [isPlaying, currentSceneId, loadAndPlay]);
+
   return (
     <AmbientContext.Provider
-      value={{ currentScene, isPlaying, isMuted, setScene, togglePlayback, stopAmbient }}
+      value={{ currentScene, isPlaying, isMuted, setScene, togglePlayback, stopAmbient, startAmbient }}
     >
       {children}
     </AmbientContext.Provider>

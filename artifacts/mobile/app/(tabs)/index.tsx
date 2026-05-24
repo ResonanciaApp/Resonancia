@@ -26,6 +26,7 @@ import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { useAmbientPlayer } from "@/context/AmbientPlayerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
@@ -65,7 +66,14 @@ export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
+  const { startAmbient } = useAmbientPlayer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
+
+  // Start ambient sound once the home screen mounts (after onboarding)
+  useEffect(() => {
+    startAmbient();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
