@@ -359,3 +359,9 @@ id = "Sn_4n06dZg55Ld15d-3PP"
 uri = "file://artifacts/mobile/assets/audio/pad_sol_sostenido_extraterrestre.mp3"
 type = "audio"
 title = "Viaje Fibonacci — Luz → Night Psy → Renacimiento (v4)"
+
+[[outputs]]
+id = "8MlaUjWLoCB9NTjz8cbkO"
+uri = "file://artifacts/mobile/assets/audio/goa_trance_viaje_interdimensional.mp3"
+type = "audio"
+title = "Goa Trance — Viaje Interdimensional (7 min)"
