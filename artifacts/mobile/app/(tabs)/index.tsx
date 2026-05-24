@@ -213,7 +213,7 @@ export default function HomeScreen() {
               style={[styles.heroCard, { borderColor: "rgba(198,155,79,0.22)" }]}
               onPress={() => router.push(`/session/${featuredSession.id}` as never)}
             >
-              <Image source={featuredSession.image as number} style={styles.heroImage} />
+              <Image source={featuredSession.image as number} style={styles.heroImage} resizeMode="cover" />
               <LinearGradient
                 colors={["transparent", "rgba(24,17,12,0.65)", colors.background]}
                 locations={[0, 0.5, 1]}
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
   },
-  heroImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  heroImage: { width: "100%", height: "100%" },
   glowCenter: {
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",

@@ -265,7 +265,7 @@ export default function SessionDetailScreen() {
                     { borderColor: colors.border, backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
-                  <Image source={s.image as never} style={styles.relatedImg} resizeMode="cover" />
+                  <Image source={s.image as never} style={styles.relatedImg} contentFit="cover" />
                   <View style={styles.relatedInfo}>
                     <Text style={[styles.relatedTitle, { color: colors.foreground }]}>{s.title}</Text>
                     <Text style={[styles.relatedSub, { color: colors.mutedForeground }]}>

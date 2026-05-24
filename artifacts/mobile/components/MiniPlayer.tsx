@@ -49,7 +49,7 @@ export function MiniPlayer() {
       </View>
 
       <View style={styles.row}>
-        <Image source={currentSession.image} style={styles.art} />
+        <Image source={currentSession.image} style={styles.art} resizeMode="cover" />
         <View style={styles.info}>
           <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
             {currentSession.title}
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 10,
-    resizeMode: "cover",
   },
   info: {
     flex: 1,

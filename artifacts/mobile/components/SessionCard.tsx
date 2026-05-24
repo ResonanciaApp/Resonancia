@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
   cardImage: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover",
   },
   favBtn: {
     position: "absolute",
@@ -174,7 +173,6 @@ const styles = StyleSheet.create({
   hImage: {
     width: 108,
     height: 96,
-    resizeMode: "cover",
   },
   hGradient: {
     position: "absolute",
