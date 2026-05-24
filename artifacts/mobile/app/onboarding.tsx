@@ -309,7 +309,7 @@ export default function Onboarding() {
             />
           </View>
 
-          <View>
+          <View style={{ paddingHorizontal: 32, width: "100%" }}>
             <Text style={styles.welcomeTitle}>Bienvenido/a a tu refugio</Text>
             <Text style={styles.welcomeSubtitle}>
               Un espacio de sonido, silencio y presencia.{"\n"}
@@ -482,18 +482,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 32,
     gap: 40,
   },
-  welcomeGlow: { alignItems: "center", justifyContent: "center", width: "100%", alignSelf: "center" },
+  welcomeGlow: {
+    width: 280,
+    height: 280,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   glowRing: {
     position: "absolute",
-    width: 300,
-    height: 300,
-    borderRadius: 150,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 140,
     backgroundColor: "rgba(198,155,79,0.06)",
   },
-  welcomeLogo: { width: 220, height: 220 },
+  welcomeLogo: { width: 220, height: 220, alignSelf: "center" },
   welcomeTitle: {
     color: FG,
     fontSize: 26,
