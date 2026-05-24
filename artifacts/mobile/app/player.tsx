@@ -173,7 +173,12 @@ export default function PlayerScreen() {
 
   useEffect(() => {
     if (!isSeekingRef.current) {
-      progressShared.value = progress;
+      // Smoothly animate to the new audio position over the polling interval
+      // (~500ms) so the bar moves continuously instead of jumping every tick.
+      progressShared.value = withTiming(progress, {
+        duration: 500,
+        easing: Easing.linear,
+      });
     }
   }, [progress, progressShared]);
 
@@ -205,8 +210,13 @@ export default function PlayerScreen() {
     (e: GestureResponderEvent) => {
       const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
       progressShared.value = p;
-      isSeekingRef.current = false;
       seekTo(p);
+      // Keep ignoring context progress updates for a short window so a stale
+      // poll (reporting the old audio position before setPositionAsync took
+      // effect) can't snap the bar back.
+      setTimeout(() => {
+        isSeekingRef.current = false;
+      }, 700);
     },
     [progressShared, progressBarWidthShared, seekTo]
   );
