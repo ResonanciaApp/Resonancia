@@ -95,12 +95,11 @@ export function AmbientWidget() {
             return (
               <Pressable
                 key={scene.id}
-                onPress={async () => {
-                  await setScene(scene.id as SceneId);
-                  if (!isPlaying) {
-                    await togglePlayback();
-                  }
-                  setExpanded(false);
+                onPress={() => {
+                  setExpanded(false);   // close picker instantly
+                  setScene(scene.id as SceneId).then(() => {
+                    if (!isPlaying) togglePlayback();
+                  }).catch(() => {});
                 }}
                 style={styles.sceneBtn}
               >
