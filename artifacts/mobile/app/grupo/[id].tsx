@@ -667,18 +667,9 @@ export default function GrupoDetailScreen() {
           </ScrollView>
         )}
 
-        {/* Comments modal */}
-        <Modal
-          visible={openCommentsPostId !== null}
-          transparent
-          animationType="slide"
-          statusBarTranslucent
-          onRequestClose={() => {
-            setOpenCommentsPostId(null);
-            setCommentText("");
-          }}
-        >
-          <View style={commentStyles.modalRoot}>
+        {/* Comments overlay (inline, no native Modal to avoid Android white flash) */}
+        {openCommentsPostId !== null && (
+          <View style={commentStyles.modalRoot} pointerEvents="box-none">
             <Pressable
               style={commentStyles.overlayPressable}
               onPress={() => {
@@ -795,14 +786,14 @@ export default function GrupoDetailScreen() {
               })()}
             </KeyboardAvoidingView>
           </View>
-        </Modal>
+        )}
       </View>
     </KeyboardAvoidingView>
   );
 }
 
 const commentStyles = StyleSheet.create({
-  modalRoot: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" },
+  modalRoot: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100, elevation: 100 },
   overlayPressable: { ...StyleSheet.absoluteFillObject },
   sheet: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, paddingTop: 10 },
   handle: { width: 40, height: 4, borderRadius: 2, alignSelf: "center", marginBottom: 12 },
