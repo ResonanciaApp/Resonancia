@@ -16,12 +16,19 @@
     "ios": {
       "supportsTablet": false,
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "RESONANCIA necesita acceso al micrófono para grabar tu Voz Interior."
+        "NSMicrophoneUsageDescription": "RESONANCIA usa el micrófono para grabar tu Voz Interior y mensajes de voz en los chats.",
+        "NSPhotoLibraryUsageDescription": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir imágenes en los mensajes.",
+        "NSPhotoLibraryAddUsageDescription": "RESONANCIA guarda imágenes en tu galería cuando las descargás.",
+        "NSCameraUsageDescription": "RESONANCIA usa la cámara para que puedas sacarte una foto de perfil."
       }
     },
     "android": {
       "backgroundColor": "#18110C",
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/images/icon.png"
@@ -34,7 +41,20 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir imágenes en los mensajes.",
+          "cameraPermission": "RESONANCIA usa la cámara para que puedas sacarte una foto de perfil."
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "RESONANCIA usa el micrófono para grabar tu Voz Interior y mensajes de voz en los chats."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
