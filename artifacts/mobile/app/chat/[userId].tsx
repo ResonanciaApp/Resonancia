@@ -17,6 +17,7 @@ import {
   type UserProfile,
 } from "@workspace/api-client-react";
 import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
@@ -88,26 +89,49 @@ async function uploadLocalFile(
   fileName: string,
   hintSize: number,
 ): Promise<string> {
-  console.log("[upload] fetching local file", { fileName, contentType, hintSize });
-  const fileResp = await fetch(uri);
-  const blob = await fileResp.blob();
-  const realSize = blob.size || hintSize || 1;
-  console.log("[upload] blob ready", { size: realSize, type: blob.type });
+  console.log("[upload] preparing", { fileName, contentType, hintSize, platform: Platform.OS });
+  let realSize = hintSize || 1;
+  if (Platform.OS !== "web") {
+    try {
+      const info = await FileSystem.getInfoAsync(uri, { size: true });
+      if (info.exists && typeof info.size === "number") realSize = info.size;
+    } catch {
+      // ignore, fall back to hintSize
+    }
+  }
+  console.log("[upload] requesting URL", { size: realSize });
   const { uploadURL, objectPath } = await requestUploadUrl({
     name: fileName,
     size: realSize,
     contentType,
   });
   console.log("[upload] got URL");
-  const putResp = await fetch(uploadURL, {
-    method: "PUT",
+
+  if (Platform.OS === "web") {
+    const fileResp = await fetch(uri);
+    const blob = await fileResp.blob();
+    const putResp = await fetch(uploadURL, {
+      method: "PUT",
+      headers: { "Content-Type": contentType },
+      body: blob,
+    });
+    console.log("[upload] PUT done (web)", { status: putResp.status, size: blob.size });
+    if (!putResp.ok) {
+      const text = await putResp.text().catch(() => "");
+      throw new Error(`Upload falló (${putResp.status}): ${text.slice(0, 120)}`);
+    }
+    return objectPath;
+  }
+
+  // Native: use FileSystem.uploadAsync to send raw bytes
+  const result = await FileSystem.uploadAsync(uploadURL, uri, {
+    httpMethod: "PUT",
+    uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
     headers: { "Content-Type": contentType },
-    body: blob,
   });
-  console.log("[upload] PUT done", { status: putResp.status });
-  if (!putResp.ok) {
-    const text = await putResp.text().catch(() => "");
-    throw new Error(`Upload falló (${putResp.status}): ${text.slice(0, 120)}`);
+  console.log("[upload] PUT done (native)", { status: result.status });
+  if (result.status < 200 || result.status >= 300) {
+    throw new Error(`Upload falló (${result.status}): ${result.body?.slice(0, 120) ?? ""}`);
   }
   return objectPath;
 }
