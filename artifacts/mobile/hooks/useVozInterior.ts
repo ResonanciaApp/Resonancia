@@ -53,7 +53,7 @@ export function useVozInterior() {
       } catch {}
 
       const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.LOW_QUALITY,
+        Audio.RecordingOptionsPresets.HIGH_QUALITY,
       );
 
       recordingRef.current = recording;
