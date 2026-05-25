@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useClerk } from "@clerk/expo";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function DevReset() {
   const { signOut } = useClerk();
@@ -24,11 +24,10 @@ export default function DevReset() {
         try { await AsyncStorage.clear(); } catch {}
       }
       setStatus("Listo. Recargando…");
-      if (typeof window !== "undefined") {
-        window.location.href = "/";
-      } else {
-        router.replace("/");
+      if (Platform.OS === "web" && typeof window !== "undefined") {
+        try { window.location.assign("/"); return; } catch {}
       }
+      router.replace("/onboarding");
     } catch (e) {
       setStatus("Error: " + (e instanceof Error ? e.message : String(e)));
       setWorking(false);
