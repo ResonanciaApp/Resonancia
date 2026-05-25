@@ -48,37 +48,26 @@ export function useVozInterior() {
   }, []);
 
   const startRecording = useCallback(async (): Promise<boolean> => {
-    console.log("[voz] startRecording: begin");
     try {
-      console.log("[voz] requesting permissions");
       const perm = await AudioModule.requestRecordingPermissionsAsync();
-      console.log("[voz] permission result", perm);
       if (!perm.granted) return false;
 
       // Stop any active expo-av playback that may be holding the audio session
       try {
-        console.log("[voz] unloading existing soundRef");
         await soundRef.current?.stopAsync().catch(() => {});
         await soundRef.current?.unloadAsync().catch(() => {});
         soundRef.current = null;
       } catch {}
 
       try {
-        console.log("[voz] setting audio mode (record)");
         await setAudioModeAsync({
           allowsRecording: true,
           playsInSilentMode: true,
         });
-        console.log("[voz] audio mode set");
-      } catch (e) {
-        console.log("[voz] setAudioModeAsync error", e);
-      }
+      } catch {}
 
-      console.log("[voz] prepareToRecordAsync");
       await audioRecorder.prepareToRecordAsync();
-      console.log("[voz] recorder.record()");
       audioRecorder.record();
-      console.log("[voz] recording started");
 
       isRecordingRef.current = true;
       startTimeRef.current = Date.now();
@@ -90,8 +79,7 @@ export function useVozInterior() {
       }, 100);
 
       return true;
-    } catch (e) {
-      console.log("[voz] startRecording error", e);
+    } catch {
       setIsRecording(false);
       return false;
     }
