@@ -98,22 +98,22 @@ function GuestPrompt() {
   return (
     <View style={[styles.guestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Feather name="users" size={28} color={colors.primary} />
-      <Text style={[styles.guestTitle, { color: colors.foreground }]}>Conectate para sumar amigos</Text>
+      <Text style={[styles.guestTitle, { color: colors.foreground }]}>Creá tu cuenta para sumar amigos</Text>
       <Text style={[styles.guestText, { color: colors.mutedForeground }]}>
-        Creá una cuenta para encontrar a tus amigos, enviar solicitudes y compartir tu práctica. Tu meditación
-        local sigue intacta.
+        Para conectarte con otros practicantes necesitás una cuenta con email. Es gratis y solo tarda un minuto. Tu
+        perfil local y tus meditaciones siguen intactos.
       </Text>
       <Pressable
-        onPress={() => router.push("/(auth)/sign-in")}
+        onPress={() => router.push("/(auth)/sign-up")}
         style={({ pressed }) => [styles.guestBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
         <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.guestBtnGrad}>
-          <Text style={styles.guestBtnText}>Conectarte</Text>
+          <Text style={styles.guestBtnText}>Crear cuenta</Text>
           <Feather name="arrow-right" size={16} color="#1A0E06" />
         </LinearGradient>
       </Pressable>
-      <Pressable onPress={() => router.push("/(auth)/sign-up")}>
-        <Text style={[styles.guestLink, { color: colors.primary }]}>Crear cuenta nueva</Text>
+      <Pressable onPress={() => router.push("/(auth)/sign-in")}>
+        <Text style={[styles.guestLink, { color: colors.primary }]}>Ya tengo cuenta — iniciar sesión</Text>
       </Pressable>
     </View>
   );
