@@ -163,8 +163,6 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   const { isFavorited, toggleFavorite } = useDiarioFavoritesCtx();
   const [text, setText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
-  const [confirmingDeleteAll, setConfirmingDeleteAll] = useState(false);
-  const deleteAllTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const remaining = MAX_CHARS - text.length;
 
   const handleSave = async () => {
@@ -174,14 +172,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   };
 
   const handleDeleteAll = () => {
-    if (confirmingDeleteAll) {
-      if (deleteAllTimerRef.current) clearTimeout(deleteAllTimerRef.current);
-      setConfirmingDeleteAll(false);
-      deleteAll();
-    } else {
-      setConfirmingDeleteAll(true);
-      deleteAllTimerRef.current = setTimeout(() => setConfirmingDeleteAll(false), 3000);
-    }
+    deleteAll();
   };
 
   return (
@@ -256,10 +247,10 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
             <Text style={[styles.historyTitle, { color: colors.mutedForeground }]}>
               HISTORIAL · {entries.length} {entries.length === 1 ? "entrada" : "entradas"}
             </Text>
-            <Pressable onPress={handleDeleteAll} hitSlop={8} style={[styles.deleteAllBtn, confirmingDeleteAll && styles.deleteAllBtnConfirm]}>
-              <Feather name="trash-2" size={11} color="#E07060" />
-              <Text style={styles.deleteAllText}>
-                {confirmingDeleteAll ? "¿Confirmar?" : "Borrar todo"}
+            <Pressable onPress={handleDeleteAll} hitSlop={8} style={styles.deleteAllBtn}>
+              <Feather name="trash-2" size={11} color={colors.mutedForeground} />
+              <Text style={[styles.deleteAllText, { color: colors.mutedForeground }]}>
+                Borrar todo
               </Text>
             </Pressable>
           </View>
@@ -423,12 +414,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 4,
-    borderRadius: 8,
-    backgroundColor: "rgba(224,112,96,0.1)",
   },
-  deleteAllText: { fontSize: 10, fontWeight: "700", color: "#E07060", letterSpacing: 0.3 },
+  deleteAllText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.3 },
   entryCard: {
     borderWidth: 1,
     borderRadius: 14,
@@ -446,19 +435,6 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     padding: 6,
-  },
-  actionBtnConfirm: {
-    backgroundColor: "rgba(224,112,96,0.12)",
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  confirmDeleteText: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#E07060",
-  },
-  deleteAllBtnConfirm: {
-    backgroundColor: "rgba(224,112,96,0.22)",
   },
   favBadge: {
     flexDirection: "row",
