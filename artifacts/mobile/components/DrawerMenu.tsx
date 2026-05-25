@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -59,8 +60,18 @@ interface Props {
 export function DrawerMenu({ visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { isRegistered } = useAuth();
+  const { isRegistered, isSignedIn } = useAuth();
+  const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
+
+  const loggedIn = isRegistered || isSignedIn;
+  const clerkName =
+    clerkUser?.firstName ||
+    clerkUser?.fullName ||
+    clerkUser?.username ||
+    clerkUser?.primaryEmailAddress?.emailAddress ||
+    null;
+  const clerkPhoto = clerkUser?.imageUrl || null;
 
   const translateX = useRef(new Animated.Value(-DRAWER_W)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
@@ -101,8 +112,13 @@ export function DrawerMenu({ visible, onClose }: Props) {
 
   if (!visible) return null;
 
-  const mainItems = isRegistered ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
-  const fullName = [username, lastName].filter(Boolean).join(" ");
+  const mainItems = loggedIn ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
+  const localFullName = [username, lastName].filter(Boolean).join(" ");
+  const fullName =
+    isRegistered && username && username !== "Explorador de Sonido"
+      ? localFullName
+      : clerkName || localFullName || "Explorador";
+  const displayPhoto = photoUri || clerkPhoto;
 
   const navigate = (route: string) => {
     onClose();
@@ -124,10 +140,10 @@ export function DrawerMenu({ visible, onClose }: Props) {
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
-          {isRegistered ? (
+          {loggedIn ? (
             <View style={styles.profileSection}>
-              {photoUri ? (
-                <Image source={{ uri: photoUri }} style={styles.profilePhoto} contentFit="cover" />
+              {displayPhoto ? (
+                <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
               ) : (
                 <View style={styles.profilePhotoFallback}>
                   <Feather name="user" size={22} color="#C69B4F" />
