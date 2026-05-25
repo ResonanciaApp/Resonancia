@@ -1,8 +1,29 @@
 import { Feather } from "@expo/vector-icons";
+import { useAuth as useClerkAuth } from "@clerk/expo";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  getGetFriendRequestsQueryKey,
+  getGetFriendsQueryKey,
+  getGetMeQueryKey,
+  getSearchUsersQueryKey,
+  useAcceptFriendRequest,
+  useDeclineFriendRequest,
+  useGetFriendRequests,
+  useGetFriends,
+  useGetMe,
+  useRemoveFriend,
+  useSearchUsers,
+  useSendFriendRequest,
+  type FriendRequest,
+  type UserProfile,
+  type UserSearchResult,
+} from "@workspace/api-client-react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -17,24 +38,26 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
-const REQUESTS = [
-  { id: "r1", name: "Valentina Ríos", mutual: 3, initials: "VR", color: "#D4709A" },
-  { id: "r2", name: "Tomás Blanco", mutual: 1, initials: "TB", color: "#8AAAD4" },
-];
+const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#E8C87A", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 
-const FRIENDS = [
-  { id: "f1", name: "Sofía Herrera", activity: "Escuchando · Ondas Delta", initials: "SH", color: "#E8C87A" },
-  { id: "f2", name: "Martín Paz", activity: "Activo hace 2h", initials: "MP", color: "#A8C4A8" },
-  { id: "f3", name: "Luna Vega", activity: "Escuchando · El Lago de Cristal", initials: "LV", color: "#C8B4E0" },
-  { id: "f4", name: "Carlos Medina", activity: "Activo ayer", initials: "CM", color: "#EDD9B8" },
-];
+function initialsFor(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "·";
+  const first = parts[0][0] ?? "";
+  const last = parts.length > 1 ? parts[parts.length - 1][0] ?? "" : "";
+  return (first + last).toUpperCase();
+}
+
+function colorFor(id: number): string {
+  return AVATAR_PALETTE[Math.abs(id) % AVATAR_PALETTE.length];
+}
 
 export default function AmigosScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const [search, setSearch] = useState("");
+  const { isSignedIn, isLoaded } = useClerkAuth();
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -45,7 +68,6 @@ export default function AmigosScreen() {
         contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <View style={styles.headerRow}>
           <Pressable onPress={() => router.back()} hitSlop={12}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -57,81 +79,289 @@ export default function AmigosScreen() {
           Conectá con practicantes de tu comunidad
         </Text>
 
-        {/* Search */}
-        <View style={[styles.searchRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Feather name="search" size={16} color={colors.mutedForeground} />
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Buscar por nombre o usuario..."
-            placeholderTextColor={colors.mutedForeground}
-            style={[styles.searchInput, { color: colors.foreground }]}
-          />
-        </View>
-
-        {/* Solicitudes */}
-        {REQUESTS.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Solicitudes · {REQUESTS.length}
-            </Text>
-            {REQUESTS.map((r) => (
-              <View key={r.id} style={[styles.requestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <View style={[styles.avatar, { backgroundColor: r.color + "33" }]}>
-                  <Text style={[styles.initials, { color: r.color }]}>{r.initials}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.friendName, { color: colors.foreground }]}>{r.name}</Text>
-                  <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>
-                    {r.mutual} amigos en común
-                  </Text>
-                </View>
-                <View style={styles.requestBtns}>
-                  <Pressable style={styles.acceptBtn}>
-                    <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.acceptGrad}>
-                      <Feather name="check" size={14} color="#1A0E06" />
-                    </LinearGradient>
-                  </Pressable>
-                  <Pressable style={[styles.rejectBtn, { borderColor: colors.border }]}>
-                    <Feather name="x" size={14} color={colors.mutedForeground} />
-                  </Pressable>
-                </View>
-              </View>
-            ))}
+        {!isLoaded ? (
+          <View style={{ paddingTop: 40, alignItems: "center" }}>
+            <ActivityIndicator color={colors.primary} />
           </View>
+        ) : isSignedIn ? (
+          <SignedInAmigos />
+        ) : (
+          <GuestPrompt />
         )}
-
-        {/* Amigos */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-            Mis amigos · {FRIENDS.length}
-          </Text>
-          {FRIENDS.map((f) => (
-            <Pressable
-              key={f.id}
-              style={({ pressed }) => [styles.friendRow, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
-            >
-              <View style={[styles.avatar, { backgroundColor: f.color + "33" }]}>
-                <Text style={[styles.initials, { color: f.color }]}>{f.initials}</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.friendName, { color: colors.foreground }]}>{f.name}</Text>
-                <Text style={[styles.friendSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                  {f.activity}
-                </Text>
-              </View>
-              <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
-            </Pressable>
-          ))}
-        </View>
-
-        {/* Agregar */}
-        <Pressable style={({ pressed }) => [styles.addBtn, { borderColor: colors.primary, opacity: pressed ? 0.8 : 1 }]}>
-          <Feather name="user-plus" size={16} color={colors.primary} />
-          <Text style={[styles.addText, { color: colors.primary }]}>Agregar amigo por usuario</Text>
-        </Pressable>
       </ScrollView>
     </View>
+  );
+}
+
+function GuestPrompt() {
+  const colors = useColors();
+  return (
+    <View style={[styles.guestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <Feather name="users" size={28} color={colors.primary} />
+      <Text style={[styles.guestTitle, { color: colors.foreground }]}>Conectate para sumar amigos</Text>
+      <Text style={[styles.guestText, { color: colors.mutedForeground }]}>
+        Creá una cuenta para encontrar a tus amigos, enviar solicitudes y compartir tu práctica. Tu meditación
+        local sigue intacta.
+      </Text>
+      <Pressable
+        onPress={() => router.push("/(auth)/sign-in")}
+        style={({ pressed }) => [styles.guestBtn, { opacity: pressed ? 0.85 : 1 }]}
+      >
+        <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.guestBtnGrad}>
+          <Text style={styles.guestBtnText}>Conectarte</Text>
+          <Feather name="arrow-right" size={16} color="#1A0E06" />
+        </LinearGradient>
+      </Pressable>
+      <Pressable onPress={() => router.push("/(auth)/sign-up")}>
+        <Text style={[styles.guestLink, { color: colors.primary }]}>Crear cuenta nueva</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+function SignedInAmigos() {
+  const colors = useColors();
+  const qc = useQueryClient();
+  const [search, setSearch] = useState("");
+
+  // Ensure the user row exists server-side (JIT provisioning).
+  useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 60_000 } });
+
+  const friendsQ = useGetFriends();
+  const requestsQ = useGetFriendRequests({
+    query: { queryKey: getGetFriendRequestsQueryKey(), refetchInterval: 30_000 },
+  });
+  const trimmed = search.trim();
+  const searchQ = useSearchUsers(
+    { q: trimmed },
+    {
+      query: {
+        queryKey: getSearchUsersQueryKey({ q: trimmed }),
+        enabled: trimmed.length >= 2,
+      },
+    },
+  );
+
+  const invalidateAll = () => {
+    qc.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
+    qc.invalidateQueries({ queryKey: getGetFriendRequestsQueryKey() });
+  };
+
+  const sendReq = useSendFriendRequest({
+    mutation: { onSuccess: () => invalidateAll() },
+  });
+  const acceptReq = useAcceptFriendRequest({
+    mutation: { onSuccess: () => invalidateAll() },
+  });
+  const declineReq = useDeclineFriendRequest({
+    mutation: { onSuccess: () => invalidateAll() },
+  });
+  const removeFriend = useRemoveFriend({
+    mutation: { onSuccess: () => invalidateAll() },
+  });
+
+  const friends = friendsQ.data ?? [];
+  const requests = requestsQ.data ?? [];
+  const searchResults = trimmed.length >= 2 ? searchQ.data ?? [] : [];
+
+  const showSearch = trimmed.length >= 2;
+  const noResults = showSearch && !searchQ.isLoading && searchResults.length === 0;
+
+  const onRemove = (f: UserProfile) => {
+    Alert.alert("Eliminar amigo", `¿Eliminar a ${f.displayName} de tus amigos?`, [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () => removeFriend.mutate({ userId: f.id }),
+      },
+    ]);
+  };
+
+  return (
+    <>
+      <View style={[styles.searchRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Feather name="search" size={16} color={colors.mutedForeground} />
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Buscar por nombre o usuario..."
+          placeholderTextColor={colors.mutedForeground}
+          style={[styles.searchInput, { color: colors.foreground }]}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        {search.length > 0 && (
+          <Pressable onPress={() => setSearch("")} hitSlop={10}>
+            <Feather name="x" size={14} color={colors.mutedForeground} />
+          </Pressable>
+        )}
+      </View>
+
+      {showSearch && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Resultados</Text>
+          {searchQ.isLoading && <ActivityIndicator color={colors.primary} />}
+          {noResults && (
+            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+              No encontramos a nadie con “{trimmed}”.
+            </Text>
+          )}
+          {searchResults.map((u) => (
+            <SearchResultRow
+              key={u.id}
+              user={u}
+              onAdd={() => sendReq.mutate({ data: { addresseeId: u.id } })}
+            />
+          ))}
+        </View>
+      )}
+
+      {!showSearch && requests.length > 0 && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            Solicitudes · {requests.length}
+          </Text>
+          {requests.map((r) => (
+            <RequestRow
+              key={r.id}
+              request={r}
+              onAccept={() => acceptReq.mutate({ id: r.id })}
+              onDecline={() => declineReq.mutate({ id: r.id })}
+            />
+          ))}
+        </View>
+      )}
+
+      {!showSearch && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            Mis amigos · {friends.length}
+          </Text>
+          {friendsQ.isLoading && <ActivityIndicator color={colors.primary} />}
+          {!friendsQ.isLoading && friends.length === 0 && (
+            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+              Aún no tenés amigos. Buscá a alguien por nombre o usuario.
+            </Text>
+          )}
+          {friends.map((f) => (
+            <FriendRow key={f.id} friend={f} onRemove={() => onRemove(f)} />
+          ))}
+        </View>
+      )}
+    </>
+  );
+}
+
+function Avatar({ user }: { user: UserProfile | UserSearchResult }) {
+  const tint = colorFor(user.id);
+  return (
+    <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
+      <Text style={[styles.initials, { color: tint }]}>{initialsFor(user.displayName)}</Text>
+    </View>
+  );
+}
+
+function SearchResultRow({
+  user,
+  onAdd,
+}: {
+  user: UserSearchResult;
+  onAdd: () => void;
+}) {
+  const colors = useColors();
+  const status = user.friendshipStatus;
+  return (
+    <View style={[styles.friendRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <Avatar user={user} />
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.friendName, { color: colors.foreground }]}>{user.displayName}</Text>
+        <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{user.username}</Text>
+      </View>
+      {status === "none" && (
+        <Pressable onPress={onAdd} style={styles.acceptBtn}>
+          <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.acceptGrad}>
+            <Feather name="user-plus" size={14} color="#1A0E06" />
+          </LinearGradient>
+        </Pressable>
+      )}
+      {status === "pending_outgoing" && (
+        <Text style={[styles.statusBadge, { color: colors.mutedForeground }]}>Enviada</Text>
+      )}
+      {status === "pending_incoming" && (
+        <Pressable onPress={onAdd} style={styles.acceptBtn}>
+          <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.acceptGrad}>
+            <Feather name="check" size={14} color="#1A0E06" />
+          </LinearGradient>
+        </Pressable>
+      )}
+      {status === "accepted" && (
+        <Text style={[styles.statusBadge, { color: colors.primary }]}>Amigos</Text>
+      )}
+    </View>
+  );
+}
+
+function RequestRow({
+  request,
+  onAccept,
+  onDecline,
+}: {
+  request: FriendRequest;
+  onAccept: () => void;
+  onDecline: () => void;
+}) {
+  const colors = useColors();
+  const requester = request.requester;
+  return (
+    <View style={[styles.requestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <Avatar user={requester} />
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.friendName, { color: colors.foreground }]}>{requester.displayName}</Text>
+        <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{requester.username}</Text>
+      </View>
+      <View style={styles.requestBtns}>
+        <Pressable style={styles.acceptBtn} onPress={onAccept}>
+          <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.acceptGrad}>
+            <Feather name="check" size={14} color="#1A0E06" />
+          </LinearGradient>
+        </Pressable>
+        <Pressable
+          style={[styles.rejectBtn, { borderColor: colors.border }]}
+          onPress={onDecline}
+        >
+          <Feather name="x" size={14} color={colors.mutedForeground} />
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+function FriendRow({
+  friend,
+  onRemove,
+}: {
+  friend: UserProfile;
+  onRemove: () => void;
+}) {
+  const colors = useColors();
+  return (
+    <Pressable
+      onPress={onRemove}
+      style={({ pressed }) => [
+        styles.friendRow,
+        { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+      ]}
+    >
+      <Avatar user={friend} />
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.friendName, { color: colors.foreground }]}>{friend.displayName}</Text>
+        <Text style={[styles.friendSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+          @{friend.username}
+        </Text>
+      </View>
+      <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
+    </Pressable>
   );
 }
 
@@ -153,6 +383,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14 },
   section: { marginBottom: 28, gap: 10 },
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 4 },
+  empty: { fontSize: 13, paddingVertical: 8 },
   requestCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -177,15 +408,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 14,
   },
-  addBtn: {
+  statusBadge: { fontSize: 12, fontWeight: "600" },
+  guestCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 22,
+    alignItems: "center",
+    gap: 12,
+    marginTop: 8,
+  },
+  guestTitle: { fontSize: 18, fontWeight: "700", textAlign: "center" },
+  guestText: { fontSize: 13, textAlign: "center", lineHeight: 19, marginBottom: 8 },
+  guestBtn: { borderRadius: 14, overflow: "hidden", width: "100%" },
+  guestBtnGrad: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    borderWidth: 1,
-    borderRadius: 14,
-    borderStyle: "dashed",
     paddingVertical: 14,
   },
-  addText: { fontSize: 14, fontWeight: "600" },
+  guestBtnText: { color: "#1A0E06", fontWeight: "700", fontSize: 15 },
+  guestLink: { fontSize: 13, fontWeight: "600", marginTop: 4 },
 });

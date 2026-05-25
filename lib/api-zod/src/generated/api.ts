@@ -65,6 +65,148 @@ export const GetTopMessageResponse = zod.object({
 
 
 /**
+ * @summary Get the current user's profile (auto-creates on first call)
+ */
+export const GetMeResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+})
+
+
+/**
+ * @summary Update the current user's profile
+ */
+export const updateMeBodyUsernameMin = 3;
+export const updateMeBodyUsernameMax = 24;
+
+
+export const updateMeBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9_]+$');
+export const updateMeBodyDisplayNameMax = 60;
+
+
+
+export const UpdateMeBody = zod.object({
+  "username": zod.string().min(updateMeBodyUsernameMin).max(updateMeBodyUsernameMax).regex(updateMeBodyUsernameRegExp).optional(),
+  "displayName": zod.string().min(1).max(updateMeBodyDisplayNameMax).optional(),
+  "avatarUrl": zod.string().nullish()
+})
+
+export const UpdateMeResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+})
+
+
+/**
+ * @summary Search users by username or display name
+ */
+
+
+
+export const SearchUsersQueryParams = zod.object({
+  "q": zod.coerce.string().min(1)
+})
+
+export const SearchUsersResponseItem = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "friendshipStatus": zod.enum(['none', 'pending_outgoing', 'pending_incoming', 'accepted', 'self'])
+})
+export const SearchUsersResponse = zod.array(SearchUsersResponseItem)
+
+
+/**
+ * @summary List accepted friends
+ */
+export const GetFriendsResponseItem = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+})
+export const GetFriendsResponse = zod.array(GetFriendsResponseItem)
+
+
+/**
+ * @summary Remove a friend (or cancel a pending request involving the user)
+ */
+export const RemoveFriendParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+
+/**
+ * @summary List incoming pending friend requests
+ */
+export const GetFriendRequestsResponseItem = zod.object({
+  "id": zod.number(),
+  "status": zod.enum(['pending', 'accepted']),
+  "createdAt": zod.coerce.date(),
+  "requester": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+}),
+  "addressee": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+})
+})
+export const GetFriendRequestsResponse = zod.array(GetFriendRequestsResponseItem)
+
+
+/**
+ * @summary Send a friend request
+ */
+export const SendFriendRequestBody = zod.object({
+  "addresseeId": zod.number()
+})
+
+
+/**
+ * @summary Accept an incoming friend request
+ */
+export const AcceptFriendRequestParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AcceptFriendRequestResponse = zod.object({
+  "id": zod.number(),
+  "status": zod.enum(['pending', 'accepted']),
+  "createdAt": zod.coerce.date(),
+  "requester": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+}),
+  "addressee": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+})
+})
+
+
+/**
+ * @summary Decline an incoming friend request
+ */
+export const DeclineFriendRequestParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary Like a message
  */
 export const LikeMessageParams = zod.object({

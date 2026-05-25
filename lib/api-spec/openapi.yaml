@@ -12,6 +12,10 @@ tags:
     description: Health operations
   - name: messages
     description: Anonymous community messages
+  - name: users
+    description: User profiles
+  - name: friends
+    description: Friendships and friend requests
 paths:
   /healthz:
     get:
@@ -79,6 +83,201 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TopMessageResponse"
+  /me:
+    get:
+      operationId: getMe
+      tags: [users]
+      summary: Get the current user's profile (auto-creates on first call)
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateMe
+      tags: [users]
+      summary: Update the current user's profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Username already taken
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /users/search:
+    get:
+      operationId: searchUsers
+      tags: [users]
+      summary: Search users by username or display name
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Matching users with friendship status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserSearchResult"
+  /friends:
+    get:
+      operationId: getFriends
+      tags: [friends]
+      summary: List accepted friends
+      responses:
+        "200":
+          description: Friends list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserProfile"
+  /friends/{userId}:
+    delete:
+      operationId: removeFriend
+      tags: [friends]
+      summary: Remove a friend (or cancel a pending request involving the user)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /friend-requests:
+    get:
+      operationId: getFriendRequests
+      tags: [friends]
+      summary: List incoming pending friend requests
+      responses:
+        "200":
+          description: Incoming requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FriendRequest"
+    post:
+      operationId: sendFriendRequest
+      tags: [friends]
+      summary: Send a friend request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FriendRequestInput"
+      responses:
+        "201":
+          description: Request sent (or accepted, if there was a matching incoming request)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FriendRequest"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Target user not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Already friends or request already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /friend-requests/{id}/accept:
+    post:
+      operationId: acceptFriendRequest
+      tags: [friends]
+      summary: Accept an incoming friend request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FriendRequest"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /friend-requests/{id}/decline:
+    post:
+      operationId: declineFriendRequest
+      tags: [friends]
+      summary: Decline an incoming friend request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Declined
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /messages/{id}/like:
     post:
       operationId: likeMessage
@@ -161,3 +360,66 @@ components:
         error:
           type: string
       required: [error]
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        displayName:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+      required: [id, username, displayName]
+    UserProfileUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 24
+          pattern: "^[a-zA-Z0-9_]+$"
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 60
+        avatarUrl:
+          type: ["string", "null"]
+    UserSearchResult:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        displayName:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+        friendshipStatus:
+          type: string
+          enum: ["none", "pending_outgoing", "pending_incoming", "accepted", "self"]
+      required: [id, username, displayName, friendshipStatus]
+    FriendRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+          enum: ["pending", "accepted"]
+        createdAt:
+          type: string
+          format: date-time
+        requester:
+          $ref: "#/components/schemas/UserProfile"
+        addressee:
+          $ref: "#/components/schemas/UserProfile"
+      required: [id, status, createdAt, requester, addressee]
+    FriendRequestInput:
+      type: object
+      properties:
+        addresseeId:
+          type: integer
+      required: [addresseeId]

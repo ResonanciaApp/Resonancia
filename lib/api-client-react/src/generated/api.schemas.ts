@@ -39,7 +39,78 @@ export interface ErrorResponse {
   error: string;
 }
 
+export interface UserProfile {
+  id: number;
+  username: string;
+  displayName: string;
+  /** @nullable */
+  avatarUrl?: string | null;
+}
+
+export interface UserProfileUpdate {
+  /**
+     * @minLength 3
+     * @maxLength 24
+     * @pattern ^[a-zA-Z0-9_]+$
+     */
+  username?: string;
+  /**
+     * @minLength 1
+     * @maxLength 60
+     */
+  displayName?: string;
+  /** @nullable */
+  avatarUrl?: string | null;
+}
+
+export type UserSearchResultFriendshipStatus = typeof UserSearchResultFriendshipStatus[keyof typeof UserSearchResultFriendshipStatus];
+
+
+export const UserSearchResultFriendshipStatus = {
+  none: 'none',
+  pending_outgoing: 'pending_outgoing',
+  pending_incoming: 'pending_incoming',
+  accepted: 'accepted',
+  self: 'self',
+} as const;
+
+export interface UserSearchResult {
+  id: number;
+  username: string;
+  displayName: string;
+  /** @nullable */
+  avatarUrl?: string | null;
+  friendshipStatus: UserSearchResultFriendshipStatus;
+}
+
+export type FriendRequestStatus = typeof FriendRequestStatus[keyof typeof FriendRequestStatus];
+
+
+export const FriendRequestStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+} as const;
+
+export interface FriendRequest {
+  id: number;
+  status: FriendRequestStatus;
+  createdAt: string;
+  requester: UserProfile;
+  addressee: UserProfile;
+}
+
+export interface FriendRequestInput {
+  addresseeId: number;
+}
+
 export type GetMessagesParams = {
 page?: number;
+};
+
+export type SearchUsersParams = {
+/**
+ * @minLength 1
+ */
+q: string;
 };
 
