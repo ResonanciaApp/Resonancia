@@ -170,7 +170,7 @@ export default function ChatScreen() {
       query: {
         queryKey: getGetDirectMessagesQueryKey(otherId, {}),
         enabled: !!isSignedIn && Number.isFinite(otherId),
-        refetchInterval: 4000,
+        refetchInterval: 1500,
       },
     },
   );
