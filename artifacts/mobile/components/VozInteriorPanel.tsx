@@ -226,20 +226,10 @@ export function VozInteriorPanel() {
           </View>
         </View>
         {entries.length > 0 && (
-          <View style={styles.headerActions}>
-            <Pressable
-              onPress={() => deleteAllEntries()}
-              style={styles.deleteAllBtn}
-              hitSlop={8}
-            >
-              <Feather name="trash-2" size={14} color="#E8D8FF" />
-              <Text style={styles.deleteAllText}>Borrar todos</Text>
-            </Pressable>
-            <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
-              <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#E8D8FF" />
-              <Text style={styles.historyCount}>{entries.length}</Text>
-            </Pressable>
-          </View>
+          <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#E8D8FF" />
+            <Text style={styles.historyCount}>{entries.length}</Text>
+          </Pressable>
         )}
       </LinearGradient>
 
@@ -270,9 +260,21 @@ export function VozInteriorPanel() {
       {/* History */}
       {showHistory && entries.length > 0 && (
         <View style={[styles.history, { borderTopColor: colors.border }]}>
-          <Text style={[styles.historyTitle, { color: colors.mutedForeground }]}>
-            HISTORIAL · {entries.length} {entries.length === 1 ? "grabación" : "grabaciones"}
-          </Text>
+          <View style={styles.historyHeaderRow}>
+            <Text style={[styles.historyTitle, { color: colors.mutedForeground }]}>
+              HISTORIAL · {entries.length} {entries.length === 1 ? "grabación" : "grabaciones"}
+            </Text>
+            <Pressable
+              onPress={() => deleteAllEntries()}
+              style={styles.deleteAllBtn}
+              hitSlop={8}
+            >
+              <Feather name="trash-2" size={12} color={colors.mutedForeground} />
+              <Text style={[styles.deleteAllText, { color: colors.mutedForeground }]}>
+                Borrar todos
+              </Text>
+            </Pressable>
+          </View>
           {entries.map((entry) => (
             <RecordingEntry
               key={entry.id}
@@ -323,17 +325,20 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   historyCount: { color: "#E8D8FF", fontSize: 12, fontWeight: "600" },
-  headerActions: { flexDirection: "row", alignItems: "center", gap: 6 },
+  historyHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
   deleteAllBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(212,48,74,0.25)",
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
   },
-  deleteAllText: { color: "#E8D8FF", fontSize: 11, fontWeight: "600" },
+  deleteAllText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
 
   recordArea: {
     alignItems: "center",
