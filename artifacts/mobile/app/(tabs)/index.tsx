@@ -18,7 +18,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AmbientWidget } from "@/components/AmbientWidget";
 import { NotificationBell } from "@/components/NotificationBell";
 import { DrawerMenu } from "@/components/DrawerMenu";
 import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
@@ -150,10 +149,7 @@ export default function HomeScreen() {
             >
               <Feather name="menu" size={18} color={colors.accent} />
             </Pressable>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <NotificationBell />
-              <AmbientWidget />
-            </View>
+            <NotificationBell />
           </View>
 
           {/* Widget de intención — centrado, sin fondo */}
