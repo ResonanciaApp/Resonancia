@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
+import { useGrupos } from "@/hooks/useGrupos";
 
 // ─── Image library ────────────────────────────────────────────────────────────
 const GALLERY = [
@@ -157,7 +158,9 @@ export default function CrearGrupoScreen() {
   const [descripcion, setDescripcion] = useState("");
   const [imageIdx, setImageIdx] = useState<number | null>(null);
   const [bienvenida, setBienvenida] = useState("");
-  const [inviteCode] = useState(() => makeCode("grupo"));
+  const [inviteCode] = useState(() => makeCode(nombre || "grupo"));
+  const [saved, setSaved] = useState(false);
+  const { saveGrupo } = useGrupos();
 
   const nameInputRef = useRef<TextInput>(null);
   const remaining = 40 - nombre.length;
@@ -166,6 +169,24 @@ export default function CrearGrupoScreen() {
   useEffect(() => {
     if (step === 1) setTimeout(() => nameInputRef.current?.focus(), 200);
   }, [step]);
+
+  // Save group when reaching step 5 (share screen)
+  useEffect(() => {
+    if (step === 5 && !saved) {
+      const code = makeCode(nombre);
+      saveGrupo({
+        id: `g-${Date.now()}`,
+        nombre: nombre.trim(),
+        descripcion,
+        privado,
+        imageIdx,
+        bienvenida,
+        inviteCode: code,
+        creadoEn: Date.now(),
+      });
+      setSaved(true);
+    }
+  }, [step, saved, nombre, descripcion, privado, imageIdx, bienvenida, saveGrupo]);
 
   const handleShare = useCallback(async () => {
     try {

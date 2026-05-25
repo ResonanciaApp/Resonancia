@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
+  Image,
   Modal,
   Platform,
   Pressable,
@@ -16,6 +17,33 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
+import { type GrupoLocal, useGrupos } from "@/hooks/useGrupos";
+
+// ─── Image gallery (same as crear.tsx) ───────────────────────────────────────
+const GALLERY = [
+  require("@/assets/images/sessions/session-1.jpg"),
+  require("@/assets/images/sessions/session-2.jpg"),
+  require("@/assets/images/sessions/session-3.jpg"),
+  require("@/assets/images/sessions/session-4.jpg"),
+  require("@/assets/images/sessions/session-5.jpg"),
+  require("@/assets/images/sessions/session-6.jpg"),
+  require("@/assets/images/sessions/session-7.jpg"),
+  require("@/assets/images/sessions/session-8.jpg"),
+  require("@/assets/images/sessions/session-9.jpg"),
+  require("@/assets/images/sessions/session-10.jpg"),
+  require("@/assets/images/sessions/session-11.jpg"),
+  require("@/assets/images/sessions/session-12.jpg"),
+  require("@/assets/images/sessions/session-13.jpg"),
+  require("@/assets/images/sessions/session-14.jpg"),
+  require("@/assets/images/sessions/session-15.jpg"),
+  require("@/assets/images/sessions/session-16.jpg"),
+  require("@/assets/images/sessions/session-17.jpg"),
+  require("@/assets/images/sessions/session-18.jpg"),
+  require("@/assets/images/sessions/session-19.jpg"),
+  require("@/assets/images/sessions/session-20.jpg"),
+  require("@/assets/images/sessions/session-27.jpg"),
+  require("@/assets/images/sessions/session-28.jpg"),
+];
 
 // ─── Mock data ───────────────────────────────────────────────────────────────
 const GRUPOS_POPULARES = [
@@ -247,13 +275,33 @@ function TabOjear({ colors }: { colors: ReturnType<typeof useColors> }) {
   );
 }
 
+// ─── Avatar for a local grupo ────────────────────────────────────────────────
+function LocalGrupoAvatar({ grupo, size = 54 }: { grupo: GrupoLocal; size?: number }) {
+  const initial = (grupo.nombre[0] ?? "G").toUpperCase();
+  if (grupo.imageIdx !== null && grupo.imageIdx < GALLERY.length) {
+    return (
+      <Image
+        source={GALLERY[grupo.imageIdx]}
+        style={{ width: size, height: size, borderRadius: size * 0.3 }}
+      />
+    );
+  }
+  return (
+    <LinearGradient colors={["#2D4A3E", "#152820"]} style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: "center", justifyContent: "center" }}>
+      <Text style={{ color: "#EDE1D3", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
+    </LinearGradient>
+  );
+}
+
 // ─── Tab: Mis Grupos ──────────────────────────────────────────────────────────
 function TabMisGrupos({
   colors,
   onCreatePress,
+  gruposCreados,
 }: {
   colors: ReturnType<typeof useColors>;
   onCreatePress: () => void;
+  gruposCreados: GrupoLocal[];
 }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
@@ -267,11 +315,41 @@ function TabMisGrupos({
             </View>
           </Pressable>
         </View>
-        <View style={[styles.emptyBox, { borderColor: colors.border }]}>
-          <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-            No gestionás ningún grupo todavía.{"\n"}¿Te apasiona algún tema? Crea un grupo público o privado hoy.
-          </Text>
-        </View>
+
+        {gruposCreados.length === 0 ? (
+          <View style={[styles.emptyBox, { borderColor: colors.border }]}>
+            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+              No gestionás ningún grupo todavía.{"\n"}¿Te apasiona algún tema? Crea un grupo público o privado hoy.
+            </Text>
+          </View>
+        ) : (
+          gruposCreados.map((g) => (
+            <Pressable
+              key={g.id}
+              onPress={() => router.push(`/grupo/${g.id}` as never)}
+              style={({ pressed }) => [
+                styles.unitoRow,
+                { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+              ]}
+            >
+              <LocalGrupoAvatar grupo={g} size={54} />
+              <View style={{ flex: 1 }}>
+                <View style={styles.grupoNameRow}>
+                  <Text style={[styles.popularName, { color: colors.foreground }]} numberOfLines={1}>
+                    {g.nombre}
+                  </Text>
+                  <View style={[styles.adminBadge, { backgroundColor: colors.primary + "22" }]}>
+                    <Text style={[styles.adminBadgeText, { color: colors.primary }]}>ADMIN</Text>
+                  </View>
+                </View>
+                <Text style={[styles.popularMembers, { color: colors.mutedForeground }]}>
+                  {g.privado ? "Privado" : "Público"} · Sin publicaciones aún
+                </Text>
+              </View>
+              <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+            </Pressable>
+          ))
+        )}
       </View>
 
       {/* Divider */}
@@ -390,6 +468,7 @@ export default function GruposScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const [tab, setTab] = useState<TabType>("ojear");
   const [showCreate, setShowCreate] = useState(false);
+  const { grupos: gruposCreados } = useGrupos();
 
   const TABS: { key: TabType; label: string }[] = [
     { key: "ojear", label: "Ojear" },
@@ -442,7 +521,7 @@ export default function GruposScreen() {
       <View style={styles.content}>
         {tab === "ojear" && <TabOjear colors={colors} />}
         {tab === "misgrupos" && (
-          <TabMisGrupos colors={colors} onCreatePress={() => setShowCreate(true)} />
+          <TabMisGrupos colors={colors} onCreatePress={() => setShowCreate(true)} gruposCreados={gruposCreados} />
         )}
         {tab === "tablon" && <TabTablon colors={colors} />}
       </View>
@@ -516,6 +595,10 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 10,
   },
+
+  grupoNameRow: { flexDirection: "row", alignItems: "center", gap: 6, flex: 1 },
+  adminBadge: { borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
+  adminBadgeText: { fontSize: 9, fontWeight: "700", letterSpacing: 0.5 },
 
   // Feed / tablón
   feedCard: {
