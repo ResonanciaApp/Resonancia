@@ -246,6 +246,7 @@ export default function PlayerScreen() {
 
   const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
     { label: "Sin timer", minutes: null },
+    { label: "5 min", minutes: 5 },
     { label: "10 min", minutes: 10 },
     { label: "20 min", minutes: 20 },
     { label: "30 min", minutes: 30 },
@@ -506,7 +507,11 @@ export default function PlayerScreen() {
                 </Text>
               )}
             </View>
-            <View style={styles.timerChips}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.timerChips}
+            >
               {TIMER_OPTIONS.map((opt) => {
                 const selected = opt.minutes === selectedTimerMinutes;
                 return (
@@ -532,7 +537,7 @@ export default function PlayerScreen() {
                   </Pressable>
                 );
               })}
-            </View>
+            </ScrollView>
           </View>
         )}
 
@@ -764,8 +769,8 @@ const styles = StyleSheet.create({
   },
   timerChips: {
     flexDirection: "row",
-    flexWrap: "wrap",
     gap: 8,
+    paddingVertical: 2,
   },
   timerChip: {
     paddingHorizontal: 14,
