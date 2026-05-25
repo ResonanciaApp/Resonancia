@@ -145,6 +145,7 @@ function SignedInAmigos() {
   const invalidateAll = () => {
     qc.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
     qc.invalidateQueries({ queryKey: getGetFriendRequestsQueryKey() });
+    qc.invalidateQueries({ queryKey: getSearchUsersQueryKey({ q: trimmed }) });
   };
 
   const sendReq = useSendFriendRequest({
