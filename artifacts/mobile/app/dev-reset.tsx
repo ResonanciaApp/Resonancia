@@ -15,7 +15,14 @@ export default function DevReset() {
       setStatus("Cerrando sesión…");
       try { await signOut(); } catch {}
       setStatus("Borrando datos locales…");
-      await AsyncStorage.clear();
+      try {
+        const keys = await AsyncStorage.getAllKeys();
+        if (keys.length > 0) {
+          await AsyncStorage.multiRemove(keys);
+        }
+      } catch {
+        try { await AsyncStorage.clear(); } catch {}
+      }
       setStatus("Listo. Recargando…");
       if (typeof window !== "undefined") {
         window.location.href = "/";
