@@ -18,7 +18,8 @@ export function NotificationBell() {
     query: {
       queryKey: getGetUnreadNotificationCountQueryKey(),
       enabled: !!isSignedIn,
-      refetchInterval: 30_000,
+      refetchInterval: 10_000,
+      refetchOnWindowFocus: true,
     },
   });
 
