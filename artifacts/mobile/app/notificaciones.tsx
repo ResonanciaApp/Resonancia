@@ -9,7 +9,7 @@ import {
   type Notification,
 } from "@workspace/api-client-react";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -67,6 +67,32 @@ function routeFor(n: Notification): string {
   return "/amigos";
 }
 
+type GroupedNotification = Notification & { groupCount: number; groupHasUnread: boolean };
+
+// Collapse all `dm` notifications from the same actor into a single row
+// (using the most recent one as the representative). Other types stay as-is.
+function groupNotifications(list: Notification[]): GroupedNotification[] {
+  const out: GroupedNotification[] = [];
+  const dmSeen = new Map<number, number>(); // actorId -> index into `out`
+  for (const n of list) {
+    if (n.type === "dm") {
+      const existingIdx = dmSeen.get(n.actor.id);
+      if (existingIdx != null) {
+        const existing = out[existingIdx];
+        existing.groupCount += 1;
+        if (!n.readAt) existing.groupHasUnread = true;
+        // Keep the newest as representative (list is newest-first, so first wins).
+        continue;
+      }
+      dmSeen.set(n.actor.id, out.length);
+      out.push({ ...n, groupCount: 1, groupHasUnread: !n.readAt });
+    } else {
+      out.push({ ...n, groupCount: 1, groupHasUnread: !n.readAt });
+    }
+  }
+  return out;
+}
+
 export default function NotificacionesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -100,7 +126,10 @@ export default function NotificacionesScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignedIn, notifsQ.data]);
 
-  const list = notifsQ.data ?? [];
+  const rawList = notifsQ.data ?? [];
+
+  // Group consecutive `dm` notifications from the same actor into a single row.
+  const list = useMemo(() => groupNotifications(rawList), [rawList]);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -138,14 +167,18 @@ export default function NotificacionesScreen() {
         ) : (
           list.map((n) => {
             const tint = colorFor(n.actor.id);
+            const isGroupedDm = n.type === "dm" && n.groupCount > 1;
+            const messageText = isGroupedDm
+              ? `te envió ${n.groupCount} mensajes`
+              : messageFor(n);
             return (
               <Pressable
-                key={n.id}
+                key={n.type === "dm" ? `dm-${n.actor.id}` : `n-${n.id}`}
                 onPress={() => router.push(routeFor(n) as never)}
                 style={({ pressed }) => [
                   styles.row,
                   {
-                    backgroundColor: n.readAt ? colors.card : colors.card,
+                    backgroundColor: colors.card,
                     borderColor: colors.border,
                     opacity: pressed ? 0.85 : 1,
                   },
@@ -157,13 +190,20 @@ export default function NotificacionesScreen() {
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.text, { color: colors.foreground }]}>
                     <Text style={{ fontWeight: "700" }}>{n.actor.displayName}</Text>{" "}
-                    {messageFor(n)}
+                    {messageText}
                   </Text>
                   <Text style={[styles.time, { color: colors.mutedForeground }]}>
                     {relativeTime(n.createdAt)}
                   </Text>
                 </View>
-                {!n.readAt && <View style={[styles.dot, { backgroundColor: colors.primary }]} />}
+                {isGroupedDm && (
+                  <View style={[styles.countBadge, { backgroundColor: colors.primary }]}>
+                    <Text style={styles.countText}>{n.groupCount > 9 ? "9+" : n.groupCount}</Text>
+                  </View>
+                )}
+                {n.groupHasUnread && (
+                  <View style={[styles.dot, { backgroundColor: colors.primary }]} />
+                )}
               </Pressable>
             );
           })
@@ -192,4 +232,13 @@ const styles = StyleSheet.create({
   text: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
   time: { fontSize: 12 },
   dot: { width: 8, height: 8, borderRadius: 4 },
+  countBadge: {
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
+    paddingHorizontal: 7,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  countText: { color: "#1A0E06", fontSize: 12, fontWeight: "700" },
 });
