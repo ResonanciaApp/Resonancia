@@ -347,7 +347,33 @@ export default function ChatScreen() {
         playsInSilentModeIOS: true,
       });
       const rec = new Audio.Recording();
-      await rec.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
+      // Custom high-quality AAC settings: 44.1kHz, stereo, 192kbps
+      await rec.prepareToRecordAsync({
+        isMeteringEnabled: false,
+        android: {
+          extension: ".m4a",
+          outputFormat: Audio.AndroidOutputFormat.MPEG_4,
+          audioEncoder: Audio.AndroidAudioEncoder.AAC,
+          sampleRate: 44100,
+          numberOfChannels: 2,
+          bitRate: 192000,
+        },
+        ios: {
+          extension: ".m4a",
+          outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
+          audioQuality: Audio.IOSAudioQuality.MAX,
+          sampleRate: 44100,
+          numberOfChannels: 2,
+          bitRate: 192000,
+          linearPCMBitDepth: 16,
+          linearPCMIsBigEndian: false,
+          linearPCMIsFloat: false,
+        },
+        web: {
+          mimeType: "audio/webm",
+          bitsPerSecond: 192000,
+        },
+      });
       await rec.startAsync();
       setShowAttachMenu(false);
       recStartRef.current = Date.now();
@@ -384,6 +410,11 @@ export default function ChatScreen() {
     setRecElapsedMs(0);
     try {
       await rec.stopAndUnloadAsync();
+      // Reset audio mode so playback goes through the loudspeaker, not the earpiece
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+      }).catch(() => {});
       const uri = rec.getURI();
       if (!uri) throw new Error("No se pudo obtener el audio.");
       if (durationMs < 600) {
