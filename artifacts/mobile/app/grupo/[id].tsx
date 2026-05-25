@@ -1,8 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
 import {
+  Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -16,10 +18,39 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
+import { formatRelativeTime, useGrupoPosts } from "@/hooks/useGrupoPosts";
+import { type GrupoLocal, useGrupos } from "@/hooks/useGrupos";
 
-// ─── Mock data ─────────────────────────────────────────────────────────────
-const GRUPOS_DATA: Record<string, {
+// ─── Gallery (must match crear.tsx) ───────────────────────────────────────────
+const GALLERY = [
+  require("@/assets/images/sessions/session-1.jpg"),
+  require("@/assets/images/sessions/session-2.jpg"),
+  require("@/assets/images/sessions/session-3.jpg"),
+  require("@/assets/images/sessions/session-4.jpg"),
+  require("@/assets/images/sessions/session-5.jpg"),
+  require("@/assets/images/sessions/session-6.jpg"),
+  require("@/assets/images/sessions/session-7.jpg"),
+  require("@/assets/images/sessions/session-8.jpg"),
+  require("@/assets/images/sessions/session-9.jpg"),
+  require("@/assets/images/sessions/session-10.jpg"),
+  require("@/assets/images/sessions/session-11.jpg"),
+  require("@/assets/images/sessions/session-12.jpg"),
+  require("@/assets/images/sessions/session-13.jpg"),
+  require("@/assets/images/sessions/session-14.jpg"),
+  require("@/assets/images/sessions/session-15.jpg"),
+  require("@/assets/images/sessions/session-16.jpg"),
+  require("@/assets/images/sessions/session-17.jpg"),
+  require("@/assets/images/sessions/session-18.jpg"),
+  require("@/assets/images/sessions/session-19.jpg"),
+  require("@/assets/images/sessions/session-20.jpg"),
+  require("@/assets/images/sessions/session-27.jpg"),
+  require("@/assets/images/sessions/session-28.jpg"),
+];
+
+// ─── Seed data (demo groups) ─────────────────────────────────────────────────
+const SEED_GRUPOS: Record<string, {
   name: string; description: string; moderator: string; modColor: string; modInitials: string;
   members: number; icon: React.ComponentProps<typeof Feather>["name"];
   color: string; gradient: [string, string];
@@ -129,6 +160,118 @@ const GRUPOS_DATA: Record<string, {
   },
 };
 
+// ─── View-model unified type ─────────────────────────────────────────────────
+type ViewPost = {
+  id: string;
+  author: string;
+  initials: string;
+  color: string;
+  time: string;
+  text: string;
+  likes: number;
+  replies: number;
+  pinned?: boolean;
+  isLocal?: boolean;
+};
+
+type ViewModel = {
+  name: string;
+  description: string;
+  moderator: string;
+  modColor: string;
+  modInitials: string;
+  members: number;
+  icon: React.ComponentProps<typeof Feather>["name"];
+  color: string;
+  gradient: [string, string];
+  rules: string[];
+  memberList: { name: string; role: string; color: string; initials: string; active: boolean }[];
+  posts: ViewPost[];
+  isAdmin: boolean;
+  isLocalGroup: boolean;
+  imageSrc: number | null;
+  inviteCode?: string;
+  privado?: boolean;
+};
+
+const DEFAULT_RULES_LOCAL = [
+  "Compartir desde el respeto y la escucha",
+  "No spam ni contenido comercial",
+  "Mantener el espacio sagrado y seguro",
+];
+
+function initialsFrom(name: string): string {
+  const parts = name.trim().split(/\s+/).slice(0, 2);
+  return parts.map((p) => p[0]?.toUpperCase() ?? "").join("") || "U";
+}
+
+function buildLocalViewModel(
+  g: GrupoLocal,
+  userName: string,
+  localPosts: ReturnType<typeof useGrupoPosts>["posts"],
+): ViewModel {
+  const userInitials = initialsFrom(userName);
+  const userColor = "#C69B4F";
+
+  const welcomePost: ViewPost | null = g.bienvenida.trim()
+    ? {
+        id: "welcome",
+        author: userName,
+        initials: userInitials,
+        color: userColor,
+        time: "Mensaje de bienvenida",
+        text: g.bienvenida,
+        likes: 0,
+        replies: 0,
+        pinned: true,
+      }
+    : null;
+
+  const realPosts: ViewPost[] = localPosts.map((p) => ({
+    id: p.id,
+    author: p.author,
+    initials: p.initials,
+    color: p.color,
+    time: formatRelativeTime(p.createdAt),
+    text: p.text,
+    likes: p.likes,
+    replies: p.replies,
+    isLocal: true,
+  }));
+
+  return {
+    name: g.nombre,
+    description: g.descripcion || "Un nuevo espacio en RESONANCIA.",
+    moderator: userName,
+    modColor: userColor,
+    modInitials: userInitials,
+    members: 1,
+    icon: "users",
+    color: "#C69B4F",
+    gradient: ["#C69B4F", "#3E2208"],
+    rules: DEFAULT_RULES_LOCAL,
+    memberList: [
+      { name: `${userName} (vos)`, role: "Admin", color: userColor, initials: userInitials, active: true },
+    ],
+    posts: welcomePost ? [welcomePost, ...realPosts] : realPosts,
+    isAdmin: true,
+    isLocalGroup: true,
+    imageSrc: g.imageIdx !== null && g.imageIdx < GALLERY.length ? GALLERY[g.imageIdx] : null,
+    inviteCode: g.inviteCode,
+    privado: g.privado,
+  };
+}
+
+function buildSeedViewModel(seed: typeof SEED_GRUPOS[string]): ViewModel {
+  return {
+    ...seed,
+    posts: seed.posts.map((p) => ({ ...p })),
+    isAdmin: false,
+    isLocalGroup: false,
+    imageSrc: null,
+  };
+}
+
 type TabType = "discusion" | "miembros" | "info";
 
 export default function GrupoDetailScreen() {
@@ -141,15 +284,89 @@ export default function GrupoDetailScreen() {
   const [compose, setCompose] = useState("");
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
 
-  const grupo = GRUPOS_DATA[id ?? "g2"] ?? GRUPOS_DATA["g2"];
+  const { username } = useUserProfile();
+  const userName = username || "Explorador de Sonido";
+
+  const { grupos, deleteGrupo, reload: reloadGrupos } = useGrupos();
+  const localGrupo = useMemo(() => grupos.find((g) => g.id === id), [grupos, id]);
+
+  const { posts: localPosts, addPost, reload: reloadPosts } = useGrupoPosts(
+    localGrupo ? localGrupo.id : undefined,
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      reloadGrupos();
+      reloadPosts();
+    }, [reloadGrupos, reloadPosts]),
+  );
+
+  const grupo: ViewModel | null = useMemo(() => {
+    if (localGrupo) return buildLocalViewModel(localGrupo, userName, localPosts);
+    if (id && SEED_GRUPOS[id]) return buildSeedViewModel(SEED_GRUPOS[id]);
+    return null;
+  }, [localGrupo, userName, localPosts, id]);
 
   const toggleLike = (postId: string) => {
-    setLikedPosts(prev => {
+    setLikedPosts((prev) => {
       const next = new Set(prev);
-      next.has(postId) ? next.delete(postId) : next.add(postId);
+      if (next.has(postId)) next.delete(postId);
+      else next.add(postId);
       return next;
     });
   };
+
+  const handleSend = () => {
+    const text = compose.trim();
+    if (!text || !grupo?.isLocalGroup) return;
+    addPost({
+      author: userName,
+      initials: initialsFrom(userName),
+      color: "#C69B4F",
+      text,
+    });
+    setCompose("");
+  };
+
+  const handleDeleteGroup = () => {
+    if (!localGrupo) return;
+    Alert.alert(
+      "Eliminar grupo",
+      `¿Seguro querés eliminar "${localGrupo.nombre}"? Esta acción no se puede deshacer.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            await deleteGrupo(localGrupo.id);
+            router.back();
+          },
+        },
+      ],
+    );
+  };
+
+  if (!grupo) {
+    return (
+      <View style={[styles.root, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center", padding: 32 }]}>
+        <StatusBar barStyle="light-content" />
+        <Feather name="alert-circle" size={32} color={colors.mutedForeground} />
+        <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "700", marginTop: 12 }}>
+          Grupo no encontrado
+        </Text>
+        <Text style={{ color: colors.mutedForeground, fontSize: 13, marginTop: 6, textAlign: "center" }}>
+          Este grupo ya no existe o fue eliminado.
+        </Text>
+        <Pressable
+          onPress={() => router.back()}
+          style={{ marginTop: 24, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}
+        >
+          <Text style={{ color: colors.foreground, fontWeight: "600" }}>Volver</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
@@ -158,10 +375,7 @@ export default function GrupoDetailScreen() {
         <SacredBackground />
 
         {/* Header */}
-        <LinearGradient
-          colors={grupo.gradient}
-          style={[styles.header, { paddingTop: topPad + 12 }]}
-        >
+        <LinearGradient colors={grupo.gradient} style={[styles.header, { paddingTop: topPad + 12 }]}>
           <View style={styles.headerTop}>
             <Pressable onPress={() => router.back()} hitSlop={12}>
               <Feather name="arrow-left" size={22} color="#EDE1D3" />
@@ -172,15 +386,21 @@ export default function GrupoDetailScreen() {
           </View>
 
           <View style={styles.headerBody}>
-            <View style={[styles.groupIcon, { backgroundColor: grupo.color + "22" }]}>
-              <Feather name={grupo.icon} size={26} color={grupo.color} />
-            </View>
+            {grupo.imageSrc ? (
+              <Image source={grupo.imageSrc} style={styles.groupIconImg} />
+            ) : (
+              <View style={[styles.groupIcon, { backgroundColor: grupo.color + "22" }]}>
+                <Feather name={grupo.icon} size={26} color={grupo.color} />
+              </View>
+            )}
             <View style={{ flex: 1 }}>
               <Text style={styles.groupName}>{grupo.name}</Text>
               <Text style={styles.groupSub} numberOfLines={1}>{grupo.description}</Text>
               <View style={styles.groupMeta}>
                 <Feather name="users" size={11} color="#EDE1D3AA" />
-                <Text style={styles.groupMetaText}>{grupo.members} miembros</Text>
+                <Text style={styles.groupMetaText}>
+                  {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
+                </Text>
                 <Text style={styles.groupMetaDot}>·</Text>
                 <View style={styles.activeDot} />
                 <Text style={styles.groupMetaText}>activo ahora</Text>
@@ -190,12 +410,8 @@ export default function GrupoDetailScreen() {
 
           {/* Tabs */}
           <View style={styles.tabs}>
-            {(["discusion", "miembros", "info"] as TabType[]).map(t => (
-              <Pressable
-                key={t}
-                onPress={() => setTab(t)}
-                style={[styles.tabItem, tab === t && styles.tabItemActive]}
-              >
+            {(["discusion", "miembros", "info"] as TabType[]).map((t) => (
+              <Pressable key={t} onPress={() => setTab(t)} style={[styles.tabItem, tab === t && styles.tabItemActive]}>
                 <Text style={[styles.tabText, { color: tab === t ? "#EDE1D3" : "#EDE1D388" }]}>
                   {t === "discusion" ? "Discusión" : t === "miembros" ? "Miembros" : "Info"}
                 </Text>
@@ -204,64 +420,71 @@ export default function GrupoDetailScreen() {
           </View>
         </LinearGradient>
 
-        {/* Content */}
+        {/* ── Discusión ── */}
         {tab === "discusion" && (
           <>
             <ScrollView
               contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: bottomPad + 90 }}
               showsVerticalScrollIndicator={false}
             >
-              {grupo.posts.map(post => (
-                <View
-                  key={post.id}
-                  style={[
-                    styles.postCard,
-                    {
-                      backgroundColor: post.pinned ? colors.primary + "10" : colors.card,
-                      borderColor: post.pinned ? colors.primary + "44" : colors.border,
-                    },
-                  ]}
-                >
-                  {post.pinned && (
-                    <View style={styles.pinnedRow}>
-                      <Feather name="bookmark" size={11} color={colors.primary} />
-                      <Text style={[styles.pinnedText, { color: colors.primary }]}>Fijado</Text>
-                    </View>
-                  )}
-                  <View style={styles.postHeader}>
-                    <View style={[styles.postAvatar, { backgroundColor: post.color + "30" }]}>
-                      <Text style={[styles.postInitials, { color: post.color }]}>{post.initials}</Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
-                      <Text style={[styles.postTime, { color: colors.mutedForeground }]}>{post.time}</Text>
-                    </View>
-                  </View>
-                  <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
-                  <View style={[styles.postActions, { borderTopColor: colors.border }]}>
-                    <Pressable
-                      onPress={() => toggleLike(post.id)}
-                      style={styles.actionBtn}
-                    >
-                      <Feather
-                        name="heart"
-                        size={15}
-                        color={likedPosts.has(post.id) ? "#D4709A" : colors.mutedForeground}
-                      />
-                      <Text style={[styles.actionText, { color: likedPosts.has(post.id) ? "#D4709A" : colors.mutedForeground }]}>
-                        {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
-                      </Text>
-                    </Pressable>
-                    <Pressable style={styles.actionBtn}>
-                      <Feather name="message-square" size={15} color={colors.mutedForeground} />
-                      <Text style={[styles.actionText, { color: colors.mutedForeground }]}>{post.replies}</Text>
-                    </Pressable>
-                    <Pressable style={styles.actionBtn}>
-                      <Feather name="share" size={15} color={colors.mutedForeground} />
-                    </Pressable>
-                  </View>
+              {grupo.posts.length === 0 ? (
+                <View style={[styles.emptyState, { borderColor: colors.border }]}>
+                  <Feather name="message-square" size={28} color={colors.mutedForeground} />
+                  <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Sin publicaciones aún</Text>
+                  <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+                    Sé el primero en escribir algo en este grupo.
+                  </Text>
                 </View>
-              ))}
+              ) : (
+                grupo.posts.map((post) => (
+                  <View
+                    key={post.id}
+                    style={[
+                      styles.postCard,
+                      {
+                        backgroundColor: post.pinned ? colors.primary + "10" : colors.card,
+                        borderColor: post.pinned ? colors.primary + "44" : colors.border,
+                      },
+                    ]}
+                  >
+                    {post.pinned && (
+                      <View style={styles.pinnedRow}>
+                        <Feather name="bookmark" size={11} color={colors.primary} />
+                        <Text style={[styles.pinnedText, { color: colors.primary }]}>Fijado</Text>
+                      </View>
+                    )}
+                    <View style={styles.postHeader}>
+                      <View style={[styles.postAvatar, { backgroundColor: post.color + "30" }]}>
+                        <Text style={[styles.postInitials, { color: post.color }]}>{post.initials}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
+                        <Text style={[styles.postTime, { color: colors.mutedForeground }]}>{post.time}</Text>
+                      </View>
+                    </View>
+                    <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
+                    <View style={[styles.postActions, { borderTopColor: colors.border }]}>
+                      <Pressable onPress={() => toggleLike(post.id)} style={styles.actionBtn}>
+                        <Feather
+                          name="heart"
+                          size={15}
+                          color={likedPosts.has(post.id) ? "#D4709A" : colors.mutedForeground}
+                        />
+                        <Text style={[styles.actionText, { color: likedPosts.has(post.id) ? "#D4709A" : colors.mutedForeground }]}>
+                          {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
+                        </Text>
+                      </Pressable>
+                      <Pressable style={styles.actionBtn}>
+                        <Feather name="message-square" size={15} color={colors.mutedForeground} />
+                        <Text style={[styles.actionText, { color: colors.mutedForeground }]}>{post.replies}</Text>
+                      </Pressable>
+                      <Pressable style={styles.actionBtn}>
+                        <Feather name="share" size={15} color={colors.mutedForeground} />
+                      </Pressable>
+                    </View>
+                  </View>
+                ))
+              )}
             </ScrollView>
 
             {/* Compose bar */}
@@ -270,31 +493,34 @@ export default function GrupoDetailScreen() {
                 <TextInput
                   value={compose}
                   onChangeText={setCompose}
-                  placeholder="Escribir en el grupo..."
+                  placeholder={grupo.isLocalGroup ? "Escribir en el grupo..." : "Solo el creador puede publicar"}
                   placeholderTextColor={colors.mutedForeground}
                   style={[styles.composeText, { color: colors.foreground }]}
                   multiline
+                  editable={grupo.isLocalGroup}
                 />
               </View>
               <Pressable
-                style={[styles.sendBtn, { backgroundColor: compose.trim() ? colors.primary : colors.card, borderColor: colors.border }]}
-                onPress={() => setCompose("")}
+                style={[styles.sendBtn, { backgroundColor: compose.trim() && grupo.isLocalGroup ? colors.primary : colors.card, borderColor: colors.border }]}
+                onPress={handleSend}
+                disabled={!grupo.isLocalGroup}
               >
-                <Feather name="send" size={17} color={compose.trim() ? "#1A0E06" : colors.mutedForeground} />
+                <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#1A0E06" : colors.mutedForeground} />
               </Pressable>
             </View>
           </>
         )}
 
+        {/* ── Miembros ── */}
         {tab === "miembros" && (
           <ScrollView
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: bottomPad + 40 }}
             showsVerticalScrollIndicator={false}
           >
             <Text style={[styles.memberCount, { color: colors.mutedForeground }]}>
-              {grupo.members} miembros
+              {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
             </Text>
-            {grupo.memberList.map(m => (
+            {grupo.memberList.map((m) => (
               <View key={m.name} style={[styles.memberRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
                 <View style={{ position: "relative" }}>
                   <View style={[styles.memberAvatar, { backgroundColor: m.color + "30" }]}>
@@ -304,7 +530,7 @@ export default function GrupoDetailScreen() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.memberName, { color: colors.foreground }]}>{m.name}</Text>
-                  <Text style={[styles.memberRole, { color: m.role === "Moderadora" || m.role === "Moderador" ? colors.primary : colors.mutedForeground }]}>
+                  <Text style={[styles.memberRole, { color: m.role === "Moderadora" || m.role === "Moderador" || m.role === "Admin" ? colors.primary : colors.mutedForeground }]}>
                     {m.role}
                   </Text>
                 </View>
@@ -313,9 +539,20 @@ export default function GrupoDetailScreen() {
                 </Pressable>
               </View>
             ))}
+
+            {grupo.isLocalGroup && (
+              <View style={[styles.emptyState, { borderColor: colors.border, marginTop: 8 }]}>
+                <Feather name="user-plus" size={24} color={colors.mutedForeground} />
+                <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Invitá a más personas</Text>
+                <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+                  Compartí el enlace desde la pestaña Info para que se unan al grupo.
+                </Text>
+              </View>
+            )}
           </ScrollView>
         )}
 
+        {/* ── Info ── */}
         {tab === "info" && (
           <ScrollView
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: bottomPad + 40 }}
@@ -328,13 +565,25 @@ export default function GrupoDetailScreen() {
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Sobre el grupo</Text>
               </View>
               <Text style={[styles.infoCardText, { color: colors.mutedForeground }]}>{grupo.description}</Text>
+              {grupo.isLocalGroup && (
+                <View style={styles.badgeRow}>
+                  <View style={[styles.badge, { backgroundColor: colors.primary + "22" }]}>
+                    <Feather name={grupo.privado ? "lock" : "globe"} size={11} color={colors.primary} />
+                    <Text style={[styles.badgeText, { color: colors.primary }]}>
+                      {grupo.privado ? "Privado" : "Público"}
+                    </Text>
+                  </View>
+                </View>
+              )}
             </View>
 
             {/* Moderator */}
             <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={styles.infoCardHeader}>
                 <Feather name="shield" size={16} color={colors.primary} />
-                <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Moderación</Text>
+                <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>
+                  {grupo.isLocalGroup ? "Administrador" : "Moderación"}
+                </Text>
               </View>
               <View style={styles.modRow}>
                 <View style={[styles.modAvatar, { backgroundColor: grupo.modColor + "30" }]}>
@@ -343,6 +592,21 @@ export default function GrupoDetailScreen() {
                 <Text style={[styles.modName, { color: colors.foreground }]}>{grupo.moderator}</Text>
               </View>
             </View>
+
+            {/* Invite link (local groups) */}
+            {grupo.isLocalGroup && grupo.inviteCode && (
+              <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <View style={styles.infoCardHeader}>
+                  <Feather name="link" size={16} color={colors.primary} />
+                  <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Enlace de invitación</Text>
+                </View>
+                <View style={[styles.linkBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
+                  <Text style={[styles.linkText, { color: colors.primary }]} numberOfLines={1}>
+                    {grupo.inviteCode}
+                  </Text>
+                </View>
+              </View>
+            )}
 
             {/* Rules */}
             <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -360,13 +624,21 @@ export default function GrupoDetailScreen() {
               ))}
             </View>
 
-            {/* Leave group */}
-            <Pressable
-              style={[styles.leaveBtn, { borderColor: "#C0392B33", backgroundColor: "#C0392B0A" }]}
-            >
-              <Feather name="log-out" size={15} color="#E07060" />
-              <Text style={[styles.leaveText, { color: "#E07060" }]}>Salir del grupo</Text>
-            </Pressable>
+            {/* Leave / Delete */}
+            {grupo.isLocalGroup ? (
+              <Pressable
+                onPress={handleDeleteGroup}
+                style={[styles.leaveBtn, { borderColor: "#C0392B33", backgroundColor: "#C0392B0A" }]}
+              >
+                <Feather name="trash-2" size={15} color="#E07060" />
+                <Text style={[styles.leaveText, { color: "#E07060" }]}>Eliminar grupo</Text>
+              </Pressable>
+            ) : (
+              <Pressable style={[styles.leaveBtn, { borderColor: "#C0392B33", backgroundColor: "#C0392B0A" }]}>
+                <Feather name="log-out" size={15} color="#E07060" />
+                <Text style={[styles.leaveText, { color: "#E07060" }]}>Salir del grupo</Text>
+              </Pressable>
+            )}
           </ScrollView>
         )}
       </View>
@@ -380,6 +652,7 @@ const styles = StyleSheet.create({
   headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 },
   headerBody: { flexDirection: "row", gap: 12, alignItems: "flex-start", marginBottom: 16 },
   groupIcon: { width: 52, height: 52, borderRadius: 18, alignItems: "center", justifyContent: "center" },
+  groupIconImg: { width: 52, height: 52, borderRadius: 14 },
   groupName: { color: "#EDE1D3", fontSize: 18, fontWeight: "700", marginBottom: 3 },
   groupSub: { color: "#EDE1D3AA", fontSize: 12, marginBottom: 6 },
   groupMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
@@ -403,6 +676,10 @@ const styles = StyleSheet.create({
   postActions: { flexDirection: "row", gap: 20, paddingTop: 10, borderTopWidth: 1 },
   actionBtn: { flexDirection: "row", alignItems: "center", gap: 5 },
   actionText: { fontSize: 13 },
+  // Empty state
+  emptyState: { borderRadius: 16, borderWidth: 1, borderStyle: "dashed", padding: 24, alignItems: "center", gap: 8 },
+  emptyTitle: { fontSize: 14, fontWeight: "700", marginTop: 4 },
+  emptySub: { fontSize: 12, textAlign: "center", lineHeight: 18 },
   // Compose
   composeBar: { position: "absolute", bottom: 0, left: 0, right: 0, flexDirection: "row", gap: 10, padding: 12, borderTopWidth: 1, alignItems: "flex-end" },
   composeInput: { flex: 1, borderRadius: 20, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 10, maxHeight: 100 },
@@ -428,7 +705,12 @@ const styles = StyleSheet.create({
   ruleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   ruleNum: { width: 26, height: 26, borderRadius: 13, alignItems: "center", justifyContent: "center" },
   ruleNumText: { fontSize: 12, fontWeight: "700" },
-  ruleText: { flex: 1, fontSize: 14, lineHeight: 20 },
-  leaveBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, borderWidth: 1, borderRadius: 14, paddingVertical: 14, marginTop: 4 },
-  leaveText: { fontSize: 14, fontWeight: "600" },
+  ruleText: { fontSize: 13, flex: 1, lineHeight: 19 },
+  badgeRow: { flexDirection: "row", gap: 8 },
+  badge: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 },
+  badgeText: { fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
+  linkBox: { borderRadius: 10, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 12 },
+  linkText: { fontSize: 13, fontWeight: "600" },
+  leaveBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, borderRadius: 14, borderWidth: 1, paddingVertical: 14, marginTop: 8 },
+  leaveText: { fontSize: 14, fontWeight: "700" },
 });
