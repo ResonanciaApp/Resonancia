@@ -63,11 +63,22 @@ function timeFor(iso: string): string {
 // Resolve an object path returned by the upload endpoint (e.g. `/objects/uploads/uuid`)
 // into a full URL we can fetch from the mobile client.
 function resolveAttachmentUrl(objectPath: string): string {
+  if (/^https?:\/\//i.test(objectPath)) return objectPath;
   const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
   if (!objectPath.startsWith("/")) objectPath = `/${objectPath}`;
   if (base.endsWith("/api")) return `${base}/storage${objectPath}`;
   return `${base}/api/storage${objectPath}`;
 }
+
+const GIPHY_API_KEY = process.env.EXPO_PUBLIC_GIPHY_API_KEY ?? "";
+type GiphyGif = {
+  id: string;
+  title: string;
+  images: {
+    fixed_width: { url: string; width: string; height: string };
+    original: { url: string; width: string; height: string };
+  };
+};
 
 // Upload a local file (uri) to GCS via presigned URL and return the objectPath
 // (e.g. `/objects/uploads/uuid`) that the server stores in the DB.
@@ -214,6 +225,7 @@ export default function ChatScreen() {
   const [draft, setDraft] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recElapsedMs, setRecElapsedMs] = useState(0);
@@ -606,10 +618,32 @@ export default function ChatScreen() {
         visible={showAttachMenu}
         onClose={() => setShowAttachMenu(false)}
         onPickImage={pickImage}
+        onPickGif={() => {
+          setShowAttachMenu(false);
+          setShowGifPicker(true);
+        }}
         onRecordVoice={startRecording}
         onShareSession={() => {
           setShowAttachMenu(false);
           setShowShareModal(true);
+        }}
+      />
+
+      <GifPickerModal
+        visible={showGifPicker}
+        onClose={() => setShowGifPicker(false)}
+        onPick={(gif) => {
+          setShowGifPicker(false);
+          const w = parseInt(gif.images.original.width, 10) || undefined;
+          const h = parseInt(gif.images.original.height, 10) || undefined;
+          sendMsg.mutate({
+            userId: otherId,
+            data: {
+              attachmentUrl: gif.images.original.url,
+              attachmentType: "image",
+              attachmentMeta: { mime: "image/gif", width: w, height: h },
+            },
+          });
         }}
       />
     </View>
@@ -1068,12 +1102,14 @@ function AttachMenuModal({
   visible,
   onClose,
   onPickImage,
+  onPickGif,
   onRecordVoice,
   onShareSession,
 }: {
   visible: boolean;
   onClose: () => void;
   onPickImage: () => void;
+  onPickGif: () => void;
   onRecordVoice: () => void;
   onShareSession: () => void;
 }) {
@@ -1097,10 +1133,17 @@ function AttachMenuModal({
           <Text style={[styles.attachTitle, { color: colors.foreground }]}>Adjuntar</Text>
           <AttachOption
             icon="image"
-            label="Foto o GIF"
+            label="Foto"
             sublabel="De tu galería"
             tint={colors.primary}
             onPress={onPickImage}
+          />
+          <AttachOption
+            icon="film"
+            label="Buscar GIF"
+            sublabel="Animaciones desde Giphy"
+            tint="#B57AD4"
+            onPress={onPickGif}
           />
           <AttachOption
             icon="mic"
@@ -1157,6 +1200,158 @@ function AttachOption({
       </View>
       <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
     </Pressable>
+  );
+}
+
+function GifPickerModal({
+  visible,
+  onClose,
+  onPick,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onPick: (gif: GiphyGif) => void;
+}) {
+  const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const [query, setQuery] = useState("");
+  const [gifs, setGifs] = useState<GiphyGif[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const reqIdRef = useRef(0);
+
+  useEffect(() => {
+    if (!visible) return;
+    const myReq = ++reqIdRef.current;
+    if (!GIPHY_API_KEY) {
+      setError("Falta configurar la API key de Giphy.");
+      setGifs([]);
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    const isSearch = query.trim().length > 0;
+    const url = isSearch
+      ? `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&limit=24&rating=pg-13&lang=es&q=${encodeURIComponent(query.trim())}`
+      : `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=24&rating=pg-13`;
+    const t = setTimeout(() => {
+      fetch(url)
+        .then((r) => r.json())
+        .then((j: { data?: GiphyGif[] }) => {
+          if (reqIdRef.current !== myReq) return;
+          setGifs(j.data ?? []);
+        })
+        .catch(() => {
+          if (reqIdRef.current !== myReq) return;
+          setError("No se pudo cargar los GIFs.");
+        })
+        .finally(() => {
+          if (reqIdRef.current !== myReq) return;
+          setLoading(false);
+        });
+    }, isSearch ? 300 : 0);
+    return () => clearTimeout(t);
+  }, [visible, query]);
+
+  useEffect(() => {
+    if (!visible) {
+      setQuery("");
+      setGifs([]);
+      setError(null);
+    }
+  }, [visible]);
+
+  return (
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+      <View
+        style={[
+          styles.pickerRoot,
+          { backgroundColor: colors.background, paddingTop: insets.top },
+        ]}
+      >
+        <View style={styles.pickerHeader}>
+          <Pressable onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={colors.foreground} />
+          </Pressable>
+          <Text style={[styles.pickerHeaderTitle, { color: colors.foreground }]}>
+            Buscar GIF
+          </Text>
+          <View style={{ width: 22 }} />
+        </View>
+        <View
+          style={[
+            styles.searchBox,
+            { backgroundColor: colors.card, borderColor: colors.border },
+          ]}
+        >
+          <Feather name="search" size={16} color={colors.mutedForeground} />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Buscar en Giphy…"
+            placeholderTextColor={colors.mutedForeground}
+            style={[styles.searchInput, { color: colors.foreground }]}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="search"
+          />
+        </View>
+        {error ? (
+          <Text style={{ color: "#E07A7A", textAlign: "center", marginTop: 24 }}>{error}</Text>
+        ) : null}
+        {loading && gifs.length === 0 ? (
+          <ActivityIndicator color={colors.accent} style={{ marginTop: 24 }} />
+        ) : null}
+        <FlatList
+          data={gifs}
+          keyExtractor={(g) => g.id}
+          numColumns={2}
+          contentContainerStyle={{
+            paddingHorizontal: 8,
+            paddingBottom: insets.bottom + 16,
+            paddingTop: 8,
+          }}
+          columnWrapperStyle={{ gap: 8 }}
+          ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+          renderItem={({ item }) => {
+            const w = parseInt(item.images.fixed_width.width, 10) || 200;
+            const h = parseInt(item.images.fixed_width.height, 10) || 200;
+            const ratio = h / w;
+            return (
+              <Pressable
+                onPress={() => onPick(item)}
+                style={({ pressed }) => ({
+                  flex: 1,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  backgroundColor: colors.card,
+                  opacity: pressed ? 0.7 : 1,
+                  aspectRatio: 1 / ratio,
+                })}
+              >
+                <Image
+                  source={{ uri: item.images.fixed_width.url }}
+                  style={{ width: "100%", height: "100%" }}
+                  contentFit="cover"
+                />
+              </Pressable>
+            );
+          }}
+          ListFooterComponent={
+            <Text
+              style={{
+                color: colors.mutedForeground,
+                fontSize: 11,
+                textAlign: "center",
+                marginTop: 16,
+              }}
+            >
+              Powered by GIPHY
+            </Text>
+          }
+        />
+      </View>
+    </Modal>
   );
 }
 
@@ -1333,4 +1528,24 @@ const styles = StyleSheet.create({
   pickerImg: { width: 50, height: 50, borderRadius: 10 },
   pickerLabel: { fontSize: 9, fontWeight: "700", letterSpacing: 0.8, marginBottom: 2 },
   pickerTitle: { fontSize: 13, fontWeight: "600" },
+  pickerRoot: { flex: 1 },
+  pickerHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  pickerHeaderTitle: { fontSize: 16, fontWeight: "700" },
+  searchBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginHorizontal: 16,
+    marginBottom: 8,
+  },
 });
