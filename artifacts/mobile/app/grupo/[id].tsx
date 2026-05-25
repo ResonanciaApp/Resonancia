@@ -660,22 +660,23 @@ export default function GrupoDetailScreen() {
           visible={openCommentsPostId !== null}
           transparent
           animationType="slide"
+          statusBarTranslucent
           onRequestClose={() => {
             setOpenCommentsPostId(null);
             setCommentText("");
           }}
         >
-          <Pressable
-            style={commentStyles.overlay}
-            onPress={() => {
-              setOpenCommentsPostId(null);
-              setCommentText("");
-            }}
-          />
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
-            style={commentStyles.sheetWrap}
+            style={commentStyles.modalRoot}
           >
+            <Pressable
+              style={commentStyles.overlay}
+              onPress={() => {
+                setOpenCommentsPostId(null);
+                setCommentText("");
+              }}
+            />
             <View style={[commentStyles.sheet, { backgroundColor: colors.card, paddingBottom: bottomPad + 12 }]}>
               <View style={[commentStyles.handle, { backgroundColor: colors.border }]} />
               <View style={commentStyles.sheetHeader}>
@@ -789,8 +790,8 @@ export default function GrupoDetailScreen() {
 }
 
 const commentStyles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)" },
-  sheetWrap: { position: "absolute", left: 0, right: 0, bottom: 0 },
+  modalRoot: { flex: 1, justifyContent: "flex-end" },
+  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.5)" },
   sheet: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, paddingTop: 10 },
   handle: { width: 40, height: 4, borderRadius: 2, alignSelf: "center", marginBottom: 12 },
   sheetHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 14 },
