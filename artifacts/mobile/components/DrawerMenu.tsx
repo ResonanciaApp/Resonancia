@@ -47,6 +47,7 @@ const SECONDARY_ITEMS: MenuItem[] = [
   { label: "Invitar a un amigo", icon: "share-2",    route: "/invitar" },
   { label: "Ayuda",              icon: "help-circle", route: "/ayuda" },
   { label: "Configuraciones",    icon: "settings",    route: "/configuraciones" },
+  { label: "Resetear app (prueba)", icon: "refresh-cw", route: "/dev-reset" },
 ];
 
 interface Props {
