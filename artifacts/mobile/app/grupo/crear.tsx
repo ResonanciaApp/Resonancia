@@ -390,7 +390,7 @@ export default function CrearGrupoScreen() {
 
               {/* Done */}
               <Pressable
-                onPress={() => router.replace("/grupos" as never)}
+                onPress={() => router.back()}
                 style={{ marginTop: 12, alignItems: "center", paddingVertical: 12 }}
               >
                 <Text style={[styles.skipText, { color: colors.mutedForeground }]}>
