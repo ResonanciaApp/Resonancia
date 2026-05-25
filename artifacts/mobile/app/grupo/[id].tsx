@@ -678,18 +678,18 @@ export default function GrupoDetailScreen() {
             setCommentText("");
           }}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            style={commentStyles.modalRoot}
-          >
+          <View style={commentStyles.modalRoot}>
             <Pressable
-              style={commentStyles.overlay}
+              style={commentStyles.overlayPressable}
               onPress={() => {
                 setOpenCommentsPostId(null);
                 setCommentText("");
               }}
             />
-            <View style={[commentStyles.sheet, { backgroundColor: colors.card, paddingBottom: bottomPad + 12 }]}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              style={[commentStyles.sheet, { backgroundColor: colors.card, paddingBottom: bottomPad + 12 }]}
+            >
               <View style={[commentStyles.handle, { backgroundColor: colors.border }]} />
               <View style={commentStyles.sheetHeader}>
                 <Text style={[commentStyles.sheetTitle, { color: colors.foreground }]}>Comentarios</Text>
@@ -793,8 +793,8 @@ export default function GrupoDetailScreen() {
                   </>
                 );
               })()}
-            </View>
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+          </View>
         </Modal>
       </View>
     </KeyboardAvoidingView>
@@ -802,8 +802,8 @@ export default function GrupoDetailScreen() {
 }
 
 const commentStyles = StyleSheet.create({
-  modalRoot: { flex: 1, justifyContent: "flex-end" },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.5)" },
+  modalRoot: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" },
+  overlayPressable: { ...StyleSheet.absoluteFillObject },
   sheet: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, paddingTop: 10 },
   handle: { width: 40, height: 4, borderRadius: 2, alignSelf: "center", marginBottom: 12 },
   sheetHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 14 },
