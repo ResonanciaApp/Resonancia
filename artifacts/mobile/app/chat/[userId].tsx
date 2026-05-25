@@ -298,10 +298,10 @@ export default function ChatScreen() {
   };
 
   const startRecording = async () => {
-    setShowAttachMenu(false);
     try {
       const perm = await Audio.requestPermissionsAsync();
       if (!perm.granted) {
+        setShowAttachMenu(false);
         Alert.alert("Permiso", "Necesitamos acceso al micrófono para grabar.");
         return;
       }
@@ -312,6 +312,7 @@ export default function ChatScreen() {
       const rec = new Audio.Recording();
       await rec.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
       await rec.startAsync();
+      setShowAttachMenu(false);
       recStartRef.current = Date.now();
       setRecElapsedMs(0);
       setRecording(rec);
