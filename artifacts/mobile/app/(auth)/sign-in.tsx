@@ -14,6 +14,8 @@ import {
   View,
 } from "react-native";
 
+import { SocialAuthButtons } from "@/components/SocialAuthButtons";
+
 const COLORS = {
   bg: "#18110C",
   card: "#24160F",
@@ -128,6 +130,8 @@ export default function SignInScreen() {
                 <Text style={styles.primaryBtnText}>Entrar</Text>
               )}
             </Pressable>
+
+            <SocialAuthButtons />
 
             <View style={styles.footer}>
               <Text style={styles.footerText}>¿No tenés cuenta? </Text>

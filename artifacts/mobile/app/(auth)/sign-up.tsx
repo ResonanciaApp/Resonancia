@@ -14,6 +14,8 @@ import {
   View,
 } from "react-native";
 
+import { SocialAuthButtons } from "@/components/SocialAuthButtons";
+
 const COLORS = {
   bg: "#18110C",
   card: "#24160F",
@@ -153,6 +155,8 @@ export default function SignUpScreen() {
 
               {/* Required: Clerk bot protection */}
               <View nativeID="clerk-captcha" />
+
+              <SocialAuthButtons />
 
               <View style={styles.footer}>
                 <Text style={styles.footerText}>¿Ya tenés cuenta? </Text>
