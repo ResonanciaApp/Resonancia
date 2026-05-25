@@ -17,13 +17,16 @@ export interface GrupoLocal {
 export function useGrupos() {
   const [grupos, setGrupos] = useState<GrupoLocal[]>([]);
 
-  useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((raw) => {
-        if (raw) setGrupos(JSON.parse(raw));
-      })
-      .catch(() => {});
+  const reload = useCallback(async () => {
+    try {
+      const raw = await AsyncStorage.getItem(STORAGE_KEY);
+      setGrupos(raw ? (JSON.parse(raw) as GrupoLocal[]) : []);
+    } catch {}
   }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   const saveGrupo = useCallback(async (grupo: GrupoLocal) => {
     setGrupos((prev) => {
@@ -41,5 +44,5 @@ export function useGrupos() {
     });
   }, []);
 
-  return { grupos, saveGrupo, deleteGrupo };
+  return { grupos, reload, saveGrupo, deleteGrupo };
 }

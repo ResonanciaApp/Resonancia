@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import React, { useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
   Image,
   Modal,
@@ -468,7 +468,13 @@ export default function GruposScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const [tab, setTab] = useState<TabType>("ojear");
   const [showCreate, setShowCreate] = useState(false);
-  const { grupos: gruposCreados } = useGrupos();
+  const { grupos: gruposCreados, reload } = useGrupos();
+
+  useFocusEffect(
+    useCallback(() => {
+      reload();
+    }, [reload])
+  );
 
   const TABS: { key: TabType; label: string }[] = [
     { key: "ojear", label: "Ojear" },
