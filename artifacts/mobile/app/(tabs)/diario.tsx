@@ -436,6 +436,16 @@ const styles = StyleSheet.create({
   actionBtn: {
     padding: 6,
   },
+  actionBtnConfirm: {
+    backgroundColor: "rgba(224,112,96,0.12)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  confirmDeleteText: {
+    fontSize: 11,
+    fontWeight: "700" as const,
+    color: "#E07060",
+  },
   favBadge: {
     flexDirection: "row",
     alignItems: "center",
