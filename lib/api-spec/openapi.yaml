@@ -20,6 +20,8 @@ tags:
     description: User notifications
   - name: dm
     description: Direct messages between friends
+  - name: storage
+    description: File upload and serving
 paths:
   /healthz:
     get:
@@ -316,6 +318,86 @@ paths:
       responses:
         "204":
           description: Marked as read
+  /storage/uploads/request-url:
+    post:
+      tags: [storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for file upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUploadUrlBody"
+      responses:
+        "200":
+          description: Presigned upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestUploadUrlResponse"
+        "400":
+          description: Missing or invalid required fields.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
+          description: Failed to generate upload URL.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /storage/public-objects/{filePath}:
+    get:
+      tags: [storage]
+      operationId: getPublicObject
+      summary: Serve a public asset
+      parameters:
+        - name: filePath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Object content
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /storage/objects/{objectPath}:
+    get:
+      tags: [storage]
+      operationId: getStorageObject
+      summary: Serve an uploaded object
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Object content
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
   /dm/conversations:
     get:
       operationId: getConversations
@@ -622,13 +704,31 @@ components:
           type: ["string", "null"]
         sessionId:
           type: ["integer", "null"]
+        attachmentUrl:
+          type: ["string", "null"]
+        attachmentType:
+          type: ["string", "null"]
+          enum: ["image", "audio", null]
+        attachmentMeta:
+          type: ["object", "null"]
+          properties:
+            mime:
+              type: string
+            durationMs:
+              type: integer
+            width:
+              type: integer
+            height:
+              type: integer
+            sizeBytes:
+              type: integer
         readAt:
           type: ["string", "null"]
           format: date-time
         createdAt:
           type: string
           format: date-time
-      required: [id, senderId, recipientId, body, sessionId, readAt, createdAt]
+      required: [id, senderId, recipientId, body, sessionId, attachmentUrl, attachmentType, attachmentMeta, readAt, createdAt]
     Conversation:
       type: object
       properties:
@@ -650,6 +750,55 @@ components:
           maxLength: 2000
         sessionId:
           type: integer
+        attachmentUrl:
+          type: string
+          minLength: 1
+        attachmentType:
+          type: string
+          enum: ["image", "audio"]
+        attachmentMeta:
+          type: object
+          properties:
+            mime:
+              type: string
+            durationMs:
+              type: integer
+            width:
+              type: integer
+            height:
+              type: integer
+            sizeBytes:
+              type: integer
+    RequestUploadUrlBody:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        size:
+          type: integer
+          minimum: 1
+        contentType:
+          type: string
+          minLength: 1
+    RequestUploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+        objectPath:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/RequestUploadUrlBody"
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
     TypingStatus:
       type: object
       properties:

@@ -6,6 +6,7 @@ import {
   getGetDirectMessagesQueryKey,
   getGetFriendsQueryKey,
   getGetUnreadNotificationCountQueryKey,
+  requestUploadUrl,
   useGetDirectMessages,
   useGetFriends,
   useGetTypingStatus,
@@ -15,13 +16,16 @@ import {
   type DirectMessage,
   type UserProfile,
 } from "@workspace/api-client-react";
+import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Modal,
@@ -54,6 +58,48 @@ function timeFor(iso: string): string {
   const hh = d.getHours().toString().padStart(2, "0");
   const mm = d.getMinutes().toString().padStart(2, "0");
   return `${hh}:${mm}`;
+}
+
+// Resolve an object path returned by the upload endpoint (e.g. `/objects/uploads/uuid`)
+// into a full URL we can fetch from the mobile client.
+function resolveAttachmentUrl(objectPath: string): string {
+  const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
+  if (!objectPath.startsWith("/")) objectPath = `/${objectPath}`;
+  if (base.endsWith("/api")) return `${base}/storage${objectPath}`;
+  return `${base}/api/storage${objectPath}`;
+}
+
+// Upload a local file (uri) to GCS via presigned URL and return the objectPath
+// (e.g. `/objects/uploads/uuid`) that the server stores in the DB.
+async function uploadLocalFile(
+  uri: string,
+  contentType: string,
+  fileName: string,
+  size: number,
+): Promise<string> {
+  const { uploadURL, objectPath } = await requestUploadUrl({
+    name: fileName,
+    size,
+    contentType,
+  });
+  const fileResp = await fetch(uri);
+  const blob = await fileResp.blob();
+  const putResp = await fetch(uploadURL, {
+    method: "PUT",
+    headers: { "Content-Type": contentType },
+    body: blob,
+  });
+  if (!putResp.ok) {
+    throw new Error(`Upload falló (${putResp.status})`);
+  }
+  return objectPath;
+}
+
+function formatDuration(ms: number): string {
+  const total = Math.round(ms / 1000);
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
 export default function ChatScreen() {
@@ -162,6 +208,12 @@ export default function ChatScreen() {
 
   const [draft, setDraft] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [recElapsedMs, setRecElapsedMs] = useState(0);
+  const recStartRef = useRef<number>(0);
+  const recTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTypingPingRef = useRef(0);
 
   const onChangeDraft = (text: string) => {
@@ -184,6 +236,135 @@ export default function ChatScreen() {
     setShowShareModal(false);
     sendMsg.mutate({ userId: otherId, data: { sessionId } });
   };
+
+  const pickImage = async () => {
+    setShowAttachMenu(false);
+    try {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert("Permiso", "Necesitamos acceso a tus fotos para enviarlas.");
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.85,
+        allowsEditing: false,
+        exif: false,
+      });
+      if (result.canceled || result.assets.length === 0) return;
+      const asset = result.assets[0];
+      const isGif =
+        (asset.mimeType ?? "").toLowerCase() === "image/gif" ||
+        (asset.fileName ?? asset.uri).toLowerCase().endsWith(".gif");
+      const contentType = isGif ? "image/gif" : (asset.mimeType ?? "image/jpeg");
+      const ext = isGif ? "gif" : contentType.split("/")[1] ?? "jpg";
+      const fileName = asset.fileName ?? `photo-${Date.now()}.${ext}`;
+      const size = asset.fileSize ?? 0;
+      setUploading(true);
+      const objectPath = await uploadLocalFile(asset.uri, contentType, fileName, size || 1);
+      sendMsg.mutate({
+        userId: otherId,
+        data: {
+          attachmentUrl: objectPath,
+          attachmentType: "image",
+          attachmentMeta: {
+            mime: contentType,
+            width: asset.width,
+            height: asset.height,
+            sizeBytes: size || undefined,
+          },
+        },
+      });
+    } catch (err) {
+      Alert.alert("Error", err instanceof Error ? err.message : "No se pudo enviar la foto.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const startRecording = async () => {
+    setShowAttachMenu(false);
+    try {
+      const perm = await Audio.requestPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert("Permiso", "Necesitamos acceso al micrófono para grabar.");
+        return;
+      }
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+      const rec = new Audio.Recording();
+      await rec.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
+      await rec.startAsync();
+      recStartRef.current = Date.now();
+      setRecElapsedMs(0);
+      setRecording(rec);
+      recTimerRef.current = setInterval(() => {
+        setRecElapsedMs(Date.now() - recStartRef.current);
+      }, 200);
+    } catch (err) {
+      Alert.alert("Error", err instanceof Error ? err.message : "No se pudo iniciar la grabación.");
+    }
+  };
+
+  const cancelRecording = async () => {
+    if (recTimerRef.current) clearInterval(recTimerRef.current);
+    recTimerRef.current = null;
+    setRecElapsedMs(0);
+    if (!recording) return;
+    try {
+      await recording.stopAndUnloadAsync();
+    } catch {
+      // ignore
+    }
+    setRecording(null);
+  };
+
+  const sendRecording = async () => {
+    if (!recording) return;
+    if (recTimerRef.current) clearInterval(recTimerRef.current);
+    recTimerRef.current = null;
+    const durationMs = Date.now() - recStartRef.current;
+    const rec = recording;
+    setRecording(null);
+    setRecElapsedMs(0);
+    try {
+      await rec.stopAndUnloadAsync();
+      const uri = rec.getURI();
+      if (!uri) throw new Error("No se pudo obtener el audio.");
+      if (durationMs < 600) {
+        Alert.alert("Muy corto", "Grabá al menos 1 segundo.");
+        return;
+      }
+      const contentType = Platform.OS === "ios" ? "audio/m4a" : "audio/mp4";
+      const ext = "m4a";
+      setUploading(true);
+      const objectPath = await uploadLocalFile(uri, contentType, `voice-${Date.now()}.${ext}`, 1);
+      sendMsg.mutate({
+        userId: otherId,
+        data: {
+          attachmentUrl: objectPath,
+          attachmentType: "audio",
+          attachmentMeta: { mime: contentType, durationMs },
+        },
+      });
+    } catch (err) {
+      Alert.alert("Error", err instanceof Error ? err.message : "No se pudo enviar el audio.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (recTimerRef.current) clearInterval(recTimerRef.current);
+      if (recording) {
+        recording.stopAndUnloadAsync().catch(() => {});
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const messages = useMemo(() => {
     const list = messagesQ.data ?? [];
@@ -321,39 +502,81 @@ export default function ChatScreen() {
             },
           ]}
         >
-          <Pressable
-            onPress={() => setShowShareModal(true)}
-            hitSlop={10}
-            style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <Feather name="paperclip" size={16} color={colors.accent} />
-          </Pressable>
-          <TextInput
-            value={draft}
-            onChangeText={onChangeDraft}
-            placeholder="Escribí un mensaje…"
-            placeholderTextColor={colors.mutedForeground}
-            style={[
-              styles.input,
-              {
-                backgroundColor: colors.card,
-                borderColor: colors.border,
-                color: colors.foreground,
-              },
-            ]}
-            multiline
-            maxLength={2000}
-            onSubmitEditing={send}
-          />
-          <Pressable
-            onPress={send}
-            disabled={draft.trim().length === 0 || sendMsg.isPending}
-            style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
-          >
-            <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.sendGrad}>
-              <Feather name="send" size={16} color="#1A0E06" />
-            </LinearGradient>
-          </Pressable>
+          {recording ? (
+            <>
+              <Pressable
+                onPress={cancelRecording}
+                hitSlop={10}
+                style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+              >
+                <Feather name="x" size={16} color="#E07A7A" />
+              </Pressable>
+              <View
+                style={[
+                  styles.recBar,
+                  { backgroundColor: colors.card, borderColor: colors.border },
+                ]}
+              >
+                <View style={styles.recDot} />
+                <Text style={[styles.recTime, { color: colors.foreground }]}>
+                  Grabando · {formatDuration(recElapsedMs)}
+                </Text>
+              </View>
+              <Pressable onPress={sendRecording} style={styles.sendBtn}>
+                <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.sendGrad}>
+                  <Feather name="send" size={16} color="#1A0E06" />
+                </LinearGradient>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <Pressable
+                onPress={() => setShowAttachMenu(true)}
+                hitSlop={10}
+                disabled={uploading}
+                style={[
+                  styles.iconBtn,
+                  {
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                    opacity: uploading ? 0.5 : 1,
+                  },
+                ]}
+              >
+                {uploading ? (
+                  <ActivityIndicator size="small" color={colors.accent} />
+                ) : (
+                  <Feather name="plus" size={18} color={colors.accent} />
+                )}
+              </Pressable>
+              <TextInput
+                value={draft}
+                onChangeText={onChangeDraft}
+                placeholder="Escribí un mensaje…"
+                placeholderTextColor={colors.mutedForeground}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                    color: colors.foreground,
+                  },
+                ]}
+                multiline
+                maxLength={2000}
+                onSubmitEditing={send}
+              />
+              <Pressable
+                onPress={send}
+                disabled={draft.trim().length === 0 || sendMsg.isPending}
+                style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
+              >
+                <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.sendGrad}>
+                  <Feather name="send" size={16} color="#1A0E06" />
+                </LinearGradient>
+              </Pressable>
+            </>
+          )}
         </View>
       </KeyboardAvoidingView>
 
@@ -361,6 +584,17 @@ export default function ChatScreen() {
         visible={showShareModal}
         onClose={() => setShowShareModal(false)}
         onPick={shareSession}
+      />
+
+      <AttachMenuModal
+        visible={showAttachMenu}
+        onClose={() => setShowAttachMenu(false)}
+        onPickImage={pickImage}
+        onRecordVoice={startRecording}
+        onShareSession={() => {
+          setShowAttachMenu(false);
+          setShowShareModal(true);
+        }}
       />
     </View>
   );
@@ -388,6 +622,8 @@ function MessageBubble({
   const marginBottom = groupedWithNext ? 2 : 8;
   const tailRadius = 4;
   const compactRadius = 14;
+  const isImage = message.attachmentType === "image" && !!message.attachmentUrl;
+  const isAudio = message.attachmentType === "audio" && !!message.attachmentUrl;
 
   return (
     <View style={{ alignItems: isMine ? "flex-end" : "flex-start", marginBottom }}>
@@ -396,7 +632,19 @@ function MessageBubble({
           {timeFor(message.createdAt)}
         </Text>
       )}
-      {session ? (
+      {isImage ? (
+        <ImageAttachment
+          objectPath={message.attachmentUrl!}
+          width={message.attachmentMeta?.width}
+          height={message.attachmentMeta?.height}
+        />
+      ) : isAudio ? (
+        <AudioAttachment
+          objectPath={message.attachmentUrl!}
+          durationMs={message.attachmentMeta?.durationMs ?? 0}
+          isMine={isMine}
+        />
+      ) : session ? (
         <Pressable
           onPress={() => router.push(`/session/${session.id}`)}
           style={[
@@ -594,8 +842,320 @@ function ShareSessionModal({
   );
 }
 
+function ImageAttachment({
+  objectPath,
+  width,
+  height,
+}: {
+  objectPath: string;
+  width?: number;
+  height?: number;
+}) {
+  const url = useMemo(() => resolveAttachmentUrl(objectPath), [objectPath]);
+  const maxW = 220;
+  const maxH = 280;
+  let w = maxW;
+  let h = maxH;
+  if (width && height && width > 0 && height > 0) {
+    const ratio = width / height;
+    if (ratio >= 1) {
+      w = maxW;
+      h = Math.round(maxW / ratio);
+      if (h > maxH) {
+        h = maxH;
+        w = Math.round(maxH * ratio);
+      }
+    } else {
+      h = maxH;
+      w = Math.round(maxH * ratio);
+      if (w > maxW) {
+        w = maxW;
+        h = Math.round(maxW / ratio);
+      }
+    }
+  }
+  return (
+    <View style={{ borderRadius: 14, overflow: "hidden" }}>
+      <Image
+        source={{ uri: url }}
+        style={{ width: w, height: h }}
+        contentFit="cover"
+      />
+    </View>
+  );
+}
+
+function AudioAttachment({
+  objectPath,
+  durationMs,
+  isMine,
+}: {
+  objectPath: string;
+  durationMs: number;
+  isMine: boolean;
+}) {
+  const colors = useColors();
+  const url = useMemo(() => resolveAttachmentUrl(objectPath), [objectPath]);
+  const soundRef = useRef<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [positionMs, setPositionMs] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const totalMs = durationMs > 0 ? durationMs : 0;
+
+  useEffect(() => {
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.unloadAsync().catch(() => {});
+        soundRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggle = async () => {
+    try {
+      if (!soundRef.current) {
+        setLoading(true);
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: url },
+          { shouldPlay: true },
+          (status) => {
+            if (!status.isLoaded) return;
+            setPositionMs(status.positionMillis ?? 0);
+            setIsPlaying(status.isPlaying);
+            if (status.didJustFinish) {
+              setIsPlaying(false);
+              setPositionMs(0);
+              soundRef.current?.setPositionAsync(0).catch(() => {});
+            }
+          },
+        );
+        soundRef.current = sound;
+        setLoading(false);
+        setIsPlaying(true);
+        return;
+      }
+      const status = await soundRef.current.getStatusAsync();
+      if (status.isLoaded && status.isPlaying) {
+        await soundRef.current.pauseAsync();
+        setIsPlaying(false);
+      } else {
+        await soundRef.current.playAsync();
+        setIsPlaying(true);
+      }
+    } catch {
+      setLoading(false);
+      Alert.alert("Error", "No se pudo reproducir el audio.");
+    }
+  };
+
+  const progressPct = totalMs > 0 ? Math.min(1, positionMs / totalMs) : 0;
+  const bg = isMine ? "#C69B4F" : colors.card;
+  const fg = isMine ? "#1A0E06" : colors.foreground;
+  const trackBg = isMine ? "#1A0E0633" : colors.border;
+  const trackFill = isMine ? "#1A0E06" : colors.primary;
+
+  return (
+    <View
+      style={[
+        styles.audioBubble,
+        {
+          backgroundColor: bg,
+          borderColor: isMine ? "transparent" : colors.border,
+          borderWidth: isMine ? 0 : 1,
+        },
+      ]}
+    >
+      <Pressable onPress={toggle} hitSlop={6} style={styles.audioPlayBtn}>
+        {loading ? (
+          <ActivityIndicator size="small" color={fg} />
+        ) : (
+          <Feather name={isPlaying ? "pause" : "play"} size={18} color={fg} />
+        )}
+      </Pressable>
+      <View style={{ flex: 1 }}>
+        <View style={[styles.audioTrack, { backgroundColor: trackBg }]}>
+          <View
+            style={{
+              width: `${progressPct * 100}%`,
+              height: "100%",
+              backgroundColor: trackFill,
+              borderRadius: 2,
+            }}
+          />
+        </View>
+        <Text style={[styles.audioTime, { color: fg }]}>
+          {formatDuration(totalMs > 0 ? totalMs - positionMs : positionMs)}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function AttachMenuModal({
+  visible,
+  onClose,
+  onPickImage,
+  onRecordVoice,
+  onShareSession,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onPickImage: () => void;
+  onRecordVoice: () => void;
+  onShareSession: () => void;
+}) {
+  const colors = useColors();
+  const insets = useSafeAreaInsets();
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <Pressable style={styles.attachBackdrop} onPress={onClose}>
+        <Pressable
+          onPress={(e) => e.stopPropagation()}
+          style={[
+            styles.attachSheet,
+            {
+              backgroundColor: colors.background,
+              borderColor: colors.border,
+              paddingBottom: insets.bottom + 16,
+            },
+          ]}
+        >
+          <View style={styles.attachHandle} />
+          <Text style={[styles.attachTitle, { color: colors.foreground }]}>Adjuntar</Text>
+          <AttachOption
+            icon="image"
+            label="Foto o GIF"
+            sublabel="De tu galería"
+            tint={colors.primary}
+            onPress={onPickImage}
+          />
+          <AttachOption
+            icon="mic"
+            label="Grabar mensaje de voz"
+            sublabel="Mantenés grabando hasta 5 min"
+            tint="#D6A85B"
+            onPress={onRecordVoice}
+          />
+          <AttachOption
+            icon="play-circle"
+            label="Compartir una sesión"
+            sublabel="Buscá entre todas las sesiones"
+            tint="#8AAAD4"
+            onPress={onShareSession}
+          />
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
+function AttachOption({
+  icon,
+  label,
+  sublabel,
+  tint,
+  onPress,
+}: {
+  icon: React.ComponentProps<typeof Feather>["name"];
+  label: string;
+  sublabel: string;
+  tint: string;
+  onPress: () => void;
+}) {
+  const colors = useColors();
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.attachOption,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+          opacity: pressed ? 0.85 : 1,
+        },
+      ]}
+    >
+      <View style={[styles.attachIcon, { backgroundColor: tint + "22" }]}>
+        <Feather name={icon} size={20} color={tint} />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.attachLabel, { color: colors.foreground }]}>{label}</Text>
+        <Text style={[styles.attachSub, { color: colors.mutedForeground }]}>{sublabel}</Text>
+      </View>
+      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  recBar: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 18,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    height: 40,
+  },
+  recDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: "#E07A7A" },
+  recTime: { fontSize: 13, fontWeight: "600" },
+  audioBubble: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    minWidth: 180,
+    maxWidth: 240,
+    borderRadius: 18,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 2,
+  },
+  audioPlayBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  audioTrack: { width: "100%", height: 4, borderRadius: 2, overflow: "hidden" },
+  audioTime: { fontSize: 11, marginTop: 4 },
+  attachBackdrop: { flex: 1, backgroundColor: "#0008", justifyContent: "flex-end" },
+  attachSheet: {
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    borderTopWidth: 1,
+    paddingHorizontal: 18,
+    paddingTop: 10,
+    gap: 10,
+  },
+  attachHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#FFFFFF33",
+    alignSelf: "center",
+    marginBottom: 8,
+  },
+  attachTitle: { fontSize: 18, fontWeight: "700", marginBottom: 6 },
+  attachOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 14,
+  },
+  attachIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  attachLabel: { fontSize: 14, fontWeight: "700", marginBottom: 2 },
+  attachSub: { fontSize: 12 },
   header: {
     flexDirection: "row",
     alignItems: "center",

@@ -121,6 +121,28 @@ export interface Notification {
   actor: UserProfile;
 }
 
+/**
+ * @nullable
+ */
+export type DirectMessageAttachmentType = typeof DirectMessageAttachmentType[keyof typeof DirectMessageAttachmentType] | null;
+
+
+export const DirectMessageAttachmentType = {
+  image: 'image',
+  audio: 'audio',
+} as const;
+
+/**
+ * @nullable
+ */
+export type DirectMessageAttachmentMeta = {
+  mime?: string;
+  durationMs?: number;
+  width?: number;
+  height?: number;
+  sizeBytes?: number;
+} | null;
+
 export interface DirectMessage {
   id: number;
   senderId: number;
@@ -129,6 +151,12 @@ export interface DirectMessage {
   body: string | null;
   /** @nullable */
   sessionId: number | null;
+  /** @nullable */
+  attachmentUrl: string | null;
+  /** @nullable */
+  attachmentType: DirectMessageAttachmentType;
+  /** @nullable */
+  attachmentMeta: DirectMessageAttachmentMeta;
   /** @nullable */
   readAt: string | null;
   createdAt: string;
@@ -140,6 +168,22 @@ export interface Conversation {
   unreadCount: number;
 }
 
+export type SendDirectMessageBodyAttachmentType = typeof SendDirectMessageBodyAttachmentType[keyof typeof SendDirectMessageBodyAttachmentType];
+
+
+export const SendDirectMessageBodyAttachmentType = {
+  image: 'image',
+  audio: 'audio',
+} as const;
+
+export type SendDirectMessageBodyAttachmentMeta = {
+  mime?: string;
+  durationMs?: number;
+  width?: number;
+  height?: number;
+  sizeBytes?: number;
+};
+
 export interface SendDirectMessageBody {
   /**
      * @minLength 1
@@ -147,6 +191,29 @@ export interface SendDirectMessageBody {
      */
   body?: string;
   sessionId?: number;
+  /** @minLength 1 */
+  attachmentUrl?: string;
+  attachmentType?: SendDirectMessageBodyAttachmentType;
+  attachmentMeta?: SendDirectMessageBodyAttachmentMeta;
+}
+
+export interface RequestUploadUrlBody {
+  /** @minLength 1 */
+  name: string;
+  /** @minimum 1 */
+  size: number;
+  /** @minLength 1 */
+  contentType: string;
+}
+
+export interface RequestUploadUrlResponse {
+  uploadURL: string;
+  objectPath: string;
+  metadata?: RequestUploadUrlBody;
+}
+
+export interface ErrorEnvelope {
+  error: string;
 }
 
 export interface TypingStatus {

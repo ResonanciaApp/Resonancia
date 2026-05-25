@@ -233,6 +233,52 @@ export const GetUnreadNotificationCountResponse = zod.object({
 
 
 /**
+ * @summary Request a presigned URL for file upload
+ */
+
+
+
+
+
+export const RequestUploadUrlBody = zod.object({
+  "name": zod.string().min(1),
+  "size": zod.number().min(1),
+  "contentType": zod.string().min(1)
+})
+
+
+
+
+
+
+export const RequestUploadUrlResponse = zod.object({
+  "uploadURL": zod.string().url(),
+  "objectPath": zod.string(),
+  "metadata": zod.object({
+  "name": zod.string().min(1),
+  "size": zod.number().min(1),
+  "contentType": zod.string().min(1)
+}).optional()
+})
+
+
+/**
+ * @summary Serve a public asset
+ */
+export const GetPublicObjectParams = zod.object({
+  "filePath": zod.coerce.string()
+})
+
+
+/**
+ * @summary Serve an uploaded object
+ */
+export const GetStorageObjectParams = zod.object({
+  "objectPath": zod.coerce.string()
+})
+
+
+/**
  * @summary List recent conversations with friends
  */
 export const GetConversationsResponseItem = zod.object({
@@ -248,6 +294,15 @@ export const GetConversationsResponseItem = zod.object({
   "recipientId": zod.number(),
   "body": zod.string().nullable(),
   "sessionId": zod.number().nullable(),
+  "attachmentUrl": zod.string().nullable(),
+  "attachmentType": zod.union([zod.literal('image'),zod.literal('audio'),zod.literal(null)]).nullable(),
+  "attachmentMeta": zod.object({
+  "mime": zod.string().optional(),
+  "durationMs": zod.number().optional(),
+  "width": zod.number().optional(),
+  "height": zod.number().optional(),
+  "sizeBytes": zod.number().optional()
+}).nullable(),
   "readAt": zod.coerce.date().nullable(),
   "createdAt": zod.coerce.date()
 }),zod.null()]),
@@ -279,6 +334,15 @@ export const GetDirectMessagesResponseItem = zod.object({
   "recipientId": zod.number(),
   "body": zod.string().nullable(),
   "sessionId": zod.number().nullable(),
+  "attachmentUrl": zod.string().nullable(),
+  "attachmentType": zod.union([zod.literal('image'),zod.literal('audio'),zod.literal(null)]).nullable(),
+  "attachmentMeta": zod.object({
+  "mime": zod.string().optional(),
+  "durationMs": zod.number().optional(),
+  "width": zod.number().optional(),
+  "height": zod.number().optional(),
+  "sizeBytes": zod.number().optional()
+}).nullable(),
   "readAt": zod.coerce.date().nullable(),
   "createdAt": zod.coerce.date()
 })
@@ -296,9 +360,19 @@ export const sendDirectMessageBodyBodyMax = 2000;
 
 
 
+
 export const SendDirectMessageBody = zod.object({
   "body": zod.string().min(1).max(sendDirectMessageBodyBodyMax).optional(),
-  "sessionId": zod.number().optional()
+  "sessionId": zod.number().optional(),
+  "attachmentUrl": zod.string().min(1).optional(),
+  "attachmentType": zod.enum(['image', 'audio']).optional(),
+  "attachmentMeta": zod.object({
+  "mime": zod.string().optional(),
+  "durationMs": zod.number().optional(),
+  "width": zod.number().optional(),
+  "height": zod.number().optional(),
+  "sizeBytes": zod.number().optional()
+}).optional()
 })
 
 

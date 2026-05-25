@@ -5,6 +5,7 @@ import {
   text,
   timestamp,
   index,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
@@ -22,6 +23,15 @@ export const directMessagesTable = pgTable(
       .references(() => usersTable.id, { onDelete: "cascade" }),
     body: text("body"),
     sessionId: integer("session_id"),
+    attachmentUrl: text("attachment_url"),
+    attachmentType: text("attachment_type"),
+    attachmentMeta: jsonb("attachment_meta").$type<{
+      mime?: string;
+      durationMs?: number;
+      width?: number;
+      height?: number;
+      sizeBytes?: number;
+    } | null>(),
     readAt: timestamp("read_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },

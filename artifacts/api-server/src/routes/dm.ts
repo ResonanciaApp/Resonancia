@@ -99,6 +99,9 @@ function serializeMessage(m: DirectMessage) {
     recipientId: m.recipientId,
     body: m.body,
     sessionId: m.sessionId,
+    attachmentUrl: m.attachmentUrl ?? null,
+    attachmentType: (m.attachmentType ?? null) as "image" | "audio" | null,
+    attachmentMeta: m.attachmentMeta ?? null,
     readAt: m.readAt ? m.readAt.toISOString() : null,
     createdAt: m.createdAt.toISOString(),
   };
@@ -284,7 +287,11 @@ router.post("/dm/with/:userId", requireAuth, async (req, res) => {
   }
   const hasBody = typeof body.data.body === "string" && body.data.body.trim().length > 0;
   const hasSession = typeof body.data.sessionId === "number";
-  if (!hasBody && !hasSession) {
+  const hasAttachment =
+    typeof body.data.attachmentUrl === "string" &&
+    body.data.attachmentUrl.length > 0 &&
+    (body.data.attachmentType === "image" || body.data.attachmentType === "audio");
+  if (!hasBody && !hasSession && !hasAttachment) {
     res.status(400).json({ error: "Mensaje vacío" });
     return;
   }
@@ -301,6 +308,9 @@ router.post("/dm/with/:userId", requireAuth, async (req, res) => {
         recipientId: otherId,
         body: hasBody ? body.data.body!.trim() : null,
         sessionId: hasSession ? body.data.sessionId! : null,
+        attachmentUrl: hasAttachment ? body.data.attachmentUrl! : null,
+        attachmentType: hasAttachment ? body.data.attachmentType! : null,
+        attachmentMeta: hasAttachment ? (body.data.attachmentMeta ?? null) : null,
       })
       .returning();
 
