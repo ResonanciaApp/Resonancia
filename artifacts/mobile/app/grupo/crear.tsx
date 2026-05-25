@@ -1,12 +1,15 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -15,284 +18,438 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
-const TEMAS = [
-  { id: "meditacion", label: "Meditación", icon: "wind" as const, color: "#A8C4A8", gradient: ["#3A5438", "#1E2E1C"] as [string, string] },
-  { id: "sueno", label: "Sueño", icon: "moon" as const, color: "#C8B4E0", gradient: ["#4A3260", "#251633"] as [string, string] },
-  { id: "sonidos", label: "Sonidos", icon: "disc" as const, color: "#E8C87A", gradient: ["#7A5520", "#3E2208"] as [string, string] },
-  { id: "espiritualidad", label: "Espiritualidad", icon: "star" as const, color: "#F0CC82", gradient: ["#C49A52", "#7A5C20"] as [string, string] },
-  { id: "ansiedad", label: "Ansiedad", icon: "heart" as const, color: "#D4709A", gradient: ["#5A2040", "#2E1020"] as [string, string] },
-  { id: "crecimiento", label: "Crecimiento", icon: "trending-up" as const, color: "#8AAAD4", gradient: ["#2A3E5A", "#141E2E"] as [string, string] },
+// ─── Image library ────────────────────────────────────────────────────────────
+const GALLERY = [
+  require("@/assets/images/sessions/session-1.jpg"),
+  require("@/assets/images/sessions/session-2.jpg"),
+  require("@/assets/images/sessions/session-3.jpg"),
+  require("@/assets/images/sessions/session-4.jpg"),
+  require("@/assets/images/sessions/session-5.jpg"),
+  require("@/assets/images/sessions/session-6.jpg"),
+  require("@/assets/images/sessions/session-7.jpg"),
+  require("@/assets/images/sessions/session-8.jpg"),
+  require("@/assets/images/sessions/session-9.jpg"),
+  require("@/assets/images/sessions/session-10.jpg"),
+  require("@/assets/images/sessions/session-11.jpg"),
+  require("@/assets/images/sessions/session-12.jpg"),
+  require("@/assets/images/sessions/session-13.jpg"),
+  require("@/assets/images/sessions/session-14.jpg"),
+  require("@/assets/images/sessions/session-15.jpg"),
+  require("@/assets/images/sessions/session-16.jpg"),
+  require("@/assets/images/sessions/session-17.jpg"),
+  require("@/assets/images/sessions/session-18.jpg"),
+  require("@/assets/images/sessions/session-19.jpg"),
+  require("@/assets/images/sessions/session-20.jpg"),
+  require("@/assets/images/sessions/session-27.jpg"),
+  require("@/assets/images/sessions/session-28.jpg"),
 ];
+
+// ─── Fake invite code ─────────────────────────────────────────────────────────
+function makeCode(name: string) {
+  const slug = name.toLowerCase().replace(/\s+/g, "-").slice(0, 20);
+  const rand = Math.random().toString(36).slice(2, 6);
+  return `resonancia.app/grupo/${slug}-${rand}`;
+}
+
+// ─── Group preview header (shown behind sheets in steps 2+) ──────────────────
+function GroupPreview({
+  nombre,
+  privado,
+  imageIdx,
+  colors,
+}: {
+  nombre: string;
+  privado: boolean;
+  imageIdx: number | null;
+  colors: ReturnType<typeof import("@/hooks/useColors").useColors>;
+}) {
+  const initial = (nombre.trim()[0] ?? "G").toUpperCase();
+  return (
+    <View style={preview.root}>
+      {/* Avatar */}
+      {imageIdx !== null ? (
+        <Image source={GALLERY[imageIdx]} style={preview.image} />
+      ) : (
+        <LinearGradient colors={["#2D4A3E", "#152820"]} style={preview.image}>
+          <Text style={preview.initial}>{initial}</Text>
+        </LinearGradient>
+      )}
+      <Text style={preview.name}>{nombre || "Nombre del grupo"}</Text>
+      <Text style={preview.meta}>
+        {privado ? "PRIVADO" : "PÚBLICO"} · 1 MIEMBRO
+      </Text>
+      {/* Fake invite row */}
+      <View style={preview.inviteRow}>
+        <View style={preview.memberDot}>
+          <Text style={preview.memberDotText}>T</Text>
+        </View>
+        <Pressable style={preview.inviteBtn}>
+          <Feather name="plus" size={13} color="#EDE1D3" />
+          <Text style={preview.inviteBtnText}>Invitar</Text>
+        </Pressable>
+      </View>
+      {/* Fake tab bar */}
+      <View style={[preview.tabs, { borderTopColor: "rgba(237,225,211,0.12)" }]}>
+        {["Hilo principal", "Biblioteca", "Medita", "Chat"].map((t, i) => (
+          <Text key={t} style={[preview.tab, i === 0 && preview.tabActive]}>
+            {t}
+          </Text>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+const preview = StyleSheet.create({
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#18110C" },
+  image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
+  initial: { fontSize: 28, fontWeight: "700", color: "#EDE1D3" },
+  name: { color: "#EDE1D3", fontSize: 18, fontWeight: "700", marginBottom: 4 },
+  meta: { color: "rgba(237,225,211,0.55)", fontSize: 12, letterSpacing: 0.8, marginBottom: 14 },
+  inviteRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 16 },
+  memberDot: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#3A5438", alignItems: "center", justifyContent: "center" },
+  memberDotText: { color: "#A8C4A8", fontSize: 13, fontWeight: "700" },
+  inviteBtn: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(237,225,211,0.12)", borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6 },
+  inviteBtnText: { color: "#EDE1D3", fontSize: 13, fontWeight: "600" },
+  tabs: { flexDirection: "row", width: "100%", borderTopWidth: 1, paddingHorizontal: 16 },
+  tab: { paddingVertical: 12, marginRight: 24, color: "rgba(237,225,211,0.4)", fontSize: 14 },
+  tabActive: { color: "#EDE1D3", borderBottomWidth: 2, borderBottomColor: "#EDE1D3", fontWeight: "600" },
+});
+
+// ─── Bottom sheet wrapper ─────────────────────────────────────────────────────
+function BottomSheet({ children, colors }: { children: React.ReactNode; colors: ReturnType<typeof import("@/hooks/useColors").useColors> }) {
+  const anim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.spring(anim, { toValue: 1, useNativeDriver: true, tension: 70, friction: 12 }).start();
+  }, [anim]);
+  return (
+    <Animated.View
+      style={[
+        sheet.root,
+        { backgroundColor: colors.card },
+        { transform: [{ translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [300, 0] }) }] },
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+}
+const sheet = StyleSheet.create({
+  root: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 12 },
+});
+
+// ─── Main wizard ──────────────────────────────────────────────────────────────
+type Step = 1 | 2 | 3 | 4 | 5;
 
 export default function CrearGrupoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const { tipo } = useLocalSearchParams<{ tipo?: string }>();
+  const topPad = Platform.OS === "web" ? 0 : insets.top;
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
+  const { privado: privadoParam } = useLocalSearchParams<{ privado?: string }>();
+  const privado = privadoParam === "1";
+
+  const [step, setStep] = useState<Step>(1);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [temaId, setTemaId] = useState<string | null>(null);
-  const [privado, setPrivado] = useState(tipo === "privado");
-  const [reglas, setReglas] = useState<string[]>(["", "", ""]);
+  const [imageIdx, setImageIdx] = useState<number | null>(null);
+  const [bienvenida, setBienvenida] = useState("");
+  const [inviteCode] = useState(() => makeCode("grupo"));
 
-  const tema = TEMAS.find((t) => t.id === temaId) ?? TEMAS[0];
-  const canSave = nombre.trim().length >= 3;
+  const nameInputRef = useRef<TextInput>(null);
+  const remaining = 40 - nombre.length;
+  const canNext1 = nombre.trim().length >= 3;
 
-  const updateRegla = (i: number, val: string) => {
-    setReglas((prev) => prev.map((r, idx) => (idx === i ? val : r)));
-  };
+  useEffect(() => {
+    if (step === 1) setTimeout(() => nameInputRef.current?.focus(), 200);
+  }, [step]);
 
-  const addRegla = () => setReglas((prev) => [...prev, ""]);
+  const handleShare = useCallback(async () => {
+    try {
+      await Share.share({
+        message: `¡Únete a mi grupo "${nombre}" en RESONANCIA!\n\n${inviteCode}`,
+        url: `https://${inviteCode}`,
+      });
+    } catch {}
+  }, [nombre, inviteCode]);
 
-  const handleCreate = () => {
-    // TODO: persistir en backend
-    router.back();
-  };
-
-  return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
+  // ── Step 1: Name ─────────────────────────────────────────────────────────────
+  if (step === 1) {
+    return (
+      <KeyboardAvoidingView
+        style={[styles.root, { backgroundColor: "#18110C" }]}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
         <StatusBar barStyle="light-content" />
-        <SacredBackground />
-
-        {/* Header */}
-        <LinearGradient
-          colors={tema.gradient}
-          style={[styles.header, { paddingTop: topPad + 8 }]}
-        >
-          <View style={styles.headerTop}>
-            <Pressable onPress={() => router.back()} hitSlop={12}>
-              <Feather name="arrow-left" size={22} color="#EDE1D3" />
-            </Pressable>
-            <Text style={styles.headerTitle}>Crear grupo</Text>
-            <View style={{ width: 22 }} />
-          </View>
-          <View style={styles.headerPreview}>
-            <View style={[styles.previewIcon, { backgroundColor: tema.color + "22" }]}>
-              <Feather name={tema.icon} size={26} color={tema.color} />
+        <View style={{ paddingTop: topPad + 12, paddingHorizontal: 20, flex: 1 }}>
+          {/* Close */}
+          <Pressable onPress={() => router.back()} hitSlop={12} style={styles.closeBtn}>
+            <View style={styles.closeBtnInner}>
+              <Feather name="x" size={18} color="#EDE1D3" />
             </View>
-            <View>
-              <Text style={styles.previewName} numberOfLines={1}>
-                {nombre.trim() || "Nombre del grupo"}
-              </Text>
-              <Text style={styles.previewSub}>
-                {privado ? "🔒 Privado" : "🌐 Público"} · 1 miembro
-              </Text>
-            </View>
+          </Pressable>
+
+          <Text style={styles.stepTitle}>Nombrá tu Grupo</Text>
+
+          <View style={[styles.nameInputBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <TextInput
+              ref={nameInputRef}
+              value={nombre}
+              onChangeText={(v) => setNombre(v.slice(0, 40))}
+              placeholder="Nombre del Grupo"
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.nameInput, { color: colors.foreground }]}
+              maxLength={40}
+              returnKeyType="done"
+              onSubmitEditing={() => canNext1 && setStep(2)}
+            />
+            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#C69B4F" : colors.mutedForeground }]}>
+              {remaining}
+            </Text>
           </View>
-        </LinearGradient>
+        </View>
 
-        <ScrollView
-          contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 24, paddingBottom: insets.bottom + 100 }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Nombre */}
-          <Text style={[styles.label, { color: colors.foreground }]}>Nombre del grupo *</Text>
-          <TextInput
-            value={nombre}
-            onChangeText={setNombre}
-            placeholder="Ej: Meditadores del amanecer"
-            placeholderTextColor={colors.mutedForeground}
-            style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.foreground }]}
-            maxLength={60}
-          />
-          <Text style={[styles.hint, { color: colors.mutedForeground }]}>{nombre.length}/60</Text>
-
-          {/* Descripción */}
-          <Text style={[styles.label, { color: colors.foreground }]}>Descripción</Text>
-          <TextInput
-            value={descripcion}
-            onChangeText={setDescripcion}
-            placeholder="¿De qué trata este grupo?"
-            placeholderTextColor={colors.mutedForeground}
-            style={[styles.inputMulti, { backgroundColor: colors.card, borderColor: colors.border, color: colors.foreground }]}
-            multiline
-            numberOfLines={3}
-            maxLength={200}
-          />
-          <Text style={[styles.hint, { color: colors.mutedForeground }]}>{descripcion.length}/200</Text>
-
-          {/* Tema / ícono */}
-          <Text style={[styles.label, { color: colors.foreground }]}>Tema del grupo</Text>
-          <View style={styles.temasGrid}>
-            {TEMAS.map((t) => (
-              <Pressable
-                key={t.id}
-                onPress={() => setTemaId(t.id)}
-                style={[
-                  styles.temaChip,
-                  {
-                    backgroundColor: temaId === t.id ? t.color + "22" : colors.card,
-                    borderColor: temaId === t.id ? t.color : colors.border,
-                  },
-                ]}
-              >
-                <Feather name={t.icon} size={14} color={temaId === t.id ? t.color : colors.mutedForeground} />
-                <Text
-                  style={[
-                    styles.temaChipText,
-                    { color: temaId === t.id ? t.color : colors.mutedForeground },
-                  ]}
-                >
-                  {t.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {/* Privacidad */}
-          <Text style={[styles.label, { color: colors.foreground }]}>Privacidad</Text>
-          <View style={styles.privRow}>
-            <Pressable
-              onPress={() => setPrivado(false)}
-              style={[
-                styles.privOption,
-                {
-                  backgroundColor: !privado ? colors.primary + "15" : colors.card,
-                  borderColor: !privado ? colors.primary : colors.border,
-                },
-              ]}
-            >
-              <Feather name="users" size={18} color={!privado ? colors.primary : colors.mutedForeground} />
-              <View>
-                <Text style={[styles.privTitle, { color: !privado ? colors.primary : colors.foreground }]}>
-                  Público
-                </Text>
-                <Text style={[styles.privSub, { color: colors.mutedForeground }]}>
-                  Cualquiera puede unirse
-                </Text>
-              </View>
-            </Pressable>
-            <Pressable
-              onPress={() => setPrivado(true)}
-              style={[
-                styles.privOption,
-                {
-                  backgroundColor: privado ? colors.primary + "15" : colors.card,
-                  borderColor: privado ? colors.primary : colors.border,
-                },
-              ]}
-            >
-              <Feather name="lock" size={18} color={privado ? colors.primary : colors.mutedForeground} />
-              <View>
-                <Text style={[styles.privTitle, { color: privado ? colors.primary : colors.foreground }]}>
-                  Privado
-                </Text>
-                <Text style={[styles.privSub, { color: colors.mutedForeground }]}>
-                  Solo por invitación
-                </Text>
-              </View>
-            </Pressable>
-          </View>
-
-          {/* Reglas */}
-          <Text style={[styles.label, { color: colors.foreground }]}>Reglas del espacio</Text>
-          <Text style={[styles.hint, { color: colors.mutedForeground, marginTop: -8, marginBottom: 10 }]}>
-            Opcionales — ayudan a mantener un espacio sagrado
-          </Text>
-          {reglas.map((r, i) => (
-            <View key={i} style={styles.reglaRow}>
-              <View style={[styles.reglaNum, { backgroundColor: colors.primary + "20" }]}>
-                <Text style={[styles.reglaNumText, { color: colors.primary }]}>{i + 1}</Text>
-              </View>
-              <TextInput
-                value={r}
-                onChangeText={(v) => updateRegla(i, v)}
-                placeholder={`Regla ${i + 1}`}
-                placeholderTextColor={colors.mutedForeground}
-                style={[styles.reglaInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.foreground }]}
-                maxLength={100}
-              />
-            </View>
-          ))}
-          {reglas.length < 6 && (
-            <Pressable onPress={addRegla} style={styles.addReglaBtn}>
-              <Feather name="plus" size={14} color={colors.primary} />
-              <Text style={[styles.addReglaText, { color: colors.primary }]}>Agregar regla</Text>
-            </Pressable>
-          )}
-        </ScrollView>
-
-        {/* Save button */}
-        <View style={[styles.saveBar, { paddingBottom: insets.bottom + 12, backgroundColor: colors.background, borderTopColor: colors.border }]}>
+        {/* Terminar button pinned to bottom */}
+        <View style={[styles.stepFooter, { paddingBottom: bottomPad + 12 }]}>
           <Pressable
-            onPress={handleCreate}
-            disabled={!canSave}
-            style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, borderRadius: 18, overflow: "hidden" }]}
+            onPress={() => canNext1 && setStep(2)}
+            style={[styles.nextBtn, { backgroundColor: canNext1 ? colors.foreground : colors.card }]}
+            disabled={!canNext1}
           >
-            <LinearGradient
-              colors={canSave ? ["#D6A85B", "#C69B4F"] : [colors.card, colors.card]}
-              style={styles.saveBtn}
-            >
-              <Text style={[styles.saveBtnText, { color: canSave ? "#1A0E06" : colors.mutedForeground }]}>
-                Crear grupo
-              </Text>
-            </LinearGradient>
+            <Text style={[styles.nextBtnText, { color: canNext1 ? "#18110C" : colors.mutedForeground }]}>
+              Terminar
+            </Text>
           </Pressable>
         </View>
+      </KeyboardAvoidingView>
+    );
+  }
+
+  // ── Steps 2-5: Group preview + bottom sheet ───────────────────────────────
+  return (
+    <View style={[styles.root, { backgroundColor: "#18110C" }]}>
+      <StatusBar barStyle="light-content" />
+
+      {/* Back arrow top-left */}
+      <View style={{ paddingTop: topPad + 8, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between" }}>
+        <Pressable onPress={() => setStep((s) => Math.max(1, s - 1) as Step)} hitSlop={12}>
+          <Feather name="arrow-left" size={22} color="#EDE1D3" />
+        </Pressable>
+        <Feather name="settings" size={20} color="rgba(237,225,211,0.3)" />
       </View>
-    </KeyboardAvoidingView>
+
+      {/* Group preview (visible behind sheet) */}
+      <GroupPreview nombre={nombre} privado={privado} imageIdx={imageIdx} colors={colors} />
+
+      {/* Sheet */}
+      <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <BottomSheet key={step} colors={colors}>
+
+          {/* ── Step 2: Description ── */}
+          {step === 2 && (
+            <>
+              <View style={styles.sheetTopRow}>
+                <Text style={[styles.sheetTitle, { color: colors.foreground }]}>¡Grupo creado!</Text>
+                <Pressable onPress={() => setStep(3)} hitSlop={12}>
+                  <Text style={[styles.skipText, { color: colors.mutedForeground }]}>Omitir</Text>
+                </Pressable>
+              </View>
+              <Text style={[styles.sheetSub, { color: colors.mutedForeground }]}>
+                Agregá una breve descripción para que los demás sepan de qué se trata.
+              </Text>
+              <TextInput
+                value={descripcion}
+                onChangeText={setDescripcion}
+                placeholder="Agregar una descripción (Opcional)"
+                placeholderTextColor={colors.mutedForeground}
+                style={[styles.sheetTextarea, { backgroundColor: colors.background, color: colors.foreground, borderColor: colors.border }]}
+                multiline
+                numberOfLines={4}
+                maxLength={200}
+              />
+              <Pressable
+                onPress={() => setStep(3)}
+                style={[styles.sheetNext, { backgroundColor: colors.foreground }]}
+              >
+                <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Siguiente</Text>
+              </Pressable>
+              <View style={{ height: bottomPad + 8 }} />
+            </>
+          )}
+
+          {/* ── Step 3: Image picker ── */}
+          {step === 3 && (
+            <>
+              <View style={styles.sheetTopRow}>
+                <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Imagen de Portada</Text>
+              </View>
+              <Text style={[styles.sheetSub, { color: colors.mutedForeground }]}>
+                Asegurate que tu Grupo destaque seleccionando una imagen relevante.
+              </Text>
+              <ScrollView style={{ maxHeight: 230 }} showsVerticalScrollIndicator={false}>
+                <View style={styles.galleryGrid}>
+                  {GALLERY.map((src, i) => (
+                    <Pressable
+                      key={i}
+                      onPress={() => setImageIdx(i)}
+                      style={[styles.galleryItem, imageIdx === i && styles.galleryItemSelected]}
+                    >
+                      <Image source={src} style={styles.galleryImg} />
+                      {imageIdx === i && (
+                        <View style={styles.galleryCheck}>
+                          <Feather name="check" size={14} color="#fff" />
+                        </View>
+                      )}
+                    </Pressable>
+                  ))}
+                </View>
+              </ScrollView>
+              <View style={[styles.sheetNavRow, { marginTop: 14 }]}>
+                <Pressable onPress={() => setStep(2)} style={styles.prevBtn}>
+                  <Text style={[styles.prevBtnText, { color: colors.mutedForeground }]}>Anterior</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setStep(4)}
+                  style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
+                >
+                  <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Siguiente</Text>
+                </Pressable>
+              </View>
+              <View style={{ height: bottomPad + 8 }} />
+            </>
+          )}
+
+          {/* ── Step 4: Welcome message ── */}
+          {step === 4 && (
+            <>
+              <View style={styles.sheetTopRow}>
+                <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Mensaje de Bienvenida</Text>
+                <Pressable onPress={() => setStep(5)} hitSlop={12}>
+                  <Text style={[styles.skipText, { color: colors.mutedForeground }]}>Omitir</Text>
+                </Pressable>
+              </View>
+              <Text style={[styles.sheetSub, { color: colors.mutedForeground }]}>
+                Escribí un mensaje que verán las personas al unirse al grupo.
+              </Text>
+              <TextInput
+                value={bienvenida}
+                onChangeText={setBienvenida}
+                placeholder="Ej: Bienvenido/a al grupo. Aquí compartimos..."
+                placeholderTextColor={colors.mutedForeground}
+                style={[styles.sheetTextarea, { backgroundColor: colors.background, color: colors.foreground, borderColor: colors.border }]}
+                multiline
+                numberOfLines={4}
+                maxLength={300}
+              />
+              <View style={styles.sheetNavRow}>
+                <Pressable onPress={() => setStep(3)} style={styles.prevBtn}>
+                  <Text style={[styles.prevBtnText, { color: colors.mutedForeground }]}>Anterior</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setStep(5)}
+                  style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
+                >
+                  <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Siguiente</Text>
+                </Pressable>
+              </View>
+              <View style={{ height: bottomPad + 8 }} />
+            </>
+          )}
+
+          {/* ── Step 5: Share / Done ── */}
+          {step === 5 && (
+            <>
+              <View style={styles.successIcon}>
+                <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.successGrad}>
+                  <Feather name="check" size={28} color="#18110C" />
+                </LinearGradient>
+              </View>
+              <Text style={[styles.sheetTitle, { color: colors.foreground, textAlign: "center", marginBottom: 8 }]}>
+                ¡Tu grupo está listo!
+              </Text>
+              <Text style={[styles.sheetSub, { color: colors.mutedForeground, textAlign: "center", marginBottom: 20 }]}>
+                Compartí el enlace para invitar personas a "{nombre}".
+              </Text>
+
+              {/* Invite link box */}
+              <View style={[styles.linkBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
+                <Feather name="link" size={14} color={colors.primary} style={{ marginRight: 8 }} />
+                <Text style={[styles.linkText, { color: colors.primary }]} numberOfLines={1}>
+                  {inviteCode}
+                </Text>
+              </View>
+
+              {/* Share button */}
+              <Pressable onPress={handleShare} style={[styles.sheetNext, { backgroundColor: colors.primary, marginTop: 16 }]}>
+                <Feather name="share-2" size={17} color="#18110C" />
+                <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Compartir enlace</Text>
+              </Pressable>
+
+              {/* Done */}
+              <Pressable
+                onPress={() => router.replace("/grupos" as never)}
+                style={{ marginTop: 12, alignItems: "center", paddingVertical: 12 }}
+              >
+                <Text style={[styles.skipText, { color: colors.mutedForeground }]}>
+                  Ir a Mis Grupos
+                </Text>
+              </Pressable>
+              <View style={{ height: bottomPad + 8 }} />
+            </>
+          )}
+        </BottomSheet>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  header: { paddingHorizontal: 16, paddingBottom: 20 },
-  headerTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20 },
-  headerTitle: { color: "#EDE1D3", fontSize: 17, fontWeight: "700" },
-  headerPreview: { flexDirection: "row", alignItems: "center", gap: 14 },
-  previewIcon: { width: 52, height: 52, borderRadius: 18, alignItems: "center", justifyContent: "center" },
-  previewName: { color: "#EDE1D3", fontSize: 17, fontWeight: "700", marginBottom: 4, maxWidth: 240 },
-  previewSub: { color: "#EDE1D3AA", fontSize: 12 },
 
-  label: { fontSize: 14, fontWeight: "700", marginBottom: 10, marginTop: 20 },
-  hint: { fontSize: 11, marginTop: 4, marginBottom: 4 },
-  input: {
+  // Step 1
+  closeBtn: { marginBottom: 36, alignSelf: "flex-start" },
+  closeBtnInner: { width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(237,225,211,0.12)", alignItems: "center", justifyContent: "center" },
+  stepTitle: { color: "#EDE1D3", fontSize: 24, fontWeight: "700", marginBottom: 24 },
+  nameInputBox: {
+    flexDirection: "row", alignItems: "center",
+    borderRadius: 14, borderWidth: 1,
+    paddingHorizontal: 16, paddingVertical: 14,
+  },
+  nameInput: { flex: 1, fontSize: 16 },
+  nameCounter: { fontSize: 13, fontWeight: "600", marginLeft: 8 },
+  stepFooter: { paddingHorizontal: 20 },
+  nextBtn: { borderRadius: 16, paddingVertical: 16, alignItems: "center" },
+  nextBtnText: { fontSize: 16, fontWeight: "700" },
+
+  // Shared sheet styles
+  sheetTopRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 },
+  sheetTitle: { fontSize: 20, fontWeight: "700" },
+  sheetSub: { fontSize: 14, lineHeight: 21, marginBottom: 16 },
+  skipText: { fontSize: 14, fontWeight: "600" },
+  sheetTextarea: {
     borderWidth: 1, borderRadius: 14,
     paddingHorizontal: 14, paddingVertical: 12,
-    fontSize: 15,
+    fontSize: 14, minHeight: 100, textAlignVertical: "top",
   },
-  inputMulti: {
-    borderWidth: 1, borderRadius: 14,
-    paddingHorizontal: 14, paddingVertical: 12,
-    fontSize: 15, minHeight: 80, textAlignVertical: "top",
-  },
+  sheetNavRow: { flexDirection: "row", gap: 12, marginTop: 14, alignItems: "center" },
+  prevBtn: { paddingVertical: 16, paddingHorizontal: 4 },
+  prevBtnText: { fontSize: 15, fontWeight: "600" },
+  sheetNext: { borderRadius: 16, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 },
+  sheetNextText: { fontSize: 16, fontWeight: "700" },
 
-  temasGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  temaChip: {
-    flexDirection: "row", alignItems: "center", gap: 6,
-    borderWidth: 1, borderRadius: 20,
-    paddingHorizontal: 12, paddingVertical: 7,
-  },
-  temaChipText: { fontSize: 13, fontWeight: "600" },
+  // Gallery
+  galleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+  galleryItem: { borderRadius: 10, overflow: "hidden", position: "relative" },
+  galleryItemSelected: { borderWidth: 2.5, borderColor: "#C69B4F", borderRadius: 10 },
+  galleryImg: { width: 68, height: 68 },
+  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#C69B4F", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
 
-  privRow: { flexDirection: "row", gap: 12 },
-  privOption: {
-    flex: 1, borderWidth: 1, borderRadius: 16,
-    padding: 14, gap: 8, alignItems: "center",
-  },
-  privTitle: { fontSize: 14, fontWeight: "700" },
-  privSub: { fontSize: 11 },
-
-  reglaRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 },
-  reglaNum: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
-  reglaNumText: { fontSize: 13, fontWeight: "700" },
-  reglaInput: {
-    flex: 1, borderWidth: 1, borderRadius: 14,
-    paddingHorizontal: 12, paddingVertical: 10, fontSize: 14,
-  },
-  addReglaBtn: { flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 8, marginBottom: 4 },
-  addReglaText: { fontSize: 14, fontWeight: "600" },
-
-  saveBar: {
-    position: "absolute", bottom: 0, left: 0, right: 0,
-    paddingHorizontal: 20, paddingTop: 12, borderTopWidth: 1,
-  },
-  saveBtn: { borderRadius: 18, paddingVertical: 16, alignItems: "center" },
-  saveBtnText: { fontSize: 16, fontWeight: "700" },
+  // Success
+  successIcon: { alignSelf: "center", marginBottom: 16, borderRadius: 30, overflow: "hidden" },
+  successGrad: { width: 60, height: 60, alignItems: "center", justifyContent: "center" },
+  linkBox: { flexDirection: "row", alignItems: "center", borderRadius: 12, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 12 },
+  linkText: { fontSize: 13, fontWeight: "600", flex: 1 },
 });

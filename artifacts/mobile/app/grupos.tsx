@@ -130,9 +130,9 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
   const colors = useColors();
   const insets = useSafeAreaInsets();
 
-  const handleSelect = (_tipo: "publico" | "privado") => {
+  const handleSelect = (tipo: "publico" | "privado") => {
     onClose();
-    router.push("/grupo/crear" as never);
+    router.push(`/grupo/crear?privado=${tipo === "privado" ? "1" : "0"}` as never);
   };
 
   return (
