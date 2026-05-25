@@ -91,32 +91,57 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
     const objectPath = `/objects/${wildcardPath}`;
     const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
 
-    // --- Protected route example (uncomment when using replit-auth) ---
-    // if (!req.isAuthenticated()) {
-    //   res.status(401).json({ error: "Unauthorized" });
-    //   return;
-    // }
-    // const canAccess = await objectStorageService.canAccessObjectEntity({
-    //   userId: req.user.id,
-    //   objectFile,
-    //   requestedPermission: ObjectPermission.READ,
-    // });
-    // if (!canAccess) {
-    //   res.status(403).json({ error: "Forbidden" });
-    //   return;
-    // }
+    const [metadata] = await objectFile.getMetadata();
+    const totalSize =
+      typeof metadata.size === "string" ? parseInt(metadata.size, 10) : Number(metadata.size ?? 0);
+    const contentType = (metadata.contentType as string) || "application/octet-stream";
 
-    const response = await objectStorageService.downloadObject(objectFile);
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Accept-Ranges", "bytes");
+    res.setHeader("Cache-Control", "private, max-age=3600");
 
-    res.status(response.status);
-    response.headers.forEach((value, key) => res.setHeader(key, value));
-
-    if (response.body) {
-      const nodeStream = Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
-      nodeStream.pipe(res);
-    } else {
-      res.end();
+    const rangeHeader = req.headers.range;
+    if (rangeHeader && totalSize > 0) {
+      const match = /^bytes=(\d*)-(\d*)$/.exec(rangeHeader);
+      if (!match) {
+        res.status(416).setHeader("Content-Range", `bytes */${totalSize}`).end();
+        return;
+      }
+      const startStr = match[1];
+      const endStr = match[2];
+      let start = startStr ? parseInt(startStr, 10) : 0;
+      let end = endStr ? parseInt(endStr, 10) : totalSize - 1;
+      if (!startStr && endStr) {
+        // suffix range: last N bytes
+        start = Math.max(0, totalSize - parseInt(endStr, 10));
+        end = totalSize - 1;
+      }
+      if (isNaN(start) || isNaN(end) || start > end || end >= totalSize) {
+        res.status(416).setHeader("Content-Range", `bytes */${totalSize}`).end();
+        return;
+      }
+      res.status(206);
+      res.setHeader("Content-Range", `bytes ${start}-${end}/${totalSize}`);
+      res.setHeader("Content-Length", String(end - start + 1));
+      const stream = objectFile.createReadStream({ start, end });
+      stream.on("error", (err) => {
+        req.log.error({ err }, "Error streaming range");
+        if (!res.headersSent) res.status(500).end();
+        else res.destroy(err);
+      });
+      stream.pipe(res);
+      return;
     }
+
+    res.status(200);
+    if (totalSize > 0) res.setHeader("Content-Length", String(totalSize));
+    const stream = objectFile.createReadStream();
+    stream.on("error", (err) => {
+      req.log.error({ err }, "Error streaming object");
+      if (!res.headersSent) res.status(500).end();
+      else res.destroy(err);
+    });
+    stream.pipe(res);
   } catch (error) {
     if (error instanceof ObjectNotFoundError) {
       req.log.warn({ err: error }, "Object not found");

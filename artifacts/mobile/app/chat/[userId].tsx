@@ -86,18 +86,19 @@ async function uploadLocalFile(
   uri: string,
   contentType: string,
   fileName: string,
-  size: number,
+  hintSize: number,
 ): Promise<string> {
-  console.log("[upload] requesting URL", { fileName, contentType, size });
-  const { uploadURL, objectPath } = await requestUploadUrl({
-    name: fileName,
-    size,
-    contentType,
-  });
-  console.log("[upload] got URL, fetching local file");
+  console.log("[upload] fetching local file", { fileName, contentType, hintSize });
   const fileResp = await fetch(uri);
   const blob = await fileResp.blob();
-  console.log("[upload] blob ready", { size: blob.size, type: blob.type });
+  const realSize = blob.size || hintSize || 1;
+  console.log("[upload] blob ready", { size: realSize, type: blob.type });
+  const { uploadURL, objectPath } = await requestUploadUrl({
+    name: fileName,
+    size: realSize,
+    contentType,
+  });
+  console.log("[upload] got URL");
   const putResp = await fetch(uploadURL, {
     method: "PUT",
     headers: { "Content-Type": contentType },
