@@ -15,13 +15,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AmbientPlayerProvider, useAmbientPlayer } from "@/context/AmbientPlayerContext";
+import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
@@ -68,30 +68,11 @@ function AuthGate() {
   return null;
 }
 
-/** Starts ambient sound once, as soon as auth resolves and user is registered.
- *  Lives at layout level so it fires regardless of which screen is active. */
-function AmbientAutoStart() {
-  const { startAmbient } = useAmbientPlayer();
-  const { isRegistered, authLoading } = useAuth();
-  const started = useRef(false);
-
-  useEffect(() => {
-    if (authLoading || !isRegistered) return;
-    if (started.current) return;
-    started.current = true;
-    console.warn("[Ambient] AmbientAutoStart firing startAmbient");
-    startAmbient();
-  }, [authLoading, isRegistered, startAmbient]);
-
-  return null;
-}
-
 function RootLayoutNav() {
   return (
     <>
       <ApiAuthBridge />
       <AuthGate />
-      <AmbientAutoStart />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

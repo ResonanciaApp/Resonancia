@@ -965,9 +965,11 @@ function AudioAttachment({
 
   useEffect(() => {
     if (Platform.OS !== "web") return;
-    const audio = new (globalThis as unknown as { Audio: new (src?: string) => HTMLAudioElement }).Audio(url);
-    audio.preload = "metadata";
-    const onPlay = () => setIsPlaying(true);
+    const AudioCtor = (globalThis as unknown as { Audio: new (src?: string) => HTMLAudioElement }).Audio;
+    const audio = new AudioCtor();
+    audio.src = url;
+    audio.preload = "auto";
+    const onPlay = () => { setIsPlaying(true); setLoading(false); };
     const onPause = () => setIsPlaying(false);
     const onTime = () => setPositionMs(Math.round(audio.currentTime * 1000));
     const onEnded = () => {
@@ -975,21 +977,19 @@ function AudioAttachment({
       setPositionMs(0);
       audio.currentTime = 0;
     };
-    const onWaiting = () => setLoading(true);
-    const onPlaying = () => setLoading(false);
-    const onCanPlay = () => setLoading(false);
     const onError = () => {
-      console.log("[audio] error", audio.error?.code, audio.error?.message);
+      console.log("[audio] error", audio.error?.code, audio.error?.message, "src:", audio.src);
       setLoading(false);
-      Alert.alert("Error", "No se pudo reproducir el audio.");
+      setIsPlaying(false);
+      Alert.alert(
+        "Audio no compatible",
+        "Este formato de audio no se puede reproducir en el navegador. Probá desde la app móvil.",
+      );
     };
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
     audio.addEventListener("timeupdate", onTime);
     audio.addEventListener("ended", onEnded);
-    audio.addEventListener("waiting", onWaiting);
-    audio.addEventListener("playing", onPlaying);
-    audio.addEventListener("canplay", onCanPlay);
     audio.addEventListener("error", onError);
     webAudioRef.current = audio;
     return () => {
@@ -998,9 +998,6 @@ function AudioAttachment({
       audio.removeEventListener("pause", onPause);
       audio.removeEventListener("timeupdate", onTime);
       audio.removeEventListener("ended", onEnded);
-      audio.removeEventListener("waiting", onWaiting);
-      audio.removeEventListener("playing", onPlaying);
-      audio.removeEventListener("canplay", onCanPlay);
       audio.removeEventListener("error", onError);
       webAudioRef.current = null;
     };
@@ -1013,7 +1010,11 @@ function AudioAttachment({
         if (!a) return;
         if (a.paused) {
           setLoading(true);
-          await a.play();
+          try {
+            await a.play();
+          } finally {
+            setLoading(false);
+          }
         } else {
           a.pause();
         }
