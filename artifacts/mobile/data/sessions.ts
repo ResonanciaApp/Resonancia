@@ -1,4 +1,4 @@
-export type SoundTag = "Binaural" | "Música" | "Sonidos Naturaleza";
+export type SoundTag = "Binaural" | "Música" | "Sonidos Naturaleza" | "Música Enteógena";
 export type MeditationTag =
   | "No Duales"
   | "Visualizaciones"

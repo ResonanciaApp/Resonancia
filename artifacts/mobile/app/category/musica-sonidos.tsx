@@ -31,7 +31,7 @@ const IMG_SIZE = CARD_WIDTH - 10;
 
 type Tab = "Todos" | SoundTag;
 
-const TABS: Tab[] = ["Todos", "Binaural", "Música", "Sonidos Naturaleza"];
+const TABS: Tab[] = ["Todos", "Binaural", "Música", "Sonidos Naturaleza", "Música Enteógena"];
 
 const DURATION_OPTIONS = [5, 10, 15, 20, 30, 45];
 
@@ -39,12 +39,14 @@ const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
   Binaural: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   Música: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   "Sonidos Naturaleza": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
+  "Música Enteógena": { bg: "rgba(198,155,79,0.18)", text: "rgba(230,195,120,0.9)" },
 };
 
 const TAG_ICONS: Record<SoundTag, React.ComponentProps<typeof Feather>["name"]> = {
   Binaural: "headphones",
   Música: "music",
   "Sonidos Naturaleza": "wind",
+  "Música Enteógena": "zap",
 };
 
 const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
