@@ -4,7 +4,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   getGetConversationsQueryKey,
   getGetDirectMessagesQueryKey,
-  useGetMe,
   getGetFriendsQueryKey,
   getGetUnreadNotificationCountQueryKey,
   requestUploadUrl,
@@ -155,8 +154,6 @@ export default function ChatScreen() {
   const otherId = Number(params.userId);
   const qc = useQueryClient();
   const { isSignedIn, isLoaded } = useClerkAuth();
-  const meQ = useGetMe({ query: { queryKey: ["me"] as const, enabled: !!isSignedIn } });
-  const meId = meQ.data?.id;
 
   const friendsQ = useGetFriends({
     query: { queryKey: getGetFriendsQueryKey(), enabled: !!isSignedIn },
@@ -188,30 +185,6 @@ export default function ChatScreen() {
 
   const sendMsg = useSendDirectMessage({
     mutation: {
-      onMutate: async (variables) => {
-        const key = getGetDirectMessagesQueryKey(otherId, {});
-        await qc.cancelQueries({ queryKey: key });
-        const previous = qc.getQueryData<DirectMessage[]>(key);
-        const data = variables.data;
-        const optimistic: DirectMessage = {
-          id: -Date.now(),
-          senderId: meId ?? 0,
-          recipientId: otherId,
-          body: data.body ?? null,
-          sessionId: data.sessionId ?? null,
-          attachmentUrl: data.attachmentUrl ?? null,
-          attachmentType: (data.attachmentType ?? null) as DirectMessage["attachmentType"],
-          attachmentMeta: (data.attachmentMeta ?? null) as DirectMessage["attachmentMeta"],
-          readAt: null,
-          createdAt: new Date().toISOString(),
-        };
-        qc.setQueryData<DirectMessage[]>(key, (old) => [optimistic, ...(old ?? [])]);
-        return { previous, optimisticId: optimistic.id };
-      },
-      onError: (_err, _vars, ctx) => {
-        const key = getGetDirectMessagesQueryKey(otherId, {});
-        if (ctx?.previous) qc.setQueryData(key, ctx.previous);
-      },
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: getGetDirectMessagesQueryKey(otherId, {}) });
         qc.invalidateQueries({ queryKey: getGetConversationsQueryKey() });
