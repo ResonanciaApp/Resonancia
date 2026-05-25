@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, eq, ilike, ne, or, sql } from "drizzle-orm";
+import { and, eq, ilike, inArray, ne, or } from "drizzle-orm";
 import { db, usersTable, friendshipsTable, type User } from "@workspace/db";
 import { UpdateMeBody, SearchUsersQueryParams } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
@@ -91,8 +91,8 @@ router.get("/users/search", requireAuth, async (req, res) => {
       .from(friendshipsTable)
       .where(
         or(
-          and(eq(friendshipsTable.requesterId, me.id), sql`${friendshipsTable.addresseeId} = ANY(${ids})`),
-          and(eq(friendshipsTable.addresseeId, me.id), sql`${friendshipsTable.requesterId} = ANY(${ids})`),
+          and(eq(friendshipsTable.requesterId, me.id), inArray(friendshipsTable.addresseeId, ids)),
+          and(eq(friendshipsTable.addresseeId, me.id), inArray(friendshipsTable.requesterId, ids)),
         ),
       );
 
