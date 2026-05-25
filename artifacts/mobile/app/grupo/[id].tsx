@@ -1,10 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -300,6 +301,20 @@ export default function GrupoDetailScreen() {
 
   const [openCommentsPostId, setOpenCommentsPostId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState("");
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showEvt = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvt = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const showSub = Keyboard.addListener(showEvt, (e) => {
+      setKeyboardHeight(e.endCoordinates?.height ?? 0);
+    });
+    const hideSub = Keyboard.addListener(hideEvt, () => setKeyboardHeight(0));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -677,9 +692,15 @@ export default function GrupoDetailScreen() {
                 setCommentText("");
               }}
             />
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : undefined}
-              style={[commentStyles.sheet, { backgroundColor: colors.card, paddingBottom: bottomPad + 12 }]}
+            <View
+              style={[
+                commentStyles.sheet,
+                {
+                  backgroundColor: colors.card,
+                  paddingBottom: (keyboardHeight > 0 ? keyboardHeight + 12 : bottomPad + 12),
+                  marginBottom: keyboardHeight > 0 && Platform.OS === "android" ? -keyboardHeight : 0,
+                },
+              ]}
             >
               <View style={[commentStyles.handle, { backgroundColor: colors.border }]} />
               <View style={commentStyles.sheetHeader}>
@@ -784,7 +805,7 @@ export default function GrupoDetailScreen() {
                   </>
                 );
               })()}
-            </KeyboardAvoidingView>
+            </View>
           </View>
         )}
       </View>
