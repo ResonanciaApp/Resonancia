@@ -125,6 +125,16 @@ export function useVozInterior() {
     } catch {}
   }, [audioRecorder]);
 
+  const deleteAllEntries = useCallback(async () => {
+    await soundRef.current?.stopAsync().catch(() => {});
+    await soundRef.current?.unloadAsync().catch(() => {});
+    soundRef.current = null;
+    setPlayingId(null);
+    setPlayingPositionMs(0);
+    setEntries([]);
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+  }, []);
+
   const deleteEntry = useCallback(
     async (id: string) => {
       setEntries((prev) => {
@@ -209,6 +219,7 @@ export function useVozInterior() {
     startRecording,
     stopRecording,
     deleteEntry,
+    deleteAllEntries,
     updateEntry,
     playEntry,
   };

@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Alert,
   Platform,
@@ -10,15 +10,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from "react-native-reanimated";
-
 import { type VozEntry, useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 
@@ -95,19 +86,6 @@ function RecordingEntry({
   const progress = entry.durationMs > 0 ? Math.min(positionMs / entry.durationMs, 1) : 0;
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState(entry.title ?? "");
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const confirmTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleTrashPress = () => {
-    if (confirmingDelete) {
-      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
-      setConfirmingDelete(false);
-      onDelete();
-    } else {
-      setConfirmingDelete(true);
-      confirmTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
-    }
-  };
   const inputRef = useRef<TextInput>(null);
 
   const confirmTitle = () => {
@@ -174,15 +152,8 @@ function RecordingEntry({
           </Text>
         </View>
 
-        <Pressable
-          onPress={handleTrashPress}
-          hitSlop={8}
-          style={[styles.deleteBtn, confirmingDelete && styles.deleteBtnConfirm]}
-        >
-          {confirmingDelete
-            ? <Text style={styles.confirmDeleteText}>¿Borrar?</Text>
-            : <Feather name="trash-2" size={13} color={colors.mutedForeground} />
-          }
+        <Pressable onPress={onDelete} hitSlop={8} style={styles.deleteBtn}>
+          <Feather name="trash-2" size={13} color={colors.mutedForeground} />
         </Pressable>
       </View>
 
@@ -214,6 +185,7 @@ export function VozInteriorPanel() {
     startRecording,
     stopRecording,
     deleteEntry,
+    deleteAllEntries,
     updateEntry,
     playEntry,
   } = useVozInterior();
@@ -236,19 +208,8 @@ export function VozInteriorPanel() {
     }
   };
 
-  const [confirmingDeleteId, setConfirmingDeleteId] = React.useState<string | null>(null);
-  const confirmDeleteTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const handleDelete = (id: string) => {
-    if (confirmingDeleteId === id) {
-      if (confirmDeleteTimerRef.current) clearTimeout(confirmDeleteTimerRef.current);
-      setConfirmingDeleteId(null);
-      deleteEntry(id);
-    } else {
-      if (confirmDeleteTimerRef.current) clearTimeout(confirmDeleteTimerRef.current);
-      setConfirmingDeleteId(id);
-      confirmDeleteTimerRef.current = setTimeout(() => setConfirmingDeleteId(null), 3000);
-    }
+    deleteEntry(id);
   };
 
   return (
@@ -265,10 +226,20 @@ export function VozInteriorPanel() {
           </View>
         </View>
         {entries.length > 0 && (
-          <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#E8D8FF" />
-            <Text style={styles.historyCount}>{entries.length}</Text>
-          </Pressable>
+          <View style={styles.headerActions}>
+            <Pressable
+              onPress={() => deleteAllEntries()}
+              style={styles.deleteAllBtn}
+              hitSlop={8}
+            >
+              <Feather name="trash-2" size={14} color="#E8D8FF" />
+              <Text style={styles.deleteAllText}>Borrar todos</Text>
+            </Pressable>
+            <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
+              <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#E8D8FF" />
+              <Text style={styles.historyCount}>{entries.length}</Text>
+            </Pressable>
+          </View>
         )}
       </LinearGradient>
 
@@ -352,6 +323,17 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   historyCount: { color: "#E8D8FF", fontSize: 12, fontWeight: "600" },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 6 },
+  deleteAllBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "rgba(212,48,74,0.25)",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  deleteAllText: { color: "#E8D8FF", fontSize: 11, fontWeight: "600" },
 
   recordArea: {
     alignItems: "center",
@@ -460,17 +442,6 @@ const styles = StyleSheet.create({
   entryDate: { fontSize: 10, fontWeight: "600", letterSpacing: 0.4 },
   entryDuration: { fontSize: 13, fontWeight: "600", marginTop: 2, fontVariant: ["tabular-nums"] },
   deleteBtn: { padding: 6 },
-  deleteBtnConfirm: {
-    backgroundColor: "rgba(224,112,96,0.12)",
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  confirmDeleteText: {
-    fontSize: 11,
-    fontWeight: "700" as const,
-    color: "#E07060",
-  },
-
   progressTrack: {
     height: 3,
     borderRadius: 2,
