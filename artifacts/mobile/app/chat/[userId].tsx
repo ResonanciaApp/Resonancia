@@ -927,8 +927,64 @@ function AudioAttachment({
     };
   }, []);
 
+  const webAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (Platform.OS !== "web") return;
+    const audio = new (globalThis as unknown as { Audio: new (src?: string) => HTMLAudioElement }).Audio(url);
+    audio.preload = "metadata";
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onTime = () => setPositionMs(Math.round(audio.currentTime * 1000));
+    const onEnded = () => {
+      setIsPlaying(false);
+      setPositionMs(0);
+      audio.currentTime = 0;
+    };
+    const onWaiting = () => setLoading(true);
+    const onPlaying = () => setLoading(false);
+    const onCanPlay = () => setLoading(false);
+    const onError = () => {
+      console.log("[audio] error", audio.error?.code, audio.error?.message);
+      setLoading(false);
+      Alert.alert("Error", "No se pudo reproducir el audio.");
+    };
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("timeupdate", onTime);
+    audio.addEventListener("ended", onEnded);
+    audio.addEventListener("waiting", onWaiting);
+    audio.addEventListener("playing", onPlaying);
+    audio.addEventListener("canplay", onCanPlay);
+    audio.addEventListener("error", onError);
+    webAudioRef.current = audio;
+    return () => {
+      audio.pause();
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("timeupdate", onTime);
+      audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("waiting", onWaiting);
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("canplay", onCanPlay);
+      audio.removeEventListener("error", onError);
+      webAudioRef.current = null;
+    };
+  }, [url]);
+
   const toggle = async () => {
     try {
+      if (Platform.OS === "web") {
+        const a = webAudioRef.current;
+        if (!a) return;
+        if (a.paused) {
+          setLoading(true);
+          await a.play();
+        } else {
+          a.pause();
+        }
+        return;
+      }
       if (!soundRef.current) {
         setLoading(true);
         const { sound } = await Audio.Sound.createAsync(
@@ -958,7 +1014,8 @@ function AudioAttachment({
         await soundRef.current.playAsync();
         setIsPlaying(true);
       }
-    } catch {
+    } catch (err) {
+      console.log("[audio] toggle error", err);
       setLoading(false);
       Alert.alert("Error", "No se pudo reproducir el audio.");
     }
