@@ -207,6 +207,32 @@ export const DeclineFriendRequestParams = zod.object({
 
 
 /**
+ * @summary List the current user's notifications (newest first)
+ */
+export const GetNotificationsResponseItem = zod.object({
+  "id": zod.number(),
+  "type": zod.enum(['friend_request', 'friend_accepted']),
+  "createdAt": zod.coerce.date(),
+  "readAt": zod.coerce.date().nullable(),
+  "actor": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+})
+})
+export const GetNotificationsResponse = zod.array(GetNotificationsResponseItem)
+
+
+/**
+ * @summary Number of unread notifications
+ */
+export const GetUnreadNotificationCountResponse = zod.object({
+  "count": zod.number()
+})
+
+
+/**
  * @summary Like a message
  */
 export const LikeMessageParams = zod.object({

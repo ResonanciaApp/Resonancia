@@ -103,6 +103,27 @@ export interface FriendRequestInput {
   addresseeId: number;
 }
 
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
+
+
+export const NotificationType = {
+  friend_request: 'friend_request',
+  friend_accepted: 'friend_accepted',
+} as const;
+
+export interface Notification {
+  id: number;
+  type: NotificationType;
+  createdAt: string;
+  /** @nullable */
+  readAt: string | null;
+  actor: UserProfile;
+}
+
+export interface UnreadCount {
+  count: number;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };

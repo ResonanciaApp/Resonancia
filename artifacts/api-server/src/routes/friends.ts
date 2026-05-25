@@ -5,6 +5,7 @@ import {
   db,
   usersTable,
   friendshipsTable,
+  notificationsTable,
   type User,
   type Friendship,
 } from "@workspace/db";
@@ -177,6 +178,12 @@ router.post("/friend-requests", requireAuth, async (req, res) => {
         .set({ status: "accepted" })
         .where(eq(friendshipsTable.id, existing.id))
         .returning();
+      // Notify the original requester that their request was accepted.
+      await db.insert(notificationsTable).values({
+        userId: target.id,
+        actorUserId: me.id,
+        type: "friend_accepted",
+      });
       res.status(201).json(serializeRequest(accepted, target, me));
       return;
     }
@@ -185,6 +192,11 @@ router.post("/friend-requests", requireAuth, async (req, res) => {
       .insert(friendshipsTable)
       .values({ requesterId: me.id, addresseeId, status: "pending" })
       .returning();
+    await db.insert(notificationsTable).values({
+      userId: addresseeId,
+      actorUserId: me.id,
+      type: "friend_request",
+    });
     res.status(201).json(serializeRequest(created, me, target));
   } catch (err) {
     req.log.error(err);
@@ -220,6 +232,12 @@ router.post("/friend-requests/:id/accept", requireAuth, async (req, res) => {
       .from(usersTable)
       .where(eq(usersTable.id, updated.requesterId))
       .limit(1);
+    // Notify the original requester that their request was accepted.
+    await db.insert(notificationsTable).values({
+      userId: updated.requesterId,
+      actorUserId: me.id,
+      type: "friend_accepted",
+    });
     res.json(serializeRequest(updated, requester!, me));
   } catch (err) {
     req.log.error(err);

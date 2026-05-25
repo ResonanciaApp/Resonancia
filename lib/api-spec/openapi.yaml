@@ -16,6 +16,8 @@ tags:
     description: User profiles
   - name: friends
     description: Friendships and friend requests
+  - name: notifications
+    description: User notifications
 paths:
   /healthz:
     get:
@@ -278,6 +280,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /notifications:
+    get:
+      operationId: getNotifications
+      tags: [notifications]
+      summary: List the current user's notifications (newest first)
+      responses:
+        "200":
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+  /notifications/unread-count:
+    get:
+      operationId: getUnreadNotificationCount
+      tags: [notifications]
+      summary: Number of unread notifications
+      responses:
+        "200":
+          description: Unread count
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnreadCount"
+  /notifications/read-all:
+    post:
+      operationId: markAllNotificationsRead
+      tags: [notifications]
+      summary: Mark all notifications as read
+      responses:
+        "204":
+          description: Marked as read
   /messages/{id}/like:
     post:
       operationId: likeMessage
@@ -423,3 +459,26 @@ components:
         addresseeId:
           type: integer
       required: [addresseeId]
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: ["friend_request", "friend_accepted"]
+        createdAt:
+          type: string
+          format: date-time
+        readAt:
+          type: ["string", "null"]
+          format: date-time
+        actor:
+          $ref: "#/components/schemas/UserProfile"
+      required: [id, type, createdAt, readAt, actor]
+    UnreadCount:
+      type: object
+      properties:
+        count:
+          type: integer
+      required: [count]

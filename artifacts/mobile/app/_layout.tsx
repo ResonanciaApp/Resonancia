@@ -136,6 +136,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="notificaciones"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="nuevas-sesiones"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

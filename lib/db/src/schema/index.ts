@@ -20,3 +20,4 @@
 export * from "./messages";
 export * from "./users";
 export * from "./friendships";
+export * from "./notifications";
