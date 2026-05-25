@@ -9,8 +9,10 @@ import {
   PlayfairDisplay_400Regular,
   PlayfairDisplay_700Bold,
 } from "@expo-google-fonts/playfair-display";
+import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { setBaseUrl } from "@workspace/api-client-react";
+import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useRef } from "react";
@@ -29,26 +31,49 @@ import { UserProfileProvider } from "@/context/UserProfileContext";
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
 
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
+
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-/** Redirects to onboarding only for new (unregistered) users.
- *  Waits for authLoading to resolve before deciding — prevents false
- *  redirects when isRegistered starts as false before AsyncStorage loads. */
-function OnboardingGate() {
+/** Attach Clerk session token to all generated API client requests. */
+function ApiAuthBridge() {
+  const { getToken } = useClerkAuth();
+  useEffect(() => {
+    setAuthTokenGetter(() => getToken());
+  }, [getToken]);
+  return null;
+}
+
+/** Routes users based on auth state:
+ *  - Not signed in → /(auth)/sign-in
+ *  - Signed in but not onboarded → /onboarding
+ *  - Signed in & onboarded → stay on home tabs */
+function AuthGate() {
   const segments = useSegments();
-  const redirected = useRef(false);
-  const { isRegistered, authLoading } = useAuth();
+  const { isRegistered, authLoading, isSignedIn } = useAuth();
 
   useEffect(() => {
-    if (authLoading) return;            // wait until AsyncStorage resolved
-    if (redirected.current) return;
-    if (isRegistered) return;           // returning user — stay on home tabs
-    if (segments[0] === "onboarding") return;
-    redirected.current = true;
-    router.replace("/onboarding");
-  }, [segments, isRegistered, authLoading]);
+    if (authLoading) return;
+    const inAuthGroup = segments[0] === "(auth)";
+    const inOnboarding = segments[0] === "onboarding";
+
+    if (!isSignedIn) {
+      if (!inAuthGroup) router.replace("/(auth)/sign-in");
+      return;
+    }
+    // Signed in but didn't finish onboarding (display name, birth year, etc.)
+    if (!isRegistered) {
+      if (!inOnboarding) router.replace("/onboarding");
+      return;
+    }
+    // Fully registered — bounce out of auth/onboarding screens
+    if (inAuthGroup || inOnboarding) {
+      router.replace("/(tabs)");
+    }
+  }, [segments, isRegistered, isSignedIn, authLoading]);
 
   return null;
 }
@@ -74,9 +99,11 @@ function AmbientAutoStart() {
 function RootLayoutNav() {
   return (
     <>
-      <OnboardingGate />
+      <ApiAuthBridge />
+      <AuthGate />
       <AmbientAutoStart />
       <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="onboarding"
@@ -153,42 +180,48 @@ export default function RootLayout() {
     PlayfairDisplay_700Bold,
   });
 
-  // Hide splash when fonts are ready
   useEffect(() => {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
 
-  // Fallback: hide splash after 800ms max — never block the user
   useEffect(() => {
     const t = setTimeout(() => SplashScreen.hideAsync(), 800);
     return () => clearTimeout(t);
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-          <PlayerProvider>
-            <AmbientPlayerProvider>
-            <UserProfileProvider>
-            <IntencionProvider>
-              <DiarioFavoritesProvider>
-                <GestureHandlerRootView>
-                  <KeyboardProvider>
-                    <RootLayoutNav />
-                  </KeyboardProvider>
-                </GestureHandlerRootView>
-              </DiarioFavoritesProvider>
-            </IntencionProvider>
-            </UserProfileProvider>
-            </AmbientPlayerProvider>
-          </PlayerProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </ErrorBoundary>
-    </SafeAreaProvider>
+    <ClerkProvider
+      publishableKey={publishableKey}
+      tokenCache={tokenCache}
+      proxyUrl={proxyUrl}
+    >
+      <ClerkLoaded>
+        <SafeAreaProvider>
+          <ErrorBoundary>
+            <QueryClientProvider client={queryClient}>
+              <AuthProvider>
+                <PlayerProvider>
+                  <AmbientPlayerProvider>
+                    <UserProfileProvider>
+                      <IntencionProvider>
+                        <DiarioFavoritesProvider>
+                          <GestureHandlerRootView>
+                            <KeyboardProvider>
+                              <RootLayoutNav />
+                            </KeyboardProvider>
+                          </GestureHandlerRootView>
+                        </DiarioFavoritesProvider>
+                      </IntencionProvider>
+                    </UserProfileProvider>
+                  </AmbientPlayerProvider>
+                </PlayerProvider>
+              </AuthProvider>
+            </QueryClientProvider>
+          </ErrorBoundary>
+        </SafeAreaProvider>
+      </ClerkLoaded>
+    </ClerkProvider>
   );
 }

@@ -1,7 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-
-const AUTH_KEY = "@resonancia_auth";
+import { useAuth as useClerkAuth, useClerk, useUser } from "@clerk/expo";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 
 export type AuthMethod = "email" | "apple" | "google";
 
@@ -15,51 +13,73 @@ interface AuthState {
 
 interface AuthContextValue extends AuthState {
   authLoading: boolean;
+  isSignedIn: boolean;
   register: (data: Omit<AuthState, "isRegistered">) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-const DEFAULT: AuthState = {
-  isRegistered: false,
-  email: null,
-  displayName: null,
-  birthYear: null,
-  method: null,
-};
-
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+type OnboardingMeta = {
+  onboarded?: boolean;
+  displayName?: string;
+  birthYear?: number;
+  method?: AuthMethod;
+  [key: string]: unknown;
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<AuthState>(DEFAULT);
-  const [authLoading, setAuthLoading] = useState(true);
+  const { isLoaded: userLoaded, user } = useUser();
+  const { isLoaded: authLoaded, isSignedIn } = useClerkAuth();
+  const { signOut } = useClerk();
 
-  useEffect(() => {
-    AsyncStorage.getItem(AUTH_KEY).then((raw) => {
-      if (raw) {
-        try {
-          setState({ ...DEFAULT, ...JSON.parse(raw) });
-        } catch {}
+  const authLoading = !userLoaded || !authLoaded;
+
+  const meta = (user?.unsafeMetadata ?? {}) as OnboardingMeta;
+  const isRegistered = Boolean(isSignedIn && meta.onboarded);
+  const email = user?.primaryEmailAddress?.emailAddress ?? null;
+  const displayName = meta.displayName ?? user?.firstName ?? null;
+  const birthYear = meta.birthYear ?? null;
+  const method = meta.method ?? "email";
+
+  const register = useCallback(
+    async (data: Omit<AuthState, "isRegistered">) => {
+      if (!user) {
+        throw new Error("Cannot register before sign-in. User is not signed in.");
       }
-      setAuthLoading(false);
-    });
-  }, []);
-
-  const register = useCallback(async (data: Omit<AuthState, "isRegistered">) => {
-    const next: AuthState = { isRegistered: true, ...data };
-    setState(next);
-    await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(next));
-  }, []);
+      const next: OnboardingMeta = {
+        ...(user.unsafeMetadata as OnboardingMeta),
+        onboarded: true,
+        displayName: data.displayName ?? undefined,
+        birthYear: data.birthYear ?? undefined,
+        method: data.method ?? "email",
+      };
+      await user.update({ unsafeMetadata: next });
+      await user.reload();
+    },
+    [user],
+  );
 
   const logout = useCallback(async () => {
-    setState(DEFAULT);
-    await AsyncStorage.removeItem(AUTH_KEY);
-  }, []);
+    await signOut();
+  }, [signOut]);
 
-  return (
-    <AuthContext.Provider value={{ ...state, authLoading, register, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      isRegistered,
+      email,
+      displayName,
+      birthYear,
+      method,
+      authLoading,
+      isSignedIn: Boolean(isSignedIn),
+      register,
+      logout,
+    }),
+    [isRegistered, email, displayName, birthYear, method, authLoading, isSignedIn, register, logout],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
