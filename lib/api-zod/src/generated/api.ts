@@ -211,7 +211,7 @@ export const DeclineFriendRequestParams = zod.object({
  */
 export const GetNotificationsResponseItem = zod.object({
   "id": zod.number(),
-  "type": zod.enum(['friend_request', 'friend_accepted']),
+  "type": zod.enum(['friend_request', 'friend_accepted', 'dm']),
   "createdAt": zod.coerce.date(),
   "readAt": zod.coerce.date().nullable(),
   "actor": zod.object({
@@ -229,6 +229,104 @@ export const GetNotificationsResponse = zod.array(GetNotificationsResponseItem)
  */
 export const GetUnreadNotificationCountResponse = zod.object({
   "count": zod.number()
+})
+
+
+/**
+ * @summary List recent conversations with friends
+ */
+export const GetConversationsResponseItem = zod.object({
+  "friend": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+}),
+  "lastMessage": zod.union([zod.object({
+  "id": zod.number(),
+  "senderId": zod.number(),
+  "recipientId": zod.number(),
+  "body": zod.string().nullable(),
+  "sessionId": zod.number().nullable(),
+  "readAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date()
+}),zod.null()]),
+  "unreadCount": zod.number()
+})
+export const GetConversationsResponse = zod.array(GetConversationsResponseItem)
+
+
+/**
+ * @summary Get messages with a friend (newest first)
+ */
+export const GetDirectMessagesParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const getDirectMessagesQueryLimitDefault = 50;
+export const getDirectMessagesQueryLimitMax = 100;
+
+
+
+export const GetDirectMessagesQueryParams = zod.object({
+  "before": zod.date().optional(),
+  "limit": zod.coerce.number().max(getDirectMessagesQueryLimitMax).default(getDirectMessagesQueryLimitDefault)
+})
+
+export const GetDirectMessagesResponseItem = zod.object({
+  "id": zod.number(),
+  "senderId": zod.number(),
+  "recipientId": zod.number(),
+  "body": zod.string().nullable(),
+  "sessionId": zod.number().nullable(),
+  "readAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date()
+})
+export const GetDirectMessagesResponse = zod.array(GetDirectMessagesResponseItem)
+
+
+/**
+ * @summary Send a direct message to a friend
+ */
+export const SendDirectMessageParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const sendDirectMessageBodyBodyMax = 2000;
+
+
+
+export const SendDirectMessageBody = zod.object({
+  "body": zod.string().min(1).max(sendDirectMessageBodyBodyMax).optional(),
+  "sessionId": zod.number().optional()
+})
+
+
+/**
+ * @summary Mark all messages from this friend as read
+ */
+export const MarkConversationReadParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+
+/**
+ * @summary Notify that the current user is typing
+ */
+export const PingTypingParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+
+/**
+ * @summary Check whether the friend is currently typing
+ */
+export const GetTypingStatusParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetTypingStatusResponse = zod.object({
+  "typing": zod.boolean()
 })
 
 

@@ -21,16 +21,21 @@ import type {
 
 import type {
   CommunityMessage,
+  Conversation,
   CreateMessageBody,
+  DirectMessage,
   ErrorResponse,
   FriendRequest,
   FriendRequestInput,
+  GetDirectMessagesParams,
   GetMessagesParams,
   HealthStatus,
   MessagesPage,
   Notification,
   SearchUsersParams,
+  SendDirectMessageBody,
   TopMessageResponse,
+  TypingStatus,
   UnreadCount,
   UserProfile,
   UserProfileUpdate,
@@ -1249,6 +1254,461 @@ export const useMarkAllNotificationsRead = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getMarkAllNotificationsReadMutationOptions(options));
     }
+
+export const getGetConversationsUrl = () => {
+
+
+
+
+  return `/api/dm/conversations`
+}
+
+/**
+ * @summary List recent conversations with friends
+ */
+export const getConversations = async ( options?: RequestInit): Promise<Conversation[]> => {
+
+  return customFetch<Conversation[]>(getGetConversationsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetConversationsQueryKey = () => {
+    return [
+    `/api/dm/conversations`
+    ] as const;
+    }
+
+
+export const getGetConversationsQueryOptions = <TData = Awaited<ReturnType<typeof getConversations>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getConversations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetConversationsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConversations>>> = ({ signal }) => getConversations({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getConversations>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetConversationsQueryResult = NonNullable<Awaited<ReturnType<typeof getConversations>>>
+export type GetConversationsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List recent conversations with friends
+ */
+
+export function useGetConversations<TData = Awaited<ReturnType<typeof getConversations>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getConversations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetConversationsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetDirectMessagesUrl = (userId: number,
+    params?: GetDirectMessagesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/dm/with/${userId}?${stringifiedParams}` : `/api/dm/with/${userId}`
+}
+
+/**
+ * @summary Get messages with a friend (newest first)
+ */
+export const getDirectMessages = async (userId: number,
+    params?: GetDirectMessagesParams, options?: RequestInit): Promise<DirectMessage[]> => {
+
+  return customFetch<DirectMessage[]>(getGetDirectMessagesUrl(userId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetDirectMessagesQueryKey = (userId: number,
+    params?: GetDirectMessagesParams,) => {
+    return [
+    `/api/dm/with/${userId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetDirectMessagesQueryOptions = <TData = Awaited<ReturnType<typeof getDirectMessages>>, TError = ErrorType<ErrorResponse>>(userId: number,
+    params?: GetDirectMessagesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDirectMessages>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDirectMessagesQueryKey(userId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDirectMessages>>> = ({ signal }) => getDirectMessages(userId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDirectMessages>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetDirectMessagesQueryResult = NonNullable<Awaited<ReturnType<typeof getDirectMessages>>>
+export type GetDirectMessagesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get messages with a friend (newest first)
+ */
+
+export function useGetDirectMessages<TData = Awaited<ReturnType<typeof getDirectMessages>>, TError = ErrorType<ErrorResponse>>(
+ userId: number,
+    params?: GetDirectMessagesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDirectMessages>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetDirectMessagesQueryOptions(userId,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSendDirectMessageUrl = (userId: number,) => {
+
+
+
+
+  return `/api/dm/with/${userId}`
+}
+
+/**
+ * @summary Send a direct message to a friend
+ */
+export const sendDirectMessage = async (userId: number,
+    sendDirectMessageBody: SendDirectMessageBody, options?: RequestInit): Promise<DirectMessage> => {
+
+  return customFetch<DirectMessage>(getSendDirectMessageUrl(userId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      sendDirectMessageBody,)
+  }
+);}
+
+
+
+
+export const getSendDirectMessageMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendDirectMessage>>, TError,{userId: number;data: BodyType<SendDirectMessageBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof sendDirectMessage>>, TError,{userId: number;data: BodyType<SendDirectMessageBody>}, TContext> => {
+
+const mutationKey = ['sendDirectMessage'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendDirectMessage>>, {userId: number;data: BodyType<SendDirectMessageBody>}> = (props) => {
+          const {userId,data} = props ?? {};
+
+          return  sendDirectMessage(userId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SendDirectMessageMutationResult = NonNullable<Awaited<ReturnType<typeof sendDirectMessage>>>
+    export type SendDirectMessageMutationBody = BodyType<SendDirectMessageBody>
+    export type SendDirectMessageMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Send a direct message to a friend
+ */
+export const useSendDirectMessage = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendDirectMessage>>, TError,{userId: number;data: BodyType<SendDirectMessageBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof sendDirectMessage>>,
+        TError,
+        {userId: number;data: BodyType<SendDirectMessageBody>},
+        TContext
+      > => {
+      return useMutation(getSendDirectMessageMutationOptions(options));
+    }
+
+export const getMarkConversationReadUrl = (userId: number,) => {
+
+
+
+
+  return `/api/dm/with/${userId}/read`
+}
+
+/**
+ * @summary Mark all messages from this friend as read
+ */
+export const markConversationRead = async (userId: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getMarkConversationReadUrl(userId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getMarkConversationReadMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markConversationRead>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof markConversationRead>>, TError,{userId: number}, TContext> => {
+
+const mutationKey = ['markConversationRead'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof markConversationRead>>, {userId: number}> = (props) => {
+          const {userId} = props ?? {};
+
+          return  markConversationRead(userId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MarkConversationReadMutationResult = NonNullable<Awaited<ReturnType<typeof markConversationRead>>>
+
+    export type MarkConversationReadMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Mark all messages from this friend as read
+ */
+export const useMarkConversationRead = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markConversationRead>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof markConversationRead>>,
+        TError,
+        {userId: number},
+        TContext
+      > => {
+      return useMutation(getMarkConversationReadMutationOptions(options));
+    }
+
+export const getPingTypingUrl = (userId: number,) => {
+
+
+
+
+  return `/api/dm/with/${userId}/typing`
+}
+
+/**
+ * @summary Notify that the current user is typing
+ */
+export const pingTyping = async (userId: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getPingTypingUrl(userId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getPingTypingMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pingTyping>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof pingTyping>>, TError,{userId: number}, TContext> => {
+
+const mutationKey = ['pingTyping'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof pingTyping>>, {userId: number}> = (props) => {
+          const {userId} = props ?? {};
+
+          return  pingTyping(userId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PingTypingMutationResult = NonNullable<Awaited<ReturnType<typeof pingTyping>>>
+
+    export type PingTypingMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Notify that the current user is typing
+ */
+export const usePingTyping = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pingTyping>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof pingTyping>>,
+        TError,
+        {userId: number},
+        TContext
+      > => {
+      return useMutation(getPingTypingMutationOptions(options));
+    }
+
+export const getGetTypingStatusUrl = (userId: number,) => {
+
+
+
+
+  return `/api/dm/with/${userId}/typing`
+}
+
+/**
+ * @summary Check whether the friend is currently typing
+ */
+export const getTypingStatus = async (userId: number, options?: RequestInit): Promise<TypingStatus> => {
+
+  return customFetch<TypingStatus>(getGetTypingStatusUrl(userId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTypingStatusQueryKey = (userId: number,) => {
+    return [
+    `/api/dm/with/${userId}/typing`
+    ] as const;
+    }
+
+
+export const getGetTypingStatusQueryOptions = <TData = Awaited<ReturnType<typeof getTypingStatus>>, TError = ErrorType<unknown>>(userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTypingStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTypingStatusQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTypingStatus>>> = ({ signal }) => getTypingStatus(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTypingStatus>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTypingStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getTypingStatus>>>
+export type GetTypingStatusQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Check whether the friend is currently typing
+ */
+
+export function useGetTypingStatus<TData = Awaited<ReturnType<typeof getTypingStatus>>, TError = ErrorType<unknown>>(
+ userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTypingStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTypingStatusQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getLikeMessageUrl = (id: number,) => {
 

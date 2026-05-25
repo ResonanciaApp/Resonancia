@@ -55,9 +55,16 @@ function messageFor(n: Notification): string {
       return "te envió una solicitud de amistad";
     case "friend_accepted":
       return "aceptó tu solicitud de amistad";
+    case "dm":
+      return "te envió un mensaje";
     default:
       return "tiene una novedad";
   }
+}
+
+function routeFor(n: Notification): string {
+  if (n.type === "dm") return `/chat/${n.actor.id}`;
+  return "/amigos";
 }
 
 export default function NotificacionesScreen() {
@@ -134,7 +141,7 @@ export default function NotificacionesScreen() {
             return (
               <Pressable
                 key={n.id}
-                onPress={() => router.push("/amigos")}
+                onPress={() => router.push(routeFor(n) as never)}
                 style={({ pressed }) => [
                   styles.row,
                   {

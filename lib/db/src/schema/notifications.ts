@@ -5,7 +5,9 @@ import {
   text,
   timestamp,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
@@ -13,6 +15,7 @@ import { usersTable } from "./users";
 export const NOTIFICATION_TYPES = [
   "friend_request",
   "friend_accepted",
+  "dm",
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
@@ -32,6 +35,9 @@ export const notificationsTable = pgTable(
   },
   (table) => ({
     userIdx: index("notifications_user_idx").on(table.userId, table.createdAt),
+    unreadDmUnique: uniqueIndex("notifications_unread_dm_unique")
+      .on(table.userId, table.actorUserId, table.type)
+      .where(sql`${table.readAt} IS NULL AND ${table.type} = 'dm'`),
   }),
 );
 

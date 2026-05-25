@@ -109,6 +109,7 @@ export type NotificationType = typeof NotificationType[keyof typeof Notification
 export const NotificationType = {
   friend_request: 'friend_request',
   friend_accepted: 'friend_accepted',
+  dm: 'dm',
 } as const;
 
 export interface Notification {
@@ -118,6 +119,38 @@ export interface Notification {
   /** @nullable */
   readAt: string | null;
   actor: UserProfile;
+}
+
+export interface DirectMessage {
+  id: number;
+  senderId: number;
+  recipientId: number;
+  /** @nullable */
+  body: string | null;
+  /** @nullable */
+  sessionId: number | null;
+  /** @nullable */
+  readAt: string | null;
+  createdAt: string;
+}
+
+export interface Conversation {
+  friend: UserProfile;
+  lastMessage: DirectMessage | null;
+  unreadCount: number;
+}
+
+export interface SendDirectMessageBody {
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  body?: string;
+  sessionId?: number;
+}
+
+export interface TypingStatus {
+  typing: boolean;
 }
 
 export interface UnreadCount {
@@ -133,5 +166,13 @@ export type SearchUsersParams = {
  * @minLength 1
  */
 q: string;
+};
+
+export type GetDirectMessagesParams = {
+before?: string;
+/**
+ * @maximum 100
+ */
+limit?: number;
 };
 

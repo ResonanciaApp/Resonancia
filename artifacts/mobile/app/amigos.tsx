@@ -2,18 +2,21 @@ import { Feather } from "@expo/vector-icons";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  getGetConversationsQueryKey,
   getGetFriendRequestsQueryKey,
   getGetFriendsQueryKey,
   getGetMeQueryKey,
   getSearchUsersQueryKey,
   useAcceptFriendRequest,
   useDeclineFriendRequest,
+  useGetConversations,
   useGetFriendRequests,
   useGetFriends,
   useGetMe,
   useRemoveFriend,
   useSearchUsers,
   useSendFriendRequest,
+  type Conversation,
   type FriendRequest,
   type UserProfile,
   type UserSearchResult,
@@ -131,6 +134,9 @@ function SignedInAmigos() {
   const requestsQ = useGetFriendRequests({
     query: { queryKey: getGetFriendRequestsQueryKey(), refetchInterval: 30_000 },
   });
+  const conversationsQ = useGetConversations({
+    query: { queryKey: getGetConversationsQueryKey(), refetchInterval: 15_000 },
+  });
   const trimmed = search.trim();
   const searchQ = useSearchUsers(
     { q: trimmed },
@@ -163,6 +169,7 @@ function SignedInAmigos() {
 
   const friends = friendsQ.data ?? [];
   const requests = requestsQ.data ?? [];
+  const conversations = (conversationsQ.data ?? []).filter((c) => c.lastMessage != null);
   const searchResults = trimmed.length >= 2 ? searchQ.data ?? [] : [];
 
   const showSearch = trimmed.length >= 2;
@@ -234,6 +241,15 @@ function SignedInAmigos() {
         </View>
       )}
 
+      {!showSearch && conversations.length > 0 && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Conversaciones</Text>
+          {conversations.map((c) => (
+            <ConversationRow key={c.friend.id} conversation={c} />
+          ))}
+        </View>
+      )}
+
       {!showSearch && (
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
@@ -246,7 +262,12 @@ function SignedInAmigos() {
             </Text>
           )}
           {friends.map((f) => (
-            <FriendRow key={f.id} friend={f} onRemove={() => onRemove(f)} />
+            <FriendRow
+              key={f.id}
+              friend={f}
+              onOpen={() => router.push(`/chat/${f.id}` as never)}
+              onRemove={() => onRemove(f)}
+            />
           ))}
         </View>
       )}
@@ -340,15 +361,19 @@ function RequestRow({
 
 function FriendRow({
   friend,
+  onOpen,
   onRemove,
 }: {
   friend: UserProfile;
+  onOpen: () => void;
   onRemove: () => void;
 }) {
   const colors = useColors();
   return (
     <Pressable
-      onPress={onRemove}
+      onPress={onOpen}
+      onLongPress={onRemove}
+      delayLongPress={350}
       style={({ pressed }) => [
         styles.friendRow,
         { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
@@ -361,9 +386,64 @@ function FriendRow({
           @{friend.username}
         </Text>
       </View>
-      <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
+      <Feather name="message-circle" size={18} color={colors.accent} />
     </Pressable>
   );
+}
+
+function ConversationRow({ conversation }: { conversation: Conversation }) {
+  const colors = useColors();
+  const { friend, lastMessage, unreadCount } = conversation;
+  const preview = lastMessage
+    ? lastMessage.sessionId != null
+      ? "🎧 Compartió una sesión"
+      : lastMessage.body ?? ""
+    : "";
+  const time = lastMessage ? relativeShort(lastMessage.createdAt) : "";
+  return (
+    <Pressable
+      onPress={() => router.push(`/chat/${friend.id}` as never)}
+      style={({ pressed }) => [
+        styles.friendRow,
+        { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+      ]}
+    >
+      <Avatar user={friend} />
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={[styles.friendName, { color: colors.foreground }]} numberOfLines={1}>
+            {friend.displayName}
+          </Text>
+          <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>{time}</Text>
+        </View>
+        <Text
+          style={[
+            styles.friendSub,
+            { color: unreadCount > 0 ? colors.foreground : colors.mutedForeground },
+          ]}
+          numberOfLines={1}
+        >
+          {preview || "·"}
+        </Text>
+      </View>
+      {unreadCount > 0 && (
+        <View style={[styles.unreadBadge, { backgroundColor: colors.primary }]}>
+          <Text style={styles.unreadText}>{unreadCount > 9 ? "9+" : unreadCount}</Text>
+        </View>
+      )}
+    </Pressable>
+  );
+}
+
+function relativeShort(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const min = Math.floor(diff / 60_000);
+  if (min < 1) return "ahora";
+  if (min < 60) return `${min}m`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h}h`;
+  const d = Math.floor(h / 24);
+  return `${d}d`;
 }
 
 const styles = StyleSheet.create({
@@ -410,6 +490,15 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   statusBadge: { fontSize: 12, fontWeight: "600" },
+  unreadBadge: {
+    minWidth: 22,
+    height: 22,
+    borderRadius: 11,
+    paddingHorizontal: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  unreadText: { color: "#1A0E06", fontSize: 11, fontWeight: "700" },
   guestCard: {
     borderRadius: 20,
     borderWidth: 1,
