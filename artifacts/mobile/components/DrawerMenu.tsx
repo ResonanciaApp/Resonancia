@@ -29,7 +29,8 @@ type MenuItem = {
 };
 
 const LOGGED_OUT_ITEMS: MenuItem[] = [
-  { label: "Regístrate",  icon: "user-plus", route: "/registro" },
+  { label: "Crear cuenta",  icon: "user-plus", route: "/(auth)/sign-up" },
+  { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
   { label: "Membresía",   icon: "star",      route: "/membresia" },
   { label: "Favoritos",   icon: "heart",     route: "/(tabs)/profile" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
