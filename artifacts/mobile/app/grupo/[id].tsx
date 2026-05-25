@@ -10,6 +10,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -491,7 +492,18 @@ export default function GrupoDetailScreen() {
                         <Feather name="message-square" size={15} color={colors.mutedForeground} />
                         <Text style={[styles.actionText, { color: colors.mutedForeground }]}>{post.replies}</Text>
                       </Pressable>
-                      <Pressable style={styles.actionBtn}>
+                      <Pressable
+                        style={styles.actionBtn}
+                        onPress={async () => {
+                          try {
+                            await Share.share({
+                              message: `${post.author} en ${grupo.name}:\n\n${post.text}\n\n— Compartido desde RESONANCIA`,
+                            });
+                          } catch {
+                            // usuario canceló o error al compartir
+                          }
+                        }}
+                      >
                         <Feather name="share" size={15} color={colors.mutedForeground} />
                       </Pressable>
                     </View>
