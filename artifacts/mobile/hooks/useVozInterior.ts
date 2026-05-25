@@ -1,4 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  AudioModule,
+  RecordingPresets,
+  setAudioModeAsync,
+  useAudioRecorder,
+} from "expo-audio";
 import { Audio } from "expo-av";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -20,10 +26,11 @@ export function useVozInterior() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [playingPositionMs, setPlayingPositionMs] = useState(0);
 
-  const recordingRef = useRef<Audio.Recording | null>(null);
+  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const soundRef = useRef<Audio.Sound | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
+  const isRecordingRef = useRef(false);
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
@@ -42,47 +49,20 @@ export function useVozInterior() {
 
   const startRecording = useCallback(async (): Promise<boolean> => {
     try {
-      const perm = await Audio.requestPermissionsAsync();
+      const perm = await AudioModule.requestRecordingPermissionsAsync();
       if (!perm.granted) return false;
 
       try {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
+        await setAudioModeAsync({
+          allowsRecording: true,
+          playsInSilentMode: true,
         });
       } catch {}
 
-      const rec = new Audio.Recording();
-      await rec.prepareToRecordAsync({
-        isMeteringEnabled: false,
-        android: {
-          extension: ".m4a",
-          outputFormat: Audio.AndroidOutputFormat.MPEG_4,
-          audioEncoder: Audio.AndroidAudioEncoder.AAC,
-          sampleRate: 44100,
-          numberOfChannels: 2,
-          bitRate: 192000,
-        },
-        ios: {
-          extension: ".m4a",
-          outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
-          audioQuality: Audio.IOSAudioQuality.MAX,
-          sampleRate: 44100,
-          numberOfChannels: 2,
-          bitRate: 192000,
-          linearPCMBitDepth: 16,
-          linearPCMIsBigEndian: false,
-          linearPCMIsFloat: false,
-        },
-        web: {
-          mimeType: "audio/webm",
-          bitsPerSecond: 192000,
-        },
-      });
-      await rec.startAsync();
-      const recording = rec;
+      await audioRecorder.prepareToRecordAsync();
+      audioRecorder.record();
 
-      recordingRef.current = recording;
+      isRecordingRef.current = true;
       startTimeRef.current = Date.now();
       setElapsedMs(0);
       setIsRecording(true);
@@ -96,24 +76,23 @@ export function useVozInterior() {
       setIsRecording(false);
       return false;
     }
-  }, []);
+  }, [audioRecorder]);
 
   const stopRecording = useCallback(async () => {
-    if (!recordingRef.current) return;
+    if (!isRecordingRef.current) return;
+    isRecordingRef.current = false;
 
     timerRef.current && clearInterval(timerRef.current);
     timerRef.current = null;
 
     const durationMs = Date.now() - startTimeRef.current;
-    const rec = recordingRef.current;
-    recordingRef.current = null;
 
     setIsRecording(false);
     setElapsedMs(0);
 
     try {
-      await rec.stopAndUnloadAsync();
-      const uri = rec.getURI();
+      await audioRecorder.stop();
+      const uri = audioRecorder.uri;
       if (uri) {
         const entry: VozEntry = {
           id: Date.now().toString(),
@@ -132,12 +111,12 @@ export function useVozInterior() {
     } catch {}
 
     try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        playsInSilentModeIOS: true,
+      await setAudioModeAsync({
+        allowsRecording: false,
+        playsInSilentMode: true,
       });
     } catch {}
-  }, []);
+  }, [audioRecorder]);
 
   const deleteEntry = useCallback(
     async (id: string) => {
