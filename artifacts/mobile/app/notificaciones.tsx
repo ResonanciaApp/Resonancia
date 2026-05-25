@@ -79,7 +79,7 @@ export default function NotificacionesScreen() {
     query: {
       queryKey: getGetNotificationsQueryKey(),
       enabled: !!isSignedIn,
-      refetchInterval: 30_000,
+      refetchInterval: 10_000,
     },
   });
 

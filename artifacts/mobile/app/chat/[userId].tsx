@@ -15,6 +15,7 @@ import {
   type DirectMessage,
   type UserProfile,
 } from "@workspace/api-client-react";
+import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -126,6 +127,39 @@ export default function ChatScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messagesQ.data, otherId]);
 
+  // Haptic feedback when a new incoming message arrives
+  const lastIncomingIdRef = useRef<number | null>(null);
+  useEffect(() => {
+    const list = messagesQ.data ?? [];
+    const newestIncoming = list.find((m) => m.recipientId !== otherId);
+    if (!newestIncoming) return;
+    if (lastIncomingIdRef.current === null) {
+      lastIncomingIdRef.current = newestIncoming.id;
+      return;
+    }
+    if (newestIncoming.id !== lastIncomingIdRef.current) {
+      lastIncomingIdRef.current = newestIncoming.id;
+      if (Platform.OS !== "web") {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      }
+    }
+  }, [messagesQ.data, otherId]);
+
+  // Auto-scroll to bottom when a new message (mine or theirs) appears
+  const listRef = useRef<FlatList<DirectMessage>>(null);
+  const lastMsgIdRef = useRef<number | null>(null);
+  useEffect(() => {
+    const list = messagesQ.data ?? [];
+    if (list.length === 0) return;
+    const newestId = list[0].id;
+    if (lastMsgIdRef.current !== newestId) {
+      lastMsgIdRef.current = newestId;
+      requestAnimationFrame(() => {
+        listRef.current?.scrollToOffset({ offset: 0, animated: true });
+      });
+    }
+  }, [messagesQ.data]);
+
   const [draft, setDraft] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
   const lastTypingPingRef = useRef(0);
@@ -235,21 +269,38 @@ export default function ChatScreen() {
           </View>
         ) : (
           <FlatList
+            ref={listRef}
             data={messages}
             inverted
             keyExtractor={(m) => String(m.id)}
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 16 }}
+            ListHeaderComponent={
+              typingQ.data?.typing ? (
+                <TypingBubble name={friend?.displayName ?? "…"} tint={friendTint} />
+              ) : null
+            }
             renderItem={({ item, index }) => {
               const prev = messages[index + 1]; // older
+              const next = messages[index - 1]; // newer (visually below since inverted)
               const isMine = item.recipientId === otherId;
-              const showTime =
-                !prev ||
-                new Date(item.createdAt).getTime() - new Date(prev.createdAt).getTime() > 5 * 60_000;
+              const prevSameSender = !!prev && prev.recipientId === item.recipientId;
+              const nextSameSender = !!next && next.recipientId === item.recipientId;
+              const gapToPrev = prev
+                ? new Date(item.createdAt).getTime() - new Date(prev.createdAt).getTime()
+                : Infinity;
+              const gapToNext = next
+                ? new Date(next.createdAt).getTime() - new Date(item.createdAt).getTime()
+                : Infinity;
+              const groupedWithPrev = prevSameSender && gapToPrev < 60_000;
+              const groupedWithNext = nextSameSender && gapToNext < 60_000;
+              const showTime = !prev || gapToPrev > 5 * 60_000;
               return (
                 <MessageBubble
                   message={item}
                   isMine={isMine}
                   showTime={showTime}
+                  groupedWithPrev={groupedWithPrev}
+                  groupedWithNext={groupedWithNext}
                   isLastMine={
                     isMine && messages.slice(0, index).every((m) => m.recipientId !== otherId)
                   }
@@ -319,20 +370,27 @@ function MessageBubble({
   message,
   isMine,
   showTime,
+  groupedWithPrev,
+  groupedWithNext,
   isLastMine,
 }: {
   message: DirectMessage;
   isMine: boolean;
   showTime: boolean;
+  groupedWithPrev: boolean;
+  groupedWithNext: boolean;
   isLastMine: boolean;
 }) {
   const colors = useColors();
   const session = message.sessionId != null
     ? SESSIONS.find((s) => Number(s.id) === message.sessionId)
     : undefined;
+  const marginBottom = groupedWithNext ? 2 : 8;
+  const tailRadius = 4;
+  const compactRadius = 14;
 
   return (
-    <View style={{ alignItems: isMine ? "flex-end" : "flex-start", marginBottom: 4 }}>
+    <View style={{ alignItems: isMine ? "flex-end" : "flex-start", marginBottom }}>
       {showTime && (
         <Text style={[styles.timeLabel, { color: colors.mutedForeground }]}>
           {timeFor(message.createdAt)}
@@ -380,12 +438,17 @@ function MessageBubble({
           style={[
             styles.bubble,
             isMine
-              ? { backgroundColor: "#C69B4F", borderBottomRightRadius: 4 }
+              ? {
+                  backgroundColor: "#C69B4F",
+                  borderTopRightRadius: groupedWithPrev ? compactRadius : 18,
+                  borderBottomRightRadius: groupedWithNext ? compactRadius : tailRadius,
+                }
               : {
                   backgroundColor: colors.card,
                   borderColor: colors.border,
                   borderWidth: 1,
-                  borderBottomLeftRadius: 4,
+                  borderTopLeftRadius: groupedWithPrev ? compactRadius : 18,
+                  borderBottomLeftRadius: groupedWithNext ? compactRadius : tailRadius,
                 },
           ]}
         >
@@ -411,6 +474,43 @@ function MessageBubble({
           </Text>
         </View>
       )}
+    </View>
+  );
+}
+
+function TypingBubble({ name, tint }: { name: string; tint: string }) {
+  const colors = useColors();
+  const dotAnim = useRef(0);
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => {
+      dotAnim.current = (dotAnim.current + 1) % 3;
+      setStep(dotAnim.current);
+    }, 350);
+    return () => clearInterval(id);
+  }, []);
+  const dots = ".".repeat(step + 1);
+  return (
+    <View style={{ alignItems: "flex-start", marginBottom: 8 }}>
+      <View
+        style={[
+          styles.bubble,
+          {
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+            borderWidth: 1,
+            borderBottomLeftRadius: 4,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+          },
+        ]}
+      >
+        <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: tint }} />
+        <Text style={[styles.bubbleText, { color: colors.mutedForeground, minWidth: 110 }]}>
+          {name} está escribiendo{dots}
+        </Text>
+      </View>
     </View>
   );
 }

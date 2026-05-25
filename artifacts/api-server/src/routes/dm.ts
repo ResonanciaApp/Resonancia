@@ -28,6 +28,61 @@ function typingKey(fromUserId: number, toUserId: number): string {
   return `${fromUserId}->${toUserId}`;
 }
 
+// --- Bot Luna (dev only) ---
+const LUNA_BOT_USER_ID =
+  process.env.NODE_ENV !== "production" ? Number(process.env.LUNA_BOT_USER_ID ?? 3) : null;
+
+const LUNA_REPLIES = [
+  "Mmm, qué lindo lo que decís 🌙",
+  "Te entiendo totalmente.",
+  "Hoy me acordé de vos cuando meditaba.",
+  "¿Vos cómo estás durmiendo últimamente?",
+  "Esa frase me la guardo ✨",
+  "Probá respirar 4-7-8 antes de dormir, me cambió la noche.",
+  "Mañana arrancamos el día con una sesión cortita ¿dale?",
+  "Estoy escuchando los cuencos ahora mismo 🎶",
+  "Gracias por escribirme, lo necesitaba.",
+  "Te mando un abrazo grande 🤍",
+];
+const LUNA_SESSION_REPLY = "¡Uhh gracias! La pongo esta noche para dormir 🌙";
+const LUNA_GREETING_REPLY = "¡Hola! ¿Cómo va tu día? 😊";
+
+function pickLunaReply(msgBody: string | null, sessionId: number | null): string {
+  if (sessionId != null) return LUNA_SESSION_REPLY;
+  const b = (msgBody ?? "").toLowerCase();
+  if (/^(hola|holi|buenas|hey|holaa)/.test(b.trim())) return LUNA_GREETING_REPLY;
+  return LUNA_REPLIES[Math.floor(Math.random() * LUNA_REPLIES.length)];
+}
+
+function scheduleLunaReply(senderId: number, body: string | null, sessionId: number | null) {
+  if (LUNA_BOT_USER_ID == null) return;
+  const botId = LUNA_BOT_USER_ID;
+  // Show "está escribiendo…" immediately and keep it alive across the delay.
+  typingMap.set(typingKey(botId, senderId), Date.now());
+  const keepAlive = setInterval(() => {
+    typingMap.set(typingKey(botId, senderId), Date.now());
+  }, 3000);
+  const delayMs = 2500 + Math.floor(Math.random() * 2500);
+  setTimeout(async () => {
+    clearInterval(keepAlive);
+    typingMap.delete(typingKey(botId, senderId));
+    try {
+      await db.insert(directMessagesTable).values({
+        senderId: botId,
+        recipientId: senderId,
+        body: pickLunaReply(body, sessionId),
+        sessionId: null,
+      });
+      await db
+        .insert(notificationsTable)
+        .values({ userId: senderId, actorUserId: botId, type: "dm" })
+        .onConflictDoNothing();
+    } catch {
+      // dev-only side effect; swallow
+    }
+  }, delayMs);
+}
+
 function toProfile(u: User) {
   return {
     id: u.id,
@@ -275,6 +330,15 @@ router.post("/dm/with/:userId", requireAuth, async (req, res) => {
 
     // Clear my typing indicator
     typingMap.delete(typingKey(me.id, otherId));
+
+    // Dev-only: bot Luna replies automatically
+    if (LUNA_BOT_USER_ID != null && otherId === LUNA_BOT_USER_ID) {
+      scheduleLunaReply(
+        me.id,
+        hasBody ? body.data.body!.trim() : null,
+        hasSession ? body.data.sessionId! : null,
+      );
+    }
 
     res.status(201).json(serializeMessage(created));
   } catch (err) {
