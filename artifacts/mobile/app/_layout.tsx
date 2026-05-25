@@ -47,33 +47,23 @@ function ApiAuthBridge() {
   return null;
 }
 
-/** Routes users based on auth state:
- *  - Not signed in → /(auth)/sign-in
- *  - Signed in but not onboarded → /onboarding
- *  - Signed in & onboarded → stay on home tabs */
+/** Sends new users (no local onboarding yet) to the onboarding screen.
+ *  Does NOT force Clerk sign-in — guests can use the whole app. Clerk
+ *  sign-in is only triggered explicitly from social features. */
 function AuthGate() {
   const segments = useSegments();
-  const { isRegistered, authLoading, isSignedIn } = useAuth();
+  const redirected = React.useRef(false);
+  const { isRegistered, authLoading } = useAuth();
 
   useEffect(() => {
     if (authLoading) return;
-    const inAuthGroup = segments[0] === "(auth)";
-    const inOnboarding = segments[0] === "onboarding";
-
-    if (!isSignedIn) {
-      if (!inAuthGroup) router.replace("/(auth)/sign-in");
-      return;
-    }
-    // Signed in but didn't finish onboarding (display name, birth year, etc.)
-    if (!isRegistered) {
-      if (!inOnboarding) router.replace("/onboarding");
-      return;
-    }
-    // Fully registered — bounce out of auth/onboarding screens
-    if (inAuthGroup || inOnboarding) {
-      router.replace("/(tabs)");
-    }
-  }, [segments, isRegistered, isSignedIn, authLoading]);
+    if (redirected.current) return;
+    if (isRegistered) return;
+    if (segments[0] === "onboarding") return;
+    if (segments[0] === "(auth)") return; // user explicitly opened sign-in
+    redirected.current = true;
+    router.replace("/onboarding");
+  }, [segments, isRegistered, authLoading]);
 
   return null;
 }

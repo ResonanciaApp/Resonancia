@@ -1,7 +1,31 @@
 import { useAuth as useClerkAuth, useClerk, useUser } from "@clerk/expo";
-import React, { createContext, useCallback, useContext, useMemo } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-export type AuthMethod = "email" | "apple" | "google";
+/**
+ * Auth model — two layers:
+ *
+ * 1. LOCAL onboarding (AsyncStorage). Guests can use the whole app without
+ *    creating a Clerk account. `isRegistered` is true once they complete
+ *    the local onboarding (name, birth year, etc.).
+ *
+ * 2. CLERK account (optional). Activated only when the user opts into
+ *    social features (friends, groups). Exposes `isSignedIn` separately.
+ *
+ * The two are independent: a user can be registered locally without being
+ * signed into Clerk, or signed into Clerk before completing local onboarding.
+ */
+
+const AUTH_KEY = "@resonancia_auth";
+
+export type AuthMethod = "email" | "apple" | "google" | "guest";
 
 interface AuthState {
   isRegistered: boolean;
@@ -13,71 +37,92 @@ interface AuthState {
 
 interface AuthContextValue extends AuthState {
   authLoading: boolean;
+  /** True only when the user has a Clerk session (for social features). */
   isSignedIn: boolean;
   register: (data: Omit<AuthState, "isRegistered">) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
-
-type OnboardingMeta = {
-  onboarded?: boolean;
-  displayName?: string;
-  birthYear?: number;
-  method?: AuthMethod;
-  [key: string]: unknown;
+const DEFAULT: AuthState = {
+  isRegistered: false,
+  email: null,
+  displayName: null,
+  birthYear: null,
+  method: null,
 };
 
+const AuthContext = createContext<AuthContextValue | null>(null);
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { isLoaded: userLoaded, user } = useUser();
-  const { isLoaded: authLoaded, isSignedIn } = useClerkAuth();
+  const [localState, setLocalState] = useState<AuthState>(DEFAULT);
+  const [localLoading, setLocalLoading] = useState(true);
+
+  const { isLoaded: clerkLoaded, isSignedIn: clerkSignedIn } = useClerkAuth();
+  const { user: clerkUser } = useUser();
   const { signOut } = useClerk();
 
-  const authLoading = !userLoaded || !authLoaded;
-
-  const meta = (user?.unsafeMetadata ?? {}) as OnboardingMeta;
-  const isRegistered = Boolean(isSignedIn && meta.onboarded);
-  const email = user?.primaryEmailAddress?.emailAddress ?? null;
-  const displayName = meta.displayName ?? user?.firstName ?? null;
-  const birthYear = meta.birthYear ?? null;
-  const method = meta.method ?? "email";
+  // Load local registration on mount
+  useEffect(() => {
+    AsyncStorage.getItem(AUTH_KEY)
+      .then((raw) => {
+        if (raw) {
+          try {
+            setLocalState({ ...DEFAULT, ...JSON.parse(raw) });
+          } catch {}
+        }
+      })
+      .finally(() => setLocalLoading(false));
+  }, []);
 
   const register = useCallback(
     async (data: Omit<AuthState, "isRegistered">) => {
-      if (!user) {
-        throw new Error("Cannot register before sign-in. User is not signed in.");
-      }
-      const next: OnboardingMeta = {
-        ...(user.unsafeMetadata as OnboardingMeta),
-        onboarded: true,
-        displayName: data.displayName ?? undefined,
-        birthYear: data.birthYear ?? undefined,
-        method: data.method ?? "email",
-      };
-      await user.update({ unsafeMetadata: next });
-      await user.reload();
+      const next: AuthState = { isRegistered: true, ...data };
+      setLocalState(next);
+      await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(next));
     },
-    [user],
+    [],
   );
 
   const logout = useCallback(async () => {
-    await signOut();
-  }, [signOut]);
+    setLocalState(DEFAULT);
+    await AsyncStorage.removeItem(AUTH_KEY);
+    if (clerkSignedIn) {
+      try {
+        await signOut();
+      } catch {}
+    }
+  }, [signOut, clerkSignedIn]);
 
-  const value = useMemo<AuthContextValue>(
-    () => ({
-      isRegistered,
+  // Merge Clerk user data when signed in — prefer Clerk values for email
+  // and displayName so the linked account stays in sync.
+  const value = useMemo<AuthContextValue>(() => {
+    const isSignedIn = Boolean(clerkSignedIn);
+    const email = isSignedIn
+      ? clerkUser?.primaryEmailAddress?.emailAddress ?? localState.email
+      : localState.email;
+    const displayName =
+      localState.displayName ?? clerkUser?.firstName ?? null;
+
+    return {
+      isRegistered: localState.isRegistered,
       email,
       displayName,
-      birthYear,
-      method,
-      authLoading,
-      isSignedIn: Boolean(isSignedIn),
+      birthYear: localState.birthYear,
+      method: localState.method,
+      authLoading: localLoading || !clerkLoaded,
+      isSignedIn,
       register,
       logout,
-    }),
-    [isRegistered, email, displayName, birthYear, method, authLoading, isSignedIn, register, logout],
-  );
+    };
+  }, [
+    localState,
+    localLoading,
+    clerkLoaded,
+    clerkSignedIn,
+    clerkUser,
+    register,
+    logout,
+  ]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
