@@ -78,6 +78,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const voiceSoundRef = useRef<Audio.Sound | null>(null);
   const ambientSoundRef = useRef<Audio.Sound | null>(null);
   const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const preloadedRef = useRef<Map<string, Audio.Sound>>(new Map());
+  const preloadedVoiceRef = useRef<Map<string, Audio.Sound>>(new Map());
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Keep latest isPlaying in a ref so timer callbacks see the current value
   const isPlayingRef = useRef(false);
@@ -113,8 +115,41 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       unloadVoiceSound();
       clearSim();
       clearSleepInterval();
+      preloadedRef.current.forEach((s) => s.unloadAsync().catch(() => {}));
+      preloadedRef.current.clear();
+      preloadedVoiceRef.current.forEach((s) => s.unloadAsync().catch(() => {}));
+      preloadedVoiceRef.current.clear();
     };
   }, []);
+
+  // ── Audio preloading ─────────────────────────────────────────────────────────
+  // Preload all mapped audio files 1.5 s after mount so the first tap plays instantly
+  useEffect(() => {
+    let mounted = true;
+    const timer = setTimeout(async () => {
+      for (const [id, file] of Object.entries(AUDIO_MAP)) {
+        if (!file || !mounted) break;
+        try {
+          const { sound } = await Audio.Sound.createAsync(file as any, { shouldPlay: false });
+          if (mounted) preloadedRef.current.set(id, sound);
+          else sound.unloadAsync().catch(() => {});
+        } catch (_) {}
+      }
+      for (const [id, file] of Object.entries(VOICE_MAP)) {
+        if (!file || !mounted) break;
+        try {
+          const { sound } = await Audio.Sound.createAsync(file as any, { shouldPlay: false });
+          if (mounted) preloadedVoiceRef.current.set(id, sound);
+          else sound.unloadAsync().catch(() => {});
+        } catch (_) {}
+      }
+    }, 1500);
+    return () => {
+      mounted = false;
+      clearTimeout(timer);
+    };
+  }, []);
+  // ────────────────────────────────────────────────────────────────────────────
 
   // ── Sleep timer tick ────────────────────────────────────────────────────────
   // Start/stop the countdown interval whenever playing state or timer active/inactive changes
@@ -250,23 +285,46 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (audioFile) {
         setIsLoading(true);
         try {
-          const { sound } = await Audio.Sound.createAsync(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            audioFile as any,
-            { shouldPlay: true, progressUpdateIntervalMillis: 500 },
-            onPlaybackStatusUpdate
-          );
+          // Use preloaded sound if available, otherwise load fresh
+          let sound: Audio.Sound;
+          const preloaded = preloadedRef.current.get(session.id);
+          if (preloaded) {
+            preloadedRef.current.delete(session.id);
+            sound = preloaded;
+            sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+            await sound.setPositionAsync(0);
+            await sound.setStatusAsync({ shouldPlay: true, progressUpdateIntervalMillis: 500 });
+          } else {
+            const result = await Audio.Sound.createAsync(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              audioFile as any,
+              { shouldPlay: true, progressUpdateIntervalMillis: 500 },
+              onPlaybackStatusUpdate
+            );
+            sound = result.sound;
+          }
           soundRef.current = sound;
 
           // Load voice track if available (plays simultaneously)
           const voiceFile = VOICE_MAP[session.id];
           if (voiceFile) {
             try {
-              const { sound: voiceSound } = await Audio.Sound.createAsync(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                voiceFile as any,
-                { shouldPlay: true, volume: voiceVolume, isLooping: false }
-              );
+              let voiceSound: Audio.Sound;
+              const preloadedVoice = preloadedVoiceRef.current.get(session.id);
+              if (preloadedVoice) {
+                preloadedVoiceRef.current.delete(session.id);
+                voiceSound = preloadedVoice;
+                await voiceSound.setPositionAsync(0);
+                await voiceSound.setVolumeAsync(voiceVolume);
+                await voiceSound.setStatusAsync({ shouldPlay: true, isLooping: false });
+              } else {
+                const result = await Audio.Sound.createAsync(
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  voiceFile as any,
+                  { shouldPlay: true, volume: voiceVolume, isLooping: false }
+                );
+                voiceSound = result.sound;
+              }
               voiceSoundRef.current = voiceSound;
             } catch (_) {}
           }
@@ -310,11 +368,22 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (audioFile) {
         setIsLoading(true);
         try {
-          const { sound } = await Audio.Sound.createAsync(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            audioFile as any,
-            { shouldPlay: true, isLooping: isLoopSession }
-          );
+          let sound: Audio.Sound;
+          const preloaded = preloadedRef.current.get(session.id);
+          if (preloaded) {
+            preloadedRef.current.delete(session.id);
+            sound = preloaded;
+            sound.setOnPlaybackStatusUpdate(null);
+            await sound.setPositionAsync(0);
+            await sound.setStatusAsync({ shouldPlay: true, isLooping: isLoopSession });
+          } else {
+            const result = await Audio.Sound.createAsync(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              audioFile as any,
+              { shouldPlay: true, isLooping: isLoopSession }
+            );
+            sound = result.sound;
+          }
           soundRef.current = sound;
 
           // Load ambient layer (e.g. birds) if available
