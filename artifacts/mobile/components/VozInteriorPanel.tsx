@@ -44,72 +44,23 @@ function formatDate(iso: string) {
   });
 }
 
+const BAR_HEIGHTS_ACTIVE = [10, 22, 14, 30, 16, 24, 12];
+
 function WaveformBar({ index, active }: { index: number; active: boolean }) {
-  const height = useSharedValue(4);
-
-  useEffect(() => {
-    if (active) {
-      const delay = index * 80;
-      const minH = 4 + Math.random() * 6;
-      const maxH = 18 + Math.random() * 22;
-      height.value = withRepeat(
-        withSequence(
-          withTiming(maxH, { duration: 250 + delay, easing: Easing.inOut(Easing.sine) }),
-          withTiming(minH, { duration: 300 + delay, easing: Easing.inOut(Easing.sine) }),
-        ),
-        -1,
-        true,
-      );
-    } else {
-      height.value = withTiming(4, { duration: 300 });
-    }
-  }, [active, index, height]);
-
-  const style = useAnimatedStyle(() => ({ height: height.value }));
-
+  const height = active ? BAR_HEIGHTS_ACTIVE[index % BAR_HEIGHTS_ACTIVE.length] : 4;
   return (
-    <Animated.View
+    <View
       style={[
         styles.waveBar,
-        style,
-        { backgroundColor: active ? ACCENT : "rgba(155,111,212,0.35)" },
+        { height, backgroundColor: active ? ACCENT : "rgba(155,111,212,0.35)" },
       ]}
     />
   );
 }
 
 function RecordButton({ isRecording, onPress }: { isRecording: boolean; onPress: () => void }) {
-  const pulse = useSharedValue(1);
-
-  useEffect(() => {
-    if (isRecording) {
-      pulse.value = withRepeat(
-        withSequence(
-          withTiming(1.15, { duration: 700, easing: Easing.inOut(Easing.ease) }),
-          withTiming(1, { duration: 700, easing: Easing.inOut(Easing.ease) }),
-        ),
-        -1,
-        true,
-      );
-    } else {
-      pulse.value = withTiming(1, { duration: 300 });
-    }
-  }, [isRecording, pulse]);
-
-  const pulseStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pulse.value }],
-    opacity: isRecording ? 0.35 : 0,
-  }));
-
   return (
     <Pressable onPress={onPress} style={styles.recordBtnWrapper}>
-      <Animated.View
-        style={[
-          styles.recordPulse,
-          { backgroundColor: isRecording ? "#D4304A" : ACCENT },
-          pulseStyle,
-        ]}
-      />
       <View
         style={[
           styles.recordBtn,
