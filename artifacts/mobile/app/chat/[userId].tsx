@@ -77,20 +77,25 @@ async function uploadLocalFile(
   fileName: string,
   size: number,
 ): Promise<string> {
+  console.log("[upload] requesting URL", { fileName, contentType, size });
   const { uploadURL, objectPath } = await requestUploadUrl({
     name: fileName,
     size,
     contentType,
   });
+  console.log("[upload] got URL, fetching local file");
   const fileResp = await fetch(uri);
   const blob = await fileResp.blob();
+  console.log("[upload] blob ready", { size: blob.size, type: blob.type });
   const putResp = await fetch(uploadURL, {
     method: "PUT",
     headers: { "Content-Type": contentType },
     body: blob,
   });
+  console.log("[upload] PUT done", { status: putResp.status });
   if (!putResp.ok) {
-    throw new Error(`Upload falló (${putResp.status})`);
+    const text = await putResp.text().catch(() => "");
+    throw new Error(`Upload falló (${putResp.status}): ${text.slice(0, 120)}`);
   }
   return objectPath;
 }
@@ -238,21 +243,31 @@ export default function ChatScreen() {
   };
 
   const pickImage = async () => {
-    setShowAttachMenu(false);
     try {
-      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!perm.granted) {
-        Alert.alert("Permiso", "Necesitamos acceso a tus fotos para enviarlas.");
-        return;
+      if (Platform.OS !== "web") {
+        const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!perm.granted) {
+          setShowAttachMenu(false);
+          Alert.alert("Permiso", "Necesitamos acceso a tus fotos para enviarlas.");
+          return;
+        }
       }
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ["images"],
         quality: 0.85,
         allowsEditing: false,
         exif: false,
       });
+      setShowAttachMenu(false);
       if (result.canceled || result.assets.length === 0) return;
       const asset = result.assets[0];
+      console.log("[chat] pickImage selected", {
+        uri: asset.uri.slice(0, 60),
+        mimeType: asset.mimeType,
+        fileSize: asset.fileSize,
+        width: asset.width,
+        height: asset.height,
+      });
       const isGif =
         (asset.mimeType ?? "").toLowerCase() === "image/gif" ||
         (asset.fileName ?? asset.uri).toLowerCase().endsWith(".gif");
