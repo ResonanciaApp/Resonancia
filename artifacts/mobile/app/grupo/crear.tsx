@@ -230,7 +230,11 @@ export default function CrearGrupoScreen() {
 
   // ── Steps 2-5: Group preview + bottom sheet ───────────────────────────────
   return (
-    <View style={[styles.root, { backgroundColor: "#18110C" }]}>
+    <KeyboardAvoidingView
+      style={[styles.root, { backgroundColor: "#18110C" }]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={0}
+    >
       <StatusBar barStyle="light-content" />
 
       {/* Back arrow top-left */}
@@ -343,6 +347,8 @@ export default function CrearGrupoScreen() {
                 multiline
                 numberOfLines={4}
                 maxLength={300}
+                blurOnSubmit
+                returnKeyType="done"
               />
               <View style={styles.sheetNavRow}>
                 <Pressable onPress={() => setStep(3)} style={styles.prevBtn}>
@@ -402,7 +408,7 @@ export default function CrearGrupoScreen() {
           )}
         </BottomSheet>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
