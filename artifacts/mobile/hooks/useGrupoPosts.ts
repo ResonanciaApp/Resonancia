@@ -3,6 +3,15 @@ import { useCallback, useEffect, useState } from "react";
 
 const keyFor = (grupoId: string) => `resonancia:grupo_posts:${grupoId}`;
 
+export interface GrupoComment {
+  id: string;
+  author: string;
+  initials: string;
+  color: string;
+  text: string;
+  createdAt: number;
+}
+
 export interface GrupoPost {
   id: string;
   author: string;
@@ -12,6 +21,7 @@ export interface GrupoPost {
   createdAt: number;
   likes: number;
   replies: number;
+  comments?: GrupoComment[];
 }
 
 export function useGrupoPosts(grupoId: string | undefined) {
@@ -48,6 +58,30 @@ export function useGrupoPosts(grupoId: string | undefined) {
     [grupoId],
   );
 
+  const addComment = useCallback(
+    async (
+      postId: string,
+      comment: Omit<GrupoComment, "id" | "createdAt">,
+    ) => {
+      if (!grupoId) return;
+      const newComment: GrupoComment = {
+        ...comment,
+        id: `c-${Date.now()}`,
+        createdAt: Date.now(),
+      };
+      setPosts((prev) => {
+        const arr = prev.map((p) =>
+          p.id === postId
+            ? { ...p, comments: [...(p.comments ?? []), newComment], replies: (p.replies ?? 0) + 1 }
+            : p,
+        );
+        AsyncStorage.setItem(keyFor(grupoId), JSON.stringify(arr)).catch(() => {});
+        return arr;
+      });
+    },
+    [grupoId],
+  );
+
   const deletePost = useCallback(
     async (postId: string) => {
       if (!grupoId) return;
@@ -66,7 +100,7 @@ export function useGrupoPosts(grupoId: string | undefined) {
     AsyncStorage.removeItem(keyFor(grupoId)).catch(() => {});
   }, [grupoId]);
 
-  return { posts, addPost, deletePost, clearAll, reload };
+  return { posts, addPost, addComment, deletePost, clearAll, reload };
 }
 
 export function formatRelativeTime(ts: number): string {

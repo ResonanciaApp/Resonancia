@@ -6,6 +6,7 @@ import {
   Alert,
   Image,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -20,7 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
-import { formatRelativeTime, useGrupoPosts } from "@/hooks/useGrupoPosts";
+import { type GrupoComment, formatRelativeTime, useGrupoPosts } from "@/hooks/useGrupoPosts";
 import { type GrupoLocal, useGrupos } from "@/hooks/useGrupos";
 
 // ─── Gallery (must match crear.tsx) ───────────────────────────────────────────
@@ -172,6 +173,7 @@ type ViewPost = {
   replies: number;
   pinned?: boolean;
   isLocal?: boolean;
+  comments?: GrupoComment[];
 };
 
 type ViewModel = {
@@ -237,6 +239,7 @@ function buildLocalViewModel(
     likes: p.likes,
     replies: p.replies,
     isLocal: true,
+    comments: p.comments,
   }));
 
   return {
@@ -290,9 +293,12 @@ export default function GrupoDetailScreen() {
   const { grupos, deleteGrupo, reload: reloadGrupos } = useGrupos();
   const localGrupo = useMemo(() => grupos.find((g) => g.id === id), [grupos, id]);
 
-  const { posts: localPosts, addPost, reload: reloadPosts } = useGrupoPosts(
+  const { posts: localPosts, addPost, addComment, reload: reloadPosts } = useGrupoPosts(
     localGrupo ? localGrupo.id : undefined,
   );
+
+  const [openCommentsPostId, setOpenCommentsPostId] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -474,7 +480,14 @@ export default function GrupoDetailScreen() {
                           {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
                         </Text>
                       </Pressable>
-                      <Pressable style={styles.actionBtn}>
+                      <Pressable
+                        style={styles.actionBtn}
+                        onPress={() => {
+                          if (grupo.isLocalGroup && post.id !== "welcome") {
+                            setOpenCommentsPostId(post.id);
+                          }
+                        }}
+                      >
                         <Feather name="message-square" size={15} color={colors.mutedForeground} />
                         <Text style={[styles.actionText, { color: colors.mutedForeground }]}>{post.replies}</Text>
                       </Pressable>
@@ -641,10 +654,159 @@ export default function GrupoDetailScreen() {
             )}
           </ScrollView>
         )}
+
+        {/* Comments modal */}
+        <Modal
+          visible={openCommentsPostId !== null}
+          transparent
+          animationType="slide"
+          onRequestClose={() => {
+            setOpenCommentsPostId(null);
+            setCommentText("");
+          }}
+        >
+          <Pressable
+            style={commentStyles.overlay}
+            onPress={() => {
+              setOpenCommentsPostId(null);
+              setCommentText("");
+            }}
+          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={commentStyles.sheetWrap}
+          >
+            <View style={[commentStyles.sheet, { backgroundColor: colors.card, paddingBottom: bottomPad + 12 }]}>
+              <View style={[commentStyles.handle, { backgroundColor: colors.border }]} />
+              <View style={commentStyles.sheetHeader}>
+                <Text style={[commentStyles.sheetTitle, { color: colors.foreground }]}>Comentarios</Text>
+                <Pressable
+                  onPress={() => {
+                    setOpenCommentsPostId(null);
+                    setCommentText("");
+                  }}
+                  hitSlop={10}
+                >
+                  <Feather name="x" size={22} color={colors.mutedForeground} />
+                </Pressable>
+              </View>
+
+              {(() => {
+                const post = grupo.posts.find((p) => p.id === openCommentsPostId);
+                const comments = post?.comments ?? [];
+                return (
+                  <>
+                    <ScrollView
+                      style={{ maxHeight: 360 }}
+                      contentContainerStyle={{ paddingBottom: 12 }}
+                      showsVerticalScrollIndicator={false}
+                    >
+                      {comments.length === 0 ? (
+                        <View style={{ alignItems: "center", paddingVertical: 32, gap: 8 }}>
+                          <Feather name="message-circle" size={26} color={colors.mutedForeground} />
+                          <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>
+                            Sin comentarios. Sé el primero.
+                          </Text>
+                        </View>
+                      ) : (
+                        comments.map((c) => (
+                          <View key={c.id} style={commentStyles.commentRow}>
+                            <View style={[commentStyles.commentAvatar, { backgroundColor: c.color + "30" }]}>
+                              <Text style={[commentStyles.commentInitials, { color: c.color }]}>{c.initials}</Text>
+                            </View>
+                            <View style={{ flex: 1 }}>
+                              <View style={commentStyles.commentHeader}>
+                                <Text style={[commentStyles.commentAuthor, { color: colors.foreground }]}>
+                                  {c.author}
+                                </Text>
+                                <Text style={[commentStyles.commentTime, { color: colors.mutedForeground }]}>
+                                  {formatRelativeTime(c.createdAt)}
+                                </Text>
+                              </View>
+                              <Text style={[commentStyles.commentText, { color: colors.foreground }]}>
+                                {c.text}
+                              </Text>
+                            </View>
+                          </View>
+                        ))
+                      )}
+                    </ScrollView>
+
+                    <View style={[commentStyles.composeRow, { borderTopColor: colors.border }]}>
+                      <View
+                        style={[
+                          commentStyles.composeInput,
+                          { backgroundColor: colors.background, borderColor: colors.border },
+                        ]}
+                      >
+                        <TextInput
+                          value={commentText}
+                          onChangeText={setCommentText}
+                          placeholder="Escribir un comentario..."
+                          placeholderTextColor={colors.mutedForeground}
+                          style={[commentStyles.composeText, { color: colors.foreground }]}
+                          multiline
+                          autoFocus
+                        />
+                      </View>
+                      <Pressable
+                        style={[
+                          commentStyles.sendBtn,
+                          {
+                            backgroundColor: commentText.trim() ? colors.primary : colors.card,
+                            borderColor: colors.border,
+                          },
+                        ]}
+                        onPress={async () => {
+                          const txt = commentText.trim();
+                          if (!txt || !openCommentsPostId) return;
+                          await addComment(openCommentsPostId, {
+                            author: userName,
+                            initials: initialsFrom(userName),
+                            color: "#C69B4F",
+                            text: txt,
+                          });
+                          setCommentText("");
+                        }}
+                        disabled={!commentText.trim()}
+                      >
+                        <Feather
+                          name="send"
+                          size={17}
+                          color={commentText.trim() ? "#1A0E06" : colors.mutedForeground}
+                        />
+                      </Pressable>
+                    </View>
+                  </>
+                );
+              })()}
+            </View>
+          </KeyboardAvoidingView>
+        </Modal>
       </View>
     </KeyboardAvoidingView>
   );
 }
+
+const commentStyles = StyleSheet.create({
+  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)" },
+  sheetWrap: { position: "absolute", left: 0, right: 0, bottom: 0 },
+  sheet: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, paddingTop: 10 },
+  handle: { width: 40, height: 4, borderRadius: 2, alignSelf: "center", marginBottom: 12 },
+  sheetHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 14 },
+  sheetTitle: { fontSize: 17, fontWeight: "700" },
+  commentRow: { flexDirection: "row", gap: 10, paddingVertical: 10 },
+  commentAvatar: { width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center" },
+  commentInitials: { fontSize: 12, fontWeight: "700" },
+  commentHeader: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 2 },
+  commentAuthor: { fontSize: 13, fontWeight: "700" },
+  commentTime: { fontSize: 11 },
+  commentText: { fontSize: 14, lineHeight: 20 },
+  composeRow: { flexDirection: "row", gap: 10, alignItems: "flex-end", paddingTop: 12, borderTopWidth: 1 },
+  composeInput: { flex: 1, borderRadius: 20, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 10, maxHeight: 100 },
+  composeText: { fontSize: 14 },
+  sendBtn: { width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center", borderWidth: 1 },
+});
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
