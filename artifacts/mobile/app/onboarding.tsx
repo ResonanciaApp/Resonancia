@@ -375,8 +375,26 @@ export default function Onboarding() {
         </Animated.View>
 
         <View style={[styles.welcomeBottom, { paddingBottom: insets.bottom + 24 }]}>
-          <Pressable onPress={finish} style={styles.primaryBtn}>
-            <Text style={styles.primaryBtnText}>Entrar a Casa del Cuenco   →</Text>
+          <Text style={styles.accountHint}>
+            ¿Querés sumar amigos y guardar tu progreso?{"\n"}Creá tu cuenta gratis (opcional).
+          </Text>
+          <Pressable
+            onPress={async () => {
+              await AsyncStorage.setItem(STORAGE_KEY, "true");
+              await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(answers));
+              const sound = soundRef.current;
+              if (sound) {
+                try { await sound.setVolumeAsync(0); await sound.unloadAsync(); } catch {}
+                soundRef.current = null;
+              }
+              router.replace("/(auth)/sign-up");
+            }}
+            style={styles.primaryBtn}
+          >
+            <Text style={styles.primaryBtnText}>Crear cuenta gratis   →</Text>
+          </Pressable>
+          <Pressable onPress={finish} style={styles.skipBtn}>
+            <Text style={styles.skipBtnText}>ENTRAR SIN CUENTA</Text>
           </Pressable>
         </View>
       </LinearGradient>
@@ -532,6 +550,15 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontFamily: "Inter_400Regular",
     paddingHorizontal: 16,
+  },
+  accountHint: {
+    color: MUTED,
+    fontSize: 12,
+    textAlign: "center",
+    lineHeight: 18,
+    fontFamily: "Inter_400Regular",
+    paddingHorizontal: 16,
+    marginBottom: 4,
   },
 
   // Closing
