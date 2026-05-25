@@ -94,7 +94,11 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
     const [metadata] = await objectFile.getMetadata();
     const totalSize =
       typeof metadata.size === "string" ? parseInt(metadata.size, 10) : Number(metadata.size ?? 0);
-    const contentType = (metadata.contentType as string) || "application/octet-stream";
+    let contentType = (metadata.contentType as string) || "application/octet-stream";
+    // Normalize non-standard audio MIME types that iOS AVPlayer rejects
+    if (contentType === "audio/m4a" || contentType === "audio/x-m4a") {
+      contentType = "audio/mp4";
+    }
 
     res.setHeader("Content-Type", contentType);
     res.setHeader("Accept-Ranges", "bytes");

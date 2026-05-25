@@ -390,7 +390,7 @@ export default function ChatScreen() {
         Alert.alert("Muy corto", "Grabá al menos 1 segundo.");
         return;
       }
-      const contentType = Platform.OS === "ios" ? "audio/m4a" : "audio/mp4";
+      const contentType = "audio/mp4";
       const ext = "m4a";
       setUploading(true);
       const objectPath = await uploadLocalFile(uri, contentType, `voice-${Date.now()}.${ext}`, 1);
