@@ -81,7 +81,7 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 
 ## User preferences
 
-- Idioma: español en toda la UI
+- Idioma: español neutro en toda la UI y en las respuestas del agente (no usar modismos argentinos)
 - Colores: bg `#18110C`, primary `#C69B4F`, accent `#D6A85B`, card `#24160F`, fg `#EDE1D3`
 - Pre-existing TS errors (ignorar): VozInterior, MensajesAnon, MiniPlayer, session/[id], SessionCard, PlayerContext, player.tsx
 
