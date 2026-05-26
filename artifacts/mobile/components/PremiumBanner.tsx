@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   btnText: {
-    color: "#090F0B",
+    color: "#0C1610",
     fontWeight: "700",
     fontSize: 16,
   },

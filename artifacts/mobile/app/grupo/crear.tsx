@@ -104,7 +104,7 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#090F0B" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#0C1610" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontSize: 28, fontWeight: "700", color: "#C8C1B5" },
   name: { color: "#C8C1B5", fontSize: 18, fontWeight: "700", marginBottom: 4 },
@@ -201,7 +201,7 @@ export default function CrearGrupoScreen() {
   if (step === 1) {
     return (
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#090F0B" }]}
+        style={[styles.root, { backgroundColor: "#0C1610" }]}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <StatusBar barStyle="light-content" />
@@ -240,7 +240,7 @@ export default function CrearGrupoScreen() {
             style={[styles.nextBtn, { backgroundColor: canNext1 ? colors.foreground : colors.card }]}
             disabled={!canNext1}
           >
-            <Text style={[styles.nextBtnText, { color: canNext1 ? "#090F0B" : colors.mutedForeground }]}>
+            <Text style={[styles.nextBtnText, { color: canNext1 ? "#0C1610" : colors.mutedForeground }]}>
               Terminar
             </Text>
           </Pressable>
@@ -252,7 +252,7 @@ export default function CrearGrupoScreen() {
   // ── Steps 2-5: Group preview + bottom sheet ───────────────────────────────
   return (
     <KeyboardAvoidingView
-      style={[styles.root, { backgroundColor: "#090F0B" }]}
+      style={[styles.root, { backgroundColor: "#0C1610" }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={0}
     >
@@ -299,7 +299,7 @@ export default function CrearGrupoScreen() {
                 onPress={() => setStep(3)}
                 style={[styles.sheetNext, { backgroundColor: colors.foreground }]}
               >
-                <Text style={[styles.sheetNextText, { color: "#090F0B" }]}>Siguiente</Text>
+                <Text style={[styles.sheetNextText, { color: "#0C1610" }]}>Siguiente</Text>
               </Pressable>
               <View style={{ height: bottomPad + 8 }} />
             </>
@@ -340,7 +340,7 @@ export default function CrearGrupoScreen() {
                   onPress={() => setStep(4)}
                   style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
                 >
-                  <Text style={[styles.sheetNextText, { color: "#090F0B" }]}>Siguiente</Text>
+                  <Text style={[styles.sheetNextText, { color: "#0C1610" }]}>Siguiente</Text>
                 </Pressable>
               </View>
               <View style={{ height: bottomPad + 8 }} />
@@ -379,7 +379,7 @@ export default function CrearGrupoScreen() {
                   onPress={() => setStep(5)}
                   style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
                 >
-                  <Text style={[styles.sheetNextText, { color: "#090F0B" }]}>Siguiente</Text>
+                  <Text style={[styles.sheetNextText, { color: "#0C1610" }]}>Siguiente</Text>
                 </Pressable>
               </View>
               <View style={{ height: bottomPad + 8 }} />
@@ -391,7 +391,7 @@ export default function CrearGrupoScreen() {
             <>
               <View style={styles.successIcon}>
                 <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.successGrad}>
-                  <Feather name="check" size={28} color="#090F0B" />
+                  <Feather name="check" size={28} color="#0C1610" />
                 </LinearGradient>
               </View>
               <Text style={[styles.sheetTitle, { color: colors.foreground, textAlign: "center", marginBottom: 8 }]}>
@@ -411,8 +411,8 @@ export default function CrearGrupoScreen() {
 
               {/* Share button */}
               <Pressable onPress={handleShare} style={[styles.sheetNext, { backgroundColor: colors.primary, marginTop: 16 }]}>
-                <Feather name="share-2" size={17} color="#090F0B" />
-                <Text style={[styles.sheetNextText, { color: "#090F0B" }]}>Compartir enlace</Text>
+                <Feather name="share-2" size={17} color="#0C1610" />
+                <Text style={[styles.sheetNextText, { color: "#0C1610" }]}>Compartir enlace</Text>
               </Pressable>
 
               {/* Done */}

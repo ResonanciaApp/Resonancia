@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   newBadgeText: {
     fontSize: 9,
     fontWeight: "700",
-    color: "#090F0B",
+    color: "#0C1610",
     letterSpacing: 0.5,
   },
   cardTitle: {

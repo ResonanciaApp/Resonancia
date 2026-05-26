@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#090F0B",
+    borderColor: "#0C1610",
   },
   userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
