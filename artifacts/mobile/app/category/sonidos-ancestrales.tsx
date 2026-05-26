@@ -2,7 +2,6 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -14,13 +13,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import {
-  IconCuencoCuarzo,
-  IconCuencoTibetano,
-  IconCuencosYGongs,
-  IconGong,
-  IconMixCuencos,
-} from "@/components/AncestralIcons";
+import { Image } from "expo-image";
 import { SacredBackground } from "@/components/SacredBackground";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionCard } from "@/components/SessionCard";
@@ -33,17 +26,17 @@ const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ance
 
 type CategoryDef = {
   tag: AncestralTag;
-  Icon: React.FC<{ size?: number; color?: string }>;
+  image: ReturnType<typeof require>;
   description: string;
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Cuencos Tibetanos",  Icon: IconCuencoTibetano, description: "Vibraciones milenarias del Himalaya" },
-  { tag: "Cuencos de Cuarzo", Icon: IconCuencoCuarzo,   description: "Frecuencias cristalinas de alta pureza" },
-  { tag: "Mix de Cuencos",    Icon: IconMixCuencos,     description: "Lo mejor de ambos mundos sonoros" },
-  { tag: "Gongs",             Icon: IconGong,           description: "Ondas expansivas de transformación" },
-  { tag: "Cuencos y Gongs",   Icon: IconCuencosYGongs,  description: "Combinación sagrada de instrumentos" },
-  { tag: "Full Instrumentos", Icon: IconMixCuencos,     description: "Todos los instrumentos ancestrales" },
+  { tag: "Cuencos Tibetanos",  image: require("@/assets/images/sessions/session-1.jpg"),  description: "Vibraciones milenarias del Himalaya" },
+  { tag: "Cuencos de Cuarzo", image: require("@/assets/images/sessions/session-3.jpg"),  description: "Frecuencias cristalinas de alta pureza" },
+  { tag: "Mix de Cuencos",    image: require("@/assets/images/sessions/session-4.jpg"),  description: "Lo mejor de ambos mundos sonoros" },
+  { tag: "Gongs",             image: require("@/assets/images/sessions/session-7.jpg"),  description: "Ondas expansivas de transformación" },
+  { tag: "Cuencos y Gongs",   image: require("@/assets/images/sessions/session-5.jpg"),  description: "Combinación sagrada de instrumentos" },
+  { tag: "Full Instrumentos", image: require("@/assets/images/sessions/session-8.jpg"),  description: "Todos los instrumentos ancestrales" },
 ];
 
 export default function SonidosAncestalesScreen() {
@@ -137,14 +130,12 @@ export default function SonidosAncestalesScreen() {
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    <View
-                      style={[
-                        styles.iconCircle,
-                        { backgroundColor: "rgba(232,200,122,0.1)", borderColor: "rgba(232,200,122,0.22)" },
-                      ]}
-                    >
-                      <cat.Icon size={22} color="#E8C87A" />
-                    </View>
+                    <Image
+                      source={cat.image}
+                      style={styles.iconCircle}
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
+                    />
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
                       <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
@@ -337,9 +328,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    overflow: "hidden",
   },
   catName: {
     flex: 1,
