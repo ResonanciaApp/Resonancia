@@ -64,8 +64,8 @@ function CardFront({ message }: { message: string }) {
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
     >
-      <View style={[styles.outerBorder, { borderColor: "#4A7A55" }]} pointerEvents="none" />
-      <View style={[styles.innerBorder, { borderColor: "rgba(74,122,85,0.3)" }]} pointerEvents="none" />
+      <View style={[styles.outerBorder, { borderWidth: 0.8, borderColor: "#4A7A55" }]} pointerEvents="none" />
+      <View style={[styles.innerBorder, { borderWidth: 0.8, borderColor: "rgba(74,122,85,0.3)" }]} pointerEvents="none" />
       <Corner position="tl" />
       <Corner position="tr" />
       <Corner position="bl" />
@@ -199,13 +199,11 @@ const styles = StyleSheet.create({
   outerBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 10,
-    borderWidth: 0.8,
   },
   innerBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 8,
     margin: 6,
-    borderWidth: 0.8,
   },
   corner: { position: "absolute" },
   backCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10 },
