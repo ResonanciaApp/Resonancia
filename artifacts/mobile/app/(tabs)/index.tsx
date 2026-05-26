@@ -34,6 +34,7 @@ import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
+import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
 const { width } = Dimensions.get("window");
 const GRID_GAP = 12;
@@ -468,7 +469,9 @@ export default function HomeScreen() {
         {/* ── 9. BANNER PREMIUM ── */}
         <PremiumBanner />
 
-        {/* ── 10. STATS + SOCIAL ── */}
+        {/* ── 10. FRASE DEL DÍA ── */}
+        <QuoteOfTheDay />
+
       </ScrollView>
 
       <DrawerMenu visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
