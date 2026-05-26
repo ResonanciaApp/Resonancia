@@ -243,7 +243,7 @@ export default function HomeScreen() {
               Sesión destacada del día
             </Text>
             <Pressable
-              style={[styles.heroCard, { borderColor: "rgba(182,149,95,0.22)" }]}
+              style={[styles.heroCard]}
               onPress={() => router.push(`/session/${featuredSession.id}` as never)}
             >
               <Image source={featuredSession.image as number} style={styles.heroImage} resizeMode="cover" />
@@ -309,7 +309,7 @@ export default function HomeScreen() {
                 onPress={() => handleTimeBucket(bucket)}
                 style={({ pressed }) => [
                   styles.timeChip,
-                  { backgroundColor: colors.card, borderColor: colors.primary + "44", opacity: pressed ? 0.78 : 1 },
+                  { backgroundColor: colors.card, opacity: pressed ? 0.78 : 1 },
                 ]}
               >
                 <LinearGradient
@@ -570,7 +570,6 @@ const styles = StyleSheet.create({
     height: HERO_HEIGHT,
     borderRadius: 24,
     overflow: "hidden",
-    borderWidth: 1,
   },
   heroImage: { width: "100%", height: "100%" },
   glowCenter: {
@@ -604,7 +603,6 @@ const styles = StyleSheet.create({
   timeRow: { flexDirection: "row", gap: 8, paddingRight: 4, marginTop: 6 },
   timeChip: {
     borderRadius: 20,
-    borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 10,
     flexDirection: "row",
