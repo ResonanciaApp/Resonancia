@@ -82,6 +82,42 @@ export function useGrupoPosts(grupoId: string | undefined) {
     [grupoId],
   );
 
+  const ensureWelcomePost = useCallback(
+    async (data: Omit<GrupoPost, "id" | "createdAt" | "likes" | "replies">) => {
+      if (!grupoId) return;
+      setPosts((prev) => {
+        if (prev.some((p) => p.id === "welcome")) return prev;
+        const welcome: GrupoPost = {
+          ...data,
+          id: "welcome",
+          createdAt: Date.now(),
+          likes: 0,
+          replies: 0,
+        };
+        const arr = [...prev, welcome];
+        AsyncStorage.setItem(keyFor(grupoId), JSON.stringify(arr)).catch(() => {});
+        return arr;
+      });
+    },
+    [grupoId],
+  );
+
+  const togglePostLike = useCallback(
+    async (postId: string, liked: boolean) => {
+      if (!grupoId) return;
+      setPosts((prev) => {
+        const arr = prev.map((p) =>
+          p.id === postId
+            ? { ...p, likes: Math.max(0, (p.likes ?? 0) + (liked ? 1 : -1)) }
+            : p,
+        );
+        AsyncStorage.setItem(keyFor(grupoId), JSON.stringify(arr)).catch(() => {});
+        return arr;
+      });
+    },
+    [grupoId],
+  );
+
   const deletePost = useCallback(
     async (postId: string) => {
       if (!grupoId) return;
@@ -100,7 +136,7 @@ export function useGrupoPosts(grupoId: string | undefined) {
     AsyncStorage.removeItem(keyFor(grupoId)).catch(() => {});
   }, [grupoId]);
 
-  return { posts, addPost, addComment, deletePost, clearAll, reload };
+  return { posts, addPost, addComment, ensureWelcomePost, togglePostLike, deletePost, clearAll, reload };
 }
 
 export function formatRelativeTime(ts: number): string {

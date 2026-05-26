@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Image,
@@ -215,30 +215,22 @@ function buildLocalViewModel(
   const userInitials = initialsFrom(userName);
   const userColor = "#C69B4F";
 
-  const welcomePost: ViewPost | null = g.bienvenida.trim()
-    ? {
-        id: "welcome",
-        author: userName,
-        initials: userInitials,
-        color: userColor,
-        time: "Mensaje de bienvenida",
-        text: g.bienvenida,
-        likes: 0,
-        replies: 0,
-        pinned: true,
-      }
-    : null;
+  // welcome aparece arriba (pinned); el resto, más recientes después.
+  const welcome = localPosts.find((p) => p.id === "welcome");
+  const rest = localPosts.filter((p) => p.id !== "welcome");
+  const ordered = welcome ? [welcome, ...rest] : rest;
 
-  const realPosts: ViewPost[] = localPosts.map((p) => ({
+  const realPosts: ViewPost[] = ordered.map((p) => ({
     id: p.id,
     author: p.author,
     initials: p.initials,
     color: p.color,
-    time: formatRelativeTime(p.createdAt),
+    time: p.id === "welcome" ? "Mensaje de bienvenida" : formatRelativeTime(p.createdAt),
     text: p.text,
     likes: p.likes,
     replies: p.replies,
     isLocal: true,
+    pinned: p.id === "welcome",
   }));
 
   return {
@@ -256,7 +248,7 @@ function buildLocalViewModel(
     memberList: [
       { name: `${userName} (vos)`, role: "Admin", color: userColor, initials: userInitials, active: true },
     ],
-    posts: welcomePost ? [welcomePost, ...realPosts] : realPosts,
+    posts: realPosts,
     isAdmin: true,
     isLocalGroup: true,
     imageSrc: g.imageIdx !== null && g.imageIdx < GALLERY.length ? GALLERY[g.imageIdx] : null,
@@ -294,10 +286,21 @@ export default function GrupoDetailScreen() {
   const { grupos, deleteGrupo, reload: reloadGrupos } = useGrupos();
   const localGrupo = useMemo(() => grupos.find((g) => g.id === id), [grupos, id]);
 
-  const { posts: localPosts, addPost, reload: reloadPosts } = useGrupoPosts(
+  const { posts: localPosts, addPost, ensureWelcomePost, togglePostLike, reload: reloadPosts } = useGrupoPosts(
     localGrupo ? localGrupo.id : undefined,
   );
 
+  // Sembrar el post de bienvenida como un post real (con id="welcome")
+  // para que se le pueda dar Me gusta, comentar y compartir.
+  useEffect(() => {
+    if (!localGrupo || !localGrupo.bienvenida?.trim()) return;
+    ensureWelcomePost({
+      author: userName,
+      initials: initialsFrom(userName),
+      color: "#C69B4F",
+      text: localGrupo.bienvenida,
+    });
+  }, [localGrupo, userName, ensureWelcomePost]);
 
   useFocusEffect(
     useCallback(() => {
@@ -315,8 +318,13 @@ export default function GrupoDetailScreen() {
   const toggleLike = (postId: string) => {
     setLikedPosts((prev) => {
       const next = new Set(prev);
-      if (next.has(postId)) next.delete(postId);
-      else next.add(postId);
+      const willLike = !next.has(postId);
+      if (willLike) next.add(postId);
+      else next.delete(postId);
+      // Persistir cambio de likes en el post (solo para grupos locales)
+      if (grupo?.isLocalGroup) {
+        togglePostLike(postId, willLike);
+      }
       return next;
     });
   };
@@ -463,7 +471,7 @@ export default function GrupoDetailScreen() {
                     )}
                     <Pressable
                       onPress={() => {
-                        if (grupo.isLocalGroup && post.id !== "welcome") {
+                        if (grupo.isLocalGroup) {
                           router.push({
                             pathname: "/grupo-post/[postId]",
                             params: { postId: post.id, grupoId: grupo.id },
@@ -496,7 +504,7 @@ export default function GrupoDetailScreen() {
                       <Pressable
                         style={styles.actionBtn}
                         onPress={() => {
-                          if (grupo.isLocalGroup && post.id !== "welcome") {
+                          if (grupo.isLocalGroup) {
                             router.push({
                               pathname: "/grupo-post/[postId]",
                               params: { postId: post.id, grupoId: grupo.id },

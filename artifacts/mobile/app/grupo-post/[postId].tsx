@@ -6,6 +6,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -36,12 +37,13 @@ export default function GrupoPostScreen() {
 
   const userName = username || "Explorador de Sonido";
 
-  const { posts, addComment } = useGrupoPosts(grupoId || undefined);
+  const { posts, addComment, togglePostLike } = useGrupoPosts(grupoId || undefined);
   const post = useMemo(() => posts.find((p) => p.id === postId), [posts, postId]);
   const comments = post?.comments ?? [];
 
   const [commentText, setCommentText] = useState("");
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
+  const [postLiked, setPostLiked] = useState(false);
 
   const toggleCommentLike = (commentId: string) => {
     setLikedComments((prev) => {
@@ -50,6 +52,24 @@ export default function GrupoPostScreen() {
       else next.add(commentId);
       return next;
     });
+  };
+
+  const handleTogglePostLike = () => {
+    if (!post) return;
+    const willLike = !postLiked;
+    setPostLiked(willLike);
+    togglePostLike(post.id, willLike);
+  };
+
+  const handleSharePost = async () => {
+    if (!post) return;
+    try {
+      await Share.share({
+        message: `${post.author}:\n\n${post.text}\n\n— Compartido desde RESONANCIA`,
+      });
+    } catch {
+      // cancelado
+    }
   };
 
   const topPad = Math.max(insets.top, 12);
@@ -114,14 +134,29 @@ export default function GrupoPostScreen() {
               </View>
               <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
               <View style={[styles.postMeta, { borderTopColor: colors.border }]}>
+                <Pressable onPress={handleTogglePostLike} hitSlop={6} style={styles.metaItem}>
+                  <Feather
+                    name="heart"
+                    size={14}
+                    color={postLiked ? "#D4709A" : colors.mutedForeground}
+                  />
+                  <Text
+                    style={[
+                      styles.metaText,
+                      { color: postLiked ? "#D4709A" : colors.mutedForeground },
+                    ]}
+                  >
+                    {post.likes + (postLiked ? 1 : 0)}
+                  </Text>
+                </Pressable>
                 <View style={styles.metaItem}>
-                  <Feather name="heart" size={13} color={colors.mutedForeground} />
-                  <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{post.likes}</Text>
-                </View>
-                <View style={styles.metaItem}>
-                  <Feather name="message-square" size={13} color={colors.mutedForeground} />
+                  <Feather name="message-square" size={14} color={colors.mutedForeground} />
                   <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{comments.length}</Text>
                 </View>
+                <Pressable onPress={handleSharePost} hitSlop={6} style={styles.metaItem}>
+                  <Feather name="share" size={14} color={colors.mutedForeground} />
+                  <Text style={[styles.metaText, { color: colors.mutedForeground }]}>Compartir</Text>
+                </Pressable>
               </View>
             </View>
 
