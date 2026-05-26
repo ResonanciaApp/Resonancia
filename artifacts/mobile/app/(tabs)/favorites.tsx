@@ -8,6 +8,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -54,6 +55,7 @@ export default function FavoritesScreen() {
   }, [favSessions]);
 
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   // Si el tag activo desaparece (último fav removido), resetear
   if (activeTag && !availableTags.includes(activeTag)) {
@@ -61,11 +63,25 @@ export default function FavoritesScreen() {
   }
 
   const filteredSessions = useMemo(() => {
-    if (!activeTag) return favSessions;
-    return favSessions.filter(
-      (s) => s.themeTag?.includes(activeTag as never) || s.sleepTag === activeTag,
-    );
-  }, [favSessions, activeTag]);
+    const q = query.trim().toLowerCase();
+    return favSessions.filter((s) => {
+      if (activeTag && !(s.themeTag?.includes(activeTag as never) || s.sleepTag === activeTag)) {
+        return false;
+      }
+      if (!q) return true;
+      const hay = [
+        s.title,
+        s.description,
+        s.categoryLabel,
+        s.sleepTag,
+        ...(s.themeTag ?? []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [favSessions, activeTag, query]);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -81,12 +97,47 @@ export default function FavoritesScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.headerTop}>
+          <Pressable
+            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+            hitSlop={10}
+            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <Feather name="chevron-left" size={20} color={colors.foreground} />
+          </Pressable>
+        </View>
+
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Favoritos</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Tus viajes sonoros y reflexiones guardados
           </Text>
         </View>
+
+        {favSessions.length > 0 && (
+          <View
+            style={[
+              styles.searchWrap,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
+          >
+            <Feather name="search" size={16} color={colors.mutedForeground} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Buscar en favoritos…"
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.searchInput, { color: colors.foreground }]}
+              returnKeyType="search"
+              autoCorrect={false}
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                <Feather name="x" size={16} color={colors.mutedForeground} />
+              </Pressable>
+            )}
+          </View>
+        )}
 
         {/* ── Sesiones ── */}
         <View style={styles.sectionBlock}>
@@ -228,7 +279,31 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
-  header: { marginBottom: 28 },
+  headerTop: { marginBottom: 14 },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  header: { marginBottom: 20 },
+  searchWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === "ios" ? 10 : 6,
+    marginBottom: 22,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    padding: 0,
+  },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   pageSub: { fontSize: 13 },
 
