@@ -46,7 +46,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
         onPress={() => router.push(`/session/${session.id}` as never)}
         style={({ pressed }) => [
           styles.hRow,
-          { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+          { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
         ]}
       >
         <Image source={session.image} style={styles.hImage} contentFit="cover" />
@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 18,
-    borderWidth: 1,
     overflow: "hidden",
     marginBottom: 12,
     height: 96,
