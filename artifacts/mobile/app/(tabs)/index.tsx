@@ -260,9 +260,12 @@ export default function HomeScreen() {
                 <Text style={[styles.heroTitle, { color: colors.foreground }]}>
                   {featuredSession.title}
                 </Text>
-                <Text style={[styles.heroSub, { color: "#C8C1B5", marginBottom: 14 }]}>
-                  {featuredSession.durationLabel}
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
+                  <Feather name="clock" size={13} color="#C8C1B5" style={{ marginRight: 5 }} />
+                  <Text style={[styles.heroSub, { color: "#C8C1B5" }]}>
+                    {featuredSession.durationLabel}
+                  </Text>
+                </View>
                 <Pressable
                   onPress={() => playSession(featuredSession)}
                   style={({ pressed }) => [
