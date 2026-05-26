@@ -308,7 +308,7 @@ export default function Onboarding() {
           <View style={styles.welcomeGlow}>
             <View style={styles.glowRing} />
             <Image
-              source={require("@/assets/images/logo-cuenco.png")}
+              source={require("@/assets/images/logo-vinyl.png")}
               style={styles.welcomeLogo}
               resizeMode="contain"
             />
