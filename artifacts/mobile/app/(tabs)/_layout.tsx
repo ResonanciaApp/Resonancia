@@ -32,7 +32,6 @@ const TAB_CONFIG: Record<
 > = {
   index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
   explore: { label: "Biblioteca", sfIcon: "books.vertical", sfIconFill: "books.vertical.fill", featherIcon: "book-open" },
-  descanzo:{ label: "Descanso",   sfIcon: "moon.stars",     sfIconFill: "moon.stars.fill",     featherIcon: "moon" },
   diario:  { label: "Diario",     sfIcon: "pencil.line",    sfIconFill: "pencil.line",         featherIcon: "feather" },
   profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
 };
