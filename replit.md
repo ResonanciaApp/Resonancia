@@ -92,6 +92,12 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 - NEVER agregar sesiones fuera del array `SESSIONS = [...]` — siempre antes del `];` de cierre
 - LOOP_SESSIONS usa IDs como strings: `"20"`, no `20`
 
+## Pendientes (recordar más adelante)
+
+- **Configuraciones → "Actividad de la comunidad"**: hoy solo guarda la preferencia local. Cuando exista backend de notificaciones, enchufar push real (suscribir/desuscribir según toggle).
+- **Configuraciones → "Términos y privacidad"**: el Alert ofrece abrir `https://resonancia.app` como placeholder. Reemplazar por el link real cuando esté.
+- **Configuraciones → "Calificar la app"**: hoy muestra "Próximamente". Cuando se publique en stores, abrir el link nativo (`expo-store-review` o `Linking` a la store URL).
+
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
