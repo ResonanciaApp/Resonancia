@@ -308,7 +308,7 @@ export function MensajesAnonimosPanel() {
           <Feather
             name={showFeed ? "chevron-up" : "chevron-down"}
             size={16}
-            color={ACCENT}
+            color="#FFFFFF"
           />
         </View>
       </Pressable>
