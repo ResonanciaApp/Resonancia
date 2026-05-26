@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
-import { type GrupoLocal, useGrupos } from "@/hooks/useGrupos";
+import { type GrupoLocal, isAdminGrupo, useGrupos } from "@/hooks/useGrupos";
 
 // ─── Image gallery (same as crear.tsx) ───────────────────────────────────────
 const GALLERY = [
@@ -74,15 +74,6 @@ const GRUPOS_POPULARES = [
     icon: "sun" as const,
     color: "#C8B4E0",
   },
-];
-
-const GRUPOS_POR_TEMA = [
-  { label: "Meditación y mindfulness", icon: "wind" as const },
-  { label: "Sueño y descanso", icon: "moon" as const },
-  { label: "Sonidos y frecuencias", icon: "disc" as const },
-  { label: "Espiritualidad", icon: "star" as const },
-  { label: "Ansiedad y estrés", icon: "heart" as const },
-  { label: "Crecimiento personal", icon: "trending-up" as const },
 ];
 
 const GRUPOS_UNIDOS = [
@@ -215,7 +206,13 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
 }
 
 // ─── Tab: Ojear ───────────────────────────────────────────────────────────────
-function TabOjear({ colors }: { colors: ReturnType<typeof useColors> }) {
+function TabOjear({
+  colors,
+  gruposAdmin,
+}: {
+  colors: ReturnType<typeof useColors>;
+  gruposAdmin: GrupoLocal[];
+}) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
       {/* Grupos populares */}
@@ -250,24 +247,33 @@ function TabOjear({ colors }: { colors: ReturnType<typeof useColors> }) {
         ))}
       </View>
 
-      {/* Grupos por tema */}
+      {/* Grupos de RESONANCIA (admin) */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 8 }]}>
-          Grupos por tema
+        <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+          Grupos de RESONANCIA
         </Text>
-        {GRUPOS_POR_TEMA.map((t) => (
+        {gruposAdmin.map((g) => (
           <Pressable
-            key={t.label}
+            key={g.id}
+            onPress={() => router.push(`/grupo/${g.id}` as never)}
             style={({ pressed }) => [
-              styles.temaRow,
-              { borderBottomColor: colors.border, opacity: pressed ? 0.7 : 1 },
+              styles.popularRow,
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
             ]}
           >
-            <View style={[styles.temaIconBg, { backgroundColor: colors.card }]}>
-              <Feather name={t.icon} size={16} color={colors.primary} />
+            <LocalGrupoAvatar grupo={g} size={54} />
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.popularTipo, { color: colors.mutedForeground }]}>
+                Círculo público
+              </Text>
+              <Text style={[styles.popularName, { color: colors.foreground }]} numberOfLines={1}>
+                {g.nombre}
+              </Text>
+              <Text style={[styles.popularMembers, { color: colors.mutedForeground }]} numberOfLines={1}>
+                Por Casa del Cuenco
+              </Text>
             </View>
-            <Text style={[styles.temaLabel, { color: colors.foreground }]}>{t.label}</Text>
-            <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+            <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
           </Pressable>
         ))}
       </View>
@@ -525,9 +531,15 @@ export default function GruposScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        {tab === "ojear" && <TabOjear colors={colors} />}
+        {tab === "ojear" && (
+          <TabOjear colors={colors} gruposAdmin={gruposCreados.filter((g) => isAdminGrupo(g.id))} />
+        )}
         {tab === "misgrupos" && (
-          <TabMisGrupos colors={colors} onCreatePress={() => setShowCreate(true)} gruposCreados={gruposCreados} />
+          <TabMisGrupos
+            colors={colors}
+            onCreatePress={() => setShowCreate(true)}
+            gruposCreados={gruposCreados.filter((g) => !isAdminGrupo(g.id))}
+          />
         )}
         {tab === "tablon" && <TabTablon colors={colors} />}
       </View>
