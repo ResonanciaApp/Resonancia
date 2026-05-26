@@ -118,7 +118,7 @@ export default function HistorialScreen() {
         </View>
 
         {grouped.length === 0 ? (
-          <View style={[styles.emptyWrap, { borderColor: "rgba(182,149,95,0.15)", backgroundColor: colors.card }]}>
+          <View style={[styles.emptyWrap, { backgroundColor: colors.card }]}>
             <Feather name="clock" size={34} color={colors.primary} style={{ marginBottom: 14 }} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
               Aún no hay sesiones
@@ -132,7 +132,7 @@ export default function HistorialScreen() {
             <View key={dayLabel} style={styles.group}>
               <View style={styles.dayRow}>
                 <View style={[styles.dayLine, { backgroundColor: "rgba(182,149,95,0.18)" }]} />
-                <View style={[styles.dayPill, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.25)" }]}>
+                <View style={[styles.dayPill, { backgroundColor: colors.card }]}>
                   <Text style={[styles.dayText, { color: colors.accent }]}>{dayLabel}</Text>
                 </View>
                 <View style={[styles.dayLine, { backgroundColor: "rgba(182,149,95,0.18)" }]} />
@@ -157,7 +157,7 @@ export default function HistorialScreen() {
         )}
 
         {grouped.length > 0 && (
-          <View style={[styles.footerNote, { borderColor: "rgba(182,149,95,0.12)" }]}>
+          <View style={[styles.footerNote]}>
             <Feather name="info" size={13} color={colors.mutedForeground} />
             <Text style={[styles.footerNoteText, { color: colors.mutedForeground }]}>
               Las sesiones se eliminan automáticamente al cumplir 30 días.
@@ -198,7 +198,6 @@ const styles = StyleSheet.create({
   dayLine: { flex: 1, height: 1 },
   dayPill: {
     borderRadius: 20,
-    borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 5,
   },
@@ -217,7 +216,6 @@ const styles = StyleSheet.create({
   },
   emptyWrap: {
     borderRadius: 20,
-    borderWidth: 1,
     paddingVertical: 52,
     paddingHorizontal: 28,
     alignItems: "center",
@@ -229,7 +227,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    borderTopWidth: 1,
     paddingTop: 18,
     marginTop: 4,
   },

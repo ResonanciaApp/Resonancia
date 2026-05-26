@@ -103,7 +103,7 @@ export default function FavoritesScreen() {
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
             hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.backBtn, { backgroundColor: colors.card }]}
           >
             <Feather name="chevron-left" size={20} color={colors.foreground} />
           </Pressable>
@@ -120,7 +120,7 @@ export default function FavoritesScreen() {
           <View
             style={[
               styles.searchWrap,
-              { backgroundColor: colors.card, borderColor: colors.border },
+              { backgroundColor: colors.card },
             ]}
           >
             <Feather name="search" size={16} color={colors.mutedForeground} />
@@ -151,14 +151,14 @@ export default function FavoritesScreen() {
           </View>
 
           {favSessions.length === 0 ? (
-            <View style={[styles.emptySmall, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
               <Feather name="music" size={20} color={colors.border} />
               <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
                 Aún no guardaste sesiones
               </Text>
               <Pressable
                 onPress={() => router.push("/(tabs)/explore" as never)}
-                style={[styles.emptyLink, { borderColor: colors.border }]}
+                style={[styles.emptyLink]}
               >
                 <Text style={[styles.emptyLinkText, { color: colors.accent }]}>Explorar</Text>
               </Pressable>
@@ -229,7 +229,7 @@ export default function FavoritesScreen() {
                 <View
                   style={[
                     styles.emptySmall,
-                    { backgroundColor: colors.card, borderColor: colors.border, marginTop: 8 },
+                    { backgroundColor: colors.card, marginTop: 8 },
                   ]}
                 >
                   <Feather name="filter" size={18} color={colors.border} />
@@ -256,7 +256,7 @@ export default function FavoritesScreen() {
           </View>
 
           {favoriteEntries.length === 0 ? (
-            <View style={[styles.emptySmall, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
               <Feather name="heart" size={20} color={colors.border} />
               <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
                 Marca entradas con ♥ en el diario
@@ -284,7 +284,7 @@ export default function FavoritesScreen() {
           </View>
 
           {intencionFavorites.length === 0 ? (
-            <View style={[styles.emptySmall, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
               <Feather name="heart" size={20} color={colors.border} />
               <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
                 Marca intenciones con ♥ para guardarlas aquí
@@ -298,7 +298,7 @@ export default function FavoritesScreen() {
               {intencionFavorites.map((fav) => (
                 <View
                   key={fav}
-                  style={[styles.intencionCard, { backgroundColor: colors.card, borderColor: colors.primary + "30" }]}
+                  style={[styles.intencionCard, { backgroundColor: colors.card }]}
                 >
                   <View style={{ flex: 1 }}>
                     <Text style={[styles.intencionLabel, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
@@ -307,7 +307,7 @@ export default function FavoritesScreen() {
                   <Pressable
                     onPress={() => removeIntencionFavorite(fav)}
                     hitSlop={8}
-                    style={[styles.removeBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                    style={[styles.removeBtn, { backgroundColor: colors.card }]}
                   >
                     <Feather name="trash-2" size={14} color={colors.mutedForeground} />
                   </Pressable>
@@ -329,7 +329,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -338,7 +337,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    borderWidth: 1,
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === "ios" ? 10 : 6,
@@ -369,11 +367,9 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 16,
     borderRadius: 16,
-    borderWidth: 1,
   },
   emptySmallText: { fontSize: 13, flex: 1 },
   emptyLink: {
-    borderWidth: 1,
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -386,7 +382,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
-    borderWidth: 1,
     padding: 16,
   },
   intencionLabel: {
@@ -401,7 +396,6 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 10,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
