@@ -27,7 +27,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
-const GRADIENT: [string, string] = ["#2A2010", "#1A1408"];
+const GRADIENT: [string, string] = ["#111E16", "#0D1810"];
 const ACCENT = "#D4709A";
 
 const HOW_IT_WORKS = [
@@ -207,7 +207,7 @@ export function MensajesAnonimosPanel() {
             <View style={styles.headerTitleRow}>
               <Text style={styles.headerTitle}>Mensajes del Alma</Text>
               <View style={styles.cycleBadge}>
-                <Feather name="clock" size={9} color="#8AB894" />
+                <Feather name="clock" size={9} color="rgba(237,225,211,0.7)" />
                 <Text style={styles.cycleBadgeText}>24 h</Text>
               </View>
             </View>
@@ -221,7 +221,7 @@ export function MensajesAnonimosPanel() {
           style={styles.infoBtn}
           hitSlop={8}
         >
-          <Feather name="info" size={15} color="rgba(138,184,148,0.7)" />
+          <Feather name="info" size={15} color="rgba(237,225,211,0.45)" />
         </Pressable>
       </LinearGradient>
 
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerTitle: {
-    color: "#8AB894",
+    color: "#EDE1D3",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
@@ -551,19 +551,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(138,184,148,0.15)",
+    backgroundColor: "rgba(237,225,211,0.10)",
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   cycleBadgeText: {
-    color: "#8AB894",
+    color: "rgba(237,225,211,0.7)",
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(138,184,148,0.65)",
+    color: "rgba(237,225,211,0.50)",
     fontSize: 11,
     marginTop: 2,
   },

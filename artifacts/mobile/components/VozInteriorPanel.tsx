@@ -16,7 +16,7 @@ import { useColors } from "@/hooks/useColors";
 const BAR_COUNT = 7;
 const ACCENT = "#9B6FD4";
 const PINK = "#D4709A";
-const GRADIENT: [string, string] = ["#241C0C", "#141008"];
+const GRADIENT: [string, string] = ["#111E16", "#0D1810"];
 
 function formatMs(ms: number): string {
   const totalSec = Math.floor(ms / 1000);
@@ -227,7 +227,7 @@ export function VozInteriorPanel() {
         </View>
         {entries.length > 0 && (
           <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#8AB894" />
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="rgba(237,225,211,0.6)" />
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
@@ -313,8 +313,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { color: "#8AB894", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  headerSubtitle: { color: "rgba(138,184,148,0.65)", fontSize: 11, marginTop: 1 },
+  headerTitle: { color: "#EDE1D3", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  headerSubtitle: { color: "rgba(237,225,211,0.50)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  historyCount: { color: "#8AB894", fontSize: 12, fontWeight: "600" },
+  historyCount: { color: "rgba(237,225,211,0.7)", fontSize: 12, fontWeight: "600" },
   historyHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
