@@ -295,15 +295,11 @@ export default function ExploreScreen() {
                   {historySessions.slice(0, 5).map(({ session, playedAt }) => {
                     const date = new Date(playedAt);
                     const dateLabel = date.toLocaleDateString("es", { day: "numeric", month: "short" });
-                    const timeLabel = date.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
                     return (
                       <View key={`${session.id}-${playedAt}`} style={styles.historyRow}>
-                        <View style={[styles.historyDateBadge, { backgroundColor: colors.card }]}>
-                          <Text style={[styles.historyDateText, { color: colors.primary }]}>{dateLabel}</Text>
-                          <Text style={[styles.historyTimeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
-                        </View>
                         <View style={{ flex: 1 }}>
                           <SessionCard session={session} horizontal />
+                          <Text style={[styles.historyDateOverlay, { color: colors.mutedForeground }]}>{dateLabel}</Text>
                         </View>
                       </View>
                     );
@@ -441,22 +437,14 @@ const styles = StyleSheet.create({
   },
   historyEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
   historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
-  historyRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 10,
+  historyRow: {},
+  historyDateOverlay: {
+    position: "absolute",
+    top: 10,
+    right: 12,
+    fontSize: 10,
+    fontWeight: "600",
   },
-  historyDateBadge: {
-    width: 54,
-    borderRadius: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 4,
-  },
-  historyDateText: { fontSize: 11, fontWeight: "700", textAlign: "center" },
-  historyTimeText: { fontSize: 10, textAlign: "center", marginTop: 2 },
   verTodoBtn: {
     flexDirection: "row",
     alignItems: "center",
