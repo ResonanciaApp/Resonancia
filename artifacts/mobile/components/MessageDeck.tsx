@@ -73,10 +73,7 @@ function CardBack() {
 
       {/* Center content */}
       <View style={styles.backCenter}>
-        <View style={styles.thinRule} />
-        <Text style={styles.backTitle}>UNA SEÑAL DIVINA</Text>
-        <Text style={styles.backSub}>mensaje del día</Text>
-        <View style={styles.thinRule} />
+        <Text style={styles.backTitle}>TU MENSAJE DEL DÍA</Text>
       </View>
     </LinearGradient>
   );
