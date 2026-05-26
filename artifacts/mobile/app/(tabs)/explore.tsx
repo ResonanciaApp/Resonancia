@@ -151,7 +151,6 @@ export default function ExploreScreen() {
                       colors={cat.gradient as [string, string]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
                     />
-                    <View style={[styles.primaryBorder, { borderColor: "rgba(255,220,140,0.15)" }]} />
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
@@ -184,7 +183,6 @@ export default function ExploreScreen() {
                       colors={cat.gradient as [string, string]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
                     />
-                    <View style={[styles.secondaryBorder, { borderColor: "rgba(255,220,140,0.12)" }]} />
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
@@ -264,7 +262,6 @@ export default function ExploreScreen() {
                       colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.72)"]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
                     />
-                    <View style={[StyleSheet.absoluteFill, { borderRadius: 16, borderWidth: 1, borderColor: "rgba(182,149,95,0.2)" }]} />
                     <Text style={styles.tagLabel}>{tag.label}</Text>
                   </Pressable>
                 ))}
@@ -370,7 +367,6 @@ const styles = StyleSheet.create({
   primaryBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 18,
-    borderWidth: 1,
   },
   primaryIcon: { marginBottom: 12 },
   primaryLabel: {
@@ -399,7 +395,6 @@ const styles = StyleSheet.create({
   secondaryBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 14,
-    borderWidth: 1,
   },
   secondaryIcon: { marginBottom: 8 },
   secondaryLabel: {

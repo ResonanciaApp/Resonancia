@@ -32,17 +32,11 @@ export function CategoryCard({ category, wide = false }: Props) {
         end={{ x: 1, y: 1 }}
         style={[StyleSheet.absoluteFill, { borderRadius: colors.radius }]}
       />
-      <View
-        style={[
-          styles.border,
-          { borderRadius: colors.radius, borderColor: "rgba(182,149,95,0.15)" },
-        ]}
-      />
       <View style={styles.iconWrapper}>
         <View
           style={[
             styles.iconBg,
-            { backgroundColor: "rgba(110,55,100,0.32)", borderColor: "rgba(150,80,138,0.45)" },
+            { backgroundColor: "rgba(110,55,100,0.32)" },
           ]}
         >
           {category.iconFamily === "MaterialCommunityIcons" ? (
@@ -93,16 +87,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     gap: 14,
   },
-  border: {
-    ...StyleSheet.absoluteFillObject,
-    borderWidth: 1,
-  },
   iconWrapper: {},
   iconBg: {
     width: 42,
     height: 42,
     borderRadius: 14,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
