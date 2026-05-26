@@ -159,6 +159,7 @@ export default function ProfileScreen() {
 
   // ── Menu items (replaces favorites list) ─────────────────────────────────
   const menuPrimary: { label: string; icon: FeatherIconName; href: string }[] = [
+    { label: "Membresía", icon: "star", href: "/membresia" },
     { label: "Top 10 Comunidad", icon: "trending-up", href: "/comunidad-top10" },
     { label: "Amigos", icon: "users", href: "/amigos" },
     { label: "Grupos", icon: "message-circle", href: "/grupos" },
