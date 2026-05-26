@@ -186,7 +186,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Profile Card ── */}
-        <View style={[styles.profileCard, { borderColor: "rgba(182,149,95,0.2)" }]}>
+        <View style={[styles.profileCard]}>
           <LinearGradient
             colors={["rgba(5,10,7,1.0)", "rgba(3,7,4,1.0)"]}
             style={[StyleSheet.absoluteFill, { borderRadius: 24 }]}
@@ -225,7 +225,7 @@ export default function ProfileScreen() {
           {/* Editar Detalles button */}
           <Pressable
             onPress={openEdit}
-            style={({ pressed }) => [styles.editBtn, { borderColor: "rgba(182,149,95,0.4)", opacity: pressed ? 0.75 : 1 }]}
+            style={({ pressed }) => [styles.editBtn, { opacity: pressed ? 0.75 : 1 }]}
           >
             <Feather name="edit-2" size={13} color={colors.primary} />
             <Text style={[styles.editBtnText, { color: colors.primary }]}>Editar Detalles</Text>
@@ -249,7 +249,7 @@ export default function ProfileScreen() {
                   onPress={() => router.push(stat.href as never)}
                   style={({ pressed }) => [
                     styles.statCard,
-                    { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   {content}
@@ -259,7 +259,7 @@ export default function ProfileScreen() {
             return (
               <View
                 key={stat.label}
-                style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+                style={[styles.statCard, { backgroundColor: colors.card }]}
               >
                 {content}
               </View>
@@ -268,7 +268,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Premium Banner ── */}
-        <View style={[styles.premiumBanner, { borderColor: "rgba(182,149,95,0.3)" }]}>
+        <View style={[styles.premiumBanner]}>
           <LinearGradient
             colors={["rgba(182,149,95,0.15)", "rgba(36,22,15,0.8)"]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
@@ -286,7 +286,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Menú ── */}
-        <View style={[styles.menuCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.menuCard, { backgroundColor: colors.card }]}>
           {menuPrimary.map((item, idx) => (
             <Pressable
               key={item.label}
@@ -304,7 +304,7 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        <View style={[styles.menuCard, { backgroundColor: colors.card, borderColor: colors.border, marginTop: 14 }]}>
+        <View style={[styles.menuCard, { backgroundColor: colors.card, marginTop: 14 }]}>
           {menuSecondary.map((item, idx) => (
             <Pressable
               key={item.label}
@@ -446,7 +446,6 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 24,
-    borderWidth: 1,
     padding: 24,
     alignItems: "center",
     overflow: "hidden",
@@ -484,7 +483,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 7,
@@ -494,7 +492,7 @@ const styles = StyleSheet.create({
 
   // Stats
   statsRow: { flexDirection: "row", gap: 10, marginBottom: 20 },
-  statCard: { flex: 1, borderRadius: 18, borderWidth: 1, padding: 16, alignItems: "center" },
+  statCard: { flex: 1, borderRadius: 18, padding: 16, alignItems: "center" },
   statIcon: { marginBottom: 8 },
   statValue: { fontSize: 22, fontWeight: "700", marginBottom: 2 },
   statLabel: { fontSize: 11, letterSpacing: 0.5 },
@@ -502,7 +500,6 @@ const styles = StyleSheet.create({
   // Premium
   premiumBanner: {
     borderRadius: 20,
-    borderWidth: 1,
     padding: 18,
     flexDirection: "row",
     alignItems: "center",
@@ -518,7 +515,6 @@ const styles = StyleSheet.create({
   // Menu
   menuCard: {
     borderRadius: 18,
-    borderWidth: 1,
     overflow: "hidden",
   },
   menuRow: {
