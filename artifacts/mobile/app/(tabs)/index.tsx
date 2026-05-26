@@ -280,7 +280,10 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 4. RECOMENDADAS PARA TI ── */}
+        {/* ── 4. FRASE DEL DÍA ── */}
+        <QuoteOfTheDay />
+
+        {/* ── 5. RECOMENDADAS PARA TI ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
@@ -469,8 +472,6 @@ export default function HomeScreen() {
         {/* ── 9. BANNER PREMIUM ── */}
         <PremiumBanner />
 
-        {/* ── 10. FRASE DEL DÍA ── */}
-        <QuoteOfTheDay />
 
       </ScrollView>
 
