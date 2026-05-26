@@ -1,5 +1,6 @@
-import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { SESSIONS } from "@/data/sessions";
@@ -18,10 +19,6 @@ export default function StatsAndSocial() {
     { icon: "activity" as const,  label: "Minutos",    value: totalMinutes || "—" },
     { icon: "heart" as const,     label: "Favoritos",  value: favorites.length },
   ];
-
-  function comingSoon() {
-    Alert.alert("Próximamente", "Esta función estará disponible pronto.");
-  }
 
   return (
     <View style={styles.wrapper}>
@@ -43,7 +40,7 @@ export default function StatsAndSocial() {
             styles.socialBtn,
             { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.75 : 1 },
           ]}
-          onPress={comingSoon}
+          onPress={() => router.push("/amigos" as never)}
         >
           <Feather name="users" size={16} color={colors.primary} />
           <Text style={[styles.socialText, { color: colors.foreground }]}>Amigos</Text>
@@ -54,7 +51,7 @@ export default function StatsAndSocial() {
             styles.socialBtn,
             { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.75 : 1 },
           ]}
-          onPress={comingSoon}
+          onPress={() => router.push("/grupos" as never)}
         >
           <Feather name="globe" size={16} color={colors.primary} />
           <Text style={[styles.socialText, { color: colors.foreground }]}>Grupos</Text>
