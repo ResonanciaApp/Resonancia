@@ -221,7 +221,7 @@ export function MensajesAnonimosPanel() {
           style={styles.infoBtn}
           hitSlop={8}
         >
-          <Feather name="info" size={15} color="rgba(237,225,211,0.45)" />
+          <Feather name="info" size={15} color="#C8A860" />
         </Pressable>
       </LinearGradient>
 
@@ -500,8 +500,8 @@ export function MensajesAnonimosPanel() {
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
-      <Feather name="info" size={14} color={ACCENT} />
-      <Text style={[styles.discoverLabel, { color: ACCENT }]}>
+      <Feather name="info" size={14} color="#FFFFFF" />
+      <Text style={[styles.discoverLabel, { color: "#FFFFFF" }]}>
         {showInfo ? "Cerrar" : "Descubre más sobre este espacio"}
       </Text>
     </Pressable>
