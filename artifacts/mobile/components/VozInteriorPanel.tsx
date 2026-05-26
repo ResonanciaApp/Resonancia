@@ -16,7 +16,7 @@ import { useColors } from "@/hooks/useColors";
 const BAR_COUNT = 7;
 const ACCENT = "#9B6FD4";
 const PINK = "#D4709A";
-const GRADIENT: [string, string] = ["#3D1F5E", "#1E0F32"];
+const GRADIENT: [string, string] = ["#241C0C", "#141008"];
 
 function formatMs(ms: number): string {
   const totalSec = Math.floor(ms / 1000);
@@ -218,7 +218,7 @@ export function VozInteriorPanel() {
       <LinearGradient colors={GRADIENT} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
         <View style={styles.headerLeft}>
           <View style={styles.headerIconBg}>
-            <Feather name="mic" size={18} color="#E8D8FF" />
+            <Feather name="mic" size={18} color={ACCENT} />
           </View>
           <View>
             <Text style={styles.headerTitle}>Voz Interior</Text>
@@ -227,7 +227,7 @@ export function VozInteriorPanel() {
         </View>
         {entries.length > 0 && (
           <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#E8D8FF" />
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#C8A860" />
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
@@ -309,12 +309,12 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(155,111,212,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { color: "#E8D8FF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  headerSubtitle: { color: "rgba(232,216,255,0.7)", fontSize: 11, marginTop: 1 },
+  headerTitle: { color: "#C8A860", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  headerSubtitle: { color: "rgba(200,168,96,0.65)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  historyCount: { color: "#E8D8FF", fontSize: 12, fontWeight: "600" },
+  historyCount: { color: "#C8A860", fontSize: 12, fontWeight: "600" },
   historyHeaderRow: {
     flexDirection: "row",
     alignItems: "center",

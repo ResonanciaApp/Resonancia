@@ -39,7 +39,7 @@ const SECTIONS: SectionMeta[] = [
     subtitle: "Mis más increíbles descubrimientos",
     icon: "moon",
     accentColor: "#8AAAD4",
-    gradientColors: ["#243350", "#131E33"],
+    gradientColors: ["#241C0C", "#141008"],
   },
   {
     key: "ideas",
@@ -47,7 +47,7 @@ const SECTIONS: SectionMeta[] = [
     subtitle: "Las chispas que no quiero perder",
     icon: "zap",
     accentColor: "#F0CC82",
-    gradientColors: ["#3D2E00", "#231A00"],
+    gradientColors: ["#241C0C", "#141008"],
   },
 ];
 
@@ -185,8 +185,8 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
         end={{ x: 1, y: 1 }}
       >
         <View style={styles.panelHeaderLeft}>
-          <View style={[styles.panelIconBg, { backgroundColor: "rgba(255,255,255,0.15)" }]}>
-            <Feather name={meta.icon} size={18} color="#F5EDD8" />
+          <View style={[styles.panelIconBg, { backgroundColor: `${meta.accentColor}22` }]}>
+            <Feather name={meta.icon} size={18} color={meta.accentColor} />
           </View>
           <View>
             <Text style={styles.panelTitle}>{meta.title}</Text>
@@ -195,7 +195,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
         </View>
         {entries.length > 0 && (
           <Pressable onPress={() => setShowHistory(!showHistory)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#F5EDD8" />
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#C8A860" />
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
@@ -360,8 +360,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  panelTitle: { color: "#F5EDD8", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  panelSubtitle: { color: "rgba(245,237,216,0.7)", fontSize: 11, marginTop: 1 },
+  panelTitle: { color: "#C8A860", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  panelSubtitle: { color: "rgba(200,168,96,0.65)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
