@@ -122,6 +122,10 @@ export function DrawerMenu({ visible, onClose }: Props) {
 
   const navigate = (route: string) => {
     onClose();
+    // Siempre insertar profile en el stack para que "atrás" regrese al menú
+    if (route !== "/(tabs)/profile") {
+      router.push("/(tabs)/profile" as never);
+    }
     router.push(route as never);
   };
 
