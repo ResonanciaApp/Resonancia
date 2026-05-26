@@ -84,10 +84,11 @@ type GroupedNotification = Notification & { groupCount: number; groupHasUnread: 
 // (using the most recent one as the representative). Other types stay as-is.
 function groupNotifications(list: Notification[]): GroupedNotification[] {
   const out: GroupedNotification[] = [];
-  const dmSeen = new Map<number, number>(); // actorId -> index into `out`
+  const dmSeen = new Map<string, number>(); // String(actorId) -> index into `out`
   for (const n of list) {
     if (n.type === "dm") {
-      const existingIdx = dmSeen.get(n.actor.id);
+      const key = String(n.actor.id);
+      const existingIdx = dmSeen.get(key);
       if (existingIdx != null) {
         const existing = out[existingIdx];
         existing.groupCount += 1;
@@ -95,7 +96,7 @@ function groupNotifications(list: Notification[]): GroupedNotification[] {
         // Keep the newest as representative (list is newest-first, so first wins).
         continue;
       }
-      dmSeen.set(n.actor.id, out.length);
+      dmSeen.set(key, out.length);
       out.push({ ...n, groupCount: 1, groupHasUnread: !n.readAt });
     } else {
       out.push({ ...n, groupCount: 1, groupHasUnread: !n.readAt });
