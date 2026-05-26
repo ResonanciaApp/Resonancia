@@ -59,18 +59,13 @@ function CardBack() {
       <Corner position="bl" />
       <Corner position="br" />
       <View style={styles.backCenter}>
-        <Text style={styles.backTitle}>TU MENSAJE DEL DÍA</Text>
+        <Text style={styles.backTitle}>RECIBE UNA SEÑAL</Text>
       </View>
     </LinearGradient>
   );
 }
 
 function CardFront({ message }: { message: string }) {
-  const today = new Date().toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-  });
-
   return (
     <LinearGradient
       colors={["#200E38", "#180B2C", "#200E38"]}
@@ -84,13 +79,9 @@ function CardFront({ message }: { message: string }) {
       <Corner position="tr" />
       <Corner position="bl" />
       <Corner position="br" />
-      <Text style={styles.frontTopLabel}>Un mensaje para ti</Text>
       <View style={styles.frontBody}>
-        <View style={[styles.thinRule, { width: 40 }]} />
         <Text style={styles.frontMessage}>"{message}"</Text>
-        <View style={[styles.thinRule, { width: 40 }]} />
       </View>
-      <Text style={styles.frontDate}>Casa del Cuenco  ·  {today}</Text>
     </LinearGradient>
   );
 }
@@ -253,8 +244,8 @@ const styles = StyleSheet.create({
   },
   frontMessage: {
     color: "#D0B8F0",
-    fontSize: 13,
-    lineHeight: 21,
+    fontSize: 17,
+    lineHeight: 26,
     textAlign: "center",
     fontStyle: "italic",
     fontFamily: "serif",
