@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -152,12 +152,21 @@ export default function ExploreScreen() {
                       style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
                     />
                     <View style={[styles.primaryBorder, { borderColor: "rgba(255,220,140,0.15)" }]} />
-                    <Feather
-                      name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                      size={38}
-                      color={cat.color}
-                      style={styles.primaryIcon}
-                    />
+                    {cat.iconFamily === "MaterialCommunityIcons" ? (
+                      <MaterialCommunityIcons
+                        name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                        size={38}
+                        color={cat.color}
+                        style={styles.primaryIcon}
+                      />
+                    ) : (
+                      <Feather
+                        name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
+                        size={38}
+                        color={cat.color}
+                        style={styles.primaryIcon}
+                      />
+                    )}
                     <Text style={styles.primaryLabel} numberOfLines={2}>{cat.title}</Text>
                   </Pressable>
                 ))}
@@ -176,12 +185,21 @@ export default function ExploreScreen() {
                       style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
                     />
                     <View style={[styles.secondaryBorder, { borderColor: "rgba(255,220,140,0.12)" }]} />
-                    <Feather
-                      name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                      size={26}
-                      color={cat.color}
-                      style={styles.secondaryIcon}
-                    />
+                    {cat.iconFamily === "MaterialCommunityIcons" ? (
+                      <MaterialCommunityIcons
+                        name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                        size={26}
+                        color={cat.color}
+                        style={styles.secondaryIcon}
+                      />
+                    ) : (
+                      <Feather
+                        name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
+                        size={26}
+                        color={cat.color}
+                        style={styles.secondaryIcon}
+                      />
+                    )}
                     <Text style={styles.secondaryLabel} numberOfLines={2}>{cat.title}</Text>
                   </Pressable>
                 ))}

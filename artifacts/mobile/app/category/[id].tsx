@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -64,11 +64,19 @@ export default function CategoryScreen() {
                 { backgroundColor: "rgba(198,155,79,0.15)", borderColor: "rgba(198,155,79,0.25)" },
               ]}
             >
-              <Feather
-                name={category.icon as React.ComponentProps<typeof Feather>["name"]}
-                size={28}
-                color={category.color}
-              />
+              {category.iconFamily === "MaterialCommunityIcons" ? (
+                <MaterialCommunityIcons
+                  name={category.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                  size={28}
+                  color={category.color}
+                />
+              ) : (
+                <Feather
+                  name={category.icon as React.ComponentProps<typeof Feather>["name"]}
+                  size={28}
+                  color={category.color}
+                />
+              )}
             </View>
             <Text style={[styles.heroTitle, { color: colors.foreground }]}>{category.title}</Text>
             <Text style={[styles.heroSub, { color: colors.foreground }]}>

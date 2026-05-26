@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -189,11 +189,19 @@ export default function HomeScreen() {
                 style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
               >
                 <View style={[styles.catPillCircle, { backgroundColor: cat.gradient[1] + "CC" }]}>
-                  <Feather
-                    name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                    size={20}
-                    color={cat.color}
-                  />
+                  {cat.iconFamily === "MaterialCommunityIcons" ? (
+                    <MaterialCommunityIcons
+                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                      size={20}
+                      color={cat.color}
+                    />
+                  ) : (
+                    <Feather
+                      name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
+                      size={20}
+                      color={cat.color}
+                    />
+                  )}
                 </View>
                 <Text style={[styles.catPillLabel, { color: cat.color }]} numberOfLines={2}>
                   {cat.title}

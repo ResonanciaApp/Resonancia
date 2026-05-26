@@ -3,6 +3,7 @@ export type Category = {
   title: string;
   subtitle: string;
   icon: string;
+  iconFamily?: "Feather" | "MaterialCommunityIcons";
   sessionCount: number;
   color: string;
   gradient: [string, string];
@@ -14,7 +15,8 @@ export const CATEGORIES: Category[] = [
     id: "sonidos-ancestrales",
     title: "Sonidos Ancestrales",
     subtitle: "Cuencos, gongs y frecuencias sagradas",
-    icon: "disc",
+    icon: "bowl",
+    iconFamily: "MaterialCommunityIcons",
     sessionCount: 4,
     color: "#E8C87A",
     gradient: ["#7A5520", "#3E2208"],

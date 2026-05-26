@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
@@ -7,7 +7,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { type Category } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 
-type IconName = React.ComponentProps<typeof Feather>["name"];
+type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
+type MCIIconName = React.ComponentProps<typeof MaterialCommunityIcons>["name"];
 
 type Props = {
   category: Category;
@@ -44,7 +45,11 @@ export function CategoryCard({ category, wide = false }: Props) {
             { backgroundColor: "rgba(198,155,79,0.12)", borderColor: "rgba(198,155,79,0.2)" },
           ]}
         >
-          <Feather name={category.icon as IconName} size={wide ? 22 : 18} color={category.color} />
+          {category.iconFamily === "MaterialCommunityIcons" ? (
+            <MaterialCommunityIcons name={category.icon as MCIIconName} size={wide ? 22 : 18} color={category.color} />
+          ) : (
+            <Feather name={category.icon as FeatherIconName} size={wide ? 22 : 18} color={category.color} />
+          )}
         </View>
       </View>
       <View style={styles.content}>
