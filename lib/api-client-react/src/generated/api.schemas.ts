@@ -110,6 +110,7 @@ export const NotificationType = {
   friend_request: 'friend_request',
   friend_accepted: 'friend_accepted',
   dm: 'dm',
+  group_message: 'group_message',
 } as const;
 
 export interface Notification {

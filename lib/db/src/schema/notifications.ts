@@ -16,6 +16,7 @@ export const NOTIFICATION_TYPES = [
   "friend_request",
   "friend_accepted",
   "dm",
+  "group_message",
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 

@@ -49,21 +49,31 @@ function relativeTime(iso: string): string {
   return `hace ${d} d`;
 }
 
+type FeatherName = React.ComponentProps<typeof Feather>["name"];
+
+function iconFor(type: Notification["type"]): { name: FeatherName; color: string } {
+  switch (type) {
+    case "friend_request":  return { name: "user-plus",     color: "#8AAAD4" };
+    case "friend_accepted": return { name: "user-check",    color: "#A8C4A8" };
+    case "dm":              return { name: "message-circle", color: "#C69B4F" };
+    case "group_message":   return { name: "users",          color: "#C8B4E0" };
+    default:                return { name: "bell",           color: "#EDE1D3" };
+  }
+}
+
 function messageFor(n: Notification): string {
   switch (n.type) {
-    case "friend_request":
-      return "te envió una solicitud de amistad";
-    case "friend_accepted":
-      return "aceptó tu solicitud de amistad";
-    case "dm":
-      return "te envió un mensaje";
-    default:
-      return "tiene una novedad";
+    case "friend_request":  return "te envió una solicitud de amistad";
+    case "friend_accepted": return "aceptó tu solicitud de amistad";
+    case "dm":              return "te envió un mensaje";
+    case "group_message":   return "publicó en el grupo";
+    default:                return "tiene una novedad";
   }
 }
 
 function routeFor(n: Notification): string {
-  if (n.type === "dm") return `/chat/${n.actor.id}`;
+  if (n.type === "dm")            return `/chat/${n.actor.id}`;
+  if (n.type === "group_message") return "/grupos";
   return "/amigos";
 }
 
@@ -184,8 +194,14 @@ export default function NotificacionesScreen() {
                   },
                 ]}
               >
-                <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
-                  <Text style={[styles.initials, { color: tint }]}>{initials(n.actor.displayName)}</Text>
+                {/* Avatar + type icon badge */}
+                <View style={styles.avatarWrap}>
+                  <View style={[styles.avatar, { backgroundColor: tint + "33" }]}>
+                    <Text style={[styles.initials, { color: tint }]}>{initials(n.actor.displayName)}</Text>
+                  </View>
+                  <View style={[styles.typeBadge, { backgroundColor: iconFor(n.type).color + "22", borderColor: iconFor(n.type).color + "55" }]}>
+                    <Feather name={iconFor(n.type).name} size={10} color={iconFor(n.type).color} />
+                  </View>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.text, { color: colors.foreground }]}>
@@ -227,7 +243,19 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 10,
   },
+  avatarWrap: { position: "relative", width: 44, height: 44 },
   avatar: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
+  typeBadge: {
+    position: "absolute",
+    bottom: -2,
+    right: -4,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   initials: { fontSize: 15, fontWeight: "700" },
   text: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
   time: { fontSize: 12 },

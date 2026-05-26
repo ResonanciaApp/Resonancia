@@ -681,7 +681,7 @@ components:
           type: integer
         type:
           type: string
-          enum: ["friend_request", "friend_accepted", "dm"]
+          enum: ["friend_request", "friend_accepted", "dm", "group_message"]
         createdAt:
           type: string
           format: date-time

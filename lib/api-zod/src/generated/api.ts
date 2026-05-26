@@ -211,7 +211,7 @@ export const DeclineFriendRequestParams = zod.object({
  */
 export const GetNotificationsResponseItem = zod.object({
   "id": zod.number(),
-  "type": zod.enum(['friend_request', 'friend_accepted', 'dm']),
+  "type": zod.enum(['friend_request', 'friend_accepted', 'dm', 'group_message']),
   "createdAt": zod.coerce.date(),
   "readAt": zod.coerce.date().nullable(),
   "actor": zod.object({
