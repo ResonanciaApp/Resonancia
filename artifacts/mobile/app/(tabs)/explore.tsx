@@ -220,7 +220,6 @@ export default function ExploreScreen() {
                       styles.timeChip,
                       {
                         backgroundColor: colors.card,
-                        borderColor: colors.primary + "44",
                         opacity: pressed ? 0.78 : 1,
                       },
                     ]}
@@ -299,7 +298,7 @@ export default function ExploreScreen() {
                     const timeLabel = date.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
                     return (
                       <View key={`${session.id}-${playedAt}`} style={styles.historyRow}>
-                        <View style={[styles.historyDateBadge, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.2)" }]}>
+                        <View style={[styles.historyDateBadge, { backgroundColor: colors.card }]}>
                           <Text style={[styles.historyDateText, { color: colors.primary }]}>{dateLabel}</Text>
                           <Text style={[styles.historyTimeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
                         </View>
@@ -450,7 +449,6 @@ const styles = StyleSheet.create({
   historyDateBadge: {
     width: 54,
     borderRadius: 12,
-    borderWidth: 1,
     paddingVertical: 8,
     paddingHorizontal: 4,
     alignItems: "center",
@@ -487,7 +485,6 @@ const styles = StyleSheet.create({
   },
   timeChip: {
     borderRadius: 20,
-    borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 10,
     flexDirection: "row",
