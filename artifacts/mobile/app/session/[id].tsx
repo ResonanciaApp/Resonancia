@@ -209,7 +209,7 @@ export default function SessionDetailScreen() {
           <View style={styles.actionRow}>
             <Pressable
               onPress={handleFav}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 }]}
             >
               <Feather name="heart" size={20} color={fav ? colors.primary : colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: fav ? colors.primary : colors.mutedForeground }]}>Guardar</Text>
@@ -217,7 +217,7 @@ export default function SessionDetailScreen() {
 
             <Pressable
               onPress={handleShare}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 }]}
             >
               <Feather name="share-2" size={20} color={colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Compartir</Text>
@@ -228,8 +228,8 @@ export default function SessionDetailScreen() {
           {!isMusica && session.guide && (
             <View style={styles.guideBlock}>
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>Sobre la voz guía</Text>
-              <View style={[styles.guideCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <View style={[styles.guideAvatar, { backgroundColor: "rgba(182,149,95,0.18)", borderColor: "rgba(182,149,95,0.35)" }]}>
+              <View style={styles.guideCard}>
+                <View style={[styles.guideAvatar, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
                   <Text style={[styles.guideInitials, { color: colors.primary }]}>{guideInitials}</Text>
                 </View>
                 <View style={styles.guideMeta}>
@@ -255,7 +255,7 @@ export default function SessionDetailScreen() {
                   onPress={() => router.push(`/session/${s.id}` as never)}
                   style={({ pressed }) => [
                     styles.relatedRow,
-                    { borderColor: colors.border, backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   <Image source={s.image as never} style={styles.relatedImg} contentFit="cover" />
@@ -322,7 +322,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
-    borderWidth: 1,
   },
   badgeText: { fontSize: 9, letterSpacing: 1.5, fontWeight: "700" },
 
@@ -365,7 +364,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 16,
     borderRadius: 14,
-    borderWidth: 1,
     gap: 10,
   },
   actionLabel: {
@@ -380,15 +378,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    padding: 14,
-    borderRadius: 14,
-    borderWidth: 1,
+    paddingVertical: 4,
   },
   guideAvatar: {
     width: 52,
     height: 52,
     borderRadius: 26,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -415,7 +410,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
-    borderWidth: 1,
     overflow: "hidden",
     marginBottom: 10,
     padding: 10,
