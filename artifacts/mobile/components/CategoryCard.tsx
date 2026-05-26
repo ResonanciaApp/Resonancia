@@ -42,7 +42,7 @@ export function CategoryCard({ category, wide = false }: Props) {
         <View
           style={[
             styles.iconBg,
-            { backgroundColor: "rgba(182,149,95,0.28)", borderColor: "rgba(182,149,95,0.4)" },
+            { backgroundColor: "rgba(182,149,95,0.55)", borderColor: "rgba(182,149,95,0.7)" },
           ]}
         >
           {category.iconFamily === "MaterialCommunityIcons" ? (
