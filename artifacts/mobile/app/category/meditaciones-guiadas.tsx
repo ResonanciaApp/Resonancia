@@ -135,7 +135,7 @@ export default function MeditacionesGuiadasScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "rgba(200,180,224,0.12)", borderColor: "rgba(200,180,224,0.28)" }]}>
-            <MaterialCommunityIcons name="layers-triple-outline" size={22} color="#C8B4E0" />
+            <MaterialCommunityIcons name="meditation" size={22} color="#C8B4E0" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Meditaciones Guiadas"}

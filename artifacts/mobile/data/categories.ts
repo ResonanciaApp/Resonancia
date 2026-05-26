@@ -26,7 +26,7 @@ export const CATEGORIES: Category[] = [
     id: "meditaciones-guiadas",
     title: "Meditaciones Guiadas",
     subtitle: "Viajes interiores guiados por el sonido",
-    icon: "layers-triple-outline",
+    icon: "meditation",
     iconFamily: "MaterialCommunityIcons",
     sessionCount: 3,
     color: "#C8B4E0",
