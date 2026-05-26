@@ -286,8 +286,45 @@ export default function GrupoDetailScreen() {
   const { grupos, deleteGrupo, reload: reloadGrupos } = useGrupos();
   const localGrupo = useMemo(() => grupos.find((g) => g.id === id), [grupos, id]);
 
-  const { posts: localPosts, addPost, ensureWelcomePost, togglePostLike, reload: reloadPosts } = useGrupoPosts(
+  const { posts: localPosts, addPost, ensureWelcomePost, togglePostLike, deletePost, reload: reloadPosts } = useGrupoPosts(
     localGrupo ? localGrupo.id : undefined,
+  );
+
+  const openPostMenu = useCallback(
+    (postId: string, postAuthor: string, postText: string, groupName: string) => {
+      Alert.alert(
+        "Opciones",
+        undefined,
+        [
+          {
+            text: "Compartir",
+            onPress: async () => {
+              try {
+                await Share.share({
+                  message: `${postAuthor} en ${groupName}:\n\n${postText}\n\n— Compartido desde RESONANCIA`,
+                });
+              } catch {}
+            },
+          },
+          {
+            text: "Eliminar",
+            style: "destructive",
+            onPress: () => {
+              Alert.alert(
+                "Eliminar publicación",
+                "¿Seguro querés eliminar esta publicación? Esta acción no se puede deshacer.",
+                [
+                  { text: "Cancelar", style: "cancel" },
+                  { text: "Eliminar", style: "destructive", onPress: () => deletePost(postId) },
+                ],
+              );
+            },
+          },
+          { text: "Cancelar", style: "cancel" },
+        ],
+      );
+    },
+    [deletePost],
   );
 
   // Sembrar el post de bienvenida como un post real (con id="welcome")
@@ -469,6 +506,36 @@ export default function GrupoDetailScreen() {
                         <Text style={[styles.pinnedText, { color: colors.primary }]}>Fijado</Text>
                       </View>
                     )}
+                    <View style={styles.postHeader}>
+                      <Pressable
+                        style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1 }}
+                        onPress={() => {
+                          if (grupo.isLocalGroup) {
+                            router.push({
+                              pathname: "/grupo-post/[postId]",
+                              params: { postId: post.id, grupoId: grupo.id },
+                            });
+                          }
+                        }}
+                      >
+                        <View style={[styles.postAvatar, { backgroundColor: post.color + "30" }]}>
+                          <Text style={[styles.postInitials, { color: post.color }]}>{post.initials}</Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
+                          <Text style={[styles.postTime, { color: colors.mutedForeground }]}>{post.time}</Text>
+                        </View>
+                      </Pressable>
+                      {grupo.isLocalGroup && (
+                        <Pressable
+                          hitSlop={10}
+                          onPress={() => openPostMenu(post.id, post.author, post.text, grupo.name)}
+                          style={styles.menuBtn}
+                        >
+                          <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
+                        </Pressable>
+                      )}
+                    </View>
                     <Pressable
                       onPress={() => {
                         if (grupo.isLocalGroup) {
@@ -479,15 +546,6 @@ export default function GrupoDetailScreen() {
                         }
                       }}
                     >
-                      <View style={styles.postHeader}>
-                        <View style={[styles.postAvatar, { backgroundColor: post.color + "30" }]}>
-                          <Text style={[styles.postInitials, { color: post.color }]}>{post.initials}</Text>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                          <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
-                          <Text style={[styles.postTime, { color: colors.mutedForeground }]}>{post.time}</Text>
-                        </View>
-                      </View>
                       <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
                     </Pressable>
                     <View style={[styles.postActions, { borderTopColor: colors.border }]}>
@@ -717,6 +775,7 @@ const styles = StyleSheet.create({
   pinnedRow: { flexDirection: "row", alignItems: "center", gap: 5 },
   pinnedText: { fontSize: 11, fontWeight: "600" },
   postHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
+  menuBtn: { paddingHorizontal: 6, paddingVertical: 4 },
   postAvatar: { width: 38, height: 38, borderRadius: 19, alignItems: "center", justifyContent: "center" },
   postInitials: { fontSize: 13, fontWeight: "700" },
   postAuthor: { fontSize: 14, fontWeight: "700" },

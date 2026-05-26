@@ -130,13 +130,29 @@ export function useGrupoPosts(grupoId: string | undefined) {
     [grupoId],
   );
 
+  const deleteComment = useCallback(
+    async (postId: string, commentId: string) => {
+      if (!grupoId) return;
+      setPosts((prev) => {
+        const arr = prev.map((p) => {
+          if (p.id !== postId) return p;
+          const filtered = (p.comments ?? []).filter((c) => c.id !== commentId);
+          return { ...p, comments: filtered, replies: filtered.length };
+        });
+        AsyncStorage.setItem(keyFor(grupoId), JSON.stringify(arr)).catch(() => {});
+        return arr;
+      });
+    },
+    [grupoId],
+  );
+
   const clearAll = useCallback(async () => {
     if (!grupoId) return;
     setPosts([]);
     AsyncStorage.removeItem(keyFor(grupoId)).catch(() => {});
   }, [grupoId]);
 
-  return { posts, addPost, addComment, ensureWelcomePost, togglePostLike, deletePost, clearAll, reload };
+  return { posts, addPost, addComment, ensureWelcomePost, togglePostLike, deletePost, deleteComment, clearAll, reload };
 }
 
 export function formatRelativeTime(ts: number): string {

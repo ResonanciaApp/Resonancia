@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -37,7 +38,7 @@ export default function GrupoPostScreen() {
 
   const userName = username || "Explorador de Sonido";
 
-  const { posts, addComment, togglePostLike } = useGrupoPosts(grupoId || undefined);
+  const { posts, addComment, togglePostLike, deletePost, deleteComment } = useGrupoPosts(grupoId || undefined);
   const post = useMemo(() => posts.find((p) => p.id === postId), [posts, postId]);
   const comments = post?.comments ?? [];
 
@@ -70,6 +71,67 @@ export default function GrupoPostScreen() {
     } catch {
       // cancelado
     }
+  };
+
+  const openPostMenu = () => {
+    if (!post) return;
+    Alert.alert("Opciones", undefined, [
+      { text: "Compartir", onPress: handleSharePost },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () =>
+          Alert.alert(
+            "Eliminar publicación",
+            "¿Seguro querés eliminarla? Esta acción no se puede deshacer.",
+            [
+              { text: "Cancelar", style: "cancel" },
+              {
+                text: "Eliminar",
+                style: "destructive",
+                onPress: async () => {
+                  await deletePost(post.id);
+                  router.back();
+                },
+              },
+            ],
+          ),
+      },
+      { text: "Cancelar", style: "cancel" },
+    ]);
+  };
+
+  const openCommentMenu = (commentId: string, author: string, text: string) => {
+    Alert.alert("Opciones", undefined, [
+      {
+        text: "Compartir",
+        onPress: async () => {
+          try {
+            await Share.share({
+              message: `${author}:\n\n${text}\n\n— Compartido desde RESONANCIA`,
+            });
+          } catch {}
+        },
+      },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () =>
+          Alert.alert(
+            "Eliminar respuesta",
+            "¿Seguro querés eliminar esta respuesta?",
+            [
+              { text: "Cancelar", style: "cancel" },
+              {
+                text: "Eliminar",
+                style: "destructive",
+                onPress: () => post && deleteComment(post.id, commentId),
+              },
+            ],
+          ),
+      },
+      { text: "Cancelar", style: "cancel" },
+    ]);
   };
 
   const topPad = Math.max(insets.top, 12);
@@ -131,6 +193,9 @@ export default function GrupoPostScreen() {
                     {formatRelativeTime(post.createdAt)}
                   </Text>
                 </View>
+                <Pressable hitSlop={10} onPress={openPostMenu} style={{ padding: 4 }}>
+                  <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
+                </Pressable>
               </View>
               <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
               <View style={[styles.postMeta, { borderTopColor: colors.border }]}>
@@ -188,12 +253,19 @@ export default function GrupoPostScreen() {
                       </View>
                       <View style={{ flex: 1 }}>
                         <View style={styles.commentHeader}>
-                          <Text style={[styles.commentAuthor, { color: colors.foreground }]}>
+                          <Text style={[styles.commentAuthor, { color: colors.foreground }]} numberOfLines={1}>
                             {c.author}
                           </Text>
                           <Text style={[styles.commentTime, { color: colors.mutedForeground }]}>
                             {formatRelativeTime(c.createdAt)}
                           </Text>
+                          <View style={{ flex: 1 }} />
+                          <Pressable
+                            hitSlop={8}
+                            onPress={() => openCommentMenu(c.id, c.author, c.text)}
+                          >
+                            <Feather name="more-horizontal" size={16} color={colors.mutedForeground} />
+                          </Pressable>
                         </View>
                         <Text style={[styles.commentText, { color: colors.foreground }]}>{c.text}</Text>
                         <Pressable
