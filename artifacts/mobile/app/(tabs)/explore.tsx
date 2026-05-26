@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Dimensions,
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -14,6 +13,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
@@ -255,7 +255,8 @@ export default function ExploreScreen() {
                     <Image
                       source={tag.image}
                       style={{ position: "absolute", width: TAG_W, height: TAG_H }}
-                      resizeMode="cover"
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
                     />
                     <LinearGradient
                       colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.72)"]}

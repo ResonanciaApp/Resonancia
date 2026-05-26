@@ -1,5 +1,6 @@
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export function SacredBackground() {
   return (
@@ -7,7 +8,9 @@ export function SacredBackground() {
       <Image
         source={require("../assets/images/bg-texture.jpg")}
         style={StyleSheet.absoluteFill}
-        resizeMode="cover"
+        contentFit="cover"
+        priority="high"
+        cachePolicy="memory-disk"
       />
       {/* Overlay ligero — la imagen ya es oscura */}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(4,8,5,0.62)" }]} />
