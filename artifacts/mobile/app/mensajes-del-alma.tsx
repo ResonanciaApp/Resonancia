@@ -22,8 +22,8 @@ const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
 const HOW_IT_WORKS = [
   {
     icon: "edit-3" as const,
-    title: "Escribís desde el corazón",
-    body: "Compartís lo que sentís, pensás o querés soltar. Sin nombre, sin juicio.",
+    title: "Escribe desde el corazón",
+    body: "Comparte lo que sientes, piensas o quieres soltar. Sin nombre, sin juicio.",
   },
   {
     icon: "globe" as const,
@@ -172,7 +172,7 @@ export default function MensajesDelAlmaScreen() {
               </Text>
             </View>
             <Text style={[styles.rulesBody, { color: colors.mutedForeground }]}>
-              Este es un espacio de respeto y cuidado. Los mensajes que contengan violencia, discriminación o contenido dañino serán eliminados. Compartí desde la vulnerabilidad, no desde el ataque.
+              Este es un espacio de respeto y cuidado. Los mensajes que contengan violencia, discriminación o contenido dañino serán eliminados. Comparte desde la vulnerabilidad, no desde el ataque.
             </Text>
           </View>
         </View>

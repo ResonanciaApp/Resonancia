@@ -477,8 +477,8 @@ export default function ChatScreen() {
         </Pressable>
         <Text style={[styles.empty, { color: colors.mutedForeground }]}>
           {isForbidden
-            ? "Ya no podés escribirle a esta persona."
-            : "No podés ver este chat."}
+            ? "Ya no puedes escribirle a esta persona."
+            : "No puedes ver este chat."}
         </Text>
       </View>
     );
@@ -1207,7 +1207,7 @@ function AttachMenuModal({
           <AttachOption
             icon="mic"
             label="Grabar mensaje de voz"
-            sublabel="Mantenés grabando hasta 5 min"
+            sublabel="Mantén grabando hasta 5 min"
             tint="#D6A85B"
             onPress={onRecordVoice}
           />

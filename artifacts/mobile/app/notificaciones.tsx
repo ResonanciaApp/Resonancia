@@ -168,13 +168,13 @@ export default function NotificacionesScreen() {
           <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
         ) : !isSignedIn ? (
           <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-            Conectate para ver tus notificaciones.
+            Conéctate para ver tus notificaciones.
           </Text>
         ) : notifsQ.isLoading ? (
           <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
         ) : list.length === 0 ? (
           <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-            No tenés notificaciones todavía.
+            No tienes notificaciones todavía.
           </Text>
         ) : list.map((n) => {
             const tint = colorFor(n.actor.id);

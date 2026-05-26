@@ -163,7 +163,7 @@ export default function ConfiguracionesScreen() {
   const handleLogout = () => {
     Alert.alert(
       "Cerrar sesión",
-      "Vas a salir de RESONANCIA. Tu progreso queda guardado.",
+      "Saldrás de RESONANCIA. Tu progreso queda guardado.",
       [
         { text: "Cancelar", style: "cancel" },
         {
@@ -197,7 +197,7 @@ export default function ConfiguracionesScreen() {
                 { text: "OK", onPress: () => router.replace("/onboarding") },
               ]);
             } catch {
-              Alert.alert("Error", "No se pudo borrar todo. Intentá de nuevo.");
+              Alert.alert("Error", "No se pudo borrar todo. Inténtalo de nuevo.");
             }
           },
         },
@@ -216,13 +216,13 @@ export default function ConfiguracionesScreen() {
       Alert.alert("Próximamente", "La app estará disponible en las tiendas pronto.");
       return;
     }
-    Alert.alert("Próximamente", "Cuando RESONANCIA esté en la tienda, vas a poder calificarla acá.");
+    Alert.alert("Próximamente", "Cuando RESONANCIA esté en la tienda, podrás calificarla aquí.");
   };
 
   const handleTerms = () => {
     Alert.alert(
       "Términos y privacidad",
-      "Los términos completos estarán disponibles pronto en nuestro sitio. ¿Querés abrir el sitio?",
+      "Los términos completos estarán disponibles pronto en nuestro sitio. ¿Quieres abrir el sitio?",
       [
         { text: "Cancelar", style: "cancel" },
         { text: "Abrir", onPress: () => openExternal("https://resonancia.app") },

@@ -49,7 +49,7 @@ export default function InvitarScreen() {
           </View>
           <Text style={[styles.title, { color: colors.foreground }]}>Invitar a un amigo</Text>
           <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-            Compartí Resonancia con quienes querés que descansen y mediten
+            Comparte Resonancia con quienes quieres que descansen y mediten
           </Text>
         </View>
 
@@ -73,7 +73,7 @@ export default function InvitarScreen() {
           {[
             { n: "1", text: "Tu amigo descarga la app y usa tu código" },
             { n: "2", text: "Ellos obtienen 7 días de membresía gratis" },
-            { n: "3", text: "Cuando se suscriben, vos obtenés 1 mes gratis" },
+            { n: "3", text: "Cuando se suscriben, tú obtienes 1 mes gratis" },
           ].map((s) => (
             <View key={s.n} style={styles.howRow}>
               <View style={[styles.howNum, { backgroundColor: colors.primary + "25" }]}>

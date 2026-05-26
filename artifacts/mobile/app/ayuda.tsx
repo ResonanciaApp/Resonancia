@@ -18,23 +18,23 @@ import { useColors } from "@/hooks/useColors";
 const FAQS = [
   {
     q: "¿Cómo funciona la membresía?",
-    a: "La membresía te da acceso ilimitado a todas las sesiones, grupos y funciones premium. Podés elegir el plan mensual o el anual con 40% de descuento.",
+    a: "La membresía te da acceso ilimitado a todas las sesiones, grupos y funciones premium. Puedes elegir el plan mensual o el anual con 40% de descuento.",
   },
   {
     q: "¿Puedo cancelar en cualquier momento?",
-    a: "Sí. Podés cancelar tu membresía desde la sección Membresía en el menú. Si cancelás, conservás el acceso hasta el final del período pagado.",
+    a: "Sí. Puedes cancelar tu membresía desde la sección Membresía en el menú. Si cancelas, conservas el acceso hasta el final del período pagado.",
   },
   {
     q: "¿Las sesiones funcionan sin internet?",
-    a: "Con membresía activa podés descargar sesiones para escucharlas sin conexión. Vas a Biblioteca, buscás la sesión y tocás el ícono de descarga.",
+    a: "Con membresía activa puedes descargar sesiones para escucharlas sin conexión. Ve a Biblioteca, busca la sesión y toca el ícono de descarga.",
   },
   {
     q: "¿Qué son los Mensajes del Alma?",
-    a: "Son mensajes anónimos que los usuarios comparten con la comunidad. Podés leerlos y enviar los tuyos desde la pantalla principal.",
+    a: "Son mensajes anónimos que los usuarios comparten con la comunidad. Puedes leerlos y enviar los tuyos desde la pantalla principal.",
   },
   {
     q: "¿Cómo uso el Diario Expansivo?",
-    a: "Desde la pestaña Diario podés escribir reflexiones, registrar sueños, anotar ideas brillantes y guardar notas de voz. Todo queda privado en tu dispositivo.",
+    a: "Desde la pestaña Diario puedes escribir reflexiones, registrar sueños, anotar ideas brillantes y guardar notas de voz. Todo queda privado en tu dispositivo.",
   },
   {
     q: "¿Los grupos son moderados?",
@@ -120,7 +120,7 @@ export default function AyudaScreen() {
           <Feather name="message-square" size={22} color={colors.primary} />
           <View style={{ flex: 1 }}>
             <Text style={[styles.contactTitle, { color: colors.foreground }]}>¿No encontraste lo que buscabas?</Text>
-            <Text style={[styles.contactSub, { color: colors.mutedForeground }]}>Escribinos y te respondemos a la brevedad</Text>
+            <Text style={[styles.contactSub, { color: colors.mutedForeground }]}>Escríbenos y te respondemos a la brevedad</Text>
           </View>
           <Pressable style={[styles.contactBtn, { borderColor: colors.primary }]}>
             <Text style={[styles.contactBtnText, { color: colors.primary }]}>Escribir</Text>

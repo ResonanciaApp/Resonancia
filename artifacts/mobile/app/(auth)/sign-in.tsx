@@ -71,7 +71,7 @@ export default function SignInScreen() {
             <Text style={styles.brand}>RESONANCIA</Text>
             <Text style={styles.title}>Bienvenido de vuelta</Text>
             <Text style={styles.subtitle}>
-              Ingresá a tu cuenta para continuar tu práctica
+              Ingresa a tu cuenta para continuar tu práctica
             </Text>
           </View>
 
@@ -134,7 +134,7 @@ export default function SignInScreen() {
             <SocialAuthButtons />
 
             <View style={styles.footer}>
-              <Text style={styles.footerText}>¿No tenés cuenta? </Text>
+              <Text style={styles.footerText}>¿No tienes cuenta? </Text>
               <Link href="/(auth)/sign-up" replace>
                 <Text style={styles.footerLink}>Crear una</Text>
               </Link>

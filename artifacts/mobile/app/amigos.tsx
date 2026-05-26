@@ -101,9 +101,9 @@ function GuestPrompt() {
   return (
     <View style={[styles.guestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Feather name="users" size={28} color={colors.primary} />
-      <Text style={[styles.guestTitle, { color: colors.foreground }]}>Creá tu cuenta para sumar amigos</Text>
+      <Text style={[styles.guestTitle, { color: colors.foreground }]}>Crea tu cuenta para agregar amigos</Text>
       <Text style={[styles.guestText, { color: colors.mutedForeground }]}>
-        Para conectarte con otros practicantes necesitás una cuenta con email. Es gratis y solo tarda un minuto. Tu
+        Para conectarte con otros practicantes necesitas una cuenta con email. Es gratis y solo tarda un minuto. Tu
         perfil local y tus meditaciones siguen intactos.
       </Text>
       <Pressable
@@ -258,7 +258,7 @@ function SignedInAmigos() {
           {friendsQ.isLoading && <ActivityIndicator color={colors.primary} />}
           {!friendsQ.isLoading && friends.length === 0 && (
             <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-              Aún no tenés amigos. Buscá a alguien por nombre o usuario.
+              Aún no tienes amigos. Busca a alguien por nombre o usuario.
             </Text>
           )}
           {friends.map((f) => (

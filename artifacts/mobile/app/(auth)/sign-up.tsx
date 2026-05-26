@@ -87,7 +87,7 @@ export default function SignUpScreen() {
           <View style={styles.header}>
             <Text style={styles.brand}>RESONANCIA</Text>
             <Text style={styles.title}>
-              {inVerifyStep ? "Verificá tu correo" : "Creá tu cuenta"}
+              {inVerifyStep ? "Verifica tu correo" : "Crea tu cuenta"}
             </Text>
             <Text style={styles.subtitle}>
               {inVerifyStep
@@ -159,9 +159,9 @@ export default function SignUpScreen() {
               <SocialAuthButtons />
 
               <View style={styles.footer}>
-                <Text style={styles.footerText}>¿Ya tenés cuenta? </Text>
+                <Text style={styles.footerText}>¿Ya tienes cuenta? </Text>
                 <Link href="/(auth)/sign-in" replace>
-                  <Text style={styles.footerLink}>Iniciá sesión</Text>
+                  <Text style={styles.footerLink}>Inicia sesión</Text>
                 </Link>
               </View>
             </View>

@@ -108,7 +108,7 @@ const SEED_GRUPOS: Record<string, {
     ],
     posts: [
       { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#C69B4F", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
-      { id: "p2", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 09:30", text: "Compartí fotos de mi set nuevo 🎶 Cuenco tibetano en FA, dos de cristal en SOL y RE. Tardé 3 años en armarlo y por fin está completo. ¿Alguien más colecciona?", likes: 33, replies: 9 },
+      { id: "p2", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 09:30", text: "Compartí unas fotos de mi set nuevo 🎶 Cuenco tibetano en FA, dos de cristal en SOL y RE. Tardé 3 años en armarlo y por fin está completo. ¿Alguien más colecciona?", likes: 33, replies: 9 },
       { id: "p3", author: "Pablo Torres", initials: "PT", color: "#8AAAD4", time: "Ayer · 20:15", text: "Pregunta para los que practican: ¿cada cuánto hacen sesiones personales en casa? Yo estoy tratando de instalar una rutina diaria de 20 minutos.", likes: 15, replies: 14 },
       { id: "p4", author: "Ana Quiroga", initials: "AQ", color: "#EDD9B8", time: "Ayer · 16:00", text: "Descubrí que el cuenco en nota SI tiene un efecto increíble cuando trabajo con el chakra corona en clientes. ¿Alguien más trabaja en sesiones terapéuticas?", likes: 19, replies: 6 },
       { id: "p5", author: "Sofía Herrera", initials: "SH", color: "#E8C87A", time: "Lunes · 12:00", text: "Para los que están empezando: este es el orden de notas que uso en mis baños de cuencos. DO → RE → MI → FA → SOL → LA → SI. Cada nota corresponde a un chakra. 🙏", likes: 52, replies: 18 },
@@ -131,7 +131,7 @@ const SEED_GRUPOS: Record<string, {
       { name: "Tomás Blanco", role: "Miembro", color: "#8AAAD4", initials: "TB", active: true },
     ],
     posts: [
-      { id: "p1", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 07:00", text: "📌 Técnica de la semana: WILD (Wake Initiated Lucid Dream). Despertarse a las 5am, estar despierto 30 min, volver a dormir con intención. Quien lo pruebe que cuente acá 🌙", likes: 28, replies: 8, pinned: true },
+      { id: "p1", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 07:00", text: "📌 Técnica de la semana: WILD (Wake Initiated Lucid Dream). Despertarse a las 5am, estar despierto 30 min, volver a dormir con intención. Quien lo pruebe que lo cuente aquí 🌙", likes: 28, replies: 8, pinned: true },
       { id: "p2", author: "Tomás Blanco", initials: "TB", color: "#8AAAD4", time: "Hoy · 06:45", text: "¡Anoche lo logré por primera vez! 🌙 Me di cuenta que estaba soñando cuando vi mis manos y tenían 7 dedos. Estuve lúcido unos 3 minutos antes de despertar de la emoción jaja", likes: 37, replies: 15 },
       { id: "p3", author: "Sofía Herrera", initials: "SH", color: "#E8C87A", time: "Ayer · 23:30", text: "Sueño de anoche: estaba en un templo en las nubes. Un anciano me entregó un cuenco de oro y dijo 'el sonido que buscas viene de adentro'. Al despertar me quedó una paz enorme.", likes: 22, replies: 5 },
     ],
@@ -312,7 +312,7 @@ export default function GrupoDetailScreen() {
             onPress: () => {
               Alert.alert(
                 "Eliminar publicación",
-                "¿Seguro querés eliminar esta publicación? Esta acción no se puede deshacer.",
+                "¿Seguro que quieres eliminar esta publicación? Esta acción no se puede deshacer.",
                 [
                   { text: "Cancelar", style: "cancel" },
                   { text: "Eliminar", style: "destructive", onPress: () => deletePost(postId) },
@@ -382,7 +382,7 @@ export default function GrupoDetailScreen() {
     if (!localGrupo) return;
     Alert.alert(
       "Eliminar grupo",
-      `¿Seguro querés eliminar "${localGrupo.nombre}"? Esta acción no se puede deshacer.`,
+      `¿Seguro que quieres eliminar "${localGrupo.nombre}"? Esta acción no se puede deshacer.`,
       [
         { text: "Cancelar", style: "cancel" },
         {
@@ -649,9 +649,9 @@ export default function GrupoDetailScreen() {
             {grupo.isLocalGroup && (
               <View style={[styles.emptyState, { borderColor: colors.border, marginTop: 8 }]}>
                 <Feather name="user-plus" size={24} color={colors.mutedForeground} />
-                <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Invitá a más personas</Text>
+                <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Invita a más personas</Text>
                 <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-                  Compartí el enlace desde la pestaña Info para que se unan al grupo.
+                  Comparte el enlace desde la pestaña Info para que se unan al grupo.
                 </Text>
               </View>
             )}

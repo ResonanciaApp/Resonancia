@@ -68,8 +68,8 @@ const QUESTIONS: Question[] = [
   },
   {
     key: "time_of_day",
-    title: "¿Cuándo preferís meditar?",
-    subtitle: "Podés elegir más de uno",
+    title: "¿Cuándo prefieres meditar?",
+    subtitle: "Puedes elegir más de uno",
     multi: true,
     options: [
       { emoji: "🌅", label: "Por la mañana", value: "morning" },
@@ -80,7 +80,7 @@ const QUESTIONS: Question[] = [
   },
   {
     key: "duration",
-    title: "¿Cuánto tiempo tenés por sesión?",
+    title: "¿Cuánto tiempo tienes por sesión?",
     subtitle: "Unos minutos ya cambian todo",
     options: [
       { emoji: "⚡", label: "5 a 10 minutos", value: "short" },
@@ -376,7 +376,7 @@ export default function Onboarding() {
 
         <View style={[styles.welcomeBottom, { paddingBottom: insets.bottom + 24 }]}>
           <Text style={styles.accountHint}>
-            ¿Querés sumar amigos y guardar tu progreso?{"\n"}Creá tu cuenta gratis (opcional).
+            ¿Quieres agregar amigos y guardar tu progreso?{"\n"}Crea tu cuenta gratis (opcional).
           </Text>
           <Pressable
             onPress={async () => {
@@ -489,7 +489,7 @@ export default function Onboarding() {
           </Text>
         </Pressable>
         {q.multi && (
-          <Text style={styles.multiHint}>Podés seleccionar varias opciones</Text>
+          <Text style={styles.multiHint}>Puedes seleccionar varias opciones</Text>
         )}
       </View>
     </LinearGradient>

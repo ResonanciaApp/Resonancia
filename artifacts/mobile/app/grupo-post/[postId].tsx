@@ -83,7 +83,7 @@ export default function GrupoPostScreen() {
         onPress: () =>
           Alert.alert(
             "Eliminar publicación",
-            "¿Seguro querés eliminarla? Esta acción no se puede deshacer.",
+            "¿Seguro que quieres eliminarla? Esta acción no se puede deshacer.",
             [
               { text: "Cancelar", style: "cancel" },
               {
@@ -119,7 +119,7 @@ export default function GrupoPostScreen() {
         onPress: () =>
           Alert.alert(
             "Eliminar respuesta",
-            "¿Seguro querés eliminar esta respuesta?",
+            "¿Seguro que quieres eliminar esta respuesta?",
             [
               { text: "Cancelar", style: "cancel" },
               {
