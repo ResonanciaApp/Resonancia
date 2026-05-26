@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 import { type GrupoLocal, isAdminGrupo, useGrupos } from "@/hooks/useGrupos";
 
@@ -46,36 +47,6 @@ const GALLERY = [
 ];
 
 // ─── Mock data ───────────────────────────────────────────────────────────────
-const GRUPOS_POPULARES = [
-  {
-    id: "g1",
-    name: "Meditación Vipassana",
-    tipo: "Círculo público",
-    members: 4200,
-    gradient: ["#3A5438", "#1E2E1C"] as [string, string],
-    icon: "wind" as const,
-    color: "#A8C4A8",
-  },
-  {
-    id: "g2",
-    name: "Cuencos y Frecuencias",
-    tipo: "Círculo público",
-    members: 2100,
-    gradient: ["#7A5520", "#3E2208"] as [string, string],
-    icon: "disc" as const,
-    color: "#E8C87A",
-  },
-  {
-    id: "g3",
-    name: "Autoestima Saludable",
-    tipo: "Círculo público",
-    members: 2300,
-    gradient: ["#4A3260", "#251633"] as [string, string],
-    icon: "sun" as const,
-    color: "#C8B4E0",
-  },
-];
-
 const GRUPOS_UNIDOS = [
   {
     id: "g2",
@@ -209,48 +180,18 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
 function TabOjear({
   colors,
   gruposAdmin,
+  adminName,
 }: {
   colors: ReturnType<typeof useColors>;
   gruposAdmin: GrupoLocal[];
+  adminName: string;
 }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
       {/* Grupos populares */}
       <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Grupos populares</Text>
-          <Pressable>
-            <Text style={[styles.verTodos, { color: colors.primary }]}>Ver todos</Text>
-          </Pressable>
-        </View>
-        {GRUPOS_POPULARES.map((g) => (
-          <Pressable
-            key={g.id}
-            onPress={() => router.push(`/grupo/${g.id}` as never)}
-            style={({ pressed }) => [
-              styles.popularRow,
-              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
-            ]}
-          >
-            <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.popularTipo, { color: colors.mutedForeground }]}>{g.tipo}</Text>
-              <Text style={[styles.popularName, { color: colors.foreground }]} numberOfLines={1}>
-                {g.name}
-              </Text>
-              <Text style={[styles.popularMembers, { color: colors.mutedForeground }]}>
-                {formatCount(g.members)} miembros
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
-          </Pressable>
-        ))}
-      </View>
-
-      {/* Grupos de RESONANCIA (admin) */}
-      <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
-          Grupos de RESONANCIA
+          Grupos populares
         </Text>
         {gruposAdmin.map((g) => (
           <Pressable
@@ -270,7 +211,7 @@ function TabOjear({
                 {g.nombre}
               </Text>
               <Text style={[styles.popularMembers, { color: colors.mutedForeground }]} numberOfLines={1}>
-                Por Casa del Cuenco
+                Por {adminName}
               </Text>
             </View>
             <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
@@ -475,6 +416,7 @@ export default function GruposScreen() {
   const [tab, setTab] = useState<TabType>("ojear");
   const [showCreate, setShowCreate] = useState(false);
   const { grupos: gruposCreados, reload } = useGrupos();
+  const { username } = useUserProfile();
 
   useFocusEffect(
     useCallback(() => {
@@ -532,7 +474,11 @@ export default function GruposScreen() {
       {/* Content */}
       <View style={styles.content}>
         {tab === "ojear" && (
-          <TabOjear colors={colors} gruposAdmin={gruposCreados.filter((g) => isAdminGrupo(g.id))} />
+          <TabOjear
+            colors={colors}
+            gruposAdmin={gruposCreados.filter((g) => isAdminGrupo(g.id))}
+            adminName={username || "ElSeñordelosCuencos"}
+          />
         )}
         {tab === "misgrupos" && (
           <TabMisGrupos

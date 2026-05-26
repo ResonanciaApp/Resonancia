@@ -21,7 +21,7 @@ interface UserProfile {
 }
 
 const DEFAULT_PROFILE: UserProfile = {
-  username: "Explorador de Sonido",
+  username: "ElSeñordelosCuencos",
   lastName: "",
   location: "",
   description: "",
