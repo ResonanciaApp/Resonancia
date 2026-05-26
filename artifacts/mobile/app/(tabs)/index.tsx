@@ -260,9 +260,9 @@ export default function HomeScreen() {
                 <Text style={[styles.heroTitle, { color: colors.foreground }]}>
                   {featuredSession.title}
                 </Text>
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
-                  <Feather name="clock" size={13} color="#C8C1B5" style={{ marginRight: 5 }} />
-                  <Text style={[styles.heroSub, { color: "#C8C1B5" }]}>
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14, marginTop: 2 }}>
+                  <Feather name="clock" size={12} color="#C8C1B5" style={{ marginRight: 4, marginTop: 1 }} />
+                  <Text style={{ fontSize: 13, color: "#C8C1B5", opacity: 0.85, lineHeight: 16 }}>
                     {featuredSession.durationLabel}
                   </Text>
                 </View>
