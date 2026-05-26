@@ -177,7 +177,7 @@ export function MessageDeck() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { alignItems: "center", paddingVertical: 4 },
+  wrapper: { width: CARD_W, alignSelf: "center", paddingVertical: 4 },
   shadowCard: {
     position: "absolute",
     height: CARD_H,
