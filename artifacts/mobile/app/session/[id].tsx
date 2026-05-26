@@ -21,7 +21,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
-import { useDownloads } from "@/context/DownloadsContext";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 300;
@@ -32,7 +31,6 @@ export default function SessionDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying } = usePlayer();
-  const { isDownloaded, toggleDownload } = useDownloads();
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -218,24 +216,6 @@ export default function SessionDetailScreen() {
             </Pressable>
 
             <Pressable
-              onPress={() => {
-                if (!id) return;
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                toggleDownload(id);
-              }}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
-            >
-              <Feather
-                name={id && isDownloaded(id) ? "check-circle" : "download-cloud"}
-                size={20}
-                color={id && isDownloaded(id) ? colors.primary : colors.mutedForeground}
-              />
-              <Text style={[styles.actionLabel, { color: id && isDownloaded(id) ? colors.primary : colors.mutedForeground }]}>
-                {id && isDownloaded(id) ? "Descargada" : "Descargar"}
-              </Text>
-            </Pressable>
-
-            <Pressable
               onPress={handleShare}
               style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
             >
@@ -380,17 +360,18 @@ const styles = StyleSheet.create({
   },
   actionCard: {
     flex: 1,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderRadius: 14,
     borderWidth: 1,
-    gap: 6,
+    gap: 10,
   },
   actionLabel: {
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: "600",
-    letterSpacing: 0.2,
+    letterSpacing: 0.3,
   },
 
   // Guide

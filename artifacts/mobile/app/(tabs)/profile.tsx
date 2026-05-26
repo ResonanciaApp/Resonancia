@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { File as FSFile, Paths } from "expo-file-system";
+import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,9 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { getSessionById, SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
-import { useDownloads } from "@/context/DownloadsContext";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -54,8 +52,7 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { favorites, elapsed, playSession, currentSession, isPlaying, history } = usePlayer();
-  const { downloads } = useDownloads();
+  const { favorites, elapsed, history } = usePlayer();
   const {
     username,
     lastName,
@@ -142,12 +139,6 @@ export default function ProfileScreen() {
     href?: string;
   }[] = [
     {
-      label: "Descargas",
-      value: downloads.length.toString(),
-      icon: "download-cloud",
-      href: "/descargas",
-    },
-    {
       label: "Recientes",
       value: history.length.toString(),
       icon: "clock",
@@ -158,12 +149,25 @@ export default function ProfileScreen() {
       value: totalMinutes > 0 ? totalMinutes.toString() : "—",
       icon: "activity",
     },
+    {
+      label: "Favoritos",
+      value: favorites.length.toString(),
+      icon: "heart",
+      href: "/(tabs)/favorites",
+    },
   ];
 
-  // ── Favorite sessions ─────────────────────────────────────────────────────
-  const favSessions = favorites
-    .map((id) => getSessionById(id))
-    .filter(Boolean);
+  // ── Menu items (replaces favorites list) ─────────────────────────────────
+  const menuPrimary: { label: string; icon: FeatherIconName; href: string }[] = [
+    { label: "Top 10 Comunidad", icon: "trending-up", href: "/comunidad-top10" },
+    { label: "Amigos", icon: "users", href: "/amigos" },
+    { label: "Grupos", icon: "message-circle", href: "/grupos" },
+  ];
+  const menuSecondary: { label: string; icon: FeatherIconName; href: string }[] = [
+    { label: "Invitar a un amigo", icon: "user-plus", href: "/invitar" },
+    { label: "Ayuda", icon: "help-circle", href: "/ayuda" },
+    { label: "Configuraciones", icon: "settings", href: "/configuraciones" },
+  ];
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -280,45 +284,41 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* ── Favoritos ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Favoritos</Text>
-          {favSessions.length === 0 ? (
-            <View style={[styles.emptyFav, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Feather name="heart" size={22} color={"rgba(198,155,79,0.3)"} />
-              <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
-                Aún no has guardado sesiones.{"\n"}Toca ❤️ en cualquier sesión para guardarla aquí.
-              </Text>
-            </View>
-          ) : (
-            favSessions.map((s) => {
-              if (!s) return null;
-              const playing = currentSession?.id === s.id && isPlaying;
-              return (
-                <Pressable
-                  key={s.id}
-                  onPress={() => router.push(`/session/${s.id}` as never)}
-                  style={({ pressed }) => [
-                    styles.favRow,
-                    { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
-                  ]}
-                >
-                  <Image source={s.image as never} style={styles.favImg} contentFit="cover" />
-                  <View style={styles.favInfo}>
-                    <Text style={[styles.favTitle, { color: colors.foreground }]} numberOfLines={1}>{s.title}</Text>
-                    <Text style={[styles.favSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {s.categoryLabel} · {s.durationLabel}
-                    </Text>
-                  </View>
-                  {playing ? (
-                    <Feather name="volume-2" size={16} color={colors.primary} />
-                  ) : (
-                    <Feather name="chevron-right" size={16} color={colors.border} />
-                  )}
-                </Pressable>
-              );
-            })
-          )}
+        {/* ── Menú ── */}
+        <View style={[styles.menuCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {menuPrimary.map((item, idx) => (
+            <Pressable
+              key={item.label}
+              onPress={() => router.push(item.href as never)}
+              style={({ pressed }) => [
+                styles.menuRow,
+                idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
+                pressed && { opacity: 0.7 },
+              ]}
+            >
+              <Feather name={item.icon} size={18} color={colors.accent} />
+              <Text style={[styles.menuLabel, { color: colors.foreground }]}>{item.label}</Text>
+              <Feather name="chevron-right" size={16} color={colors.border} />
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={[styles.menuCard, { backgroundColor: colors.card, borderColor: colors.border, marginTop: 14 }]}>
+          {menuSecondary.map((item, idx) => (
+            <Pressable
+              key={item.label}
+              onPress={() => router.push(item.href as never)}
+              style={({ pressed }) => [
+                styles.menuRow,
+                idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
+                pressed && { opacity: 0.7 },
+              ]}
+            >
+              <Feather name={item.icon} size={18} color={colors.accent} />
+              <Text style={[styles.menuLabel, { color: colors.foreground }]}>{item.label}</Text>
+              <Feather name="chevron-right" size={16} color={colors.border} />
+            </Pressable>
+          ))}
         </View>
 
         <Text style={[styles.footer, { color: colors.border }]}>
@@ -514,30 +514,20 @@ const styles = StyleSheet.create({
   premiumSub: { fontSize: 12, lineHeight: 17 },
   premiumBadge: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
 
-  // Favoritos
-  section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", marginBottom: 14 },
-  emptyFav: {
-    borderRadius: 16,
+  // Menu
+  menuCard: {
+    borderRadius: 18,
     borderWidth: 1,
-    padding: 24,
-    alignItems: "center",
-    gap: 10,
+    overflow: "hidden",
   },
-  emptyFavText: { fontSize: 13, lineHeight: 20, textAlign: "center" },
-  favRow: {
+  menuRow: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 14,
-    borderWidth: 1,
-    padding: 10,
-    gap: 12,
-    marginBottom: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 14,
   },
-  favImg: { width: 52, height: 52, borderRadius: 10 },
-  favInfo: { flex: 1 },
-  favTitle: { fontSize: 14, fontWeight: "600", marginBottom: 3 },
-  favSub: { fontSize: 12 },
+  menuLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
 
   footer: { textAlign: "center", fontSize: 11, letterSpacing: 1, marginBottom: 8 },
 
