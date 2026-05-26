@@ -12,7 +12,7 @@ export default function PremiumBanner() {
   const colors = useColors();
 
   return (
-    <View style={[styles.card, { backgroundColor: "#1E1030" }]}>
+    <View style={[styles.card, { backgroundColor: colors.background }]}>
       <Text style={[styles.heading, { color: colors.foreground }]}>
         Únete a la comunidad
       </Text>
