@@ -201,7 +201,7 @@ export function MensajesAnonimosPanel() {
       >
         <View style={styles.headerLeft}>
           <View style={styles.headerIconBg}>
-            <Feather name="users" size={18} color="#8AB894" />
+            <Feather name="users" size={18} color="#FFFFFF" />
           </View>
           <View style={{ flex: 1 }}>
             <View style={styles.headerTitleRow}>
@@ -374,7 +374,7 @@ export function MensajesAnonimosPanel() {
             <ActivityIndicator color={ACCENT} style={{ marginVertical: 24 }} />
           ) : sortedByLikes.length === 0 ? (
             <View style={styles.emptyState}>
-              <Feather name="edit-2" size={28} color={colors.mutedForeground} />
+              <Feather name="edit-2" size={28} color="#C8A860" />
               <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                 Sé la primera persona en compartir algo hoy
               </Text>
