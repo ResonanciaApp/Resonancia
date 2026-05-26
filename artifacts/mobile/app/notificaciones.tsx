@@ -79,6 +79,13 @@ function routeFor(n: Notification): string {
 
 type GroupedNotification = Notification & { groupCount: number; groupHasUnread: boolean };
 
+const MOCK_NOTIFICATIONS: GroupedNotification[] = [
+  { id: -1, type: "friend_request",  createdAt: new Date(Date.now() - 2 * 60_000).toISOString(),   readAt: null,  actor: { id: 1, displayName: "Ana García",   username: "ana" },   groupCount: 1, groupHasUnread: true  },
+  { id: -2, type: "friend_accepted",  createdAt: new Date(Date.now() - 15 * 60_000).toISOString(),  readAt: null,  actor: { id: 2, displayName: "Carlos López", username: "carlos" }, groupCount: 1, groupHasUnread: false },
+  { id: -3, type: "dm",               createdAt: new Date(Date.now() - 60 * 60_000).toISOString(),   readAt: null,  actor: { id: 3, displayName: "María Torres", username: "maria" },  groupCount: 3, groupHasUnread: true  },
+  { id: -4, type: "group_message",    createdAt: new Date(Date.now() - 3 * 3600_000).toISOString(), readAt: null,  actor: { id: 4, displayName: "Lucía Ramos",  username: "lucia" },  groupCount: 1, groupHasUnread: true  },
+];
+
 // Collapse all `dm` notifications from the same actor into a single row
 // (using the most recent one as the representative). Other types stay as-is.
 function groupNotifications(list: Notification[]): GroupedNotification[] {
@@ -139,7 +146,11 @@ export default function NotificacionesScreen() {
   const rawList = notifsQ.data ?? [];
 
   // Group consecutive `dm` notifications from the same actor into a single row.
-  const list = useMemo(() => groupNotifications(rawList), [rawList]);
+  // Append mock notifications at the end for preview purposes.
+  const list = useMemo(
+    () => [...groupNotifications(rawList), ...MOCK_NOTIFICATIONS],
+    [rawList],
+  );
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -162,20 +173,11 @@ export default function NotificacionesScreen() {
 
         <Text style={[styles.title, { color: colors.foreground }]}>Notificaciones</Text>
 
-        {!isLoaded ? (
+        {(notifsQ.isLoading && isSignedIn) ? (
           <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
-        ) : !isSignedIn ? (
-          <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-            Conectate para ver tus notificaciones.
-          </Text>
-        ) : notifsQ.isLoading ? (
-          <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
-        ) : list.length === 0 ? (
-          <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-            No tenés notificaciones todavía.
-          </Text>
-        ) : (
-          list.map((n) => {
+        ) : null}
+
+        {list.map((n) => {
             const tint = colorFor(n.actor.id);
             const isGroupedDm = n.type === "dm" && n.groupCount > 1;
             const messageText = isGroupedDm
@@ -222,8 +224,7 @@ export default function NotificacionesScreen() {
                 )}
               </Pressable>
             );
-          })
-        )}
+          })}
       </ScrollView>
     </View>
   );
