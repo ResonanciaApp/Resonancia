@@ -52,7 +52,7 @@ export default function DevReset() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#0F1A13", padding: 28, justifyContent: "center", gap: 16 },
+  root: { flex: 1, backgroundColor: "#090F0B", padding: 28, justifyContent: "center", gap: 16 },
   title: { color: "#C8C1B5", fontSize: 24, fontFamily: "PlayfairDisplay_700Bold" },
   body: { color: "rgba(237,225,211,0.65)", fontSize: 14, lineHeight: 20 },
   btn: { backgroundColor: "#B6955F", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
