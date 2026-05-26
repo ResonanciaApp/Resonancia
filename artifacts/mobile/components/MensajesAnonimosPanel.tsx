@@ -201,13 +201,13 @@ export function MensajesAnonimosPanel() {
       >
         <View style={styles.headerLeft}>
           <View style={styles.headerIconBg}>
-            <Feather name="users" size={18} color="#B6955F" />
+            <Feather name="users" size={18} color="#8AB894" />
           </View>
           <View style={{ flex: 1 }}>
             <View style={styles.headerTitleRow}>
               <Text style={styles.headerTitle}>Mensajes del Alma</Text>
               <View style={styles.cycleBadge}>
-                <Feather name="clock" size={9} color="#C8A860" />
+                <Feather name="clock" size={9} color="#8AB894" />
                 <Text style={styles.cycleBadgeText}>24 h</Text>
               </View>
             </View>
@@ -221,7 +221,7 @@ export function MensajesAnonimosPanel() {
           style={styles.infoBtn}
           hitSlop={8}
         >
-          <Feather name="info" size={15} color="rgba(200,168,96,0.7)" />
+          <Feather name="info" size={15} color="rgba(138,184,148,0.7)" />
         </Pressable>
       </LinearGradient>
 
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(182,149,95,0.22)",
+    backgroundColor: "rgba(138,184,148,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerTitle: {
-    color: "#C8A860",
+    color: "#8AB894",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
@@ -551,19 +551,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(182,149,95,0.18)",
+    backgroundColor: "rgba(138,184,148,0.15)",
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   cycleBadgeText: {
-    color: "#C8A860",
+    color: "#8AB894",
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(200,168,96,0.65)",
+    color: "rgba(138,184,148,0.65)",
     fontSize: 11,
     marginTop: 2,
   },
