@@ -27,13 +27,13 @@ const STORAGE_KEY = "cdc_onboarding_done";
 const PROFILE_KEY = "cdc_onboarding_profile";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
-const BG       = "#141B26";
-const CARD     = "#1D2A3C";
-const GOLD     = "#C79C58";
-const GOLD_LT  = "#D8C7A5";
-const MUTED    = "#5C6E82";
-const FG       = "#F0E6D2";
-const BORDER   = "rgba(199,156,88,0.25)";
+const BG       = "#23332C";
+const CARD     = "#2D3F38";
+const GOLD     = "#B6955F";
+const GOLD_LT  = "#C8C1B5";
+const MUTED    = "#587060";
+const FG       = "#C8C1B5";
+const BORDER   = "rgba(182,149,95,0.25)";
 
 // ── Survey definition ─────────────────────────────────────────────────────────
 type Question = {
@@ -111,7 +111,7 @@ function Dots({ total, current }: { total: number; current: number }) {
           style={[
             styles.dot,
             {
-              backgroundColor: i === current ? GOLD : "rgba(199,156,88,0.3)",
+              backgroundColor: i === current ? GOLD : "rgba(182,149,95,0.3)",
               width: i === current ? 20 : 7,
             },
           ]}
@@ -296,7 +296,7 @@ export default function Onboarding() {
   if (step === -1) {
     return (
       <LinearGradient
-        colors={["#0A1018", "#0F1825", "#1A2535", "#141B26"]}
+        colors={["#131D17", "#182419", "#1E2D26", "#23332C"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
@@ -347,7 +347,7 @@ export default function Onboarding() {
 
     return (
       <LinearGradient
-        colors={["#0A1018", "#0F1825", "#1A2535"]}
+        colors={["#131D17", "#182419", "#1E2D26"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
@@ -407,7 +407,7 @@ export default function Onboarding() {
 
   return (
     <LinearGradient
-      colors={["#0A1018", "#0F1825", "#1A2535"]}
+      colors={["#131D17", "#182419", "#1E2D26"]}
       style={[styles.fill, { paddingTop: insets.top }]}
       start={{ x: 0.3, y: 0 }}
       end={{ x: 0.7, y: 1 }}
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     borderRadius: 140,
-    backgroundColor: "rgba(199,156,88,0.06)",
+    backgroundColor: "rgba(182,149,95,0.06)",
   },
   welcomeLogo: { width: 220, height: 220, alignSelf: "center" },
   welcomeTitle: {
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: "rgba(199,156,88,0.12)",
+    backgroundColor: "rgba(182,149,95,0.12)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
   // Progress
   progressBar: {
     height: 2,
-    backgroundColor: "rgba(199,156,88,0.15)",
+    backgroundColor: "rgba(182,149,95,0.15)",
     marginTop: 4,
   },
   progressFill: {
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(199,156,88,0.08)",
+    backgroundColor: "rgba(182,149,95,0.08)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   },
   optionCardSelected: {
     borderColor: GOLD,
-    backgroundColor: "rgba(199,156,88,0.08)",
+    backgroundColor: "rgba(182,149,95,0.08)",
   },
   optionEmoji: { fontSize: 26 },
   optionLabel: {
@@ -713,14 +713,14 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: "center",
   },
-  primaryBtnDisabled: { backgroundColor: "rgba(199,156,88,0.2)" },
+  primaryBtnDisabled: { backgroundColor: "rgba(182,149,95,0.2)" },
   skipBtn: {
     alignItems: "center",
     paddingVertical: 10,
     marginTop: 4,
   },
   skipBtnText: {
-    color: "rgba(199,156,88,0.5)",
+    color: "rgba(182,149,95,0.5)",
     fontSize: 12,
     fontFamily: "Inter_600SemiBold",
     letterSpacing: 2,

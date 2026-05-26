@@ -19,7 +19,7 @@ import { usePlayer } from "@/context/PlayerContext";
 const ACTIVE_COLOR = "#FFFFFF";
 const INACTIVE_COLOR = "rgba(255,255,255,0.42)";
 const PILL_BG = "rgba(255,255,255,0.13)";
-const BAR_BORDER = "rgba(199,156,88,0.18)";
+const BAR_BORDER = "rgba(182,149,95,0.18)";
 
 const TAB_CONFIG: Record<
   string,
@@ -99,7 +99,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       {isIOS ? (
         <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
       ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#141B26" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#23332C" }]} />
       )}
       <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
       <View style={styles.row}>

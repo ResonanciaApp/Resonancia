@@ -190,7 +190,7 @@ export default function FavoritesScreen() {
                     <Text
                       style={[
                         styles.chipText,
-                        { color: activeTag === null ? "#0D1520" : colors.foreground },
+                        { color: activeTag === null ? "#131D17" : colors.foreground },
                       ]}
                     >
                       Todas
@@ -213,7 +213,7 @@ export default function FavoritesScreen() {
                         <Text
                           style={[
                             styles.chipText,
-                            { color: active ? "#0D1520" : colors.foreground },
+                            { color: active ? "#131D17" : colors.foreground },
                           ]}
                           numberOfLines={1}
                         >

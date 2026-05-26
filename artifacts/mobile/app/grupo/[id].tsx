@@ -91,7 +91,7 @@ const SEED_GRUPOS: Record<string, {
     name: "Cuencos y Frecuencias",
     description: "Todo sobre cuencos tibetanos, de cristal y terapia de sonido",
     moderator: "Casa del Cuenco",
-    modColor: "#C79C58",
+    modColor: "#B6955F",
     modInitials: "CC",
     members: 567,
     icon: "disc",
@@ -99,7 +99,7 @@ const SEED_GRUPOS: Record<string, {
     gradient: ["#7A5520", "#3E2208"],
     rules: ["Compartir con generosidad y apertura", "Incluir fuente cuando sea posible", "Cero spam comercial"],
     memberList: [
-      { name: "Casa del Cuenco", role: "Moderador", color: "#C79C58", initials: "CC", active: true },
+      { name: "Casa del Cuenco", role: "Moderador", color: "#B6955F", initials: "CC", active: true },
       { name: "Sofía Herrera", role: "Miembro", color: "#E8C87A", initials: "SH", active: true },
       { name: "Luna Vega", role: "Miembro", color: "#C8B4E0", initials: "LV", active: true },
       { name: "Pablo Torres", role: "Miembro", color: "#8AAAD4", initials: "PT", active: false },
@@ -107,7 +107,7 @@ const SEED_GRUPOS: Record<string, {
       { name: "Tomás Blanco", role: "Miembro", color: "#A8C4A8", initials: "TB", active: false },
     ],
     posts: [
-      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#C79C58", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
+      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#B6955F", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
       { id: "p2", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 09:30", text: "Compartí unas fotos de mi set nuevo 🎶 Cuenco tibetano en FA, dos de cristal en SOL y RE. Tardé 3 años en armarlo y por fin está completo. ¿Alguien más colecciona?", likes: 33, replies: 9 },
       { id: "p3", author: "Pablo Torres", initials: "PT", color: "#8AAAD4", time: "Ayer · 20:15", text: "Pregunta para los que practican: ¿cada cuánto hacen sesiones personales en casa? Yo estoy tratando de instalar una rutina diaria de 20 minutos.", likes: 15, replies: 14 },
       { id: "p4", author: "Ana Quiroga", initials: "AQ", color: "#EDD9B8", time: "Ayer · 16:00", text: "Descubrí que el cuenco en nota SI tiene un efecto increíble cuando trabajo con el chakra corona en clientes. ¿Alguien más trabaja en sesiones terapéuticas?", likes: 19, replies: 6 },
@@ -213,7 +213,7 @@ function buildLocalViewModel(
   localPosts: ReturnType<typeof useGrupoPosts>["posts"],
 ): ViewModel {
   const userInitials = initialsFrom(userName);
-  const userColor = "#C79C58";
+  const userColor = "#B6955F";
 
   // welcome aparece arriba (pinned); el resto, más recientes después.
   const welcome = localPosts.find((p) => p.id === "welcome");
@@ -242,8 +242,8 @@ function buildLocalViewModel(
     modInitials: userInitials,
     members: 1,
     icon: "users",
-    color: "#C79C58",
-    gradient: ["#C79C58", "#3E2208"],
+    color: "#B6955F",
+    gradient: ["#B6955F", "#3E2208"],
     rules: DEFAULT_RULES_LOCAL,
     memberList: [
       { name: `${userName} (vos)`, role: "Admin", color: userColor, initials: userInitials, active: true },
@@ -334,7 +334,7 @@ export default function GrupoDetailScreen() {
     ensureWelcomePost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#C79C58",
+      color: "#B6955F",
       text: localGrupo.bienvenida,
     });
   }, [localGrupo, userName, ensureWelcomePost]);
@@ -372,7 +372,7 @@ export default function GrupoDetailScreen() {
     addPost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#C79C58",
+      color: "#B6955F",
       text,
     });
     setCompose("");
@@ -431,10 +431,10 @@ export default function GrupoDetailScreen() {
         <LinearGradient colors={grupo.gradient} style={[styles.header, { paddingTop: topPad + 12 }]}>
           <View style={styles.headerTop}>
             <Pressable onPress={() => router.back()} hitSlop={12}>
-              <Feather name="arrow-left" size={22} color="#F0E6D2" />
+              <Feather name="arrow-left" size={22} color="#C8C1B5" />
             </Pressable>
             <Pressable hitSlop={12}>
-              <Feather name="more-horizontal" size={22} color="#F0E6D2" />
+              <Feather name="more-horizontal" size={22} color="#C8C1B5" />
             </Pressable>
           </View>
 
@@ -450,7 +450,7 @@ export default function GrupoDetailScreen() {
               <Text style={styles.groupName}>{grupo.name}</Text>
               <Text style={styles.groupSub} numberOfLines={1}>{grupo.description}</Text>
               <View style={styles.groupMeta}>
-                <Feather name="users" size={11} color="#F0E6D2AA" />
+                <Feather name="users" size={11} color="#C8C1B5AA" />
                 <Text style={styles.groupMetaText}>
                   {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
                 </Text>
@@ -465,7 +465,7 @@ export default function GrupoDetailScreen() {
           <View style={styles.tabs}>
             {(["discusion", "miembros", "info"] as TabType[]).map((t) => (
               <Pressable key={t} onPress={() => setTab(t)} style={[styles.tabItem, tab === t && styles.tabItemActive]}>
-                <Text style={[styles.tabText, { color: tab === t ? "#F0E6D2" : "#F0E6D288" }]}>
+                <Text style={[styles.tabText, { color: tab === t ? "#C8C1B5" : "#C8C1B588" }]}>
                   {t === "discusion" ? "Discusión" : t === "miembros" ? "Miembros" : "Info"}
                 </Text>
               </Pressable>
@@ -611,7 +611,7 @@ export default function GrupoDetailScreen() {
                 onPress={handleSend}
                 disabled={!grupo.isLocalGroup}
               >
-                <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#0D1520" : colors.mutedForeground} />
+                <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#131D17" : colors.mutedForeground} />
               </Pressable>
             </View>
           </>
@@ -760,15 +760,15 @@ const styles = StyleSheet.create({
   headerBody: { flexDirection: "row", gap: 12, alignItems: "flex-start", marginBottom: 16 },
   groupIcon: { width: 52, height: 52, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   groupIconImg: { width: 52, height: 52, borderRadius: 14 },
-  groupName: { color: "#F0E6D2", fontSize: 18, fontWeight: "700", marginBottom: 3 },
-  groupSub: { color: "#F0E6D2AA", fontSize: 12, marginBottom: 6 },
+  groupName: { color: "#C8C1B5", fontSize: 18, fontWeight: "700", marginBottom: 3 },
+  groupSub: { color: "#C8C1B5AA", fontSize: 12, marginBottom: 6 },
   groupMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
-  groupMetaText: { color: "#F0E6D2AA", fontSize: 11 },
-  groupMetaDot: { color: "#F0E6D2AA", fontSize: 11 },
+  groupMetaText: { color: "#C8C1B5AA", fontSize: 11 },
+  groupMetaDot: { color: "#C8C1B5AA", fontSize: 11 },
   activeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#7ED65A" },
   tabs: { flexDirection: "row" },
   tabItem: { flex: 1, alignItems: "center", paddingVertical: 12 },
-  tabItemActive: { borderBottomWidth: 2, borderBottomColor: "#F0E6D2" },
+  tabItemActive: { borderBottomWidth: 2, borderBottomColor: "#C8C1B5" },
   tabText: { fontSize: 14, fontWeight: "600" },
   // Posts
   postCard: { borderRadius: 16, borderWidth: 1, padding: 14, marginBottom: 12, gap: 10 },
@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
   memberRow: { flexDirection: "row", alignItems: "center", gap: 12, borderRadius: 14, borderWidth: 1, padding: 14, marginBottom: 10 },
   memberAvatar: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
   memberInitials: { fontSize: 14, fontWeight: "700" },
-  onlineDot: { position: "absolute", bottom: 2, right: 2, width: 10, height: 10, borderRadius: 5, backgroundColor: "#7ED65A", borderWidth: 2, borderColor: "#0D1520" },
+  onlineDot: { position: "absolute", bottom: 2, right: 2, width: 10, height: 10, borderRadius: 5, backgroundColor: "#7ED65A", borderWidth: 2, borderColor: "#131D17" },
   memberName: { fontSize: 14, fontWeight: "600" },
   memberRole: { fontSize: 12, marginTop: 2 },
   // Info

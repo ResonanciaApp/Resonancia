@@ -176,7 +176,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   };
 
   return (
-    <View style={[styles.panel, { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.15)" }]}>
+    <View style={[styles.panel, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.15)" }]}>
       {/* Card header */}
       <LinearGradient
         colors={meta.gradientColors}
@@ -232,8 +232,8 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
               },
             ]}
           >
-            <Feather name="check" size={14} color={text.trim() ? "#141B26" : colors.mutedForeground} style={{ paddingLeft: 1 }} />
-            <Text style={[styles.saveBtnText, { color: text.trim() ? "#141B26" : colors.mutedForeground }]}>
+            <Feather name="check" size={14} color={text.trim() ? "#23332C" : colors.mutedForeground} style={{ paddingLeft: 1 }} />
+            <Text style={[styles.saveBtnText, { color: text.trim() ? "#23332C" : colors.mutedForeground }]}>
               Guardar
             </Text>
           </Pressable>
@@ -304,7 +304,7 @@ export default function DiarioScreen() {
         </View>
 
         {/* Divider line */}
-        <View style={[styles.divider, { backgroundColor: "rgba(199,156,88,0.2)" }]} />
+        <View style={[styles.divider, { backgroundColor: "rgba(182,149,95,0.2)" }]} />
 
         {/* Sections */}
         <View style={styles.sections}>

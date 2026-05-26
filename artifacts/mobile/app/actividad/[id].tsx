@@ -82,7 +82,7 @@ const ACTIVITIES: Record<string, {
     description:
       "Un fin de semana de silencio, sonido y naturaleza en un entorno privilegiado de los Andes mendocinos. El programa incluye baños de cuencos, meditaciones guiadas, caminatas conscientes y momentos de silencio profundo.\n\nIncluye alojamiento y alimentación vegetariana. Cupos muy limitados.",
     gradient: ["#3A5438", "#1E2E1C"],
-    orgColor: "#C79C58",
+    orgColor: "#B6955F",
     orgInitials: "CC",
     tags: ["Retiro", "Silencio", "Naturaleza", "Full weekend"],
   },
@@ -128,7 +128,7 @@ export default function ActividadDetailScreen() {
       {/* Hero header */}
       <LinearGradient colors={act.gradient} style={[styles.hero, { paddingTop: topPad + 20 }]}>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={12}>
-          <Feather name="arrow-left" size={22} color="#F0E6D2" />
+          <Feather name="arrow-left" size={22} color="#C8C1B5" />
         </Pressable>
 
         <View style={[styles.typeBadge, { backgroundColor: "#ffffff18" }]}>
@@ -138,10 +138,10 @@ export default function ActividadDetailScreen() {
         <Text style={styles.heroTitle}>{act.title}</Text>
 
         <View style={styles.heroMeta}>
-          <Feather name="map-pin" size={13} color="#F0E6D2AA" />
+          <Feather name="map-pin" size={13} color="#C8C1B5AA" />
           <Text style={styles.heroMetaText}>{act.city}</Text>
           <Text style={styles.heroMetaSep}>·</Text>
-          <Feather name="calendar" size={13} color="#F0E6D2AA" />
+          <Feather name="calendar" size={13} color="#C8C1B5AA" />
           <Text style={styles.heroMetaText}>{act.date}</Text>
         </View>
       </LinearGradient>
@@ -237,8 +237,8 @@ export default function ActividadDetailScreen() {
             onPress={() => setShowReserva(true)}
             style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.ctaGrad}>
-              <Feather name="send" size={17} color="#0D1520" />
+            <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.ctaGrad}>
+              <Feather name="send" size={17} color="#131D17" />
               <Text style={styles.ctaText}>Solicitar reserva</Text>
             </LinearGradient>
           </Pressable>
@@ -286,7 +286,7 @@ export default function ActividadDetailScreen() {
               onPress={handleEnviarReserva}
               style={({ pressed }) => [styles.modalBtn, { opacity: pressed ? 0.85 : 1 }]}
             >
-              <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.modalBtnGrad}>
+              <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.modalBtnGrad}>
                 <Text style={styles.modalBtnText}>Enviar solicitud</Text>
               </LinearGradient>
             </Pressable>
@@ -353,8 +353,8 @@ export default function ActividadDetailScreen() {
                   onPress={handleEnviarMensaje}
                   style={({ pressed }) => [styles.modalBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.modalBtnGrad}>
-                    <Feather name="send" size={16} color="#0D1520" />
+                  <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.modalBtnGrad}>
+                    <Feather name="send" size={16} color="#131D17" />
                     <Text style={styles.modalBtnText}>Enviar mensaje</Text>
                   </LinearGradient>
                 </Pressable>
@@ -388,11 +388,11 @@ const styles = StyleSheet.create({
   hero: { paddingHorizontal: 20, paddingBottom: 28, alignItems: "flex-start" },
   backBtn: { marginBottom: 20, width: 40, height: 40, justifyContent: "center" },
   typeBadge: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, marginBottom: 12 },
-  typeBadgeText: { color: "#F0E6D2", fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
-  heroTitle: { color: "#F0E6D2", fontSize: 24, fontWeight: "700", lineHeight: 30, marginBottom: 12 },
+  typeBadgeText: { color: "#C8C1B5", fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
+  heroTitle: { color: "#C8C1B5", fontSize: 24, fontWeight: "700", lineHeight: 30, marginBottom: 12 },
   heroMeta: { flexDirection: "row", alignItems: "center", gap: 6 },
-  heroMetaText: { color: "#F0E6D2AA", fontSize: 12 },
-  heroMetaSep: { color: "#F0E6D2AA", fontSize: 12 },
+  heroMetaText: { color: "#C8C1B5AA", fontSize: 12 },
+  heroMetaSep: { color: "#C8C1B5AA", fontSize: 12 },
   // Chips
   chipsRow: { flexDirection: "row", gap: 10 },
   chip: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10, borderRadius: 14, borderWidth: 1, padding: 14 },
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
   ctaBar: { position: "absolute", bottom: 0, left: 0, right: 0, paddingHorizontal: 20, paddingTop: 12, borderTopWidth: 1 },
   ctaBtn: { borderRadius: 16, overflow: "hidden" },
   ctaGrad: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16 },
-  ctaText: { fontWeight: "700", fontSize: 16, color: "#0D1520" },
+  ctaText: { fontWeight: "700", fontSize: 16, color: "#131D17" },
   ctaConfirmed: { flexDirection: "row", alignItems: "center", gap: 12, borderRadius: 16, borderWidth: 1.5, padding: 16 },
   ctaConfirmedTitle: { fontSize: 14, fontWeight: "700" },
   ctaConfirmedSub: { fontSize: 12, marginTop: 2 },
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
   textAreaInput: { fontSize: 14, lineHeight: 21 },
   modalBtn: { borderRadius: 16, overflow: "hidden", marginTop: 4 },
   modalBtnGrad: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16 },
-  modalBtnText: { color: "#0D1520", fontWeight: "700", fontSize: 16 },
+  modalBtnText: { color: "#131D17", fontWeight: "700", fontSize: 16 },
   // Mensaje modal
   msgOrgRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 4 },
   msgOrgAvatar: { width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center" },

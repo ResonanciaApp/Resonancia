@@ -39,7 +39,7 @@ const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
   Binaural: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   Música: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   "Sonidos Naturaleza": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
-  "Música Enteógena": { bg: "rgba(199,156,88,0.18)", text: "rgba(230,195,120,0.9)" },
+  "Música Enteógena": { bg: "rgba(182,149,95,0.18)", text: "rgba(230,195,120,0.9)" },
 };
 
 const TAG_ICONS: Record<SoundTag, React.ComponentProps<typeof Feather>["name"]> = {
@@ -122,7 +122,7 @@ export default function MusicaSonidosScreen() {
           <View
             style={[
               styles.searchBar,
-              { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.18)" },
+              { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)" },
             ]}
           >
             <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
@@ -159,7 +159,7 @@ export default function MusicaSonidosScreen() {
                   styles.tab,
                   {
                     backgroundColor: active ? colors.primary : colors.card,
-                    borderColor: active ? colors.primary : "rgba(199,156,88,0.2)",
+                    borderColor: active ? colors.primary : "rgba(182,149,95,0.2)",
                   },
                 ]}
               >
@@ -201,7 +201,7 @@ export default function MusicaSonidosScreen() {
                       {
                         width: CARD_WIDTH,
                         backgroundColor: colors.card,
-                        borderColor: "rgba(199,156,88,0.15)",
+                        borderColor: "rgba(182,149,95,0.15)",
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}
@@ -279,13 +279,13 @@ export default function MusicaSonidosScreen() {
                 ]}
               >
                 {/* Drag handle */}
-                <View style={[styles.dragHandle, { backgroundColor: "rgba(199,156,88,0.3)" }]} />
+                <View style={[styles.dragHandle, { backgroundColor: "rgba(182,149,95,0.3)" }]} />
 
                 {/* Session info */}
                 {pendingSession && (
                   <>
                     <View style={styles.modalHeader}>
-                      <View style={[styles.modalIcon, { backgroundColor: "rgba(199,156,88,0.1)" }]}>
+                      <View style={[styles.modalIcon, { backgroundColor: "rgba(182,149,95,0.1)" }]}>
                         <Feather name="clock" size={20} color={colors.primary} />
                       </View>
                       <View style={{ flex: 1 }}>
@@ -312,10 +312,10 @@ export default function MusicaSonidosScreen() {
                             {
                               backgroundColor: pressed
                                 ? colors.primary
-                                : "rgba(199,156,88,0.08)",
+                                : "rgba(182,149,95,0.08)",
                               borderColor: pressed
                                 ? colors.primary
-                                : "rgba(199,156,88,0.25)",
+                                : "rgba(182,149,95,0.25)",
                             },
                           ]}
                           onPress={() => handleSelectDuration(min)}
@@ -336,7 +336,7 @@ export default function MusicaSonidosScreen() {
 
                     {/* Cancel */}
                     <Pressable
-                      style={[styles.cancelBtn, { borderColor: "rgba(199,156,88,0.2)" }]}
+                      style={[styles.cancelBtn, { borderColor: "rgba(182,149,95,0.2)" }]}
                       onPress={() => setPendingSession(null)}
                     >
                       <Text style={[styles.cancelText, { color: colors.mutedForeground }]}>

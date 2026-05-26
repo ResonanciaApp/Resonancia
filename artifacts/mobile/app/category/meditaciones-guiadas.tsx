@@ -56,7 +56,7 @@ function StarRow({ sessionId }: { sessionId: string }) {
           key={star}
           name="star"
           size={11}
-          color={star <= rating ? "#E8B96A" : "rgba(199,156,88,0.22)"}
+          color={star <= rating ? "#E8B96A" : "rgba(182,149,95,0.22)"}
         />
       ))}
       {rating === 0 && (
@@ -67,7 +67,7 @@ function StarRow({ sessionId }: { sessionId: string }) {
 }
 const starStyles = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 2, marginBottom: 3 },
-  noRating: { fontSize: 9, color: "rgba(199,156,88,0.5)", marginLeft: 4, letterSpacing: 0.3 },
+  noRating: { fontSize: 9, color: "rgba(182,149,95,0.5)", marginLeft: 4, letterSpacing: 0.3 },
 });
 
 export default function MeditacionesGuiadasScreen() {
@@ -159,7 +159,7 @@ export default function MeditacionesGuiadasScreen() {
                     onPress={() => setSelectedTag(cat.tag)}
                     style={({ pressed }) => [
                       styles.catRow,
-                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(199,156,88,0.1)" },
+                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(182,149,95,0.1)" },
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
@@ -240,7 +240,7 @@ export default function MeditacionesGuiadasScreen() {
           <>
             {/* Search bar */}
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.18)" }]}>
+              <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)" }]}>
                 <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
@@ -276,7 +276,7 @@ export default function MeditacionesGuiadasScreen() {
                       styles.card,
                       {
                         backgroundColor: colors.card,
-                        borderColor: "rgba(199,156,88,0.18)",
+                        borderColor: "rgba(182,149,95,0.18)",
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}

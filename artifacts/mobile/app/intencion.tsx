@@ -162,7 +162,7 @@ export default function IntencionScreen() {
                   <LinearGradient
                     colors={
                       text === idea
-                        ? ["rgba(199,156,88,0.08)", "rgba(199,156,88,0.04)"]
+                        ? ["rgba(182,149,95,0.08)", "rgba(182,149,95,0.04)"]
                         : ["transparent", "transparent"]
                     }
                     style={StyleSheet.absoluteFill}
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginTop: 10,
   },
-  saveBtnText: { fontSize: 13, fontWeight: "700", color: "#141B26" },
+  saveBtnText: { fontSize: 13, fontWeight: "700", color: "#23332C" },
 
   tabRow: {
     flexDirection: "row",

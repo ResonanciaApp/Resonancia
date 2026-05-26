@@ -49,7 +49,7 @@ export default function MembresiaScreen() {
 
         {/* Hero */}
         <View style={styles.hero}>
-          <LinearGradient colors={["#C79C5822", "#C79C5800"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#B6955F22", "#B6955F00"]} style={StyleSheet.absoluteFill} />
           <Text style={[styles.heroLabel, { color: colors.primary }]}>CASA DEL CUENCO</Text>
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>
             Membresía{"\n"}Resonancia
@@ -72,7 +72,7 @@ export default function MembresiaScreen() {
             ]}
           >
             {selected === "anual" && (
-              <LinearGradient colors={["#C79C58", "#D8C7A5"]} style={styles.bestBadge}>
+              <LinearGradient colors={["#B6955F", "#C8C1B5"]} style={styles.bestBadge}>
                 <Text style={styles.bestText}>RECOMENDADO</Text>
               </LinearGradient>
             )}
@@ -124,7 +124,7 @@ export default function MembresiaScreen() {
         {/* CTA */}
         <View style={{ paddingHorizontal: 20 }}>
           <Pressable style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}>
-            <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.ctaGrad}>
+            <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.ctaGrad}>
               <Text style={styles.ctaText}>
                 {selected === "anual" ? "Comenzar con plan anual · $89" : "Comenzar con plan mensual · $12"}
               </Text>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderBottomLeftRadius: 10,
   },
-  bestText: { color: "#0D1520", fontSize: 9, fontWeight: "700", letterSpacing: 1 },
+  bestText: { color: "#131D17", fontSize: 9, fontWeight: "700", letterSpacing: 1 },
   planName: { fontSize: 18, fontWeight: "700", marginTop: 8 },
   priceRow: { flexDirection: "row", alignItems: "flex-end", gap: 1 },
   currency: { fontSize: 16, fontWeight: "700", marginBottom: 4 },
@@ -179,6 +179,6 @@ const styles = StyleSheet.create({
   benefitText: { flex: 1, fontSize: 14, lineHeight: 20 },
   ctaBtn: { borderRadius: 16, overflow: "hidden", marginBottom: 14 },
   ctaGrad: { paddingVertical: 16, alignItems: "center" },
-  ctaText: { color: "#0D1520", fontWeight: "700", fontSize: 16 },
+  ctaText: { color: "#131D17", fontWeight: "700", fontSize: 16 },
   legal: { fontSize: 11, textAlign: "center", lineHeight: 16 },
 });

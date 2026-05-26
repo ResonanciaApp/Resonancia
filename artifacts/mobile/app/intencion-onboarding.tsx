@@ -96,7 +96,7 @@ export default function IntencionOnboardingScreen() {
           style={({ pressed }) => [styles.btn, { backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 }]}
         >
           <Text style={styles.btnText}>¡Entendido!</Text>
-          <Feather name="arrow-right" size={18} color="#141B26" />
+          <Feather name="arrow-right" size={18} color="#23332C" />
         </Pressable>
       </View>
     </View>
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 28,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(199,156,88,0.25)",
+    borderColor: "rgba(182,149,95,0.25)",
   },
   iconInner: {
     width: "100%",
@@ -194,5 +194,5 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 8,
   },
-  btnText: { fontSize: 16, fontWeight: "700", color: "#141B26" },
+  btnText: { fontSize: 16, fontWeight: "700", color: "#23332C" },
 });

@@ -64,7 +64,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
                   key={star}
                   name="star"
                   size={11}
-                  color={star <= rating ? "#E8B96A" : "rgba(199,156,88,0.22)"}
+                  color={star <= rating ? "#E8B96A" : "rgba(182,149,95,0.22)"}
                 />
               ))}
               {rating === 0 && (

@@ -72,7 +72,7 @@ export default function RecientesScreen() {
 
         {entries.length === 0 ? (
           <View style={[styles.empty, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Feather name="clock" size={26} color={"rgba(199,156,88,0.4)"} />
+            <Feather name="clock" size={26} color={"rgba(182,149,95,0.4)"} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Aún no hay historial</Text>
             <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
               Las sesiones que escuches aparecerán aquí.

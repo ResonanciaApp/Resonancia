@@ -119,7 +119,7 @@ export default function ActividadesScreen() {
                 },
               ]}
             >
-              <Text style={[styles.filterText, { color: cityFilter === c ? "#0D1520" : colors.mutedForeground }]}>
+              <Text style={[styles.filterText, { color: cityFilter === c ? "#131D17" : colors.mutedForeground }]}>
                 {c}
               </Text>
             </Pressable>
@@ -169,8 +169,8 @@ export default function ActividadesScreen() {
         style={[styles.fab, { bottom: bottomPad + 24 }]}
         onPress={() => router.push("/crear-actividad" as never)}
       >
-        <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.fabGrad}>
-          <Feather name="plus" size={22} color="#0D1520" />
+        <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.fabGrad}>
+          <Feather name="plus" size={22} color="#131D17" />
         </LinearGradient>
       </Pressable>
     </View>

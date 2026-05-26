@@ -186,9 +186,9 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Profile Card ── */}
-        <View style={[styles.profileCard, { borderColor: "rgba(199,156,88,0.2)" }]}>
+        <View style={[styles.profileCard, { borderColor: "rgba(182,149,95,0.2)" }]}>
           <LinearGradient
-            colors={["rgba(199,156,88,0.1)", "rgba(60,36,21,0.5)"]}
+            colors={["rgba(182,149,95,0.1)", "rgba(60,36,21,0.5)"]}
             style={[StyleSheet.absoluteFill, { borderRadius: 24 }]}
           />
 
@@ -225,7 +225,7 @@ export default function ProfileScreen() {
           {/* Editar Detalles button */}
           <Pressable
             onPress={openEdit}
-            style={({ pressed }) => [styles.editBtn, { borderColor: "rgba(199,156,88,0.4)", opacity: pressed ? 0.75 : 1 }]}
+            style={({ pressed }) => [styles.editBtn, { borderColor: "rgba(182,149,95,0.4)", opacity: pressed ? 0.75 : 1 }]}
           >
             <Feather name="edit-2" size={13} color={colors.primary} />
             <Text style={[styles.editBtnText, { color: colors.primary }]}>Editar Detalles</Text>
@@ -268,9 +268,9 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Premium Banner ── */}
-        <View style={[styles.premiumBanner, { borderColor: "rgba(199,156,88,0.3)" }]}>
+        <View style={[styles.premiumBanner, { borderColor: "rgba(182,149,95,0.3)" }]}>
           <LinearGradient
-            colors={["rgba(199,156,88,0.15)", "rgba(36,22,15,0.8)"]}
+            colors={["rgba(182,149,95,0.15)", "rgba(36,22,15,0.8)"]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
           />
@@ -470,11 +470,11 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#C79C58",
+    backgroundColor: "#B6955F",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#141B26",
+    borderColor: "#23332C",
   },
   userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },

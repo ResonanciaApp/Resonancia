@@ -133,7 +133,7 @@ export default function SonidosAncestalesScreen() {
                     onPress={() => setSelectedTag(cat.tag)}
                     style={({ pressed }) => [
                       styles.catRow,
-                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(199,156,88,0.1)" },
+                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(182,149,95,0.1)" },
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
@@ -214,7 +214,7 @@ export default function SonidosAncestalesScreen() {
               <View
                 style={[
                   styles.searchBar,
-                  { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.18)" },
+                  { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)" },
                 ]}
               >
                 <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
@@ -251,7 +251,7 @@ export default function SonidosAncestalesScreen() {
                       styles.card,
                       {
                         backgroundColor: colors.card,
-                        borderColor: "rgba(199,156,88,0.18)",
+                        borderColor: "rgba(182,149,95,0.18)",
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}

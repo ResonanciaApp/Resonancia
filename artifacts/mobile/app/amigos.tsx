@@ -110,9 +110,9 @@ function GuestPrompt() {
         onPress={() => router.push("/(auth)/sign-up")}
         style={({ pressed }) => [styles.guestBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
-        <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.guestBtnGrad}>
+        <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.guestBtnGrad}>
           <Text style={styles.guestBtnText}>Crear cuenta</Text>
-          <Feather name="arrow-right" size={16} color="#0D1520" />
+          <Feather name="arrow-right" size={16} color="#131D17" />
         </LinearGradient>
       </Pressable>
       <Pressable onPress={() => router.push("/(auth)/sign-in")}>
@@ -302,8 +302,8 @@ function SearchResultRow({
       </View>
       {status === "none" && (
         <Pressable onPress={onAdd} style={styles.acceptBtn}>
-          <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.acceptGrad}>
-            <Feather name="user-plus" size={14} color="#0D1520" />
+          <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
+            <Feather name="user-plus" size={14} color="#131D17" />
           </LinearGradient>
         </Pressable>
       )}
@@ -312,8 +312,8 @@ function SearchResultRow({
       )}
       {status === "pending_incoming" && (
         <Pressable onPress={onAdd} style={styles.acceptBtn}>
-          <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#0D1520" />
+          <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
+            <Feather name="check" size={14} color="#131D17" />
           </LinearGradient>
         </Pressable>
       )}
@@ -344,8 +344,8 @@ function RequestRow({
       </View>
       <View style={styles.requestBtns}>
         <Pressable style={styles.acceptBtn} onPress={onAccept}>
-          <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#0D1520" />
+          <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
+            <Feather name="check" size={14} color="#131D17" />
           </LinearGradient>
         </Pressable>
         <Pressable
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  unreadText: { color: "#0D1520", fontSize: 11, fontWeight: "700" },
+  unreadText: { color: "#131D17", fontSize: 11, fontWeight: "700" },
   guestCard: {
     borderRadius: 20,
     borderWidth: 1,
@@ -517,6 +517,6 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 14,
   },
-  guestBtnText: { color: "#0D1520", fontWeight: "700", fontSize: 15 },
+  guestBtnText: { color: "#131D17", fontWeight: "700", fontSize: 15 },
   guestLink: { fontSize: 13, fontWeight: "600", marginTop: 4 },
 });

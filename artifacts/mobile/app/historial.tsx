@@ -118,7 +118,7 @@ export default function HistorialScreen() {
         </View>
 
         {grouped.length === 0 ? (
-          <View style={[styles.emptyWrap, { borderColor: "rgba(199,156,88,0.15)", backgroundColor: colors.card }]}>
+          <View style={[styles.emptyWrap, { borderColor: "rgba(182,149,95,0.15)", backgroundColor: colors.card }]}>
             <Feather name="clock" size={34} color={colors.primary} style={{ marginBottom: 14 }} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
               Aún no hay sesiones
@@ -131,11 +131,11 @@ export default function HistorialScreen() {
           grouped.map(({ dayLabel, entries }) => (
             <View key={dayLabel} style={styles.group}>
               <View style={styles.dayRow}>
-                <View style={[styles.dayLine, { backgroundColor: "rgba(199,156,88,0.18)" }]} />
-                <View style={[styles.dayPill, { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.25)" }]}>
+                <View style={[styles.dayLine, { backgroundColor: "rgba(182,149,95,0.18)" }]} />
+                <View style={[styles.dayPill, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.25)" }]}>
                   <Text style={[styles.dayText, { color: colors.accent }]}>{dayLabel}</Text>
                 </View>
-                <View style={[styles.dayLine, { backgroundColor: "rgba(199,156,88,0.18)" }]} />
+                <View style={[styles.dayLine, { backgroundColor: "rgba(182,149,95,0.18)" }]} />
               </View>
 
               {entries.map((entry) => {
@@ -157,7 +157,7 @@ export default function HistorialScreen() {
         )}
 
         {grouped.length > 0 && (
-          <View style={[styles.footerNote, { borderColor: "rgba(199,156,88,0.12)" }]}>
+          <View style={[styles.footerNote, { borderColor: "rgba(182,149,95,0.12)" }]}>
             <Feather name="info" size={13} color={colors.mutedForeground} />
             <Text style={[styles.footerNoteText, { color: colors.mutedForeground }]}>
               Las sesiones se eliminan automáticamente al cumplir 30 días.

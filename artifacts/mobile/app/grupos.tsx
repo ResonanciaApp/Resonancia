@@ -235,7 +235,7 @@ function LocalGrupoAvatar({ grupo, size = 54 }: { grupo: GrupoLocal; size?: numb
   }
   return (
     <LinearGradient colors={["#2D4A3E", "#152820"]} style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ color: "#F0E6D2", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
+      <Text style={{ color: "#C8C1B5", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
     </LinearGradient>
   );
 }

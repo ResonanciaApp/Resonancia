@@ -243,7 +243,7 @@ export default function HomeScreen() {
               Sesión destacada del día
             </Text>
             <Pressable
-              style={[styles.heroCard, { borderColor: "rgba(199,156,88,0.22)" }]}
+              style={[styles.heroCard, { borderColor: "rgba(182,149,95,0.22)" }]}
               onPress={() => router.push(`/session/${featuredSession.id}` as never)}
             >
               <Image source={featuredSession.image as number} style={styles.heroImage} resizeMode="cover" />
@@ -253,15 +253,15 @@ export default function HomeScreen() {
                 style={StyleSheet.absoluteFill}
               />
               <View style={styles.glowCenter}>
-                <GlowRing size={110} color="rgba(199,156,88,0.18)" delay={0} duration={3500} />
-                <GlowRing size={170} color="rgba(199,156,88,0.1)" delay={600} duration={3500} />
+                <GlowRing size={110} color="rgba(182,149,95,0.18)" delay={0} duration={3500} />
+                <GlowRing size={170} color="rgba(182,149,95,0.1)" delay={600} duration={3500} />
               </View>
               <View style={styles.heroContent}>
                 <Text style={[styles.heroLabel, { color: colors.accent }]}>SESIÓN DESTACADA DEL DÍA</Text>
                 <Text style={[styles.heroTitle, { color: colors.foreground }]}>
                   {featuredSession.title}
                 </Text>
-                <Text style={[styles.heroSub, { color: "#D8C7A5" }]}>
+                <Text style={[styles.heroSub, { color: "#C8C1B5" }]}>
                   {featuredSession.subtitle} · {featuredSession.durationLabel}
                 </Text>
                 <Pressable
@@ -313,7 +313,7 @@ export default function HomeScreen() {
                 ]}
               >
                 <LinearGradient
-                  colors={["rgba(199,156,88,0.1)", "rgba(199,156,88,0.03)"]}
+                  colors={["rgba(182,149,95,0.1)", "rgba(182,149,95,0.03)"]}
                   style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                 />
                 <Feather name="clock" size={13} color={colors.primary} style={{ marginRight: 5 }} />

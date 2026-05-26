@@ -18,7 +18,7 @@ import { useColors } from "@/hooks/useColors";
 
 const SHARE_OPTIONS = [
   { icon: "message-circle" as const, label: "WhatsApp", color: "#25D366" },
-  { icon: "mail" as const, label: "Email", color: "#C79C58" },
+  { icon: "mail" as const, label: "Email", color: "#B6955F" },
   { icon: "instagram" as const, label: "Instagram", color: "#E4405F" },
   { icon: "share-2" as const, label: "Más opciones", color: "#8AAAD4" },
 ];
@@ -55,7 +55,7 @@ export default function InvitarScreen() {
 
         {/* Invite card */}
         <View style={[styles.inviteCard, { borderColor: colors.primary + "44" }]}>
-          <LinearGradient colors={["#1A2535", "#0D1520"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#1E2D26", "#131D17"]} style={StyleSheet.absoluteFill} />
           <View style={styles.inviteTop}>
             <Feather name="gift" size={20} color={colors.primary} />
             <Text style={[styles.inviteLabel, { color: colors.primary }]}>7 días gratis para tu amigo</Text>

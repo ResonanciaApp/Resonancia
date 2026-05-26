@@ -496,7 +496,7 @@ export default function ChatScreen() {
       <View
         style={[
           styles.header,
-          { paddingTop: topPad + 8, borderColor: colors.border, backgroundColor: "#0D1520EE" },
+          { paddingTop: topPad + 8, borderColor: colors.border, backgroundColor: "#131D17EE" },
         ]}
       >
         <Pressable onPress={() => router.back()} hitSlop={12} style={{ padding: 6 }}>
@@ -584,7 +584,7 @@ export default function ChatScreen() {
             {
               paddingBottom: bottomPad + 8,
               borderColor: colors.border,
-              backgroundColor: "#0D1520EE",
+              backgroundColor: "#131D17EE",
             },
           ]}
         >
@@ -609,8 +609,8 @@ export default function ChatScreen() {
                 </Text>
               </View>
               <Pressable onPress={sendRecording} style={styles.sendBtn}>
-                <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#0D1520" />
+                <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.sendGrad}>
+                  <Feather name="send" size={16} color="#131D17" />
                 </LinearGradient>
               </Pressable>
             </>
@@ -657,8 +657,8 @@ export default function ChatScreen() {
                 disabled={draft.trim().length === 0 || sendMsg.isPending}
                 style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
               >
-                <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#0D1520" />
+                <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.sendGrad}>
+                  <Feather name="send" size={16} color="#131D17" />
                 </LinearGradient>
               </Pressable>
             </>
@@ -758,7 +758,7 @@ function MessageBubble({
           style={[
             styles.sessionCard,
             {
-              backgroundColor: isMine ? "#C79C58" : colors.card,
+              backgroundColor: isMine ? "#B6955F" : colors.card,
               borderColor: isMine ? "transparent" : colors.border,
             },
           ]}
@@ -768,13 +768,13 @@ function MessageBubble({
             <Text
               style={[
                 styles.sessionLabel,
-                { color: isMine ? "#0D1520" : colors.mutedForeground },
+                { color: isMine ? "#131D17" : colors.mutedForeground },
               ]}
             >
               {session.categoryLabel.toUpperCase()}
             </Text>
             <Text
-              style={[styles.sessionTitle, { color: isMine ? "#0D1520" : colors.foreground }]}
+              style={[styles.sessionTitle, { color: isMine ? "#131D17" : colors.foreground }]}
               numberOfLines={2}
             >
               {session.title}
@@ -782,7 +782,7 @@ function MessageBubble({
             <Text
               style={[
                 styles.sessionDuration,
-                { color: isMine ? "#0D1520" : colors.mutedForeground },
+                { color: isMine ? "#131D17" : colors.mutedForeground },
               ]}
             >
               {session.durationLabel}
@@ -795,7 +795,7 @@ function MessageBubble({
             styles.bubble,
             isMine
               ? {
-                  backgroundColor: "#C79C58",
+                  backgroundColor: "#B6955F",
                   borderTopRightRadius: groupedWithPrev ? compactRadius : 18,
                   borderBottomRightRadius: groupedWithNext ? compactRadius : tailRadius,
                 }
@@ -811,7 +811,7 @@ function MessageBubble({
           <Text
             style={[
               styles.bubbleText,
-              { color: isMine ? "#0D1520" : colors.foreground },
+              { color: isMine ? "#131D17" : colors.foreground },
             ]}
           >
             {message.body}
@@ -823,7 +823,7 @@ function MessageBubble({
           <Feather
             name={message.readAt ? "check-circle" : "check"}
             size={11}
-            color={message.readAt ? "#C79C58" : colors.mutedForeground}
+            color={message.readAt ? "#B6955F" : colors.mutedForeground}
           />
           <Text style={[styles.readText, { color: colors.mutedForeground }]}>
             {message.readAt ? "Visto" : "Enviado"}
@@ -1115,10 +1115,10 @@ function AudioAttachment({
   };
 
   const progressPct = totalMs > 0 ? Math.min(1, positionMs / totalMs) : 0;
-  const bg = isMine ? "#C79C58" : colors.card;
-  const fg = isMine ? "#0D1520" : colors.foreground;
-  const trackBg = isMine ? "#0D152033" : colors.border;
-  const trackFill = isMine ? "#0D1520" : colors.primary;
+  const bg = isMine ? "#B6955F" : colors.card;
+  const fg = isMine ? "#131D17" : colors.foreground;
+  const trackBg = isMine ? "#131D1733" : colors.border;
+  const trackFill = isMine ? "#131D17" : colors.primary;
 
   return (
     <View
@@ -1208,7 +1208,7 @@ function AttachMenuModal({
             icon="mic"
             label="Grabar mensaje de voz"
             sublabel="Mantén grabando hasta 5 min"
-            tint="#D8C7A5"
+            tint="#C8C1B5"
             onPress={onRecordVoice}
           />
           <AttachOption

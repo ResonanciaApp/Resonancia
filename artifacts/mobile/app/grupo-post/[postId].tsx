@@ -143,7 +143,7 @@ export default function GrupoPostScreen() {
     await addComment(postId, {
       author: userName,
       initials: initialsFrom(userName),
-      color: "#C79C58",
+      color: "#B6955F",
       text: txt,
     });
     setCommentText("");
@@ -332,7 +332,7 @@ export default function GrupoPostScreen() {
               <Feather
                 name="send"
                 size={18}
-                color={commentText.trim() ? "#0D1520" : colors.mutedForeground}
+                color={commentText.trim() ? "#131D17" : colors.mutedForeground}
               />
             </Pressable>
           </View>
