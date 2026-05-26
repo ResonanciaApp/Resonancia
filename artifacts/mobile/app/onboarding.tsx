@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     borderRadius: 140,
     backgroundColor: "rgba(182,149,95,0.06)",
   },
-  welcomeLogo: { width: 220, height: 220, alignSelf: "center" },
+  welcomeLogo: { width: 165, height: 165, alignSelf: "center" },
   welcomeTitle: {
     color: FG,
     fontSize: 26,
