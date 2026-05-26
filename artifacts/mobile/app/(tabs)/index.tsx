@@ -280,9 +280,6 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 4. FRASE DEL DÍA ── */}
-        <QuoteOfTheDay />
-
         {/* ── 5. RECOMENDADAS PARA TI ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
@@ -326,7 +323,10 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* ── 5. A NO OLVIDAR ── */}
+        {/* ── 5. FRASE DEL DÍA ── */}
+        <QuoteOfTheDay />
+
+        {/* ── 6. A NO OLVIDAR ── */}
         <View style={styles.section}>
             {/* Cabecera tappable */}
             <Pressable
