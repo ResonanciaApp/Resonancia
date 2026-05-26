@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   author: {
-    fontSize: 10,
+    fontSize: 6,
     fontWeight: "500",
     marginBottom: 20,
   },
