@@ -34,7 +34,7 @@ export default function QuoteOfTheDay() {
   }
 
   return (
-    <View style={[styles.card, { backgroundColor: GREEN_BG, borderColor: GREEN_BORDER }]}>
+    <View style={[styles.card, { backgroundColor: GREEN_BG }]}>
       {/* Chip */}
       <View style={[styles.chip, { backgroundColor: GREEN_CHIP_BG }]}>
         <Text style={[styles.chipText, { color: GREEN_ACCENT }]}>Frase del día</Text>
@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 8,
     borderRadius: 20,
-    borderWidth: 1,
     paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 16,
@@ -140,7 +139,6 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },

@@ -363,7 +363,7 @@ export default function HomeScreen() {
 
             {/* Estado vacío */}
             {noOlvidarItems.length === 0 && (
-              <View style={[styles.noOlvidarPeek, { backgroundColor: colors.card, borderColor: colors.border, justifyContent: "center" }]}>
+              <View style={[styles.noOlvidarPeek, { backgroundColor: colors.card, justifyContent: "center" }]}>
                 <Text style={[styles.peekLabel, { color: colors.mutedForeground, textAlign: "center" }]}>
                   Aún no has guardado nada de tu diario
                 </Text>
@@ -374,7 +374,7 @@ export default function HomeScreen() {
             {noOlvidarItems.length > 0 && !noOlvidarOpen && (
               <Pressable
                 onPress={() => setNoOlvidarOpen(true)}
-                style={[styles.noOlvidarPeek, { backgroundColor: colors.card, borderColor: colors.border }]}
+                style={[styles.noOlvidarPeek, { backgroundColor: colors.card }]}
               >
                 {/* Mini apilado de tarjetas */}
                 <View style={styles.peekStack}>
@@ -385,7 +385,6 @@ export default function HomeScreen() {
                         styles.peekCard,
                         {
                           backgroundColor: colors.card,
-                          borderColor: colors.border,
                           left: i * 6,
                           top: i === 0 ? 0 : -i * 2,
                           zIndex: 3 - i,
@@ -646,7 +645,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     borderRadius: 14,
-    borderWidth: 1,
     paddingVertical: 13,
     paddingHorizontal: 16,
   },
@@ -660,7 +658,6 @@ const styles = StyleSheet.create({
     width: 22,
     height: 16,
     borderRadius: 5,
-    borderWidth: 1,
   },
   peekLabel: {
     flex: 1,

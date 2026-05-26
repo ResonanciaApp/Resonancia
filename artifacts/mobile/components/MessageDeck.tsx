@@ -208,15 +208,11 @@ const styles = StyleSheet.create({
   outerBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 10,
-    borderWidth: 0.8,
-    borderColor: "#4A2E7A",
   },
   innerBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 8,
     margin: 6,
-    borderWidth: 0.5,
-    borderColor: "rgba(74,46,122,0.4)",
   },
   corner: { position: "absolute" },
   backCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10 },
