@@ -34,7 +34,7 @@ if (apiUrl) setBaseUrl(apiUrl);
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const queryClient = new QueryClient();
 
@@ -162,12 +162,14 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().catch(() => {});
     }
   }, [fontsLoaded, fontError]);
 
   useEffect(() => {
-    const t = setTimeout(() => SplashScreen.hideAsync(), 800);
+    const t = setTimeout(() => {
+      SplashScreen.hideAsync().catch(() => {});
+    }, 800);
     return () => clearTimeout(t);
   }, []);
 
