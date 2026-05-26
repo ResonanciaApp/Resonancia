@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderBottomLeftRadius: 10,
   },
-  bestText: { color: "#131D17", fontSize: 9, fontWeight: "700", letterSpacing: 1 },
+  bestText: { color: "#080F0A", fontSize: 9, fontWeight: "700", letterSpacing: 1 },
   planName: { fontSize: 18, fontWeight: "700", marginTop: 8 },
   priceRow: { flexDirection: "row", alignItems: "flex-end", gap: 1 },
   currency: { fontSize: 16, fontWeight: "700", marginBottom: 4 },
@@ -179,6 +179,6 @@ const styles = StyleSheet.create({
   benefitText: { flex: 1, fontSize: 14, lineHeight: 20 },
   ctaBtn: { borderRadius: 16, overflow: "hidden", marginBottom: 14 },
   ctaGrad: { paddingVertical: 16, alignItems: "center" },
-  ctaText: { color: "#131D17", fontWeight: "700", fontSize: 16 },
+  ctaText: { color: "#080F0A", fontWeight: "700", fontSize: 16 },
   legal: { fontSize: 11, textAlign: "center", lineHeight: 16 },
 });

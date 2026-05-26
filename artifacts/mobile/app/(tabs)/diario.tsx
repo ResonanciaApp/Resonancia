@@ -232,8 +232,8 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
               },
             ]}
           >
-            <Feather name="check" size={14} color={text.trim() ? "#23332C" : colors.mutedForeground} style={{ paddingLeft: 1 }} />
-            <Text style={[styles.saveBtnText, { color: text.trim() ? "#23332C" : colors.mutedForeground }]}>
+            <Feather name="check" size={14} color={text.trim() ? "#0F1A13" : colors.mutedForeground} style={{ paddingLeft: 1 }} />
+            <Text style={[styles.saveBtnText, { color: text.trim() ? "#0F1A13" : colors.mutedForeground }]}>
               Guardar
             </Text>
           </Pressable>

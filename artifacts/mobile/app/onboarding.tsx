@@ -27,7 +27,7 @@ const STORAGE_KEY = "cdc_onboarding_done";
 const PROFILE_KEY = "cdc_onboarding_profile";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
-const BG       = "#23332C";
+const BG       = "#0F1A13";
 const CARD     = "#2D3F38";
 const GOLD     = "#B6955F";
 const GOLD_LT  = "#C8C1B5";
@@ -296,7 +296,7 @@ export default function Onboarding() {
   if (step === -1) {
     return (
       <LinearGradient
-        colors={["#131D17", "#182419", "#1E2D26", "#23332C"]}
+        colors={["#080F0A", "#0A1510", "#12221A", "#0F1A13"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
@@ -347,7 +347,7 @@ export default function Onboarding() {
 
     return (
       <LinearGradient
-        colors={["#131D17", "#182419", "#1E2D26"]}
+        colors={["#080F0A", "#0A1510", "#12221A"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
@@ -407,7 +407,7 @@ export default function Onboarding() {
 
   return (
     <LinearGradient
-      colors={["#131D17", "#182419", "#1E2D26"]}
+      colors={["#080F0A", "#0A1510", "#12221A"]}
       style={[styles.fill, { paddingTop: insets.top }]}
       start={{ x: 0.3, y: 0 }}
       end={{ x: 0.7, y: 1 }}

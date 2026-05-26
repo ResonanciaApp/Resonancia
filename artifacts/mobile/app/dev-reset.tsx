@@ -44,7 +44,7 @@ export default function DevReset() {
         para probar el flujo desde cero.
       </Text>
       <Pressable onPress={reset} disabled={working} style={[styles.btn, working && { opacity: 0.5 }]}>
-        {working ? <ActivityIndicator color="#131D17" /> : <Text style={styles.btnText}>Borrar todo y reiniciar</Text>}
+        {working ? <ActivityIndicator color="#080F0A" /> : <Text style={styles.btnText}>Borrar todo y reiniciar</Text>}
       </Pressable>
       <Text style={styles.status}>{status}</Text>
     </View>
@@ -52,10 +52,10 @@ export default function DevReset() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#23332C", padding: 28, justifyContent: "center", gap: 16 },
+  root: { flex: 1, backgroundColor: "#0F1A13", padding: 28, justifyContent: "center", gap: 16 },
   title: { color: "#C8C1B5", fontSize: 24, fontFamily: "PlayfairDisplay_700Bold" },
   body: { color: "rgba(237,225,211,0.65)", fontSize: 14, lineHeight: 20 },
   btn: { backgroundColor: "#B6955F", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
-  btnText: { color: "#131D17", fontFamily: "Inter_700Bold", fontSize: 15, letterSpacing: 0.3 },
+  btnText: { color: "#080F0A", fontFamily: "Inter_700Bold", fontSize: 15, letterSpacing: 0.3 },
   status: { color: "rgba(182,149,95,0.7)", fontSize: 12, textAlign: "center" },
 });

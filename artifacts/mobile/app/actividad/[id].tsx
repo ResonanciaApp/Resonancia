@@ -238,7 +238,7 @@ export default function ActividadDetailScreen() {
             style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
           >
             <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.ctaGrad}>
-              <Feather name="send" size={17} color="#131D17" />
+              <Feather name="send" size={17} color="#080F0A" />
               <Text style={styles.ctaText}>Solicitar reserva</Text>
             </LinearGradient>
           </Pressable>
@@ -354,7 +354,7 @@ export default function ActividadDetailScreen() {
                   style={({ pressed }) => [styles.modalBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
                   <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.modalBtnGrad}>
-                    <Feather name="send" size={16} color="#131D17" />
+                    <Feather name="send" size={16} color="#080F0A" />
                     <Text style={styles.modalBtnText}>Enviar mensaje</Text>
                   </LinearGradient>
                 </Pressable>
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
   ctaBar: { position: "absolute", bottom: 0, left: 0, right: 0, paddingHorizontal: 20, paddingTop: 12, borderTopWidth: 1 },
   ctaBtn: { borderRadius: 16, overflow: "hidden" },
   ctaGrad: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16 },
-  ctaText: { fontWeight: "700", fontSize: 16, color: "#131D17" },
+  ctaText: { fontWeight: "700", fontSize: 16, color: "#080F0A" },
   ctaConfirmed: { flexDirection: "row", alignItems: "center", gap: 12, borderRadius: 16, borderWidth: 1.5, padding: 16 },
   ctaConfirmedTitle: { fontSize: 14, fontWeight: "700" },
   ctaConfirmedSub: { fontSize: 12, marginTop: 2 },
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
   textAreaInput: { fontSize: 14, lineHeight: 21 },
   modalBtn: { borderRadius: 16, overflow: "hidden", marginTop: 4 },
   modalBtnGrad: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16 },
-  modalBtnText: { color: "#131D17", fontWeight: "700", fontSize: 16 },
+  modalBtnText: { color: "#080F0A", fontWeight: "700", fontSize: 16 },
   // Mensaje modal
   msgOrgRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 4 },
   msgOrgAvatar: { width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center" },

@@ -332,7 +332,7 @@ export default function GrupoPostScreen() {
               <Feather
                 name="send"
                 size={18}
-                color={commentText.trim() ? "#131D17" : colors.mutedForeground}
+                color={commentText.trim() ? "#080F0A" : colors.mutedForeground}
               />
             </Pressable>
           </View>

@@ -611,7 +611,7 @@ export default function GrupoDetailScreen() {
                 onPress={handleSend}
                 disabled={!grupo.isLocalGroup}
               >
-                <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#131D17" : colors.mutedForeground} />
+                <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#080F0A" : colors.mutedForeground} />
               </Pressable>
             </View>
           </>
@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
   memberRow: { flexDirection: "row", alignItems: "center", gap: 12, borderRadius: 14, borderWidth: 1, padding: 14, marginBottom: 10 },
   memberAvatar: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
   memberInitials: { fontSize: 14, fontWeight: "700" },
-  onlineDot: { position: "absolute", bottom: 2, right: 2, width: 10, height: 10, borderRadius: 5, backgroundColor: "#7ED65A", borderWidth: 2, borderColor: "#131D17" },
+  onlineDot: { position: "absolute", bottom: 2, right: 2, width: 10, height: 10, borderRadius: 5, backgroundColor: "#7ED65A", borderWidth: 2, borderColor: "#080F0A" },
   memberName: { fontSize: 14, fontWeight: "600" },
   memberRole: { fontSize: 12, marginTop: 2 },
   // Info

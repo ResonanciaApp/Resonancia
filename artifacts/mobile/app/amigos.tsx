@@ -112,7 +112,7 @@ function GuestPrompt() {
       >
         <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.guestBtnGrad}>
           <Text style={styles.guestBtnText}>Crear cuenta</Text>
-          <Feather name="arrow-right" size={16} color="#131D17" />
+          <Feather name="arrow-right" size={16} color="#080F0A" />
         </LinearGradient>
       </Pressable>
       <Pressable onPress={() => router.push("/(auth)/sign-in")}>
@@ -303,7 +303,7 @@ function SearchResultRow({
       {status === "none" && (
         <Pressable onPress={onAdd} style={styles.acceptBtn}>
           <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
-            <Feather name="user-plus" size={14} color="#131D17" />
+            <Feather name="user-plus" size={14} color="#080F0A" />
           </LinearGradient>
         </Pressable>
       )}
@@ -313,7 +313,7 @@ function SearchResultRow({
       {status === "pending_incoming" && (
         <Pressable onPress={onAdd} style={styles.acceptBtn}>
           <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#131D17" />
+            <Feather name="check" size={14} color="#080F0A" />
           </LinearGradient>
         </Pressable>
       )}
@@ -345,7 +345,7 @@ function RequestRow({
       <View style={styles.requestBtns}>
         <Pressable style={styles.acceptBtn} onPress={onAccept}>
           <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#131D17" />
+            <Feather name="check" size={14} color="#080F0A" />
           </LinearGradient>
         </Pressable>
         <Pressable
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  unreadText: { color: "#131D17", fontSize: 11, fontWeight: "700" },
+  unreadText: { color: "#080F0A", fontSize: 11, fontWeight: "700" },
   guestCard: {
     borderRadius: 20,
     borderWidth: 1,
@@ -517,6 +517,6 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 14,
   },
-  guestBtnText: { color: "#131D17", fontWeight: "700", fontSize: 15 },
+  guestBtnText: { color: "#080F0A", fontWeight: "700", fontSize: 15 },
   guestLink: { fontSize: 13, fontWeight: "600", marginTop: 4 },
 });

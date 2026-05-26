@@ -496,7 +496,7 @@ export default function ChatScreen() {
       <View
         style={[
           styles.header,
-          { paddingTop: topPad + 8, borderColor: colors.border, backgroundColor: "#131D17EE" },
+          { paddingTop: topPad + 8, borderColor: colors.border, backgroundColor: "#080F0AEE" },
         ]}
       >
         <Pressable onPress={() => router.back()} hitSlop={12} style={{ padding: 6 }}>
@@ -584,7 +584,7 @@ export default function ChatScreen() {
             {
               paddingBottom: bottomPad + 8,
               borderColor: colors.border,
-              backgroundColor: "#131D17EE",
+              backgroundColor: "#080F0AEE",
             },
           ]}
         >
@@ -610,7 +610,7 @@ export default function ChatScreen() {
               </View>
               <Pressable onPress={sendRecording} style={styles.sendBtn}>
                 <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#131D17" />
+                  <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>
             </>
@@ -658,7 +658,7 @@ export default function ChatScreen() {
                 style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
               >
                 <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#131D17" />
+                  <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>
             </>
@@ -768,13 +768,13 @@ function MessageBubble({
             <Text
               style={[
                 styles.sessionLabel,
-                { color: isMine ? "#131D17" : colors.mutedForeground },
+                { color: isMine ? "#080F0A" : colors.mutedForeground },
               ]}
             >
               {session.categoryLabel.toUpperCase()}
             </Text>
             <Text
-              style={[styles.sessionTitle, { color: isMine ? "#131D17" : colors.foreground }]}
+              style={[styles.sessionTitle, { color: isMine ? "#080F0A" : colors.foreground }]}
               numberOfLines={2}
             >
               {session.title}
@@ -782,7 +782,7 @@ function MessageBubble({
             <Text
               style={[
                 styles.sessionDuration,
-                { color: isMine ? "#131D17" : colors.mutedForeground },
+                { color: isMine ? "#080F0A" : colors.mutedForeground },
               ]}
             >
               {session.durationLabel}
@@ -811,7 +811,7 @@ function MessageBubble({
           <Text
             style={[
               styles.bubbleText,
-              { color: isMine ? "#131D17" : colors.foreground },
+              { color: isMine ? "#080F0A" : colors.foreground },
             ]}
           >
             {message.body}
@@ -1116,9 +1116,9 @@ function AudioAttachment({
 
   const progressPct = totalMs > 0 ? Math.min(1, positionMs / totalMs) : 0;
   const bg = isMine ? "#B6955F" : colors.card;
-  const fg = isMine ? "#131D17" : colors.foreground;
-  const trackBg = isMine ? "#131D1733" : colors.border;
-  const trackFill = isMine ? "#131D17" : colors.primary;
+  const fg = isMine ? "#080F0A" : colors.foreground;
+  const trackBg = isMine ? "#080F0A33" : colors.border;
+  const trackFill = isMine ? "#080F0A" : colors.primary;
 
   return (
     <View

@@ -130,7 +130,7 @@ export default function CrearActividadScreen() {
             onPress={() => router.back()}
           >
             <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.publishGrad}>
-              <Feather name="check-circle" size={18} color="#131D17" />
+              <Feather name="check-circle" size={18} color="#080F0A" />
               <Text style={styles.publishText}>Publicar actividad</Text>
             </LinearGradient>
           </Pressable>
@@ -286,7 +286,7 @@ export default function CrearActividadScreen() {
           >
             <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.publishGrad}>
               <Text style={styles.publishText}>Continuar</Text>
-              <Feather name="arrow-right" size={18} color="#131D17" />
+              <Feather name="arrow-right" size={18} color="#080F0A" />
             </LinearGradient>
           </Pressable>
         </ScrollView>
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   previewBtnText: { fontSize: 14, fontWeight: "600" },
   publishBtn: { borderRadius: 16, overflow: "hidden" },
   publishGrad: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16 },
-  publishText: { color: "#131D17", fontWeight: "700", fontSize: 16 },
+  publishText: { color: "#080F0A", fontWeight: "700", fontSize: 16 },
   // Preview styles
   previewCard: { borderRadius: 20, borderWidth: 1.5, overflow: "hidden", marginBottom: 16 },
   previewAccent: { height: 5 },

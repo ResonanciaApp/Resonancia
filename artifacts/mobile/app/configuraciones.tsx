@@ -301,7 +301,7 @@ export default function ConfiguracionesScreen() {
                         },
                       ]}
                     >
-                      <Text style={[styles.chipText, { color: active ? "#131D17" : colors.foreground }]}>
+                      <Text style={[styles.chipText, { color: active ? "#080F0A" : colors.foreground }]}>
                         {formatTime(t.h, t.m)}
                       </Text>
                     </Pressable>
@@ -356,7 +356,7 @@ export default function ConfiguracionesScreen() {
                       },
                     ]}
                   >
-                    <Text style={[styles.chipText, { color: active ? "#131D17" : colors.foreground }]}>
+                    <Text style={[styles.chipText, { color: active ? "#080F0A" : colors.foreground }]}>
                       {opt.label}
                     </Text>
                   </Pressable>

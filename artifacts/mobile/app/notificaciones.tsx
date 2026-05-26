@@ -268,5 +268,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  countText: { color: "#131D17", fontSize: 12, fontWeight: "700" },
+  countText: { color: "#080F0A", fontSize: 12, fontWeight: "700" },
 });
