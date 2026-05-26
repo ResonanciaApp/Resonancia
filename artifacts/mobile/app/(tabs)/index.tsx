@@ -2,8 +2,8 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -33,6 +33,7 @@ import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
+import { getReopenDrawerOnFocus, setReopenDrawerOnFocus } from "@/lib/drawerState";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
@@ -149,6 +150,15 @@ export default function HomeScreen() {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [noOlvidarOpen, setNoOlvidarOpen] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (getReopenDrawerOnFocus()) {
+        setReopenDrawerOnFocus(false);
+        setDrawerOpen(true);
+      }
+    }, [])
+  );
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;

@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
+import { setReopenDrawerOnFocus } from "@/lib/drawerState";
 
 const { width } = Dimensions.get("window");
 const DRAWER_W = Math.min(width * 0.78, 300);
@@ -122,10 +123,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
 
   const navigate = (route: string) => {
     onClose();
-    // Siempre insertar profile en el stack para que "atrás" regrese al menú
-    if (route !== "/(tabs)/profile") {
-      router.push("/(tabs)/profile" as never);
-    }
+    setReopenDrawerOnFocus(true);
     router.push(route as never);
   };
 
