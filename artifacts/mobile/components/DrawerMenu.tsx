@@ -33,14 +33,14 @@ const LOGGED_OUT_ITEMS: MenuItem[] = [
   { label: "Crear cuenta",  icon: "user-plus", route: "/(auth)/sign-up" },
   { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
   { label: "Membresía",   icon: "star",      route: "/membresia" },
-  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/profile" },
+  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
 ];
 
 const LOGGED_IN_ITEMS: MenuItem[] = [
   { label: "Membresía",   icon: "star",      route: "/membresia" },
-  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/profile" },
+  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
 ];

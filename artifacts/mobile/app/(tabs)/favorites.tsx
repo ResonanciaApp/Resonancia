@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -38,7 +38,34 @@ export default function FavoritesScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const favSessions = SESSIONS.filter((s) => favorites.includes(s.id));
+  const favSessions = useMemo(
+    () => SESSIONS.filter((s) => favorites.includes(s.id)),
+    [favorites],
+  );
+
+  // Tags presentes en los favoritos (themeTag + sleepTag únicos)
+  const availableTags = useMemo(() => {
+    const set = new Set<string>();
+    favSessions.forEach((s) => {
+      s.themeTag?.forEach((t) => set.add(t));
+      if (s.sleepTag) set.add(s.sleepTag);
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
+  }, [favSessions]);
+
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+
+  // Si el tag activo desaparece (último fav removido), resetear
+  if (activeTag && !availableTags.includes(activeTag)) {
+    setActiveTag(null);
+  }
+
+  const filteredSessions = useMemo(() => {
+    if (!activeTag) return favSessions;
+    return favSessions.filter(
+      (s) => s.themeTag?.includes(activeTag as never) || s.sleepTag === activeTag,
+    );
+  }, [favSessions, activeTag]);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -86,11 +113,82 @@ export default function FavoritesScreen() {
           ) : (
             <View>
               <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>
-                {favSessions.length} sesión{favSessions.length !== 1 ? "es" : ""} guardada{favSessions.length !== 1 ? "s" : ""}
+                {filteredSessions.length} de {favSessions.length} sesión{favSessions.length !== 1 ? "es" : ""}
+                {activeTag ? ` · ${activeTag}` : ""}
               </Text>
-              {favSessions.map((s) => (
-                <SessionCard key={s.id} session={s} horizontal />
-              ))}
+
+              {availableTags.length > 0 && (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.chipsRow}
+                  style={styles.chipsScroll}
+                >
+                  <Pressable
+                    onPress={() => setActiveTag(null)}
+                    style={[
+                      styles.chip,
+                      {
+                        backgroundColor: activeTag === null ? colors.primary : colors.card,
+                        borderColor: activeTag === null ? colors.primary : colors.border,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.chipText,
+                        { color: activeTag === null ? "#1A0E06" : colors.foreground },
+                      ]}
+                    >
+                      Todas
+                    </Text>
+                  </Pressable>
+                  {availableTags.map((tag) => {
+                    const active = activeTag === tag;
+                    return (
+                      <Pressable
+                        key={tag}
+                        onPress={() => setActiveTag(active ? null : tag)}
+                        style={[
+                          styles.chip,
+                          {
+                            backgroundColor: active ? colors.primary : colors.card,
+                            borderColor: active ? colors.primary : colors.border,
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.chipText,
+                            { color: active ? "#1A0E06" : colors.foreground },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {tag}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              )}
+
+              {filteredSessions.length === 0 ? (
+                <View
+                  style={[
+                    styles.emptySmall,
+                    { backgroundColor: colors.card, borderColor: colors.border, marginTop: 8 },
+                  ]}
+                >
+                  <Feather name="filter" size={18} color={colors.border} />
+                  <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+                    Ninguna sesión coincide con esta etiqueta.
+                  </Text>
+                </View>
+              ) : (
+                filteredSessions.map((s) => (
+                  <SessionCard key={s.id} session={s} horizontal />
+                ))
+              )}
             </View>
           )}
         </View>
@@ -163,4 +261,15 @@ const styles = StyleSheet.create({
   emptyLinkText: { fontSize: 12, fontWeight: "600" },
 
   entriesList: { gap: 10 },
+
+  chipsScroll: { marginBottom: 14 },
+  chipsRow: { gap: 8, paddingRight: 4 },
+  chip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 16,
+    borderWidth: 1,
+    maxWidth: 220,
+  },
+  chipText: { fontSize: 12, fontWeight: "600" },
 });
