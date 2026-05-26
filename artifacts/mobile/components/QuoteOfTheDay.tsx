@@ -1,7 +1,12 @@
 import { View, Text, Image, Pressable, StyleSheet, Share } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useColors } from "@/hooks/useColors";
 import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
+
+const GREEN_BG      = "#1A2E1A";
+const GREEN_ACCENT  = "#A8C4A8";
+const GREEN_CHIP_BG = "#2E4A2E";
+const GREEN_MUTED   = "#7A9E7A";
+const GREEN_BORDER  = "rgba(168,196,168,0.2)";
 
 const AVATARS = [
   require("@/assets/images/sessions/session-3.jpg"),
@@ -15,7 +20,6 @@ function formatCount(n: number): string {
 }
 
 export default function QuoteOfTheDay() {
-  const colors = useColors();
   const quote = getQuoteOfTheDay();
   const shareCount = getShareCountForDay();
 
@@ -30,27 +34,19 @@ export default function QuoteOfTheDay() {
   }
 
   return (
-    <View
-      style={[
-        styles.card,
-        {
-          backgroundColor: colors.card,
-          borderColor: "rgba(198,155,79,0.18)",
-        },
-      ]}
-    >
+    <View style={[styles.card, { backgroundColor: GREEN_BG, borderColor: GREEN_BORDER }]}>
       {/* Chip */}
-      <View style={[styles.chip, { backgroundColor: colors.foreground }]}>
-        <Text style={[styles.chipText, { color: colors.background }]}>Frase del día</Text>
+      <View style={[styles.chip, { backgroundColor: GREEN_CHIP_BG }]}>
+        <Text style={[styles.chipText, { color: GREEN_ACCENT }]}>Frase del día</Text>
       </View>
 
       {/* Quote */}
-      <Text style={[styles.quoteText, { color: colors.foreground }]}>
+      <Text style={[styles.quoteText, { color: "#EDE1D3" }]}>
         "{quote.text}"
       </Text>
 
       {/* Author */}
-      <Text style={[styles.author, { color: colors.primary }]}>{quote.author}</Text>
+      <Text style={[styles.author, { color: GREEN_ACCENT }]}>{quote.author}</Text>
 
       {/* Footer */}
       <View style={styles.footer}>
@@ -61,14 +57,11 @@ export default function QuoteOfTheDay() {
               <Image
                 key={i}
                 source={src}
-                style={[
-                  styles.avatar,
-                  { marginLeft: i === 0 ? 0 : -10, borderColor: colors.card },
-                ]}
+                style={[styles.avatar, { marginLeft: i === 0 ? 0 : -10, borderColor: GREEN_BG }]}
               />
             ))}
           </View>
-          <Text style={[styles.countText, { color: colors.mutedForeground }]}>
+          <Text style={[styles.countText, { color: GREEN_MUTED }]}>
             {formatCount(shareCount)} compartieron
           </Text>
         </View>
@@ -78,14 +71,10 @@ export default function QuoteOfTheDay() {
           onPress={handleShare}
           style={({ pressed }) => [
             styles.shareBtn,
-            {
-              backgroundColor: colors.background,
-              borderColor: "rgba(198,155,79,0.25)",
-              opacity: pressed ? 0.75 : 1,
-            },
+            { backgroundColor: GREEN_CHIP_BG, borderColor: GREEN_BORDER, opacity: pressed ? 0.75 : 1 },
           ]}
         >
-          <Feather name="share-2" size={18} color={colors.primary} />
+          <Feather name="share-2" size={18} color={GREEN_ACCENT} />
         </Pressable>
       </View>
     </View>
