@@ -34,7 +34,6 @@ import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
-import StatsAndSocial from "@/components/StatsAndSocial";
 
 const { width } = Dimensions.get("window");
 const GRID_GAP = 12;
@@ -470,7 +469,6 @@ export default function HomeScreen() {
         <PremiumBanner />
 
         {/* ── 10. STATS + SOCIAL ── */}
-        <StatsAndSocial />
       </ScrollView>
 
       <DrawerMenu visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
