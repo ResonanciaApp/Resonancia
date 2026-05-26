@@ -461,16 +461,27 @@ export default function GrupoDetailScreen() {
                         <Text style={[styles.pinnedText, { color: colors.primary }]}>Fijado</Text>
                       </View>
                     )}
-                    <View style={styles.postHeader}>
-                      <View style={[styles.postAvatar, { backgroundColor: post.color + "30" }]}>
-                        <Text style={[styles.postInitials, { color: post.color }]}>{post.initials}</Text>
+                    <Pressable
+                      onPress={() => {
+                        if (grupo.isLocalGroup && post.id !== "welcome") {
+                          router.push({
+                            pathname: "/grupo-post/[postId]",
+                            params: { postId: post.id, grupoId: grupo.id },
+                          });
+                        }
+                      }}
+                    >
+                      <View style={styles.postHeader}>
+                        <View style={[styles.postAvatar, { backgroundColor: post.color + "30" }]}>
+                          <Text style={[styles.postInitials, { color: post.color }]}>{post.initials}</Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
+                          <Text style={[styles.postTime, { color: colors.mutedForeground }]}>{post.time}</Text>
+                        </View>
                       </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
-                        <Text style={[styles.postTime, { color: colors.mutedForeground }]}>{post.time}</Text>
-                      </View>
-                    </View>
-                    <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
+                      <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
+                    </Pressable>
                     <View style={[styles.postActions, { borderTopColor: colors.border }]}>
                       <Pressable onPress={() => toggleLike(post.id)} style={styles.actionBtn}>
                         <Feather

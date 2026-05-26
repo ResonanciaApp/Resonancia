@@ -41,6 +41,16 @@ export default function GrupoPostScreen() {
   const comments = post?.comments ?? [];
 
   const [commentText, setCommentText] = useState("");
+  const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
+
+  const toggleCommentLike = (commentId: string) => {
+    setLikedComments((prev) => {
+      const next = new Set(prev);
+      if (next.has(commentId)) next.delete(commentId);
+      else next.add(commentId);
+      return next;
+    });
+  };
 
   const topPad = Math.max(insets.top, 12);
   const bottomPad = Math.max(insets.bottom, 12);
@@ -134,24 +144,47 @@ export default function GrupoPostScreen() {
               </View>
             ) : (
               <View style={{ paddingHorizontal: 16 }}>
-                {comments.map((c) => (
-                  <View key={c.id} style={[styles.commentCard, { borderBottomColor: colors.border }]}>
-                    <View style={[styles.commentAvatar, { backgroundColor: c.color + "30" }]}>
-                      <Text style={[styles.commentInitials, { color: c.color }]}>{c.initials}</Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <View style={styles.commentHeader}>
-                        <Text style={[styles.commentAuthor, { color: colors.foreground }]}>
-                          {c.author}
-                        </Text>
-                        <Text style={[styles.commentTime, { color: colors.mutedForeground }]}>
-                          {formatRelativeTime(c.createdAt)}
-                        </Text>
+                {comments.map((c) => {
+                  const liked = likedComments.has(c.id);
+                  return (
+                    <View key={c.id} style={[styles.commentCard, { borderBottomColor: colors.border }]}>
+                      <View style={[styles.commentAvatar, { backgroundColor: c.color + "30" }]}>
+                        <Text style={[styles.commentInitials, { color: c.color }]}>{c.initials}</Text>
                       </View>
-                      <Text style={[styles.commentText, { color: colors.foreground }]}>{c.text}</Text>
+                      <View style={{ flex: 1 }}>
+                        <View style={styles.commentHeader}>
+                          <Text style={[styles.commentAuthor, { color: colors.foreground }]}>
+                            {c.author}
+                          </Text>
+                          <Text style={[styles.commentTime, { color: colors.mutedForeground }]}>
+                            {formatRelativeTime(c.createdAt)}
+                          </Text>
+                        </View>
+                        <Text style={[styles.commentText, { color: colors.foreground }]}>{c.text}</Text>
+                        <Pressable
+                          onPress={() => toggleCommentLike(c.id)}
+                          hitSlop={8}
+                          style={styles.commentLikeBtn}
+                        >
+                          <Feather
+                            name="heart"
+                            size={13}
+                            color={liked ? "#D4709A" : colors.mutedForeground}
+                          />
+                          <Text
+                            style={[
+                              styles.commentLikeText,
+                              { color: liked ? "#D4709A" : colors.mutedForeground },
+                            ]}
+                          >
+                            {liked ? "Te gusta" : "Me gusta"}
+                            {liked ? " · 1" : ""}
+                          </Text>
+                        </Pressable>
+                      </View>
                     </View>
-                  </View>
-                ))}
+                  );
+                })}
               </View>
             )}
           </ScrollView>
@@ -238,6 +271,8 @@ const styles = StyleSheet.create({
   commentAuthor: { fontSize: 13, fontWeight: "700" },
   commentTime: { fontSize: 11 },
   commentText: { fontSize: 14, lineHeight: 20 },
+  commentLikeBtn: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 6, alignSelf: "flex-start" },
+  commentLikeText: { fontSize: 12, fontWeight: "600" },
   composeBar: {
     flexDirection: "row",
     gap: 10,
