@@ -27,7 +27,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
-const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
+const GRADIENT: [string, string] = ["#2A2010", "#1A1408"];
 const ACCENT = "#D4709A";
 
 const HOW_IT_WORKS = [
@@ -201,13 +201,13 @@ export function MensajesAnonimosPanel() {
       >
         <View style={styles.headerLeft}>
           <View style={styles.headerIconBg}>
-            <Feather name="users" size={18} color="#FFD6EB" />
+            <Feather name="users" size={18} color="#B6955F" />
           </View>
           <View style={{ flex: 1 }}>
             <View style={styles.headerTitleRow}>
               <Text style={styles.headerTitle}>Mensajes del Alma</Text>
               <View style={styles.cycleBadge}>
-                <Feather name="clock" size={9} color="#FFD6EB" />
+                <Feather name="clock" size={9} color="#C8A860" />
                 <Text style={styles.cycleBadgeText}>24 h</Text>
               </View>
             </View>
@@ -221,7 +221,7 @@ export function MensajesAnonimosPanel() {
           style={styles.infoBtn}
           hitSlop={8}
         >
-          <Feather name="info" size={15} color="rgba(255,214,235,0.7)" />
+          <Feather name="info" size={15} color="rgba(200,168,96,0.7)" />
         </Pressable>
       </LinearGradient>
 
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(182,149,95,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerTitle: {
-    color: "#FFD6EB",
+    color: "#C8A860",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
@@ -551,19 +551,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(182,149,95,0.18)",
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   cycleBadgeText: {
-    color: "#FFD6EB",
+    color: "#C8A860",
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(255,214,235,0.7)",
+    color: "rgba(200,168,96,0.65)",
     fontSize: 11,
     marginTop: 2,
   },
