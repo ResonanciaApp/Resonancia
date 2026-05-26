@@ -189,7 +189,7 @@ export function MensajesAnonimosPanel() {
     <View
       style={[
         styles.panel,
-        { backgroundColor: colors.card, borderColor: "rgba(212,112,154,0.2)" },
+        { backgroundColor: colors.card },
       ]}
     >
       {/* ── Header ── */}
@@ -237,7 +237,6 @@ export function MensajesAnonimosPanel() {
             styles.textInput,
             {
               color: colors.foreground,
-              borderColor: text.length > 0 ? `${ACCENT}55` : colors.border,
             },
           ]}
         />
@@ -513,7 +512,6 @@ export function MensajesAnonimosPanel() {
 const styles = StyleSheet.create({
   panel: {
     borderRadius: 20,
-    borderWidth: 1,
     overflow: "hidden",
   },
 
@@ -581,7 +579,6 @@ const styles = StyleSheet.create({
   composeArea: { padding: 14 },
   textInput: {
     minHeight: 88,
-    borderWidth: 1,
     borderRadius: 14,
     padding: 12,
     fontSize: 14,
@@ -612,7 +609,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderTopWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -656,7 +652,6 @@ const styles = StyleSheet.create({
   emptyHint: { fontSize: 11, textAlign: "center", opacity: 0.6 },
 
   messageCard: {
-    borderWidth: 1,
     borderRadius: 14,
     padding: 14,
     marginBottom: 8,
@@ -707,7 +702,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 12,
     borderRadius: 14,
-    borderWidth: 1,
     padding: 12,
   },
   infoStepIcon: {
@@ -735,7 +729,6 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 8,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
@@ -745,7 +738,6 @@ const styles = StyleSheet.create({
 
   infoRules: {
     borderRadius: 12,
-    borderWidth: 1,
     padding: 14,
     marginTop: 4,
   },
