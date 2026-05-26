@@ -109,7 +109,7 @@ export default function SonidosAncestalesScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "rgba(232,200,122,0.12)", borderColor: "rgba(232,200,122,0.28)" }]}>
-            <MaterialCommunityIcons name="bowl" size={22} color="#E8C87A" />
+            <MaterialCommunityIcons name="bell" size={22} color="#E8C87A" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Sonidos Ancestrales"}
