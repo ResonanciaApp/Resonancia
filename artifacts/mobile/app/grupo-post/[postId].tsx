@@ -177,8 +177,7 @@ export default function GrupoPostScreen() {
                               { color: liked ? "#D4709A" : colors.mutedForeground },
                             ]}
                           >
-                            {liked ? "Te gusta" : "Me gusta"}
-                            {liked ? " · 1" : ""}
+                            {liked ? "1" : "Me gusta"}
                           </Text>
                         </Pressable>
                       </View>
