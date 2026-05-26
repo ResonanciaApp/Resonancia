@@ -2,11 +2,11 @@ import { View, Text, Image, Pressable, StyleSheet, Share } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
 
-const GREEN_BG      = "#1A2E1A";
-const GREEN_ACCENT  = "#A8C4A8";
-const GREEN_CHIP_BG = "#2E4A2E";
-const GREEN_MUTED   = "#7A9E7A";
-const GREEN_BORDER  = "rgba(168,196,168,0.2)";
+const GREEN_BG      = "#1A160A";
+const GREEN_ACCENT  = "#C8A860";
+const GREEN_CHIP_BG = "#2A200A";
+const GREEN_MUTED   = "#8A7A50";
+const GREEN_BORDER  = "rgba(182,149,95,0.25)";
 
 const AVATARS = [
   require("@/assets/images/sessions/session-3.jpg"),
