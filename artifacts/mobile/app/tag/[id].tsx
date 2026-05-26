@@ -94,7 +94,7 @@ export default function TagScreen() {
           {
             paddingTop: topPad,
             backgroundColor: colors.background,
-            borderBottomColor: "rgba(198,155,79,0.15)",
+            borderBottomColor: "rgba(199,156,88,0.15)",
             opacity: headerOpacity,
           },
         ]}
@@ -107,7 +107,7 @@ export default function TagScreen() {
             pointerEvents="auto"
             style={({ pressed }) => [
               styles.stickyBack,
-              { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.2)", opacity: pressed ? 0.7 : 1 },
+              { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.2)", opacity: pressed ? 0.7 : 1 },
             ]}
           >
             <Feather name="arrow-left" size={18} color={colors.foreground} />
@@ -168,7 +168,7 @@ export default function TagScreen() {
               styles.filterPill,
               {
                 backgroundColor: !durationFilter ? colors.primary : colors.card,
-                borderColor: !durationFilter ? colors.primary : "rgba(198,155,79,0.25)",
+                borderColor: !durationFilter ? colors.primary : "rgba(199,156,88,0.25)",
               },
             ]}
           >
@@ -186,7 +186,7 @@ export default function TagScreen() {
                   styles.filterPill,
                   {
                     backgroundColor: active ? colors.primary : colors.card,
-                    borderColor: active ? colors.primary : "rgba(198,155,79,0.25)",
+                    borderColor: active ? colors.primary : "rgba(199,156,88,0.25)",
                   },
                 ]}
               >
@@ -199,7 +199,7 @@ export default function TagScreen() {
         </ScrollView>
 
         {filteredSessions.length === 0 ? (
-          <View style={[styles.emptyBox, { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.15)" }]}>
+          <View style={[styles.emptyBox, { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.15)" }]}>
             <Feather name="inbox" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Sin sesiones en este filtro</Text>
             <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>Probá otra duración</Text>
@@ -253,7 +253,7 @@ export default function TagScreen() {
                     onPress={() => router.push(`/session/${session.id}` as never)}
                     style={({ pressed }) => [
                       styles.listRow,
-                      { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.14)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.14)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <View style={[styles.listThumb, { backgroundColor: colors.card }]}>

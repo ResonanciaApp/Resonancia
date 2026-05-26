@@ -35,14 +35,14 @@ export function CategoryCard({ category, wide = false }: Props) {
       <View
         style={[
           styles.border,
-          { borderRadius: colors.radius, borderColor: "rgba(198,155,79,0.15)" },
+          { borderRadius: colors.radius, borderColor: "rgba(199,156,88,0.15)" },
         ]}
       />
       <View style={styles.iconWrapper}>
         <View
           style={[
             styles.iconBg,
-            { backgroundColor: "rgba(198,155,79,0.12)", borderColor: "rgba(198,155,79,0.2)" },
+            { backgroundColor: "rgba(199,156,88,0.12)", borderColor: "rgba(199,156,88,0.2)" },
           ]}
         >
           {category.iconFamily === "MaterialCommunityIcons" ? (

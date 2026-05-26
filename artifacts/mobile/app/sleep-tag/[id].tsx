@@ -62,7 +62,7 @@ export default function SleepTagDetailScreen() {
               styles.backBtn,
               {
                 backgroundColor: colors.card,
-                borderColor: "rgba(198,155,79,0.2)",
+                borderColor: "rgba(199,156,88,0.2)",
                 opacity: pressed ? 0.7 : 1,
               },
             ]}

@@ -115,8 +115,8 @@ export default function SessionDetailScreen() {
   const renderBadges = () => {
     let tag: string | undefined;
     let tagColor = colors.accent;
-    let tagBg = "rgba(198,155,79,0.15)";
-    let tagBorder = "rgba(198,155,79,0.3)";
+    let tagBg = "rgba(199,156,88,0.15)";
+    let tagBorder = "rgba(199,156,88,0.3)";
 
     if (isGuiada && session.meditationTag) tag = session.meditationTag;
     else if (isAncestral && session.ancestralTag) tag = session.ancestralTag;
@@ -193,7 +193,7 @@ export default function SessionDetailScreen() {
                   <Feather
                     name="star"
                     size={13}
-                    color={star <= rating ? "#E8B96A" : "rgba(198,155,79,0.28)"}
+                    color={star <= rating ? "#E8B96A" : "rgba(199,156,88,0.28)"}
                   />
                 </Pressable>
               ))}
@@ -201,7 +201,7 @@ export default function SessionDetailScreen() {
           </View>
 
           {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#D9C5AE" }]}>
+          <Text style={[styles.description, { color: colors.softSand ?? "#D8C7A5" }]}>
             {session.description}
           </Text>
 
@@ -229,7 +229,7 @@ export default function SessionDetailScreen() {
             <View style={styles.guideBlock}>
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>Sobre la voz guía</Text>
               <View style={[styles.guideCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <View style={[styles.guideAvatar, { backgroundColor: "rgba(198,155,79,0.18)", borderColor: "rgba(198,155,79,0.35)" }]}>
+                <View style={[styles.guideAvatar, { backgroundColor: "rgba(199,156,88,0.18)", borderColor: "rgba(199,156,88,0.35)" }]}>
                   <Text style={[styles.guideInitials, { color: colors.primary }]}>{guideInitials}</Text>
                 </View>
                 <View style={styles.guideMeta}>
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 16,
     borderRadius: 30,
-    shadowColor: "#C69B4F",
+    shadowColor: "#C79C58",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

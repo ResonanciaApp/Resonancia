@@ -340,7 +340,7 @@ function EmailFormStep({
             style={({ pressed }) => [
               styles.continueBtn,
               {
-                backgroundColor: canContinue ? colors.primary : "rgba(198,155,79,0.18)",
+                backgroundColor: canContinue ? colors.primary : "rgba(199,156,88,0.18)",
                 opacity: pressed ? 0.85 : 1,
               },
             ]}
@@ -368,7 +368,7 @@ function VerifyEmailStep({ topPad, bottomPad, colors, email, resent, onResend, o
           Por favor haz clic en el enlace que te enviamos a:
         </Text>
 
-        <View style={[styles.emailRow, { backgroundColor: "rgba(198,155,79,0.06)", borderColor: colors.border }]}>
+        <View style={[styles.emailRow, { backgroundColor: "rgba(199,156,88,0.06)", borderColor: colors.border }]}>
           <Text style={[styles.emailDisplay, { color: colors.foreground }]} numberOfLines={1}>
             {email}
           </Text>
@@ -385,7 +385,7 @@ function VerifyEmailStep({ topPad, bottomPad, colors, email, resent, onResend, o
           </Text>
         </Pressable>
         <Pressable onPress={onSkip} style={styles.skipLink} hitSlop={8}>
-          <Text style={[styles.skipText, { color: "rgba(198,155,79,0.35)" }]}>
+          <Text style={[styles.skipText, { color: "rgba(199,156,88,0.35)" }]}>
             Continuar de todas formas
           </Text>
         </Pressable>
@@ -413,13 +413,13 @@ function NameStep({ topPad, bottomPad, colors, displayName, setDisplayName, onCo
             value={displayName}
             onChangeText={setDisplayName}
             placeholder="Tu nombre"
-            placeholderTextColor={"rgba(198,155,79,0.25)"}
+            placeholderTextColor={"rgba(199,156,88,0.25)"}
             autoFocus
             style={[
               styles.nameInput,
               {
                 color: colors.primary,
-                borderBottomColor: "rgba(198,155,79,0.3)",
+                borderBottomColor: "rgba(199,156,88,0.3)",
               },
             ]}
           />
@@ -484,7 +484,7 @@ function BirthYearStep({ topPad, bottomPad, colors, birthYear, setBirthYear, agr
         {/* Selection highlight bar */}
         <View
           pointerEvents="none"
-          style={[styles.pickerHighlight, { borderColor: "rgba(198,155,79,0.22)", backgroundColor: "rgba(198,155,79,0.05)" }]}
+          style={[styles.pickerHighlight, { borderColor: "rgba(199,156,88,0.22)", backgroundColor: "rgba(199,156,88,0.05)" }]}
         />
         <ScrollView
           ref={scrollRef}
@@ -524,7 +524,7 @@ function BirthYearStep({ topPad, bottomPad, colors, birthYear, setBirthYear, agr
             styles.checkbox,
             {
               borderColor: agreed ? colors.primary : colors.mutedForeground,
-              backgroundColor: agreed ? "rgba(198,155,79,0.15)" : "transparent",
+              backgroundColor: agreed ? "rgba(199,156,88,0.15)" : "transparent",
             },
           ]}>
             {agreed && <Feather name="check" size={12} color={colors.primary} />}
@@ -544,7 +544,7 @@ function BirthYearStep({ topPad, bottomPad, colors, birthYear, setBirthYear, agr
           style={({ pressed }) => [
             styles.createBtn,
             {
-              backgroundColor: agreed ? colors.primary : "rgba(198,155,79,0.18)",
+              backgroundColor: agreed ? colors.primary : "rgba(199,156,88,0.18)",
               opacity: pressed ? 0.88 : 1,
             },
           ]}

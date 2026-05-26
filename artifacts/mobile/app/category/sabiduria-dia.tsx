@@ -126,7 +126,7 @@ export default function SabiduriaDiaScreen() {
                     onPress={() => setSelectedTag(cat.tag)}
                     style={({ pressed }) => [
                       styles.catRow,
-                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(198,155,79,0.1)" },
+                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(199,156,88,0.1)" },
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
@@ -199,7 +199,7 @@ export default function SabiduriaDiaScreen() {
         {selectedTag && (
           <>
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.18)" }]}>
+              <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.18)" }]}>
                 <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
@@ -232,7 +232,7 @@ export default function SabiduriaDiaScreen() {
                     onPress={() => router.push(`/session/${session.id}` as never)}
                     style={({ pressed }) => [
                       styles.card,
-                      { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.18)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.18)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <Image

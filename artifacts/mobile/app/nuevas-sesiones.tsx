@@ -96,7 +96,7 @@ export default function NuevasSessionesScreen() {
               },
             ]}
           >
-            <View style={[styles.indexBadge, { backgroundColor: "rgba(198,155,79,0.1)" }]}>
+            <View style={[styles.indexBadge, { backgroundColor: "rgba(199,156,88,0.1)" }]}>
               <Text style={[styles.indexNum, { color: colors.mutedForeground }]}>
                 {String(index + 1).padStart(2, "0")}
               </Text>
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   newBadgeText: {
     fontSize: 9,
     fontWeight: "700",
-    color: "#18110C",
+    color: "#141B26",
     letterSpacing: 0.5,
   },
   cardTitle: {

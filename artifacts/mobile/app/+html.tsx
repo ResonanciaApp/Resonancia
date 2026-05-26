@@ -20,5 +20,5 @@ export default function Root({ children }: PropsWithChildren) {
 }
 
 const bodyBgCss = `
-html, body, #root { background-color: #18110C; }
+html, body, #root { background-color: #141B26; }
 `;

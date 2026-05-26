@@ -87,7 +87,7 @@ function GroupPreview({
           <Text style={preview.memberDotText}>T</Text>
         </View>
         <Pressable style={preview.inviteBtn}>
-          <Feather name="plus" size={13} color="#EDE1D3" />
+          <Feather name="plus" size={13} color="#F0E6D2" />
           <Text style={preview.inviteBtnText}>Invitar</Text>
         </Pressable>
       </View>
@@ -104,19 +104,19 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#18110C" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#141B26" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
-  initial: { fontSize: 28, fontWeight: "700", color: "#EDE1D3" },
-  name: { color: "#EDE1D3", fontSize: 18, fontWeight: "700", marginBottom: 4 },
+  initial: { fontSize: 28, fontWeight: "700", color: "#F0E6D2" },
+  name: { color: "#F0E6D2", fontSize: 18, fontWeight: "700", marginBottom: 4 },
   meta: { color: "rgba(237,225,211,0.55)", fontSize: 12, letterSpacing: 0.8, marginBottom: 14 },
   inviteRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 16 },
   memberDot: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#3A5438", alignItems: "center", justifyContent: "center" },
   memberDotText: { color: "#A8C4A8", fontSize: 13, fontWeight: "700" },
   inviteBtn: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(237,225,211,0.12)", borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6 },
-  inviteBtnText: { color: "#EDE1D3", fontSize: 13, fontWeight: "600" },
+  inviteBtnText: { color: "#F0E6D2", fontSize: 13, fontWeight: "600" },
   tabs: { flexDirection: "row", width: "100%", borderTopWidth: 1, paddingHorizontal: 16 },
   tab: { paddingVertical: 12, marginRight: 24, color: "rgba(237,225,211,0.4)", fontSize: 14 },
-  tabActive: { color: "#EDE1D3", borderBottomWidth: 2, borderBottomColor: "#EDE1D3", fontWeight: "600" },
+  tabActive: { color: "#F0E6D2", borderBottomWidth: 2, borderBottomColor: "#F0E6D2", fontWeight: "600" },
 });
 
 // ─── Bottom sheet wrapper ─────────────────────────────────────────────────────
@@ -201,7 +201,7 @@ export default function CrearGrupoScreen() {
   if (step === 1) {
     return (
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#18110C" }]}
+        style={[styles.root, { backgroundColor: "#141B26" }]}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <StatusBar barStyle="light-content" />
@@ -209,7 +209,7 @@ export default function CrearGrupoScreen() {
           {/* Close */}
           <Pressable onPress={() => router.back()} hitSlop={12} style={styles.closeBtn}>
             <View style={styles.closeBtnInner}>
-              <Feather name="x" size={18} color="#EDE1D3" />
+              <Feather name="x" size={18} color="#F0E6D2" />
             </View>
           </Pressable>
 
@@ -227,7 +227,7 @@ export default function CrearGrupoScreen() {
               returnKeyType="done"
               onSubmitEditing={() => canNext1 && setStep(2)}
             />
-            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#C69B4F" : colors.mutedForeground }]}>
+            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#C79C58" : colors.mutedForeground }]}>
               {remaining}
             </Text>
           </View>
@@ -240,7 +240,7 @@ export default function CrearGrupoScreen() {
             style={[styles.nextBtn, { backgroundColor: canNext1 ? colors.foreground : colors.card }]}
             disabled={!canNext1}
           >
-            <Text style={[styles.nextBtnText, { color: canNext1 ? "#18110C" : colors.mutedForeground }]}>
+            <Text style={[styles.nextBtnText, { color: canNext1 ? "#141B26" : colors.mutedForeground }]}>
               Terminar
             </Text>
           </Pressable>
@@ -252,7 +252,7 @@ export default function CrearGrupoScreen() {
   // ── Steps 2-5: Group preview + bottom sheet ───────────────────────────────
   return (
     <KeyboardAvoidingView
-      style={[styles.root, { backgroundColor: "#18110C" }]}
+      style={[styles.root, { backgroundColor: "#141B26" }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={0}
     >
@@ -261,7 +261,7 @@ export default function CrearGrupoScreen() {
       {/* Back arrow top-left */}
       <View style={{ paddingTop: topPad + 8, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between" }}>
         <Pressable onPress={() => setStep((s) => Math.max(1, s - 1) as Step)} hitSlop={12}>
-          <Feather name="arrow-left" size={22} color="#EDE1D3" />
+          <Feather name="arrow-left" size={22} color="#F0E6D2" />
         </Pressable>
         <Feather name="settings" size={20} color="rgba(237,225,211,0.3)" />
       </View>
@@ -299,7 +299,7 @@ export default function CrearGrupoScreen() {
                 onPress={() => setStep(3)}
                 style={[styles.sheetNext, { backgroundColor: colors.foreground }]}
               >
-                <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Siguiente</Text>
+                <Text style={[styles.sheetNextText, { color: "#141B26" }]}>Siguiente</Text>
               </Pressable>
               <View style={{ height: bottomPad + 8 }} />
             </>
@@ -340,7 +340,7 @@ export default function CrearGrupoScreen() {
                   onPress={() => setStep(4)}
                   style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
                 >
-                  <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Siguiente</Text>
+                  <Text style={[styles.sheetNextText, { color: "#141B26" }]}>Siguiente</Text>
                 </Pressable>
               </View>
               <View style={{ height: bottomPad + 8 }} />
@@ -379,7 +379,7 @@ export default function CrearGrupoScreen() {
                   onPress={() => setStep(5)}
                   style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
                 >
-                  <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Siguiente</Text>
+                  <Text style={[styles.sheetNextText, { color: "#141B26" }]}>Siguiente</Text>
                 </Pressable>
               </View>
               <View style={{ height: bottomPad + 8 }} />
@@ -390,8 +390,8 @@ export default function CrearGrupoScreen() {
           {step === 5 && (
             <>
               <View style={styles.successIcon}>
-                <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.successGrad}>
-                  <Feather name="check" size={28} color="#18110C" />
+                <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.successGrad}>
+                  <Feather name="check" size={28} color="#141B26" />
                 </LinearGradient>
               </View>
               <Text style={[styles.sheetTitle, { color: colors.foreground, textAlign: "center", marginBottom: 8 }]}>
@@ -411,8 +411,8 @@ export default function CrearGrupoScreen() {
 
               {/* Share button */}
               <Pressable onPress={handleShare} style={[styles.sheetNext, { backgroundColor: colors.primary, marginTop: 16 }]}>
-                <Feather name="share-2" size={17} color="#18110C" />
-                <Text style={[styles.sheetNextText, { color: "#18110C" }]}>Compartir enlace</Text>
+                <Feather name="share-2" size={17} color="#141B26" />
+                <Text style={[styles.sheetNextText, { color: "#141B26" }]}>Compartir enlace</Text>
               </Pressable>
 
               {/* Done */}
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   // Step 1
   closeBtn: { marginBottom: 36, alignSelf: "flex-start" },
   closeBtnInner: { width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(237,225,211,0.12)", alignItems: "center", justifyContent: "center" },
-  stepTitle: { color: "#EDE1D3", fontSize: 24, fontWeight: "700", marginBottom: 24 },
+  stepTitle: { color: "#F0E6D2", fontSize: 24, fontWeight: "700", marginBottom: 24 },
   nameInputBox: {
     flexDirection: "row", alignItems: "center",
     borderRadius: 14, borderWidth: 1,
@@ -470,9 +470,9 @@ const styles = StyleSheet.create({
   // Gallery
   galleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   galleryItem: { borderRadius: 10, overflow: "hidden", position: "relative" },
-  galleryItemSelected: { borderWidth: 2.5, borderColor: "#C69B4F", borderRadius: 10 },
+  galleryItemSelected: { borderWidth: 2.5, borderColor: "#C79C58", borderRadius: 10 },
   galleryImg: { width: 68, height: 68 },
-  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#C69B4F", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
+  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#C79C58", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
 
   // Success
   successIcon: { alignSelf: "center", marginBottom: 16, borderRadius: 30, overflow: "hidden" },

@@ -74,7 +74,7 @@ export function AmbientWidget() {
           <Feather
             name={isActive ? "volume-2" : "volume-x"}
             size={14}
-            color={isActive ? "#C69B4F" : "#5A4432"}
+            color={isActive ? "#C79C58" : "#5A4432"}
           />
         </Pressable>
       </View>
@@ -135,10 +135,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#24160F",
+    backgroundColor: "#1D2A3C",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(198,155,79,0.22)",
+    borderColor: "rgba(199,156,88,0.22)",
     paddingHorizontal: 6,
     paddingVertical: 5,
   },
@@ -171,9 +171,9 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: "#C69B4F",
+    backgroundColor: "#C79C58",
     borderWidth: 1.5,
-    borderColor: "#18110C",
+    borderColor: "#141B26",
   },
   volBtn: {
     width: 24,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1108",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(198,155,79,0.18)",
+    borderColor: "rgba(199,156,88,0.18)",
     padding: 8,
     shadowColor: "#000",
     shadowOffset: { width: -2, height: 4 },
@@ -214,19 +214,19 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   sceneThumbSelected: {
-    borderColor: "#C69B4F",
+    borderColor: "#C79C58",
   },
   sceneImg: {
     width: SCENE_THUMB,
     height: SCENE_THUMB,
   },
   sceneLabel: {
-    color: "#7A6040",
+    color: "#5C6E82",
     fontSize: 9,
     fontWeight: "500",
     letterSpacing: 0.2,
   },
   sceneLabelSelected: {
-    color: "#C69B4F",
+    color: "#C79C58",
   },
 });

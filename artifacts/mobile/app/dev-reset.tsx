@@ -44,7 +44,7 @@ export default function DevReset() {
         para probar el flujo desde cero.
       </Text>
       <Pressable onPress={reset} disabled={working} style={[styles.btn, working && { opacity: 0.5 }]}>
-        {working ? <ActivityIndicator color="#1A0E06" /> : <Text style={styles.btnText}>Borrar todo y reiniciar</Text>}
+        {working ? <ActivityIndicator color="#0D1520" /> : <Text style={styles.btnText}>Borrar todo y reiniciar</Text>}
       </Pressable>
       <Text style={styles.status}>{status}</Text>
     </View>
@@ -52,10 +52,10 @@ export default function DevReset() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#18110C", padding: 28, justifyContent: "center", gap: 16 },
-  title: { color: "#EDE1D3", fontSize: 24, fontFamily: "PlayfairDisplay_700Bold" },
+  root: { flex: 1, backgroundColor: "#141B26", padding: 28, justifyContent: "center", gap: 16 },
+  title: { color: "#F0E6D2", fontSize: 24, fontFamily: "PlayfairDisplay_700Bold" },
   body: { color: "rgba(237,225,211,0.65)", fontSize: 14, lineHeight: 20 },
-  btn: { backgroundColor: "#C69B4F", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
-  btnText: { color: "#1A0E06", fontFamily: "Inter_700Bold", fontSize: 15, letterSpacing: 0.3 },
-  status: { color: "rgba(198,155,79,0.7)", fontSize: 12, textAlign: "center" },
+  btn: { backgroundColor: "#C79C58", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
+  btnText: { color: "#0D1520", fontFamily: "Inter_700Bold", fontSize: 15, letterSpacing: 0.3 },
+  status: { color: "rgba(199,156,88,0.7)", fontSize: 12, textAlign: "center" },
 });

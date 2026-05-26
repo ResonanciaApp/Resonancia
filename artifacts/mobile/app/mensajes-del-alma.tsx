@@ -164,7 +164,7 @@ export default function MensajesDelAlmaScreen() {
 
         {/* Normas */}
         <View style={[styles.section, { paddingBottom: 0 }]}>
-          <View style={[styles.rulesCard, { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.15)" }]}>
+          <View style={[styles.rulesCard, { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.15)" }]}>
             <View style={styles.rulesHeader}>
               <Feather name="shield" size={16} color={colors.accent} />
               <Text style={[styles.rulesTitle, { color: colors.foreground }]}>

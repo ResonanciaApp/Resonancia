@@ -34,10 +34,10 @@ export function MiniPlayer() {
         <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card, borderRadius: 18 }]} />
       )}
       <LinearGradient
-        colors={["rgba(198,155,79,0.08)", "rgba(60,36,21,0.4)"]}
+        colors={["rgba(199,156,88,0.08)", "rgba(60,36,21,0.4)"]}
         style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
       />
-      <View style={[styles.border, { borderColor: "rgba(198,155,79,0.2)" }]} />
+      <View style={[styles.border, { borderColor: "rgba(199,156,88,0.2)" }]} />
 
       <View style={styles.progressBar}>
         <View
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 2,
-    backgroundColor: "rgba(198,155,79,0.15)",
+    backgroundColor: "rgba(199,156,88,0.15)",
   },
   progressFill: {
     height: 2,

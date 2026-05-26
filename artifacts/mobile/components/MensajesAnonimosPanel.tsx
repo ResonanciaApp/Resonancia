@@ -356,7 +356,7 @@ export function MensajesAnonimosPanel() {
           </View>
 
           {/* Espacio seguro */}
-          <View style={[styles.infoRules, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(198,155,79,0.2)" }]}>
+          <View style={[styles.infoRules, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(199,156,88,0.2)" }]}>
             <View style={styles.infoRulesHeader}>
               <Feather name="shield" size={13} color="rgba(255,214,235,0.6)" />
               <Text style={[styles.infoRulesTitle, { color: "#FFD6EB" }]}>Espacio seguro</Text>

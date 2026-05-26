@@ -174,7 +174,7 @@ export default function PodcastScreen() {
                             </Text>
                           </View>
                           {s.isNew && (
-                            <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(198,155,79,0.18)" }]}>
+                            <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(199,156,88,0.18)" }]}>
                               <Text style={[styles.episodeNum, { color: colors.primary }]}>NUEVO</Text>
                             </View>
                           )}

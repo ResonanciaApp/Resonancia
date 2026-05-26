@@ -4,7 +4,7 @@ import Svg, { Circle, Ellipse, Line, Path, Rect } from "react-native-svg";
 type Props = { size?: number; color?: string };
 
 /** Cuenco tibetano: cuenco hemisférico con base y palillo */
-export function IconCuencoTibetano({ size = 24, color = "#C69B4F" }: Props) {
+export function IconCuencoTibetano({ size = 24, color = "#C79C58" }: Props) {
   const s = size;
   return (
     <Svg width={s} height={s} viewBox="0 0 24 24" fill="none">
@@ -31,7 +31,7 @@ export function IconCuencoTibetano({ size = 24, color = "#C69B4F" }: Props) {
 }
 
 /** Cuenco de cuarzo: bowl más esférico con destellos de cristal */
-export function IconCuencoCuarzo({ size = 24, color = "#C69B4F" }: Props) {
+export function IconCuencoCuarzo({ size = 24, color = "#C79C58" }: Props) {
   const s = size;
   return (
     <Svg width={s} height={s} viewBox="0 0 24 24" fill="none">
@@ -56,7 +56,7 @@ export function IconCuencoCuarzo({ size = 24, color = "#C69B4F" }: Props) {
 }
 
 /** Mix: dos cuencos superpuestos, uno más pequeño */
-export function IconMixCuencos({ size = 24, color = "#C69B4F" }: Props) {
+export function IconMixCuencos({ size = 24, color = "#C79C58" }: Props) {
   const s = size;
   return (
     <Svg width={s} height={s} viewBox="0 0 24 24" fill="none">
@@ -75,7 +75,7 @@ export function IconMixCuencos({ size = 24, color = "#C69B4F" }: Props) {
 }
 
 /** Gong: disco circular con aro exterior y punto central */
-export function IconGong({ size = 24, color = "#C69B4F" }: Props) {
+export function IconGong({ size = 24, color = "#C79C58" }: Props) {
   const s = size;
   return (
     <Svg width={s} height={s} viewBox="0 0 24 24" fill="none">
@@ -95,7 +95,7 @@ export function IconGong({ size = 24, color = "#C69B4F" }: Props) {
 }
 
 /** Cuencos y Gongs: cuenco a la izquierda, gong a la derecha */
-export function IconCuencosYGongs({ size = 24, color = "#C69B4F" }: Props) {
+export function IconCuencosYGongs({ size = 24, color = "#C79C58" }: Props) {
   const s = size;
   return (
     <Svg width={s} height={s} viewBox="0 0 24 24" fill="none">
@@ -114,7 +114,7 @@ export function IconCuencosYGongs({ size = 24, color = "#C69B4F" }: Props) {
 }
 
 /** Sonidos de la Selva: hoja con ondas de sonido */
-export function IconSelva({ size = 24, color = "#C69B4F" }: Props) {
+export function IconSelva({ size = 24, color = "#C79C58" }: Props) {
   const s = size;
   return (
     <Svg width={s} height={s} viewBox="0 0 24 24" fill="none">

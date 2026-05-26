@@ -69,9 +69,9 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
           height: ART_SIZE + 40,
           borderRadius: (ART_SIZE + 40) / 2,
           position: "absolute",
-          backgroundColor: "rgba(198,155,79,0.05)",
+          backgroundColor: "rgba(199,156,88,0.05)",
           borderWidth: 1,
-          borderColor: "rgba(198,155,79,0.15)",
+          borderColor: "rgba(199,156,88,0.15)",
         },
         animStyle,
       ]}
@@ -315,10 +315,10 @@ export default function PlayerScreen() {
       <ScrollView showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={styles.scrollContent}>
         {/* Art + Glow */}
         <View style={styles.artSection}>
-          <GlowRing size={ART_SIZE + 80} color="rgba(198,155,79,0.12)" delay={0} duration={4000} />
-          <GlowRing size={ART_SIZE + 120} color="rgba(198,155,79,0.07)" delay={700} duration={4000} />
+          <GlowRing size={ART_SIZE + 80} color="rgba(199,156,88,0.12)" delay={0} duration={4000} />
+          <GlowRing size={ART_SIZE + 120} color="rgba(199,156,88,0.07)" delay={700} duration={4000} />
           <BreathingPulse isPlaying={isPlaying} />
-          <View style={[styles.artFrame, { borderColor: "rgba(198,155,79,0.25)" }]}>
+          <View style={[styles.artFrame, { borderColor: "rgba(199,156,88,0.25)" }]}>
             <ExpoImage
               source={currentSession.image as any}
               style={styles.artImage}
@@ -385,7 +385,7 @@ export default function PlayerScreen() {
             </Pressable>
 
             <View style={styles.playOuter}>
-              <View style={[styles.playRing, { borderColor: "rgba(198,155,79,0.25)" }]} />
+              <View style={[styles.playRing, { borderColor: "rgba(199,156,88,0.25)" }]} />
               <Pressable
                 onPress={handlePlayPause}
                 disabled={isLoading}
@@ -521,8 +521,8 @@ export default function PlayerScreen() {
                     style={[
                       styles.timerChip,
                       {
-                        backgroundColor: selected ? colors.primary : "rgba(198,155,79,0.08)",
-                        borderColor: selected ? colors.primary : "rgba(198,155,79,0.2)",
+                        backgroundColor: selected ? colors.primary : "rgba(199,156,88,0.08)",
+                        borderColor: selected ? colors.primary : "rgba(199,156,88,0.2)",
                       },
                     ]}
                   >
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
   controlsWrapper: {
     overflow: "hidden",
     borderTopWidth: 1,
-    borderTopColor: "rgba(198,155,79,0.12)",
+    borderTopColor: "rgba(199,156,88,0.12)",
     paddingTop: 20,
   },
   controls: {
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     borderRadius: 38,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#C69B4F",
+    shadowColor: "#C79C58",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 16,
@@ -749,7 +749,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     marginBottom: 12,
     borderTopWidth: 1,
-    borderTopColor: "rgba(198,155,79,0.1)",
+    borderTopColor: "rgba(199,156,88,0.1)",
   },
   timerHeader: {
     flexDirection: "row",

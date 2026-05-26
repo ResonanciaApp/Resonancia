@@ -41,7 +41,7 @@ export default function TodasLasTemáticasScreen() {
           hitSlop={10}
           style={({ pressed }) => [
             styles.backBtn,
-            { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.2)", opacity: pressed ? 0.7 : 1 },
+            { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.2)", opacity: pressed ? 0.7 : 1 },
           ]}
         >
           <Feather name="arrow-left" size={18} color={colors.foreground} />
@@ -78,7 +78,7 @@ export default function TodasLasTemáticasScreen() {
               <View
                 style={[
                   StyleSheet.absoluteFill,
-                  { borderRadius: 16, borderWidth: 1, borderColor: "rgba(198,155,79,0.22)" },
+                  { borderRadius: 16, borderWidth: 1, borderColor: "rgba(199,156,88,0.22)" },
                 ]}
               />
               <Text style={styles.label}>{tag.label}</Text>

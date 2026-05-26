@@ -129,8 +129,8 @@ export default function CrearActividadScreen() {
             style={({ pressed }) => [styles.publishBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={() => router.back()}
           >
-            <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.publishGrad}>
-              <Feather name="check-circle" size={18} color="#1A0E06" />
+            <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.publishGrad}>
+              <Feather name="check-circle" size={18} color="#0D1520" />
               <Text style={styles.publishText}>Publicar actividad</Text>
             </LinearGradient>
           </Pressable>
@@ -284,9 +284,9 @@ export default function CrearActividadScreen() {
             style={({ pressed }) => [styles.publishBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={() => setStep("preview")}
           >
-            <LinearGradient colors={["#D6A85B", "#C69B4F"]} style={styles.publishGrad}>
+            <LinearGradient colors={["#D8C7A5", "#C79C58"]} style={styles.publishGrad}>
               <Text style={styles.publishText}>Continuar</Text>
-              <Feather name="arrow-right" size={18} color="#1A0E06" />
+              <Feather name="arrow-right" size={18} color="#0D1520" />
             </LinearGradient>
           </Pressable>
         </ScrollView>
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   previewBtnText: { fontSize: 14, fontWeight: "600" },
   publishBtn: { borderRadius: 16, overflow: "hidden" },
   publishGrad: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16 },
-  publishText: { color: "#1A0E06", fontWeight: "700", fontSize: 16 },
+  publishText: { color: "#0D1520", fontWeight: "700", fontSize: 16 },
   // Preview styles
   previewCard: { borderRadius: 20, borderWidth: 1.5, overflow: "hidden", marginBottom: 16 },
   previewAccent: { height: 5 },

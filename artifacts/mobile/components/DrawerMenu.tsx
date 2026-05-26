@@ -136,7 +136,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <LinearGradient
-          colors={["#241408", "#1A0E06"]}
+          colors={["#241408", "#0D1520"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
@@ -146,7 +146,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
                 <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
               ) : (
                 <View style={styles.profilePhotoFallback}>
-                  <Feather name="user" size={22} color="#C69B4F" />
+                  <Feather name="user" size={22} color="#C79C58" />
                 </View>
               )}
               <View style={styles.profileInfo}>
@@ -156,17 +156,17 @@ export function DrawerMenu({ visible, onClose }: Props) {
                   style={styles.verPerfilBtn}
                 >
                   <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                  <Feather name="chevron-right" size={11} color="#C69B4F" />
+                  <Feather name="chevron-right" size={11} color="#C79C58" />
                 </Pressable>
               </View>
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#C69B4F" />
+                <Feather name="x" size={20} color="#C79C58" />
               </Pressable>
             </View>
           ) : (
             <View style={styles.closeBtnRow}>
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#C69B4F" />
+                <Feather name="x" size={20} color="#C79C58" />
               </Pressable>
             </View>
           )}
@@ -180,14 +180,14 @@ export function DrawerMenu({ visible, onClose }: Props) {
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
                 <View style={styles.itemIcon}>
-                  <Feather name={item.icon} size={17} color="#C69B4F" />
+                  <Feather name={item.icon} size={17} color="#C79C58" />
                 </View>
                 <Text style={styles.itemLabel}>{item.label}</Text>
               </Pressable>
             ))}
           </View>
 
-          <View style={[styles.divider, { backgroundColor: "#C69B4F22", marginVertical: 16 }]} />
+          <View style={[styles.divider, { backgroundColor: "#C79C5822", marginVertical: 16 }]} />
 
           {/* Items secundarios */}
           <View style={styles.itemGroup}>
@@ -260,15 +260,15 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#C69B4F",
+    borderColor: "#C79C58",
   },
   profilePhotoFallback: {
     width: 48,
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#C69B4F",
-    backgroundColor: "rgba(198,155,79,0.12)",
+    borderColor: "#C79C58",
+    backgroundColor: "rgba(199,156,88,0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   profileName: {
-    color: "#EDE1D3",
+    color: "#F0E6D2",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   verPerfilText: {
-    color: "#C69B4F",
+    color: "#C79C58",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
@@ -305,10 +305,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  itemPressed: { backgroundColor: "rgba(198,155,79,0.1)" },
+  itemPressed: { backgroundColor: "rgba(199,156,88,0.1)" },
   itemIcon: { width: 26, alignItems: "center" },
   itemLabel: {
-    color: "#EDE1D3",
+    color: "#F0E6D2",
     fontSize: 15,
     fontWeight: "500",
     letterSpacing: 0.2,

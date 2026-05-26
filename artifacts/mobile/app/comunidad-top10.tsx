@@ -67,7 +67,7 @@ export default function ComunidadTop10Screen() {
         {top10.map((s, idx) => (
           <View key={s.id} style={styles.row}>
             <View style={[styles.rank, { backgroundColor: idx < 3 ? colors.primary : colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.rankText, { color: idx < 3 ? "#1A0E06" : colors.foreground }]}>
+              <Text style={[styles.rankText, { color: idx < 3 ? "#0D1520" : colors.foreground }]}>
                 {idx + 1}
               </Text>
             </View>

@@ -228,7 +228,7 @@ export default function ExploreScreen() {
                     ]}
                   >
                     <LinearGradient
-                      colors={["rgba(198,155,79,0.1)", "rgba(198,155,79,0.03)"]}
+                      colors={["rgba(199,156,88,0.1)", "rgba(199,156,88,0.03)"]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
                     />
                     <Feather name="clock" size={13} color={colors.primary} style={styles.timeIcon} />
@@ -264,7 +264,7 @@ export default function ExploreScreen() {
                       colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.72)"]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
                     />
-                    <View style={[StyleSheet.absoluteFill, { borderRadius: 16, borderWidth: 1, borderColor: "rgba(198,155,79,0.2)" }]} />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 16, borderWidth: 1, borderColor: "rgba(199,156,88,0.2)" }]} />
                     <Text style={styles.tagLabel}>{tag.label}</Text>
                   </Pressable>
                 ))}
@@ -285,7 +285,7 @@ export default function ExploreScreen() {
               </View>
 
               {historySessions.length === 0 ? (
-                <View style={[styles.historyEmpty, { borderColor: "rgba(198,155,79,0.15)", backgroundColor: colors.card }]}>
+                <View style={[styles.historyEmpty, { borderColor: "rgba(199,156,88,0.15)", backgroundColor: colors.card }]}>
                   <Feather name="clock" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
                   <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>
                     Aún no hay sesiones
@@ -302,7 +302,7 @@ export default function ExploreScreen() {
                     const timeLabel = date.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
                     return (
                       <View key={`${session.id}-${playedAt}`} style={styles.historyRow}>
-                        <View style={[styles.historyDateBadge, { backgroundColor: colors.card, borderColor: "rgba(198,155,79,0.2)" }]}>
+                        <View style={[styles.historyDateBadge, { backgroundColor: colors.card, borderColor: "rgba(199,156,88,0.2)" }]}>
                           <Text style={[styles.historyDateText, { color: colors.primary }]}>{dateLabel}</Text>
                           <Text style={[styles.historyTimeText, { color: colors.mutedForeground }]}>{timeLabel}</Text>
                         </View>
