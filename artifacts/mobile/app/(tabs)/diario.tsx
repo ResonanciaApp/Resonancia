@@ -176,7 +176,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   };
 
   return (
-    <View style={[styles.panel, { backgroundColor: "#111E16", borderColor: "rgba(182,149,95,0.15)" }]}>
+    <View style={[styles.panel, { backgroundColor: "#111E16" }]}>
       {/* Card header */}
       <LinearGradient
         colors={meta.gradientColors}
@@ -343,7 +343,6 @@ const styles = StyleSheet.create({
   // Panel
   panel: {
     borderRadius: 20,
-    borderWidth: 1,
     overflow: "hidden",
   },
   panelHeader: {
