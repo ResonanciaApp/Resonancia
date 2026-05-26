@@ -698,10 +698,21 @@ export default function GrupoDetailScreen() {
                 {
                   backgroundColor: colors.card,
                   paddingBottom: (keyboardHeight > 0 ? keyboardHeight + 12 : bottomPad + 12),
-                  marginBottom: keyboardHeight > 0 && Platform.OS === "android" ? -keyboardHeight : 0,
                 },
               ]}
             >
+              {/* Dark "skirt" extending below to prevent any white flash from keyboard/resize */}
+              <View
+                pointerEvents="none"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: -2000,
+                  height: 2000,
+                  backgroundColor: colors.card,
+                }}
+              />
               <View style={[commentStyles.handle, { backgroundColor: colors.border }]} />
               <View style={commentStyles.sheetHeader}>
                 <Text style={[commentStyles.sheetTitle, { color: colors.foreground }]}>Comentarios</Text>
