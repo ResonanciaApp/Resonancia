@@ -239,7 +239,9 @@ export default function HomeScreen() {
         {/* ── 3. SESIÓN DESTACADA ── */}
         {featuredSession && (
           <View style={styles.section}>
-
+            <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+              Sesión destacada del día
+            </Text>
             <Pressable
               style={[styles.heroCard]}
               onPress={() => router.push(`/session/${featuredSession.id}` as never)}
@@ -257,6 +259,9 @@ export default function HomeScreen() {
               <View style={styles.heroContent}>
                 <Text style={[styles.heroTitle, { color: colors.foreground }]}>
                   {featuredSession.title}
+                </Text>
+                <Text style={[styles.heroSub, { color: "#C8C1B5", marginBottom: 14 }]}>
+                  {featuredSession.durationLabel}
                 </Text>
                 <Pressable
                   onPress={() => playSession(featuredSession)}
