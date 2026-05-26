@@ -86,13 +86,6 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
             <Text style={[styles.hDuration, { color: colors.mutedForeground }]}>
               {" "}{session.durationLabel}
             </Text>
-            {session.frequency ? (
-              <View style={[styles.freqPill, { borderColor: colors.border }]}>
-                <Text style={[styles.freqText, { color: colors.accent }]}>
-                  {session.frequency}
-                </Text>
-              </View>
-            ) : null}
           </View>
         </View>
       </Pressable>

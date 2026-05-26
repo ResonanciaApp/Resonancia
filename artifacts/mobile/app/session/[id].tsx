@@ -180,7 +180,7 @@ export default function SessionDetailScreen() {
           {/* Title */}
           <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
 
-          {/* Meta row: duration · frequency · small stars */}
+          {/* Meta row: duration · small stars */}
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>
               <Feather name="clock" size={13} color={colors.mutedForeground} />

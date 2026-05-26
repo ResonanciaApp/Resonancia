@@ -273,14 +273,6 @@ export default function SonidosAncestalesScreen() {
                         <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
                           {" "}{session.durationLabel}
                         </Text>
-                        {session.frequency && (
-                          <>
-                            <Text style={[styles.metaDot, { color: colors.mutedForeground }]}> · </Text>
-                            <Text style={[styles.metaText, { color: colors.accent }]}>
-                              {session.frequency}
-                            </Text>
-                          </>
-                        )}
                       </View>
                     </View>
                     <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
