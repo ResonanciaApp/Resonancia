@@ -227,7 +227,7 @@ export function VozInteriorPanel() {
         </View>
         {entries.length > 0 && (
           <Pressable onPress={() => setShowHistory((v) => !v)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#C8A860" />
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#8AB894" />
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
@@ -313,8 +313,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { color: "#C8A860", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  headerSubtitle: { color: "rgba(200,168,96,0.65)", fontSize: 11, marginTop: 1 },
+  headerTitle: { color: "#8AB894", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  headerSubtitle: { color: "rgba(138,184,148,0.65)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  historyCount: { color: "#C8A860", fontSize: 12, fontWeight: "600" },
+  historyCount: { color: "#8AB894", fontSize: 12, fontWeight: "600" },
   historyHeaderRow: {
     flexDirection: "row",
     alignItems: "center",

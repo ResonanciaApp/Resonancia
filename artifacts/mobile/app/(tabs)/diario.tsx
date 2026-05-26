@@ -195,7 +195,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
         </View>
         {entries.length > 0 && (
           <Pressable onPress={() => setShowHistory(!showHistory)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#C8A860" />
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#8AB894" />
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
@@ -360,8 +360,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  panelTitle: { color: "#C8A860", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  panelSubtitle: { color: "rgba(200,168,96,0.65)", fontSize: 11, marginTop: 1 },
+  panelTitle: { color: "#8AB894", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  panelSubtitle: { color: "rgba(138,184,148,0.65)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
