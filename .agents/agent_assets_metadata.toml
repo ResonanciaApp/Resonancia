@@ -515,3 +515,9 @@ id = "Wbs9AgXpdqxWVNrx-Ylff"
 uri = "file://artifacts/mobile/assets/audio/canto_cosmico_mi.mp3"
 type = "audio"
 title = "Canto Cósmico — en Mi (-7 semitonos + coro)"
+
+[[outputs]]
+id = "F_Uyy8RMpCTCamiRqupqw"
+uri = "file://attached_assets/dripping-leaves-30min.mp3"
+type = "audio"
+title = "Dripping Leaves — 30 min (loop sin corte)"
