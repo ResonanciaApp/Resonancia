@@ -1,32 +1,23 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useCallback, useState } from "react";
-import {
-  Dimensions,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { useCallback, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Easing,
-  interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { DAILY_MESSAGES } from "../data/messages";
 
-import { DAILY_MESSAGES } from "@/data/messages";
-
-const { width } = Dimensions.get("window");
-const CARD_W = width - 48;
-const CARD_H = 192;
+const CARD_W = 300;
+const CARD_H = 185;
 
 // Corner ornament — thin L-shaped bracket
 function Corner({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
   const s = 14;
   const off = 12;
-  const borderColor = "#6B4A9A";
+  const borderColor = "#3E6B48";
   const bw = 0.8;
 
   const pos: Record<string, object> = {
@@ -47,7 +38,7 @@ function Corner({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
 function CardBack() {
   return (
     <LinearGradient
-      colors={["#1A0E2E", "#120A22", "#1A0E2E"]}
+      colors={["#0B1A0E", "#07100A", "#0B1A0E"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
@@ -68,13 +59,13 @@ function CardBack() {
 function CardFront({ message }: { message: string }) {
   return (
     <LinearGradient
-      colors={["#200E38", "#180B2C", "#200E38"]}
+      colors={["#0F1E12", "#0A1510", "#0F1E12"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
     >
-      <View style={[styles.outerBorder, { borderColor: "#7A4EAA" }]} pointerEvents="none" />
-      <View style={[styles.innerBorder, { borderColor: "rgba(122,78,170,0.3)" }]} pointerEvents="none" />
+      <View style={[styles.outerBorder, { borderColor: "#4A7A55" }]} pointerEvents="none" />
+      <View style={[styles.innerBorder, { borderColor: "rgba(74,122,85,0.3)" }]} pointerEvents="none" />
       <Corner position="tl" />
       <Corner position="tr" />
       <Corner position="bl" />
@@ -122,17 +113,17 @@ export function MessageDeck() {
   const backStyle = useAnimatedStyle(() => ({
     transform: [
       { perspective: 1400 },
-      { rotateY: `${interpolate(flip.value, [0, 0.5], [0, 90])}deg` },
+      { rotateY: `${flip.value * 180}deg` },
     ],
-    opacity: interpolate(flip.value, [0.3, 0.5], [1, 0], "clamp"),
+    backfaceVisibility: "hidden",
   }));
 
   const frontStyle = useAnimatedStyle(() => ({
     transform: [
       { perspective: 1400 },
-      { rotateY: `${interpolate(flip.value, [0.5, 1], [-90, 0])}deg` },
+      { rotateY: `${flip.value * 180 - 180}deg` },
     ],
-    opacity: interpolate(flip.value, [0.5, 0.7], [0, 1], "clamp"),
+    backfaceVisibility: "hidden",
   }));
 
   const isFlipping = phase === "flipping-in" || phase === "flipping-out";
@@ -149,10 +140,10 @@ export function MessageDeck() {
           pointerEvents="none"
         >
           <LinearGradient
-            colors={["#160B28", "#100820"]}
+            colors={["#091510", "#060E08"]}
             style={StyleSheet.absoluteFill}
           />
-          <View style={[StyleSheet.absoluteFill, { borderWidth: 0.8, borderColor: "#3A2060", borderRadius: 10 }]} />
+          <View style={[StyleSheet.absoluteFill, { borderWidth: 0.8, borderColor: "#1A3520", borderRadius: 10 }]} />
         </View>
       ))}
 
@@ -216,16 +207,16 @@ const styles = StyleSheet.create({
   },
   corner: { position: "absolute" },
   backCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10 },
-  thinRule: { width: 56, height: 0.8, backgroundColor: "#6B4A9A", opacity: 0.7 },
+  thinRule: { width: 56, height: 0.8, backgroundColor: "#4A7A55", opacity: 0.7 },
   backTitle: {
-    color: "#C0A0E0",
+    color: "#A8C8B0",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 4,
     textAlign: "center",
   },
   frontTopLabel: {
-    color: "#7A5AAA",
+    color: "#5A8A65",
     fontSize: 9,
     letterSpacing: 2,
     textAlign: "center",
@@ -239,7 +230,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   frontMessage: {
-    color: "#D0B8F0",
+    color: "#D8EDE0",
     fontSize: 17,
     lineHeight: 26,
     textAlign: "center",
@@ -247,7 +238,7 @@ const styles = StyleSheet.create({
     fontFamily: "serif",
   },
   frontDate: {
-    color: "#5A3A8A",
+    color: "#3A6A45",
     fontSize: 8,
     letterSpacing: 1.2,
     textAlign: "center",
@@ -259,7 +250,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   hintText: {
-    color: "#6A4A90",
+    color: "#4A7055",
     fontSize: 11,
     letterSpacing: 0.8,
     textAlign: "center",
@@ -270,11 +261,11 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     borderRadius: 6,
     borderWidth: 0.8,
-    borderColor: "#6B4A9A",
-    backgroundColor: "rgba(107,74,154,0.10)",
+    borderColor: "#4A7A55",
+    backgroundColor: "rgba(74,122,85,0.10)",
   },
   newBtnText: {
-    color: "#9A70C8",
+    color: "#7AAA85",
     fontSize: 11,
     letterSpacing: 1.5,
     textAlign: "center",
