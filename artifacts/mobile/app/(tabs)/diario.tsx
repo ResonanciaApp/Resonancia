@@ -176,7 +176,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   };
 
   return (
-    <View style={[styles.panel, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.15)" }]}>
+    <View style={[styles.panel, { backgroundColor: "#111E16", borderColor: "rgba(182,149,95,0.15)" }]}>
       {/* Card header */}
       <LinearGradient
         colors={meta.gradientColors}
