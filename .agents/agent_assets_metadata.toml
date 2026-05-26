@@ -521,3 +521,9 @@ id = "F_Uyy8RMpCTCamiRqupqw"
 uri = "file://attached_assets/dripping-leaves-30min.mp3"
 type = "audio"
 title = "Dripping Leaves — 30 min (loop sin corte)"
+
+[[outputs]]
+id = "5Fputq5-ieZVvz96xclbg"
+uri = "file://artifacts/mobile/assets/audio/prueba_voz_generada.mp3"
+type = "audio"
+title = "Prueba — Tu voz generada con ElevenLabs"
