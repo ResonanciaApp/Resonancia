@@ -127,7 +127,14 @@ export default function HomeScreen() {
   }, [favoriteEntries, vozEntries]);
 
   const featured = getFeaturedSessions();
-  const featuredSession = featured[0];
+  // Rotate daily: pick a different featured session each day of the year.
+  const featuredSession = React.useMemo(() => {
+    if (!featured.length) return undefined;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+    return featured[dayOfYear % featured.length];
+  }, []);
   // Last 5 sessions (most recently added = highest index)
   const newSessions = [...SESSIONS].reverse().slice(0, 5);
   // 6 random sessions — shuffled once on mount via useMemo
@@ -233,7 +240,7 @@ export default function HomeScreen() {
         {featuredSession && (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
-              Sesión Destacada
+              Sesión destacada del día
             </Text>
             <Pressable
               style={[styles.heroCard, { borderColor: "rgba(198,155,79,0.22)" }]}
@@ -250,7 +257,7 @@ export default function HomeScreen() {
                 <GlowRing size={170} color="rgba(198,155,79,0.1)" delay={600} duration={3500} />
               </View>
               <View style={styles.heroContent}>
-                <Text style={[styles.heroLabel, { color: colors.accent }]}>SESIÓN DESTACADA</Text>
+                <Text style={[styles.heroLabel, { color: colors.accent }]}>SESIÓN DESTACADA DEL DÍA</Text>
                 <Text style={[styles.heroTitle, { color: colors.foreground }]}>
                   {featuredSession.title}
                 </Text>
