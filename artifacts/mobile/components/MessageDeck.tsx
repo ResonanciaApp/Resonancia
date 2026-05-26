@@ -23,14 +23,10 @@ const CARD_W = width - 48;
 const CARD_H = 192;
 
 // Corner ornament — thin L-shaped bracket
-function Corner({
-  position,
-}: {
-  position: "tl" | "tr" | "bl" | "br";
-}) {
+function Corner({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
   const s = 14;
   const off = 12;
-  const borderColor = "#7A5228";
+  const borderColor = "#6B4A9A";
   const bw = 0.8;
 
   const pos: Record<string, object> = {
@@ -42,11 +38,7 @@ function Corner({
 
   return (
     <View
-      style={[
-        styles.corner,
-        { width: s, height: s, borderColor },
-        pos[position],
-      ]}
+      style={[styles.corner, { width: s, height: s, borderColor }, pos[position]]}
       pointerEvents="none"
     />
   );
@@ -55,23 +47,17 @@ function Corner({
 function CardBack() {
   return (
     <LinearGradient
-      colors={["#221209", "#18100A", "#221209"]}
+      colors={["#1A0E2E", "#120A22", "#1A0E2E"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
     >
-      {/* Outer border */}
       <View style={styles.outerBorder} pointerEvents="none" />
-      {/* Inner border */}
       <View style={styles.innerBorder} pointerEvents="none" />
-
-      {/* Corner ornaments */}
       <Corner position="tl" />
       <Corner position="tr" />
       <Corner position="bl" />
       <Corner position="br" />
-
-      {/* Center content */}
       <View style={styles.backCenter}>
         <Text style={styles.backTitle}>TU MENSAJE DEL DÍA</Text>
       </View>
@@ -87,31 +73,23 @@ function CardFront({ message }: { message: string }) {
 
   return (
     <LinearGradient
-      colors={["#261509", "#1C1008", "#261509"]}
+      colors={["#200E38", "#180B2C", "#200E38"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
     >
-      {/* Outer border — warmer on front */}
-      <View style={[styles.outerBorder, { borderColor: "#8A6030" }]} pointerEvents="none" />
-      <View style={[styles.innerBorder, { borderColor: "rgba(138,96,48,0.3)" }]} pointerEvents="none" />
-
+      <View style={[styles.outerBorder, { borderColor: "#7A4EAA" }]} pointerEvents="none" />
+      <View style={[styles.innerBorder, { borderColor: "rgba(122,78,170,0.3)" }]} pointerEvents="none" />
       <Corner position="tl" />
       <Corner position="tr" />
       <Corner position="bl" />
       <Corner position="br" />
-
-      {/* Top label */}
       <Text style={styles.frontTopLabel}>Un mensaje para ti</Text>
-
-      {/* Message */}
       <View style={styles.frontBody}>
         <View style={[styles.thinRule, { width: 40 }]} />
         <Text style={styles.frontMessage}>"{message}"</Text>
         <View style={[styles.thinRule, { width: 40 }]} />
       </View>
-
-      {/* Date footer */}
       <Text style={styles.frontDate}>Casa del Cuenco  ·  {today}</Text>
     </LinearGradient>
   );
@@ -170,47 +148,34 @@ export function MessageDeck() {
 
   return (
     <View style={styles.wrapper}>
-      {/* Shadow cards behind — two barely-visible copies */}
       {[4, 8].map((offset, i) => (
         <View
           key={i}
           style={[
             styles.shadowCard,
-            {
-              top: offset,
-              left: offset / 2,
-              right: offset / 2,
-              opacity: i === 0 ? 0.45 : 0.28,
-            },
+            { top: offset, left: offset / 2, right: offset / 2, opacity: i === 0 ? 0.45 : 0.28 },
           ]}
           pointerEvents="none"
         >
           <LinearGradient
-            colors={["#1C0E07", "#130C06"]}
+            colors={["#160B28", "#100820"]}
             style={StyleSheet.absoluteFill}
           />
-          <View style={[StyleSheet.absoluteFill, { borderWidth: 0.8, borderColor: "#4A2C10", borderRadius: 10 }]} />
+          <View style={[StyleSheet.absoluteFill, { borderWidth: 0.8, borderColor: "#3A2060", borderRadius: 10 }]} />
         </View>
       ))}
 
-      {/* Active card */}
       <View style={styles.cardContainer}>
         <Animated.View style={[StyleSheet.absoluteFill, backStyle]}>
-          <Pressable
-            onPress={revealCard}
-            disabled={isFlipping}
-            style={{ flex: 1 }}
-          >
+          <Pressable onPress={revealCard} disabled={isFlipping} style={{ flex: 1 }}>
             <CardBack />
           </Pressable>
         </Animated.View>
-
         <Animated.View style={[StyleSheet.absoluteFill, frontStyle]} pointerEvents="none">
           <CardFront message={message} />
         </Animated.View>
       </View>
 
-      {/* Action area */}
       <View style={styles.actionArea}>
         {phase === "idle" && (
           <Text style={styles.hintText}>Toca para revelar tu mensaje</Text>
@@ -230,12 +195,7 @@ export function MessageDeck() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    alignItems: "center",
-    paddingVertical: 4,
-  },
-
-  // Shadow cards
+  wrapper: { alignItems: "center", paddingVertical: 4 },
   shadowCard: {
     position: "absolute",
     height: CARD_H,
@@ -243,14 +203,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     zIndex: 0,
   },
-
-  // Active card
-  cardContainer: {
-    width: CARD_W,
-    height: CARD_H,
-    zIndex: 1,
-  },
-
+  cardContainer: { width: CARD_W, height: CARD_H, zIndex: 1 },
   cardFace: {
     width: CARD_W,
     height: CARD_H,
@@ -261,57 +214,31 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 28,
   },
-
   outerBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 10,
     borderWidth: 0.8,
-    borderColor: "#5A3418",
+    borderColor: "#4A2E7A",
   },
   innerBorder: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 8,
     margin: 6,
     borderWidth: 0.5,
-    borderColor: "rgba(90,52,24,0.4)",
+    borderColor: "rgba(74,46,122,0.4)",
   },
-
-  // Corner L-brackets
-  corner: {
-    position: "absolute",
-  },
-
-  // Card back
-  backCenter: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-  },
-  thinRule: {
-    width: 56,
-    height: 0.8,
-    backgroundColor: "#7A5228",
-    opacity: 0.7,
-  },
+  corner: { position: "absolute" },
+  backCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10 },
+  thinRule: { width: 56, height: 0.8, backgroundColor: "#6B4A9A", opacity: 0.7 },
   backTitle: {
-    color: "#C4944A",
+    color: "#C0A0E0",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 4,
     textAlign: "center",
   },
-  backSub: {
-    color: "#8A6030",
-    fontSize: 10,
-    letterSpacing: 2.5,
-    fontStyle: "italic",
-    textAlign: "center",
-  },
-
-  // Card front
   frontTopLabel: {
-    color: "#8A6030",
+    color: "#7A5AAA",
     fontSize: 9,
     letterSpacing: 2,
     textAlign: "center",
@@ -325,7 +252,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   frontMessage: {
-    color: "#D4B483",
+    color: "#D0B8F0",
     fontSize: 13,
     lineHeight: 21,
     textAlign: "center",
@@ -333,13 +260,11 @@ const styles = StyleSheet.create({
     fontFamily: "serif",
   },
   frontDate: {
-    color: "#6A4820",
+    color: "#5A3A8A",
     fontSize: 8,
     letterSpacing: 1.2,
     textAlign: "center",
   },
-
-  // Action area
   actionArea: {
     marginTop: 20,
     alignItems: "center",
@@ -347,7 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   hintText: {
-    color: "#6A4820",
+    color: "#6A4A90",
     fontSize: 11,
     letterSpacing: 0.8,
     textAlign: "center",
@@ -358,11 +283,11 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     borderRadius: 6,
     borderWidth: 0.8,
-    borderColor: "#7A5228",
-    backgroundColor: "rgba(122,82,40,0.08)",
+    borderColor: "#6B4A9A",
+    backgroundColor: "rgba(107,74,154,0.10)",
   },
   newBtnText: {
-    color: "#A07840",
+    color: "#9A70C8",
     fontSize: 11,
     letterSpacing: 1.5,
     textAlign: "center",
