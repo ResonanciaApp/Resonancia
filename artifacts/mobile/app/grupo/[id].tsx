@@ -376,7 +376,10 @@ export default function GrupoDetailScreen() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <View style={[styles.root, { backgroundColor: colors.background }]}>
         <StatusBar barStyle="light-content" />
         <SacredBackground />
