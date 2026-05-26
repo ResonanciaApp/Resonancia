@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   planCard: {
     flex: 1,
     borderRadius: 18,
-    borderWidth: 1.5,
+    borderWidth: 0.5,
     padding: 18,
     gap: 6,
     overflow: "hidden",

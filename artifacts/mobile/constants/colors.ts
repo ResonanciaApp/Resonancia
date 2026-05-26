@@ -16,7 +16,7 @@ const colors = {
     accentForeground: "#070E09",
     destructive: "#ef4444",
     destructiveForeground: "#ffffff",
-    border: "#3E5346",
+    border: "#1C2C22",
     input: "#3E5346",
     warmIvory: "#C8C1B5",
     softSand: "#C8C1B5",

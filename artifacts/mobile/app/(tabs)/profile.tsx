@@ -188,7 +188,7 @@ export default function ProfileScreen() {
         {/* ── Profile Card ── */}
         <View style={[styles.profileCard, { borderColor: "rgba(182,149,95,0.2)" }]}>
           <LinearGradient
-            colors={["rgba(182,149,95,0.1)", "rgba(60,36,21,0.5)"]}
+            colors={["rgba(17,30,22,0.97)", "rgba(10,20,14,0.99)"]}
             style={[StyleSheet.absoluteFill, { borderRadius: 24 }]}
           />
 
