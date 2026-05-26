@@ -527,3 +527,9 @@ id = "5Fputq5-ieZVvz96xclbg"
 uri = "file://artifacts/mobile/assets/audio/prueba_voz_generada.mp3"
 type = "audio"
 title = "Prueba — Tu voz generada con ElevenLabs"
+
+[[outputs]]
+id = "m5ReEEXuiVeJnMcfUJs-k"
+uri = "file://artifacts/mobile/assets/audio/meditacion_respiracion.mp3"
+type = "audio"
+title = "Meditación — Respiración (tu voz)"
