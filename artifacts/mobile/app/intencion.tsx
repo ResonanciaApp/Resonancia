@@ -65,6 +65,7 @@ export default function IntencionScreen() {
     const trimmed = text.trim();
     if (!trimmed) return;
     addSaved(trimmed);
+    setText("");
     setTab("guardados");
   }
 
