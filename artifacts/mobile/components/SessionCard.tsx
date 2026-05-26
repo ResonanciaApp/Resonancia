@@ -49,6 +49,8 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
         ]}
       >
+        {/* Warm amber tint sutil */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)", borderRadius: 18 }]} />
         <Image source={session.image} style={styles.hImage} contentFit="cover" />
         <LinearGradient
           colors={["transparent", colors.card]}
