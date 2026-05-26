@@ -97,7 +97,8 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 - **Configuraciones → "Actividad de la comunidad"**: hoy solo guarda la preferencia local. Cuando exista backend de notificaciones, enchufar push real (suscribir/desuscribir según toggle).
 - **Configuraciones → "Términos y privacidad"**: el Alert ofrece abrir `https://resonancia.app` como placeholder. Reemplazar por el link real cuando esté.
 - **Configuraciones → "Calificar la app"**: hoy muestra "Próximamente". Cuando se publique en stores, abrir el link nativo (`expo-store-review` o `Linking` a la store URL).
-- **Free vs Premium (gating de funcionalidades)**: armar `PremiumContext` con flag `isPremium`, hook `useGate(feature)`, componente `<PremiumLock>` y archivo `config/premium-features.ts` con la lista. Falta definir con el usuario qué entra en cada plan.
+- **Free vs Premium (gating de funcionalidades)**: armar `PremiumContext` con flag `isPremium`, hook `useGate(feature)`, componente `<PremiumLock>` y archivo `config/premium-features.ts` con la lista. **Poner la lógica en `lib/` del monorepo (no en `artifacts/mobile/`)** para reusarla en una futura versión web. Falta definir con el usuario qué entra en cada plan.
+- **Versión web (futura)**: la DB, API y lógica se reusan. Hay que reescribir UI (RN no corre en web). Pago: Stripe directo (no Apple/Google). Estimado: 2-4 semanas de trabajo dependiendo del scope.
 - **Cobro de Premium (pagos in-app)**: usar **RevenueCat** sobre Apple IAP / Google Play Billing (obligatorio para apps móviles — no se puede usar Stripe directo). Apple/Google se quedan 15-30%. Falta: definir precio (mensual/anual/lifetime), crear cuentas en App Store Connect + Google Play Console + RevenueCat. Para web (si llega) sí va Stripe directo.
 
 ## Pointers
