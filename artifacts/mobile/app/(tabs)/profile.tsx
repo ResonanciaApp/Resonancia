@@ -26,6 +26,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { useDownloads } from "@/context/DownloadsContext";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -53,7 +54,8 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { favorites, elapsed, playSession, currentSession, isPlaying } = usePlayer();
+  const { favorites, elapsed, playSession, currentSession, isPlaying, history } = usePlayer();
+  const { downloads } = useDownloads();
   const {
     username,
     lastName,
@@ -132,12 +134,30 @@ export default function ProfileScreen() {
 
   // ── Stats ─────────────────────────────────────────────────────────────────
   const totalMinutes = Math.floor(elapsed / 60);
-  const favCount = favorites.length;
 
-  const stats = [
-    { label: "Sesiones", value: SESSIONS.length.toString(), icon: "disc" as FeatherIconName },
-    { label: "Minutos", value: totalMinutes > 0 ? totalMinutes.toString() : "—", icon: "clock" as FeatherIconName },
-    { label: "Guardadas", value: favCount.toString(), icon: "heart" as FeatherIconName },
+  const stats: {
+    label: string;
+    value: string;
+    icon: FeatherIconName;
+    href?: string;
+  }[] = [
+    {
+      label: "Descargas",
+      value: downloads.length.toString(),
+      icon: "download-cloud",
+      href: "/descargas",
+    },
+    {
+      label: "Recientes",
+      value: history.length.toString(),
+      icon: "clock",
+      href: "/recientes",
+    },
+    {
+      label: "Minutos",
+      value: totalMinutes > 0 ? totalMinutes.toString() : "—",
+      icon: "activity",
+    },
   ];
 
   // ── Favorite sessions ─────────────────────────────────────────────────────
@@ -209,13 +229,37 @@ export default function ProfileScreen() {
 
         {/* ── Stats ── */}
         <View style={styles.statsRow}>
-          {stats.map((stat) => (
-            <View key={stat.label} style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Feather name={stat.icon} size={18} color={colors.accent} style={styles.statIcon} />
-              <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
-            </View>
-          ))}
+          {stats.map((stat) => {
+            const content = (
+              <>
+                <Feather name={stat.icon} size={18} color={colors.accent} style={styles.statIcon} />
+                <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
+              </>
+            );
+            if (stat.href) {
+              return (
+                <Pressable
+                  key={stat.label}
+                  onPress={() => router.push(stat.href as never)}
+                  style={({ pressed }) => [
+                    styles.statCard,
+                    { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+                  ]}
+                >
+                  {content}
+                </Pressable>
+              );
+            }
+            return (
+              <View
+                key={stat.label}
+                style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+              >
+                {content}
+              </View>
+            );
+          })}
         </View>
 
         {/* ── Premium Banner ── */}

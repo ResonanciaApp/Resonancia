@@ -24,6 +24,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
+import { DownloadsProvider } from "@/context/DownloadsContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
@@ -189,11 +190,13 @@ export default function RootLayout() {
                     <UserProfileProvider>
                       <IntencionProvider>
                         <DiarioFavoritesProvider>
+                          <DownloadsProvider>
                           <GestureHandlerRootView>
                             <KeyboardProvider>
                               <RootLayoutNav />
                             </KeyboardProvider>
                           </GestureHandlerRootView>
+                          </DownloadsProvider>
                         </DiarioFavoritesProvider>
                       </IntencionProvider>
                     </UserProfileProvider>
