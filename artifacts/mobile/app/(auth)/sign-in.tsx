@@ -17,7 +17,7 @@ import {
 import { SocialAuthButtons } from "@/components/SocialAuthButtons";
 
 const COLORS = {
-  bg: "#0C1610",
+  bg: "#070E09",
   card: "#2D3F38",
   primary: "#B6955F",
   accent: "#C8C1B5",

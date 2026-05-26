@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginTop: 10,
   },
-  saveBtnText: { fontSize: 13, fontWeight: "700", color: "#0C1610" },
+  saveBtnText: { fontSize: 13, fontWeight: "700", color: "#070E09" },
 
   tabRow: {
     flexDirection: "row",
