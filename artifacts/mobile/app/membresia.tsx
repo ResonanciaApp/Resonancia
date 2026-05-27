@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -12,6 +13,9 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { SacredBackground } from "@/components/SacredBackground";
+import { useColors } from "@/hooks/useColors";
 
 const P = {
   bg0:        "#06150F",
@@ -42,24 +46,16 @@ const BENEFITS = [
 ];
 
 export default function MembresiaScreen() {
+  const colors = useColors();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const [selected, setSelected] = useState<"anual" | "mensual">("anual");
 
   return (
-    <View style={[styles.root, { backgroundColor: P.bg0 }]}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
-
-      {/* Fondo verde profundo con leve gradiente */}
-      <LinearGradient
-        colors={[P.bg1, P.bg0]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
-      {/* Glow dorado arriba */}
-      <View style={styles.topGlow} pointerEvents="none" />
+      <SacredBackground />
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40 }}
@@ -72,7 +68,11 @@ export default function MembresiaScreen() {
 
         {/* Hero */}
         <View style={styles.hero}>
-          <Text style={[styles.heroLabel, { color: P.gold }]}>CASA DEL CUENCO</Text>
+          <Image
+            source={require("../assets/images/estrella-premium.png")}
+            style={styles.heroStar}
+            contentFit="contain"
+          />
           <Text style={[styles.heroTitle, { color: P.textMain }]}>
             Membresía{"\n"}Resonancia
           </Text>
@@ -184,18 +184,9 @@ export default function MembresiaScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  topGlow: {
-    position: "absolute",
-    top: -40,
-    alignSelf: "center",
-    width: 280,
-    height: 110,
-    borderRadius: 140,
-    backgroundColor: "rgba(35,66,54,0.55)",
-  },
   back: { marginBottom: 8, width: 40, height: 40, justifyContent: "center" },
   hero: { paddingHorizontal: 24, paddingVertical: 24, alignItems: "center", marginBottom: 12 },
-  heroLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 3, marginBottom: 14 },
+  heroStar: { width: 44, height: 44, marginBottom: 14 },
   heroTitle: { fontSize: 34, fontWeight: "700", textAlign: "center", lineHeight: 42, marginBottom: 14 },
   divider: { width: 160, height: 1, marginBottom: 14 },
   heroSub: { fontSize: 14, textAlign: "center" },
