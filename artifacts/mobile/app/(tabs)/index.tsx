@@ -463,7 +463,7 @@ export default function HomeScreen() {
         {/* ── 7. NUEVAS SESIONES ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Nuevas sesiones</Text>
             <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
               <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
             </Pressable>
