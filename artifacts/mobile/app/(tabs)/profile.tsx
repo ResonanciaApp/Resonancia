@@ -186,11 +186,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Profile Card ── */}
-        <View style={[styles.profileCard]}>
-          <LinearGradient
-            colors={["rgba(5,10,7,1.0)", "rgba(3,7,4,1.0)"]}
-            style={[StyleSheet.absoluteFill, { borderRadius: 24 }]}
-          />
+        <View style={[styles.profileCard, { backgroundColor: colors.card }]}>
 
           {/* Avatar */}
           <Pressable onPress={pickPhoto} style={styles.avatarWrapper}>
