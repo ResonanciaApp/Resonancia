@@ -8,8 +8,8 @@ const FAV_KEY = "@diario_favorites";
 const SECTION_META: Record<DiarioSection, { title: string; accentColor: string }> = {
   aprendizaje: { title: "Qué aprendí hoy",       accentColor: "#B6955F" },
   suenos:      { title: "Materializo mis sueños", accentColor: "#E0B882" },
-  reflexiones: { title: "Mis reflexiones",        accentColor: "#7EC8E3" },
-  ideas:       { title: "Ideas Brillantes",       accentColor: "#F0CC82" },
+  reflexiones: { title: "Mis reflexiones",        accentColor: "#D6A85B" },
+  ideas:       { title: "Ideas Brillantes",       accentColor: "#D6A85B" },
 };
 
 export type FavoriteDiarioEntry = DiarioEntry & {
