@@ -28,7 +28,9 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
 const GRADIENT: [string, string] = ["#1C3545", "#0E2232"];
-const ACCENT = "#2A5580";
+const ACCENT = "#C69B4F";
+const BODY_FG = "#FFFFFF";
+const BODY_MUTED = "rgba(160,200,220,0.65)";
 
 const HOW_IT_WORKS = [
   {
@@ -221,7 +223,7 @@ export function MensajesAnonimosPanel() {
           style={styles.infoBtn}
           hitSlop={8}
         >
-          <Feather name="info" size={15} color="#C8A860" />
+          <Feather name="info" size={15} color="rgba(160,200,220,0.75)" />
         </Pressable>
       </LinearGradient>
 
@@ -231,12 +233,12 @@ export function MensajesAnonimosPanel() {
           value={text}
           onChangeText={(t) => setText(t.slice(0, MAX_CHARS))}
           placeholder="Escribe algo desde el corazón..."
-          placeholderTextColor={colors.mutedForeground}
+          placeholderTextColor={BODY_MUTED}
           multiline
           style={[
             styles.textInput,
             {
-              color: colors.foreground,
+              color: BODY_FG,
             },
           ]}
         />
@@ -244,7 +246,7 @@ export function MensajesAnonimosPanel() {
           <Text
             style={[
               styles.charCount,
-              { color: remaining < 40 ? "#E07060" : colors.mutedForeground },
+              { color: remaining < 40 ? "#E07060" : BODY_MUTED },
             ]}
           >
             {remaining} caracteres
@@ -267,12 +269,12 @@ export function MensajesAnonimosPanel() {
                 <Feather
                   name="send"
                   size={13}
-                  color={text.trim() ? "#fff" : colors.mutedForeground}
+                  color={text.trim() ? "#fff" : BODY_MUTED}
                 />
                 <Text
                   style={[
                     styles.sendBtnText,
-                    { color: text.trim() ? "#fff" : colors.mutedForeground },
+                    { color: text.trim() ? "#fff" : BODY_MUTED },
                   ]}
                 >
                   Enviar
@@ -290,11 +292,11 @@ export function MensajesAnonimosPanel() {
           styles.feedToggleRow,
           {
             borderTopColor: colors.border,
-            backgroundColor: pressed ? "rgba(212,112,154,0.06)" : "transparent",
+            backgroundColor: pressed ? "rgba(100,170,190,0.06)" : "transparent",
           },
         ]}
       >
-        <Text style={[styles.feedToggleLabel, { color: colors.mutedForeground }]}>
+        <Text style={[styles.feedToggleLabel, { color: BODY_FG }]}>
           {feedLabel}
         </Text>
         <View style={styles.feedToggleRight}>
@@ -430,7 +432,7 @@ export function MensajesAnonimosPanel() {
                         },
                       ]}
                     >
-                      <Text style={[styles.messageText, { color: colors.foreground }]}>
+                      <Text style={[styles.messageText, { color: BODY_FG }]}>
                         {msg.content}
                       </Text>
                       <View style={styles.messageMeta}>
@@ -438,7 +440,7 @@ export function MensajesAnonimosPanel() {
                           <Text
                             style={[
                               styles.messageTime,
-                              { color: colors.mutedForeground },
+                              { color: BODY_MUTED },
                             ]}
                           >
                             {timeAgo(msg.createdAt)}
@@ -463,7 +465,7 @@ export function MensajesAnonimosPanel() {
                             color={
                               likedIds.has(msg.id)
                                 ? "#E07070"
-                                : colors.mutedForeground
+                                : BODY_MUTED
                             }
                           />
                           {msg.likes > 0 && (
@@ -473,7 +475,7 @@ export function MensajesAnonimosPanel() {
                                 {
                                   color: likedIds.has(msg.id)
                                     ? "#E07070"
-                                    : colors.mutedForeground,
+                                    : BODY_MUTED,
                                 },
                               ]}
                             >
