@@ -125,8 +125,8 @@ export default function SessionDetailScreen() {
       tagBorder = "rgba(200,180,224,0.35)";
     }
     else if (isAncestral && session.ancestralTag) tag = session.ancestralTag;
-    else if (isPodcast && session.podcastTag) {
-      tag = session.podcastTag;
+    else if (isPodcast) {
+      tag = "Podcast";
       tagColor = "#8AAAD4";
       tagBg = "rgba(138,170,212,0.15)";
       tagBorder = "rgba(138,170,212,0.35)";
