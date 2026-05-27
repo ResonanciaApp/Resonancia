@@ -21,19 +21,21 @@ type Props = {
   size?: number;
   top?: number;
   right?: number;
+  left?: number;
 };
 
 const GOLD = "#E5B84B";
 
-export function PremiumBadge({ session, size = 20, top = 8, right = 8 }: Props) {
+export function PremiumBadge({ session, size = 20, top = 8, right, left }: Props) {
   const { isPremium } = usePremium();
   if (!session.isPremium || isPremium) return null;
+  const pos = left != null ? { left } : { right: right ?? 8 };
   return (
     <FontAwesome
       name="star"
       size={size}
       color={GOLD}
-      style={[styles.star, { top, right }]}
+      style={[styles.star, { top, ...pos }]}
     />
   );
 }

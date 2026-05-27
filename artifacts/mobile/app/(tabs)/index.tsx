@@ -526,7 +526,7 @@ export default function HomeScreen() {
                     colors={["rgba(0,0,0,0.05)", "rgba(0,0,0,0.75)"]}
                     style={StyleSheet.absoluteFill}
                   />
-                  <PremiumBadge session={s} />
+                  <PremiumBadge session={s} top={10} left={10} />
                   <View style={styles.diaTopRow}>
                     <View />
                     <Text style={styles.diaDuration}>{s.duration}m</Text>
