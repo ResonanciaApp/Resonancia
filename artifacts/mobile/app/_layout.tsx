@@ -74,7 +74,12 @@ function RootLayoutNav() {
     <>
       <ApiAuthBridge />
       <AuthGate />
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: "#18110C" },
+        }}
+      >
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
