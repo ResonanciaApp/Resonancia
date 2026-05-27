@@ -318,6 +318,36 @@ uri = "file://artifacts/mobile/assets/images/sessions/med-manifestacion.png"
 type = "image"
 title = "manifestacion meditation"
 
+[[generated]]
+id = "pVP3Mitl1b0j84Xfi182Y"
+uri = "file://artifacts/mobile/assets/images/sessions/sab-silencio-interior.png"
+type = "image"
+title = "silencio interior sabiduria"
+
+[[generated]]
+id = "PSFpl6HyvN8UqOEbTZLlP"
+uri = "file://artifacts/mobile/assets/images/sessions/sab-aceptacion-flujo.png"
+type = "image"
+title = "aceptacion flujo sabiduria"
+
+[[generated]]
+id = "oLjtthhTLjWzIdP63f4jU"
+uri = "file://artifacts/mobile/assets/images/sessions/sab-atencion-plena.png"
+type = "image"
+title = "atencion plena sabiduria"
+
+[[generated]]
+id = "RF7h8qPQb785DEjLj5oE_"
+uri = "file://artifacts/mobile/assets/images/sessions/sab-oscuridad.png"
+type = "image"
+title = "observo mi oscuridad sabiduria"
+
+[[generated]]
+id = "dGBXU92gcrkUxBtPyDQO1"
+uri = "file://artifacts/mobile/assets/images/sessions/sab-condicionamiento.png"
+type = "image"
+title = "condicionamiento creencias sabiduria"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

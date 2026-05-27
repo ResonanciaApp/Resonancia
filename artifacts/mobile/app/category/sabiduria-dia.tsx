@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -12,6 +11,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
@@ -27,15 +27,16 @@ const SABIDURÍA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sabiduria-d
 type CategoryDef = {
   tag: SabiduriaTag;
   icon: React.ComponentProps<typeof Feather>["name"];
+  image: ReturnType<typeof require>;
   description: string;
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Silencio Interior",            icon: "moon",     description: "Encuentra el espacio entre los pensamientos" },
-  { tag: "Aceptación y flujo",           icon: "droplet",  description: "Suelta y deja que la vida fluya" },
-  { tag: "Atención plena",               icon: "eye",      description: "Presencia total en el momento que es" },
-  { tag: "Observo mi oscuridad",         icon: "feather",  description: "Mira sin etiquetar, siente sin resistir" },
-  { tag: "Condicionamiento y creencias", icon: "layers",   description: "Despierta los patrones que te limitan" },
+  { tag: "Silencio Interior",            icon: "moon",     image: require("@/assets/images/sessions/sab-silencio-interior.jpg"),  description: "Encuentra el espacio entre los pensamientos" },
+  { tag: "Aceptación y flujo",           icon: "droplet",  image: require("@/assets/images/sessions/sab-aceptacion-flujo.jpg"),   description: "Suelta y deja que la vida fluya" },
+  { tag: "Atención plena",               icon: "eye",      image: require("@/assets/images/sessions/sab-atencion-plena.jpg"),     description: "Presencia total en el momento que es" },
+  { tag: "Observo mi oscuridad",         icon: "feather",  image: require("@/assets/images/sessions/sab-oscuridad.jpg"),          description: "Mira sin etiquetar, siente sin resistir" },
+  { tag: "Condicionamiento y creencias", icon: "layers",   image: require("@/assets/images/sessions/sab-condicionamiento.jpg"),   description: "Despierta los patrones que te limitan" },
 ];
 
 export default function SabiduriaDiaScreen() {
@@ -130,9 +131,7 @@ export default function SabiduriaDiaScreen() {
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    <View style={[styles.iconCircle, { backgroundColor: "rgba(240,204,130,0.1)", borderColor: "rgba(240,204,130,0.22)" }]}>
-                      <Feather name={cat.icon} size={20} color="#F0CC82" />
-                    </View>
+                    <Image source={cat.image} style={styles.iconCircle} contentFit="cover" />
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
                       <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
