@@ -28,7 +28,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
 const GRADIENT: [string, string] = ["#1C3545", "#0E2232"];
-const ACCENT = "#D4709A";
+const ACCENT = "#2A5580";
 
 const HOW_IT_WORKS = [
   {
