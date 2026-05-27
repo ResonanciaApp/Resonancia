@@ -181,10 +181,18 @@ export function DrawerMenu({ visible, onClose }: Props) {
                 onPress={() => navigate(item.route)}
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
-                <View style={styles.itemIcon}>
-                  <Feather name={item.icon} size={17} color="#B6955F" />
-                </View>
-                <Text style={styles.itemLabel}>{item.label}</Text>
+                {item.label === "Membresía" ? (
+                  <View style={styles.premiumIconCircle}>
+                    <Text style={styles.premiumIconText}>✦</Text>
+                  </View>
+                ) : (
+                  <View style={styles.itemIcon}>
+                    <Feather name={item.icon} size={17} color="#B6955F" />
+                  </View>
+                )}
+                <Text style={[styles.itemLabel, item.label === "Membresía" && { color: "#D6A14D" }]}>
+                  {item.label}
+                </Text>
               </Pressable>
             ))}
           </View>
@@ -309,6 +317,17 @@ const styles = StyleSheet.create({
   },
   itemPressed: { backgroundColor: "rgba(182,149,95,0.1)" },
   itemIcon: { width: 26, alignItems: "center" },
+  premiumIconCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#17352A",
+    borderWidth: 1,
+    borderColor: "#A97A34",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  premiumIconText: { fontSize: 11, color: "#F0C36A" },
   itemLabel: {
     color: "#C8C1B5",
     fontSize: 15,
