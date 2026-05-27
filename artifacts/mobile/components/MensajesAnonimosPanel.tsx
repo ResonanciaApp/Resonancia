@@ -27,7 +27,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
-const GRADIENT: [string, string] = ["#8B3A22", "#5C1F10"];
+const GRADIENT: [string, string] = ["#1C3545", "#0E2232"];
 const ACCENT = "#D4709A";
 
 const HOW_IT_WORKS = [
@@ -189,7 +189,7 @@ export function MensajesAnonimosPanel() {
     <View
       style={[
         styles.panel,
-        { backgroundColor: "rgba(58,36,24,0.78)" },
+        { backgroundColor: "rgba(14,22,30,0.88)" },
       ]}
     >
       {/* ── Header ── */}
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(100,170,190,0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
