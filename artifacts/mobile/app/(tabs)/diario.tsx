@@ -38,8 +38,8 @@ const SECTIONS: SectionMeta[] = [
     title: "Mis reflexiones",
     subtitle: "Mis más increíbles descubrimientos",
     icon: "moon",
-    accentColor: "#F0CC82",
-    gradientColors: ["#241C0C", "#141008"],
+    accentColor: "#7EC8E3",
+    gradientColors: ["#0C1E24", "#070F14"],
   },
   {
     key: "ideas",
@@ -190,7 +190,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
           </View>
           <View>
             <Text style={styles.panelTitle}>{meta.title}</Text>
-            <Text style={styles.panelSubtitle}>{meta.subtitle}</Text>
+            <Text style={[styles.panelSubtitle, { color: `${meta.accentColor}CC` }]}>{meta.subtitle}</Text>
           </View>
         </View>
         {entries.length > 0 && (

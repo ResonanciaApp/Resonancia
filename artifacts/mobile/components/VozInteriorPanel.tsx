@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitle: { color: "#FFFFFF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  headerSubtitle: { color: "rgba(220,190,100,0.80)", fontSize: 11, marginTop: 1 },
+  headerSubtitle: { color: "rgba(255,190,210,0.85)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
