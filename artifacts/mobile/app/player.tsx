@@ -358,10 +358,10 @@ export default function PlayerScreen() {
           >
             <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
               <Animated.View
-                style={[styles.progressFill, fillAnimStyle, { backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
+                style={[styles.progressFill, fillAnimStyle, { backgroundColor: colors.primary }]}
               />
               <Animated.View
-                style={[styles.progressThumb, thumbAnimStyle, { backgroundColor: isMusicaYSonidos ? "#6EC899" : colors.primary }]}
+                style={[styles.progressThumb, thumbAnimStyle, { backgroundColor: colors.primary }]}
               />
             </View>
           </View>
@@ -460,7 +460,7 @@ export default function PlayerScreen() {
               <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>
                 {isMusicaYSonidos ? "Sonidos Ambiente" : "Pájaros"}
               </Text>
-              <Text style={[styles.sliderPercent, { color: "#6EC899" }]}>
+              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
                 {Math.round(ambientVolume * 100)}%
               </Text>
             </View>
@@ -478,11 +478,11 @@ export default function PlayerScreen() {
               <View style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}>
                 <View
                   pointerEvents="none"
-                  style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
+                  style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: colors.primary }]}
                 />
                 <View
                   pointerEvents="none"
-                  style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: "#6EC899" }]}
+                  style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: colors.primary }]}
                 />
               </View>
             </View>
