@@ -314,7 +314,7 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        <View style={[styles.menuCard, { backgroundColor: colors.card, marginTop: 14 }]}>
+        <View style={[styles.menuCard, { backgroundColor: "#160C07", marginTop: 14 }]}>
           {menuSecondary.map((item, idx) => (
             <Pressable
               key={item.label}
