@@ -222,7 +222,7 @@ export function VozInteriorPanel() {
             <Feather name="mic" size={18} color={ACCENT} />
           </View>
           <View>
-            <Text style={styles.headerTitle}>Voz Interior</Text>
+            <Text style={[styles.headerTitle, { color: ACCENT }]}>Voz Interior</Text>
             <Text style={styles.headerSubtitle}>Graba tus pensamientos y emociones</Text>
           </View>
         </View>
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitle: { color: "#FFFFFF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  headerSubtitle: { color: "rgba(255,190,210,0.85)", fontSize: 11, marginTop: 1 },
+  headerSubtitle: { color: "#FFFFFF", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",

@@ -185,8 +185,8 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
             <Feather name={meta.icon} size={18} color={meta.accentColor} />
           </View>
           <View>
-            <Text style={styles.panelTitle}>{meta.title}</Text>
-            <Text style={[styles.panelSubtitle, { color: `${meta.accentColor}CC` }]}>{meta.subtitle}</Text>
+            <Text style={[styles.panelTitle, { color: meta.accentColor }]}>{meta.title}</Text>
+            <Text style={styles.panelSubtitle}>{meta.subtitle}</Text>
           </View>
         </View>
         {entries.length > 0 && (
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   panelTitle: { color: "#FFFFFF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  panelSubtitle: { color: "rgba(220,190,100,0.80)", fontSize: 11, marginTop: 1 },
+  panelSubtitle: { color: "#FFFFFF", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
