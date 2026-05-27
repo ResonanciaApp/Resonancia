@@ -41,6 +41,12 @@ const { width } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 20;
 
+const PARA_TU_DIA = [
+  { id: "1", emoji: "🌞", label: "Mañana" },
+  { id: "5", emoji: "✨", label: "Afirmaciones" },
+  { id: "2", emoji: "🌙", label: "Noche" },
+];
+
 const TIME_BUCKETS = [
   { label: "5 min",   min: 0,  max: 5    },
   { label: "10 min",  min: 6,  max: 10   },
@@ -492,6 +498,62 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
+        {/* ── 9.5 PARA TU DÍA ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Para tu día</Text>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.hScroll}
+          >
+            {PARA_TU_DIA.map((item) => {
+              const s = SESSIONS.find((x) => x.id === item.id);
+              if (!s) return null;
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => router.push(`/session/${s.id}` as never)}
+                  style={({ pressed }) => [styles.diaCard, { opacity: pressed ? 0.9 : 1 }]}
+                >
+                  <Image source={s.image as never} style={styles.diaImg} />
+                  <LinearGradient
+                    colors={["rgba(0,0,0,0.05)", "rgba(0,0,0,0.75)"]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <View style={styles.diaTopRow}>
+                    <View style={styles.diaChip}>
+                      <Text style={styles.diaChipEmoji}>{item.emoji}</Text>
+                      <Text style={styles.diaChipText}>{item.label}</Text>
+                    </View>
+                    <Text style={styles.diaDuration}>{s.duration}m</Text>
+                  </View>
+                  <View style={styles.diaBottomRow}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.diaTitle} numberOfLines={2}>{s.title}</Text>
+                      {s.guide?.name && (
+                        <Text style={styles.diaAuthor} numberOfLines={1}>{s.guide.name}</Text>
+                      )}
+                    </View>
+                    <Pressable
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        playSession(s);
+                        router.push("/player" as never);
+                      }}
+                      style={styles.diaPlayBtn}
+                      hitSlop={8}
+                    >
+                      <Feather name="play" size={16} color="#0C0908" style={{ marginLeft: 2 }} />
+                    </Pressable>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+
         {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />
 
@@ -562,6 +624,56 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
   seeAll: { fontSize: 13 },
+
+  // Para tu día
+  diaCard: {
+    width: 260,
+    height: 170,
+    borderRadius: 18,
+    overflow: "hidden",
+    marginRight: 12,
+    backgroundColor: "#1a120c",
+  },
+  diaImg: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
+  diaTopRow: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+    right: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  diaChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.95)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+  },
+  diaChipEmoji: { fontSize: 12, marginRight: 5 },
+  diaChipText: { fontSize: 12, fontWeight: "700", color: "#1a120c" },
+  diaDuration: { fontSize: 13, fontWeight: "700", color: "#fff" },
+  diaBottomRow: {
+    position: "absolute",
+    bottom: 12,
+    left: 14,
+    right: 12,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 10,
+  },
+  diaTitle: { fontSize: 16, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  diaAuthor: { fontSize: 12, color: "rgba(255,255,255,0.85)", marginTop: 2 },
+  diaPlayBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
   // Categories — pill icons row
   catPillRow: {
