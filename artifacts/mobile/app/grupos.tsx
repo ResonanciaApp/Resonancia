@@ -166,7 +166,7 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
           <View style={{ flex: 1 }}>
             <Text style={[styles.sheetOptionTitle, { color: colors.foreground }]}>Privado</Text>
             <Text style={[styles.sheetOptionSub, { color: colors.mutedForeground }]}>
-              Escogés quién se une a tu Grupo
+              Escoges quién se une a tu Grupo
             </Text>
           </View>
           <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
@@ -234,8 +234,8 @@ function LocalGrupoAvatar({ grupo, size = 54 }: { grupo: GrupoLocal; size?: numb
     );
   }
   return (
-    <LinearGradient colors={["#2D4A3E", "#152820"]} style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ color: "#C8C1B5", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
+    <LinearGradient colors={["#3A2517", "#1F1209"]} style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: "center", justifyContent: "center" }}>
+      <Text style={{ color: "#E5C98B", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
     </LinearGradient>
   );
 }
@@ -266,7 +266,7 @@ function TabMisGrupos({
         {gruposCreados.length === 0 ? (
           <View style={[styles.emptyBox, { borderColor: colors.border }]}>
             <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-              No gestionás ningún grupo todavía.{"\n"}¿Te apasiona algún tema? Crea un grupo público o privado hoy.
+              No gestionas ningún grupo todavía.{"\n"}¿Te apasiona algún tema? Crea un grupo público o privado hoy.
             </Text>
           </View>
         ) : (

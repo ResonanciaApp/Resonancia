@@ -97,7 +97,7 @@ export default function ActividadesScreen() {
 
         <Text style={[styles.title, { color: colors.foreground }]}>Actividades Expansivas</Text>
         <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-          Conectá con practicantes cerca tuyo
+          Conecta con practicantes cerca de ti
         </Text>
 
         {/* City filter */}

@@ -27,6 +27,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { useIntencion } from "@/context/IntencionContext";
+import { usePremium } from "@/context/PremiumContext";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -56,6 +57,7 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
+  const { isPremium } = usePremium();
   const lastIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const {
     username,
@@ -284,36 +286,38 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        <View style={styles.premiumBanner}>
-          <LinearGradient
-            colors={["#0D261D", "#06150F"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-            style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-          />
-          <View style={styles.premiumGlow} />
-          <View style={styles.premiumLeft}>
-            <View style={styles.premiumTitleRow}>
-              <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 13, height: 13, marginRight: 6 }} contentFit="contain" />
-              <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>Prueba Premium</Text>
-            </View>
-            <Text style={[styles.premiumSub, { color: "#D5C8B2", marginBottom: 10 }]}>
-              Lleva tu relajación al siguiente nivel y accede a:
-            </Text>
-            {[
-              { icon: "headphones", text: "+500 meditaciones" },
-              { icon: "music",      text: "+50 Música y sonidos relajantes" },
-              { icon: "users",      text: "Muro general de la comunidad" },
-            ].map((f) => (
-              <View key={f.text} style={styles.premiumFeatureRow}>
-                <Feather name={f.icon as never} size={11} color="#A97A34" />
-                <Text style={[styles.premiumFeatureText, { color: "#D5C8B2" }]}>{f.text}</Text>
+        {!isPremium && (
+          <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
+            <LinearGradient
+              colors={["#2E1B0E", "#160C06"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+            />
+            <View style={styles.premiumGlow} />
+            <View style={styles.premiumLeft}>
+              <View style={styles.premiumTitleRow}>
+                <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 13, height: 13, marginRight: 6 }} contentFit="contain" />
+                <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>Prueba Premium</Text>
               </View>
-            ))}
-          </View>
-          <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
-            <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
-          </View>
-        </View>
+              <Text style={[styles.premiumSub, { color: "#D5C8B2", marginBottom: 10 }]}>
+                Lleva tu relajación al siguiente nivel y accede a:
+              </Text>
+              {[
+                { icon: "headphones", text: "+500 meditaciones" },
+                { icon: "music",      text: "+50 Música y sonidos relajantes" },
+                { icon: "users",      text: "Muro general de la comunidad" },
+              ].map((f) => (
+                <View key={f.text} style={styles.premiumFeatureRow}>
+                  <Feather name={f.icon as never} size={11} color="#D6A85B" />
+                  <Text style={[styles.premiumFeatureText, { color: "#D5C8B2" }]}>{f.text}</Text>
+                </View>
+              ))}
+            </View>
+            <View style={[styles.premiumBadge, { backgroundColor: "#3A2517", borderColor: "#D6A85B" }]}>
+              <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
+            </View>
+          </Pressable>
+        )}
 
         {/* ── Favoritos ── */}
         <View style={styles.section}>

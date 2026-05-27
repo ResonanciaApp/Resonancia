@@ -79,7 +79,7 @@ export default function AmigosScreen() {
 
         <Text style={[styles.title, { color: colors.foreground }]}>Amigos</Text>
         <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-          Conectá con practicantes de tu comunidad
+          Conecta con practicantes de tu comunidad
         </Text>
 
         {!isLoaded ? (
