@@ -270,13 +270,25 @@ export default function ProfileScreen() {
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
           />
-          {/* subtle glow top-left */}
           <View style={styles.premiumGlow} />
           <View style={styles.premiumLeft}>
-            <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>RESONANCE Premium</Text>
-            <Text style={[styles.premiumSub, { color: "#D5C8B2" }]}>
-              Accede a todas las sesiones, modo offline y más
+            <View style={styles.premiumTitleRow}>
+              <Text style={{ color: "#F0C36A", fontSize: 13, marginRight: 6 }}>✦</Text>
+              <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>Prueba Premium</Text>
+            </View>
+            <Text style={[styles.premiumSub, { color: "#D5C8B2", marginBottom: 10 }]}>
+              Lleva tu relajación al siguiente nivel y accede a:
             </Text>
+            {[
+              { icon: "headphones", text: "+500 meditaciones" },
+              { icon: "music",      text: "+50 Música y sonidos relajantes" },
+              { icon: "users",      text: "Muro general de la comunidad" },
+            ].map((f) => (
+              <View key={f.text} style={styles.premiumFeatureRow}>
+                <Feather name={f.icon as never} size={11} color="#A97A34" />
+                <Text style={[styles.premiumFeatureText, { color: "#D5C8B2" }]}>{f.text}</Text>
+              </View>
+            ))}
           </View>
           <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
             <Text style={{ color: "#F0C36A", fontSize: 16 }}>✦</Text>
@@ -517,8 +529,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(35,66,54,0.5)",
   },
   premiumLeft: { flex: 1 },
-  premiumTitle: { fontSize: 15, fontWeight: "700", marginBottom: 4 },
+  premiumTitleRow: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
+  premiumTitle: { fontSize: 15, fontWeight: "700" },
   premiumSub: { fontSize: 12, lineHeight: 17 },
+  premiumFeatureRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 3 },
+  premiumFeatureText: { fontSize: 11, lineHeight: 16 },
   premiumBadge: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
 
   // Menu
