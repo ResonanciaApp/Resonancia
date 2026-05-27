@@ -53,9 +53,16 @@ export default function MembresiaScreen() {
   const [selected, setSelected] = useState<"anual" | "mensual">("anual");
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#241710" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
+      <LinearGradient
+        colors={["rgba(214,161,77,0.10)", "rgba(35,66,54,0.08)", "transparent"]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.6 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40 }}
