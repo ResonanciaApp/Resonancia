@@ -17,7 +17,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS, type Session, type SoundTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -88,9 +87,13 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#1A2418" }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <Image
+        source={require("@/assets/images/backgrounds/musica-sonidos.jpg")}
+        style={StyleSheet.absoluteFill}
+        resizeMode="cover"
+      />
 
       <ScrollView
         style={styles.scroll}
