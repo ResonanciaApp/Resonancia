@@ -3,4 +3,4 @@ export {
   usePremium,
   type PremiumStorage,
   type PremiumState,
-} from "./PremiumContext.js";
+} from "./PremiumContext";
