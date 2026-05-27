@@ -203,7 +203,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
           value={text}
           onChangeText={(t) => setText(t.slice(0, MAX_CHARS))}
           placeholder="Escribe aquí tu reflexión..."
-          placeholderTextColor={colors.mutedForeground}
+          placeholderTextColor="rgba(237,225,211,0.55)"
           multiline
           style={[
             styles.textInput,
@@ -214,9 +214,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
           ]}
         />
         <View style={styles.inputFooter}>
-          <Text style={[styles.charCount, { color: remaining < 100 ? "#E07060" : colors.mutedForeground }]}>
-            {remaining} caracteres restantes
-          </Text>
+          <View />
           <Pressable
             onPress={handleSave}
             disabled={!text.trim()}
