@@ -423,10 +423,10 @@ export function MensajesAnonimosPanel() {
                       style={[
                         styles.messageCard,
                         {
-                          backgroundColor: colors.background,
+                          backgroundColor: "rgba(18,52,68,0.90)",
                           borderColor: isExpiringSoon
                             ? "rgba(224,112,96,0.3)"
-                            : colors.border,
+                            : "rgba(80,160,185,0.2)",
                         },
                       ]}
                     >
