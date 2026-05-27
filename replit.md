@@ -102,6 +102,37 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 - **Configuraciones → "Términos y privacidad"**: hoy apunta a `/terminos` con texto base interno. Cuando exista web oficial, opcionalmente reemplazar por link externo.
 - **Configuraciones → "Calificar la app"**: ya usa `expo-store-review` (`requestReview` → fallback a `storeUrl` → fallback a Alert). Funciona automáticamente cuando esté publicada en stores.
 - **Free vs Premium (gating de funcionalidades)**: `PremiumContext` + flag `isPremium` por sesión ya armados (mobile-only, pendiente mover a `lib/` cuando exista la web). Toggle de testing en Configuraciones → DESARROLLO (`__DEV__`). Falta: gating de features (no solo sesiones), y decidir qué sesiones marcar como premium al subirlas.
+
+### Propuesta de paquete Premium (a revisar y definir)
+
+**FREE incluye:**
+- Sesiones marcadas como gratuitas (hoy: #1 "Adentro de uno mismo" y #29 "Prueba Maestra 1") — pensar 5-8 sesiones sampler en total, repartidas entre categorías
+- Intención del día (ilimitada)
+- Frase del día (ver + compartir)
+- Diario: hasta **5 entradas** guardadas
+- Favoritos: hasta **5 sesiones** favoritas
+- Timer de sueño / meditación: hasta **30 min**
+- Comunidad: ver grupos, posts y actividades (modo lectura)
+- Configuraciones, perfil, ayuda, registro
+- Notificaciones (cuando exista backend)
+
+**PREMIUM desbloquea:**
+- Catálogo completo de sesiones
+- **Voz Interior**: grabar mensajes (hoy todos pueden)
+- **Diario / Mensajes del Alma**: entradas ilimitadas
+- **Favoritos**: ilimitados
+- **Timer**: hasta 8 hs (para dormir toda la noche)
+- **Descargas offline** de sesiones
+- **Comunidad activa**: postear, crear actividades, chatear, invitar amigos
+- **Mensajes anónimos**: enviar (no solo leer)
+- **Estadísticas / historial extendido** (más allá de últimos 7 días)
+- **Personalización avanzada**: temas, sonidos ambiente custom
+
+**Notas de implementación cuando se confirme:**
+- Cada feature gateada usa `const { isPremium } = usePremium()` y muestra PremiumBadge / Alert → router.push("/membresia")
+- Mantener UX coherente: el free ve la opción pero al tocar le explica brevemente y le ofrece probar premium
+- Para los límites (5 diario, 30 min timer, etc.), guardar el contador local y al alcanzar el tope mostrar paywall
+
 - **Versión web (futura)**: la DB, API y lógica se reusan. Hay que reescribir UI (RN no corre en web). Pago: Stripe directo (no Apple/Google). Estimado: 2-4 semanas de trabajo dependiendo del scope.
 - **Cobro de Premium (pagos in-app)**: usar **RevenueCat** sobre Apple IAP / Google Play Billing (obligatorio para apps móviles — no se puede usar Stripe directo). Apple/Google se quedan 15-30%. Falta: definir precio (mensual/anual/lifetime), crear cuentas en App Store Connect + Google Play Console + RevenueCat. Para web (si llega) sí va Stripe directo.
 - **Frase del día → contador "X compartieron"**: el número actual es decorativo (fórmula basada en el día del año, no en datos reales). Cuando exista backend, registrar cada compartida en DB y devolver el total real desde la API.
