@@ -38,15 +38,15 @@ const SECTIONS: SectionMeta[] = [
     title: "Mis reflexiones",
     subtitle: "Mis más increíbles descubrimientos",
     icon: "moon",
-    accentColor: "#7EC8E3",
-    gradientColors: ["#0C1E24", "#070F14"],
+    accentColor: "#D6A85B",
+    gradientColors: ["#241C0C", "#141008"],
   },
   {
     key: "ideas",
     title: "Ideas Brillantes",
     subtitle: "Las chispas que no quiero perder",
     icon: "zap",
-    accentColor: "#F0CC82",
+    accentColor: "#D6A85B",
     gradientColors: ["#241C0C", "#141008"],
   },
 ];
