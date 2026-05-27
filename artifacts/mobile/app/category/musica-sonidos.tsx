@@ -125,7 +125,7 @@ export default function MusicaSonidosScreen() {
           <View
             style={[
               styles.searchBar,
-              { backgroundColor: "rgba(42,62,42,0.55)", borderColor: "rgba(168,196,168,0.22)" },
+              { backgroundColor: "rgba(42,62,42,0.55)", borderColor: "transparent", borderWidth: 0 },
             ]}
           >
             <Feather name="search" size={16} color="#B8D4B8" style={{ marginRight: 8 }} />
@@ -161,15 +161,16 @@ export default function MusicaSonidosScreen() {
                 style={[
                   styles.tab,
                   {
-                    backgroundColor: active ? colors.primary : colors.card,
-                    borderColor: active ? colors.primary : "rgba(182,149,95,0.2)",
+                    backgroundColor: active ? "#A8C4A8" : "rgba(42,62,42,0.55)",
+                    borderColor: "transparent",
+                    borderWidth: 0,
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.tabText,
-                    { color: active ? colors.primaryForeground : colors.mutedForeground },
+                    { color: active ? "#1A2418" : "#B8D4B8" },
                   ]}
                 >
                   {tab}
@@ -204,7 +205,8 @@ export default function MusicaSonidosScreen() {
                       {
                         width: CARD_WIDTH,
                         backgroundColor: "rgba(42,62,42,0.55)",
-                        borderColor: "rgba(168,196,168,0.22)",
+                        borderColor: "transparent",
+                        borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}
