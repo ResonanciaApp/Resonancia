@@ -303,6 +303,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.06)",
   },
   headerLeft: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
   headerIconBg: {
