@@ -189,7 +189,7 @@ export function MensajesAnonimosPanel() {
     <View
       style={[
         styles.panel,
-        { backgroundColor: "#3A2418" },
+        { backgroundColor: "rgba(58,36,24,0.78)" },
       ]}
     >
       {/* ── Header ── */}
