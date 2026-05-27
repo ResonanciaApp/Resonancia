@@ -84,6 +84,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "2",
+    isPremium: true,
     title: "Para dormir bien",
     subtitle: "Baño de Cuencos y Gongs",
     categoryId: "sonidos-ancestrales",
@@ -103,6 +104,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "3",
+    isPremium: true,
     title: "Descanz en ti",
     subtitle: "ASMR Expansivo",
     categoryId: "asmr-expansivos",
@@ -120,6 +122,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "4",
+    isPremium: true,
     title: "Dentro de uno",
     subtitle: "El Gran Despertar · Episodio 1",
     categoryId: "podcast",
@@ -136,6 +139,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "5",
+    isPremium: true,
     title: "Más allá del sonido",
     subtitle: "Consejo del Día",
     categoryId: "sabiduria-dia",
@@ -152,6 +156,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "6",
+    isPremium: true,
     title: "Investigando en la mente",
     subtitle: "Pausa Meditativa",
     categoryId: "pausas-meditativas",
@@ -186,6 +191,7 @@ export const SESSIONS: Session[] = [
   // ── Sonidos Binaurales con Cuencos ────────────────────────────────────────
   {
     id: "8",
+    isPremium: true,
     title: "Ondas Delta para Dormir",
     subtitle: "Sonidos Binaurales con Cuencos",
     categoryId: "sonidos-ancestrales",
@@ -204,6 +210,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "9",
+    isPremium: true,
     title: "Theta Profundo con Cuencos",
     subtitle: "Sonidos Binaurales con Cuencos",
     categoryId: "sonidos-ancestrales",
@@ -222,6 +229,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "10",
+    isPremium: true,
     title: "Sincronización Gamma 40Hz",
     subtitle: "Sonidos Binaurales con Cuencos",
     categoryId: "sonidos-ancestrales",
@@ -242,6 +250,7 @@ export const SESSIONS: Session[] = [
   // ── Meditaciones ASMR ─────────────────────────────────────────────────────
   {
     id: "11",
+    isPremium: true,
     title: "Susurros del Cuenco Tibetano",
     subtitle: "Meditaciones ASMR",
     categoryId: "meditaciones-asmr",
@@ -276,6 +285,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "13",
+    isPremium: true,
     title: "El Silencio que Habla",
     subtitle: "Meditaciones ASMR",
     categoryId: "meditaciones-asmr",
@@ -295,6 +305,7 @@ export const SESSIONS: Session[] = [
   // ── Historias para Dormir ──────────────────────────────────────────────────
   {
     id: "14",
+    isPremium: true,
     title: "El Lago de Cristal",
     subtitle: "Historias para Dormir",
     categoryId: "historias-dormir",
@@ -311,6 +322,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "15",
+    isPremium: true,
     title: "Camino entre Bosques",
     subtitle: "Historias para Dormir",
     categoryId: "historias-dormir",
@@ -327,6 +339,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "16",
+    isPremium: true,
     title: "La Caverna del Sonido",
     subtitle: "Historias para Dormir",
     categoryId: "historias-dormir",
@@ -346,6 +359,7 @@ export const SESSIONS: Session[] = [
   // ── Historias Infantiles ───────────────────────────────────────────────────
   {
     id: "17",
+    isPremium: true,
     title: "El Cuenco Mágico",
     subtitle: "Historias Infantiles",
     categoryId: "historias-infantiles",
@@ -380,6 +394,7 @@ export const SESSIONS: Session[] = [
   // ── Música y Sonidos ──────────────────────────────────────────────────────
   {
     id: "20",
+    isPremium: true,
     title: "Sonidos de la Naturaleza",
     subtitle: "Atmósfera Natural",
     categoryId: "musica-sonidos",
@@ -397,6 +412,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "21",
+    isPremium: true,
     title: "Lluvia de Bosque",
     subtitle: "Sonidos Naturales",
     categoryId: "musica-sonidos",
@@ -413,6 +429,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "22",
+    isPremium: true,
     title: "Orilla del Mar",
     subtitle: "Sonidos Naturales",
     categoryId: "musica-sonidos",
@@ -447,6 +464,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "24",
+    isPremium: true,
     title: "Binaural Theta Nocturno",
     subtitle: "Ondas Cerebrales",
     categoryId: "musica-sonidos",
@@ -464,6 +482,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "25",
+    isPremium: true,
     title: "Música Ambient Dorada",
     subtitle: "Música Meditativa",
     categoryId: "musica-sonidos",
@@ -480,6 +499,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "26",
+    isPremium: true,
     title: "Piano y Cuencos",
     subtitle: "Música Meditativa",
     categoryId: "musica-sonidos",
@@ -515,6 +535,7 @@ export const SESSIONS: Session[] = [
 
   {
     id: "27",
+    isPremium: true,
     title: "Riachuelo con Pájaros",
     subtitle: "Sonidos Naturales",
     categoryId: "musica-sonidos",
@@ -533,6 +554,7 @@ export const SESSIONS: Session[] = [
 
   {
     id: "19",
+    isPremium: true,
     title: "La Tortuga y el Gong",
     subtitle: "Historias Infantiles",
     categoryId: "historias-infantiles",
@@ -551,6 +573,7 @@ export const SESSIONS: Session[] = [
   // ── Prueba Maestra 2 ───────────────────────────────────────────────────────
   {
     id: "30",
+    isPremium: true,
     title: "Prueba Maestra 2",
     subtitle: "Binaural",
     categoryId: "musica-sonidos",
