@@ -16,7 +16,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { SacredBackground } from "@/components/SacredBackground";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
+import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type AncestralTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -41,6 +43,7 @@ const CATEGORIES: CategoryDef[] = [
 
 export default function SonidosAncestalesScreen() {
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
@@ -213,10 +216,12 @@ export default function SonidosAncestalesScreen() {
                   </Text>
                 </View>
               ) : (
-                filteredSessions.map((session) => (
+                filteredSessions.map((session) => {
+                  const locked = !!session.isPremium && !isPremium;
+                  return (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.card,
                       {
@@ -226,11 +231,14 @@ export default function SonidosAncestalesScreen() {
                       },
                     ]}
                   >
+                    <View>
                     <Image
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       source={session.image as any}
                       style={styles.cardImage}
                     />
+                    <PremiumBadge session={session} />
+                    </View>
                     <View style={styles.cardContent}>
                       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
@@ -247,7 +255,8 @@ export default function SonidosAncestalesScreen() {
                     </View>
                     <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
                   </Pressable>
-                ))
+                  );
+                })
               )}
             </View>
           </>

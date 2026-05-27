@@ -16,7 +16,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
+import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type MeditationTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -41,6 +43,7 @@ const CATEGORIES: CategoryDef[] = [
 
 export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
 
   const [selectedTag, setSelectedTag] = useState<MeditationTag | null>(null);
@@ -221,10 +224,12 @@ export default function MeditacionesGuiadasScreen() {
                   </Text>
                 </View>
               ) : (
-                filteredSessions.map((session) => (
+                filteredSessions.map((session) => {
+                  const locked = !!session.isPremium && !isPremium;
+                  return (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.card,
                       {
@@ -235,11 +240,14 @@ export default function MeditacionesGuiadasScreen() {
                       },
                     ]}
                   >
+                    <View>
                     <Image
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       source={session.image as any}
                       style={styles.cardImage}
                     />
+                    <PremiumBadge session={session} />
+                    </View>
                     <View style={styles.cardContent}>
                       <Text style={[styles.cardCategory, { color: colors.accent }]}>
                         {session.categoryLabel}
@@ -255,7 +263,8 @@ export default function MeditacionesGuiadasScreen() {
                       </View>
                     </View>
                   </Pressable>
-                ))
+                  );
+                })
               )}
             </View>
           </>

@@ -16,6 +16,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PremiumBadge } from "@/components/PremiumBadge";
+import { usePremium } from "@/context/PremiumContext";
 import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -36,6 +38,7 @@ const DURATION_FILTERS = [
 export default function TagScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
 
 
@@ -215,10 +218,12 @@ export default function TagScreen() {
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.hScroll}
                 >
-                  {topSessions.map((session) => (
+                  {topSessions.map((session) => {
+                    const locked = !!session.isPremium && !isPremium;
+                    return (
                     <Pressable
                       key={session.id}
-                      onPress={() => router.push(`/session/${session.id}` as never)}
+                      onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                       style={({ pressed }) => [styles.hCard, { opacity: pressed ? 0.82 : 1 }]}
                     >
                       <View style={[styles.hCardImg, { backgroundColor: colors.card }]}>
@@ -230,6 +235,7 @@ export default function TagScreen() {
                         <View style={styles.durationBadge}>
                           <Text style={styles.durationText}>{session.durationLabel}</Text>
                         </View>
+                        <PremiumBadge session={session} />
                       </View>
                       <Text style={[styles.hCardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
@@ -238,7 +244,8 @@ export default function TagScreen() {
                         {session.categoryLabel}
                       </Text>
                     </Pressable>
-                  ))}
+                    );
+                  })}
                 </ScrollView>
               </View>
             )}
@@ -247,10 +254,12 @@ export default function TagScreen() {
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Todos</Text>
               <View style={styles.list}>
-                {filteredSessions.map((session) => (
+                {filteredSessions.map((session) => {
+                  const locked = !!session.isPremium && !isPremium;
+                  return (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.listRow,
                       { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.14)", opacity: pressed ? 0.82 : 1 },
@@ -265,6 +274,7 @@ export default function TagScreen() {
                       <View style={styles.durationBadge}>
                         <Text style={styles.durationText}>{session.durationLabel}</Text>
                       </View>
+                      <PremiumBadge session={session} />
                     </View>
                     <View style={styles.listMeta}>
                       <Text style={[styles.listTitle, { color: colors.foreground }]} numberOfLines={2}>
@@ -275,7 +285,8 @@ export default function TagScreen() {
                       </Text>
                     </View>
                   </Pressable>
-                ))}
+                  );
+                })}
               </View>
             </View>
           </>

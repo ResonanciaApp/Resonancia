@@ -14,7 +14,9 @@ import {
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { SacredBackground } from "@/components/SacredBackground";
+import { usePremium } from "@/context/PremiumContext";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type SabiduriaTag } from "@/data/sessions";
@@ -41,6 +43,7 @@ const CATEGORIES: CategoryDef[] = [
 
 export default function SabiduriaDiaScreen() {
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
 
   const [selectedTag, setSelectedTag] = useState<SabiduriaTag | null>(null);
@@ -204,20 +207,25 @@ export default function SabiduriaDiaScreen() {
                   </Text>
                 </View>
               ) : (
-                filteredSessions.map((session) => (
+                filteredSessions.map((session) => {
+                  const locked = !!session.isPremium && !isPremium;
+                  return (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.card,
                       { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "rgba(240,204,130,0.22)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
+                    <View>
                     <Image
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       source={session.image as any}
                       style={styles.cardImage}
                     />
+                    <PremiumBadge session={session} />
+                    </View>
                     <View style={styles.cardContent}>
                       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
@@ -234,7 +242,8 @@ export default function SabiduriaDiaScreen() {
                     </View>
                     <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
                   </Pressable>
-                ))
+                  );
+                })
               )}
             </View>
           </>

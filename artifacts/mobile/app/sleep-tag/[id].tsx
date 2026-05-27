@@ -15,6 +15,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { PremiumBadge } from "@/components/PremiumBadge";
+import { usePremium } from "@/context/PremiumContext";
 import { SLEEP_TAG_CARDS } from "@/data/tags";
 import { getSessionsBySleepTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -28,6 +30,7 @@ const CARD_IMG_H = Math.round(CARD_W * 0.85);
 export default function SleepTagDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -107,10 +110,12 @@ export default function SleepTagDetailScreen() {
           <View style={styles.grid}>
             {rows.map((row, rowIdx) => (
               <View key={rowIdx} style={styles.row}>
-                {row.map((session) => (
+                {row.map((session) => {
+                  const locked = !!session.isPremium && !isPremium;
+                  return (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.card,
                       { width: CARD_W, opacity: pressed ? 0.82 : 1 },
@@ -132,6 +137,7 @@ export default function SleepTagDetailScreen() {
                           {session.durationLabel}
                         </Text>
                       </View>
+                      <PremiumBadge session={session} />
                     </View>
                     <Text
                       style={[styles.cardTitle, { color: colors.foreground }]}
@@ -152,7 +158,8 @@ export default function SleepTagDetailScreen() {
                       </Text>
                     </View>
                   </Pressable>
-                ))}
+                  );
+                })}
                 {row.length === 1 && <View style={{ width: CARD_W }} />}
               </View>
             ))}

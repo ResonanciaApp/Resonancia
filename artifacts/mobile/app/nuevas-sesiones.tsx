@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PremiumBadge } from "@/components/PremiumBadge";
+import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -22,6 +24,7 @@ const ALL_SESSIONS = [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id
 
 export default function NuevasSessionesScreen() {
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -84,9 +87,11 @@ export default function NuevasSessionesScreen() {
             </View>
           )
         }
-        renderItem={({ item: session, index }) => (
+        renderItem={({ item: session, index }) => {
+          const locked = !!session.isPremium && !isPremium;
+          return (
           <Pressable
-            onPress={() => router.push(`/session/${session.id}` as never)}
+            onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
             style={({ pressed }) => [
               styles.card,
               {
@@ -101,7 +106,10 @@ export default function NuevasSessionesScreen() {
                 {String(index + 1).padStart(2, "0")}
               </Text>
             </View>
-            <Image source={session.image as never} style={styles.cardImage} />
+            <View>
+              <Image source={session.image as never} style={styles.cardImage} />
+              <PremiumBadge session={session} />
+            </View>
             <View style={styles.cardBody}>
               {session.isNew && (
                 <View style={[styles.newBadge, { backgroundColor: colors.primary }]}>
@@ -123,7 +131,8 @@ export default function NuevasSessionesScreen() {
             </View>
             <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
           </Pressable>
-        )}
+          );
+        }}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       />
     </View>

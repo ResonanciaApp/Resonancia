@@ -17,7 +17,9 @@ import {
 import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session, type SoundTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -52,6 +54,7 @@ const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos"
 
 export default function MusicaSonidosScreen() {
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
   const { isFavorite, toggleFavorite, playSessionWithDuration } = usePlayer();
 
@@ -213,7 +216,10 @@ export default function MusicaSonidosScreen() {
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}
-                    onPress={() => setPendingSession(session)}
+                    onPress={() => {
+                      if (session.isPremium && !isPremium) router.push("/membresia" as never);
+                      else setPendingSession(session);
+                    }}
                   >
                     {/* Circular image */}
                     <View style={[styles.imgWrap, { width: IMG_SIZE, height: IMG_SIZE }]}>
@@ -225,6 +231,7 @@ export default function MusicaSonidosScreen() {
                         transition={0}
                         cachePolicy="memory-disk"
                       />
+                      <PremiumBadge session={session} />
                       {/* Tag badge on image */}
                       {activeTab === "Todos" && tag && tagStyle && tagIcon && (
                         <View
