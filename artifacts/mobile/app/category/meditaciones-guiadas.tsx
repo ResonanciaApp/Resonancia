@@ -113,7 +113,7 @@ export default function MeditacionesGuiadasScreen() {
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Meditaciones Guiadas"}
           </Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+          <Text style={[styles.pageSub, { color: "#B49ECB" }]}>
             {selectedTag
               ? selectedCat?.description ?? ""
               : "Déjate llevar por la voz y el sonido"}
@@ -146,10 +146,10 @@ export default function MeditacionesGuiadasScreen() {
 
                     {/* Count + chevron */}
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.catCount, { color: "#C8B4E0" }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                      <Feather name="chevron-right" size={18} color="#C8B4E0" />
                     </View>
                   </Pressable>
                 );
@@ -211,7 +211,7 @@ export default function MeditacionesGuiadasScreen() {
           <>
             {/* Search bar */}
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)" }]}>
+              <View style={[styles.searchBar, { backgroundColor: "rgba(60,32,82,0.55)", borderColor: "rgba(200,180,224,0.22)" }]}>
                 <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
@@ -246,8 +246,8 @@ export default function MeditacionesGuiadasScreen() {
                     style={({ pressed }) => [
                       styles.card,
                       {
-                        backgroundColor: colors.card,
-                        borderColor: "rgba(182,149,95,0.18)",
+                        backgroundColor: "rgba(60,32,82,0.55)",
+                        borderColor: "rgba(200,180,224,0.22)",
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}
