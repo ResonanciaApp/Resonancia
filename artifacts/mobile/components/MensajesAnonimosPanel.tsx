@@ -27,7 +27,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
-const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
+const GRADIENT: [string, string] = ["#8B3A22", "#5C1F10"];
 const ACCENT = "#D4709A";
 
 const HOW_IT_WORKS = [
@@ -189,7 +189,7 @@ export function MensajesAnonimosPanel() {
     <View
       style={[
         styles.panel,
-        { backgroundColor: colors.card },
+        { backgroundColor: "#3A2418" },
       ]}
     >
       {/* ── Header ── */}
@@ -201,7 +201,7 @@ export function MensajesAnonimosPanel() {
       >
         <View style={styles.headerLeft}>
           <View style={styles.headerIconBg}>
-            <Feather name="users" size={18} color="#B6955F" />
+            <Feather name="users" size={18} color="#FFFFFF" />
           </View>
           <View style={{ flex: 1 }}>
             <View style={styles.headerTitleRow}>
@@ -308,7 +308,7 @@ export function MensajesAnonimosPanel() {
           <Feather
             name={showFeed ? "chevron-up" : "chevron-down"}
             size={16}
-            color="#C8A860"
+            color="#FFFFFF"
           />
         </View>
       </Pressable>
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(182,149,95,0.22)",
+    backgroundColor: "rgba(255,255,255,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerTitle: {
-    color: "#C8A860",
+    color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
@@ -551,19 +551,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(182,149,95,0.18)",
+    backgroundColor: "rgba(255,255,255,0.18)",
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   cycleBadgeText: {
-    color: "#C8A860",
+    color: "#FFFFFF",
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(200,168,96,0.65)",
+    color: "rgba(255,255,255,0.65)",
     fontSize: 11,
     marginTop: 2,
   },
