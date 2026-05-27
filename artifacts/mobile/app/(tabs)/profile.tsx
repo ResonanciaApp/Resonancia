@@ -268,20 +268,22 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Premium Banner ── */}
-        <View style={[styles.premiumBanner]}>
+        <View style={styles.premiumBanner}>
           <LinearGradient
-            colors={["rgba(182,149,95,0.15)", "rgba(36,22,15,0.8)"]}
+            colors={["#0D261D", "#06150F"]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
           />
+          {/* subtle glow top-left */}
+          <View style={styles.premiumGlow} />
           <View style={styles.premiumLeft}>
-            <Text style={[styles.premiumTitle, { color: colors.foreground }]}>RESONANCE Premium</Text>
-            <Text style={[styles.premiumSub, { color: colors.mutedForeground }]}>
+            <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>RESONANCE Premium</Text>
+            <Text style={[styles.premiumSub, { color: "#D5C8B2" }]}>
               Accede a todas las sesiones, modo offline y más
             </Text>
           </View>
-          <View style={[styles.premiumBadge, { backgroundColor: colors.primary }]}>
-            <Feather name="star" size={14} color={colors.primaryForeground} />
+          <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
+            <Text style={{ color: "#F0C36A", fontSize: 16 }}>✦</Text>
           </View>
         </View>
 
@@ -506,11 +508,22 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: 24,
     gap: 14,
+    borderWidth: 1,
+    borderColor: "rgba(169,122,52,0.45)",
+  },
+  premiumGlow: {
+    position: "absolute",
+    top: -20,
+    left: -20,
+    width: 100,
+    height: 60,
+    borderRadius: 50,
+    backgroundColor: "rgba(35,66,54,0.5)",
   },
   premiumLeft: { flex: 1 },
   premiumTitle: { fontSize: 15, fontWeight: "700", marginBottom: 4 },
   premiumSub: { fontSize: 12, lineHeight: 17 },
-  premiumBadge: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
+  premiumBadge: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
 
   // Menu
   menuCard: {
