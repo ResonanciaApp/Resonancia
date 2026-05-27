@@ -28,7 +28,7 @@ const GUIADAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "meditaciones-g
 type CategoryDef = {
   tag: MeditationTag;
   icon: React.ComponentProps<typeof Feather>["name"];
-  image: ReturnType<typeof require>;
+  image: import("react-native").ImageSourcePropType;
   description: string;
 };
 

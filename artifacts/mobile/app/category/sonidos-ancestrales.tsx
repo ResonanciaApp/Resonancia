@@ -28,7 +28,7 @@ const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ance
 
 type CategoryDef = {
   tag: AncestralTag;
-  image: ReturnType<typeof require>;
+  image: import("react-native").ImageSourcePropType;
   description: string;
 };
 

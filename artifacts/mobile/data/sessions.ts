@@ -48,8 +48,8 @@ export type Session = {
   description: string;
   benefits: string[];
   instruments: string[];
-  image: ReturnType<typeof require>;
-  audio?: ReturnType<typeof require>;
+  image: import("react-native").ImageSourcePropType;
+  audio?: number;
   isFeatured?: boolean;
   isNew?: boolean;
   isPremium?: boolean;

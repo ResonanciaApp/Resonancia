@@ -29,7 +29,7 @@ const SABIDURÍA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sabiduria-d
 type CategoryDef = {
   tag: SabiduriaTag;
   icon: React.ComponentProps<typeof Feather>["name"];
-  image: ReturnType<typeof require>;
+  image: import("react-native").ImageSourcePropType;
   description: string;
 };
 
