@@ -78,8 +78,13 @@ export default function MeditacionesGuiadasScreen() {
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#1A0A24" }]}>
       <StatusBar barStyle="light-content" />
+      <Image
+        source={require("@/assets/images/backgrounds/meditaciones-guiadas.jpg")}
+        style={StyleSheet.absoluteFill}
+        contentFit="cover"
+      />
       <SacredBackground />
 
       <ScrollView
