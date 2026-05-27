@@ -214,8 +214,9 @@ export function VozInteriorPanel() {
 
   return (
     <View style={[styles.panel, { backgroundColor: "#24160F" }]}>
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)" }]} pointerEvents="none" />
       {/* Header */}
-      <LinearGradient colors={GRADIENT} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+      <View style={styles.header}>
         <View style={styles.headerLeft}>
           <View style={styles.headerIconBg}>
             <Feather name="mic" size={18} color={ACCENT} />
@@ -231,7 +232,7 @@ export function VozInteriorPanel() {
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
-      </LinearGradient>
+      </View>
 
       {/* Record Area */}
       <View style={styles.recordArea}>

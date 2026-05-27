@@ -177,13 +177,9 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
 
   return (
     <View style={[styles.panel, { backgroundColor: "#24160F" }]}>
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)" }]} pointerEvents="none" />
       {/* Card header */}
-      <LinearGradient
-        colors={meta.gradientColors}
-        style={styles.panelHeader}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
+      <View style={styles.panelHeader}>
         <View style={styles.panelHeaderLeft}>
           <View style={[styles.panelIconBg, { backgroundColor: `${meta.accentColor}22` }]}>
             <Feather name={meta.icon} size={18} color={meta.accentColor} />
@@ -199,7 +195,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
-      </LinearGradient>
+      </View>
 
       {/* Text input */}
       <View style={styles.inputArea}>
