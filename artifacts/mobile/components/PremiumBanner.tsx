@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
   },
   titleRow: {
     flexDirection: "row",
-    alignItems: "baseline",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 12,
   },
   title: {
