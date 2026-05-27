@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -40,9 +39,13 @@ export default function PodcastScreen() {
   }, [query]);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#0E1A30" }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <Image
+        source={require("@/assets/images/backgrounds/podcast.jpg")}
+        style={StyleSheet.absoluteFill}
+        resizeMode="cover"
+      />
 
       <ScrollView
         style={styles.scroll}
