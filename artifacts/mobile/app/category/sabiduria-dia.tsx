@@ -14,6 +14,7 @@ import {
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { SacredBackground } from "@/components/SacredBackground";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type SabiduriaTag } from "@/data/sessions";
@@ -76,13 +77,9 @@ export default function SabiduriaDiaScreen() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1F1608" }]}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
-      <Image
-        source={require("@/assets/images/backgrounds/sabiduria-dia.jpg")}
-        style={StyleSheet.absoluteFill}
-        contentFit="cover"
-      />
+      <SacredBackground />
 
       <ScrollView
         style={styles.scroll}
