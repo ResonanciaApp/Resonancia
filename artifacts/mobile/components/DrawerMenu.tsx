@@ -115,10 +115,8 @@ export function DrawerMenu({ visible, onClose }: Props) {
 
   const mainItems = loggedIn ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
   const localFullName = [username, lastName].filter(Boolean).join(" ");
-  const fullName =
-    isRegistered && username && username !== "Explorador de Sonido"
-      ? localFullName
-      : clerkName || localFullName || "Explorador";
+  const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
+  const fullName = hasLocalName ? localFullName : (clerkName || "Explorador");
   const displayPhoto = photoUri || clerkPhoto;
 
   const navigate = (route: string) => {
