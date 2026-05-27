@@ -33,14 +33,14 @@ type MenuItem = {
 const LOGGED_OUT_ITEMS: MenuItem[] = [
   { label: "Crear cuenta",  icon: "user-plus", route: "/(auth)/sign-up" },
   { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
-  { label: "Membresía",   icon: "star",      route: "/membresia" },
+  { label: "Premium",     icon: "star",      route: "/membresia" },
   { label: "Favoritos",   icon: "heart",     route: "/(tabs)/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
 ];
 
 const LOGGED_IN_ITEMS: MenuItem[] = [
-  { label: "Membresía",   icon: "star",      route: "/membresia" },
+  { label: "Premium",     icon: "star",      route: "/membresia" },
   { label: "Favoritos",   icon: "heart",     route: "/(tabs)/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
@@ -179,7 +179,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
                 onPress={() => navigate(item.route)}
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
-                {item.label === "Membresía" ? (
+                {item.label === "Premium" ? (
                   <View style={styles.premiumIconCircle}>
                     <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 16, height: 16 }} contentFit="contain" />
                   </View>
@@ -188,7 +188,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
                     <Feather name={item.icon} size={17} color="#FFFFFF" />
                   </View>
                 )}
-                <Text style={[styles.itemLabel, { color: item.label === "Membresía" ? "#D6A14D" : "#FFFFFF" }]}>
+                <Text style={[styles.itemLabel, { color: item.label === "Premium" ? "#F5EAC8" : "#FFFFFF" }]}>
                   {item.label}
                 </Text>
               </Pressable>
