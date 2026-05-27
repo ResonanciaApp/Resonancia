@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   lockBadge: {
     position: "absolute",
     top: 8,
-    right: 8,
+    left: 8,
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
