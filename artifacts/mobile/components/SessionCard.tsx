@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -23,7 +23,7 @@ type Props = {
 function LockStar() {
   return (
     <View style={styles.lockBadge}>
-      <Feather name="star" size={15} color="#5BA85F" />
+      <FontAwesome name="star" size={16} color="#E5B84B" />
     </View>
   );
 }
@@ -198,16 +198,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     right: 8,
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    backgroundColor: "#5BA85F33",
-    borderWidth: 1,
-    borderColor: "#5BA85F66",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#1F3A2A",
+    borderWidth: 1.5,
+    borderColor: "#E5B84B",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.45,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 1 },
   },

@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -23,19 +23,20 @@ type Props = {
   right?: number;
 };
 
-const GREEN = "#5BA85F";
+const GREEN_BG = "#1F3A2A";
+const GOLD = "#E5B84B";
 
-export function PremiumBadge({ session, size = 28, top = 8, right = 8 }: Props) {
+export function PremiumBadge({ session, size = 30, top = 8, right = 8 }: Props) {
   const { isPremium } = usePremium();
   if (!session.isPremium || isPremium) return null;
   return (
     <View
       style={[
         styles.badge,
-        { width: size, height: size, borderRadius: 8, top, right },
+        { width: size, height: size, borderRadius: size / 2, top, right },
       ]}
     >
-      <Feather name="star" size={size * 0.55} color={GREEN} />
+      <FontAwesome name="star" size={size * 0.55} color={GOLD} />
     </View>
   );
 }
@@ -43,13 +44,13 @@ export function PremiumBadge({ session, size = 28, top = 8, right = 8 }: Props) 
 const styles = StyleSheet.create({
   badge: {
     position: "absolute",
-    backgroundColor: GREEN + "33",
-    borderWidth: 1,
-    borderColor: GREEN + "66",
+    backgroundColor: GREEN_BG,
+    borderWidth: 1.5,
+    borderColor: GOLD,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.45,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 1 },
     zIndex: 10,
