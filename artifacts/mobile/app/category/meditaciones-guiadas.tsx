@@ -84,6 +84,9 @@ export default function MeditacionesGuiadasScreen() {
         source={require("@/assets/images/backgrounds/meditaciones-guiadas.jpg")}
         style={StyleSheet.absoluteFill}
         contentFit="cover"
+        transition={0}
+        cachePolicy="memory-disk"
+        priority="high"
       />
 
       <ScrollView

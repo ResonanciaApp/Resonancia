@@ -15,6 +15,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
@@ -89,10 +90,13 @@ export default function MusicaSonidosScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#1A2418" }]}>
       <StatusBar barStyle="light-content" />
-      <Image
+      <ExpoImage
         source={require("@/assets/images/backgrounds/musica-sonidos.jpg")}
         style={StyleSheet.absoluteFill}
-        resizeMode="cover"
+        contentFit="cover"
+        transition={0}
+        cachePolicy="memory-disk"
+        priority="high"
       />
 
       <ScrollView

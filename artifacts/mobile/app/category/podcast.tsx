@@ -12,6 +12,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SESSIONS } from "@/data/sessions";
@@ -41,10 +42,13 @@ export default function PodcastScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#0E1A30" }]}>
       <StatusBar barStyle="light-content" />
-      <Image
+      <ExpoImage
         source={require("@/assets/images/backgrounds/podcast.jpg")}
         style={StyleSheet.absoluteFill}
-        resizeMode="cover"
+        contentFit="cover"
+        transition={0}
+        cachePolicy="memory-disk"
+        priority="high"
       />
 
       <ScrollView
