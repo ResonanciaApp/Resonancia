@@ -30,6 +30,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
@@ -85,6 +86,8 @@ function BlinkingCursor({ color }: { color: string }) {
 export default function HomeScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
+  const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
   const { isRegistered } = useAuth();
@@ -208,10 +211,18 @@ export default function HomeScreen() {
               Hoy voy a ...
             </Text>
             <View style={styles.intentionRow}>
-              <BlinkingCursor color={colors.primary} />
-              <Text style={[styles.intentionPlaceholder, { color: "#FFFFFF" }]}>
-                Establece tu intención aquí
-              </Text>
+              {currentIntencion ? (
+                <Text style={[styles.intentionPlaceholder, { color: colors.primary, fontStyle: "italic" }]} numberOfLines={2}>
+                  {currentIntencion}
+                </Text>
+              ) : (
+                <>
+                  <BlinkingCursor color={colors.primary} />
+                  <Text style={[styles.intentionPlaceholder, { color: "#FFFFFF" }]}>
+                    Establece tu intención aquí
+                  </Text>
+                </>
+              )}
             </View>
           </Pressable>
         </View>

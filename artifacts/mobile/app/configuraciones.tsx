@@ -4,6 +4,7 @@ import * as Application from "expo-application";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
+import * as StoreReview from "expo-store-review";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -213,12 +214,27 @@ export default function ConfiguracionesScreen() {
     });
   };
 
-  const handleRate = () => {
+  const handleRate = async () => {
     if (Platform.OS === "web") {
       Alert.alert("Próximamente", "La app estará disponible en las tiendas pronto.");
       return;
     }
-    Alert.alert("Próximamente", "Cuando RESONANCIA esté en la tienda, podrás calificarla aquí.");
+    try {
+      const available = await StoreReview.isAvailableAsync();
+      const hasAction = await StoreReview.hasAction();
+      if (available && hasAction) {
+        await StoreReview.requestReview();
+        return;
+      }
+      const url = await StoreReview.storeUrl();
+      if (url) {
+        Linking.openURL(url);
+        return;
+      }
+      Alert.alert("Próximamente", "Cuando RESONANCIA esté en la tienda, podrás calificarla aquí.");
+    } catch {
+      Alert.alert("Próximamente", "Cuando RESONANCIA esté en la tienda, podrás calificarla aquí.");
+    }
   };
 
   const handleTerms = () => {

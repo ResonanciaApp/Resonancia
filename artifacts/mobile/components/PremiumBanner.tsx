@@ -1,5 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 
 const IMAGES = [
@@ -76,6 +77,7 @@ export default function PremiumBanner() {
 
         {/* CTA button */}
         <Pressable
+          onPress={() => router.push("/membresia" as never)}
           style={({ pressed }) => [styles.btnWrap, { opacity: pressed ? 0.88 : 1 }]}
         >
           <LinearGradient
