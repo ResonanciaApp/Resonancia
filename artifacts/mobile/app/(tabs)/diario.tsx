@@ -298,9 +298,6 @@ export default function DiarioScreen() {
               Tu espacio de reflexión interior
             </Text>
           </View>
-          <View style={[styles.headerIcon, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Feather name="book-open" size={18} color={colors.accent} />
-          </View>
         </View>
 
         {/* Divider line */}
