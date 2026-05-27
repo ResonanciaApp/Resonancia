@@ -434,7 +434,7 @@ export default function ChatScreen() {
     setRecording(null);
   };
 
-  const sendRecording = async () => {
+  const sendRecording = () => {
     if (!recording) return;
     if (recTimerRef.current) clearInterval(recTimerRef.current);
     recTimerRef.current = null;
@@ -442,58 +442,65 @@ export default function ChatScreen() {
     const rec = recording;
     setRecording(null);
     setRecElapsedMs(0);
-    try {
-      await rec.stopAndUnloadAsync();
-      // Reset audio mode so playback goes through the loudspeaker, not the earpiece
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        playsInSilentModeIOS: true,
-      }).catch(() => {});
-      const uri = rec.getURI();
-      if (!uri) throw new Error("No se pudo obtener el audio.");
-      if (durationMs < 600) {
-        Alert.alert("Muy corto", "Grabá al menos 1 segundo.");
-        return;
-      }
-      const contentType = "audio/mp4";
-      const ext = "m4a";
 
-      // Optimistic bubble immediately; upload in background
-      const tempId = `tmp-aud-${Date.now()}`;
-      setPending((p) => [
-        ...p,
-        { tempId, kind: "audio", localUri: uri, durationMs },
-      ]);
-
-      (async () => {
-        try {
-          const objectPath = await uploadLocalFile(
-            uri,
-            contentType,
-            `voice-${Date.now()}.${ext}`,
-            1,
-          );
-          setPending((p) =>
-            p.map((x) => (x.tempId === tempId ? { ...x, serverObjectPath: objectPath } : x)),
-          );
-          await sendMsg.mutateAsync({
-            userId: otherId,
-            data: {
-              attachmentUrl: objectPath,
-              attachmentType: "audio",
-              attachmentMeta: { mime: contentType, durationMs },
-            },
-          });
-        } catch (err) {
-          console.log("[chat] audio upload failed", err);
-          setPending((p) =>
-            p.map((x) => (x.tempId === tempId ? { ...x, failed: true } : x)),
-          );
-        }
-      })();
-    } catch (err) {
-      Alert.alert("Error", err instanceof Error ? err.message : "No se pudo enviar el audio.");
+    if (durationMs < 600) {
+      Alert.alert("Muy corto", "Grabá al menos 1 segundo.");
+      rec.stopAndUnloadAsync().catch(() => {});
+      return;
     }
+
+    // Get URI immediately — it's set by prepareToRecordAsync and is the same
+    // path stopAndUnloadAsync will finalize the audio to.
+    const uri = rec.getURI();
+    if (!uri) {
+      Alert.alert("Error", "No se pudo obtener el audio.");
+      rec.stopAndUnloadAsync().catch(() => {});
+      return;
+    }
+
+    const contentType = "audio/mp4";
+    const ext = "m4a";
+    const tempId = `tmp-aud-${Date.now()}`;
+
+    // Optimistic bubble appears instantly — no awaiting stopAndUnloadAsync.
+    setPending((p) => [
+      ...p,
+      { tempId, kind: "audio", localUri: uri, durationMs },
+    ]);
+
+    // Everything below runs in the background.
+    (async () => {
+      try {
+        await rec.stopAndUnloadAsync();
+        Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          playsInSilentModeIOS: true,
+        }).catch(() => {});
+
+        const objectPath = await uploadLocalFile(
+          uri,
+          contentType,
+          `voice-${Date.now()}.${ext}`,
+          1,
+        );
+        setPending((p) =>
+          p.map((x) => (x.tempId === tempId ? { ...x, serverObjectPath: objectPath } : x)),
+        );
+        await sendMsg.mutateAsync({
+          userId: otherId,
+          data: {
+            attachmentUrl: objectPath,
+            attachmentType: "audio",
+            attachmentMeta: { mime: contentType, durationMs },
+          },
+        });
+      } catch (err) {
+        console.log("[chat] audio send failed", err);
+        setPending((p) =>
+          p.map((x) => (x.tempId === tempId ? { ...x, failed: true } : x)),
+        );
+      }
+    })();
   };
 
   useEffect(() => {
