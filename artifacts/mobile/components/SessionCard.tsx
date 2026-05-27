@@ -22,9 +22,7 @@ type Props = {
 
 function LockStar() {
   return (
-    <View style={styles.lockBadge}>
-      <FontAwesome name="star" size={16} color="#E5B84B" />
-    </View>
+    <FontAwesome name="star" size={20} color="#E5B84B" style={styles.lockBadge} />
   );
 }
 
@@ -198,17 +196,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     right: 8,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#1F3A2A",
-    borderWidth: 1.5,
-    borderColor: "#E5B84B",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.45,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 1 },
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
 });

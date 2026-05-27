@@ -25,9 +25,11 @@ import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
@@ -82,6 +84,7 @@ function BlinkingCursor({ color }: { color: string }) {
 
 export default function HomeScreen() {
   const colors = useColors();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
   const { isRegistered } = useAuth();
@@ -511,10 +514,11 @@ export default function HomeScreen() {
             {PARA_TU_DIA.map((item) => {
               const s = SESSIONS.find((x) => x.id === item.id);
               if (!s) return null;
+              const locked = !!s.isPremium && !isPremium;
               return (
                 <Pressable
                   key={s.id}
-                  onPress={() => router.push(`/session/${s.id}` as never)}
+                  onPress={() => router.push((locked ? "/membresia" : `/session/${s.id}`) as never)}
                   style={({ pressed }) => [styles.diaCard, { opacity: pressed ? 0.9 : 1 }]}
                 >
                   <Image source={s.image as never} style={styles.diaImg} />
@@ -522,6 +526,7 @@ export default function HomeScreen() {
                     colors={["rgba(0,0,0,0.05)", "rgba(0,0,0,0.75)"]}
                     style={StyleSheet.absoluteFill}
                   />
+                  <PremiumBadge session={s} />
                   <View style={styles.diaTopRow}>
                     <View />
                     <Text style={styles.diaDuration}>{s.duration}m</Text>
@@ -536,6 +541,10 @@ export default function HomeScreen() {
                     <Pressable
                       onPress={(e) => {
                         e.stopPropagation();
+                        if (locked) {
+                          router.push("/membresia" as never);
+                          return;
+                        }
                         playSession(s);
                         router.push("/player" as never);
                       }}

@@ -23,36 +23,27 @@ type Props = {
   right?: number;
 };
 
-const GREEN_BG = "#1F3A2A";
 const GOLD = "#E5B84B";
 
-export function PremiumBadge({ session, size = 30, top = 8, right = 8 }: Props) {
+export function PremiumBadge({ session, size = 20, top = 8, right = 8 }: Props) {
   const { isPremium } = usePremium();
   if (!session.isPremium || isPremium) return null;
   return (
-    <View
-      style={[
-        styles.badge,
-        { width: size, height: size, borderRadius: size / 2, top, right },
-      ]}
-    >
-      <FontAwesome name="star" size={size * 0.55} color={GOLD} />
-    </View>
+    <FontAwesome
+      name="star"
+      size={size}
+      color={GOLD}
+      style={[styles.star, { top, right }]}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  badge: {
+  star: {
     position: "absolute",
-    backgroundColor: GREEN_BG,
-    borderWidth: 1.5,
-    borderColor: GOLD,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.45,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 1 },
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
     zIndex: 10,
   },
 });
