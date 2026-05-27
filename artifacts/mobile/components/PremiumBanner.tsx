@@ -60,15 +60,17 @@ export default function PremiumBanner() {
           Comienza tu camino hacia el bienestar con más de 500 meditaciones y sonidos relajantes.
         </Text>
 
-        {/* Star above images */}
-        <View style={{ alignItems: "center", marginTop: 6, marginBottom: 6 }}>
-          <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 22, height: 22 }} contentFit="contain" />
-        </View>
-
-        {/* Preview images */}
+        {/* Preview images with star overlay */}
         <View style={styles.images}>
           {IMAGES.map((src, i) => (
-            <Image key={i} source={src} style={styles.thumb} contentFit="cover" />
+            <View key={i} style={{ position: "relative" }}>
+              <Image source={src} style={styles.thumb} contentFit="cover" />
+              <Image
+                source={require("../assets/images/estrella-premium.png")}
+                style={{ position: "absolute", top: 4, left: 4, width: 18, height: 18, zIndex: 2 }}
+                contentFit="contain"
+              />
+            </View>
           ))}
         </View>
 
