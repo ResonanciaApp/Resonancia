@@ -23,17 +23,19 @@ type Props = {
   right?: number;
 };
 
-export function PremiumBadge({ session, size = 24, top = 8, right = 8 }: Props) {
+const GREEN = "#5BA85F";
+
+export function PremiumBadge({ session, size = 28, top = 8, right = 8 }: Props) {
   const { isPremium } = usePremium();
   if (!session.isPremium || isPremium) return null;
   return (
     <View
       style={[
         styles.badge,
-        { width: size, height: size, borderRadius: size / 2, top, right },
+        { width: size, height: size, borderRadius: 8, top, right },
       ]}
     >
-      <Feather name="star" size={size * 0.5} color="#0C0908" />
+      <Feather name="star" size={size * 0.55} color={GREEN} />
     </View>
   );
 }
@@ -41,7 +43,9 @@ export function PremiumBadge({ session, size = 24, top = 8, right = 8 }: Props) 
 const styles = StyleSheet.create({
   badge: {
     position: "absolute",
-    backgroundColor: "#D6A85B",
+    backgroundColor: GREEN + "33",
+    borderWidth: 1,
+    borderColor: GREEN + "66",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",

@@ -23,7 +23,7 @@ type Props = {
 function LockStar() {
   return (
     <View style={styles.lockBadge}>
-      <Feather name="star" size={12} color="#0C0908" />
+      <Feather name="star" size={15} color="#5BA85F" />
     </View>
   );
 }
@@ -198,10 +198,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     right: 8,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "#D6A85B",
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: "#5BA85F33",
+    borderWidth: 1,
+    borderColor: "#5BA85F66",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
