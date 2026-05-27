@@ -451,11 +451,6 @@ export default function HomeScreen() {
             )}
           </View>
 
-        {/* ── 6. MENSAJE DEL DÍA ── */}
-        <View style={styles.section}>
-          <MessageDeck />
-        </View>
-
         {/* ── 7. NUEVAS SESIONES ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
