@@ -185,10 +185,10 @@ export function DrawerMenu({ visible, onClose }: Props) {
                   </View>
                 ) : (
                   <View style={styles.itemIcon}>
-                    <Feather name={item.icon} size={17} color="#B6955F" />
+                    <Feather name={item.icon} size={17} color="#FFFFFF" />
                   </View>
                 )}
-                <Text style={[styles.itemLabel, item.label === "Membresía" && { color: "#D6A14D" }]}>
+                <Text style={[styles.itemLabel, { color: item.label === "Membresía" ? "#D6A14D" : "#FFFFFF" }]}>
                   {item.label}
                 </Text>
               </Pressable>
@@ -206,9 +206,9 @@ export function DrawerMenu({ visible, onClose }: Props) {
                 style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
               >
                 <View style={styles.itemIcon}>
-                  <Feather name={item.icon} size={17} color="#8A6A3A" />
+                  <Feather name={item.icon} size={17} color="#FFFFFF" />
                 </View>
-                <Text style={[styles.itemLabel, styles.itemLabelMuted]}>{item.label}</Text>
+                <Text style={[styles.itemLabel, styles.itemLabelMuted, { color: "#FFFFFF" }]}>{item.label}</Text>
               </Pressable>
             ))}
           </View>
