@@ -237,7 +237,7 @@ export default function CrearGrupoScreen() {
         <View style={[styles.stepFooter, { paddingBottom: bottomPad + 12 }]}>
           <Pressable
             onPress={() => canNext1 && setStep(2)}
-            style={[styles.nextBtn, { backgroundColor: canNext1 ? colors.foreground : colors.card }]}
+            style={[styles.nextBtn, { backgroundColor: canNext1 ? "#DFC76A" : colors.card }]}
             disabled={!canNext1}
           >
             <Text style={[styles.nextBtnText, { color: canNext1 ? "#070E09" : colors.mutedForeground }]}>
@@ -297,7 +297,7 @@ export default function CrearGrupoScreen() {
               />
               <Pressable
                 onPress={() => setStep(3)}
-                style={[styles.sheetNext, { backgroundColor: colors.foreground }]}
+                style={[styles.sheetNext, { backgroundColor: "#DFC76A" }]}
               >
                 <Text style={[styles.sheetNextText, { color: "#070E09" }]}>Siguiente</Text>
               </Pressable>
@@ -338,7 +338,7 @@ export default function CrearGrupoScreen() {
                 </Pressable>
                 <Pressable
                   onPress={() => setStep(4)}
-                  style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
+                  style={[styles.sheetNext, { flex: 1, backgroundColor: "#DFC76A" }]}
                 >
                   <Text style={[styles.sheetNextText, { color: "#070E09" }]}>Siguiente</Text>
                 </Pressable>
@@ -377,7 +377,7 @@ export default function CrearGrupoScreen() {
                 </Pressable>
                 <Pressable
                   onPress={() => setStep(5)}
-                  style={[styles.sheetNext, { flex: 1, backgroundColor: colors.foreground }]}
+                  style={[styles.sheetNext, { flex: 1, backgroundColor: "#DFC76A" }]}
                 >
                   <Text style={[styles.sheetNextText, { color: "#070E09" }]}>Siguiente</Text>
                 </Pressable>
