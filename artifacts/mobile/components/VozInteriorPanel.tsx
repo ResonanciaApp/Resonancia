@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  historyCount: { color: "#8AB894", fontSize: 12, fontWeight: "600" },
+  historyCount: { color: "#FFFFFF", fontSize: 12, fontWeight: "600" },
   historyHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
