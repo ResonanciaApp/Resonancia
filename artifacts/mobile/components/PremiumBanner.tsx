@@ -44,7 +44,7 @@ export default function PremiumBanner() {
         {/* Premium title */}
         <View style={styles.titleRow}>
           <Text style={[styles.title, { color: P.gold }]}>Premium</Text>
-          <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 22, height: 22, marginLeft: 8 }} contentFit="contain" />
+          <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 26, height: 26, marginLeft: 10, marginTop: 6 }} contentFit="contain" />
         </View>
 
         {/* Divider line */}
