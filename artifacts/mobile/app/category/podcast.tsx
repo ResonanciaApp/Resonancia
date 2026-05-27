@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -117,7 +116,13 @@ export default function PodcastScreen() {
                   { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "transparent", borderWidth: 0, opacity: pressed ? 0.82 : 1 },
                 ]}
               >
-                <Image source={s.image as never} style={styles.episodeImage} />
+                <ExpoImage
+                  source={s.image as never}
+                  style={styles.episodeImage}
+                  contentFit="cover"
+                  transition={0}
+                  cachePolicy="memory-disk"
+                />
                 <View style={styles.episodeBody}>
                   <View style={styles.episodeNumRow}>
                     <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(138,170,212,0.15)" }]}>
@@ -235,7 +240,6 @@ const styles = StyleSheet.create({
   episodeImage: {
     width: 110,
     height: 110,
-    resizeMode: "cover",
   },
   episodeBody: {
     flex: 1,

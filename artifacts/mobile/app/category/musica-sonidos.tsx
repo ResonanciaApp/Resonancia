@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   Dimensions,
-  Image,
   Modal,
   Platform,
   Pressable,
@@ -218,10 +217,13 @@ export default function MusicaSonidosScreen() {
                   >
                     {/* Circular image */}
                     <View style={[styles.imgWrap, { width: IMG_SIZE, height: IMG_SIZE }]}>
-                      <Image
+                      <ExpoImage
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         source={session.image as any}
                         style={[styles.img, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: IMG_SIZE / 2 }]}
+                        contentFit="cover"
+                        transition={0}
+                        cachePolicy="memory-disk"
                       />
                       {/* Tag badge on image */}
                       {activeTab === "Todos" && tag && tagStyle && tagIcon && (
@@ -448,9 +450,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 4,
   },
-  img: {
-    resizeMode: "cover",
-  },
+  img: {},
   tagBadge: {
     position: "absolute",
     bottom: 0,
