@@ -167,6 +167,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "7",
+    isPremium: true,
     title: "Prueba",
     subtitle: "Meditación Guiada",
     categoryId: "meditaciones-guiadas",
@@ -258,6 +259,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "12",
+    isPremium: true,
     title: "Fricciones que Sanan",
     subtitle: "Meditaciones ASMR",
     categoryId: "meditaciones-asmr",
@@ -360,6 +362,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "18",
+    isPremium: true,
     title: "Viaje al Reino de los Sueños",
     subtitle: "Historias Infantiles",
     categoryId: "historias-infantiles",
@@ -426,6 +429,7 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "23",
+    isPremium: true,
     title: "Binaural Alpha 8Hz",
     subtitle: "Ondas Cerebrales",
     categoryId: "musica-sonidos",
@@ -493,6 +497,7 @@ export const SESSIONS: Session[] = [
   // ── Meditaciones Guiadas ─────────────────────────────────────────────────
   {
     id: "28",
+    isPremium: true,
     title: "Prueba 1",
     subtitle: "Meditación Guiada con Cuencos",
     categoryId: "meditaciones-guiadas",
