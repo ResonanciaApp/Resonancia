@@ -147,10 +147,7 @@ export default function ExploreScreen() {
                     onPress={() => router.push(`/category/${cat.id}` as never)}
                     style={({ pressed }) => [styles.primaryCard, { width: PRIMARY_W, opacity: pressed ? 0.82 : 1 }]}
                   >
-                    <LinearGradient
-                      colors={cat.gradient as [string, string]}
-                      style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
-                    />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 18, backgroundColor: cat.gradient[1] + "CC" }]} />
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
@@ -166,7 +163,7 @@ export default function ExploreScreen() {
                         style={styles.primaryIcon}
                       />
                     )}
-                    <Text style={styles.primaryLabel} numberOfLines={2}>{cat.title}</Text>
+                    <Text style={[styles.primaryLabel, { color: cat.color }]} numberOfLines={2}>{cat.title}</Text>
                   </Pressable>
                 ))}
               </View>
@@ -179,10 +176,7 @@ export default function ExploreScreen() {
                     onPress={() => router.push(`/category/${cat.id}` as never)}
                     style={({ pressed }) => [styles.secondaryCard, { opacity: pressed ? 0.82 : 1 }]}
                   >
-                    <LinearGradient
-                      colors={cat.gradient as [string, string]}
-                      style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
-                    />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 14, backgroundColor: cat.gradient[1] + "CC" }]} />
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
@@ -198,7 +192,7 @@ export default function ExploreScreen() {
                         style={styles.secondaryIcon}
                       />
                     )}
-                    <Text style={styles.secondaryLabel} numberOfLines={2}>{cat.title}</Text>
+                    <Text style={[styles.secondaryLabel, { color: cat.color }]} numberOfLines={2}>{cat.title}</Text>
                   </Pressable>
                 ))}
               </View>
