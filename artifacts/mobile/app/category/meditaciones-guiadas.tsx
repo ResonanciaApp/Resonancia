@@ -85,7 +85,6 @@ export default function MeditacionesGuiadasScreen() {
         style={StyleSheet.absoluteFill}
         contentFit="cover"
       />
-      <SacredBackground />
 
       <ScrollView
         style={styles.scroll}
