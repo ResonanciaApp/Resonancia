@@ -12,7 +12,7 @@ export default function PremiumBanner() {
   const colors = useColors();
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.background }]}>
+    <View style={styles.card}>
       <Text style={[styles.heading, { color: colors.foreground }]}>
         Únete a la comunidad
       </Text>
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: 16,
     marginBottom: 8,
-    borderRadius: 20,
     paddingVertical: 28,
     paddingHorizontal: 20,
     alignItems: "center",
