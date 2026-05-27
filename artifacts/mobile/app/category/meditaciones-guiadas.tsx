@@ -159,27 +159,6 @@ export default function MeditacionesGuiadasScreen() {
               })}
             </View>
 
-            {/* ── Nuevas Sesiones ── */}
-            {nuevasSessions.length > 0 && (
-              <View style={styles.nuevasSection}>
-                <View style={styles.nuevasHeader}>
-                  <Text style={[styles.nuevasTitle, { color: colors.foreground }]}>Nuevas Sesiones</Text>
-                  <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
-                    <Text style={[styles.verTodas, { color: "#C8B4E0" }]}>Ver todas</Text>
-                  </Pressable>
-                </View>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.nuevasCarousel}
-                >
-                  {nuevasSessions.map((s) => (
-                    <SessionCard key={s.id} session={s} width={148} />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
-
             <CategoryInfoPanel
               accentColor="#C8B4E0"
               heading="¿Qué es la meditación guiada?"
