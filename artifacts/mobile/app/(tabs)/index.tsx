@@ -138,6 +138,9 @@ export default function HomeScreen() {
   }, []);
   // Last 5 sessions (most recently added = highest index)
   const newSessions = [...SESSIONS].reverse().slice(0, 5);
+  // Top 10 más escuchadas (mock semanal — reemplazar con datos reales cuando exista el endpoint)
+  const TOP_IDS = ["1","5","8","3","12","6","14","20","7","11"];
+  const topSessions = TOP_IDS.map((id) => SESSIONS.find((s) => s.id === id)).filter(Boolean) as Session[];
   // 6 random sessions — shuffled once on mount via useMemo
   const recommended = React.useMemo<Session[]>(() => {
     const pool = [...SESSIONS];
@@ -470,7 +473,26 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* ── 9. BANNER PREMIUM ── */}
+        {/* ── 9. LO MÁS ESCUCHADO ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Lo más escuchado</Text>
+            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
+              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
+            </Pressable>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.hScroll}
+          >
+            {topSessions.map((s) => (
+              <SessionCard key={s.id} session={s} width={110} />
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />
 
 
