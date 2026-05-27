@@ -44,9 +44,12 @@ Descripción:
 Duración:
 Grupo 1:      ← ThemeTag (ej: "Para la ansiedad") — dejar vacío si no aplica
 Grupo 2:      ← SleepTag (ej: "Sonidos Binaurales") — dejar vacío si no aplica
+Premium:      ← "sí" / "no" (default no = free)
 Nombre Audio 1:
 Nombre Audio 2:  ← dejar vacío si no aplica
 ```
+
+> Si la sesión es premium, agregar `isPremium: true` al objeto en `sessions.ts`. Las cards muestran una estrellita dorada arriba a la derecha cuando el usuario no es premium, y el tap redirige a `/membresia`.
 
 El usuario adjunta los archivos de audio. Los pasos para agregarla:
 
@@ -97,7 +100,7 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 - **Configuraciones → "Actividad de la comunidad"**: hoy solo guarda la preferencia local. Cuando exista backend de notificaciones, enchufar push real (suscribir/desuscribir según toggle).
 - **Configuraciones → "Términos y privacidad"**: el Alert ofrece abrir `https://resonancia.app` como placeholder. Reemplazar por el link real cuando esté.
 - **Configuraciones → "Calificar la app"**: hoy muestra "Próximamente". Cuando se publique en stores, abrir el link nativo (`expo-store-review` o `Linking` a la store URL).
-- **Free vs Premium (gating de funcionalidades)**: armar `PremiumContext` con flag `isPremium`, hook `useGate(feature)`, componente `<PremiumLock>` y archivo `config/premium-features.ts` con la lista. **Poner la lógica en `lib/` del monorepo (no en `artifacts/mobile/`)** para reusarla en una futura versión web. Falta definir con el usuario qué entra en cada plan.
+- **Free vs Premium (gating de funcionalidades)**: `PremiumContext` + flag `isPremium` por sesión ya armados (mobile-only, pendiente mover a `lib/` cuando exista la web). Toggle de testing en Configuraciones → DESARROLLO (`__DEV__`). Falta: gating de features (no solo sesiones), y decidir qué sesiones marcar como premium al subirlas.
 - **Versión web (futura)**: la DB, API y lógica se reusan. Hay que reescribir UI (RN no corre en web). Pago: Stripe directo (no Apple/Google). Estimado: 2-4 semanas de trabajo dependiendo del scope.
 - **Cobro de Premium (pagos in-app)**: usar **RevenueCat** sobre Apple IAP / Google Play Billing (obligatorio para apps móviles — no se puede usar Stripe directo). Apple/Google se quedan 15-30%. Falta: definir precio (mensual/anual/lifetime), crear cuentas en App Store Connect + Google Play Console + RevenueCat. Para web (si llega) sí va Stripe directo.
 - **Frase del día → contador "X compartieron"**: el número actual es decorativo (fórmula basada en el día del año, no en datos reales). Cuando exista backend, registrar cada compartida en DB y devolver el total real desde la API.

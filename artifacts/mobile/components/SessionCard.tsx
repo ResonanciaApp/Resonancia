@@ -12,6 +12,7 @@ import {
 
 import { type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { usePremium } from "@/context/PremiumContext";
 
 type Props = {
   session: Session;
@@ -19,13 +20,27 @@ type Props = {
   horizontal?: boolean;
 };
 
+function LockStar() {
+  return (
+    <View style={styles.lockBadge}>
+      <Feather name="star" size={12} color="#0C0908" />
+    </View>
+  );
+}
+
 export function SessionCard({ session, width = 200, horizontal = false }: Props) {
   const colors = useColors();
+  const { isPremium } = usePremium();
+  const locked = !!session.isPremium && !isPremium;
+  const handlePress = () => {
+    if (locked) router.push("/membresia" as never);
+    else router.push(`/session/${session.id}` as never);
+  };
 
   if (horizontal) {
     return (
       <Pressable
-        onPress={() => router.push(`/session/${session.id}` as never)}
+        onPress={handlePress}
         style={({ pressed }) => [
           styles.hRow,
           { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
@@ -33,7 +48,10 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
       >
         {/* Warm amber tint sutil */}
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)", borderRadius: 18 }]} />
-        <Image source={session.image} style={styles.hImage} contentFit="cover" />
+        <View style={{ width: 108, height: 96 }}>
+          <Image source={session.image} style={styles.hImage} contentFit="cover" />
+          {locked && <LockStar />}
+        </View>
         <LinearGradient
           colors={["transparent", colors.card]}
           start={{ x: 0, y: 0.5 }}
@@ -60,7 +78,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
 
   return (
     <Pressable
-      onPress={() => router.push(`/session/${session.id}` as never)}
+      onPress={handlePress}
       style={({ pressed }) => [
         styles.card,
         { width, opacity: pressed ? 0.85 : 1 },
@@ -68,6 +86,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
         <Image source={session.image} style={styles.cardImage} contentFit="cover" />
+        {locked && <LockStar />}
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
@@ -174,5 +193,20 @@ const styles = StyleSheet.create({
   freqText: {
     fontSize: 9,
     letterSpacing: 0.5,
+  },
+  lockBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#D6A85B",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.35,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
   },
 });

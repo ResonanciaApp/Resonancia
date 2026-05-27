@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
@@ -97,6 +98,7 @@ export default function ConfiguracionesScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const { logout } = useAuth();
+  const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { setSleepTimer } = usePlayer();
 
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
@@ -220,14 +222,7 @@ export default function ConfiguracionesScreen() {
   };
 
   const handleTerms = () => {
-    Alert.alert(
-      "Términos y privacidad",
-      "Los términos completos estarán disponibles pronto en nuestro sitio. ¿Quieres abrir el sitio?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Abrir", onPress: () => openExternal("https://resonancia.app") },
-      ],
-    );
+    router.push("/terminos" as never);
   };
 
   const handleAbout = () => {
@@ -399,6 +394,25 @@ export default function ConfiguracionesScreen() {
             danger
           />
         </View>
+
+        {/* ── Dev (solo testing premium) ── */}
+        {__DEV__ && (
+          <>
+            <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>DESARROLLO</Text>
+            <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.row}>
+                <RowIcon icon="star" colors={colors} />
+                <Text style={[styles.rowLabel, { color: colors.foreground }]}>Modo Premium (testing)</Text>
+                <Switch
+                  value={isPremiumDev}
+                  onValueChange={(v) => setPremiumDev(v)}
+                  trackColor={{ false: colors.border, true: colors.primary + "AA" }}
+                  thumbColor={isPremiumDev ? colors.primary : "#888"}
+                />
+              </View>
+            </View>
+          </>
+        )}
 
         {/* Logout */}
         <Pressable

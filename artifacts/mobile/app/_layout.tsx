@@ -26,6 +26,7 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
+import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -125,6 +126,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="terminos"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="todas-las-tematicas"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
@@ -184,6 +189,7 @@ export default function RootLayout() {
           <ErrorBoundary>
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
+                <PremiumProvider>
                 <PlayerProvider>
                   <AmbientPlayerProvider>
                     <UserProfileProvider>
@@ -199,6 +205,7 @@ export default function RootLayout() {
                     </UserProfileProvider>
                   </AmbientPlayerProvider>
                 </PlayerProvider>
+                </PremiumProvider>
               </AuthProvider>
             </QueryClientProvider>
           </ErrorBoundary>

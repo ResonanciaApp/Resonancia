@@ -52,6 +52,7 @@ export type Session = {
   audio?: ReturnType<typeof require>;
   isFeatured?: boolean;
   isNew?: boolean;
+  isPremium?: boolean;
   frequency?: string;
   soundTag?: SoundTag;
   meditationTag?: MeditationTag;
