@@ -26,6 +26,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
+import { useIntencion } from "@/context/IntencionContext";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -54,6 +55,8 @@ export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
+  const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
+  const lastIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const {
     username,
     lastName,
@@ -286,6 +289,31 @@ export default function ProfileScreen() {
           <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
             <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
           </View>
+        </View>
+
+        {/* ── Mi intención de hoy ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi intención de hoy</Text>
+          <Pressable
+            onPress={() => router.push("/intencion" as never)}
+            style={({ pressed }) => [
+              styles.intencionCard,
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            {lastIntencion ? (
+              <>
+                <Feather name="sun" size={16} color={colors.primary} style={{ marginTop: 2 }} />
+                <Text style={[styles.intencionText, { color: colors.foreground }]} numberOfLines={3}>
+                  {lastIntencion}
+                </Text>
+              </>
+            ) : (
+              <Text style={[styles.intencionEmptyText, { color: colors.mutedForeground }]}>
+                Aún no has escrito tu intención de hoy
+              </Text>
+            )}
+          </Pressable>
         </View>
 
         {/* ── Favoritos ── */}
@@ -557,6 +585,19 @@ const styles = StyleSheet.create({
   favInfo: { flex: 1 },
   favTitle: { fontSize: 14, fontWeight: "600", marginBottom: 3 },
   favSub: { fontSize: 12 },
+
+  // Mi intención de hoy
+  intencionCard: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 18,
+    gap: 12,
+    minHeight: 72,
+  },
+  intencionText: { flex: 1, fontSize: 14, lineHeight: 20, fontStyle: "italic" },
+  intencionEmptyText: { flex: 1, fontSize: 13, lineHeight: 20, textAlign: "center" },
 
   // Menu
   menuCard: {
