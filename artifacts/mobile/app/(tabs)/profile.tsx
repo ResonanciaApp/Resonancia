@@ -325,7 +325,7 @@ export default function ProfileScreen() {
                 pressed && { opacity: 0.7 },
               ]}
             >
-              <Feather name={item.icon} size={18} color={colors.accent} />
+              <Feather name={item.icon} size={18} color="#EDE1D3" />
               <Text style={[styles.menuLabel, { color: "#EDE1D3" }]}>{item.label}</Text>
               <Feather name="chevron-right" size={16} color={colors.border} />
             </Pressable>
