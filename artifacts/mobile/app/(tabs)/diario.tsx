@@ -195,7 +195,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
         </View>
         {entries.length > 0 && (
           <Pressable onPress={() => setShowHistory(!showHistory)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#8AB894" />
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#FFFFFF" />
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
