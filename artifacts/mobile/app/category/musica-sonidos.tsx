@@ -220,7 +220,7 @@ export default function MusicaSonidosScreen() {
                         style={[styles.img, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: IMG_SIZE / 2 }]}
                       />
                       {/* Tag badge on image */}
-                      {tag && tagStyle && tagIcon && (
+                      {activeTab === "Todos" && tag && tagStyle && tagIcon && (
                         <View
                           style={[
                             styles.tagBadge,
