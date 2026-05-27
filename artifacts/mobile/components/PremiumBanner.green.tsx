@@ -10,18 +10,18 @@ const IMAGES = [
 ];
 
 const P = {
-  bg0:        "#03111E",
-  bg1:        "#071B35",
-  bg2:        "#0E2A4A",
-  glow:       "#173C63",
-  gold:       "#D9A451",
-  goldSoft:   "#E2B86A",
-  goldHi:     "#F5D27F",
-  textMain:   "#EEE8DD",
-  textMuted:  "#D8CCB7",
-  btnFrom:    "#0A2343",
-  btnTo:      "#153A66",
-  border:     "#B8883F",
+  bg0:        "#06150F",
+  bg1:        "#0D261D",
+  bg2:        "#17352A",
+  glow:       "#234236",
+  gold:       "#D6A14D",
+  goldSoft:   "#C89544",
+  goldHi:     "#F0C36A",
+  textMain:   "#EDE7DA",
+  textMuted:  "#D5C8B2",
+  btnFrom:    "#173A2B",
+  btnTo:      "#244935",
+  border:     "#A97A34",
 };
 
 export default function PremiumBanner() {
@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(184,136,63,0.45)",
+    borderColor: "rgba(169,122,52,0.45)",
     overflow: "hidden",
-    shadowColor: "#03111E",
+    shadowColor: "#06150F",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.6,
     shadowRadius: 16,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 80,
     borderRadius: 100,
-    backgroundColor: "rgba(23,60,99,0.55)",
+    backgroundColor: "rgba(35,66,54,0.55)",
     alignSelf: "center",
   },
   eyebrow: {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     height: 68,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(184,136,63,0.3)",
+    borderColor: "rgba(169,122,52,0.3)",
   },
   btnWrap: {
     width: "100%",
