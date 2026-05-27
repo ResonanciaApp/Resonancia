@@ -3,7 +3,6 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -13,6 +12,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
@@ -29,15 +29,16 @@ const GUIADAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "meditaciones-g
 type CategoryDef = {
   tag: MeditationTag;
   icon: React.ComponentProps<typeof Feather>["name"];
+  image: ReturnType<typeof require>;
   description: string;
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "No Duales",        icon: "sun",        description: "Despertar y observación del ser" },
-  { tag: "Visualizaciones",  icon: "eye",        description: "Guías para visualizar y crear" },
-  { tag: "Mantras",          icon: "radio",      description: "Vibración y repetición sagrada" },
-  { tag: "Escaneo Corporal", icon: "user",       description: "Conexión y presencia en el cuerpo" },
-  { tag: "Manifestación",    icon: "zap",        description: "Intención, foco y creación" },
+  { tag: "No Duales",        icon: "sun",   image: require("@/assets/images/sessions/med-no-duales.jpg"),       description: "Despertar y observación del ser" },
+  { tag: "Visualizaciones",  icon: "eye",   image: require("@/assets/images/sessions/med-visualizaciones.jpg"), description: "Guías para visualizar y crear" },
+  { tag: "Mantras",          icon: "radio", image: require("@/assets/images/sessions/med-mantras.jpg"),          description: "Vibración y repetición sagrada" },
+  { tag: "Escaneo Corporal", icon: "user",  image: require("@/assets/images/sessions/med-escaneo-corporal.jpg"),description: "Conexión y presencia en el cuerpo" },
+  { tag: "Manifestación",    icon: "zap",   image: require("@/assets/images/sessions/med-manifestacion.jpg"),   description: "Intención, foco y creación" },
 ];
 
 function StarRow({ sessionId }: { sessionId: string }) {
@@ -163,10 +164,8 @@ export default function MeditacionesGuiadasScreen() {
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    {/* Icon circle */}
-                    <View style={[styles.iconCircle, { backgroundColor: "rgba(200,180,224,0.1)", borderColor: "rgba(200,180,224,0.22)" }]}>
-                      <Feather name={cat.icon} size={20} color="#C8B4E0" />
-                    </View>
+                    {/* Category image */}
+                    <Image source={cat.image} style={styles.iconCircle} contentFit="cover" />
 
                     {/* Name */}
                     <Text style={[styles.catName, { color: colors.foreground }]}>

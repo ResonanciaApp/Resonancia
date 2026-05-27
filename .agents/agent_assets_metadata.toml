@@ -288,6 +288,36 @@ uri = "file://artifacts/resonancia-deck/public/hero-atmosphere.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "54ppIV-i8mRci_YKEnxdN"
+uri = "file://artifacts/mobile/assets/images/sessions/med-no-duales.png"
+type = "image"
+title = "no duales meditation"
+
+[[generated]]
+id = "GBaQ6kKxOQe_87CEyzXNz"
+uri = "file://artifacts/mobile/assets/images/sessions/med-visualizaciones.png"
+type = "image"
+title = "visualizaciones meditation"
+
+[[generated]]
+id = "zUp1gL3WmMCWGp0wtyidM"
+uri = "file://artifacts/mobile/assets/images/sessions/med-mantras.png"
+type = "image"
+title = "mantras meditation"
+
+[[generated]]
+id = "otByB4bObXFgK7WeSqP3J"
+uri = "file://artifacts/mobile/assets/images/sessions/med-escaneo-corporal.png"
+type = "image"
+title = "escaneo corporal meditation"
+
+[[generated]]
+id = "_yMTXNIiBg0YTbZdEK3i_"
+uri = "file://artifacts/mobile/assets/images/sessions/med-manifestacion.png"
+type = "image"
+title = "manifestacion meditation"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
