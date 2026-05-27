@@ -28,7 +28,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
 const GRADIENT: [string, string] = ["#1C3545", "#0E2232"];
-const ACCENT = "#C8A040";
+const ACCENT = "#3AACB8";
 const BODY_FG = "#FFFFFF";
 const BODY_MUTED = "rgba(160,200,220,0.65)";
 
@@ -376,11 +376,11 @@ export function MensajesAnonimosPanel() {
             <ActivityIndicator color={ACCENT} style={{ marginVertical: 24 }} />
           ) : sortedByLikes.length === 0 ? (
             <View style={styles.emptyState}>
-              <Feather name="edit-2" size={28} color="#C8A860" />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+              <Feather name="edit-2" size={28} color="#FFFFFF" />
+              <Text style={[styles.emptyText, { color: BODY_FG }]}>
                 Sé la primera persona en compartir algo hoy
               </Text>
-              <Text style={[styles.emptyHint, { color: colors.mutedForeground }]}>
+              <Text style={[styles.emptyHint, { color: BODY_MUTED }]}>
                 Los mensajes duran 24 h y luego desaparecen
               </Text>
             </View>
