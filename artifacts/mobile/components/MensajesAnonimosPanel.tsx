@@ -258,7 +258,7 @@ export function MensajesAnonimosPanel() {
               styles.sendBtn,
               {
                 backgroundColor: ACCENT,
-                opacity: text.trim() ? (pressed || isSubmitting ? 0.7 : 1) : 0.35,
+                opacity: text.trim() ? (pressed || isSubmitting ? 0.75 : 1) : 0.6,
               },
             ]}
           >
