@@ -303,7 +303,7 @@ export default function ProfileScreen() {
           >
             {lastIntencion ? (
               <>
-                <Feather name="sun" size={16} color={colors.primary} style={{ marginTop: 2 }} />
+                <Feather name="target" size={16} color={colors.primary} style={{ marginTop: 2 }} />
                 <Text style={[styles.intencionText, { color: colors.foreground }]} numberOfLines={3}>
                   {lastIntencion}
                 </Text>
