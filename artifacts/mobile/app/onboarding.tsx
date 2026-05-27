@@ -27,12 +27,12 @@ const STORAGE_KEY = "cdc_onboarding_done";
 const PROFILE_KEY = "cdc_onboarding_profile";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
-const BG       = "#070E09";
-const CARD     = "#111E16";
-const GOLD     = "#B6955F";
-const GOLD_LT  = "#C8C1B5";
-const MUTED    = "#587060";
-const FG       = "#C8C1B5";
+const BG       = "#18110C";
+const CARD     = "#24160F";
+const GOLD     = "#C69B4F";
+const GOLD_LT  = "#D6A85B";
+const MUTED    = "#8A7060";
+const FG       = "#EDE1D3";
 const BORDER   = "rgba(182,149,95,0.25)";
 
 // ── Survey definition ─────────────────────────────────────────────────────────
@@ -296,7 +296,7 @@ export default function Onboarding() {
   if (step === -1) {
     return (
       <LinearGradient
-        colors={["#080F0A", "#0A1510", "#12221A", "#070E09"]}
+        colors={["#100A05", "#18110C", "#221508", "#18110C"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}

@@ -98,7 +98,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       {isIOS ? (
         <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
       ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#070E09" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#18110C" }]} />
       )}
       <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
       <View style={styles.row}>

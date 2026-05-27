@@ -8,8 +8,8 @@ import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View } from "
 WebBrowser.maybeCompleteAuthSession();
 
 const COLORS = {
-  card: "#111E16",
-  fg: "#C8C1B5",
+  card: "#24160F",
+  fg: "#EDE1D3",
   muted: "rgba(200, 193, 181, 0.55)",
   border: "rgba(182, 149, 95, 0.25)",
   error: "#D87856",

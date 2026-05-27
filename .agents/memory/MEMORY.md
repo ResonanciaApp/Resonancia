@@ -1,1 +1,1 @@
-- [MessageDeck shadow card sizing](message-deck-shadows.md) — absolute shadow cards need wrapper width = CARD_W or they stretch to screen width
+- [Warm theme palette](warm-theme.md) — colores cálidos dorado/café aplicados en colors.ts y archivos con paletas hardcodeadas

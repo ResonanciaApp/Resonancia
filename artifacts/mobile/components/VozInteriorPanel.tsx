@@ -213,7 +213,7 @@ export function VozInteriorPanel() {
   };
 
   return (
-    <View style={[styles.panel, { backgroundColor: "#111E16" }]}>
+    <View style={[styles.panel, { backgroundColor: "#24160F" }]}>
       {/* Header */}
       <LinearGradient colors={GRADIENT} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
         <View style={styles.headerLeft}>

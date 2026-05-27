@@ -271,8 +271,8 @@ export default function HomeScreen() {
                   {featuredSession.title}
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14, marginTop: 2 }}>
-                  <Feather name="clock" size={12} color="#C8C1B5" style={{ marginRight: 4, marginTop: 1 }} />
-                  <Text style={{ fontSize: 13, color: "#C8C1B5", opacity: 0.85, lineHeight: 16 }}>
+                  <Feather name="clock" size={12} color="#EDE1D3" style={{ marginRight: 4, marginTop: 1 }} />
+                  <Text style={{ fontSize: 13, color: "#EDE1D3", opacity: 0.85, lineHeight: 16 }}>
                     {featuredSession.durationLabel}
                   </Text>
                 </View>
