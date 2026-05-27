@@ -523,10 +523,7 @@ export default function HomeScreen() {
                     style={StyleSheet.absoluteFill}
                   />
                   <View style={styles.diaTopRow}>
-                    <View style={styles.diaChip}>
-                      <Text style={styles.diaChipEmoji}>{item.emoji}</Text>
-                      <Text style={styles.diaChipText}>{item.label}</Text>
-                    </View>
+                    <View />
                     <Text style={styles.diaDuration}>{s.duration}m</Text>
                   </View>
                   <View style={styles.diaBottomRow}>
