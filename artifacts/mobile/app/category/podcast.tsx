@@ -59,26 +59,26 @@ export default function PodcastScreen() {
             <Feather name="mic" size={22} color="#8AAAD4" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>PodCast</Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+          <Text style={[styles.pageSub, { color: "#9DB5D8" }]}>
             Conversaciones que despiertan el alma
           </Text>
         </View>
 
         {/* Search */}
         <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
-          <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(138,170,212,0.18)" }]}>
-            <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+          <View style={[styles.searchBar, { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "rgba(138,170,212,0.22)" }]}>
+            <Feather name="search" size={16} color="#9DB5D8" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
               onChangeText={setQuery}
               placeholder="Buscar episodio..."
-              placeholderTextColor={colors.mutedForeground}
+              placeholderTextColor="#9DB5D8"
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
             />
             {query.length > 0 && (
               <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color={colors.mutedForeground} />
+                <Feather name="x" size={14} color="#9DB5D8" />
               </Pressable>
             )}
           </View>
@@ -88,15 +88,15 @@ export default function PodcastScreen() {
         <View style={[styles.countRow, { paddingHorizontal: H_PAD }]}>
           <Feather name="mic" size={13} color="#8AAAD4" style={{ marginRight: 6 }} />
           <Text style={[styles.countLabel, { color: colors.foreground }]}>Episodios</Text>
-          <Text style={[styles.countNum, { color: colors.mutedForeground }]}>{episodios.length}</Text>
+          <Text style={[styles.countNum, { color: "#9DB5D8" }]}>{episodios.length}</Text>
         </View>
 
         {/* Episodes list */}
         <View style={{ paddingHorizontal: H_PAD }}>
           {episodios.length === 0 ? (
             <View style={styles.emptyWrap}>
-              <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+              <Feather name="search" size={32} color="#9DB5D8" style={{ marginBottom: 12 }} />
+              <Text style={[styles.emptyText, { color: "#9DB5D8" }]}>
                 Sin resultados para "{query}"
               </Text>
             </View>
@@ -107,7 +107,7 @@ export default function PodcastScreen() {
                 onPress={() => router.push(`/session/${s.id}` as never)}
                 style={({ pressed }) => [
                   styles.episodeCard,
-                  { backgroundColor: colors.card, borderColor: "rgba(138,170,212,0.18)", opacity: pressed ? 0.82 : 1 },
+                  { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "rgba(138,170,212,0.22)", opacity: pressed ? 0.82 : 1 },
                 ]}
               >
                 <Image source={s.image as never} style={styles.episodeImage} />

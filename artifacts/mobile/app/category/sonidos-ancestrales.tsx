@@ -107,7 +107,7 @@ export default function SonidosAncestalesScreen() {
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Sonidos Ancestrales"}
           </Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+          <Text style={[styles.pageSub, { color: "#E8C87A" }]}>
             {selectedTag
               ? selectedCat?.description ?? ""
               : "Cuencos, gongs y frecuencias sagradas"}
@@ -138,10 +138,10 @@ export default function SonidosAncestalesScreen() {
                     />
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.catCount, { color: "#E8C87A" }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                      <Feather name="chevron-right" size={18} color="#E8C87A" />
                     </View>
                   </Pressable>
                 );
@@ -205,21 +205,21 @@ export default function SonidosAncestalesScreen() {
               <View
                 style={[
                   styles.searchBar,
-                  { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)" },
+                  { backgroundColor: "rgba(72,58,28,0.55)", borderColor: "rgba(232,200,122,0.22)" },
                 ]}
               >
-                <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+                <Feather name="search" size={16} color="#E8C87A" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
                   onChangeText={setQuery}
                   placeholder="Buscar..."
-                  placeholderTextColor={colors.mutedForeground}
+                  placeholderTextColor="#E8C87A"
                   style={[styles.searchInput, { color: colors.foreground }]}
                   returnKeyType="search"
                 />
                 {query.length > 0 && (
                   <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                    <Feather name="x" size={14} color={colors.mutedForeground} />
+                    <Feather name="x" size={14} color="#E8C87A" />
                   </Pressable>
                 )}
               </View>
@@ -228,8 +228,8 @@ export default function SonidosAncestalesScreen() {
             <View style={{ paddingHorizontal: H_PAD }}>
               {filteredSessions.length === 0 ? (
                 <View style={styles.emptyWrap}>
-                  <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  <Feather name="search" size={32} color="#E8C87A" style={{ marginBottom: 12 }} />
+                  <Text style={[styles.emptyText, { color: "#E8C87A" }]}>
                     Sin resultados{query ? ` para "${query}"` : ""}
                   </Text>
                 </View>
@@ -241,8 +241,8 @@ export default function SonidosAncestalesScreen() {
                     style={({ pressed }) => [
                       styles.card,
                       {
-                        backgroundColor: colors.card,
-                        borderColor: "rgba(182,149,95,0.18)",
+                        backgroundColor: "rgba(72,58,28,0.55)",
+                        borderColor: "rgba(232,200,122,0.22)",
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}

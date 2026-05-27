@@ -112,7 +112,7 @@ export default function MusicaSonidosScreen() {
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             Música y Sonidos
           </Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+          <Text style={[styles.pageSub, { color: "#B8D4B8" }]}>
             Elige un sonido y conecta con el momento presente
           </Text>
         </View>
@@ -122,21 +122,21 @@ export default function MusicaSonidosScreen() {
           <View
             style={[
               styles.searchBar,
-              { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)" },
+              { backgroundColor: "rgba(42,62,42,0.55)", borderColor: "rgba(168,196,168,0.22)" },
             ]}
           >
-            <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+            <Feather name="search" size={16} color="#B8D4B8" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
               onChangeText={setQuery}
               placeholder={`Busca +${MUSICA_SESSIONS.length} sonidos`}
-              placeholderTextColor={colors.mutedForeground}
+              placeholderTextColor="#B8D4B8"
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
             />
             {query.length > 0 && (
               <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color={colors.mutedForeground} />
+                <Feather name="x" size={14} color="#B8D4B8" />
               </Pressable>
             )}
           </View>
@@ -180,8 +180,8 @@ export default function MusicaSonidosScreen() {
         <View style={[styles.grid, { paddingHorizontal: H_PAD }]}>
           {filtered.length === 0 ? (
             <View style={styles.emptyWrap}>
-              <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+              <Feather name="search" size={32} color="#B8D4B8" style={{ marginBottom: 12 }} />
+              <Text style={[styles.emptyText, { color: "#B8D4B8" }]}>
                 Sin resultados{query ? ` para "${query}"` : ""}
               </Text>
             </View>
@@ -200,8 +200,8 @@ export default function MusicaSonidosScreen() {
                       styles.card,
                       {
                         width: CARD_WIDTH,
-                        backgroundColor: colors.card,
-                        borderColor: "rgba(182,149,95,0.15)",
+                        backgroundColor: "rgba(42,62,42,0.55)",
+                        borderColor: "rgba(168,196,168,0.22)",
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}

@@ -108,7 +108,7 @@ export default function SabiduriaDiaScreen() {
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "3 Minutos de Sabiduría"}
           </Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+          <Text style={[styles.pageSub, { color: "#F0CC82" }]}>
             {selectedTag
               ? selectedCat?.description ?? ""
               : "Una semilla de consciencia cada día"}
@@ -134,10 +134,10 @@ export default function SabiduriaDiaScreen() {
                     <Image source={cat.image} style={styles.iconCircle} contentFit="cover" />
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.catCount, { color: "#F0CC82" }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                      <Feather name="chevron-right" size={18} color="#F0CC82" />
                     </View>
                   </Pressable>
                 );
@@ -198,19 +198,19 @@ export default function SabiduriaDiaScreen() {
         {selectedTag && (
           <>
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)" }]}>
-                <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+              <View style={[styles.searchBar, { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "rgba(240,204,130,0.22)" }]}>
+                <Feather name="search" size={16} color="#F0CC82" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
                   onChangeText={setQuery}
                   placeholder="Buscar..."
-                  placeholderTextColor={colors.mutedForeground}
+                  placeholderTextColor="#F0CC82"
                   style={[styles.searchInput, { color: colors.foreground }]}
                   returnKeyType="search"
                 />
                 {query.length > 0 && (
                   <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                    <Feather name="x" size={14} color={colors.mutedForeground} />
+                    <Feather name="x" size={14} color="#F0CC82" />
                   </Pressable>
                 )}
               </View>
@@ -219,8 +219,8 @@ export default function SabiduriaDiaScreen() {
             <View style={{ paddingHorizontal: H_PAD }}>
               {filteredSessions.length === 0 ? (
                 <View style={styles.emptyWrap}>
-                  <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  <Feather name="search" size={32} color="#F0CC82" style={{ marginBottom: 12 }} />
+                  <Text style={[styles.emptyText, { color: "#F0CC82" }]}>
                     Sin resultados{query ? ` para "${query}"` : ""}
                   </Text>
                 </View>
@@ -231,7 +231,7 @@ export default function SabiduriaDiaScreen() {
                     onPress={() => router.push(`/session/${session.id}` as never)}
                     style={({ pressed }) => [
                       styles.card,
-                      { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.18)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "rgba(240,204,130,0.22)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <Image
