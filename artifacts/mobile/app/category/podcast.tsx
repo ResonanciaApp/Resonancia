@@ -69,7 +69,7 @@ export default function PodcastScreen() {
 
         {/* Search */}
         <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
-          <View style={[styles.searchBar, { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "rgba(138,170,212,0.22)" }]}>
+          <View style={[styles.searchBar, { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "transparent", borderWidth: 0 }]}>
             <Feather name="search" size={16} color="#9DB5D8" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
@@ -110,7 +110,7 @@ export default function PodcastScreen() {
                 onPress={() => router.push(`/session/${s.id}` as never)}
                 style={({ pressed }) => [
                   styles.episodeCard,
-                  { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "rgba(138,170,212,0.22)", opacity: pressed ? 0.82 : 1 },
+                  { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "transparent", borderWidth: 0, opacity: pressed ? 0.82 : 1 },
                 ]}
               >
                 <Image source={s.image as never} style={styles.episodeImage} />

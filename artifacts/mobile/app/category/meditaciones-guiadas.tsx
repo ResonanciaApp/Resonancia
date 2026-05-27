@@ -211,7 +211,7 @@ export default function MeditacionesGuiadasScreen() {
           <>
             {/* Search bar */}
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: "rgba(60,32,82,0.55)", borderColor: "rgba(200,180,224,0.22)" }]}>
+              <View style={[styles.searchBar, { backgroundColor: "rgba(60,32,82,0.55)", borderColor: "transparent", borderWidth: 0 }]}>
                 <Feather name="search" size={16} color="#C8B4E0" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
@@ -247,7 +247,8 @@ export default function MeditacionesGuiadasScreen() {
                       styles.card,
                       {
                         backgroundColor: "rgba(60,32,82,0.55)",
-                        borderColor: "rgba(200,180,224,0.22)",
+                        borderColor: "transparent",
+                        borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}
