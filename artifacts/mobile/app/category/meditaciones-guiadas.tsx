@@ -1,7 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -22,8 +21,6 @@ import { SESSIONS, type MeditationTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const RATINGS_KEY = "@resonance_ratings";
-
 const GUIADAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
 
 type CategoryDef = {
@@ -41,35 +38,6 @@ const CATEGORIES: CategoryDef[] = [
   { tag: "Manifestación",    icon: "zap",   image: require("@/assets/images/sessions/med-manifestacion.jpg"),   description: "Intención, foco y creación" },
 ];
 
-function StarRow({ sessionId }: { sessionId: string }) {
-  const [rating, setRating] = useState(0);
-  useEffect(() => {
-    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
-      if (!val) return;
-      const map: Record<string, number> = JSON.parse(val);
-      if (map[sessionId]) setRating(map[sessionId]);
-    });
-  }, [sessionId]);
-  return (
-    <View style={starStyles.row}>
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Feather
-          key={star}
-          name="star"
-          size={11}
-          color={star <= rating ? "#E8B96A" : "rgba(182,149,95,0.22)"}
-        />
-      ))}
-      {rating === 0 && (
-        <Text style={starStyles.noRating}>Sin valorar</Text>
-      )}
-    </View>
-  );
-}
-const starStyles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", gap: 2, marginBottom: 3 },
-  noRating: { fontSize: 9, color: "rgba(182,149,95,0.5)", marginLeft: 4, letterSpacing: 0.3 },
-});
 
 export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
@@ -286,7 +254,9 @@ export default function MeditacionesGuiadasScreen() {
                       style={styles.cardImage}
                     />
                     <View style={styles.cardContent}>
-                      <StarRow sessionId={session.id} />
+                      <Text style={[styles.cardCategory, { color: colors.accent }]}>
+                        {session.categoryLabel}
+                      </Text>
                       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
                       </Text>
@@ -415,6 +385,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     justifyContent: "center",
+  },
+  cardCategory: {
+    fontSize: 10,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    marginBottom: 3,
   },
   cardTitle: {
     fontSize: 15,
