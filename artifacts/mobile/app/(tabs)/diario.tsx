@@ -39,7 +39,7 @@ const SECTIONS: SectionMeta[] = [
     subtitle: "Mis más increíbles descubrimientos",
     icon: "moon",
     accentColor: "#8AAAD4",
-    gradientColors: ["#111E16", "#0D1810"],
+    gradientColors: ["#241C0C", "#141008"],
   },
   {
     key: "ideas",
@@ -47,7 +47,7 @@ const SECTIONS: SectionMeta[] = [
     subtitle: "Las chispas que no quiero perder",
     icon: "zap",
     accentColor: "#F0CC82",
-    gradientColors: ["#111E16", "#0D1810"],
+    gradientColors: ["#241C0C", "#141008"],
   },
 ];
 
@@ -195,7 +195,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
         </View>
         {entries.length > 0 && (
           <Pressable onPress={() => setShowHistory(!showHistory)} style={styles.historyToggle}>
-            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="rgba(237,225,211,0.6)" />
+            <Feather name={showHistory ? "chevron-up" : "clock"} size={16} color="#8AB894" />
             <Text style={styles.historyCount}>{entries.length}</Text>
           </Pressable>
         )}
@@ -359,8 +359,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  panelTitle: { color: "#EDE1D3", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  panelSubtitle: { color: "rgba(237,225,211,0.50)", fontSize: 11, marginTop: 1 },
+  panelTitle: { color: "#8AB894", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  panelSubtitle: { color: "rgba(138,184,148,0.65)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",

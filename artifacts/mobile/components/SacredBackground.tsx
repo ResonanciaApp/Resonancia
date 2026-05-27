@@ -13,7 +13,7 @@ export function SacredBackground() {
         cachePolicy="memory-disk"
       />
       {/* Overlay ligero — la imagen ya es oscura */}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(4,8,5,0.67)" }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(4,8,5,0.72)" }]} />
       {/* Glow cálido dorado — esquina superior derecha */}
       <LinearGradient
         colors={["rgba(182,149,95,0.05)", "rgba(182,149,95,0.00)"]}

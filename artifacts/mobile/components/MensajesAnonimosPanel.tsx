@@ -27,7 +27,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 369;
-const GRADIENT: [string, string] = ["#111E16", "#0D1810"];
+const GRADIENT: [string, string] = ["#5C1A3A", "#3A0D22"];
 const ACCENT = "#D4709A";
 
 const HOW_IT_WORKS = [
@@ -201,7 +201,7 @@ export function MensajesAnonimosPanel() {
       >
         <View style={styles.headerLeft}>
           <View style={styles.headerIconBg}>
-            <Feather name="users" size={18} color="#FFFFFF" />
+            <Feather name="users" size={18} color="#B6955F" />
           </View>
           <View style={{ flex: 1 }}>
             <View style={styles.headerTitleRow}>
@@ -308,7 +308,7 @@ export function MensajesAnonimosPanel() {
           <Feather
             name={showFeed ? "chevron-up" : "chevron-down"}
             size={16}
-            color="#FFFFFF"
+            color="#C8A860"
           />
         </View>
       </Pressable>
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(138,184,148,0.18)",
+    backgroundColor: "rgba(182,149,95,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerTitle: {
-    color: "#EDE1D3",
+    color: "#C8A860",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
@@ -551,19 +551,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(237,225,211,0.10)",
+    backgroundColor: "rgba(182,149,95,0.18)",
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   cycleBadgeText: {
-    color: "rgba(237,225,211,0.7)",
+    color: "#C8A860",
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(237,225,211,0.50)",
+    color: "rgba(200,168,96,0.65)",
     fontSize: 11,
     marginTop: 2,
   },

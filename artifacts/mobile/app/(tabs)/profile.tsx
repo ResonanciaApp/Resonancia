@@ -286,7 +286,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Menú ── */}
-        <View style={[styles.menuCard, { backgroundColor: "#1C1410" }]}>
+        <View style={[styles.menuCard, { backgroundColor: colors.card }]}>
           {menuPrimary.map((item, idx) => (
             <Pressable
               key={item.label}
@@ -304,7 +304,7 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        <View style={[styles.menuCard, { backgroundColor: "#1C1410", marginTop: 14 }]}>
+        <View style={[styles.menuCard, { backgroundColor: colors.card, marginTop: 14 }]}>
           {menuSecondary.map((item, idx) => (
             <Pressable
               key={item.label}

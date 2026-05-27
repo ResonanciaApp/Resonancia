@@ -4,7 +4,7 @@ const colors = {
     tint: "#B6955F",
     background: "#070E09",
     foreground: "#C8C1B5",
-    card: "#1A2A1E",
+    card: "#111E16",
     cardForeground: "#C8C1B5",
     primary: "#B6955F",
     primaryForeground: "#070E09",
