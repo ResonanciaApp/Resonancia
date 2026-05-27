@@ -359,8 +359,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  panelTitle: { color: "#8AB894", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  panelSubtitle: { color: "rgba(138,184,148,0.65)", fontSize: 11, marginTop: 1 },
+  panelTitle: { color: "#FFFFFF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  panelSubtitle: { color: "rgba(220,190,100,0.80)", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
