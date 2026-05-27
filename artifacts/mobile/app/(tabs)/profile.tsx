@@ -259,7 +259,31 @@ export default function ProfileScreen() {
           })}
         </View>
 
-        {/* ── Premium Banner ── */}
+        {/* ── Mi intención de hoy ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi intención de hoy</Text>
+          <Pressable
+            onPress={() => router.push("/intencion" as never)}
+            style={({ pressed }) => [
+              styles.intencionCard,
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            {lastIntencion ? (
+              <>
+                <Feather name="target" size={16} color={colors.primary} style={{ marginTop: 2 }} />
+                <Text style={[styles.intencionText, { color: colors.foreground }]} numberOfLines={3}>
+                  {lastIntencion}
+                </Text>
+              </>
+            ) : (
+              <Text style={[styles.intencionEmptyText, { color: colors.mutedForeground }]}>
+                Aún no has escrito tu intención de hoy
+              </Text>
+            )}
+          </Pressable>
+        </View>
+
         <View style={styles.premiumBanner}>
           <LinearGradient
             colors={["#0D261D", "#06150F"]}
@@ -289,31 +313,6 @@ export default function ProfileScreen() {
           <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
             <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
           </View>
-        </View>
-
-        {/* ── Mi intención de hoy ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi intención de hoy</Text>
-          <Pressable
-            onPress={() => router.push("/intencion" as never)}
-            style={({ pressed }) => [
-              styles.intencionCard,
-              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
-            ]}
-          >
-            {lastIntencion ? (
-              <>
-                <Feather name="target" size={16} color={colors.primary} style={{ marginTop: 2 }} />
-                <Text style={[styles.intencionText, { color: colors.foreground }]} numberOfLines={3}>
-                  {lastIntencion}
-                </Text>
-              </>
-            ) : (
-              <Text style={[styles.intencionEmptyText, { color: colors.mutedForeground }]}>
-                Aún no has escrito tu intención de hoy
-              </Text>
-            )}
-          </Pressable>
         </View>
 
         {/* ── Favoritos ── */}
