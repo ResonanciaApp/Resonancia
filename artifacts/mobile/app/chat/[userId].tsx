@@ -138,6 +138,19 @@ async function uploadLocalFile(
   return objectPath;
 }
 
+type PendingAttachment = {
+  tempId: string;
+  kind: "image" | "audio";
+  localUri: string;
+  width?: number;
+  height?: number;
+  durationMs?: number;
+  // Server objectPath set once the upload completes — used to dedupe against
+  // the server message once the next refetch returns it.
+  serverObjectPath?: string;
+  failed?: boolean;
+};
+
 function formatDuration(ms: number): string {
   const total = Math.round(ms / 1000);
   const m = Math.floor(total / 60);
@@ -253,7 +266,7 @@ export default function ChatScreen() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [pending, setPending] = useState<PendingAttachment[]>([]);
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recElapsedMs, setRecElapsedMs] = useState(0);
   const recStartRef = useRef<number>(0);
@@ -293,20 +306,13 @@ export default function ChatScreen() {
       }
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
-        quality: 0.85,
+        quality: 0.7,
         allowsEditing: false,
         exif: false,
       });
       setShowAttachMenu(false);
       if (result.canceled || result.assets.length === 0) return;
       const asset = result.assets[0];
-      console.log("[chat] pickImage selected", {
-        uri: asset.uri.slice(0, 60),
-        mimeType: asset.mimeType,
-        fileSize: asset.fileSize,
-        width: asset.width,
-        height: asset.height,
-      });
       const isGif =
         (asset.mimeType ?? "").toLowerCase() === "image/gif" ||
         (asset.fileName ?? asset.uri).toLowerCase().endsWith(".gif");
@@ -314,25 +320,50 @@ export default function ChatScreen() {
       const ext = isGif ? "gif" : contentType.split("/")[1] ?? "jpg";
       const fileName = asset.fileName ?? `photo-${Date.now()}.${ext}`;
       const size = asset.fileSize ?? 0;
-      setUploading(true);
-      const objectPath = await uploadLocalFile(asset.uri, contentType, fileName, size || 1);
-      sendMsg.mutate({
-        userId: otherId,
-        data: {
-          attachmentUrl: objectPath,
-          attachmentType: "image",
-          attachmentMeta: {
-            mime: contentType,
-            width: asset.width,
-            height: asset.height,
-            sizeBytes: size || undefined,
-          },
+
+      // Optimistic: show bubble immediately with local URI; upload in background
+      const tempId = `tmp-img-${Date.now()}`;
+      setPending((p) => [
+        ...p,
+        {
+          tempId,
+          kind: "image",
+          localUri: asset.uri,
+          width: asset.width,
+          height: asset.height,
         },
-      });
+      ]);
+
+      (async () => {
+        try {
+          const objectPath = await uploadLocalFile(asset.uri, contentType, fileName, size || 1);
+          // Tag pending with serverObjectPath so the dedup effect can remove it
+          // once the server message arrives via refetch.
+          setPending((p) =>
+            p.map((x) => (x.tempId === tempId ? { ...x, serverObjectPath: objectPath } : x)),
+          );
+          await sendMsg.mutateAsync({
+            userId: otherId,
+            data: {
+              attachmentUrl: objectPath,
+              attachmentType: "image",
+              attachmentMeta: {
+                mime: contentType,
+                width: asset.width,
+                height: asset.height,
+                sizeBytes: size || undefined,
+              },
+            },
+          });
+        } catch (err) {
+          console.log("[chat] image upload failed", err);
+          setPending((p) =>
+            p.map((x) => (x.tempId === tempId ? { ...x, failed: true } : x)),
+          );
+        }
+      })();
     } catch (err) {
       Alert.alert("Error", err instanceof Error ? err.message : "No se pudo enviar la foto.");
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -349,31 +380,32 @@ export default function ChatScreen() {
         playsInSilentModeIOS: true,
       });
       const rec = new Audio.Recording();
-      // Custom high-quality AAC settings: 44.1kHz, stereo, 192kbps
+      // Voice-grade AAC: 22050Hz mono 48kbps — ~8x smaller than the
+      // previous 44.1kHz stereo 192kbps, perfectly fine for voice messages.
       await rec.prepareToRecordAsync({
         isMeteringEnabled: false,
         android: {
           extension: ".m4a",
           outputFormat: Audio.AndroidOutputFormat.MPEG_4,
           audioEncoder: Audio.AndroidAudioEncoder.AAC,
-          sampleRate: 44100,
-          numberOfChannels: 2,
-          bitRate: 192000,
+          sampleRate: 22050,
+          numberOfChannels: 1,
+          bitRate: 48000,
         },
         ios: {
           extension: ".m4a",
           outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
-          audioQuality: Audio.IOSAudioQuality.MAX,
-          sampleRate: 44100,
-          numberOfChannels: 2,
-          bitRate: 192000,
+          audioQuality: Audio.IOSAudioQuality.MEDIUM,
+          sampleRate: 22050,
+          numberOfChannels: 1,
+          bitRate: 48000,
           linearPCMBitDepth: 16,
           linearPCMIsBigEndian: false,
           linearPCMIsFloat: false,
         },
         web: {
           mimeType: "audio/webm",
-          bitsPerSecond: 192000,
+          bitsPerSecond: 48000,
         },
       });
       await rec.startAsync();
@@ -425,20 +457,42 @@ export default function ChatScreen() {
       }
       const contentType = "audio/mp4";
       const ext = "m4a";
-      setUploading(true);
-      const objectPath = await uploadLocalFile(uri, contentType, `voice-${Date.now()}.${ext}`, 1);
-      sendMsg.mutate({
-        userId: otherId,
-        data: {
-          attachmentUrl: objectPath,
-          attachmentType: "audio",
-          attachmentMeta: { mime: contentType, durationMs },
-        },
-      });
+
+      // Optimistic bubble immediately; upload in background
+      const tempId = `tmp-aud-${Date.now()}`;
+      setPending((p) => [
+        ...p,
+        { tempId, kind: "audio", localUri: uri, durationMs },
+      ]);
+
+      (async () => {
+        try {
+          const objectPath = await uploadLocalFile(
+            uri,
+            contentType,
+            `voice-${Date.now()}.${ext}`,
+            1,
+          );
+          setPending((p) =>
+            p.map((x) => (x.tempId === tempId ? { ...x, serverObjectPath: objectPath } : x)),
+          );
+          await sendMsg.mutateAsync({
+            userId: otherId,
+            data: {
+              attachmentUrl: objectPath,
+              attachmentType: "audio",
+              attachmentMeta: { mime: contentType, durationMs },
+            },
+          });
+        } catch (err) {
+          console.log("[chat] audio upload failed", err);
+          setPending((p) =>
+            p.map((x) => (x.tempId === tempId ? { ...x, failed: true } : x)),
+          );
+        }
+      })();
     } catch (err) {
       Alert.alert("Error", err instanceof Error ? err.message : "No se pudo enviar el audio.");
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -457,6 +511,21 @@ export default function ChatScreen() {
     // server returns newest first; FlatList inverted expects newest first
     return list;
   }, [messagesQ.data]);
+
+  // Dedup: once the server message with our objectPath shows up in the list,
+  // drop the matching pending bubble. Prevents the brief "double bubble" gap
+  // between mutateAsync resolving and the refetch returning.
+  useEffect(() => {
+    if (pending.length === 0) return;
+    const serverPaths = new Set(
+      (messagesQ.data ?? [])
+        .map((m) => m.attachmentUrl)
+        .filter((u): u is string => !!u),
+    );
+    setPending((p) =>
+      p.filter((x) => !x.serverObjectPath || !serverPaths.has(x.serverObjectPath)),
+    );
+  }, [messagesQ.data, pending.length]);
 
   if (!isLoaded) {
     return (
@@ -542,9 +611,15 @@ export default function ChatScreen() {
             keyExtractor={(m) => String(m.id)}
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 16 }}
             ListHeaderComponent={
-              typingQ.data?.typing ? (
-                <TypingBubble name={friend?.displayName ?? "…"} tint={friendTint} />
-              ) : null
+              <>
+                {typingQ.data?.typing ? (
+                  <TypingBubble name={friend?.displayName ?? "…"} tint={friendTint} />
+                ) : null}
+                {/* Pending uploads — render newest at bottom (inverted) */}
+                {pending.map((p) => (
+                  <PendingBubble key={p.tempId} item={p} />
+                ))}
+              </>
             }
             renderItem={({ item, index }) => {
               const prev = messages[index + 1]; // older
@@ -619,21 +694,12 @@ export default function ChatScreen() {
               <Pressable
                 onPress={() => setShowAttachMenu(true)}
                 hitSlop={10}
-                disabled={uploading}
                 style={[
                   styles.iconBtn,
-                  {
-                    backgroundColor: colors.card,
-                    borderColor: colors.border,
-                    opacity: uploading ? 0.5 : 1,
-                  },
+                  { backgroundColor: colors.card, borderColor: colors.border },
                 ]}
               >
-                {uploading ? (
-                  <ActivityIndicator size="small" color={colors.accent} />
-                ) : (
-                  <Feather name="plus" size={18} color={colors.accent} />
-                )}
+                <Feather name="plus" size={18} color={colors.accent} />
               </Pressable>
               <TextInput
                 value={draft}
@@ -950,6 +1016,79 @@ function ShareSessionModal({
   );
 }
 
+function PendingBubble({ item }: { item: PendingAttachment }) {
+  const colors = useColors();
+  return (
+    <View style={{ alignItems: "flex-end", marginBottom: 8 }}>
+      <View style={{ position: "relative", opacity: item.failed ? 0.55 : 0.85 }}>
+        {item.kind === "image" ? (
+          <View style={{ borderRadius: 14, overflow: "hidden" }}>
+            <Image
+              source={{ uri: item.localUri }}
+              style={{
+                width: 220,
+                height:
+                  item.width && item.height
+                    ? Math.min(280, Math.round((220 * item.height) / item.width))
+                    : 220,
+              }}
+              contentFit="cover"
+            />
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.audioBubble,
+              { backgroundColor: "#B6955F", borderWidth: 0 },
+            ]}
+          >
+            <View style={styles.audioPlayBtn}>
+              <Feather name="mic" size={18} color="#080F0A" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <View style={[styles.audioTrack, { backgroundColor: "#080F0A33" }]} />
+              <Text style={[styles.audioTime, { color: "#080F0A" }]}>
+                {formatDuration(item.durationMs ?? 0)}
+              </Text>
+            </View>
+          </View>
+        )}
+        {/* Upload overlay */}
+        <View
+          style={{
+            position: "absolute",
+            right: 6,
+            bottom: 6,
+            backgroundColor: "#000000AA",
+            borderRadius: 10,
+            paddingHorizontal: 6,
+            paddingVertical: 3,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          {item.failed ? (
+            <>
+              <Feather name="alert-circle" size={11} color="#E07A7A" />
+              <Text style={{ color: "#E07A7A", fontSize: 10, fontWeight: "600" }}>
+                Error
+              </Text>
+            </>
+          ) : (
+            <>
+              <ActivityIndicator size="small" color={colors.accent} />
+              <Text style={{ color: "#FFFFFFCC", fontSize: 10, fontWeight: "600" }}>
+                Enviando
+              </Text>
+            </>
+          )}
+        </View>
+      </View>
+    </View>
+  );
+}
+
 function ImageAttachment({
   objectPath,
   width,
@@ -1010,14 +1149,43 @@ function AudioAttachment({
   const [loading, setLoading] = useState(false);
   const totalMs = durationMs > 0 ? durationMs : 0;
 
+  // Native: preload Sound on mount so first tap plays instantly
   useEffect(() => {
+    if (Platform.OS === "web") return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: url },
+          { shouldPlay: false },
+          (status) => {
+            if (!status.isLoaded) return;
+            setPositionMs(status.positionMillis ?? 0);
+            setIsPlaying(status.isPlaying);
+            if (status.didJustFinish) {
+              setIsPlaying(false);
+              setPositionMs(0);
+              soundRef.current?.setPositionAsync(0).catch(() => {});
+            }
+          },
+        );
+        if (cancelled) {
+          sound.unloadAsync().catch(() => {});
+          return;
+        }
+        soundRef.current = sound;
+      } catch (err) {
+        console.log("[audio] preload error", err);
+      }
+    })();
     return () => {
+      cancelled = true;
       if (soundRef.current) {
         soundRef.current.unloadAsync().catch(() => {});
         soundRef.current = null;
       }
     };
-  }, []);
+  }, [url]);
 
   const webAudioRef = useRef<HTMLAudioElement | null>(null);
 

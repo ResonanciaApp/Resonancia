@@ -1,1 +1,2 @@
 - [Warm theme palette](warm-theme.md) — colores cálidos dorado/café aplicados en colors.ts y archivos con paletas hardcodeadas
+- [Chat optimistic uploads + audio preload](chat-optimistic-uploads.md) — pattern para image/audio sends instantáneos en DM; dedup por serverObjectPath, no setQueryData
