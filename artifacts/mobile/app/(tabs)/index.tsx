@@ -475,11 +475,6 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* ── 8. MENSAJES DEL ALMA ── */}
-        <View style={styles.section}>
-          <MensajesAnonimosPanel />
-        </View>
-
         {/* ── 9. BANNER PREMIUM ── */}
         <PremiumBanner />
 
