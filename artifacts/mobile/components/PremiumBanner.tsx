@@ -44,7 +44,7 @@ export default function PremiumBanner() {
         {/* Premium title */}
         <View style={styles.titleRow}>
           <Text style={[styles.title, { color: P.gold }]}>Premium</Text>
-          <Text style={[styles.star, { color: P.goldHi }]}>  ✦</Text>
+          <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 22, height: 22, marginLeft: 8 }} contentFit="contain" />
         </View>
 
         {/* Divider line */}
@@ -77,7 +77,7 @@ export default function PremiumBanner() {
             end={{ x: 1, y: 0 }}
             style={styles.btn}
           >
-            <Text style={[styles.star, { color: P.goldHi, fontSize: 14, marginRight: 8 }]}>✦</Text>
+            <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 16, height: 16, marginRight: 8 }} contentFit="contain" />
             <Text style={[styles.btnText, { color: P.gold }]}>Probar gratis</Text>
           </LinearGradient>
         </Pressable>

@@ -273,7 +273,7 @@ export default function ProfileScreen() {
           <View style={styles.premiumGlow} />
           <View style={styles.premiumLeft}>
             <View style={styles.premiumTitleRow}>
-              <Text style={{ color: "#F0C36A", fontSize: 13, marginRight: 6 }}>✦</Text>
+              <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 13, height: 13, marginRight: 6 }} contentFit="contain" />
               <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>Prueba Premium</Text>
             </View>
             <Text style={[styles.premiumSub, { color: "#D5C8B2", marginBottom: 10 }]}>
@@ -291,7 +291,7 @@ export default function ProfileScreen() {
             ))}
           </View>
           <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
-            <Text style={{ color: "#F0C36A", fontSize: 16 }}>✦</Text>
+            <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
           </View>
         </View>
 

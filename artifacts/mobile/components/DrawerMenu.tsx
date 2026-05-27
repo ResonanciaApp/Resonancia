@@ -181,7 +181,7 @@ export function DrawerMenu({ visible, onClose }: Props) {
               >
                 {item.label === "Membresía" ? (
                   <View style={styles.premiumIconCircle}>
-                    <Text style={styles.premiumIconText}>✦</Text>
+                    <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 16, height: 16 }} contentFit="contain" />
                   </View>
                 ) : (
                   <View style={styles.itemIcon}>
