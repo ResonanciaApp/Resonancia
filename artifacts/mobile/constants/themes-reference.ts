@@ -1,8 +1,8 @@
 /**
  * RESONANCIA — Referencia de paletas de color
  *
- * OPCIÓN A: Tema original (verde oscuro + acentos dorado-púrpura)
- * OPCIÓN B: Tema actual (verde más claro + headers crema + fondo nuevo)
+ * OPCIÓN A: Tema cálido original (tonos marrones/dorados)
+ * OPCIÓN B: Tema verde actual  ← EN USO HOY (26 may 2026)
  *
  * Para cambiar de tema, aplicar los valores correspondientes en cada archivo.
  */
@@ -83,14 +83,14 @@ export const THEME_A = {
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// OPCIÓN B — Estado actual (hoy)
+// OPCIÓN B — Tonos verdes (EN USO — 26 may 2026)
 // ─────────────────────────────────────────────────────────────────────────────
 export const THEME_B = {
 
   // ── constants/colors.ts ──────────────────────────────────────────────────
   colors: {
     background:          "#070E09",
-    card:                "#1A2A1E",   // más claro que A
+    card:                "#1A2A1E",
     primary:             "#B6955F",
     primaryForeground:   "#070E09",
     foreground:          "#C8C1B5",
@@ -106,42 +106,53 @@ export const THEME_B = {
 
   // ── components/SacredBackground.tsx ─────────────────────────────────────
   sacredBackground: {
-    image:          "bg-texture.jpg",   // assets/images/bg-texture.jpg (más oscura)
-    overlayColor:   "rgba(4,8,5,0.62)", // overlay más ligero que A
+    image:        "bg-texture.jpg",     // assets/images/bg-texture.jpg
+    overlayColor: "rgba(4,8,5,0.67)",  // 0.67 = +5% oscuro respecto al original
   },
 
   // ── components/VozInteriorPanel.tsx ─────────────────────────────────────
   vozInterior: {
+    panelBg:          "#111E16",
     gradient:         ["#111E16", "#0D1810"] as [string, string],
     headerTitle:      "#EDE1D3",
     headerSubtitle:   "rgba(237,225,211,0.50)",
     historyCount:     "rgba(237,225,211,0.7)",
     historyIcon:      "rgba(237,225,211,0.6)",
+    // sin borderWidth (bordes quitados)
   },
 
   // ── app/(tabs)/diario.tsx — Mis reflexiones + Ideas Brillantes ───────────
   diario: {
+    panelBg:       "#111E16",
     gradient:      ["#111E16", "#0D1810"] as [string, string],
     panelTitle:    "#EDE1D3",
     panelSubtitle: "rgba(237,225,211,0.50)",
     historyIcon:   "rgba(237,225,211,0.6)",
     modules: {
-      misReflexiones: { accentColor: "#8AAAD4" },
+      misReflexiones:  { accentColor: "#8AAAD4" },
       ideasBrillantes: { accentColor: "#F0CC82" },
     },
+    // sin borderWidth (bordes quitados en todos los módulos)
   },
 
   // ── components/MensajesAnonimosPanel.tsx ────────────────────────────────
   mensajesDelAlma: {
-    gradient:           ["#111E16", "#0D1810"] as [string, string],
-    headerTitle:        "#EDE1D3",
-    headerSubtitle:     "rgba(237,225,211,0.50)",
-    cycleBadgeBg:       "rgba(237,225,211,0.10)",
-    cycleBadgeText:     "rgba(237,225,211,0.7)",
-    clockIcon:          "rgba(237,225,211,0.7)",
-    infoIcon:           "rgba(237,225,211,0.45)",
-    iconBg:             "rgba(138,184,148,0.18)",
-    mainIcon:           "#8AB894",
+    gradient:       ["#111E16", "#0D1810"] as [string, string],
+    headerTitle:    "#EDE1D3",
+    headerSubtitle: "rgba(237,225,211,0.50)",
+    cycleBadgeBg:   "rgba(237,225,211,0.10)",
+    cycleBadgeText: "rgba(237,225,211,0.7)",
+    clockIcon:      "rgba(237,225,211,0.7)",
+    infoIcon:       "rgba(237,225,211,0.45)",
+    iconBg:         "rgba(138,184,148,0.18)",
+    mainIcon:       "#FFFFFF",        // ícono de personas — blanco
+    editIcon:       "#C8A860",        // lápiz estado vacío — dorado
+    toggleChevron:  "#FFFFFF",        // flecha abrir/cerrar — blanca
+  },
+
+  // ── app/(tabs)/profile.tsx — Módulos del menú ───────────────────────────
+  profileMenu: {
+    menuCardBg: "#1C1410",            // marrón rojizo oscuro (igual que Historial)
   },
 
   // ── data/categories.ts — 3 Minutos de Sabiduría ─────────────────────────
