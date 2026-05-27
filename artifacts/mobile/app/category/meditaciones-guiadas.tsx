@@ -212,18 +212,18 @@ export default function MeditacionesGuiadasScreen() {
             {/* Search bar */}
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
               <View style={[styles.searchBar, { backgroundColor: "rgba(60,32,82,0.55)", borderColor: "rgba(200,180,224,0.22)" }]}>
-                <Feather name="search" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+                <Feather name="search" size={16} color="#C8B4E0" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
                   onChangeText={setQuery}
                   placeholder="Buscar..."
-                  placeholderTextColor={colors.mutedForeground}
+                  placeholderTextColor="#C8B4E0"
                   style={[styles.searchInput, { color: colors.foreground }]}
                   returnKeyType="search"
                 />
                 {query.length > 0 && (
                   <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                    <Feather name="x" size={14} color={colors.mutedForeground} />
+                    <Feather name="x" size={14} color="#C8B4E0" />
                   </Pressable>
                 )}
               </View>
@@ -233,8 +233,8 @@ export default function MeditacionesGuiadasScreen() {
             <View style={{ paddingHorizontal: H_PAD }}>
               {filteredSessions.length === 0 ? (
                 <View style={styles.emptyWrap}>
-                  <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  <Feather name="search" size={32} color="#C8B4E0" style={{ marginBottom: 12 }} />
+                  <Text style={[styles.emptyText, { color: "#C8B4E0" }]}>
                     Sin resultados{query ? ` para "${query}"` : ""}
                   </Text>
                 </View>
