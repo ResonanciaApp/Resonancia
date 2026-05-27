@@ -25,6 +25,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
+import { getSessionById } from "@/data/sessions";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -52,7 +53,7 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { favorites, elapsed, history } = usePlayer();
+  const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
   const {
     username,
     lastName,
@@ -157,18 +158,10 @@ export default function ProfileScreen() {
     },
   ];
 
-  // ── Menu items (replaces favorites list) ─────────────────────────────────
-  const menuPrimary: { label: string; icon: FeatherIconName; href: string }[] = [
-    { label: "Membresía", icon: "star", href: "/membresia" },
-    { label: "Top 10 Comunidad", icon: "trending-up", href: "/comunidad-top10" },
-    { label: "Amigos", icon: "users", href: "/amigos" },
-    { label: "Grupos", icon: "message-circle", href: "/grupos" },
-  ];
-  const menuSecondary: { label: string; icon: FeatherIconName; href: string }[] = [
-    { label: "Invitar a un amigo", icon: "user-plus", href: "/invitar" },
-    { label: "Ayuda", icon: "help-circle", href: "/ayuda" },
-    { label: "Configuraciones", icon: "settings", href: "/configuraciones" },
-  ];
+  // ── Favorite sessions ─────────────────────────────────────────────────────
+  const favSessions = favorites
+    .map((id) => getSessionById(id))
+    .filter(Boolean);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -295,41 +288,45 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* ── Menú ── */}
-        <View style={[styles.menuCard, { backgroundColor: colors.card }]}>
-          {menuPrimary.map((item, idx) => (
-            <Pressable
-              key={item.label}
-              onPress={() => router.push(item.href as never)}
-              style={({ pressed }) => [
-                styles.menuRow,
-                idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
-                pressed && { opacity: 0.7 },
-              ]}
-            >
-              <Feather name={item.icon} size={18} color={item.label === "Membresía" ? colors.accent : "#FFFFFF"} />
-              <Text style={[styles.menuLabel, { color: item.label === "Membresía" ? colors.accent : "#FFFFFF" }]}>{item.label}</Text>
-              <Feather name="chevron-right" size={16} color={colors.border} />
-            </Pressable>
-          ))}
-        </View>
-
-        <View style={[styles.menuCard, { backgroundColor: "#160C07", marginTop: 14 }]}>
-          {menuSecondary.map((item, idx) => (
-            <Pressable
-              key={item.label}
-              onPress={() => router.push(item.href as never)}
-              style={({ pressed }) => [
-                styles.menuRow,
-                idx > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
-                pressed && { opacity: 0.7 },
-              ]}
-            >
-              <Feather name={item.icon} size={18} color="#FFFFFF" />
-              <Text style={[styles.menuLabel, { color: "#FFFFFF" }]}>{item.label}</Text>
-              <Feather name="chevron-right" size={16} color={colors.border} />
-            </Pressable>
-          ))}
+        {/* ── Favoritos ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Favoritos</Text>
+          {favSessions.length === 0 ? (
+            <View style={[styles.emptyFav, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Feather name="heart" size={22} color={"rgba(198,155,79,0.3)"} />
+              <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
+                Aún no has guardado sesiones.{"\n"}Toca ❤️ en cualquier sesión para guardarla aquí.
+              </Text>
+            </View>
+          ) : (
+            favSessions.map((s) => {
+              if (!s) return null;
+              const playing = currentSession?.id === s.id && isPlaying;
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => router.push(`/session/${s.id}` as never)}
+                  style={({ pressed }) => [
+                    styles.favRow,
+                    { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+                  ]}
+                >
+                  <Image source={s.image as never} style={styles.favImg} contentFit="cover" />
+                  <View style={styles.favInfo}>
+                    <Text style={[styles.favTitle, { color: colors.foreground }]} numberOfLines={1}>{s.title}</Text>
+                    <Text style={[styles.favSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                      {s.categoryLabel} · {s.durationLabel}
+                    </Text>
+                  </View>
+                  {playing ? (
+                    <Feather name="volume-2" size={16} color={colors.primary} />
+                  ) : (
+                    <Feather name="chevron-right" size={16} color={colors.border} />
+                  )}
+                </Pressable>
+              );
+            })
+          )}
         </View>
 
         <Text style={[styles.footer, { color: colors.border }]}>
@@ -535,6 +532,31 @@ const styles = StyleSheet.create({
   premiumFeatureRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 3 },
   premiumFeatureText: { fontSize: 11, lineHeight: 16 },
   premiumBadge: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+
+  // Favoritos
+  section: { marginBottom: 24 },
+  sectionTitle: { fontSize: 18, fontWeight: "700", marginBottom: 14 },
+  emptyFav: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 24,
+    alignItems: "center",
+    gap: 10,
+  },
+  emptyFavText: { fontSize: 13, lineHeight: 20, textAlign: "center" },
+  favRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 10,
+    gap: 12,
+    marginBottom: 10,
+  },
+  favImg: { width: 52, height: 52, borderRadius: 10 },
+  favInfo: { flex: 1 },
+  favTitle: { fontSize: 14, fontWeight: "600", marginBottom: 3 },
+  favSub: { fontSize: 12 },
 
   // Menu
   menuCard: {
