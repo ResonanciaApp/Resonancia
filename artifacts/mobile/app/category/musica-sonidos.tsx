@@ -212,19 +212,6 @@ export default function MusicaSonidosScreen() {
                     ]}
                     onPress={() => setPendingSession(session)}
                   >
-                    {/* Favorite button */}
-                    <Pressable
-                      style={styles.favBtn}
-                      onPress={() => toggleFavorite(session.id)}
-                      hitSlop={8}
-                    >
-                      <Feather
-                        name="heart"
-                        size={13}
-                        color={fav ? "#E8A44A" : colors.mutedForeground}
-                      />
-                    </Pressable>
-
                     {/* Circular image */}
                     <View style={[styles.imgWrap, { width: IMG_SIZE, height: IMG_SIZE }]}>
                       <Image
