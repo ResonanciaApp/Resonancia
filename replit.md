@@ -112,7 +112,7 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 - Diario: hasta **5 entradas** guardadas
 - Favoritos: hasta **5 sesiones** favoritas
 - Timer de sueño / meditación: hasta **30 min**
-- Comunidad: ver grupos, posts y actividades (modo lectura)
+- Comunidad: acceso completo (grupos, posts, actividades, chat, invitar, crear)
 - Configuraciones, perfil, ayuda, registro
 - Notificaciones (cuando exista backend)
 
@@ -123,10 +123,11 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 - **Favoritos**: ilimitados
 - **Timer**: hasta 8 hs (para dormir toda la noche)
 - **Descargas offline** de sesiones
-- **Comunidad activa**: postear, crear actividades, chatear, invitar amigos
 - **Mensajes anónimos**: enviar (no solo leer)
 - **Estadísticas / historial extendido** (más allá de últimos 7 días)
 - **Personalización avanzada**: temas, sonidos ambiente custom
+
+**Comunidad queda 100% FREE** (grupos, actividades, chat, invitar amigos, postear).
 
 **Notas de implementación cuando se confirme:**
 - Cada feature gateada usa `const { isPremium } = usePremium()` y muestra PremiumBadge / Alert → router.push("/membresia")
