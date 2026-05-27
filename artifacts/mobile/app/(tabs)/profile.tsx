@@ -307,8 +307,8 @@ export default function ProfileScreen() {
                 pressed && { opacity: 0.7 },
               ]}
             >
-              <Feather name={item.icon} size={18} color={colors.accent} />
-              <Text style={[styles.menuLabel, { color: colors.foreground }]}>{item.label}</Text>
+              <Feather name={item.icon} size={18} color={item.label === "Membresía" ? colors.accent : "#FFFFFF"} />
+              <Text style={[styles.menuLabel, { color: item.label === "Membresía" ? colors.accent : "#FFFFFF" }]}>{item.label}</Text>
               <Feather name="chevron-right" size={16} color={colors.border} />
             </Pressable>
           ))}
@@ -325,8 +325,8 @@ export default function ProfileScreen() {
                 pressed && { opacity: 0.7 },
               ]}
             >
-              <Feather name={item.icon} size={18} color="#EDE1D3" />
-              <Text style={[styles.menuLabel, { color: "#EDE1D3" }]}>{item.label}</Text>
+              <Feather name={item.icon} size={18} color="#FFFFFF" />
+              <Text style={[styles.menuLabel, { color: "#FFFFFF" }]}>{item.label}</Text>
               <Feather name="chevron-right" size={16} color={colors.border} />
             </Pressable>
           ))}
