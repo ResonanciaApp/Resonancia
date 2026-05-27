@@ -376,6 +376,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     textAlignVertical: "top",
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
   inputFooter: {
     flexDirection: "row",
