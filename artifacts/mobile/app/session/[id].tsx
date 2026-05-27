@@ -118,7 +118,12 @@ export default function SessionDetailScreen() {
     let tagBg = "rgba(182,149,95,0.15)";
     let tagBorder = "rgba(182,149,95,0.3)";
 
-    if (isGuiada && session.meditationTag) tag = session.meditationTag;
+    if (isGuiada && session.meditationTag) {
+      tag = session.meditationTag;
+      tagColor = "#C8B4E0";
+      tagBg = "rgba(200,180,224,0.15)";
+      tagBorder = "rgba(200,180,224,0.35)";
+    }
     else if (isAncestral && session.ancestralTag) tag = session.ancestralTag;
     else if (isPodcast && session.podcastTag) {
       tag = session.podcastTag;
