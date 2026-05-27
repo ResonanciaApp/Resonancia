@@ -128,12 +128,12 @@ export default function PodcastScreen() {
                   <Text style={[styles.episodeTitle, { color: colors.foreground }]} numberOfLines={2}>
                     {s.title}
                   </Text>
-                  <Text style={[styles.episodeSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                  <Text style={[styles.episodeSub, { color: "#FFFFFF" }]} numberOfLines={1}>
                     {s.subtitle}
                   </Text>
                   <View style={styles.episodeMeta}>
-                    <Feather name="clock" size={11} color={colors.mutedForeground} />
-                    <Text style={[styles.episodeMetaText, { color: colors.mutedForeground }]}>
+                    <Feather name="clock" size={11} color="#FFFFFF" />
+                    <Text style={[styles.episodeMetaText, { color: "#FFFFFF" }]}>
                       {" "}{s.durationLabel}
                     </Text>
                   </View>
