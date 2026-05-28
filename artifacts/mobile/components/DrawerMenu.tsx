@@ -231,7 +231,7 @@ export function DrawerMenu({ visible, onClose, instant }: Props) {
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.55)",
+    backgroundColor: "rgba(0,0,0,0.78)",
   },
   drawer: {
     position: "absolute",
