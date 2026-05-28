@@ -10,6 +10,7 @@ import {
   type DirectMessage,
   type User,
 } from "@workspace/db";
+import { sendPushToUsers } from "../lib/push";
 import {
   GetDirectMessagesParams,
   GetDirectMessagesQueryParams,
@@ -337,6 +338,21 @@ router.post("/dm/with/:userId", requireAuth, async (req, res) => {
         })
         .onConflictDoNothing();
     }
+
+    // Push: notify recipient on every new message (Expo dedupes via collapseId if needed)
+    void sendPushToUsers([otherId], {
+      title: me.displayName || me.username || "Mensaje nuevo",
+      body: hasBody
+        ? body.data.body!.trim().slice(0, 140)
+        : hasAttachment
+          ? body.data.attachmentType === "audio"
+            ? "🎤 Mensaje de voz"
+            : body.data.attachmentType === "image"
+              ? "📷 Foto"
+              : "Te envió un archivo"
+          : "Te envió un mensaje",
+      data: { kind: "dm", fromUserId: me.id },
+    });
 
     // Clear my typing indicator
     typingMap.delete(typingKey(me.id, otherId));

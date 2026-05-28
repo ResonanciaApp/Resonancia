@@ -23,6 +23,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
@@ -69,11 +70,17 @@ function AuthGate() {
   return null;
 }
 
+function PushBridge() {
+  usePushNotifications();
+  return null;
+}
+
 function RootLayoutNav() {
   return (
     <>
       <ApiAuthBridge />
       <AuthGate />
+      <PushBridge />
       <Stack
         screenOptions={{
           headerShown: false,

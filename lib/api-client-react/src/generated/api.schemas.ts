@@ -5,6 +5,32 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type RegisterPushTokenBodyPlatform = typeof RegisterPushTokenBodyPlatform[keyof typeof RegisterPushTokenBodyPlatform];
+
+
+export const RegisterPushTokenBodyPlatform = {
+  ios: 'ios',
+  android: 'android',
+  web: 'web',
+} as const;
+
+export interface RegisterPushTokenBody {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  token: string;
+  platform: RegisterPushTokenBodyPlatform;
+}
+
+export interface UnregisterPushTokenBody {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  token: string;
+}
+
 export interface HealthStatus {
   status: string;
 }

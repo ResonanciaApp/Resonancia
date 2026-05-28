@@ -16,6 +16,7 @@ import {
   DeclineFriendRequestParams,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
+import { sendPushToUsers } from "../lib/push";
 
 const router: IRouter = Router();
 
@@ -184,6 +185,11 @@ router.post("/friend-requests", requireAuth, async (req, res) => {
         actorUserId: me.id,
         type: "friend_accepted",
       });
+      void sendPushToUsers([target.id], {
+        title: "Solicitud aceptada",
+        body: `${me.displayName || me.username || "Alguien"} aceptó tu solicitud de amistad`,
+        data: { kind: "friend_accepted", fromUserId: me.id },
+      });
       res.status(201).json(serializeRequest(accepted, target, me));
       return;
     }
@@ -196,6 +202,11 @@ router.post("/friend-requests", requireAuth, async (req, res) => {
       userId: addresseeId,
       actorUserId: me.id,
       type: "friend_request",
+    });
+    void sendPushToUsers([addresseeId], {
+      title: "Nueva solicitud de amistad",
+      body: `${me.displayName || me.username || "Alguien"} te quiere agregar`,
+      data: { kind: "friend_request", fromUserId: me.id },
     });
     res.status(201).json(serializeRequest(created, me, target));
   } catch (err) {
@@ -237,6 +248,11 @@ router.post("/friend-requests/:id/accept", requireAuth, async (req, res) => {
       userId: updated.requesterId,
       actorUserId: me.id,
       type: "friend_accepted",
+    });
+    void sendPushToUsers([updated.requesterId], {
+      title: "Solicitud aceptada",
+      body: `${me.displayName || me.username || "Alguien"} aceptó tu solicitud de amistad`,
+      data: { kind: "friend_accepted", fromUserId: me.id },
     });
     res.json(serializeRequest(updated, requester!, me));
   } catch (err) {

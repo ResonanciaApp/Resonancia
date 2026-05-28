@@ -55,6 +55,12 @@
         {
           "microphonePermission": "RESONANCIA usa el micrófono para grabar tu Voz Interior y mensajes de voz en los chats."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#C69B4F"
+        }
       ]
     ],
     "experiments": {

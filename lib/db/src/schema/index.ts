@@ -22,3 +22,4 @@ export * from "./users";
 export * from "./friendships";
 export * from "./notifications";
 export * from "./direct-messages";
+export * from "./push-tokens";

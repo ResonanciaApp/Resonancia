@@ -419,3 +419,28 @@ export const LikeMessageResponse = zod.object({
 })
 
 
+/**
+ * @summary Register an Expo push token for the current user
+ */
+export const registerPushTokenBodyTokenMax = 500;
+
+
+
+export const RegisterPushTokenBody = zod.object({
+  "token": zod.string().min(1).max(registerPushTokenBodyTokenMax),
+  "platform": zod.enum(['ios', 'android', 'web'])
+})
+
+
+/**
+ * @summary Remove a push token (e.g. on logout)
+ */
+export const unregisterPushTokenBodyTokenMax = 500;
+
+
+
+export const UnregisterPushTokenBody = zod.object({
+  "token": zod.string().min(1).max(unregisterPushTokenBodyTokenMax)
+})
+
+

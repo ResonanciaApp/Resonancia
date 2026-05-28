@@ -22,6 +22,8 @@ tags:
     description: Direct messages between friends
   - name: storage
     description: File upload and serving
+  - name: push
+    description: Mobile push notification tokens
 paths:
   /healthz:
     get:
@@ -553,8 +555,67 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /push/register:
+    post:
+      tags: [push]
+      operationId: registerPushToken
+      summary: Register an Expo push token for the current user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterPushTokenBody"
+      responses:
+        "204":
+          description: Registered
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /push/unregister:
+    post:
+      tags: [push]
+      operationId: unregisterPushToken
+      summary: Remove a push token (e.g. on logout)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UnregisterPushTokenBody"
+      responses:
+        "204":
+          description: Unregistered
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    RegisterPushTokenBody:
+      type: object
+      properties:
+        token:
+          type: string
+          minLength: 1
+          maxLength: 500
+        platform:
+          type: string
+          enum: [ios, android, web]
+      required: [token, platform]
+    UnregisterPushTokenBody:
+      type: object
+      properties:
+        token:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required: [token]
     HealthStatus:
       type: object
       properties:
