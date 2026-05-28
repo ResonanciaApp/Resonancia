@@ -19,6 +19,7 @@ type Props = {
   session: Session;
   width?: number;
   horizontal?: boolean;
+  tint?: "terracotta";
 };
 
 function LockStar() {
@@ -27,7 +28,9 @@ function LockStar() {
   );
 }
 
-export function SessionCard({ session, width = 200, horizontal = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint }: Props) {
+  const tintOverlay =
+    tint === "terracotta" ? "rgba(184,86,46,0.11)" : "rgba(190,145,50,0.04)";
   const colors = useColors();
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
@@ -45,8 +48,8 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
           { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
         ]}
       >
-        {/* Warm amber tint sutil */}
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)", borderRadius: 18 }]} />
+        {/* Warm tint sutil */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: tintOverlay, borderRadius: 18 }]} />
         <View style={{ width: 108, height: 96 }}>
           <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
