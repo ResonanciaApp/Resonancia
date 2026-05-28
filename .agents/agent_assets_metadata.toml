@@ -599,3 +599,9 @@ id = "m5ReEEXuiVeJnMcfUJs-k"
 uri = "file://artifacts/mobile/assets/audio/meditacion_respiracion.mp3"
 type = "audio"
 title = "Meditación — voz más grave y acento más neutro"
+
+[[outputs]]
+id = "50-sNW2-E2OeyeRvB2U-_"
+uri = "file://attached_assets/earth_50_cm.mp3"
+type = "audio"
+title = "Gong Earth — 50 cm (simulado)"
