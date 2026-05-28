@@ -311,14 +311,14 @@ export default function MusicaSonidosScreen() {
                 ]}
               >
                 {/* Drag handle */}
-                <View style={[styles.dragHandle, { backgroundColor: "rgba(182,149,95,0.3)" }]} />
+                <View style={[styles.dragHandle, { backgroundColor: "rgba(160,200,140,0.35)" }]} />
 
                 {/* Session info */}
                 {pendingSession && (
                   <>
                     <View style={styles.modalHeader}>
-                      <View style={[styles.modalIcon, { backgroundColor: "rgba(182,149,95,0.1)" }]}>
-                        <Feather name="clock" size={20} color={colors.primary} />
+                      <View style={[styles.modalIcon, { backgroundColor: "rgba(160,200,140,0.12)" }]}>
+                        <Feather name="clock" size={20} color="#A8D49F" />
                       </View>
                       <View style={{ flex: 1 }}>
                         <Text style={[styles.modalTitle, { color: colors.foreground }]}>
@@ -343,11 +343,11 @@ export default function MusicaSonidosScreen() {
                             styles.durationBtn,
                             {
                               backgroundColor: pressed
-                                ? colors.primary
-                                : "rgba(182,149,95,0.08)",
+                                ? "#A8D49F"
+                                : "rgba(160,200,140,0.10)",
                               borderColor: pressed
-                                ? colors.primary
-                                : "rgba(182,149,95,0.25)",
+                                ? "#A8D49F"
+                                : "rgba(160,200,140,0.28)",
                             },
                           ]}
                           onPress={() => handleSelectDuration(min)}
@@ -368,7 +368,7 @@ export default function MusicaSonidosScreen() {
 
                     {/* Cancel */}
                     <Pressable
-                      style={[styles.cancelBtn, { borderColor: "rgba(182,149,95,0.2)" }]}
+                      style={[styles.cancelBtn, { borderColor: "rgba(160,200,140,0.22)" }]}
                       onPress={() => setPendingSession(null)}
                     >
                       <Text style={[styles.cancelText, { color: colors.mutedForeground }]}>
