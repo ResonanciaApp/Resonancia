@@ -83,10 +83,10 @@ export default function MeditacionesGuiadasScreen() {
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1A0A24" }]}>
+    <View style={[styles.root, { backgroundColor: "#0A040E" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#4A3260", "#251633"]}
+        colors={["#1E1426", "#0F0914"]}
         style={StyleSheet.absoluteFill}
       />
 
