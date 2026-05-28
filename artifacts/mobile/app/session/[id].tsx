@@ -20,6 +20,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { CATEGORIES } from "@/data/categories";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -85,6 +86,10 @@ export default function SessionDetailScreen() {
   const related = SESSIONS.filter(
     (s) => s.categoryId === session.categoryId && s.id !== session.id
   ).slice(0, 3);
+
+  // Tinted background derived from the session's category (gradient[1] = darker shade)
+  const category = CATEGORIES.find((c) => c.id === session.categoryId);
+  const categoryBg = category?.gradient[1] ?? colors.background;
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -154,7 +159,7 @@ export default function SessionDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: categoryBg }]}>
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -166,7 +171,7 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <LinearGradient
-            colors={["rgba(24,17,12,0.25)", "transparent", colors.background]}
+            colors={["rgba(0,0,0,0.25)", "transparent", categoryBg]}
             locations={[0, 0.45, 1]}
             style={StyleSheet.absoluteFill}
           />
@@ -281,7 +286,7 @@ export default function SessionDetailScreen() {
 
       {/* ── Sticky "Escuchar ahora" ──────────────────────────────────────── */}
       <View style={[styles.stickyPlay, { paddingBottom: bottomPad + 10 }]}>
-        <LinearGradient colors={["transparent", colors.background]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["transparent", categoryBg]} style={StyleSheet.absoluteFill} />
         <Pressable
           onPress={handlePlay}
           style={({ pressed }) => [
