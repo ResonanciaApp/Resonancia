@@ -56,12 +56,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
         </View>
-        <LinearGradient
-          colors={["transparent", bg]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={styles.hGradient}
-        />
         <View style={styles.hContent}>
           <Text style={[styles.hCategory, { color: colors.accent }]}>
             {session.categoryLabel}
