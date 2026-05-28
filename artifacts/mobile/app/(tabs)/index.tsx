@@ -185,9 +185,9 @@ export default function HomeScreen() {
             <Pressable
               onPress={() => openDrawer()}
               hitSlop={12}
-              style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+              style={styles.iconBtnBare}
             >
-              <Feather name="menu" size={18} color="#FFFFFF" />
+              <Feather name="menu" size={22} color="#FFFFFF" />
             </Pressable>
             <NotificationBell />
           </View>
@@ -588,6 +588,12 @@ const styles = StyleSheet.create({
     height: 38,
     borderRadius: 12,
     borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconBtnBare: {
+    width: 38,
+    height: 38,
     alignItems: "center",
     justifyContent: "center",
   },
