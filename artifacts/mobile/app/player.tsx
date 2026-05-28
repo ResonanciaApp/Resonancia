@@ -30,10 +30,23 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { usePlayer } from "@/context/PlayerContext";
+import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const ART_SIZE = width * 0.72;
+
+/** Darken a hex color toward black. `amount` is 0..1 (1 = black). */
+function darkenHex(hex: string, amount: number): string {
+  const h = hex.replace("#", "");
+  if (h.length !== 6) return hex;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const k = Math.max(0, Math.min(1, 1 - amount));
+  const toHex = (n: number) => Math.round(n * k).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -264,6 +277,20 @@ export default function PlayerScreen() {
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
 
+  // Fondo derivado de la categoría (mismo cálculo que session/[id].tsx)
+  // para que el reproductor herede el color de cada categoría.
+  const playerCategory = CATEGORIES.find((c) => c.id === currentSession.categoryId);
+  let playerBg: string;
+  if (playerCategory?.id === "sonidos-ancestrales") {
+    playerBg = colors.background;
+  } else {
+    const baseHex =
+      playerCategory?.id === "sabiduria-dia"
+        ? "#3E260A"
+        : playerCategory?.gradient[1] ?? colors.background;
+    playerBg = darkenHex(baseHex, 0.6);
+  }
+
   const handlePlayPause = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     pauseResume();
@@ -280,7 +307,7 @@ export default function PlayerScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: playerBg }]}>
       <ExpoImage
         source={currentSession.image as any}
         style={[StyleSheet.absoluteFill, { opacity: 0.12 }]}
@@ -288,7 +315,7 @@ export default function PlayerScreen() {
         blurRadius={20}
       />
       <LinearGradient
-        colors={[colors.background, "transparent", colors.background]}
+        colors={[playerBg, "transparent", playerBg]}
         locations={[0, 0.5, 1]}
         style={StyleSheet.absoluteFill}
       />
