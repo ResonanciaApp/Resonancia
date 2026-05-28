@@ -11,7 +11,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Image as ExpoImage } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SESSIONS } from "@/data/sessions";
@@ -41,13 +41,9 @@ export default function PodcastScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#0E1A30" }]}>
       <StatusBar barStyle="light-content" />
-      <ExpoImage
-        source={require("@/assets/images/backgrounds/podcast.jpg")}
+      <LinearGradient
+        colors={["#243350", "#101A28"]}
         style={StyleSheet.absoluteFill}
-        contentFit="cover"
-        transition={0}
-        cachePolicy="memory-disk"
-        priority="high"
       />
 
       <ScrollView

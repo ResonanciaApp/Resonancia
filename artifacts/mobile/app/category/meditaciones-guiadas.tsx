@@ -84,13 +84,9 @@ export default function MeditacionesGuiadasScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#1A0A24" }]}>
       <StatusBar barStyle="light-content" />
-      <Image
-        source={require("@/assets/images/backgrounds/meditaciones-guiadas.jpg")}
+      <LinearGradient
+        colors={["#4A3260", "#251633"]}
         style={StyleSheet.absoluteFill}
-        contentFit="cover"
-        transition={0}
-        cachePolicy="memory-disk"
-        priority="high"
       />
 
       <ScrollView

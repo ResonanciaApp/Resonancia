@@ -93,13 +93,9 @@ export default function MusicaSonidosScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#1A2418" }]}>
       <StatusBar barStyle="light-content" />
-      <ExpoImage
-        source={require("@/assets/images/backgrounds/musica-sonidos.jpg")}
+      <LinearGradient
+        colors={["#3A5438", "#1E2E1C"]}
         style={StyleSheet.absoluteFill}
-        contentFit="cover"
-        transition={0}
-        cachePolicy="memory-disk"
-        priority="high"
       />
 
       <ScrollView
