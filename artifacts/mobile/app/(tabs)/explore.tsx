@@ -148,7 +148,7 @@ export default function ExploreScreen() {
                     onPress={() => router.push(`/category/${cat.id}` as never)}
                     style={({ pressed }) => [styles.primaryCard, { width: PRIMARY_W, opacity: pressed ? 0.82 : 1 }]}
                   >
-                    <View style={[StyleSheet.absoluteFill, { borderRadius: 18, backgroundColor: cat.gradient[1] + "CC" }]} />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 18, backgroundColor: cat.color + "22" }]} />
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
@@ -173,7 +173,7 @@ export default function ExploreScreen() {
               <View style={styles.secondaryRow}>
                 {secondaryCats.map((cat) => {
                   const isSab = cat.id === "sabiduria-dia";
-                  const bgColor = isSab ? "#2E2417" : cat.gradient[1] + "CC";
+                  const bgColor = isSab ? cat.color + "22" : cat.color + "22";
                   const fgColor = isSab ? "#E6D6B3" : cat.color;
                   return (
                   <Pressable
