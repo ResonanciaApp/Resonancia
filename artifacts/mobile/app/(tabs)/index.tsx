@@ -197,7 +197,7 @@ export default function HomeScreen() {
               hitSlop={12}
               style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
             >
-              <Feather name="menu" size={18} color={colors.accent} />
+              <Feather name="menu" size={18} color="#FFFFFF" />
             </Pressable>
             <NotificationBell />
           </View>
