@@ -99,11 +99,10 @@ export function DrawerMenu({ visible, onClose }: Props) {
       ]).start();
     } else {
       Animated.parallel([
-        Animated.spring(translateX, {
+        Animated.timing(translateX, {
           toValue: -DRAWER_W,
+          duration: 220,
           useNativeDriver: ND,
-          damping: 22,
-          stiffness: 200,
         }),
         Animated.timing(overlayOpacity, {
           toValue: 0,
