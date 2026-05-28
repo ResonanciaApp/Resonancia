@@ -159,7 +159,7 @@ export default function ProfileScreen() {
       label: "Favoritos",
       value: favorites.length.toString(),
       icon: "heart",
-      href: "/(tabs)/favorites",
+      href: "/favorites",
     },
   ];
 

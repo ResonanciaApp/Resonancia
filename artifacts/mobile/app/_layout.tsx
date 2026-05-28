@@ -20,11 +20,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { DrawerMenu } from "@/components/DrawerMenu";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
+import { DrawerProvider } from "@/context/DrawerContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { PremiumProvider } from "@/context/PremiumContext";
@@ -77,7 +79,7 @@ function PushBridge() {
 
 function RootLayoutNav() {
   return (
-    <>
+    <DrawerProvider>
       <ApiAuthBridge />
       <AuthGate />
       <PushBridge />
@@ -162,8 +164,16 @@ function RootLayoutNav() {
           name="chat/[userId]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
+        <Stack.Screen name="favorites" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="amigos" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="grupos" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="ayuda" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="invitar" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="configuraciones" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="membresia" options={{ headerShown: false, animation: "slide_from_right" }} />
       </Stack>
-    </>
+      <DrawerMenu />
+    </DrawerProvider>
   );
 }
 

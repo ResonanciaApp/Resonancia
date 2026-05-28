@@ -16,9 +16,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
+import { useDrawer, markDrawerReopenOnHome } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
-import { setReopenDrawerOnFocus } from "@/lib/drawerState";
 
 const { width } = Dimensions.get("window");
 const DRAWER_W = Math.min(width * 0.78, 300);
@@ -34,14 +34,14 @@ const LOGGED_OUT_ITEMS: MenuItem[] = [
   { label: "Crear cuenta",  icon: "user-plus", route: "/(auth)/sign-up" },
   { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
   { label: "Premium",     icon: "star",      route: "/membresia" },
-  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/favorites" },
+  { label: "Favoritos",   icon: "heart",     route: "/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
 ];
 
 const LOGGED_IN_ITEMS: MenuItem[] = [
   { label: "Premium",     icon: "star",      route: "/membresia" },
-  { label: "Favoritos",   icon: "heart",     route: "/(tabs)/favorites" },
+  { label: "Favoritos",   icon: "heart",     route: "/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
 ];
@@ -53,13 +53,8 @@ const SECONDARY_ITEMS: MenuItem[] = [
   { label: "Resetear app (prueba)", icon: "refresh-cw", route: "/dev-reset" },
 ];
 
-interface Props {
-  visible: boolean;
-  onClose: () => void;
-  instant?: boolean;
-}
-
-export function DrawerMenu({ visible, onClose, instant }: Props) {
+export function DrawerMenu() {
+  const { isOpen: visible, instant, close: onClose } = useDrawer();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
@@ -131,7 +126,7 @@ export function DrawerMenu({ visible, onClose, instant }: Props) {
 
   const navigate = (route: string) => {
     onClose();
-    setReopenDrawerOnFocus(true);
+    markDrawerReopenOnHome();
     router.push(route as never);
   };
 

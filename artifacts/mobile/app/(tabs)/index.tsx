@@ -2,8 +2,8 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect, usePathname } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { router } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -19,7 +19,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
-import { DrawerMenu } from "@/components/DrawerMenu";
 import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
 import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { MessageDeck } from "@/components/MessageDeck";
@@ -28,6 +27,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
 import { useAuth } from "@/context/AuthContext";
+import { useDrawer } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useIntencion } from "@/context/IntencionContext";
@@ -36,7 +36,6 @@ import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
-import { getReopenDrawerOnFocus, setReopenDrawerOnFocus } from "@/lib/drawerState";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
@@ -163,28 +162,8 @@ export default function HomeScreen() {
     return pool.slice(0, 6);
   }, []);
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerInstant, setDrawerInstant] = useState(false);
+  const { open: openDrawer } = useDrawer();
   const [noOlvidarOpen, setNoOlvidarOpen] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (getReopenDrawerOnFocus()) {
-        setReopenDrawerOnFocus(false);
-        setDrawerInstant(true);
-        setDrawerOpen(true);
-      }
-    }, [])
-  );
-
-  const pathname = usePathname();
-  useEffect(() => {
-    if ((pathname === "/" || pathname === "") && getReopenDrawerOnFocus()) {
-      setReopenDrawerOnFocus(false);
-      setDrawerInstant(true);
-      setDrawerOpen(true);
-    }
-  }, [pathname]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -204,7 +183,7 @@ export default function HomeScreen() {
           {/* Fila superior: hamburger izquierda + avatar derecha */}
           <View style={styles.headerTopRow}>
             <Pressable
-              onPress={() => setDrawerOpen(true)}
+              onPress={() => openDrawer()}
               hitSlop={12}
               style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
             >
@@ -585,7 +564,6 @@ export default function HomeScreen() {
 
       </ScrollView>
 
-      <DrawerMenu visible={drawerOpen} instant={drawerInstant} onClose={() => { setDrawerOpen(false); setDrawerInstant(false); }} />
     </View>
   );
 }

@@ -147,7 +147,6 @@ export default function TabLayout() {
         <Tabs.Screen name="index"    options={{ title: "Inicio" }} />
         <Tabs.Screen name="explore"  options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="descanzo" options={{ title: "Descanso", href: null }} />
-        <Tabs.Screen name="favorites" options={{ title: "Favoritos", href: null }} />
         <Tabs.Screen name="diario"   options={{ title: "Diario" }} />
         <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
       </Tabs>
