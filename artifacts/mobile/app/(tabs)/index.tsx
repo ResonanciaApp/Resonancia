@@ -231,9 +231,6 @@ export default function HomeScreen() {
         <View style={[styles.section, { marginBottom: 20 }]}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Categorías</Text>
-            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
-            </Pressable>
           </View>
           <ScrollView
             horizontal
