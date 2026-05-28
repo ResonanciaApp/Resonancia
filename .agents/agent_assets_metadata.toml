@@ -641,3 +641,63 @@ id = "ZgZ69EWID547Rnyyq9McV"
 uri = "file://attached_assets/earth_80_cm.mp3"
 type = "audio"
 title = "Gong Earth — 80 cm"
+
+[[outputs]]
+id = "YwAEuAjHL3uqFjLq2dymd"
+uri = "file://attached_assets/symphonic_45_cm.mp3"
+type = "audio"
+title = "Symphonic — 45 cm"
+
+[[outputs]]
+id = "sfM4lCeDS6Vf6k6ABUng6"
+uri = "file://attached_assets/symphonic_55_cm.mp3"
+type = "audio"
+title = "Symphonic — 55 cm"
+
+[[outputs]]
+id = "k-DHfK3kM9z03vOyf_Ian"
+uri = "file://attached_assets/symphonic_60_cm.mp3"
+type = "audio"
+title = "Symphonic — 60 cm"
+
+[[outputs]]
+id = "Z2_Ed1NYaAb_K6W5WPxbI"
+uri = "file://attached_assets/symphonic_65_cm.mp3"
+type = "audio"
+title = "Symphonic — 65 cm"
+
+[[outputs]]
+id = "RxTGVGUA8gZw_2eq-sqTt"
+uri = "file://attached_assets/symphonic_70_cm.mp3"
+type = "audio"
+title = "Symphonic — 70 cm"
+
+[[outputs]]
+id = "oEWz_dh6z_eJk3-j7Vc5f"
+uri = "file://attached_assets/symphonic_75_cm.mp3"
+type = "audio"
+title = "Symphonic — 75 cm"
+
+[[outputs]]
+id = "CMIfEzpz7WYGyvQVhyMTL"
+uri = "file://attached_assets/symphonic_80_cm.mp3"
+type = "audio"
+title = "Symphonic — 80 cm"
+
+[[outputs]]
+id = "4LXfRy_zFnbI6OfW3vEVN"
+uri = "file://attached_assets/symphonic_85_cm.mp3"
+type = "audio"
+title = "Symphonic — 85 cm"
+
+[[outputs]]
+id = "sSTkOiCPuvog8W5DRI50j"
+uri = "file://attached_assets/symphonic_95_cm.mp3"
+type = "audio"
+title = "Symphonic — 95 cm"
+
+[[outputs]]
+id = "77o2KDNIEZWLiirzdIMX7"
+uri = "file://attached_assets/symphonic_100_cm.mp3"
+type = "audio"
+title = "Symphonic — 100 cm"
