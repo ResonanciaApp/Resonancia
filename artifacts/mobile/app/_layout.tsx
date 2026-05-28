@@ -66,7 +66,9 @@ function AuthGate() {
     if (segments[0] === "onboarding") return;
     if (segments[0] === "(auth)") return; // user explicitly opened sign-in
     redirected.current = true;
-    router.replace("/onboarding");
+    // TEMP: onboarding (logo + encuesta) deshabilitado por pedido del usuario.
+    // Para reactivar, descomentar la línea de abajo.
+    // router.replace("/onboarding");
   }, [segments, isRegistered, authLoading]);
 
   return null;
