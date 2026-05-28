@@ -21,6 +21,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
+import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
@@ -79,6 +80,8 @@ export default function ExploreScreen() {
   const primaryCats = getPrimaryCategories();
   const secondaryCats = getSecondaryCategories();
 
+  const lastSession = historySessions[0]?.session ?? null;
+
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
@@ -136,6 +139,44 @@ export default function ExploreScreen() {
           </View>
         ) : (
           <>
+            {/* ── Continúa escuchando ── */}
+            {lastSession && (
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                  Continúa escuchando
+                </Text>
+                <Pressable
+                  onPress={() => router.push(`/session/${lastSession.id}` as never)}
+                  style={({ pressed }) => [
+                    styles.continueCard,
+                    { backgroundColor: colors.card, opacity: pressed ? 0.85 : 1 },
+                  ]}
+                >
+                  <Image
+                    source={lastSession.image as number}
+                    style={styles.continueImg}
+                    contentFit="cover"
+                    placeholder={BLUR_PLACEHOLDER}
+                    transition={IMAGE_TRANSITION}
+                  />
+                  <View style={styles.continueMeta}>
+                    <Text style={[styles.continueKicker, { color: colors.primary }]}>
+                      RETOMA DONDE LO DEJASTE
+                    </Text>
+                    <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
+                      {lastSession.title}
+                    </Text>
+                    <Text style={[styles.continueSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                      {lastSession.categoryLabel} · {lastSession.durationLabel}
+                    </Text>
+                  </View>
+                  <View style={[styles.continuePlay, { backgroundColor: colors.primary }]}>
+                    <Feather name="play" size={16} color="#18110C" style={{ marginLeft: 2 }} />
+                  </View>
+                </Pressable>
+              </View>
+            )}
+
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
@@ -200,6 +241,45 @@ export default function ExploreScreen() {
                   </Pressable>
                 ))}
               </View>
+            </View>
+
+            {/* ── Programas ── */}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Programas</Text>
+              <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+                Caminos guiados de varios días para crear hábito
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.seriesRow}
+              >
+                {SERIES.map((s) => (
+                  <Pressable
+                    key={s.id}
+                    onPress={() => router.push(`/serie/${s.id}` as never)}
+                    style={({ pressed }) => [styles.seriesCard, { opacity: pressed ? 0.85 : 1 }]}
+                  >
+                    <Image
+                      source={s.image}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                    />
+                    <LinearGradient
+                      colors={["rgba(10,6,4,0.15)", "rgba(10,6,4,0.85)"]}
+                      style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+                    />
+                    <View style={styles.seriesContent}>
+                      <Text style={[styles.seriesKicker, { color: s.accentColor }]}>
+                        {s.subtitle.toUpperCase()}
+                      </Text>
+                      <Text style={styles.seriesTitle} numberOfLines={2}>{s.title}</Text>
+                    </View>
+                  </Pressable>
+                ))}
+              </ScrollView>
             </View>
 
             {/* ── Historial ── */}
@@ -398,6 +478,72 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   verTodasLink: { fontSize: 13, fontWeight: "600" },
+
+  // Continúa escuchando
+  continueCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    padding: 10,
+    gap: 12,
+    marginTop: 8,
+  },
+  continueImg: {
+    width: 72,
+    height: 72,
+    borderRadius: 12,
+  },
+  continueMeta: { flex: 1 },
+  continueKicker: {
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    marginBottom: 4,
+  },
+  continueTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 20,
+    marginBottom: 3,
+  },
+  continueSub: { fontSize: 12, lineHeight: 16 },
+  continuePlay: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+
+  // Programas
+  seriesRow: {
+    gap: 12,
+    paddingRight: 4,
+    paddingTop: 12,
+  },
+  seriesCard: {
+    width: 220,
+    height: 140,
+    borderRadius: 16,
+    overflow: "hidden",
+    justifyContent: "flex-end",
+  },
+  seriesContent: {
+    padding: 14,
+  },
+  seriesKicker: {
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    marginBottom: 4,
+  },
+  seriesTitle: {
+    color: "#F5EDD8",
+    fontSize: 16,
+    fontWeight: "700",
+    lineHeight: 21,
+  },
 
   // Time buckets
   timeRow: {
