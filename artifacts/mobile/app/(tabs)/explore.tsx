@@ -171,31 +171,36 @@ export default function ExploreScreen() {
 
               {/* Secundarias — fila que reparte el ancho equitativamente */}
               <View style={styles.secondaryRow}>
-                {secondaryCats.map((cat) => (
+                {secondaryCats.map((cat) => {
+                  const isSab = cat.id === "sabiduria-dia";
+                  const bgColor = isSab ? "#2E2417" : cat.gradient[1] + "CC";
+                  const fgColor = isSab ? "#E6D6B3" : cat.color;
+                  return (
                   <Pressable
                     key={cat.id}
                     onPress={() => router.push(`/category/${cat.id}` as never)}
                     style={({ pressed }) => [styles.secondaryCard, { opacity: pressed ? 0.82 : 1 }]}
                   >
-                    <View style={[StyleSheet.absoluteFill, { borderRadius: 14, backgroundColor: cat.gradient[1] + "CC" }]} />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 14, backgroundColor: bgColor }]} />
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                         size={26}
-                        color={cat.color}
+                        color={fgColor}
                         style={styles.secondaryIcon}
                       />
                     ) : (
                       <Feather
                         name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
                         size={26}
-                        color={cat.color}
+                        color={fgColor}
                         style={styles.secondaryIcon}
                       />
                     )}
-                    <Text style={[styles.secondaryLabel, { color: cat.color }]} numberOfLines={2}>{cat.title}</Text>
+                    <Text style={[styles.secondaryLabel, { color: fgColor }]} numberOfLines={2}>{cat.title}</Text>
                   </Pressable>
-                ))}
+                  );
+                })}
               </View>
             </View>
 
