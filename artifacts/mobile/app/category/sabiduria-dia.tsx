@@ -216,7 +216,7 @@ export default function SabiduriaDiaScreen() {
                     onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.card,
-                      { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "transparent", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: "#2A2A2E", borderColor: "transparent", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <View>
