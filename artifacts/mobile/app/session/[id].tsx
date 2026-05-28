@@ -102,7 +102,7 @@ export default function SessionDetailScreen() {
   // Tinted background derived from the session's category (gradient[1] = darker shade)
   // Darkened ~80% to keep a subtle tint without being too bright.
   const category = CATEGORIES.find((c) => c.id === session.categoryId);
-  const categoryBg = darkenHex(category?.gradient[1] ?? colors.background, 0.8);
+  const categoryBg = darkenHex(category?.gradient[1] ?? colors.background, 0.6);
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
