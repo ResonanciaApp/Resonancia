@@ -43,7 +43,7 @@ function WaveformBar({ index, active }: { index: number; active: boolean }) {
     <View
       style={[
         styles.waveBar,
-        { height, backgroundColor: active ? ACCENT : "rgba(155,111,212,0.35)" },
+        { height, backgroundColor: active ? ACCENT : "rgba(154,138,120,0.55)" },
       ]}
     />
   );
