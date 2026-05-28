@@ -158,7 +158,7 @@ export default function TagScreen() {
         {/* TITLE + DESCRIPTION */}
         <View style={styles.intro}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>{tag.label}</Text>
-          <Text style={[styles.pageDesc, { color: colors.mutedForeground }]}>{tag.description}</Text>
+          <Text style={[styles.pageDesc, { color: "#E0C9A8" }]}>{tag.description}</Text>
         </View>
 
         {/* DURATION FILTERS */}
