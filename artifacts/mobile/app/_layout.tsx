@@ -217,7 +217,7 @@ export default function RootLayout() {
                     <UserProfileProvider>
                       <IntencionProvider>
                         <DiarioFavoritesProvider>
-                          <GestureHandlerRootView>
+                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#18110C" }}>
                             <KeyboardProvider>
                               <RootLayoutNav />
                             </KeyboardProvider>
