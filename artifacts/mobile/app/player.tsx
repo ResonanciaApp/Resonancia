@@ -363,6 +363,14 @@ export default function PlayerScreen() {
           <Text style={[styles.category, { color: colors.accent }]}>{currentSession.categoryLabel}</Text>
           <Text style={[styles.sessionTitle, { color: colors.foreground }]}>{currentSession.title}</Text>
           <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>{currentSession.subtitle}</Text>
+          {isMusicaYSonidos && (
+            <View style={styles.durationChip}>
+              <Feather name="clock" size={11} color="#A8D49F" />
+              <Text style={styles.durationChipText}>
+                Apagar en {formatRemaining(Math.max(0, totalSeconds - elapsed))}
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Progress */}
@@ -603,7 +611,9 @@ const styles = StyleSheet.create({
   artSection: {
     alignItems: "center",
     justifyContent: "center",
-    height: ART_SIZE + 60,
+    height: ART_SIZE + 140,
+    marginTop: 8,
+    marginBottom: 4,
   },
   artFrame: {
     width: ART_SIZE,
@@ -639,6 +649,24 @@ const styles = StyleSheet.create({
   sessionSub: {
     fontSize: 14,
     textAlign: "center",
+  },
+  durationChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: "rgba(160,200,140,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(160,200,140,0.25)",
+  },
+  durationChipText: {
+    color: "#E8F5E0",
+    fontSize: 12,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
   progressSection: {
     paddingHorizontal: 32,
