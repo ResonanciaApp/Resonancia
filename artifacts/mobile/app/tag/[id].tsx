@@ -17,6 +17,7 @@ import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SacredBackground } from "@/components/SacredBackground";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePremium } from "@/context/PremiumContext";
 import { TAG_CARDS } from "@/data/tags";
@@ -90,6 +91,7 @@ export default function TagScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#2A1D14" }]}>
       <StatusBar barStyle="light-content" />
+      <SacredBackground />
 
       {/* ── STICKY HEADER (fades in on scroll) ── */}
       <Animated.View
