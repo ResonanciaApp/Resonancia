@@ -2,7 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, usePathname } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -176,6 +176,15 @@ export default function HomeScreen() {
       }
     }, [])
   );
+
+  const pathname = usePathname();
+  useEffect(() => {
+    if ((pathname === "/" || pathname === "") && getReopenDrawerOnFocus()) {
+      setReopenDrawerOnFocus(false);
+      setDrawerInstant(true);
+      setDrawerOpen(true);
+    }
+  }, [pathname]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
