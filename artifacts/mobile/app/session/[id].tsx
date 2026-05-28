@@ -100,9 +100,15 @@ export default function SessionDetailScreen() {
   ).slice(0, 3);
 
   // Tinted background derived from the session's category (gradient[1] = darker shade)
-  // Darkened ~80% to keep a subtle tint without being too bright.
+  // Darkened ~60% to keep a subtle tint without being too bright.
   const category = CATEGORIES.find((c) => c.id === session.categoryId);
-  const categoryBg = darkenHex(category?.gradient[1] ?? colors.background, 0.6);
+  // Sabiduría del Día: usar el mismo tono que Sonidos Ancestrales pero con un
+  // leve matiz más amarillo (un toque más de verde sobre el rojo dominante).
+  const baseHex =
+    category?.id === "sabiduria-dia"
+      ? "#3E260A"
+      : category?.gradient[1] ?? colors.background;
+  const categoryBg = darkenHex(baseHex, 0.6);
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
