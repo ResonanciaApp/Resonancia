@@ -289,7 +289,7 @@ export default function ProfileScreen() {
         {!isPremium && (
           <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
             <LinearGradient
-              colors={["#2E1B0E", "#160C06"]}
+              colors={["#0D261D", "#06150F"]}
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
             />
@@ -313,7 +313,7 @@ export default function ProfileScreen() {
                 </View>
               ))}
             </View>
-            <View style={[styles.premiumBadge, { backgroundColor: "#3A2517", borderColor: "#D6A85B" }]}>
+            <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
               <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
             </View>
           </Pressable>
