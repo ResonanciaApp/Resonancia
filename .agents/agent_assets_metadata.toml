@@ -605,3 +605,39 @@ id = "50-sNW2-E2OeyeRvB2U-_"
 uri = "file://attached_assets/earth_50_cm.mp3"
 type = "audio"
 title = "Gong Earth — 50 cm (simulado)"
+
+[[outputs]]
+id = "uPiQmaZfhohh2DqnuhF-1"
+uri = "file://attached_assets/earth_55_cm.mp3"
+type = "audio"
+title = "Gong Earth — 55 cm"
+
+[[outputs]]
+id = "KsU7bHE44MQfl5C01Yqa-"
+uri = "file://attached_assets/earth_60_cm.mp3"
+type = "audio"
+title = "Gong Earth — 60 cm"
+
+[[outputs]]
+id = "1NnxFeXX6ogVk3_H0zQ-I"
+uri = "file://attached_assets/earth_65_cm.mp3"
+type = "audio"
+title = "Gong Earth — 65 cm"
+
+[[outputs]]
+id = "WUZzuz1JPPJ-T6NKyfFBr"
+uri = "file://attached_assets/earth_70_cm.mp3"
+type = "audio"
+title = "Gong Earth — 70 cm"
+
+[[outputs]]
+id = "IoHgSx1Yf8YFkhkoxihg6"
+uri = "file://attached_assets/earth_75_cm.mp3"
+type = "audio"
+title = "Gong Earth — 75 cm"
+
+[[outputs]]
+id = "ZgZ69EWID547Rnyyq9McV"
+uri = "file://attached_assets/earth_80_cm.mp3"
+type = "audio"
+title = "Gong Earth — 80 cm"
