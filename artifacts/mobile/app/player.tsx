@@ -319,7 +319,6 @@ export default function PlayerScreen() {
         locations={[0, 0.5, 1]}
         style={StyleSheet.absoluteFill}
       />
-      <SacredBackground />
 
       {/* Header */}
       <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
