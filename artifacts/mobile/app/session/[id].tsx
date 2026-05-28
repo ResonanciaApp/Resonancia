@@ -114,11 +114,18 @@ export default function SessionDetailScreen() {
   const category = CATEGORIES.find((c) => c.id === session.categoryId);
   // Sabiduría del Día: usar el mismo tono que Sonidos Ancestrales pero con un
   // leve matiz más amarillo (un toque más de verde sobre el rojo dominante).
-  const baseHex =
-    category?.id === "sabiduria-dia"
-      ? "#3E260A"
-      : category?.gradient[1] ?? colors.background;
-  const categoryBg = darkenHex(baseHex, 0.6);
+  // Sonidos Ancestrales: usar exactamente el fondo del reproductor (colors.background)
+  // Sabiduría del Día: tono de Sonidos Ancestrales con un leve matiz más amarillo.
+  let categoryBg: string;
+  if (category?.id === "sonidos-ancestrales") {
+    categoryBg = colors.background;
+  } else {
+    const baseHex =
+      category?.id === "sabiduria-dia"
+        ? "#3E260A"
+        : category?.gradient[1] ?? colors.background;
+    categoryBg = darkenHex(baseHex, 0.6);
+  }
   // Tinte suave para los botones Guardar/Compartir, derivado del color
   // brillante de la categoría (gradient[0]) con baja opacidad.
   const actionTint = category
