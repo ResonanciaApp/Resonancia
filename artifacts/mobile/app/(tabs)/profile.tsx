@@ -323,7 +323,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Favoritos</Text>
           {favSessions.length === 0 ? (
-            <View style={[styles.emptyFav, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.emptyFav, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}>
               <Feather name="heart" size={22} color={"rgba(198,155,79,0.3)"} />
               <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
                 Aún no has guardado sesiones.{"\n"}Toca ❤️ en cualquier sesión para guardarla aquí.
@@ -339,7 +339,7 @@ export default function ProfileScreen() {
                   onPress={() => router.push(`/session/${s.id}` as never)}
                   style={({ pressed }) => [
                     styles.favRow,
-                    { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   <Image source={s.image as never} style={styles.favImg} contentFit="cover" />
