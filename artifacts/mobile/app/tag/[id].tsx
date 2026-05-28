@@ -88,7 +88,7 @@ export default function TagScreen() {
   if (!tag) return null;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#120D09" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER (fades in on scroll) ── */}
@@ -97,7 +97,7 @@ export default function TagScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: colors.background,
+            backgroundColor: "#120D09",
             borderBottomColor: "rgba(182,149,95,0.15)",
             opacity: headerOpacity,
           },
@@ -136,7 +136,7 @@ export default function TagScreen() {
         <View style={[styles.hero, { height: HERO_H }]}>
           <Image source={tag.image} style={StyleSheet.absoluteFill} resizeMode="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <LinearGradient
-            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.25)", colors.background]}
+            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.25)", "#120D09"]}
             locations={[0, 0.55, 1]}
             style={StyleSheet.absoluteFill}
           />
@@ -264,7 +264,7 @@ export default function TagScreen() {
                     onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.listRow,
-                      { backgroundColor: "#2A2A2E", borderColor: "rgba(255,255,255,0.08)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.08)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <View style={[styles.listThumb, { backgroundColor: colors.card }]}>
