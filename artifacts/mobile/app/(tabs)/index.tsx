@@ -240,32 +240,37 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.catPillRow}
           >
-            {CATEGORIES.map((cat) => (
+            {CATEGORIES.map((cat) => {
+              const isSab = cat.id === "sabiduria-dia";
+              const bgColor = isSab ? "#2E2417" : cat.gradient[1] + "CC";
+              const fgColor = isSab ? "#E6D6B3" : cat.color;
+              return (
               <Pressable
                 key={cat.id}
                 onPress={() => router.push(`/category/${cat.id}` as never)}
                 style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
               >
-                <View style={[styles.catPillCircle, { backgroundColor: cat.gradient[1] + "CC" }]}>
+                <View style={[styles.catPillCircle, { backgroundColor: bgColor }]}>
                   {cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                       size={20}
-                      color={cat.color}
+                      color={fgColor}
                     />
                   ) : (
                     <Feather
                       name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
                       size={20}
-                      color={cat.color}
+                      color={fgColor}
                     />
                   )}
                 </View>
-                <Text style={[styles.catPillLabel, { color: cat.color }]} numberOfLines={2}>
+                <Text style={[styles.catPillLabel, { color: fgColor }]} numberOfLines={2}>
                   {cat.title}
                 </Text>
               </Pressable>
-            ))}
+              );
+            })}
           </ScrollView>
         </View>
 
