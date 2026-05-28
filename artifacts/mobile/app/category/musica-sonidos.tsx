@@ -324,13 +324,13 @@ export default function MusicaSonidosScreen() {
                         <Text style={[styles.modalTitle, { color: colors.foreground }]}>
                           ¿Cuánto tiempo?
                         </Text>
-                        <Text style={[styles.modalSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                        <Text style={[styles.modalSub, { color: "#E8F5E0" }]} numberOfLines={1}>
                           {pendingSession.title}
                         </Text>
                       </View>
                     </View>
 
-                    <Text style={[styles.modalHint, { color: colors.mutedForeground }]}>
+                    <Text style={[styles.modalHint, { color: "#E8F5E0" }]}>
                       El audio tendrá la duración que elijas
                     </Text>
 
@@ -354,10 +354,10 @@ export default function MusicaSonidosScreen() {
                         >
                           {({ pressed }) => (
                             <>
-                              <Text style={[styles.durationNum, { color: pressed ? colors.primaryForeground : colors.foreground }]}>
+                              <Text style={[styles.durationNum, { color: pressed ? colors.primaryForeground : "#E8F5E0" }]}>
                                 {min}
                               </Text>
-                              <Text style={[styles.durationUnit, { color: pressed ? colors.primaryForeground : colors.mutedForeground }]}>
+                              <Text style={[styles.durationUnit, { color: pressed ? colors.primaryForeground : "#E8F5E0" }]}>
                                 min
                               </Text>
                             </>
@@ -371,7 +371,7 @@ export default function MusicaSonidosScreen() {
                       style={[styles.cancelBtn, { borderColor: "rgba(160,200,140,0.22)" }]}
                       onPress={() => setPendingSession(null)}
                     >
-                      <Text style={[styles.cancelText, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.cancelText, { color: "#E8F5E0" }]}>
                         Cancelar
                       </Text>
                     </Pressable>
