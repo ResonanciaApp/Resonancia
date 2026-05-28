@@ -325,9 +325,7 @@ export default function PlayerScreen() {
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
           <Feather name="chevron-down" size={26} color={colors.foreground} />
         </Pressable>
-        <View style={styles.navCenter}>
-          <Text style={[styles.navLabel, { color: colors.accent }]}>AHORA SONANDO</Text>
-        </View>
+        <View style={styles.navCenter} />
         <Pressable
           onPress={() => {
             toggleFavorite(currentSession.id);
@@ -605,8 +603,7 @@ const styles = StyleSheet.create({
   artSection: {
     alignItems: "center",
     justifyContent: "center",
-    height: ART_SIZE + 140,
-    marginTop: 20,
+    height: ART_SIZE + 60,
   },
   artFrame: {
     width: ART_SIZE,
