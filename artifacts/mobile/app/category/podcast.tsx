@@ -40,10 +40,10 @@ export default function PodcastScreen() {
   }, [query]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0E1A30" }]}>
+    <View style={[styles.root, { backgroundColor: "#060A13" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#243350", "#101A28"]}
+        colors={["#0E1420", "#060A10"]}
         style={StyleSheet.absoluteFill}
       />
 

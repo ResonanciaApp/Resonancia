@@ -92,10 +92,10 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1A2418" }]}>
+    <View style={[styles.root, { backgroundColor: "#0A0F09" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#3A5438", "#1E2E1C"]}
+        colors={["#172210", "#0C120B"]}
         style={StyleSheet.absoluteFill}
       />
 
