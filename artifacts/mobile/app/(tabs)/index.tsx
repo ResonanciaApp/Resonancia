@@ -179,7 +179,7 @@ export default function HomeScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#2A1D14" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
