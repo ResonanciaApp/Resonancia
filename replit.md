@@ -138,6 +138,14 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 - **Versión web (futura)**: la DB, API y lógica se reusan. Hay que reescribir UI (RN no corre en web). Pago: Stripe directo (no Apple/Google). Estimado: 2-4 semanas de trabajo dependiendo del scope.
 - **Cobro de Premium (pagos in-app)**: usar **RevenueCat** sobre Apple IAP / Google Play Billing (obligatorio para apps móviles — no se puede usar Stripe directo). Apple/Google se quedan 15-30%. Falta: definir precio (mensual/anual/lifetime), crear cuentas en App Store Connect + Google Play Console + RevenueCat. Para web (si llega) sí va Stripe directo.
 - **Frase del día → contador "X compartieron"**: el número actual es decorativo (fórmula basada en el día del año, no en datos reales). Cuando exista backend, registrar cada compartida en DB y devolver el total real desde la API.
+- **EAS Build (publicar la app + activar push notifications reales)**: el código ya está armado (`eas.json` con perfiles dev/preview/production, hook de push, registro/unregistro de tokens, server enganchado a DM/amigos). Faltan los pasos manuales:
+  1. Crear cuenta gratis en https://expo.dev
+  2. `npm install -g eas-cli` + `eas login`
+  3. Desde `artifacts/mobile/`: `eas init` (genera `projectId` y lo agrega a `app.json` — lo necesita el hook de push para pedir el token)
+  4. Credenciales de push: iOS → `eas credentials` con APNs key (requiere cuenta Apple Developer USD 99/año); Android → subir `google-services.json` de Firebase para FCM
+  5. Reemplazar placeholders `REPLACE_WITH_…` en `eas.json` (submit.production) con Apple ID, ascAppId, teamId, y poner el service account de Google Play (USD 25 pago único)
+  6. Primer build: `eas build --profile preview --platform all`
+  - Costos: EAS Free tier (30 builds/mes) o Production (USD 19/mes). Cuando se decida avanzar, pedirle al agente que ayude con credenciales y primer build.
 
 ## Pointers
 
