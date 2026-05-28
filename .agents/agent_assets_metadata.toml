@@ -348,6 +348,12 @@ uri = "file://artifacts/mobile/assets/images/sessions/sab-condicionamiento.png"
 type = "image"
 title = "condicionamiento creencias sabiduria"
 
+[[generated]]
+id = "ekFlY8WM30mhfkNu78ddK"
+uri = "file://attached_assets/generated_images/session-2-dormir.png"
+type = "image"
+title = "tibetan bowl dormir bien"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
