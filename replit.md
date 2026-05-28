@@ -137,6 +137,11 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 
 - **Versión web (futura)**: la DB, API y lógica se reusan. Hay que reescribir UI (RN no corre en web). Pago: Stripe directo (no Apple/Google). Estimado: 2-4 semanas de trabajo dependiendo del scope.
 - **Cobro de Premium (pagos in-app)**: usar **RevenueCat** sobre Apple IAP / Google Play Billing (obligatorio para apps móviles — no se puede usar Stripe directo). Apple/Google se quedan 15-30%. Falta: definir precio (mensual/anual/lifetime), crear cuentas en App Store Connect + Google Play Console + RevenueCat. Para web (si llega) sí va Stripe directo.
+- **Prueba gratis de 7 días (free trial)**: estándar en la categoría (Calm, Headspace, Pura Mente). NO se programa en código — se configura como "oferta introductoria" en App Store Connect y Google Play Console, atada al producto de suscripción. RevenueCat la lee automáticamente y `isPremium` ya funciona durante el trial. Decisiones a tomar al implementar:
+  - Duración: 7 días (estándar) vs 14 (más conversión, más abuso)
+  - Solo en plan anual (recomendado, empuja al anual) vs también en mensual
+  - Pedir tarjeta upfront (default Apple/Google, mejor conversión post-trial) vs sin tarjeta
+  - Precio sugerido: ~$43.900/año (similar a Pura Mente) + opción mensual ~$4.900/mes — ajustar según mercado destino
 - **Frase del día → contador "X compartieron"**: el número actual es decorativo (fórmula basada en el día del año, no en datos reales). Cuando exista backend, registrar cada compartida en DB y devolver el total real desde la API.
 - **EAS Build (publicar la app + activar push notifications reales)**: el código ya está armado (`eas.json` con perfiles dev/preview/production, hook de push, registro/unregistro de tokens, server enganchado a DM/amigos). Faltan los pasos manuales:
   1. Crear cuenta gratis en https://expo.dev
