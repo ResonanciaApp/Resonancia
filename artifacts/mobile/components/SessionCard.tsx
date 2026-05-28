@@ -20,6 +20,7 @@ type Props = {
   width?: number;
   horizontal?: boolean;
   tint?: "terracotta";
+  cardBg?: string;
 };
 
 function LockStar() {
@@ -28,10 +29,11 @@ function LockStar() {
   );
 }
 
-export function SessionCard({ session, width = 200, horizontal = false, tint }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
+  const bg = cardBg ?? colors.card;
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
@@ -45,7 +47,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint }: 
         onPress={handlePress}
         style={({ pressed }) => [
           styles.hRow,
-          { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
+          { backgroundColor: bg, opacity: pressed ? 0.8 : 1 },
         ]}
       >
         {/* Warm tint sutil */}
@@ -55,7 +57,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint }: 
           {locked && <LockStar />}
         </View>
         <LinearGradient
-          colors={["transparent", colors.card]}
+          colors={["transparent", bg]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={styles.hGradient}
