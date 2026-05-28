@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 9,
     borderRadius: 50,
-    borderWidth: 1,
+    borderWidth: 0,
   },
   filterLabel: {
     fontSize: 13,
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
-    borderWidth: 1,
+    borderWidth: 0,
     padding: 10,
     gap: 12,
   },
