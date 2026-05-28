@@ -13,6 +13,7 @@ import {
 import { type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 
 type Props = {
   session: Session;
@@ -47,7 +48,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
         {/* Warm amber tint sutil */}
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)", borderRadius: 18 }]} />
         <View style={{ width: 108, height: 96 }}>
-          <Image source={session.image} style={styles.hImage} contentFit="cover" />
+          <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
         </View>
         <LinearGradient
@@ -83,7 +84,7 @@ export function SessionCard({ session, width = 200, horizontal = false }: Props)
       ]}
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
-        <Image source={session.image} style={styles.cardImage} contentFit="cover" />
+        <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         {locked && <LockStar />}
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>

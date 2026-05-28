@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
@@ -251,6 +252,8 @@ export default function ExploreScreen() {
                       style={{ position: "absolute", width: TAG_W, height: TAG_H }}
                       contentFit="cover"
                       cachePolicy="memory-disk"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
                     />
                     <LinearGradient
                       colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.72)"]}

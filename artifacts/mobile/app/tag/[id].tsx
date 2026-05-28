@@ -5,7 +5,6 @@ import React, { useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -14,9 +13,11 @@ import {
   Text,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePremium } from "@/context/PremiumContext";
 import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS } from "@/data/sessions";
@@ -134,7 +135,7 @@ export default function TagScreen() {
       >
         {/* HERO IMAGE */}
         <View style={[styles.hero, { height: HERO_H }]}>
-          <Image source={tag.image} style={StyleSheet.absoluteFill} resizeMode="cover" />
+          <Image source={tag.image} style={StyleSheet.absoluteFill} resizeMode="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <LinearGradient
             colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.25)", colors.background]}
             locations={[0, 0.55, 1]}
@@ -231,6 +232,8 @@ export default function TagScreen() {
                           source={session.image as number}
                           style={StyleSheet.absoluteFill}
                           resizeMode="cover"
+                          placeholder={BLUR_PLACEHOLDER}
+                          transition={IMAGE_TRANSITION}
                         />
                         <View style={styles.durationBadge}>
                           <Text style={styles.durationText}>{session.durationLabel}</Text>
@@ -270,6 +273,8 @@ export default function TagScreen() {
                         source={session.image as number}
                         style={StyleSheet.absoluteFill}
                         resizeMode="cover"
+                        placeholder={BLUR_PLACEHOLDER}
+                        transition={IMAGE_TRANSITION}
                       />
                       <View style={styles.durationBadge}>
                         <Text style={styles.durationText}>{session.durationLabel}</Text>

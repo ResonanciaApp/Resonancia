@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
@@ -134,7 +135,7 @@ export default function SabiduriaDiaScreen() {
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    <Image source={cat.image} style={styles.iconCircle} contentFit="cover" />
+                    <Image source={cat.image} style={styles.iconCircle} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
                       <Text style={[styles.catCount, { color: "#F0CC82" }]}>
@@ -223,6 +224,8 @@ export default function SabiduriaDiaScreen() {
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       source={session.image as any}
                       style={styles.cardImage}
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
                     />
                     <PremiumBadge session={session} />
                     </View>

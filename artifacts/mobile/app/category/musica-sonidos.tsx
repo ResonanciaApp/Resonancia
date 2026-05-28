@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { Image as ExpoImage } from "expo-image";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
@@ -228,8 +229,9 @@ export default function MusicaSonidosScreen() {
                         source={session.image as any}
                         style={[styles.img, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: IMG_SIZE / 2 }]}
                         contentFit="cover"
-                        transition={0}
+                        transition={IMAGE_TRANSITION}
                         cachePolicy="memory-disk"
+                        placeholder={BLUR_PLACEHOLDER}
                       />
                       <PremiumBadge session={session} />
                       {/* Tag badge on image */}

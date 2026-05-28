@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
   Dimensions,
   LayoutChangeEvent,
@@ -323,6 +324,8 @@ export default function PlayerScreen() {
               source={currentSession.image as any}
               style={styles.artImage}
               contentFit="cover"
+              placeholder={BLUR_PLACEHOLDER}
+              transition={IMAGE_TRANSITION}
             />
             <LinearGradient
               colors={["transparent", "rgba(24,17,12,0.4)"]}

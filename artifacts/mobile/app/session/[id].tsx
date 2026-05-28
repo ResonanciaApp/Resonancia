@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image } from "expo-image";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
   Dimensions,
   Platform,
@@ -163,7 +164,7 @@ export default function SessionDetailScreen() {
       >
         {/* ── Hero image ──────────────────────────────────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
-          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" />
+          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <LinearGradient
             colors={["rgba(24,17,12,0.25)", "transparent", colors.background]}
             locations={[0, 0.45, 1]}
@@ -263,7 +264,7 @@ export default function SessionDetailScreen() {
                     { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
-                  <Image source={s.image as never} style={styles.relatedImg} contentFit="cover" />
+                  <Image source={s.image as never} style={styles.relatedImg} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
                   <View style={styles.relatedInfo}>
                     <Text style={[styles.relatedTitle, { color: colors.foreground }]}>{s.title}</Text>
                     <Text style={[styles.relatedSub, { color: colors.mutedForeground }]}>
