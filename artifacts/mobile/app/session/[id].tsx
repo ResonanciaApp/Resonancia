@@ -28,6 +28,18 @@ const { width } = Dimensions.get("window");
 const HEADER_H = 300;
 const RATINGS_KEY = "@resonance_ratings";
 
+/** Darken a hex color toward black. `amount` is 0..1 (1 = black). */
+function darkenHex(hex: string, amount: number): string {
+  const h = hex.replace("#", "");
+  if (h.length !== 6) return hex;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const k = Math.max(0, Math.min(1, 1 - amount));
+  const toHex = (n: number) => Math.round(n * k).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -88,8 +100,9 @@ export default function SessionDetailScreen() {
   ).slice(0, 3);
 
   // Tinted background derived from the session's category (gradient[1] = darker shade)
+  // Darkened ~80% to keep a subtle tint without being too bright.
   const category = CATEGORIES.find((c) => c.id === session.categoryId);
-  const categoryBg = category?.gradient[1] ?? colors.background;
+  const categoryBg = darkenHex(category?.gradient[1] ?? colors.background, 0.8);
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
