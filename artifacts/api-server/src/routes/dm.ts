@@ -149,6 +149,10 @@ router.get("/dm/conversations", requireAuth, async (req, res) => {
       return;
     }
     const friendIds = friends.map((f) => f.id);
+    const idsList = sql.join(
+      friendIds.map((id) => sql`${id}`),
+      sql`, `,
+    );
 
     // Last message per friend (in either direction)
     const lastPerPair = await db.execute(sql`
@@ -158,8 +162,8 @@ router.get("/dm/conversations", requireAuth, async (req, res) => {
           CASE WHEN sender_id = ${me.id} THEN recipient_id ELSE sender_id END AS other_id,
           id, sender_id, recipient_id, body, session_id, read_at, created_at
         FROM direct_messages
-        WHERE (sender_id = ${me.id} AND recipient_id = ANY(${friendIds}))
-           OR (recipient_id = ${me.id} AND sender_id = ANY(${friendIds}))
+        WHERE (sender_id = ${me.id} AND recipient_id IN (${idsList}))
+           OR (recipient_id = ${me.id} AND sender_id IN (${idsList}))
       ) AS pairs
       ORDER BY other_id, created_at DESC
     `);
