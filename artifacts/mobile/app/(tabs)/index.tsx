@@ -496,9 +496,6 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Lo más escuchado</Text>
-            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
-            </Pressable>
           </View>
           <ScrollView
             horizontal
