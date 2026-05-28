@@ -467,9 +467,6 @@ export default function HomeScreen() {
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
               Recomendadas para ti
             </Text>
-            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
-            </Pressable>
           </View>
           {recommended.slice(0, 4).map((s) => (
             <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
@@ -483,7 +480,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Nuevas sesiones</Text>
-            <Pressable onPress={() => router.push("/(tabs)/explore" as never)}>
+            <Pressable onPress={() => router.push("/nuevas-sesiones" as never)}>
               <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
             </Pressable>
           </View>
