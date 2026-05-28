@@ -14,7 +14,7 @@ export function NotificationBell({ hasUnread = false }: Props) {
     );
   };
 
-  const color = hasUnread ? "#E6C66A" : "#9A8A78";
+  const color = hasUnread ? "#E6C66A" : "#BCAE9C";
 
   return (
     <Pressable onPress={handlePress} hitSlop={12} style={styles.btn}>
