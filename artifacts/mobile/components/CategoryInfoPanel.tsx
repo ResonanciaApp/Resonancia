@@ -33,7 +33,7 @@ export function CategoryInfoPanel({ accentColor, heading, items, quote, whyItems
         onPress={() => setOpen((v) => !v)}
         style={({ pressed }) => [
           styles.toggle,
-          { backgroundColor: colors.card, borderColor: accentColor + "44", opacity: pressed ? 0.75 : 1 },
+          { backgroundColor: "rgba(255,255,255,0.05)", borderColor: accentColor + "44", opacity: pressed ? 0.75 : 1 },
         ]}
       >
         <Feather name="info" size={16} color={accentColor} style={{ marginRight: 10 }} />
@@ -55,7 +55,7 @@ export function CategoryInfoPanel({ accentColor, heading, items, quote, whyItems
           {items.map((item, i) => (
             <View
               key={i}
-              style={[styles.card, { backgroundColor: colors.card, borderColor: accentColor + "33" }]}
+              style={[styles.card, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: accentColor + "33" }]}
             >
               <View style={[styles.iconWrap, { backgroundColor: accentColor + "22" }]}>
                 <Feather name={item.icon} size={18} color={accentColor} />

@@ -19,6 +19,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -260,6 +261,33 @@ export default function MusicaSonidosScreen() {
             </View>
           )}
         </View>
+
+        <CategoryInfoPanel
+          accentColor="#A8C4A8"
+          heading="¿Qué es Música y Sonidos?"
+          items={[
+            {
+              icon: "music",
+              title: "Atmósferas para acompañar",
+              body: "Paisajes sonoros que sostienen el momento — para meditar, leer, trabajar o simplemente estar.",
+            },
+            {
+              icon: "repeat",
+              title: "Pensados para fluir",
+              body: "Las pistas se repiten en loop. Vos elegís cuánto tiempo querés permanecer adentro del sonido.",
+            },
+            {
+              icon: "headphones",
+              title: "Mejor con auriculares",
+              body: "El detalle estéreo y las capas sutiles cobran vida cuando escuchás con auriculares.",
+            },
+          ]}
+          quote="El sonido no llena el silencio — lo revela."
+          whyItems={[
+            { icon: "feather", text: "Porque la música también es un refugio." },
+            { icon: "wind", text: "Porque a veces basta con escuchar para volver al cuerpo." },
+          ]}
+        />
       </ScrollView>
 
       {/* Duration Picker Modal */}
