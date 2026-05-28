@@ -89,8 +89,9 @@ export function DrawerMenu() {
         Animated.spring(translateX, {
           toValue: 0,
           useNativeDriver: ND,
-          damping: 20,
-          stiffness: 180,
+          damping: 28,
+          stiffness: 200,
+          overshootClamping: true,
         }),
         Animated.timing(overlayOpacity, {
           toValue: 1,
