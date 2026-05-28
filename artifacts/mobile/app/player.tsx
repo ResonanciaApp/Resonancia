@@ -611,9 +611,9 @@ const styles = StyleSheet.create({
   artSection: {
     alignItems: "center",
     justifyContent: "center",
-    height: ART_SIZE + 140,
-    marginTop: 8,
-    marginBottom: 4,
+    height: ART_SIZE + 60,
+    marginTop: -40,
+    overflow: "visible",
   },
   artFrame: {
     width: ART_SIZE,
