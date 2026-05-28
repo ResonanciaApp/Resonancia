@@ -213,8 +213,7 @@ export function VozInteriorPanel() {
   };
 
   return (
-    <View style={[styles.panel, { backgroundColor: "#24160F" }]}>
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)" }]} pointerEvents="none" />
+    <View style={[styles.panel, { backgroundColor: "rgba(255,255,255,0.05)" }]}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>

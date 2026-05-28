@@ -176,8 +176,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   };
 
   return (
-    <View style={[styles.panel, { backgroundColor: "#24160F" }]}>
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,145,50,0.04)" }]} pointerEvents="none" />
+    <View style={[styles.panel, { backgroundColor: "rgba(255,255,255,0.05)" }]}>
       {/* Card header */}
       <View style={styles.panelHeader}>
         <View style={styles.panelHeaderLeft}>
