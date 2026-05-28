@@ -40,6 +40,16 @@ function darkenHex(hex: string, amount: number): string {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
+/** Convert a #RRGGBB hex to an rgba() string with the given alpha (0..1). */
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  if (h.length !== 6) return hex;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -109,6 +119,11 @@ export default function SessionDetailScreen() {
       ? "#3E260A"
       : category?.gradient[1] ?? colors.background;
   const categoryBg = darkenHex(baseHex, 0.6);
+  // Tinte suave para los botones Guardar/Compartir, derivado del color
+  // brillante de la categoría (gradient[0]) con baja opacidad.
+  const actionTint = category
+    ? hexToRgba(category.gradient[0], 0.35)
+    : "rgba(255,255,255,0.05)";
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -239,7 +254,7 @@ export default function SessionDetailScreen() {
           <View style={styles.actionRow}>
             <Pressable
               onPress={handleFav}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 }]}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: actionTint, opacity: pressed ? 0.8 : 1 }]}
             >
               <Feather name="heart" size={20} color={fav ? colors.primary : colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: fav ? colors.primary : colors.mutedForeground }]}>Guardar</Text>
@@ -247,7 +262,7 @@ export default function SessionDetailScreen() {
 
             <Pressable
               onPress={handleShare}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 }]}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: actionTint, opacity: pressed ? 0.8 : 1 }]}
             >
               <Feather name="share-2" size={20} color={colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Compartir</Text>
@@ -285,7 +300,7 @@ export default function SessionDetailScreen() {
                   onPress={() => router.push(`/session/${s.id}` as never)}
                   style={({ pressed }) => [
                     styles.relatedRow,
-                    { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   <Image source={s.image as never} style={styles.relatedImg} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
