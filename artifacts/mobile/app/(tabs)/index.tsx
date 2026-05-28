@@ -247,7 +247,8 @@ export default function HomeScreen() {
                 onPress={() => router.push(`/category/${cat.id}` as never)}
                 style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
               >
-                <View style={[styles.catPillCircle, { backgroundColor: bgColor }]}>
+                <View style={[styles.catPillCircle, { backgroundColor: "#18110C" }]}>
+                  <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: 26 }]} />
                   {cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
