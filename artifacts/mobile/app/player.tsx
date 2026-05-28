@@ -321,7 +321,7 @@ export default function PlayerScreen() {
       />
 
       {/* Header */}
-      <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
+      <View style={[styles.navBar, { paddingTop: topPad + 8, backgroundColor: "transparent", zIndex: 1 }]} pointerEvents="box-none">
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
           <Feather name="chevron-down" size={26} color={colors.foreground} />
         </Pressable>
@@ -612,8 +612,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: ART_SIZE + 60,
-    marginTop: -40,
+    marginTop: -50,
     overflow: "visible",
+    zIndex: 2,
   },
   artFrame: {
     width: ART_SIZE,
