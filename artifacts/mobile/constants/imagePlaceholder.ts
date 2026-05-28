@@ -1,5 +1,5 @@
 export const BLUR_PLACEHOLDER = {
-  blurhash: "L24K0;~q00IU00of~qof00of~qof",
+  blurhash: "K02#_#-VfQ-VoefQfQfQfQ",
 };
 
-export const IMAGE_TRANSITION = 350;
+export const IMAGE_TRANSITION = 200;
