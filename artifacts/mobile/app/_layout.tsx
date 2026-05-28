@@ -99,7 +99,7 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="player"
-          options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
+          options={{ headerShown: false, presentation: "fullScreenModal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen
           name="session/[id]"

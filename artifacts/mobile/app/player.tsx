@@ -322,24 +322,7 @@ export default function PlayerScreen() {
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Header */}
-      <View style={[styles.navBar, { paddingTop: topPad + 8, backgroundColor: "transparent", zIndex: 1 }]} pointerEvents="box-none">
-        <Pressable onPress={() => router.back()} style={styles.iconBtn}>
-          <Feather name="x" size={26} color={colors.foreground} />
-        </Pressable>
-        <View style={styles.navCenter} />
-        <Pressable
-          onPress={() => {
-            toggleFavorite(currentSession.id);
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          }}
-          style={styles.iconBtn}
-        >
-          <Feather name="heart" size={22} color={fav ? colors.primary : colors.mutedForeground} />
-        </Pressable>
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={[styles.scrollContent, { paddingTop: topPad + 8 }]}>
         {/* Art + Glow */}
         <View style={styles.artSection}>
           <GlowRing size={ART_SIZE + 80} color="rgba(182,149,95,0.12)" delay={0} duration={4000} />
@@ -580,6 +563,25 @@ export default function PlayerScreen() {
 
         <View style={{ paddingBottom: bottomPad + 20 }} />
       </ScrollView>
+
+      {/* Floating top buttons */}
+      <Pressable
+        onPress={() => router.back()}
+        style={[styles.floatingBtn, { top: topPad + 8, left: 16 }]}
+        hitSlop={12}
+      >
+        <Feather name="x" size={26} color={colors.foreground} />
+      </Pressable>
+      <Pressable
+        onPress={() => {
+          toggleFavorite(currentSession.id);
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }}
+        style={[styles.floatingBtn, { top: topPad + 8, right: 16 }]}
+        hitSlop={12}
+      >
+        <Feather name="heart" size={22} color={fav ? colors.primary : colors.mutedForeground} />
+      </Pressable>
     </View>
   );
 }
@@ -598,6 +600,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  floatingBtn: {
+    position: "absolute",
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+  },
   navCenter: {
     flex: 1,
     alignItems: "center",
@@ -613,10 +623,8 @@ const styles = StyleSheet.create({
   artSection: {
     alignItems: "center",
     justifyContent: "center",
-    height: ART_SIZE + 60,
-    marginTop: -50,
+    height: ART_SIZE + 120,
     overflow: "visible",
-    zIndex: 2,
   },
   artFrame: {
     width: ART_SIZE,
