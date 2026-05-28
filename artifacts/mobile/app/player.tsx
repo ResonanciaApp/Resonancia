@@ -12,6 +12,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -236,7 +237,7 @@ export default function PlayerScreen() {
   );
   // ─────────────────────────────────────────────────────────────────────────
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 20 : 12;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   if (!currentSession) {
@@ -308,6 +309,7 @@ export default function PlayerScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: playerBg }]}>
+      <StatusBar hidden />
       <ExpoImage
         source={currentSession.image as any}
         style={[StyleSheet.absoluteFill, { opacity: 0.12 }]}
@@ -323,7 +325,7 @@ export default function PlayerScreen() {
       {/* Header */}
       <View style={[styles.navBar, { paddingTop: topPad + 8, backgroundColor: "transparent", zIndex: 1 }]} pointerEvents="box-none">
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
-          <Feather name="chevron-down" size={26} color={colors.foreground} />
+          <Feather name="x" size={26} color={colors.foreground} />
         </Pressable>
         <View style={styles.navCenter} />
         <Pressable
