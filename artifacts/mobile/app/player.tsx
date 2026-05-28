@@ -579,7 +579,8 @@ const styles = StyleSheet.create({
   artSection: {
     alignItems: "center",
     justifyContent: "center",
-    height: ART_SIZE + 60,
+    height: ART_SIZE + 140,
+    marginTop: 20,
   },
   artFrame: {
     width: ART_SIZE,
