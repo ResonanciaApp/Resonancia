@@ -24,6 +24,7 @@ import { SESSIONS } from "@/data/sessions";
 import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -47,7 +48,8 @@ export default function ExploreScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
-  const { history, playSession } = usePlayer();
+  const { history, playSession, getSessionProgress, sessionProgress } = usePlayer();
+  const { isPremium } = usePremium();
 
   const historySessions = history
     .map((entry) => ({
@@ -80,7 +82,17 @@ export default function ExploreScreen() {
   const primaryCats = getPrimaryCategories();
   const secondaryCats = getSecondaryCategories();
 
-  const lastSession = historySessions[0]?.session ?? null;
+  // Pick the most recent session that still has saved progress (unfinished).
+  // Fall back to the most recent history entry if none qualifies.
+  const lastSession =
+    historySessions.find((e) => {
+      const p = sessionProgress[e.session.id] ?? 0;
+      return p > 0 && p < 0.97;
+    })?.session ??
+    historySessions[0]?.session ??
+    null;
+  const lastSessionProgress = lastSession ? getSessionProgress(lastSession.id) : 0;
+  const lastSessionLocked = !!lastSession?.isPremium && !isPremium;
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -146,7 +158,13 @@ export default function ExploreScreen() {
                   Continúa escuchando
                 </Text>
                 <Pressable
-                  onPress={() => router.push(`/session/${lastSession.id}` as never)}
+                  onPress={() =>
+                    router.push(
+                      (lastSessionLocked
+                        ? "/membresia"
+                        : `/session/${lastSession.id}`) as never,
+                    )
+                  }
                   style={({ pressed }) => [
                     styles.continueCard,
                     { backgroundColor: colors.card, opacity: pressed ? 0.85 : 1 },
@@ -161,7 +179,9 @@ export default function ExploreScreen() {
                   />
                   <View style={styles.continueMeta}>
                     <Text style={[styles.continueKicker, { color: colors.primary }]}>
-                      RETOMA DONDE LO DEJASTE
+                      {lastSessionProgress > 0
+                        ? `RETOMA · ${Math.round(lastSessionProgress * 100)}% ESCUCHADO`
+                        : "RETOMA DONDE LO DEJASTE"}
                     </Text>
                     <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
                       {lastSession.title}
@@ -169,9 +189,27 @@ export default function ExploreScreen() {
                     <Text style={[styles.continueSub, { color: colors.mutedForeground }]} numberOfLines={1}>
                       {lastSession.categoryLabel} · {lastSession.durationLabel}
                     </Text>
+                    {lastSessionProgress > 0 && (
+                      <View style={[styles.continueProgressTrack, { backgroundColor: "rgba(182,149,95,0.2)" }]}>
+                        <View
+                          style={[
+                            styles.continueProgressFill,
+                            {
+                              width: `${Math.min(100, lastSessionProgress * 100)}%`,
+                              backgroundColor: colors.primary,
+                            },
+                          ]}
+                        />
+                      </View>
+                    )}
                   </View>
                   <View style={[styles.continuePlay, { backgroundColor: colors.primary }]}>
-                    <Feather name="play" size={16} color="#18110C" style={{ marginLeft: 2 }} />
+                    <Feather
+                      name={lastSessionLocked ? "lock" : "play"}
+                      size={16}
+                      color="#18110C"
+                      style={lastSessionLocked ? undefined : { marginLeft: 2 }}
+                    />
                   </View>
                 </Pressable>
               </View>
@@ -507,6 +545,16 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   continueSub: { fontSize: 12, lineHeight: 16 },
+  continueProgressTrack: {
+    height: 3,
+    borderRadius: 2,
+    marginTop: 8,
+    overflow: "hidden",
+  },
+  continueProgressFill: {
+    height: 3,
+    borderRadius: 2,
+  },
   continuePlay: {
     width: 40,
     height: 40,

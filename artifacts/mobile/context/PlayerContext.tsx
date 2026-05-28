@@ -26,6 +26,10 @@ type PlayerContextType = {
   isLoading: boolean;
   favorites: string[];
   history: HistoryEntry[];
+  /** Per-session saved progress (0-1), keyed by session id */
+  sessionProgress: Record<string, number>;
+  /** Get saved progress for a session id (0 if none) */
+  getSessionProgress: (id: string) => number;
   isFavorite: (id: string) => boolean;
   toggleFavorite: (id: string) => void;
   playSession: (session: Session) => void;
@@ -58,7 +62,12 @@ const PlayerContext = createContext<PlayerContextType | null>(null);
 
 const FAVORITES_KEY = "@resonance_favorites";
 const HISTORY_KEY = "@resonance_history";
+const SESSION_PROGRESS_KEY = "@resonance_session_progress";
 const HISTORY_LIMIT = 50;
+/** Progress >= this value is treated as "completed" and cleared */
+const COMPLETED_THRESHOLD = 0.97;
+/** Minimum delta before persisting progress to AsyncStorage */
+const PROGRESS_SAVE_DELTA = 0.02;
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
@@ -69,7 +78,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [sessionProgress, setSessionProgress] = useState<Record<string, number>>({});
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
+
+  /** Last persisted progress per session id — to throttle AsyncStorage writes */
+  const lastSavedProgressRef = useRef<Record<string, number>>({});
+  /** Latest in-memory progress map — for use inside async callbacks */
+  const sessionProgressRef = useRef<Record<string, number>>({});
 
   const [voiceVolume, setVoiceVolumeState] = useState(0.8);
   const [ambientVolume, setAmbientVolumeState] = useState(0.7);
@@ -99,7 +114,56 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       }
       setHistory(filtered);
     });
+    AsyncStorage.getItem(SESSION_PROGRESS_KEY).then((val) => {
+      if (!val) return;
+      try {
+        const parsed: Record<string, number> = JSON.parse(val);
+        sessionProgressRef.current = parsed;
+        lastSavedProgressRef.current = { ...parsed };
+        setSessionProgress(parsed);
+      } catch (_) {}
+    });
   }, []);
+
+  /** Persist current progress map to AsyncStorage (fire-and-forget) */
+  const persistProgress = useCallback(() => {
+    AsyncStorage.setItem(
+      SESSION_PROGRESS_KEY,
+      JSON.stringify(sessionProgressRef.current),
+    ).catch(() => {});
+  }, []);
+
+  /** Save progress for a session id; throttles writes by PROGRESS_SAVE_DELTA */
+  const saveSessionProgress = useCallback(
+    (id: string, p: number, opts?: { force?: boolean }) => {
+      const clamped = Math.max(0, Math.min(1, p));
+      if (clamped >= COMPLETED_THRESHOLD) {
+        // Treat as completed → clear saved progress
+        if (sessionProgressRef.current[id] !== undefined) {
+          const next = { ...sessionProgressRef.current };
+          delete next[id];
+          sessionProgressRef.current = next;
+          delete lastSavedProgressRef.current[id];
+          setSessionProgress(next);
+          persistProgress();
+        }
+        return;
+      }
+      const last = lastSavedProgressRef.current[id] ?? -1;
+      if (!opts?.force && Math.abs(clamped - last) < PROGRESS_SAVE_DELTA) return;
+      const next = { ...sessionProgressRef.current, [id]: clamped };
+      sessionProgressRef.current = next;
+      lastSavedProgressRef.current[id] = clamped;
+      setSessionProgress(next);
+      persistProgress();
+    },
+    [persistProgress],
+  );
+
+  const getSessionProgress = useCallback(
+    (id: string) => sessionProgressRef.current[id] ?? 0,
+    [],
+  );
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -220,23 +284,35 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
-    if (!status.isLoaded) return;
-    const durMs = status.durationMillis ?? 0;
-    const posMs = status.positionMillis ?? 0;
+  /** Latest currentSession in a ref — for use inside playback callbacks */
+  const currentSessionRef = useRef<Session | null>(null);
+  currentSessionRef.current = currentSession;
 
-    if (durMs > 0) {
-      setActualDurationSeconds(Math.floor(durMs / 1000));
-      setProgress(posMs / durMs);
-    }
-    setElapsed(Math.floor(posMs / 1000));
-    setIsPlaying(status.isPlaying);
+  const onPlaybackStatusUpdate = useCallback(
+    (status: AVPlaybackStatus) => {
+      if (!status.isLoaded) return;
+      const durMs = status.durationMillis ?? 0;
+      const posMs = status.positionMillis ?? 0;
 
-    if (status.didJustFinish) {
-      setIsPlaying(false);
-      setProgress(1);
-    }
-  }, []);
+      if (durMs > 0) {
+        setActualDurationSeconds(Math.floor(durMs / 1000));
+        const p = posMs / durMs;
+        setProgress(p);
+        const sId = currentSessionRef.current?.id;
+        if (sId) saveSessionProgress(sId, p);
+      }
+      setElapsed(Math.floor(posMs / 1000));
+      setIsPlaying(status.isPlaying);
+
+      if (status.didJustFinish) {
+        setIsPlaying(false);
+        setProgress(1);
+        const sId = currentSessionRef.current?.id;
+        if (sId) saveSessionProgress(sId, 1, { force: true });
+      }
+    },
+    [saveSessionProgress],
+  );
 
   const startSimulation = (session: Session) => {
     const totalSeconds = session.duration * 60;
@@ -245,13 +321,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     simIntervalRef.current = setInterval(() => {
       setElapsed((prev) => {
         const next = prev + 1;
+        const sId = currentSessionRef.current?.id;
         if (next >= totalSeconds) {
           clearSim();
           setIsPlaying(false);
           setProgress(1);
+          if (sId) saveSessionProgress(sId, 1, { force: true });
           return totalSeconds;
         }
-        setProgress(next / totalSeconds);
+        const p = next / totalSeconds;
+        setProgress(p);
+        if (sId) saveSessionProgress(sId, p);
         return next;
       });
     }, 1000);
@@ -275,7 +355,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       clearSim();
 
       setCurrentSession(session);
-      setProgress(0);
+      const savedProgress = sessionProgressRef.current[session.id] ?? 0;
+      const resumeFraction =
+        savedProgress > 0 && savedProgress < COMPLETED_THRESHOLD ? savedProgress : 0;
+      setProgress(resumeFraction);
       setElapsed(0);
       setActualDurationSeconds(session.duration * 60);
       void addToHistory(session);
@@ -304,6 +387,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             sound = result.sound;
           }
           soundRef.current = sound;
+
+          // Resume from saved position
+          if (resumeFraction > 0) {
+            try {
+              const status = await sound.getStatusAsync();
+              if (status.isLoaded && status.durationMillis) {
+                await sound.setPositionAsync(status.durationMillis * resumeFraction);
+              }
+            } catch (_) {}
+          }
 
           // Load voice track if available (plays simultaneously)
           const voiceFile = VOICE_MAP[session.id];
@@ -405,6 +498,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           simIntervalRef.current = setInterval(() => {
             setElapsed((prev) => {
               const next = prev + 1;
+              const sId = currentSessionRef.current?.id;
               if (next >= totalSeconds) {
                 clearSim();
                 void sound.stopAsync().catch(() => {});
@@ -417,9 +511,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 }
                 setIsPlaying(false);
                 setProgress(1);
+                if (sId) saveSessionProgress(sId, 1, { force: true });
                 return totalSeconds;
               }
-              setProgress(next / totalSeconds);
+              const p = next / totalSeconds;
+              setProgress(p);
+              if (sId) saveSessionProgress(sId, p);
               return next;
             });
           }, 1000);
@@ -446,6 +543,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           try { await voiceSoundRef.current.pauseAsync(); } catch (_) {}
         }
         setIsPlaying(false);
+        const sId = currentSessionRef.current?.id;
+        if (sId && status.durationMillis) {
+          saveSessionProgress(sId, (status.positionMillis ?? 0) / status.durationMillis, { force: true });
+        }
       } else {
         await soundRef.current.playAsync();
         if (voiceSoundRef.current) {
@@ -466,6 +567,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }, [currentSession]);
 
   const stop = useCallback(async () => {
+    // Force-save current progress before tearing down
+    const sId = currentSessionRef.current?.id;
+    if (sId && soundRef.current) {
+      try {
+        const status = await soundRef.current.getStatusAsync();
+        if (status.isLoaded && status.durationMillis) {
+          saveSessionProgress(sId, (status.positionMillis ?? 0) / status.durationMillis, { force: true });
+        }
+      } catch (_) {}
+    } else if (sId && actualDurationSeconds > 0) {
+      saveSessionProgress(sId, elapsed / actualDurationSeconds, { force: true });
+    }
     await unloadSound();
     clearSim();
     clearSleepInterval();
@@ -475,7 +588,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setProgress(0);
     setElapsed(0);
     setActualDurationSeconds(0);
-  }, []);
+  }, [saveSessionProgress, actualDurationSeconds, elapsed]);
 
   const seekTo = useCallback(
     async (p: number) => {
@@ -555,6 +668,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         favorites,
         history,
+        sessionProgress,
+        getSessionProgress,
         isFavorite,
         toggleFavorite,
         playSession,
