@@ -164,12 +164,14 @@ export default function HomeScreen() {
   }, []);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerInstant, setDrawerInstant] = useState(false);
   const [noOlvidarOpen, setNoOlvidarOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       if (getReopenDrawerOnFocus()) {
         setReopenDrawerOnFocus(false);
+        setDrawerInstant(true);
         setDrawerOpen(true);
       }
     }, [])
@@ -574,7 +576,7 @@ export default function HomeScreen() {
 
       </ScrollView>
 
-      <DrawerMenu visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <DrawerMenu visible={drawerOpen} instant={drawerInstant} onClose={() => { setDrawerOpen(false); setDrawerInstant(false); }} />
     </View>
   );
 }

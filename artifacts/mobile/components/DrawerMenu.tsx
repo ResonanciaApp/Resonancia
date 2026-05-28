@@ -56,9 +56,10 @@ const SECONDARY_ITEMS: MenuItem[] = [
 interface Props {
   visible: boolean;
   onClose: () => void;
+  instant?: boolean;
 }
 
-export function DrawerMenu({ visible, onClose }: Props) {
+export function DrawerMenu({ visible, onClose, instant }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
@@ -84,6 +85,11 @@ export function DrawerMenu({ visible, onClose }: Props) {
   useEffect(() => {
     if (visible) {
       setRendered(true);
+      if (instant) {
+        translateX.setValue(0);
+        overlayOpacity.setValue(1);
+        return;
+      }
       Animated.parallel([
         Animated.spring(translateX, {
           toValue: 0,
