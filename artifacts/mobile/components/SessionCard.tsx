@@ -33,7 +33,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
-  const bg = cardBg ?? colors.card;
+  const bg = cardBg ?? "#2A2A2E";
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {

@@ -264,7 +264,7 @@ export default function TagScreen() {
                     onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.listRow,
-                      { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(182,149,95,0.14)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: "#2A2A2E", borderColor: "rgba(255,255,255,0.08)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <View style={[styles.listThumb, { backgroundColor: colors.card }]}>
