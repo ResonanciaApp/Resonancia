@@ -138,8 +138,8 @@ export default function TagScreen() {
         <View style={[styles.hero, { height: HERO_H }]}>
           <Image source={tag.image} style={StyleSheet.absoluteFill} resizeMode="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <LinearGradient
-            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.25)", "#2A1D14"]}
-            locations={[0, 0.55, 1]}
+            colors={["rgba(42,29,20,0)", "rgba(42,29,20,0.15)", "rgba(42,29,20,0.6)", "#2A1D14"]}
+            locations={[0, 0.4, 0.78, 1]}
             style={StyleSheet.absoluteFill}
           />
           {/* Back button floating on hero */}
