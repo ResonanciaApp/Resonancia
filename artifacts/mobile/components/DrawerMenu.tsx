@@ -3,7 +3,7 @@ import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -76,12 +76,14 @@ export function DrawerMenu({ visible, onClose }: Props) {
 
   const translateX = useRef(new Animated.Value(-DRAWER_W)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
+  const [rendered, setRendered] = useState(visible);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   useEffect(() => {
     if (visible) {
+      setRendered(true);
       Animated.parallel([
         Animated.spring(translateX, {
           toValue: 0,
@@ -97,21 +99,24 @@ export function DrawerMenu({ visible, onClose }: Props) {
       ]).start();
     } else {
       Animated.parallel([
-        Animated.timing(translateX, {
+        Animated.spring(translateX, {
           toValue: -DRAWER_W,
-          duration: 200,
           useNativeDriver: ND,
+          damping: 22,
+          stiffness: 200,
         }),
         Animated.timing(overlayOpacity, {
           toValue: 0,
-          duration: 200,
+          duration: 220,
           useNativeDriver: ND,
         }),
-      ]).start();
+      ]).start(({ finished }) => {
+        if (finished) setRendered(false);
+      });
     }
   }, [visible, translateX, overlayOpacity]);
 
-  if (!visible) return null;
+  if (!rendered) return null;
 
   const mainItems = loggedIn ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
   const localFullName = [username, lastName].filter(Boolean).join(" ");
