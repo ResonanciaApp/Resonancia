@@ -60,7 +60,7 @@ export default function MeditaTiempoScreen() {
         showsVerticalScrollIndicator={false}
       >
         {sessions.length > 0 ? (
-          sessions.map((s) => <SessionCard key={s.id} session={s} horizontal />)
+          sessions.map((s) => <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />)
         ) : (
           <View style={styles.empty}>
             <Feather name="clock" size={40} color={colors.border} />
