@@ -208,7 +208,7 @@ export default function MusicaSonidosScreen() {
                       styles.card,
                       {
                         width: CARD_WIDTH,
-                        backgroundColor: "rgba(42,62,42,0.55)",
+                        backgroundColor: "rgba(255,255,255,0.05)",
                         borderColor: "transparent",
                         borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,
