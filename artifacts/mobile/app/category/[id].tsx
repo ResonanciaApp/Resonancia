@@ -55,7 +55,7 @@ export default function CategoryScreen() {
         {category && (
           <View style={[styles.heroCard, { borderColor: "rgba(182,149,95,0.2)" }]}>
             <LinearGradient
-              colors={category.gradient as [string, string]}
+              colors={[category.gradient[1], category.gradient[1]] as [string, string]}
               style={[StyleSheet.absoluteFill, { borderRadius: 22 }]}
             />
             <View

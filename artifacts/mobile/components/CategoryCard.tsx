@@ -27,7 +27,7 @@ export function CategoryCard({ category, wide = false }: Props) {
       ]}
     >
       <LinearGradient
-        colors={category.gradient as [string, string]}
+        colors={[category.gradient[1], category.gradient[1]] as [string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[StyleSheet.absoluteFill, { borderRadius: colors.radius }]}
