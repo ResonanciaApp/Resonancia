@@ -102,13 +102,12 @@ export default function TagScreen() {
             opacity: headerOpacity,
           },
         ]}
-        pointerEvents="none"
+        pointerEvents="box-none"
       >
-        <View style={styles.stickyInner}>
+        <View style={styles.stickyInner} pointerEvents="box-none">
           <Pressable
             onPress={() => router.back()}
             hitSlop={10}
-            pointerEvents="auto"
             style={({ pressed }) => [
               styles.stickyBack,
               { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.2)", opacity: pressed ? 0.7 : 1 },
