@@ -15,6 +15,7 @@ import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -105,47 +106,77 @@ export default function PodcastScreen() {
             </View>
           ) : (
             episodios.map((s, idx) => (
-              <Pressable
-                key={s.id}
-                onPress={() => router.push(`/session/${s.id}` as never)}
-                style={({ pressed }) => [
-                  styles.episodeCard,
-                  { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "transparent", borderWidth: 0, opacity: pressed ? 0.82 : 1 },
-                ]}
-              >
-                <ExpoImage
-                  source={s.image as never}
-                  style={styles.episodeImage}
-                  contentFit="cover"
-                  transition={0}
-                  cachePolicy="memory-disk"
-                />
-                <View style={styles.episodeBody}>
-                  <View style={styles.episodeNumRow}>
-                    <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(138,170,212,0.15)" }]}>
-                      <Text style={[styles.episodeNum, { color: "#8AAAD4" }]}>EP {idx + 1}</Text>
-                    </View>
-                    {s.isNew && (
-                      <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
-                        <Text style={[styles.episodeNum, { color: colors.primary }]}>NUEVO</Text>
+              <React.Fragment key={s.id}>
+                <Pressable
+                  onPress={() => router.push(`/session/${s.id}` as never)}
+                  style={({ pressed }) => [
+                    styles.episodeCard,
+                    { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "transparent", borderWidth: 0, opacity: pressed ? 0.82 : 1 },
+                  ]}
+                >
+                  <ExpoImage
+                    source={s.image as never}
+                    style={styles.episodeImage}
+                    contentFit="cover"
+                    transition={0}
+                    cachePolicy="memory-disk"
+                  />
+                  <View style={styles.episodeBody}>
+                    <View style={styles.episodeNumRow}>
+                      <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(138,170,212,0.15)" }]}>
+                        <Text style={[styles.episodeNum, { color: "#8AAAD4" }]}>EP {idx + 1}</Text>
                       </View>
-                    )}
-                  </View>
-                  <Text style={[styles.episodeTitle, { color: colors.foreground }]} numberOfLines={2}>
-                    {s.title}
-                  </Text>
-                  <Text style={[styles.episodeSub, { color: "#FFFFFF" }]} numberOfLines={1}>
-                    {s.subtitle}
-                  </Text>
-                  <View style={styles.episodeMeta}>
-                    <Feather name="clock" size={11} color="#FFFFFF" />
-                    <Text style={[styles.episodeMetaText, { color: "#FFFFFF" }]}>
-                      {" "}{s.durationLabel}
+                      {s.isNew && (
+                        <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
+                          <Text style={[styles.episodeNum, { color: colors.primary }]}>NUEVO</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={[styles.episodeTitle, { color: colors.foreground }]} numberOfLines={2}>
+                      {s.title}
                     </Text>
+                    <Text style={[styles.episodeSub, { color: "#FFFFFF" }]} numberOfLines={1}>
+                      {s.subtitle}
+                    </Text>
+                    <View style={styles.episodeMeta}>
+                      <Feather name="clock" size={11} color="#FFFFFF" />
+                      <Text style={[styles.episodeMetaText, { color: "#FFFFFF" }]}>
+                        {" "}{s.durationLabel}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-                <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
-              </Pressable>
+                  <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
+                </Pressable>
+
+                {idx === 0 && (
+                  <CategoryInfoPanel
+                    accentColor="#8AAAD4"
+                    heading="¿Qué es el PodCast?"
+                    items={[
+                      {
+                        icon: "mic",
+                        title: "Conversaciones con propósito",
+                        body: "Cada episodio es un encuentro con voces que comparten su mirada sobre el bienestar, la consciencia y el camino interior.",
+                      },
+                      {
+                        icon: "headphones",
+                        title: "Para escuchar en cualquier momento",
+                        body: "Ideal para acompañar caminatas, viajes o momentos de calma. Audio diseñado para enfocarte sin distracciones.",
+                      },
+                      {
+                        icon: "feather",
+                        title: "Inspiración cercana",
+                        body: "Historias reales, herramientas prácticas y reflexiones que se quedan resonando mucho después de terminar.",
+                      },
+                    ]}
+                    quote="A veces, escuchar a otro es la mejor forma de escucharte a vos mismo."
+                    whyItems={[
+                      { icon: "heart", text: "Porque las palabras justas pueden cambiar una mañana entera." },
+                      { icon: "sun", text: "Porque crecer también es escuchar." },
+                    ]}
+                  />
+                )}
+              </React.Fragment>
             ))
           )}
         </View>
