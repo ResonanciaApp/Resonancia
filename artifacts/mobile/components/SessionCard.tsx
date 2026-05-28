@@ -30,7 +30,7 @@ function LockStar() {
 
 export function SessionCard({ session, width = 200, horizontal = false, tint }: Props) {
   const tintOverlay =
-    tint === "terracotta" ? "rgba(184,86,46,0.11)" : "rgba(190,145,50,0.04)";
+    tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
