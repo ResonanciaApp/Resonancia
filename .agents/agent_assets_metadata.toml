@@ -701,3 +701,9 @@ id = "77o2KDNIEZWLiirzdIMX7"
 uri = "file://attached_assets/symphonic_100_cm.mp3"
 type = "audio"
 title = "Symphonic — 100 cm"
+
+[[outputs]]
+id = "6BtH65jh1wPBT8LYinvph"
+uri = "file://attached_assets/symphonic_50_cm.mp3"
+type = "audio"
+title = "Symphonic — 50 cm"
