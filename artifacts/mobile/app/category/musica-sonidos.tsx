@@ -305,7 +305,7 @@ export default function MusicaSonidosScreen() {
                 style={[
                   styles.modalSheet,
                   {
-                    backgroundColor: colors.card,
+                    backgroundColor: "rgba(20,32,18,0.98)",
                     paddingBottom: Math.max(insets.bottom, 24) + 8,
                   },
                 ]}
