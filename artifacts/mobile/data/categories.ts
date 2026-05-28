@@ -15,7 +15,7 @@ export const CATEGORIES: Category[] = [
     id: "sonidos-ancestrales",
     title: "Sonidos Ancestrales",
     subtitle: "Cuencos, gongs y frecuencias sagradas",
-    icon: "meditation",
+    icon: "bowl-mix",
     iconFamily: "MaterialCommunityIcons",
     sessionCount: 4,
     color: "#E8C87A",
