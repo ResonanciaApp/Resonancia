@@ -190,7 +190,7 @@ export default function SonidosAncestalesScreen() {
               <View
                 style={[
                   styles.searchBar,
-                  { backgroundColor: "rgba(72,58,28,0.55)", borderColor: "rgba(232,200,122,0.22)" },
+                  { backgroundColor: "rgba(72,58,28,0.55)", borderColor: "transparent" },
                 ]}
               >
                 <Feather name="search" size={16} color="#E8C87A" style={{ marginRight: 8 }} />
@@ -229,7 +229,7 @@ export default function SonidosAncestalesScreen() {
                       styles.card,
                       {
                         backgroundColor: "rgba(72,58,28,0.55)",
-                        borderColor: "rgba(232,200,122,0.22)",
+                        borderColor: "transparent",
                         opacity: pressed ? 0.82 : 1,
                       },
                     ]}

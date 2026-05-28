@@ -181,7 +181,7 @@ export default function SabiduriaDiaScreen() {
         {selectedTag && (
           <>
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "rgba(240,204,130,0.22)" }]}>
+              <View style={[styles.searchBar, { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "transparent" }]}>
                 <Feather name="search" size={16} color="#F0CC82" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
@@ -216,7 +216,7 @@ export default function SabiduriaDiaScreen() {
                     onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.card,
-                      { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "rgba(240,204,130,0.22)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: "rgba(76,60,32,0.55)", borderColor: "transparent", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <View>
