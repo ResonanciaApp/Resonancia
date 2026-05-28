@@ -472,7 +472,7 @@ export default function HomeScreen() {
             </Pressable>
           </View>
           {recommended.slice(0, 4).map((s) => (
-            <SessionCard key={s.id} session={s} horizontal />
+            <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
           ))}
         </View>
 
