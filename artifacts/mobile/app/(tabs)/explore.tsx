@@ -27,6 +27,10 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 
+// Sección "Programas" oculta temporalmente — se lanzará más adelante.
+// Poner en true para volver a mostrarla.
+const SHOW_PROGRAMAS = false;
+
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const GAP = 10;
@@ -281,7 +285,8 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Programas ── */}
+            {/* ── Programas (oculto temporalmente) ── */}
+            {SHOW_PROGRAMAS && (
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Programas</Text>
               <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
@@ -319,6 +324,7 @@ export default function ExploreScreen() {
                 ))}
               </ScrollView>
             </View>
+            )}
 
             {/* ── Historial ── */}
             <View style={[styles.section, { marginBottom: 12 }]}>
