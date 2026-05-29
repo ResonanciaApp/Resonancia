@@ -70,7 +70,7 @@ function TabItem({
     >
       <View style={styles.iconWrap}>
         <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
-        {isIOS ? (
+        {isIOS && route.name !== "diario" ? (
           <SymbolView
             name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
             tintColor={iconColor}
