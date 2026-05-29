@@ -106,8 +106,8 @@ export default function SabiduriaDiaScreen() {
           >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: "#2E2417", borderColor: "transparent" }]}>
-            <Feather name="sun" size={22} color="#E6D6B3" />
+          <View style={[styles.catIconCircle, { backgroundColor: "rgba(240,160,80,0.18)", borderColor: "rgba(240,160,80,0.36)" }]}>
+            <Feather name="sun" size={22} color="#F0A850" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "3 Minutos de Sabiduría"}

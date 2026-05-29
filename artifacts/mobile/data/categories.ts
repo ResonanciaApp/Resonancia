@@ -48,7 +48,7 @@ export const CATEGORIES: Category[] = [
     icon: "sun",
     sessionCount: 1,
     color: "#F0CC82",
-    gradient: ["#7A5A1E", "#4A3810"],
+    gradient: ["#5E4A22", "#3A2E12"],
   },
   {
     id: "podcast",
