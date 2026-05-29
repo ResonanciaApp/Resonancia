@@ -386,24 +386,8 @@ export default function HomeScreen() {
                 onPress={() => setNoOlvidarOpen(true)}
                 style={[styles.noOlvidarPeek, { backgroundColor: "rgba(255,255,255,0.05)" }]}
               >
-                {/* Mini apilado de tarjetas */}
-                <View style={styles.peekStack}>
-                  {noOlvidarItems.slice(0, 3).map((_, i) => (
-                    <View
-                      key={i}
-                      style={[
-                        styles.peekCard,
-                        {
-                          backgroundColor: colors.card,
-                          left: i * 6,
-                          top: i === 0 ? 0 : -i * 2,
-                          zIndex: 3 - i,
-                          opacity: 1 - i * 0.25,
-                        },
-                      ]}
-                    />
-                  ))}
-                </View>
+                <Feather name="feather" size={20} color={colors.accent} />
+
                 <Text style={[styles.peekLabel, { color: colors.mutedForeground }]}>
                   {noOlvidarItems.length === 1
                     ? "1 nota guardada — toca para ver"
@@ -792,17 +776,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 13,
     paddingHorizontal: 16,
-  },
-  peekStack: {
-    width: 32,
-    height: 22,
-    position: "relative",
-  },
-  peekCard: {
-    position: "absolute",
-    width: 22,
-    height: 16,
-    borderRadius: 5,
   },
   peekLabel: {
     flex: 1,
