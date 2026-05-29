@@ -20,6 +20,7 @@ import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
+import { getCategoryTint } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 
 function formatDate(iso: string) {
@@ -239,7 +240,12 @@ export default function FavoritesScreen() {
                 </View>
               ) : (
                 filteredSessions.map((s) => (
-                  <SessionCard key={s.id} session={s} horizontal />
+                  <SessionCard
+                    key={s.id}
+                    session={s}
+                    horizontal
+                    cardBg={getCategoryTint(s.categoryId)}
+                  />
                 ))
               )}
             </View>
