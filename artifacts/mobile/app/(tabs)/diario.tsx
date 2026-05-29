@@ -50,7 +50,7 @@ const SECTIONS: SectionMeta[] = [
     icon: "zap",
     accentColor: "#D6A85B",
     gradientColors: ["#241C0C", "#141008"],
-    placeholder: "Escribe aquí tus ideas geniales",
+    placeholder: "Escribe aquí tus ideas geniales...",
   },
 ];
 
