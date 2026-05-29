@@ -74,7 +74,7 @@ const hexToRgba = (hex: string, alpha: number) => {
 };
 
 // Color de la categoría con opacidad baja, para tintar tarjetas de forma sutil.
-export const getCategoryTint = (categoryId: string, alpha = 0.14) => {
+export const getCategoryTint = (categoryId: string, alpha = 0.2) => {
   const cat = CATEGORIES.find((c) => c.id === categoryId);
   if (!cat) return undefined;
   return hexToRgba(cat.color, alpha);
