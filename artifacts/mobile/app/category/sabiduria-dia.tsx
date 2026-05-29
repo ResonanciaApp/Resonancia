@@ -92,6 +92,10 @@ export default function SabiduriaDiaScreen() {
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
+      <View
+        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.4)" }]}
+        pointerEvents="none"
+      />
 
       <ScrollView
         style={styles.scroll}
