@@ -150,7 +150,7 @@ export default function HomeScreen() {
   // Last 5 sessions (most recently added = highest index)
   const newSessions = [...SESSIONS].reverse().slice(0, 5);
   // Top 10 más escuchadas (mock semanal — reemplazar con datos reales cuando exista el endpoint)
-  const TOP_IDS = ["1","5","8","3","12","6","14","20","7","11"];
+  const TOP_IDS = ["1","5","8","2","9","10","21","20","7","22"];
   const topSessions = TOP_IDS.map((id) => SESSIONS.find((s) => s.id === id)).filter(Boolean) as Session[];
   // 6 random sessions — shuffled once on mount via useMemo
   const recommended = React.useMemo<Session[]>(() => {

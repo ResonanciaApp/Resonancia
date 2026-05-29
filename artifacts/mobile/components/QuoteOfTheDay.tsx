@@ -9,9 +9,9 @@ const GREEN_MUTED   = "#8A7A50";
 const GREEN_BORDER  = "rgba(182,149,95,0.25)";
 
 const AVATARS = [
-  require("@/assets/images/sessions/session-3.jpg"),
+  require("@/assets/images/sessions/session-1.jpg"),
   require("@/assets/images/sessions/session-7.jpg"),
-  require("@/assets/images/sessions/session-12.jpg"),
+  require("@/assets/images/sessions/session-7.jpg"),
 ];
 
 function formatCount(n: number): string {

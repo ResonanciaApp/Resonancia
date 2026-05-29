@@ -1,4 +1,5 @@
 - [Warm theme palette](warm-theme.md) — colores cálidos dorado/café aplicados en colors.ts y archivos con paletas hardcodeadas
 - [Chat optimistic uploads + audio preload](chat-optimistic-uploads.md) — pattern para image/audio sends instantáneos en DM; dedup por serverObjectPath, no setQueryData
+- [session image shared pool](session-images-shared-pool.md) — session-N.jpg es pool decorativo compartido (grupos usan imageIdx); al borrar sesión, repuntar refs in-place, no quitar entradas
 - [SacredBackground gradient matching](sacred-background-gradient.md) — hero image overlays sobre SacredBackground deben fundir a ~#0F0A06, no al bg cálido del root, o aparece una banda visible
 - [Expo Router fullscreen player](expo-fullscreen-modal.md) — fullScreenModal + StatusBar hidden + botones flotantes absolute (sin navBar) para que decoraciones lleguen al borde

@@ -103,24 +103,6 @@ export const SESSIONS: Session[] = [
     frequency: "Delta 0.5–4 Hz",
   },
   {
-    id: "3",
-    isPremium: true,
-    title: "Descanz en ti",
-    subtitle: "ASMR Expansivo",
-    categoryId: "asmr-expansivos",
-    sleepTag: "ASMR Expansivos" as const,
-    categoryLabel: "ASMR Expansivos",
-    duration: 20,
-    durationLabel: "20 min",
-    description:
-      "Sonidos íntimos y envolventes que disuelven los límites del cuerpo y la mente. Una experiencia ASMR diseñada para expandir tu percepción interior más allá de lo conocido.",
-    benefits: ["Relajación profunda", "Expansión sensorial", "Presencia plena", "Calma instantánea"],
-    instruments: ["Cuencos de cuarzo", "Campanas suaves", "Sonidos de la naturaleza"],
-    image: require("@/assets/images/sessions/session-3.jpg"),
-    frequency: "432 Hz",
-    isNew: true,
-  },
-  {
     id: "4",
     isPremium: true,
     title: "Dentro de uno",
@@ -155,22 +137,6 @@ export const SESSIONS: Session[] = [
     isFeatured: true,
   },
   {
-    id: "6",
-    isPremium: true,
-    title: "Investigando en la mente",
-    subtitle: "Pausa Meditativa",
-    categoryId: "pausas-meditativas",
-    categoryLabel: "Pausas Meditativas",
-    duration: 10,
-    durationLabel: "10 min",
-    description:
-      "Una invitación a observar la mente desde adentro. El sonido crea el espacio; tú aportas la atención. Juntos exploran los movimientos del pensamiento y la quietud que subyace a todo.",
-    benefits: ["Observación de la mente", "Presencia plena", "Insight interior", "Reset rápido"],
-    instruments: ["Cuenco tibetano", "Silencio consciente", "Campanillas suaves"],
-    image: require("@/assets/images/sessions/session-6.jpg"),
-    isNew: true,
-  },
-  {
     id: "7",
     isPremium: true,
     title: "Prueba",
@@ -187,8 +153,6 @@ export const SESSIONS: Session[] = [
     isNew: true,
     meditationTag: "Escaneo Corporal",
   },
-
-  // ── Sonidos Binaurales con Cuencos ────────────────────────────────────────
   {
     id: "8",
     isPremium: true,
@@ -204,7 +168,7 @@ export const SESSIONS: Session[] = [
       "Frecuencias binaurales delta entretejidas con el canto de cuencos tibetanos. Tu cerebro es guiado suavemente hacia el estado de sueño más profundo y reparador.",
     benefits: ["Sueño profundo", "Reducción del estrés", "Regeneración celular", "Paz mental"],
     instruments: ["Cuencos tibetanos", "Frecuencias binaurales delta"],
-    image: require("@/assets/images/sessions/session-19.jpg"),
+    image: require("@/assets/images/sessions/session-9.jpg"),
     frequency: "Delta 1–4 Hz",
     isNew: true,
   },
@@ -246,152 +210,6 @@ export const SESSIONS: Session[] = [
     frequency: "Gamma 40 Hz",
     isNew: true,
   },
-
-  // ── Meditaciones ASMR ─────────────────────────────────────────────────────
-  {
-    id: "11",
-    isPremium: true,
-    title: "Susurros del Cuenco Tibetano",
-    subtitle: "Meditaciones ASMR",
-    categoryId: "meditaciones-asmr",
-    categoryLabel: "Meditaciones ASMR",
-    duration: 20,
-    durationLabel: "20 min",
-    description:
-      "Los sonidos más suaves y cercanos del cuenco tibetano rozan tu conciencia como un susurro. Una experiencia íntima diseñada para disolver la tensión más profunda.",
-    benefits: ["Hormigueo relajante", "Alivio del insomnio", "Reducción de ansiedad", "Presencia sensorial"],
-    instruments: ["Cuenco tibetano pequeño", "Fricciones suaves", "Agua y cristal"],
-    image: require("@/assets/images/sessions/session-11.jpg"),
-    frequency: "432 Hz",
-    sleepTag: "ASMR Expansivos",
-    isNew: true,
-  },
-  {
-    id: "12",
-    isPremium: true,
-    title: "Fricciones que Sanan",
-    subtitle: "Meditaciones ASMR",
-    categoryId: "meditaciones-asmr",
-    categoryLabel: "Meditaciones ASMR",
-    duration: 15,
-    durationLabel: "15 min",
-    description:
-      "El sonido continuo del baquetazo sobre el cuenco en movimiento circular hipnotiza los sentidos y lleva la mente a un estado de quietud profunda. Puro ASMR ancestral.",
-    benefits: ["Calma instantánea", "Relajación muscular", "Mente quieta", "Desconexión del ruido"],
-    instruments: ["Cuencos de bronce", "Baqueta de cuero", "Sonidos circulares"],
-    image: require("@/assets/images/sessions/session-12.jpg"),
-    sleepTag: "ASMR Expansivos",
-    isNew: true,
-  },
-  {
-    id: "13",
-    isPremium: true,
-    title: "El Silencio que Habla",
-    subtitle: "Meditaciones ASMR",
-    categoryId: "meditaciones-asmr",
-    categoryLabel: "Meditaciones ASMR",
-    duration: 25,
-    durationLabel: "25 min",
-    description:
-      "Entre los golpes suaves del cuenco, el silencio cobra vida. Esta sesión ASMR entrena la escucha profunda y el descanso en el espacio entre los sonidos.",
-    benefits: ["Sensibilidad auditiva", "Presente profundo", "Silencio interior", "Relajación plena"],
-    instruments: ["Cuencos tibetanos variados", "Tingsha", "Silencios conscientes"],
-    image: require("@/assets/images/sessions/session-13.jpg"),
-    frequency: "528 Hz",
-    sleepTag: "ASMR Expansivos",
-    isNew: true,
-  },
-
-  // ── Historias para Dormir ──────────────────────────────────────────────────
-  {
-    id: "14",
-    isPremium: true,
-    title: "El Lago de Cristal",
-    subtitle: "Historias para Dormir",
-    categoryId: "historias-dormir",
-    sleepTag: "Historias para Dormir" as const,
-    categoryLabel: "Historias para Dormir",
-    duration: 30,
-    durationLabel: "30 min",
-    description:
-      "Una historia narrada con voz suave sobre un lago en las montañas donde el agua refleja las estrellas y cada ola trae consigo una capa de sueño más profundo.",
-    benefits: ["Inducción al sueño", "Imágenes relajantes", "Mente quieta", "Sueño reparador"],
-    instruments: ["Voz guía", "Cuencos suaves", "Sonidos de agua"],
-    image: require("@/assets/images/sessions/session-14.jpg"),
-    isNew: true,
-  },
-  {
-    id: "15",
-    isPremium: true,
-    title: "Camino entre Bosques",
-    subtitle: "Historias para Dormir",
-    categoryId: "historias-dormir",
-    sleepTag: "Historias para Dormir" as const,
-    categoryLabel: "Historias para Dormir",
-    duration: 40,
-    durationLabel: "40 min",
-    description:
-      "Caminas por un sendero entre árboles antiguos. El suelo es suave, el aire huele a tierra húmeda y resina. Los cuencos marcan cada paso hacia el sueño profundo.",
-    benefits: ["Visualización guiada", "Desconexión digital", "Sueño natural", "Paz profunda"],
-    instruments: ["Voz guía", "Cuencos de cuarzo", "Sonidos del bosque"],
-    image: require("@/assets/images/sessions/session-15.jpg"),
-    isNew: true,
-  },
-  {
-    id: "16",
-    isPremium: true,
-    title: "La Caverna del Sonido",
-    subtitle: "Historias para Dormir",
-    categoryId: "historias-dormir",
-    sleepTag: "Historias para Dormir" as const,
-    categoryLabel: "Historias para Dormir",
-    duration: 35,
-    durationLabel: "35 min",
-    description:
-      "En lo profundo de una montaña existe una caverna donde los sonidos duermen. Quien la visita en sueños despierta renovado, como si hubiera dormido toda una vida.",
-    benefits: ["Sueño muy profundo", "Regeneración total", "Imágenes vívidas", "Despertar fresco"],
-    instruments: ["Voz guía", "Gong tibetano", "Cuencos de bronce profundo"],
-    image: require("@/assets/images/sessions/session-16.jpg"),
-    frequency: "Delta 0.5–2 Hz",
-    isNew: true,
-  },
-
-  // ── Historias Infantiles ───────────────────────────────────────────────────
-  {
-    id: "17",
-    isPremium: true,
-    title: "El Cuenco Mágico",
-    subtitle: "Historias Infantiles",
-    categoryId: "historias-infantiles",
-    sleepTag: "Historias Infantiles" as const,
-    categoryLabel: "Historias Infantiles",
-    duration: 15,
-    durationLabel: "15 min",
-    description:
-      "Un cuenco especial que vive en el estante de una niña. Cada noche, cuando ella lo toca suavemente, el sonido pinta colores en el aire y la lleva a dormir entre estrellas.",
-    benefits: ["Sueño infantil", "Imaginación activa", "Calma para niños", "Rituales de sueño"],
-    instruments: ["Cuenco tibetano pequeño", "Voz narrativa suave", "Campanillas"],
-    image: require("@/assets/images/sessions/session-17.jpg"),
-    isNew: true,
-  },
-  {
-    id: "18",
-    isPremium: true,
-    title: "Viaje al Reino de los Sueños",
-    subtitle: "Historias Infantiles",
-    categoryId: "historias-infantiles",
-    sleepTag: "Historias Infantiles" as const,
-    categoryLabel: "Historias Infantiles",
-    duration: 20,
-    durationLabel: "20 min",
-    description:
-      "Una nube suave lleva a los niños por el cielo nocturno. En cada estrella que tocan hay un sonido, y juntos forman la melodía que abre las puertas del reino de los sueños.",
-    benefits: ["Transición al sueño", "Aventura imaginaria", "Descanso profundo", "Confianza y seguridad"],
-    instruments: ["Cuencos de cuarzo", "Voz narrativa", "Campanas de viento"],
-    image: require("@/assets/images/sessions/session-18.jpg"),
-    isNew: true,
-  },
-  // ── Música y Sonidos ──────────────────────────────────────────────────────
   {
     id: "20",
     isPremium: true,
@@ -514,7 +332,6 @@ export const SESSIONS: Session[] = [
     isNew: true,
     soundTag: "Música",
   },
-  // ── Meditaciones Guiadas ─────────────────────────────────────────────────
   {
     id: "28",
     isPremium: true,
@@ -532,7 +349,6 @@ export const SESSIONS: Session[] = [
     isNew: true,
     meditationTag: "Visualizaciones",
   },
-
   {
     id: "27",
     isPremium: true,
@@ -551,26 +367,6 @@ export const SESSIONS: Session[] = [
     isNew: true,
     soundTag: "Sonidos Naturaleza",
   },
-
-  {
-    id: "19",
-    isPremium: true,
-    title: "La Tortuga y el Gong",
-    subtitle: "Historias Infantiles",
-    categoryId: "historias-infantiles",
-    sleepTag: "Historias Infantiles" as const,
-    categoryLabel: "Historias Infantiles",
-    duration: 12,
-    durationLabel: "12 min",
-    description:
-      "Una tortuga sabia que vive junto al mar tiene un gong muy antiguo. Cuando lo toca al atardecer, todos los animales del bosque se detienen, respiran y se preparan para dormir.",
-    benefits: ["Ritual de sueño", "Calma profunda", "Respiración consciente", "Amor por la naturaleza"],
-    instruments: ["Gong suave", "Voz narrativa", "Sonidos del mar"],
-    image: require("@/assets/images/sessions/session-19.jpg"),
-    isNew: true,
-  },
-
-  // ── Prueba Maestra 2 ───────────────────────────────────────────────────────
   {
     id: "30",
     isPremium: true,
@@ -583,14 +379,12 @@ export const SESSIONS: Session[] = [
     description: "Esta es una prueba maestra 2.",
     benefits: ["Energía matutina", "Claridad mental", "Activación suave", "Foco natural"],
     instruments: ["Binaural", "Sonido ambiente"],
-    image: require("@/assets/images/sessions/session-18.jpg"),
+    image: require("@/assets/images/sessions/session-20.jpg"),
     soundTag: "Binaural" as const,
     themeTag: ["Energiza tus mañanas"] as const,
     sleepTag: "ASMR Expansivos" as const,
     isNew: true,
   },
-
-  // ── Prueba Maestra 1 ───────────────────────────────────────────────────────
   {
     id: "29",
     title: "Prueba Maestra 1",

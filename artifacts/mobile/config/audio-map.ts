@@ -10,29 +10,13 @@
  *
  *   3. Guarda. El reproductor usará el audio automáticamente.
  *
- * IDs de sesiones disponibles:
- *   "1"  → Inner Journey (Tibetan Bowl Session · 30 min)
- *   "2"  → Golden Sleep (Deep Rest Session · 45 min)
- *   "3"  → Cosmic Gong Bath (Gong Session · 60 min)
- *   "4"  → Morning Presence (Guided Meditation · 15 min)
- *   "5"  → Crystal Clarity (Crystal Bowl · 25 min)
- *   "6"  → Breath of Peace (Breathwork · 12 min)
- *   "7"  → Anxiety Dissolve (Emotional Healing · 20 min)
- *   "8"  → Still Waters (Conscious Pause · 5 min)
- *   "9"  → Deep Delta Sleep (Sleep · 60 min)
- *   "10" → Grounded Clarity (Focus · 20 min)
- *   "11" → Sound Healing Journey (Full Session · 50 min)
- *   "12" → Moonrise Rest (Sleep · 90 min)
- *   "13" → Tibetan Sunrise (Morning Ritual · 18 min)
- *   "14" → Harmonic Release (Sound Healing · 35 min)
- *   "15" → Sacred Pause (Midday Reset · 8 min)
+ * Los IDs de sesión corresponden a los definidos en data/sessions.ts.
  * ─────────────────────────────────────────────────────────────────
  */
 
 export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> = {
   "1": require("@/assets/audio/62 CM.mp3"),
   "2": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
-  "3": require("@/assets/audio/62 CM.mp3"),
   "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "27": require("@/assets/audio/riachuelo_stream.mp3"),
   "28": require("@/assets/audio/sesion_cuencos_mix.mp3"),
