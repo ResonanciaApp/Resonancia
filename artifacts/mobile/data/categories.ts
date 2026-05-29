@@ -64,3 +64,18 @@ export const CATEGORIES: Category[] = [
 
 export const getPrimaryCategories = () => CATEGORIES.filter((c) => c.primary);
 export const getSecondaryCategories = () => CATEGORIES.filter((c) => !c.primary);
+
+const hexToRgba = (hex: string, alpha: number) => {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+// Color de la categoría con opacidad baja, para tintar tarjetas de forma sutil.
+export const getCategoryTint = (categoryId: string, alpha = 0.14) => {
+  const cat = CATEGORIES.find((c) => c.id === categoryId);
+  if (!cat) return undefined;
+  return hexToRgba(cat.color, alpha);
+};

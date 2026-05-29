@@ -19,7 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
+import { CATEGORIES, getCategoryTint, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
 import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
@@ -141,7 +141,12 @@ export default function ExploreScreen() {
               {filteredSessions.length} sesión{filteredSessions.length !== 1 ? "es" : ""} encontrada{filteredSessions.length !== 1 ? "s" : ""}
             </Text>
             {filteredSessions.map((s) => (
-              <SessionCard key={s.id} session={s} horizontal />
+              <SessionCard
+                key={s.id}
+                session={s}
+                horizontal
+                cardBg={getCategoryTint(s.categoryId)}
+              />
             ))}
             {filteredSessions.length === 0 && (
               <View style={styles.emptyState}>
