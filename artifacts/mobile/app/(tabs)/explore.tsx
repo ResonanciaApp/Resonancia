@@ -123,7 +123,7 @@ export default function ExploreScreen() {
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder="Buscar sesiones, cuencos, gongs..."
+            placeholder="¿Buscar sesiones, músicas, sonidos..."
             placeholderTextColor={colors.mutedForeground}
             style={[styles.searchInput, { color: colors.foreground }]}
           />
