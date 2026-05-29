@@ -76,7 +76,7 @@ const hexToRgba = (hex: string, alpha: number) => {
 // Color de la categoría con opacidad baja, para tintar tarjetas de forma sutil.
 // Algunas categorías necesitan menos opacidad para que su color luzca mejor.
 const TINT_ALPHA_OVERRIDE: Record<string, number> = {
-  "musica-sonidos": 0.14,
+  "musica-sonidos": 0.105,
 };
 
 export const getCategoryTint = (categoryId: string, alpha = 0.2) => {
