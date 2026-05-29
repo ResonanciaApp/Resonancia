@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -84,6 +85,13 @@ export default function SabiduriaDiaScreen() {
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
+      <LinearGradient
+        colors={["rgba(240,168,92,0.18)", "rgba(240,168,92,0.05)", "rgba(240,168,92,0.12)"]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       <ScrollView
         style={styles.scroll}
@@ -106,8 +114,8 @@ export default function SabiduriaDiaScreen() {
           >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: "rgba(240,160,80,0.18)", borderColor: "rgba(240,160,80,0.36)" }]}>
-            <Feather name="sun" size={22} color="#F0A850" />
+          <View style={[styles.catIconCircle, { backgroundColor: "#2E2417", borderColor: "transparent" }]}>
+            <Feather name="sun" size={22} color="#E6D6B3" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "3 Minutos de Sabiduría"}
