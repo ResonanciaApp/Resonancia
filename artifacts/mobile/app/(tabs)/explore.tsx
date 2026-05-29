@@ -112,9 +112,6 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Biblioteca</Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Descubre tu santuario sonoro
-          </Text>
         </View>
 
         {/* ── Search bar ── */}
@@ -384,7 +381,6 @@ const styles = StyleSheet.create({
 
   header: { paddingHorizontal: H_PAD, marginBottom: 18 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
-  pageSub: { fontSize: 13 },
 
   searchBar: {
     flexDirection: "row",
