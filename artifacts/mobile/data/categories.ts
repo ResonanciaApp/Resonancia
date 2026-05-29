@@ -74,13 +74,18 @@ const hexToRgba = (hex: string, alpha: number) => {
 };
 
 // Color de la categoría con opacidad baja, para tintar tarjetas de forma sutil.
-// Algunas categorías necesitan menos opacidad para que su color luzca mejor.
+// Algunas categorías tienen un color base muy apagado (casi gris), así que para
+// el tinte del buscador usamos un color/opacidad propios para que sí se note.
 const TINT_ALPHA_OVERRIDE: Record<string, number> = {
-  "musica-sonidos": 0.105,
+  "musica-sonidos": 0.24,
+};
+const TINT_COLOR_OVERRIDE: Record<string, string> = {
+  "musica-sonidos": "#5FB36A",
 };
 
 export const getCategoryTint = (categoryId: string, alpha = 0.2) => {
   const cat = CATEGORIES.find((c) => c.id === categoryId);
   if (!cat) return undefined;
-  return hexToRgba(cat.color, TINT_ALPHA_OVERRIDE[categoryId] ?? alpha);
+  const color = TINT_COLOR_OVERRIDE[categoryId] ?? cat.color;
+  return hexToRgba(color, TINT_ALPHA_OVERRIDE[categoryId] ?? alpha);
 };
