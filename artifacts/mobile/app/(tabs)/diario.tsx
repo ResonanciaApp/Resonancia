@@ -30,6 +30,7 @@ type SectionMeta = {
   icon: React.ComponentProps<typeof Feather>["name"];
   accentColor: string;
   gradientColors: [string, string];
+  placeholder: string;
 };
 
 const SECTIONS: SectionMeta[] = [
@@ -40,6 +41,7 @@ const SECTIONS: SectionMeta[] = [
     icon: "moon",
     accentColor: "#D6A85B",
     gradientColors: ["#241C0C", "#141008"],
+    placeholder: "Escribe aquí tu reflexión...",
   },
   {
     key: "ideas",
@@ -48,6 +50,7 @@ const SECTIONS: SectionMeta[] = [
     icon: "zap",
     accentColor: "#D6A85B",
     gradientColors: ["#241C0C", "#141008"],
+    placeholder: "Escribe aquí tus ideas geniales",
   },
 ];
 
@@ -201,7 +204,7 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
         <TextInput
           value={text}
           onChangeText={(t) => setText(t.slice(0, MAX_CHARS))}
-          placeholder="Escribe aquí tu reflexión..."
+          placeholder={meta.placeholder}
           placeholderTextColor="rgba(237,225,211,0.55)"
           multiline
           style={[
@@ -287,9 +290,6 @@ export default function DiarioScreen() {
         <View style={styles.header}>
           <View>
             <Text style={[styles.screenTitle, { color: colors.foreground }]}>Mi Diario</Text>
-            <Text style={[styles.screenSubtitle, { color: colors.mutedForeground }]}>
-              Tu espacio de reflexión interior
-            </Text>
           </View>
         </View>
 
@@ -318,7 +318,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   screenTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.3 },
-  screenSubtitle: { fontSize: 13, marginTop: 3 },
   headerIcon: {
     width: 44,
     height: 44,
