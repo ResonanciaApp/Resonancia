@@ -47,8 +47,8 @@ export const CATEGORIES: Category[] = [
     subtitle: "Sabiduría condensada en 3 minutos",
     icon: "sun",
     sessionCount: 1,
-    color: "#F0CC82",
-    gradient: ["#5E4A22", "#3A2E12"],
+    color: "#F2A45A",
+    gradient: ["#9A5A26", "#4A2A0E"],
   },
   {
     id: "podcast",
