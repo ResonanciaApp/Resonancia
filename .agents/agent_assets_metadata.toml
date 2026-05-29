@@ -749,3 +749,9 @@ id = "a3PXjWQc5UjdiMEEWzs6J"
 uri = "file://attached_assets/relax_sueno_profundo_10min.mp3"
 type = "audio"
 title = "6. Sueño Profundo — 10 min"
+
+[[outputs]]
+id = "1JhucoVkhRJne2Oor0MpB"
+uri = "file://COSTOS-Y-VIDEOS-BUNNY.md"
+type = "text"
+title = "Costos de almacenamiento y plan Bunny.net"
