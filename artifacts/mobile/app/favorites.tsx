@@ -15,29 +15,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { DiarioEntryCard } from "@/components/DiarioEntryCard";
-import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
-import { useIntencion } from "@/context/IntencionContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
 import { getCategoryTint } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 
-function formatDate(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
 export default function FavoritesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { favorites } = usePlayer();
-  const { favoriteEntries } = useDiarioFavoritesCtx();
-  const { favorites: intencionFavorites, removeFavorite: removeIntencionFavorite } = useIntencion();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -252,76 +238,6 @@ export default function FavoritesScreen() {
           )}
         </View>
 
-        {/* ── Diario ── */}
-        <View style={styles.sectionBlock}>
-          <View style={styles.sectionTitleRow}>
-            <Feather name="book-open" size={15} color={colors.accent} />
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Diario
-            </Text>
-          </View>
-
-          {favoriteEntries.length === 0 ? (
-            <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
-              <Feather name="heart" size={20} color={colors.border} />
-              <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
-                Marca entradas con ♥ en el diario
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.entriesList}>
-              <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>
-                {favoriteEntries.length} entrada{favoriteEntries.length !== 1 ? "s" : ""} guardada{favoriteEntries.length !== 1 ? "s" : ""}
-              </Text>
-              {favoriteEntries.map((entry) => (
-                <DiarioEntryCard key={entry.id} entry={entry} />
-              ))}
-            </View>
-          )}
-        </View>
-
-        {/* ── Intención del día ── */}
-        <View style={styles.sectionBlock}>
-          <View style={styles.sectionTitleRow}>
-            <Feather name="sun" size={15} color={colors.accent} />
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Intención del día
-            </Text>
-          </View>
-
-          {intencionFavorites.length === 0 ? (
-            <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
-              <Feather name="heart" size={20} color={colors.border} />
-              <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
-                Marca intenciones con ♥ para guardarlas aquí
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.entriesList}>
-              <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>
-                {intencionFavorites.length} intención{intencionFavorites.length !== 1 ? "es" : ""} guardada{intencionFavorites.length !== 1 ? "s" : ""}
-              </Text>
-              {intencionFavorites.map((fav) => (
-                <View
-                  key={fav}
-                  style={[styles.intencionCard, { backgroundColor: colors.card }]}
-                >
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.intencionLabel, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
-                    <Text style={[styles.intencionText, { color: colors.foreground }]}>{fav}</Text>
-                  </View>
-                  <Pressable
-                    onPress={() => removeIntencionFavorite(fav)}
-                    hitSlop={8}
-                    style={[styles.removeBtn, { backgroundColor: colors.card }]}
-                  >
-                    <Feather name="trash-2" size={14} color={colors.mutedForeground} />
-                  </Pressable>
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
       </ScrollView>
     </View>
   );
@@ -381,30 +297,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   emptyLinkText: { fontSize: 12, fontWeight: "600" },
-
-  entriesList: { gap: 10 },
-  intencionCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    borderRadius: 16,
-    padding: 16,
-  },
-  intencionLabel: {
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginBottom: 4,
-  },
-  intencionText: { fontSize: 14, lineHeight: 20 },
-  removeBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
   chipsScroll: { marginBottom: 14 },
   chipsRow: { gap: 8, paddingRight: 4 },
