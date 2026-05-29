@@ -82,6 +82,25 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 | Grupo 1 | `themeTag: [...]` |
 | Grupo 2 | `sleepTag` |
 
+## Videos (sección dentro de Biblioteca)
+
+Sección de videos pregrabados que aparece como bloque "Videos" en `app/(tabs)/explore.tsx` (solo se muestra si hay videos cargados). Archivos:
+
+- `artifacts/mobile/data/videos.ts` — tipo `VideoItem`, array `VIDEOS`, helper `getVideoSourceUri` (mapea `objectPath` "/objects/..." → ruta de serving `/api/storage/objects/...` usando `EXPO_PUBLIC_API_URL`)
+- `artifacts/mobile/components/VideoCard.tsx` — card (carousel + horizontal) con gating premium y overlay de play
+- `artifacts/mobile/app/video/[id].tsx` — reproductor con `expo-video` (`useVideoPlayer` + `VideoView`); si es premium y el usuario no, redirige a `/membresia`
+- `artifacts/mobile/app/videos.tsx` — listado completo con empty state "Próximamente"
+
+Los videos NO se bundlean (pesan demasiado): viven en Object Storage y se sirven desde `GET /api/storage/objects/*` (esa ruta soporta range requests → seek y streaming progresivo). `public-objects` NO sirve para video (sin range).
+
+### Subir un video
+
+1. Subir el archivo a Object Storage (presigned URL flow) → guardar el `objectPath` devuelto ("/objects/...").
+2. Copiar el thumbnail a `artifacts/mobile/assets/images/videos/` (o reutilizar un placeholder).
+3. Agregar el objeto a `VIDEOS` en `data/videos.ts` con el próximo ID. Marcar `isPremium: true` si corresponde.
+
+> **Gating premium de videos = solo UI** (igual que las sesiones). La ruta `/api/storage/objects/*` no exige auth/ACL, así que un usuario podría pedir la URL directa. El enforcement real depende de tener el estado premium en backend (RevenueCat, ver pendientes). NO modificar esa ruta para gating sin coordinar: la comparte el chat (DM image/audio).
+
 ## User preferences
 
 - **"RA"** = "Restart App" — cuando el usuario escribe "RA", reiniciar el workflow `artifacts/mobile: expo`
