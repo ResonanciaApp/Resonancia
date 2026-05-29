@@ -384,7 +384,7 @@ export default function HomeScreen() {
             {noOlvidarItems.length > 0 && !noOlvidarOpen && (
               <Pressable
                 onPress={() => setNoOlvidarOpen(true)}
-                style={[styles.noOlvidarPeek, { backgroundColor: colors.card }]}
+                style={[styles.noOlvidarPeek, { backgroundColor: "rgba(255,255,255,0.05)" }]}
               >
                 {/* Mini apilado de tarjetas */}
                 <View style={styles.peekStack}>
