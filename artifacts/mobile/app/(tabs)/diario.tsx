@@ -291,7 +291,7 @@ export default function DiarioScreen() {
           <View style={{ flex: 1 }}>
             <Text style={[styles.screenTitle, { color: colors.foreground }]}>Mi Diario</Text>
             <Text style={[styles.screenSubtitle, { color: colors.mutedForeground }]}>
-              En esta sección podrás grabar y guardar audios de voz con las inspiraciones, reflexiones y mensajes que emergen desde lo más profundo de tu ser. Utilízala cuando sientas que algo verdaderamente valioso merece ser recordado, escuchado nuevamente o atesorado en tu camino interior.
+              En esta sección podrás grabar y guardar audios de voz con las inspiraciones, reflexiones y mensajes que emergen desde lo más profundo de tu ser.
             </Text>
           </View>
         </View>
