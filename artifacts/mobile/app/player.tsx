@@ -566,7 +566,10 @@ export default function PlayerScreen() {
 
       {/* Floating top buttons */}
       <Pressable
-        onPress={() => router.back()}
+        onPress={() => {
+          stop();
+          router.back();
+        }}
         style={[styles.floatingBtn, { top: topPad + 8, left: 16 }]}
         hitSlop={12}
       >
