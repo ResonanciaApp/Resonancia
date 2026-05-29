@@ -28,7 +28,18 @@ export type VideoItem = {
   isNew?: boolean;
 };
 
-export const VIDEOS: VideoItem[] = [];
+export const VIDEOS: VideoItem[] = [
+  {
+    id: "1",
+    title: "Cuenco en movimiento",
+    subtitle: "Visual sonoro",
+    description:
+      "Un breve visual del cuenco tibetano en movimiento, ideal para acompañar tu práctica de respiración y enfoque.",
+    durationLabel: "0:04",
+    thumbnail: require("@/assets/images/videos/video-1.jpg"),
+    objectPath: "/objects/uploads/032d9237-beea-4d88-8c58-c84ea7b500a6",
+  },
+];
 
 export function getVideoById(id: string): VideoItem | undefined {
   return VIDEOS.find((v) => v.id === id);
