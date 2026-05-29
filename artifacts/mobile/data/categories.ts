@@ -81,6 +81,7 @@ const TINT_ALPHA_OVERRIDE: Record<string, number> = {
 };
 const TINT_COLOR_OVERRIDE: Record<string, string> = {
   "musica-sonidos": "#5FB36A",
+  "sabiduria-dia": "#E0935A",
 };
 
 export const getCategoryTint = (categoryId: string, alpha = 0.2) => {
