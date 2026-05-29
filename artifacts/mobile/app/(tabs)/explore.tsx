@@ -290,18 +290,28 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Videos ── */}
-            {VIDEOS.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionRow}>
-                  <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                    Videos
+            <View style={styles.section}>
+              <View style={styles.sectionRow}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                  Videos
+                </Text>
+                {VIDEOS.length > 3 && (
+                  <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
+                    <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
+                  </Pressable>
+                )}
+              </View>
+              {VIDEOS.length === 0 ? (
+                <View style={[styles.videosEmpty, { borderColor: "rgba(182,149,95,0.15)", backgroundColor: colors.card }]}>
+                  <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
+                  <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>
+                    Próximamente
                   </Text>
-                  {VIDEOS.length > 3 && (
-                    <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
-                      <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
-                    </Pressable>
-                  )}
+                  <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
+                    Pronto vas a encontrar videos aquí.
+                  </Text>
                 </View>
+              ) : (
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
@@ -311,8 +321,8 @@ export default function ExploreScreen() {
                     <VideoCard key={v.id} video={v} />
                   ))}
                 </ScrollView>
-              </View>
-            )}
+              )}
+            </View>
 
             {/* ── Programas (oculto temporalmente) ── */}
             {SHOW_PROGRAMAS && (
@@ -521,6 +531,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: "center",
     marginTop: 4,
+  },
+  videosEmpty: {
+    borderRadius: 18,
+    borderWidth: 1,
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    marginTop: 12,
   },
   historyEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
   historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
