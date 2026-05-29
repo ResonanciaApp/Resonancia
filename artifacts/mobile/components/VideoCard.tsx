@@ -92,6 +92,9 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
         <PlayOverlay />
         {locked && <LockStar />}
       </View>
+      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+        {video.title}
+      </Text>
       <View style={styles.cardMeta}>
         <Feather name="clock" size={11} color={colors.mutedForeground} />
         <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
