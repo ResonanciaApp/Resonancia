@@ -39,6 +39,26 @@ export const VIDEOS: VideoItem[] = [
     thumbnail: require("@/assets/images/videos/video-1.jpg"),
     objectPath: "/objects/uploads/032d9237-beea-4d88-8c58-c84ea7b500a6",
   },
+  {
+    id: "2",
+    title: "Prueba de video 2",
+    subtitle: "Visual sonoro",
+    description:
+      "Video de prueba para validar el carrusel de la sección de Videos.",
+    durationLabel: "0:22",
+    thumbnail: require("@/assets/images/videos/video-2.jpg"),
+    objectPath: "/objects/uploads/61890768-8f25-42f2-88a0-b389056b471a",
+  },
+  {
+    id: "3",
+    title: "Prueba de video 3",
+    subtitle: "Visual sonoro",
+    description:
+      "Video de prueba para validar el carrusel de la sección de Videos.",
+    durationLabel: "0:24",
+    thumbnail: require("@/assets/images/videos/video-3.jpg"),
+    objectPath: "/objects/uploads/49bb34bb-fbce-4d71-a914-b5ee6d04d8d8",
+  },
 ];
 
 export function getVideoById(id: string): VideoItem | undefined {
