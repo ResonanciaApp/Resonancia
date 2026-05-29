@@ -386,7 +386,7 @@ export default function HomeScreen() {
                 onPress={() => setNoOlvidarOpen(true)}
                 style={[styles.noOlvidarPeek, { backgroundColor: "rgba(255,255,255,0.05)" }]}
               >
-                <Feather name="feather" size={20} color={colors.accent} />
+                <Feather name="feather" size={17} color={colors.accent} />
 
                 <Text style={[styles.peekLabel, { color: colors.mutedForeground }]}>
                   {noOlvidarItems.length === 1
