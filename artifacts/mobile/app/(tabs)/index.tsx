@@ -433,56 +433,6 @@ export default function HomeScreen() {
             )}
           </View>
 
-        {/* ── 5. RECOMENDADAS PARA TI ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Recomendadas para ti
-            </Text>
-          </View>
-          {recommended.slice(0, 4).map((s) => (
-            <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
-          ))}
-        </View>
-
-        {/* ── 5. FRASE DEL DÍA ── */}
-        <QuoteOfTheDay />
-
-        {/* ── 7. NUEVAS SESIONES ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Nuevas sesiones</Text>
-            <Pressable onPress={() => router.push("/nuevas-sesiones" as never)}>
-              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
-            </Pressable>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.hScroll}
-          >
-            {newSessions.map((s) => (
-              <SessionCard key={s.id} session={s} width={110} />
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* ── 9. LO MÁS ESCUCHADO ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Lo más escuchado</Text>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.hScroll}
-          >
-            {topSessions.map((s) => (
-              <SessionCard key={s.id} session={s} width={110} />
-            ))}
-          </ScrollView>
-        </View>
-
         {/* ── 9.5 PARA TU DÍA ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
@@ -539,6 +489,56 @@ export default function HomeScreen() {
                 </Pressable>
               );
             })}
+          </ScrollView>
+        </View>
+
+        {/* ── 5. RECOMENDADAS PARA TI ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              Recomendadas para ti
+            </Text>
+          </View>
+          {recommended.slice(0, 4).map((s) => (
+            <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
+          ))}
+        </View>
+
+        {/* ── 5. FRASE DEL DÍA ── */}
+        <QuoteOfTheDay />
+
+        {/* ── 7. NUEVAS SESIONES ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Nuevas sesiones</Text>
+            <Pressable onPress={() => router.push("/nuevas-sesiones" as never)}>
+              <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
+            </Pressable>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.hScroll}
+          >
+            {newSessions.map((s) => (
+              <SessionCard key={s.id} session={s} width={110} />
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── 9. LO MÁS ESCUCHADO ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Lo más escuchado</Text>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.hScroll}
+          >
+            {topSessions.map((s) => (
+              <SessionCard key={s.id} session={s} width={110} />
+            ))}
           </ScrollView>
         </View>
 
