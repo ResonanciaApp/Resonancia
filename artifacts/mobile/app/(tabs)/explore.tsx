@@ -176,7 +176,7 @@ export default function ExploreScreen() {
                   }
                   style={({ pressed }) => [
                     styles.continueCard,
-                    { backgroundColor: colors.card, opacity: pressed ? 0.85 : 1 },
+                    { backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
                   <Image
