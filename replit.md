@@ -142,6 +142,12 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
   - Solo en plan anual (recomendado, empuja al anual) vs también en mensual
   - Pedir tarjeta upfront (default Apple/Google, mejor conversión post-trial) vs sin tarjeta
   - Precio sugerido: ~$43.900/año (similar a Pura Mente) + opción mensual ~$4.900/mes — ajustar según mercado destino
+- **Disponibilidad por país + precios por región**: la app se puede vender en +150 países (todos los hispanohablantes incluidos). Al publicar se elige en qué países está disponible (default: todos, o solo Latam+España al inicio). Apple/Google cobran en moneda local automáticamente y retienen impuestos por país. Recomendación de estrategia de precios regional:
+  - **Localizar precios por región** (NO usar un precio global convertido): el poder adquisitivo varía mucho. Un precio que funciona en España (~€40/año) es caro para Latam.
+  - Sugerencia de tiers: España/EE.UU. ≈ €40-45/año; México/Chile/Colombia/Perú/Argentina ≈ equivalente a USD 15-25/año; ajustar por país con los precios que recomienda RevenueCat/App Store Connect (tienen sugerencias por paridad de compra).
+  - RevenueCat permite definir precios por país/región desde su panel sin tocar código — `isPremium` funciona igual sin importar el precio pagado.
+  - Plan anual como ancla (mejor retención) + mensual más caro proporcionalmente para empujar al anual.
+  - Al lanzar, arrancar con precios un poco más bajos (oferta de lanzamiento) para ganar reseñas y conversión, luego subir.
 - **Frase del día → contador "X compartieron"**: el número actual es decorativo (fórmula basada en el día del año, no en datos reales). Cuando exista backend, registrar cada compartida en DB y devolver el total real desde la API.
 - **EAS Build (publicar la app + activar push notifications reales)**: el código ya está armado (`eas.json` con perfiles dev/preview/production, hook de push, registro/unregistro de tokens, server enganchado a DM/amigos). Faltan los pasos manuales:
   1. Crear cuenta gratis en https://expo.dev
