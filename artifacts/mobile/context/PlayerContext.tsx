@@ -1,4 +1,10 @@
-import { Audio, AVPlaybackStatus } from "expo-av";
+import {
+  type AudioPlayer,
+  type AudioStatus,
+  createAudioPlayer,
+  setAudioModeAsync,
+} from "expo-audio";
+import { Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AMBIENT_MAP, AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
 import React, {
@@ -69,6 +75,17 @@ const COMPLETED_THRESHOLD = 0.97;
 /** Minimum delta before persisting progress to AsyncStorage */
 const PROGRESS_SAVE_DELTA = 0.02;
 
+/** Resolve a bundled session image to a URI usable as lock screen artwork */
+function resolveArtworkUrl(session: Session): string | undefined {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const resolved = Image.resolveAssetSource(session.image as any);
+    return resolved?.uri;
+  } catch (_) {
+    return undefined;
+  }
+}
+
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -89,16 +106,38 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [voiceVolume, setVoiceVolumeState] = useState(0.8);
   const [ambientVolume, setAmbientVolumeState] = useState(0.7);
 
-  const soundRef = useRef<Audio.Sound | null>(null);
-  const voiceSoundRef = useRef<Audio.Sound | null>(null);
-  const ambientSoundRef = useRef<Audio.Sound | null>(null);
+  // ── expo-audio players (main + simultaneous voice/ambient layers) ─────────────
+  const mainPlayerRef = useRef<AudioPlayer | null>(null);
+  const voicePlayerRef = useRef<AudioPlayer | null>(null);
+  const ambientPlayerRef = useRef<AudioPlayer | null>(null);
+  const statusSubRef = useRef<{ remove: () => void } | null>(null);
+
   const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const preloadedRef = useRef<Map<string, Audio.Sound>>(new Map());
-  const preloadedVoiceRef = useRef<Map<string, Audio.Sound>>(new Map());
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /** True when the current session is backed by a real audio file (vs simulation) */
+  const hasRealAudioRef = useRef(false);
+  /** True for looping/duration-based sessions (progress driven by interval, not audio position) */
+  const loopModeRef = useRef(false);
+  /** Whether voice/ambient layers are active for the current session */
+  const voiceActiveRef = useRef(false);
+  const ambientActiveRef = useRef(false);
+  /** Pending resume seek fraction, applied once the main track reports its duration */
+  const pendingSeekRef = useRef<number | null>(null);
+  /** Last known playing state of the main player — to mirror lock-screen play/pause onto layers */
+  const lastPlayingRef = useRef(false);
+  /** True while switching sessions — suppresses stale status events from the prior track */
+  const switchingRef = useRef(false);
+
   // Keep latest isPlaying in a ref so timer callbacks see the current value
   const isPlayingRef = useRef(false);
   isPlayingRef.current = isPlaying;
+
+  // Keep latest volumes in refs for use inside async setup
+  const voiceVolumeRef = useRef(voiceVolume);
+  voiceVolumeRef.current = voiceVolume;
+  const ambientVolumeRef = useRef(ambientVolume);
+  ambientVolumeRef.current = ambientVolume;
 
   useEffect(() => {
     AsyncStorage.getItem(FAVORITES_KEY).then((val) => {
@@ -165,55 +204,148 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  // ── Audio session config: play in silence + keep going in background ──────────
   useEffect(() => {
-    Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      staysActiveInBackground: true,
-      shouldDuckAndroid: false,
-    });
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+    }).catch(() => {});
+  }, []);
+
+  /** Latest currentSession in a ref — for use inside playback callbacks */
+  const currentSessionRef = useRef<Session | null>(null);
+  currentSessionRef.current = currentSession;
+
+  // ── Main player status handler (referenced via ref to stay current) ───────────
+  const handleMainStatus = useCallback(
+    (status: AudioStatus) => {
+      if (!status.isLoaded) return;
+
+      // Clear loading once the track is ready
+      setIsLoading(false);
+
+      // Mirror lock-screen / system play-pause onto the simultaneous layers
+      if (status.playing !== lastPlayingRef.current) {
+        lastPlayingRef.current = status.playing;
+        if (status.playing) {
+          if (voiceActiveRef.current) voicePlayerRef.current?.play();
+          if (ambientActiveRef.current) ambientPlayerRef.current?.play();
+        } else {
+          voicePlayerRef.current?.pause();
+          ambientPlayerRef.current?.pause();
+        }
+        // While switching sessions we manage isPlaying manually — ignore stale toggles
+        if (!switchingRef.current) setIsPlaying(status.playing);
+      }
+
+      // Loop/duration sessions are driven by the countdown interval, not audio position
+      if (loopModeRef.current) return;
+
+      const dur = status.duration ?? 0;
+      const pos = status.currentTime ?? 0;
+
+      // Apply a pending resume seek once we know the real duration, then skip the
+      // rest of this tick so the pre-seek position is never persisted
+      if (pendingSeekRef.current != null) {
+        if (dur > 0) {
+          const target = pendingSeekRef.current * dur;
+          pendingSeekRef.current = null;
+          switchingRef.current = false;
+          setActualDurationSeconds(Math.floor(dur));
+          mainPlayerRef.current?.seekTo(target).catch(() => {});
+        }
+        return;
+      }
+
+      // Skip the first tick after a session switch so the previous track's
+      // position is never attributed to the new session
+      if (switchingRef.current) {
+        switchingRef.current = false;
+        if (dur > 0) setActualDurationSeconds(Math.floor(dur));
+        return;
+      }
+
+      if (dur > 0) {
+        setActualDurationSeconds(Math.floor(dur));
+        const p = pos / dur;
+        setProgress(p);
+        const sId = currentSessionRef.current?.id;
+        if (sId) saveSessionProgress(sId, p);
+      }
+      setElapsed(Math.floor(pos));
+
+      if (status.didJustFinish) {
+        setIsPlaying(false);
+        lastPlayingRef.current = false;
+        voiceActiveRef.current = false;
+        ambientActiveRef.current = false;
+        voicePlayerRef.current?.pause();
+        ambientPlayerRef.current?.pause();
+        setProgress(1);
+        const sId = currentSessionRef.current?.id;
+        if (sId) saveSessionProgress(sId, 1, { force: true });
+      }
+    },
+    [saveSessionProgress],
+  );
+
+  const handleMainStatusRef = useRef(handleMainStatus);
+  handleMainStatusRef.current = handleMainStatus;
+
+  /** Lazily create the persistent main player + attach its status listener */
+  const ensureMainPlayer = useCallback((): AudioPlayer => {
+    if (!mainPlayerRef.current) {
+      const player = createAudioPlayer(null, { updateInterval: 500 });
+      statusSubRef.current = player.addListener("playbackStatusUpdate", (s) =>
+        handleMainStatusRef.current(s),
+      );
+      mainPlayerRef.current = player;
+    }
+    return mainPlayerRef.current;
+  }, []);
+
+  const ensureVoicePlayer = useCallback((): AudioPlayer => {
+    if (!voicePlayerRef.current) {
+      voicePlayerRef.current = createAudioPlayer(null);
+    }
+    return voicePlayerRef.current;
+  }, []);
+
+  const ensureAmbientPlayer = useCallback((): AudioPlayer => {
+    if (!ambientPlayerRef.current) {
+      ambientPlayerRef.current = createAudioPlayer(null);
+    }
+    return ambientPlayerRef.current;
+  }, []);
+
+  /** Pause the optional layers and mark them inactive */
+  const teardownLayers = useCallback(() => {
+    voicePlayerRef.current?.pause();
+    ambientPlayerRef.current?.pause();
+    voiceActiveRef.current = false;
+    ambientActiveRef.current = false;
+  }, []);
+
+  /** Pause everything and clear the lock-screen now-playing info */
+  const teardownPlayback = useCallback(() => {
+    try {
+      mainPlayerRef.current?.pause();
+      mainPlayerRef.current?.clearLockScreenControls();
+    } catch (_) {}
+    voicePlayerRef.current?.pause();
+    ambientPlayerRef.current?.pause();
   }, []);
 
   useEffect(() => {
     return () => {
-      unloadSound();
-      unloadVoiceSound();
+      statusSubRef.current?.remove();
+      try { mainPlayerRef.current?.remove(); } catch (_) {}
+      try { voicePlayerRef.current?.remove(); } catch (_) {}
+      try { ambientPlayerRef.current?.remove(); } catch (_) {}
       clearSim();
       clearSleepInterval();
-      preloadedRef.current.forEach((s) => s.unloadAsync().catch(() => {}));
-      preloadedRef.current.clear();
-      preloadedVoiceRef.current.forEach((s) => s.unloadAsync().catch(() => {}));
-      preloadedVoiceRef.current.clear();
     };
   }, []);
-
-  // ── Audio preloading ─────────────────────────────────────────────────────────
-  // Preload all mapped audio files 1.5 s after mount so the first tap plays instantly
-  useEffect(() => {
-    let mounted = true;
-    const timer = setTimeout(async () => {
-      for (const [id, file] of Object.entries(AUDIO_MAP)) {
-        if (!file || !mounted) break;
-        try {
-          const { sound } = await Audio.Sound.createAsync(file as any, { shouldPlay: false });
-          if (mounted) preloadedRef.current.set(id, sound);
-          else sound.unloadAsync().catch(() => {});
-        } catch (_) {}
-      }
-      for (const [id, file] of Object.entries(VOICE_MAP)) {
-        if (!file || !mounted) break;
-        try {
-          const { sound } = await Audio.Sound.createAsync(file as any, { shouldPlay: false });
-          if (mounted) preloadedVoiceRef.current.set(id, sound);
-          else sound.unloadAsync().catch(() => {});
-        } catch (_) {}
-      }
-    }, 1500);
-    return () => {
-      mounted = false;
-      clearTimeout(timer);
-    };
-  }, []);
-  // ────────────────────────────────────────────────────────────────────────────
 
   // ── Sleep timer tick ────────────────────────────────────────────────────────
   // Start/stop the countdown interval whenever playing state or timer active/inactive changes
@@ -239,10 +371,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     clearSleepInterval();
     setSleepTimerRemaining(null);
     // Stop audio without wiping the session from UI
-    unloadSound();
+    teardownPlayback();
     clearSim();
+    loopModeRef.current = false;
+    hasRealAudioRef.current = false;
+    lastPlayingRef.current = false;
+    teardownLayers();
     setIsPlaying(false);
-  }, [sleepTimerRemaining]);
+  }, [sleepTimerRemaining, teardownPlayback, teardownLayers]);
   // ────────────────────────────────────────────────────────────────────────────
 
   const clearSleepInterval = () => {
@@ -252,67 +388,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const unloadVoiceSound = async () => {
-    if (voiceSoundRef.current) {
-      try { await voiceSoundRef.current.unloadAsync(); } catch (_) {}
-      voiceSoundRef.current = null;
-    }
-  };
-
-  const unloadAmbientSound = async () => {
-    if (ambientSoundRef.current) {
-      try { await ambientSoundRef.current.unloadAsync(); } catch (_) {}
-      ambientSoundRef.current = null;
-    }
-  };
-
-  const unloadSound = async () => {
-    await unloadVoiceSound();
-    await unloadAmbientSound();
-    if (soundRef.current) {
-      try {
-        await soundRef.current.unloadAsync();
-      } catch (_) {}
-      soundRef.current = null;
-    }
-  };
-
   const clearSim = () => {
     if (simIntervalRef.current) {
       clearInterval(simIntervalRef.current);
       simIntervalRef.current = null;
     }
   };
-
-  /** Latest currentSession in a ref — for use inside playback callbacks */
-  const currentSessionRef = useRef<Session | null>(null);
-  currentSessionRef.current = currentSession;
-
-  const onPlaybackStatusUpdate = useCallback(
-    (status: AVPlaybackStatus) => {
-      if (!status.isLoaded) return;
-      const durMs = status.durationMillis ?? 0;
-      const posMs = status.positionMillis ?? 0;
-
-      if (durMs > 0) {
-        setActualDurationSeconds(Math.floor(durMs / 1000));
-        const p = posMs / durMs;
-        setProgress(p);
-        const sId = currentSessionRef.current?.id;
-        if (sId) saveSessionProgress(sId, p);
-      }
-      setElapsed(Math.floor(posMs / 1000));
-      setIsPlaying(status.isPlaying);
-
-      if (status.didJustFinish) {
-        setIsPlaying(false);
-        setProgress(1);
-        const sId = currentSessionRef.current?.id;
-        if (sId) saveSessionProgress(sId, 1, { force: true });
-      }
-    },
-    [saveSessionProgress],
-  );
 
   const startSimulation = (session: Session) => {
     const totalSeconds = session.duration * 60;
@@ -349,10 +430,39 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  /** Configure lock-screen now-playing info for the current session */
+  const activateLockScreen = useCallback(
+    (session: Session, withSeek: boolean) => {
+      try {
+        mainPlayerRef.current?.setActiveForLockScreen(
+          true,
+          {
+            title: session.title,
+            artist: session.subtitle || session.categoryLabel,
+            albumTitle: "RESONANCIA",
+            artworkUrl: resolveArtworkUrl(session),
+          },
+          { showSeekForward: withSeek, showSeekBackward: withSeek },
+        );
+      } catch (_) {}
+    },
+    [],
+  );
+
   const playSession = useCallback(
     async (session: Session) => {
-      await unloadSound();
       clearSim();
+      teardownLayers();
+      loopModeRef.current = false;
+      switchingRef.current = true;
+      // Stop the previous track immediately so its status events don't bleed into the new session
+      try {
+        mainPlayerRef.current?.pause();
+      } catch {
+        // ignore
+      }
+      lastPlayingRef.current = false;
+      pendingSeekRef.current = null;
 
       setCurrentSession(session);
       const savedProgress = sessionProgressRef.current[session.id] ?? 0;
@@ -367,80 +477,69 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
       if (audioFile) {
         setIsLoading(true);
+        hasRealAudioRef.current = true;
         try {
-          // Use preloaded sound if available, otherwise load fresh
-          let sound: Audio.Sound;
-          const preloaded = preloadedRef.current.get(session.id);
-          if (preloaded) {
-            preloadedRef.current.delete(session.id);
-            sound = preloaded;
-            sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-            await sound.setPositionAsync(0);
-            await sound.setStatusAsync({ shouldPlay: true, progressUpdateIntervalMillis: 500 });
-          } else {
-            const result = await Audio.Sound.createAsync(
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              audioFile as any,
-              { shouldPlay: true, progressUpdateIntervalMillis: 500 },
-              onPlaybackStatusUpdate
-            );
-            sound = result.sound;
-          }
-          soundRef.current = sound;
+          await setAudioModeAsync({
+            playsInSilentMode: true,
+            shouldPlayInBackground: true,
+          });
 
-          // Resume from saved position
-          if (resumeFraction > 0) {
-            try {
-              const status = await sound.getStatusAsync();
-              if (status.isLoaded && status.durationMillis) {
-                await sound.setPositionAsync(status.durationMillis * resumeFraction);
-              }
-            } catch (_) {}
-          }
+          const main = ensureMainPlayer();
+          main.loop = false;
+          pendingSeekRef.current = resumeFraction > 0 ? resumeFraction : null;
+          main.replace(audioFile);
+          main.volume = 1;
+          main.play();
 
-          // Load voice track if available (plays simultaneously)
+          // Voice track plays simultaneously with the main track
           const voiceFile = VOICE_MAP[session.id];
           if (voiceFile) {
-            try {
-              let voiceSound: Audio.Sound;
-              const preloadedVoice = preloadedVoiceRef.current.get(session.id);
-              if (preloadedVoice) {
-                preloadedVoiceRef.current.delete(session.id);
-                voiceSound = preloadedVoice;
-                await voiceSound.setPositionAsync(0);
-                await voiceSound.setVolumeAsync(voiceVolume);
-                await voiceSound.setStatusAsync({ shouldPlay: true, isLooping: false });
-              } else {
-                const result = await Audio.Sound.createAsync(
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  voiceFile as any,
-                  { shouldPlay: true, volume: voiceVolume, isLooping: false }
-                );
-                voiceSound = result.sound;
-              }
-              voiceSoundRef.current = voiceSound;
-            } catch (_) {}
+            const voice = ensureVoicePlayer();
+            voice.loop = false;
+            voice.replace(voiceFile);
+            voice.volume = voiceVolumeRef.current;
+            voice.play();
+            voiceActiveRef.current = true;
+          } else {
+            voiceActiveRef.current = false;
+            voicePlayerRef.current?.pause();
           }
+          ambientActiveRef.current = false;
 
+          activateLockScreen(session, true);
+          lastPlayingRef.current = true;
           setIsPlaying(true);
         } catch (err) {
           console.warn("[RESONANCE] Audio load failed:", err);
+          hasRealAudioRef.current = false;
+          switchingRef.current = false;
           startSimulation(session);
         } finally {
           setIsLoading(false);
         }
       } else {
+        hasRealAudioRef.current = false;
+        switchingRef.current = false;
         startSimulation(session);
       }
     },
-    [onPlaybackStatusUpdate]
+    [addToHistory, ensureMainPlayer, ensureVoicePlayer, teardownLayers, activateLockScreen],
   );
 
   /** Play a looping ambient/nature session for a chosen number of minutes */
   const playSessionWithDuration = useCallback(
     async (session: Session, minutes: number) => {
-      await unloadSound();
       clearSim();
+      teardownLayers();
+      loopModeRef.current = true;
+      switchingRef.current = true;
+      try {
+        mainPlayerRef.current?.pause();
+      } catch {
+        // ignore
+      }
+      lastPlayingRef.current = false;
+      pendingSeekRef.current = null;
 
       const totalSeconds = minutes * 60;
       const sessionOverride: Session = {
@@ -460,39 +559,41 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
       if (audioFile) {
         setIsLoading(true);
+        hasRealAudioRef.current = true;
+        loopModeRef.current = true;
         try {
-          let sound: Audio.Sound;
-          const preloaded = preloadedRef.current.get(session.id);
-          if (preloaded) {
-            preloadedRef.current.delete(session.id);
-            sound = preloaded;
-            sound.setOnPlaybackStatusUpdate(null);
-            await sound.setPositionAsync(0);
-            await sound.setStatusAsync({ shouldPlay: true, isLooping: isLoopSession });
-          } else {
-            const result = await Audio.Sound.createAsync(
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              audioFile as any,
-              { shouldPlay: true, isLooping: isLoopSession }
-            );
-            sound = result.sound;
-          }
-          soundRef.current = sound;
+          await setAudioModeAsync({
+            playsInSilentMode: true,
+            shouldPlayInBackground: true,
+          });
 
-          // Load ambient layer (e.g. birds) if available
+          const main = ensureMainPlayer();
+          main.loop = isLoopSession;
+          main.replace(audioFile);
+          main.volume = 1;
+          main.play();
+
+          // Ambient layer (e.g. birds) loops under the main track
           const ambientFile = AMBIENT_MAP[session.id];
           if (ambientFile) {
-            try {
-              const { sound: ambientSound } = await Audio.Sound.createAsync(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ambientFile as any,
-                { shouldPlay: true, isLooping: true, volume: ambientVolume }
-              );
-              ambientSoundRef.current = ambientSound;
-            } catch (_) {}
+            const ambient = ensureAmbientPlayer();
+            ambient.loop = true;
+            ambient.replace(ambientFile);
+            ambient.volume = ambientVolumeRef.current;
+            ambient.play();
+            ambientActiveRef.current = true;
+          } else {
+            ambientActiveRef.current = false;
+            ambientPlayerRef.current?.pause();
           }
+          voiceActiveRef.current = false;
 
+          activateLockScreen(sessionOverride, false);
+          lastPlayingRef.current = true;
           setIsPlaying(true);
+          // Loop progress is interval-driven (no position attribution risk), so the
+          // switch guard can be released immediately to let lock-screen toggles reflect in the UI
+          switchingRef.current = false;
 
           // Drive progress with a countdown interval (audio loops indefinitely)
           simIntervalRef.current = setInterval(() => {
@@ -501,14 +602,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               const sId = currentSessionRef.current?.id;
               if (next >= totalSeconds) {
                 clearSim();
-                void sound.stopAsync().catch(() => {});
-                void sound.unloadAsync().catch(() => {});
-                soundRef.current = null;
-                if (ambientSoundRef.current) {
-                  void ambientSoundRef.current.stopAsync().catch(() => {});
-                  void ambientSoundRef.current.unloadAsync().catch(() => {});
-                  ambientSoundRef.current = null;
-                }
+                teardownPlayback();
+                ambientActiveRef.current = false;
+                loopModeRef.current = false;
+                hasRealAudioRef.current = false;
+                lastPlayingRef.current = false;
                 setIsPlaying(false);
                 setProgress(1);
                 if (sId) saveSessionProgress(sId, 1, { force: true });
@@ -522,36 +620,49 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           }, 1000);
         } catch (err) {
           console.warn("[RESONANCE] Loop audio load failed:", err);
+          hasRealAudioRef.current = false;
+          loopModeRef.current = false;
+          switchingRef.current = false;
           startSimulation(sessionOverride);
         } finally {
           setIsLoading(false);
         }
       } else {
+        hasRealAudioRef.current = false;
+        loopModeRef.current = false;
+        switchingRef.current = false;
         startSimulation(sessionOverride);
       }
     },
-    [addToHistory, ambientVolume]
+    [
+      addToHistory,
+      ensureMainPlayer,
+      ensureAmbientPlayer,
+      teardownLayers,
+      teardownPlayback,
+      saveSessionProgress,
+      activateLockScreen,
+    ],
   );
 
   const pauseResume = useCallback(async () => {
-    if (soundRef.current) {
-      const status = await soundRef.current.getStatusAsync();
-      if (!status.isLoaded) return;
-      if (status.isPlaying) {
-        await soundRef.current.pauseAsync();
-        if (voiceSoundRef.current) {
-          try { await voiceSoundRef.current.pauseAsync(); } catch (_) {}
-        }
+    if (hasRealAudioRef.current && mainPlayerRef.current?.isLoaded) {
+      const main = mainPlayerRef.current;
+      if (main.playing) {
+        main.pause();
+        if (voiceActiveRef.current) voicePlayerRef.current?.pause();
+        if (ambientActiveRef.current) ambientPlayerRef.current?.pause();
+        lastPlayingRef.current = false;
         setIsPlaying(false);
         const sId = currentSessionRef.current?.id;
-        if (sId && status.durationMillis) {
-          saveSessionProgress(sId, (status.positionMillis ?? 0) / status.durationMillis, { force: true });
+        if (sId && !loopModeRef.current && main.duration > 0) {
+          saveSessionProgress(sId, main.currentTime / main.duration, { force: true });
         }
       } else {
-        await soundRef.current.playAsync();
-        if (voiceSoundRef.current) {
-          try { await voiceSoundRef.current.playAsync(); } catch (_) {}
-        }
+        main.play();
+        if (voiceActiveRef.current) voicePlayerRef.current?.play();
+        if (ambientActiveRef.current) ambientPlayerRef.current?.play();
+        lastPlayingRef.current = true;
         setIsPlaying(true);
       }
     } else {
@@ -564,51 +675,64 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         return !prev;
       });
     }
-  }, [currentSession]);
+  }, [currentSession, saveSessionProgress]);
 
   const stop = useCallback(async () => {
     // Force-save current progress before tearing down
     const sId = currentSessionRef.current?.id;
-    if (sId && soundRef.current) {
-      try {
-        const status = await soundRef.current.getStatusAsync();
-        if (status.isLoaded && status.durationMillis) {
-          saveSessionProgress(sId, (status.positionMillis ?? 0) / status.durationMillis, { force: true });
-        }
-      } catch (_) {}
+    if (
+      sId &&
+      hasRealAudioRef.current &&
+      !loopModeRef.current &&
+      mainPlayerRef.current?.isLoaded &&
+      mainPlayerRef.current.duration > 0
+    ) {
+      saveSessionProgress(
+        sId,
+        mainPlayerRef.current.currentTime / mainPlayerRef.current.duration,
+        { force: true },
+      );
     } else if (sId && actualDurationSeconds > 0) {
       saveSessionProgress(sId, elapsed / actualDurationSeconds, { force: true });
     }
-    await unloadSound();
+    teardownPlayback();
+    teardownLayers();
     clearSim();
     clearSleepInterval();
+    loopModeRef.current = false;
+    hasRealAudioRef.current = false;
+    lastPlayingRef.current = false;
+    switchingRef.current = false;
+    pendingSeekRef.current = null;
     setSleepTimerRemaining(null);
     setCurrentSession(null);
     setIsPlaying(false);
     setProgress(0);
     setElapsed(0);
     setActualDurationSeconds(0);
-  }, [saveSessionProgress, actualDurationSeconds, elapsed]);
+  }, [saveSessionProgress, actualDurationSeconds, elapsed, teardownPlayback, teardownLayers]);
 
   const seekTo = useCallback(
     async (p: number) => {
       const clamped = Math.max(0, Math.min(1, p));
       setProgress(clamped);
-      if (soundRef.current) {
-        const status = await soundRef.current.getStatusAsync();
-        if (status.isLoaded && status.durationMillis) {
-          const posMs = clamped * status.durationMillis;
-          setElapsed(Math.floor(posMs / 1000));
-          try {
-            await soundRef.current.setPositionAsync(posMs);
-          } catch (_) {}
-        }
+      if (
+        hasRealAudioRef.current &&
+        !loopModeRef.current &&
+        mainPlayerRef.current?.isLoaded &&
+        mainPlayerRef.current.duration > 0
+      ) {
+        const posSeconds = clamped * mainPlayerRef.current.duration;
+        setElapsed(Math.floor(posSeconds));
+        try {
+          await mainPlayerRef.current.seekTo(posSeconds);
+        } catch (_) {}
       } else if (currentSession) {
         const posSeconds = clamped * actualDurationSeconds;
         setElapsed(Math.floor(posSeconds));
       }
     },
-    [currentSession, actualDurationSeconds]
+    [currentSession, actualDurationSeconds],
   );
 
   const setSleepTimer = useCallback((minutes: number | null) => {
@@ -625,19 +749,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.removeItem(HISTORY_KEY);
   }, []);
 
-  const setVoiceVolume = useCallback(async (volume: number) => {
+  const setVoiceVolume = useCallback((volume: number) => {
     const clamped = Math.max(0, Math.min(1, volume));
     setVoiceVolumeState(clamped);
-    if (voiceSoundRef.current) {
-      try { await voiceSoundRef.current.setVolumeAsync(clamped); } catch (_) {}
+    if (voicePlayerRef.current) {
+      try { voicePlayerRef.current.volume = clamped; } catch (_) {}
     }
   }, []);
 
-  const setAmbientVolume = useCallback(async (volume: number) => {
+  const setAmbientVolume = useCallback((volume: number) => {
     const clamped = Math.max(0, Math.min(1, volume));
     setAmbientVolumeState(clamped);
-    if (ambientSoundRef.current) {
-      try { await ambientSoundRef.current.setVolumeAsync(clamped); } catch (_) {}
+    if (ambientPlayerRef.current) {
+      try { ambientPlayerRef.current.volume = clamped; } catch (_) {}
     }
   }, []);
 
