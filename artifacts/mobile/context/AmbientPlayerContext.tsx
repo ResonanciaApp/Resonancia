@@ -162,9 +162,12 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
 
   // On mount: configure audio mode + pre-load the default scene immediately
   useEffect(() => {
+    // staysActiveInBackground MUST be true: this expo-av session shares the single
+    // native audio session with the expo-audio player. If it were false, locking the
+    // screen would deactivate the whole session and cut off the main session audio.
     Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
-      staysActiveInBackground: false,
+      staysActiveInBackground: true,
       shouldDuckAndroid: true,
     }).catch(() => {});
 
