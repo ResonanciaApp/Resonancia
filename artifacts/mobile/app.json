@@ -15,6 +15,7 @@
     },
     "ios": {
       "supportsTablet": false,
+      "bundleIdentifier": "com.resonancia.casadelcuenco",
       "infoPlist": {
         "UIBackgroundModes": ["audio"],
         "NSMicrophoneUsageDescription": "RESONANCIA usa el micrófono para grabar tu Voz Interior y mensajes de voz en los chats.",
@@ -24,6 +25,7 @@
       }
     },
     "android": {
+      "package": "com.resonancia.casadelcuenco",
       "backgroundColor": "#18110C",
       "softwareKeyboardLayoutMode": "pan",
       "permissions": [
