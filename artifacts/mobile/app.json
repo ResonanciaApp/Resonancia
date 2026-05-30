@@ -17,7 +17,9 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.resonancia.casadelcuenco",
       "infoPlist": {
-        "UIBackgroundModes": ["audio"],
+        "UIBackgroundModes": [
+          "audio"
+        ],
         "NSMicrophoneUsageDescription": "RESONANCIA usa el micrófono para grabar tu Voz Interior y mensajes de voz en los chats.",
         "NSPhotoLibraryUsageDescription": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir imágenes en los mensajes.",
         "NSPhotoLibraryAddUsageDescription": "RESONANCIA guarda imágenes en tu galería cuando las descargás.",
@@ -74,6 +76,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "181736c1-cb71-4763-8d71-0b4ae2ce30a1"
+      }
+    },
+    "owner": "casadelcuenco"
   }
 }
