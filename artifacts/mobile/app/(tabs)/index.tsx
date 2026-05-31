@@ -34,14 +34,6 @@ import PremiumBanner from "@/components/PremiumBanner";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
-// Iconos de categoría (imagen circular con fondo de color ya incluido).
-const CATEGORY_ICONS: Record<string, number> = {
-  "sonidos-ancestrales": require("@/assets/images/categories/sonidos-ancestrales.png"),
-  "meditaciones-guiadas": require("@/assets/images/categories/meditaciones-guiadas.png"),
-  "musica-sonidos": require("@/assets/images/categories/musica-sonidos.png"),
-  podcast: require("@/assets/images/categories/podcast.png"),
-};
-
 const { width } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 20;
@@ -193,30 +185,20 @@ export default function HomeScreen() {
                 onPress={() => router.push(`/category/${cat.id}` as never)}
                 style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
               >
-                <View style={styles.catPillCircle}>
-                  {CATEGORY_ICONS[cat.id] ? (
-                    <Image
-                      source={CATEGORY_ICONS[cat.id]}
-                      style={styles.catPillImage}
-                      resizeMode="contain"
+                <View style={[styles.catPillCircle, { backgroundColor: "#18110C" }]}>
+                  <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: 32 }]} />
+                  {cat.iconFamily === "MaterialCommunityIcons" ? (
+                    <MaterialCommunityIcons
+                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                      size={26}
+                      color={fgColor}
                     />
                   ) : (
-                    <>
-                      <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: 32 }]} />
-                      {cat.iconFamily === "MaterialCommunityIcons" ? (
-                        <MaterialCommunityIcons
-                          name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                          size={26}
-                          color={fgColor}
-                        />
-                      ) : (
-                        <Feather
-                          name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                          size={26}
-                          color={fgColor}
-                        />
-                      )}
-                    </>
+                    <Feather
+                      name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
+                      size={26}
+                      color={fgColor}
+                    />
                   )}
                 </View>
                 <Text style={[styles.catPillLabel, { color: fgColor }]} numberOfLines={2}>
@@ -462,11 +444,6 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
-  },
-  catPillImage: {
-    width: 64,
-    height: 64,
   },
   catPillLabel: {
     fontSize: 11,
