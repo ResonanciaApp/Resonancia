@@ -10,6 +10,7 @@ import React, {
 } from "react";
 
 import { SOUND_MAP } from "@/config/sound-map";
+import type { MixCategory } from "@/data/mix-categories";
 
 /** Máximo de sonidos sonando a la vez (CPU/batería en móviles normales) */
 export const MAX_ACTIVE_SOUNDS = 5;
@@ -20,8 +21,21 @@ export type ActiveSound = { id: string; volume: number };
 export type MixPreset = {
   id: string;
   name: string;
+  description?: string;
+  /** Key de la galería de imágenes (config/mix-images.ts), ej: "lluvia". */
+  image?: string;
+  category: MixCategory;
   sounds: ActiveSound[];
   createdAt: string;
+  /** true para las mezclas curadas que vienen con la app (no se borran). */
+  isCurated?: boolean;
+};
+
+export type SaveMixInput = {
+  name: string;
+  description?: string;
+  image?: string;
+  category: MixCategory;
 };
 
 type MixerContextType = {
@@ -36,7 +50,7 @@ type MixerContextType = {
   togglePlay: () => void;
   stopAll: () => void;
   presets: MixPreset[];
-  savePreset: (name: string) => void;
+  savePreset: (input: SaveMixInput) => void;
   loadPreset: (preset: MixPreset) => void;
   deletePreset: (id: string) => void;
   sleepTimerRemaining: number | null;
@@ -67,7 +81,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.getItem(PRESETS_KEY).then((val) => {
       if (!val) return;
       try {
-        setPresets(JSON.parse(val));
+        const parsed = JSON.parse(val) as MixPreset[];
+        // Migración: mezclas viejas no tenían categoría → default "dormir"
+        const migrated = parsed.map((p) => ({
+          ...p,
+          category: p.category ?? "dormir",
+        }));
+        setPresets(migrated);
       } catch {
         // ignore corrupt data
       }
@@ -224,11 +244,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [clearSleepTimer]);
 
   const savePreset = useCallback(
-    (name: string) => {
+    (input: SaveMixInput) => {
       if (activeSoundsRef.current.length === 0) return;
       const preset: MixPreset = {
         id: Date.now().toString(),
-        name: name.trim() || "Mi mezcla",
+        name: input.name.trim() || "Mi mezcla",
+        description: input.description?.trim() || undefined,
+        image: input.image,
+        category: input.category,
         sounds: activeSoundsRef.current.map((s) => ({ ...s })),
         createdAt: new Date().toISOString(),
       };

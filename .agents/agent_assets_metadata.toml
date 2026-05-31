@@ -444,6 +444,24 @@ uri = "file://artifacts/mobile/assets/images/mixer/tren.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "ZmgWhHsefvzmSxPbQChOd"
+uri = "file://artifacts/mobile/assets/images/mixer/categories/dormir.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BxaM7Af7EKGUYfE4vDYp3"
+uri = "file://artifacts/mobile/assets/images/mixer/categories/trabajar.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "S27sHSmHv-t7B1BelOsxN"
+uri = "file://artifacts/mobile/assets/images/mixer/categories/motivarme.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

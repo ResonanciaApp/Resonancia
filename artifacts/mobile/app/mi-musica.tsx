@@ -19,9 +19,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { VolumeSlider } from "@/components/VolumeSlider";
+import { MIX_IMAGE_GALLERY, getMixImage, DEFAULT_MIX_IMAGE_KEY } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
 import { MAX_ACTIVE_SOUNDS, type MixPreset, useMixer } from "@/context/MixerContext";
+import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
+import { useLoadMix } from "@/hooks/useLoadMix";
 import {
   type MixSound,
   type SoundIconSet,
@@ -33,7 +36,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 
 const TIMER_OPTIONS = [15, 30, 45, 60];
-const FREE_PRESET_LIMIT = 1;
+const FREE_MIX_PER_CATEGORY = 1;
 
 function SoundIcon({
   iconSet,
@@ -74,14 +77,16 @@ export default function MiMusicaScreen() {
     stopAll,
     presets,
     savePreset,
-    loadPreset,
-    deletePreset,
     sleepTimerRemaining,
     setSleepTimer,
   } = useMixer();
+  const loadMix = useLoadMix();
 
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [presetName, setPresetName] = useState("");
+  const [mixDescription, setMixDescription] = useState("");
+  const [mixImage, setMixImage] = useState<string>(DEFAULT_MIX_IMAGE_KEY);
+  const [mixCategory, setMixCategory] = useState<MixCategory>("dormir");
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -115,10 +120,19 @@ export default function MiMusicaScreen() {
 
   const handleSavePress = () => {
     if (activeSounds.length === 0) return;
-    if (!isPremium && presets.length >= FREE_PRESET_LIMIT) {
+    setPresetName("");
+    setMixDescription("");
+    setMixImage(DEFAULT_MIX_IMAGE_KEY);
+    setMixCategory("dormir");
+    setSaveModalOpen(true);
+  };
+
+  const confirmSave = () => {
+    const countInCategory = presets.filter((p) => p.category === mixCategory).length;
+    if (!isPremium && countInCategory >= FREE_MIX_PER_CATEGORY) {
       Alert.alert(
         "Mezclas ilimitadas con Premium",
-        `En la versión gratuita podés guardar ${FREE_PRESET_LIMIT} mezcla. Hacete Premium para guardar todas las que quieras.`,
+        `En la versión gratuita podés guardar ${FREE_MIX_PER_CATEGORY} mezcla por categoría. Hacete Premium para guardar todas las que quieras.`,
         [
           { text: "Ahora no", style: "cancel" },
           { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
@@ -126,50 +140,17 @@ export default function MiMusicaScreen() {
       );
       return;
     }
-    setPresetName("");
-    setSaveModalOpen(true);
-  };
-
-  const confirmSave = () => {
-    savePreset(presetName);
+    const savedCategory = mixCategory;
+    savePreset({
+      name: presetName,
+      description: mixDescription,
+      image: mixImage,
+      category: mixCategory,
+    });
     setSaveModalOpen(false);
     setPresetName("");
-  };
-
-  const handleLoadPreset = (preset: MixPreset) => {
-    // Filtrar: solo sonidos con archivo y accesibles según premium
-    const accessible = preset.sounds.filter((s) => {
-      const snd = getSoundById(s.id);
-      if (!snd || !hasSoundFile(s.id)) return false;
-      if (snd.isPremium && !isPremium) return false;
-      return true;
-    });
-    if (accessible.length === 0) {
-      const hasLockedPremium = preset.sounds.some(
-        (s) => getSoundById(s.id)?.isPremium && !isPremium,
-      );
-      if (hasLockedPremium) {
-        Alert.alert(
-          "Mezcla Premium",
-          "Esta mezcla usa sonidos exclusivos de Premium.",
-          [
-            { text: "Ahora no", style: "cancel" },
-            { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
-          ],
-        );
-      } else {
-        Alert.alert("Mezcla vacía", "Los sonidos de esta mezcla aún no están disponibles.");
-      }
-      return;
-    }
-    loadPreset({ ...preset, sounds: accessible });
-  };
-
-  const handleDeletePreset = (preset: MixPreset) => {
-    Alert.alert("Eliminar mezcla", `¿Eliminar "${preset.name}"?`, [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Eliminar", style: "destructive", onPress: () => deletePreset(preset.id) },
-    ]);
+    setMixDescription("");
+    router.push(`/mezclas/${savedCategory}` as never);
   };
 
   const handleTimerPress = () => {
@@ -216,7 +197,45 @@ export default function MiMusicaScreen() {
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mi Música</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Combiná sonidos y creá tu mezcla de relajación
+            Tus mezclas, organizadas por momento
+          </Text>
+        </View>
+
+        {/* ── Categorías de mezclas ── */}
+        <View style={styles.catRow}>
+          {MIX_CATEGORIES.map((cat) => (
+            <Pressable
+              key={cat.id}
+              onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+              style={styles.catCard}
+            >
+              <ImageBackground
+                source={cat.image}
+                style={styles.catImage}
+                imageStyle={styles.catImageInner}
+              >
+                <LinearGradient
+                  colors={["rgba(24,17,12,0.10)", "rgba(24,17,12,0.45)", "rgba(24,17,12,0.92)"]}
+                  locations={[0, 0.5, 1]}
+                  style={styles.cardOverlay}
+                />
+                <View style={styles.catContent}>
+                  <Text style={styles.catLabel} numberOfLines={2}>
+                    {cat.label}
+                  </Text>
+                </View>
+              </ImageBackground>
+            </Pressable>
+          ))}
+        </View>
+
+        {/* ── Mezclador ── */}
+        <View style={styles.mixerHeader}>
+          <Text style={[styles.pageTitle, { color: colors.foreground, fontSize: 24 }]}>
+            Mezcla mi música
+          </Text>
+          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+            Combiná sonidos y guardá tu mezcla en una categoría
           </Text>
         </View>
 
@@ -305,36 +324,6 @@ export default function MiMusicaScreen() {
                 <Feather name="save" size={18} color={colors.foreground} />
               </Pressable>
             </View>
-          </View>
-        )}
-
-        {/* ── Mezclas guardadas ── */}
-        {presets.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis mezclas</Text>
-            {presets.map((preset) => (
-              <Pressable
-                key={preset.id}
-                onPress={() => handleLoadPreset(preset)}
-                onLongPress={() => handleDeletePreset(preset)}
-                style={[styles.presetRow, { backgroundColor: colors.card, borderColor: colors.border }]}
-              >
-                <View style={[styles.presetIcon, { backgroundColor: colors.secondary }]}>
-                  <Feather name="play" size={14} color={colors.accent} />
-                </View>
-                <View style={styles.presetInfo}>
-                  <Text style={[styles.presetName, { color: colors.foreground }]} numberOfLines={1}>
-                    {preset.name}
-                  </Text>
-                  <Text style={[styles.presetMeta, { color: colors.mutedForeground }]}>
-                    {preset.sounds.length} sonido{preset.sounds.length !== 1 ? "s" : ""}
-                  </Text>
-                </View>
-                <Pressable onPress={() => handleDeletePreset(preset)} hitSlop={10}>
-                  <Feather name="trash-2" size={16} color={colors.mutedForeground} />
-                </Pressable>
-              </Pressable>
-            ))}
           </View>
         )}
 
@@ -428,18 +417,99 @@ export default function MiMusicaScreen() {
             onPress={(e) => e.stopPropagation()}
           >
             <Text style={[styles.modalTitle, { color: colors.foreground }]}>Guardar mezcla</Text>
-            <TextInput
-              value={presetName}
-              onChangeText={setPresetName}
-              placeholder="Ej: Para dormir"
-              placeholderTextColor={colors.mutedForeground}
-              style={[
-                styles.modalInput,
-                { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary },
-              ]}
-              autoFocus
-              maxLength={40}
-            />
+
+            <ScrollView
+              style={styles.modalScroll}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Título</Text>
+              <TextInput
+                value={presetName}
+                onChangeText={setPresetName}
+                placeholder="Ej: Lluvia para dormir"
+                placeholderTextColor={colors.mutedForeground}
+                style={[
+                  styles.modalInput,
+                  { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary },
+                ]}
+                maxLength={40}
+              />
+
+              <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Descripción</Text>
+              <TextInput
+                value={mixDescription}
+                onChangeText={setMixDescription}
+                placeholder="Opcional: ¿para qué momento es?"
+                placeholderTextColor={colors.mutedForeground}
+                style={[
+                  styles.modalInput,
+                  styles.modalInputArea,
+                  { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary },
+                ]}
+                multiline
+                maxLength={120}
+              />
+
+              <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Categoría</Text>
+              <View style={styles.catChips}>
+                {MIX_CATEGORIES.map((cat) => {
+                  const selected = mixCategory === cat.id;
+                  return (
+                    <Pressable
+                      key={cat.id}
+                      onPress={() => setMixCategory(cat.id)}
+                      style={[
+                        styles.catChip,
+                        {
+                          backgroundColor: selected ? colors.primary : colors.secondary,
+                          borderColor: selected ? colors.primary : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.catChipText,
+                          { color: selected ? colors.primaryForeground : colors.foreground },
+                        ]}
+                      >
+                        {cat.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Imagen</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.imgGallery}
+              >
+                {MIX_IMAGE_GALLERY.map((key) => {
+                  const selected = mixImage === key;
+                  return (
+                    <Pressable key={key} onPress={() => setMixImage(key)} style={styles.imgThumbWrap}>
+                      <ImageBackground
+                        source={getMixImage(key)}
+                        style={styles.imgThumb}
+                        imageStyle={[
+                          styles.imgThumbInner,
+                          { borderColor: selected ? colors.primary : "transparent" },
+                        ]}
+                      >
+                        {selected && (
+                          <View style={[styles.imgCheck, { backgroundColor: colors.primary }]}>
+                            <Feather name="check" size={12} color={colors.primaryForeground} />
+                          </View>
+                        )}
+                      </ImageBackground>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            </ScrollView>
+
             <View style={styles.modalActions}>
               <Pressable onPress={() => setSaveModalOpen(false)} style={styles.modalBtn}>
                 <Text style={[styles.modalBtnText, { color: colors.mutedForeground }]}>Cancelar</Text>
@@ -535,26 +605,26 @@ const styles = StyleSheet.create({
   section: { marginBottom: 14 },
   sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
 
-  // Presets
-  presetRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    borderRadius: 14,
-    borderWidth: 1,
-    padding: 12,
-    marginBottom: 8,
+  // Categorías de mezclas
+  catRow: { flexDirection: "row", gap: 10, marginBottom: 26 },
+  catCard: {
+    flex: 1,
+    height: 110,
+    borderRadius: 16,
+    overflow: "hidden",
   },
-  presetIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
+  catImage: { flex: 1, justifyContent: "flex-end" },
+  catImageInner: { borderRadius: 16 },
+  catContent: { padding: 10 },
+  catLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
-  presetInfo: { flex: 1 },
-  presetName: { fontSize: 14, fontWeight: "600" },
-  presetMeta: { fontSize: 12, marginTop: 2 },
+  mixerHeader: { marginBottom: 18 },
 
   // Grilla de sonidos
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
@@ -619,12 +689,34 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalTitle: { fontSize: 17, fontWeight: "700", marginBottom: 14 },
+  modalScroll: { maxHeight: 420 },
+  modalLabel: { fontSize: 12, fontWeight: "600", marginBottom: 6, marginTop: 12 },
   modalInput: {
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 15,
+  },
+  modalInputArea: { minHeight: 64, textAlignVertical: "top" },
+  catChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  catChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  catChipText: { fontSize: 12.5, fontWeight: "600" },
+  imgGallery: { gap: 8, paddingVertical: 2 },
+  imgThumbWrap: { borderRadius: 12, overflow: "hidden" },
+  imgThumb: { width: 64, height: 64, justifyContent: "center", alignItems: "center" },
+  imgThumbInner: { borderRadius: 12, borderWidth: 2 },
+  imgCheck: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: "center",
+    justifyContent: "center",
   },
   modalActions: {
     flexDirection: "row",
