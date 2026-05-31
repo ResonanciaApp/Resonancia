@@ -1071,7 +1071,18 @@ components:
           type: integer
         type:
           type: string
-          enum: ["friend_request", "friend_accepted", "dm", "group_message"]
+          enum:
+            [
+              "friend_request",
+              "friend_accepted",
+              "dm",
+              "group_message",
+              "mix_like",
+              "mix_comment",
+            ]
+        entityId:
+          type: ["integer", "null"]
+          description: ID de la entidad relacionada (p. ej. la mezcla para mix_like/mix_comment)
         createdAt:
           type: string
           format: date-time
@@ -1080,7 +1091,7 @@ components:
           format: date-time
         actor:
           $ref: "#/components/schemas/UserProfile"
-      required: [id, type, createdAt, readAt, actor]
+      required: [id, type, entityId, createdAt, readAt, actor]
     DirectMessage:
       type: object
       properties:

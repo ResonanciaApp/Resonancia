@@ -223,11 +223,18 @@ export const NotificationType = {
   friend_accepted: 'friend_accepted',
   dm: 'dm',
   group_message: 'group_message',
+  mix_like: 'mix_like',
+  mix_comment: 'mix_comment',
 } as const;
 
 export interface Notification {
   id: number;
   type: NotificationType;
+  /**
+     * ID de la entidad relacionada (p. ej. la mezcla para mix_like/mix_comment)
+     * @nullable
+     */
+  entityId: number | null;
   createdAt: string;
   /** @nullable */
   readAt: string | null;

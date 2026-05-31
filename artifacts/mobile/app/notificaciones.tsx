@@ -57,6 +57,8 @@ function iconFor(type: Notification["type"]): { name: FeatherName; color: string
     case "friend_accepted": return { name: "user-check",    color: "#A8C4A8" };
     case "dm":              return { name: "message-circle", color: "#B6955F" };
     case "group_message":   return { name: "users",          color: "#C8B4E0" };
+    case "mix_like":        return { name: "heart",          color: "#D4709A" };
+    case "mix_comment":     return { name: "message-square", color: "#B6955F" };
     default:                return { name: "bell",           color: "#C8C1B5" };
   }
 }
@@ -67,6 +69,8 @@ function messageFor(n: Notification): string {
     case "friend_accepted": return "aceptó tu solicitud de amistad";
     case "dm":              return "te envió un mensaje";
     case "group_message":   return "publicó en el grupo";
+    case "mix_like":        return "le dio me gusta a tu mezcla";
+    case "mix_comment":     return "comentó tu mezcla";
     default:                return "tiene una novedad";
   }
 }
@@ -74,6 +78,9 @@ function messageFor(n: Notification): string {
 function routeFor(n: Notification): string {
   if (n.type === "dm")            return `/chat/${n.actor.id}`;
   if (n.type === "group_message") return "/grupos";
+  if (n.type === "mix_like" || n.type === "mix_comment") {
+    return n.entityId != null ? `/mezcla/${n.entityId}` : "/";
+  }
   return "/amigos";
 }
 

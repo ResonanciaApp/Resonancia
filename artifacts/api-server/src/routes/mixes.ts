@@ -1,19 +1,22 @@
 import { Router, type IRouter } from "express";
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { getAuth } from "@clerk/express";
 import {
   db,
   sharedMixesTable,
   sharedMixLikesTable,
   sharedMixCommentsTable,
+  notificationsTable,
   usersTable,
   insertSharedMixSchema,
   insertSharedMixCommentSchema,
+  type NotificationType,
   type SharedMix,
   type SharedMixComment,
   type User,
 } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
+import { sendPushToUsers } from "../lib/push";
 
 const router: IRouter = Router();
 const PAGE_SIZE = 20;
@@ -64,6 +67,65 @@ function serializeComment(
     isMine: currentUserId != null && comment.authorId === currentUserId,
     createdAt: comment.createdAt.toISOString(),
   };
+}
+
+/**
+ * Crea una notificación (colapsando no leídas del mismo actor+mezcla) y envía
+ * push al creador de la mezcla. Fire-and-forget: nunca rompe la request.
+ */
+async function notifyMixOwner(opts: {
+  ownerId: number;
+  actor: User;
+  type: Extract<NotificationType, "mix_like" | "mix_comment">;
+  mixId: number;
+  mixName: string;
+}): Promise<void> {
+  const { ownerId, actor, type, mixId, mixName } = opts;
+  // No te notifiques a ti mismo.
+  if (ownerId === actor.id) return;
+
+  const actorName = actor.displayName || actor.username || "Alguien";
+  try {
+    // Solo inserta si no hay ya una no leída del mismo actor sobre esta mezcla
+    // (el índice parcial único respalda el onConflictDoNothing como red de seguridad).
+    const [existingUnread] = await db
+      .select({ id: notificationsTable.id })
+      .from(notificationsTable)
+      .where(
+        and(
+          eq(notificationsTable.userId, ownerId),
+          eq(notificationsTable.actorUserId, actor.id),
+          eq(notificationsTable.entityId, mixId),
+          eq(notificationsTable.type, type),
+          isNull(notificationsTable.readAt),
+        ),
+      )
+      .limit(1);
+    if (existingUnread) return; // Ya hay una no leída: no dupliques notificación ni push.
+
+    const inserted = await db
+      .insert(notificationsTable)
+      .values({ userId: ownerId, actorUserId: actor.id, type, entityId: mixId })
+      .onConflictDoNothing()
+      .returning({ id: notificationsTable.id });
+    // El índice único pudo absorber una carrera concurrente: si no se insertó
+    // ninguna fila, ya existe una no leída, así que tampoco mandamos push.
+    if (inserted.length === 0) return;
+  } catch (err) {
+    // No interrumpir la acción principal por un fallo de notificación.
+    void err;
+    return;
+  }
+
+  // Push solo cuando se creó una notificación nueva (evita spam de likes/comentarios repetidos).
+  void sendPushToUsers([ownerId], {
+    title: actorName,
+    body:
+      type === "mix_like"
+        ? `le dio me gusta a tu mezcla "${mixName}"`
+        : `comentó tu mezcla "${mixName}"`,
+    data: { kind: type, mixId },
+  });
 }
 
 /** Look up the local user row for a request without creating one. */
@@ -217,6 +279,17 @@ router.post("/mixes/:id/like", requireAuth, async (req, res) => {
       return { updated: row, likedByMe: liked };
     });
 
+    // Notifica al creador solo cuando se da like (no al quitarlo).
+    if (likedByMe) {
+      void notifyMixOwner({
+        ownerId: existing.mix.authorId,
+        actor: me,
+        type: "mix_like",
+        mixId: id,
+        mixName: existing.mix.name,
+      });
+    }
+
     res.json(serialize(updated, existing.author, likedByMe, me.id));
   } catch (err) {
     req.log.error(err);
@@ -309,7 +382,7 @@ router.post("/mixes/:id/comments", requireAuth, async (req, res) => {
   const me = req.currentUser!;
   try {
     const [mix] = await db
-      .select({ id: sharedMixesTable.id })
+      .select({ authorId: sharedMixesTable.authorId, name: sharedMixesTable.name })
       .from(sharedMixesTable)
       .where(eq(sharedMixesTable.id, id))
       .limit(1);
@@ -322,6 +395,14 @@ router.post("/mixes/:id/comments", requireAuth, async (req, res) => {
       .insert(sharedMixCommentsTable)
       .values({ mixId: id, authorId: me.id, body: parsed.data.body })
       .returning();
+
+    void notifyMixOwner({
+      ownerId: mix.authorId,
+      actor: me,
+      type: "mix_comment",
+      mixId: id,
+      mixName: mix.name,
+    });
 
     res.status(201).json(serializeComment(comment, me, me.id));
   } catch (err) {

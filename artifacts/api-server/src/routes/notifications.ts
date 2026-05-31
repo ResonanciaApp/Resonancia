@@ -18,6 +18,7 @@ function serialize(n: Notification, actor: User) {
   return {
     id: n.id,
     type: n.type,
+    entityId: n.entityId,
     createdAt: n.createdAt.toISOString(),
     readAt: n.readAt ? n.readAt.toISOString() : null,
     actor: toProfile(actor),
