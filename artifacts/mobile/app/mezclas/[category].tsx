@@ -15,10 +15,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { MixerPanel } from "@/components/MixerPanel";
 import { SacredBackground } from "@/components/SacredBackground";
 import { getMixImage } from "@/config/mix-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
-import { getCuratedByCategory } from "@/data/curated-mixes";
 import { type MixCategory, getCategoryMeta } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
@@ -36,17 +36,13 @@ export default function CategoryMixesScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const curated = useMemo(() => getCuratedByCategory(categoryId), [categoryId]);
   const userMixes = useMemo(
     () => presets.filter((p) => p.category === categoryId),
     [presets, categoryId],
   );
 
   const handleOpen = (mix: MixPreset) => {
-    const ok = loadMix(mix);
-    if (!ok) return;
-    if (router.canGoBack()) router.back();
-    else router.replace("/mi-musica" as never);
+    loadMix(mix);
   };
 
   const handleDelete = (mix: MixPreset) => {
@@ -60,7 +56,7 @@ export default function CategoryMixesScreen() {
     <Pressable
       key={mix.id}
       onPress={() => handleOpen(mix)}
-      onLongPress={mix.isCurated ? undefined : () => handleDelete(mix)}
+      onLongPress={() => handleDelete(mix)}
       style={[styles.mixRow, { backgroundColor: colors.card, borderColor: colors.border }]}
     >
       <ImageBackground
@@ -87,11 +83,9 @@ export default function CategoryMixesScreen() {
         </Text>
       </View>
 
-      {!mix.isCurated && (
-        <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.trashBtn}>
-          <Feather name="trash-2" size={16} color={colors.mutedForeground} />
-        </Pressable>
-      )}
+      <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.trashBtn}>
+        <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+      </Pressable>
     </Pressable>
   );
 
@@ -126,26 +120,34 @@ export default function CategoryMixesScreen() {
                 style={StyleSheet.absoluteFill}
               />
               <View style={styles.heroContent}>
-                <Text style={styles.heroLabel}>{meta.label}</Text>
-                <Text style={styles.heroSub}>{meta.subtitle}</Text>
+                <View style={styles.heroIconWrap}>
+                  <Feather name={meta.icon} size={20} color="#FFFFFF" />
+                </View>
+                <View style={styles.heroText}>
+                  <Text style={styles.heroLabel}>{meta.label}</Text>
+                  <Text style={styles.heroSub}>{meta.subtitle}</Text>
+                </View>
               </View>
             </ImageBackground>
           </View>
         )}
 
+        {/* Mezcla activa */}
+        <MixerPanel currentCategory={categoryId} />
+
         {/* Mezclas del usuario */}
-        {userMixes.length > 0 && (
+        {userMixes.length > 0 ? (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis mezclas</Text>
             {userMixes.map(renderMix)}
           </View>
+        ) : (
+          <View style={styles.section}>
+            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+              Todavía no guardaste mezclas en esta categoría.
+            </Text>
+          </View>
         )}
-
-        {/* Mezclas sugeridas */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Sugeridas</Text>
-          {curated.map(renderMix)}
-        </View>
       </ScrollView>
     </View>
   );
@@ -167,7 +169,18 @@ const styles = StyleSheet.create({
   hero: { borderRadius: 18, overflow: "hidden", marginBottom: 22 },
   heroImage: { height: 150, justifyContent: "flex-end" },
   heroImageInner: { borderRadius: 18 },
-  heroContent: { padding: 16 },
+  heroContent: { padding: 16, flexDirection: "row", alignItems: "center", gap: 12 },
+  heroIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(237,225,211,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(237,225,211,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  heroText: { flex: 1 },
   heroLabel: {
     fontSize: 24,
     fontWeight: "700",
@@ -180,6 +193,7 @@ const styles = StyleSheet.create({
 
   section: { marginBottom: 22 },
   sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  emptyText: { fontSize: 13, lineHeight: 19 },
 
   mixRow: {
     flexDirection: "row",

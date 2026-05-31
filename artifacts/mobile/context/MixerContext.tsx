@@ -27,8 +27,6 @@ export type MixPreset = {
   category: MixCategory;
   sounds: ActiveSound[];
   createdAt: string;
-  /** true para las mezclas curadas que vienen con la app (no se borran). */
-  isCurated?: boolean;
 };
 
 export type SaveMixInput = {

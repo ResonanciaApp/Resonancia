@@ -14,7 +14,13 @@ Un sonido se "enciende" solo cuando existe su archivo en `SOUND_MAP` (config/sou
 `MixerContext` corre un `AudioPlayer` (expo-audio `createAudioPlayer`) por sonido activo, en un `Map` (`playersRef`), máx `MAX_ACTIVE_SOUNDS=5`. Mismo primitivo que PlayerContext (que ya corre 3 players main/voice/ambient con volumen independiente).
 
 ## Reglas que NO son obvias
-- **Premium gating de presets se sanea en la PANTALLA, no en el context.** `MixerContext` es premium-agnóstico (solo filtra por `SOUND_MAP`). `mi-musica.tsx > handleLoadPreset` filtra los sonidos premium antes de llamar `loadPreset({...preset, sounds: accessible})`. Si se agrega otra vía de carga de presets, hay que repetir el saneo ahí — el context NO protege.
+- **Premium gating de presets se sanea en el HOOK `useLoadMix`, no en el context.** `MixerContext` es premium-agnóstico (solo filtra por `SOUND_MAP`). `hooks/useLoadMix.ts` filtra los sonidos premium antes de cargar el preset y devuelve boolean. Cualquier pantalla que cargue mezclas debe usar `useLoadMix` — el context NO protege.
   - **Why:** gating premium en esta app es solo-UI (igual que sesiones/videos); meter premium en el context lo acoplaría innecesariamente.
+
+## Estructura UI (MixerPanel + categorías)
+- El mezclador activo + timer + modal de guardar viven en `components/MixerPanel.tsx` (componente compartido). Lo usan `app/mi-musica.tsx` y `app/mezclas/[category].tsx`. Devuelve null si no hay mezcla activa.
+- `MixerPanel` recibe `currentCategory?`. Al guardar: si `savedCategory === currentCategory` NO navega (la mezcla ya se ve in-place); si difiere, hace `router.push(/mezclas/<cat>)`.
+- Categorías de mezclas en `data/mix-categories.ts` (dormir/trabajar/motivarme), cada una con `icon: FeatherIconName`. Las cards en Mi Música son icono sobre fondo gris translúcido (no imágenes); el hero de cada categoría sí mantiene `meta.image` + muestra `meta.icon`.
+- **Curated mixes eliminadas.** Ya no existe `data/curated-mixes.ts` ni el campo `isCurated`. Abrir una mezcla guardada solo llama `loadMix(mix)` (sin navegar de vuelta).
 - **No agregar sonidos "fantasma":** `toggleSound`/`loadPreset` solo mutan `activeSounds`/`isPlaying` si `createPlayerFor` devolvió un player (archivo presente). Si falla, no se cuenta contra el límite de 5 ni marca isPlaying.
 - **Sleep timer se resetea (`clearSleepTimer`) cuando la mezcla queda vacía y al cargar un preset**, para que un timer viejo no pause una mezcla nueva.
