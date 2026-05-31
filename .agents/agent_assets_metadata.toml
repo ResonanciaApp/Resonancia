@@ -755,3 +755,33 @@ id = "1JhucoVkhRJne2Oor0MpB"
 uri = "file://COSTOS-Y-VIDEOS-BUNNY.md"
 type = "text"
 title = "Costos de almacenamiento y plan Bunny.net"
+
+[[outputs]]
+id = "3vxrtgcpYt95l9Eg_tLLj"
+uri = "file://artifacts/mobile/assets/audio/mixer/oceano.mp3"
+type = "audio"
+title = "ocean loop"
+
+[[outputs]]
+id = "UVqMClzSVoWvZGjYn1mbH"
+uri = "file://artifacts/mobile/assets/audio/mixer/lluvia.mp3"
+type = "audio"
+title = "rain loop"
+
+[[outputs]]
+id = "emkD84kyC2eF1BirIEgSI"
+uri = "file://artifacts/mobile/assets/audio/mixer/viento.mp3"
+type = "audio"
+title = "wind loop"
+
+[[outputs]]
+id = "XMB90E7P0axkKA8BXpe30"
+uri = "file://artifacts/mobile/assets/audio/mixer/ruido_blanco.mp3"
+type = "audio"
+title = "white noise loop"
+
+[[outputs]]
+id = "oy2ecJNHYzYAS5TW_hHRO"
+uri = "file://artifacts/mobile/assets/audio/mixer/cuencos.mp3"
+type = "audio"
+title = "singing bowls loop"
