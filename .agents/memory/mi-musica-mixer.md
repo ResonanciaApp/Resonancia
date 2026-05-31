@@ -19,7 +19,8 @@ Un sonido se "enciende" solo cuando existe su archivo en `SOUND_MAP` (config/sou
 
 ## Estructura UI (MixerPanel + categorías)
 - El mezclador activo + timer + modal de guardar viven en `components/MixerPanel.tsx` (componente compartido). Lo usan `app/mi-musica.tsx` y `app/mezclas/[category].tsx`. Devuelve null si no hay mezcla activa.
-- `MixerPanel` recibe `currentCategory?`. Al guardar: si `savedCategory === currentCategory` NO navega (la mezcla ya se ve in-place); si difiere, hace `router.push(/mezclas/<cat>)`.
+- `MixerPanel` recibe `currentCategory?`. Al guardar dispara `SaveMixCelebration` (overlay animado: el token de la mezcla "vuela" a la categoría + mensaje "Guardaste tu mezcla en {cat}"). Al terminar la animación (`onDone`): `stopAll()` cierra/colapsa el mezclador y si `savedCategory !== currentCategory` navega a `/mezclas/<cat>`.
+  - El efecto de animación en `SaveMixCelebration` depende SOLO de `[visible]` a propósito: `onDone` se recrea en cada render, meterlo en deps re-dispararía la animación a mitad de vuelo.
 - Categorías de mezclas en `data/mix-categories.ts` (dormir/trabajar/motivarme), cada una con `icon: FeatherIconName`. Las cards en Mi Música son icono sobre fondo gris translúcido (no imágenes); el hero de cada categoría sí mantiene `meta.image` + muestra `meta.icon`.
 - **Curated mixes eliminadas.** Ya no existe `data/curated-mixes.ts` ni el campo `isCurated`. Abrir una mezcla guardada solo llama `loadMix(mix)` (sin navegar de vuelta).
 - **No agregar sonidos "fantasma":** `toggleSound`/`loadPreset` solo mutan `activeSounds`/`isPlaying` si `createPlayerFor` devolvió un player (archivo presente). Si falla, no se cuenta contra el límite de 5 ni marca isPlaying.

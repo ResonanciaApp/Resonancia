@@ -23,11 +23,12 @@ import {
   View,
 } from "react-native";
 
+import { SaveMixCelebration } from "@/components/SaveMixCelebration";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
+import { MIX_CATEGORIES, type MixCategory, getCategoryMeta } from "@/data/mix-categories";
 import { type MixSound, type SoundIconSet, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
@@ -84,6 +85,12 @@ export function MixerPanel({ currentCategory }: Props) {
   const [mixImage, setMixImage] = useState<string>(DEFAULT_MIX_IMAGE_KEY);
   const [mixCategory, setMixCategory] = useState<MixCategory>(currentCategory ?? "dormir");
 
+  // Animación de confirmación al guardar
+  const [celebration, setCelebration] = useState<{
+    category: MixCategory;
+    image: string;
+  } | null>(null);
+
   const activeMix = useMemo(
     () =>
       activeSounds
@@ -114,7 +121,6 @@ export function MixerPanel({ currentCategory }: Props) {
       );
       return;
     }
-    const savedCategory = mixCategory;
     savePreset({
       name: presetName,
       description: mixDescription,
@@ -124,9 +130,18 @@ export function MixerPanel({ currentCategory }: Props) {
     setSaveModalOpen(false);
     setPresetName("");
     setMixDescription("");
-    // Si ya estamos viendo esa categoría, no navegamos: el mezclador queda acá.
-    if (savedCategory !== currentCategory) {
-      router.push(`/mezclas/${savedCategory}` as never);
+    // Disparamos la animación de confirmación; el cierre real ocurre en onDone.
+    setCelebration({ category: mixCategory, image: mixImage });
+  };
+
+  const handleCelebrationDone = () => {
+    const saved = celebration;
+    setCelebration(null);
+    // El mezclador se cierra (se limpia la mezcla activa) tras guardar.
+    stopAll();
+    // Si guardamos en otra categoría, llevamos al usuario a verla.
+    if (saved && saved.category !== currentCategory) {
+      router.push(`/mezclas/${saved.category}` as never);
     }
   };
 
@@ -339,6 +354,14 @@ export function MixerPanel({ currentCategory }: Props) {
           </Pressable>
         </Pressable>
       </Modal>
+
+      {/* Animación de confirmación al guardar */}
+      <SaveMixCelebration
+        visible={celebration != null}
+        category={celebration ? getCategoryMeta(celebration.category) : undefined}
+        imageKey={celebration?.image}
+        onDone={handleCelebrationDone}
+      />
     </>
   );
 }
