@@ -15,10 +15,20 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useQueryClient } from "@tanstack/react-query";
+
+import {
+  getGetSharedMixesQueryKey,
+  useShareMix,
+  useUnshareMix,
+} from "@workspace/api-client-react";
+
 import { MixerPanel } from "@/components/MixerPanel";
 import { SacredBackground } from "@/components/SacredBackground";
 import { getMixImage } from "@/config/mix-images";
+import { useAuth } from "@/context/AuthContext";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { type MixCategory, getCategoryMeta } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
@@ -26,8 +36,13 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 export default function CategoryMixesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { presets, deletePreset, loadedPresetId, isPlaying, stopAll } = useMixer();
+  const { presets, deletePreset, setPresetShared, loadedPresetId, isPlaying, stopAll } = useMixer();
   const loadMix = useLoadMix();
+  const { isSignedIn } = useAuth();
+  const { isPremium } = usePremium();
+  const queryClient = useQueryClient();
+  const shareMix = useShareMix();
+  const unshareMix = useUnshareMix();
 
   // Al salir de esta pantalla, detener la mezcla (no debe seguir sonando fuera del mezclador).
   useFocusEffect(
@@ -58,6 +73,84 @@ export default function CategoryMixesScreen() {
     Alert.alert("Eliminar mezcla", `¿Eliminar "${mix.name}"?`, [
       { text: "Cancelar", style: "cancel" },
       { text: "Eliminar", style: "destructive", onPress: () => deletePreset(mix.id) },
+    ]);
+  };
+
+  const doShare = (mix: MixPreset) => {
+    shareMix.mutate(
+      {
+        data: {
+          name: mix.name,
+          description: mix.description,
+          image: mix.image,
+          category: mix.category as "dormir" | "trabajar" | "motivarme",
+          sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
+        },
+      },
+      {
+        onSuccess: (shared) => {
+          setPresetShared(mix.id, shared.id);
+          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+          Alert.alert("¡Compartida!", "Tu mezcla ya está disponible para la comunidad.");
+        },
+        onError: () => {
+          Alert.alert("Error", "No se pudo compartir la mezcla. Intenta de nuevo.");
+        },
+      },
+    );
+  };
+
+  const handleShare = (mix: MixPreset) => {
+    // Ver es libre, pero compartir requiere cuenta + premium.
+    if (!isSignedIn) {
+      Alert.alert(
+        "Crea tu cuenta",
+        "Necesitas una cuenta para compartir tus mezclas con la comunidad.",
+        [
+          { text: "Ahora no", style: "cancel" },
+          { text: "Registrarme", onPress: () => router.push("/(auth)/sign-up" as never) },
+        ],
+      );
+      return;
+    }
+    if (!isPremium) {
+      Alert.alert(
+        "Función Premium",
+        "Compartir mezclas con la comunidad es una función exclusiva de Premium.",
+        [
+          { text: "Ahora no", style: "cancel" },
+          { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
+        ],
+      );
+      return;
+    }
+    Alert.alert("Compartir mezcla", `¿Compartir "${mix.name}" con la comunidad?`, [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Compartir", onPress: () => doShare(mix) },
+    ]);
+  };
+
+  const handleUnshare = (mix: MixPreset) => {
+    if (mix.sharedId == null) return;
+    Alert.alert("Dejar de compartir", `¿Quitar "${mix.name}" de la comunidad?`, [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Quitar",
+        style: "destructive",
+        onPress: () =>
+          unshareMix.mutate(
+            { id: mix.sharedId! },
+            {
+              onSuccess: () => {
+                setPresetShared(mix.id, null);
+                queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+              },
+              onError: () => {
+                Alert.alert("Error", "No se pudo quitar la mezcla. Intenta de nuevo.");
+              },
+            },
+          ),
+      },
     ]);
   };
 
@@ -109,9 +202,22 @@ export default function CategoryMixesScreen() {
           )}
         </View>
 
-        <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.trashBtn}>
-          <Feather name="trash-2" size={16} color={colors.mutedForeground} />
-        </Pressable>
+        <View style={styles.actions}>
+          <Pressable
+            onPress={() => (mix.sharedId != null ? handleUnshare(mix) : handleShare(mix))}
+            hitSlop={10}
+            style={styles.actionBtn}
+          >
+            <Feather
+              name={mix.sharedId != null ? "check-circle" : "share-2"}
+              size={16}
+              color={mix.sharedId != null ? colors.primary : colors.mutedForeground}
+            />
+          </Pressable>
+          <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.actionBtn}>
+            <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
       </Pressable>
     );
   };
@@ -246,4 +352,6 @@ const styles = StyleSheet.create({
   mixMeta: { fontSize: 11, fontWeight: "600", marginTop: 4 },
   playingRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 },
   trashBtn: { padding: 4 },
+  actions: { flexDirection: "row", alignItems: "center", gap: 4 },
+  actionBtn: { padding: 4 },
 });

@@ -30,6 +30,7 @@ import type {
   FriendRequestInput,
   GetDirectMessagesParams,
   GetMessagesParams,
+  GetSharedMixesParams,
   HealthStatus,
   MessagesPage,
   Notification,
@@ -38,6 +39,9 @@ import type {
   RequestUploadUrlResponse,
   SearchUsersParams,
   SendDirectMessageBody,
+  SharedMix,
+  SharedMixInput,
+  SharedMixesPage,
   TopMessageResponse,
   TypingStatus,
   UnreadCount,
@@ -368,6 +372,301 @@ export function useGetTopMessage<TData = Awaited<ReturnType<typeof getTopMessage
 
 
 
+
+export const getGetSharedMixesUrl = (params?: GetSharedMixesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/mixes?${stringifiedParams}` : `/api/mixes`
+}
+
+/**
+ * @summary List community-shared mixes (newest first)
+ */
+export const getSharedMixes = async (params?: GetSharedMixesParams, options?: RequestInit): Promise<SharedMixesPage> => {
+
+  return customFetch<SharedMixesPage>(getGetSharedMixesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSharedMixesQueryKey = (params?: GetSharedMixesParams,) => {
+    return [
+    `/api/mixes`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetSharedMixesQueryOptions = <TData = Awaited<ReturnType<typeof getSharedMixes>>, TError = ErrorType<unknown>>(params?: GetSharedMixesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSharedMixes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSharedMixesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSharedMixes>>> = ({ signal }) => getSharedMixes(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSharedMixes>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSharedMixesQueryResult = NonNullable<Awaited<ReturnType<typeof getSharedMixes>>>
+export type GetSharedMixesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List community-shared mixes (newest first)
+ */
+
+export function useGetSharedMixes<TData = Awaited<ReturnType<typeof getSharedMixes>>, TError = ErrorType<unknown>>(
+ params?: GetSharedMixesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSharedMixes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSharedMixesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getShareMixUrl = () => {
+
+
+
+
+  return `/api/mixes`
+}
+
+/**
+ * @summary Share a mix to the community (requires account)
+ */
+export const shareMix = async (sharedMixInput: SharedMixInput, options?: RequestInit): Promise<SharedMix> => {
+
+  return customFetch<SharedMix>(getShareMixUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      sharedMixInput,)
+  }
+);}
+
+
+
+
+export const getShareMixMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof shareMix>>, TError,{data: BodyType<SharedMixInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof shareMix>>, TError,{data: BodyType<SharedMixInput>}, TContext> => {
+
+const mutationKey = ['shareMix'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof shareMix>>, {data: BodyType<SharedMixInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  shareMix(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ShareMixMutationResult = NonNullable<Awaited<ReturnType<typeof shareMix>>>
+    export type ShareMixMutationBody = BodyType<SharedMixInput>
+    export type ShareMixMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Share a mix to the community (requires account)
+ */
+export const useShareMix = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof shareMix>>, TError,{data: BodyType<SharedMixInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof shareMix>>,
+        TError,
+        {data: BodyType<SharedMixInput>},
+        TContext
+      > => {
+      return useMutation(getShareMixMutationOptions(options));
+    }
+
+export const getToggleSharedMixLikeUrl = (id: number,) => {
+
+
+
+
+  return `/api/mixes/${id}/like`
+}
+
+/**
+ * @summary Toggle like on a shared mix (requires account)
+ */
+export const toggleSharedMixLike = async (id: number, options?: RequestInit): Promise<SharedMix> => {
+
+  return customFetch<SharedMix>(getToggleSharedMixLikeUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getToggleSharedMixLikeMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toggleSharedMixLike>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof toggleSharedMixLike>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['toggleSharedMixLike'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toggleSharedMixLike>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  toggleSharedMixLike(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ToggleSharedMixLikeMutationResult = NonNullable<Awaited<ReturnType<typeof toggleSharedMixLike>>>
+
+    export type ToggleSharedMixLikeMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Toggle like on a shared mix (requires account)
+ */
+export const useToggleSharedMixLike = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toggleSharedMixLike>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof toggleSharedMixLike>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getToggleSharedMixLikeMutationOptions(options));
+    }
+
+export const getUnshareMixUrl = (id: number,) => {
+
+
+
+
+  return `/api/mixes/${id}`
+}
+
+/**
+ * @summary Unshare a mix (author only)
+ */
+export const unshareMix = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getUnshareMixUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getUnshareMixMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unshareMix>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unshareMix>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['unshareMix'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unshareMix>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  unshareMix(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnshareMixMutationResult = NonNullable<Awaited<ReturnType<typeof unshareMix>>>
+
+    export type UnshareMixMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Unshare a mix (author only)
+ */
+export const useUnshareMix = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unshareMix>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof unshareMix>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getUnshareMixMutationOptions(options));
+    }
 
 export const getGetMeUrl = () => {
 

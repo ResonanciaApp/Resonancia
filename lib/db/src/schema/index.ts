@@ -23,3 +23,5 @@ export * from "./friendships";
 export * from "./notifications";
 export * from "./direct-messages";
 export * from "./push-tokens";
+export * from "./shared-mixes";
+export * from "./shared-mix-likes";

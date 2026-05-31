@@ -31,6 +31,7 @@ import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
+import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
 const { width } = Dimensions.get("window");
@@ -352,6 +353,8 @@ export default function HomeScreen() {
         {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />
 
+        {/* ── 12. MEZCLAS DE LA COMUNIDAD ── */}
+        <CommunityMixesCarousel />
 
       </ScrollView>
 

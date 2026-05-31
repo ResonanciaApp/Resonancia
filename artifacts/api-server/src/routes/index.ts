@@ -7,6 +7,7 @@ import notificationsRouter from "./notifications";
 import dmRouter from "./dm";
 import storageRouter from "./storage";
 import pushRouter from "./push";
+import mixesRouter from "./mixes";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(notificationsRouter);
 router.use(dmRouter);
 router.use(storageRouter);
 router.use(pushRouter);
+router.use(mixesRouter);
 
 export default router;

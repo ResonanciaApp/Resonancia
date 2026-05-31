@@ -61,9 +61,19 @@ export interface TopMessageResponse {
   message: CommunityMessage | null;
 }
 
-export interface ErrorResponse {
-  error: string;
+export interface SharedMixSound {
+  id: string;
+  volume: number;
 }
+
+export type SharedMixCategory = typeof SharedMixCategory[keyof typeof SharedMixCategory];
+
+
+export const SharedMixCategory = {
+  dormir: 'dormir',
+  trabajar: 'trabajar',
+  motivarme: 'motivarme',
+} as const;
 
 export interface UserProfile {
   id: number;
@@ -71,6 +81,60 @@ export interface UserProfile {
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+}
+
+export interface SharedMix {
+  id: number;
+  name: string;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  image?: string | null;
+  category: SharedMixCategory;
+  sounds: SharedMixSound[];
+  likes: number;
+  likedByMe: boolean;
+  isMine: boolean;
+  author: UserProfile;
+  createdAt: string;
+}
+
+export interface SharedMixesPage {
+  mixes: SharedMix[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export type SharedMixInputCategory = typeof SharedMixInputCategory[keyof typeof SharedMixInputCategory];
+
+
+export const SharedMixInputCategory = {
+  dormir: 'dormir',
+  trabajar: 'trabajar',
+  motivarme: 'motivarme',
+} as const;
+
+export interface SharedMixInput {
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  name: string;
+  /** @maxLength 120 */
+  description?: string;
+  /** @maxLength 60 */
+  image?: string;
+  category: SharedMixInputCategory;
+  /**
+     * @minItems 1
+     * @maxItems 5
+     */
+  sounds: SharedMixSound[];
+}
+
+export interface ErrorResponse {
+  error: string;
 }
 
 export interface UserProfileUpdate {
@@ -254,6 +318,20 @@ export interface UnreadCount {
 export type GetMessagesParams = {
 page?: number;
 };
+
+export type GetSharedMixesParams = {
+page?: number;
+category?: GetSharedMixesCategory;
+};
+
+export type GetSharedMixesCategory = typeof GetSharedMixesCategory[keyof typeof GetSharedMixesCategory];
+
+
+export const GetSharedMixesCategory = {
+  dormir: 'dormir',
+  trabajar: 'trabajar',
+  motivarme: 'motivarme',
+} as const;
 
 export type SearchUsersParams = {
 /**

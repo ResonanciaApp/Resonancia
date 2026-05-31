@@ -27,6 +27,8 @@ export type MixPreset = {
   category: MixCategory;
   sounds: ActiveSound[];
   createdAt: string;
+  /** ID de la mezcla compartida en la comunidad (si el autor la compartió). */
+  sharedId?: number;
 };
 
 export type SaveMixInput = {
@@ -51,6 +53,8 @@ type MixerContextType = {
   savePreset: (input: SaveMixInput) => void;
   loadPreset: (preset: MixPreset) => void;
   deletePreset: (id: string) => void;
+  /** Marca/desmarca un preset local como compartido en la comunidad. */
+  setPresetShared: (id: string, sharedId: number | null) => void;
   /** ID del preset cargado actualmente (null si la mezcla activa no proviene de uno guardado o fue modificada). */
   loadedPresetId: string | null;
   sleepTimerRemaining: number | null;
@@ -311,6 +315,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     [persistPresets],
   );
 
+  const setPresetShared = useCallback(
+    (id: string, sharedId: number | null) => {
+      persistPresets(
+        presetsRef.current.map((p) =>
+          p.id === id ? { ...p, sharedId: sharedId ?? undefined } : p,
+        ),
+      );
+    },
+    [persistPresets],
+  );
+
   const setSleepTimer = useCallback(
     (minutes: number | null) => {
       if (sleepIntervalRef.current) {
@@ -387,6 +402,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         savePreset,
         loadPreset,
         deletePreset,
+        setPresetShared,
         loadedPresetId,
         sleepTimerRemaining,
         setSleepTimer,

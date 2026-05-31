@@ -65,6 +65,107 @@ export const GetTopMessageResponse = zod.object({
 
 
 /**
+ * @summary List community-shared mixes (newest first)
+ */
+export const getSharedMixesQueryPageDefault = 1;
+
+export const GetSharedMixesQueryParams = zod.object({
+  "page": zod.coerce.number().default(getSharedMixesQueryPageDefault),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme']).optional()
+})
+
+export const GetSharedMixesResponse = zod.object({
+  "mixes": zod.array(zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "image": zod.string().nullish(),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme']),
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "volume": zod.number()
+})),
+  "likes": zod.number(),
+  "likedByMe": zod.boolean(),
+  "isMine": zod.boolean(),
+  "author": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+}),
+  "createdAt": zod.coerce.date()
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+})
+
+
+/**
+ * @summary Share a mix to the community (requires account)
+ */
+export const shareMixBodyNameMax = 40;
+
+export const shareMixBodyDescriptionMax = 120;
+
+export const shareMixBodyImageMax = 60;
+
+export const shareMixBodySoundsMax = 5;
+
+
+
+export const ShareMixBody = zod.object({
+  "name": zod.string().min(1).max(shareMixBodyNameMax),
+  "description": zod.string().max(shareMixBodyDescriptionMax).optional(),
+  "image": zod.string().max(shareMixBodyImageMax).optional(),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme']),
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "volume": zod.number()
+})).min(1).max(shareMixBodySoundsMax)
+})
+
+
+/**
+ * @summary Toggle like on a shared mix (requires account)
+ */
+export const ToggleSharedMixLikeParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const ToggleSharedMixLikeResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "image": zod.string().nullish(),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme']),
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "volume": zod.number()
+})),
+  "likes": zod.number(),
+  "likedByMe": zod.boolean(),
+  "isMine": zod.boolean(),
+  "author": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+}),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Unshare a mix (author only)
+ */
+export const UnshareMixParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary Get the current user's profile (auto-creates on first call)
  */
 export const GetMeResponse = zod.object({

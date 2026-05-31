@@ -24,6 +24,8 @@ tags:
     description: File upload and serving
   - name: push
     description: Mobile push notification tokens
+  - name: mixes
+    description: Community-shared "Mi Música" mixes
 paths:
   /healthz:
     get:
@@ -91,6 +93,120 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TopMessageResponse"
+  /mixes:
+    get:
+      operationId: getSharedMixes
+      tags: [mixes]
+      summary: List community-shared mixes (newest first)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [dormir, trabajar, motivarme]
+      responses:
+        "200":
+          description: Paginated list of shared mixes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedMixesPage"
+    post:
+      operationId: shareMix
+      tags: [mixes]
+      summary: Share a mix to the community (requires account)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SharedMixInput"
+      responses:
+        "201":
+          description: Mix shared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedMix"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /mixes/{id}/like:
+    post:
+      operationId: toggleSharedMixLike
+      tags: [mixes]
+      summary: Toggle like on a shared mix (requires account)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated mix with like state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedMix"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /mixes/{id}:
+    delete:
+      operationId: unshareMix
+      tags: [mixes]
+      summary: Unshare a mix (author only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Unshared
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Not the author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /me:
     get:
       operationId: getMe
@@ -666,6 +782,82 @@ components:
             - $ref: "#/components/schemas/CommunityMessage"
             - type: "null"
       required: [message]
+    SharedMixSound:
+      type: object
+      properties:
+        id:
+          type: string
+        volume:
+          type: number
+      required: [id, volume]
+    SharedMix:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        image:
+          type: ["string", "null"]
+        category:
+          type: string
+          enum: [dormir, trabajar, motivarme]
+        sounds:
+          type: array
+          items:
+            $ref: "#/components/schemas/SharedMixSound"
+        likes:
+          type: integer
+        likedByMe:
+          type: boolean
+        isMine:
+          type: boolean
+        author:
+          $ref: "#/components/schemas/UserProfile"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        [id, name, category, sounds, likes, likedByMe, isMine, author, createdAt]
+    SharedMixesPage:
+      type: object
+      properties:
+        mixes:
+          type: array
+          items:
+            $ref: "#/components/schemas/SharedMix"
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+      required: [mixes, total, page, pageSize]
+    SharedMixInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 40
+        description:
+          type: string
+          maxLength: 120
+        image:
+          type: string
+          maxLength: 60
+        category:
+          type: string
+          enum: [dormir, trabajar, motivarme]
+        sounds:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/SharedMixSound"
+      required: [name, category, sounds]
     ErrorResponse:
       type: object
       properties:
