@@ -299,6 +299,9 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
+        {/* ── MEZCLAS DE LA COMUNIDAD ── */}
+        <CommunityMixesCarousel />
+
         {/* ── 5. DESCUBRÍ ALGO NUEVO ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
@@ -370,9 +373,6 @@ export default function HomeScreen() {
 
         {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />
-
-        {/* ── 12. MEZCLAS DE LA COMUNIDAD ── */}
-        <CommunityMixesCarousel />
 
       </ScrollView>
 
