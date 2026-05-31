@@ -100,6 +100,11 @@ export function MixerPanel({ currentCategory }: Props) {
     [activeSounds],
   );
 
+  const loadedPreset = useMemo(
+    () => (loadedPresetId ? presets.find((p) => p.id === loadedPresetId) : undefined),
+    [loadedPresetId, presets],
+  );
+
   const handleSavePress = () => {
     if (activeSounds.length === 0) return;
     setPresetName("");
@@ -166,8 +171,8 @@ export function MixerPanel({ currentCategory }: Props) {
     <>
       <View style={[styles.mixCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.mixHeader}>
-          <Text style={[styles.mixTitle, { color: colors.foreground }]}>
-            Tu mezcla · {activeMix.length}/{MAX_ACTIVE_SOUNDS}
+          <Text style={[styles.mixTitle, { color: colors.foreground }]} numberOfLines={1}>
+            {loadedPreset?.name ?? "Tu mezcla"} · {activeMix.length}/{MAX_ACTIVE_SOUNDS}
           </Text>
           <Pressable onPress={stopAll} hitSlop={8}>
             <Text style={[styles.clearText, { color: colors.mutedForeground }]}>Limpiar</Text>
@@ -383,7 +388,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  mixTitle: { fontSize: 14, fontWeight: "700", letterSpacing: 0.3 },
+  mixTitle: { fontSize: 14, fontWeight: "700", letterSpacing: 0.3, flexShrink: 1, marginRight: 8 },
   clearText: { fontSize: 12, fontWeight: "600" },
   sliderRow: { marginTop: 8 },
   sliderTop: {

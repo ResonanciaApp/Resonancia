@@ -26,7 +26,7 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 export default function CategoryMixesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { presets, deletePreset } = useMixer();
+  const { presets, deletePreset, loadedPresetId, isPlaying } = useMixer();
   const loadMix = useLoadMix();
 
   const params = useLocalSearchParams<{ category: string }>();
@@ -52,42 +52,60 @@ export default function CategoryMixesScreen() {
     ]);
   };
 
-  const renderMix = (mix: MixPreset) => (
-    <Pressable
-      key={mix.id}
-      onPress={() => handleOpen(mix)}
-      onLongPress={() => handleDelete(mix)}
-      style={[styles.mixRow, { backgroundColor: colors.card, borderColor: colors.border }]}
-    >
-      <ImageBackground
-        source={getMixImage(mix.image)}
-        style={styles.mixThumb}
-        imageStyle={styles.mixThumbInner}
+  const renderMix = (mix: MixPreset) => {
+    const isPlayingThis = loadedPresetId === mix.id && isPlaying;
+    return (
+      <Pressable
+        key={mix.id}
+        onPress={() => handleOpen(mix)}
+        onLongPress={() => handleDelete(mix)}
+        style={[
+          styles.mixRow,
+          { backgroundColor: colors.card, borderColor: isPlayingThis ? colors.primary : colors.border },
+        ]}
       >
-        <View style={[styles.playBubble, { backgroundColor: "rgba(24,17,12,0.55)" }]}>
-          <Feather name="play" size={14} color="#FFFFFF" />
-        </View>
-      </ImageBackground>
+        <ImageBackground
+          source={getMixImage(mix.image)}
+          style={styles.mixThumb}
+          imageStyle={styles.mixThumbInner}
+        >
+          <View
+            style={[
+              styles.playBubble,
+              { backgroundColor: isPlayingThis ? colors.primary : "rgba(24,17,12,0.55)" },
+            ]}
+          >
+            <Feather name={isPlayingThis ? "pause" : "play"} size={14} color="#FFFFFF" />
+          </View>
+        </ImageBackground>
 
-      <View style={styles.mixInfo}>
-        <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={1}>
-          {mix.name}
-        </Text>
-        {!!mix.description && (
-          <Text style={[styles.mixDesc, { color: colors.mutedForeground }]} numberOfLines={2}>
-            {mix.description}
+        <View style={styles.mixInfo}>
+          <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={1}>
+            {mix.name}
           </Text>
-        )}
-        <Text style={[styles.mixMeta, { color: colors.accent }]}>
-          {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-        </Text>
-      </View>
+          {!!mix.description && (
+            <Text style={[styles.mixDesc, { color: colors.mutedForeground }]} numberOfLines={2}>
+              {mix.description}
+            </Text>
+          )}
+          {isPlayingThis ? (
+            <View style={styles.playingRow}>
+              <Feather name="volume-2" size={11} color={colors.primary} />
+              <Text style={[styles.mixMeta, { color: colors.primary }]}>Reproduciendo...</Text>
+            </View>
+          ) : (
+            <Text style={[styles.mixMeta, { color: colors.accent }]}>
+              {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+            </Text>
+          )}
+        </View>
 
-      <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.trashBtn}>
-        <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+        <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.trashBtn}>
+          <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+        </Pressable>
       </Pressable>
-    </Pressable>
-  );
+    );
+  };
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -217,5 +235,6 @@ const styles = StyleSheet.create({
   mixName: { fontSize: 15, fontWeight: "700" },
   mixDesc: { fontSize: 12, lineHeight: 16, marginTop: 2 },
   mixMeta: { fontSize: 11, fontWeight: "600", marginTop: 4 },
+  playingRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 },
   trashBtn: { padding: 4 },
 });
