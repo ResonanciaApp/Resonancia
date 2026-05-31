@@ -227,10 +227,9 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.catPillRow}
           >
-            {CATEGORIES.map((cat) => {
-              const isSab = cat.id === "sabiduria-dia";
-              const bgColor = isSab ? "#2E2417" : cat.gradient[1] + "CC";
-              const fgColor = isSab ? "#E6D6B3" : cat.color;
+            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat) => {
+              const bgColor = cat.gradient[1] + "CC";
+              const fgColor = cat.color;
               return (
               <Pressable
                 key={cat.id}
@@ -238,17 +237,17 @@ export default function HomeScreen() {
                 style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
               >
                 <View style={[styles.catPillCircle, { backgroundColor: "#18110C" }]}>
-                  <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: 26 }]} />
+                  <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: 32 }]} />
                   {cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={20}
+                      size={26}
                       color={fgColor}
                     />
                   ) : (
                     <Feather
                       name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                      size={20}
+                      size={26}
                       color={fgColor}
                     />
                   )}
@@ -670,26 +669,26 @@ const styles = StyleSheet.create({
 
   // Categories — pill icons row
   catPillRow: {
-    gap: 16,
+    gap: 14,
     paddingRight: 20,
   },
   catPillItem: {
     alignItems: "center",
-    width: 62,
-    gap: 6,
+    width: 78,
+    gap: 8,
   },
   catPillCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: "center",
     justifyContent: "center",
   },
   catPillLabel: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: "600",
     textAlign: "center",
-    lineHeight: 13,
+    lineHeight: 14,
     letterSpacing: 0.1,
   },
 

@@ -21,25 +21,31 @@ import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
 import { usePremium } from "@/context/PremiumContext";
-import { SESSIONS, type MeditationTag } from "@/data/sessions";
+import { SESSIONS } from "@/data/sessions";
+import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
+const ALL_SESSIONS = SESSIONS.filter(
+  (s) => s.categoryId === "meditaciones-guiadas" || s.categoryId === "sabiduria-dia"
+);
 const GUIADAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
 
 type CategoryDef = {
-  tag: MeditationTag;
+  tag: string;
   icon: React.ComponentProps<typeof Feather>["name"];
   image: import("react-native").ImageSourcePropType;
   description: string;
+  categoryIdFilter?: string;
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "No Duales",        icon: "sun",   image: require("@/assets/images/sessions/med-no-duales.jpg"),       description: "Despertar y observación del ser" },
-  { tag: "Visualizaciones",  icon: "eye",   image: require("@/assets/images/sessions/med-visualizaciones.jpg"), description: "Guías para visualizar y crear" },
-  { tag: "Mantras",          icon: "radio", image: require("@/assets/images/sessions/med-mantras.jpg"),          description: "Vibración y repetición sagrada" },
-  { tag: "Escaneo Corporal", icon: "user",  image: require("@/assets/images/sessions/med-escaneo-corporal.jpg"),description: "Conexión y presencia en el cuerpo" },
-  { tag: "Manifestación",    icon: "zap",   image: require("@/assets/images/sessions/med-manifestacion.jpg"),   description: "Intención, foco y creación" },
+  { tag: "No Duales",              icon: "sun",   image: require("@/assets/images/sessions/med-no-duales.jpg"),            description: "Despertar y observación del ser" },
+  { tag: "Visualizaciones",        icon: "eye",   image: require("@/assets/images/sessions/med-visualizaciones.jpg"),      description: "Guías para visualizar y crear" },
+  { tag: "Mantras",                icon: "radio", image: require("@/assets/images/sessions/med-mantras.jpg"),              description: "Vibración y repetición sagrada" },
+  { tag: "Escaneo Corporal",       icon: "user",  image: require("@/assets/images/sessions/med-escaneo-corporal.jpg"),     description: "Conexión y presencia en el cuerpo" },
+  { tag: "Manifestación",          icon: "zap",   image: require("@/assets/images/sessions/med-manifestacion.jpg"),        description: "Intención, foco y creación" },
+  { tag: "3 Minutos de Sabiduría", icon: "sun",   image: require("@/assets/images/sessions/sab-silencio-interior.jpg"),   description: "Sabiduría condensada en 3 minutos", categoryIdFilter: "sabiduria-dia" },
 ];
 
 
@@ -48,7 +54,7 @@ export default function MeditacionesGuiadasScreen() {
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
 
-  const [selectedTag, setSelectedTag] = useState<MeditationTag | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const nuevasSessions = useMemo(
     () => [...GUIADAS_SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 8),
@@ -60,8 +66,15 @@ export default function MeditacionesGuiadasScreen() {
 
   // Sessions filtered by selected tag (+ search within tag view)
   const filteredSessions = useMemo(() => {
-    let list = GUIADAS_SESSIONS;
-    if (selectedTag) list = list.filter((s) => s.meditationTag === selectedTag);
+    let list: typeof ALL_SESSIONS = ALL_SESSIONS;
+    if (selectedTag) {
+      const cat = CATEGORIES.find((c) => c.tag === selectedTag);
+      if (cat?.categoryIdFilter) {
+        list = list.filter((s) => s.categoryId === cat.categoryIdFilter);
+      } else {
+        list = list.filter((s) => (s as Session & { meditationTag?: string }).meditationTag === selectedTag);
+      }
+    }
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter(
@@ -75,7 +88,11 @@ export default function MeditacionesGuiadasScreen() {
   const countByTag = useMemo(() => {
     const map: Record<string, number> = {};
     for (const cat of CATEGORIES) {
-      map[cat.tag] = GUIADAS_SESSIONS.filter((s) => s.meditationTag === cat.tag).length;
+      if (cat.categoryIdFilter) {
+        map[cat.tag] = ALL_SESSIONS.filter((s) => s.categoryId === cat.categoryIdFilter).length;
+      } else {
+        map[cat.tag] = GUIADAS_SESSIONS.filter((s) => (s as Session & { meditationTag?: string }).meditationTag === cat.tag).length;
+      }
     }
     return map;
   }, []);
