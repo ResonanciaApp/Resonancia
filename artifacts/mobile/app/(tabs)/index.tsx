@@ -49,14 +49,6 @@ const PARA_TU_DIA = [
   { id: "2", emoji: "🌙", label: "Noche" },
 ];
 
-const TIME_BUCKETS = [
-  { label: "5 min",   min: 0,  max: 5    },
-  { label: "10 min",  min: 6,  max: 10   },
-  { label: "15 min",  min: 11, max: 15   },
-  { label: "20 min",  min: 16, max: 20   },
-  { label: "30 min",  min: 21, max: 30   },
-  { label: "30+ min", min: 31, max: 9999 },
-];
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 320;
@@ -94,13 +86,6 @@ export default function HomeScreen() {
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
-  }
-
-  function handleTimeBucket(bucket: typeof TIME_BUCKETS[number]) {
-    router.push({
-      pathname: "/medita-tiempo",
-      params: { min: String(bucket.min), max: String(bucket.max), label: bucket.label },
-    } as never);
   }
 
   const { favoriteEntries, toggleFavorite } = useDiarioFavoritesCtx();
@@ -306,34 +291,6 @@ export default function HomeScreen() {
             </Pressable>
           </View>
         )}
-
-        {/* ── 4b. ¿CUÁNTO TIEMPO TIENES HOY? ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.timeRow}
-          >
-            {TIME_BUCKETS.map((bucket) => (
-              <Pressable
-                key={bucket.label}
-                onPress={() => handleTimeBucket(bucket)}
-                style={({ pressed }) => [
-                  styles.timeChip,
-                  { backgroundColor: colors.card, opacity: pressed ? 0.78 : 1 },
-                ]}
-              >
-                <LinearGradient
-                  colors={["rgba(182,149,95,0.1)", "rgba(182,149,95,0.03)"]}
-                  style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                />
-                <Feather name="clock" size={13} color={colors.primary} style={{ marginRight: 5 }} />
-                <Text style={[styles.timeLabel, { color: colors.foreground }]}>{bucket.label}</Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
 
         {/* ── 4c. A NO OLVIDAR ── */}
         <View style={styles.section}>
@@ -727,17 +684,6 @@ const styles = StyleSheet.create({
 
   // Horizontal scroll
   hScroll: { paddingRight: 20 },
-  timeRow: { flexDirection: "row", gap: 8, paddingRight: 4, marginTop: 6 },
-  timeChip: {
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    overflow: "hidden",
-    justifyContent: "center",
-  },
-  timeLabel: { fontSize: 13, fontWeight: "600" },
 
   // Diary favorites
   diarioList: { gap: 10 },
