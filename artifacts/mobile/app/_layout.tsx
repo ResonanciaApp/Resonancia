@@ -28,6 +28,7 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { DrawerProvider } from "@/context/DrawerContext";
 import { IntencionProvider } from "@/context/IntencionContext";
+import { MixerProvider } from "@/context/MixerContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
@@ -216,6 +217,7 @@ export default function RootLayout() {
                 <PremiumProvider>
                 <PlayerProvider>
                   <AmbientPlayerProvider>
+                    <MixerProvider>
                     <UserProfileProvider>
                       <IntencionProvider>
                         <DiarioFavoritesProvider>
@@ -227,6 +229,7 @@ export default function RootLayout() {
                         </DiarioFavoritesProvider>
                       </IntencionProvider>
                     </UserProfileProvider>
+                    </MixerProvider>
                   </AmbientPlayerProvider>
                 </PlayerProvider>
                 </PremiumProvider>
