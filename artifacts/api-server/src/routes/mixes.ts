@@ -5,9 +5,12 @@ import {
   db,
   sharedMixesTable,
   sharedMixLikesTable,
+  sharedMixCommentsTable,
   usersTable,
   insertSharedMixSchema,
+  insertSharedMixCommentSchema,
   type SharedMix,
+  type SharedMixComment,
   type User,
 } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
@@ -45,6 +48,21 @@ function serialize(
     isMine: currentUserId != null && mix.authorId === currentUserId,
     author: toProfile(author),
     createdAt: mix.createdAt.toISOString(),
+  };
+}
+
+function serializeComment(
+  comment: SharedMixComment,
+  author: User,
+  currentUserId: number | null,
+) {
+  return {
+    id: comment.id,
+    mixId: comment.mixId,
+    body: comment.body,
+    author: toProfile(author),
+    isMine: currentUserId != null && comment.authorId === currentUserId,
+    createdAt: comment.createdAt.toISOString(),
   };
 }
 
@@ -235,6 +253,118 @@ router.delete("/mixes/:id", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al eliminar la mezcla" });
+  }
+});
+
+router.get("/mixes/:id/comments", async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (!Number.isInteger(id)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+
+  try {
+    const me = await getOptionalUser(req);
+
+    const [mix] = await db
+      .select({ id: sharedMixesTable.id })
+      .from(sharedMixesTable)
+      .where(eq(sharedMixesTable.id, id))
+      .limit(1);
+    if (!mix) {
+      res.status(404).json({ error: "Mezcla no encontrada" });
+      return;
+    }
+
+    const rows = await db
+      .select({ comment: sharedMixCommentsTable, author: usersTable })
+      .from(sharedMixCommentsTable)
+      .innerJoin(usersTable, eq(usersTable.id, sharedMixCommentsTable.authorId))
+      .where(eq(sharedMixCommentsTable.mixId, id))
+      .orderBy(desc(sharedMixCommentsTable.createdAt));
+
+    res.json({
+      comments: rows.map((r) => serializeComment(r.comment, r.author, me?.id ?? null)),
+      total: rows.length,
+    });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al obtener los comentarios" });
+  }
+});
+
+router.post("/mixes/:id/comments", requireAuth, async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (!Number.isInteger(id)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+
+  const parsed = insertSharedMixCommentSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Comentario inválido" });
+    return;
+  }
+
+  const me = req.currentUser!;
+  try {
+    const [mix] = await db
+      .select({ id: sharedMixesTable.id })
+      .from(sharedMixesTable)
+      .where(eq(sharedMixesTable.id, id))
+      .limit(1);
+    if (!mix) {
+      res.status(404).json({ error: "Mezcla no encontrada" });
+      return;
+    }
+
+    const [comment] = await db
+      .insert(sharedMixCommentsTable)
+      .values({ mixId: id, authorId: me.id, body: parsed.data.body })
+      .returning();
+
+    res.status(201).json(serializeComment(comment, me, me.id));
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al publicar el comentario" });
+  }
+});
+
+router.delete("/mixes/:id/comments/:commentId", requireAuth, async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  const commentId = parseInt(String(req.params.commentId), 10);
+  if (!Number.isInteger(id) || !Number.isInteger(commentId)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+
+  const me = req.currentUser!;
+  try {
+    const [comment] = await db
+      .select()
+      .from(sharedMixCommentsTable)
+      .where(
+        and(
+          eq(sharedMixCommentsTable.id, commentId),
+          eq(sharedMixCommentsTable.mixId, id),
+        ),
+      )
+      .limit(1);
+
+    if (!comment) {
+      res.status(404).json({ error: "Comentario no encontrado" });
+      return;
+    }
+    if (comment.authorId !== me.id) {
+      res.status(403).json({ error: "No puedes eliminar este comentario" });
+      return;
+    }
+
+    await db.delete(sharedMixCommentsTable).where(eq(sharedMixCommentsTable.id, commentId));
+    res.status(204).end();
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al eliminar el comentario" });
   }
 });
 

@@ -33,6 +33,9 @@ import type {
   GetSharedMixesParams,
   HealthStatus,
   MessagesPage,
+  MixComment,
+  MixCommentInput,
+  MixCommentsPage,
   Notification,
   RegisterPushTokenBody,
   RequestUploadUrlBody,
@@ -666,6 +669,227 @@ export const useUnshareMix = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getUnshareMixMutationOptions(options));
+    }
+
+export const getGetMixCommentsUrl = (id: number,) => {
+
+
+
+
+  return `/api/mixes/${id}/comments`
+}
+
+/**
+ * @summary List comments for a shared mix (newest first)
+ */
+export const getMixComments = async (id: number, options?: RequestInit): Promise<MixCommentsPage> => {
+
+  return customFetch<MixCommentsPage>(getGetMixCommentsUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMixCommentsQueryKey = (id: number,) => {
+    return [
+    `/api/mixes/${id}/comments`
+    ] as const;
+    }
+
+
+export const getGetMixCommentsQueryOptions = <TData = Awaited<ReturnType<typeof getMixComments>>, TError = ErrorType<ErrorResponse>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMixComments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMixCommentsQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMixComments>>> = ({ signal }) => getMixComments(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMixComments>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMixCommentsQueryResult = NonNullable<Awaited<ReturnType<typeof getMixComments>>>
+export type GetMixCommentsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List comments for a shared mix (newest first)
+ */
+
+export function useGetMixComments<TData = Awaited<ReturnType<typeof getMixComments>>, TError = ErrorType<ErrorResponse>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMixComments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMixCommentsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getAddMixCommentUrl = (id: number,) => {
+
+
+
+
+  return `/api/mixes/${id}/comments`
+}
+
+/**
+ * @summary Add a comment to a shared mix (requires account)
+ */
+export const addMixComment = async (id: number,
+    mixCommentInput: MixCommentInput, options?: RequestInit): Promise<MixComment> => {
+
+  return customFetch<MixComment>(getAddMixCommentUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      mixCommentInput,)
+  }
+);}
+
+
+
+
+export const getAddMixCommentMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addMixComment>>, TError,{id: number;data: BodyType<MixCommentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof addMixComment>>, TError,{id: number;data: BodyType<MixCommentInput>}, TContext> => {
+
+const mutationKey = ['addMixComment'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addMixComment>>, {id: number;data: BodyType<MixCommentInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  addMixComment(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddMixCommentMutationResult = NonNullable<Awaited<ReturnType<typeof addMixComment>>>
+    export type AddMixCommentMutationBody = BodyType<MixCommentInput>
+    export type AddMixCommentMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Add a comment to a shared mix (requires account)
+ */
+export const useAddMixComment = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addMixComment>>, TError,{id: number;data: BodyType<MixCommentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof addMixComment>>,
+        TError,
+        {id: number;data: BodyType<MixCommentInput>},
+        TContext
+      > => {
+      return useMutation(getAddMixCommentMutationOptions(options));
+    }
+
+export const getDeleteMixCommentUrl = (id: number,
+    commentId: number,) => {
+
+
+
+
+  return `/api/mixes/${id}/comments/${commentId}`
+}
+
+/**
+ * @summary Delete a comment (author only)
+ */
+export const deleteMixComment = async (id: number,
+    commentId: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteMixCommentUrl(id,commentId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteMixCommentMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMixComment>>, TError,{id: number;commentId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteMixComment>>, TError,{id: number;commentId: number}, TContext> => {
+
+const mutationKey = ['deleteMixComment'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteMixComment>>, {id: number;commentId: number}> = (props) => {
+          const {id,commentId} = props ?? {};
+
+          return  deleteMixComment(id,commentId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteMixCommentMutationResult = NonNullable<Awaited<ReturnType<typeof deleteMixComment>>>
+
+    export type DeleteMixCommentMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Delete a comment (author only)
+ */
+export const useDeleteMixComment = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMixComment>>, TError,{id: number;commentId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteMixComment>>,
+        TError,
+        {id: number;commentId: number},
+        TContext
+      > => {
+      return useMutation(getDeleteMixCommentMutationOptions(options));
     }
 
 export const getGetMeUrl = () => {

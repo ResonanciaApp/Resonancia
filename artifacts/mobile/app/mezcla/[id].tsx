@@ -12,25 +12,33 @@ import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   Share,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
+  getGetMixCommentsQueryKey,
   getGetSharedMixesQueryKey,
+  useAddMixComment,
+  useDeleteMixComment,
+  useGetMixComments,
   useGetSharedMixes,
   useToggleSharedMixLike,
 } from "@workspace/api-client-react";
-import type { SharedMix, SharedMixesPage } from "@workspace/api-client-react";
+import type { MixComment, SharedMixesPage } from "@workspace/api-client-react";
 
 import { getMixImage } from "@/config/mix-images";
 import { useAuth } from "@/context/AuthContext";
@@ -54,6 +62,12 @@ export default function CommunityMixScreen() {
 
   const { data, isLoading } = useGetSharedMixes();
   const mix = data?.mixes.find((m) => m.id === mixId);
+
+  const { data: commentsData } = useGetMixComments(mixId);
+  const comments = commentsData?.comments ?? [];
+  const addComment = useAddMixComment();
+  const deleteComment = useDeleteMixComment();
+  const [draft, setDraft] = useState("");
 
   const presetId = `community-${mixId}`;
   const isThisLoaded = loadedPresetId === presetId;
@@ -149,6 +163,57 @@ export default function CommunityMixScreen() {
     });
   }, [mix]);
 
+  const refreshComments = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: getGetMixCommentsQueryKey(mixId) });
+  }, [queryClient, mixId]);
+
+  const handleSendComment = useCallback(() => {
+    const body = draft.trim();
+    if (!body) return;
+    if (!isSignedIn) {
+      Alert.alert(
+        "Crea tu cuenta",
+        "Necesitas una cuenta para dejar un comentario.",
+        [
+          { text: "Ahora no", style: "cancel" },
+          { text: "Registrarme", onPress: () => router.push("/(auth)/sign-up" as never) },
+        ],
+      );
+      return;
+    }
+    if (addComment.isPending) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    addComment.mutate(
+      { id: mixId, data: { body } },
+      {
+        onSuccess: () => {
+          setDraft("");
+          refreshComments();
+        },
+        onError: () =>
+          Alert.alert("Ups", "No pudimos publicar tu comentario. Intentá de nuevo."),
+      },
+    );
+  }, [draft, isSignedIn, addComment, mixId, refreshComments]);
+
+  const handleDeleteComment = useCallback(
+    (comment: MixComment) => {
+      Alert.alert("Eliminar comentario", "¿Querés eliminar este comentario?", [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () =>
+            deleteComment.mutate(
+              { id: mixId, commentId: comment.id },
+              { onSuccess: refreshComments },
+            ),
+        },
+      ]);
+    },
+    [deleteComment, mixId, refreshComments],
+  );
+
   if (isLoading) {
     return (
       <View style={[styles.center, { backgroundColor: colors.background }]}>
@@ -175,29 +240,38 @@ export default function CommunityMixScreen() {
   const authorInitial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
-      {/* Hero con la portada de la mezcla */}
-      <ImageBackground
-        source={getMixImage(mix.image ?? undefined)}
-        style={styles.hero}
-        resizeMode="cover"
+    <KeyboardAvoidingView
+      style={[styles.root, { backgroundColor: colors.background }]}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        style={styles.root}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 28 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <LinearGradient
-          colors={["rgba(15,10,6,0.25)", "rgba(15,10,6,0.65)", colors.background]}
-          locations={[0, 0.55, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={12}
-          style={[styles.backBtn, { top: insets.top + 8 }]}
+        {/* Hero con la portada de la mezcla */}
+        <ImageBackground
+          source={getMixImage(mix.image ?? undefined)}
+          style={styles.hero}
+          resizeMode="cover"
         >
-          <Feather name="chevron-left" size={26} color="#FFFFFF" />
-        </Pressable>
-      </ImageBackground>
+          <LinearGradient
+            colors={["rgba(15,10,6,0.25)", "rgba(15,10,6,0.65)", colors.background]}
+            locations={[0, 0.55, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={12}
+            style={[styles.backBtn, { top: insets.top + 8 }]}
+          >
+            <Feather name="chevron-left" size={26} color="#FFFFFF" />
+          </Pressable>
+        </ImageBackground>
 
-      {/* Contenido */}
-      <View style={styles.content}>
+        {/* Contenido */}
+        <View style={styles.content}>
         {categoryMeta && (
           <Text style={[styles.category, { color: colors.accent }]}>
             {categoryMeta.label.toUpperCase()}
@@ -268,8 +342,79 @@ export default function CommunityMixScreen() {
             <Text style={[styles.actionTxt, { color: colors.foreground }]}>Compartir</Text>
           </Pressable>
         </View>
-      </View>
-    </View>
+
+        {/* Comentarios */}
+        <View style={styles.commentsHeader}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            Comentarios
+          </Text>
+          {comments.length > 0 && (
+            <Text style={[styles.commentsCount, { color: colors.mutedForeground }]}>
+              {comments.length}
+            </Text>
+          )}
+        </View>
+
+        {/* Caja para escribir */}
+        <View style={[styles.composer, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <TextInput
+            value={draft}
+            onChangeText={setDraft}
+            placeholder="Deja un comentario…"
+            placeholderTextColor={colors.mutedForeground}
+            style={[styles.input, { color: colors.foreground }]}
+            multiline
+            maxLength={500}
+          />
+          <Pressable
+            onPress={handleSendComment}
+            disabled={!draft.trim() || addComment.isPending}
+            style={[
+              styles.sendBtn,
+              {
+                backgroundColor: draft.trim() ? colors.primary : colors.border,
+                opacity: addComment.isPending ? 0.6 : 1,
+              },
+            ]}
+          >
+            <Feather name="send" size={18} color={colors.background} />
+          </Pressable>
+        </View>
+
+        {/* Lista de comentarios */}
+        {comments.length === 0 ? (
+          <Text style={[styles.emptyComments, { color: colors.mutedForeground }]}>
+            Sé el primero en comentar esta mezcla.
+          </Text>
+        ) : (
+          comments.map((c) => (
+            <View key={c.id} style={styles.commentRow}>
+              <View
+                style={[styles.avatar, { backgroundColor: colors.card, borderColor: colors.border }]}
+              >
+                <Text style={[styles.avatarTxt, { color: colors.accent }]}>
+                  {c.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·"}
+                </Text>
+              </View>
+              <View style={styles.commentBody}>
+                <View style={styles.commentTop}>
+                  <Text style={[styles.commentAuthor, { color: colors.foreground }]} numberOfLines={1}>
+                    {c.author.displayName}
+                  </Text>
+                  {c.isMine && (
+                    <Pressable onPress={() => handleDeleteComment(c)} hitSlop={8}>
+                      <Feather name="trash-2" size={15} color={colors.mutedForeground} />
+                    </Pressable>
+                  )}
+                </View>
+                <Text style={[styles.commentTxt, { color: colors.mutedForeground }]}>{c.body}</Text>
+              </View>
+            </View>
+          ))
+        )}
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -336,4 +481,41 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   actionTxt: { fontSize: 15, fontWeight: "600" },
+  commentsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 36,
+    marginBottom: 14,
+  },
+  sectionTitle: { fontSize: 18, fontWeight: "700" },
+  commentsCount: { fontSize: 14, fontWeight: "600" },
+  composer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 10,
+    padding: 10,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    maxHeight: 120,
+  },
+  sendBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyComments: { fontSize: 13.5, marginTop: 18, lineHeight: 19 },
+  commentRow: { flexDirection: "row", gap: 12, marginTop: 20 },
+  commentBody: { flex: 1, gap: 4 },
+  commentTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
+  commentAuthor: { flex: 1, fontSize: 14, fontWeight: "600" },
+  commentTxt: { fontSize: 14, lineHeight: 19 },
 });

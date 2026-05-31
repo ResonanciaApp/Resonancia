@@ -207,6 +207,108 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /mixes/{id}/comments:
+    get:
+      operationId: getMixComments
+      tags: [mixes]
+      summary: List comments for a shared mix (newest first)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Comments for the mix
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MixCommentsPage"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: addMixComment
+      tags: [mixes]
+      summary: Add a comment to a shared mix (requires account)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MixCommentInput"
+      responses:
+        "201":
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MixComment"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /mixes/{id}/comments/{commentId}:
+    delete:
+      operationId: deleteMixComment
+      tags: [mixes]
+      summary: Delete a comment (author only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Not the author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /me:
     get:
       operationId: getMe
@@ -858,6 +960,41 @@ components:
           items:
             $ref: "#/components/schemas/SharedMixSound"
       required: [name, category, sounds]
+    MixComment:
+      type: object
+      properties:
+        id:
+          type: integer
+        mixId:
+          type: integer
+        body:
+          type: string
+        author:
+          $ref: "#/components/schemas/UserProfile"
+        isMine:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, mixId, body, author, isMine, createdAt]
+    MixCommentsPage:
+      type: object
+      properties:
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/MixComment"
+        total:
+          type: integer
+      required: [comments, total]
+    MixCommentInput:
+      type: object
+      properties:
+        body:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required: [body]
     ErrorResponse:
       type: object
       properties:

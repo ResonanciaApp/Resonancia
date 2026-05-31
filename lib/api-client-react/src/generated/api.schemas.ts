@@ -133,6 +133,28 @@ export interface SharedMixInput {
   sounds: SharedMixSound[];
 }
 
+export interface MixComment {
+  id: number;
+  mixId: number;
+  body: string;
+  author: UserProfile;
+  isMine: boolean;
+  createdAt: string;
+}
+
+export interface MixCommentsPage {
+  comments: MixComment[];
+  total: number;
+}
+
+export interface MixCommentInput {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  body: string;
+}
+
 export interface ErrorResponse {
   error: string;
 }

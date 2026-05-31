@@ -166,6 +166,56 @@ export const UnshareMixParams = zod.object({
 
 
 /**
+ * @summary List comments for a shared mix (newest first)
+ */
+export const GetMixCommentsParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetMixCommentsResponse = zod.object({
+  "comments": zod.array(zod.object({
+  "id": zod.number(),
+  "mixId": zod.number(),
+  "body": zod.string(),
+  "author": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish()
+}),
+  "isMine": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})),
+  "total": zod.number()
+})
+
+
+/**
+ * @summary Add a comment to a shared mix (requires account)
+ */
+export const AddMixCommentParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const addMixCommentBodyBodyMax = 500;
+
+
+
+export const AddMixCommentBody = zod.object({
+  "body": zod.string().min(1).max(addMixCommentBodyBodyMax)
+})
+
+
+/**
+ * @summary Delete a comment (author only)
+ */
+export const DeleteMixCommentParams = zod.object({
+  "id": zod.coerce.number(),
+  "commentId": zod.coerce.number()
+})
+
+
+/**
  * @summary Get the current user's profile (auto-creates on first call)
  */
 export const GetMeResponse = zod.object({
