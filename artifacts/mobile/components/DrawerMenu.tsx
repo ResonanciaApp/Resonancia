@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer, markDrawerReopenOnHome } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -60,6 +61,7 @@ export function DrawerMenu() {
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
+  const { isPremium } = usePremium();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -197,6 +199,11 @@ export function DrawerMenu() {
                 <Text style={[styles.itemLabel, { color: item.label === "Premium" ? "#F5EAC8" : "#FFFFFF" }]}>
                   {item.label}
                 </Text>
+                {item.label === "Premium" && isPremium && (
+                  <View style={styles.premiumCheck}>
+                    <Feather name="check" size={12} color="#5FB98C" />
+                  </View>
+                )}
               </Pressable>
             ))}
           </View>
@@ -323,6 +330,17 @@ const styles = StyleSheet.create({
   },
   itemPressed: { backgroundColor: "rgba(182,149,95,0.1)" },
   itemIcon: { width: 26, alignItems: "center" },
+  premiumCheck: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    marginLeft: 8,
+    backgroundColor: "rgba(95,185,140,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(95,185,140,0.45)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   premiumIconCircle: {
     width: 26,
     height: 26,

@@ -1,7 +1,10 @@
+import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+
+import { usePremium } from "@/context/PremiumContext";
 
 const IMAGES = [
   require("@/assets/images/sessions/session-1.jpg"),
@@ -15,6 +18,8 @@ const P = {
   bg1:        "#0D261D",
   bg2:        "#17352A",
   glow:       "#234236",
+  green:      "#5FB98C",
+  greenSoft:  "#3E8A66",
   gold:       "#D6A14D",
   goldSoft:   "#C89544",
   goldHi:     "#F0C36A",
@@ -25,7 +30,83 @@ const P = {
   border:     "#A97A34",
 };
 
+const PERKS = [
+  "Catálogo completo desbloqueado",
+  "Favoritos y diario ilimitados",
+  "Temporizador de sueño extendido",
+];
+
+function PremiumActiveBanner() {
+  return (
+    <View style={[styles.outer, styles.outerActive]}>
+      <LinearGradient
+        colors={[P.bg2, P.bg0]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.card}
+      >
+        {/* Top glow */}
+        <View style={styles.topGlow} />
+
+        {/* Insignia verde con check dorado */}
+        <View style={styles.activeBadge}>
+          <Feather name="check" size={26} color={P.goldHi} />
+        </View>
+
+        {/* Eyebrow */}
+        <Text style={[styles.eyebrow, { color: P.green, marginTop: 14 }]}>
+          Membresía activa
+        </Text>
+
+        {/* Title */}
+        <View style={styles.titleRow}>
+          <Text style={[styles.title, { color: P.gold }]}>Eres Premium</Text>
+          <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 24, height: 24, marginLeft: 10, marginTop: 6 }} contentFit="contain" />
+        </View>
+
+        {/* Divider line */}
+        <LinearGradient
+          colors={["transparent", P.green, "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.divider}
+        />
+
+        {/* Lista de beneficios con check verde */}
+        <View style={styles.perks}>
+          {PERKS.map((perk) => (
+            <View key={perk} style={styles.perkRow}>
+              <View style={styles.perkCheck}>
+                <Feather name="check" size={12} color={P.green} />
+              </View>
+              <Text style={[styles.perkText, { color: P.textMuted }]}>{perk}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* CTA secundario */}
+        <Pressable
+          onPress={() => router.push("/membresia" as never)}
+          style={({ pressed }) => [styles.btnWrap, styles.btnWrapActive, { opacity: pressed ? 0.88 : 1 }]}
+        >
+          <LinearGradient
+            colors={[P.btnFrom, P.btnTo]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.btn}
+          >
+            <Text style={[styles.btnText, { color: P.gold }]}>Gestionar membresía</Text>
+          </LinearGradient>
+        </Pressable>
+      </LinearGradient>
+    </View>
+  );
+}
+
 export default function PremiumBanner() {
+  const { isPremium } = usePremium();
+  if (isPremium) return <PremiumActiveBanner />;
+
   return (
     <View style={styles.outer}>
       <LinearGradient
@@ -107,6 +188,48 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 16,
     elevation: 10,
+  },
+  outerActive: {
+    borderColor: "rgba(95,185,140,0.5)",
+  },
+  activeBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(95,185,140,0.14)",
+    borderWidth: 1.5,
+    borderColor: "rgba(95,185,140,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  perks: {
+    alignSelf: "stretch",
+    gap: 10,
+    marginBottom: 24,
+    paddingHorizontal: 8,
+  },
+  perkRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  perkCheck: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(95,185,140,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(95,185,140,0.4)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  perkText: {
+    fontSize: 13.5,
+    flex: 1,
+    letterSpacing: 0.2,
+  },
+  btnWrapActive: {
+    borderColor: "rgba(95,185,140,0.55)",
   },
   card: {
     paddingVertical: 30,
