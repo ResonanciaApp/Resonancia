@@ -28,7 +28,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
-import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
+import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
@@ -68,7 +68,7 @@ export default function HomeScreen() {
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
-  const { playSession } = usePlayer();
+  const { playSession, history } = usePlayer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   function handleIntentionPress() {
@@ -96,6 +96,20 @@ export default function HomeScreen() {
     }
     return pool.slice(0, 4);
   }, []);
+
+  // Últimas sesiones únicas escuchadas (max 5)
+  const recentSessions = React.useMemo(() => {
+    const seen = new Set<string>();
+    const result: Session[] = [];
+    for (const entry of history) {
+      if (seen.has(entry.sessionId)) continue;
+      seen.add(entry.sessionId);
+      const s = getSessionById(entry.sessionId);
+      if (s) result.push(s);
+      if (result.length === 5) break;
+    }
+    return result;
+  }, [history]);
 
   const { open: openDrawer } = useDrawer();
 
@@ -274,6 +288,23 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
         </View>
+
+        {/* ── 11. HISTORIAL RECIENTE ── */}
+        {recentSessions.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionRow}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                Escuchado recientemente
+              </Text>
+              <Pressable onPress={() => router.push("/recientes" as never)}>
+                <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
+              </Pressable>
+            </View>
+            {recentSessions.map((s) => (
+              <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
+            ))}
+          </View>
+        )}
 
         {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />
