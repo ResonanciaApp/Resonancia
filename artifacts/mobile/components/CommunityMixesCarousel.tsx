@@ -29,7 +29,7 @@ import type { SharedMix, SharedMixesPage } from "@workspace/api-client-react";
 
 import { getMixImage } from "@/config/mix-images";
 import { useAuth } from "@/context/AuthContext";
-import { useMixer, type MixPreset } from "@/context/MixerContext";
+import { type MixPreset } from "@/context/MixerContext";
 import type { MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
@@ -37,7 +37,6 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 export function CommunityMixesCarousel() {
   const colors = useColors();
   const { isSignedIn } = useAuth();
-  const { loadPreset } = useMixer();
   const loadMix = useLoadMix();
   const queryClient = useQueryClient();
 
@@ -123,13 +122,14 @@ export function CommunityMixesCarousel() {
         sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
         createdAt: mix.createdAt,
       };
+      // loadMix ya filtra sonidos premium/no disponibles y llama a loadPreset
+      // internamente. NO volver a llamar loadPreset crudo (saltearía el filtro).
       const ok = loadMix(preset);
       if (ok) {
-        loadPreset(preset);
         router.push("/(tabs)/musica" as never);
       }
     },
-    [loadMix, loadPreset],
+    [loadMix],
   );
 
   if (mixes.length === 0) return null;
