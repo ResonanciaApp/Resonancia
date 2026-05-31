@@ -201,7 +201,7 @@ export function DrawerMenu() {
             ))}
           </View>
 
-          <View style={[styles.divider, { backgroundColor: "#B6955F22", marginVertical: 16 }]} />
+          <View style={[styles.divider, { backgroundColor: "#B6955F10", marginVertical: 16 }]} />
 
           {/* Items secundarios */}
           <View style={styles.itemGroup}>
@@ -244,8 +244,8 @@ const styles = StyleSheet.create({
   drawerInner: {
     flex: 1,
     paddingHorizontal: 20,
-    borderRightWidth: 1,
-    borderRightColor: "rgba(180,180,180,0.14)",
+    borderRightWidth: StyleSheet.hairlineWidth,
+    borderRightColor: "rgba(180,180,180,0.10)",
   },
   closeBtnRow: {
     alignItems: "flex-end",
