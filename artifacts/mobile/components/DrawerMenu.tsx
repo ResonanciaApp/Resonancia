@@ -142,7 +142,7 @@ export function DrawerMenu() {
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <LinearGradient
-          colors={["rgba(30,25,20,1)", "rgba(14,12,10,1)"]}
+          colors={["rgba(30,25,20,0.9)", "rgba(14,12,10,0.9)"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
@@ -227,7 +227,7 @@ export function DrawerMenu() {
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.78)",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   drawer: {
     position: "absolute",
