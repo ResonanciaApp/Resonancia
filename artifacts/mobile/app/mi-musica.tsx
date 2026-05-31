@@ -1,8 +1,10 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   Alert,
+  ImageBackground,
   Modal,
   Platform,
   Pressable,
@@ -17,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { VolumeSlider } from "@/components/VolumeSlider";
+import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
 import { MAX_ACTIVE_SOUNDS, type MixPreset, useMixer } from "@/context/MixerContext";
 import {
@@ -347,6 +350,42 @@ export default function MiMusicaScreen() {
                   const available = hasSoundFile(sound.id);
                   const active = isActive(sound.id);
                   const locked = sound.isPremium && !isPremium;
+                  const image = getSoundImage(sound.id);
+
+                  const overlay = (
+                    <>
+                      {/* Degradado para legibilidad del texto */}
+                      <LinearGradient
+                        colors={
+                          active
+                            ? ["rgba(198,155,79,0.10)", "rgba(24,17,12,0.20)", "rgba(24,17,12,0.85)"]
+                            : ["rgba(24,17,12,0)", "rgba(24,17,12,0.12)", "rgba(24,17,12,0.82)"]
+                        }
+                        locations={[0, 0.55, 1]}
+                        style={styles.cardOverlay}
+                      />
+
+                      {locked && (
+                        <View style={styles.lockBadge}>
+                          <Feather name="star" size={9} color="#18110C" />
+                        </View>
+                      )}
+
+                      {active && (
+                        <View style={[styles.activeBadge, { backgroundColor: colors.primary }]}>
+                          <Feather name="check" size={11} color={colors.primaryForeground} />
+                        </View>
+                      )}
+
+                      <View style={styles.cardContent}>
+                        <Text style={styles.soundName} numberOfLines={1}>
+                          {sound.name}
+                        </Text>
+                        {!available && <Text style={styles.soonText}>Próximamente</Text>}
+                      </View>
+                    </>
+                  );
+
                   return (
                     <Pressable
                       key={sound.id}
@@ -355,36 +394,22 @@ export default function MiMusicaScreen() {
                       style={[
                         styles.soundCard,
                         {
-                          backgroundColor: active ? colors.primary : colors.card,
-                          borderColor: active ? colors.primary : colors.border,
-                          opacity: available ? 1 : 0.45,
+                          backgroundColor: colors.card,
+                          borderColor: active ? colors.primary : "rgba(0,0,0,0.25)",
+                          borderWidth: active ? 2 : StyleSheet.hairlineWidth,
                         },
                       ]}
                     >
-                      {locked && available && (
-                        <View style={styles.lockBadge}>
-                          <Feather name="star" size={9} color="#18110C" />
-                        </View>
-                      )}
-                      <SoundIcon
-                        iconSet={sound.iconSet}
-                        icon={sound.icon}
-                        size={22}
-                        color={active ? colors.primaryForeground : colors.accent}
-                      />
-                      <Text
-                        style={[
-                          styles.soundName,
-                          { color: active ? colors.primaryForeground : colors.foreground },
-                        ]}
-                        numberOfLines={1}
-                      >
-                        {sound.name}
-                      </Text>
-                      {!available && (
-                        <Text style={[styles.soonText, { color: colors.mutedForeground }]}>
-                          Próximamente
-                        </Text>
+                      {image ? (
+                        <ImageBackground
+                          source={image}
+                          style={styles.cardImage}
+                          imageStyle={[styles.cardImageInner, { opacity: available ? 1 : 0.4 }]}
+                        >
+                          {overlay}
+                        </ImageBackground>
+                      ) : (
+                        <View style={styles.cardImage}>{overlay}</View>
                       )}
                     </Pressable>
                   );
@@ -507,8 +532,8 @@ const styles = StyleSheet.create({
   timerText: { fontSize: 12, fontWeight: "700" },
 
   // Secciones
-  section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 12 },
+  section: { marginBottom: 14 },
+  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
 
   // Presets
   presetRow: {
@@ -537,22 +562,44 @@ const styles = StyleSheet.create({
     width: "31%",
     aspectRatio: 1,
     borderRadius: 16,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingHorizontal: 6,
+    overflow: "hidden",
   },
-  soundName: { fontSize: 12, fontWeight: "600", textAlign: "center" },
-  soonText: { fontSize: 9, letterSpacing: 0.2 },
+  cardImage: { flex: 1, justifyContent: "flex-end" },
+  cardImageInner: { borderRadius: 16 },
+  cardOverlay: { ...StyleSheet.absoluteFillObject },
+  cardContent: { padding: 8 },
+  soundName: {
+    fontSize: 12.5,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  soonText: {
+    fontSize: 9,
+    letterSpacing: 0.2,
+    color: "rgba(237,225,211,0.85)",
+    marginTop: 2,
+  },
   lockBadge: {
     position: "absolute",
     top: 6,
     right: 6,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
     backgroundColor: "#D6A85B",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  activeBadge: {
+    position: "absolute",
+    top: 6,
+    left: 6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
