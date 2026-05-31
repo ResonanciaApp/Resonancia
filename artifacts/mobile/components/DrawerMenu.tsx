@@ -142,7 +142,7 @@ export function DrawerMenu() {
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <LinearGradient
-          colors={["rgba(18,14,10,0.98)", "rgba(0,0,0,0.98)"]}
+          colors={["rgba(30,25,20,1)", "rgba(14,12,10,1)"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
@@ -244,6 +244,8 @@ const styles = StyleSheet.create({
   drawerInner: {
     flex: 1,
     paddingHorizontal: 20,
+    borderRightWidth: 1,
+    borderRightColor: "rgba(180,180,180,0.14)",
   },
   closeBtnRow: {
     alignItems: "flex-end",
