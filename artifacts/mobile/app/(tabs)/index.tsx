@@ -290,21 +290,39 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 11. HISTORIAL RECIENTE ── */}
-        {recentSessions.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionRow}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Escuchado recientemente
-              </Text>
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              Escuchado recientemente
+            </Text>
+            {recentSessions.length > 0 && (
               <Pressable onPress={() => router.push("/recientes" as never)}>
                 <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
               </Pressable>
-            </View>
-            {recentSessions.map((s) => (
-              <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
-            ))}
+            )}
           </View>
-        )}
+          {recentSessions.length === 0 ? (
+            <Pressable
+              onPress={() => router.push("/(tabs)/explore" as never)}
+              style={[styles.recentEmpty, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(182,149,95,0.15)" }]}
+            >
+              <Feather name="headphones" size={28} color="rgba(182,149,95,0.35)" />
+              <Text style={[styles.recentEmptyTitle, { color: colors.foreground }]}>
+                Tu historial está vacío
+              </Text>
+              <Text style={[styles.recentEmptyText, { color: colors.mutedForeground }]}>
+                Las sesiones que escuches aparecerán aquí para que puedas volver a ellas fácilmente.
+              </Text>
+              <View style={[styles.recentEmptyBtn, { borderColor: "rgba(182,149,95,0.3)" }]}>
+                <Text style={[styles.recentEmptyBtnText, { color: colors.accent }]}>Explorar sesiones</Text>
+              </View>
+            </Pressable>
+          ) : (
+            recentSessions.map((s) => (
+              <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
+            ))
+          )}
+        </View>
 
         {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />
@@ -445,4 +463,25 @@ const styles = StyleSheet.create({
 
   // Diary favorites
   diarioList: { gap: 10 },
+
+  // Historial vacío
+  recentEmpty: {
+    borderWidth: 1,
+    borderRadius: 18,
+    borderStyle: "dashed",
+    paddingVertical: 28,
+    paddingHorizontal: 20,
+    alignItems: "center",
+    gap: 8,
+  },
+  recentEmptyTitle: { fontSize: 15, fontWeight: "700", marginTop: 4 },
+  recentEmptyText: { fontSize: 13, lineHeight: 19, textAlign: "center", maxWidth: 280 },
+  recentEmptyBtn: {
+    marginTop: 8,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  recentEmptyBtnText: { fontSize: 13, fontWeight: "600" },
 });
