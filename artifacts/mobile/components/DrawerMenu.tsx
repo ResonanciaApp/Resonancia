@@ -142,7 +142,7 @@ export function DrawerMenu() {
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <LinearGradient
-          colors={["#241408", "#1A0E06"]}
+          colors={["rgba(34,34,37,0.96)", "rgba(22,22,24,0.96)"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
