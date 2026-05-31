@@ -51,6 +51,8 @@ type MixerContextType = {
   savePreset: (input: SaveMixInput) => void;
   loadPreset: (preset: MixPreset) => void;
   deletePreset: (id: string) => void;
+  /** ID del preset cargado actualmente (null si la mezcla activa no proviene de uno guardado o fue modificada). */
+  loadedPresetId: string | null;
   sleepTimerRemaining: number | null;
   setSleepTimer: (minutes: number | null) => void;
 };
@@ -62,6 +64,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [presets, setPresets] = useState<MixPreset[]>([]);
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
+  const [loadedPresetId, setLoadedPresetId] = useState<string | null>(null);
 
   /** Un AudioPlayer por sonido activo, keyed por sound id */
   const playersRef = useRef<Map<string, AudioPlayer>>(new Map());
@@ -73,6 +76,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   isPlayingRef.current = isPlaying;
   const presetsRef = useRef<MixPreset[]>([]);
   presetsRef.current = presets;
+  const loadedPresetIdRef = useRef<string | null>(null);
+  loadedPresetIdRef.current = loadedPresetId;
 
   // ── Cargar presets guardados ──────────────────────────────────────
   useEffect(() => {
@@ -154,6 +159,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         destroyPlayer(id);
         const next = prev.filter((s) => s.id !== id);
         setActiveSounds(next);
+        setLoadedPresetId(null);
         if (next.length === 0) {
           setIsPlaying(false);
           clearSleepTimer();
@@ -179,6 +185,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         setIsPlaying(true);
       }
       setActiveSounds([...prev, { id, volume: DEFAULT_VOLUME }]);
+      setLoadedPresetId(null);
       return true;
     },
     [createPlayerFor, destroyPlayer, ensureAudioMode, clearSleepTimer],
@@ -201,6 +208,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       destroyPlayer(id);
       const next = activeSoundsRef.current.filter((s) => s.id !== id);
       setActiveSounds(next);
+      setLoadedPresetId(null);
       if (next.length === 0) {
         setIsPlaying(false);
         clearSleepTimer();
@@ -238,6 +246,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     playersRef.current.clear();
     setActiveSounds([]);
     setIsPlaying(false);
+    setLoadedPresetId(null);
     clearSleepTimer();
   }, [clearSleepTimer]);
 
@@ -286,6 +295,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       });
       setActiveSounds(created);
       setIsPlaying(created.length > 0);
+      setLoadedPresetId(created.length > 0 ? preset.id : null);
       clearSleepTimer();
     },
     [createPlayerFor, ensureAudioMode, clearSleepTimer],
@@ -294,6 +304,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const deletePreset = useCallback(
     (id: string) => {
       persistPresets(presetsRef.current.filter((p) => p.id !== id));
+      // Si se borra el preset que está sonando, la mezcla activa ya no proviene
+      // de uno guardado → reaparece el botón Guardar.
+      if (loadedPresetIdRef.current === id) setLoadedPresetId(null);
     },
     [persistPresets],
   );
@@ -374,6 +387,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         savePreset,
         loadPreset,
         deletePreset,
+        loadedPresetId,
         sleepTimerRemaining,
         setSleepTimer,
       }}

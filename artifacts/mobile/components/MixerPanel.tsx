@@ -75,6 +75,7 @@ export function MixerPanel({ currentCategory }: Props) {
     stopAll,
     presets,
     savePreset,
+    loadedPresetId,
     sleepTimerRemaining,
     setSleepTimer,
   } = useMixer();
@@ -223,12 +224,14 @@ export function MixerPanel({ currentCategory }: Props) {
             )}
           </Pressable>
 
-          <Pressable
-            onPress={handleSavePress}
-            style={[styles.iconBtn, { borderColor: colors.border, backgroundColor: colors.secondary }]}
-          >
-            <Feather name="save" size={18} color={colors.foreground} />
-          </Pressable>
+          {loadedPresetId == null && (
+            <Pressable
+              onPress={handleSavePress}
+              style={[styles.iconBtn, { borderColor: colors.border, backgroundColor: colors.secondary }]}
+            >
+              <Feather name="save" size={18} color={colors.foreground} />
+            </Pressable>
+          )}
         </View>
       </View>
 
