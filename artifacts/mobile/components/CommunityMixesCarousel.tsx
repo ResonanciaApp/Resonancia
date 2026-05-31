@@ -29,15 +29,11 @@ import type { SharedMix, SharedMixesPage } from "@workspace/api-client-react";
 
 import { getMixImage } from "@/config/mix-images";
 import { useAuth } from "@/context/AuthContext";
-import { type MixPreset } from "@/context/MixerContext";
-import type { MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
-import { useLoadMix } from "@/hooks/useLoadMix";
 
 export function CommunityMixesCarousel() {
   const colors = useColors();
   const { isSignedIn } = useAuth();
-  const loadMix = useLoadMix();
   const queryClient = useQueryClient();
 
   const { data } = useGetSharedMixes();
@@ -111,26 +107,11 @@ export function CommunityMixesCarousel() {
     [isSignedIn, applyOptimistic, toggleLike, queryClient],
   );
 
-  const handlePlay = useCallback(
-    (mix: SharedMix) => {
-      const preset: MixPreset = {
-        id: `community-${mix.id}`,
-        name: mix.name,
-        description: mix.description ?? undefined,
-        image: mix.image ?? undefined,
-        category: mix.category as MixCategory,
-        sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
-        createdAt: mix.createdAt,
-      };
-      // loadMix ya filtra sonidos premium/no disponibles y llama a loadPreset
-      // internamente. NO volver a llamar loadPreset crudo (saltearía el filtro).
-      const ok = loadMix(preset);
-      if (ok) {
-        router.push("/(tabs)/musica" as never);
-      }
-    },
-    [loadMix],
-  );
+  const handlePlay = useCallback((mix: SharedMix) => {
+    // Abre el reproductor de la mezcla de la comunidad (la presenta como un
+    // todo, sin exponer las pistas/volúmenes del creador).
+    router.push(`/mezcla/${mix.id}` as never);
+  }, []);
 
   if (mixes.length === 0) return null;
 
