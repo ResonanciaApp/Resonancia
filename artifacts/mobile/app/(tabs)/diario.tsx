@@ -18,7 +18,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { VozInteriorPanel } from "@/components/VozInteriorPanel";
 import { type DiarioSection, useDiario } from "@/hooks/useDiario";
+import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
+import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 
 const MAX_CHARS = 1000;
@@ -272,6 +274,44 @@ export default function DiarioScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const { favoriteEntries, toggleFavorite } = useDiarioFavoritesCtx();
+  const {
+    entries: vozEntries,
+    playEntry,
+    playingId,
+    playingPositionMs,
+    updateEntry: updateVozEntry,
+  } = useVozInterior();
+  const [noOlvidarOpen, setNoOlvidarOpen] = useState(true);
+
+  const noOlvidarItems = React.useMemo<NoOlvidarItem[]>(() => {
+    const diarioFavs: NoOlvidarItem[] = favoriteEntries
+      .filter((e) => e.sectionKey !== "aprendizaje")
+      .map((e) => ({
+        kind: "diary" as const,
+        id: `ref-${e.id}`,
+        rawId: e.id,
+        text: e.text,
+        createdAt: e.createdAt,
+        sectionTitle: e.sectionTitle,
+        accentColor: e.accentColor,
+        sectionKey: e.sectionKey,
+      }));
+    const vozFavs: NoOlvidarItem[] = vozEntries
+      .filter((e) => e.isFavorite)
+      .map((e) => ({
+        kind: "voz" as const,
+        id: `voz-${e.id}`,
+        rawId: e.id,
+        title: e.title?.trim() ?? "",
+        durationMs: e.durationMs,
+        createdAt: e.createdAt,
+      }));
+    return [...diarioFavs, ...vozFavs].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [favoriteEntries, vozEntries]);
+
   return (
     <KeyboardAvoidingView
       style={[styles.root, { backgroundColor: colors.background }]}
@@ -301,6 +341,84 @@ export default function DiarioScreen() {
 
         {/* Sections */}
         <View style={styles.sections}>
+          {/* ── A no olvidar ── */}
+          <View style={[styles.noOlvidarPanel, { backgroundColor: "rgba(255,255,255,0.05)" }]}>
+            <Pressable
+              onPress={() => setNoOlvidarOpen((v) => !v)}
+              style={({ pressed }) => [styles.noOlvidarHeader, { opacity: pressed ? 0.75 : 1 }]}
+            >
+              <View style={styles.noOlvidarTitleRow}>
+                <View style={[styles.panelIconBg, { backgroundColor: "rgba(212,112,154,0.15)" }]}>
+                  <Feather name="heart" size={16} color="#D4709A" />
+                </View>
+                <View>
+                  <Text style={[styles.noOlvidarTitle, { color: "#D4709A" }]}>A no olvidar</Text>
+                  <Text style={[styles.noOlvidarSub, { color: colors.mutedForeground }]}>
+                    Tus notas y audios favoritos
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.noOlvidarRight}>
+                {noOlvidarItems.length > 0 && (
+                  <View style={styles.countBadge}>
+                    <Text style={styles.countText}>{noOlvidarItems.length}</Text>
+                  </View>
+                )}
+                <Feather
+                  name={noOlvidarOpen ? "chevron-up" : "chevron-down"}
+                  size={17}
+                  color="#D4709A"
+                />
+              </View>
+            </Pressable>
+
+            {noOlvidarOpen && noOlvidarItems.length === 0 && (
+              <View style={styles.noOlvidarEmpty}>
+                <Text style={[styles.noOlvidarEmptyText, { color: colors.mutedForeground }]}>
+                  Toca el corazón en cualquier entrada para guardarla aquí.
+                </Text>
+              </View>
+            )}
+
+            {noOlvidarOpen && noOlvidarItems.length > 0 && (
+              <View style={styles.noOlvidarList}>
+                {noOlvidarItems.map((item) => {
+                  const vozEntry =
+                    item.kind === "voz"
+                      ? vozEntries.find((e) => e.id === item.rawId)
+                      : undefined;
+                  return (
+                    <NoOlvidarCard
+                      key={item.id}
+                      item={item}
+                      isPlaying={item.kind === "voz" && playingId === item.rawId}
+                      positionMs={
+                        item.kind === "voz" && playingId === item.rawId
+                          ? playingPositionMs
+                          : 0
+                      }
+                      onPlay={
+                        item.kind === "voz" && vozEntry
+                          ? () => playEntry(vozEntry)
+                          : undefined
+                      }
+                      onRemove={() => {
+                        if (item.kind === "voz") {
+                          updateVozEntry(item.rawId, { isFavorite: false });
+                        } else {
+                          toggleFavorite(
+                            { id: item.rawId, text: item.text, createdAt: item.createdAt },
+                            item.sectionKey,
+                          );
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </View>
+            )}
+          </View>
+
           <VozInteriorPanel />
           {SECTIONS.map((s) => (
             <SectionPanel key={s.key} meta={s} />
@@ -332,6 +450,30 @@ const styles = StyleSheet.create({
   },
   divider: { height: 1, marginHorizontal: 20, marginBottom: 24 },
   sections: { paddingHorizontal: 20, gap: 16 },
+
+  // A no olvidar
+  noOlvidarPanel: { borderRadius: 20, overflow: "hidden" },
+  noOlvidarHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  noOlvidarTitleRow: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
+  noOlvidarTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  noOlvidarSub: { fontSize: 11, marginTop: 1 },
+  noOlvidarRight: { flexDirection: "row", alignItems: "center", gap: 8 },
+  countBadge: {
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    backgroundColor: "rgba(212,112,154,0.18)",
+  },
+  countText: { fontSize: 12, fontWeight: "700", color: "#D4709A" },
+  noOlvidarEmpty: { padding: 16, paddingTop: 12 },
+  noOlvidarEmptyText: { fontSize: 13, lineHeight: 20, textAlign: "center" },
+  noOlvidarList: { padding: 14, gap: 10 },
 
   // Panel
   panel: {

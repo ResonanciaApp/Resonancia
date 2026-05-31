@@ -19,7 +19,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
-import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
 import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -33,8 +32,6 @@ import { usePremium } from "@/context/PremiumContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
-import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
-import { useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
@@ -88,40 +85,6 @@ export default function HomeScreen() {
     router.push("/intencion-onboarding" as never);
   }
 
-  const { favoriteEntries, toggleFavorite } = useDiarioFavoritesCtx();
-  const {
-    entries: vozEntries,
-    playEntry,
-    playingId,
-    playingPositionMs,
-    updateEntry: updateVozEntry,
-  } = useVozInterior();
-
-  const noOlvidarItems = React.useMemo<NoOlvidarItem[]>(() => {
-    const diarioFavs: NoOlvidarItem[] = favoriteEntries.filter((e) => e.sectionKey !== "aprendizaje").map((e) => ({
-      kind: "diary" as const,
-      id: `ref-${e.id}`,
-      rawId: e.id,
-      text: e.text,
-      createdAt: e.createdAt,
-      sectionTitle: e.sectionTitle,
-      accentColor: e.accentColor,
-      sectionKey: e.sectionKey,
-    }));
-    const vozFavs: NoOlvidarItem[] = vozEntries
-      .filter((e) => e.isFavorite)
-      .map((e) => ({
-        kind: "voz" as const,
-        id: `voz-${e.id}`,
-        rawId: e.id,
-        title: e.title?.trim() ?? "",
-        durationMs: e.durationMs,
-        createdAt: e.createdAt,
-      }));
-    return [...diarioFavs, ...vozFavs]
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 4);
-  }, [favoriteEntries, vozEntries]);
 
   const featured = getFeaturedSessions();
   // Rotate daily: pick a different featured session each day of the year.
@@ -148,7 +111,6 @@ export default function HomeScreen() {
   }, []);
 
   const { open: openDrawer } = useDrawer();
-  const [noOlvidarOpen, setNoOlvidarOpen] = useState(false);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -291,103 +253,6 @@ export default function HomeScreen() {
             </Pressable>
           </View>
         )}
-
-        {/* ── 4c. A NO OLVIDAR ── */}
-        <View style={styles.section}>
-            {/* Cabecera tappable */}
-            <Pressable
-              onPress={() => noOlvidarItems.length > 0 && setNoOlvidarOpen((v) => !v)}
-              style={({ pressed }) => [styles.noOlvidarHeader, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <View style={styles.noOlvidarTitleRow}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                  A no olvidar
-                </Text>
-                {!noOlvidarOpen && noOlvidarItems.length > 0 && (
-                  <View style={[styles.countBadge, { backgroundColor: colors.primary + "22" }]}>
-                    <Text style={[styles.countText, { color: colors.primary }]}>
-                      {noOlvidarItems.length}
-                    </Text>
-                  </View>
-                )}
-              </View>
-              {noOlvidarItems.length > 0 && (
-                <View style={styles.noOlvidarRight}>
-                  {noOlvidarOpen && (
-                    <Pressable onPress={() => router.push("/(tabs)/diario" as never)}>
-                      <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todas</Text>
-                    </Pressable>
-                  )}
-                  <Feather
-                    name={noOlvidarOpen ? "chevron-up" : "chevron-down"}
-                    size={18}
-                    color={colors.accent}
-                  />
-                </View>
-              )}
-            </Pressable>
-
-            {/* Estado vacío */}
-            {noOlvidarItems.length === 0 && (
-              <View style={[styles.noOlvidarPeek, { backgroundColor: colors.card, justifyContent: "center" }]}>
-                <Text style={[styles.peekLabel, { color: colors.mutedForeground, textAlign: "center" }]}>
-                  Aún no has guardado nada de tu diario
-                </Text>
-              </View>
-            )}
-
-            {/* Peek colapsado */}
-            {noOlvidarItems.length > 0 && !noOlvidarOpen && (
-              <Pressable
-                onPress={() => setNoOlvidarOpen(true)}
-                style={[styles.noOlvidarPeek, { backgroundColor: "rgba(255,255,255,0.05)" }]}
-              >
-                <Feather name="feather" size={17} color={colors.accent} />
-
-                <Text style={[styles.peekLabel, { color: colors.mutedForeground }]}>
-                  {noOlvidarItems.length === 1
-                    ? "1 nota guardada — toca para ver"
-                    : `${noOlvidarItems.length} notas guardadas — toca para ver`}
-                </Text>
-                <Feather name="chevron-down" size={15} color={colors.accent} />
-              </Pressable>
-            )}
-
-            {/* Lista expandida */}
-            {noOlvidarItems.length > 0 && noOlvidarOpen && (
-              <View style={styles.diarioList}>
-                {noOlvidarItems.map((item) => {
-                  const vozEntry =
-                    item.kind === "voz"
-                      ? vozEntries.find((e) => e.id === item.rawId)
-                      : undefined;
-                  return (
-                    <NoOlvidarCard
-                      key={item.id}
-                      item={item}
-                      isPlaying={item.kind === "voz" && playingId === item.rawId}
-                      positionMs={item.kind === "voz" && playingId === item.rawId ? playingPositionMs : 0}
-                      onPlay={
-                        item.kind === "voz" && vozEntry
-                          ? () => playEntry(vozEntry)
-                          : undefined
-                      }
-                      onRemove={() => {
-                        if (item.kind === "voz") {
-                          updateVozEntry(item.rawId, { isFavorite: false });
-                        } else {
-                          toggleFavorite(
-                            { id: item.rawId, text: item.text, createdAt: item.createdAt },
-                            item.sectionKey,
-                          );
-                        }
-                      }}
-                    />
-                  );
-                })}
-              </View>
-            )}
-          </View>
 
         {/* ── 9.5 PARA TU DÍA ── */}
         <View style={styles.section}>
@@ -687,44 +552,4 @@ const styles = StyleSheet.create({
 
   // Diary favorites
   diarioList: { gap: 10 },
-
-  // A no olvidar colapsable
-  noOlvidarHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  noOlvidarTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  noOlvidarRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  countBadge: {
-    borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  countText: {
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  noOlvidarPeek: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    borderRadius: 14,
-    paddingVertical: 13,
-    paddingHorizontal: 16,
-  },
-  peekLabel: {
-    flex: 1,
-    fontSize: 13,
-    fontWeight: "500",
-  },
 });
