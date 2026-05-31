@@ -167,6 +167,7 @@ function RootLayoutNav() {
           name="chat/[userId]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
+        <Stack.Screen name="diario" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="favorites" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="amigos" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="grupos" options={{ headerShown: false, animation: "slide_from_right" }} />

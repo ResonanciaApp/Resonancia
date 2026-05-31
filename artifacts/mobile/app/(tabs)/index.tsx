@@ -209,6 +209,31 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
+        {/* ── MI DIARIO ── */}
+        <View style={[styles.section, { marginBottom: 24 }]}>
+          <Pressable
+            onPress={() => router.push("/diario" as never)}
+            style={({ pressed }) => [styles.diarioCard, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <LinearGradient
+              colors={["#2A1F10", "#1C130A"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={styles.diarioIconWrap}>
+              <Feather name="feather" size={22} color={colors.accent} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.diarioTitle, { color: colors.foreground }]}>Mi Diario</Text>
+              <Text style={[styles.diarioSub, { color: colors.mutedForeground }]} numberOfLines={2}>
+                Tus reflexiones, ideas y mensajes de voz
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
+
         {/* ── 3. SESIÓN DESTACADA ── */}
         {featuredSession && (
           <View style={styles.section}>
@@ -460,6 +485,29 @@ const styles = StyleSheet.create({
 
   // Horizontal scroll
   hScroll: { paddingRight: 20 },
+
+  // Mi Diario card
+  diarioCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    borderRadius: 18,
+    overflow: "hidden",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "rgba(182,149,95,0.18)",
+  },
+  diarioIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: "rgba(214,168,91,0.14)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  diarioTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2 },
+  diarioSub: { fontSize: 12.5, lineHeight: 17, marginTop: 2 },
 
   // Diary favorites
   diarioList: { gap: 10 },

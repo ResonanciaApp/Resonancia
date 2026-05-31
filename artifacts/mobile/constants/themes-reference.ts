@@ -44,7 +44,7 @@ export const THEME_A = {
     historyIcon:      "#8AB894",
   },
 
-  // ── app/(tabs)/diario.tsx — Mis reflexiones + Ideas Brillantes ───────────
+  // ── app/diario.tsx — Reflexiones e ideas (unificado) ───────────
   diario: {
     gradient:      ["#241C0C", "#141008"] as [string, string],
     panelTitle:    "#8AB894",
@@ -121,7 +121,7 @@ export const THEME_B = {
     // sin borderWidth (bordes quitados)
   },
 
-  // ── app/(tabs)/diario.tsx — Mis reflexiones + Ideas Brillantes ───────────
+  // ── app/diario.tsx — Reflexiones e ideas (unificado) ───────────
   diario: {
     panelBg:       "#111E16",
     gradient:      ["#111E16", "#0D1810"] as [string, string],

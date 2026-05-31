@@ -80,19 +80,6 @@ export default function MiMusicaScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.headerTop}>
-          <Pressable
-            onPress={() =>
-              router.canGoBack() ? router.back() : router.replace("/(tabs)" as never)
-            }
-            hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <Feather name="chevron-left" size={20} color={colors.foreground} />
-          </Pressable>
-        </View>
-
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mi Música</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
@@ -220,15 +207,6 @@ export default function MiMusicaScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
-  headerTop: { marginBottom: 14 },
-  backBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   header: { marginBottom: 20 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   pageSub: { fontSize: 13, lineHeight: 18 },

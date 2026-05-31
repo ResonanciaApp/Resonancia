@@ -129,7 +129,7 @@ export default function CategoryMixesScreen() {
         {/* Header */}
         <View style={styles.headerTop}>
           <Pressable
-            onPress={() => (router.canGoBack() ? router.back() : router.replace("/mi-musica" as never))}
+            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/musica" as never))}
             hitSlop={10}
             style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
           >

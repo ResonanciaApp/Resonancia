@@ -34,7 +34,7 @@ const FAQS = [
   },
   {
     q: "¿Cómo uso el Diario Expansivo?",
-    a: "Desde la pestaña Diario puedes escribir reflexiones, registrar sueños, anotar ideas brillantes y guardar notas de voz. Todo queda privado en tu dispositivo.",
+    a: "Desde Inicio, toca la tarjeta Mi Diario para escribir reflexiones e ideas y guardar notas de voz. Todo queda privado en tu dispositivo.",
   },
   {
     q: "¿Los grupos son moderados?",

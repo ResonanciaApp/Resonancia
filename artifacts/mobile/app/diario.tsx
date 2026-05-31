@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { VozInteriorPanel } from "@/components/VozInteriorPanel";
-import { type DiarioSection, useDiario } from "@/hooks/useDiario";
+import { type DiarioEntry, type DiarioSection, useDiario } from "@/hooks/useDiario";
 import { NoOlvidarCard, type NoOlvidarItem } from "@/components/NoOlvidarCard";
 import { useDiarioFavoritesCtx } from "@/context/DiarioFavoritesContext";
 import { useVozInterior } from "@/hooks/useVozInterior";
@@ -35,24 +35,16 @@ type SectionMeta = {
   placeholder: string;
 };
 
+// Diario unificado: una sola sección para reflexiones e ideas.
 const SECTIONS: SectionMeta[] = [
   {
     key: "reflexiones",
-    title: "Mis reflexiones",
-    subtitle: "Mis más increíbles descubrimientos",
-    icon: "moon",
+    title: "Reflexiones e ideas",
+    subtitle: "Todo lo que quieras recordar",
+    icon: "edit-3",
     accentColor: "#D6A85B",
     gradientColors: ["#241C0C", "#141008"],
-    placeholder: "Escribe aquí tu reflexión...",
-  },
-  {
-    key: "ideas",
-    title: "Ideas Brillantes",
-    subtitle: "Las chispas que no quiero perder",
-    icon: "zap",
-    accentColor: "#D6A85B",
-    gradientColors: ["#241C0C", "#141008"],
-    placeholder: "Escribe aquí tus ideas geniales...",
+    placeholder: "Escribe aquí tu reflexión o idea...",
   },
 ];
 
@@ -128,13 +120,12 @@ function EntryCard({
         {entry.text}
       </Text>
 
-      {isTruncated && !expanded && (
+      {isTruncated && (
         <Text style={[styles.expandHint, { color: colors.mutedForeground }]}>
-          Toca para leer más
+          {expanded ? "Toca para contraer" : "Toca para ver más"}
         </Text>
       )}
 
-      {/* Favorite badge */}
       {isFavorited && (
         <View style={styles.favBadge}>
           <Feather name="heart" size={9} color="#D4709A" />
@@ -147,15 +138,20 @@ function EntryCard({
         <Pressable onPress={onToggleFavorite} hitSlop={8} style={styles.actionBtn}>
           <Feather
             name="heart"
-            size={13}
+            size={15}
             color={isFavorited ? "#D4709A" : colors.mutedForeground}
           />
         </Pressable>
-        <Pressable onPress={handleTrashPress} hitSlop={8} style={[styles.actionBtn, confirmingDelete && styles.actionBtnConfirm]}>
-          {confirmingDelete
-            ? <Text style={styles.confirmDeleteText}>¿Borrar?</Text>
-            : <Feather name="trash-2" size={13} color={colors.mutedForeground} />
-          }
+        <Pressable
+          onPress={handleTrashPress}
+          hitSlop={8}
+          style={[styles.actionBtn, confirmingDelete && styles.actionBtnConfirm]}
+        >
+          {confirmingDelete ? (
+            <Text style={styles.confirmDeleteText}>¿Borrar?</Text>
+          ) : (
+            <Feather name="trash-2" size={15} color={colors.mutedForeground} />
+          )}
         </Pressable>
       </View>
     </Pressable>
@@ -168,7 +164,6 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   const { isFavorited, toggleFavorite } = useDiarioFavoritesCtx();
   const [text, setText] = useState("");
   const [showHistory, setShowHistory] = useState(false);
-  const remaining = MAX_CHARS - text.length;
 
   const handleSave = async () => {
     if (!text.trim()) return;
@@ -268,6 +263,29 @@ function SectionPanel({ meta }: { meta: SectionMeta }) {
   );
 }
 
+// Migración única: junta las entradas viejas de "Ideas Brillantes" dentro del
+// diario unificado ("reflexiones") y limpia la clave antigua. Idempotente.
+async function migrateIdeasIntoReflexiones() {
+  try {
+    const ideasRaw = await AsyncStorage.getItem("@diario_ideas");
+    if (ideasRaw == null) return;
+    const ideas = JSON.parse(ideasRaw) as DiarioEntry[];
+    if (ideas.length > 0) {
+      const refRaw = await AsyncStorage.getItem("@diario_reflexiones");
+      const refs = refRaw ? (JSON.parse(refRaw) as DiarioEntry[]) : [];
+      const byId = new Map<string, DiarioEntry>();
+      [...refs, ...ideas].forEach((e) => byId.set(e.id, e));
+      const merged = Array.from(byId.values()).sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+      await AsyncStorage.setItem("@diario_reflexiones", JSON.stringify(merged));
+    }
+    await AsyncStorage.removeItem("@diario_ideas");
+  } catch {
+    // Si falla, no bloqueamos la pantalla.
+  }
+}
+
 export default function DiarioScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -283,6 +301,11 @@ export default function DiarioScreen() {
     updateEntry: updateVozEntry,
   } = useVozInterior();
   const [noOlvidarOpen, setNoOlvidarOpen] = useState(true);
+  const [migrated, setMigrated] = useState(false);
+
+  useEffect(() => {
+    migrateIdeasIntoReflexiones().finally(() => setMigrated(true));
+  }, []);
 
   const noOlvidarItems = React.useMemo<NoOlvidarItem[]>(() => {
     const diarioFavs: NoOlvidarItem[] = favoriteEntries
@@ -326,12 +349,25 @@ export default function DiarioScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Back */}
+        <View style={styles.headerTop}>
+          <Pressable
+            onPress={() =>
+              router.canGoBack() ? router.back() : router.replace("/(tabs)" as never)
+            }
+            hitSlop={10}
+            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <Feather name="chevron-left" size={20} color={colors.foreground} />
+          </Pressable>
+        </View>
+
         {/* Header */}
         <View style={styles.header}>
           <View style={{ flex: 1 }}>
             <Text style={[styles.screenTitle, { color: colors.foreground }]}>Mi Diario</Text>
             <Text style={[styles.screenSubtitle, { color: colors.mutedForeground }]}>
-              Guarda audios de voz con las inspiraciones y mensajes que brotan desde tu interior.
+              Escribe tus reflexiones e ideas, y guarda mensajes de voz que brotan desde tu interior.
             </Text>
           </View>
         </View>
@@ -419,10 +455,11 @@ export default function DiarioScreen() {
             )}
           </View>
 
+          {/* ── Diario unificado (reflexiones + ideas) ── */}
+          {migrated && SECTIONS.map((s) => <SectionPanel key={s.key} meta={s} />)}
+
+          {/* ── Voz Interior (más abajo) ── */}
           <VozInteriorPanel />
-          {SECTIONS.map((s) => (
-            <SectionPanel key={s.key} meta={s} />
-          ))}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -431,6 +468,15 @@ export default function DiarioScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  headerTop: { paddingHorizontal: 20, marginBottom: 14 },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",

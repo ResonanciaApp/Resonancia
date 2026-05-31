@@ -34,7 +34,6 @@ const LOGGED_OUT_ITEMS: MenuItem[] = [
   { label: "Crear cuenta",  icon: "user-plus", route: "/(auth)/sign-up" },
   { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
   { label: "Premium",     icon: "star",      route: "/membresia" },
-  { label: "Mi Música",   icon: "sliders",   route: "/mi-musica" },
   { label: "Favoritos",   icon: "heart",     route: "/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
@@ -42,7 +41,6 @@ const LOGGED_OUT_ITEMS: MenuItem[] = [
 
 const LOGGED_IN_ITEMS: MenuItem[] = [
   { label: "Premium",     icon: "star",      route: "/membresia" },
-  { label: "Mi Música",   icon: "sliders",   route: "/mi-musica" },
   { label: "Favoritos",   icon: "heart",     route: "/favorites" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },

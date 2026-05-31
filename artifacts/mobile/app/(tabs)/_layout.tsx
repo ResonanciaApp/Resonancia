@@ -32,7 +32,7 @@ const TAB_CONFIG: Record<
 > = {
   index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
   explore: { label: "Biblioteca", sfIcon: "books.vertical", sfIconFill: "books.vertical.fill", featherIcon: "book-open" },
-  diario:  { label: "Diario",     sfIcon: "pencil.line",    sfIconFill: "pencil.line",         featherIcon: "feather" },
+  musica:  { label: "Mi Música",  sfIcon: "music.note",     sfIconFill: "music.note",          featherIcon: "music" },
   profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
 };
 
@@ -70,7 +70,7 @@ function TabItem({
     >
       <View style={styles.iconWrap}>
         <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
-        {isIOS && route.name !== "diario" ? (
+        {isIOS ? (
           <SymbolView
             name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
             tintColor={iconColor}
@@ -147,7 +147,7 @@ export default function TabLayout() {
         <Tabs.Screen name="index"    options={{ title: "Inicio" }} />
         <Tabs.Screen name="explore"  options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="descanzo" options={{ title: "Descanso", href: null }} />
-        <Tabs.Screen name="diario"   options={{ title: "Diario" }} />
+        <Tabs.Screen name="musica"   options={{ title: "Mi Música" }} />
         <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
       </Tabs>
 
