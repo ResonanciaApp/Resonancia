@@ -23,12 +23,9 @@ import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
-import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
-import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { usePremium } from "@/context/PremiumContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
@@ -40,11 +37,6 @@ const { width } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 20;
 
-const PARA_TU_DIA = [
-  { id: "1", emoji: "🌞", label: "Mañana" },
-  { id: "5", emoji: "✨", label: "Afirmaciones" },
-  { id: "2", emoji: "🌙", label: "Noche" },
-];
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
@@ -73,12 +65,10 @@ function BlinkingCursor({ color }: { color: string }) {
 
 export default function HomeScreen() {
   const colors = useColors();
-  const { isPremium } = usePremium();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
-  const { isRegistered } = useAuth();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   function handleIntentionPress() {
@@ -97,17 +87,14 @@ export default function HomeScreen() {
   }, []);
   // Last 5 sessions (most recently added = highest index)
   const newSessions = [...SESSIONS].reverse().slice(0, 5);
-  // Top 10 más escuchadas (mock semanal — reemplazar con datos reales cuando exista el endpoint)
-  const TOP_IDS = ["1","5","8","2","9","10","21","20","7","22"];
-  const topSessions = TOP_IDS.map((id) => SESSIONS.find((s) => s.id === id)).filter(Boolean) as Session[];
-  // 6 random sessions — shuffled once on mount via useMemo
+  // Descubrí algo nuevo — shuffled once on mount via useMemo
   const recommended = React.useMemo<Session[]>(() => {
     const pool = [...SESSIONS];
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]];
     }
-    return pool.slice(0, 6);
+    return pool.slice(0, 4);
   }, []);
 
   const { open: openDrawer } = useDrawer();
@@ -254,73 +241,14 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 9.5 PARA TU DÍA ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Para tu día</Text>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.hScroll}
-          >
-            {PARA_TU_DIA.map((item) => {
-              const s = SESSIONS.find((x) => x.id === item.id);
-              if (!s) return null;
-              const locked = !!s.isPremium && !isPremium;
-              return (
-                <Pressable
-                  key={s.id}
-                  onPress={() => router.push((locked ? "/membresia" : `/session/${s.id}`) as never)}
-                  style={({ pressed }) => [styles.diaCard, { opacity: pressed ? 0.9 : 1 }]}
-                >
-                  <Image source={s.image as never} style={styles.diaImg} />
-                  <LinearGradient
-                    colors={["rgba(0,0,0,0.05)", "rgba(0,0,0,0.75)"]}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <PremiumBadge session={s} top={10} left={10} />
-                  <View style={styles.diaTopRow}>
-                    <View />
-                    <Text style={styles.diaDuration}>{s.duration}m</Text>
-                  </View>
-                  <View style={styles.diaBottomRow}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.diaTitle} numberOfLines={2}>{s.title}</Text>
-                      {s.guide?.name && (
-                        <Text style={styles.diaAuthor} numberOfLines={1}>{s.guide.name}</Text>
-                      )}
-                    </View>
-                    <Pressable
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        if (locked) {
-                          router.push("/membresia" as never);
-                          return;
-                        }
-                        playSession(s);
-                        router.push("/player" as never);
-                      }}
-                      style={styles.diaPlayBtn}
-                      hitSlop={8}
-                    >
-                      <Feather name="play" size={16} color="#0C0908" style={{ marginLeft: 2 }} />
-                    </Pressable>
-                  </View>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* ── 5. RECOMENDADAS PARA TI ── */}
+        {/* ── 5. DESCUBRÍ ALGO NUEVO ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Recomendadas para ti
+              Descubrí algo nuevo
             </Text>
           </View>
-          {recommended.slice(0, 4).map((s) => (
+          {recommended.map((s) => (
             <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
           ))}
         </View>
@@ -342,22 +270,6 @@ export default function HomeScreen() {
             contentContainerStyle={styles.hScroll}
           >
             {newSessions.map((s) => (
-              <SessionCard key={s.id} session={s} width={110} />
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* ── 9. LO MÁS ESCUCHADO ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Lo más escuchado</Text>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.hScroll}
-          >
-            {topSessions.map((s) => (
               <SessionCard key={s.id} session={s} width={110} />
             ))}
           </ScrollView>
@@ -438,56 +350,6 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
   seeAll: { fontSize: 13 },
-
-  // Para tu día
-  diaCard: {
-    width: 260,
-    height: 170,
-    borderRadius: 18,
-    overflow: "hidden",
-    marginRight: 12,
-    backgroundColor: "#1a120c",
-  },
-  diaImg: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
-  diaTopRow: {
-    position: "absolute",
-    top: 12,
-    left: 12,
-    right: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  diaChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.95)",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 999,
-  },
-  diaChipEmoji: { fontSize: 12, marginRight: 5 },
-  diaChipText: { fontSize: 12, fontWeight: "700", color: "#1a120c" },
-  diaDuration: { fontSize: 13, fontWeight: "700", color: "#fff" },
-  diaBottomRow: {
-    position: "absolute",
-    bottom: 12,
-    left: 14,
-    right: 12,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 10,
-  },
-  diaTitle: { fontSize: 16, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
-  diaAuthor: { fontSize: 12, color: "rgba(255,255,255,0.85)", marginTop: 2 },
-  diaPlayBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
   // Categories — pill icons row
   catPillRow: {
