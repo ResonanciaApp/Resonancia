@@ -93,12 +93,19 @@ const COMPLETED_THRESHOLD = 0.97;
 /** Minimum delta before persisting progress to AsyncStorage */
 const PROGRESS_SAVE_DELTA = 0.02;
 
-/** Resolve a bundled session image to a URI usable as lock screen artwork */
+/** Resolve a bundled session image to a URI usable as lock screen artwork.
+ *  In dev, Metro serves assets from a URL containing a second "?" (e.g.
+ *  ".../foo.jpg?platform=ios&hash=..."). iOS cannot fetch that as artwork, and
+ *  expo-audio's async artwork download failing prevents the Now Playing info
+ *  from registering at all. So we only return clean single-query / file URLs. */
 function resolveArtworkUrl(session: Session): string | undefined {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const resolved = Image.resolveAssetSource(session.image as any);
-    return resolved?.uri;
+    const uri = Image.resolveAssetSource(session.image as any)?.uri;
+    if (!uri) return undefined;
+    const queryCount = (uri.match(/\?/g) || []).length;
+    if (queryCount > 1) return undefined;
+    return uri;
   } catch (_) {
     return undefined;
   }
