@@ -161,10 +161,7 @@ export default function CategoryMixesScreen() {
         key={mix.id}
         onPress={() => handleOpen(mix)}
         onLongPress={() => handleDelete(mix)}
-        style={[
-          styles.mixRow,
-          { backgroundColor: colors.card, borderColor: isPlayingThis ? colors.primary : colors.border },
-        ]}
+        style={styles.mixRow}
       >
         <ImageBackground
           source={getMixImage(mix.image)}
@@ -333,7 +330,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
-    borderWidth: 1,
+    backgroundColor: "rgba(255,255,255,0.06)",
     padding: 10,
     marginBottom: 10,
   },
