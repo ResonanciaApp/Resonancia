@@ -5,7 +5,7 @@ import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   ImageBackground,
@@ -56,10 +56,39 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   });
 }
 
+/** Local day key (year-month-day) using device time, for streak grouping */
+function dayKey(d: Date): string {
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+/** Count consecutive active days ending today or yesterday */
+function computeStreak(events: { playedAt: string }[]): number {
+  if (events.length === 0) return 0;
+  const days = new Set(events.map((e) => dayKey(new Date(e.playedAt))));
+  const today = new Date();
+  const todayKey = dayKey(today);
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const yKey = dayKey(yesterday);
+
+  let cursor: Date;
+  if (days.has(todayKey)) cursor = today;
+  else if (days.has(yKey)) cursor = yesterday;
+  else return 0;
+
+  let count = 0;
+  const walk = new Date(cursor);
+  while (days.has(dayKey(walk))) {
+    count++;
+    walk.setDate(walk.getDate() - 1);
+  }
+  return count;
+}
+
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
+  const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
   const { presets } = useMixer();
   const { isPremium } = usePremium();
   const loadMix = useLoadMix();
@@ -172,6 +201,51 @@ export default function ProfileScreen() {
     .map((id) => getSessionById(id))
     .filter(Boolean);
 
+  // ── Activity summary (week minutes, top category, top session, streak) ──────
+  const activity = useMemo(() => {
+    const weekCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    let weeklyMinutes = 0;
+    const categoryCount = new Map<string, number>();
+    const sessionCount = new Map<string, number>();
+
+    for (const e of statEvents) {
+      if (new Date(e.playedAt).getTime() >= weekCutoff) {
+        weeklyMinutes += e.minutes;
+      }
+      categoryCount.set(e.categoryLabel, (categoryCount.get(e.categoryLabel) ?? 0) + 1);
+      sessionCount.set(e.sessionId, (sessionCount.get(e.sessionId) ?? 0) + 1);
+    }
+
+    let topCategory: string | null = null;
+    let topCategoryN = 0;
+    for (const [label, n] of categoryCount) {
+      if (n > topCategoryN) {
+        topCategoryN = n;
+        topCategory = label;
+      }
+    }
+
+    let topSessionId: string | null = null;
+    let topSessionN = 0;
+    for (const [id, n] of sessionCount) {
+      if (n > topSessionN) {
+        topSessionN = n;
+        topSessionId = id;
+      }
+    }
+
+    const topSession = topSessionId ? getSessionById(topSessionId) : null;
+    const streak = computeStreak(statEvents);
+
+    return {
+      weeklyMinutes: Math.round(weeklyMinutes),
+      topCategory,
+      topSession,
+      streak,
+      hasData: statEvents.length > 0,
+    };
+  }, [statEvents]);
+
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
@@ -275,6 +349,62 @@ export default function ProfileScreen() {
           })}
         </View>
 
+        {/* ── Racha ── */}
+        <View style={[styles.streakCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.streakFlame}>
+            <Text style={styles.streakEmoji}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.streakValue, { color: colors.foreground }]}>
+              {activity.streak > 0
+                ? `${activity.streak} día${activity.streak !== 1 ? "s" : ""} seguidos`
+                : "Comienza tu racha"}
+            </Text>
+            <Text style={[styles.streakSub, { color: colors.mutedForeground }]}>
+              {activity.streak > 0
+                ? "Sigue así, no pierdas tu constancia"
+                : "Escucha una sesión hoy para empezar"}
+            </Text>
+          </View>
+        </View>
+
+        {/* ── Mi viaje ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi viaje</Text>
+          {activity.hasData ? (
+            <View style={[styles.journeyCard, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}>
+              <View style={styles.journeyRow}>
+                <Feather name="clock" size={16} color={colors.accent} />
+                <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Minutos esta semana</Text>
+                <Text style={[styles.journeyValue, { color: colors.foreground }]}>{activity.weeklyMinutes}</Text>
+              </View>
+              <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
+              <View style={styles.journeyRow}>
+                <Feather name="heart" size={16} color={colors.accent} />
+                <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Sesión favorita</Text>
+                <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
+                  {activity.topSession?.title ?? "—"}
+                </Text>
+              </View>
+              <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
+              <View style={styles.journeyRow}>
+                <Feather name="bar-chart-2" size={16} color={colors.accent} />
+                <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Categoría más escuchada</Text>
+                <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
+                  {activity.topCategory ?? "—"}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View style={[styles.emptyFav, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}>
+              <Feather name="compass" size={22} color={"rgba(198,155,79,0.3)"} />
+              <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
+                Tu viaje empieza con la primera sesión.{"\n"}Aquí verás tus minutos, sesión favorita y más.
+              </Text>
+            </View>
+          )}
+        </View>
+
         {/* ── Mis Mezclas ── */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Mezclas</Text>
@@ -318,6 +448,37 @@ export default function ProfileScreen() {
             ))
           )}
         </View>
+
+        {/* ── Membresía ── */}
+        <Pressable
+          onPress={() => router.push("/membresia" as never)}
+          style={({ pressed }) => [
+            styles.membershipRow,
+            {
+              backgroundColor: colors.card,
+              borderColor: isPremium ? colors.primary : colors.border,
+              opacity: pressed ? 0.85 : 1,
+            },
+          ]}
+        >
+          <Feather
+            name={isPremium ? "award" : "user"}
+            size={18}
+            color={isPremium ? colors.primary : colors.mutedForeground}
+          />
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.membershipPlan, { color: colors.foreground }]}>
+              {isPremium ? "Plan Premium" : "Plan Free"}
+            </Text>
+            <Text style={[styles.membershipSub, { color: colors.mutedForeground }]}>
+              {isPremium ? "Acceso completo activo" : "Acceso limitado al catálogo"}
+            </Text>
+          </View>
+          <Text style={[styles.membershipAction, { color: colors.primary }]}>
+            {isPremium ? "Gestionar" : "Mejorar"}
+          </Text>
+          <Feather name="chevron-right" size={16} color={colors.primary} />
+        </Pressable>
 
         {!isPremium && (
           <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
@@ -580,6 +741,42 @@ const styles = StyleSheet.create({
   statIcon: { marginBottom: 8 },
   statValue: { fontSize: 22, fontWeight: "700", marginBottom: 2 },
   statLabel: { fontSize: 11, letterSpacing: 0.5 },
+
+  // Racha
+  streakCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 20,
+  },
+  streakFlame: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(198,155,79,0.12)" },
+  streakEmoji: { fontSize: 22 },
+  streakValue: { fontSize: 16, fontWeight: "700", marginBottom: 2 },
+  streakSub: { fontSize: 12 },
+
+  // Mi viaje
+  journeyCard: { borderRadius: 18, borderWidth: 1, paddingHorizontal: 16, paddingVertical: 4 },
+  journeyRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 14 },
+  journeyLabel: { flex: 1, fontSize: 13 },
+  journeyValue: { fontSize: 14, fontWeight: "600", maxWidth: "45%", textAlign: "right" },
+  journeyDivider: { height: StyleSheet.hairlineWidth, opacity: 0.5 },
+
+  // Membresía
+  membershipRow: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
+  },
+  membershipPlan: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
+  membershipSub: { fontSize: 12 },
+  membershipAction: { fontSize: 13, fontWeight: "600" },
 
   // Premium
   premiumBanner: {

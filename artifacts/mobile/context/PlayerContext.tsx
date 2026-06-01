@@ -23,6 +23,15 @@ export interface HistoryEntry {
   playedAt: string;
 }
 
+/** A single play event used to derive activity stats (week minutes, streak, top category) */
+export interface StatEvent {
+  sessionId: string;
+  categoryId: string;
+  categoryLabel: string;
+  minutes: number;
+  playedAt: string;
+}
+
 type PlayerContextType = {
   currentSession: Session | null;
   isPlaying: boolean;
@@ -32,6 +41,8 @@ type PlayerContextType = {
   isLoading: boolean;
   favorites: string[];
   history: HistoryEntry[];
+  /** Play events for activity stats (week minutes, streak, top category) */
+  statEvents: StatEvent[];
   /** Per-session saved progress (0-1), keyed by session id */
   sessionProgress: Record<string, number>;
   /** Get saved progress for a session id (0 if none) */
@@ -69,7 +80,12 @@ const PlayerContext = createContext<PlayerContextType | null>(null);
 const FAVORITES_KEY = "@resonance_favorites";
 const HISTORY_KEY = "@resonance_history";
 const SESSION_PROGRESS_KEY = "@resonance_session_progress";
+const STATS_KEY = "@resonance_stats";
 const HISTORY_LIMIT = 50;
+/** Keep stat events for this many days (older ones are pruned on load) */
+const STATS_RETENTION_DAYS = 180;
+/** Cap stored stat events to avoid unbounded growth */
+const STATS_LIMIT = 600;
 /** Progress >= this value is treated as "completed" and cleared */
 const COMPLETED_THRESHOLD = 0.97;
 /** Minimum delta before persisting progress to AsyncStorage */
@@ -95,6 +111,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [statEvents, setStatEvents] = useState<StatEvent[]>([]);
   const [sessionProgress, setSessionProgress] = useState<Record<string, number>>({});
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
 
@@ -160,6 +177,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         sessionProgressRef.current = parsed;
         lastSavedProgressRef.current = { ...parsed };
         setSessionProgress(parsed);
+      } catch (_) {}
+    });
+    AsyncStorage.getItem(STATS_KEY).then((val) => {
+      if (!val) return;
+      try {
+        const parsed: StatEvent[] = JSON.parse(val);
+        const cutoff = Date.now() - STATS_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+        const filtered = parsed.filter((e) => new Date(e.playedAt).getTime() > cutoff);
+        if (filtered.length !== parsed.length) {
+          AsyncStorage.setItem(STATS_KEY, JSON.stringify(filtered)).catch(() => {});
+        }
+        setStatEvents(filtered);
       } catch (_) {}
     });
   }, []);
@@ -418,14 +447,27 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }, 1000);
   };
 
-  const addToHistory = useCallback(async (session: Session) => {
+  const addToHistory = useCallback(async (session: Session, minutes?: number) => {
+    const playedAt = new Date().toISOString();
     setHistory((prev) => {
       const filtered = prev.filter((e) => e.sessionId !== session.id);
       const updated = [
-        { sessionId: session.id, playedAt: new Date().toISOString() },
+        { sessionId: session.id, playedAt },
         ...filtered,
       ].slice(0, HISTORY_LIMIT);
       AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+      return updated;
+    });
+    setStatEvents((prev) => {
+      const event: StatEvent = {
+        sessionId: session.id,
+        categoryId: session.categoryId,
+        categoryLabel: session.categoryLabel,
+        minutes: minutes ?? session.duration,
+        playedAt,
+      };
+      const updated = [event, ...prev].slice(0, STATS_LIMIT);
+      AsyncStorage.setItem(STATS_KEY, JSON.stringify(updated)).catch(() => {});
       return updated;
     });
   }, []);
@@ -552,7 +594,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setProgress(0);
       setElapsed(0);
       setActualDurationSeconds(totalSeconds);
-      void addToHistory(session);
+      void addToHistory(session, minutes);
 
       const audioFile = AUDIO_MAP[session.id];
       const isLoopSession = LOOP_SESSIONS.has(session.id);
@@ -746,7 +788,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const clearHistory = useCallback(async () => {
     setHistory([]);
-    await AsyncStorage.removeItem(HISTORY_KEY);
+    setStatEvents([]);
+    await AsyncStorage.multiRemove([HISTORY_KEY, STATS_KEY]);
   }, []);
 
   const setVoiceVolume = useCallback((volume: number) => {
@@ -792,6 +835,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         favorites,
         history,
+        statEvents,
         sessionProgress,
         getSessionProgress,
         isFavorite,
