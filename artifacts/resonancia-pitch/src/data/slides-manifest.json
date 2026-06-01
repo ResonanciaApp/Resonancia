@@ -102,5 +102,13 @@
     "title": "La inversión",
     "description": "Monto, uso de fondos y contacto.",
     "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000014",
+    "position": 14,
+    "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
+    "title": "Anexo · Escenarios de inversión",
+    "description": "Matriz de monto a levantar vs valoración vs porcentaje cedido.",
+    "speakerNotes": ""
   }
 ]
