@@ -303,7 +303,7 @@ export default function SessionDetailScreen() {
           )}
 
           {/* ── Más en … ─────────────────────────────────────────────────── */}
-          {!isGuiada && related.length > 0 && (
+          {!isGuiada && !isAncestral && related.length > 0 && (
             <View style={styles.relatedBlock}>
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>
                 Más en {session.categoryLabel}
