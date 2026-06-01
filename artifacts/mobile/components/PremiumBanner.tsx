@@ -48,7 +48,7 @@ function PremiumActiveBanner() {
       >
         {/* Fondo verde oscuro */}
         <LinearGradient
-          colors={[P.bg1, P.bg0]}
+          colors={["#1A4231", "#0E2D20"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.cardActive}
