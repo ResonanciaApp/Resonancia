@@ -94,18 +94,16 @@ const COMPLETED_THRESHOLD = 0.97;
 const PROGRESS_SAVE_DELTA = 0.02;
 
 /** Resolve a bundled session image to a URI usable as lock screen artwork.
- *  In dev, Metro serves assets from a URL containing a second "?" (e.g.
- *  ".../foo.jpg?platform=ios&hash=..."). iOS cannot fetch that as artwork, and
- *  expo-audio's async artwork download failing prevents the Now Playing info
- *  from registering at all. So we only return clean single-query / file URLs. */
+ *  expo-audio downloads this URL asynchronously (URLSession) and adds it to the
+ *  Now Playing info once fetched. A failing download is harmless — the Now Playing
+ *  entry is registered independently from the artwork — so we pass the URL through
+ *  as-is. In dev, Metro serves a URL with a second "?" (".../foo.jpg?platform=ios
+ *  &hash=..."); Swift's URL(string:) accepts it and the asset loads fine. */
 function resolveArtworkUrl(session: Session): string | undefined {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const uri = Image.resolveAssetSource(session.image as any)?.uri;
-    if (!uri) return undefined;
-    const queryCount = (uri.match(/\?/g) || []).length;
-    if (queryCount > 1) return undefined;
-    return uri;
+    return uri || undefined;
   } catch (_) {
     return undefined;
   }
