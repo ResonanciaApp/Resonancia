@@ -72,15 +72,7 @@
           "color": "#C69B4F"
         }
       ],
-      "expo-video",
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "buildReactNativeFromSource": true
-          }
-        }
-      ]
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,
