@@ -1,7 +1,39 @@
 ---
-name: expo-av launch SIGABRT under New Architecture
-description: Why expo-av audio-session calls at app launch crash standalone iOS builds on SDK 54 New Arch, and how to avoid it
+name: iOS launch SIGABRT on SDK 54 New Arch (expo-updates error recovery; audio was a red herring)
+description: A standalone iOS launch crash that LOOKED like audio but was actually expo-updates error recovery; how to read the .ips queue name to find the real culprit
 ---
+
+# RESOLUTION (read first): the real cause was expo-updates, not audio
+
+The crash (`EXC_CRASH / SIGABRT`, `objc_exception_throw`, ~1s after launch) was
+**expo-updates**, not audio. The decisive clue was ONLY in the FULL `.ips` file:
+`"legacyInfo": { "threadTriggered": { "queue": "expo.controller.errorRecoveryQueue" } }`
+— that GCD queue belongs to `EXUpdatesAppController`'s error-recovery path. The
+`lastExceptionBacktrace` frames were all `imageIndex:0` = the main `RESONANCE`
+binary (Expo modules are statically linked), so offsets alone could not name the
+module — the **queue name** did.
+
+**Why the audio fixes did nothing:** the backtrace was byte-identical across every
+build because expo-updates error recovery sits independent of the audio code. The
+app.json had `updates.url` but no `enabled` flag → expo-updates ran at launch,
+something in its update/recovery path threw an uncatchable NSException → abort.
+
+**Fix that worked:** in `app.json`, `updates.enabled: false` (kept the `url` for
+later). Test/preview builds load the embedded JS bundle and don't need OTA, so
+disabling updates removes the error-recovery machinery and the crash. Re-enable
+when actually shipping OTA updates.
+
+**Lesson for next time:** for any standalone iOS launch SIGABRT, get the FULL `.ips`
+and read `legacyInfo.threadTriggered.queue` (and faulting-thread queue names)
+FIRST. The queue name identifies the owning module even when every frame is
+`imageIndex:0`. Do not guess from screenshots that omit `legacyInfo`/`usedImages`.
+
+---
+
+(Below: the earlier audio investigation. The audio deferral changes were kept as
+good practice — configuring AVAudioSession off the launch path is still correct —
+but they were NOT the cause of this crash.)
+
 
 # expo-av audio session at launch = uncatchable SIGABRT (SDK 54 + New Arch)
 
