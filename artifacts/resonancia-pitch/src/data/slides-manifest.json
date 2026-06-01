@@ -1,1 +1,90 @@
-[]
+[
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000001",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01Portada.tsx",
+    "title": "Portada",
+    "description": "Portada del pitch para inversionistas.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000002",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02Problema.tsx",
+    "title": "El problema",
+    "description": "Salud mental desatendida en el mundo hispanohablante.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000003",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03Solucion.tsx",
+    "title": "La solución",
+    "description": "Un refugio de sonido nativo en español.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000004",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04Producto.tsx",
+    "title": "El producto",
+    "description": "Una app completa, ya construida.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000005",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide05Mercado.tsx",
+    "title": "El mercado",
+    "description": "Mercado grande y en plena expansión.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000006",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06Competencia.tsx",
+    "title": "La competencia",
+    "description": "Calm y Headspace validan el modelo, pero en inglés.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000007",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07PorQue.tsx",
+    "title": "Por qué RESONANCIA",
+    "description": "Ventaja defendible: idioma, contenido propio e identidad.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000008",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide08Modelo.tsx",
+    "title": "Modelo de negocio",
+    "description": "Suscripción freemium con precios regionales.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000009",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide09Estado.tsx",
+    "title": "Estado actual",
+    "description": "El producto ya existe; riesgo técnico resuelto.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000010",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10HojaDeRuta.tsx",
+    "title": "Hoja de ruta",
+    "description": "El camino a las tiendas y al crecimiento.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000011",
+    "position": 11,
+    "filepath": "src/pages/slides/Slide11Inversion.tsx",
+    "title": "La inversión",
+    "description": "Monto, uso de fondos y contacto.",
+    "speakerNotes": ""
+  }
+]
