@@ -119,6 +119,11 @@ export default function MiMusicaScreen() {
         <MixerPanel />
 
         {/* ── Biblioteca de sonidos ── */}
+        <View style={styles.allSoundsHeader}>
+          <Text style={[styles.pageTitle, { color: colors.foreground, fontSize: 24 }]}>
+            Todos los sonidos
+          </Text>
+        </View>
         {SOUND_CATEGORIES.map((cat) => {
           const sounds = getSoundsByCategory(cat.id);
           if (sounds.length === 0) return null;
@@ -240,6 +245,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   mixerHeader: { marginBottom: 18 },
+  allSoundsHeader: { marginTop: 8, marginBottom: 14 },
 
   // Grilla de sonidos
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
