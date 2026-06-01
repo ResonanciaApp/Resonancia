@@ -376,8 +376,10 @@ export default function PlayerScreen() {
               style={styles.artistRow}
               hitSlop={6}
             >
-              <Feather name="user" size={12} color={colors.accent} />
-              <Text style={[styles.artistText, { color: colors.accent }]}>Artista: {artist.name}</Text>
+              <Feather name="user" size={12} color={colors.foreground} />
+              <Text style={[styles.artistText, { color: colors.foreground }]}>
+                Artista: <Text style={{ color: colors.accent }}>{artist.name}</Text>
+              </Text>
               {artist.certified && <Feather name="check-circle" size={12} color={colors.accent} />}
             </Pressable>
           )}
