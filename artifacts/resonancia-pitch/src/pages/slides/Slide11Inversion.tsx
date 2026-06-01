@@ -13,7 +13,7 @@ export default function Slide11Inversion() {
       >
         <div>
           <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "#7a6050", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
-            10 · LA INVERSIÓN
+            12 · LA INVERSIÓN
           </div>
           <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "48vw" }}>
             Buscamos <span style={{ color: "#C69B4F" }}>[monto a levantar]</span>

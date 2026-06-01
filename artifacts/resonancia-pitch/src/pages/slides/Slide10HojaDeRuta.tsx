@@ -7,7 +7,7 @@ export default function Slide10HojaDeRuta() {
       {/* Header */}
       <div>
         <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "#7a6050", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
-          09 · HOJA DE RUTA AL LANZAMIENTO
+          11 · HOJA DE RUTA AL LANZAMIENTO
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
           El camino a <span style={{ color: "#C69B4F" }}>las tiendas.</span>

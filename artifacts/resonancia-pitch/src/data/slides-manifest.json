@@ -72,8 +72,24 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1f4c2d0-1111-4a01-9c01-000000000010",
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000012",
     "position": 10,
+    "filepath": "src/pages/slides/SlideAudiencia.tsx",
+    "title": "Nuestra audiencia",
+    "description": "Comunidad de +1M de seguidores como ventaja de distribución.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000013",
+    "position": 11,
+    "filepath": "src/pages/slides/SlideProyeccion.tsx",
+    "title": "Proyección a 12 meses",
+    "description": "Escenarios de ingresos para el primer año.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000010",
+    "position": 12,
     "filepath": "src/pages/slides/Slide10HojaDeRuta.tsx",
     "title": "Hoja de ruta",
     "description": "El camino a las tiendas y al crecimiento.",
@@ -81,7 +97,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000011",
-    "position": 11,
+    "position": 13,
     "filepath": "src/pages/slides/Slide11Inversion.tsx",
     "title": "La inversión",
     "description": "Monto, uso de fondos y contacto.",
