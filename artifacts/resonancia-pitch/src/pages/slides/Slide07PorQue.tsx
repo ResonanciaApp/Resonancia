@@ -24,9 +24,9 @@ export default function Slide07PorQue() {
             </div>
           </div>
           <div>
-            <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#C69B4F", marginBottom: "0.8vh" }}>Contenido propio</div>
+            <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#C69B4F", marginBottom: "0.8vh" }}>Biblioteca sonora propia</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#cbb9a4", lineHeight: 1.4 }}>
-              Artistas y voces guía certificados crean material exclusivo para la plataforma.
+              Tienda propia de cuencos tibetanos y gongs: audio original en alta calidad de un amplio rango de frecuencias y notas, imposible de replicar. A esto se suman artistas y voces guía certificados.
             </div>
           </div>
         </div>
@@ -48,7 +48,7 @@ export default function Slide07PorQue() {
 
       {/* Closing line */}
       <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.5, maxWidth: "76vw" }}>
-        Ser primeros y mejores en español construye una marca difícil de copiar.
+        Una biblioteca sonora propia más una marca nativa en español: una ventaja muy difícil de copiar.
       </div>
     </div>
   );
