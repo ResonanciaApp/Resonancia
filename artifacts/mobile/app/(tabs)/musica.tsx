@@ -196,8 +196,13 @@ export default function MiMusicaScreen() {
         {/* ── Mezcla activa ── */}
         <MixerPanel />
 
-        {/* ── Tabs de categorías de sonido (varias filas) ── */}
-        <View style={styles.tabsWrap}>
+        {/* ── Tabs de categorías de sonido ── */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsRow}
+          style={styles.tabsScroll}
+        >
           {tabs.map((tab) => {
             const selected = activeTab === tab.id;
             return (
@@ -223,7 +228,7 @@ export default function MiMusicaScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         {/* ── Biblioteca de sonidos (con títulos por categoría, filtrada por tab) ── */}
         {SOUND_CATEGORIES.filter(
@@ -257,8 +262,9 @@ const styles = StyleSheet.create({
   section: { marginBottom: 14 },
   sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
 
-  // Tabs de categorías de sonido (varias filas)
-  tabsWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 16 },
+  // Tabs de categorías de sonido
+  tabsScroll: { marginBottom: 16, marginHorizontal: -20 },
+  tabsRow: { gap: 8, paddingHorizontal: 20 },
   tab: {
     paddingHorizontal: 14,
     paddingVertical: 8,
