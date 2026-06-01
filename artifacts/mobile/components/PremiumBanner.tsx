@@ -46,9 +46,9 @@ function PremiumActiveBanner() {
         end={{ x: 1, y: 1 }}
         style={styles.goldBorder}
       >
-        {/* Fondo negro con tinte verde */}
+        {/* Fondo verde oscuro */}
         <LinearGradient
-          colors={["#0B1812", "#040C09"]}
+          colors={[P.bg1, P.bg0]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.cardActive}
