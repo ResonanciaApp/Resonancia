@@ -19,8 +19,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ArtistCard } from "@/components/ArtistCard";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { getFeaturedArtists } from "@/data/artists";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session, type SoundTag } from "@/data/sessions";
@@ -64,6 +66,8 @@ export default function MusicaSonidosScreen() {
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
   const { isFavorite, toggleFavorite, playSession, playSessionWithDuration } = usePlayer();
+
+  const featuredArtists = getFeaturedArtists();
 
   const [activeTab, setActiveTab] = useState<Tab>("Todos");
   const [query, setQuery] = useState("");
@@ -300,6 +304,24 @@ export default function MusicaSonidosScreen() {
             { icon: "wind", text: "Porque a veces basta con escuchar para volver al cuerpo." },
           ]}
         />
+
+        {featuredArtists.length > 0 && (
+          <View style={styles.artistsSection}>
+            <Text style={[styles.artistsTitle, { color: colors.foreground }]}>Artistas</Text>
+            <Text style={[styles.artistsSub, { color: colors.mutedForeground }]}>
+              Productores certificados que crean música para Resonancia
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingTop: 6 }}
+            >
+              {featuredArtists.map((artist) => (
+                <ArtistCard key={artist.id} artist={artist} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
       </ScrollView>
 
       {/* Duration Picker Modal */}
@@ -401,6 +423,10 @@ export default function MusicaSonidosScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
+
+  artistsSection: { paddingHorizontal: 20, marginTop: 28 },
+  artistsTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
+  artistsSub: { fontSize: 13, lineHeight: 18, marginBottom: 4 },
 
   header: {
     alignItems: "center",
