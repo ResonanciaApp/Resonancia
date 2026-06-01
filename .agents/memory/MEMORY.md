@@ -6,6 +6,7 @@
 - [Mi Música mixer](mi-musica-mixer.md) — mezclador ambiente: sonidos se activan con slot SOUND_MAP; premium gating de presets se sanea en la pantalla (context es premium-agnóstico)
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
 - [Codegen clean breaks Metro](codegen-metro-resolve.md) — Orval clean:true deletes generated/ mid-run; Metro caches "Unable to resolve ./generated/api" → restart expo after codegen
+- [expo-av launch SIGABRT](expo-av-launch-crash.md) — expo-av audio-session call at launch under SDK54 New Arch = uncatchable NSException→SIGABRT; keep expo-av off launch path, expo-audio owns session
 - [Diario structure](diario-structure.md) — free Diario = list (diario.tsx) + modal editor (diario-entrada.tsx); useDiario mutators must read-modify-write storage (parallel hook instances); Voz/Favoritos kept for premium
 - [Avatar sync](avatar-sync.md) — foto de perfil local se sube a storage + PATCH /me avatarUrl en ProfileSync; resolveAvatarUrl mapea objectPath a serving URL
 - [Artistas feature](artistas-feature.md) — perfiles curados; artistId solo Ambient/Enteógena; getArtist (con fallback, player) vs getArtistById (sin fallback, perfil); artists.ts→sessions.ts no al revés

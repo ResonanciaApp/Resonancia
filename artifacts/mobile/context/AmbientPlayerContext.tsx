@@ -102,12 +102,36 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   const isPlayingRef = useRef(false);
   const isMutedRef = useRef(false);
   const currentSceneIdRef = useRef<SceneId>("universo");
+  // expo-av session is configured lazily on first ambient use, never at launch.
+  const sessionConfiguredRef = useRef(false);
 
   isPlayingRef.current = isPlaying;
   isMutedRef.current = isMuted;
   currentSceneIdRef.current = currentSceneId;
 
   const currentScene = AMBIENT_SCENES.find((s) => s.id === currentSceneId)!;
+
+  // Configure the expo-av audio session lazily — ONLY on first ambient use, never
+  // at launch. Calling expo-av's Audio.setAudioModeAsync at startup races with the
+  // expo-audio session setup (PlayerContext); under the New Architecture the
+  // resulting native NSException is uncatchable and aborts the app (SIGABRT) ~1s
+  // after launch. Wrapped in try/catch as an extra guard.
+  const ensureAmbientSession = useCallback(async () => {
+    if (sessionConfiguredRef.current) return;
+    try {
+      // staysActiveInBackground MUST be true: this expo-av session shares the single
+      // native audio session with the expo-audio player. If it were false, locking
+      // the screen would deactivate the whole session and cut off the main audio.
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: true,
+        shouldDuckAndroid: true,
+      });
+      sessionConfiguredRef.current = true; // mark only after success → allow retry on failure
+    } catch (e) {
+      console.warn("[Ambient] setAudioMode failed:", e);
+    }
+  }, []);
 
   const unload = useCallback(async () => {
     if (soundRef.current) {
@@ -121,6 +145,7 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   // Pre-load a scene without playing it yet (instant start later)
   const preload = useCallback(async (sceneId: SceneId) => {
     if (loadedSceneRef.current === sceneId) return; // already loaded
+    await ensureAmbientSession();
     await unload();
     try {
       const { sound } = await Audio.Sound.createAsync(
@@ -132,10 +157,11 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     } catch (e) {
       console.warn("[Ambient] preload failed:", e);
     }
-  }, [unload]);
+  }, [unload, ensureAmbientSession]);
 
   const loadAndPlay = useCallback(async (sceneId: SceneId) => {
     console.warn(`[Ambient] loadAndPlay scene=${sceneId} loaded=${loadedSceneRef.current}`);
+    await ensureAmbientSession();
     if (loadedSceneRef.current !== sceneId) {
       await unload();
       try {
@@ -158,24 +184,19 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
         console.warn(`[Ambient] playing preloaded sound for ${sceneId}`);
       }
     }
-  }, [unload]);
+  }, [unload, ensureAmbientSession]);
 
-  // On mount: configure audio mode + pre-load the default scene immediately
+  // On mount: set the initial scene state ONLY. We deliberately do NOT touch the
+  // native audio session or load any expo-av sound at launch — doing so races with
+  // the expo-audio session setup (PlayerContext) and, under the New Architecture, an
+  // NSException from the audio TurboModule is uncatchable and aborts the app
+  // (SIGABRT) ~1s after launch. The expo-av session + default scene are now loaded
+  // lazily on first ambient use (ensureAmbientSession + preload/loadAndPlay).
   useEffect(() => {
-    // staysActiveInBackground MUST be true: this expo-av session shares the single
-    // native audio session with the expo-audio player. If it were false, locking the
-    // screen would deactivate the whole session and cut off the main session audio.
-    Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      staysActiveInBackground: true,
-      shouldDuckAndroid: true,
-    }).catch(() => {});
-
     // Always start on "universo" (first scene) — ignore saved preference on cold start.
     // User can still switch scenes during the session.
     AsyncStorage.setItem(STORAGE_KEY, "universo").catch(() => {});
     setCurrentSceneId("universo");
-    preload("universo");
 
     return () => {
       soundRef.current?.unloadAsync().catch(() => {});
