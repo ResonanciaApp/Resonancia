@@ -160,11 +160,11 @@ export default function ExploreScreen() {
         ) : (
           <>
             {/* ── Continúa escuchando ── */}
-            {lastSession && (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                  Continúa escuchando
-                </Text>
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                Continúa escuchando
+              </Text>
+              {lastSession ? (
                 <Pressable
                   onPress={() =>
                     router.push(
@@ -220,8 +220,24 @@ export default function ExploreScreen() {
                     />
                   </View>
                 </Pressable>
-              </View>
-            )}
+              ) : (
+                <View
+                  style={[
+                    styles.continuePlaceholder,
+                    { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border },
+                  ]}
+                >
+                  <View
+                    style={[styles.continuePlaceholderIcon, { backgroundColor: "rgba(182,149,95,0.12)" }]}
+                  >
+                    <Feather name="headphones" size={20} color={colors.primary} />
+                  </View>
+                  <Text style={[styles.continuePlaceholderText, { color: colors.mutedForeground }]}>
+                    Acá se mostrará la sesión que estabas escuchando
+                  </Text>
+                </View>
+              )}
+            </View>
 
             {/* ── Herramientas ── */}
             <View style={styles.section}>
@@ -607,6 +623,28 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 12,
+  },
+  continuePlaceholder: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    padding: 14,
+    gap: 12,
+    marginTop: 8,
+    borderWidth: 1,
+    borderStyle: "dashed",
+  },
+  continuePlaceholderIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  continuePlaceholderText: {
+    flex: 1,
+    fontSize: 13.5,
+    lineHeight: 19,
   },
   continueMeta: { flex: 1 },
   continueKicker: {
