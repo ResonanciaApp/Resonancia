@@ -7,105 +7,22 @@
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather } from "@expo/vector-icons";
-import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import React, { useCallback, useRef } from "react";
-import {
-  Alert,
-  ImageBackground,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { useCallback } from "react";
+import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import {
-  getGetSharedMixesQueryKey,
-  useGetSharedMixes,
-  useToggleSharedMixLike,
-} from "@workspace/api-client-react";
-import type { SharedMix, SharedMixesPage } from "@workspace/api-client-react";
+import { useGetSharedMixes } from "@workspace/api-client-react";
+import type { SharedMix } from "@workspace/api-client-react";
 
 import { getMixImage } from "@/config/mix-images";
-import { useAuth } from "@/context/AuthContext";
 import { useColors } from "@/hooks/useColors";
 
 export function CommunityMixesCarousel() {
   const colors = useColors();
-  const { isSignedIn } = useAuth();
-  const queryClient = useQueryClient();
 
   const { data } = useGetSharedMixes();
-  const toggleLike = useToggleSharedMixLike();
-  // IDs de mezclas con un like en vuelo, para ignorar taps repetidos.
-  const pendingLikes = useRef<Set<number>>(new Set());
 
   const mixes = data?.mixes ?? [];
-
-  const applyOptimistic = useCallback(
-    (id: number, liked: boolean) => {
-      const key = getGetSharedMixesQueryKey();
-      queryClient.setQueryData<SharedMixesPage>(key, (prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          mixes: prev.mixes.map((m) =>
-            m.id === id
-              ? { ...m, likedByMe: liked, likes: Math.max(0, m.likes + (liked ? 1 : -1)) }
-              : m,
-          ),
-        };
-      });
-    },
-    [queryClient],
-  );
-
-  const handleLike = useCallback(
-    (mix: SharedMix) => {
-      if (!isSignedIn) {
-        Alert.alert(
-          "Crea tu cuenta",
-          "Necesitas una cuenta para dar me gusta a las mezclas de la comunidad.",
-          [
-            { text: "Ahora no", style: "cancel" },
-            { text: "Registrarme", onPress: () => router.push("/(auth)/sign-up" as never) },
-          ],
-        );
-        return;
-      }
-      if (pendingLikes.current.has(mix.id)) return;
-      pendingLikes.current.add(mix.id);
-      const nextLiked = !mix.likedByMe;
-      applyOptimistic(mix.id, nextLiked);
-      toggleLike.mutate(
-        { id: mix.id },
-        {
-          onError: () => {
-            applyOptimistic(mix.id, !nextLiked);
-          },
-          onSettled: () => {
-            pendingLikes.current.delete(mix.id);
-          },
-          onSuccess: (updated) => {
-            const key = getGetSharedMixesQueryKey();
-            queryClient.setQueryData<SharedMixesPage>(key, (prev) => {
-              if (!prev) return prev;
-              return {
-                ...prev,
-                mixes: prev.mixes.map((m) =>
-                  m.id === updated.id
-                    ? { ...m, likes: updated.likes, likedByMe: updated.likedByMe }
-                    : m,
-                ),
-              };
-            });
-          },
-        },
-      );
-    },
-    [isSignedIn, applyOptimistic, toggleLike, queryClient],
-  );
 
   const handlePlay = useCallback((mix: SharedMix) => {
     // Abre el reproductor de la mezcla de la comunidad (la presenta como un
@@ -148,25 +65,15 @@ export function CommunityMixesCarousel() {
               <Text style={[styles.cardName, { color: colors.foreground }]} numberOfLines={1}>
                 {mix.name}
               </Text>
-              <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-                {mix.author.displayName}
-              </Text>
-
-              <Pressable onPress={() => handleLike(mix)} hitSlop={8} style={styles.likeRow}>
-                <Feather
-                  name="heart"
-                  size={14}
-                  color={mix.likedByMe ? colors.primary : colors.mutedForeground}
-                />
+              <View style={styles.authorRow}>
+                <Feather name="user" size={12} color={colors.mutedForeground} />
                 <Text
-                  style={[
-                    styles.likeCount,
-                    { color: mix.likedByMe ? colors.primary : colors.mutedForeground },
-                  ]}
+                  style={[styles.cardAuthor, { color: colors.mutedForeground }]}
+                  numberOfLines={1}
                 >
-                  {mix.likes}
+                  {mix.author.displayName}
                 </Text>
-              </Pressable>
+              </View>
             </View>
           </View>
         ))}
@@ -193,7 +100,6 @@ const styles = StyleSheet.create({
   },
   cardBody: { padding: 10 },
   cardName: { fontSize: 14, fontWeight: "700" },
-  cardAuthor: { fontSize: 12, marginTop: 2 },
-  likeRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 8 },
-  likeCount: { fontSize: 12, fontWeight: "600" },
+  authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 4 },
+  cardAuthor: { fontSize: 12, flexShrink: 1 },
 });
