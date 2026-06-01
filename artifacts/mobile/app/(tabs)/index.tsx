@@ -31,7 +31,6 @@ import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
-import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
 const { width } = Dimensions.get("window");
@@ -307,9 +306,6 @@ export default function HomeScreen() {
             <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
           </Pressable>
         </View>
-
-        {/* ── MEZCLAS DE LA COMUNIDAD ── */}
-        <CommunityMixesCarousel />
 
         {/* ── 5. DESCUBRÍ ALGO NUEVO ── */}
         <View style={styles.section}>
