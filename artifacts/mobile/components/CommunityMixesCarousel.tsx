@@ -130,7 +130,7 @@ export function CommunityMixesCarousel() {
         {mixes.map((mix) => (
           <View
             key={mix.id}
-            style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.card, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}
           >
             <Pressable onPress={() => handlePlay(mix)}>
               <ImageBackground
