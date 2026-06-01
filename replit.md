@@ -25,6 +25,7 @@ App de meditación y sueño en español (Expo SDK 54). Estética oscura y cálid
 
 - `artifacts/mobile/data/sessions.ts` — todas las sesiones, tipos de tags, helper functions
 - `artifacts/mobile/data/tags.ts` — ThemeTag, SleepTag, TagCard, SleepTagCard
+- `artifacts/mobile/data/artists.ts` — tipo Artist, array ARTISTS, helpers getArtist/getArtistSessions/getArtistTrackCount/getFeaturedArtists
 - `artifacts/mobile/config/audio-map.ts` — AUDIO_MAP, VOICE_MAP, AMBIENT_MAP, LOOP_SESSIONS
 - `artifacts/mobile/context/PlayerContext.tsx` — reproductor de audio, timer, favoritos
 - `artifacts/mobile/context/AuthContext.tsx` — registro e isRegistered
@@ -81,6 +82,7 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 | Subcategoria | `ancestralTag` / `soundTag` / `meditationTag` / etc. |
 | Grupo 1 | `themeTag: [...]` |
 | Grupo 2 | `sleepTag` |
+| Artista (solo Música Ambient/Enteógena) | `artistId` (ID de `data/artists.ts`; si se omite → "resonancia") |
 
 ## Videos (sección dentro de Biblioteca)
 
@@ -100,6 +102,24 @@ Los videos NO se bundlean (pesan demasiado): viven en Object Storage y se sirven
 3. Agregar el objeto a `VIDEOS` en `data/videos.ts` con el próximo ID. Marcar `isPremium: true` si corresponde.
 
 > **Gating premium de videos = solo UI** (igual que las sesiones). La ruta `/api/storage/objects/*` no exige auth/ACL, así que un usuario podría pedir la URL directa. El enforcement real depende de tener el estado premium en backend (RevenueCat, ver pendientes). NO modificar esa ruta para gating sin coordinar: la comparte el chat (DM image/audio).
+
+## Artistas (sección dentro de Biblioteca)
+
+Perfiles curados (en código, NO usuarios reales) de productores certificados que crean música para la app. Aparecen como carrusel "Artistas" al final de `app/(tabs)/explore.tsx` (solo si hay artistas `featured`). Visibles para free y premium. Archivos:
+
+- `artifacts/mobile/data/artists.ts` — tipo `Artist` (id, name, photo, bio, country, genre, links[], certified, featured), array `ARTISTS`, `DEFAULT_ARTIST_ID = "resonancia"`, helpers `getArtist(id?)`, `getArtistSessions(id)`, `getArtistTrackCount(id)`, `getFeaturedArtists()`
+- `artifacts/mobile/components/ArtistCard.tsx` — card circular del carrusel (foto + nombre + sello certificado)
+- `artifacts/mobile/app/artista/[id].tsx` — perfil: foto, nombre + sello, país, género, bio, redes, contador de pistas y listado de sus sesiones (tap → `playSession` + `/player`; gating premium por sesión)
+
+Cada sesión de **Música Ambient / Música Enteógena** lleva crédito de artista, que se muestra en el player (línea tappable "por [Artista]" debajo del subtítulo) y enlaza al perfil.
+
+### Subir un artista
+
+1. Copiar la foto a `artifacts/mobile/assets/images/` (recomendado: cuadrada, se recorta circular).
+2. Agregar el objeto a `ARTISTS` en `data/artists.ts` con un `id` único (slug), `featured: true` para que salga en el carrusel, `certified: true` para el sello.
+3. En cada sesión Música Ambient/Enteógena de ese artista, poner `artistId: "<su-id>"` en `sessions.ts`. Si se omite → queda atribuida a "resonancia" (la casa).
+
+> Los artistas actuales **Lumen Sonora** y **Raíz Profunda** son ejemplos con fotos placeholder — reemplazar con artistas reales. El artista por defecto es **"Resonancia"** (cambiar `name` cuando se defina el nombre final de la app).
 
 ## User preferences
 

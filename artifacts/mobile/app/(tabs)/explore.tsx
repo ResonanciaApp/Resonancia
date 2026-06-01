@@ -20,6 +20,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
+import { ArtistCard } from "@/components/ArtistCard";
+import { getFeaturedArtists } from "@/data/artists";
 import { CATEGORIES, getCategoryTint, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
 import { SERIES } from "@/data/series";
@@ -52,6 +54,7 @@ const TIME_BUCKETS = [
 export default function ExploreScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const featuredArtists = getFeaturedArtists();
   const [query, setQuery] = useState("");
   const { history, playSession, getSessionProgress, sessionProgress } = usePlayer();
   const { isPremium } = usePremium();
@@ -387,6 +390,25 @@ export default function ExploreScreen() {
                 ))}
               </ScrollView>
             </View>
+            )}
+
+            {/* ── Artistas ── */}
+            {featuredArtists.length > 0 && (
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Artistas</Text>
+                <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+                  Productores certificados que crean música para Resonancia
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingTop: 6 }}
+                >
+                  {featuredArtists.map((artist) => (
+                    <ArtistCard key={artist.id} artist={artist} />
+                  ))}
+                </ScrollView>
+              </View>
             )}
           </>
         )}

@@ -32,6 +32,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { usePlayer } from "@/context/PlayerContext";
+import { getArtist } from "@/data/artists";
 import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 
@@ -262,6 +263,11 @@ export default function PlayerScreen() {
   // Solo los "Sonidos Naturaleza" son loops con duración elegida por el usuario.
   // "Música Ambient" / "Música Enteógena" son pistas con duración fija.
   const isLoopSession = isMusicaYSonidos && currentSession.soundTag === "Sonidos Naturaleza";
+  // Música Ambient / Enteógena llevan crédito de artista (default Resonancia).
+  const showArtist =
+    isMusicaYSonidos &&
+    (currentSession.soundTag === "Música Ambient" || currentSession.soundTag === "Música Enteógena");
+  const artist = getArtist(currentSession.artistId);
 
   const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
     { label: "Sin timer", minutes: null },
@@ -360,6 +366,17 @@ export default function PlayerScreen() {
           <Text style={[styles.category, { color: colors.accent }]}>{currentSession.categoryLabel}</Text>
           <Text style={[styles.sessionTitle, { color: colors.foreground }]}>{currentSession.title}</Text>
           <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>{currentSession.subtitle}</Text>
+          {showArtist && (
+            <Pressable
+              onPress={() => router.push(`/artista/${artist.id}` as never)}
+              style={styles.artistRow}
+              hitSlop={6}
+            >
+              <Feather name="user" size={12} color={colors.accent} />
+              <Text style={[styles.artistText, { color: colors.accent }]}>{artist.name}</Text>
+              {artist.certified && <Feather name="check-circle" size={12} color={colors.accent} />}
+            </Pressable>
+          )}
           {isLoopSession && (
             <View style={styles.durationChip}>
               <Feather name="clock" size={11} color="#A8D49F" />
@@ -682,6 +699,16 @@ const styles = StyleSheet.create({
   sessionSub: {
     fontSize: 14,
     textAlign: "center",
+  },
+  artistRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 8,
+  },
+  artistText: {
+    fontSize: 13,
+    fontWeight: "600",
   },
   durationChip: {
     flexDirection: "row",

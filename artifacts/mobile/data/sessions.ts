@@ -62,6 +62,8 @@ export type Session = {
   themeTag?: ThemeTag[];
   sleepTag?: SleepTag;
   guide?: SessionGuide;
+  /** ID del artista (de data/artists.ts). Solo para Música Ambient/Enteógena. Si se omite → Resonancia. */
+  artistId?: string;
 };
 
 export const SESSIONS: Session[] = [
@@ -314,6 +316,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-6-musica-dark.jpg"),
     isNew: true,
     soundTag: "Música Ambient",
+    artistId: "lumen-sonora",
   },
   {
     id: "26",
@@ -331,6 +334,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-7-musica-dark.jpg"),
     isNew: true,
     soundTag: "Música Ambient",
+    artistId: "raiz-profunda",
   },
   {
     id: "28",
