@@ -255,6 +255,18 @@ export default function HomeScreen() {
           </View>
         )}
 
+        {/* ── 5. DESCUBRÍ ALGO NUEVO ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              Descubrí algo nuevo
+            </Text>
+          </View>
+          {recommended.map((s) => (
+            <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
+          ))}
+        </View>
+
         {/* ── MI DIARIO ── */}
         <View style={[styles.section, { marginBottom: 24 }]}>
           <Pressable
@@ -305,18 +317,6 @@ export default function HomeScreen() {
             </View>
             <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
           </Pressable>
-        </View>
-
-        {/* ── 5. DESCUBRÍ ALGO NUEVO ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Descubrí algo nuevo
-            </Text>
-          </View>
-          {recommended.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
-          ))}
         </View>
 
         {/* ── 5. FRASE DEL DÍA ── */}
