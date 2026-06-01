@@ -640,6 +640,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           await setAudioModeAsync({
             playsInSilentMode: true,
             shouldPlayInBackground: true,
+            // doNotMix = foco de audio exclusivo. Imprescindible para que iOS
+            // convierta la app en la "app de Now Playing" y muestre los controles
+            // en pantalla bloqueada / Centro de Control. Con el default
+            // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
+            interruptionMode: "doNotMix",
           });
 
           const main = ensureMainPlayer();
@@ -726,6 +731,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           await setAudioModeAsync({
             playsInSilentMode: true,
             shouldPlayInBackground: true,
+            // doNotMix = foco de audio exclusivo. Imprescindible para que iOS
+            // convierta la app en la "app de Now Playing" y muestre los controles
+            // en pantalla bloqueada / Centro de Control. Con el default
+            // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
+            interruptionMode: "doNotMix",
           });
 
           const main = ensureMainPlayer();
