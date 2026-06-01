@@ -244,13 +244,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  // ── Audio session config: play in silence + keep going in background ──────────
-  useEffect(() => {
-    setAudioModeAsync({
-      playsInSilentMode: true,
-      shouldPlayInBackground: true,
-    }).catch(() => {});
-  }, []);
+  // NOTE: No configuramos la sesión de audio al montar. Hacerlo durante la
+  // ventana de arranque (app aún no completamente en primer plano) hace que el
+  // método nativo void del TurboModule lance una NSException no atrapable →
+  // crash SIGABRT al abrir en iOS. La sesión se configura de forma diferida
+  // (lazy) justo antes de la primera reproducción en playSession /
+  // playSessionWithDuration, cuando la app ya está activa.
 
   /** Latest currentSession in a ref — for use inside playback callbacks */
   const currentSessionRef = useRef<Session | null>(null);

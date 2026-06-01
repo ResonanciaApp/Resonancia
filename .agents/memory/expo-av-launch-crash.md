@@ -14,9 +14,19 @@ does NOT swallow it, so it propagates → `abort()` → `EXC_CRASH / SIGABRT`
 A JS `.catch()` on the promise does **not** prevent it — the throw is synchronous in
 the native void method, before the promise resolves.
 
-**Trigger here:** two audio libs (expo-av AND expo-audio) both configured the native
-AVAudioSession at launch → session conflict → throw. Only reproduces in standalone
-release builds (Expo Go masks it); confirms the classic "works in dev, crashes in build".
+**Trigger here:** ANY `setAudioModeAsync` on the launch path throws — even a SINGLE lib.
+First removed expo-av's launch call → crash persisted with byte-identical backtrace
+(same imageIndex-0 offsets). The survivor was **expo-audio**'s `setAudioModeAsync` in a
+provider mount `useEffect`. Configuring AVAudioSession during the ~1s launch window
+(app not yet fully foregrounded/active) throws regardless of which lib does it. Only
+reproduces in standalone release builds (Expo Go masks it).
+
+**Key debugging signal:** the `lastExceptionBacktrace` showed `_dispatch_workloop_worker_thread`
+→ `_dispatch_lane_serial_drain` → `_dispatch_call_block_and_release` (the RN TurboModule
+serial queue) + `objc_exception_throw` — i.e. a TurboModule **void** method throwing.
+`setAudioModeAsync` is exactly such a void method. An identical backtrace across two
+different builds means the throwing native fn is unchanged → look for the audio call you
+did NOT remove, not the one you did.
 
 **Why:** expo-av is deprecated in SDK 54 (removed in 55) and runs via a fragile interop
 shim under New Arch. Cannot just disable New Arch — `react-native-reanimated` v4 REQUIRES it.
