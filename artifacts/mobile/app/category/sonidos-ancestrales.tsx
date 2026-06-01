@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Platform,
   Pressable,
@@ -24,6 +25,7 @@ import { SESSIONS, type AncestralTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
+const RATINGS_KEY = "@resonance_ratings";
 
 const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
 
@@ -49,6 +51,13 @@ export default function SonidosAncestalesScreen() {
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
   const [query, setQuery] = useState("");
+  const [ratings, setRatings] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
+      if (val) setRatings(JSON.parse(val));
+    });
+  }, []);
   const nuevasSessions = useMemo(
     () => [...ANCESTRAL_SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 8),
     []
@@ -243,6 +252,14 @@ export default function SonidosAncestalesScreen() {
                     <PremiumBadge session={session} />
                     </View>
                     <View style={styles.cardContent}>
+                      {ratings[session.id] ? (
+                        <View style={styles.ratingRow}>
+                          <Feather name="star" size={11} color="#E8B96A" />
+                          <Text style={[styles.cardRating, { color: colors.accent }]}>
+                            {" "}{ratings[session.id]}/5
+                          </Text>
+                        </View>
+                      ) : null}
                       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
                       </Text>
@@ -371,6 +388,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     justifyContent: "center",
+  },
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 3,
+  },
+  cardRating: {
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.3,
   },
   cardTitle: {
     fontSize: 15,
