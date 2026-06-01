@@ -455,29 +455,41 @@ export default function ProfileScreen() {
           style={({ pressed }) => [
             styles.membershipRow,
             {
-              backgroundColor: colors.card,
-              borderColor: isPremium ? colors.primary : colors.border,
+              backgroundColor: isPremium ? "transparent" : colors.card,
+              borderColor: isPremium ? "#A97A34" : colors.border,
               opacity: pressed ? 0.85 : 1,
+              overflow: "hidden",
             },
           ]}
         >
-          <Feather
-            name={isPremium ? "award" : "user"}
-            size={18}
-            color={isPremium ? colors.primary : colors.mutedForeground}
-          />
+          {isPremium && (
+            <LinearGradient
+              colors={["#1B4A38", "#0A2018"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
+            />
+          )}
+          {isPremium ? (
+            <Image
+              source={require("../../assets/images/estrella-premium.png")}
+              style={{ width: 20, height: 20 }}
+              contentFit="contain"
+            />
+          ) : (
+            <Feather name="user" size={18} color={colors.mutedForeground} />
+          )}
           <View style={{ flex: 1 }}>
-            <Text style={[styles.membershipPlan, { color: colors.foreground }]}>
+            <Text style={[styles.membershipPlan, { color: isPremium ? "#EDE7DA" : colors.foreground }]}>
               {isPremium ? "Plan Premium" : "Plan Free"}
             </Text>
-            <Text style={[styles.membershipSub, { color: colors.mutedForeground }]}>
+            <Text style={[styles.membershipSub, { color: isPremium ? "#D5C8B2" : colors.mutedForeground }]}>
               {isPremium ? "Acceso completo activo" : "Acceso limitado al catálogo"}
             </Text>
           </View>
-          <Text style={[styles.membershipAction, { color: colors.primary }]}>
+          <Text style={[styles.membershipAction, { color: isPremium ? "#D6A85B" : colors.primary }]}>
             {isPremium ? "Gestionar" : "Mejorar"}
           </Text>
-          <Feather name="chevron-right" size={16} color={colors.primary} />
+          <Feather name="chevron-right" size={16} color={isPremium ? "#D6A85B" : colors.primary} />
         </Pressable>
 
         {!isPremium && (
