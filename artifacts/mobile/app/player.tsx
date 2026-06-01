@@ -363,9 +363,13 @@ export default function PlayerScreen() {
 
         {/* Info */}
         <View style={styles.infoSection}>
-          <Text style={[styles.category, { color: colors.accent }]}>{currentSession.categoryLabel}</Text>
+          <Text style={[styles.category, { color: colors.accent }]}>
+            {showArtist ? currentSession.soundTag : currentSession.categoryLabel}
+          </Text>
           <Text style={[styles.sessionTitle, { color: colors.foreground }]}>{currentSession.title}</Text>
-          <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>{currentSession.subtitle}</Text>
+          {!showArtist && (
+            <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>{currentSession.subtitle}</Text>
+          )}
           {showArtist && (
             <Pressable
               onPress={() => router.push(`/artista/${artist.id}` as never)}
@@ -373,7 +377,7 @@ export default function PlayerScreen() {
               hitSlop={6}
             >
               <Feather name="user" size={12} color={colors.accent} />
-              <Text style={[styles.artistText, { color: colors.accent }]}>{artist.name}</Text>
+              <Text style={[styles.artistText, { color: colors.accent }]}>Artista: {artist.name}</Text>
               {artist.certified && <Feather name="check-circle" size={12} color={colors.accent} />}
             </Pressable>
           )}
