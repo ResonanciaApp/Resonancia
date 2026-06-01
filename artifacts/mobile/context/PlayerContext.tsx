@@ -262,6 +262,21 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const currentSessionRef = useRef<Session | null>(null);
   currentSessionRef.current = currentSession;
 
+  /**
+   * Lock-screen / Now Playing activation se posterga hasta que el track cargó con
+   * una duración válida. Si se llama justo tras replace() el AVPlayerItem aún no
+   * cargó → player.duration = NaN, y iOS descarta TODA la entrada de Now Playing
+   * ("Sin Reproducción"). Guardamos la sesión pendiente acá y disparamos la
+   * activación desde handleMainStatus en el primer status cargado (duration > 0).
+   */
+  const lockScreenPendingRef = useRef<{
+    session: Session;
+    withSeek: boolean;
+  } | null>(null);
+  const activateLockScreenRef = useRef<
+    ((session: Session, withSeek: boolean) => void) | null
+  >(null);
+
   // ── Main player status handler (referenced via ref to stay current) ───────────
   const handleMainStatus = useCallback(
     (status: AudioStatus) => {
@@ -269,6 +284,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
       // Clear loading once the track is ready
       setIsLoading(false);
+
+      // Activar lock-screen / Now Playing recién cuando el track tiene una
+      // duración real. Hacerlo antes (justo tras replace()) escribe NaN en
+      // MPNowPlayingInfoCenter y iOS descarta toda la entrada → "Sin Reproducción".
+      if (lockScreenPendingRef.current && (status.duration ?? 0) > 0) {
+        const pending = lockScreenPendingRef.current;
+        lockScreenPendingRef.current = null;
+        activateLockScreenRef.current?.(pending.session, pending.withSeek);
+      }
 
       // Mirror lock-screen / system play-pause onto the simultaneous layers
       if (status.playing !== lastPlayingRef.current) {
@@ -579,6 +603,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     },
     [],
   );
+  activateLockScreenRef.current = activateLockScreen;
 
   const playSession = useCallback(
     async (session: Session) => {
@@ -639,7 +664,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           }
           ambientActiveRef.current = false;
 
-          activateLockScreen(session, true);
+          lockScreenPendingRef.current = { session, withSeek: true };
           lastPlayingRef.current = true;
           setIsPlaying(true);
           markPlayStarted();
@@ -657,7 +682,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         startSimulation(session);
       }
     },
-    [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers, activateLockScreen],
+    [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers],
   );
 
   /** Play a looping ambient/nature session for a chosen number of minutes */
@@ -724,7 +749,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           }
           voiceActiveRef.current = false;
 
-          activateLockScreen(sessionOverride, false);
+          lockScreenPendingRef.current = {
+            session: sessionOverride,
+            withSeek: false,
+          };
           lastPlayingRef.current = true;
           setIsPlaying(true);
           markPlayStarted();
@@ -782,7 +810,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       teardownLayers,
       teardownPlayback,
       saveSessionProgress,
-      activateLockScreen,
     ],
   );
 
