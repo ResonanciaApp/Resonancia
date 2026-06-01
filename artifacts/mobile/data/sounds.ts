@@ -4,10 +4,25 @@ import { SOUND_MAP } from "@/config/sound-map";
  * Catálogo de sonidos del mixer "Mi Música".
  * Los archivos de audio viven en config/sound-map.ts (SOUND_MAP).
  * Un sonido sin archivo en SOUND_MAP se muestra como "Próximamente".
+ *
+ * Los sonidos se agrupan por categoría. En la pantalla "Mi Música" estas
+ * categorías se muestran como tabs (más "Todos") para filtrar la biblioteca.
+ *
+ * NOTA: muchos sonidos de abajo son de PRUEBA (placeholders sin archivo de
+ * audio) — aparecen como "Próximamente" hasta que se carguen los audios
+ * finales en SOUND_MAP. Sirven para ver las categorías pobladas.
  */
 
 export type SoundIconSet = "feather" | "ionicons";
-export type SoundCategoryId = "naturaleza" | "tonales" | "lugares";
+export type SoundCategoryId =
+  | "naturaleza"
+  | "agua"
+  | "cuencos_tibetanos"
+  | "cuencos_cuarzo"
+  | "gongs"
+  | "campanas_viento"
+  | "mantras"
+  | "solfeggio";
 
 export interface SoundCategory {
   id: SoundCategoryId;
@@ -16,8 +31,13 @@ export interface SoundCategory {
 
 export const SOUND_CATEGORIES: SoundCategory[] = [
   { id: "naturaleza", label: "Naturaleza" },
-  { id: "tonales", label: "Tonales" },
-  { id: "lugares", label: "Lugares" },
+  { id: "agua", label: "Agua" },
+  { id: "cuencos_tibetanos", label: "Cuencos Tibetanos" },
+  { id: "cuencos_cuarzo", label: "Cuencos de Cuarzo" },
+  { id: "gongs", label: "Gongs" },
+  { id: "campanas_viento", label: "Campanas de Viento" },
+  { id: "mantras", label: "Mantras" },
+  { id: "solfeggio", label: "Solfeggio" },
 ];
 
 export interface MixSound {
@@ -33,25 +53,47 @@ export interface MixSound {
 
 export const SOUNDS: MixSound[] = [
   // ── Naturaleza ──────────────────────────────────────────────
-  { id: "lluvia", name: "Lluvia", icon: "rainy", iconSet: "ionicons", category: "naturaleza" },
-  { id: "tormenta", name: "Tormenta", icon: "thunderstorm", iconSet: "ionicons", category: "naturaleza" },
-  { id: "oceano", name: "Océano", icon: "water", iconSet: "ionicons", category: "naturaleza" },
-  { id: "rio", name: "Río", icon: "droplet", iconSet: "feather", category: "naturaleza" },
   { id: "viento", name: "Viento", icon: "wind", iconSet: "feather", category: "naturaleza" },
   { id: "fogata", name: "Fogata", icon: "flame", iconSet: "ionicons", category: "naturaleza", isPremium: true },
   { id: "bosque", name: "Bosque", icon: "leaf", iconSet: "ionicons", category: "naturaleza" },
   { id: "noche", name: "Noche", icon: "moon", iconSet: "feather", category: "naturaleza", isPremium: true },
+  { id: "tormenta", name: "Tormenta", icon: "thunderstorm", iconSet: "ionicons", category: "naturaleza" },
+  { id: "pajaros", name: "Pájaros", icon: "leaf", iconSet: "ionicons", category: "naturaleza" },
+  { id: "grillos", name: "Grillos", icon: "moon", iconSet: "feather", category: "naturaleza" },
 
-  // ── Tonales ─────────────────────────────────────────────────
-  { id: "ruido_blanco", name: "Ruido blanco", icon: "radio", iconSet: "feather", category: "tonales" },
-  { id: "ruido_rosa", name: "Ruido rosa", icon: "radio", iconSet: "feather", category: "tonales", isPremium: true },
-  { id: "ruido_marron", name: "Ruido marrón", icon: "radio", iconSet: "feather", category: "tonales", isPremium: true },
-  { id: "cuencos", name: "Cuencos", icon: "musical-notes", iconSet: "ionicons", category: "tonales" },
-  { id: "drone", name: "Drone cósmico", icon: "disc", iconSet: "feather", category: "tonales", isPremium: true },
+  // ── Agua ────────────────────────────────────────────────────
+  { id: "lluvia", name: "Lluvia", icon: "rainy", iconSet: "ionicons", category: "agua" },
+  { id: "oceano", name: "Océano", icon: "water", iconSet: "ionicons", category: "agua" },
+  { id: "rio", name: "Río", icon: "droplet", iconSet: "feather", category: "agua" },
+  { id: "arroyo", name: "Arroyo", icon: "droplet", iconSet: "feather", category: "agua" },
+  { id: "cascada", name: "Cascada", icon: "water", iconSet: "ionicons", category: "agua", isPremium: true },
 
-  // ── Lugares ─────────────────────────────────────────────────
-  { id: "cafe", name: "Café", icon: "cafe", iconSet: "ionicons", category: "lugares" },
-  { id: "tren", name: "Tren", icon: "train", iconSet: "ionicons", category: "lugares", isPremium: true },
+  // ── Cuencos Tibetanos ───────────────────────────────────────
+  { id: "cuencos", name: "Cuenco tibetano", icon: "musical-notes", iconSet: "ionicons", category: "cuencos_tibetanos" },
+  { id: "cuenco_grave", name: "Cuenco grave", icon: "musical-notes", iconSet: "ionicons", category: "cuencos_tibetanos" },
+  { id: "cuenco_agudo", name: "Cuenco agudo", icon: "musical-notes", iconSet: "ionicons", category: "cuencos_tibetanos", isPremium: true },
+
+  // ── Cuencos de Cuarzo ───────────────────────────────────────
+  { id: "cuarzo_do", name: "Cuarzo · Do", icon: "disc", iconSet: "feather", category: "cuencos_cuarzo" },
+  { id: "cuarzo_sol", name: "Cuarzo · Sol", icon: "disc", iconSet: "feather", category: "cuencos_cuarzo" },
+  { id: "cuarzo_corazon", name: "Cuarzo · Corazón", icon: "disc", iconSet: "feather", category: "cuencos_cuarzo", isPremium: true },
+
+  // ── Gongs ───────────────────────────────────────────────────
+  { id: "gong", name: "Gong", icon: "radio", iconSet: "feather", category: "gongs" },
+  { id: "gong_planetario", name: "Gong planetario", icon: "radio", iconSet: "feather", category: "gongs", isPremium: true },
+
+  // ── Campanas de Viento ──────────────────────────────────────
+  { id: "campanas_viento", name: "Campanas de viento", icon: "musical-note", iconSet: "ionicons", category: "campanas_viento" },
+  { id: "campanas_bambu", name: "Campanas de bambú", icon: "musical-note", iconSet: "ionicons", category: "campanas_viento" },
+
+  // ── Mantras ─────────────────────────────────────────────────
+  { id: "mantra_om", name: "Om", icon: "mic", iconSet: "feather", category: "mantras" },
+  { id: "mantra_soham", name: "So Ham", icon: "mic", iconSet: "feather", category: "mantras", isPremium: true },
+
+  // ── Solfeggio ───────────────────────────────────────────────
+  { id: "solfeggio_528", name: "528 Hz", icon: "activity", iconSet: "feather", category: "solfeggio" },
+  { id: "solfeggio_432", name: "432 Hz", icon: "activity", iconSet: "feather", category: "solfeggio" },
+  { id: "solfeggio_396", name: "396 Hz", icon: "activity", iconSet: "feather", category: "solfeggio", isPremium: true },
 ];
 
 export function getSoundById(id: string): MixSound | undefined {

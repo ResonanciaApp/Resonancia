@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Alert,
   ImageBackground,
@@ -23,17 +23,22 @@ import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES } from "@/data/mix-categories";
 import {
   type MixSound,
+  type SoundCategoryId,
+  SOUNDS,
   SOUND_CATEGORIES,
   getSoundsByCategory,
   hasSoundFile,
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
+type TabId = "todos" | SoundCategoryId;
+
 export default function MiMusicaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { isActive, toggleSound, stopAll } = useMixer();
+  const [activeTab, setActiveTab] = useState<TabId>("todos");
 
   // Al salir de esta pantalla, detener la mezcla (no debe seguir sonando fuera del mezclador).
   useFocusEffect(
@@ -64,6 +69,83 @@ export default function MiMusicaScreen() {
     } else {
       toggleSound(sound.id);
     }
+  };
+
+  const tabs: { id: TabId; label: string }[] = [
+    { id: "todos", label: "Todos" },
+    ...SOUND_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
+  ];
+
+  const visibleSounds =
+    activeTab === "todos" ? SOUNDS : getSoundsByCategory(activeTab);
+
+  const renderSoundCard = (sound: MixSound) => {
+    const available = hasSoundFile(sound.id);
+    const active = isActive(sound.id);
+    const locked = sound.isPremium && !isPremium;
+    const image = getSoundImage(sound.id);
+
+    const overlay = (
+      <>
+        {/* Degradado para legibilidad del texto */}
+        <LinearGradient
+          colors={
+            active
+              ? ["rgba(198,155,79,0.10)", "rgba(24,17,12,0.20)", "rgba(24,17,12,0.85)"]
+              : ["rgba(24,17,12,0)", "rgba(24,17,12,0.12)", "rgba(24,17,12,0.82)"]
+          }
+          locations={[0, 0.55, 1]}
+          style={styles.cardOverlay}
+        />
+
+        {locked && (
+          <View style={styles.lockBadge}>
+            <Feather name="star" size={9} color="#18110C" />
+          </View>
+        )}
+
+        {active && (
+          <View style={[styles.activeBadge, { backgroundColor: colors.primary }]}>
+            <Feather name="check" size={11} color={colors.primaryForeground} />
+          </View>
+        )}
+
+        <View style={styles.cardContent}>
+          <Text style={styles.soundName} numberOfLines={1}>
+            {sound.name}
+          </Text>
+          {!available && <Text style={styles.soonText}>Próximamente</Text>}
+        </View>
+      </>
+    );
+
+    return (
+      <Pressable
+        key={sound.id}
+        onPress={() => handleSoundPress(sound)}
+        disabled={!available}
+        style={[
+          styles.soundCard,
+          {
+            backgroundColor: colors.card,
+            borderColor: active ? colors.primary : "rgba(0,0,0,0.25)",
+            borderWidth: active ? 2 : StyleSheet.hairlineWidth,
+          },
+        ]}
+      >
+        {image ? (
+          <ImageBackground
+            source={image}
+            style={styles.cardImage}
+            imageStyle={[styles.cardImageInner, { opacity: available ? 1 : 0.4 }]}
+          >
+            {overlay}
+          </ImageBackground>
+        ) : (
+          <View style={styles.cardImage}>{overlay}</View>
+        )}
+      </Pressable>
+    );
   };
 
   return (
@@ -118,86 +200,42 @@ export default function MiMusicaScreen() {
         {/* ── Mezcla activa ── */}
         <MixerPanel />
 
-        {/* ── Biblioteca de sonidos ── */}
-        {SOUND_CATEGORIES.map((cat) => {
-          const sounds = getSoundsByCategory(cat.id);
-          if (sounds.length === 0) return null;
-          return (
-            <View key={cat.id} style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{cat.label}</Text>
-              <View style={styles.grid}>
-                {sounds.map((sound) => {
-                  const available = hasSoundFile(sound.id);
-                  const active = isActive(sound.id);
-                  const locked = sound.isPremium && !isPremium;
-                  const image = getSoundImage(sound.id);
+        {/* ── Tabs de categorías de sonido ── */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsRow}
+          style={styles.tabsScroll}
+        >
+          {tabs.map((tab) => {
+            const selected = activeTab === tab.id;
+            return (
+              <Pressable
+                key={tab.id}
+                onPress={() => setActiveTab(tab.id)}
+                style={[
+                  styles.tab,
+                  {
+                    backgroundColor: selected ? colors.primary : "rgba(237,225,211,0.06)",
+                    borderColor: selected ? colors.primary : colors.border,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    { color: selected ? colors.primaryForeground : colors.foreground },
+                  ]}
+                >
+                  {tab.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
 
-                  const overlay = (
-                    <>
-                      {/* Degradado para legibilidad del texto */}
-                      <LinearGradient
-                        colors={
-                          active
-                            ? ["rgba(198,155,79,0.10)", "rgba(24,17,12,0.20)", "rgba(24,17,12,0.85)"]
-                            : ["rgba(24,17,12,0)", "rgba(24,17,12,0.12)", "rgba(24,17,12,0.82)"]
-                        }
-                        locations={[0, 0.55, 1]}
-                        style={styles.cardOverlay}
-                      />
-
-                      {locked && (
-                        <View style={styles.lockBadge}>
-                          <Feather name="star" size={9} color="#18110C" />
-                        </View>
-                      )}
-
-                      {active && (
-                        <View style={[styles.activeBadge, { backgroundColor: colors.primary }]}>
-                          <Feather name="check" size={11} color={colors.primaryForeground} />
-                        </View>
-                      )}
-
-                      <View style={styles.cardContent}>
-                        <Text style={styles.soundName} numberOfLines={1}>
-                          {sound.name}
-                        </Text>
-                        {!available && <Text style={styles.soonText}>Próximamente</Text>}
-                      </View>
-                    </>
-                  );
-
-                  return (
-                    <Pressable
-                      key={sound.id}
-                      onPress={() => handleSoundPress(sound)}
-                      disabled={!available}
-                      style={[
-                        styles.soundCard,
-                        {
-                          backgroundColor: colors.card,
-                          borderColor: active ? colors.primary : "rgba(0,0,0,0.25)",
-                          borderWidth: active ? 2 : StyleSheet.hairlineWidth,
-                        },
-                      ]}
-                    >
-                      {image ? (
-                        <ImageBackground
-                          source={image}
-                          style={styles.cardImage}
-                          imageStyle={[styles.cardImageInner, { opacity: available ? 1 : 0.4 }]}
-                        >
-                          {overlay}
-                        </ImageBackground>
-                      ) : (
-                        <View style={styles.cardImage}>{overlay}</View>
-                      )}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-          );
-        })}
+        {/* ── Biblioteca de sonidos (filtrada por tab) ── */}
+        <View style={styles.grid}>{visibleSounds.map(renderSoundCard)}</View>
       </ScrollView>
 
     </View>
@@ -211,9 +249,16 @@ const styles = StyleSheet.create({
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   pageSub: { fontSize: 13, lineHeight: 18 },
 
-  // Secciones
-  section: { marginBottom: 14 },
-  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  // Tabs de categorías de sonido
+  tabsScroll: { marginBottom: 16, marginHorizontal: -20 },
+  tabsRow: { gap: 8, paddingHorizontal: 20 },
+  tab: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
+  tabLabel: { fontSize: 13, fontWeight: "700", letterSpacing: 0.2 },
 
   // Categorías de mezclas
   catRow: { flexDirection: "row", gap: 10, marginBottom: 26 },
