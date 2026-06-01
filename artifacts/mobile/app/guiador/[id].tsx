@@ -38,9 +38,9 @@ export default function GuiadorScreen() {
 
   if (!guide) {
     return (
-      <View style={[styles.root, { backgroundColor: "#060905" }]}>
+      <View style={[styles.root, { backgroundColor: "#060208" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#0E140A", "#070B07"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#120C17", "#09050C"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -71,9 +71,9 @@ export default function GuiadorScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#060905" }]}>
+    <View style={[styles.root, { backgroundColor: "#060208" }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#0E140A", "#070B07"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#120C17", "#09050C"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}
@@ -98,7 +98,7 @@ export default function GuiadorScreen() {
               transition={IMAGE_TRANSITION}
             />
             {guide.certified && (
-              <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#060905" }]}>
+              <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#060208" }]}>
                 <Feather name="check" size={15} color="#1A120A" />
               </View>
             )}
