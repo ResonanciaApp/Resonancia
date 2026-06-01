@@ -893,3 +893,9 @@ id = "oy2ecJNHYzYAS5TW_hHRO"
 uri = "file://artifacts/mobile/assets/audio/mixer/cuencos.mp3"
 type = "audio"
 title = "singing bowls loop"
+
+[[outputs]]
+id = "SNg-jJofgIkEHWdJvyc7Y"
+uri = "file://.local/outputs/Sound-Sanctuary.pdf"
+type = "pdf"
+title = "Sound Sanctuary.pdf"

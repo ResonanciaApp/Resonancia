@@ -10,7 +10,7 @@ export default function Slide06Competencia() {
           05 · LA COMPETENCIA
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "70vw" }}>
-          Los gigantes validan el modelo, <span style={{ color: "#C69B4F" }}>pero en inglés.</span>
+          Los gigantes validan el modelo, <span style={{ color: "#C69B4F" }}>pero no son nativos en español.</span>
         </div>
       </div>
 
@@ -21,7 +21,7 @@ export default function Slide06Competencia() {
           <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#C69B4F", lineHeight: 1 }}>~US$ 227M</div>
           <div style={{ fontSize: "1.5vw", color: "#7a6050", marginBottom: "2vh" }}>ingresos anuales</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#cbb9a4", lineHeight: 1.45 }}>
-            ~4,5 millones de suscriptores pagos. Producto en inglés.
+            ~4,5 millones de suscriptores pagos. Pensado en inglés; español traducido.
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "#24160F", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
@@ -29,7 +29,7 @@ export default function Slide06Competencia() {
           <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#C69B4F", lineHeight: 1 }}>~US$ 348M</div>
           <div style={{ fontSize: "1.5vw", color: "#7a6050", marginBottom: "2vh" }}>ingresos anuales</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#cbb9a4", lineHeight: 1.45 }}>
-            ~2,8 millones de suscriptores pagos. Producto en inglés.
+            ~2,8 millones de suscriptores pagos. Pensado en inglés; español traducido.
           </div>
         </div>
         <div style={{ flex: 1, border: "1.5px solid #C69B4F", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
@@ -37,14 +37,14 @@ export default function Slide06Competencia() {
           <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#EDE1D3", lineHeight: 1 }}>Español</div>
           <div style={{ fontSize: "1.5vw", color: "#7a6050", marginBottom: "2vh" }}>nativo, no traducido</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#cbb9a4", lineHeight: 1.45 }}>
-            La categoría premium aún no tiene un referente en nuestro idioma.
+            Pensado desde el español y la cultura hispanohablante, no adaptado.
           </div>
         </div>
       </div>
 
       {/* Closing line */}
       <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.5, maxWidth: "78vw" }}>
-        El espacio que Calm y Headspace ocupan en inglés está vacío para 500 millones de hispanohablantes.
+        Calm, Headspace e Insight Timer tienen contenido en español, pero ninguno es nativo ni curado para nuestra cultura. Ahí está la oportunidad.
         <span style={{ color: "#5a4632", fontSize: "1.5vw", display: "block", marginTop: "1vh" }}>
           Fuentes: Business of Apps (cifras aproximadas de ingresos y suscriptores).
         </span>

@@ -31,14 +31,14 @@ export default function Slide02Problema() {
         <div style={{ display: "flex", alignItems: "baseline", gap: "2.5vw", borderTop: "1px solid #3a2a1c", paddingTop: "2.5vh" }}>
           <div style={{ fontSize: "4.5vw", fontWeight: 700, color: "#C69B4F", width: "16vw", lineHeight: 1 }}>+80%</div>
           <div style={{ fontSize: "2vw", fontWeight: 400, color: "#cbb9a4", lineHeight: 1.45, maxWidth: "58vw" }}>
-            de penetración de smartphones en la región, pero casi sin contenido de bienestar en español.
+            de penetración de smartphones en la región: una audiencia enorme lista para apps móviles.
           </div>
         </div>
       </div>
 
       {/* Closing line */}
-      <div style={{ fontSize: "1.7vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.5, maxWidth: "70vw" }}>
-        Las grandes apps de meditación están pensadas en inglés. El hispanohablante no encuentra un espacio propio.
+      <div style={{ fontSize: "1.7vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.5, maxWidth: "72vw" }}>
+        Las grandes apps tienen español, pero son traducciones de productos pensados en inglés: ninguna nació para el hispanohablante.
       </div>
     </div>
   );

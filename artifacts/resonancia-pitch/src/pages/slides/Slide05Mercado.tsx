@@ -38,7 +38,7 @@ export default function Slide05Mercado() {
 
       {/* Closing line */}
       <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.5, maxWidth: "78vw" }}>
-        Más de 500 millones de hispanohablantes y casi ninguna app de bienestar diseñada para ellos.
+        Más de 500 millones de hispanohablantes y ninguna app premium de bienestar pensada desde su idioma y cultura.
         <span style={{ color: "#5a4632", fontSize: "1.5vw", display: "block", marginTop: "1vh" }}>
           Fuentes: Grand View Research, OPS / Banco Mundial, Business of Apps.
         </span>
