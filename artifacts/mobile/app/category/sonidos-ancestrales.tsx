@@ -263,9 +263,6 @@ export default function SonidosAncestalesScreen() {
                       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
                       </Text>
-                      <Text style={[styles.cardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {session.subtitle}
-                      </Text>
                       <View style={styles.metaRow}>
                         <Feather name="clock" size={11} color={colors.mutedForeground} />
                         <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
@@ -404,10 +401,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     lineHeight: 20,
     marginBottom: 2,
-  },
-  cardSub: {
-    fontSize: 11,
-    marginBottom: 4,
   },
   metaRow: {
     flexDirection: "row",
