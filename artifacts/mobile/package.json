@@ -68,6 +68,7 @@
     "expo-audio": "^1.1.1",
     "expo-av": "^16.0.8",
     "expo-build-properties": "~1.0.10",
+    "expo-dev-client": "~6.0.21",
     "expo-file-system": "^56.0.7",
     "expo-notifications": "^56.0.13",
     "expo-store-review": "^56.0.3",
