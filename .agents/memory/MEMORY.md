@@ -13,3 +13,4 @@
 - [Artistas feature](artistas-feature.md) — perfiles curados; artistId solo Ambient/Enteógena; getArtist (con fallback, player) vs getArtistById (sin fallback, perfil); artists.ts→sessions.ts no al revés
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
+- [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
