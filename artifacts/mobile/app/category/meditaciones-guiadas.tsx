@@ -18,8 +18,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
+import { GuideCard } from "@/components/GuideCard";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
+import { getFeaturedGuides } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS } from "@/data/sessions";
 import type { Session } from "@/data/sessions";
@@ -53,6 +55,8 @@ export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
+
+  const featuredGuides = getFeaturedGuides();
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -203,6 +207,24 @@ export default function MeditacionesGuiadasScreen() {
                 { icon: "sun", text: "Porque la paz no viene de afuera — se cultiva desde adentro." },
               ]}
             />
+
+            {featuredGuides.length > 0 && (
+              <View style={styles.guidesSection}>
+                <Text style={[styles.guidesTitle, { color: colors.foreground }]}>Guiadores</Text>
+                <Text style={[styles.guidesSub, { color: colors.mutedForeground }]}>
+                  Voces certificadas que guían las meditaciones de Resonancia
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingTop: 6 }}
+                >
+                  {featuredGuides.map((guide) => (
+                    <GuideCard key={guide.id} guide={guide} />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
           </>
         )}
 
@@ -294,6 +316,10 @@ export default function MeditacionesGuiadasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
+
+  guidesSection: { paddingHorizontal: 20, marginTop: 28 },
+  guidesTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
+  guidesSub: { fontSize: 13, lineHeight: 18, marginBottom: 4 },
 
   header: {
     alignItems: "center",

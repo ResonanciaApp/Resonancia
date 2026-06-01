@@ -32,11 +32,6 @@ export type AncestralTag =
 
 import type { SleepTag, ThemeTag } from "@/data/tags";
 
-export type SessionGuide = {
-  name: string;
-  country: string;
-};
-
 export type Session = {
   id: string;
   title: string;
@@ -61,7 +56,8 @@ export type Session = {
   podcastTag?: PodcastTag;
   themeTag?: ThemeTag[];
   sleepTag?: SleepTag;
-  guide?: SessionGuide;
+  /** Guiador de la meditación (ver data/guides.ts). Si se omite → Casa del Cuenco. */
+  guideId?: string;
   /** ID del artista (de data/artists.ts). Solo para Música Ambient/Enteógena. Si se omite → Resonancia. */
   artistId?: string;
 };
@@ -82,7 +78,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-1.jpg"),
     isFeatured: true,
     meditationTag: "Visualizaciones",
-    guide: { name: "Sofía Ramírez", country: "Argentina" },
+    guideId: "sofia-ramirez",
   },
   {
     id: "2",

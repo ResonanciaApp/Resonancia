@@ -121,6 +121,24 @@ Cada sesión de **Música Ambient / Música Enteógena** lleva crédito de artis
 
 > Los artistas actuales **Lumen Sonora** y **Raíz Profunda** son ejemplos con fotos placeholder — reemplazar con artistas reales. El artista por defecto es **"Resonancia"** (cambiar `name` cuando se defina el nombre final de la app).
 
+## Guiadores (voces guía de Meditaciones Guiadas)
+
+Espejo del patrón Artistas, pero para Meditaciones Guiadas. Perfiles curados (en código, NO usuarios reales) de voces guía: foto, bio, país, especialidad, redes, certificado. Aparecen como carrusel "Guiadores" en Biblioteca (debajo de Artistas) y en la pantalla de categoría Meditaciones Guiadas. En cada sesión guiada, el bloque "Sobre la voz guía" muestra foto/nombre/país tappable al perfil. Archivos:
+
+- `artifacts/mobile/data/guides.ts` — tipo `Guide` (id, name, photo, bio, country, specialty, links[], certified, featured), array `GUIDES`, `DEFAULT_GUIDE_ID = "casa-cuenco"`, helpers `getGuide(id?)`, `getGuideById(id)`, `getGuideSessions(id)` (solo meditaciones-guiadas), `getGuideTrackCount(id)`, `getFeaturedGuides()`
+- `artifacts/mobile/components/GuideCard.tsx` — card circular del carrusel (foto + nombre + sello certificado + specialty) → `/guiador/[id]`
+- `artifacts/mobile/app/guiador/[id].tsx` — perfil: foto, nombre + sello, país, especialidad, bio, redes, contador de meditaciones y listado de sus sesiones (estado "no encontrado" incluido)
+
+Cada sesión de **Meditaciones Guiadas** lleva `guideId` (campo en `sessions.ts`). Si se omite → guiador por defecto **"Casa del Cuenco"** (la casa). El antiguo tipo `SessionGuide` / campo `guide` fue eliminado.
+
+### Subir un guiador
+
+1. Copiar la foto a `artifacts/mobile/assets/images/` (recomendado: cuadrada, se recorta circular).
+2. Agregar el objeto a `GUIDES` en `data/guides.ts` con un `id` único (slug), `featured: true` para el carrusel, `certified: true` para el sello.
+3. En cada sesión Meditación Guiada de ese guiador, poner `guideId: "<su-id>"` en `sessions.ts`. Si se omite → queda atribuida a "casa-cuenco".
+
+> Los guiadores actuales **Sofía Ramírez** y **Mateo Luz** son ejemplos con fotos placeholder — reemplazar con voces reales. El guiador por defecto es **"Casa del Cuenco"**.
+
 ## User preferences
 
 - **"RA"** = "Restart App" — cuando el usuario escribe "RA", reiniciar el workflow `artifacts/mobile: expo`

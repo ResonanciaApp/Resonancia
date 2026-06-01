@@ -111,6 +111,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="guiador/[id]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="category/musica-sonidos"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

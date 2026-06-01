@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { getSessionById, SESSIONS } from "@/data/sessions";
+import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -153,10 +154,8 @@ export default function SessionDetailScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  // ── Guide initials ──────────────────────────────────────────────────────────
-  const guideInitials = session.guide
-    ? session.guide.name.split(" ").map((w) => w[0]).slice(0, 2).join("")
-    : "";
+  // ── Guiador (solo meditaciones guiadas) ─────────────────────────────────────
+  const guide = isGuiada ? getGuide(session.guideId) : undefined;
 
   // ── Badge block helper ──────────────────────────────────────────────────────
   const renderBadges = () => {
@@ -277,21 +276,29 @@ export default function SessionDetailScreen() {
           </View>
 
           {/* ── Sobre la voz guía ────────────────────────────────────────── */}
-          {!isMusica && session.guide && (
+          {guide && (
             <View style={styles.guideBlock}>
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>Sobre la voz guía</Text>
-              <View style={styles.guideCard}>
-                <View style={[styles.guideAvatar, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
-                  <Text style={[styles.guideInitials, { color: colors.primary }]}>{guideInitials}</Text>
-                </View>
+              <Pressable
+                onPress={() => router.push(`/guiador/${guide.id}` as never)}
+                style={({ pressed }) => [styles.guideCard, { opacity: pressed ? 0.8 : 1 }]}
+              >
+                <Image
+                  source={guide.photo as never}
+                  style={styles.guideAvatar}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                />
                 <View style={styles.guideMeta}>
-                  <Text style={[styles.guideName, { color: colors.foreground }]}>{session.guide.name}</Text>
+                  <Text style={[styles.guideName, { color: colors.foreground }]}>{guide.name}</Text>
                   <View style={styles.guideCountryRow}>
                     <Feather name="map-pin" size={11} color={colors.mutedForeground} />
-                    <Text style={[styles.guideCountry, { color: colors.mutedForeground }]}>{session.guide.country}</Text>
+                    <Text style={[styles.guideCountry, { color: colors.mutedForeground }]}>{guide.country}</Text>
                   </View>
                 </View>
-              </View>
+                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              </Pressable>
             </View>
           )}
 

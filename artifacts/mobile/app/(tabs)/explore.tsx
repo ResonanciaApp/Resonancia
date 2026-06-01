@@ -21,7 +21,9 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ArtistCard } from "@/components/ArtistCard";
+import { GuideCard } from "@/components/GuideCard";
 import { getFeaturedArtists } from "@/data/artists";
+import { getFeaturedGuides } from "@/data/guides";
 import { CATEGORIES, getCategoryTint, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
 import { SERIES } from "@/data/series";
@@ -55,6 +57,7 @@ export default function ExploreScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const featuredArtists = getFeaturedArtists();
+  const featuredGuides = getFeaturedGuides();
   const [query, setQuery] = useState("");
   const { history, playSession, getSessionProgress, sessionProgress } = usePlayer();
   const { isPremium } = usePremium();
@@ -406,6 +409,25 @@ export default function ExploreScreen() {
                 >
                   {featuredArtists.map((artist) => (
                     <ArtistCard key={artist.id} artist={artist} />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {/* ── Guiadores ── */}
+            {featuredGuides.length > 0 && (
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Guiadores</Text>
+                <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+                  Voces certificadas que guían las meditaciones de Resonancia
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingTop: 6 }}
+                >
+                  {featuredGuides.map((guide) => (
+                    <GuideCard key={guide.id} guide={guide} />
                   ))}
                 </ScrollView>
               </View>
