@@ -40,11 +40,15 @@ import {
 } from "@workspace/api-client-react";
 import type { MixComment, SharedMixesPage } from "@workspace/api-client-react";
 
+import { Image } from "expo-image";
+
 import { getMixImage } from "@/config/mix-images";
 import { useAuth } from "@/context/AuthContext";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { getCategoryMeta, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
 export default function CommunityMixScreen() {
@@ -54,6 +58,7 @@ export default function CommunityMixScreen() {
   const mixId = Number(id);
 
   const { isSignedIn } = useAuth();
+  const { photoUri } = useUserProfile();
   const { isPlaying, togglePlay, loadedPresetId } = useMixer();
   const loadMix = useLoadMix();
   const queryClient = useQueryClient();
@@ -238,6 +243,9 @@ export default function CommunityMixScreen() {
 
   const categoryMeta = getCategoryMeta(mix.category as MixCategory);
   const authorInitial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
+  // Foto del autor: la del server si ya está sincronizada; si es mi mezcla,
+  // uso la local para verla al instante en mi propio dispositivo.
+  const authorAvatar = resolveAvatarUrl(mix.author.avatarUrl) ?? (mix.isMine ? photoUri : null);
 
   return (
     <KeyboardAvoidingView
@@ -283,9 +291,17 @@ export default function CommunityMixScreen() {
 
         {/* Autor */}
         <View style={styles.authorRow}>
-          <View style={[styles.avatar, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.avatarTxt, { color: colors.accent }]}>{authorInitial}</Text>
-          </View>
+          {authorAvatar ? (
+            <Image
+              source={{ uri: authorAvatar }}
+              style={[styles.avatar, { borderColor: colors.border }]}
+              contentFit="cover"
+            />
+          ) : (
+            <View style={[styles.avatar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Text style={[styles.avatarTxt, { color: colors.accent }]}>{authorInitial}</Text>
+            </View>
+          )}
           <Text style={[styles.authorName, { color: colors.mutedForeground }]} numberOfLines={1}>
             Creada por {mix.author.displayName}
           </Text>

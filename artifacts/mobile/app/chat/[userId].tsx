@@ -6,7 +6,6 @@ import {
   getGetDirectMessagesQueryKey,
   getGetFriendsQueryKey,
   getGetUnreadNotificationCountQueryKey,
-  requestUploadUrl,
   useGetDirectMessages,
   useGetFriends,
   useGetTypingStatus,
@@ -43,6 +42,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { uploadLocalFile } from "@/lib/upload";
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#E8C87A", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 function initialsFor(name: string): string {
@@ -81,62 +81,7 @@ type GiphyGif = {
   };
 };
 
-// Upload a local file (uri) to GCS via presigned URL and return the objectPath
-// (e.g. `/objects/uploads/uuid`) that the server stores in the DB.
-async function uploadLocalFile(
-  uri: string,
-  contentType: string,
-  fileName: string,
-  hintSize: number,
-): Promise<string> {
-  console.log("[upload] preparing", { fileName, contentType, hintSize, platform: Platform.OS });
-  let realSize = hintSize || 1;
-  if (Platform.OS !== "web") {
-    try {
-      const info = await FileSystem.getInfoAsync(uri);
-      if (info.exists && typeof (info as { size?: number }).size === "number") {
-        realSize = (info as { size: number }).size;
-      }
-    } catch {
-      // ignore, fall back to hintSize
-    }
-  }
-  console.log("[upload] requesting URL", { size: realSize });
-  const { uploadURL, objectPath } = await requestUploadUrl({
-    name: fileName,
-    size: realSize,
-    contentType,
-  });
-  console.log("[upload] got URL");
-
-  if (Platform.OS === "web") {
-    const fileResp = await fetch(uri);
-    const blob = await fileResp.blob();
-    const putResp = await fetch(uploadURL, {
-      method: "PUT",
-      headers: { "Content-Type": contentType },
-      body: blob,
-    });
-    console.log("[upload] PUT done (web)", { status: putResp.status, size: blob.size });
-    if (!putResp.ok) {
-      const text = await putResp.text().catch(() => "");
-      throw new Error(`Upload falló (${putResp.status}): ${text.slice(0, 120)}`);
-    }
-    return objectPath;
-  }
-
-  // Native: use FileSystem.uploadAsync to send raw bytes
-  const result = await FileSystem.uploadAsync(uploadURL, uri, {
-    httpMethod: "PUT",
-    uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
-    headers: { "Content-Type": contentType },
-  });
-  console.log("[upload] PUT done (native)", { status: result.status });
-  if (result.status < 200 || result.status >= 300) {
-    throw new Error(`Upload falló (${result.status}): ${result.body?.slice(0, 120) ?? ""}`);
-  }
-  return objectPath;
-}
+// uploadLocalFile vive en "@/lib/upload" (compartido con la sync de avatar).
 
 type PendingAttachment = {
   tempId: string;

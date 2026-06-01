@@ -11,6 +11,7 @@
  * No renderiza nada.
  * ─────────────────────────────────────────────────────────────────
  */
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
@@ -23,10 +24,31 @@ import {
 
 import { useAuth } from "@/context/AuthContext";
 import { DEFAULT_USERNAME, useUserProfile } from "@/context/UserProfileContext";
+import { uploadLocalFile } from "@/lib/upload";
+
+const AVATAR_MARKER_KEY = "cdc_avatar_synced";
+
+/** contentType + nombre de archivo para subir el avatar (data URL o file URI). */
+function avatarMeta(uri: string): { contentType: string; fileName: string } {
+  if (uri.startsWith("data:")) {
+    const mime = uri.slice(5, uri.indexOf(";")) || "image/jpeg";
+    const ext = mime.split("/")[1] || "jpg";
+    return { contentType: mime, fileName: `avatar.${ext}` };
+  }
+  const ext = uri.split("?")[0].split(".").pop()?.toLowerCase() || "jpg";
+  const map: Record<string, string> = {
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    webp: "image/webp",
+    heic: "image/heic",
+  };
+  return { contentType: map[ext] ?? "image/jpeg", fileName: `avatar.${ext}` };
+}
 
 export function ProfileSync() {
   const { isSignedIn } = useAuth();
-  const { username, profileLoaded } = useUserProfile();
+  const { username, photoUri, profileLoaded } = useUserProfile();
   const queryClient = useQueryClient();
 
   const { data: me } = useGetMe({
@@ -70,6 +92,78 @@ export function ProfileSync() {
       },
     );
   }, [isSignedIn, me, username, profileLoaded, updateMe, queryClient]);
+
+  // ── Sync de avatar ───────────────────────────────────────────────────────
+  // La foto vive como URI local (data URL en web, file:// en native). Las
+  // features sociales muestran `avatarUrl` del server, así que subimos la foto
+  // a Object Storage y guardamos el objectPath. Un marker en AsyncStorage evita
+  // re-subir la misma foto en cada arranque.
+  const avatarSyncing = useRef(false);
+  const avatarMarker = useRef<{ uri: string; path: string } | null>(null);
+  const avatarMarkerLoaded = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function syncAvatar() {
+      if (!isSignedIn || !me || !profileLoaded) return;
+      if (avatarSyncing.current) return;
+
+      // Marker namespaced por cuenta (multi-usuario en el mismo dispositivo).
+      const markerKey = `${AVATAR_MARKER_KEY}:${me.id}`;
+      if (!avatarMarkerLoaded.current) {
+        try {
+          const raw = await AsyncStorage.getItem(markerKey);
+          avatarMarker.current = raw ? JSON.parse(raw) : null;
+        } catch {
+          avatarMarker.current = null;
+        }
+        avatarMarkerLoaded.current = true;
+      }
+      const marker = avatarMarker.current;
+
+      // El usuario quitó la foto: si nosotros habíamos seteado el avatar del
+      // server, lo limpiamos. No tocamos un avatar que no hayamos puesto.
+      if (!photoUri) {
+        if (!marker || !me.avatarUrl) return;
+        avatarSyncing.current = true;
+        try {
+          await updateMe.mutateAsync({ data: { avatarUrl: null } });
+          avatarMarker.current = null;
+          await AsyncStorage.removeItem(markerKey);
+          queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+        } catch {
+          // reintentamos en el próximo arranque
+        } finally {
+          avatarSyncing.current = false;
+        }
+        return;
+      }
+
+      // Ya sincronizado: misma foto local y el server todavía la tiene.
+      if (marker && marker.uri === photoUri && me.avatarUrl === marker.path) return;
+
+      avatarSyncing.current = true;
+      try {
+        const { contentType, fileName } = avatarMeta(photoUri);
+        const objectPath = await uploadLocalFile(photoUri, contentType, fileName, 1);
+        if (cancelled) return;
+        await updateMe.mutateAsync({ data: { avatarUrl: objectPath } });
+        avatarMarker.current = { uri: photoUri, path: objectPath };
+        await AsyncStorage.setItem(markerKey, JSON.stringify(avatarMarker.current));
+        queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+      } catch {
+        // Falló la subida: reintentamos en el próximo arranque (no en bucle).
+      } finally {
+        avatarSyncing.current = false;
+      }
+    }
+    syncAvatar();
+    return () => {
+      cancelled = true;
+    };
+  }, [isSignedIn, me, photoUri, profileLoaded, updateMe, queryClient]);
 
   return null;
 }
