@@ -253,6 +253,9 @@ export default function HomeScreen() {
           ))}
         </View>
 
+        {/* ── 5. FRASE DEL DÍA ── */}
+        <QuoteOfTheDay />
+
         {/* ── MI DIARIO + EJERCICIOS DE RESPIRACIÓN ── */}
         <View style={[styles.section, { marginBottom: 24 }]}>
           <View style={styles.squareRow}>
@@ -297,9 +300,6 @@ export default function HomeScreen() {
             </Pressable>
           </View>
         </View>
-
-        {/* ── 5. FRASE DEL DÍA ── */}
-        <QuoteOfTheDay />
 
         {/* ── 7. NUEVAS SESIONES ── */}
         <View style={styles.section}>
@@ -469,7 +469,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: "rgba(182,149,95,0.18)",
-    justifyContent: "flex-start",
+    alignItems: "center",
+    justifyContent: "center",
   },
   diarioIconWrap: {
     width: 46,
@@ -478,10 +479,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(214,168,91,0.14)",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: "auto",
   },
-  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12 },
-  squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4 },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center" },
+  squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
 
   // Diary favorites
   diarioList: { gap: 10 },
