@@ -86,6 +86,8 @@ const HISTORY_LIMIT = 50;
 const STATS_RETENTION_DAYS = 180;
 /** Cap stored stat events to avoid unbounded growth */
 const STATS_LIMIT = 600;
+/** Minimum listened seconds before a stat event is recorded (ignores accidental taps) */
+const STAT_MIN_SECONDS = 30;
 /** Progress >= this value is treated as "completed" and cleared */
 const COMPLETED_THRESHOLD = 0.97;
 /** Minimum delta before persisting progress to AsyncStorage */
@@ -149,6 +151,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // Keep latest isPlaying in a ref so timer callbacks see the current value
   const isPlayingRef = useRef(false);
   isPlayingRef.current = isPlaying;
+
+  /** Session currently accruing real listen time (flushed to statEvents on end) */
+  const statTrackerRef = useRef<Session | null>(null);
+  /** Wall-clock accumulator of seconds actually played for the tracked session (seek-proof) */
+  const listenedSecondsRef = useRef(0);
+  /** Timestamp (ms) when the current play chunk started, or null while paused */
+  const playStartRef = useRef<number | null>(null);
+  /** Stable wrapper so completion handlers defined earlier can flush stats */
+  const flushActiveStatRef = useRef<() => void>(() => {});
 
   // Keep latest volumes in refs for use inside async setup
   const voiceVolumeRef = useRef(voiceVolume);
@@ -304,6 +315,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setElapsed(Math.floor(pos));
 
       if (status.didJustFinish) {
+        flushActiveStatRef.current();
         setIsPlaying(false);
         lastPlayingRef.current = false;
         voiceActiveRef.current = false;
@@ -367,6 +379,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     return () => {
+      flushActiveStatRef.current();
       statusSubRef.current?.remove();
       try { mainPlayerRef.current?.remove(); } catch (_) {}
       try { voicePlayerRef.current?.remove(); } catch (_) {}
@@ -399,6 +412,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (sleepTimerRemaining !== 0) return;
     clearSleepInterval();
     setSleepTimerRemaining(null);
+    flushActiveStatRef.current();
     // Stop audio without wiping the session from UI
     teardownPlayback();
     clearSim();
@@ -428,6 +442,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const totalSeconds = session.duration * 60;
     setActualDurationSeconds(totalSeconds);
     setIsPlaying(true);
+    if (statTrackerRef.current && playStartRef.current === null) {
+      playStartRef.current = Date.now();
+    }
     simIntervalRef.current = setInterval(() => {
       setElapsed((prev) => {
         const next = prev + 1;
@@ -437,6 +454,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           setIsPlaying(false);
           setProgress(1);
           if (sId) saveSessionProgress(sId, 1, { force: true });
+          flushActiveStatRef.current();
           return totalSeconds;
         }
         const p = next / totalSeconds;
@@ -447,7 +465,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }, 1000);
   };
 
-  const addToHistory = useCallback(async (session: Session, minutes?: number) => {
+  const addToHistory = useCallback(async (session: Session) => {
     const playedAt = new Date().toISOString();
     setHistory((prev) => {
       const filtered = prev.filter((e) => e.sessionId !== session.id);
@@ -458,19 +476,72 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
       return updated;
     });
+  }, []);
+
+  /** Append a StatEvent reflecting minutes actually listened (ignores very short plays) */
+  const recordStat = useCallback((session: Session, secondsListened: number) => {
+    if (secondsListened < STAT_MIN_SECONDS) return;
+    const event: StatEvent = {
+      sessionId: session.id,
+      categoryId: session.categoryId,
+      categoryLabel: session.categoryLabel,
+      minutes: Math.max(1, Math.round(secondsListened / 60)),
+      playedAt: new Date().toISOString(),
+    };
     setStatEvents((prev) => {
-      const event: StatEvent = {
-        sessionId: session.id,
-        categoryId: session.categoryId,
-        categoryLabel: session.categoryLabel,
-        minutes: minutes ?? session.duration,
-        playedAt,
-      };
       const updated = [event, ...prev].slice(0, STATS_LIMIT);
       AsyncStorage.setItem(STATS_KEY, JSON.stringify(updated)).catch(() => {});
       return updated;
     });
   }, []);
+
+  /** Close the current play chunk into the accumulator (no-op while paused) */
+  const accumulateListened = useCallback(() => {
+    if (playStartRef.current !== null) {
+      listenedSecondsRef.current += (Date.now() - playStartRef.current) / 1000;
+      playStartRef.current = null;
+    }
+  }, []);
+
+  /** Begin tracking a session: init the accumulator but do NOT start the clock yet
+   *  (the clock starts at the confirmed-play moment via markPlayStarted / the isPlaying effect,
+   *  so buffering/setup/switch-gap time is not counted as listened). */
+  const startStatTracking = useCallback((session: Session) => {
+    statTrackerRef.current = session;
+    listenedSecondsRef.current = 0;
+    playStartRef.current = null;
+  }, []);
+
+  /** Start the listen-time clock at the moment playback actually begins (idempotent).
+   *  Covers the session-switch path where isPlaying stays true so the effect never fires. */
+  const markPlayStarted = useCallback(() => {
+    if (statTrackerRef.current && playStartRef.current === null) {
+      playStartRef.current = Date.now();
+    }
+  }, []);
+
+  /** Flush the tracked session's accumulated listen time, then clear the tracker (idempotent) */
+  const flushActiveStat = useCallback(() => {
+    const session = statTrackerRef.current;
+    if (!session) return;
+    accumulateListened();
+    const seconds = listenedSecondsRef.current;
+    statTrackerRef.current = null;
+    listenedSecondsRef.current = 0;
+    playStartRef.current = null;
+    recordStat(session, seconds);
+  }, [recordStat, accumulateListened]);
+  flushActiveStatRef.current = flushActiveStat;
+
+  // Drive the listen-time accumulator from play/pause transitions (seek-proof)
+  useEffect(() => {
+    if (!statTrackerRef.current) return;
+    if (isPlaying) {
+      if (playStartRef.current === null) playStartRef.current = Date.now();
+    } else {
+      accumulateListened();
+    }
+  }, [isPlaying, accumulateListened]);
 
   /** Configure lock-screen now-playing info for the current session */
   const activateLockScreen = useCallback(
@@ -493,6 +564,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const playSession = useCallback(
     async (session: Session) => {
+      flushActiveStat();
       clearSim();
       teardownLayers();
       loopModeRef.current = false;
@@ -514,6 +586,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setElapsed(0);
       setActualDurationSeconds(session.duration * 60);
       void addToHistory(session);
+      startStatTracking(session);
 
       const audioFile = AUDIO_MAP[session.id];
 
@@ -551,6 +624,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           activateLockScreen(session, true);
           lastPlayingRef.current = true;
           setIsPlaying(true);
+          markPlayStarted();
         } catch (err) {
           console.warn("[RESONANCE] Audio load failed:", err);
           hasRealAudioRef.current = false;
@@ -565,12 +639,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         startSimulation(session);
       }
     },
-    [addToHistory, ensureMainPlayer, ensureVoicePlayer, teardownLayers, activateLockScreen],
+    [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers, activateLockScreen],
   );
 
   /** Play a looping ambient/nature session for a chosen number of minutes */
   const playSessionWithDuration = useCallback(
     async (session: Session, minutes: number) => {
+      flushActiveStat();
       clearSim();
       teardownLayers();
       loopModeRef.current = true;
@@ -594,7 +669,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setProgress(0);
       setElapsed(0);
       setActualDurationSeconds(totalSeconds);
-      void addToHistory(session, minutes);
+      void addToHistory(session);
+      startStatTracking(sessionOverride);
 
       const audioFile = AUDIO_MAP[session.id];
       const isLoopSession = LOOP_SESSIONS.has(session.id);
@@ -633,6 +709,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           activateLockScreen(sessionOverride, false);
           lastPlayingRef.current = true;
           setIsPlaying(true);
+          markPlayStarted();
           // Loop progress is interval-driven (no position attribution risk), so the
           // switch guard can be released immediately to let lock-screen toggles reflect in the UI
           switchingRef.current = false;
@@ -652,6 +729,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 setIsPlaying(false);
                 setProgress(1);
                 if (sId) saveSessionProgress(sId, 1, { force: true });
+                flushActiveStatRef.current();
                 return totalSeconds;
               }
               const p = next / totalSeconds;
@@ -678,6 +756,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     },
     [
       addToHistory,
+      flushActiveStat,
+      startStatTracking,
+      markPlayStarted,
       ensureMainPlayer,
       ensureAmbientPlayer,
       teardownLayers,
@@ -720,6 +801,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }, [currentSession, saveSessionProgress]);
 
   const stop = useCallback(async () => {
+    flushActiveStat();
     // Force-save current progress before tearing down
     const sId = currentSessionRef.current?.id;
     if (
@@ -752,7 +834,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setProgress(0);
     setElapsed(0);
     setActualDurationSeconds(0);
-  }, [saveSessionProgress, actualDurationSeconds, elapsed, teardownPlayback, teardownLayers]);
+  }, [saveSessionProgress, actualDurationSeconds, elapsed, flushActiveStat, teardownPlayback, teardownLayers]);
 
   const seekTo = useCallback(
     async (p: number) => {
@@ -787,6 +869,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const clearHistory = useCallback(async () => {
+    statTrackerRef.current = null;
     setHistory([]);
     setStatEvents([]);
     await AsyncStorage.multiRemove([HISTORY_KEY, STATS_KEY]);
