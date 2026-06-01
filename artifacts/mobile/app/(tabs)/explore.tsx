@@ -239,31 +239,6 @@ export default function ExploreScreen() {
               )}
             </View>
 
-            {/* ── Herramientas ── */}
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Herramientas</Text>
-              <Pressable
-                onPress={() => router.push("/respiracion" as never)}
-                style={({ pressed }) => [
-                  styles.toolCard,
-                  { backgroundColor: colors.card, opacity: pressed ? 0.85 : 1 },
-                ]}
-              >
-                <LinearGradient
-                  colors={["rgba(182,149,95,0.16)", "rgba(182,149,95,0.03)"]}
-                  style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-                />
-                <View style={[styles.toolIconWrap, { backgroundColor: "rgba(198,155,79,0.14)" }]}>
-                  <Feather name="wind" size={20} color={colors.primary} />
-                </View>
-                <View style={styles.toolContent}>
-                  <Text style={[styles.toolTitle, { color: colors.foreground }]}>Ejercicios de respiración</Text>
-                  <Text style={[styles.toolSub, { color: colors.mutedForeground }]}>4-7-8 · Cuadrada · Coherencia</Text>
-                </View>
-                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
-              </Pressable>
-            </View>
-
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
@@ -726,25 +701,4 @@ const styles = StyleSheet.create({
   },
   timeIcon: { marginRight: 5 },
   timeLabel: { fontSize: 13, fontWeight: "600" },
-
-  // Herramientas
-  toolCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 16,
-    padding: 16,
-    gap: 14,
-    overflow: "hidden",
-  },
-  toolIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
-  toolContent: { flex: 1 },
-  toolTitle: { fontSize: 15, fontWeight: "600", marginBottom: 3 },
-  toolSub: { fontSize: 12 },
 });

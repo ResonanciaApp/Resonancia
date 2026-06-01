@@ -281,6 +281,33 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
+        {/* ── EJERCICIOS DE RESPIRACIÓN ── */}
+        <View style={[styles.section, { marginBottom: 24 }]}>
+          <Pressable
+            onPress={() => router.push("/respiracion" as never)}
+            style={({ pressed }) => [styles.diarioCard, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <LinearGradient
+              colors={["#2A1F10", "#1C130A"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={styles.diarioIconWrap}>
+              <Feather name="wind" size={22} color={colors.accent} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.diarioTitle, { color: colors.foreground }]}>
+                Ejercicios de respiración
+              </Text>
+              <Text style={[styles.diarioSub, { color: colors.mutedForeground }]} numberOfLines={2}>
+                4-7-8 · Cuadrada · Coherencia
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
+
         {/* ── MEZCLAS DE LA COMUNIDAD ── */}
         <CommunityMixesCarousel />
 
