@@ -13,7 +13,7 @@ import { SOUND_MAP } from "@/config/sound-map";
 import type { MixCategory } from "@/data/mix-categories";
 
 /** Máximo de sonidos sonando a la vez (CPU/batería en móviles normales) */
-export const MAX_ACTIVE_SOUNDS = 5;
+export const MAX_ACTIVE_SOUNDS = 10;
 const PRESETS_KEY = "@resonance_mixer_presets";
 const DEFAULT_VOLUME = 0.7;
 

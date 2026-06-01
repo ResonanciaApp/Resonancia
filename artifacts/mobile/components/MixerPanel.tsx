@@ -8,7 +8,7 @@
  * Si no hay sonidos activos, no renderiza nada.
  * ─────────────────────────────────────────────────────────────────
  */
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -29,28 +29,11 @@ import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory, getCategoryMeta } from "@/data/mix-categories";
-import { type MixSound, type SoundIconSet, getSoundById } from "@/data/sounds";
+import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
 const TIMER_OPTIONS = [15, 30, 45, 60];
 const FREE_MIX_PER_CATEGORY = 1;
-
-function SoundIcon({
-  iconSet,
-  icon,
-  size,
-  color,
-}: {
-  iconSet: SoundIconSet;
-  icon: string;
-  size: number;
-  color: string;
-}) {
-  if (iconSet === "ionicons") {
-    return <Ionicons name={icon as never} size={size} color={color} />;
-  }
-  return <Feather name={icon as never} size={size} color={color} />;
-}
 
 function formatTimer(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -179,7 +162,6 @@ export function MixerPanel({ currentCategory }: Props) {
           <View key={sound.id} style={styles.sliderRow}>
             <View style={styles.sliderTop}>
               <View style={styles.sliderLabelWrap}>
-                <SoundIcon iconSet={sound.iconSet} icon={sound.icon} size={15} color={colors.accent} />
                 <Text style={[styles.sliderLabel, { color: colors.foreground }]}>{sound.name}</Text>
               </View>
               <View style={styles.sliderRight}>
