@@ -29,14 +29,14 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     label: "Para Dormir",
     subtitle: "Mezclas para descansar",
     icon: "moon",
-    image: require("@/assets/images/mixer/categories/dormir.png"),
+    image: require("@/assets/images/mixer/categories/dormir.jpg"),
   },
   {
     id: "motivarme",
     label: "Para Meditar",
     subtitle: "Calma y presencia",
     icon: "feather",
-    image: require("@/assets/images/mixer/categories/motivarme.png"),
+    image: require("@/assets/images/mixer/categories/motivarme.jpg"),
   },
 ];
 
