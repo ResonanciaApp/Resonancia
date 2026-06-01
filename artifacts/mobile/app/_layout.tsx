@@ -32,6 +32,7 @@ import { MixerProvider } from "@/context/MixerContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
+import { ProfileSync } from "@/components/ProfileSync";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
@@ -228,6 +229,7 @@ export default function RootLayout() {
                   <AmbientPlayerProvider>
                     <MixerProvider>
                     <UserProfileProvider>
+                      <ProfileSync />
                       <IntencionProvider>
                         <DiarioFavoritesProvider>
                           <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#18110C" }}>
