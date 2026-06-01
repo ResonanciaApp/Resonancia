@@ -88,16 +88,23 @@ export default function DiarioEntradaScreen() {
           {isEditing ? "Editar entrada" : "Nueva entrada"}
         </Text>
 
-        <Pressable onPress={handleSave} hitSlop={10} disabled={!canSave} style={styles.headerSide}>
-          <Text
-            style={[
-              styles.saveText,
-              { color: canSave ? colors.primary : colors.mutedForeground },
-            ]}
-          >
-            Guardar
-          </Text>
-        </Pressable>
+        <View style={[styles.headerSide, styles.headerRight]}>
+          {isEditing && (
+            <Pressable onPress={handleDelete} hitSlop={10} style={styles.trashBtn}>
+              <Feather name="trash-2" size={20} color={colors.foreground} />
+            </Pressable>
+          )}
+          <Pressable onPress={handleSave} hitSlop={10} disabled={!canSave}>
+            <Text
+              style={[
+                styles.saveText,
+                { color: canSave ? colors.primary : colors.mutedForeground },
+              ]}
+            >
+              Guardar
+            </Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Cuerpo */}
@@ -108,21 +115,9 @@ export default function DiarioEntradaScreen() {
         placeholderTextColor="rgba(237,225,211,0.4)"
         multiline
         autoFocus
-        style={[styles.input, { color: colors.foreground }]}
+        style={[styles.input, { color: colors.foreground, paddingBottom: bottomPad + 16 }]}
         textAlignVertical="top"
       />
-
-      {/* Eliminar (solo edición) */}
-      {isEditing && (
-        <View style={[styles.footer, { paddingBottom: bottomPad + 10 }]}>
-          <Pressable onPress={handleDelete} hitSlop={8} style={styles.deleteBtn}>
-            <Feather name="trash-2" size={15} color={colors.mutedForeground} />
-            <Text style={[styles.deleteText, { color: colors.mutedForeground }]}>
-              Eliminar entrada
-            </Text>
-          </Pressable>
-        </View>
-      )}
     </KeyboardAvoidingView>
   );
 }
@@ -137,6 +132,13 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
   },
   headerSide: { minWidth: 64 },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 16,
+  },
+  trashBtn: { padding: 2 },
   headerTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2 },
   saveText: { fontSize: 15, fontWeight: "700", textAlign: "right" },
   input: {
@@ -146,16 +148,4 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 26,
   },
-  footer: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  deleteBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    alignSelf: "center",
-    paddingVertical: 6,
-  },
-  deleteText: { fontSize: 13, fontWeight: "600" },
 });
