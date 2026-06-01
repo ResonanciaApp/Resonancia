@@ -24,11 +24,13 @@ import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { VideoCard } from "@/components/VideoCard";
 import { useDrawer } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
+import { VIDEOS } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
@@ -256,6 +258,41 @@ export default function HomeScreen() {
         {/* ── 5. FRASE DEL DÍA ── */}
         <QuoteOfTheDay />
 
+        {/* ── VIDEOS ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              Videos
+            </Text>
+            {VIDEOS.length > 3 && (
+              <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
+                <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
+              </Pressable>
+            )}
+          </View>
+          {VIDEOS.length === 0 ? (
+            <View style={[styles.videosEmpty, { borderColor: "rgba(182,149,95,0.15)", backgroundColor: colors.card }]}>
+              <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
+              <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>
+                Próximamente
+              </Text>
+              <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
+                Pronto vas a encontrar videos aquí.
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingTop: 12, paddingRight: 4 }}
+            >
+              {VIDEOS.map((v) => (
+                <VideoCard key={v.id} video={v} />
+              ))}
+            </ScrollView>
+          )}
+        </View>
+
         {/* ── MI DIARIO + EJERCICIOS DE RESPIRACIÓN ── */}
         <View style={[styles.section, { marginBottom: 24 }]}>
           <View style={styles.squareRow}>
@@ -394,6 +431,17 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
   seeAll: { fontSize: 13 },
+  verTodasLink: { fontSize: 13, fontWeight: "600" },
+  videosEmpty: {
+    borderRadius: 18,
+    borderWidth: 1,
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  historyEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
+  historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   // Categories — pill icons row
   catPillRow: {

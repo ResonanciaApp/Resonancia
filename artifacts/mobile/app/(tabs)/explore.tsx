@@ -20,8 +20,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
-import { VideoCard } from "@/components/VideoCard";
-import { VIDEOS } from "@/data/videos";
 import { CATEGORIES, getCategoryTint, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
 import { SERIES } from "@/data/series";
@@ -349,41 +347,6 @@ export default function ExploreScreen() {
 
             {/* ── Mezclas de la comunidad ── */}
             <CommunityMixesCarousel />
-
-            {/* ── Videos ── */}
-            <View style={styles.section}>
-              <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                  Videos
-                </Text>
-                {VIDEOS.length > 3 && (
-                  <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
-                    <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
-                  </Pressable>
-                )}
-              </View>
-              {VIDEOS.length === 0 ? (
-                <View style={[styles.videosEmpty, { borderColor: "rgba(182,149,95,0.15)", backgroundColor: colors.card }]}>
-                  <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
-                  <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>
-                    Próximamente
-                  </Text>
-                  <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
-                    Pronto vas a encontrar videos aquí.
-                  </Text>
-                </View>
-              ) : (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ paddingTop: 12, paddingRight: 4 }}
-                >
-                  {VIDEOS.map((v) => (
-                    <VideoCard key={v.id} video={v} />
-                  ))}
-                </ScrollView>
-              )}
-            </View>
 
             {/* ── Programas (oculto temporalmente) ── */}
             {SHOW_PROGRAMAS && (
