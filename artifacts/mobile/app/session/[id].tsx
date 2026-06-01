@@ -8,6 +8,7 @@ import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
   Dimensions,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -275,6 +276,62 @@ export default function SessionDetailScreen() {
             </Pressable>
           </View>
 
+          {/* ── Participantes (solo podcast) ──────────────────────────────── */}
+          {isPodcast && (
+            <View style={styles.participantsBlock}>
+              <Text style={[styles.blockTitle, { color: colors.foreground }]}>Participantes</Text>
+
+              <View style={styles.participantRow}>
+                <View style={[styles.participantIcon, { backgroundColor: actionTint }]}>
+                  <Feather name="mic" size={16} color={colors.primary} />
+                </View>
+                <View style={styles.participantMeta}>
+                  <Text style={[styles.participantName, { color: colors.foreground }]}>
+                    ElSeñordelosCuencos
+                  </Text>
+                  <Text style={[styles.participantRole, { color: colors.mutedForeground }]}>
+                    Anfitrión
+                  </Text>
+                </View>
+              </View>
+
+              {session.guests?.map((g) => {
+                const tappable = !!g.instagram;
+                const content = (
+                  <>
+                    <View style={[styles.participantIcon, { backgroundColor: actionTint }]}>
+                      <Feather name="user" size={16} color={colors.mutedForeground} />
+                    </View>
+                    <View style={styles.participantMeta}>
+                      <Text style={[styles.participantName, { color: colors.foreground }]}>
+                        {g.name}
+                      </Text>
+                      <Text style={[styles.participantRole, { color: colors.mutedForeground }]}>
+                        {g.role}
+                      </Text>
+                    </View>
+                    {tappable && (
+                      <Feather name="instagram" size={18} color={colors.primary} />
+                    )}
+                  </>
+                );
+                return tappable ? (
+                  <Pressable
+                    key={g.name}
+                    onPress={() => Linking.openURL(g.instagram!)}
+                    style={({ pressed }) => [styles.participantRow, { opacity: pressed ? 0.7 : 1 }]}
+                  >
+                    {content}
+                  </Pressable>
+                ) : (
+                  <View key={g.name} style={styles.participantRow}>
+                    {content}
+                  </View>
+                );
+              })}
+            </View>
+          )}
+
           {/* ── Sobre la voz guía ────────────────────────────────────────── */}
           {guide && (
             <View style={styles.guideBlock}>
@@ -462,6 +519,25 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     marginBottom: 14,
   },
+
+  // Participantes
+  participantsBlock: { marginBottom: 28 },
+  participantRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 8,
+  },
+  participantIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  participantMeta: { flex: 1 },
+  participantName: { fontSize: 15, fontWeight: "600", marginBottom: 2 },
+  participantRole: { fontSize: 12 },
 
   // Related
   relatedBlock: { marginBottom: 10 },

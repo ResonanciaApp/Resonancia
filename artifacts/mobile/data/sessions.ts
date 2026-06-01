@@ -58,6 +58,8 @@ export type Session = {
   sleepTag?: SleepTag;
   /** Guiador de la meditación (ver data/guides.ts). Si se omite → Casa del Cuenco. */
   guideId?: string;
+  /** Invitados del podcast (además del anfitrión fijo). instagram opcional → fila tappable. */
+  guests?: { name: string; role: string; instagram?: string }[];
   /** ID del artista (de data/artists.ts). Solo para Música Ambient/Enteógena. Si se omite → Resonancia. */
   artistId?: string;
 };
@@ -116,6 +118,9 @@ export const SESSIONS: Session[] = [
     instruments: ["Voz", "Cuenco tibetano de apertura", "Silencio consciente"],
     image: require("@/assets/images/sessions/session-4.jpg"),
     isNew: true,
+    guests: [
+      { name: "Ricardo Galdamez", role: "Profesor de Yoga" },
+    ],
   },
   {
     id: "5",
