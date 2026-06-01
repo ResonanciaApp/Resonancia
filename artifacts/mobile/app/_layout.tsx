@@ -177,6 +177,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen name="diario" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen
+          name="diario-entrada"
+          options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
+        />
         <Stack.Screen name="favorites" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="amigos" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="grupos" options={{ headerShown: false, animation: "slide_from_right" }} />

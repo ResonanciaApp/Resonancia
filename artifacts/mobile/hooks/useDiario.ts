@@ -30,6 +30,26 @@ export function useDiario(section: DiarioSection) {
     load();
   }, [load]);
 
+  // Lee siempre el estado persistido más reciente antes de mutar, para evitar
+  // pisar datos cuando hay instancias paralelas del hook (lista + modal) que
+  // todavía no terminaron su hidratación inicial.
+  const readPersisted = useCallback(async (): Promise<DiarioEntry[]> => {
+    try {
+      const raw = await AsyncStorage.getItem(KEY(section));
+      return raw ? (JSON.parse(raw) as DiarioEntry[]) : [];
+    } catch {
+      return [];
+    }
+  }, [section]);
+
+  const persist = useCallback(
+    async (next: DiarioEntry[]) => {
+      setEntries(next);
+      await AsyncStorage.setItem(KEY(section), JSON.stringify(next));
+    },
+    [section],
+  );
+
   const saveEntry = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
@@ -39,26 +59,33 @@ export function useDiario(section: DiarioSection) {
         text: trimmed,
         createdAt: new Date().toISOString(),
       };
-      const updated = [entry, ...entries];
-      setEntries(updated);
-      await AsyncStorage.setItem(KEY(section), JSON.stringify(updated));
+      const current = await readPersisted();
+      await persist([entry, ...current]);
     },
-    [entries, section],
+    [readPersisted, persist],
+  );
+
+  const updateEntry = useCallback(
+    async (id: string, text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      const current = await readPersisted();
+      await persist(current.map((e) => (e.id === id ? { ...e, text: trimmed } : e)));
+    },
+    [readPersisted, persist],
   );
 
   const deleteEntry = useCallback(
     async (id: string) => {
-      const updated = entries.filter((e) => e.id !== id);
-      setEntries(updated);
-      await AsyncStorage.setItem(KEY(section), JSON.stringify(updated));
+      const current = await readPersisted();
+      await persist(current.filter((e) => e.id !== id));
     },
-    [entries, section],
+    [readPersisted, persist],
   );
 
   const deleteAll = useCallback(async () => {
-    setEntries([]);
-    await AsyncStorage.setItem(KEY(section), JSON.stringify([]));
-  }, [section]);
+    await persist([]);
+  }, [persist]);
 
-  return { entries, loading, saveEntry, deleteEntry, deleteAll };
+  return { entries, loading, saveEntry, updateEntry, deleteEntry, deleteAll, reload: load };
 }
