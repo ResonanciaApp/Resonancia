@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/resonancia-pitch/"
+title = "RESONANCIA — Pitch Inversionistas"
+version = "1.0.0"
+id = "artifacts/resonancia-pitch"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/resonancia-pitch/" ]
+localPort = 18837
+
+[services.development]
+run = "pnpm --filter @workspace/resonancia-pitch run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/resonancia-pitch", "run", "build" ]
+publicDir = "artifacts/resonancia-pitch/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18837"
+BASE_PATH = "/resonancia-pitch/"
