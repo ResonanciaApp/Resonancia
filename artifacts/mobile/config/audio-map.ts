@@ -37,8 +37,10 @@ export const AMBIENT_MAP: Record<string, ReturnType<typeof require> | undefined>
 /**
  * LOOP_SESSIONS — IDs de sesiones que deben reproducirse en loop indefinido.
  * El usuario elige la duración total antes de reproducir.
+ * Solo las sesiones "Sonidos Naturaleza" de Música y Sonidos son loops.
+ * Las de "Música Ambient" / "Música Enteógena" son pistas con duración fija.
  */
-export const LOOP_SESSIONS = new Set(["20", "21", "22", "23", "24", "25", "26", "27", "30"]);
+export const LOOP_SESSIONS = new Set(["20", "21", "22", "27"]);
 
 /**
  * VOICE_MAP — audio de voz guiada superpuesto al fondo musical.

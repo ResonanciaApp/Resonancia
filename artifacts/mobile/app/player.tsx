@@ -259,6 +259,9 @@ export default function PlayerScreen() {
   }
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
+  // Solo los "Sonidos Naturaleza" son loops con duración elegida por el usuario.
+  // "Música Ambient" / "Música Enteógena" son pistas con duración fija.
+  const isLoopSession = isMusicaYSonidos && currentSession.soundTag === "Sonidos Naturaleza";
 
   const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
     { label: "Sin timer", minutes: null },
@@ -357,7 +360,7 @@ export default function PlayerScreen() {
           <Text style={[styles.category, { color: colors.accent }]}>{currentSession.categoryLabel}</Text>
           <Text style={[styles.sessionTitle, { color: colors.foreground }]}>{currentSession.title}</Text>
           <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>{currentSession.subtitle}</Text>
-          {isMusicaYSonidos && (
+          {isLoopSession && (
             <View style={styles.durationChip}>
               <Feather name="clock" size={11} color="#A8D49F" />
               <Text style={styles.durationChipText}>
@@ -524,8 +527,8 @@ export default function PlayerScreen() {
           </View>
         )}
 
-        {/* Sleep Timer — at the bottom, hidden for Música y Sonidos */}
-        {!isMusicaYSonidos && (
+        {/* Sleep Timer — at the bottom, hidden para loops (usan el picker de duración) */}
+        {!isLoopSession && (
           <View style={[styles.timerSection, { paddingTop: 24, marginTop: 8 }]}>
             <View style={styles.timerHeader}>
               <Feather name="moon" size={13} color={colors.mutedForeground} />

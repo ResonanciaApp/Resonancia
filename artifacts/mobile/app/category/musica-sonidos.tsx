@@ -63,7 +63,7 @@ export default function MusicaSonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
-  const { isFavorite, toggleFavorite, playSessionWithDuration } = usePlayer();
+  const { isFavorite, toggleFavorite, playSession, playSessionWithDuration } = usePlayer();
 
   const [activeTab, setActiveTab] = useState<Tab>("Todos");
   const [query, setQuery] = useState("");
@@ -220,8 +220,16 @@ export default function MusicaSonidosScreen() {
                       },
                     ]}
                     onPress={() => {
-                      if (session.isPremium && !isPremium) router.push("/membresia" as never);
-                      else setPendingSession(session);
+                      if (session.isPremium && !isPremium) {
+                        router.push("/membresia" as never);
+                      } else if (session.soundTag === "Sonidos Naturaleza") {
+                        // Loops → el usuario elige la duración
+                        setPendingSession(session);
+                      } else {
+                        // Música Ambient / Enteógena → pistas con duración fija
+                        playSession(session);
+                        router.push("/player" as never);
+                      }
                     }}
                   >
                     {/* Circular image */}
@@ -278,12 +286,12 @@ export default function MusicaSonidosScreen() {
             {
               icon: "repeat",
               title: "Pensados para fluir",
-              body: "Las pistas se repiten en loop. Vos elegís cuánto tiempo querés permanecer adentro del sonido.",
+              body: "En Sonidos Naturaleza eliges cuánto tiempo permanecer dentro del sonido. Música Ambient y Enteógena son pistas de duración fija.",
             },
             {
               icon: "headphones",
               title: "Mejor con auriculares",
-              body: "El detalle estéreo y las capas sutiles cobran vida cuando escuchás con auriculares.",
+              body: "El detalle estéreo y las capas sutiles cobran vida cuando escuchas con auriculares.",
             },
           ]}
           quote="El sonido no llena el silencio — lo revela."
