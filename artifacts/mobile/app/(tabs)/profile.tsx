@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { useIntencion } from "@/context/IntencionContext";
@@ -56,6 +57,7 @@ export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
+  const { presets } = useMixer();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const { isPremium } = usePremium();
   const lastIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
@@ -156,10 +158,10 @@ export default function ProfileScreen() {
       icon: "activity",
     },
     {
-      label: "Favoritos",
-      value: favorites.length.toString(),
-      icon: "heart",
-      href: "/favorites",
+      label: "Mezclas",
+      value: presets.length.toString(),
+      icon: "sliders",
+      href: "/musica",
     },
   ];
 
