@@ -1,8 +1,10 @@
 /**
  * CATEGORÍAS DE MEZCLAS — "Mi Música"
  * ─────────────────────────────────────────────────────────────────
- * Las 3 categorías a las que el usuario asigna sus mezclas creadas.
+ * Las 2 categorías a las que el usuario asigna sus mezclas creadas.
  * Cada categoría tiene su imagen de portada (assets/images/mixer/categories).
+ * Nota: los IDs internos ("dormir", "motivarme") se mantienen por
+ * compatibilidad con el backend; las etiquetas visibles son las nuevas.
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather } from "@expo/vector-icons";
@@ -24,17 +26,10 @@ export type MixCategoryMeta = {
 export const MIX_CATEGORIES: MixCategoryMeta[] = [
   {
     id: "dormir",
-    label: "Para Dormir",
-    subtitle: "Mezclas para descansar",
-    icon: "moon",
+    label: "Para Relajarme",
+    subtitle: "Mezclas para relajarte",
+    icon: "wind",
     image: require("@/assets/images/mixer/categories/dormir.png"),
-  },
-  {
-    id: "trabajar",
-    label: "Para Trabajar",
-    subtitle: "Concentración y enfoque",
-    icon: "briefcase",
-    image: require("@/assets/images/mixer/categories/trabajar.png"),
   },
   {
     id: "motivarme",

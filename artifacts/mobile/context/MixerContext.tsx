@@ -89,10 +89,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       if (!val) return;
       try {
         const parsed = JSON.parse(val) as MixPreset[];
-        // Migración: mezclas viejas no tenían categoría → default "dormir"
+        // Migración: mezclas viejas sin categoría → "dormir"; la categoría
+        // "trabajar" fue removida → se reasigna a "dormir" (Para Relajarme).
         const migrated = parsed.map((p) => ({
           ...p,
-          category: p.category ?? "dormir",
+          category: !p.category || p.category === "trabajar" ? "dormir" : p.category,
         }));
         setPresets(migrated);
       } catch {
