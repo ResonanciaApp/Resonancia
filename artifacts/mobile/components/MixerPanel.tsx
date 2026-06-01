@@ -141,14 +141,10 @@ export function MixerPanel({ currentCategory }: Props) {
   };
 
   const handleCelebrationDone = () => {
-    const saved = celebration;
     setCelebration(null);
     // El mezclador se cierra (se limpia la mezcla activa) tras guardar.
+    // El usuario permanece en la pantalla de Mi Música (no se navega a la categoría).
     stopAll();
-    // Si guardamos en otra categoría, llevamos al usuario a verla.
-    if (saved && saved.category !== currentCategory) {
-      router.push(`/mezclas/${saved.category}` as never);
-    }
   };
 
   const handleTimerPress = () => {
