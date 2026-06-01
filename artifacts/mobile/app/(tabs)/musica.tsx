@@ -108,10 +108,10 @@ export default function MiMusicaScreen() {
         {/* ── Mezclador ── */}
         <View style={styles.mixerHeader}>
           <Text style={[styles.pageTitle, { color: colors.foreground, fontSize: 24 }]}>
-            Mezcla mi música
+            Crea tu música
           </Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Combiná sonidos y guardá tu mezcla en una categoría
+            Acá aparecerán los sonidos que selecciones
           </Text>
         </View>
 
