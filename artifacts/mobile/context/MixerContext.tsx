@@ -90,7 +90,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsed = JSON.parse(val) as MixPreset[];
         // Migración: mezclas viejas sin categoría → "dormir"; la categoría
-        // "trabajar" fue removida → se reasigna a "dormir" (Para Relajarme).
+        // "trabajar" fue removida → se reasigna a "dormir" (Para Dormir).
         const migrated = parsed.map((p) => ({
           ...p,
           category: !p.category || p.category === "trabajar" ? "dormir" : p.category,
