@@ -397,6 +397,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   /** Pause everything and clear the lock-screen now-playing info */
   const teardownPlayback = useCallback(() => {
+    // Drop any not-yet-fired lock-screen activation so a late status update
+    // can't re-register stale Now Playing info after stop / loop end.
+    lockScreenPendingRef.current = null;
     try {
       mainPlayerRef.current?.pause();
       mainPlayerRef.current?.clearLockScreenControls();
@@ -576,13 +579,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     (session: Session, withSeek: boolean) => {
       const player = mainPlayerRef.current;
       const art = resolveArtworkUrl(session);
-      console.log(
-        "[LOCKSCREEN] activate →",
-        "hasPlayer=" + !!player,
-        "method=" + typeof player?.setActiveForLockScreen,
-        "title=" + session.title,
-        "artwork=" + art,
-      );
       try {
         player?.setActiveForLockScreen(
           true,
@@ -594,9 +590,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           },
           { showSeekForward: withSeek, showSeekBackward: withSeek },
         );
-        console.log("[LOCKSCREEN] setActiveForLockScreen OK");
       } catch (e) {
-        console.log("[LOCKSCREEN] setActiveForLockScreen FAILED:", String(e));
+        console.warn("[RESONANCE] setActiveForLockScreen failed:", e);
       }
     },
     [],
@@ -675,6 +670,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           console.warn("[RESONANCE] Audio load failed:", err);
           hasRealAudioRef.current = false;
           switchingRef.current = false;
+          lockScreenPendingRef.current = null;
           startSimulation(session);
         } finally {
           setIsLoading(false);
@@ -682,6 +678,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       } else {
         hasRealAudioRef.current = false;
         switchingRef.current = false;
+        lockScreenPendingRef.current = null;
         startSimulation(session);
       }
     },
@@ -797,6 +794,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           hasRealAudioRef.current = false;
           loopModeRef.current = false;
           switchingRef.current = false;
+          lockScreenPendingRef.current = null;
           startSimulation(sessionOverride);
         } finally {
           setIsLoading(false);
@@ -805,6 +803,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         hasRealAudioRef.current = false;
         loopModeRef.current = false;
         switchingRef.current = false;
+        lockScreenPendingRef.current = null;
         startSimulation(sessionOverride);
       }
     },
