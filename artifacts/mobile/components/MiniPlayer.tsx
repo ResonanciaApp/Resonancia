@@ -13,21 +13,31 @@ import {
 } from "react-native";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 
 export function MiniPlayer() {
   const { currentSession, isPlaying, progress, pauseResume, stop } = usePlayer();
+  const {
+    activeSounds,
+    isPlaying: mixPlaying,
+    togglePlay,
+    stopAll,
+    presets,
+    loadedPresetId,
+  } = useMixer();
   const colors = useColors();
-
-  if (!currentSession) return null;
 
   const isIOS = Platform.OS === "ios";
 
-  return (
-    <Pressable
-      onPress={() => router.push("/player" as never)}
-      style={styles.wrapper}
-    >
+  // La sesión tiene prioridad sobre la mezcla (son mutuamente excluyentes, pero
+  // por seguridad si ambas existieran mostramos la sesión).
+  const mixActive = !currentSession && activeSounds.length > 0;
+
+  if (!currentSession && !mixActive) return null;
+
+  const shell = (children: React.ReactNode, onPress: () => void) => (
+    <Pressable onPress={onPress} style={styles.wrapper}>
       {isIOS ? (
         <BlurView intensity={80} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 18 }]} />
       ) : (
@@ -38,7 +48,62 @@ export function MiniPlayer() {
         style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
       />
       <View style={[styles.border, { borderColor: "rgba(182,149,95,0.2)" }]} />
+      {children}
+    </Pressable>
+  );
 
+  if (mixActive) {
+    const presetName = loadedPresetId
+      ? presets.find((p) => p.id === loadedPresetId)?.name
+      : null;
+    const title = presetName || "Mi mezcla";
+    const count = activeSounds.length;
+
+    return shell(
+      <>
+        <View style={styles.progressBar} />
+        <View style={styles.row}>
+          <View style={[styles.art, styles.mixArt, { backgroundColor: "rgba(182,149,95,0.14)" }]}>
+            <Feather name="sliders" size={20} color={colors.primary} />
+          </View>
+          <View style={styles.info}>
+            <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
+              {title}
+            </Text>
+            <Text style={[styles.sub, { color: colors.mutedForeground }]} numberOfLines={1}>
+              {count} {count === 1 ? "sonido" : "sonidos"}
+            </Text>
+          </View>
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              togglePlay();
+            }}
+            style={[styles.btn, { backgroundColor: colors.primary }]}
+          >
+            <Feather
+              name={mixPlaying ? "pause" : "play"}
+              size={18}
+              color={colors.primaryForeground}
+            />
+          </Pressable>
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              stopAll();
+            }}
+            style={styles.closeBtn}
+          >
+            <Feather name="x" size={18} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
+      </>,
+      () => router.push("/musica" as never),
+    );
+  }
+
+  return shell(
+    <>
       <View style={styles.progressBar}>
         <View
           style={[
@@ -49,13 +114,13 @@ export function MiniPlayer() {
       </View>
 
       <View style={styles.row}>
-        <Image source={currentSession.image} style={styles.art} resizeMode="cover" />
+        <Image source={currentSession!.image} style={styles.art} resizeMode="cover" />
         <View style={styles.info}>
           <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
-            {currentSession.title}
+            {currentSession!.title}
           </Text>
           <Text style={[styles.sub, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {currentSession.categoryLabel} · {currentSession.durationLabel}
+            {currentSession!.categoryLabel} · {currentSession!.durationLabel}
           </Text>
         </View>
         <Pressable
@@ -81,7 +146,8 @@ export function MiniPlayer() {
           <Feather name="x" size={18} color={colors.mutedForeground} />
         </Pressable>
       </View>
-    </Pressable>
+    </>,
+    () => router.push("/player" as never),
   );
 }
 
@@ -115,6 +181,10 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 10,
+  },
+  mixArt: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   info: {
     flex: 1,

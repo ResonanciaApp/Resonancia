@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import { Tabs, useRouter } from "expo-router";
+import { Tabs, useRouter, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
+import { useMixer } from "@/context/MixerContext";
 
 const ACTIVE_COLOR = "#FFFFFF";
 const INACTIVE_COLOR = "rgba(255,255,255,0.42)";
@@ -134,9 +135,17 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
 export default function TabLayout() {
   const { currentSession } = usePlayer();
+  const { activeSounds } = useMixer();
+  const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
   const tabBarHeight = 56 + (isWeb ? 34 : insets.bottom);
+
+  // La mezcla ya se controla dentro de "Mi Música", así que ahí ocultamos el
+  // MiniPlayer de mezcla (pero seguimos mostrando el de sesión si la hay).
+  const onMusicaTab = pathname?.includes("musica");
+  const mixActive = !currentSession && activeSounds.length > 0;
+  const showMiniPlayer = currentSession || (mixActive && !onMusicaTab);
 
   return (
     <View style={{ flex: 1 }}>
@@ -151,7 +160,7 @@ export default function TabLayout() {
         <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
       </Tabs>
 
-      {currentSession && (
+      {showMiniPlayer && (
         <View style={[styles.miniPlayerFloat, { bottom: tabBarHeight + 6 }]}>
           <MiniPlayer />
         </View>

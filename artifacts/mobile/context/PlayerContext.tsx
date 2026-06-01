@@ -17,6 +17,10 @@ import React, {
 } from "react";
 
 import { type Session } from "@/data/sessions";
+import {
+  registerSessionStopper,
+  stopMixPlayback,
+} from "@/context/audioBridge";
 
 export interface HistoryEntry {
   sessionId: string;
@@ -600,6 +604,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const playSession = useCallback(
     async (session: Session) => {
+      // Sesión y mezcla son mutuamente excluyentes (comparten Now Playing).
+      stopMixPlayback();
       flushActiveStat();
       clearSim();
       teardownLayers();
@@ -688,6 +694,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Play a looping ambient/nature session for a chosen number of minutes */
   const playSessionWithDuration = useCallback(
     async (session: Session, minutes: number) => {
+      // Sesión y mezcla son mutuamente excluyentes (comparten Now Playing).
+      stopMixPlayback();
       flushActiveStat();
       clearSim();
       teardownLayers();
@@ -887,6 +895,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setElapsed(0);
     setActualDurationSeconds(0);
   }, [saveSessionProgress, actualDurationSeconds, elapsed, flushActiveStat, teardownPlayback, teardownLayers]);
+
+  // ── Registrar la sesión como "stoppable" por la mezcla ────────────
+  // (MixerContext llama stopSessionPlayback() al iniciar una mezcla)
+  const stopRef = useRef(stop);
+  stopRef.current = stop;
+  useEffect(() => {
+    registerSessionStopper(() => {
+      void stopRef.current();
+    });
+    return () => registerSessionStopper(null);
+  }, []);
 
   const seekTo = useCallback(
     async (p: number) => {

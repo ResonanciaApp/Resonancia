@@ -11,6 +11,10 @@ import React, {
 
 import { SOUND_MAP } from "@/config/sound-map";
 import type { MixCategory } from "@/data/mix-categories";
+import {
+  registerMixStopper,
+  stopSessionPlayback,
+} from "@/context/audioBridge";
 
 /** Máximo de sonidos sonando a la vez (CPU/batería en móviles normales) */
 export const MAX_ACTIVE_SOUNDS = 10;
@@ -83,6 +87,123 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const loadedPresetIdRef = useRef<string | null>(null);
   loadedPresetIdRef.current = loadedPresetId;
 
+  // ── Lock-screen / Now Playing ─────────────────────────────────────
+  /** Player que "posee" los controles de pantalla bloqueada (uno solo a la vez). */
+  const lockOwnerRef = useRef<AudioPlayer | null>(null);
+  /** Suscripción al status del owner (para reflejar play/pausa remoto). */
+  const lockSubRef = useRef<{ remove: () => void } | null>(null);
+  /** Activación postergada hasta que el track tenga duración válida (evita NaN). */
+  const lockPendingRef = useRef(false);
+
+  /** Reproduce/pausa todos los players de la mezcla y actualiza el estado. */
+  const applyPlaying = useCallback((next: boolean) => {
+    isPlayingRef.current = next; // sincrónico: el listener del lock screen lo lee
+    playersRef.current.forEach((p) => {
+      try {
+        next ? p.play() : p.pause();
+      } catch {
+        // ignore
+      }
+    });
+    setIsPlaying(next);
+  }, []);
+  const applyPlayingRef = useRef(applyPlaying);
+  applyPlayingRef.current = applyPlaying;
+  /** Wrapper estable de stopAll para registrarlo en el coordinador de audio. */
+  const stopAllRef = useRef<() => void>(() => {});
+
+  const lockMetadata = useCallback(() => {
+    const loadedId = loadedPresetIdRef.current;
+    const preset = loadedId ? presetsRef.current.find((p) => p.id === loadedId) : null;
+    return {
+      title: preset?.name || "Mi mezcla",
+      artist: "Mezcla de sonidos",
+      albumTitle: "RESONANCIA",
+    };
+  }, []);
+
+  const clearLockScreen = useCallback(() => {
+    lockPendingRef.current = false;
+    if (lockSubRef.current) {
+      try {
+        lockSubRef.current.remove();
+      } catch {
+        // ignore
+      }
+      lockSubRef.current = null;
+    }
+    const owner = lockOwnerRef.current;
+    lockOwnerRef.current = null;
+    try {
+      owner?.clearLockScreenControls();
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  /**
+   * (Re)apunta los controles de pantalla bloqueada al primer player activo.
+   * La mezcla son varios loops sin una pista "principal", así que designamos
+   * uno como ancla del Now Playing. Si el ancla deja de existir (se quitó ese
+   * sonido), se transfiere al siguiente. Si no queda ninguno, se limpia.
+   */
+  const syncLockScreen = useCallback(() => {
+    const first = playersRef.current.values().next().value as AudioPlayer | undefined;
+    if (!first) {
+      clearLockScreen();
+      return;
+    }
+    // Mismo owner → solo refrescar metadata (ej. cambió el nombre del preset).
+    if (lockOwnerRef.current === first) {
+      try {
+        first.updateLockScreenMetadata(lockMetadata());
+      } catch {
+        // ignore
+      }
+      return;
+    }
+    // Transferir ownership a un nuevo player ancla.
+    if (lockSubRef.current) {
+      try {
+        lockSubRef.current.remove();
+      } catch {
+        // ignore
+      }
+      lockSubRef.current = null;
+    }
+    const prev = lockOwnerRef.current;
+    if (prev) {
+      try {
+        prev.clearLockScreenControls();
+      } catch {
+        // ignore
+      }
+    }
+    lockOwnerRef.current = first;
+    lockPendingRef.current = true;
+    lockSubRef.current = first.addListener("playbackStatusUpdate", (status) => {
+      // Activar recién cuando hay duración válida: tras replace() el item aún
+      // no cargó → duration NaN, e iOS descarta TODA la entrada de Now Playing.
+      if (lockPendingRef.current && (status.duration ?? 0) > 0) {
+        lockPendingRef.current = false;
+        try {
+          first.setActiveForLockScreen(true, lockMetadata(), {
+            showSeekForward: false,
+            showSeekBackward: false,
+          });
+        } catch {
+          // ignore
+        }
+      }
+      // Reflejar play/pausa remoto (botones de la pantalla bloqueada) sobre
+      // TODA la mezcla. Comparamos contra el ref (actualizado sincrónicamente
+      // en applyPlaying) para no entrar en bucle con nuestros propios cambios.
+      if (typeof status.playing === "boolean" && status.playing !== isPlayingRef.current) {
+        applyPlayingRef.current(status.playing);
+      }
+    });
+  }, [clearLockScreen, lockMetadata]);
+
   // ── Cargar presets guardados ──────────────────────────────────────
   useEffect(() => {
     AsyncStorage.getItem(PRESETS_KEY).then((val) => {
@@ -109,7 +230,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const ensureAudioMode = useCallback(async () => {
     try {
-      await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+        shouldPlayInBackground: true,
+        // doNotMix = foco de audio exclusivo. Imprescindible para que iOS
+        // convierta la app en la "app de Now Playing" y muestre los controles
+        // en pantalla bloqueada. Con el default (mixWithOthers) no aparece nada.
+        interruptionMode: "doNotMix",
+      });
     } catch {
       // ignore
     }
@@ -161,39 +289,49 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const exists = prev.some((s) => s.id === id);
 
       if (exists) {
+        const removingOwner = lockOwnerRef.current === playersRef.current.get(id);
+        if (removingOwner) clearLockScreen();
         destroyPlayer(id);
         const next = prev.filter((s) => s.id !== id);
         setActiveSounds(next);
         setLoadedPresetId(null);
         if (next.length === 0) {
           setIsPlaying(false);
+          isPlayingRef.current = false;
           clearSleepTimer();
+        } else if (removingOwner) {
+          // El owner del lock screen se quitó → transferir al siguiente player.
+          syncLockScreen();
         }
         return true;
       }
 
       if (prev.length >= MAX_ACTIVE_SOUNDS) return false;
 
+      // Mezcla y sesión son mutuamente excluyentes (comparten Now Playing).
+      stopSessionPlayback();
       void ensureAudioMode();
       const player = createPlayerFor(id, DEFAULT_VOLUME);
       // Sin archivo de audio (o falla de carga): no agregar un sonido "fantasma"
       if (!player) return true;
       // Si la mezcla estaba pausada, retomar todos al sumar un sonido
       if (!isPlayingRef.current) {
-        playersRef.current.forEach((p) => {
-          try {
-            p.play();
-          } catch {
-            // ignore
-          }
-        });
-        setIsPlaying(true);
+        applyPlaying(true);
       }
       setActiveSounds([...prev, { id, volume: DEFAULT_VOLUME }]);
       setLoadedPresetId(null);
+      syncLockScreen();
       return true;
     },
-    [createPlayerFor, destroyPlayer, ensureAudioMode, clearSleepTimer],
+    [
+      createPlayerFor,
+      destroyPlayer,
+      ensureAudioMode,
+      clearSleepTimer,
+      applyPlaying,
+      syncLockScreen,
+      clearLockScreen,
+    ],
   );
 
   const setVolume = useCallback((id: string, volume: number) => {
@@ -210,30 +348,33 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const removeSound = useCallback(
     (id: string) => {
+      const removingOwner = lockOwnerRef.current === playersRef.current.get(id);
+      if (removingOwner) clearLockScreen();
       destroyPlayer(id);
       const next = activeSoundsRef.current.filter((s) => s.id !== id);
       setActiveSounds(next);
       setLoadedPresetId(null);
       if (next.length === 0) {
         setIsPlaying(false);
+        isPlayingRef.current = false;
         clearSleepTimer();
+      } else if (removingOwner) {
+        syncLockScreen();
       }
     },
-    [destroyPlayer, clearSleepTimer],
+    [destroyPlayer, clearSleepTimer, clearLockScreen, syncLockScreen],
   );
 
   const togglePlay = useCallback(() => {
     if (activeSoundsRef.current.length === 0) return;
     const next = !isPlayingRef.current;
-    playersRef.current.forEach((p) => {
-      try {
-        next ? p.play() : p.pause();
-      } catch {
-        // ignore
-      }
-    });
-    setIsPlaying(next);
-  }, []);
+    // Al retomar la mezcla, cortar la sesión (comparten Now Playing).
+    if (next) stopSessionPlayback();
+    applyPlaying(next);
+    // Al pausar mantenemos el lock screen (en estado pausado) para poder
+    // retomar desde la pantalla bloqueada; al retomar reaseguramos el owner.
+    if (next) syncLockScreen();
+  }, [applyPlaying, syncLockScreen]);
 
   const stopAll = useCallback(() => {
     playersRef.current.forEach((p) => {
@@ -249,11 +390,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
     });
     playersRef.current.clear();
+    clearLockScreen();
     setActiveSounds([]);
     setIsPlaying(false);
+    isPlayingRef.current = false;
     setLoadedPresetId(null);
     clearSleepTimer();
-  }, [clearSleepTimer]);
+  }, [clearSleepTimer, clearLockScreen]);
+  stopAllRef.current = stopAll;
 
   const savePreset = useCallback(
     (input: SaveMixInput) => {
@@ -274,6 +418,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const loadPreset = useCallback(
     (preset: MixPreset) => {
+      // Mezcla y sesión son mutuamente excluyentes (comparten Now Playing).
+      stopSessionPlayback();
+      // Soltar el lock screen del owner viejo antes de desmontarlo.
+      clearLockScreen();
       // Desmontar la mezcla actual
       playersRef.current.forEach((p) => {
         try {
@@ -300,10 +448,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       });
       setActiveSounds(created);
       setIsPlaying(created.length > 0);
-      setLoadedPresetId(created.length > 0 ? preset.id : null);
+      isPlayingRef.current = created.length > 0;
+      // Set sincrónico: syncLockScreen lee loadedPresetIdRef para el título.
+      const nextLoadedId = created.length > 0 ? preset.id : null;
+      setLoadedPresetId(nextLoadedId);
+      loadedPresetIdRef.current = nextLoadedId;
       clearSleepTimer();
+      if (created.length > 0) syncLockScreen();
     },
-    [createPlayerFor, ensureAudioMode, clearSleepTimer],
+    [createPlayerFor, ensureAudioMode, clearSleepTimer, clearLockScreen, syncLockScreen],
   );
 
   const deletePreset = useCallback(
@@ -346,14 +499,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
               clearInterval(sleepIntervalRef.current);
               sleepIntervalRef.current = null;
             }
-            playersRef.current.forEach((p) => {
-              try {
-                p.pause();
-              } catch {
-                // ignore
-              }
-            });
-            setIsPlaying(false);
+            applyPlayingRef.current(false);
             return null;
           }
           return prev - 1;
@@ -363,9 +509,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  // ── Registrar la mezcla como "stoppable" por la sesión ────────────
+  // (PlayerContext llama stopMixPlayback() al iniciar una sesión)
+  useEffect(() => {
+    registerMixStopper(() => stopAllRef.current());
+    return () => registerMixStopper(null);
+  }, []);
+
   // ── Limpieza al desmontar ─────────────────────────────────────────
   useEffect(() => {
     return () => {
+      clearLockScreen();
       playersRef.current.forEach((p) => {
         try {
           p.remove();
@@ -376,7 +530,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       playersRef.current.clear();
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
     };
-  }, []);
+  }, [clearLockScreen]);
 
   const isActive = useCallback(
     (id: string) => activeSounds.some((s) => s.id === id),

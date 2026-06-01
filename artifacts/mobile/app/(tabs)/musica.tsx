@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useState } from "react";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
   Alert,
   ImageBackground,
@@ -36,17 +36,8 @@ export default function MiMusicaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { isActive, toggleSound, stopAll } = useMixer();
+  const { isActive, toggleSound } = useMixer();
   const [activeTab, setActiveTab] = useState<TabId>("todos");
-
-  // Al salir de esta pantalla, detener la mezcla (no debe seguir sonando fuera del mezclador).
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        stopAll();
-      };
-    }, [stopAll]),
-  );
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;

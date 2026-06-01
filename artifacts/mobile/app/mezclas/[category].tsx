@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useMemo } from "react";
 import {
   Alert,
   ImageBackground,
@@ -36,22 +36,13 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 export default function CategoryMixesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { presets, deletePreset, setPresetShared, loadedPresetId, isPlaying, stopAll } = useMixer();
+  const { presets, deletePreset, setPresetShared, loadedPresetId, isPlaying } = useMixer();
   const loadMix = useLoadMix();
   const { isSignedIn } = useAuth();
   const { isPremium } = usePremium();
   const queryClient = useQueryClient();
   const shareMix = useShareMix();
   const unshareMix = useUnshareMix();
-
-  // Al salir de esta pantalla, detener la mezcla (no debe seguir sonando fuera del mezclador).
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        stopAll();
-      };
-    }, [stopAll]),
-  );
 
   const params = useLocalSearchParams<{ category: string }>();
   const categoryId = params.category as MixCategory;
