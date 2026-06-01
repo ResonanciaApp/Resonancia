@@ -24,7 +24,6 @@ import { MIX_CATEGORIES } from "@/data/mix-categories";
 import {
   type MixSound,
   type SoundCategoryId,
-  SOUNDS,
   SOUND_CATEGORIES,
   getSoundsByCategory,
   hasSoundFile,
@@ -75,9 +74,6 @@ export default function MiMusicaScreen() {
     { id: "todos", label: "Todos" },
     ...SOUND_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
   ];
-
-  const visibleSounds =
-    activeTab === "todos" ? SOUNDS : getSoundsByCategory(activeTab);
 
   const renderSoundCard = (sound: MixSound) => {
     const available = hasSoundFile(sound.id);
@@ -234,8 +230,21 @@ export default function MiMusicaScreen() {
           })}
         </ScrollView>
 
-        {/* ── Biblioteca de sonidos (filtrada por tab) ── */}
-        <View style={styles.grid}>{visibleSounds.map(renderSoundCard)}</View>
+        {/* ── Biblioteca de sonidos (con títulos por categoría, filtrada por tab) ── */}
+        {SOUND_CATEGORIES.filter(
+          (cat) => activeTab === "todos" || activeTab === cat.id,
+        ).map((cat) => {
+          const sounds = getSoundsByCategory(cat.id);
+          if (sounds.length === 0) return null;
+          return (
+            <View key={cat.id} style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                {cat.label}
+              </Text>
+              <View style={styles.grid}>{sounds.map(renderSoundCard)}</View>
+            </View>
+          );
+        })}
       </ScrollView>
 
     </View>
@@ -248,6 +257,10 @@ const styles = StyleSheet.create({
   header: { marginBottom: 20 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   pageSub: { fontSize: 13, lineHeight: 18 },
+
+  // Secciones
+  section: { marginBottom: 14 },
+  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
 
   // Tabs de categorías de sonido
   tabsScroll: { marginBottom: 16, marginHorizontal: -20 },
