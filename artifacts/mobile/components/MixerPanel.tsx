@@ -148,7 +148,7 @@ export function MixerPanel({ currentCategory }: Props) {
 
   return (
     <>
-      <View style={[styles.mixCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={[styles.mixCard, { backgroundColor: "rgba(120,120,120,0.18)", borderColor: colors.border }]}>
         <View style={styles.mixHeader}>
           <Text style={[styles.mixTitle, { color: colors.foreground }]} numberOfLines={1}>
             {loadedPreset?.name ?? "Tu mezcla"} · {activeMix.length}/{MAX_ACTIVE_SOUNDS}
