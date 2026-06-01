@@ -207,6 +207,7 @@ Cada sesión de **Meditaciones Guiadas** lleva `guideId` (campo en `sessions.ts`
   - Plan anual como ancla (mejor retención) + mensual más caro proporcionalmente para empujar al anual.
   - Al lanzar, arrancar con precios un poco más bajos (oferta de lanzamiento) para ganar reseñas y conversión, luego subir.
 - **Frase del día → contador "X compartieron"**: el número actual es decorativo (fórmula basada en el día del año, no en datos reales). Cuando exista backend, registrar cada compartida en DB y devolver el total real desde la API.
+- **Valoración en cards de Meditaciones Guiadas (promedio real)**: hoy las cards de las subcategorías muestran la valoración del **propio usuario** (guardada local en `@resonance_ratings`, mapa `{sessionId: estrellas}`); si no la valoró, no muestra nada. Cuando exista backend, registrar cada valoración en DB y mostrar el **promedio de la comunidad** (ej. 4.5/5) en lugar de la nota individual.
 - **EAS Build (publicar la app + activar push notifications reales)**: el código ya está armado (`eas.json` con perfiles dev/preview/production, hook de push, registro/unregistro de tokens, server enganchado a DM/amigos). Faltan los pasos manuales:
   1. Crear cuenta gratis en https://expo.dev
   2. `npm install -g eas-cli` + `eas login`
