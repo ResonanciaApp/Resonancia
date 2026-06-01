@@ -8,14 +8,15 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useCallback } from "react";
-import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useState } from "react";
+import { Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useGetSharedMixes } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
 import { getMixImage } from "@/config/mix-images";
 import { useColors } from "@/hooks/useColors";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 export function CommunityMixesCarousel() {
   const colors = useColors();
@@ -23,6 +24,9 @@ export function CommunityMixesCarousel() {
   const { data } = useGetSharedMixes();
 
   const mixes = data?.mixes ?? [];
+
+  // Si la foto del autor no carga (URL caída/expirada), caemos al icono.
+  const [failedAvatars, setFailedAvatars] = useState<Record<number, boolean>>({});
 
   const handlePlay = useCallback((mix: SharedMix) => {
     // Abre el reproductor de la mezcla de la comunidad (la presenta como un
@@ -66,7 +70,20 @@ export function CommunityMixesCarousel() {
                 {mix.name}
               </Text>
               <View style={styles.authorRow}>
-                <Feather name="user" size={12} color={colors.mutedForeground} />
+                {(() => {
+                  const avatar = resolveAvatarUrl(mix.author.avatarUrl);
+                  return avatar && !failedAvatars[mix.id] ? (
+                    <Image
+                      source={{ uri: avatar }}
+                      style={[styles.authorAvatar, { backgroundColor: colors.border }]}
+                      onError={() =>
+                        setFailedAvatars((prev) => ({ ...prev, [mix.id]: true }))
+                      }
+                    />
+                  ) : (
+                    <Feather name="user" size={12} color={colors.mutedForeground} />
+                  );
+                })()}
                 <Text
                   style={[styles.cardAuthor, { color: colors.mutedForeground }]}
                   numberOfLines={1}
@@ -101,5 +118,6 @@ const styles = StyleSheet.create({
   cardBody: { padding: 10 },
   cardName: { fontSize: 14, fontWeight: "700" },
   authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 4 },
+  authorAvatar: { width: 16, height: 16, borderRadius: 8 },
   cardAuthor: { fontSize: 12, flexShrink: 1 },
 });

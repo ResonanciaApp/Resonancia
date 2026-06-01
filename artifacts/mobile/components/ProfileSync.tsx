@@ -105,14 +105,6 @@ export function ProfileSync() {
   useEffect(() => {
     let cancelled = false;
     async function syncAvatar() {
-      console.log("[ProfileSync avatar] gate", {
-        isSignedIn,
-        hasMe: !!me,
-        profileLoaded,
-        hasPhoto: !!photoUri,
-        photoKind: photoUri ? photoUri.slice(0, 12) : null,
-        serverAvatar: me?.avatarUrl ?? null,
-      });
       if (!isSignedIn || !me || !profileLoaded) return;
       if (avatarSyncing.current) return;
 
@@ -159,11 +151,9 @@ export function ProfileSync() {
         await updateMe.mutateAsync({ data: { avatarUrl: objectPath } });
         avatarMarker.current = { uri: photoUri, path: objectPath };
         await AsyncStorage.setItem(markerKey, JSON.stringify(avatarMarker.current));
-        console.log("[ProfileSync avatar] subido OK", objectPath);
         queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
         queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
-      } catch (err) {
-        console.warn("[ProfileSync avatar] subida FALLÓ", err);
+      } catch {
         // Falló la subida: reintentamos en el próximo arranque (no en bucle).
       } finally {
         avatarSyncing.current = false;
