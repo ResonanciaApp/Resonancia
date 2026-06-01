@@ -26,7 +26,7 @@ export default function Slide07PorQue() {
           <div>
             <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#C69B4F", marginBottom: "0.8vh" }}>Biblioteca sonora propia</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#cbb9a4", lineHeight: 1.4 }}>
-              Tienda propia de cuencos tibetanos y gongs: audio original en alta calidad de un amplio rango de frecuencias y notas, imposible de replicar. A esto se suman artistas y voces guía certificados.
+              Tienda propia de cuencos tibetanos y gongs: <span style={{ color: "#C69B4F", fontWeight: 700 }}>+30 horas de audio propio</span> en alta calidad, de un amplio rango de frecuencias y notas, imposible de replicar. A esto se suman artistas y voces guía certificados.
             </div>
           </div>
         </div>
