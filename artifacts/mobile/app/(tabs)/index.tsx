@@ -28,7 +28,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
-import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
+import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
@@ -68,7 +68,7 @@ export default function HomeScreen() {
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
-  const { playSession, history } = usePlayer();
+  const { playSession } = usePlayer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   function handleIntentionPress() {
@@ -96,20 +96,6 @@ export default function HomeScreen() {
     }
     return pool.slice(0, 4);
   }, []);
-
-  // Últimas sesiones únicas escuchadas (max 5)
-  const recentSessions = React.useMemo(() => {
-    const seen = new Set<string>();
-    const result: Session[] = [];
-    for (const entry of history) {
-      if (seen.has(entry.sessionId)) continue;
-      seen.add(entry.sessionId);
-      const s = getSessionById(entry.sessionId);
-      if (s) result.push(s);
-      if (result.length === 5) break;
-    }
-    return result;
-  }, [history]);
 
   const { open: openDrawer } = useDrawer();
 
@@ -267,56 +253,49 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* ── MI DIARIO ── */}
+        {/* ── MI DIARIO + EJERCICIOS DE RESPIRACIÓN ── */}
         <View style={[styles.section, { marginBottom: 24 }]}>
-          <Pressable
-            onPress={() => router.push("/diario" as never)}
-            style={({ pressed }) => [styles.diarioCard, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            <LinearGradient
-              colors={["#2A1F10", "#1C130A"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <View style={styles.diarioIconWrap}>
-              <Feather name="feather" size={22} color={colors.accent} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.diarioTitle, { color: colors.foreground }]}>Mi Diario</Text>
-              <Text style={[styles.diarioSub, { color: colors.mutedForeground }]} numberOfLines={2}>
+          <View style={styles.squareRow}>
+            <Pressable
+              onPress={() => router.push("/diario" as never)}
+              style={({ pressed }) => [styles.squareCard, { opacity: pressed ? 0.85 : 1 }]}
+            >
+              <LinearGradient
+                colors={["#2A1F10", "#1C130A"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={styles.diarioIconWrap}>
+                <Feather name="feather" size={22} color={colors.accent} />
+              </View>
+              <Text style={[styles.squareTitle, { color: colors.foreground }]}>Mi Diario</Text>
+              <Text style={[styles.squareSub, { color: colors.mutedForeground }]} numberOfLines={2}>
                 Tus reflexiones, ideas y mensajes de voz
               </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-          </Pressable>
-        </View>
+            </Pressable>
 
-        {/* ── EJERCICIOS DE RESPIRACIÓN ── */}
-        <View style={[styles.section, { marginBottom: 24 }]}>
-          <Pressable
-            onPress={() => router.push("/respiracion" as never)}
-            style={({ pressed }) => [styles.diarioCard, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            <LinearGradient
-              colors={["#2A1F10", "#1C130A"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <View style={styles.diarioIconWrap}>
-              <Feather name="wind" size={22} color={colors.accent} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.diarioTitle, { color: colors.foreground }]}>
+            <Pressable
+              onPress={() => router.push("/respiracion" as never)}
+              style={({ pressed }) => [styles.squareCard, { opacity: pressed ? 0.85 : 1 }]}
+            >
+              <LinearGradient
+                colors={["#2A1F10", "#1C130A"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={styles.diarioIconWrap}>
+                <Feather name="wind" size={22} color={colors.accent} />
+              </View>
+              <Text style={[styles.squareTitle, { color: colors.foreground }]}>
                 Ejercicios de respiración
               </Text>
-              <Text style={[styles.diarioSub, { color: colors.mutedForeground }]} numberOfLines={2}>
+              <Text style={[styles.squareSub, { color: colors.mutedForeground }]} numberOfLines={2}>
                 4-7-8 · Cuadrada · Coherencia
               </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-          </Pressable>
+            </Pressable>
+          </View>
         </View>
 
         {/* ── 5. FRASE DEL DÍA ── */}
@@ -339,41 +318,6 @@ export default function HomeScreen() {
               <SessionCard key={s.id} session={s} width={110} />
             ))}
           </ScrollView>
-        </View>
-
-        {/* ── 11. HISTORIAL RECIENTE ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Escuchado recientemente
-            </Text>
-            {recentSessions.length > 0 && (
-              <Pressable onPress={() => router.push("/recientes" as never)}>
-                <Text style={[styles.seeAll, { color: colors.accent }]}>Ver todo</Text>
-              </Pressable>
-            )}
-          </View>
-          {recentSessions.length === 0 ? (
-            <Pressable
-              onPress={() => router.push("/(tabs)/explore" as never)}
-              style={[styles.recentEmpty, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(182,149,95,0.15)" }]}
-            >
-              <Feather name="headphones" size={28} color="rgba(182,149,95,0.35)" />
-              <Text style={[styles.recentEmptyTitle, { color: colors.foreground }]}>
-                Tu historial está vacío
-              </Text>
-              <Text style={[styles.recentEmptyText, { color: colors.mutedForeground }]}>
-                Las sesiones que escuches aparecerán aquí para que puedas volver a ellas fácilmente.
-              </Text>
-              <View style={[styles.recentEmptyBtn, { borderColor: "rgba(182,149,95,0.3)" }]}>
-                <Text style={[styles.recentEmptyBtnText, { color: colors.accent }]}>Explorar sesiones</Text>
-              </View>
-            </Pressable>
-          ) : (
-            recentSessions.map((s) => (
-              <SessionCard key={s.id} session={s} horizontal cardBg="rgba(255,255,255,0.05)" />
-            ))
-          )}
         </View>
 
         {/* ── 10. BANNER PREMIUM ── */}
@@ -512,17 +456,20 @@ const styles = StyleSheet.create({
   // Horizontal scroll
   hScroll: { paddingRight: 20 },
 
-  // Mi Diario card
-  diarioCard: {
+  // Mi Diario + Ejercicios (square cards side by side)
+  squareRow: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
+    gap: 12,
+  },
+  squareCard: {
+    flex: 1,
+    aspectRatio: 1,
     borderRadius: 18,
     overflow: "hidden",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    padding: 16,
     borderWidth: 1,
     borderColor: "rgba(182,149,95,0.18)",
+    justifyContent: "flex-start",
   },
   diarioIconWrap: {
     width: 46,
@@ -531,31 +478,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(214,168,91,0.14)",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: "auto",
   },
-  diarioTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2 },
-  diarioSub: { fontSize: 12.5, lineHeight: 17, marginTop: 2 },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12 },
+  squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4 },
 
   // Diary favorites
   diarioList: { gap: 10 },
-
-  // Historial vacío
-  recentEmpty: {
-    borderWidth: 1,
-    borderRadius: 18,
-    borderStyle: "dashed",
-    paddingVertical: 28,
-    paddingHorizontal: 20,
-    alignItems: "center",
-    gap: 8,
-  },
-  recentEmptyTitle: { fontSize: 15, fontWeight: "700", marginTop: 4 },
-  recentEmptyText: { fontSize: 13, lineHeight: 19, textAlign: "center", maxWidth: 280 },
-  recentEmptyBtn: {
-    marginTop: 8,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  recentEmptyBtnText: { fontSize: 13, fontWeight: "600" },
 });
