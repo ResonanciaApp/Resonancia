@@ -39,6 +39,29 @@ function formatTime(iso: string) {
   });
 }
 
+function dayKey(iso: string) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+type DiarioDayGroup = { key: string; createdAt: string; entries: DiarioEntry[] };
+
+function groupByDay(entries: DiarioEntry[]): DiarioDayGroup[] {
+  const groups: DiarioDayGroup[] = [];
+  const index = new Map<string, DiarioDayGroup>();
+  for (const entry of entries) {
+    const key = dayKey(entry.createdAt);
+    let group = index.get(key);
+    if (!group) {
+      group = { key, createdAt: entry.createdAt, entries: [] };
+      index.set(key, group);
+      groups.push(group);
+    }
+    group.entries.push(entry);
+  }
+  return groups;
+}
+
 export default function DiarioScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -70,32 +93,38 @@ export default function DiarioScreen() {
     ]);
   };
 
-  const renderEntry = (entry: DiarioEntry) => (
-    <Pressable
-      key={entry.id}
-      onPress={() => router.push(`/diario-entrada?id=${entry.id}` as never)}
-      style={styles.entryRow}
-    >
+  const groups = groupByDay(entries);
+
+  const renderGroup = (group: DiarioDayGroup) => (
+    <View key={group.key} style={styles.dayRow}>
       <View style={styles.dateCol}>
         <Text style={[styles.dateMonth, { color: colors.mutedForeground }]}>
-          {formatMonth(entry.createdAt)}
+          {formatMonth(group.createdAt)}
         </Text>
         <Text style={[styles.dateDay, { color: colors.mutedForeground }]}>
-          {formatDay(entry.createdAt)}
+          {formatDay(group.createdAt)}
         </Text>
       </View>
 
       <View style={[styles.entryDivider, { backgroundColor: "rgba(237,225,211,0.18)" }]} />
 
-      <View style={styles.entryBody}>
-        <Text style={[styles.entryTime, { color: colors.mutedForeground }]}>
-          {formatTime(entry.createdAt)}
-        </Text>
-        <Text style={[styles.entryText, { color: colors.foreground }]} numberOfLines={2}>
-          {entry.text}
-        </Text>
+      <View style={styles.dayEntries}>
+        {group.entries.map((entry, i) => (
+          <Pressable
+            key={entry.id}
+            onPress={() => router.push(`/diario-entrada?id=${entry.id}` as never)}
+            style={[styles.entryBody, i > 0 && styles.entryBodySpacing]}
+          >
+            <Text style={[styles.entryTime, { color: colors.mutedForeground }]}>
+              {formatTime(entry.createdAt)}
+            </Text>
+            <Text style={[styles.entryText, { color: colors.foreground }]} numberOfLines={2}>
+              {entry.text}
+            </Text>
+          </Pressable>
+        ))}
       </View>
-    </Pressable>
+    </View>
   );
 
   return (
@@ -134,7 +163,7 @@ export default function DiarioScreen() {
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 120 + bottomPad }}
           showsVerticalScrollIndicator={false}
         >
-          {entries.map(renderEntry)}
+          {groups.map(renderGroup)}
         </ScrollView>
       )}
 
@@ -182,16 +211,18 @@ const styles = StyleSheet.create({
   emptyTitle: { fontSize: 17, fontWeight: "700", marginBottom: 8 },
   emptyText: { fontSize: 14, lineHeight: 21, textAlign: "center" },
 
-  entryRow: {
+  dayRow: {
     flexDirection: "row",
     alignItems: "flex-start",
     paddingVertical: 14,
   },
-  dateCol: { width: 40, alignItems: "flex-start" },
+  dateCol: { width: 40, alignItems: "flex-start", paddingTop: 2 },
   dateMonth: { fontSize: 11, fontWeight: "600", letterSpacing: 0.5 },
   dateDay: { fontSize: 20, fontWeight: "700", marginTop: 2 },
   entryDivider: { width: 1, alignSelf: "stretch", marginHorizontal: 14 },
+  dayEntries: { flex: 1 },
   entryBody: { flex: 1 },
+  entryBodySpacing: { marginTop: 16 },
   entryTime: { fontSize: 12, marginBottom: 4 },
   entryText: { fontSize: 15, lineHeight: 21 },
 
