@@ -44,9 +44,15 @@ export function ProfileSync() {
     // si no, podríamos empujar el valor por defecto antes de leer el real.
     if (!isSignedIn || !me || !profileLoaded) return;
     const desired = username.trim();
-    // No sincronizar el placeholder: solo nombres realmente elegidos.
-    if (!desired || desired === DEFAULT_USERNAME) return;
-    if (me.displayName === desired) return;
+    if (!desired || me.displayName === desired) return;
+
+    // El server arranca con un displayName auto-generado del ID de Clerk
+    // (ej. "user_3ecvn1xpkv", con displayName === username). En ese estado SÍ
+    // queremos reemplazarlo aunque el nombre local sea el placeholder.
+    const serverIsAutoDefault =
+      me.displayName === me.username && /^user_[a-z0-9]+$/.test(me.displayName);
+    // No pisar un nombre real del server con el placeholder local (multi-device).
+    if (desired === DEFAULT_USERNAME && !serverIsAutoDefault) return;
 
     const key = `${me.id}:${desired}`;
     if (lastSynced.current === key || updateMe.isPending) return;
