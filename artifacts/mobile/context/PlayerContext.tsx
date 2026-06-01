@@ -545,18 +545,30 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Configure lock-screen now-playing info for the current session */
   const activateLockScreen = useCallback(
     (session: Session, withSeek: boolean) => {
+      const player = mainPlayerRef.current;
+      const art = resolveArtworkUrl(session);
+      console.log(
+        "[LOCKSCREEN] activate →",
+        "hasPlayer=" + !!player,
+        "method=" + typeof player?.setActiveForLockScreen,
+        "title=" + session.title,
+        "artwork=" + art,
+      );
       try {
-        mainPlayerRef.current?.setActiveForLockScreen(
+        player?.setActiveForLockScreen(
           true,
           {
             title: session.title,
             artist: session.subtitle || session.categoryLabel,
             albumTitle: "RESONANCIA",
-            artworkUrl: resolveArtworkUrl(session),
+            artworkUrl: art,
           },
           { showSeekForward: withSeek, showSeekBackward: withSeek },
         );
-      } catch (_) {}
+        console.log("[LOCKSCREEN] setActiveForLockScreen OK");
+      } catch (e) {
+        console.log("[LOCKSCREEN] setActiveForLockScreen FAILED:", String(e));
+      }
     },
     [],
   );
