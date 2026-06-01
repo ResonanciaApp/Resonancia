@@ -45,13 +45,17 @@ export default function DiarioEntradaScreen() {
 
   const canSave = text.trim().length > 0;
 
+  // En modo edición se guarda automáticamente al cerrar (no hay botón "Guardar").
+  const handleClose = async () => {
+    if (isEditing && id && canSave) {
+      await updateEntry(id, text);
+    }
+    router.back();
+  };
+
   const handleSave = async () => {
     if (!canSave) return;
-    if (isEditing && id) {
-      await updateEntry(id, text);
-    } else {
-      await saveEntry(text);
-    }
+    await saveEntry(text);
     router.back();
   };
 
@@ -80,7 +84,7 @@ export default function DiarioEntradaScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerSide}>
+        <Pressable onPress={handleClose} hitSlop={10} style={styles.headerSide}>
           <Feather name="x" size={24} color={colors.foreground} />
         </Pressable>
 
@@ -89,21 +93,22 @@ export default function DiarioEntradaScreen() {
         </Text>
 
         <View style={[styles.headerSide, styles.headerRight]}>
-          {isEditing && (
+          {isEditing ? (
             <Pressable onPress={handleDelete} hitSlop={10} style={styles.trashBtn}>
               <Feather name="trash-2" size={20} color={colors.foreground} />
             </Pressable>
+          ) : (
+            <Pressable onPress={handleSave} hitSlop={10} disabled={!canSave}>
+              <Text
+                style={[
+                  styles.saveText,
+                  { color: canSave ? colors.primary : colors.mutedForeground },
+                ]}
+              >
+                Guardar
+              </Text>
+            </Pressable>
           )}
-          <Pressable onPress={handleSave} hitSlop={10} disabled={!canSave}>
-            <Text
-              style={[
-                styles.saveText,
-                { color: canSave ? colors.primary : colors.mutedForeground },
-              ]}
-            >
-              Guardar
-            </Text>
-          </Pressable>
         </View>
       </View>
 
