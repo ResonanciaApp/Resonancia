@@ -291,14 +291,6 @@ export default function CommunityMixScreen() {
           </Text>
         </View>
 
-        {/* Nota: composición privada */}
-        <View style={[styles.privateNote, { borderColor: colors.border }]}>
-          <Feather name="lock" size={13} color={colors.mutedForeground} />
-          <Text style={[styles.privateTxt, { color: colors.mutedForeground }]}>
-            Una mezcla única de sonidos · composición privada del creador
-          </Text>
-        </View>
-
         {/* Botón reproducir */}
         <Pressable
           onPress={handlePlayPause}
@@ -448,17 +440,6 @@ const styles = StyleSheet.create({
   },
   avatarTxt: { fontSize: 15, fontWeight: "700" },
   authorName: { flex: 1, fontSize: 14 },
-  privateNote: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 22,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 14,
-    borderWidth: 1,
-  },
-  privateTxt: { flex: 1, fontSize: 12.5, lineHeight: 17 },
   playBtn: {
     flexDirection: "row",
     alignItems: "center",
