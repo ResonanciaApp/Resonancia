@@ -12,6 +12,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -295,6 +296,14 @@ export default function PlayerScreen() {
   const handlePlayPause = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     pauseResume();
+  };
+
+  const handleShare = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await Share.share({
+      title: currentSession.title,
+      message: `✨ Estoy escuchando "${currentSession.title}" en RESONANCIA — meditación y sanación con sonido. ¿Te unes?`,
+    });
   };
 
   const skipForward = () => {
@@ -584,6 +593,13 @@ export default function PlayerScreen() {
         hitSlop={12}
       >
         <Feather name="heart" size={22} color={fav ? colors.primary : colors.mutedForeground} />
+      </Pressable>
+      <Pressable
+        onPress={handleShare}
+        style={[styles.floatingBtn, { top: topPad + 8, right: 64 }]}
+        hitSlop={12}
+      >
+        <Feather name="share-2" size={21} color={colors.mutedForeground} />
       </Pressable>
     </View>
   );

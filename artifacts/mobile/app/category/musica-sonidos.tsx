@@ -35,22 +35,26 @@ const IMG_SIZE = CARD_WIDTH - 10;
 
 type Tab = "Todos" | SoundTag;
 
-const TABS: Tab[] = ["Todos", "Binaural", "Música", "Sonidos Naturaleza", "Música Enteógena"];
+const TABS: Tab[] = ["Todos", "Sonidos Naturaleza", "Música Ambient", "Música Enteógena"];
 
 const DURATION_OPTIONS = [5, 10, 15, 20, 30, 45];
 
 const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
-  Binaural: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
-  Música: { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   "Sonidos Naturaleza": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
+  "Música Ambient": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   "Música Enteógena": { bg: "rgba(182,149,95,0.18)", text: "rgba(230,195,120,0.9)" },
 };
 
 const TAG_ICONS: Record<SoundTag, React.ComponentProps<typeof Feather>["name"]> = {
-  Binaural: "headphones",
-  Música: "music",
   "Sonidos Naturaleza": "wind",
+  "Música Ambient": "music",
   "Música Enteógena": "zap",
+};
+
+const TAG_BADGE_LABELS: Record<SoundTag, string> = {
+  "Sonidos Naturaleza": "Natural",
+  "Música Ambient": "Ambient",
+  "Música Enteógena": "Enteógena",
 };
 
 const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
@@ -242,7 +246,7 @@ export default function MusicaSonidosScreen() {
                         >
                           <Feather name={tagIcon} size={9} color={tagStyle.text} />
                           <Text style={[styles.tagText, { color: tagStyle.text }]}>
-                            {tag === "Sonidos Naturaleza" ? "Natural" : tag}
+                            {TAG_BADGE_LABELS[tag]}
                           </Text>
                         </View>
                       )}

@@ -1,4 +1,4 @@
-export type SoundTag = "Binaural" | "Música" | "Sonidos Naturaleza" | "Música Enteógena";
+export type SoundTag = "Sonidos Naturaleza" | "Música Ambient" | "Música Enteógena";
 export type MeditationTag =
   | "No Duales"
   | "Visualizaciones"
@@ -278,7 +278,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-8-musica-dark.jpg"),
     isNew: true,
     frequency: "Alpha 8–12 Hz",
-    soundTag: "Binaural",
+    soundTag: "Música Ambient",
   },
   {
     id: "24",
@@ -296,7 +296,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-9-musica-dark.jpg"),
     isNew: true,
     frequency: "Theta 4–8 Hz",
-    soundTag: "Binaural",
+    soundTag: "Música Ambient",
   },
   {
     id: "25",
@@ -313,7 +313,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Sintetizadores ambient", "Cuencos de cuarzo", "Pad armónico"],
     image: require("@/assets/images/sessions/session-6-musica-dark.jpg"),
     isNew: true,
-    soundTag: "Música",
+    soundTag: "Música Ambient",
   },
   {
     id: "26",
@@ -330,7 +330,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Piano acústico", "Cuencos tibetanos", "Silencio consciente"],
     image: require("@/assets/images/sessions/session-7-musica-dark.jpg"),
     isNew: true,
-    soundTag: "Música",
+    soundTag: "Música Ambient",
   },
   {
     id: "28",
@@ -380,7 +380,7 @@ export const SESSIONS: Session[] = [
     benefits: ["Energía matutina", "Claridad mental", "Activación suave", "Foco natural"],
     instruments: ["Binaural", "Sonido ambiente"],
     image: require("@/assets/images/sessions/session-20.jpg"),
-    soundTag: "Binaural" as const,
+    soundTag: "Música Ambient" as const,
     themeTag: ["Energiza tus mañanas"] as const,
     sleepTag: "ASMR Expansivos" as const,
     isNew: true,
