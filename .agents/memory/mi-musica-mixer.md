@@ -11,7 +11,7 @@ myNoise-style: el usuario superpone varios loops ambiente, cada uno con su slide
 Un sonido se "enciende" solo cuando existe su archivo en `SOUND_MAP` (config/sound-map.ts). El catálogo (`data/sounds.ts`) lista 15 sonidos siempre; los que no tienen entrada en `SOUND_MAP` renderizan "Próximamente" y están deshabilitados. Para activar uno: dropear el loop mp3 en `assets/audio/mixer/` y descomentar su línea en `SOUND_MAP` keyed por el id del sonido (lluvia, tormenta, oceano, etc.). `hasSoundFile(id)` = existe en SOUND_MAP.
 
 ## Engine
-`MixerContext` corre un `AudioPlayer` (expo-audio `createAudioPlayer`) por sonido activo, en un `Map` (`playersRef`), máx `MAX_ACTIVE_SOUNDS=5`. Mismo primitivo que PlayerContext (que ya corre 3 players main/voice/ambient con volumen independiente).
+`MixerContext` corre un `AudioPlayer` (expo-audio `createAudioPlayer`) por sonido activo, en un `Map` (`playersRef`), máx `MAX_ACTIVE_SOUNDS` (10). Mismo primitivo que PlayerContext (que ya corre 3 players main/voice/ambient con volumen independiente).
 
 ## Reglas que NO son obvias
 - **Premium gating de presets se sanea en el HOOK `useLoadMix`, no en el context.** `MixerContext` es premium-agnóstico (solo filtra por `SOUND_MAP`). `hooks/useLoadMix.ts` filtra los sonidos premium antes de cargar el preset y devuelve boolean. Cualquier pantalla que cargue mezclas debe usar `useLoadMix` — el context NO protege.

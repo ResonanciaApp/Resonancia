@@ -22,11 +22,11 @@ import {
 } from "@workspace/api-client-react";
 
 import { useAuth } from "@/context/AuthContext";
-import { useUserProfile } from "@/context/UserProfileContext";
+import { DEFAULT_USERNAME, useUserProfile } from "@/context/UserProfileContext";
 
 export function ProfileSync() {
   const { isSignedIn } = useAuth();
-  const { username } = useUserProfile();
+  const { username, profileLoaded } = useUserProfile();
   const queryClient = useQueryClient();
 
   const { data: me } = useGetMe({
@@ -34,16 +34,26 @@ export function ProfileSync() {
   });
   const updateMe = useUpdateMe();
 
-  // Último nombre que intentamos sincronizar, para no repetir el PATCH.
+  // Última combinación cuenta+nombre que intentamos sincronizar, para no
+  // repetir el PATCH ni entrar en bucle de reintentos. Incluye el id de la
+  // cuenta para no arrastrar el nombre de una cuenta a otra en el mismo device.
   const lastSynced = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!isSignedIn || !me) return;
+    // Esperar a que el perfil local termine de hidratar desde AsyncStorage:
+    // si no, podríamos empujar el valor por defecto antes de leer el real.
+    if (!isSignedIn || !me || !profileLoaded) return;
     const desired = username.trim();
-    if (!desired || me.displayName === desired) return;
-    if (lastSynced.current === desired || updateMe.isPending) return;
+    // No sincronizar el placeholder: solo nombres realmente elegidos.
+    if (!desired || desired === DEFAULT_USERNAME) return;
+    if (me.displayName === desired) return;
 
-    lastSynced.current = desired;
+    const key = `${me.id}:${desired}`;
+    if (lastSynced.current === key || updateMe.isPending) return;
+
+    // Marcamos antes de mutar. En error NO reseteamos la key (evita un bucle
+    // de PATCH); el próximo arranque de la app remonta el componente y reintenta.
+    lastSynced.current = key;
     updateMe.mutate(
       { data: { displayName: desired } },
       {
@@ -51,13 +61,9 @@ export function ProfileSync() {
           queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
           queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
         },
-        onError: () => {
-          // Permitir reintento en el próximo render.
-          lastSynced.current = null;
-        },
       },
     );
-  }, [isSignedIn, me, username, updateMe, queryClient]);
+  }, [isSignedIn, me, username, profileLoaded, updateMe, queryClient]);
 
   return null;
 }

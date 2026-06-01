@@ -9,6 +9,9 @@ import React, {
 
 const STORAGE_KEY = "cdc_user_profile";
 
+/** Nombre por defecto (placeholder) hasta que el usuario elige el suyo. */
+export const DEFAULT_USERNAME = "ElSeñordelosCuencos";
+
 interface UserProfile {
   username: string;
   lastName: string;
@@ -21,7 +24,7 @@ interface UserProfile {
 }
 
 const DEFAULT_PROFILE: UserProfile = {
-  username: "ElSeñordelosCuencos",
+  username: DEFAULT_USERNAME,
   lastName: "",
   location: "",
   description: "",
@@ -39,6 +42,8 @@ interface ProfileUpdate {
 }
 
 interface UserProfileContextValue extends UserProfile {
+  /** true una vez que se intentó cargar el perfil desde AsyncStorage. */
+  profileLoaded: boolean;
   setUsername: (name: string) => void;
   setLastName: (v: string) => void;
   setLocation: (v: string) => void;
@@ -53,15 +58,18 @@ const UserProfileContext = createContext<UserProfileContextValue | null>(null);
 
 export function UserProfileProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((raw) => {
-      if (!raw) return;
-      try {
-        const saved = JSON.parse(raw) as Partial<UserProfile>;
-        setProfile((p) => ({ ...p, ...saved }));
-      } catch {}
-    });
+    AsyncStorage.getItem(STORAGE_KEY)
+      .then((raw) => {
+        if (!raw) return;
+        try {
+          const saved = JSON.parse(raw) as Partial<UserProfile>;
+          setProfile((p) => ({ ...p, ...saved }));
+        } catch {}
+      })
+      .finally(() => setLoaded(true));
   }, []);
 
   const persist = useCallback((next: UserProfile) => {
@@ -135,6 +143,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
     <UserProfileContext.Provider
       value={{
         ...profile,
+        profileLoaded: loaded,
         setUsername,
         setLastName,
         setLocation,
