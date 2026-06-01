@@ -11,17 +11,34 @@ import React, {
 } from "react";
 
 import { SOUND_MAP } from "@/config/sound-map";
+import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
 import {
   registerMixStopper,
   stopSessionPlayback,
 } from "@/context/audioBridge";
 
-/** Carátula para el Now Playing / pantalla bloqueada de la mezcla. La mezcla
- *  no tiene una imagen propia (son N loops), así que usamos el logo cuadrado
- *  de la app. expo-audio descarga este URL async y lo agrega al Now Playing. */
-const MIX_ARTWORK_URL =
+/** Carátula por defecto del Now Playing / pantalla bloqueada cuando la mezcla
+ *  no tiene una imagen propia asignada (ej: sonidos sueltos sin preset guardado).
+ *  Usamos el logo cuadrado de la app. expo-audio descarga el URL async. */
+const DEFAULT_MIX_ARTWORK_URL =
   Image.resolveAssetSource(require("@/assets/images/logo-cdc-square.png"))?.uri;
+
+/** Resuelve la imagen elegida al guardar la mezcla (key de la galería) a un
+ *  URL usable como carátula. Cae al logo de la app si no hay imagen. */
+function resolveMixArtworkUrl(imageKey?: string): string | undefined {
+  const source = getMixImage(imageKey);
+  if (source) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const uri = Image.resolveAssetSource(source as any)?.uri;
+      if (uri) return uri;
+    } catch (_) {
+      /* cae al default */
+    }
+  }
+  return DEFAULT_MIX_ARTWORK_URL;
+}
 
 /** Máximo de sonidos sonando a la vez (CPU/batería en móviles normales) */
 export const MAX_ACTIVE_SOUNDS = 10;
@@ -126,7 +143,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       title: preset?.name || "Mi mezcla",
       artist: "Mezcla de sonidos",
       albumTitle: "RESONANCIA",
-      artworkUrl: MIX_ARTWORK_URL,
+      artworkUrl: resolveMixArtworkUrl(preset?.image),
     };
   }, []);
 
