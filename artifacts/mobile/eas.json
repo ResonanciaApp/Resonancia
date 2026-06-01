@@ -18,6 +18,9 @@
     "preview": {
       "distribution": "internal",
       "channel": "preview",
+      "env": {
+        "RCT_BUILD_HERMES_FROM_SOURCE": "1"
+      },
       "ios": {
         "simulator": false
       },
@@ -28,6 +31,9 @@
     "production": {
       "channel": "production",
       "autoIncrement": true,
+      "env": {
+        "RCT_BUILD_HERMES_FROM_SOURCE": "1"
+      },
       "ios": {
         "simulator": false
       },

@@ -13,17 +13,20 @@ description: EXC_BAD_ACCESS on JS thread on physical iOS 26 devices — prebuilt
 ## Root cause
 The **prebuilt Hermes xcframework** shipped via npm was compiled against an older Apple SDK; iOS 26 hardened ARM64 PAC and changed VM layout, so Hermes' raw pointer arithmetic fails PAC validation. Upstream-tracked, NOT app code: facebook/hermes#1966, expo/expo#44356, A18-specific expo/expo#44680. Affects SDK 54 & 55, RN 0.81/0.83, Hermes V1 & V2, Old & New Arch. Release builds only — dev client / interpreted mode works.
 
-## Fix (Expo managed, the one we used)
-Recompile RN+Hermes **from source** so it's built against Xcode 26 (PAC-correct):
-```json
-["expo-build-properties", { "ios": { "buildReactNativeFromSource": true } }]
-```
-EAS Build defaults to Xcode 26.2, which is what makes the from-source binary PAC-correct. Tradeoff: much longer builds (~30-45 min vs ~20) because RN/Hermes compile from scratch.
+## Fix — TWO independent flags, BOTH required
+1. `["expo-build-properties", { "ios": { "buildReactNativeFromSource": true } }]` in app.json — rebuilds **React Native core** from source (prebuilt React.framework / ReactNativeDependencies.framework disappear, merged into the app binary).
+2. EAS env `RCT_BUILD_HERMES_FROM_SOURCE: "1"` (in eas.json build profile `env`) — rebuilds **Hermes itself** from source.
+
+**CRITICAL gotcha:** `buildReactNativeFromSource: true` does **NOT** rebuild Hermes. Hermes is a separate dependency (`hermes-engine` pod) fetched as a prebuilt tarball unless `RCT_BUILD_HERMES_FROM_SOURCE=1` is set. We learned this the hard way: after enabling only `buildReactNativeFromSource`, the crash persisted and the `hermes.framework` UUID in the new `.ips` was **byte-identical** to the previous build (`80d5528f-...`) — proof Hermes was untouched. The PAC crash lives in Hermes, so you MUST set the env var too.
+
+EAS Build defaults to Xcode 26.2, which is what makes the from-source binaries PAC-correct. Tradeoff: long builds (Hermes is large C++ — can add 20-40 min on top of RN-from-source).
 
 **Why:** the npm prebuilt Hermes binary can't be patched from JS/config; only recompiling against the current Xcode SDK produces a PAC-valid binary.
 
-**How to apply:** when a physical iOS 26 device crashes at launch with EXC_BAD_ACCESS on the JS thread and the rest of the JS is fine, add the plugin and rebuild. Do NOT waste builds on JS-side try/catch, disabling Hermes (Podfile still installs it), or JSC (ecosystem needs Hermes).
+**How to verify which binary is prebuilt:** compare `hermes.framework` (and React.framework) UUIDs in `usedImages` across builds. Same UUID = still prebuilt (flag didn't take). Different UUID / framework absent = rebuilt from source.
 
-## Alternatives (lighter but less comprehensive)
-- EAS env `RCT_BUILD_HERMES_FROM_SOURCE: "1"` rebuilds only Hermes from source (faster than full RN-from-source). Use if full from-source build is too slow.
-- Pitfall: `buildReactNativeFromSource: true` + `useFrameworks: "static"` breaks header resolution (needs a Podfile symlink post_install). This project does NOT use static frameworks, so it's fine.
+**Diagnostic tell:** fault address that decodes to ASCII (e.g. `0x0a31323a3538303e` → "\n12:580>") = a JS value/string being read as a pointer inside Hermes VM = Hermes corruption, not app code.
+
+## Pitfalls
+- Do NOT waste builds on JS-side try/catch, disabling Hermes (Podfile still installs it), or JSC (ecosystem needs Hermes).
+- `buildReactNativeFromSource: true` + `useFrameworks: "static"` breaks header resolution (needs a Podfile symlink post_install). This project does NOT use static frameworks, so it's fine.
