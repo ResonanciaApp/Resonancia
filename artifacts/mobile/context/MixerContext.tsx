@@ -1,5 +1,6 @@
 import { type AudioPlayer, createAudioPlayer, setAudioModeAsync } from "expo-audio";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image } from "react-native";
 import React, {
   createContext,
   useCallback,
@@ -15,6 +16,12 @@ import {
   registerMixStopper,
   stopSessionPlayback,
 } from "@/context/audioBridge";
+
+/** Carátula para el Now Playing / pantalla bloqueada de la mezcla. La mezcla
+ *  no tiene una imagen propia (son N loops), así que usamos el logo cuadrado
+ *  de la app. expo-audio descarga este URL async y lo agrega al Now Playing. */
+const MIX_ARTWORK_URL =
+  Image.resolveAssetSource(require("@/assets/images/logo-cdc-square.png"))?.uri;
 
 /** Máximo de sonidos sonando a la vez (CPU/batería en móviles normales) */
 export const MAX_ACTIVE_SOUNDS = 10;
@@ -119,6 +126,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       title: preset?.name || "Mi mezcla",
       artist: "Mezcla de sonidos",
       albumTitle: "RESONANCIA",
+      artworkUrl: MIX_ARTWORK_URL,
     };
   }, []);
 
