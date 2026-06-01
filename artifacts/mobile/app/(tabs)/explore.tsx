@@ -259,16 +259,17 @@ export default function ExploreScreen() {
                     style={({ pressed }) => [
                       styles.timeChip,
                       {
-                        backgroundColor: colors.card,
-                        opacity: pressed ? 0.78 : 1,
+                        backgroundColor: "rgba(255,255,255,0.07)",
+                        opacity: pressed ? 0.6 : 1,
                       },
                     ]}
                   >
-                    <LinearGradient
-                      colors={["rgba(182,149,95,0.1)", "rgba(182,149,95,0.03)"]}
-                      style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
+                    <Feather
+                      name="clock"
+                      size={13}
+                      color={colors.mutedForeground}
+                      style={styles.timeIcon}
                     />
-                    <Feather name="clock" size={13} color={colors.primary} style={styles.timeIcon} />
                     <Text style={[styles.timeLabel, { color: colors.foreground }]}>{bucket.label}</Text>
                   </Pressable>
                 ))}
