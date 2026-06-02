@@ -87,8 +87,6 @@ function CollaboratorCard({
           <RoleBadge role={role} />
         </View>
 
-        <Text style={styles.specialty} numberOfLines={1}>{specialty}</Text>
-
         <View style={styles.metaRow}>
           <Feather name="map-pin" size={10} color={C.muted} />
           <Text style={styles.metaText}>{country}</Text>
@@ -98,8 +96,6 @@ function CollaboratorCard({
             {trackCount > 0 ? `${trackCount} ${trackLabel}` : "Próximamente"}
           </Text>
         </View>
-
-        {certified && <CertifiedSeal />}
       </View>
 
       {/* Chevron */}
@@ -157,6 +153,10 @@ export default function ResonadoresScreen() {
             <Text style={styles.heroSub}>
               Las voces, los artistas y los guías que dan vida a esta experiencia. Cada uno aporta su esencia para acompañarte en el camino.
             </Text>
+            <View style={styles.heroCertRow}>
+              <Feather name="check-circle" size={13} color={C.certified} />
+              <Text style={styles.heroCertText}>Certificados</Text>
+            </View>
           </View>
 
           {/* Línea decorativa */}
@@ -285,6 +285,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 22,
     maxWidth: 300,
+    marginBottom: 14,
+  },
+  heroCertRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  heroCertText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: C.certified,
+    letterSpacing: 0.3,
   },
   heroDivider: {
     height: 1,
