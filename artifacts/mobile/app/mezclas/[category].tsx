@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
 import {
   Alert,
+  Image,
   ImageBackground,
   Platform,
   Pressable,
@@ -25,13 +26,43 @@ import {
 
 import { MixerPanel } from "@/components/MixerPanel";
 import { SacredBackground } from "@/components/SacredBackground";
-import { getMixImage } from "@/config/mix-images";
+import { getSoundImage } from "@/config/sound-images";
 import { useAuth } from "@/context/AuthContext";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { type MixCategory, getCategoryMeta } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
+import { getMixImage } from "@/config/mix-images";
+
+// ── Stack de imágenes ────────────────────────────────────────────
+const THUMB = 44;
+const SHIFT = 26;
+const MAX_STACK = 4;
+
+function SoundStack({ sounds }: { sounds: { id: string }[] }) {
+  const colors = useColors();
+  const visible = sounds.slice(0, MAX_STACK);
+  const stackWidth = THUMB + Math.max(0, visible.length - 1) * SHIFT;
+  return (
+    <View style={[styles.stackWrap, { width: stackWidth }]}>
+      {visible.map((s, i) => {
+        const img = getSoundImage(s.id);
+        return (
+          <View key={s.id} style={[styles.stackThumb, { left: i * SHIFT, zIndex: i }]}>
+            {img ? (
+              <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
+            ) : (
+              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(182,149,95,0.15)" }]}>
+                <Feather name="music" size={14} color={colors.primary} />
+              </View>
+            )}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
 
 export default function CategoryMixesScreen() {
   const colors = useColors();
@@ -59,13 +90,6 @@ export default function CategoryMixesScreen() {
 
   const handleOpen = (mix: MixPreset) => {
     loadMix(mix);
-  };
-
-  const handleDelete = (mix: MixPreset) => {
-    Alert.alert("Eliminar mezcla", `¿Eliminar "${mix.name}"?`, [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Eliminar", style: "destructive", onPress: () => deletePreset(mix.id) },
-    ]);
   };
 
   const handleDuplicate = (mix: MixPreset) => {
@@ -109,7 +133,6 @@ export default function CategoryMixesScreen() {
   };
 
   const handleShare = (mix: MixPreset) => {
-    // Ver es libre, pero compartir requiere cuenta + premium.
     if (!isSignedIn) {
       Alert.alert(
         "Crea tu cuenta",
@@ -132,33 +155,42 @@ export default function CategoryMixesScreen() {
       );
       return;
     }
-    Alert.alert("Compartir mezcla", `¿Compartir "${mix.name}" con la comunidad?`, [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Compartir", onPress: () => doShare(mix) },
-    ]);
+    doShare(mix);
   };
 
   const handleUnshare = (mix: MixPreset) => {
     if (mix.sharedId == null) return;
-    Alert.alert("Dejar de compartir", `¿Quitar "${mix.name}" de la comunidad?`, [
-      { text: "Cancelar", style: "cancel" },
+    unshareMix.mutate(
+      { id: mix.sharedId },
       {
-        text: "Quitar",
+        onSuccess: () => {
+          setPresetShared(mix.id, null);
+          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+        },
+        onError: () => {
+          Alert.alert("Error", "No se pudo quitar la mezcla. Intenta de nuevo.");
+        },
+      },
+    );
+  };
+
+  const handleMenu = (mix: MixPreset) => {
+    Alert.alert(mix.name, undefined, [
+      {
+        text: mix.sharedId != null ? "Dejar de compartir" : "Compartir",
+        onPress: () => (mix.sharedId != null ? handleUnshare(mix) : handleShare(mix)),
+      },
+      { text: "Duplicar", onPress: () => handleDuplicate(mix) },
+      {
+        text: "Eliminar",
         style: "destructive",
         onPress: () =>
-          unshareMix.mutate(
-            { id: mix.sharedId! },
-            {
-              onSuccess: () => {
-                setPresetShared(mix.id, null);
-                queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
-              },
-              onError: () => {
-                Alert.alert("Error", "No se pudo quitar la mezcla. Intenta de nuevo.");
-              },
-            },
-          ),
+          Alert.alert("Eliminar mezcla", `¿Eliminar "${mix.name}"?`, [
+            { text: "Cancelar", style: "cancel" },
+            { text: "Eliminar", style: "destructive", onPress: () => deletePreset(mix.id) },
+          ]),
       },
+      { text: "Cancelar", style: "cancel" },
     ]);
   };
 
@@ -168,67 +200,41 @@ export default function CategoryMixesScreen() {
       <Pressable
         key={mix.id}
         onPress={() => handleOpen(mix)}
-        onLongPress={() => handleDelete(mix)}
-        style={styles.mixRow}
+        style={[styles.mixRow, { backgroundColor: "rgba(255,255,255,0.06)" }]}
       >
-        <ImageBackground
-          source={getMixImage(mix.image)}
-          style={styles.mixThumb}
-          imageStyle={styles.mixThumbInner}
-        >
-          <View
-            style={[
-              styles.playBubble,
-              { backgroundColor: isPlayingThis ? colors.primary : "rgba(24,17,12,0.55)" },
-            ]}
-          >
-            <Feather
-              name={isPlayingThis ? "pause" : "play"}
-              size={14}
-              color="#FFFFFF"
-              style={isPlayingThis ? undefined : { marginLeft: 2 }}
-            />
-          </View>
-        </ImageBackground>
+        {/* Stack de imágenes de sonidos */}
+        <SoundStack sounds={mix.sounds} />
 
+        {/* Info */}
         <View style={styles.mixInfo}>
           <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={1}>
             {mix.name}
           </Text>
-          {!!mix.description && (
-            <Text style={[styles.mixDesc, { color: colors.mutedForeground }]} numberOfLines={2}>
-              {mix.description}
-            </Text>
-          )}
           {isPlayingThis ? (
             <View style={styles.playingRow}>
-              <Feather name="volume-2" size={11} color={colors.primary} />
-              <Text style={[styles.mixMeta, { color: colors.primary }]}>Reproduciendo...</Text>
+              <Feather name="bar-chart-2" size={12} color={colors.primary} />
+              <Text style={[styles.mixMeta, { color: colors.primary }]}>Reproduciendo</Text>
             </View>
           ) : (
-            <Text style={[styles.mixMeta, { color: colors.accent }]}>
+            <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
               {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
             </Text>
           )}
         </View>
 
-        <View style={styles.actions} onStartShouldSetResponder={() => true}>
+        {/* Indicador "activa" */}
+        {isPlayingThis && (
+          <Feather name="bar-chart-2" size={18} color={colors.primary} style={{ marginRight: 2 }} />
+        )}
+
+        {/* 3 puntitos */}
+        <View onStartShouldSetResponder={() => true}>
           <Pressable
-            onPress={() => (mix.sharedId != null ? handleUnshare(mix) : handleShare(mix))}
-            hitSlop={10}
-            style={styles.actionBtn}
+            onPress={() => handleMenu(mix)}
+            hitSlop={12}
+            style={styles.menuBtn}
           >
-            <Feather
-              name={mix.sharedId != null ? "check-circle" : "share-2"}
-              size={16}
-              color={mix.sharedId != null ? colors.primary : colors.mutedForeground}
-            />
-          </Pressable>
-          <Pressable onPress={() => handleDuplicate(mix)} hitSlop={10} style={styles.actionBtn}>
-            <Feather name="copy" size={16} color={colors.mutedForeground} />
-          </Pressable>
-          <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.actionBtn}>
-            <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+            <Feather name="more-vertical" size={20} color={colors.mutedForeground} />
           </Pressable>
         </View>
       </Pressable>
@@ -267,7 +273,7 @@ export default function CategoryMixesScreen() {
               />
               <View style={styles.heroContent}>
                 <View style={styles.heroIconWrap}>
-                  <Feather name={meta.icon} size={20} color="#FFFFFF" />
+                  <Feather name={meta.icon as React.ComponentProps<typeof Feather>["name"]} size={20} color="#FFFFFF" />
                 </View>
                 <View style={styles.heroText}>
                   <Text style={styles.heroLabel}>{meta.label}</Text>
@@ -341,30 +347,54 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
   emptyText: { fontSize: 13, lineHeight: 19 },
 
+  // ── Mix row ─────────────────────────────────────────────────────
   mixRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 14,
     borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
     marginBottom: 10,
   },
-  mixThumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", justifyContent: "center", alignItems: "center" },
-  mixThumbInner: { borderRadius: 12 },
-  playBubble: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+
+  // ── Stack ───────────────────────────────────────────────────────
+  stackWrap: {
+    height: THUMB,
+    position: "relative",
+    flexShrink: 0,
+  },
+  stackThumb: {
+    position: "absolute",
+    width: THUMB,
+    height: THUMB,
+    borderRadius: 10,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  stackThumbImg: {
+    width: THUMB,
+    height: THUMB,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
-  mixInfo: { flex: 1 },
+
+  // ── Info ────────────────────────────────────────────────────────
+  mixInfo: { flex: 1, minWidth: 0 },
   mixName: { fontSize: 15, fontWeight: "700" },
-  mixDesc: { fontSize: 12, lineHeight: 16, marginTop: 2 },
-  mixMeta: { fontSize: 11, fontWeight: "600", marginTop: 4 },
-  playingRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 },
-  trashBtn: { padding: 4 },
-  actions: { flexDirection: "row", alignItems: "center", gap: 4 },
-  actionBtn: { padding: 4 },
+  mixMeta: { fontSize: 12, marginTop: 3 },
+  playingRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 3 },
+
+  // ── Menú ────────────────────────────────────────────────────────
+  menuBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });

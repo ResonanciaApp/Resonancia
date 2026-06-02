@@ -5,26 +5,31 @@
  * app/mezclas/[category].tsx, donde NO está la barra flotante global.
  *
  * Mismo estilo visual que el MiniPlayer (glassmorphism dorado).
+ * Stack de imágenes de los sonidos activos + botón Editar.
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
+import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
 const isIOS = Platform.OS === "ios";
 
+const STACK_SIZE = 36;
+const STACK_SHIFT = 14;
+const MAX_STACK = 3;
+
 export function MixerPanel() {
   const colors = useColors();
   const {
     activeSounds,
     isPlaying,
-    togglePlay,
     presets,
     loadedPresetId,
     openSheet,
@@ -45,7 +50,10 @@ export function MixerPanel() {
 
   if (activeMix.length === 0) return null;
 
-  const names = activeMix.map((x) => x.sound.name).join(" · ");
+  const visible = activeMix.slice(-MAX_STACK);
+  const stackWidth = STACK_SIZE + Math.max(0, visible.length - 1) * STACK_SHIFT;
+  const count = activeMix.length;
+  const title = loadedPreset?.name ?? "Tu mezcla";
 
   return (
     <Pressable onPress={openSheet} style={styles.wrapper}>
@@ -65,19 +73,35 @@ export function MixerPanel() {
 
       {/* Contenido */}
       <View style={styles.row}>
-        {/* Chevron — indica que abre el editor */}
-        <View style={styles.chevron}>
-          <Feather name="chevron-up" size={20} color={colors.mutedForeground} />
+        {/* Stack de imágenes */}
+        <View style={[styles.stackWrap, { width: stackWidth }]}>
+          {visible.map((x, i) => {
+            const img = getSoundImage(x.sound.id);
+            return (
+              <View key={x.sound.id} style={[styles.stackThumb, { left: i * STACK_SHIFT, zIndex: i }]}>
+                {img ? (
+                  <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
+                ) : (
+                  <View style={[styles.stackThumbImg, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
+                    <Feather name="music" size={12} color={colors.primary} />
+                  </View>
+                )}
+              </View>
+            );
+          })}
         </View>
 
         {/* Info */}
         <View style={styles.info}>
           <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
-            {loadedPreset?.name ?? "Tu mezcla"} · {activeMix.length}/{MAX_ACTIVE_SOUNDS}
+            {title}
           </Text>
-          <Text style={[styles.sub, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {names}
-          </Text>
+          <View style={styles.metaRow}>
+            {isPlaying && <Feather name="bar-chart-2" size={11} color={colors.primary} style={{ marginRight: 3 }} />}
+            <Text style={[styles.sub, { color: isPlaying ? colors.primary : colors.mutedForeground }]} numberOfLines={1}>
+              {count}/{MAX_ACTIVE_SOUNDS} sonidos
+            </Text>
+          </View>
         </View>
 
         {/* Editar */}
@@ -88,22 +112,6 @@ export function MixerPanel() {
         >
           <Feather name="sliders" size={15} color={colors.accent} />
           <Text style={[styles.editText, { color: colors.accent }]}>Editar</Text>
-        </Pressable>
-
-        {/* Play / pausa — sin círculo */}
-        <Pressable
-          onPress={(e) => { e.stopPropagation(); togglePlay(); }}
-          hitSlop={8}
-          style={styles.playBtn}
-          accessibilityRole="button"
-          accessibilityLabel={isPlaying ? "Pausar mezcla" : "Reproducir mezcla"}
-        >
-          <Feather
-            name={isPlaying ? "pause" : "play"}
-            size={20}
-            color={colors.foreground}
-            style={isPlaying ? undefined : { marginLeft: 2 }}
-          />
         </Pressable>
       </View>
     </Pressable>
@@ -125,19 +133,44 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     paddingVertical: 12,
-    gap: 10,
+    gap: 12,
   },
-  chevron: {
-    width: 28,
-    height: 28,
+
+  // ── Stack ──────────────────────────────────────────────────────
+  stackWrap: {
+    height: STACK_SIZE,
+    position: "relative",
+    flexShrink: 0,
+  },
+  stackThumb: {
+    position: "absolute",
+    width: STACK_SIZE,
+    height: STACK_SIZE,
+    borderRadius: 8,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.35,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  stackThumbImg: {
+    width: STACK_SIZE,
+    height: STACK_SIZE,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },
-  info: { flex: 1 },
-  title: { fontSize: 14, fontWeight: "700", letterSpacing: 0.3 },
-  sub: { fontSize: 12, marginTop: 2 },
+
+  // ── Info ───────────────────────────────────────────────────────
+  info: { flex: 1, minWidth: 0 },
+  title: { fontSize: 14, fontWeight: "700", letterSpacing: 0.2 },
+  metaRow: { flexDirection: "row", alignItems: "center", marginTop: 2 },
+  sub: { fontSize: 12 },
+
+  // ── Editar ─────────────────────────────────────────────────────
   editBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -148,10 +181,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   editText: { fontSize: 12, fontWeight: "600" },
-  playBtn: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
 });

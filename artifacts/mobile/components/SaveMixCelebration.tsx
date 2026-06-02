@@ -142,7 +142,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
             ]}
           />
           <View style={[styles.pillIcon, { backgroundColor: "rgba(214,168,91,0.18)" }]}>
-            <Feather name={category.icon} size={18} color={colors.accent} />
+            <Feather name={category.icon as React.ComponentProps<typeof Feather>["name"]} size={18} color={colors.accent} />
           </View>
           <Text style={[styles.pillLabel, { color: colors.foreground }]}>{category.label}</Text>
         </Animated.View>
@@ -161,7 +161,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
           <Animated.Image source={getMixImage(imageKey)} style={styles.tokenImg} />
           <View style={styles.tokenBadge}>
             <View style={[styles.tokenBadgeInner, { backgroundColor: colors.primary }]}>
-              <Feather name={category.icon} size={16} color={colors.primaryForeground} />
+              <Feather name={category.icon as React.ComponentProps<typeof Feather>["name"]} size={16} color={colors.primaryForeground} />
             </View>
           </View>
         </Animated.View>
