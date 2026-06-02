@@ -10,6 +10,7 @@
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -45,12 +46,22 @@ function formatTimer(seconds: number): string {
 
 type SaveMode = "new" | "update";
 
-/** Superficie gris translúcida compartida (miniatura, guardar, temporizador). */
-const TRANSLUCENT_SURFACE = "rgba(255,255,255,0.08)";
+/** Superficie negra translúcida y sobria (botones guardar / temporizador). */
+const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 
-/** Miniatura circular de la pista: superficie gris translúcida. */
+/** Degradé negro sobrio para la miniatura. */
+const THUMB_GRADIENT = ["#26201A", "#000000"] as const;
+
+/** Miniatura circular de la pista: degradé negro sobrio. */
 function TrackThumb() {
-  return <View style={styles.thumb} />;
+  return (
+    <LinearGradient
+      colors={THUMB_GRADIENT}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.thumb}
+    />
+  );
 }
 
 export function MixerSheet() {
@@ -588,7 +599,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 11,
   },
-  thumb: { width: 40, height: 40, borderRadius: 20, backgroundColor: TRANSLUCENT_SURFACE },
+  thumb: { width: 40, height: 40, borderRadius: 20 },
   trackInfo: { flex: 1 },
   trackName: { fontSize: 15, fontWeight: "600" },
   reorderPill: {
