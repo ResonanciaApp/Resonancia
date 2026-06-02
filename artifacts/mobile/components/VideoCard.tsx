@@ -1,4 +1,4 @@
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import React from "react";
@@ -17,7 +17,13 @@ type Props = {
 };
 
 function LockStar() {
-  return <FontAwesome name="star" size={20} color="#E5B84B" style={styles.lockBadge} />;
+  return (
+    <Image
+      source={require("../assets/images/estrella-premium.png")}
+      style={[styles.lockBadge, { width: 22, height: 22 }]}
+      contentFit="contain"
+    />
+  );
 }
 
 function PlayOverlay() {

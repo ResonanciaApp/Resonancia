@@ -1,4 +1,4 @@
-import { Feather, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -26,7 +26,11 @@ type Props = {
 
 function LockStar() {
   return (
-    <FontAwesome name="star" size={20} color="#E5B84B" style={styles.lockBadge} />
+    <Image
+      source={require("../assets/images/estrella-premium.png")}
+      style={[styles.lockBadge, { width: 22, height: 22 }]}
+      contentFit="contain"
+    />
   );
 }
 
