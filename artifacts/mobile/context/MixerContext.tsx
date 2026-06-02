@@ -144,6 +144,18 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   loadedPresetIdRef.current = loadedPresetId;
   /** Timestamp (ms) en que expira el sleep timer; null si no hay timer activo. */
   const sleepEndTimeRef = useRef<number | null>(null);
+  /**
+   * Hasta este timestamp (ms) ignoramos el listener del lock screen.
+   * Se activa tras llamar applyPlaying para que los status updates propios
+   * (play/pause de nuestros propios players) no reboten de vuelta al mixer.
+   */
+  const ignoreLockUntilRef = useRef(0);
+  /**
+   * Timeout pendiente de propagar un playing:false desde el lock screen.
+   * Filtra los falsos negativos del loop restart (el audio llega al final,
+   * status.playing baja unos frames, y vuelve a subir al reiniciar el loop).
+   */
+  const playingFalseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Lock-screen / Now Playing ─────────────────────────────────────
   /** Player que "posee" los controles de pantalla bloqueada (uno solo a la vez). */
@@ -155,6 +167,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   /** Reproduce/pausa todos los players de la mezcla y actualiza el estado. */
   const applyPlaying = useCallback((next: boolean) => {
+    // Suprimir el listener del lock screen por 1 s para que los status updates
+    // que disparan nuestros propios play/pause no reboten de vuelta.
+    ignoreLockUntilRef.current = Date.now() + 1000;
+    // Cancelar cualquier debounce de pausa pendiente originado en lock screen.
+    if (playingFalseTimerRef.current) {
+      clearTimeout(playingFalseTimerRef.current);
+      playingFalseTimerRef.current = null;
+    }
     isPlayingRef.current = next; // sincrónico: el listener del lock screen lo lee
     playersRef.current.forEach((p) => {
       try {
@@ -255,10 +275,29 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         }
       }
       // Reflejar play/pausa remoto (botones de la pantalla bloqueada) sobre
-      // TODA la mezcla. Comparamos contra el ref (actualizado sincrónicamente
-      // en applyPlaying) para no entrar en bucle con nuestros propios cambios.
+      // TODA la mezcla, con dos guards:
+      // 1. ignoreLockUntilRef: ventana de 1 s tras applyPlaying para ignorar
+      //    los status updates que disparan nuestros propios play/pause (evita
+      //    el flicker del botón al tocar Reproducir/Pausar en la hoja).
+      // 2. playingFalseTimerRef: debounce de 350 ms para playing:false, porque
+      //    cuando el audio en loop llega al final del archivo y reinicia,
+      //    status.playing baja unos frames → sin el debounce pausaría todo.
       if (typeof status.playing === "boolean" && status.playing !== isPlayingRef.current) {
-        applyPlayingRef.current(status.playing);
+        if (Date.now() < ignoreLockUntilRef.current) return;
+        if (!status.playing) {
+          if (playingFalseTimerRef.current) clearTimeout(playingFalseTimerRef.current);
+          playingFalseTimerRef.current = setTimeout(() => {
+            playingFalseTimerRef.current = null;
+            if (!isPlayingRef.current) return; // ya pausado por otra vía
+            applyPlayingRef.current(false);
+          }, 350);
+        } else {
+          if (playingFalseTimerRef.current) {
+            clearTimeout(playingFalseTimerRef.current);
+            playingFalseTimerRef.current = null;
+          }
+          applyPlayingRef.current(true);
+        }
       }
     });
   }, [clearLockScreen, lockMetadata]);
