@@ -1,13 +1,13 @@
 const base = import.meta.env.BASE_URL;
 
 const PHONES = [
-  { src: "mockup-sonidos.jpg",    label: "Sonidos Ancestrales",  color: "#E8C87A", rot: -30, z: 1 },
-  { src: "mockup-biblioteca.jpg", label: "Meditaciones Guiadas", color: "#C8B4E0", rot: -10, z: 3 },
-  { src: "mockup-musica.jpg",     label: "Música y Sonidos",     color: "#7DC87D", rot:  10, z: 4 },
-  { src: "mockup-home.jpg",       label: "Podcast / Inicio",     color: "#8AAAD4", rot:  30, z: 2 },
+  { src: "cat-sonidos.jpg",     color: "#E8C87A", rot: -30, z: 1 },
+  { src: "cat-meditaciones.jpg", color: "#C8B4E0", rot: -10, z: 3 },
+  { src: "cat-musica.jpg",      color: "#7DC87D", rot:  10, z: 4 },
+  { src: "cat-podcast.jpg",     color: "#8AAAD4", rot:  30, z: 2 },
 ];
 
-function PhoneFrame({ src, label, color, rot, z }: (typeof PHONES)[0]) {
+function PhoneFrame({ src, color, rot, z }: (typeof PHONES)[0]) {
   const W = "12vw";
   const H = "26vw";
   return (
@@ -46,15 +46,10 @@ function PhoneFrame({ src, label, color, rot, z }: (typeof PHONES)[0]) {
           <img
             src={`${base}${src}`}
             crossOrigin="anonymous"
-            alt={label}
+            alt=""
             style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
           />
         </div>
-      </div>
-
-      {/* Label below */}
-      <div style={{ textAlign: "center", marginTop: "0.9vw", fontSize: "0.85vw", color, fontWeight: 600, letterSpacing: "0.06em", whiteSpace: "nowrap" }}>
-        {label}
       </div>
     </div>
   );
@@ -164,7 +159,7 @@ export default function Slide03Biblioteca() {
         {/* Fan pivot — all phones share bottom-center here */}
         <div style={{ position: "absolute", bottom: "30vh", left: "50%" }}>
           {PHONES.map((p) => (
-            <PhoneFrame key={p.label} {...p} />
+            <PhoneFrame key={p.src} {...p} />
           ))}
         </div>
       </div>
