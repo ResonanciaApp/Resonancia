@@ -273,7 +273,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Notificaciones ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>NOTIFICACIONES</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
           <View style={styles.row}>
             <RowIcon icon="bell" colors={colors} />
             <View style={{ flex: 1 }}>
@@ -287,13 +287,13 @@ export default function ConfiguracionesScreen() {
             <Switch
               value={settings.dailyEnabled}
               onValueChange={onToggleDaily}
-              trackColor={{ false: colors.border, true: colors.primary + "88" }}
+              trackColor={{ false: "rgba(255,255,255,0.12)", true: colors.primary + "88" }}
               thumbColor={settings.dailyEnabled ? colors.primary : "#666"}
             />
           </View>
 
           {settings.dailyEnabled && (
-            <View style={[styles.subBlock, { borderTopWidth: 1, borderTopColor: colors.border }]}>
+            <View style={[styles.subBlock, { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" }]}>
               <Text style={[styles.rowSub, { color: colors.mutedForeground, marginBottom: 10 }]}>
                 Hora del recordatorio
               </Text>
@@ -308,7 +308,7 @@ export default function ConfiguracionesScreen() {
                         styles.chip,
                         {
                           backgroundColor: active ? colors.primary : "transparent",
-                          borderColor: active ? colors.primary : colors.border,
+                          borderColor: active ? colors.primary : "rgba(255,255,255,0.12)",
                         },
                       ]}
                     >
@@ -322,7 +322,7 @@ export default function ConfiguracionesScreen() {
             </View>
           )}
 
-          <View style={[styles.row, { borderTopWidth: 1, borderTopColor: colors.border }]}>
+          <View style={[styles.row, { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" }]}>
             <RowIcon icon="users" colors={colors} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.rowLabel, { color: colors.foreground }]}>Actividad de la comunidad</Text>
@@ -333,7 +333,7 @@ export default function ConfiguracionesScreen() {
             <Switch
               value={settings.communityEnabled}
               onValueChange={(v) => update({ communityEnabled: v })}
-              trackColor={{ false: colors.border, true: colors.primary + "88" }}
+              trackColor={{ false: "rgba(255,255,255,0.12)", true: colors.primary + "88" }}
               thumbColor={settings.communityEnabled ? colors.primary : "#666"}
             />
           </View>
@@ -341,7 +341,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Reproductor ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>REPRODUCTOR</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
           <View style={styles.subBlock}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <RowIcon icon="moon" colors={colors} />
@@ -363,7 +363,7 @@ export default function ConfiguracionesScreen() {
                       styles.chip,
                       {
                         backgroundColor: active ? colors.primary : "transparent",
-                        borderColor: active ? colors.primary : colors.border,
+                        borderColor: active ? colors.primary : "rgba(255,255,255,0.12)",
                       },
                     ]}
                   >
@@ -379,7 +379,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Cuenta ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CUENTA</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
           <ActionRow
             icon="user"
             label="Editar perfil"
@@ -397,7 +397,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── App ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APP</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
           <ActionRow icon="info" label="Acerca de RESONANCIA" onPress={handleAbout} colors={colors} />
           <ActionRow icon="star" label="Calificar la app" onPress={handleRate} colors={colors} border />
           <ActionRow icon="file-text" label="Términos y privacidad" onPress={handleTerms} colors={colors} border />
@@ -415,14 +415,14 @@ export default function ConfiguracionesScreen() {
         {__DEV__ && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>DESARROLLO</Text>
-            <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
               <View style={styles.row}>
                 <RowIcon icon="star" colors={colors} />
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Modo Premium (testing)</Text>
                 <Switch
                   value={isPremiumDev}
                   onValueChange={(v) => setPremiumDev(v)}
-                  trackColor={{ false: colors.border, true: colors.primary + "AA" }}
+                  trackColor={{ false: "rgba(255,255,255,0.12)", true: colors.primary + "AA" }}
                   thumbColor={isPremiumDev ? colors.primary : "#888"}
                 />
               </View>
@@ -473,7 +473,7 @@ function ActionRow({
       disabled={!onPress}
       style={({ pressed }) => [
         styles.row,
-        border && { borderTopWidth: 1, borderTopColor: colors.border },
+        border && { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" },
         { opacity: pressed && onPress ? 0.75 : 1 },
       ]}
     >
