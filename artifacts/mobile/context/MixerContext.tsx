@@ -475,6 +475,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // confirma su offset, así que en la práctica el arranque no se siente lento
       // más allá del tiempo de carga del audio).
       let offsetConfirmed = false;
+      // Arranque rápido: la capa PRIMARIA se reposiciona UNA sola vez al pico del
+      // seno (dur/2) apenas se conoce la duración, para sonar a volumen pleno de
+      // inmediato en vez de subir lento desde el valle (pos=0) durante decenas de
+      // segundos. `primaryReady` marca que A ya quedó estable en el pico; recién
+      // ahí se alinea B (si no, alinearía contra la posición vieja de A y daría
+      // un pico doble). `audibleStart` marca el primer audio real para el fade-in.
+      let primarySeeked = false;
+      let primaryReady = false;
+      let audibleStart = 0;
+      const STARTUP_RAMP_MS = 400;
       // Recentrado de drift a largo plazo (sesiones de horas): dos loops nativos
       // se desincronizan de a poco; si se rompe el desfase de 180° sin²+cos²
       // deja de dar 1 y reaparece la ondulación. Recentramos B hacia A+dur/2
@@ -504,15 +514,45 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           }
           const dur = status.duration ?? 0;
           const pos = status.currentTime ?? 0;
+
+          // Primer audio real (duración conocida): ancla del fade-in de arranque.
+          if (dur > 0 && audibleStart === 0) audibleStart = Date.now();
+
+          // Arranque rápido (capa PRIMARIA): saltar al pico del seno una sola vez.
+          if (!isSecondary && dur > 0) {
+            if (!primarySeeked) {
+              primarySeeked = true;
+              try {
+                void p.seekTo(dur / 2);
+              } catch {
+                // ignore
+              }
+            } else if (!primaryReady) {
+              // Listo cuando A ya está en ~dur/2; o fallback por tiempo (si el
+              // seek no agarró) para no dejar B muteada para siempre → degrada al
+              // comportamiento previo, nunca peor.
+              if (Math.abs(pos - dur / 2) < 0.25 || Date.now() - audibleStart > 1200) {
+                primaryReady = true;
+              }
+            }
+          }
+
           const gain = dur > 0 ? Math.abs(Math.sin(Math.PI * (pos / dur))) : 1;
           const base = baseVolumesRef.current.get(id) ?? volume;
+          // Fundido de entrada suave (~0.4 s) desde silencio: evita un click al
+          // saltar a volumen pleno tras el seek de arranque.
+          const startupRamp =
+            audibleStart === 0 ? 0 : Math.min(1, (Date.now() - audibleStart) / STARTUP_RAMP_MS);
 
-          // B queda muteada hasta confirmar su alineación (así los reintentos del
-          // seek no se oyen). A siempre suena con su gain (su borde es inaudible).
-          setVol(p, isSecondary && !offsetConfirmed ? 0 : base * gain);
+          // B queda muteada hasta que A esté estable en el pico Y su propia
+          // alineación al borde esté confirmada (si no, los reintentos del seek se
+          // oirían o daría un pico doble). A siempre suena (su borde es inaudible).
+          const muteSecondary = isSecondary && (!primaryReady || !offsetConfirmed);
+          setVol(p, (muteSecondary ? 0 : base * gain) * startupRamp);
 
-          // Alineación / recentrado de la capa B contra A.
-          if (isSecondary && dur > 0) {
+          // Alineación / recentrado de la capa B contra A (solo cuando A ya quedó
+          // estable en el pico, para alinear contra su posición definitiva).
+          if (isSecondary && dur > 0 && primaryReady) {
             const aPos = cur.a.currentTime ?? 0;
             const desired = (((aPos + dur / 2) % dur) + dur) % dur;
             let err = Math.abs(pos - desired);
