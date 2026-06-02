@@ -301,40 +301,6 @@ export function MixerSheet() {
                     </Text>
                   </View>
 
-                  <View style={[styles.reorderPill, { borderColor: colors.border }]}>
-                    <Pressable
-                      onPress={() => moveSound(sound.id, "up")}
-                      disabled={index === 0}
-                      hitSlop={8}
-                      style={styles.reorderBtn}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Subir ${sound.name}`}
-                      accessibilityState={{ disabled: index === 0 }}
-                    >
-                      <Feather
-                        name="chevron-up"
-                        size={15}
-                        color={index === 0 ? colors.border : colors.mutedForeground}
-                      />
-                    </Pressable>
-                    <View style={[styles.reorderDivider, { backgroundColor: colors.border }]} />
-                    <Pressable
-                      onPress={() => moveSound(sound.id, "down")}
-                      disabled={index === activeMix.length - 1}
-                      hitSlop={8}
-                      style={styles.reorderBtn}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Bajar ${sound.name}`}
-                      accessibilityState={{ disabled: index === activeMix.length - 1 }}
-                    >
-                      <Feather
-                        name="chevron-down"
-                        size={15}
-                        color={index === activeMix.length - 1 ? colors.border : colors.mutedForeground}
-                      />
-                    </Pressable>
-                  </View>
-
                   <Pressable
                     onPress={() => removeSound(sound.id)}
                     hitSlop={10}
@@ -614,7 +580,7 @@ const styles = StyleSheet.create({
   thumbRadius: { borderRadius: 20 },
   trackInfo: { flex: 1 },
   trackName: { fontSize: 15, fontWeight: "600" },
-  reorderPill: {
+  _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
