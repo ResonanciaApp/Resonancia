@@ -59,38 +59,38 @@ export default function SlideAnexoInversion() {
       >
         {/* Header row */}
         <Cell header><span style={{ fontSize: "1.3vw", color: "#7a6050" }}>Valoración ↓ / Monto →</span></Cell>
-        <Cell header>US$ 100K</Cell>
-        <Cell header>US$ 200K</Cell>
-        <Cell header>US$ 300K</Cell>
-        <Cell header>US$ 400K</Cell>
+        <Cell header>US$ 10K</Cell>
+        <Cell header>US$ 15K</Cell>
+        <Cell header>US$ 20K</Cell>
+        <Cell header>US$ 25K</Cell>
 
-        {/* Row: US$ 2M */}
-        <Cell muted>US$ 2M <span style={{ fontSize: "1.1vw", color: "#7a6050" }}>(recomendada)</span></Cell>
+        {/* Row: US$ 500K */}
+        <Cell muted>US$ 500K</Cell>
+        <Cell>2,0%</Cell>
+        <Cell>3,0%</Cell>
+        <Cell>4,0%</Cell>
         <Cell>5,0%</Cell>
-        <Cell>10,0%</Cell>
-        <Cell highlight bold>15,0%</Cell>
-        <Cell>20,0%</Cell>
 
-        {/* Row: US$ 3M */}
-        <Cell muted>US$ 3M</Cell>
-        <Cell>3,3%</Cell>
-        <Cell>6,7%</Cell>
-        <Cell>10,0%</Cell>
-        <Cell>13,3%</Cell>
+        {/* Row: US$ 700K */}
+        <Cell muted>US$ 700K</Cell>
+        <Cell>1,4%</Cell>
+        <Cell>2,1%</Cell>
+        <Cell>2,9%</Cell>
+        <Cell>3,6%</Cell>
 
-        {/* Row: US$ 4M */}
-        <Cell muted>US$ 4M</Cell>
+        {/* Row: US$ 1M */}
+        <Cell muted>US$ 1M <span style={{ fontSize: "1.1vw", color: "#7a6050" }}>(recomendada)</span></Cell>
+        <Cell>1,0%</Cell>
+        <Cell>1,5%</Cell>
+        <Cell highlight bold>2,0%</Cell>
         <Cell>2,5%</Cell>
-        <Cell>5,0%</Cell>
-        <Cell>7,5%</Cell>
-        <Cell>10,0%</Cell>
       </div>
 
       {/* Footnote */}
       <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.55, maxWidth: "84vw" }}>
-        % cedido = monto ÷ valoración post-money. Celda destacada = escenario recomendado (US$ 300.000 por 15%).
+        % cedido = monto ÷ valoración post-money. Celda destacada = escenario recomendado (US$ 20.000 por ~2%).
         <span style={{ color: "#5a4632", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
-          Una valoración más alta cede menos por el mismo monto, pero es más difícil de defender antes del lanzamiento.
+          La valoración de US$ 1M es defendible pre-lanzamiento gracias a +1.000.000 de seguidores y 180 pistas listas al lanzar.
         </span>
       </div>
     </div>

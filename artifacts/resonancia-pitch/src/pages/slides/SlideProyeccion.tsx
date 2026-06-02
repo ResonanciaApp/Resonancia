@@ -66,10 +66,11 @@ export default function SlideProyeccion() {
 
       {/* Assumptions */}
       <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.55, maxWidth: "84vw" }}>
-        Supuestos: 8–18% de la comunidad instala la app en el año 1 · 3–7% de conversión a suscripción de pago ·
+        Supuestos: crecimiento orgánico desde la comunidad de +1.000.000 de seguidores (8–18% instala en el año 1),
+        apoyado con US$ 5.000 de pauta · 3–7% de conversión a suscripción de pago ·
         ingreso neto ~US$ 25 por suscriptor/año (precios regionales, ya descontada la comisión de tienda).
         <span style={{ color: "#5a4632", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
-          Referencias de conversión freemium: Calm y Headspace (~3–5%). Escenarios ilustrativos, no garantizados.
+          Canal propio = costo de adquisición casi nulo. Referencias de conversión freemium: Calm y Headspace (~3–5%). Escenarios ilustrativos, no garantizados.
         </span>
       </div>
     </div>

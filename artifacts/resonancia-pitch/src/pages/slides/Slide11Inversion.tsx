@@ -16,25 +16,29 @@ export default function Slide11Inversion() {
             12 · LA INVERSIÓN
           </div>
           <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "48vw" }}>
-            Buscamos <span style={{ color: "#C69B4F" }}>US$ 300.000</span>
+            Buscamos <span style={{ color: "#C69B4F" }}>US$ 20.000</span>
           </div>
           <div style={{ fontSize: "1.9vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.5, marginTop: "2vh", maxWidth: "46vw" }}>
-            para lanzar al mercado y acelerar el crecimiento.
+            para producir el catálogo, equipar el estudio y lanzar al mercado.
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "2.2vh" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.9vh" }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#C69B4F", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.75vw", color: "#cbb9a4", lineHeight: 1.4 }}><span style={{ color: "#C69B4F", fontWeight: 700 }}>50%</span> · Marketing de lanzamiento y adquisición de usuarios.</div>
+            <div style={{ fontSize: "1.65vw", color: "#cbb9a4", lineHeight: 1.4 }}><span style={{ color: "#C69B4F", fontWeight: 700 }}>40%</span> · Contenido: producción de 80 pistas con artistas certificados.</div>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#C69B4F", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.75vw", color: "#cbb9a4", lineHeight: 1.4 }}><span style={{ color: "#C69B4F", fontWeight: 700 }}>30%</span> · Producción de contenido con artistas y voces guía.</div>
+            <div style={{ fontSize: "1.65vw", color: "#cbb9a4", lineHeight: 1.4 }}><span style={{ color: "#C69B4F", fontWeight: 700 }}>25%</span> · Marketing de lanzamiento (orgánico + pauta).</div>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#C69B4F", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.75vw", color: "#cbb9a4", lineHeight: 1.4 }}><span style={{ color: "#C69B4F", fontWeight: 700 }}>20%</span> · Publicación en tiendas, activación de cobros y operación.</div>
+            <div style={{ fontSize: "1.65vw", color: "#cbb9a4", lineHeight: 1.4 }}><span style={{ color: "#C69B4F", fontWeight: 700 }}>15%</span> · Equipos de estudio: micrófonos y ambientación.</div>
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
+            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#C69B4F", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
+            <div style={{ fontSize: "1.65vw", color: "#cbb9a4", lineHeight: 1.4 }}><span style={{ color: "#C69B4F", fontWeight: 700 }}>20%</span> · Operación, publicación en tiendas y reserva.</div>
           </div>
         </div>
 
