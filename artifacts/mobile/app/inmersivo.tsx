@@ -7,7 +7,6 @@ import {
   Animated,
   Easing,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -128,15 +127,10 @@ export default function InmersivoScreen() {
     return () => anim.stop();
   }, [scale]);
 
-  // Capas a mostrar: base primero, luego el ambiente precargado. El usuario solo
-  // regula el volumen — no puede quitarlas ni elegir otras (eso es "Mi Música").
-  const orderedLayers = activeSounds
-    .slice()
-    .sort((a, b) => {
-      if (a.id === baseId) return -1;
-      if (b.id === baseId) return 1;
-      return 0;
-    });
+  // Igual que Sonidos Ancestrales (cuencos + voz guía): el BASE suena fijo de
+  // fondo y NO lleva barra de volumen. La única capa regulable es el ambiente
+  // precargado (grillos, pájaros, etc.). El usuario no elige ni quita capas.
+  const ambientLayers = activeSounds.filter((s) => s.id !== baseId);
 
   return (
     <View style={styles.root}>
@@ -196,41 +190,39 @@ export default function InmersivoScreen() {
         </Pressable>
       </View>
 
-      {/* Panel inferior: volumen de las capas precargadas (sin picker) */}
-      <View style={[styles.panel, { paddingBottom: Math.max(insets.bottom, 16) + 8 }]}>
-        <Text style={styles.panelTitle}>Sonidos</Text>
+      {/* Panel inferior: SOLO el volumen del ambiente precargado (sin picker).
+          El base suena fijo y no se lista. Si la sesión aún no tiene ambiente,
+          no se muestra ninguna barra. */}
+      {ambientLayers.length > 0 && (
+        <View style={[styles.panel, { paddingBottom: Math.max(insets.bottom, 16) + 8 }]}>
+          <Text style={styles.panelTitle}>Sonido ambiente</Text>
 
-        <ScrollView
-          style={{ maxHeight: 184 }}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ gap: 14, paddingTop: 6 }}
-        >
-          {orderedLayers.map((layer) => {
-            const sound = getSoundById(layer.id);
-            if (!sound) return null;
-            const isBase = layer.id === baseId;
-            return (
-              <View key={layer.id} style={styles.layerRow}>
-                <View style={styles.layerIcon}>
-                  <SoundIcon sound={sound} size={16} color={ACCENT} />
+          <View style={{ gap: 14, paddingTop: 6 }}>
+            {ambientLayers.map((layer) => {
+              const sound = getSoundById(layer.id);
+              if (!sound) return null;
+              return (
+                <View key={layer.id} style={styles.layerRow}>
+                  <View style={styles.layerIcon}>
+                    <SoundIcon sound={sound} size={16} color={ACCENT} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.layerName} numberOfLines={1}>
+                      {sound.name}
+                    </Text>
+                    <VolumeSlider
+                      value={layer.volume}
+                      onChange={(v) => setVolume(layer.id, v)}
+                      color={ACCENT}
+                      trackColor={TRACK}
+                    />
+                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.layerName} numberOfLines={1}>
-                    {sound.name}
-                    {isBase ? "  ·  base" : "  ·  ambiente"}
-                  </Text>
-                  <VolumeSlider
-                    value={layer.volume}
-                    onChange={(v) => setVolume(layer.id, v)}
-                    color={ACCENT}
-                    trackColor={TRACK}
-                  />
-                </View>
-              </View>
-            );
-          })}
-        </ScrollView>
-      </View>
+              );
+            })}
+          </View>
+        </View>
+      )}
     </View>
   );
 }

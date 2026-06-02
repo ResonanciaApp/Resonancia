@@ -75,7 +75,7 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 | Meditaciones Guiadas | ❌ | VOICE_MAP | No |
 | ASMR / Historias / Podcast | ❌ | — | No |
 
-> **Sonidos Naturaleza (modelo Pura Mente):** cada sesión trae **2 sonidos fijos** — un `base` (fondo/nativo) y un `ambient` (capa precargada, opcional) — definidos en `config/nature-base-map.ts` (`{ base, ambient? }`). NO hay picker "+ Sonidos" en la pantalla inmersiva: el usuario solo sube/baja el volumen de cada capa. Para mezclas libres está "Mi Música". Al subir una sesión Sonidos Naturaleza, el usuario indica cuál audio es base y cuál ambiente; ambos deben existir en `data/sounds.ts` / `SOUND_MAP`. Al cerrar la inmersiva se hace `stopAll()` (secciones distintas → no debe quedar el MiniPlayer "Mi mezcla").
+> **Sonidos Naturaleza (modelo Pura Mente):** cada sesión trae **2 sonidos fijos** — un `base` (fondo/nativo) y un `ambient` (capa precargada, opcional) — definidos en `config/nature-base-map.ts` (`{ base, ambient? }`). NO hay picker "+ Sonidos" en la pantalla inmersiva. Igual que Sonidos Ancestrales (cuencos + voz guía): el `base` suena fijo y NO lleva barra de volumen; la única barra regulable es la del `ambient`. Para mezclas libres está "Mi Música". Al subir una sesión Sonidos Naturaleza, el usuario indica cuál audio es base y cuál ambiente; ambos deben existir en `data/sounds.ts` / `SOUND_MAP`. Al cerrar la inmersiva se hace `stopAll()` (secciones distintas → no debe quedar el MiniPlayer "Mi mezcla").
 
 ### Mapeo de campos a tipos
 
