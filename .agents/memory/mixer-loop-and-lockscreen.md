@@ -20,22 +20,29 @@ seam is masked.
   blip to fight (this is why the old "ignore didJustFinish / debounce playing:false"
   guards are no longer the main mechanism).
 
-### Start latency: warmup phase (single decode) before crossfade
-Creating + loading TWO players at once (decode + audio-session activation) made the
-first sound take 3-8s on a real device. Mixer loop files are tiny (~320-360KB / ~21s),
-so the cost is per-player init, not file size. Fix = two phases:
-- **warmup:** only layer A is `replace()`-loaded and plays at FULL base volume the
-  instant it's ready (one decode). Layer B's `replace()` is DEFERRED — triggered from
-  A's listener once A reports `duration > 0` — so the two decodes don't contend.
-- **cross:** once B is aligned (offsetConfirmed) AND A crosses `dur/2`, switch A to the
-  sin gain. `sin(pi/2)=1`, so at `dur/2` the crossfade gain equals warmup's full volume
-  → the handoff is inaudible. A's first wrap (at `dur`) happens AFTER `dur/2`, so by the
-  time the loop seam arrives we're already crossfading and no cut is heard. B stays
-  muted (volume 0) during warmup even after it's aligned, to avoid double-volume.
-**Why:** time-to-first-sound drops to ~one decode instead of waiting on two players to
-load AND align. **How to apply:** safe because mixer loops are long (~21s) vs B's
-load+align (~1.5s), so cross always engages at the first `dur/2` (~10s) well before the
-first wrap; would NOT hold for very short loops (<~3s).
+### Do NOT use a "layer A at full volume" warmup to cut start latency (REVERTED, was unstable)
+Tempting idea: play layer A at FULL volume the instant it loads (one decode) and only
+engage the equal-power crossfade once B is aligned + A crosses `dur/2`. This was tried
+and REVERTED — it caused intermittent "the loop cuts and restarts" on a real device
+(reported on "viento", fine on "bosque", fine on re-open). **Why it fails:** on device
+the first `replace()` decode of a mixer asset can take several seconds (and varies per
+file), so B is not always aligned before A reaches its own loop end (`dur`). While still
+in warmup, A is at FULL volume at its wrap → the native loop seam is audible (cut +
+restart). Re-opening "works" only because the asset is now cached and B aligns in time —
+i.e. it's a race, not a fix.
+**Rule:** keep the crossfade SYMMETRIC — BOTH layers always use `gain=|sin(pi*pos/dur)|`,
+so each layer's own wrap always happens at gain 0 (inaudible) regardless of the other
+layer's load state. The cost (first sound ramps from 0) is acceptable; B, once aligned
+~dur/2 ahead, comes in near full almost immediately.
+
+### Start latency is dominated by asset LOAD time, mostly a dev/Metro artifact
+First-tap delay (observed 3-7s, varies per sound) is NOT the gain logic — it's the time
+for `createAudioPlayer().replace(require(mp3))` to become ready. Mixer files are tiny
+(~320-360KB), so in a real (EAS) build where assets are bundled this is near-instant; in
+Expo dev the require'd mp3 streams from the Metro dev server on first access (slow,
+variable) and is fast on re-tap once cached. Do not contort the crossfade to chase this;
+if real-build latency is still bad, the safe lever is caching toggled-off players
+(pause+mute instead of destroy) so re-taps are instant — not a full-volume warmup.
 
 ### Layer B's dur/2 offset must RETRY until confirmed — NOT a single seekTo
 A single `seekTo(dur/2)` on B right after `replace()` is unreliable on iOS (same

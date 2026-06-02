@@ -434,40 +434,32 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // siempre true → no dispara el guard de pausa del lock-screen ni hace
       // falta reiniciar a mano. updateInterval bajo (120 ms) para que el gain
       // varíe de forma continua. El listener sigue corriendo en background.
-      const makeLayer = (withSource: boolean) => {
+      const makeLayer = () => {
         const p = createAudioPlayer(null, { updateInterval: 120 });
         p.loop = true;
-        if (withSource) p.replace(file); // B se carga diferida (ver más abajo)
-        p.volume = 0;
+        p.replace(file);
+        p.volume = 0; // arranca en 0; el gain del crossfade lo sube
         return p;
       };
-      const a = makeLayer(true);
-      const b = makeLayer(false);
+      const a = makeLayer();
+      const b = makeLayer();
       const pair: SoundPlayers = { a, b };
 
-      // ── Arranque rápido + crossfade ──────────────────────────────────────
-      // Crear y cargar (decode + activar sesión de audio) DOS players a la vez
-      // hace que el primer sonido tarde 3-8 s. Para que suene casi al instante:
+      // ── Crossfade simétrico (robusto) ────────────────────────────────────
+      // AMBAS capas usan SIEMPRE el gain = |sin(pi*pos/dur)|. En el borde del
+      // loop de cualquiera de las dos su gain vale 0, así que el corte del loop
+      // nativo SIEMPRE ocurre a volumen 0 → es inaudible, sin importar el estado
+      // de la otra capa. La capa B va desfasada dur/2 (gainA²+gainB²=1, potencia
+      // constante) y cubre el valle de A, y viceversa.
       //
-      //   • Fase "warmup": SOLO la capa A se carga y suena a volumen COMPLETO
-      //     apenas está lista (un único decode). La capa B se carga diferida
-      //     (su replace() recién corre cuando A ya está reproduciendo) para no
-      //     pelear el decode con A.
-      //   • Fase "cross": cuando B ya está alineada (~dur/2 por delante) y A
-      //     cruza dur/2 — donde sin(pi/2)=1, o sea el gain del crossfade vale
-      //     exactamente lo mismo que el volumen completo del warmup → el cambio
-      //     es imperceptible — se engancha el crossfade equal-power de siempre:
-      //     cada capa con gain = |sin(pi*pos/dur)|, desfasadas dur/2, de modo
-      //     que gainA² + gainB² = 1 (potencia constante) y el empalme del loop
-      //     queda enmascarado. El primer wrap de A (en dur) ocurre DESPUÉS de
-      //     dur/2, así que para entonces ya estamos en cross y no se oye corte.
-      let phase: "warmup" | "cross" = "warmup";
-      let bLoaded = false;
-      // Alineación de B respecto de A. El offset NO se puede fijar con un solo
-      // seekTo tras replace(): en iOS suele no-opear (item recién cargado) y las
-      // capas quedan EN FASE. Solución: reintentar el seek cada tick hasta
-      // CONFIRMAR que B quedó ~dur/2 por delante de A, con B muteada mientras
-      // tanto para que los reintentos no se oigan.
+      // OJO: NO meter una fase "A a volumen completo" al arranque para ganar
+      // latencia. Si B tarda en cargar (en device el primer decode puede tardar
+      // varios segundos), A llegaría a su corte a volumen PLENO antes de que el
+      // crossfade se enganche y se oye el corte + reinicio (bug "viento"). El
+      // costo de la simetría es que el primer sonido sube desde 0 siguiendo el
+      // seno (la capa B, ya alineada ~dur/2 adelante, entra fuerte apenas
+      // confirma su offset, así que en la práctica el arranque no se siente lento
+      // más allá del tiempo de carga del audio).
       let offsetConfirmed = false;
       // Recentrado de drift a largo plazo (sesiones de horas): dos loops nativos
       // se desincronizan de a poco; si se rompe el desfase de 180° sin²+cos²
@@ -501,41 +493,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           const gain = dur > 0 ? Math.abs(Math.sin(Math.PI * (pos / dur))) : 1;
           const base = baseVolumesRef.current.get(id) ?? volume;
 
-          if (!isSecondary) {
-            // ── CAPA A (primaria) ──────────────────────────────────────────
-            // Diferir la carga de B hasta que A esté lista: un solo decode
-            // antes del primer sonido (mitad de latencia de arranque).
-            if (!bLoaded && dur > 0) {
-              bLoaded = true;
-              try {
-                cur.b.replace(file);
-                cur.b.volume = 0;
-                cur.b.play();
-              } catch {
-                // ignore
-              }
-            }
-            // Pasar de warmup a crossfade al cruzar dur/2 (sin=1 → sin salto),
-            // una vez que B está alineada.
-            if (
-              phase === "warmup" &&
-              offsetConfirmed &&
-              dur > 0 &&
-              pos >= dur / 2 &&
-              pos < dur * 0.95
-            ) {
-              phase = "cross";
-            }
-            setVol(p, phase === "warmup" ? base : base * gain);
-            return;
-          }
+          // B queda muteada hasta confirmar su alineación (así los reintentos del
+          // seek no se oyen). A siempre suena con su gain (su borde es inaudible).
+          setVol(p, isSecondary && !offsetConfirmed ? 0 : base * gain);
 
-          // ── CAPA B (secundaria) ──────────────────────────────────────────
-          // Muteada hasta estar alineada Y hasta que A enganche el crossfade.
-          const target = !offsetConfirmed || phase === "warmup" ? 0 : base * gain;
-          setVol(p, target);
-
-          if (dur > 0) {
+          // Alineación / recentrado de la capa B contra A.
+          if (isSecondary && dur > 0) {
             const aPos = cur.a.currentTime ?? 0;
             const desired = (((aPos + dur / 2) % dur) + dur) % dur;
             let err = Math.abs(pos - desired);
@@ -573,7 +536,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // identidad del player contra el par registrado).
       playersRef.current.set(id, pair);
       a.play();
-      // b.play() se dispara en el listener de A, recién cuando A ya está cargada.
+      b.play();
       return pair;
     } catch {
       return null;
