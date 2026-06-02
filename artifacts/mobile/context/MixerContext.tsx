@@ -445,14 +445,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const b = makeLayer();
       const pair: SoundPlayers = { a, b };
 
-      // La capa B se desfasa media vuelta una sola vez, cuando ya hay duración.
-      let bOffsetApplied = false;
-      // Phase-lock: dos players nativos independientes pueden ir driftando en
-      // sesiones de horas (cada uno reinicia su loop en un instante ligeramente
-      // distinto). Si se rompe el desfase de 180°, sin²+cos² deja de dar 1 y
-      // reaparece la ondulación de volumen. Periódicamente recentramos B hacia
-      // A+dur/2, PERO solo cuando B está casi en silencio (gain bajo, o sea cerca
-      // de su borde de loop) para que el seek sea inaudible. Throttle a 2 s.
+      // Alineación de la capa B respecto de A. El offset NO se puede fijar con un
+      // solo seekTo justo después de replace(): en iOS ese seek suele no-opear
+      // (item recién cargado) y las dos capas quedan EN FASE. Síntomas de eso:
+      // (1) al arrancar las dos suben desde gain 0 → varios segundos de silencio;
+      // (2) en el borde del loop las dos se van a 0 juntas → corte audible sin
+      // crossfade. Solución: reintentar el seek cada tick hasta CONFIRMAR que B
+      // quedó ~dur/2 por delante de A, manteniendo B en silencio mientras se
+      // alinea para que los reintentos del seek no se oigan.
+      let offsetConfirmed = false;
+      // Recentrado de drift a largo plazo (sesiones de horas): dos loops nativos
+      // independientes se desincronizan de a poco; si se rompe el desfase de 180°
+      // sin²+cos² deja de dar 1 y reaparece la ondulación. Recentramos B hacia
+      // A+dur/2 solo en su valle de gain (seek inaudible), con throttle de 2 s.
       let lastResync = 0;
 
       const attachFade = (p: AudioPlayer, isSecondary: boolean) => {
@@ -467,18 +472,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             }
           }
           const dur = status.duration ?? 0;
-          if (isSecondary && !bOffsetApplied && dur > 0) {
-            bOffsetApplied = true;
-            try {
-              void p.seekTo(dur / 2);
-            } catch {
-              // ignore
-            }
-          }
-          const base = baseVolumesRef.current.get(id) ?? volume;
           const pos = status.currentTime ?? 0;
           const gain = dur > 0 ? Math.abs(Math.sin(Math.PI * (pos / dur))) : 1;
-          const target = base * gain;
+
+          // Volumen: el gain del crossfade lo gobierna cada tick. B queda muteada
+          // hasta confirmar su alineación (así los reintentos de seek no suenan).
+          const base = baseVolumesRef.current.get(id) ?? volume;
+          const target = isSecondary && !offsetConfirmed ? 0 : base * gain;
           if (Math.abs(p.volume - target) > 0.004) {
             try {
               p.volume = target;
@@ -487,19 +487,32 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             }
           }
 
-          // Recentrado de fase de B contra A (solo en el valle de gain de B).
-          if (isSecondary && bOffsetApplied && dur > 0 && gain < 0.12) {
+          // Alineación / recentrado de la capa B contra A.
+          if (isSecondary && dur > 0) {
             const aPos = cur.a.currentTime ?? 0;
-            const expected = (((aPos + dur / 2) % dur) + dur) % dur;
-            let err = Math.abs(pos - expected);
+            const desired = (((aPos + dur / 2) % dur) + dur) % dur;
+            let err = Math.abs(pos - desired);
             err = Math.min(err, dur - err); // distancia circular
-            const now = Date.now();
-            if (err > 0.06 && now - lastResync > 2000) {
-              lastResync = now;
-              try {
-                void p.seekTo(expected);
-              } catch {
-                // ignore
+            if (!offsetConfirmed) {
+              // Reintentar hasta que el seek "agarre" (B muteada mientras tanto).
+              if (err < 0.15) offsetConfirmed = true;
+              else {
+                try {
+                  void p.seekTo(desired);
+                } catch {
+                  // ignore
+                }
+              }
+            } else if (gain < 0.12) {
+              // Drift: corregir solo en el valle de B (inaudible), con throttle.
+              const now = Date.now();
+              if (err > 0.06 && now - lastResync > 2000) {
+                lastResync = now;
+                try {
+                  void p.seekTo(desired);
+                } catch {
+                  // ignore
+                }
               }
             }
           }

@@ -16,11 +16,22 @@ boundary (gain 0) the other is at its peak, so the perceived level never dips an
 seam is masked.
 
 - `updateInterval: 120ms` so the gain curve moves smoothly.
-- Layer B's `dur/2` offset is applied ONCE via `seekTo(dur/2)` on the first tick with
-  valid duration (`bOffsetApplied` flag).
 - Both layers NEVER stop (native loop) → `status.playing` stays true → no end-of-file
   blip to fight (this is why the old "ignore didJustFinish / debounce playing:false"
   guards are no longer the main mechanism).
+
+### Layer B's dur/2 offset must RETRY until confirmed — NOT a single seekTo
+A single `seekTo(dur/2)` on B right after `replace()` is unreliable on iOS (same
+loaded-but-not-ready problem as play-after-replace): it silently no-ops and the two
+layers stay IN PHASE. Symptoms reported on a real device: (1) both layers ramp up from
+gain 0 at start → several seconds of silence before the sound is audible; (2) at the
+loop boundary both fade to 0 together → audible cut with no crossfade. Fix: in B's
+listener, every tick compute `desired = (aPos + dur/2) mod dur` from A's live
+`currentTime`, and `seekTo(desired)` repeatedly until `|posB - desired|` is within
+tolerance (~0.15s) → then set `offsetConfirmed`. Keep B MUTED (target volume 0) while
+unconfirmed so the retry seeks are inaudible. Aligning B relative to A's live position
+(not a fixed absolute dur/2) also means the same code path handles the long-session
+drift correction (gated on B's low-gain valley).
 
 **Why:** equal-power crossfade is the only way to make a looped ambient bed truly
 imperceptible. **How to apply:** any looping mixer sound uses the two-layer crossfade in
