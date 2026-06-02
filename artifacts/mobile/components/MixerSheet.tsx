@@ -460,7 +460,11 @@ export function MixerSheet() {
                   />
 
                   <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Categoría</Text>
-                  <View style={styles.catChips}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.catChips}
+                  >
                     {MIX_CATEGORIES.map((cat) => {
                       const selected = mixCategory === cat.id;
                       return (
@@ -470,15 +474,23 @@ export function MixerSheet() {
                           style={[
                             styles.catChip,
                             {
-                              backgroundColor: selected ? colors.primary : colors.secondary,
-                              borderColor: selected ? colors.primary : colors.border,
+                              backgroundColor: selected
+                                ? "rgba(198,155,79,0.22)"
+                                : "rgba(255,255,255,0.05)",
+                              borderColor: selected
+                                ? "rgba(198,155,79,0.6)"
+                                : "rgba(255,255,255,0.1)",
                             },
                           ]}
                         >
                           <Text
                             style={[
                               styles.catChipText,
-                              { color: selected ? colors.primaryForeground : colors.foreground },
+                              {
+                                color: selected
+                                  ? colors.primary
+                                  : colors.mutedForeground,
+                              },
                             ]}
                           >
                             {cat.label}
@@ -486,7 +498,7 @@ export function MixerSheet() {
                         </Pressable>
                       );
                     })}
-                  </View>
+                  </ScrollView>
 
                   <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Imagen</Text>
                   <ScrollView
@@ -698,7 +710,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   modalInputArea: { minHeight: 64, textAlignVertical: "top" },
-  catChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  catChips: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingRight: 32 },
   catChip: {
     paddingHorizontal: 12,
     paddingVertical: 8,
