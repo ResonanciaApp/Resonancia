@@ -139,13 +139,6 @@ export default function InmersivoScreen() {
 
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  const activeLabel = useMemo(() => {
-    const names = activeSounds
-      .map((s) => getSoundById(s.id)?.name)
-      .filter((n): n is string => !!n);
-    return names.join(" · ");
-  }, [activeSounds]);
-
   const pickerSounds = useMemo(
     () => PICKER_CATEGORIES.map((c) => ({ ...c, sounds: getSoundsByCategory(c.id) })),
     [],
@@ -225,18 +218,13 @@ export default function InmersivoScreen() {
         <View style={styles.panelTop}>
           <View style={{ flex: 1 }}>
             <Text style={styles.panelTitle}>Ambiente</Text>
-            {!!activeLabel && (
-              <Text style={styles.panelSub} numberOfLines={1}>
-                Sonando: {activeLabel}
-              </Text>
-            )}
           </View>
           <Pressable
             onPress={() => setPickerOpen(true)}
             style={({ pressed }) => [styles.addBtn, { opacity: pressed ? 0.85 : 1 }]}
           >
             <Feather name="plus" size={16} color="#0B130A" />
-            <Text style={styles.addBtnText}>Sonido</Text>
+            <Text style={styles.addBtnText}>Sonidos</Text>
           </Pressable>
         </View>
 
