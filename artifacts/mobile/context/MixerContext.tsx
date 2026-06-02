@@ -18,24 +18,45 @@ import {
   stopSessionPlayback,
 } from "@/context/audioBridge";
 
+/** Resuelve un asset (`require(...)`) a un URL usable como carátula.
+ *  En nativo `require` devuelve un id numérico → `Image.resolveAssetSource`.
+ *  En web (react-native-web) `resolveAssetSource` no existe y el `require`
+ *  ya es un string o `{ uri }` / `{ default }`. Se cubren ambos casos. */
+function assetToUri(mod: unknown): string | undefined {
+  if (!mod) return undefined;
+  if (typeof mod === "string") return mod;
+  if (typeof mod === "object") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const m = mod as any;
+    if (typeof m.uri === "string") return m.uri;
+    if (typeof m.default === "string") return m.default;
+    if (m.default && typeof m.default.uri === "string") return m.default.uri;
+  }
+  if (typeof Image.resolveAssetSource === "function") {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return Image.resolveAssetSource(mod as any)?.uri;
+    } catch (_) {
+      /* sin uri */
+    }
+  }
+  return undefined;
+}
+
 /** Carátula por defecto del Now Playing / pantalla bloqueada cuando la mezcla
  *  no tiene una imagen propia asignada (ej: sonidos sueltos sin preset guardado).
  *  Usamos el logo cuadrado de la app. expo-audio descarga el URL async. */
-const DEFAULT_MIX_ARTWORK_URL =
-  Image.resolveAssetSource(require("@/assets/images/logo-cdc-square.png"))?.uri;
+const DEFAULT_MIX_ARTWORK_URL = assetToUri(
+  require("@/assets/images/logo-cdc-square.png"),
+);
 
 /** Resuelve la imagen elegida al guardar la mezcla (key de la galería) a un
  *  URL usable como carátula. Cae al logo de la app si no hay imagen. */
 function resolveMixArtworkUrl(imageKey?: string): string | undefined {
   const source = getMixImage(imageKey);
   if (source) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const uri = Image.resolveAssetSource(source as any)?.uri;
-      if (uri) return uri;
-    } catch (_) {
-      /* cae al default */
-    }
+    const uri = assetToUri(source);
+    if (uri) return uri;
   }
   return DEFAULT_MIX_ARTWORK_URL;
 }
