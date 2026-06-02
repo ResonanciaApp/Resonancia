@@ -20,6 +20,23 @@ seam is masked.
   blip to fight (this is why the old "ignore didJustFinish / debounce playing:false"
   guards are no longer the main mechanism).
 
+### Start latency: warmup phase (single decode) before crossfade
+Creating + loading TWO players at once (decode + audio-session activation) made the
+first sound take 3-8s on a real device. Mixer loop files are tiny (~320-360KB / ~21s),
+so the cost is per-player init, not file size. Fix = two phases:
+- **warmup:** only layer A is `replace()`-loaded and plays at FULL base volume the
+  instant it's ready (one decode). Layer B's `replace()` is DEFERRED — triggered from
+  A's listener once A reports `duration > 0` — so the two decodes don't contend.
+- **cross:** once B is aligned (offsetConfirmed) AND A crosses `dur/2`, switch A to the
+  sin gain. `sin(pi/2)=1`, so at `dur/2` the crossfade gain equals warmup's full volume
+  → the handoff is inaudible. A's first wrap (at `dur`) happens AFTER `dur/2`, so by the
+  time the loop seam arrives we're already crossfading and no cut is heard. B stays
+  muted (volume 0) during warmup even after it's aligned, to avoid double-volume.
+**Why:** time-to-first-sound drops to ~one decode instead of waiting on two players to
+load AND align. **How to apply:** safe because mixer loops are long (~21s) vs B's
+load+align (~1.5s), so cross always engages at the first `dur/2` (~10s) well before the
+first wrap; would NOT hold for very short loops (<~3s).
+
 ### Layer B's dur/2 offset must RETRY until confirmed — NOT a single seekTo
 A single `seekTo(dur/2)` on B right after `replace()` is unreliable on iOS (same
 loaded-but-not-ready problem as play-after-replace): it silently no-ops and the two
