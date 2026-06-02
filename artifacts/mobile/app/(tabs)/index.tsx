@@ -19,7 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
-import { MensajesAnonimosPanel } from "@/components/MensajesAnonimosPanel";
+import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
@@ -311,6 +311,9 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
         </View>
+
+        {/* ── 8. LO QUE SIENTE LA COMUNIDAD ── */}
+        <AlmaCommunitySection />
 
         {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />

@@ -7,6 +7,9 @@ export const messagesTable = pgTable("messages", {
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   likes: integer("likes").default(0).notNull(),
+  authorClerkId: text("author_clerk_id"),
+  authorName: text("author_name"),
+  authorAvatarUrl: text("author_avatar_url"),
 });
 
 export const insertMessageSchema = createInsertSchema(messagesTable)

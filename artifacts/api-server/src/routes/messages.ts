@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
-import { sql, desc, lt } from "drizzle-orm";
-import { db, messagesTable } from "@workspace/db";
+import { sql, desc, lt, eq } from "drizzle-orm";
+import { getAuth } from "@clerk/express";
+import { db, messagesTable, usersTable } from "@workspace/db";
 import {
   CreateMessageBody,
   GetMessagesQueryParams,
@@ -86,9 +87,28 @@ router.post("/messages", async (req, res) => {
     // Clean up expired messages before inserting a new one.
     await pruneExpired();
 
+    // Optionally attach author info if the request is authenticated.
+    let authorClerkId: string | null = null;
+    let authorName: string | null = null;
+    let authorAvatarUrl: string | null = null;
+
+    const auth = getAuth(req);
+    if (auth?.userId) {
+      authorClerkId = auth.userId;
+      const [user] = await db
+        .select({ displayName: usersTable.displayName, avatarUrl: usersTable.avatarUrl })
+        .from(usersTable)
+        .where(eq(usersTable.clerkUserId, auth.userId))
+        .limit(1);
+      if (user) {
+        authorName = user.displayName ?? null;
+        authorAvatarUrl = user.avatarUrl ?? null;
+      }
+    }
+
     const [message] = await db
       .insert(messagesTable)
-      .values({ content: parsed.data.content })
+      .values({ content: parsed.data.content, authorClerkId, authorName, authorAvatarUrl })
       .returning();
     res.status(201).json(message);
   } catch (err) {

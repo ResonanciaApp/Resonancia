@@ -40,6 +40,8 @@ export interface CommunityMessage {
   content: string;
   createdAt: string;
   likes: number;
+  authorName?: string | null;
+  authorAvatarUrl?: string | null;
 }
 
 export interface MessagesPage {

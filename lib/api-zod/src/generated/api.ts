@@ -31,7 +31,9 @@ export const GetMessagesResponse = zod.object({
   "id": zod.number(),
   "content": zod.string(),
   "createdAt": zod.coerce.date(),
-  "likes": zod.number()
+  "likes": zod.number(),
+  "authorName": zod.string().nullish(),
+  "authorAvatarUrl": zod.string().nullish()
 })),
   "total": zod.number(),
   "page": zod.number(),
@@ -59,7 +61,9 @@ export const GetTopMessageResponse = zod.object({
   "id": zod.number(),
   "content": zod.string(),
   "createdAt": zod.coerce.date(),
-  "likes": zod.number()
+  "likes": zod.number(),
+  "authorName": zod.string().nullish(),
+  "authorAvatarUrl": zod.string().nullish()
 }),zod.null()])
 })
 
@@ -567,7 +571,9 @@ export const LikeMessageResponse = zod.object({
   "id": zod.number(),
   "content": zod.string(),
   "createdAt": zod.coerce.date(),
-  "likes": zod.number()
+  "likes": zod.number(),
+  "authorName": zod.string().nullish(),
+  "authorAvatarUrl": zod.string().nullish()
 })
 
 

@@ -853,6 +853,12 @@ components:
           format: date-time
         likes:
           type: integer
+        authorName:
+          type: string
+          nullable: true
+        authorAvatarUrl:
+          type: string
+          nullable: true
       required: [id, content, createdAt, likes]
     MessagesPage:
       type: object
