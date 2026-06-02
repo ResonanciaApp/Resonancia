@@ -202,9 +202,13 @@ export function DrawerMenu() {
                     </View>
                   )}
                   {item.label === "Premium" ? (
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
                       <Text style={[styles.itemLabel, { color: "#F5EAC8" }]}>Premium</Text>
-                      {isPremium && <Feather name="check" size={13} color="#5FB98C" />}
+                      {isPremium && (
+                        <View style={styles.premiumCheck}>
+                          <Feather name="check" size={11} color="#5FB98C" />
+                        </View>
+                      )}
                     </View>
                   ) : (
                     <Text style={[styles.itemLabel, { color: "#FFFFFF" }]}>
