@@ -141,12 +141,7 @@ export default function MensajesDelAlmaScreen() {
             <Feather name="chevron-left" size={20} color={colors.foreground} />
           </Pressable>
           <View style={styles.topTitleBlock}>
-            <Text style={[styles.topTitle, { color: colors.foreground }]}>Lo que siente la comunidad</Text>
-            {total > 0 && (
-              <Text style={[styles.topSub, { color: colors.mutedForeground }]}>
-                {total} {total === 1 ? "mensaje" : "mensajes"} · 24 h
-              </Text>
-            )}
+            <Text style={[styles.topTitle, { color: colors.foreground }]}>Agradecer es el inicio</Text>
           </View>
           <View style={{ width: 38 }} />
         </View>
@@ -215,7 +210,7 @@ export default function MensajesDelAlmaScreen() {
           <View style={styles.dividerRow}>
             <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
             <Text style={[styles.dividerLabel, { color: colors.mutedForeground }]}>
-              {isLoading ? "CARGANDO..." : `HOY · ${total} ${total === 1 ? "MENSAJE" : "MENSAJES"}`}
+              {isLoading ? "CARGANDO..." : "HOY"}
             </Text>
             <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
           </View>
