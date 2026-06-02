@@ -26,7 +26,7 @@ export default function Slide03Biblioteca() {
 
         {/* Stat */}
         <div>
-          <div style={{ fontSize: "8vw", fontWeight: 700, color: "#C69B4F", lineHeight: 1, letterSpacing: "-0.04em" }}>30+</div>
+          <div style={{ fontSize: "8vw", fontWeight: 700, color: "#C69B4F", lineHeight: 1, letterSpacing: "-0.04em" }}>300+</div>
           <div style={{ fontSize: "1.8vw", color: "#7a6050", marginTop: "1vh" }}>sesiones en 5 categorías</div>
         </div>
 
