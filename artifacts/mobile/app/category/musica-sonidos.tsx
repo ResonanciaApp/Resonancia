@@ -41,15 +41,15 @@ type Tab = "Todos" | SoundTag;
 
 const TABS: Tab[] = ["Todos", "Sonidos Naturaleza", "Música Ambient", "Música Enteógena"];
 
-/** Timer del sonido. 10/20/30 min gratis; el resto es premium. */
-const FREE_TIMER_MAX = 30;
-const TIMER_OPTIONS: { minutes: number; label: string }[] = [
-  { minutes: 10, label: "10 min" },
-  { minutes: 20, label: "20 min" },
-  { minutes: 30, label: "30 min" },
-  { minutes: 60, label: "1 h" },
-  { minutes: 120, label: "2 h" },
-  { minutes: 480, label: "8 h" },
+/** Timer del sonido. 5/10/20 min gratis; el resto (incluido "Sin límite") es premium. */
+const TIMER_OPTIONS: { minutes: number | null; label: string; free: boolean }[] = [
+  { minutes: 5, label: "5 min", free: true },
+  { minutes: 10, label: "10 min", free: true },
+  { minutes: 20, label: "20 min", free: true },
+  { minutes: 30, label: "30 min", free: false },
+  { minutes: 40, label: "40 min", free: false },
+  { minutes: 60, label: "1 h", free: false },
+  { minutes: null, label: "Sin límite", free: false },
 ];
 
 const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
@@ -105,10 +105,10 @@ export default function MusicaSonidosScreen() {
     return list;
   }, [activeTab, query]);
 
-  const handleSelectTimer = (minutes: number) => {
+  const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;
-    // Gating premium: solo 10/20/30 min son gratis.
-    if (minutes > FREE_TIMER_MAX && !isPremium) {
+    // Gating premium: solo 5/10/20 min son gratis.
+    if (!opt.free && !isPremium) {
       setPendingSession(null);
       stopAll();
       router.push("/membresia" as never);
@@ -123,7 +123,8 @@ export default function MusicaSonidosScreen() {
       stopAll();
       return;
     }
-    setSleepTimer(minutes);
+    // null = "Sin límite": setSleepTimer(null) deja sonando sin temporizador.
+    setSleepTimer(opt.minutes);
     router.push({
       pathname: "/inmersivo",
       params: {
@@ -412,16 +413,16 @@ export default function MusicaSonidosScreen() {
                     </View>
 
                     <Text style={[styles.modalHint, { color: "#E8F5E0" }]}>
-                      El sonido se detiene al terminar este tiempo · 10, 20 y 30 min gratis
+                      El sonido se detiene al terminar este tiempo · 5, 10 y 20 min gratis
                     </Text>
 
                     {/* Timer options */}
                     <View style={styles.durationGrid}>
                       {TIMER_OPTIONS.map((opt) => {
-                        const locked = opt.minutes > FREE_TIMER_MAX && !isPremium;
+                        const locked = !opt.free && !isPremium;
                         return (
                           <Pressable
-                            key={opt.minutes}
+                            key={opt.label}
                             style={({ pressed }) => [
                               styles.durationBtn,
                               {
@@ -433,7 +434,7 @@ export default function MusicaSonidosScreen() {
                                   : "rgba(160,200,140,0.28)",
                               },
                             ]}
-                            onPress={() => handleSelectTimer(opt.minutes)}
+                            onPress={() => handleSelectTimer(opt)}
                           >
                             {({ pressed }) => (
                               <>

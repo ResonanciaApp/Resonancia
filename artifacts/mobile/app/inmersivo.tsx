@@ -224,7 +224,7 @@ export default function InmersivoScreen() {
       <View style={[styles.panel, { paddingBottom: Math.max(insets.bottom, 16) + 8 }]}>
         <View style={styles.panelTop}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.panelTitle}>Mezcla</Text>
+            <Text style={styles.panelTitle}>Ambiente</Text>
             {!!activeLabel && (
               <Text style={styles.panelSub} numberOfLines={1}>
                 Sonando: {activeLabel}
