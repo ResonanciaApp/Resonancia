@@ -9,13 +9,13 @@ export default function Slide04Producto() {
       {/* Left column — text */}
       <div
         className="flex flex-col justify-between"
-        style={{ width: "56vw", height: "100vh", padding: "9vh 5vw", boxSizing: "border-box" }}
+        style={{ width: "52vw", height: "100vh", padding: "9vh 5vw", boxSizing: "border-box" }}
       >
         <div>
           <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "#7a6050", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
             03 · EL PRODUCTO
           </div>
-          <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "48vw" }}>
+          <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "44vw" }}>
             Una app completa, <span style={{ color: "#C69B4F" }}>ya construida.</span>
           </div>
         </div>
@@ -52,54 +52,57 @@ export default function Slide04Producto() {
         </div>
       </div>
 
-      {/* Right column — 2 iPhone mockups */}
-      <div style={{ width: "44vw", height: "100vh", position: "relative", backgroundColor: "#18110C" }}>
+      {/* Right column — iPhones, centered and larger */}
+      <div style={{ width: "48vw", height: "100vh", position: "relative", backgroundColor: "#18110C", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Ambient glow */}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(198,155,79,0.05) 0%, rgba(24,17,12,0) 65%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(198,155,79,0.06) 0%, rgba(24,17,12,0) 65%)" }} />
 
-        {/* Back phone — Mi Música */}
-        <div style={{
-          position: "absolute",
-          right: "1.5vw",
-          top: "50%",
-          transform: "translateY(-42%)",
-          width: "10.5vw",
-          height: "22.8vw",
-          backgroundColor: "#2C2C2E",
-          borderRadius: "2vw",
-          padding: "0.38vw",
-          boxShadow: "0 1vw 3vw rgba(0,0,0,0.7)",
-          zIndex: 1,
-          opacity: 0.6
-        }}>
-          <div style={{ position: "absolute", top: "1vw", left: "50%", transform: "translateX(-50%)", width: "2.7vw", height: "0.58vw", backgroundColor: "#000", borderRadius: "0.38vw", zIndex: 10 }} />
-          <div style={{ width: "100%", height: "100%", borderRadius: "1.68vw", overflow: "hidden", backgroundColor: "#18110C" }}>
-            <img src={`${base}mockup-musica.jpg`} crossOrigin="anonymous" alt="Mi Música" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
-          </div>
-        </div>
+        {/* Phone group */}
+        <div style={{ position: "relative", width: "36vw", height: "38vw", zIndex: 1 }}>
 
-        {/* Front phone — Sonidos Ancestrales */}
-        <div style={{
-          position: "absolute",
-          right: "12.5vw",
-          top: "50%",
-          transform: "translateY(-54%)",
-          width: "12.5vw",
-          height: "27.1vw",
-          backgroundColor: "#1C1C1E",
-          borderRadius: "2.3vw",
-          padding: "0.44vw",
-          boxShadow: "0 1.5vw 6vw rgba(0,0,0,0.92), 0 0 0 0.12vw rgba(255,255,255,0.07)",
-          zIndex: 2
-        }}>
-          <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.1vw", height: "0.68vw", backgroundColor: "#000", borderRadius: "0.46vw", zIndex: 10 }} />
-          <div style={{ width: "100%", height: "100%", borderRadius: "1.95vw", overflow: "hidden", backgroundColor: "#18110C" }}>
-            <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+          {/* Back phone — Mi Música, offset top-right */}
+          <div style={{
+            position: "absolute",
+            right: 0,
+            top: "10%",
+            width: "14vw",
+            height: "30.4vw",
+            backgroundColor: "#2C2C2E",
+            borderRadius: "2.5vw",
+            padding: "0.46vw",
+            boxShadow: "0 1vw 3.5vw rgba(0,0,0,0.75)",
+            zIndex: 1,
+            opacity: 0.6
+          }}>
+            <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.3vw", height: "0.72vw", backgroundColor: "#000", borderRadius: "0.48vw", zIndex: 10 }} />
+            <div style={{ width: "100%", height: "100%", borderRadius: "2.1vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+              <img src={`${base}mockup-musica.jpg`} crossOrigin="anonymous" alt="Mi Música" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+            </div>
           </div>
+
+          {/* Front phone — Sonidos Ancestrales, large and prominent */}
+          <div style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: "17vw",
+            height: "36.9vw",
+            backgroundColor: "#1C1C1E",
+            borderRadius: "3vw",
+            padding: "0.55vw",
+            boxShadow: "0 2vw 8vw rgba(0,0,0,0.95), 0 0 0 0.12vw rgba(255,255,255,0.07)",
+            zIndex: 2
+          }}>
+            <div style={{ position: "absolute", top: "1.4vw", left: "50%", transform: "translateX(-50%)", width: "4vw", height: "0.85vw", backgroundColor: "#000", borderRadius: "0.58vw", zIndex: 10 }} />
+            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+              <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+            </div>
+          </div>
+
         </div>
 
         {/* Blend gradient on left edge */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "18%", height: "100%", background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0) 100%)", zIndex: 3 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, width: "10%", height: "100%", background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0) 100%)", zIndex: 3 }} />
       </div>
     </div>
   );
