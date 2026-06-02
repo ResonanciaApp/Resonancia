@@ -299,7 +299,7 @@ export default function MeditacionesGuiadasScreen() {
                     <View style={styles.cardContent}>
                       <View style={styles.ratingRow}>
                         <Feather name="star" size={11} color="#E8B96A" />
-                        <Text style={[styles.cardRating, { color: colors.accent }]}>
+                        <Text style={styles.cardRating}>
                           {" "}{ratings[session.id] ?? 5}/5
                         </Text>
                       </View>
@@ -444,8 +444,9 @@ const styles = StyleSheet.create({
   },
   cardRating: {
     fontSize: 11,
-    fontWeight: "700",
+    fontWeight: "400",
     letterSpacing: 0.3,
+    color: "#C8C0B8",
   },
   cardTitle: {
     fontSize: 15,
