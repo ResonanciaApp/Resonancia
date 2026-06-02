@@ -1,26 +1,37 @@
 /**
- * MAPA DE SONIDOS NATURALEZA → SONIDOS BASE DEL MEZCLADOR
+ * MAPA DE SONIDOS NATURALEZA → SONIDOS DEL MEZCLADOR
  * ─────────────────────────────────────────────────────────────────
  * Cada sesión "Sonidos Naturaleza" de Música y Sonidos (data/sessions.ts)
- * se mapea a uno o más sonidos del mezclador "Mi Música" (data/sounds.ts /
- * SOUND_MAP). La pantalla inmersiva (app/inmersivo.tsx) reutiliza el motor
- * multicapa del mixer en vez de duplicarlo.
+ * trae DOS sonidos fijos del mezclador (data/sounds.ts / SOUND_MAP):
  *
- * El PRIMER id de la lista es la capa base / "fondo": arranca al tocar la card,
- * define la imagen de fondo y suena siempre (no se lista ni se puede quitar en
- * Ambiente). El resto de la sesión empieza SOLO con ese fondo; el usuario suma
- * sonidos ambiente manualmente desde "+ Sonidos". Las capas extra de la lista
- * (p. ej. "pajaros" en #27) ya NO se auto-cargan.
+ *   - `base`:    la pista principal / "fondo". Arranca al tocar la card,
+ *                define la imagen de fondo de la pantalla inmersiva y suena
+ *                siempre. Equivale a la pista de una sesión de Sonidos
+ *                Ancestrales.
+ *   - `ambient`: una capa ambiente que viene YA CARGADA en la sesión
+ *                (opcional). El usuario NO la elige: se carga sola y solo
+ *                puede subir/bajar su volumen (estilo Pura Mente).
+ *
+ * NO hay picker "+ Sonidos" en la inmersiva: para armar mezclas libres está
+ * la sección "Mi Música". Cada sesión nueva la define el usuario pasando
+ * ambos sonidos (cuál es base y cuál es ambiente) al subirla.
  * ─────────────────────────────────────────────────────────────────
  */
-export const NATURE_BASE_MAP: Record<string, string[]> = {
-  "20": ["bosque"],
-  "21": ["lluvia"],
-  "22": ["oceano"],
-  "27": ["rio", "pajaros"],
+export type NatureSounds = {
+  /** Pista principal / fondo (siempre presente). */
+  base: string;
+  /** Capa ambiente precargada (opcional). */
+  ambient?: string;
 };
 
-/** Sonidos base de una sesión natural (o undefined si no está mapeada). */
-export function getNatureBaseSounds(sessionId: string): string[] | undefined {
+export const NATURE_BASE_MAP: Record<string, NatureSounds> = {
+  "20": { base: "bosque" },
+  "21": { base: "lluvia" },
+  "22": { base: "oceano" },
+  "27": { base: "rio", ambient: "pajaros" },
+};
+
+/** Sonidos (base + ambiente) de una sesión natural (o undefined si no está mapeada). */
+export function getNatureSounds(sessionId: string): NatureSounds | undefined {
   return NATURE_BASE_MAP[sessionId];
 }

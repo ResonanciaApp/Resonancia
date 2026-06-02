@@ -22,7 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArtistCard } from "@/components/ArtistCard";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { getNatureBaseSounds } from "@/config/nature-base-map";
+import { getNatureSounds } from "@/config/nature-base-map";
 import { hasSoundFile } from "@/data/sounds";
 import { getFeaturedArtists } from "@/data/artists";
 import { useMixer } from "@/context/MixerContext";
@@ -117,13 +117,18 @@ export default function MusicaSonidosScreen() {
     }
     const session = pendingSession;
     setPendingSession(null);
-    const base = getNatureBaseSounds(session.id)?.[0];
+    const nature = getNatureSounds(session.id);
+    const base = nature?.base;
     // Sin sonido base válido (mapeado y con archivo) no hay nada que reproducir:
     // limpiar y abortar para no entrar a la inmersiva heredando una mezcla vieja.
     if (!base || !hasSoundFile(base)) {
       stopAll();
       return;
     }
+    // El ambiente viene precargado en la sesión: se pasa a la inmersiva para
+    // que lo cargue como segunda capa (el usuario solo regula su volumen).
+    const ambient =
+      nature?.ambient && hasSoundFile(nature.ambient) ? nature.ambient : undefined;
     // null = "Sin límite": setSleepTimer(null) deja sonando sin temporizador.
     setSleepTimer(opt.minutes);
     router.push({
@@ -131,6 +136,7 @@ export default function MusicaSonidosScreen() {
       params: {
         title: session.title,
         baseId: base,
+        ...(ambient ? { ambientId: ambient } : {}),
       },
     } as never);
   };
@@ -268,10 +274,10 @@ export default function MusicaSonidosScreen() {
                       if (session.isPremium && !isPremium) {
                         router.push("/membresia" as never);
                       } else if (session.soundTag === "Sonidos Naturaleza") {
-                        // Modelo inmersivo: arranca el sonido base (fondo) al
-                        // instante y abre el timer. En la inmersiva el usuario
-                        // suma sonidos ambiente sobre ese fondo.
-                        const base = getNatureBaseSounds(session.id)?.[0];
+                        // Modelo Pura Mente: arranca el sonido base (fondo) al
+                        // instante y abre el timer. El ambiente precargado se
+                        // suma en la inmersiva; no hay picker de sonidos.
+                        const base = getNatureSounds(session.id)?.base;
                         if (base && hasSoundFile(base)) {
                           stopAll();
                           toggleSound(base);
