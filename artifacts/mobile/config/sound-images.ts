@@ -24,8 +24,15 @@ export const SOUND_IMAGE_MAP: Record<string, ReturnType<typeof require> | undefi
   ruido_blanco: require("@/assets/images/mixer/ruido_blanco.jpg"),
   ruido_rosa: require("@/assets/images/mixer/ruido_rosa.jpg"),
   ruido_marron: require("@/assets/images/mixer/ruido_marron.jpg"),
+  ruido_azul: require("@/assets/images/mixer/drone.jpg"),
   cuencos: require("@/assets/images/mixer/cuencos.jpg"),
   drone: require("@/assets/images/mixer/drone.jpg"),
+  // ── Frecuencias (ondas cerebrales) ──────────────────────────
+  onda_delta: require("@/assets/images/mixer/drone.jpg"),
+  onda_theta: require("@/assets/images/mixer/drone.jpg"),
+  onda_alpha: require("@/assets/images/mixer/drone.jpg"),
+  onda_beta: require("@/assets/images/mixer/drone.jpg"),
+  onda_gamma: require("@/assets/images/mixer/drone.jpg"),
   // ── Lugares ─────────────────────────────────────────────────
   cafe: require("@/assets/images/mixer/cafe.jpg"),
   tren: require("@/assets/images/mixer/tren.jpg"),

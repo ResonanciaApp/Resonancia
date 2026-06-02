@@ -22,7 +22,9 @@ export type SoundCategoryId =
   | "gongs"
   | "campanas_viento"
   | "mantras"
-  | "solfeggio";
+  | "solfeggio"
+  | "ruidos"
+  | "frecuencias";
 
 export interface SoundCategory {
   id: SoundCategoryId;
@@ -38,6 +40,8 @@ export const SOUND_CATEGORIES: SoundCategory[] = [
   { id: "campanas_viento", label: "Campanas de Viento" },
   { id: "mantras", label: "Mantras" },
   { id: "solfeggio", label: "Solfeggio" },
+  { id: "ruidos", label: "Ruidos" },
+  { id: "frecuencias", label: "Frecuencias" },
 ];
 
 export interface MixSound {
@@ -94,6 +98,19 @@ export const SOUNDS: MixSound[] = [
   { id: "solfeggio_528", name: "528 Hz", icon: "activity", iconSet: "feather", category: "solfeggio" },
   { id: "solfeggio_432", name: "432 Hz", icon: "activity", iconSet: "feather", category: "solfeggio" },
   { id: "solfeggio_396", name: "396 Hz", icon: "activity", iconSet: "feather", category: "solfeggio", isPremium: true },
+
+  // ── Ruidos (de color) ───────────────────────────────────────
+  { id: "ruido_blanco", name: "Ruido blanco", icon: "radio", iconSet: "feather", category: "ruidos" },
+  { id: "ruido_rosa", name: "Ruido rosa", icon: "radio", iconSet: "feather", category: "ruidos" },
+  { id: "ruido_marron", name: "Ruido marrón", icon: "radio", iconSet: "feather", category: "ruidos" },
+  { id: "ruido_azul", name: "Ruido azul", icon: "radio", iconSet: "feather", category: "ruidos" },
+
+  // ── Frecuencias (ondas cerebrales isocrónicas) ──────────────
+  { id: "onda_delta", name: "Delta · Sueño", icon: "activity", iconSet: "feather", category: "frecuencias" },
+  { id: "onda_theta", name: "Theta · Meditar", icon: "activity", iconSet: "feather", category: "frecuencias" },
+  { id: "onda_alpha", name: "Alpha · Calma", icon: "activity", iconSet: "feather", category: "frecuencias" },
+  { id: "onda_beta", name: "Beta · Enfoque", icon: "activity", iconSet: "feather", category: "frecuencias" },
+  { id: "onda_gamma", name: "Gamma · Claridad", icon: "activity", iconSet: "feather", category: "frecuencias" },
 ];
 
 export function getSoundById(id: string): MixSound | undefined {

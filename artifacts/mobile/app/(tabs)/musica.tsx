@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { MixerPanel } from "@/components/MixerPanel";
 import { SacredBackground } from "@/components/SacredBackground";
 import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
@@ -180,12 +179,9 @@ export default function MiMusicaScreen() {
             Crea tu música
           </Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Acá aparecerán los sonidos que selecciones
+            Tocá un sonido para sumarlo. Tu mezcla se edita desde la barra de abajo.
           </Text>
         </View>
-
-        {/* ── Mezcla activa ── */}
-        <MixerPanel />
 
         {/* ── Tabs de categorías de sonido ── */}
         <ScrollView

@@ -36,7 +36,8 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 export default function CategoryMixesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { presets, deletePreset, setPresetShared, loadedPresetId, isPlaying } = useMixer();
+  const { presets, deletePreset, duplicatePreset, setPresetShared, loadedPresetId, isPlaying } =
+    useMixer();
   const loadMix = useLoadMix();
   const { isSignedIn } = useAuth();
   const { isPremium } = usePremium();
@@ -65,6 +66,22 @@ export default function CategoryMixesScreen() {
       { text: "Cancelar", style: "cancel" },
       { text: "Eliminar", style: "destructive", onPress: () => deletePreset(mix.id) },
     ]);
+  };
+
+  const handleDuplicate = (mix: MixPreset) => {
+    const countInCategory = presets.filter((p) => p.category === mix.category).length;
+    if (!isPremium && countInCategory >= 1) {
+      Alert.alert(
+        "Mezclas ilimitadas con Premium",
+        "En la versión gratuita podés guardar 1 mezcla por categoría. Hacete Premium para duplicar y guardar todas las que quieras.",
+        [
+          { text: "Ahora no", style: "cancel" },
+          { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
+        ],
+      );
+      return;
+    }
+    duplicatePreset(mix.id);
   };
 
   const doShare = (mix: MixPreset) => {
@@ -202,6 +219,9 @@ export default function CategoryMixesScreen() {
               color={mix.sharedId != null ? colors.primary : colors.mutedForeground}
             />
           </Pressable>
+          <Pressable onPress={() => handleDuplicate(mix)} hitSlop={10} style={styles.actionBtn}>
+            <Feather name="copy" size={16} color={colors.mutedForeground} />
+          </Pressable>
           <Pressable onPress={() => handleDelete(mix)} hitSlop={10} style={styles.actionBtn}>
             <Feather name="trash-2" size={16} color={colors.mutedForeground} />
           </Pressable>
@@ -254,7 +274,7 @@ export default function CategoryMixesScreen() {
         )}
 
         {/* Mezcla activa */}
-        <MixerPanel currentCategory={categoryId} />
+        <MixerPanel />
 
         {/* Mezclas del usuario */}
         {userMixes.length > 0 ? (

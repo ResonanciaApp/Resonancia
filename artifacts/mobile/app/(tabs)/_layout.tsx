@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import { Tabs, useRouter, usePathname } from "expo-router";
+import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
@@ -136,16 +136,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 export default function TabLayout() {
   const { currentSession } = usePlayer();
   const { activeSounds } = useMixer();
-  const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
   const tabBarHeight = 56 + (isWeb ? 34 : insets.bottom);
 
-  // La mezcla ya se controla dentro de "Mi Música", así que ahí ocultamos el
-  // MiniPlayer de mezcla (pero seguimos mostrando el de sesión si la hay).
-  const onMusicaTab = pathname?.includes("musica");
+  // La barra flotante (sesión o mezcla) abre el editor en hoja inferior; se
+  // muestra en todas las tabs, incluida "Mi Música".
   const mixActive = !currentSession && activeSounds.length > 0;
-  const showMiniPlayer = currentSession || (mixActive && !onMusicaTab);
+  const showMiniPlayer = currentSession || mixActive;
 
   return (
     <View style={{ flex: 1 }}>

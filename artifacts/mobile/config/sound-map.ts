@@ -35,6 +35,17 @@ export const SOUND_MAP: Record<string, ReturnType<typeof require> | undefined> =
   // rio: require("@/assets/audio/mixer/rio.mp3"),
   // arroyo: require("@/assets/audio/mixer/arroyo.mp3"),
   // cascada: require("@/assets/audio/mixer/cascada.mp3"),
+  // ── Ruidos (de color) ───────────────────────────────────────
+  ruido_blanco: require("@/assets/audio/mixer/ruido_blanco.mp3"),
+  ruido_rosa: require("@/assets/audio/mixer/ruido_rosa.mp3"),
+  ruido_marron: require("@/assets/audio/mixer/ruido_marron.mp3"),
+  ruido_azul: require("@/assets/audio/mixer/ruido_azul.mp3"),
+  // ── Frecuencias (ondas cerebrales isocrónicas) ──────────────
+  onda_delta: require("@/assets/audio/mixer/onda_delta.mp3"),
+  onda_theta: require("@/assets/audio/mixer/onda_theta.mp3"),
+  onda_alpha: require("@/assets/audio/mixer/onda_alpha.mp3"),
+  onda_beta: require("@/assets/audio/mixer/onda_beta.mp3"),
+  onda_gamma: require("@/assets/audio/mixer/onda_gamma.mp3"),
   // ── Cuencos Tibetanos ───────────────────────────────────────
   cuencos: require("@/assets/audio/mixer/cuencos.mp3"),
   // cuenco_grave: require("@/assets/audio/mixer/cuenco_grave.mp3"),

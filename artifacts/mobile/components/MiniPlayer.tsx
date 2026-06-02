@@ -25,6 +25,7 @@ export function MiniPlayer() {
     stopAll,
     presets,
     loadedPresetId,
+    openSheet,
   } = useMixer();
   const colors = useColors();
 
@@ -98,7 +99,7 @@ export function MiniPlayer() {
           </Pressable>
         </View>
       </>,
-      () => router.push("/musica" as never),
+      () => openSheet(),
     );
   }
 

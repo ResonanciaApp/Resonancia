@@ -21,6 +21,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { DrawerMenu } from "@/components/DrawerMenu";
+import { MixerSheet } from "@/components/MixerSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -190,6 +191,7 @@ function RootLayoutNav() {
         <Stack.Screen name="membresia" options={{ headerShown: false, animation: "slide_from_right" }} />
       </Stack>
       <DrawerMenu />
+      <MixerSheet />
     </DrawerProvider>
   );
 }

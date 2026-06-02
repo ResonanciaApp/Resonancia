@@ -95,11 +95,17 @@ type MixerContextType = {
   toggleSound: (id: string) => boolean;
   setVolume: (id: string, volume: number) => void;
   removeSound: (id: string) => void;
+  /** Reordena la mezcla activa (cosmético: el orden no afecta el audio). */
+  moveSound: (id: string, direction: "up" | "down") => void;
   isPlaying: boolean;
   togglePlay: () => void;
   stopAll: () => void;
   presets: MixPreset[];
   savePreset: (input: SaveMixInput) => void;
+  /** Sobrescribe un preset existente con la mezcla activa + metadatos. */
+  updatePreset: (id: string, input: SaveMixInput) => void;
+  /** Clona un preset existente con un nuevo id y nombre "(copia)". */
+  duplicatePreset: (id: string) => void;
   loadPreset: (preset: MixPreset) => void;
   deletePreset: (id: string) => void;
   /** Marca/desmarca un preset local como compartido en la comunidad. */
@@ -108,6 +114,10 @@ type MixerContextType = {
   loadedPresetId: string | null;
   sleepTimerRemaining: number | null;
   setSleepTimer: (minutes: number | null) => void;
+  /** Si el editor en hoja inferior (MixerSheet) está abierto. */
+  isSheetOpen: boolean;
+  openSheet: () => void;
+  closeSheet: () => void;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -118,6 +128,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const [presets, setPresets] = useState<MixPreset[]>([]);
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
   const [loadedPresetId, setLoadedPresetId] = useState<string | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   /** Un AudioPlayer por sonido activo, keyed por sound id */
   const playersRef = useRef<Map<string, AudioPlayer>>(new Map());
@@ -344,6 +355,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         if (next.length === 0) {
           setIsPlaying(false);
           isPlayingRef.current = false;
+          setIsSheetOpen(false);
           clearSleepTimer();
         } else if (removingOwner) {
           // El owner del lock screen se quitó → transferir al siguiente player.
@@ -392,6 +404,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setActiveSounds((prev) => prev.map((s) => (s.id === id ? { ...s, volume } : s)));
   }, []);
 
+  const moveSound = useCallback((id: string, direction: "up" | "down") => {
+    setActiveSounds((prev) => {
+      const idx = prev.findIndex((s) => s.id === id);
+      if (idx < 0) return prev;
+      const target = direction === "up" ? idx - 1 : idx + 1;
+      if (target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(idx, 1);
+      next.splice(target, 0, moved);
+      return next;
+    });
+  }, []);
+
   const removeSound = useCallback(
     (id: string) => {
       const removingOwner = lockOwnerRef.current === playersRef.current.get(id);
@@ -403,6 +428,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       if (next.length === 0) {
         setIsPlaying(false);
         isPlayingRef.current = false;
+        setIsSheetOpen(false);
         clearSleepTimer();
       } else if (removingOwner) {
         syncLockScreen();
@@ -441,9 +467,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setIsPlaying(false);
     isPlayingRef.current = false;
     setLoadedPresetId(null);
+    setIsSheetOpen(false);
     clearSleepTimer();
   }, [clearSleepTimer, clearLockScreen]);
   stopAllRef.current = stopAll;
+
+  const openSheet = useCallback(() => setIsSheetOpen(true), []);
+  const closeSheet = useCallback(() => setIsSheetOpen(false), []);
 
   const savePreset = useCallback(
     (input: SaveMixInput) => {
@@ -458,6 +488,48 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         createdAt: new Date().toISOString(),
       };
       persistPresets([preset, ...presetsRef.current]);
+    },
+    [persistPresets],
+  );
+
+  const updatePreset = useCallback(
+    (id: string, input: SaveMixInput) => {
+      const exists = presetsRef.current.some((p) => p.id === id);
+      if (!exists) return;
+      persistPresets(
+        presetsRef.current.map((p) =>
+          p.id === id
+            ? {
+                ...p,
+                name: input.name.trim() || p.name,
+                description: input.description?.trim() || undefined,
+                image: input.image,
+                category: input.category,
+                sounds: activeSoundsRef.current.map((s) => ({ ...s })),
+              }
+            : p,
+        ),
+      );
+      // La mezcla activa vuelve a estar "ligada" al preset recién actualizado.
+      setLoadedPresetId(id);
+      loadedPresetIdRef.current = id;
+    },
+    [persistPresets],
+  );
+
+  const duplicatePreset = useCallback(
+    (id: string) => {
+      const orig = presetsRef.current.find((p) => p.id === id);
+      if (!orig) return;
+      const copy: MixPreset = {
+        ...orig,
+        id: Date.now().toString(),
+        name: `${orig.name} (copia)`,
+        createdAt: new Date().toISOString(),
+        sharedId: undefined,
+        sounds: orig.sounds.map((s) => ({ ...s })),
+      };
+      persistPresets([copy, ...presetsRef.current]);
     },
     [persistPresets],
   );
@@ -596,17 +668,23 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         toggleSound,
         setVolume,
         removeSound,
+        moveSound,
         isPlaying,
         togglePlay,
         stopAll,
         presets,
         savePreset,
+        updatePreset,
+        duplicatePreset,
         loadPreset,
         deletePreset,
         setPresetShared,
         loadedPresetId,
         sleepTimerRemaining,
         setSleepTimer,
+        isSheetOpen,
+        openSheet,
+        closeSheet,
       }}
     >
       {children}
