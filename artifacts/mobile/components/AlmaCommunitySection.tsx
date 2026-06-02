@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   },
   msgBody: { flex: 1 },
   msgAuthor: { fontSize: 12, fontWeight: "600", marginBottom: 3 },
-  msgText: { fontSize: 14, lineHeight: 20 },
+  msgText: { fontSize: 13, lineHeight: 19, opacity: 0.82 },
   msgMeta: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5 },
   msgTime: { fontSize: 10 },
   expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },

@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   },
   msgAuthor: { fontSize: 13, fontWeight: "600" },
   msgTime: { fontSize: 10 },
-  msgContent: { fontSize: 14, lineHeight: 22 },
+  msgContent: { fontSize: 13, lineHeight: 19, opacity: 0.82 },
   msgFooter: {
     flexDirection: "row",
     alignItems: "center",
