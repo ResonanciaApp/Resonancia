@@ -54,20 +54,20 @@ export default function Slide01Portada() {
         {/* Back phone — Biblioteca */}
         <div style={{
           position: "absolute",
-          right: "2vw",
+          right: "3vw",
           top: "50%",
           transform: "translateY(-44%)",
-          width: "11vw",
-          height: "23.9vw",
+          width: "14vw",
+          height: "30.4vw",
           backgroundColor: "#2C2C2E",
-          borderRadius: "2.1vw",
-          padding: "0.4vw",
+          borderRadius: "2.6vw",
+          padding: "0.46vw",
           boxShadow: "0 1vw 3vw rgba(0,0,0,0.7)",
           zIndex: 1,
           opacity: 0.65
         }}>
-          <div style={{ position: "absolute", top: "1.1vw", left: "50%", transform: "translateX(-50%)", width: "2.8vw", height: "0.6vw", backgroundColor: "#000", borderRadius: "0.4vw", zIndex: 10 }} />
-          <div style={{ width: "100%", height: "100%", borderRadius: "1.76vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+          <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.2vw", height: "0.68vw", backgroundColor: "#000", borderRadius: "0.44vw", zIndex: 10 }} />
+          <div style={{ width: "100%", height: "100%", borderRadius: "2.2vw", overflow: "hidden", backgroundColor: "#18110C" }}>
             <img src={`${base}mockup-biblioteca.jpg`} crossOrigin="anonymous" alt="Biblioteca" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
           </div>
         </div>
@@ -75,25 +75,25 @@ export default function Slide01Portada() {
         {/* Front phone — Home */}
         <div style={{
           position: "absolute",
-          right: "13vw",
+          right: "18vw",
           top: "50%",
           transform: "translateY(-54%)",
-          width: "13vw",
-          height: "28.2vw",
+          width: "16vw",
+          height: "34.7vw",
           backgroundColor: "#1C1C1E",
-          borderRadius: "2.4vw",
-          padding: "0.46vw",
-          boxShadow: "0 1.5vw 6vw rgba(0,0,0,0.92), 0 0 0 0.12vw rgba(255,255,255,0.07)",
+          borderRadius: "2.9vw",
+          padding: "0.52vw",
+          boxShadow: "0 2vw 8vw rgba(0,0,0,0.92), 0 0 0 0.14vw rgba(255,255,255,0.07)",
           zIndex: 2
         }}>
-          <div style={{ position: "absolute", top: "1.25vw", left: "50%", transform: "translateX(-50%)", width: "3.2vw", height: "0.72vw", backgroundColor: "#000", borderRadius: "0.48vw", zIndex: 10 }} />
-          <div style={{ width: "100%", height: "100%", borderRadius: "2.0vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+          <div style={{ position: "absolute", top: "1.4vw", left: "50%", transform: "translateX(-50%)", width: "3.8vw", height: "0.82vw", backgroundColor: "#000", borderRadius: "0.55vw", zIndex: 10 }} />
+          <div style={{ width: "100%", height: "100%", borderRadius: "2.45vw", overflow: "hidden", backgroundColor: "#18110C" }}>
             <img src={`${base}mockup-home.jpg`} crossOrigin="anonymous" alt="Inicio" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
           </div>
         </div>
 
         {/* Blend gradient on left edge */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "20%", height: "100%", background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0) 100%)", zIndex: 3 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, width: "18%", height: "100%", background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0) 100%)", zIndex: 3 }} />
       </div>
     </div>
   );
