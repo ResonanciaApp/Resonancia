@@ -331,7 +331,7 @@ export default function ProfileScreen() {
                   onPress={() => router.push(stat.href as never)}
                   style={({ pressed }) => [
                     styles.statCard,
-                    { backgroundColor: colors.card, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   {content}
@@ -341,7 +341,7 @@ export default function ProfileScreen() {
             return (
               <View
                 key={stat.label}
-                style={[styles.statCard, { backgroundColor: colors.card }]}
+                style={[styles.statCard, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}
               >
                 {content}
               </View>
@@ -350,7 +350,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Racha ── */}
-        <View style={[styles.streakCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.streakCard, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}>
           <View style={styles.streakFlame}>
             <Text style={styles.streakEmoji}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
           </View>
@@ -749,7 +749,7 @@ const styles = StyleSheet.create({
 
   // Stats
   statsRow: { flexDirection: "row", gap: 10, marginBottom: 20 },
-  statCard: { flex: 1, borderRadius: 18, padding: 16, alignItems: "center" },
+  statCard: { flex: 1, borderRadius: 18, padding: 16, alignItems: "center", borderWidth: 1 },
   statIcon: { marginBottom: 8 },
   statValue: { fontSize: 22, fontWeight: "700", marginBottom: 2 },
   statLabel: { fontSize: 11, letterSpacing: 0.5 },
