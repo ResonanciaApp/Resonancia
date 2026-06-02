@@ -1,6 +1,6 @@
 import { type AudioPlayer, createAudioPlayer, setAudioModeAsync } from "expo-audio";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Image } from "react-native";
+import { AppState, type AppStateStatus, Image } from "react-native";
 import React, {
   createContext,
   useCallback,
@@ -142,6 +142,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   presetsRef.current = presets;
   const loadedPresetIdRef = useRef<string | null>(null);
   loadedPresetIdRef.current = loadedPresetId;
+  /** Timestamp (ms) en que expira el sleep timer; null si no hay timer activo. */
+  const sleepEndTimeRef = useRef<number | null>(null);
 
   // ── Lock-screen / Now Playing ─────────────────────────────────────
   /** Player que "posee" los controles de pantalla bloqueada (uno solo a la vez). */
@@ -337,6 +339,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       clearInterval(sleepIntervalRef.current);
       sleepIntervalRef.current = null;
     }
+    sleepEndTimeRef.current = null;
     setSleepTimerRemaining(null);
   }, []);
 
@@ -605,27 +608,58 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         sleepIntervalRef.current = null;
       }
       if (minutes == null) {
+        sleepEndTimeRef.current = null;
         setSleepTimerRemaining(null);
         return;
       }
+      const endTime = Date.now() + minutes * 60 * 1000;
+      sleepEndTimeRef.current = endTime;
       setSleepTimerRemaining(minutes * 60);
+
       sleepIntervalRef.current = setInterval(() => {
-        setSleepTimerRemaining((prev) => {
-          if (prev == null) return null;
-          if (prev <= 1) {
-            if (sleepIntervalRef.current) {
-              clearInterval(sleepIntervalRef.current);
-              sleepIntervalRef.current = null;
-            }
-            applyPlayingRef.current(false);
-            return null;
+        const endTs = sleepEndTimeRef.current;
+        if (endTs == null) return;
+        const remaining = Math.ceil((endTs - Date.now()) / 1000);
+        if (remaining <= 0) {
+          if (sleepIntervalRef.current) {
+            clearInterval(sleepIntervalRef.current);
+            sleepIntervalRef.current = null;
           }
-          return prev - 1;
-        });
+          sleepEndTimeRef.current = null;
+          setSleepTimerRemaining(null);
+          applyPlayingRef.current(false);
+        } else {
+          setSleepTimerRemaining(remaining);
+        }
       }, 1000);
     },
     [],
   );
+
+  // ── AppState: cuando la app vuelve al frente, verificar timer ────
+  // setInterval se throttlea en background/pantalla bloqueada. Al reanudar
+  // calculamos el tiempo restante real con Date.now() y paramos si expiró.
+  useEffect(() => {
+    const handleAppState = (nextState: AppStateStatus) => {
+      if (nextState !== "active") return;
+      const endTs = sleepEndTimeRef.current;
+      if (endTs == null) return;
+      const remaining = Math.ceil((endTs - Date.now()) / 1000);
+      if (remaining <= 0) {
+        if (sleepIntervalRef.current) {
+          clearInterval(sleepIntervalRef.current);
+          sleepIntervalRef.current = null;
+        }
+        sleepEndTimeRef.current = null;
+        setSleepTimerRemaining(null);
+        applyPlayingRef.current(false);
+      } else {
+        setSleepTimerRemaining(remaining);
+      }
+    };
+    const sub = AppState.addEventListener("change", handleAppState);
+    return () => sub.remove();
+  }, []);
 
   // ── Registrar la mezcla como "stoppable" por la sesión ────────────
   // (PlayerContext llama stopMixPlayback() al iniciar una sesión)
