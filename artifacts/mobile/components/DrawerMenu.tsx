@@ -37,7 +37,7 @@ const LOGGED_OUT_ITEMS: MenuItem[] = [
   { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
   { label: "Premium",       icon: "star",      route: "/membresia" },
   { label: "Favoritos",     icon: "heart",     route: "/favorites" },
-  { label: "Diario",        icon: "book-open", route: "/diario" },
+  { label: "Diario",        icon: "edit-2", route: "/diario" },
   { label: "Amigos",        icon: "users",     route: "/amigos" },
   { label: "Grupos",        icon: "globe",     route: "/grupos" },
   { label: "Resonadores",   icon: "award",     route: "/resonadores" },
@@ -46,7 +46,7 @@ const LOGGED_OUT_ITEMS: MenuItem[] = [
 const LOGGED_IN_ITEMS: MenuItem[] = [
   { label: "Premium",       icon: "star",      route: "/membresia" },
   { label: "Favoritos",     icon: "heart",     route: "/favorites" },
-  { label: "Diario",        icon: "book-open", route: "/diario" },
+  { label: "Diario",        icon: "edit-2", route: "/diario" },
   { label: "Amigos",        icon: "users",     route: "/amigos" },
   { label: "Grupos",        icon: "globe",     route: "/grupos" },
   { label: "Resonadores",   icon: "award",     route: "/resonadores" },
