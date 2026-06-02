@@ -82,10 +82,8 @@ export default function MiMusicaScreen() {
         <View
           style={[
             styles.cardImageWrap,
-            {
-              borderColor: active ? colors.primary : "transparent",
-              borderWidth: active ? 2 : 0,
-            },
+            active && styles.cardImageWrapActive,
+            { borderColor: active ? "#FFFFFF" : "transparent" },
           ]}
         >
           {image ? (
@@ -131,15 +129,8 @@ export default function MiMusicaScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{
-          paddingBottom: 200 + bottomPad,
-          paddingTop: topPad + 12,
-          paddingHorizontal: 20,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={[styles.inner, { paddingTop: topPad + 12 }]}>
+        {/* Header fijo (no scrollea) */}
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mi Música</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
@@ -147,93 +138,113 @@ export default function MiMusicaScreen() {
           </Text>
         </View>
 
-        {/* ── Categorías de mezclas ── */}
-        <View style={styles.catRow}>
-          {MIX_CATEGORIES.map((cat) => (
-            <Pressable
-              key={cat.id}
-              onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-              style={[styles.catCard, { backgroundColor: "rgba(237,225,211,0.06)", borderColor: colors.border }]}
-            >
-              <View style={[styles.catIconWrap, { backgroundColor: "rgba(237,225,211,0.08)" }]}>
-                {cat.iconFamily === "MaterialCommunityIcons" ? (
-                  <MaterialCommunityIcons
-                    name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                    size={24}
-                    color={colors.accent}
-                  />
-                ) : (
-                  <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={22} color={colors.accent} />
-                )}
-              </View>
-              <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
-                {cat.label}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-
-        {/* ── Tabs de categorías de sonido ── */}
         <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabsRow}
-          style={styles.tabsScroll}
+          style={styles.scroll}
+          contentContainerStyle={{
+            paddingBottom: 200 + bottomPad,
+            paddingHorizontal: 20,
+          }}
+          stickyHeaderIndices={[0]}
+          showsVerticalScrollIndicator={false}
         >
-          {tabs.map((tab) => {
-            const selected = activeTab === tab.id;
-            return (
-              <Pressable
-                key={tab.id}
-                onPress={() => setActiveTab(tab.id)}
-                style={[
-                  styles.tab,
-                  {
-                    backgroundColor: selected ? colors.primary : "rgba(237,225,211,0.06)",
-                    borderColor: selected ? colors.primary : colors.border,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: selected ? colors.primaryForeground : colors.foreground },
-                  ]}
+          {/* ── Barra sticky: categorías de mezclas + tabs de sonido ── */}
+          <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
+            {/* Categorías de mezclas */}
+            <View style={styles.catRow}>
+              {MIX_CATEGORIES.map((cat) => (
+                <Pressable
+                  key={cat.id}
+                  onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+                  style={[styles.catCard, { backgroundColor: "rgba(237,225,211,0.06)", borderColor: colors.border }]}
                 >
-                  {tab.label}
+                  <View style={[styles.catIconWrap, { backgroundColor: "rgba(237,225,211,0.08)" }]}>
+                    {cat.iconFamily === "MaterialCommunityIcons" ? (
+                      <MaterialCommunityIcons
+                        name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                        size={24}
+                        color={colors.accent}
+                      />
+                    ) : (
+                      <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={22} color={colors.accent} />
+                    )}
+                  </View>
+                  <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
+                    {cat.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+
+            {/* Tabs de categorías de sonido */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.tabsRow}
+              style={styles.tabsScroll}
+            >
+              {tabs.map((tab) => {
+                const selected = activeTab === tab.id;
+                return (
+                  <Pressable
+                    key={tab.id}
+                    onPress={() => setActiveTab(tab.id)}
+                    style={[
+                      styles.tab,
+                      {
+                        backgroundColor: selected ? colors.primary : "rgba(237,225,211,0.06)",
+                        borderColor: selected ? colors.primary : colors.border,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.tabLabel,
+                        { color: selected ? colors.primaryForeground : colors.foreground },
+                      ]}
+                    >
+                      {tab.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+
+          {/* ── Biblioteca de sonidos (con títulos por categoría, filtrada por tab) ── */}
+          {SOUND_CATEGORIES.filter(
+            (cat) => activeTab === "todos" || activeTab === cat.id,
+          ).map((cat) => {
+            const sounds = getSoundsByCategory(cat.id);
+            if (sounds.length === 0) return null;
+            return (
+              <View key={cat.id} style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                  {cat.label}
                 </Text>
-              </Pressable>
+                <View style={styles.grid}>{sounds.map(renderSoundCard)}</View>
+              </View>
             );
           })}
         </ScrollView>
-
-        {/* ── Biblioteca de sonidos (con títulos por categoría, filtrada por tab) ── */}
-        {SOUND_CATEGORIES.filter(
-          (cat) => activeTab === "todos" || activeTab === cat.id,
-        ).map((cat) => {
-          const sounds = getSoundsByCategory(cat.id);
-          if (sounds.length === 0) return null;
-          return (
-            <View key={cat.id} style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                {cat.label}
-              </Text>
-              <View style={styles.grid}>{sounds.map(renderSoundCard)}</View>
-            </View>
-          );
-        })}
-      </ScrollView>
-
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  scroll: { flex: 1 },
-  header: { marginBottom: 20 },
+  inner: { flex: 1, paddingHorizontal: 20 },
+  scroll: { flex: 1, marginHorizontal: -20 },
+  header: { marginBottom: 16 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   pageSub: { fontSize: 13, lineHeight: 18 },
+
+  // Barra sticky (categorías de mezclas + tabs de sonido)
+  stickyBar: {
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+    paddingBottom: 4,
+  },
 
   // Secciones
   section: { marginBottom: 14 },
@@ -275,27 +286,39 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   // Grilla de sonidos
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 16, rowGap: 22 },
   soundCard: {
-    width: "31%",
+    width: "30%",
   },
   cardImageWrap: {
     width: "100%",
     aspectRatio: 1,
     overflow: "hidden",
-    borderRadius: 12,
+    borderRadius: 18,
+    borderWidth: 3,
+    borderColor: "transparent",
+  },
+  // Al seleccionar: se inclina, se levanta (sombra) y crece un poco.
+  cardImageWrapActive: {
+    transform: [{ rotate: "-5deg" }, { scale: 1.05 }],
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 8,
+    elevation: 8,
   },
   cardImage: { width: "100%", height: "100%" },
   cardImageInner: { borderRadius: 0 },
   cardFooter: {
-    paddingHorizontal: 6,
-    paddingTop: 5,
-    paddingBottom: 6,
+    paddingHorizontal: 4,
+    paddingTop: 8,
+    paddingBottom: 2,
   },
   soundName: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.1,
+    textAlign: "center",
   },
   lockBadge: {
     position: "absolute",
