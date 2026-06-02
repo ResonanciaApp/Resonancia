@@ -193,8 +193,8 @@ export function DrawerMenu() {
                   style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
                 >
                   {item.label === "Premium" ? (
-                    <View style={styles.premiumIconCircle}>
-                      <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 16, height: 16 }} contentFit="contain" />
+                    <View style={styles.itemIcon}>
+                      <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 18, height: 18 }} contentFit="contain" />
                     </View>
                   ) : (
                     <View style={styles.itemIcon}>
@@ -205,9 +205,7 @@ export function DrawerMenu() {
                     {item.label}
                   </Text>
                   {item.label === "Premium" && isPremium && (
-                    <View style={styles.premiumCheck}>
-                      <Feather name="check" size={12} color="#5FB98C" />
-                    </View>
+                    <Feather name="check" size={14} color="#5FB98C" style={{ marginLeft: 4 }} />
                   )}
                 </Pressable>
               ))}
