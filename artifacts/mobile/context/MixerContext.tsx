@@ -815,6 +815,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     baseVolumesRef.current.clear();
     clearLockScreen();
     setActiveSounds([]);
+    // Resetear el ref de forma SÍNCRONA: el estado (setActiveSounds) recién se
+    // refleja en el próximo render, pero si alguien encadena stopAll() +
+    // toggleSound() en el mismo tick (p. ej. el tap de una card de Sonidos
+    // Naturaleza al re-entrar), toggleSound leería activeSoundsRef con el sonido
+    // todavía "presente" y lo quitaría en vez de agregarlo → no suena nada.
+    activeSoundsRef.current = [];
     setIsPlaying(false);
     isPlayingRef.current = false;
     setLoadedPresetId(null);
