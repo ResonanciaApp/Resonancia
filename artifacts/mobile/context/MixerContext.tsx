@@ -374,14 +374,27 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const player = createAudioPlayer(file);
       player.loop = true;
       player.volume = volume;
-      // Fallback de loop: en web (react-native-web) y en algunas plataformas el
-      // flag `loop` nativo no siempre reinicia el audio al terminar, así que el
-      // sonido se cortaba al acabar el MP3. Escuchamos `didJustFinish` y
-      // reiniciamos manualmente. Si el loop nativo SÍ funciona, `didJustFinish`
-      // no dispara (HTML5 con loop no emite `ended`), así que esto es solo
-      // seguro de respaldo y no genera doble reinicio.
+      // Loop limpio y continuo: el flag `loop` nativo es lo único que produce un
+      // loop SIN cortes (en web mapea a <audio loop>; en nativo lo maneja el
+      // motor de audio). El problema es que setear `loop` justo tras crear el
+      // player no siempre persiste si el source aún no terminó de cargar, así
+      // que lo re-aseguramos en cada status update (idempotente y barato): en
+      // cuanto el item está cargado, el loop nativo queda activo de verdad.
+      //
+      // Solo como ÚLTIMO recurso (si en alguna plataforma el loop nativo nunca
+      // engancha), reiniciamos manualmente al detectar `didJustFinish`. Ese
+      // camino tiene un pequeño corte, por eso preferimos el loop nativo. En web
+      // `onended` casi no emite status, así que esto rara vez dispara ahí.
       const sub = player.addListener("playbackStatusUpdate", (status) => {
-        if (status.didJustFinish && playersRef.current.get(id) === player) {
+        if (playersRef.current.get(id) !== player) return;
+        if (!player.loop) {
+          try {
+            player.loop = true;
+          } catch {
+            // ignore
+          }
+        }
+        if (status.didJustFinish) {
           try {
             player.seekTo(0);
             player.play();

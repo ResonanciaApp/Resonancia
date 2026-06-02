@@ -18,24 +18,31 @@ when `loop` is assigned.
 **How to apply:** any short looping sound (mixer ambient loops) must use the
 constructor-source path. Long one-shot tracks that legitimately end are fine either way.
 
-## The native loop flag is NOT reliable on web — always add a manual fallback
-The constructor-source `loop = true` fix above was still not enough on the **web
-preview** (react-native-web): the sound played once and stopped. On web `loop` maps
-to a plain `<audio loop>` (`media.loop`), which should loop, but in practice did not
-restart. The robust fix is a per-player manual fallback: each player gets its own
-`playbackStatusUpdate` listener that, on `status.didJustFinish`, does `seekTo(0)` +
-`play()`. Guard it with `playersRef.get(id) === player` so removed/replaced players
-don't restart, and register the player in `playersRef` BEFORE calling `play()` (a
-very short asset can fire `didJustFinish` before the map assignment, which would skip
-the first loop). Track the subscriptions and remove them everywhere a player is torn
-down (destroyPlayer, stopAll, loadPreset, unmount).
+## A clean (gapless) loop requires the native loop flag — re-assert it, don't rely on didJustFinish
+Setting `player.loop = true` once right after `createAudioPlayer(file)` is NOT enough:
+the flag does not reliably persist if the source has not finished loading yet, so the
+sound plays once and stops. The fix that gives a CLEAN/continuous loop is to
+**re-assert `player.loop = true` on every `playbackStatusUpdate`** (idempotent and
+cheap): as soon as the item is loaded the native loop flag sticks and the engine loops
+seamlessly (web maps it to `<audio loop>`).
 
-**Why:** native `loop` is seamless when it works (with real native loop, HTML5 does
-NOT emit `ended`/`didJustFinish`, so the fallback never runs and there is no double
-restart) but it cannot be trusted across platforms — web was the failing case here.
-**How to apply:** treat the native loop flag as best-effort; the `didJustFinish`
-self-restart is what actually guarantees continuous looping. Users frequently test in
-the web preview, so verify loop there, not only on device.
+Do NOT rely on a `didJustFinish` → `seekTo(0)` + `play()` manual restart as the primary
+mechanism: (1) it introduces an audible gap (not a clean loop), and (2) on web it
+barely fires at all — expo-audio's web `AudioPlayerWeb._createMediaElement` has
+`media.onended = () => { lastEmitTime = 0 }` which does NOT emit a status update, so
+the listener almost never sees `didJustFinish: true` on web. Keep the manual restart
+only as a last-resort safety net.
+
+Guards/ordering that still matter: gate the listener with `playersRef.get(id) ===
+player` (ignore removed/replaced players), and register the player in `playersRef`
+BEFORE calling `play()`. Track subscriptions in a ref and remove them everywhere a
+player is torn down (destroyPlayer, stopAll, loadPreset, unmount).
+
+**Why:** native loop is the only gapless loop; a JS-driven restart always has a seam
+and depends on an `ended`/`didJustFinish` event that web does not emit.
+**How to apply:** for any looping ambient/mixer sound, set loop in the constructor
+path AND re-assert it in the status listener. Verify in the web preview (users test
+there), not only on device.
 
 ## A per-player status listener that controls the whole mix must ignore loop boundaries
 The mixer designates the first player as the lock-screen "owner" and mirrors its
