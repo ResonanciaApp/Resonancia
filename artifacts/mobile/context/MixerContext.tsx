@@ -367,13 +367,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     const file = SOUND_MAP[id];
     if (!file) return null;
     try {
-      // Pasamos el source directo al constructor (no null + replace): así el
-      // player ya tiene el item cargado cuando seteamos loop, y la bandera de
-      // loop nativo se aplica de forma confiable. Con null+replace el loop se
-      // perdía y el audio sonaba una sola vez y se cortaba al terminar el MP3.
-      const player = createAudioPlayer(file);
+      // Loop nativo en iOS/Android: el flag `loop` debe estar seteado ANTES de
+      // que el item cargue, para que el motor configure el looping. Por eso
+      // creamos el player vacío, seteamos loop=true y RECIÉN ahí cargamos el
+      // source con replace() — exactamente el patrón que usa PlayerContext para
+      // las loop sessions (probado en device). Si seteamos loop después de
+      // createAudioPlayer(file), en iOS el item ya cargó sin looping y el sonido
+      // se corta al terminar el MP3.
+      const player = createAudioPlayer(null);
       player.loop = true;
       player.volume = volume;
+      player.replace(file);
       // Loop limpio y continuo: el flag `loop` nativo es lo único que produce un
       // loop SIN cortes (en web mapea a <audio loop>; en nativo lo maneja el
       // motor de audio). El problema es que setear `loop` justo tras crear el

@@ -18,31 +18,46 @@ when `loop` is assigned.
 **How to apply:** any short looping sound (mixer ambient loops) must use the
 constructor-source path. Long one-shot tracks that legitimately end are fine either way.
 
-## A clean (gapless) loop requires the native loop flag — re-assert it, don't rely on didJustFinish
-Setting `player.loop = true` once right after `createAudioPlayer(file)` is NOT enough:
-the flag does not reliably persist if the source has not finished loading yet, so the
-sound plays once and stops. The fix that gives a CLEAN/continuous loop is to
-**re-assert `player.loop = true` on every `playbackStatusUpdate`** (idempotent and
-cheap): as soon as the item is loaded the native loop flag sticks and the engine loops
-seamlessly (web maps it to `<audio loop>`).
+## A clean (gapless) loop: set loop BEFORE replace (native) AND re-assert it (web)
+The only gapless loop is the native `loop` flag (no JS restart). But WHEN you set it
+matters and differs by platform — this took several wrong attempts:
+
+- **iOS/Android (native):** the flag must be set BEFORE the source loads, or the engine
+  configures the item without looping and the sound stops at the end of the MP3. The
+  proven pattern (same as PlayerContext's loop sessions, tested on device) is:
+  `createAudioPlayer(null)` → `player.loop = true` → `player.replace(file)`.
+  `createAudioPlayer(file)` + `loop = true` afterwards does NOT loop on iOS — the item
+  already loaded without looping.
+- **Web (react-native-web):** `replace()` recreates the underlying `<audio>` element
+  with `loop=false` (see `AudioPlayerWeb._createMediaElement`), so any loop set before
+  replace is dropped. Setting `media.loop` mid-playback DOES work though, so we
+  **re-assert `player.loop = true` on every `playbackStatusUpdate`** (idempotent, cheap;
+  web emits status ~every updateInterval/500ms, long before a multi-minute MP3 ends).
+
+So the combined recipe used in `createPlayerFor`: create empty, set loop, replace with
+file (native path), then a status listener that re-asserts `loop` each tick (web path).
 
 Do NOT rely on a `didJustFinish` → `seekTo(0)` + `play()` manual restart as the primary
-mechanism: (1) it introduces an audible gap (not a clean loop), and (2) on web it
-barely fires at all — expo-audio's web `AudioPlayerWeb._createMediaElement` has
-`media.onended = () => { lastEmitTime = 0 }` which does NOT emit a status update, so
-the listener almost never sees `didJustFinish: true` on web. Keep the manual restart
-only as a last-resort safety net.
+mechanism: it has an audible gap, AND on web it barely fires — `media.onended` in
+expo-audio's web build does NOT emit a status update, so `didJustFinish: true` rarely
+reaches the listener there. Keep it only as a last-resort net.
 
-Guards/ordering that still matter: gate the listener with `playersRef.get(id) ===
-player` (ignore removed/replaced players), and register the player in `playersRef`
-BEFORE calling `play()`. Track subscriptions in a ref and remove them everywhere a
-player is torn down (destroyPlayer, stopAll, loadPreset, unmount).
+Guards/ordering: gate the listener with `playersRef.get(id) === player`, register the
+player in `playersRef` BEFORE `play()`, and remove subscriptions everywhere a player is
+torn down (destroyPlayer, stopAll, loadPreset, unmount).
 
-**Why:** native loop is the only gapless loop; a JS-driven restart always has a seam
-and depends on an `ended`/`didJustFinish` event that web does not emit.
-**How to apply:** for any looping ambient/mixer sound, set loop in the constructor
-path AND re-assert it in the status listener. Verify in the web preview (users test
-there), not only on device.
+**Why:** native loop is gapless but is configured at item-load time on iOS; web rebuilds
+the element on replace so it needs a runtime re-assert. **How to apply:** any looping
+mixer/ambient sound uses the create(null)→loop→replace pattern PLUS the re-assert
+listener. Test BOTH the iOS device (lock screen) and the web preview.
+
+## Lock-screen scrubber/duration can't be hidden via expo-audio public API
+The user wanted the locked-screen Now Playing to show no duration/progress scrubber
+(like Calm) for an endless mix. `AudioLockScreenOptions` only exposes
+`showSeekForward`/`showSeekBackward` — there is NO `isLiveStream` / hide-duration
+option. iOS shows the scrubber because the item reports a finite duration. Hiding it
+(`MPNowPlayingInfoPropertyIsLiveStream`) would require patching the native module, so
+it is not doable from JS without forking expo-audio.
 
 ## A per-player status listener that controls the whole mix must ignore loop boundaries
 The mixer designates the first player as the lock-screen "owner" and mirrors its
