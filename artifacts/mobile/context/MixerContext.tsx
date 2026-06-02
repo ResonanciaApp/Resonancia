@@ -301,6 +301,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       //    status.playing baja unos frames → sin el debounce pausaría todo.
       if (typeof status.playing === "boolean" && status.playing !== isPlayingRef.current) {
         if (Date.now() < ignoreLockUntilRef.current) return;
+        // Frontera del loop: el track terminó un ciclo y reinicia. NO es una
+        // acción del usuario → ignorar para no pausar toda la mezcla.
+        if (status.didJustFinish) return;
         if (!status.playing) {
           if (playingFalseTimerRef.current) clearTimeout(playingFalseTimerRef.current);
           playingFalseTimerRef.current = setTimeout(() => {
@@ -362,9 +365,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     const file = SOUND_MAP[id];
     if (!file) return null;
     try {
-      const player = createAudioPlayer(null);
+      // Pasamos el source directo al constructor (no null + replace): así el
+      // player ya tiene el item cargado cuando seteamos loop, y la bandera de
+      // loop nativo se aplica de forma confiable. Con null+replace el loop se
+      // perdía y el audio sonaba una sola vez y se cortaba al terminar el MP3.
+      const player = createAudioPlayer(file);
       player.loop = true;
-      player.replace(file);
       player.volume = volume;
       player.play();
       playersRef.current.set(id, player);
