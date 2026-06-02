@@ -155,9 +155,6 @@ export default function HomeScreen() {
 
         {/* ── 2. CATEGORÍAS ── */}
         <View style={[styles.section, { marginBottom: 20 }]}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Categorías</Text>
-          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -173,17 +170,17 @@ export default function HomeScreen() {
                 style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
               >
                 <View style={[styles.catPillCircle, { backgroundColor: "#18110C" }]}>
-                  <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: 32 }]} />
+                  <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: Platform.OS === "web" ? 26 : 32 }]} />
                   {cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={26}
+                      size={Platform.OS === "web" ? 20 : 26}
                       color={fgColor}
                     />
                   ) : (
                     <Feather
                       name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                      size={26}
+                      size={Platform.OS === "web" ? 20 : 26}
                       color={fgColor}
                     />
                   )}
@@ -408,13 +405,13 @@ const styles = StyleSheet.create({
   },
   catPillItem: {
     alignItems: "center",
-    width: 78,
+    width: Platform.OS === "web" ? 64 : 78,
     gap: 8,
   },
   catPillCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: Platform.OS === "web" ? 52 : 64,
+    height: Platform.OS === "web" ? 52 : 64,
+    borderRadius: Platform.OS === "web" ? 26 : 32,
     alignItems: "center",
     justifyContent: "center",
   },
