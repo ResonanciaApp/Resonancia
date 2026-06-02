@@ -23,7 +23,6 @@ import {
   getGetMessagesQueryKey,
   useCreateMessage,
   useGetMessages,
-  useLikeMessage,
 } from "@workspace/api-client-react";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
@@ -73,7 +72,6 @@ export default function MensajesDelAlmaScreen() {
   const { recordSentMessage, username, photoUri } = useUserProfile();
 
   const [text, setText] = useState("");
-  const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
   const inputRef = useRef<TextInput>(null);
 
   const { data, isLoading, refetch, isRefetching } = useGetMessages(
@@ -94,26 +92,6 @@ export default function MensajesDelAlmaScreen() {
       },
     },
   });
-
-  const { mutate: like } = useLikeMessage({
-    mutation: {
-      onSuccess: (updated) => {
-        queryClient.setQueryData(
-          getGetMessagesQueryKey({ page: 1 }),
-          (old: typeof data) => {
-            if (!old) return old;
-            return { ...old, messages: old.messages.map((m) => (m.id === updated.id ? updated : m)) };
-          },
-        );
-      },
-    },
-  });
-
-  const handleLike = (id: number) => {
-    if (likedIds.has(id)) return;
-    setLikedIds((prev) => new Set(prev).add(id));
-    like({ id });
-  };
 
   const handleSend = () => {
     const trimmed = text.trim();
@@ -233,7 +211,6 @@ export default function MensajesDelAlmaScreen() {
               {allMessages.map((msg) => {
                 const msLeft = new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
                 const isExpiring = msLeft < 3 * 60 * 60 * 1000;
-                const isLiked = likedIds.has(msg.id);
                 return (
                   <View
                     key={msg.id}
@@ -259,30 +236,14 @@ export default function MensajesDelAlmaScreen() {
                       <Text style={[styles.msgContent, { color: colors.foreground }]}>
                         {msg.content}
                       </Text>
-                      <View style={styles.msgFooter}>
-                        {isExpiring && (
+                      {isExpiring && (
+                        <View style={[styles.msgFooter, { marginTop: 8 }]}>
                           <View style={styles.expiringTag}>
                             <Feather name="clock" size={9} color="#C07060" />
                             <Text style={styles.expiringText}>expira en {expiresIn(msg.createdAt)}</Text>
                           </View>
-                        )}
-                        <Pressable
-                          onPress={() => handleLike(msg.id)}
-                          style={styles.likeBtn}
-                          hitSlop={10}
-                        >
-                          <Feather
-                            name={isLiked ? "heart" : "heart"}
-                            size={14}
-                            color={isLiked ? "#D07070" : colors.mutedForeground}
-                          />
-                          {msg.likes > 0 && (
-                            <Text style={[styles.likeCount, { color: isLiked ? "#D07070" : colors.mutedForeground }]}>
-                              {msg.likes}
-                            </Text>
-                          )}
-                        </Pressable>
-                      </View>
+                        </View>
+                      )}
                     </View>
                   </View>
                 );
@@ -408,6 +369,4 @@ const styles = StyleSheet.create({
   },
   expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },
   expiringText: { fontSize: 9, color: "#C07060" },
-  likeBtn: { flexDirection: "row", alignItems: "center", gap: 5 },
-  likeCount: { fontSize: 11, fontWeight: "600" },
 });

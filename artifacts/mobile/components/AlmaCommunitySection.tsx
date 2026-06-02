@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   Image,
@@ -12,12 +12,10 @@ import {
 
 import {
   getGetMessagesQueryKey,
-  useLikeMessage,
   useGetMessages,
 } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
-import { useQueryClient } from "@tanstack/react-query";
 
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 const PREVIEW_COUNT = 10;
@@ -43,33 +41,11 @@ function AuthorAvatar({ uri, name }: { uri?: string | null; name?: string | null
 
 export function AlmaCommunitySection() {
   const colors = useColors();
-  const queryClient = useQueryClient();
-  const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
   const { data, isLoading } = useGetMessages(
     { page: 1 },
     { query: { queryKey: getGetMessagesQueryKey({ page: 1 }), refetchInterval: 3 * 60_000 } },
   );
-
-  const { mutate: like } = useLikeMessage({
-    mutation: {
-      onSuccess: (updated) => {
-        queryClient.setQueryData(
-          getGetMessagesQueryKey({ page: 1 }),
-          (old: typeof data) => {
-            if (!old) return old;
-            return { ...old, messages: old.messages.map((m) => (m.id === updated.id ? updated : m)) };
-          },
-        );
-      },
-    },
-  });
-
-  const handleLike = (id: number) => {
-    if (likedIds.has(id)) return;
-    setLikedIds((prev) => new Set(prev).add(id));
-    like({ id });
-  };
 
   const allMessages = data?.messages ?? [];
   const total = data?.total ?? 0;
@@ -112,7 +88,6 @@ export function AlmaCommunitySection() {
           {preview.map((msg) => {
             const msLeft = new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
             const isExpiring = msLeft < 3 * 60 * 60 * 1000;
-            const isLiked = likedIds.has(msg.id);
             return (
               <Pressable
                 key={msg.id}
@@ -147,18 +122,6 @@ export function AlmaCommunitySection() {
                     )}
                   </View>
                 </View>
-                <Pressable
-                  onPress={(e) => { e.stopPropagation?.(); handleLike(msg.id); }}
-                  style={styles.likeBtn}
-                  hitSlop={10}
-                >
-                  <Feather name="heart" size={14} color={isLiked ? "#D07070" : colors.mutedForeground} />
-                  {msg.likes > 0 && (
-                    <Text style={[styles.likeCount, { color: isLiked ? "#D07070" : colors.mutedForeground }]}>
-                      {msg.likes}
-                    </Text>
-                  )}
-                </Pressable>
               </Pressable>
             );
           })}
@@ -243,8 +206,6 @@ const styles = StyleSheet.create({
   msgTime: { fontSize: 10 },
   expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },
   expiringText: { fontSize: 9, color: "#C0705A" },
-  likeBtn: { flexDirection: "column", alignItems: "center", gap: 3, paddingTop: 2 },
-  likeCount: { fontSize: 10, fontWeight: "600" },
 
   verTodo: { alignItems: "center", marginTop: 12 },
   verTodoText: { fontSize: 13, fontWeight: "600" },
