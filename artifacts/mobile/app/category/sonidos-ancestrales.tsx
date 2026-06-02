@@ -252,14 +252,12 @@ export default function SonidosAncestalesScreen() {
                     <PremiumBadge session={session} />
                     </View>
                     <View style={styles.cardContent}>
-                      {ratings[session.id] ? (
-                        <View style={styles.ratingRow}>
-                          <Feather name="star" size={11} color="#E8B96A" />
-                          <Text style={[styles.cardRating, { color: colors.accent }]}>
-                            {" "}{ratings[session.id]}/5
-                          </Text>
-                        </View>
-                      ) : null}
+                      <View style={styles.ratingRow}>
+                        <Feather name="star" size={11} color="#E8B96A" />
+                        <Text style={[styles.cardRating, { color: colors.accent }]}>
+                          {" "}{ratings[session.id] ?? 5}/5
+                        </Text>
+                      </View>
                       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {session.title}
                       </Text>
