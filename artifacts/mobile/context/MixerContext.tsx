@@ -1,6 +1,6 @@
 import { type AudioPlayer, createAudioPlayer, setAudioModeAsync } from "expo-audio";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState, type AppStateStatus, Image } from "react-native";
+import { AppState, type AppStateStatus, Image, Platform } from "react-native";
 import React, {
   createContext,
   useCallback,
@@ -378,6 +378,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       player.loop = true;
       player.volume = volume;
       player.replace(file);
+      console.log(`[MIXER] create id=${id} platform=${Platform.OS} playing@start=${isPlayingRef.current}`);
+      let loggedLoaded = false;
       // Loop limpio y continuo: el flag `loop` nativo es lo único que produce un
       // loop SIN cortes (en web mapea a <audio loop>; en nativo lo maneja el
       // motor de audio). El problema es que setear `loop` justo tras crear el
@@ -392,6 +394,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const sub = player.addListener("playbackStatusUpdate", (status) => {
         if (playersRef.current.get(id) !== player) return;
         const loaded = (status.duration ?? 0) > 0;
+        if (!loggedLoaded && loaded) {
+          loggedLoaded = true;
+          console.log(`[MIXER] loaded id=${id} dur=${status.duration} playing=${status.playing} mixShouldPlay=${isPlayingRef.current}`);
+        }
         // Arrancar la reproducción RECIÉN cuando el item cargó. En iOS, el
         // play() llamado justo tras replace() se pierde si el item aún no está
         // listo → el sonido se agrega pero queda en silencio ("lento"). Si la
@@ -399,6 +405,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // idempotente y se auto-corrige: en reproducción normal status.playing
         // ya es true y no dispara; si el usuario pausó, isPlayingRef es false.
         if (loaded && isPlayingRef.current && !status.playing && !status.didJustFinish) {
+          console.log(`[MIXER] autoplay-fired id=${id}`);
           try {
             player.play();
           } catch {
