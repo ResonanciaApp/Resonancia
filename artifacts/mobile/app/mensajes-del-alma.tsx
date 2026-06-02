@@ -27,6 +27,7 @@ import {
 } from "@workspace/api-client-react";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -244,12 +245,13 @@ export default function MensajesDelAlmaScreen() {
                     style={[
                       styles.msgCard,
                       {
-                        backgroundColor: "rgba(255,255,255,0.04)",
-                        borderColor: isExpiring ? "rgba(192,112,90,0.25)" : "rgba(255,255,255,0.07)",
+                        borderBottomColor: isExpiring
+                          ? "rgba(192,112,90,0.18)"
+                          : "rgba(255,255,255,0.07)",
                       },
                     ]}
                   >
-                    <AuthorAvatar uri={msg.authorAvatarUrl} name={msg.authorName} size={40} />
+                    <AuthorAvatar uri={resolveAvatarUrl(msg.authorAvatarUrl)} name={msg.authorName} size={40} />
                     <View style={styles.msgRight}>
                       <View style={styles.msgHeader}>
                         <Text style={[styles.msgAuthor, { color: colors.primary }]}>
@@ -385,14 +387,13 @@ const styles = StyleSheet.create({
   emptyTitle: { fontSize: 15, fontWeight: "700", textAlign: "center" },
   emptyText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
-  feedList: { gap: 10, paddingHorizontal: 20 },
+  feedList: { paddingHorizontal: 20 },
   msgCard: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 12,
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 14,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   msgRight: { flex: 1 },
   msgHeader: {

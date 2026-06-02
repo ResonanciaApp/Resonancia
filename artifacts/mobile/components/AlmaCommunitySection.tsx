@@ -16,6 +16,7 @@ import {
   useGetMessages,
 } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { useQueryClient } from "@tanstack/react-query";
 
 const WINDOW_MS = 24 * 60 * 60 * 1000;
@@ -141,7 +142,7 @@ export function AlmaCommunitySection() {
                   },
                 ]}
               >
-                <AuthorAvatar uri={msg.authorAvatarUrl} name={msg.authorName} />
+                <AuthorAvatar uri={resolveAvatarUrl(msg.authorAvatarUrl)} name={msg.authorName} />
                 <View style={styles.msgBody}>
                   <Text style={[styles.msgAuthor, { color: colors.primary }]}>
                     {msg.authorName ?? "Anónimo"}
