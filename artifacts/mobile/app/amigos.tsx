@@ -99,7 +99,7 @@ export default function AmigosScreen() {
 function GuestPrompt() {
   const colors = useColors();
   return (
-    <View style={[styles.guestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+    <View style={[styles.guestCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
       <Feather name="users" size={28} color={colors.primary} />
       <Text style={[styles.guestTitle, { color: colors.foreground }]}>Crea tu cuenta para agregar amigos</Text>
       <Text style={[styles.guestText, { color: colors.mutedForeground }]}>
@@ -188,7 +188,7 @@ function SignedInAmigos() {
 
   return (
     <>
-      <View style={[styles.searchRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
         <Feather name="search" size={16} color={colors.mutedForeground} />
         <TextInput
           value={search}
@@ -294,7 +294,7 @@ function SearchResultRow({
   const colors = useColors();
   const status = user.friendshipStatus;
   return (
-    <View style={[styles.friendRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+    <View style={[styles.friendRow, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
       <Avatar user={user} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: colors.foreground }]}>{user.displayName}</Text>
@@ -336,7 +336,7 @@ function RequestRow({
   const colors = useColors();
   const requester = request.requester;
   return (
-    <View style={[styles.requestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+    <View style={[styles.requestCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
       <Avatar user={requester} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: colors.foreground }]}>{requester.displayName}</Text>
@@ -376,7 +376,7 @@ function FriendRow({
       delayLongPress={350}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />
@@ -405,7 +405,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
       onPress={() => router.push(`/chat/${friend.id}` as never)}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />
