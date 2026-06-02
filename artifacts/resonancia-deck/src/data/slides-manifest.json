@@ -16,40 +16,32 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0003-4000-8000-resonancia003",
+    "id": "a1b2c3d4-0003-4000-8000-resonancianav",
     "position": 3,
-    "filepath": "src/pages/slides/Slide03Biblioteca.tsx",
-    "title": "Biblioteca de sesiones",
-    "description": "30+ sesiones en 5 categorías.",
+    "filepath": "src/pages/slides/SlideNavegacion.tsx",
+    "title": "4 secciones, todo organizado",
+    "description": "Los 4 menús de navegación: Inicio, Biblioteca, Mi Música y Perfil.",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0004-4000-8000-resonancia004",
+    "id": "a1b2c3d4-0004-4000-8000-resonancia003",
     "position": 4,
+    "filepath": "src/pages/slides/Slide03Biblioteca.tsx",
+    "title": "Biblioteca de sesiones",
+    "description": "300+ sesiones en 4 categorías.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0005-4000-8000-resonancia004",
+    "position": 5,
     "filepath": "src/pages/slides/Slide04Reproductor.tsx",
     "title": "El reproductor",
     "description": "Experiencia de escucha inmersiva.",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0005-4000-8000-resonancia005",
-    "position": 5,
-    "filepath": "src/pages/slides/Slide05Paisajes.tsx",
-    "title": "Paisajes de sonido",
-    "description": "8 ambientes para personalizar cada sesión.",
-    "speakerNotes": ""
-  },
-  {
-    "id": "a1b2c3d4-0006-4000-8000-resonancia006",
+    "id": "a1b2c3d4-0006-4000-8000-resonancia007",
     "position": 6,
-    "filepath": "src/pages/slides/Slide06Sesiones.tsx",
-    "title": "Sesiones destacadas",
-    "description": "Tres sesiones más elegidas.",
-    "speakerNotes": ""
-  },
-  {
-    "id": "a1b2c3d4-0007-4000-8000-resonancia007",
-    "position": 7,
     "filepath": "src/pages/slides/Slide07Cierre.tsx",
     "title": "RESONANCIA — Cierre",
     "description": "Casa del Cuenco, disponible en iOS y Android.",
