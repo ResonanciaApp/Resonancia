@@ -20,7 +20,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useQueryClient } from "@tanstack/react-query";
 
 const WINDOW_MS = 24 * 60 * 60 * 1000;
-const PREVIEW_COUNT = 3;
+const PREVIEW_COUNT = 10;
 
 function timeAgo(iso: string | Date): string {
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
