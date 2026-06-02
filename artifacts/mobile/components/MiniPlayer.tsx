@@ -41,6 +41,8 @@ export function MiniPlayer() {
     <Pressable onPress={onPress} style={styles.wrapper}>
       {isIOS ? (
         <BlurView intensity={80} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 18 }]} />
+      ) : Platform.OS === "web" ? (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(28,26,24,0.94)", borderRadius: 18 }]} />
       ) : (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card, borderRadius: 18 }]} />
       )}
