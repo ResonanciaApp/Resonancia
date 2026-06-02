@@ -85,11 +85,6 @@ export function AlmaCommunitySection() {
         <Text style={[styles.title, { color: colors.foreground }]}>
           ¿Por qué estás agradecido hoy?
         </Text>
-        {total > 0 && (
-          <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-            {total} {total === 1 ? "mensaje" : "mensajes"} hoy · desaparecen en 24 h
-          </Text>
-        )}
       </View>
 
       {/* Compose tap area */}
