@@ -14,7 +14,7 @@ import type { ImageSourcePropType } from "react-native";
 type FeatherIconName = ComponentProps<typeof Feather>["name"];
 type MCIIconName = ComponentProps<typeof MaterialCommunityIcons>["name"];
 
-export type MixCategory = "dormir" | "trabajar" | "motivarme" | "concentracion";
+export type MixCategory = "dormir" | "trabajar" | "motivarme" | "concentracion" | "energizar";
 
 export type MixCategoryMeta = {
   id: MixCategory;
@@ -48,6 +48,14 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     icon: "image-filter-hdr",
     iconFamily: "MaterialCommunityIcons",
     image: require("@/assets/images/mixer/categories/concentracion.jpg"),
+  },
+  {
+    id: "energizar",
+    label: "Energizar",
+    subtitle: "Activa tu energía",
+    icon: "zap",
+    // Placeholder: reutiliza la imagen de "motivarme" hasta tener una propia.
+    image: require("@/assets/images/mixer/categories/motivarme.jpg"),
   },
 ];
 

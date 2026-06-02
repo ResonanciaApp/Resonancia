@@ -161,11 +161,11 @@ export default function MiMusicaScreen() {
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                        size={24}
+                        size={18}
                         color={colors.accent}
                       />
                     ) : (
-                      <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={22} color={colors.accent} />
+                      <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={16} color={colors.accent} />
                     )}
                   </View>
                   <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
@@ -250,38 +250,38 @@ const styles = StyleSheet.create({
   section: { marginBottom: 14 },
   sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
 
-  // Tabs de categorías de sonido
-  tabsScroll: { marginBottom: 16, marginHorizontal: -20 },
-  tabsRow: { gap: 8, paddingHorizontal: 20 },
+  // Tabs de categorías de sonido (reducidos ~25%)
+  tabsScroll: { marginBottom: 12, marginHorizontal: -20 },
+  tabsRow: { gap: 6, paddingHorizontal: 20 },
   tab: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 11,
+    paddingVertical: 6,
     borderRadius: 999,
     borderWidth: 1,
   },
-  tabLabel: { fontSize: 13, fontWeight: "700", letterSpacing: 0.2 },
+  tabLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 0.2 },
 
-  // Categorías de mezclas
-  catRow: { flexDirection: "row", gap: 10, marginBottom: 26 },
+  // Categorías de mezclas (reducidas ~25%)
+  catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
   catCard: {
     flex: 1,
-    height: 110,
-    borderRadius: 16,
+    height: 82,
+    borderRadius: 14,
     borderWidth: 1,
-    padding: 12,
+    padding: 8,
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    gap: 7,
   },
   catIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 33,
+    height: 33,
+    borderRadius: 17,
     alignItems: "center",
     justifyContent: "center",
   },
   catLabel: {
-    fontSize: 12.5,
+    fontSize: 11,
     fontWeight: "700",
     textAlign: "center",
   },
