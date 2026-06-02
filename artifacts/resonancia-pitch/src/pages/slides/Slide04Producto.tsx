@@ -52,18 +52,54 @@ export default function Slide04Producto() {
         </div>
       </div>
 
-      {/* Right column — image */}
-      <div style={{ width: "44vw", height: "100vh", position: "relative" }}>
-        <img
-          src={`${base}hero-bowl.png`}
-          crossOrigin="anonymous"
-          alt="Experiencia sonora de RESONANCIA"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+      {/* Right column — 2 iPhone mockups */}
+      <div style={{ width: "44vw", height: "100vh", position: "relative", backgroundColor: "#18110C" }}>
+        {/* Ambient glow */}
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(198,155,79,0.05) 0%, rgba(24,17,12,0) 65%)" }} />
+
+        {/* Back phone — Mi Música */}
         <div style={{
-          position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-          background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0.1) 30%, rgba(24,17,12,0) 55%)"
-        }} />
+          position: "absolute",
+          right: "1.5vw",
+          top: "50%",
+          transform: "translateY(-42%)",
+          width: "10.5vw",
+          height: "22.8vw",
+          backgroundColor: "#2C2C2E",
+          borderRadius: "2vw",
+          padding: "0.38vw",
+          boxShadow: "0 1vw 3vw rgba(0,0,0,0.7)",
+          zIndex: 1,
+          opacity: 0.6
+        }}>
+          <div style={{ position: "absolute", top: "1vw", left: "50%", transform: "translateX(-50%)", width: "2.7vw", height: "0.58vw", backgroundColor: "#000", borderRadius: "0.38vw", zIndex: 10 }} />
+          <div style={{ width: "100%", height: "100%", borderRadius: "1.68vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+            <img src={`${base}mockup-musica.jpg`} crossOrigin="anonymous" alt="Mi Música" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+          </div>
+        </div>
+
+        {/* Front phone — Sonidos Ancestrales */}
+        <div style={{
+          position: "absolute",
+          right: "12.5vw",
+          top: "50%",
+          transform: "translateY(-54%)",
+          width: "12.5vw",
+          height: "27.1vw",
+          backgroundColor: "#1C1C1E",
+          borderRadius: "2.3vw",
+          padding: "0.44vw",
+          boxShadow: "0 1.5vw 6vw rgba(0,0,0,0.92), 0 0 0 0.12vw rgba(255,255,255,0.07)",
+          zIndex: 2
+        }}>
+          <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.1vw", height: "0.68vw", backgroundColor: "#000", borderRadius: "0.46vw", zIndex: 10 }} />
+          <div style={{ width: "100%", height: "100%", borderRadius: "1.95vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+            <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+          </div>
+        </div>
+
+        {/* Blend gradient on left edge */}
+        <div style={{ position: "absolute", top: 0, left: 0, width: "18%", height: "100%", background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0) 100%)", zIndex: 3 }} />
       </div>
     </div>
   );
