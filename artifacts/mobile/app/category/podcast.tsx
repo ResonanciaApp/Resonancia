@@ -70,13 +70,13 @@ export default function PodcastScreen() {
 
         {/* Search */}
         <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
-          <View style={[styles.searchBar, { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "transparent", borderWidth: 0 }]}>
-            <Feather name="search" size={16} color="#9DB5D8" style={{ marginRight: 8 }} />
+          <View style={[styles.searchBar, { backgroundColor: "rgba(138,170,212,0.08)", borderColor: "rgba(138,170,212,0.22)", borderWidth: 1 }]}>
+            <Feather name="search" size={16} color="rgba(138,170,212,0.5)" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
               onChangeText={setQuery}
               placeholder="Buscar episodio..."
-              placeholderTextColor="#9DB5D8"
+              placeholderTextColor="rgba(138,170,212,0.45)"
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
             />

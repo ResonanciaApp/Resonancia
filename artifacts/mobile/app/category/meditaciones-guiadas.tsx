@@ -242,13 +242,13 @@ export default function MeditacionesGuiadasScreen() {
           <>
             {/* Search bar */}
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: "rgba(60,32,82,0.55)", borderColor: "transparent", borderWidth: 0 }]}>
-                <Feather name="search" size={16} color="#C8B4E0" style={{ marginRight: 8 }} />
+              <View style={[styles.searchBar, { backgroundColor: "rgba(200,180,224,0.08)", borderColor: "rgba(200,180,224,0.22)", borderWidth: 1 }]}>
+                <Feather name="search" size={16} color="rgba(200,180,224,0.5)" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
                   onChangeText={setQuery}
                   placeholder="Buscar..."
-                  placeholderTextColor="#C8B4E0"
+                  placeholderTextColor="rgba(200,180,224,0.45)"
                   style={[styles.searchInput, { color: colors.foreground }]}
                   returnKeyType="search"
                 />

@@ -138,15 +138,15 @@ export default function MusicaSonidosScreen() {
           <View
             style={[
               styles.searchBar,
-              { backgroundColor: "rgba(42,62,42,0.55)", borderColor: "transparent", borderWidth: 0 },
+              { backgroundColor: "rgba(125,200,125,0.08)", borderColor: "rgba(125,200,125,0.22)", borderWidth: 1 },
             ]}
           >
-            <Feather name="search" size={16} color="#B8D4B8" style={{ marginRight: 8 }} />
+            <Feather name="search" size={16} color="rgba(125,200,125,0.5)" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
               onChangeText={setQuery}
               placeholder={`Busca +${MUSICA_SESSIONS.length} sonidos`}
-              placeholderTextColor="#B8D4B8"
+              placeholderTextColor="rgba(125,200,125,0.45)"
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
             />

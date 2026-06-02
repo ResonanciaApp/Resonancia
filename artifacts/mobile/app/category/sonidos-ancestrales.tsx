@@ -199,15 +199,15 @@ export default function SonidosAncestalesScreen() {
               <View
                 style={[
                   styles.searchBar,
-                  { backgroundColor: "rgba(72,58,28,0.55)", borderColor: "transparent" },
+                  { backgroundColor: "rgba(198,155,79,0.08)", borderColor: "rgba(198,155,79,0.22)", borderWidth: 1 },
                 ]}
               >
-                <Feather name="search" size={16} color="#E8C87A" style={{ marginRight: 8 }} />
+                <Feather name="search" size={16} color="rgba(198,155,79,0.5)" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
                   onChangeText={setQuery}
                   placeholder="Buscar..."
-                  placeholderTextColor="#E8C87A"
+                  placeholderTextColor="rgba(198,155,79,0.45)"
                   style={[styles.searchInput, { color: colors.foreground }]}
                   returnKeyType="search"
                 />
