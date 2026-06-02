@@ -8,7 +8,6 @@ import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
-  ImageBackground,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -29,9 +28,6 @@ import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { usePremium } from "@/context/PremiumContext";
-import { useLoadMix } from "@/hooks/useLoadMix";
-import { getMixImage, DEFAULT_MIX_IMAGE_KEY } from "@/config/mix-images";
-import type { MixPreset } from "@/context/MixerContext";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -91,7 +87,6 @@ export default function ProfileScreen() {
   const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
   const { presets } = useMixer();
   const { isPremium } = usePremium();
-  const loadMix = useLoadMix();
   const {
     username,
     lastName,
@@ -402,50 +397,6 @@ export default function ProfileScreen() {
                 Tu viaje empieza con la primera sesión.{"\n"}Aquí verás tus minutos, sesión favorita y más.
               </Text>
             </View>
-          )}
-        </View>
-
-        {/* ── Mis Mezclas ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Mezclas</Text>
-          {presets.length === 0 ? (
-            <View style={[styles.emptyFav, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}>
-              <Feather name="sliders" size={22} color={"rgba(198,155,79,0.3)"} />
-              <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
-                Aún no has creado mezclas.{"\n"}Combina sonidos en Mi Música para guardar la tuya.
-              </Text>
-            </View>
-          ) : (
-            presets.map((mix: MixPreset) => (
-              <Pressable
-                key={mix.id}
-                onPress={() => {
-                  if (loadMix(mix)) router.push("/musica" as never);
-                }}
-                style={({ pressed }) => [
-                  styles.favRow,
-                  { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
-                ]}
-              >
-                <ImageBackground
-                  source={getMixImage(mix.image) ?? getMixImage(DEFAULT_MIX_IMAGE_KEY)}
-                  style={styles.mixThumb}
-                  imageStyle={styles.mixThumbInner}
-                >
-                  <View style={styles.mixPlayBubble}>
-                    <Feather name="play" size={13} color="#FFFFFF" />
-                  </View>
-                </ImageBackground>
-                <View style={styles.favInfo}>
-                  <Text style={[styles.favTitle, { color: colors.foreground }]} numberOfLines={1}>{mix.name}</Text>
-                  <Text style={[styles.favSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                    {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-                    {mix.sharedId != null ? " · Compartida" : ""}
-                  </Text>
-                </View>
-                <Feather name="chevron-right" size={16} color={colors.border} />
-              </Pressable>
-            ))
           )}
         </View>
 
@@ -843,18 +794,6 @@ const styles = StyleSheet.create({
   favInfo: { flex: 1 },
   favTitle: { fontSize: 14, fontWeight: "600", marginBottom: 3 },
   favSub: { fontSize: 12 },
-
-  // Mis Mezclas thumbnails
-  mixThumb: { width: 52, height: 52, borderRadius: 10, overflow: "hidden", justifyContent: "center", alignItems: "center" },
-  mixThumbInner: { borderRadius: 10 },
-  mixPlayBubble: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "rgba(24,17,12,0.55)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
   // Menu
   menuCard: {
