@@ -78,40 +78,29 @@ export function AlmaCommunitySection() {
   return (
     <View style={styles.section}>
       {/* Header */}
-      <Pressable
-        style={styles.headerRow}
-        onPress={() => router.push("/mensajes-del-alma" as never)}
-      >
-        <View>
-          <Text style={[styles.title, { color: colors.foreground }]}>
-            Lo que siente la comunidad
+      <View style={styles.headerRow}>
+        <Text style={[styles.caption, { color: colors.primary }]}>
+          Muro de agradecimiento
+        </Text>
+        <Text style={[styles.title, { color: colors.foreground }]}>
+          ¿Por qué estás agradecido hoy?
+        </Text>
+        {total > 0 && (
+          <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
+            {total} {total === 1 ? "mensaje" : "mensajes"} hoy · desaparecen en 24 h
           </Text>
-          {total > 0 && (
-            <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-              {total} {total === 1 ? "mensaje" : "mensajes"} hoy · desaparecen en 24 h
-            </Text>
-          )}
-        </View>
-        <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
-      </Pressable>
+        )}
+      </View>
 
       {/* Compose tap area */}
       <Pressable
         onPress={() => router.push("/mensajes-del-alma" as never)}
         style={({ pressed }) => [
           styles.composeTap,
-          { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(198,155,79,0.18)", opacity: pressed ? 0.75 : 1 },
+          { opacity: pressed ? 0.75 : 1 },
         ]}
       >
-        <View style={[styles.composeDot, { backgroundColor: "rgba(198,155,79,0.25)" }]}>
-          <Feather name="edit-2" size={13} color={colors.primary} />
-        </View>
-        <Text style={[styles.composePlaceholder, { color: colors.mutedForeground }]}>
-          ¿Qué querés soltar hoy?
-        </Text>
-        <View style={[styles.composeChip, { borderColor: "rgba(198,155,79,0.30)" }]}>
-          <Text style={[styles.composeChipText, { color: colors.primary }]}>Compartir</Text>
-        </View>
+        <Text style={[styles.composeChipText, { color: colors.primary }]}>Publicar</Text>
       </Pressable>
 
       {/* Messages preview */}
@@ -202,39 +191,23 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   headerRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    marginBottom: 14,
+    alignItems: "center",
+    marginBottom: 16,
   },
-  title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
-  subtitle: { fontSize: 12, marginTop: 3, lineHeight: 16 },
+  caption: { fontSize: 12, fontWeight: "600", letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 6 },
+  title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  subtitle: { fontSize: 12, marginTop: 4, lineHeight: 16, textAlign: "center" },
 
   composeTap: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    marginBottom: 12,
-  },
-  composeDot: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  composePlaceholder: { flex: 1, fontSize: 14 },
-  composeChip: {
-    borderWidth: 1,
+    alignSelf: "center",
     borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: "rgba(198,155,79,0.35)",
+    paddingHorizontal: 28,
+    paddingVertical: 9,
+    marginBottom: 16,
   },
-  composeChipText: { fontSize: 12, fontWeight: "600" },
+  composeChipText: { fontSize: 13, fontWeight: "600" },
 
   emptyRow: {
     paddingVertical: 20,
@@ -269,7 +242,7 @@ const styles = StyleSheet.create({
     color: "#C69B4F",
   },
   msgBody: { flex: 1 },
-  msgAuthor: { fontSize: 12, fontWeight: "600", marginBottom: 3 },
+  msgAuthor: { fontSize: 11, fontWeight: "600", marginBottom: 3, opacity: 0.75 },
   msgText: { fontSize: 13, lineHeight: 19, opacity: 0.82 },
   msgMeta: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5 },
   msgTime: { fontSize: 10 },
