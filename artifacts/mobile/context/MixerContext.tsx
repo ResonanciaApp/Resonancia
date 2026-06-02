@@ -65,6 +65,12 @@ function resolveMixArtworkUrl(imageKey?: string): string | undefined {
 export const MAX_ACTIVE_SOUNDS = 10;
 const PRESETS_KEY = "@resonance_mixer_presets";
 const DEFAULT_VOLUME = 0.7;
+/**
+ * Duración (segundos) del fade de volumen en cada borde del loop. El loop nativo
+ * reinicia el archivo de golpe (corte audible); modulando el volumen a ~0 justo
+ * antes del final y subiéndolo de nuevo al reiniciar, el empalme queda suave.
+ */
+const LOOP_FADE_SEC = 1.5;
 
 export type ActiveSound = { id: string; volume: number };
 export type MixPreset = {
@@ -134,6 +140,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const playersRef = useRef<Map<string, AudioPlayer>>(new Map());
   /** Subscripción de fallback de loop por sonido (para reiniciar al terminar). */
   const loopSubsRef = useRef<Map<string, { remove: () => void }>>(new Map());
+  /**
+   * Volumen "objetivo" elegido por el usuario para cada sonido. El volumen REAL
+   * del player se modula con un fade en los bordes del loop (ver createPlayerFor),
+   * así que la fuente de verdad del nivel deseado vive acá, no en player.volume.
+   */
+  const baseVolumesRef = useRef<Map<string, number>>(new Map());
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
@@ -406,11 +418,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // hacía que status.playing oscilara a false, lo que disparaba el listener
       // del lock-screen y pausaba toda la mezcla a los pocos segundos (síntoma:
       // "se escucha 2s y se pausa" / "se apaga al llegar al final del audio").
-      const player = createAudioPlayer(null, { updateInterval: 500 });
+      // updateInterval bajo (120 ms) para que el fade de volumen en los bordes
+      // del loop se vea continuo y no escalonado.
+      const player = createAudioPlayer(null, { updateInterval: 120 });
       player.loop = true;
       player.replace(file);
       player.volume = volume;
-      let loggedLoaded = false;
+      baseVolumesRef.current.set(id, volume);
       // En web, replace() reconstruye el elemento <audio> con loop=false, así que
       // ahí (y solo ahí) hay que re-asegurar el flag en cada status update. En
       // nativo el loop ya quedó configurado y no se vuelve a tocar.
@@ -423,12 +437,32 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             // ignore
           }
         }
-        if (!loggedLoaded && (status.duration ?? 0) > 0) {
-          loggedLoaded = true;
-          console.log(`[MIXER] loaded id=${id} playing=${status.playing} loop=${player.loop}`);
+        // ── Fade en los bordes del loop ──────────────────────────────────
+        // El loop nativo reinicia el archivo de golpe → corte audible. Para
+        // suavizarlo, modulamos el volumen real en función de la posición:
+        // sube desde 0 en los primeros LOOP_FADE_SEC y baja a 0 en los últimos.
+        // El nivel elegido por el usuario vive en baseVolumesRef (no se pisa).
+        // Este listener sigue corriendo en background (lo maneja el motor de
+        // audio nativo), así que el fade también funciona con la pantalla
+        // bloqueada, sin setInterval (que sí se congela).
+        const base = baseVolumesRef.current.get(id) ?? volume;
+        const dur = status.duration ?? 0;
+        const pos = status.currentTime ?? 0;
+        let factor = 1;
+        if (dur > LOOP_FADE_SEC * 2 + 0.5) {
+          if (pos < LOOP_FADE_SEC) {
+            factor = pos / LOOP_FADE_SEC; // fade in tras el wrap
+          } else if (pos > dur - LOOP_FADE_SEC) {
+            factor = (dur - pos) / LOOP_FADE_SEC; // fade out antes del final
+          }
         }
-        if (status.didJustFinish) {
-          console.log(`[MIXER] didJustFinish id=${id} loop=${player.loop}`);
+        const target = base * Math.max(0, Math.min(1, factor));
+        if (Math.abs(player.volume - target) > 0.005) {
+          try {
+            player.volume = target;
+          } catch {
+            // ignore
+          }
         }
       });
       loopSubsRef.current.set(id, sub);
@@ -452,6 +486,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
       loopSubsRef.current.delete(id);
     }
+    baseVolumesRef.current.delete(id);
     const p = playersRef.current.get(id);
     if (!p) return;
     try {
@@ -529,6 +564,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   );
 
   const setVolume = useCallback((id: string, volume: number) => {
+    // Guardar el nivel deseado: el listener del loop lo aplica con el factor de
+    // fade en el próximo tick (~120 ms). Además lo seteamos directo para feedback
+    // inmediato del slider (si está en mitad del loop, factor=1 → coincide).
+    baseVolumesRef.current.set(id, volume);
     const p = playersRef.current.get(id);
     if (p) {
       try {
@@ -606,6 +645,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
     });
     playersRef.current.clear();
+    baseVolumesRef.current.clear();
     clearLockScreen();
     setActiveSounds([]);
     setIsPlaying(false);
