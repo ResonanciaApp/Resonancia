@@ -9,7 +9,7 @@
  * la mezcla. Si no hay sonidos activos, no renderiza nada.
  * ─────────────────────────────────────────────────────────────────
  */
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -28,7 +28,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SaveMixCelebration } from "@/components/SaveMixCelebration";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
-import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory, getCategoryMeta } from "@/data/mix-categories";
@@ -46,31 +45,12 @@ function formatTimer(seconds: number): string {
 
 type SaveMode = "new" | "update";
 
-/** Ícono del sonido según su iconSet, con cast acotado al glyphMap de la familia. */
-function SoundIcon({ sound, size, color }: { sound: MixSound; size: number; color: string }) {
-  if (sound.iconSet === "ionicons") {
-    return <Ionicons name={sound.icon as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
-  }
-  return <Feather name={sound.icon as keyof typeof Feather.glyphMap} size={size} color={color} />;
-}
+/** Superficie gris translúcida compartida (miniatura, guardar, temporizador). */
+const TRANSLUCENT_SURFACE = "rgba(255,255,255,0.08)";
 
-/** Miniatura circular de la pista: imagen del sonido con velo + ícono encima. */
-function TrackThumb({ sound, accent }: { sound: MixSound; accent: string }) {
-  const image = getSoundImage(sound.id);
-  return (
-    <View style={styles.thumb}>
-      {image ? (
-        <ImageBackground source={image} style={styles.thumbImg} imageStyle={styles.thumbImgInner}>
-          <View style={styles.thumbVeil} />
-          <SoundIcon sound={sound} size={16} color="#F2E7D6" />
-        </ImageBackground>
-      ) : (
-        <View style={[styles.thumbImg, styles.thumbFallback]}>
-          <SoundIcon sound={sound} size={16} color={accent} />
-        </View>
-      )}
-    </View>
-  );
+/** Miniatura circular de la pista: superficie gris translúcida. */
+function TrackThumb() {
+  return <View style={styles.thumb} />;
 }
 
 export function MixerSheet() {
@@ -293,17 +273,11 @@ export function MixerSheet() {
                 style={[styles.trackRow, { backgroundColor: colors.background, borderColor: colors.border }]}
               >
                 <View style={styles.trackTop}>
-                  <TrackThumb sound={sound} accent={colors.accent} />
+                  <TrackThumb />
 
                   <View style={styles.trackInfo}>
                     <Text style={[styles.trackName, { color: colors.foreground }]} numberOfLines={1}>
                       {sound.name}
-                    </Text>
-                    <Text style={[styles.trackVol, { color: colors.mutedForeground }]}>
-                      Volumen{" "}
-                      <Text style={{ color: colors.accent, fontWeight: "700" }}>
-                        {Math.round(active.volume * 100)}%
-                      </Text>
                     </Text>
                   </View>
 
@@ -380,7 +354,7 @@ export function MixerSheet() {
 
             <Pressable
               onPress={handleTimerPress}
-              style={[styles.iconBtn, { borderColor: colors.border, backgroundColor: colors.secondary }]}
+              style={[styles.iconBtn, { borderColor: colors.border, backgroundColor: TRANSLUCENT_SURFACE }]}
               accessibilityRole="button"
               accessibilityLabel={
                 sleepTimerRemaining != null
@@ -407,14 +381,14 @@ export function MixerSheet() {
               <>
                 <Pressable
                   onPress={() => openSaveModal("update")}
-                  style={[styles.saveBtn, { backgroundColor: colors.secondary, borderColor: colors.border }]}
+                  style={[styles.saveBtn, { backgroundColor: TRANSLUCENT_SURFACE, borderColor: colors.border }]}
                 >
                   <Feather name="check" size={16} color={colors.foreground} />
                   <Text style={[styles.saveBtnText, { color: colors.foreground }]}>Actualizar</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => openSaveModal("new")}
-                  style={[styles.saveBtn, { backgroundColor: colors.secondary, borderColor: colors.border }]}
+                  style={[styles.saveBtn, { backgroundColor: TRANSLUCENT_SURFACE, borderColor: colors.border }]}
                 >
                   <Feather name="save" size={16} color={colors.foreground} />
                   <Text style={[styles.saveBtnText, { color: colors.foreground }]}>Guardar nueva</Text>
@@ -423,7 +397,7 @@ export function MixerSheet() {
             ) : (
               <Pressable
                 onPress={() => openSaveModal("new")}
-                style={[styles.saveBtn, styles.saveBtnFull, { backgroundColor: colors.secondary, borderColor: colors.border }]}
+                style={[styles.saveBtn, styles.saveBtnFull, { backgroundColor: TRANSLUCENT_SURFACE, borderColor: colors.border }]}
               >
                 <Feather name="save" size={16} color={colors.foreground} />
                 <Text style={[styles.saveBtnText, { color: colors.foreground }]}>Guardar mezcla</Text>
@@ -614,21 +588,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 11,
   },
-  thumb: { width: 40, height: 40 },
-  thumbImg: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  thumbImgInner: { borderRadius: 20 },
-  thumbVeil: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(15,10,6,0.42)" },
-  thumbFallback: { backgroundColor: "rgba(214,168,91,0.12)" },
+  thumb: { width: 40, height: 40, borderRadius: 20, backgroundColor: TRANSLUCENT_SURFACE },
   trackInfo: { flex: 1 },
   trackName: { fontSize: 15, fontWeight: "600" },
-  trackVol: { fontSize: 12, marginTop: 2 },
   reorderPill: {
     flexDirection: "row",
     alignItems: "center",
