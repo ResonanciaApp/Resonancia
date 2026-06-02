@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "id": "b2c3d4e5-0001-4000-8000-identidad0001",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01Portada.tsx",
+    "title": "RESONANCIA — Portada",
+    "description": "Portada con anillos concéntricos y marca.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-0002-4000-8000-identidad0002",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02CuencoAncestral.tsx",
+    "title": "Sonidos Ancestrales",
+    "description": "El cuenco como símbolo — filosofía y categorías.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-0003-4000-8000-identidad0003",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03Logo.tsx",
+    "title": "Propuesta de identidad",
+    "description": "Tres conceptos de logo: El Cuenco, La Vibración, Monograma.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-0004-4000-8000-identidad0004",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04Paleta.tsx",
+    "title": "Sistema de color",
+    "description": "Paleta completa y tipografía Space Grotesk.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-0005-4000-8000-identidad0005",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide05Funcionalidades.tsx",
+    "title": "Funcionalidades clave",
+    "description": "4 funcionalidades principales con mockup de iPhone.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-0006-4000-8000-identidad0006",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06Mockups.tsx",
+    "title": "La app en acción",
+    "description": "3 iPhones: Inicio, Sonidos Ancestrales, Mi Música.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-0007-4000-8000-identidad0007",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07Cierre.tsx",
+    "title": "RESONANCIA — Cierre",
+    "description": "Panel dorado de cierre con datos de la app.",
+    "speakerNotes": ""
+  }
+]

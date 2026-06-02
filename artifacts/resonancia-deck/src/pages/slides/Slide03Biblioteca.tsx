@@ -66,22 +66,22 @@ export default function Slide03Biblioteca() {
         </div>
       </div>
 
-      {/* Right image */}
-      <div style={{ width: "42vw", height: "100vh", position: "relative" }}>
-        <img
-          src={`${base}session-1.jpg`}
-          crossOrigin="anonymous"
-          alt="Sesiones RESONANCIA"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+      {/* Right — iPhone mockup */}
+      <div style={{ width: "42vw", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", flexShrink: 0 }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(198,155,79,0.05) 0%, rgba(24,17,12,0) 65%)" }} />
         <div style={{
-          position: "absolute", inset: 0,
-          background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0.2) 30%, rgba(24,17,12,0) 55%)"
-        }} />
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "linear-gradient(0deg, #18110C 0%, rgba(24,17,12,0) 25%)"
-        }} />
+          width: "13vw", height: "28.2vw",
+          backgroundColor: "#1C1C1E",
+          borderRadius: "2.4vw",
+          padding: "0.46vw",
+          boxShadow: "0 1.5vw 6vw rgba(0,0,0,0.9), 0 0 0 0.12vw rgba(255,255,255,0.07)",
+          position: "relative", zIndex: 1
+        }}>
+          <div style={{ position: "absolute", top: "1.25vw", left: "50%", transform: "translateX(-50%)", width: "3.2vw", height: "0.72vw", backgroundColor: "#000", borderRadius: "0.48vw", zIndex: 10 }} />
+          <div style={{ width: "100%", height: "100%", borderRadius: "2.0vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+            <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+          </div>
+        </div>
       </div>
     </div>
   );

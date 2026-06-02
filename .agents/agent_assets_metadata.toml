@@ -606,6 +606,18 @@ uri = "file://artifacts/mobile/assets/images/mixer/ruido_azul.png"
 type = "image"
 title = "blue noise cobalt abstract static"
 
+[[generated]]
+id = "nXvJe9Wd_NPTe6ZfX3OwB"
+uri = "file://artifacts/resonancia-identidad/public/cuenco-hero.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "o1XWVEh6dDoeHefJghL5v"
+uri = "file://artifacts/resonancia-identidad/public/vibration-waves.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
