@@ -51,6 +51,24 @@ the element on replace so it needs a runtime re-assert. **How to apply:** any lo
 mixer/ambient sound uses the create(null)→loop→replace pattern PLUS the re-assert
 listener. Test BOTH the iOS device (lock screen) and the web preview.
 
+## play() right after replace() is unreliable on iOS — start on the "loaded" status tick
+Confirmed on a physical iOS device (via diagnostic logs): when a sound is added to an
+already-playing mix, `player.play()` called immediately after `player.replace(file)`
+silently no-ops because the AVPlayerItem has not finished loading yet. Symptom: the
+sound appears in the UI but stays silent / "feels slow" until another interaction.
+Logs showed the new player at `loaded ... playing=false` while the first one was
+`playing=true`.
+
+Fix: in the per-player `playbackStatusUpdate` listener, once the item is loaded
+(`status.duration > 0`), if the mix should be playing (`isPlayingRef.current`) and this
+player is not playing, call `player.play()`. It is idempotent and self-correcting:
+during normal playback `status.playing` is already true so it never fires, and after a
+user pause `isPlayingRef` is false so it won't fight the pause.
+
+**Why:** iOS drops a play command issued before the item is ready; the keep-the-initial
+`play()` call alone is racy. **How to apply:** for any dynamically-added looping player,
+gate the real start on the loaded tick, not on the call right after replace().
+
 ## Lock-screen scrubber/duration can't be hidden via expo-audio public API
 The user wanted the locked-screen Now Playing to show no duration/progress scrubber
 (like Calm) for an endless mix. `AudioLockScreenOptions` only exposes

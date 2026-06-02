@@ -1,6 +1,6 @@
 import { type AudioPlayer, createAudioPlayer, setAudioModeAsync } from "expo-audio";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState, type AppStateStatus, Image, Platform } from "react-native";
+import { AppState, type AppStateStatus, Image } from "react-native";
 import React, {
   createContext,
   useCallback,
@@ -378,10 +378,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       player.loop = true;
       player.volume = volume;
       player.replace(file);
-      console.log(
-        `[MIXER] create id=${id} platform=${Platform.OS} loopAfterReplace=${player.loop}`,
-      );
-      let loggedLoaded = false;
       // Loop limpio y continuo: el flag `loop` nativo es lo único que produce un
       // loop SIN cortes (en web mapea a <audio loop>; en nativo lo maneja el
       // motor de audio). El problema es que setear `loop` justo tras crear el
@@ -395,11 +391,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // `onended` casi no emite status, así que esto rara vez dispara ahí.
       const sub = player.addListener("playbackStatusUpdate", (status) => {
         if (playersRef.current.get(id) !== player) return;
-        if (!loggedLoaded && (status.duration ?? 0) > 0) {
-          loggedLoaded = true;
-          console.log(
-            `[MIXER] loaded id=${id} dur=${status.duration} loop=${player.loop} playing=${status.playing}`,
-          );
+        const loaded = (status.duration ?? 0) > 0;
+        // Arrancar la reproducción RECIÉN cuando el item cargó. En iOS, el
+        // play() llamado justo tras replace() se pierde si el item aún no está
+        // listo → el sonido se agrega pero queda en silencio ("lento"). Si la
+        // mezcla debe estar sonando y este player no suena, lo arrancamos. Es
+        // idempotente y se auto-corrige: en reproducción normal status.playing
+        // ya es true y no dispara; si el usuario pausó, isPlayingRef es false.
+        if (loaded && isPlayingRef.current && !status.playing && !status.didJustFinish) {
+          try {
+            player.play();
+          } catch {
+            // ignore
+          }
         }
         if (!player.loop) {
           try {
@@ -409,9 +413,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           }
         }
         if (status.didJustFinish) {
-          console.log(
-            `[MIXER] didJustFinish id=${id} loop=${player.loop} playing=${status.playing} — restarting`,
-          );
           try {
             player.seekTo(0).then(() => player.play()).catch(() => {});
           } catch {
