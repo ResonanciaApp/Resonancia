@@ -12,6 +12,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
@@ -98,9 +99,11 @@ export default function MiMusicaScreen() {
           )}
 
           {locked && (
-            <View style={styles.lockBadge}>
-              <Feather name="star" size={9} color="#18110C" />
-            </View>
+            <Image
+              source={require("../../assets/images/estrella-premium.png")}
+              style={[styles.lockBadge, { width: 22, height: 22 }]}
+              contentFit="contain"
+            />
           )}
 
           {active && (
@@ -296,14 +299,8 @@ const styles = StyleSheet.create({
   },
   lockBadge: {
     position: "absolute",
-    top: 5,
-    right: 5,
-    width: 17,
-    height: 17,
-    borderRadius: 9,
-    backgroundColor: "#D6A85B",
-    alignItems: "center",
-    justifyContent: "center",
+    top: 4,
+    right: 4,
   },
   activeBadge: {
     position: "absolute",
