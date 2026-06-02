@@ -201,11 +201,15 @@ export function DrawerMenu() {
                       <Feather name={item.icon} size={17} color="#FFFFFF" />
                     </View>
                   )}
-                  <Text style={[styles.itemLabel, { color: item.label === "Premium" ? "#F5EAC8" : "#FFFFFF" }]}>
-                    {item.label}
-                  </Text>
-                  {item.label === "Premium" && isPremium && (
-                    <Feather name="check" size={14} color="#5FB98C" style={{ marginLeft: 4 }} />
+                  {item.label === "Premium" ? (
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                      <Text style={[styles.itemLabel, { color: "#F5EAC8" }]}>Premium</Text>
+                      {isPremium && <Feather name="check" size={13} color="#5FB98C" />}
+                    </View>
+                  ) : (
+                    <Text style={[styles.itemLabel, { color: "#FFFFFF" }]}>
+                      {item.label}
+                    </Text>
                   )}
                 </Pressable>
               ))}
