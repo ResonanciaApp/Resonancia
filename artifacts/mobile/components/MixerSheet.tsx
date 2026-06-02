@@ -434,7 +434,7 @@ export function MixerSheet() {
           >
             <Pressable style={styles.modalOverlay} onPress={() => setSaveModalOpen(false)}>
               <Pressable
-                style={[styles.modalCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+                style={[styles.modalCard, { backgroundColor: colors.background, borderColor: "rgba(182,149,95,0.25)" }]}
                 onPress={(e) => e.stopPropagation()}
               >
                 <Text style={[styles.modalTitle, { color: colors.foreground }]}>
@@ -454,24 +454,9 @@ export function MixerSheet() {
                     placeholderTextColor={colors.mutedForeground}
                     style={[
                       styles.modalInput,
-                      { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary },
+                      { color: colors.foreground, borderColor: "rgba(182,149,95,0.2)", backgroundColor: colors.card },
                     ]}
                     maxLength={40}
-                  />
-
-                  <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Descripción</Text>
-                  <TextInput
-                    value={mixDescription}
-                    onChangeText={setMixDescription}
-                    placeholder="Opcional: ¿para qué momento es?"
-                    placeholderTextColor={colors.mutedForeground}
-                    style={[
-                      styles.modalInput,
-                      styles.modalInputArea,
-                      { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.secondary },
-                    ]}
-                    multiline
-                    maxLength={120}
                   />
 
                   <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Categoría</Text>
