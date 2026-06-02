@@ -223,10 +223,7 @@ export function MixerSheet() {
   };
 
   const handleClear = () => {
-    Alert.alert("Limpiar mezcla", "¿Quitar todos los sonidos de la mezcla actual?", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Limpiar", style: "destructive", onPress: () => stopAll() },
-    ]);
+    stopAll();
   };
 
   const canShow = isSheetOpen && activeMix.length > 0;
@@ -270,9 +267,9 @@ export function MixerSheet() {
               hitSlop={8}
               style={styles.headerBtn}
               accessibilityRole="button"
-              accessibilityLabel="Limpiar mezcla"
+              accessibilityLabel="Eliminar mezcla"
             >
-              <Text style={[styles.clearText, { color: colors.mutedForeground }]}>Limpiar</Text>
+              <Text style={[styles.clearText, { color: colors.mutedForeground }]}>Eliminar</Text>
             </Pressable>
             <Pressable
               onPress={closeSheet}
