@@ -367,70 +367,44 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     const file = SOUND_MAP[id];
     if (!file) return null;
     try {
-      // Loop nativo en iOS/Android: el flag `loop` debe estar seteado ANTES de
-      // que el item cargue, para que el motor configure el looping. Por eso
-      // creamos el player vacío, seteamos loop=true y RECIÉN ahí cargamos el
-      // source con replace() — exactamente el patrón que usa PlayerContext para
-      // las loop sessions (probado en device). Si seteamos loop después de
-      // createAudioPlayer(file), en iOS el item ya cargó sin looping y el sonido
-      // se corta al terminar el MP3.
-      const player = createAudioPlayer(null);
-      player.loop = true;
-      player.volume = volume;
-      player.replace(file);
-      console.log(`[MIXER] create id=${id} platform=${Platform.OS} playing@start=${isPlayingRef.current}`);
-      let loggedLoaded = false;
-      // Loop limpio y continuo: el flag `loop` nativo es lo único que produce un
-      // loop SIN cortes (en web mapea a <audio loop>; en nativo lo maneja el
-      // motor de audio). El problema es que setear `loop` justo tras crear el
-      // player no siempre persiste si el source aún no terminó de cargar, así
-      // que lo re-aseguramos en cada status update (idempotente y barato): en
-      // cuanto el item está cargado, el loop nativo queda activo de verdad.
+      // Patrón de loop PROBADO en device (idéntico al de PlayerContext para las
+      // loop sessions): createAudioPlayer(null) → loop=true → replace(file) →
+      // play(). El flag `loop` nativo seteado ANTES de cargar el item produce un
+      // loop sin cortes en iOS/Android, y NO hay que tocarlo más.
       //
-      // Solo como ÚLTIMO recurso (si en alguna plataforma el loop nativo nunca
-      // engancha), reiniciamos manualmente al detectar `didJustFinish`. Ese
-      // camino tiene un pequeño corte, por eso preferimos el loop nativo. En web
-      // `onended` casi no emite status, así que esto rara vez dispara ahí.
+      // Importante: NO reiniciar manualmente en `didJustFinish` ni forzar
+      // `play()` repetido desde el listener. Eso peleaba con el loop nativo:
+      // hacía que status.playing oscilara a false, lo que disparaba el listener
+      // del lock-screen y pausaba toda la mezcla a los pocos segundos (síntoma:
+      // "se escucha 2s y se pausa" / "se apaga al llegar al final del audio").
+      const player = createAudioPlayer(null, { updateInterval: 500 });
+      player.loop = true;
+      player.replace(file);
+      player.volume = volume;
+      let loggedLoaded = false;
+      // En web, replace() reconstruye el elemento <audio> con loop=false, así que
+      // ahí (y solo ahí) hay que re-asegurar el flag en cada status update. En
+      // nativo el loop ya quedó configurado y no se vuelve a tocar.
       const sub = player.addListener("playbackStatusUpdate", (status) => {
         if (playersRef.current.get(id) !== player) return;
-        const loaded = (status.duration ?? 0) > 0;
-        if (!loggedLoaded && loaded) {
-          loggedLoaded = true;
-          console.log(`[MIXER] loaded id=${id} dur=${status.duration} playing=${status.playing} mixShouldPlay=${isPlayingRef.current}`);
-        }
-        // Arrancar la reproducción RECIÉN cuando el item cargó. En iOS, el
-        // play() llamado justo tras replace() se pierde si el item aún no está
-        // listo → el sonido se agrega pero queda en silencio ("lento"). Si la
-        // mezcla debe estar sonando y este player no suena, lo arrancamos. Es
-        // idempotente y se auto-corrige: en reproducción normal status.playing
-        // ya es true y no dispara; si el usuario pausó, isPlayingRef es false.
-        if (loaded && isPlayingRef.current && !status.playing && !status.didJustFinish) {
-          console.log(`[MIXER] autoplay-fired id=${id}`);
-          try {
-            player.play();
-          } catch {
-            // ignore
-          }
-        }
-        if (!player.loop) {
+        if (Platform.OS === "web" && !player.loop) {
           try {
             player.loop = true;
           } catch {
             // ignore
           }
         }
+        if (!loggedLoaded && (status.duration ?? 0) > 0) {
+          loggedLoaded = true;
+          console.log(`[MIXER] loaded id=${id} playing=${status.playing} loop=${player.loop}`);
+        }
         if (status.didJustFinish) {
-          try {
-            player.seekTo(0).then(() => player.play()).catch(() => {});
-          } catch {
-            // ignore
-          }
+          console.log(`[MIXER] didJustFinish id=${id} loop=${player.loop}`);
         }
       });
       loopSubsRef.current.set(id, sub);
-      // Registrar el player en el map ANTES de play(): si un asset muy corto
-      // dispara didJustFinish antes de la asignación, el guard del fallback
-      // (playersRef.get(id) === player) fallaría y se perdería el primer loop.
+      // Registrar el player en el map ANTES de play() (el guard del listener
+      // compara playersRef.get(id) === player).
       playersRef.current.set(id, player);
       player.play();
       return player;
