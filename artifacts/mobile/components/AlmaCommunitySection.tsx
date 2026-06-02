@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
-  caption: { fontSize: 12, fontWeight: "600", letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 6 },
+  caption: { fontSize: 10, fontWeight: "400", letterSpacing: 1.4, textTransform: "uppercase", marginBottom: 6 },
   title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   subtitle: { fontSize: 12, marginTop: 4, lineHeight: 16, textAlign: "center" },
 
