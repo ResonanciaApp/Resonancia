@@ -1,4 +1,4 @@
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { getSoundImage } from "@/config/sound-images";
 import { useMixer } from "@/context/MixerContext";
-import { getSoundById, hasSoundFile, type MixSound } from "@/data/sounds";
+import { getSoundById, hasSoundFile } from "@/data/sounds";
 
 const ACCENT = "#A8C4A8";
 const TRACK = "rgba(255,255,255,0.16)";
@@ -30,13 +30,6 @@ function formatRemaining(seconds: number | null): string {
   const sec = s % 60;
   const pad = (n: number) => String(n).padStart(2, "0");
   return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${m}:${pad(sec)}`;
-}
-
-function SoundIcon({ sound, size, color }: { sound: MixSound; size: number; color: string }) {
-  if (sound.iconSet === "ionicons") {
-    return <Ionicons name={sound.icon as never} size={size} color={color} />;
-  }
-  return <Feather name={sound.icon as never} size={size} color={color} />;
 }
 
 export default function InmersivoScreen() {
@@ -190,36 +183,23 @@ export default function InmersivoScreen() {
         </Pressable>
       </View>
 
-      {/* Panel inferior: SOLO el volumen del ambiente precargado (sin picker).
-          El base suena fijo y no se lista. Si la sesión aún no tiene ambiente,
-          no se muestra ninguna barra. */}
+      {/* Panel inferior: SOLO el volumen del ambiente precargado (sin picker,
+          sin ícono ni nombre). Título centrado arriba de la barra. El base
+          suena fijo y no se lista. Sin ambiente → no se muestra nada. */}
       {ambientLayers.length > 0 && (
         <View style={[styles.panel, { paddingBottom: Math.max(insets.bottom, 16) + 8 }]}>
           <Text style={styles.panelTitle}>Sonido ambiente</Text>
 
-          <View style={{ gap: 14, paddingTop: 6 }}>
-            {ambientLayers.map((layer) => {
-              const sound = getSoundById(layer.id);
-              if (!sound) return null;
-              return (
-                <View key={layer.id} style={styles.layerRow}>
-                  <View style={styles.layerIcon}>
-                    <SoundIcon sound={sound} size={16} color={ACCENT} />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.layerName} numberOfLines={1}>
-                      {sound.name}
-                    </Text>
-                    <VolumeSlider
-                      value={layer.volume}
-                      onChange={(v) => setVolume(layer.id, v)}
-                      color={ACCENT}
-                      trackColor={TRACK}
-                    />
-                  </View>
-                </View>
-              );
-            })}
+          <View style={{ gap: 14 }}>
+            {ambientLayers.map((layer) => (
+              <VolumeSlider
+                key={layer.id}
+                value={layer.volume}
+                onChange={(v) => setVolume(layer.id, v)}
+                color={ACCENT}
+                trackColor={TRACK}
+              />
+            ))}
           </View>
         </View>
       )}
@@ -299,25 +279,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "rgba(168,196,168,0.14)",
   },
-  panelTitle: { color: "#FFFFFF", fontSize: 16, fontWeight: "700", marginBottom: 4 },
-
-  layerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  layerIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 12,
-    backgroundColor: "rgba(168,196,168,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  layerName: {
-    color: "#E8F5E0",
-    fontSize: 12,
-    fontWeight: "600",
-    marginBottom: 6,
+  panelTitle: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 14,
   },
 });
