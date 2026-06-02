@@ -267,9 +267,9 @@ export function MixerSheet() {
               hitSlop={8}
               style={styles.headerBtn}
               accessibilityRole="button"
-              accessibilityLabel="Eliminar mezcla"
+              accessibilityLabel="Terminar mezcla"
             >
-              <Text style={[styles.clearText, { color: colors.mutedForeground }]}>Eliminar</Text>
+              <Text style={[styles.clearText, { color: colors.mutedForeground }]}>Terminar</Text>
             </Pressable>
             <Pressable
               onPress={closeSheet}
