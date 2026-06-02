@@ -39,20 +39,13 @@ const PERKS = [
 function PremiumActiveBanner() {
   return (
     <View style={styles.outerActiveWrap}>
-      {/* Borde dorado con degradado sutil */}
+      {/* Fondo verde oscuro */}
       <LinearGradient
-        colors={["#EBCB82", "#C2913F", "#7A5A26"]}
+        colors={["#1A4231", "#0E2D20"]}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.goldBorder}
+        end={{ x: 0, y: 1 }}
+        style={styles.cardActive}
       >
-        {/* Fondo verde oscuro */}
-        <LinearGradient
-          colors={["#1A4231", "#0E2D20"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.cardActive}
-        >
         {/* Top glow */}
         <View style={styles.topGlow} />
 
@@ -106,7 +99,6 @@ function PremiumActiveBanner() {
             <Text style={[styles.btnText, { color: P.gold }]}>Gestionar membresía</Text>
           </LinearGradient>
         </Pressable>
-        </LinearGradient>
       </LinearGradient>
     </View>
   );
@@ -189,9 +181,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 8,
     borderRadius: 22,
-    borderWidth: 1,
-    borderColor: "rgba(169,122,52,0.45)",
     overflow: "hidden",
+    opacity: 0.82,
     shadowColor: "#06150F",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.6,
@@ -203,15 +194,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderRadius: 22,
     overflow: "hidden",
+    opacity: 0.82,
     shadowColor: "#06150F",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.6,
     shadowRadius: 16,
     elevation: 10,
-  },
-  goldBorder: {
-    borderRadius: 22,
-    padding: 1.5,
   },
   cardActive: {
     borderRadius: 20.5,
