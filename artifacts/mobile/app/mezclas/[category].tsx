@@ -182,7 +182,12 @@ export default function CategoryMixesScreen() {
               { backgroundColor: isPlayingThis ? colors.primary : "rgba(24,17,12,0.55)" },
             ]}
           >
-            <Feather name={isPlayingThis ? "pause" : "play"} size={14} color="#FFFFFF" />
+            <Feather
+              name={isPlayingThis ? "pause" : "play"}
+              size={14}
+              color="#FFFFFF"
+              style={isPlayingThis ? undefined : { marginLeft: 2 }}
+            />
           </View>
         </ImageBackground>
 
