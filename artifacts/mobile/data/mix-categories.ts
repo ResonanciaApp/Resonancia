@@ -1,10 +1,10 @@
 /**
  * CATEGORÍAS DE MEZCLAS — "Mi Música"
  * ─────────────────────────────────────────────────────────────────
- * Las 2 categorías a las que el usuario asigna sus mezclas creadas.
+ * Las 3 categorías a las que el usuario asigna sus mezclas creadas.
  * Cada categoría tiene su imagen de portada (assets/images/mixer/categories).
- * Nota: los IDs internos ("dormir", "motivarme") se mantienen por
- * compatibilidad con el backend; las etiquetas visibles son las nuevas.
+ * Nota: los IDs internos se mantienen por compatibilidad con el backend;
+ * las etiquetas visibles son las que se muestran al usuario.
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather } from "@expo/vector-icons";
@@ -13,7 +13,7 @@ import type { ImageSourcePropType } from "react-native";
 
 type FeatherIconName = ComponentProps<typeof Feather>["name"];
 
-export type MixCategory = "dormir" | "trabajar" | "motivarme";
+export type MixCategory = "dormir" | "trabajar" | "motivarme" | "concentracion";
 
 export type MixCategoryMeta = {
   id: MixCategory;
@@ -26,17 +26,24 @@ export type MixCategoryMeta = {
 export const MIX_CATEGORIES: MixCategoryMeta[] = [
   {
     id: "dormir",
-    label: "Para Dormir",
+    label: "Descanso profundo",
     subtitle: "Mezclas para descansar",
     icon: "moon",
     image: require("@/assets/images/mixer/categories/dormir.jpg"),
   },
   {
     id: "motivarme",
-    label: "Para Meditar",
+    label: "Meditación",
     subtitle: "Calma y presencia",
     icon: "feather",
     image: require("@/assets/images/mixer/categories/motivarme.jpg"),
+  },
+  {
+    id: "concentracion",
+    label: "Concentración",
+    subtitle: "Foco y claridad mental",
+    icon: "zap",
+    image: require("@/assets/images/mixer/categories/concentracion.jpg"),
   },
 ];
 
