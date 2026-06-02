@@ -9,6 +9,7 @@ import {
   Dimensions,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -182,52 +183,53 @@ export function DrawerMenu() {
             </View>
           )}
 
-          {/* Items principales */}
-          <View style={styles.itemGroup}>
-            {mainItems.map((item) => (
-              <Pressable
-                key={item.label}
-                onPress={() => navigate(item.route)}
-                style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
-              >
-                {item.label === "Premium" ? (
-                  <View style={styles.premiumIconCircle}>
-                    <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 16, height: 16 }} contentFit="contain" />
-                  </View>
-                ) : (
+          {/* Items principales + secundarios — scrollable */}
+          <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+            <View style={styles.itemGroup}>
+              {mainItems.map((item) => (
+                <Pressable
+                  key={item.label}
+                  onPress={() => navigate(item.route)}
+                  style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
+                >
+                  {item.label === "Premium" ? (
+                    <View style={styles.premiumIconCircle}>
+                      <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 16, height: 16 }} contentFit="contain" />
+                    </View>
+                  ) : (
+                    <View style={styles.itemIcon}>
+                      <Feather name={item.icon} size={17} color="#FFFFFF" />
+                    </View>
+                  )}
+                  <Text style={[styles.itemLabel, { color: item.label === "Premium" ? "#F5EAC8" : "#FFFFFF" }]}>
+                    {item.label}
+                  </Text>
+                  {item.label === "Premium" && isPremium && (
+                    <View style={styles.premiumCheck}>
+                      <Feather name="check" size={12} color="#5FB98C" />
+                    </View>
+                  )}
+                </Pressable>
+              ))}
+            </View>
+
+            <View style={[styles.divider, { backgroundColor: "#B6955F10", marginVertical: 16 }]} />
+
+            <View style={styles.itemGroup}>
+              {SECONDARY_ITEMS.map((item) => (
+                <Pressable
+                  key={item.label}
+                  onPress={() => navigate(item.route)}
+                  style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
+                >
                   <View style={styles.itemIcon}>
                     <Feather name={item.icon} size={17} color="#FFFFFF" />
                   </View>
-                )}
-                <Text style={[styles.itemLabel, { color: item.label === "Premium" ? "#F5EAC8" : "#FFFFFF" }]}>
-                  {item.label}
-                </Text>
-                {item.label === "Premium" && isPremium && (
-                  <View style={styles.premiumCheck}>
-                    <Feather name="check" size={12} color="#5FB98C" />
-                  </View>
-                )}
-              </Pressable>
-            ))}
-          </View>
-
-          <View style={[styles.divider, { backgroundColor: "#B6955F10", marginVertical: 16 }]} />
-
-          {/* Items secundarios */}
-          <View style={styles.itemGroup}>
-            {SECONDARY_ITEMS.map((item) => (
-              <Pressable
-                key={item.label}
-                onPress={() => navigate(item.route)}
-                style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
-              >
-                <View style={styles.itemIcon}>
-                  <Feather name={item.icon} size={17} color="#FFFFFF" />
-                </View>
-                <Text style={[styles.itemLabel, styles.itemLabelMuted, { color: "#FFFFFF" }]}>{item.label}</Text>
-              </Pressable>
-            ))}
-          </View>
+                  <Text style={[styles.itemLabel, styles.itemLabelMuted, { color: "#FFFFFF" }]}>{item.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </ScrollView>
         </LinearGradient>
       </Animated.View>
     </View>
