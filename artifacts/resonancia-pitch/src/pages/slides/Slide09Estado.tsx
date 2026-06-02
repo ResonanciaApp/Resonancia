@@ -17,7 +17,12 @@ export default function Slide09Estado() {
       {/* Two columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
         <div style={{ flex: 1, backgroundColor: "#24160F", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#C69B4F", marginBottom: "2.2vh" }}>Construido</div>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#C69B4F", marginBottom: "2.2vh", display: "flex", alignItems: "center", gap: "0.7vw" }}>
+            Construido
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "1.8vw", height: "1.8vw", flexShrink: 0 }}>
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
           <div style={{ fontSize: "1.6vw", color: "#cbb9a4", lineHeight: 1.7 }}>
             App iOS y Android funcional · Catálogo de sesiones y reproductor · Comunidad, diario y perfiles · Infraestructura de audio y backend · Diseño y marca definidos
           </div>
