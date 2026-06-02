@@ -400,6 +400,30 @@ export default function ProfileScreen() {
           )}
         </View>
 
+        {/* ── Mis herramientas ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis herramientas</Text>
+          <View style={[styles.journeyCard, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}>
+            <Pressable
+              onPress={() => router.push("/diario" as never)}
+              style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
+            >
+              <Feather name="feather" size={16} color={colors.accent} />
+              <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Mi Diario</Text>
+              <Feather name="chevron-right" size={16} color={colors.border} />
+            </Pressable>
+            <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
+            <Pressable
+              onPress={() => router.push("/respiracion" as never)}
+              style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
+            >
+              <Feather name="wind" size={16} color={colors.accent} />
+              <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Ejercicios de respiración</Text>
+              <Feather name="chevron-right" size={16} color={colors.border} />
+            </Pressable>
+          </View>
+        </View>
+
         {/* ── Membresía ── */}
         <Pressable
           onPress={() => router.push("/membresia" as never)}

@@ -293,51 +293,6 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* ── MI DIARIO + EJERCICIOS DE RESPIRACIÓN ── */}
-        <View style={[styles.section, { marginBottom: 24 }]}>
-          <View style={styles.squareRow}>
-            <Pressable
-              onPress={() => router.push("/diario" as never)}
-              style={({ pressed }) => [styles.squareCard, { opacity: pressed ? 0.85 : 1 }]}
-            >
-              <LinearGradient
-                colors={["#2A1F10", "#1C130A"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-              <View style={styles.diarioIconWrap}>
-                <Feather name="feather" size={22} color={colors.accent} />
-              </View>
-              <Text style={[styles.squareTitle, { color: colors.foreground }]}>Mi Diario</Text>
-              <Text style={[styles.squareSub, { color: colors.mutedForeground }]} numberOfLines={2}>
-                Tus reflexiones, ideas y mensajes de voz
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={() => router.push("/respiracion" as never)}
-              style={({ pressed }) => [styles.squareCard, { opacity: pressed ? 0.85 : 1 }]}
-            >
-              <LinearGradient
-                colors={["#2A1F10", "#1C130A"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-              <View style={styles.diarioIconWrap}>
-                <Feather name="wind" size={22} color={colors.accent} />
-              </View>
-              <Text style={[styles.squareTitle, { color: colors.foreground }]}>
-                Ejercicios de respiración
-              </Text>
-              <Text style={[styles.squareSub, { color: colors.mutedForeground }]} numberOfLines={2}>
-                4-7-8 · Cuadrada · Coherencia
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-
         {/* ── 7. NUEVAS SESIONES ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
