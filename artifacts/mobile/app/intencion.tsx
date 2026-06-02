@@ -153,8 +153,8 @@ export default function IntencionScreen() {
                   style={({ pressed }) => [
                     styles.ideaChip,
                     {
-                      backgroundColor: text === idea ? colors.primary + "22" : colors.card,
-                      borderColor: text === idea ? colors.primary + "66" : colors.border,
+                      backgroundColor: text === idea ? "rgba(198,155,79,0.10)" : "rgba(255,255,255,0.04)",
+                      borderColor: text === idea ? "rgba(198,155,79,0.35)" : "rgba(255,255,255,0.07)",
                       opacity: pressed ? 0.75 : 1,
                     },
                   ]}

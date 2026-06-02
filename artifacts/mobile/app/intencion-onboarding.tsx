@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -48,14 +47,8 @@ export default function IntencionOnboardingScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Icon */}
-        <View style={styles.iconWrap}>
-          <LinearGradient
-            colors={["#3D2B1A", "#5C3D20"]}
-            style={[StyleSheet.absoluteFill, { borderRadius: 24 }]}
-          />
-          <View style={styles.iconInner}>
-            <Feather name="target" size={28} color={colors.primary} />
-          </View>
+        <View style={[styles.iconWrap, { backgroundColor: "rgba(198,155,79,0.09)", borderColor: "rgba(198,155,79,0.20)" }]}>
+          <Feather name="target" size={28} color={colors.primary} />
         </View>
 
         {/* Title */}
@@ -65,22 +58,22 @@ export default function IntencionOnboardingScreen() {
         </Text>
 
         {/* Tips card */}
-        <View style={[styles.tipsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.tipsCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(198,155,79,0.12)" }]}>
           <Text style={[styles.tipsTitle, { color: colors.foreground }]}>Las mejores intenciones...</Text>
           <View style={styles.tipsList}>
             {TIPS.map((tip) => (
               <View key={tip} style={styles.tipRow}>
-                <View style={[styles.checkCircle, { backgroundColor: colors.primary + "22", borderColor: colors.primary + "55" }]}>
+                <View style={[styles.checkCircle, { backgroundColor: "rgba(198,155,79,0.10)", borderColor: "rgba(198,155,79,0.25)" }]}>
                   <Feather name="check" size={12} color={colors.primary} />
                 </View>
-                <Text style={[styles.tipText, { color: colors.foreground }]}>{tip}</Text>
+                <Text style={[styles.tipText, { color: colors.mutedForeground }]}>{tip}</Text>
               </View>
             ))}
           </View>
         </View>
 
         {/* Example */}
-        <View style={[styles.exampleCard, { backgroundColor: "#1E1209", borderColor: colors.primary + "33" }]}>
+        <View style={[styles.exampleCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "rgba(198,155,79,0.15)" }]}>
           <Text style={[styles.exampleLabel, { color: colors.primary }]}>EJEMPLO</Text>
           <Text style={[styles.exampleHoy, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
           <Text style={[styles.exampleText, { color: colors.foreground }]}>
@@ -116,15 +109,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 8,
     marginBottom: 28,
-    overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(182,149,95,0.25)",
-  },
-  iconInner: {
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   title: {
