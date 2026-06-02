@@ -118,14 +118,14 @@ export function AlmaCommunitySection() {
       {isLoading ? (
         <ActivityIndicator color={colors.primary} style={{ marginTop: 16 }} />
       ) : preview.length === 0 ? (
-        <View style={[styles.emptyRow, { borderColor: "rgba(255,255,255,0.06)" }]}>
+        <View style={styles.emptyRow}>
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             Sé la primera persona en compartir algo hoy
           </Text>
         </View>
       ) : (
         <View style={styles.messagesList}>
-          {preview.map((msg, i) => {
+          {preview.map((msg) => {
             const msLeft = new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
             const isExpiring = msLeft < 3 * 60 * 60 * 1000;
             const isLiked = likedIds.has(msg.id);
@@ -136,8 +136,9 @@ export function AlmaCommunitySection() {
                 style={({ pressed }) => [
                   styles.msgCard,
                   {
-                    backgroundColor: "rgba(255,255,255,0.04)",
-                    borderColor: i === 0 ? "rgba(198,155,79,0.14)" : "rgba(255,255,255,0.06)",
+                    borderBottomColor: isExpiring
+                      ? "rgba(192,112,90,0.20)"
+                      : "rgba(255,255,255,0.07)",
                     opacity: pressed ? 0.8 : 1,
                   },
                 ]}
@@ -236,24 +237,19 @@ const styles = StyleSheet.create({
   composeChipText: { fontSize: 12, fontWeight: "600" },
 
   emptyRow: {
-    borderWidth: 1,
-    borderRadius: 14,
     paddingVertical: 20,
-    paddingHorizontal: 16,
     alignItems: "center",
     marginTop: 2,
   },
   emptyText: { fontSize: 13, textAlign: "center" },
 
-  messagesList: { gap: 8 },
+  messagesList: {},
   msgCard: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 10,
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 11,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   avatar: {
     width: 34,
