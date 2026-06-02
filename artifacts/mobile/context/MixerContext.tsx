@@ -302,6 +302,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       //    cuando el audio en loop llega al final del archivo y reinicia,
       //    status.playing baja unos frames → sin el debounce pausaría todo.
       if (typeof status.playing === "boolean" && status.playing !== isPlayingRef.current) {
+        console.log(`[MIXER] owner playing=${status.playing} mixShouldPlay=${isPlayingRef.current} inIgnore=${Date.now() < ignoreLockUntilRef.current} djf=${status.didJustFinish}`);
         if (Date.now() < ignoreLockUntilRef.current) return;
         // Frontera del loop: el track terminó un ciclo y reinicia. NO es una
         // acción del usuario → ignorar para no pausar toda la mezcla.
@@ -311,6 +312,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           playingFalseTimerRef.current = setTimeout(() => {
             playingFalseTimerRef.current = null;
             if (!isPlayingRef.current) return; // ya pausado por otra vía
+            console.log(`[MIXER] owner -> applyPlaying(false) (pausando toda la mezcla)`);
             applyPlayingRef.current(false);
           }, 350);
         } else {
@@ -362,6 +364,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // ignore
     }
   }, []);
+
+  // Pre-calentar la sesión de audio al montar el provider. ensureAudioMode es
+  // async; en toggleSound se llama sin await (`void`), así que en arranque en
+  // frío el primer play() puede correr ANTES de que iOS configure la sesión y
+  // el primer sonido sale en SILENCIO. Configurándola acá (mucho antes de que
+  // el usuario toque un sonido) la sesión ya está lista en el primer tap.
+  useEffect(() => {
+    void ensureAudioMode();
+  }, [ensureAudioMode]);
 
   const createPlayerFor = useCallback((id: string, volume: number) => {
     const file = SOUND_MAP[id];
