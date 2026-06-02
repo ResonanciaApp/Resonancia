@@ -6,9 +6,11 @@
  * SOUND_MAP). La pantalla inmersiva (app/inmersivo.tsx) reutiliza el motor
  * multicapa del mixer en vez de duplicarlo.
  *
- * El PRIMER id de la lista es la capa base (arranca al tocar la card y define
- * la imagen de fondo). Las capas extra se suman automáticamente al abrir la
- * pantalla inmersiva (p. ej. "Riachuelo con Pájaros" = río + pájaros).
+ * El PRIMER id de la lista es la capa base / "fondo": arranca al tocar la card,
+ * define la imagen de fondo y suena siempre (no se lista ni se puede quitar en
+ * Ambiente). El resto de la sesión empieza SOLO con ese fondo; el usuario suma
+ * sonidos ambiente manualmente desde "+ Sonidos". Las capas extra de la lista
+ * (p. ej. "pajaros" en #27) ya NO se auto-cargan.
  * ─────────────────────────────────────────────────────────────────
  */
 export const NATURE_BASE_MAP: Record<string, string[]> = {

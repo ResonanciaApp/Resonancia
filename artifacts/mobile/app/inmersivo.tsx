@@ -65,7 +65,7 @@ export default function InmersivoScreen() {
   const { activeSounds, isPlaying, togglePlay, toggleSound, setVolume, sleepTimerRemaining, stopAll } =
     useMixer();
 
-  const params = useLocalSearchParams<{ title?: string; baseId?: string; extras?: string }>();
+  const params = useLocalSearchParams<{ title?: string; baseId?: string }>();
   const baseId = typeof params.baseId === "string" && params.baseId ? params.baseId : undefined;
   const title = typeof params.title === "string" ? params.title : undefined;
 
@@ -81,29 +81,6 @@ export default function InmersivoScreen() {
   // Imagen de fondo estable = sonido base.
   const bgImage = baseId ? getSoundImage(baseId) : undefined;
   const headerName = (baseId && getSoundById(baseId)?.name) || title || "Sonido natural";
-
-  // Capas extra a sumar al montar (p. ej. pájaros sobre el río). Se agregan de
-  // a una por ciclo de render porque toggleSound no se puede encadenar.
-  const pendingExtrasRef = useRef<string[]>(
-    (() => {
-      try {
-        const raw = typeof params.extras === "string" ? params.extras : "[]";
-        const arr = JSON.parse(raw);
-        return Array.isArray(arr) ? arr.filter((x) => typeof x === "string") : [];
-      } catch {
-        return [];
-      }
-    })(),
-  );
-
-  useEffect(() => {
-    if (pendingExtrasRef.current.length === 0) return;
-    const next = pendingExtrasRef.current[0];
-    pendingExtrasRef.current = pendingExtrasRef.current.slice(1);
-    if (next && !activeSounds.some((s) => s.id === next)) {
-      toggleSound(next);
-    }
-  }, [activeSounds, toggleSound]);
 
   // Si no queda ninguna capa (timer terminó o el usuario las quitó todas),
   // volver a Música y Sonidos. Se evita el disparo inicial con un guard.
@@ -143,7 +120,12 @@ export default function InmersivoScreen() {
     [],
   );
 
+  // El sonido base es el "fondo" de la sesión: suena siempre, NO se lista en
+  // Ambiente y no se puede quitar. Ambiente = solo las capas que suma el usuario.
+  const ambientLayers = activeSounds.filter((s) => s.id !== baseId);
+
   const handleAddLayer = (sound: MixSound) => {
+    if (sound.id === baseId) return; // el fondo no se quita desde el picker
     if (!hasSoundFile(sound.id)) return;
     const already = activeSounds.some((s) => s.id === sound.id);
     if (!already && sound.isPremium && !isPremium) {
@@ -232,7 +214,10 @@ export default function InmersivoScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ gap: 12, paddingTop: 4 }}
         >
-          {activeSounds.map((layer) => {
+          {ambientLayers.length === 0 && (
+            <Text style={styles.emptyAmbientText}>Elige tu sonido ambiente</Text>
+          )}
+          {ambientLayers.map((layer) => {
             const sound = getSoundById(layer.id);
             if (!sound) return null;
             return (
@@ -286,13 +271,14 @@ export default function InmersivoScreen() {
                       <Text style={styles.catLabel}>{cat.label}</Text>
                       <View style={styles.pickerGrid}>
                         {cat.sounds.map((sound) => {
+                          const isBase = sound.id === baseId;
                           const active = activeSounds.some((s) => s.id === sound.id);
                           const available = hasSoundFile(sound.id);
                           const locked = !!sound.isPremium && !isPremium;
                           return (
                             <Pressable
                               key={sound.id}
-                              disabled={!available}
+                              disabled={!available || isBase}
                               onPress={() => handleAddLayer(sound)}
                               style={({ pressed }) => [
                                 styles.pickerItem,
@@ -313,7 +299,9 @@ export default function InmersivoScreen() {
                               <Text style={styles.pickerName} numberOfLines={1}>
                                 {sound.name}
                               </Text>
-                              {!available ? (
+                              {isBase ? (
+                                <Text style={styles.pickerTag}>Fondo</Text>
+                              ) : !available ? (
                                 <Text style={styles.pickerTag}>Próximamente</Text>
                               ) : locked ? (
                                 <Feather name="lock" size={11} color="#D6A85B" />
@@ -418,6 +406,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   panelTitle: { color: "#FFFFFF", fontSize: 16, fontWeight: "700" },
+  emptyAmbientText: {
+    color: "rgba(232,245,224,0.5)",
+    fontSize: 13,
+    paddingVertical: 14,
+  },
   addBtn: {
     flexDirection: "row",
     alignItems: "center",

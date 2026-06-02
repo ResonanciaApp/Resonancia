@@ -23,6 +23,7 @@ import { ArtistCard } from "@/components/ArtistCard";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { getNatureBaseSounds } from "@/config/nature-base-map";
+import { hasSoundFile } from "@/data/sounds";
 import { getFeaturedArtists } from "@/data/artists";
 import { useMixer } from "@/context/MixerContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -116,10 +117,10 @@ export default function MusicaSonidosScreen() {
     }
     const session = pendingSession;
     setPendingSession(null);
-    const bases = getNatureBaseSounds(session.id) ?? [];
-    // Sin sonido base mapeado no hay nada que reproducir: limpiar y abortar
-    // para no entrar a la pantalla inmersiva heredando una mezcla vieja.
-    if (bases.length === 0) {
+    const base = getNatureBaseSounds(session.id)?.[0];
+    // Sin sonido base válido (mapeado y con archivo) no hay nada que reproducir:
+    // limpiar y abortar para no entrar a la inmersiva heredando una mezcla vieja.
+    if (!base || !hasSoundFile(base)) {
       stopAll();
       return;
     }
@@ -129,8 +130,7 @@ export default function MusicaSonidosScreen() {
       pathname: "/inmersivo",
       params: {
         title: session.title,
-        baseId: bases[0] ?? "",
-        extras: JSON.stringify(bases.slice(1)),
+        baseId: base,
       },
     } as never);
   };
@@ -268,15 +268,15 @@ export default function MusicaSonidosScreen() {
                       if (session.isPremium && !isPremium) {
                         router.push("/membresia" as never);
                       } else if (session.soundTag === "Sonidos Naturaleza") {
-                        // Modelo inmersivo: arranca el sonido al instante y
-                        // abre el timer. La capa base se inicia ya; las extras
-                        // se suman en la pantalla inmersiva.
+                        // Modelo inmersivo: arranca el sonido base (fondo) al
+                        // instante y abre el timer. En la inmersiva el usuario
+                        // suma sonidos ambiente sobre ese fondo.
                         const base = getNatureBaseSounds(session.id)?.[0];
-                        if (base) {
+                        if (base && hasSoundFile(base)) {
                           stopAll();
                           toggleSound(base);
+                          setPendingSession(session);
                         }
-                        setPendingSession(session);
                       } else {
                         // Música Ambient / Enteógena → pistas con duración fija
                         playSession(session);
