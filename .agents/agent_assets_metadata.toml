@@ -510,6 +510,102 @@ uri = "file://artifacts/mobile/assets/images/mixer/frecuencias.png"
 type = "image"
 title = "brain waves neon abstract"
 
+[[generated]]
+id = "3MRYI7Kdqcg5k1v9v_WTb"
+uri = "file://artifacts/mobile/assets/images/mixer/grillos.png"
+type = "image"
+title = "crickets fireflies night grass"
+
+[[generated]]
+id = "n-uPAW4qJ2z7B8eZxGlF4"
+uri = "file://artifacts/mobile/assets/images/mixer/arroyo.png"
+type = "image"
+title = "gentle stream mossy forest"
+
+[[generated]]
+id = "yO4cEoZFET0nyBsEmYoKP"
+uri = "file://artifacts/mobile/assets/images/mixer/cuenco_grave.png"
+type = "image"
+title = "large tibetan bronze bowl macro"
+
+[[generated]]
+id = "0c6JU96s9-CDEp0dPOmqK"
+uri = "file://artifacts/mobile/assets/images/mixer/cuenco_agudo.png"
+type = "image"
+title = "small silver tibetan bowl mallet"
+
+[[generated]]
+id = "dVs7HPmBoEgUgQUjgJ6Oz"
+uri = "file://artifacts/mobile/assets/images/mixer/cuarzo_sol.png"
+type = "image"
+title = "crystal bowl golden sunlight water rings"
+
+[[generated]]
+id = "atxA3r3LOmXoJQM-TDv3n"
+uri = "file://artifacts/mobile/assets/images/mixer/cuarzo_corazon.png"
+type = "image"
+title = "rose quartz heart crystal pink"
+
+[[generated]]
+id = "YGQpz80XyT3xIXdIRlfS4"
+uri = "file://artifacts/mobile/assets/images/mixer/gong_planetario.png"
+type = "image"
+title = "cosmic planetary gong nebula space"
+
+[[generated]]
+id = "1pBonXut6qOO1t4kMkQhg"
+uri = "file://artifacts/mobile/assets/images/mixer/campanas_bambu.png"
+type = "image"
+title = "bamboo chimes macro detail zen"
+
+[[generated]]
+id = "OvoOa9PzYOWabl1S_KBaV"
+uri = "file://artifacts/mobile/assets/images/mixer/mantra_soham.png"
+type = "image"
+title = "soham mantra sanskrit lotus candle"
+
+[[generated]]
+id = "BL7Wkukd9R6vIDDlH-XQC"
+uri = "file://artifacts/mobile/assets/images/mixer/solfeggio_432.png"
+type = "image"
+title = "432hz tuning fork water ripples golden"
+
+[[generated]]
+id = "Y5lR0Q4AZYbLnZftfiBrJ"
+uri = "file://artifacts/mobile/assets/images/mixer/solfeggio_396.png"
+type = "image"
+title = "396hz cymatics red sand sacred"
+
+[[generated]]
+id = "ODssUduHbe458Yg4rgl0v"
+uri = "file://artifacts/mobile/assets/images/mixer/onda_theta.png"
+type = "image"
+title = "theta wave indigo deep meditation"
+
+[[generated]]
+id = "V4dE6FWXdAYCr6BzYPb5q"
+uri = "file://artifacts/mobile/assets/images/mixer/onda_alpha.png"
+type = "image"
+title = "alpha wave teal calm awareness"
+
+[[generated]]
+id = "Pq4uiFjvebIvfYsakko4F"
+uri = "file://artifacts/mobile/assets/images/mixer/onda_beta.png"
+type = "image"
+title = "beta wave blue electric focus"
+
+[[generated]]
+id = "OAEF5iq1JVmWzUinZxml0"
+uri = "file://artifacts/mobile/assets/images/mixer/onda_gamma.png"
+type = "image"
+title = "gamma wave violet lightning peak clarity"
+
+[[generated]]
+id = "4hb1t0cOIz91FHbAkf87G"
+uri = "file://artifacts/mobile/assets/images/mixer/ruido_azul.png"
+type = "image"
+title = "blue noise cobalt abstract static"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

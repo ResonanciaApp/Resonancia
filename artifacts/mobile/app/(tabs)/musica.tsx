@@ -75,18 +75,18 @@ export default function MiMusicaScreen() {
         key={sound.id}
         onPress={() => handleSoundPress(sound)}
         disabled={!available}
-        style={[
-          styles.soundCard,
-          {
-            backgroundColor: colors.card,
-            borderColor: active ? colors.primary : "rgba(255,255,255,0.06)",
-            borderWidth: active ? 2 : StyleSheet.hairlineWidth,
-            opacity: available ? 1 : 0.55,
-          },
-        ]}
+        style={[styles.soundCard, { opacity: available ? 1 : 0.5 }]}
       >
         {/* Imagen — ocupa la parte superior cuadrada */}
-        <View style={styles.cardImageWrap}>
+        <View
+          style={[
+            styles.cardImageWrap,
+            {
+              borderColor: active ? colors.primary : "transparent",
+              borderWidth: active ? 2 : 0,
+            },
+          ]}
+        >
           {image ? (
             <ImageBackground
               source={image}
@@ -267,13 +267,12 @@ const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   soundCard: {
     width: "31%",
-    borderRadius: 14,
-    overflow: "hidden",
   },
   cardImageWrap: {
     width: "100%",
     aspectRatio: 1,
     overflow: "hidden",
+    borderRadius: 12,
   },
   cardImage: { width: "100%", height: "100%" },
   cardImageInner: { borderRadius: 0 },
