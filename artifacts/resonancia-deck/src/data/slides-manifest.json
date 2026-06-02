@@ -28,44 +28,12 @@
     "position": 4,
     "filepath": "src/pages/slides/Slide03Biblioteca.tsx",
     "title": "Biblioteca de sesiones",
-    "description": "300+ sesiones en 4 categorías.",
-    "speakerNotes": ""
-  },
-  {
-    "id": "b1c2d3e4-0005-4000-8000-sonidosanc01",
-    "position": 5,
-    "filepath": "src/pages/slides/SlideA1SonidosAncestales.tsx",
-    "title": "Sonidos Ancestrales",
-    "description": "Cuencos tibetanos, gongs, frecuencias sagradas y binaural beats.",
-    "speakerNotes": ""
-  },
-  {
-    "id": "b2c3d4e5-0006-4000-8000-meditacion01",
-    "position": 6,
-    "filepath": "src/pages/slides/SlideA2MeditacionesGuiadas.tsx",
-    "title": "Meditaciones Guiadas",
-    "description": "Viajes interiores guiados por voces certificadas.",
-    "speakerNotes": ""
-  },
-  {
-    "id": "b3c4d5e6-0007-4000-8000-musicason01",
-    "position": 7,
-    "filepath": "src/pages/slides/SlideA3MusicaSonidos.tsx",
-    "title": "Música y Sonidos",
-    "description": "Atmósferas sonoras, música ambient y enteógena.",
-    "speakerNotes": ""
-  },
-  {
-    "id": "b4c5d6e7-0008-4000-8000-podcast0001",
-    "position": 8,
-    "filepath": "src/pages/slides/SlideA4Podcast.tsx",
-    "title": "HaciaAdentro · PodCast",
-    "description": "Conversaciones que despiertan el alma.",
+    "description": "300+ sesiones en 4 categorías — abanico de 4 mockups.",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0005-4000-8000-resonancia004",
-    "position": 9,
+    "position": 5,
     "filepath": "src/pages/slides/Slide04Reproductor.tsx",
     "title": "El reproductor",
     "description": "Experiencia de escucha inmersiva.",
@@ -73,7 +41,7 @@
   },
   {
     "id": "b5c6d7e8-0010-4000-8000-herramien01",
-    "position": 10,
+    "position": 6,
     "filepath": "src/pages/slides/SlideB1Herramientas.tsx",
     "title": "El ecosistema — Herramientas secundarias",
     "description": "Muro de Agradecimiento, Diario, Amigos/Grupos y Respiración.",
@@ -81,7 +49,7 @@
   },
   {
     "id": "a1b2c3d4-0006-4000-8000-resonancia007",
-    "position": 11,
+    "position": 7,
     "filepath": "src/pages/slides/Slide07Cierre.tsx",
     "title": "RESONANCIA — Cierre",
     "description": "Casa del Cuenco, disponible en iOS y Android.",
