@@ -89,7 +89,7 @@ export default function FavoritesScreen() {
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
             hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: colors.card }]}
+            style={[styles.backBtn, { backgroundColor: "rgba(255,255,255,0.04)" }]}
           >
             <Feather name="chevron-left" size={20} color={colors.foreground} />
           </Pressable>
@@ -106,7 +106,7 @@ export default function FavoritesScreen() {
           <View
             style={[
               styles.searchWrap,
-              { backgroundColor: colors.card },
+              { backgroundColor: "rgba(255,255,255,0.04)", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.07)" },
             ]}
           >
             <Feather name="search" size={16} color={colors.mutedForeground} />
@@ -168,8 +168,8 @@ export default function FavoritesScreen() {
                     style={[
                       styles.chip,
                       {
-                        backgroundColor: activeTag === null ? colors.primary : colors.card,
-                        borderColor: activeTag === null ? colors.primary : colors.border,
+                        backgroundColor: activeTag === null ? colors.primary : "rgba(255,255,255,0.04)",
+                        borderColor: activeTag === null ? colors.primary : "rgba(255,255,255,0.07)",
                       },
                     ]}
                   >
@@ -191,8 +191,8 @@ export default function FavoritesScreen() {
                         style={[
                           styles.chip,
                           {
-                            backgroundColor: active ? colors.primary : colors.card,
-                            borderColor: active ? colors.primary : colors.border,
+                            backgroundColor: active ? colors.primary : "rgba(255,255,255,0.04)",
+                            borderColor: active ? colors.primary : "rgba(255,255,255,0.07)",
                           },
                         ]}
                       >
@@ -215,7 +215,7 @@ export default function FavoritesScreen() {
                 <View
                   style={[
                     styles.emptySmall,
-                    { backgroundColor: colors.card, marginTop: 8 },
+                    { backgroundColor: "rgba(255,255,255,0.04)", marginTop: 8 },
                   ]}
                 >
                   <Feather name="filter" size={18} color={colors.border} />
