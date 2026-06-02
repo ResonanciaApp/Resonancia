@@ -29,6 +29,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SaveMixCelebration } from "@/components/SaveMixCelebration";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
+import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory, getCategoryMeta } from "@/data/mix-categories";
@@ -49,14 +50,18 @@ type SaveMode = "new" | "update";
 /** Superficie negra translúcida y sobria (botones guardar / temporizador). */
 const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 
-/** Degradé negro sobrio para la miniatura. */
-const THUMB_GRADIENT = ["#26201A", "#000000"] as const;
+/** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
+const DARK_GRADIENT = ["#1C150F", "#080503"] as const;
 
-/** Miniatura circular de la pista: degradé negro sobrio. */
-function TrackThumb() {
+/** Miniatura circular de la pista: imagen del sonido (fallback degradé negro). */
+function TrackThumb({ sound }: { sound: MixSound }) {
+  const image = getSoundImage(sound.id);
+  if (image) {
+    return <ImageBackground source={image} style={styles.thumb} imageStyle={styles.thumbRadius} />;
+  }
   return (
     <LinearGradient
-      colors={THUMB_GRADIENT}
+      colors={DARK_GRADIENT}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.thumb}
@@ -238,10 +243,17 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: colors.card, paddingBottom: insets.bottom + 16 },
+            { backgroundColor: DARK_GRADIENT[1], paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
+          <LinearGradient
+            colors={DARK_GRADIENT}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.sheetGradient}
+            pointerEvents="none"
+          />
           <View style={[styles.handle, { backgroundColor: colors.border }]} />
 
           <View style={styles.headerRow}>
@@ -284,7 +296,7 @@ export function MixerSheet() {
                 style={[styles.trackRow, { backgroundColor: colors.background, borderColor: colors.border }]}
               >
                 <View style={styles.trackTop}>
-                  <TrackThumb />
+                  <TrackThumb sound={sound} />
 
                   <View style={styles.trackInfo}>
                     <Text style={[styles.trackName, { color: colors.foreground }]} numberOfLines={1}>
@@ -567,6 +579,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     maxHeight: "85%",
   },
+  sheetGradient: {
+    ...StyleSheet.absoluteFillObject,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
   handle: {
     alignSelf: "center",
     width: 40,
@@ -599,7 +616,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 11,
   },
-  thumb: { width: 40, height: 40, borderRadius: 20 },
+  thumb: { width: 40, height: 40, borderRadius: 20, overflow: "hidden" },
+  thumbRadius: { borderRadius: 20 },
   trackInfo: { flex: 1 },
   trackName: { fontSize: 15, fontWeight: "600" },
   reorderPill: {
