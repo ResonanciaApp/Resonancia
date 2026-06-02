@@ -65,12 +65,9 @@ function resolveMixArtworkUrl(imageKey?: string): string | undefined {
 export const MAX_ACTIVE_SOUNDS = 10;
 const PRESETS_KEY = "@resonance_mixer_presets";
 const DEFAULT_VOLUME = 0.7;
-/**
- * Duración (segundos) del fade de volumen en cada borde del loop. El loop nativo
- * reinicia el archivo de golpe (corte audible); modulando el volumen a ~0 justo
- * antes del final y subiéndolo de nuevo al reiniciar, el empalme queda suave.
- */
-const LOOP_FADE_SEC = 1.5;
+
+/** Las dos capas del mismo sonido que se crossfadean entre sí (ver MixerContext). */
+type SoundPlayers = { a: AudioPlayer; b: AudioPlayer };
 
 export type ActiveSound = { id: string; volume: number };
 export type MixPreset = {
@@ -136,10 +133,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const [loadedPresetId, setLoadedPresetId] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  /** Un AudioPlayer por sonido activo, keyed por sound id */
-  const playersRef = useRef<Map<string, AudioPlayer>>(new Map());
-  /** Subscripción de fallback de loop por sonido (para reiniciar al terminar). */
-  const loopSubsRef = useRef<Map<string, { remove: () => void }>>(new Map());
+  /**
+   * Dos capas (a/b) del MISMO sonido por id, para el crossfade del loop. Las dos
+   * suenan en loop nativo desfasadas media vuelta: cuando una llega a su corte
+   * (volumen 0) la otra está en su pico, así el empalme es imperceptible. La capa
+   * `a` es además el ancla del lock-screen (siempre playing=true).
+   */
+  const playersRef = useRef<Map<string, SoundPlayers>>(new Map());
+  /** Subscripciones de status (fade) por sonido: una por capa. */
+  const loopSubsRef = useRef<Map<string, { remove: () => void }[]>>(new Map());
   /**
    * Volumen "objetivo" elegido por el usuario para cada sonido. El volumen REAL
    * del player se modula con un fade en los bordes del loop (ver createPlayerFor),
@@ -197,9 +199,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       playingFalseTimerRef.current = null;
     }
     isPlayingRef.current = next; // sincrónico: el listener del lock screen lo lee
-    playersRef.current.forEach((p) => {
+    playersRef.current.forEach((pair) => {
       try {
-        next ? p.play() : p.pause();
+        if (next) {
+          pair.a.play();
+          pair.b.play();
+        } else {
+          pair.a.pause();
+          pair.b.pause();
+        }
       } catch {
         // ignore
       }
@@ -248,7 +256,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
    * sonido), se transfiere al siguiente. Si no queda ninguno, se limpia.
    */
   const syncLockScreen = useCallback(() => {
-    const first = playersRef.current.values().next().value as AudioPlayer | undefined;
+    // El ancla del Now Playing es la capa `a` del primer sonido (siempre suena).
+    const firstPair = playersRef.current.values().next().value as SoundPlayers | undefined;
+    const first = firstPair?.a;
     if (!first) {
       clearLockScreen();
       return;
@@ -404,101 +414,139 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     void ensureAudioMode();
   }, [ensureAudioMode]);
 
-  const createPlayerFor = useCallback((id: string, volume: number) => {
+  const createPlayerFor = useCallback((id: string, volume: number): SoundPlayers | null => {
     const file = SOUND_MAP[id];
     if (!file) return null;
     try {
-      // Patrón de loop PROBADO en device (idéntico al de PlayerContext para las
-      // loop sessions): createAudioPlayer(null) → loop=true → replace(file) →
-      // play(). El flag `loop` nativo seteado ANTES de cargar el item produce un
-      // loop sin cortes en iOS/Android, y NO hay que tocarlo más.
-      //
-      // Importante: NO reiniciar manualmente en `didJustFinish` ni forzar
-      // `play()` repetido desde el listener. Eso peleaba con el loop nativo:
-      // hacía que status.playing oscilara a false, lo que disparaba el listener
-      // del lock-screen y pausaba toda la mezcla a los pocos segundos (síntoma:
-      // "se escucha 2s y se pausa" / "se apaga al llegar al final del audio").
-      // updateInterval bajo (120 ms) para que el fade de volumen en los bordes
-      // del loop se vea continuo y no escalonado.
-      const player = createAudioPlayer(null, { updateInterval: 120 });
-      player.loop = true;
-      player.replace(file);
-      player.volume = volume;
       baseVolumesRef.current.set(id, volume);
-      // En web, replace() reconstruye el elemento <audio> con loop=false, así que
-      // ahí (y solo ahí) hay que re-asegurar el flag en cada status update. En
-      // nativo el loop ya quedó configurado y no se vuelve a tocar.
-      const sub = player.addListener("playbackStatusUpdate", (status) => {
-        if (playersRef.current.get(id) !== player) return;
-        if (Platform.OS === "web" && !player.loop) {
-          try {
-            player.loop = true;
-          } catch {
-            // ignore
+
+      // ── Crossfade del loop con DOS capas ─────────────────────────────────
+      // Un solo audio no puede solaparse consigo mismo, así que el corte del
+      // loop nativo siempre se nota (aunque se le haga un dip de volumen).
+      // Solución: dos copias del mismo sonido en loop nativo, desfasadas media
+      // vuelta. A cada una se le aplica un gain = |sin(pi * pos/dur)| según su
+      // propia posición. Como están desfasadas dur/2, sus fases cumplen
+      // gainA² + gainB² = sin² + cos² = 1 → crossfade de POTENCIA CONSTANTE:
+      // cuando una capa llega a su corte (gain 0) la otra está en su pico, y la
+      // suma percibida no varía. El empalme queda imperceptible.
+      //
+      // Importante: las dos capas NUNCA paran (loop nativo) → status.playing
+      // siempre true → no dispara el guard de pausa del lock-screen ni hace
+      // falta reiniciar a mano. updateInterval bajo (120 ms) para que el gain
+      // varíe de forma continua. El listener sigue corriendo en background.
+      const makeLayer = () => {
+        const p = createAudioPlayer(null, { updateInterval: 120 });
+        p.loop = true;
+        p.replace(file);
+        p.volume = 0; // arranca en 0; el gain del fade lo sube
+        return p;
+      };
+      const a = makeLayer();
+      const b = makeLayer();
+      const pair: SoundPlayers = { a, b };
+
+      // La capa B se desfasa media vuelta una sola vez, cuando ya hay duración.
+      let bOffsetApplied = false;
+      // Phase-lock: dos players nativos independientes pueden ir driftando en
+      // sesiones de horas (cada uno reinicia su loop en un instante ligeramente
+      // distinto). Si se rompe el desfase de 180°, sin²+cos² deja de dar 1 y
+      // reaparece la ondulación de volumen. Periódicamente recentramos B hacia
+      // A+dur/2, PERO solo cuando B está casi en silencio (gain bajo, o sea cerca
+      // de su borde de loop) para que el seek sea inaudible. Throttle a 2 s.
+      let lastResync = 0;
+
+      const attachFade = (p: AudioPlayer, isSecondary: boolean) => {
+        return p.addListener("playbackStatusUpdate", (status) => {
+          const cur = playersRef.current.get(id);
+          if (!cur || (cur.a !== p && cur.b !== p)) return; // player viejo
+          if (Platform.OS === "web" && !p.loop) {
+            try {
+              p.loop = true;
+            } catch {
+              // ignore
+            }
           }
-        }
-        // ── Fade en los bordes del loop ──────────────────────────────────
-        // El loop nativo reinicia el archivo de golpe → corte audible. Para
-        // suavizarlo, modulamos el volumen real en función de la posición:
-        // sube desde 0 en los primeros LOOP_FADE_SEC y baja a 0 en los últimos.
-        // El nivel elegido por el usuario vive en baseVolumesRef (no se pisa).
-        // Este listener sigue corriendo en background (lo maneja el motor de
-        // audio nativo), así que el fade también funciona con la pantalla
-        // bloqueada, sin setInterval (que sí se congela).
-        const base = baseVolumesRef.current.get(id) ?? volume;
-        const dur = status.duration ?? 0;
-        const pos = status.currentTime ?? 0;
-        let factor = 1;
-        if (dur > LOOP_FADE_SEC * 2 + 0.5) {
-          if (pos < LOOP_FADE_SEC) {
-            factor = pos / LOOP_FADE_SEC; // fade in tras el wrap
-          } else if (pos > dur - LOOP_FADE_SEC) {
-            factor = (dur - pos) / LOOP_FADE_SEC; // fade out antes del final
+          const dur = status.duration ?? 0;
+          if (isSecondary && !bOffsetApplied && dur > 0) {
+            bOffsetApplied = true;
+            try {
+              void p.seekTo(dur / 2);
+            } catch {
+              // ignore
+            }
           }
-        }
-        const target = base * Math.max(0, Math.min(1, factor));
-        if (Math.abs(player.volume - target) > 0.005) {
-          try {
-            player.volume = target;
-          } catch {
-            // ignore
+          const base = baseVolumesRef.current.get(id) ?? volume;
+          const pos = status.currentTime ?? 0;
+          const gain = dur > 0 ? Math.abs(Math.sin(Math.PI * (pos / dur))) : 1;
+          const target = base * gain;
+          if (Math.abs(p.volume - target) > 0.004) {
+            try {
+              p.volume = target;
+            } catch {
+              // ignore
+            }
           }
-        }
-      });
-      loopSubsRef.current.set(id, sub);
-      // Registrar el player en el map ANTES de play() (el guard del listener
-      // compara playersRef.get(id) === player).
-      playersRef.current.set(id, player);
-      player.play();
-      return player;
+
+          // Recentrado de fase de B contra A (solo en el valle de gain de B).
+          if (isSecondary && bOffsetApplied && dur > 0 && gain < 0.12) {
+            const aPos = cur.a.currentTime ?? 0;
+            const expected = (((aPos + dur / 2) % dur) + dur) % dur;
+            let err = Math.abs(pos - expected);
+            err = Math.min(err, dur - err); // distancia circular
+            const now = Date.now();
+            if (err > 0.06 && now - lastResync > 2000) {
+              lastResync = now;
+              try {
+                void p.seekTo(expected);
+              } catch {
+                // ignore
+              }
+            }
+          }
+        });
+      };
+
+      const subA = attachFade(a, false);
+      const subB = attachFade(b, true);
+      loopSubsRef.current.set(id, [subA, subB]);
+      // Registrar el par ANTES de play() (el guard del listener compara la
+      // identidad del player contra el par registrado).
+      playersRef.current.set(id, pair);
+      a.play();
+      b.play();
+      return pair;
     } catch {
       return null;
     }
   }, []);
 
   const destroyPlayer = useCallback((id: string) => {
-    const sub = loopSubsRef.current.get(id);
-    if (sub) {
-      try {
-        sub.remove();
-      } catch {
-        // ignore
-      }
+    const subs = loopSubsRef.current.get(id);
+    if (subs) {
+      subs.forEach((s) => {
+        try {
+          s.remove();
+        } catch {
+          // ignore
+        }
+      });
       loopSubsRef.current.delete(id);
     }
     baseVolumesRef.current.delete(id);
-    const p = playersRef.current.get(id);
-    if (!p) return;
-    try {
-      p.pause();
-    } catch {
-      // ignore
-    }
-    try {
-      p.remove();
-    } catch {
-      // ignore
-    }
+    const pair = playersRef.current.get(id);
+    if (!pair) return;
+    [pair.a, pair.b].forEach((p) => {
+      try {
+        p.pause();
+      } catch {
+        // ignore
+      }
+      try {
+        p.remove();
+      } catch {
+        // ignore
+      }
+    });
     playersRef.current.delete(id);
   }, []);
 
@@ -517,7 +565,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const exists = prev.some((s) => s.id === id);
 
       if (exists) {
-        const removingOwner = lockOwnerRef.current === playersRef.current.get(id);
+        const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
         if (removingOwner) clearLockScreen();
         destroyPlayer(id);
         const next = prev.filter((s) => s.id !== id);
@@ -564,18 +612,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   );
 
   const setVolume = useCallback((id: string, volume: number) => {
-    // Guardar el nivel deseado: el listener del loop lo aplica con el factor de
-    // fade en el próximo tick (~120 ms). Además lo seteamos directo para feedback
-    // inmediato del slider (si está en mitad del loop, factor=1 → coincide).
+    // Solo guardar el nivel deseado: el listener del crossfade lo aplica con el
+    // gain de cada capa en el próximo tick (~120 ms). NO setear player.volume
+    // directo acá: pisaría el gain del fade y daría un salto de volumen en el
+    // empalme del loop.
     baseVolumesRef.current.set(id, volume);
-    const p = playersRef.current.get(id);
-    if (p) {
-      try {
-        p.volume = volume;
-      } catch {
-        // ignore
-      }
-    }
     setActiveSounds((prev) => prev.map((s) => (s.id === id ? { ...s, volume } : s)));
   }, []);
 
@@ -594,7 +635,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const removeSound = useCallback(
     (id: string) => {
-      const removingOwner = lockOwnerRef.current === playersRef.current.get(id);
+      const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
       if (removingOwner) clearLockScreen();
       destroyPlayer(id);
       const next = activeSoundsRef.current.filter((s) => s.id !== id);
@@ -624,25 +665,29 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [applyPlaying, syncLockScreen]);
 
   const stopAll = useCallback(() => {
-    loopSubsRef.current.forEach((s) => {
-      try {
-        s.remove();
-      } catch {
-        // ignore
-      }
+    loopSubsRef.current.forEach((subs) => {
+      subs.forEach((s) => {
+        try {
+          s.remove();
+        } catch {
+          // ignore
+        }
+      });
     });
     loopSubsRef.current.clear();
-    playersRef.current.forEach((p) => {
-      try {
-        p.pause();
-      } catch {
-        // ignore
-      }
-      try {
-        p.remove();
-      } catch {
-        // ignore
-      }
+    playersRef.current.forEach((pair) => {
+      [pair.a, pair.b].forEach((p) => {
+        try {
+          p.pause();
+        } catch {
+          // ignore
+        }
+        try {
+          p.remove();
+        } catch {
+          // ignore
+        }
+      });
     });
     playersRef.current.clear();
     baseVolumesRef.current.clear();
@@ -725,27 +770,32 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // Soltar el lock screen del owner viejo antes de desmontarlo.
       clearLockScreen();
       // Desmontar la mezcla actual
-      loopSubsRef.current.forEach((s) => {
-        try {
-          s.remove();
-        } catch {
-          // ignore
-        }
+      loopSubsRef.current.forEach((subs) => {
+        subs.forEach((s) => {
+          try {
+            s.remove();
+          } catch {
+            // ignore
+          }
+        });
       });
       loopSubsRef.current.clear();
-      playersRef.current.forEach((p) => {
-        try {
-          p.pause();
-        } catch {
-          // ignore
-        }
-        try {
-          p.remove();
-        } catch {
-          // ignore
-        }
+      playersRef.current.forEach((pair) => {
+        [pair.a, pair.b].forEach((p) => {
+          try {
+            p.pause();
+          } catch {
+            // ignore
+          }
+          try {
+            p.remove();
+          } catch {
+            // ignore
+          }
+        });
       });
       playersRef.current.clear();
+      baseVolumesRef.current.clear();
 
       void ensureAudioMode();
       const playable = preset.sounds
@@ -861,20 +911,24 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     return () => {
       clearLockScreen();
-      loopSubsRef.current.forEach((s) => {
-        try {
-          s.remove();
-        } catch {
-          // ignore
-        }
+      loopSubsRef.current.forEach((subs) => {
+        subs.forEach((s) => {
+          try {
+            s.remove();
+          } catch {
+            // ignore
+          }
+        });
       });
       loopSubsRef.current.clear();
-      playersRef.current.forEach((p) => {
-        try {
-          p.remove();
-        } catch {
-          // ignore
-        }
+      playersRef.current.forEach((pair) => {
+        [pair.a, pair.b].forEach((p) => {
+          try {
+            p.remove();
+          } catch {
+            // ignore
+          }
+        });
       });
       playersRef.current.clear();
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
