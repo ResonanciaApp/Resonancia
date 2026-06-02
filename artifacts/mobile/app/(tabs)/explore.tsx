@@ -116,7 +116,7 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Search bar ── */}
-        <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.searchBar, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
           <Feather name="search" size={16} color={colors.mutedForeground} />
           <TextInput
             value={query}
