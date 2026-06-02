@@ -9,7 +9,7 @@
  * la mezcla. Si no hay sonidos activos, no renderiza nada.
  * ─────────────────────────────────────────────────────────────────
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -28,6 +28,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SaveMixCelebration } from "@/components/SaveMixCelebration";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
+import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory, getCategoryMeta } from "@/data/mix-categories";
@@ -44,6 +45,33 @@ function formatTimer(seconds: number): string {
 }
 
 type SaveMode = "new" | "update";
+
+/** Ícono del sonido según su iconSet, con cast acotado al glyphMap de la familia. */
+function SoundIcon({ sound, size, color }: { sound: MixSound; size: number; color: string }) {
+  if (sound.iconSet === "ionicons") {
+    return <Ionicons name={sound.icon as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
+  }
+  return <Feather name={sound.icon as keyof typeof Feather.glyphMap} size={size} color={color} />;
+}
+
+/** Miniatura circular de la pista: imagen del sonido con velo + ícono encima. */
+function TrackThumb({ sound, accent }: { sound: MixSound; accent: string }) {
+  const image = getSoundImage(sound.id);
+  return (
+    <View style={styles.thumb}>
+      {image ? (
+        <ImageBackground source={image} style={styles.thumbImg} imageStyle={styles.thumbImgInner}>
+          <View style={styles.thumbVeil} />
+          <SoundIcon sound={sound} size={16} color="#F2E7D6" />
+        </ImageBackground>
+      ) : (
+        <View style={[styles.thumbImg, styles.thumbFallback]}>
+          <SoundIcon sound={sound} size={16} color={accent} />
+        </View>
+      )}
+    </View>
+  );
+}
 
 export function MixerSheet() {
   const colors = useColors();
@@ -234,10 +262,22 @@ export function MixerSheet() {
                 {activeMix.length}/{MAX_ACTIVE_SOUNDS} sonidos
               </Text>
             </View>
-            <Pressable onPress={handleClear} hitSlop={8} style={styles.headerBtn}>
+            <Pressable
+              onPress={handleClear}
+              hitSlop={8}
+              style={styles.headerBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Limpiar mezcla"
+            >
               <Text style={[styles.clearText, { color: colors.mutedForeground }]}>Limpiar</Text>
             </Pressable>
-            <Pressable onPress={closeSheet} hitSlop={8} style={styles.headerBtn}>
+            <Pressable
+              onPress={closeSheet}
+              hitSlop={8}
+              style={styles.headerBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar editor de mezcla"
+            >
               <Feather name="chevron-down" size={22} color={colors.foreground} />
             </Pressable>
           </View>
@@ -248,47 +288,68 @@ export function MixerSheet() {
             keyboardShouldPersistTaps="handled"
           >
             {activeMix.map(({ active, sound }, index) => (
-              <View key={sound.id} style={[styles.trackRow, { borderColor: colors.border }]}>
+              <View
+                key={sound.id}
+                style={[styles.trackRow, { backgroundColor: colors.background, borderColor: colors.border }]}
+              >
                 <View style={styles.trackTop}>
-                  <View style={styles.reorderCol}>
+                  <TrackThumb sound={sound} accent={colors.accent} />
+
+                  <View style={styles.trackInfo}>
+                    <Text style={[styles.trackName, { color: colors.foreground }]} numberOfLines={1}>
+                      {sound.name}
+                    </Text>
+                    <Text style={[styles.trackVol, { color: colors.mutedForeground }]}>
+                      Volumen{" "}
+                      <Text style={{ color: colors.accent, fontWeight: "700" }}>
+                        {Math.round(active.volume * 100)}%
+                      </Text>
+                    </Text>
+                  </View>
+
+                  <View style={[styles.reorderPill, { borderColor: colors.border }]}>
                     <Pressable
                       onPress={() => moveSound(sound.id, "up")}
                       disabled={index === 0}
-                      hitSlop={6}
+                      hitSlop={8}
                       style={styles.reorderBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Subir ${sound.name}`}
+                      accessibilityState={{ disabled: index === 0 }}
                     >
                       <Feather
                         name="chevron-up"
-                        size={16}
+                        size={15}
                         color={index === 0 ? colors.border : colors.mutedForeground}
                       />
                     </Pressable>
+                    <View style={[styles.reorderDivider, { backgroundColor: colors.border }]} />
                     <Pressable
                       onPress={() => moveSound(sound.id, "down")}
                       disabled={index === activeMix.length - 1}
-                      hitSlop={6}
+                      hitSlop={8}
                       style={styles.reorderBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Bajar ${sound.name}`}
+                      accessibilityState={{ disabled: index === activeMix.length - 1 }}
                     >
                       <Feather
                         name="chevron-down"
-                        size={16}
+                        size={15}
                         color={index === activeMix.length - 1 ? colors.border : colors.mutedForeground}
                       />
                     </Pressable>
                   </View>
 
-                  <Text style={[styles.trackName, { color: colors.foreground }]} numberOfLines={1}>
-                    {sound.name}
-                  </Text>
-
-                  <View style={styles.trackRight}>
-                    <Text style={[styles.trackPercent, { color: colors.accent }]}>
-                      {Math.round(active.volume * 100)}%
-                    </Text>
-                    <Pressable onPress={() => removeSound(sound.id)} hitSlop={8}>
-                      <Feather name="x" size={16} color={colors.mutedForeground} />
-                    </Pressable>
-                  </View>
+                  <Pressable
+                    onPress={() => removeSound(sound.id)}
+                    hitSlop={10}
+                    style={styles.removeBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
+                  >
+                    <Feather name="x" size={16} color={colors.mutedForeground} />
+                  </Pressable>
                 </View>
                 <VolumeSlider
                   value={active.volume}
@@ -320,6 +381,12 @@ export function MixerSheet() {
             <Pressable
               onPress={handleTimerPress}
               style={[styles.iconBtn, { borderColor: colors.border, backgroundColor: colors.secondary }]}
+              accessibilityRole="button"
+              accessibilityLabel={
+                sleepTimerRemaining != null
+                  ? "Temporizador de sueño activo"
+                  : "Configurar temporizador de sueño"
+              }
             >
               <Feather
                 name="clock"
@@ -535,19 +602,43 @@ const styles = StyleSheet.create({
 
   trackScroll: { flexGrow: 0 },
   trackRow: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 10,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 12,
+    paddingTop: 11,
+    paddingBottom: 4,
+    marginBottom: 10,
   },
   trackTop: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 11,
   },
-  reorderCol: { width: 22 },
-  reorderBtn: { height: 18, alignItems: "center", justifyContent: "center" },
-  trackName: { flex: 1, fontSize: 15, fontWeight: "500" },
-  trackRight: { flexDirection: "row", alignItems: "center", gap: 12 },
-  trackPercent: { fontSize: 12, fontWeight: "600", minWidth: 34, textAlign: "right" },
+  thumb: { width: 40, height: 40 },
+  thumbImg: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  thumbImgInner: { borderRadius: 20 },
+  thumbVeil: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(15,10,6,0.42)" },
+  thumbFallback: { backgroundColor: "rgba(214,168,91,0.12)" },
+  trackInfo: { flex: 1 },
+  trackName: { fontSize: 15, fontWeight: "600" },
+  trackVol: { fontSize: 12, marginTop: 2 },
+  reorderPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  reorderBtn: { width: 34, height: 36, alignItems: "center", justifyContent: "center" },
+  reorderDivider: { width: StyleSheet.hairlineWidth, height: 22 },
+  removeBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
 
   addBtn: {
     flexDirection: "row",
