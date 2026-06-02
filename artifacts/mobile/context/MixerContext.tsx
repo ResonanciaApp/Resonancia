@@ -162,6 +162,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   // ── Lock-screen / Now Playing ─────────────────────────────────────
   /** Player que "posee" los controles de pantalla bloqueada (uno solo a la vez). */
   const lockOwnerRef = useRef<AudioPlayer | null>(null);
+  /**
+   * Si el owner actual ya reportó playing=true al menos una vez. Mientras sea
+   * false, un playing=false es solo el estado "cargando" (el item todavía no
+   * arrancó), NO una pausa del usuario → no debe pausar la mezcla. Se resetea
+   * cada vez que cambia el owner.
+   */
+  const lockOwnerHasPlayedRef = useRef(false);
   /** Suscripción al status del owner (para reflejar play/pausa remoto). */
   const lockSubRef = useRef<{ remove: () => void } | null>(null);
   /** Activación postergada hasta que el track tenga duración válida (evita NaN). */
@@ -261,6 +268,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
     }
     lockOwnerRef.current = first;
+    lockOwnerHasPlayedRef.current = false;
     lockPendingRef.current = true;
     lockSubRef.current = first.addListener("playbackStatusUpdate", (status) => {
       // ── Enforcement del sleep timer en background ──────────────────
@@ -301,25 +309,35 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // 2. playingFalseTimerRef: debounce de 350 ms para playing:false, porque
       //    cuando el audio en loop llega al final del archivo y reinicia,
       //    status.playing baja unos frames → sin el debounce pausaría todo.
+      // En cuanto el owner reporta playing=true: marcar que ya arrancó y
+      // CANCELAR cualquier debounce de pausa pendiente. Esto corre siempre
+      // (sin importar isPlayingRef), porque el playing=true inicial coincide
+      // con isPlayingRef=true y no entraría en la rama de "cambio" de abajo —
+      // sin esto, el playing=false de "cargando" deja un timer que pausa todo.
+      if (status.playing === true) {
+        lockOwnerHasPlayedRef.current = true;
+        if (playingFalseTimerRef.current) {
+          clearTimeout(playingFalseTimerRef.current);
+          playingFalseTimerRef.current = null;
+        }
+      }
       if (typeof status.playing === "boolean" && status.playing !== isPlayingRef.current) {
-        console.log(`[MIXER] owner playing=${status.playing} mixShouldPlay=${isPlayingRef.current} inIgnore=${Date.now() < ignoreLockUntilRef.current} djf=${status.didJustFinish}`);
         if (Date.now() < ignoreLockUntilRef.current) return;
         // Frontera del loop: el track terminó un ciclo y reinicia. NO es una
         // acción del usuario → ignorar para no pausar toda la mezcla.
         if (status.didJustFinish) return;
         if (!status.playing) {
+          // Ignorar el playing=false inicial mientras el owner todavía no
+          // arrancó (item cargando): NO es una pausa real. Solo lo es si ya
+          // estuvo sonando alguna vez.
+          if (!lockOwnerHasPlayedRef.current) return;
           if (playingFalseTimerRef.current) clearTimeout(playingFalseTimerRef.current);
           playingFalseTimerRef.current = setTimeout(() => {
             playingFalseTimerRef.current = null;
             if (!isPlayingRef.current) return; // ya pausado por otra vía
-            console.log(`[MIXER] owner -> applyPlaying(false) (pausando toda la mezcla)`);
             applyPlayingRef.current(false);
           }, 350);
         } else {
-          if (playingFalseTimerRef.current) {
-            clearTimeout(playingFalseTimerRef.current);
-            playingFalseTimerRef.current = null;
-          }
           applyPlayingRef.current(true);
         }
       }
