@@ -82,13 +82,13 @@ export default function SlideAnexoInversion() {
         <Cell muted>US$ 1M <span style={{ fontSize: "1.1vw", color: "#7a6050" }}>(recomendada)</span></Cell>
         <Cell>1,0%</Cell>
         <Cell>1,5%</Cell>
-        <Cell highlight bold>2,0%</Cell>
-        <Cell>2,5%</Cell>
+        <Cell>2,0%</Cell>
+        <Cell highlight bold>2,5%</Cell>
       </div>
 
       {/* Footnote */}
       <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.55, maxWidth: "84vw" }}>
-        % cedido = monto ÷ valoración post-money. Celda destacada = escenario recomendado (US$ 20.000 por ~2%).
+        % cedido = monto ÷ valoración post-money. Celda destacada = escenario recomendado (US$ 25.000 por ~2,5%).
         <span style={{ color: "#5a4632", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
           La valoración de US$ 1M es defendible pre-lanzamiento gracias a +1.000.000 de seguidores y 180 pistas listas al lanzar.
         </span>
