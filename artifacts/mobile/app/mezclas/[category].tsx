@@ -207,7 +207,7 @@ export default function CategoryMixesScreen() {
           )}
         </View>
 
-        <View style={styles.actions}>
+        <View style={styles.actions} onStartShouldSetResponder={() => true}>
           <Pressable
             onPress={() => (mix.sharedId != null ? handleUnshare(mix) : handleShare(mix))}
             hitSlop={10}
