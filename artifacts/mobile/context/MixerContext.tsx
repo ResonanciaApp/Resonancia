@@ -466,15 +466,26 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // de la otra capa. La capa B va desfasada dur/2 (gainA²+gainB²=1, potencia
       // constante) y cubre el valle de A, y viceversa.
       //
-      // OJO: NO meter una fase "A a volumen completo" al arranque para ganar
-      // latencia. Si B tarda en cargar (en device el primer decode puede tardar
-      // varios segundos), A llegaría a su corte a volumen PLENO antes de que el
-      // crossfade se enganche y se oye el corte + reinicio (bug "viento"). El
-      // costo de la simetría es que el primer sonido sube desde 0 siguiendo el
-      // seno (la capa B, ya alineada ~dur/2 adelante, entra fuerte apenas
-      // confirma su offset, así que en la práctica el arranque no se siente lento
-      // más allá del tiempo de carga del audio).
-      let offsetConfirmed = false;
+      // ARRANQUE FUERTE: se SIEMBRA la capa B en el pico del seno (aPos+dur/2)
+      // apenas se conoce la duración, así desde el primer instante hay una capa a
+      // gain~1 mientras A sube desde su valle. Sin esto, A sola tarda varios
+      // segundos en oírse (bosque ~28s: recién al 70% a los 7s).
+      //
+      // El seed se REINTENTA hasta CONFIRMAR que el seek aterrizó (en iOS un
+      // seekTo se puede ignorar). Hasta confirmar, B queda muteada — pero como los
+      // reintentos pasan en pos baja (gain~0) son inaudibles igual. Recién al
+      // confirmar se da por bueno el desfase y arranca el recentrado de drift.
+      //
+      // OJO: se siembra B (que igual sigue el seno), NO se fuerza A a volumen
+      // pleno ignorando el seno: eso haría que A llegue a su corte de loop a
+      // volumen pleno → click + reinicio audible (bug "viento"). Y NO se siembra
+      // A en dur/2: eso adelantaría su valle a la mitad del archivo (~14s) y, si B
+      // aún no cubre, deja un HUECO (el audio "se corta a ~20s").
+      let offsetConfirmed = false; // true al confirmar que el seed de B aterrizó
+      let bSeeded = false; // B confirmó su salto al pico
+      let bSeedTarget = -1; // posición objetivo del último seed (para confirmarlo)
+      let audibleStart = 0; // primer tick con dur válida → ancla del fade-in
+      const STARTUP_FADE_MS = 350;
       // Recentrado de drift a largo plazo (sesiones de horas): dos loops nativos
       // se desincronizan de a poco; si se rompe el desfase de 180° sin²+cos²
       // deja de dar 1 y reaparece la ondulación. Recentramos B hacia A+dur/2
@@ -504,39 +515,58 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           }
           const dur = status.duration ?? 0;
           const pos = status.currentTime ?? 0;
+
+          // Primer tick con duración válida = primer audio real → ancla del fade-in.
+          if (dur > 0 && audibleStart === 0) audibleStart = Date.now();
+
+          // Sembrar la capa B en el pico (aPos+dur/2) y CONFIRMAR que el seek
+          // aterrizó antes de darlo por bueno. Mientras no confirme, se reintenta
+          // (los reintentos pasan en pos baja → inaudibles) y B queda muteada.
+          if (isSecondary && dur > 0 && !bSeeded) {
+            if (bSeedTarget >= 0) {
+              let serr = Math.abs(pos - bSeedTarget);
+              serr = Math.min(serr, dur - serr); // distancia circular
+              if (serr < 0.3) {
+                bSeeded = true;
+                offsetConfirmed = true;
+              }
+            }
+            if (!bSeeded) {
+              const aPos = cur.a.currentTime ?? 0;
+              bSeedTarget = (((aPos + dur / 2) % dur) + dur) % dur;
+              try {
+                void p.seekTo(bSeedTarget);
+              } catch {
+                // ignore
+              }
+            }
+          }
+
           const gain = dur > 0 ? Math.abs(Math.sin(Math.PI * (pos / dur))) : 1;
           const base = baseVolumesRef.current.get(id) ?? volume;
+          // Fade-in global (~0.35 s) desde silencio: evita un click por el salto
+          // inicial de B al pico. Solo afecta el arranque (mucho antes de cualquier
+          // borde de loop), así que sigue siendo seam-safe.
+          const startup =
+            audibleStart === 0 ? 0 : Math.min(1, (Date.now() - audibleStart) / STARTUP_FADE_MS);
+          // B muteada hasta confirmar su salto al pico (así no se oye ningún
+          // transitorio del seed); A siempre suena (su borde de loop es inaudible).
+          setVol(p, (isSecondary && !bSeeded ? 0 : base * gain) * startup);
 
-          // B queda muteada hasta confirmar su alineación (así los reintentos del
-          // seek no se oyen). A siempre suena con su gain (su borde es inaudible).
-          setVol(p, isSecondary && !offsetConfirmed ? 0 : base * gain);
-
-          // Alineación / recentrado de la capa B contra A.
-          if (isSecondary && dur > 0) {
+          // Recentrado de drift de la capa B contra A: mantener el desfase dur/2,
+          // corrigiendo SOLO en el valle de B (gain bajo → seek inaudible).
+          if (isSecondary && dur > 0 && offsetConfirmed && gain < 0.12) {
             const aPos = cur.a.currentTime ?? 0;
             const desired = (((aPos + dur / 2) % dur) + dur) % dur;
             let err = Math.abs(pos - desired);
             err = Math.min(err, dur - err); // distancia circular
-            if (!offsetConfirmed) {
-              // Reintentar hasta que el seek "agarre" (B muteada mientras tanto).
-              if (err < 0.15) offsetConfirmed = true;
-              else {
-                try {
-                  void p.seekTo(desired);
-                } catch {
-                  // ignore
-                }
-              }
-            } else if (gain < 0.12) {
-              // Drift: corregir solo en el valle de B (inaudible), con throttle.
-              const now = Date.now();
-              if (err > 0.06 && now - lastResync > 2000) {
-                lastResync = now;
-                try {
-                  void p.seekTo(desired);
-                } catch {
-                  // ignore
-                }
+            const now = Date.now();
+            if (err > 0.06 && now - lastResync > 2000) {
+              lastResync = now;
+              try {
+                void p.seekTo(desired);
+              } catch {
+                // ignore
               }
             }
           }
