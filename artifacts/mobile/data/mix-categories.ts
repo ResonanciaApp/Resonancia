@@ -7,11 +7,12 @@
  * las etiquetas visibles son las que se muestran al usuario.
  * ─────────────────────────────────────────────────────────────────
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
 import type { ImageSourcePropType } from "react-native";
 
 type FeatherIconName = ComponentProps<typeof Feather>["name"];
+type MCIIconName = ComponentProps<typeof MaterialCommunityIcons>["name"];
 
 export type MixCategory = "dormir" | "trabajar" | "motivarme" | "concentracion";
 
@@ -19,7 +20,8 @@ export type MixCategoryMeta = {
   id: MixCategory;
   label: string;
   subtitle: string;
-  icon: FeatherIconName;
+  icon: FeatherIconName | MCIIconName;
+  iconFamily?: "Feather" | "MaterialCommunityIcons";
   image: ImageSourcePropType;
 };
 
@@ -35,14 +37,16 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     id: "motivarme",
     label: "Meditación",
     subtitle: "Calma y presencia",
-    icon: "feather",
+    icon: "meditation",
+    iconFamily: "MaterialCommunityIcons",
     image: require("@/assets/images/mixer/categories/motivarme.jpg"),
   },
   {
     id: "concentracion",
     label: "Enfoque",
     subtitle: "Foco y claridad mental",
-    icon: "zap",
+    icon: "image-filter-hdr",
+    iconFamily: "MaterialCommunityIcons",
     image: require("@/assets/images/mixer/categories/concentracion.jpg"),
   },
 ];

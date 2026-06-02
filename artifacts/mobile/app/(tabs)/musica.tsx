@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -153,7 +153,15 @@ export default function MiMusicaScreen() {
               style={[styles.catCard, { backgroundColor: "rgba(237,225,211,0.06)", borderColor: colors.border }]}
             >
               <View style={[styles.catIconWrap, { backgroundColor: "rgba(237,225,211,0.08)" }]}>
-                <Feather name={cat.icon} size={22} color={colors.accent} />
+                {cat.iconFamily === "MaterialCommunityIcons" ? (
+                  <MaterialCommunityIcons
+                    name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                    size={24}
+                    color={colors.accent}
+                  />
+                ) : (
+                  <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={22} color={colors.accent} />
+                )}
               </View>
               <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
                 {cat.label}
