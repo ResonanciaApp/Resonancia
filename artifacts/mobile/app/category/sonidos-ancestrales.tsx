@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "400",
     letterSpacing: 0.3,
-    color: "#C8C0B8",
+    color: "#E8B96A",
   },
   cardTitle: {
     fontSize: 15,
