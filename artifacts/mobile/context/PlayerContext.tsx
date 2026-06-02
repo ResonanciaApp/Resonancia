@@ -146,6 +146,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // ── Loop crossfade (Música y Sonidos / Sonidos Naturaleza) ──────────────────
+  /** Second layer of the constant-power crossfade (A = mainPlayerRef) */
+  const loopBPlayerRef = useRef<AudioPlayer | null>(null);
+  /** Interval that drives the A/B crossfade gains + B alignment (~100ms) */
+  const loopFadeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** True when the current loop session is playing as a two-layer crossfade */
+  const loopCrossfadeRef = useRef(false);
+  /** True once layer B is aligned dur/2 ahead of A (B stays muted until then) */
+  const loopOffsetConfirmedRef = useRef(false);
+  /** Throttle timestamp (ms) for long-run drift re-centering of layer B */
+  const loopLastResyncRef = useRef(0);
+
   /** True when the current session is backed by a real audio file (vs simulation) */
   const hasRealAudioRef = useRef(false);
   /** True for looping/duration-based sessions (progress driven by interval, not audio position) */
@@ -314,16 +326,33 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (status.playing) {
           if (voiceActiveRef.current) voicePlayerRef.current?.play();
           if (ambientActiveRef.current) ambientPlayerRef.current?.play();
+          if (loopCrossfadeRef.current) loopBPlayerRef.current?.play();
         } else {
           voicePlayerRef.current?.pause();
           ambientPlayerRef.current?.pause();
+          if (loopCrossfadeRef.current) loopBPlayerRef.current?.pause();
         }
         // While switching sessions we manage isPlaying manually — ignore stale toggles
         if (!switchingRef.current) setIsPlaying(status.playing);
       }
 
-      // Loop/duration sessions are driven by the countdown interval, not audio position
-      if (loopModeRef.current) return;
+      // Loop/duration sessions: the bespoke countdown sessions are interval-driven,
+      // but crossfade loop sessions drive the progress bar from the real audio
+      // position (so the bar is seekable, matching the lock-screen scrubber).
+      if (loopModeRef.current) {
+        if (loopCrossfadeRef.current) {
+          const dur = status.duration ?? 0;
+          const pos = status.currentTime ?? 0;
+          if (switchingRef.current) {
+            switchingRef.current = false;
+          } else if (dur > 0) {
+            setActualDurationSeconds(Math.floor(dur));
+            setProgress(pos / dur);
+            setElapsed(Math.floor(pos));
+          }
+        }
+        return;
+      }
 
       const dur = status.duration ?? 0;
       const pos = status.currentTime ?? 0;
@@ -403,12 +432,33 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     return ambientPlayerRef.current;
   }, []);
 
+  /** Lazily create the second crossfade layer (B). Its gain is driven by the
+   * loop-fade interval, so it does not need its own status listener. */
+  const ensureLoopBPlayer = useCallback((): AudioPlayer => {
+    if (!loopBPlayerRef.current) {
+      loopBPlayerRef.current = createAudioPlayer(null, { updateInterval: 1000 });
+    }
+    return loopBPlayerRef.current;
+  }, []);
+
+  /** Stop the crossfade interval + mute/pause layer B */
+  const teardownLoopCrossfade = () => {
+    if (loopFadeIntervalRef.current) {
+      clearInterval(loopFadeIntervalRef.current);
+      loopFadeIntervalRef.current = null;
+    }
+    loopCrossfadeRef.current = false;
+    loopOffsetConfirmedRef.current = false;
+    try { loopBPlayerRef.current?.pause(); } catch (_) {}
+  };
+
   /** Pause the optional layers and mark them inactive */
   const teardownLayers = useCallback(() => {
     voicePlayerRef.current?.pause();
     ambientPlayerRef.current?.pause();
     voiceActiveRef.current = false;
     ambientActiveRef.current = false;
+    teardownLoopCrossfade();
   }, []);
 
   /** Pause everything and clear the lock-screen now-playing info */
@@ -431,7 +481,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       try { mainPlayerRef.current?.remove(); } catch (_) {}
       try { voicePlayerRef.current?.remove(); } catch (_) {}
       try { ambientPlayerRef.current?.remove(); } catch (_) {}
+      try { loopBPlayerRef.current?.remove(); } catch (_) {}
       clearSim();
+      teardownLoopCrossfade();
       clearSleepInterval();
     };
   }, []);
@@ -482,6 +534,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (simIntervalRef.current) {
       clearInterval(simIntervalRef.current);
       simIntervalRef.current = null;
+    }
+  };
+
+  const clearLoopFade = () => {
+    if (loopFadeIntervalRef.current) {
+      clearInterval(loopFadeIntervalRef.current);
+      loopFadeIntervalRef.current = null;
     }
   };
 
@@ -758,61 +817,146 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           });
 
           const main = ensureMainPlayer();
-          main.loop = isLoopSession;
-          main.replace(audioFile);
-          main.volume = 1;
-          main.play();
-
-          // Ambient layer (e.g. birds) loops under the main track
           const ambientFile = AMBIENT_MAP[session.id];
-          if (ambientFile) {
-            const ambient = ensureAmbientPlayer();
-            ambient.loop = true;
-            ambient.replace(ambientFile);
-            ambient.volume = ambientVolumeRef.current;
-            ambient.play();
-            ambientActiveRef.current = true;
-          } else {
-            ambientActiveRef.current = false;
-            ambientPlayerRef.current?.pause();
-          }
-          voiceActiveRef.current = false;
 
-          lockScreenPendingRef.current = {
-            session: sessionOverride,
-            withSeek: false,
-          };
-          lastPlayingRef.current = true;
-          setIsPlaying(true);
-          markPlayStarted();
-          // Loop progress is interval-driven (no position attribution risk), so the
-          // switch guard can be released immediately to let lock-screen toggles reflect in the UI
-          switchingRef.current = false;
+          if (isLoopSession) {
+            // ── Loop con crossfade de DOS capas (mismo algoritmo del mezclador) ──
+            // Un solo audio no puede solaparse consigo mismo: el corte del loop
+            // nativo siempre se nota. Solución: dos copias del mismo sonido en loop
+            // nativo, desfasadas dur/2. A cada capa se le aplica gain = |sin(pi*pos/dur)|
+            // según su propia posición → gainA² + gainB² = 1 (potencia constante):
+            // cuando una llega a su corte (gain 0) la otra está en su pico → empalme
+            // imperceptible. Los gains los maneja un intervalo dedicado (no los
+            // status listeners), para que varíen de forma continua.
+            loopCrossfadeRef.current = true;
+            loopOffsetConfirmedRef.current = false;
+            loopLastResyncRef.current = 0;
 
-          // Drive progress with a countdown interval (audio loops indefinitely)
-          simIntervalRef.current = setInterval(() => {
-            setElapsed((prev) => {
-              const next = prev + 1;
-              const sId = currentSessionRef.current?.id;
-              if (next >= totalSeconds) {
-                clearSim();
-                teardownPlayback();
-                ambientActiveRef.current = false;
-                loopModeRef.current = false;
-                hasRealAudioRef.current = false;
-                lastPlayingRef.current = false;
-                setIsPlaying(false);
-                setProgress(1);
-                if (sId) saveSessionProgress(sId, 1, { force: true });
-                flushActiveStatRef.current();
-                return totalSeconds;
+            main.loop = true;
+            main.replace(audioFile);
+            main.volume = 0; // el crossfade sube el gain
+            main.play();
+
+            const layerB = ensureLoopBPlayer();
+            layerB.loop = true;
+            layerB.replace(audioFile);
+            layerB.volume = 0;
+            layerB.play();
+
+            if (ambientFile) {
+              const ambient = ensureAmbientPlayer();
+              ambient.loop = true;
+              ambient.replace(ambientFile);
+              ambient.volume = ambientVolumeRef.current;
+              ambient.play();
+              ambientActiveRef.current = true;
+            } else {
+              ambientActiveRef.current = false;
+              ambientPlayerRef.current?.pause();
+            }
+            voiceActiveRef.current = false;
+
+            lockScreenPendingRef.current = {
+              session: sessionOverride,
+              withSeek: false,
+            };
+            lastPlayingRef.current = true;
+            setIsPlaying(true);
+            markPlayStarted();
+            switchingRef.current = false;
+
+            // El conteo / auto-apagado lo maneja el sleep timer existente; la barra
+            // de progreso refleja la posición real del audio (handleMainStatus).
+            setSleepTimerRemaining(totalSeconds);
+
+            // Crossfade de potencia constante entre A (main) y B (layerB).
+            clearLoopFade();
+            loopFadeIntervalRef.current = setInterval(() => {
+              const a = mainPlayerRef.current;
+              const b = loopBPlayerRef.current;
+              if (!a?.isLoaded || !b?.isLoaded) return;
+              const dur = a.duration ?? 0;
+              if (!(dur > 0)) return;
+              const posA = a.currentTime ?? 0;
+              const posB = b.currentTime ?? 0;
+              const gainA = Math.abs(Math.sin(Math.PI * (posA / dur)));
+              const gainB = Math.abs(Math.sin(Math.PI * (posB / dur)));
+              // B queda muteada hasta confirmar su alineación dur/2 adelante.
+              const targetB = loopOffsetConfirmedRef.current ? gainB : 0;
+              try { if (Math.abs(a.volume - gainA) > 0.004) a.volume = gainA; } catch (_) {}
+              try { if (Math.abs(b.volume - targetB) > 0.004) b.volume = targetB; } catch (_) {}
+
+              const desired = (((posA + dur / 2) % dur) + dur) % dur;
+              let err = Math.abs(posB - desired);
+              err = Math.min(err, dur - err); // distancia circular
+              if (!loopOffsetConfirmedRef.current) {
+                if (err < 0.15) loopOffsetConfirmedRef.current = true;
+                else { try { void b.seekTo(desired); } catch (_) {} }
+              } else if (gainB < 0.12) {
+                // Drift de largo plazo: recentrar solo en el valle de B (inaudible).
+                const now = Date.now();
+                if (err > 0.06 && now - loopLastResyncRef.current > 2000) {
+                  loopLastResyncRef.current = now;
+                  try { void b.seekTo(desired); } catch (_) {}
+                }
               }
-              const p = next / totalSeconds;
-              setProgress(p);
-              if (sId) saveSessionProgress(sId, p);
-              return next;
-            });
-          }, 1000);
+            }, 100);
+          } else {
+            // ── Sesión de duración fija sin loop (sin crossfade) ──
+            main.loop = false;
+            main.replace(audioFile);
+            main.volume = 1;
+            main.play();
+
+            if (ambientFile) {
+              const ambient = ensureAmbientPlayer();
+              ambient.loop = true;
+              ambient.replace(ambientFile);
+              ambient.volume = ambientVolumeRef.current;
+              ambient.play();
+              ambientActiveRef.current = true;
+            } else {
+              ambientActiveRef.current = false;
+              ambientPlayerRef.current?.pause();
+            }
+            voiceActiveRef.current = false;
+
+            lockScreenPendingRef.current = {
+              session: sessionOverride,
+              withSeek: false,
+            };
+            lastPlayingRef.current = true;
+            setIsPlaying(true);
+            markPlayStarted();
+            // Progress is interval-driven (no position attribution risk), so the
+            // switch guard can be released immediately to let lock-screen toggles reflect in the UI
+            switchingRef.current = false;
+
+            // Drive progress with a countdown interval
+            simIntervalRef.current = setInterval(() => {
+              setElapsed((prev) => {
+                const next = prev + 1;
+                const sId = currentSessionRef.current?.id;
+                if (next >= totalSeconds) {
+                  clearSim();
+                  teardownPlayback();
+                  ambientActiveRef.current = false;
+                  loopModeRef.current = false;
+                  hasRealAudioRef.current = false;
+                  lastPlayingRef.current = false;
+                  setIsPlaying(false);
+                  setProgress(1);
+                  if (sId) saveSessionProgress(sId, 1, { force: true });
+                  flushActiveStatRef.current();
+                  return totalSeconds;
+                }
+                const p = next / totalSeconds;
+                setProgress(p);
+                if (sId) saveSessionProgress(sId, p);
+                return next;
+              });
+            }, 1000);
+          }
         } catch (err) {
           console.warn("[RESONANCE] Loop audio load failed:", err);
           hasRealAudioRef.current = false;
@@ -851,6 +995,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         main.pause();
         if (voiceActiveRef.current) voicePlayerRef.current?.pause();
         if (ambientActiveRef.current) ambientPlayerRef.current?.pause();
+        if (loopCrossfadeRef.current) loopBPlayerRef.current?.pause();
         lastPlayingRef.current = false;
         setIsPlaying(false);
         const sId = currentSessionRef.current?.id;
@@ -861,6 +1006,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         main.play();
         if (voiceActiveRef.current) voicePlayerRef.current?.play();
         if (ambientActiveRef.current) ambientPlayerRef.current?.play();
+        if (loopCrossfadeRef.current) loopBPlayerRef.current?.play();
         lastPlayingRef.current = true;
         setIsPlaying(true);
       }
@@ -929,15 +1075,25 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setProgress(clamped);
       if (
         hasRealAudioRef.current &&
-        !loopModeRef.current &&
+        (!loopModeRef.current || loopCrossfadeRef.current) &&
         mainPlayerRef.current?.isLoaded &&
         mainPlayerRef.current.duration > 0
       ) {
-        const posSeconds = clamped * mainPlayerRef.current.duration;
+        const dur = mainPlayerRef.current.duration;
+        const posSeconds = clamped * dur;
         setElapsed(Math.floor(posSeconds));
         try {
           await mainPlayerRef.current.seekTo(posSeconds);
         } catch (_) {}
+        // En crossfade, realinear la capa B medio ciclo adelante y confirmar el
+        // offset (el intervalo la mantiene; sin esto sonaría desfasada tras el seek).
+        if (loopCrossfadeRef.current && loopBPlayerRef.current?.isLoaded) {
+          const desired = (((posSeconds + dur / 2) % dur) + dur) % dur;
+          try {
+            await loopBPlayerRef.current.seekTo(desired);
+            loopOffsetConfirmedRef.current = true;
+          } catch (_) {}
+        }
       } else if (currentSession) {
         const posSeconds = clamped * actualDurationSeconds;
         setElapsed(Math.floor(posSeconds));
