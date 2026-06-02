@@ -83,7 +83,7 @@ export function AlmaCommunitySection() {
           Muro de agradecimiento
         </Text>
         <Text style={[styles.title, { color: colors.foreground }]}>
-          ¿Por qué estás agradecido hoy?
+          ¿Por qué estás agradecido(a) hoy?
         </Text>
       </View>
 
