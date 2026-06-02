@@ -40,7 +40,6 @@ const TRACK = "rgba(255,255,255,0.16)";
 const PICKER_CATEGORIES: { id: SoundCategoryId; label: string }[] = [
   { id: "naturaleza", label: "Naturaleza" },
   { id: "agua", label: "Agua" },
-  { id: "ruidos", label: "Ruidos" },
 ];
 
 function formatRemaining(seconds: number | null): string {
@@ -144,7 +143,12 @@ export default function InmersivoScreen() {
     [],
   );
 
+  // El "fondo" (sonido base de la card) suena siempre y NO se lista ni se
+  // puede quitar. La lista de abajo son las capas ambiente que el usuario suma.
+  const ambientLayers = activeSounds.filter((s) => s.id !== baseId);
+
   const handleAddLayer = (sound: MixSound) => {
+    if (sound.id === baseId) return; // el fondo no se quita desde el picker
     if (!hasSoundFile(sound.id)) return;
     const already = activeSounds.some((s) => s.id === sound.id);
     if (!already && sound.isPremium && !isPremium) {
@@ -233,7 +237,13 @@ export default function InmersivoScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ gap: 12, paddingTop: 4 }}
         >
-          {activeSounds.map((layer) => {
+          {ambientLayers.length === 0 && (
+            <View style={styles.emptyAmbient}>
+              <Feather name="wind" size={16} color="rgba(232,245,224,0.45)" />
+              <Text style={styles.emptyAmbientText}>Sin sonidos ambiente</Text>
+            </View>
+          )}
+          {ambientLayers.map((layer) => {
             const sound = getSoundById(layer.id);
             if (!sound) return null;
             return (
@@ -287,13 +297,14 @@ export default function InmersivoScreen() {
                       <Text style={styles.catLabel}>{cat.label}</Text>
                       <View style={styles.pickerGrid}>
                         {cat.sounds.map((sound) => {
+                          const isBase = sound.id === baseId;
                           const active = activeSounds.some((s) => s.id === sound.id);
                           const available = hasSoundFile(sound.id);
                           const locked = !!sound.isPremium && !isPremium;
                           return (
                             <Pressable
                               key={sound.id}
-                              disabled={!available}
+                              disabled={!available || isBase}
                               onPress={() => handleAddLayer(sound)}
                               style={({ pressed }) => [
                                 styles.pickerItem,
@@ -314,7 +325,9 @@ export default function InmersivoScreen() {
                               <Text style={styles.pickerName} numberOfLines={1}>
                                 {sound.name}
                               </Text>
-                              {!available ? (
+                              {isBase ? (
+                                <Text style={styles.pickerTag}>Fondo</Text>
+                              ) : !available ? (
                                 <Text style={styles.pickerTag}>Próximamente</Text>
                               ) : locked ? (
                                 <Feather name="lock" size={11} color="#D6A85B" />
@@ -419,7 +432,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   panelTitle: { color: "#FFFFFF", fontSize: 16, fontWeight: "700" },
-  panelSub: { color: "rgba(232,245,224,0.6)", fontSize: 12, marginTop: 2 },
+  emptyAmbient: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 18,
+    justifyContent: "center",
+  },
+  emptyAmbientText: {
+    color: "rgba(232,245,224,0.45)",
+    fontSize: 13,
+    fontWeight: "500",
+  },
   addBtn: {
     flexDirection: "row",
     alignItems: "center",
