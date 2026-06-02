@@ -383,11 +383,11 @@ export default function PlayerScreen() {
               {artist.certified && <Feather name="check-circle" size={12} color={colors.accent} />}
             </Pressable>
           )}
-          {isLoopSession && sleepTimerRemaining !== null && (
+          {isLoopSession && (
             <View style={styles.durationChip}>
               <Feather name="clock" size={11} color="#A8D49F" />
               <Text style={styles.durationChipText}>
-                Apagar en {formatRemaining(Math.max(0, sleepTimerRemaining))}
+                Apagar en {formatRemaining(Math.max(0, totalSeconds - elapsed))}
               </Text>
             </View>
           )}

@@ -336,23 +336,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (!switchingRef.current) setIsPlaying(status.playing);
       }
 
-      // Loop/duration sessions: the bespoke countdown sessions are interval-driven,
-      // but crossfade loop sessions drive the progress bar from the real audio
-      // position (so the bar is seekable, matching the lock-screen scrubber).
-      if (loopModeRef.current) {
-        if (loopCrossfadeRef.current) {
-          const dur = status.duration ?? 0;
-          const pos = status.currentTime ?? 0;
-          if (switchingRef.current) {
-            switchingRef.current = false;
-          } else if (dur > 0) {
-            setActualDurationSeconds(Math.floor(dur));
-            setProgress(pos / dur);
-            setElapsed(Math.floor(pos));
-          }
-        }
-        return;
-      }
+      // Loop/duration sessions (incl. crossfade loops) are driven by the session
+      // countdown interval, not the audio position. The audio loops underneath
+      // (seamlessly via crossfade); the progress bar tracks the chosen session
+      // length so it advances monotonically and never resets per loop cycle.
+      if (loopModeRef.current) return;
 
       const dur = status.duration ?? 0;
       const pos = status.currentTime ?? 0;
@@ -865,9 +853,35 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             markPlayStarted();
             switchingRef.current = false;
 
-            // El conteo / auto-apagado lo maneja el sleep timer existente; la barra
-            // de progreso refleja la posición real del audio (handleMainStatus).
-            setSleepTimerRemaining(totalSeconds);
+            // La barra refleja la duración elegida de la sesión (monótona, sin
+            // saltos por vuelta del loop). El audio sigue en loop por debajo con
+            // crossfade; este intervalo cuenta el tiempo de sesión y auto-apaga.
+            simIntervalRef.current = setInterval(() => {
+              setElapsed((prev) => {
+                // Congelar el conteo cuando está en pausa (in-app o lock-screen)
+                if (!lastPlayingRef.current) return prev;
+                const next = prev + 1;
+                const sId = currentSessionRef.current?.id;
+                if (next >= totalSeconds) {
+                  clearSim();
+                  teardownPlayback();
+                  teardownLoopCrossfade();
+                  ambientActiveRef.current = false;
+                  loopModeRef.current = false;
+                  hasRealAudioRef.current = false;
+                  lastPlayingRef.current = false;
+                  setIsPlaying(false);
+                  setProgress(1);
+                  if (sId) saveSessionProgress(sId, 1, { force: true });
+                  flushActiveStatRef.current();
+                  return totalSeconds;
+                }
+                const p = next / totalSeconds;
+                setProgress(p);
+                if (sId) saveSessionProgress(sId, p);
+                return next;
+              });
+            }, 1000);
 
             // Crossfade de potencia constante entre A (main) y B (layerB).
             clearLoopFade();
@@ -935,6 +949,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             // Drive progress with a countdown interval
             simIntervalRef.current = setInterval(() => {
               setElapsed((prev) => {
+                // Congelar el conteo cuando está en pausa (in-app o lock-screen)
+                if (!lastPlayingRef.current) return prev;
                 const next = prev + 1;
                 const sId = currentSessionRef.current?.id;
                 if (next >= totalSeconds) {
@@ -1075,26 +1091,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setProgress(clamped);
       if (
         hasRealAudioRef.current &&
-        (!loopModeRef.current || loopCrossfadeRef.current) &&
+        !loopModeRef.current &&
         mainPlayerRef.current?.isLoaded &&
         mainPlayerRef.current.duration > 0
       ) {
-        const dur = mainPlayerRef.current.duration;
-        const posSeconds = clamped * dur;
+        const posSeconds = clamped * mainPlayerRef.current.duration;
         setElapsed(Math.floor(posSeconds));
         try {
           await mainPlayerRef.current.seekTo(posSeconds);
         } catch (_) {}
-        // En crossfade, realinear la capa B medio ciclo adelante y confirmar el
-        // offset (el intervalo la mantiene; sin esto sonaría desfasada tras el seek).
-        if (loopCrossfadeRef.current && loopBPlayerRef.current?.isLoaded) {
-          const desired = (((posSeconds + dur / 2) % dur) + dur) % dur;
-          try {
-            await loopBPlayerRef.current.seekTo(desired);
-            loopOffsetConfirmedRef.current = true;
-          } catch (_) {}
-        }
       } else if (currentSession) {
+        // Sesiones de loop con crossfade: el seek mueve la posición de la sesión
+        // (barra + tiempo); el audio sigue en loop por debajo sin cortes. El
+        // intervalo de conteo continúa desde el nuevo elapsed.
         const posSeconds = clamped * actualDurationSeconds;
         setElapsed(Math.floor(posSeconds));
       }
