@@ -53,7 +53,7 @@ const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#1C150F", "#080503"] as const;
 
-/** Miniatura circular de la pista: imagen del sonido (fallback degradé negro). */
+/** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
 function TrackThumb({ sound }: { sound: MixSound }) {
   const image = getSoundImage(sound.id);
   if (image) {
@@ -292,31 +292,29 @@ export function MixerSheet() {
                 key={sound.id}
                 style={[styles.trackRow, { backgroundColor: colors.background, borderColor: colors.border }]}
               >
-                <View style={styles.trackTop}>
-                  <TrackThumb sound={sound} />
+                <TrackThumb sound={sound} />
 
-                  <View style={styles.trackInfo}>
-                    <Text style={[styles.trackName, { color: colors.foreground }]} numberOfLines={1}>
-                      {sound.name}
-                    </Text>
-                  </View>
-
-                  <Pressable
-                    onPress={() => removeSound(sound.id)}
-                    hitSlop={10}
-                    style={styles.removeBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
-                  >
-                    <Feather name="x" size={16} color={colors.mutedForeground} />
-                  </Pressable>
+                <View style={styles.trackInfo}>
+                  <Text style={[styles.trackName, { color: colors.foreground }]} numberOfLines={1}>
+                    {sound.name}
+                  </Text>
+                  <VolumeSlider
+                    value={active.volume}
+                    onChange={(v) => setVolume(sound.id, v)}
+                    color={colors.accent}
+                    trackColor={colors.secondary}
+                  />
                 </View>
-                <VolumeSlider
-                  value={active.volume}
-                  onChange={(v) => setVolume(sound.id, v)}
-                  color={colors.accent}
-                  trackColor={colors.secondary}
-                />
+
+                <Pressable
+                  onPress={() => removeSound(sound.id)}
+                  hitSlop={10}
+                  style={styles.removeBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
+                >
+                  <Feather name="x" size={16} color={colors.mutedForeground} />
+                </Pressable>
               </View>
             ))}
 
@@ -564,22 +562,19 @@ const styles = StyleSheet.create({
 
   trackScroll: { flexGrow: 0 },
   trackRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
     borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 12,
-    paddingTop: 11,
-    paddingBottom: 4,
-    marginBottom: 10,
+    paddingVertical: 10,
+    marginBottom: 8,
   },
-  trackTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 11,
-  },
-  thumb: { width: 40, height: 40, borderRadius: 20, overflow: "hidden" },
-  thumbRadius: { borderRadius: 20 },
+  thumb: { width: 44, height: 44, borderRadius: 10, overflow: "hidden" },
+  thumbRadius: { borderRadius: 10 },
   trackInfo: { flex: 1 },
-  trackName: { fontSize: 15, fontWeight: "600" },
+  trackName: { fontSize: 15, fontWeight: "400", marginBottom: 2 },
   _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",
