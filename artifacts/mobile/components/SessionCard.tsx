@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -34,15 +34,6 @@ function LockStar() {
   );
 }
 
-function CategoryIcon({ categoryId, size = 10 }: { categoryId: string; size?: number }) {
-  const cat = CATEGORIES.find((c) => c.id === categoryId);
-  if (!cat) return null;
-  const color = cat.color;
-  if (cat.iconFamily === "MaterialCommunityIcons") {
-    return <MaterialCommunityIcons name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]} size={size} color={color} />;
-  }
-  return <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={size} color={color} />;
-}
 
 export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg }: Props) {
   const tintOverlay =
@@ -72,7 +63,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         </View>
         <View style={styles.hContent}>
           <View style={styles.hCategoryRow}>
-            <CategoryIcon categoryId={session.categoryId} size={9} />
             <Text style={[styles.hCategory, { color: catColor }]}>
               {session.categoryLabel}
             </Text>
