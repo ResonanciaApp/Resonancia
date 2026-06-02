@@ -105,6 +105,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, presentation: "fullScreenModal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen
+          name="inmersivo"
+          options={{ headerShown: false, presentation: "fullScreenModal", animation: "slide_from_bottom" }}
+        />
+        <Stack.Screen
           name="session/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

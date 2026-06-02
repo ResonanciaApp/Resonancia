@@ -22,7 +22,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArtistCard } from "@/components/ArtistCard";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { getNatureBaseSounds } from "@/config/nature-base-map";
 import { getFeaturedArtists } from "@/data/artists";
+import { useMixer } from "@/context/MixerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session, type SoundTag } from "@/data/sessions";
@@ -39,7 +41,16 @@ type Tab = "Todos" | SoundTag;
 
 const TABS: Tab[] = ["Todos", "Sonidos Naturaleza", "Música Ambient", "Música Enteógena"];
 
-const DURATION_OPTIONS = [5, 10, 15, 20, 30, 45];
+/** Timer del sonido. 10/20/30 min gratis; el resto es premium. */
+const FREE_TIMER_MAX = 30;
+const TIMER_OPTIONS: { minutes: number; label: string }[] = [
+  { minutes: 10, label: "10 min" },
+  { minutes: 20, label: "20 min" },
+  { minutes: 30, label: "30 min" },
+  { minutes: 60, label: "1 h" },
+  { minutes: 120, label: "2 h" },
+  { minutes: 480, label: "8 h" },
+];
 
 const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
   "Sonidos Naturaleza": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
@@ -65,7 +76,8 @@ export default function MusicaSonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
-  const { isFavorite, toggleFavorite, playSession, playSessionWithDuration } = usePlayer();
+  const { isFavorite, toggleFavorite, playSession } = usePlayer();
+  const { stopAll, toggleSound, setSleepTimer } = useMixer();
 
   const featuredArtists = getFeaturedArtists();
 
@@ -93,11 +105,39 @@ export default function MusicaSonidosScreen() {
     return list;
   }, [activeTab, query]);
 
-  const handleSelectDuration = (minutes: number) => {
+  const handleSelectTimer = (minutes: number) => {
     if (!pendingSession) return;
+    // Gating premium: solo 10/20/30 min son gratis.
+    if (minutes > FREE_TIMER_MAX && !isPremium) {
+      setPendingSession(null);
+      stopAll();
+      router.push("/membresia" as never);
+      return;
+    }
+    const session = pendingSession;
     setPendingSession(null);
-    playSessionWithDuration(pendingSession, minutes);
-    router.push("/player" as never);
+    const bases = getNatureBaseSounds(session.id) ?? [];
+    // Sin sonido base mapeado no hay nada que reproducir: limpiar y abortar
+    // para no entrar a la pantalla inmersiva heredando una mezcla vieja.
+    if (bases.length === 0) {
+      stopAll();
+      return;
+    }
+    setSleepTimer(minutes);
+    router.push({
+      pathname: "/inmersivo",
+      params: {
+        title: session.title,
+        baseId: bases[0] ?? "",
+        extras: JSON.stringify(bases.slice(1)),
+      },
+    } as never);
+  };
+
+  // Cancelar el timer detiene el sonido que arrancó al tocar la card.
+  const handleCancelTimer = () => {
+    setPendingSession(null);
+    stopAll();
   };
 
   return (
@@ -227,7 +267,14 @@ export default function MusicaSonidosScreen() {
                       if (session.isPremium && !isPremium) {
                         router.push("/membresia" as never);
                       } else if (session.soundTag === "Sonidos Naturaleza") {
-                        // Loops → el usuario elige la duración
+                        // Modelo inmersivo: arranca el sonido al instante y
+                        // abre el timer. La capa base se inicia ya; las extras
+                        // se suman en la pantalla inmersiva.
+                        const base = getNatureBaseSounds(session.id)?.[0];
+                        if (base) {
+                          stopAll();
+                          toggleSound(base);
+                        }
                         setPendingSession(session);
                       } else {
                         // Música Ambient / Enteógena → pistas con duración fija
@@ -330,9 +377,9 @@ export default function MusicaSonidosScreen() {
         transparent
         animationType="slide"
         statusBarTranslucent
-        onRequestClose={() => setPendingSession(null)}
+        onRequestClose={handleCancelTimer}
       >
-        <TouchableWithoutFeedback onPress={() => setPendingSession(null)}>
+        <TouchableWithoutFeedback onPress={handleCancelTimer}>
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View
@@ -365,45 +412,55 @@ export default function MusicaSonidosScreen() {
                     </View>
 
                     <Text style={[styles.modalHint, { color: "#E8F5E0" }]}>
-                      El audio tendrá la duración que elijas
+                      El sonido se detiene al terminar este tiempo · 10, 20 y 30 min gratis
                     </Text>
 
-                    {/* Duration options */}
+                    {/* Timer options */}
                     <View style={styles.durationGrid}>
-                      {DURATION_OPTIONS.map((min) => (
-                        <Pressable
-                          key={min}
-                          style={({ pressed }) => [
-                            styles.durationBtn,
-                            {
-                              backgroundColor: pressed
-                                ? "#A8D49F"
-                                : "rgba(160,200,140,0.10)",
-                              borderColor: pressed
-                                ? "#A8D49F"
-                                : "rgba(160,200,140,0.28)",
-                            },
-                          ]}
-                          onPress={() => handleSelectDuration(min)}
-                        >
-                          {({ pressed }) => (
-                            <>
-                              <Text style={[styles.durationNum, { color: pressed ? colors.primaryForeground : "#E8F5E0" }]}>
-                                {min}
-                              </Text>
-                              <Text style={[styles.durationUnit, { color: pressed ? colors.primaryForeground : "#E8F5E0" }]}>
-                                min
-                              </Text>
-                            </>
-                          )}
-                        </Pressable>
-                      ))}
+                      {TIMER_OPTIONS.map((opt) => {
+                        const locked = opt.minutes > FREE_TIMER_MAX && !isPremium;
+                        return (
+                          <Pressable
+                            key={opt.minutes}
+                            style={({ pressed }) => [
+                              styles.durationBtn,
+                              {
+                                backgroundColor: pressed
+                                  ? "#A8D49F"
+                                  : "rgba(160,200,140,0.10)",
+                                borderColor: pressed
+                                  ? "#A8D49F"
+                                  : "rgba(160,200,140,0.28)",
+                              },
+                            ]}
+                            onPress={() => handleSelectTimer(opt.minutes)}
+                          >
+                            {({ pressed }) => (
+                              <>
+                                <Text
+                                  style={[
+                                    styles.durationNum,
+                                    { fontSize: 18, color: pressed ? colors.primaryForeground : "#E8F5E0" },
+                                  ]}
+                                >
+                                  {opt.label}
+                                </Text>
+                                {locked && (
+                                  <View style={styles.timerLock}>
+                                    <Feather name="lock" size={9} color="#D6A85B" />
+                                  </View>
+                                )}
+                              </>
+                            )}
+                          </Pressable>
+                        );
+                      })}
                     </View>
 
                     {/* Cancel */}
                     <Pressable
                       style={[styles.cancelBtn, { borderColor: "rgba(160,200,140,0.22)" }]}
-                      onPress={() => setPendingSession(null)}
+                      onPress={handleCancelTimer}
                     >
                       <Text style={[styles.cancelText, { color: "#E8F5E0" }]}>
                         Cancelar
@@ -616,6 +673,18 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 16,
     borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  timerLock: {
+    position: "absolute",
+    top: 7,
+    right: 8,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: "rgba(214,168,91,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
