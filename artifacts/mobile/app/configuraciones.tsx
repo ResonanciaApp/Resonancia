@@ -48,8 +48,8 @@ const DEFAULTS: Settings = {
 };
 
 const TIME_OPTIONS = [
-  { h: 7, m: 0 }, { h: 8, m: 0 }, { h: 9, m: 0 },
-  { h: 20, m: 0 }, { h: 21, m: 0 }, { h: 22, m: 0 },
+  { h: 6, m: 0 }, { h: 7, m: 0 }, { h: 8, m: 0 }, { h: 9, m: 0 }, { h: 10, m: 0 },
+  { h: 19, m: 0 }, { h: 20, m: 0 }, { h: 21, m: 0 }, { h: 22, m: 0 }, { h: 23, m: 0 },
 ];
 
 const SLEEP_OPTIONS: { label: string; value: number | null }[] = [
@@ -100,7 +100,7 @@ export default function ConfiguracionesScreen() {
 
   const { logout } = useAuth();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
-  const { setSleepTimer } = usePlayer();
+  const { updateDefaultSleepTimer } = usePlayer();
 
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
@@ -160,7 +160,7 @@ export default function ConfiguracionesScreen() {
 
   const onPickSleep = (minutes: number | null) => {
     update({ defaultSleepMinutes: minutes });
-    setSleepTimer(minutes);
+    updateDefaultSleepTimer(minutes);
   };
 
   const handleLogout = () => {
@@ -392,6 +392,7 @@ export default function ConfiguracionesScreen() {
             value="Español"
             colors={colors}
             border
+            disabled
           />
         </View>
 
@@ -408,6 +409,24 @@ export default function ConfiguracionesScreen() {
             colors={colors}
             border
             danger
+          />
+        </View>
+
+        {/* ── Soporte ── */}
+        <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>SOPORTE</Text>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
+          <ActionRow
+            icon="mail"
+            label="Contactar al equipo"
+            onPress={() => openExternal("mailto:hola@resonancia.app")}
+            colors={colors}
+          />
+          <ActionRow
+            icon="help-circle"
+            label="Centro de ayuda"
+            onPress={() => openExternal("https://resonancia.app/ayuda")}
+            colors={colors}
+            border
           />
         </View>
 
@@ -457,7 +476,7 @@ function RowIcon({ icon, colors }: { icon: FeatherName; colors: ReturnType<typeo
 }
 
 function ActionRow({
-  icon, label, value, onPress, colors, border, danger,
+  icon, label, value, onPress, colors, border, danger, disabled,
 }: {
   icon: FeatherName;
   label: string;
@@ -466,15 +485,16 @@ function ActionRow({
   colors: ReturnType<typeof useColors>;
   border?: boolean;
   danger?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <Pressable
       onPress={onPress}
-      disabled={!onPress}
+      disabled={!onPress || disabled}
       style={({ pressed }) => [
         styles.row,
         border && { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" },
-        { opacity: pressed && onPress ? 0.75 : 1 },
+        { opacity: pressed && onPress ? 0.75 : disabled ? 0.5 : 1 },
       ]}
     >
       <View style={[styles.rowIcon, { backgroundColor: (danger ? "#C0392B" : colors.primary) + "20" }]}>
@@ -483,7 +503,7 @@ function ActionRow({
       <Text style={[styles.rowLabel, { color: danger ? "#E07060" : colors.foreground, flex: 1 }]}>{label}</Text>
       {value ? (
         <Text style={[styles.rowValue, { color: colors.mutedForeground }]}>{value}</Text>
-      ) : onPress ? (
+      ) : onPress && !disabled ? (
         <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
       ) : null}
     </Pressable>

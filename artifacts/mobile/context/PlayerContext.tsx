@@ -63,6 +63,8 @@ type PlayerContextType = {
   sleepTimerRemaining: number | null;
   /** Set timer to N minutes (null = cancel) */
   setSleepTimer: (minutes: number | null) => void;
+  /** Update the default sleep timer preference (no aplica inmediatamente) */
+  updateDefaultSleepTimer: (minutes: number | null) => void;
   /** Wipe the full listening history */
   clearHistory: () => Promise<void>;
   /** Whether the current session has a voice track */
@@ -125,6 +127,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [statEvents, setStatEvents] = useState<StatEvent[]>([]);
   const [sessionProgress, setSessionProgress] = useState<Record<string, number>>({});
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
+  const defaultSleepMinutesRef = useRef<number | null>(null);
 
   /** Last persisted progress per session id — to throttle AsyncStorage writes */
   const lastSavedProgressRef = useRef<Record<string, number>>({});
@@ -197,6 +200,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         sessionProgressRef.current = parsed;
         lastSavedProgressRef.current = { ...parsed };
         setSessionProgress(parsed);
+      } catch (_) {}
+    });
+    AsyncStorage.getItem("@resonance_settings").then((val) => {
+      if (!val) return;
+      try {
+        const { defaultSleepMinutes } = JSON.parse(val);
+        if (typeof defaultSleepMinutes === "number" || defaultSleepMinutes === null) {
+          defaultSleepMinutesRef.current = defaultSleepMinutes ?? null;
+        }
       } catch (_) {}
     });
     AsyncStorage.getItem(STATS_KEY).then((val) => {
@@ -672,6 +684,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           lastPlayingRef.current = true;
           setIsPlaying(true);
           markPlayStarted();
+          // Aplicar timer por defecto al iniciar una nueva sesión
+          if (defaultSleepMinutesRef.current !== null) {
+            setSleepTimerRemaining(defaultSleepMinutesRef.current * 60);
+          }
         } catch (err) {
           console.warn("[RESONANCE] Audio load failed:", err);
           hasRealAudioRef.current = false;
@@ -939,6 +955,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setSleepTimerRemaining(minutes * 60);
   }, []);
 
+  const updateDefaultSleepTimer = useCallback((minutes: number | null) => {
+    defaultSleepMinutesRef.current = minutes;
+  }, []);
+
   const clearHistory = useCallback(async () => {
     statTrackerRef.current = null;
     setHistory([]);
@@ -1001,6 +1021,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         seekTo,
         sleepTimerRemaining,
         setSleepTimer,
+        updateDefaultSleepTimer,
         clearHistory,
         hasVoiceTrack: !!VOICE_MAP[currentSession?.id ?? ""],
         voiceVolume,
