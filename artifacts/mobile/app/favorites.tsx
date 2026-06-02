@@ -32,31 +32,12 @@ export default function FavoritesScreen() {
     [favorites],
   );
 
-  // Tags presentes en los favoritos (themeTag + sleepTag únicos)
-  const availableTags = useMemo(() => {
-    const set = new Set<string>();
-    favSessions.forEach((s) => {
-      s.themeTag?.forEach((t) => set.add(t));
-      if (s.sleepTag) set.add(s.sleepTag);
-    });
-    return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
-  }, [favSessions]);
-
-  const [activeTag, setActiveTag] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-
-  // Si el tag activo desaparece (último fav removido), resetear
-  if (activeTag && !availableTags.includes(activeTag)) {
-    setActiveTag(null);
-  }
 
   const filteredSessions = useMemo(() => {
     const q = query.trim().toLowerCase();
+    if (!q) return favSessions;
     return favSessions.filter((s) => {
-      if (activeTag && !(s.themeTag?.includes(activeTag as never) || s.sleepTag === activeTag)) {
-        return false;
-      }
-      if (!q) return true;
       const hay = [
         s.title,
         s.description,
@@ -69,7 +50,7 @@ export default function FavoritesScreen() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [favSessions, activeTag, query]);
+  }, [favSessions, query]);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -127,15 +108,8 @@ export default function FavoritesScreen() {
           </View>
         )}
 
-        {/* ── Sesiones ── */}
+        {/* ── Sesiones favoritas ── */}
         <View style={styles.sectionBlock}>
-          <View style={styles.sectionTitleRow}>
-            <Feather name="headphones" size={15} color={colors.accent} />
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Sesiones
-            </Text>
-          </View>
-
           {favSessions.length === 0 ? (
             <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
               <Feather name="music" size={20} color={colors.border} />
@@ -151,76 +125,16 @@ export default function FavoritesScreen() {
             </View>
           ) : (
             <View>
-              <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>
-                {filteredSessions.length} de {favSessions.length} sesión{favSessions.length !== 1 ? "es" : ""}
-                {activeTag ? ` · ${activeTag}` : ""}
-              </Text>
-
-              {availableTags.length > 0 && (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.chipsRow}
-                  style={styles.chipsScroll}
-                >
-                  <Pressable
-                    onPress={() => setActiveTag(null)}
-                    style={[
-                      styles.chip,
-                      {
-                        backgroundColor: activeTag === null ? colors.primary : "rgba(255,255,255,0.04)",
-                        borderColor: activeTag === null ? colors.primary : "rgba(255,255,255,0.07)",
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.chipText,
-                        { color: activeTag === null ? "#080F0A" : colors.foreground },
-                      ]}
-                    >
-                      Todas
-                    </Text>
-                  </Pressable>
-                  {availableTags.map((tag) => {
-                    const active = activeTag === tag;
-                    return (
-                      <Pressable
-                        key={tag}
-                        onPress={() => setActiveTag(active ? null : tag)}
-                        style={[
-                          styles.chip,
-                          {
-                            backgroundColor: active ? colors.primary : "rgba(255,255,255,0.04)",
-                            borderColor: active ? colors.primary : "rgba(255,255,255,0.07)",
-                          },
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.chipText,
-                            { color: active ? "#080F0A" : colors.foreground },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {tag}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              )}
-
               {filteredSessions.length === 0 ? (
                 <View
                   style={[
                     styles.emptySmall,
-                    { backgroundColor: "rgba(255,255,255,0.04)", marginTop: 8 },
+                    { backgroundColor: "rgba(255,255,255,0.04)" },
                   ]}
                 >
-                  <Feather name="filter" size={18} color={colors.border} />
+                  <Feather name="search" size={18} color={colors.border} />
                   <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
-                    Ninguna sesión coincide con esta etiqueta.
+                    Ninguna sesión coincide con tu búsqueda.
                   </Text>
                 </View>
               ) : (
@@ -271,15 +185,6 @@ const styles = StyleSheet.create({
   pageSub: { fontSize: 13 },
 
   sectionBlock: { marginBottom: 32 },
-  sectionTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 14,
-  },
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
-
-  countLabel: { fontSize: 12, marginBottom: 12 },
 
   emptySmall: {
     flexDirection: "row",
@@ -295,15 +200,4 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   emptyLinkText: { fontSize: 12, fontWeight: "600" },
-
-  chipsScroll: { marginBottom: 14 },
-  chipsRow: { gap: 8, paddingRight: 4 },
-  chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 16,
-    borderWidth: 1,
-    maxWidth: 220,
-  },
-  chipText: { fontSize: 12, fontWeight: "600" },
 });
