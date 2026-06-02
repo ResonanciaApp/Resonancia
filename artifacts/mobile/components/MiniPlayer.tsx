@@ -152,11 +152,16 @@ export function MiniPlayer() {
   );
 }
 
+const MAX_PLAYER_WIDTH = 430;
+
 const styles = StyleSheet.create({
   wrapper: {
     marginHorizontal: 16,
     borderRadius: 18,
     overflow: "hidden",
+    maxWidth: MAX_PLAYER_WIDTH,
+    width: "100%",
+    alignSelf: "center",
   },
   border: {
     ...StyleSheet.absoluteFillObject,

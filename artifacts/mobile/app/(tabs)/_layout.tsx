@@ -102,7 +102,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#18110C" }]} />
       )}
       <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
-      <View style={styles.row}>
+      <View style={[styles.row, isWeb && styles.rowWeb]}>
         {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
           const { options } = descriptors[route.key];
           if ((options as { href?: null }).href === null) return null;
@@ -186,6 +186,11 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingHorizontal: 8,
     height: 56,
+  },
+  rowWeb: {
+    maxWidth: 430,
+    width: "100%",
+    alignSelf: "center",
   },
   tab: {
     flex: 1,
