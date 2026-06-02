@@ -325,7 +325,7 @@ export default function CommunityMixScreen() {
         <View style={styles.actions}>
           <Pressable
             onPress={handleLike}
-            style={[styles.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.actionBtn, { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.22)" }]}
           >
             <Feather
               name="heart"
@@ -344,7 +344,7 @@ export default function CommunityMixScreen() {
 
           <Pressable
             onPress={handleShare}
-            style={[styles.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.actionBtn, { backgroundColor: "rgba(198,155,79,0.1)", borderColor: "rgba(198,155,79,0.22)" }]}
           >
             <Feather name="share-2" size={20} color={colors.mutedForeground} />
             <Text style={[styles.actionTxt, { color: colors.foreground }]}>Compartir</Text>
@@ -364,7 +364,7 @@ export default function CommunityMixScreen() {
         </View>
 
         {/* Caja para escribir */}
-        <View style={[styles.composer, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.composer, { backgroundColor: "rgba(198,155,79,0.08)", borderColor: "rgba(198,155,79,0.22)" }]}>
           <TextInput
             value={draft}
             onChangeText={setDraft}
