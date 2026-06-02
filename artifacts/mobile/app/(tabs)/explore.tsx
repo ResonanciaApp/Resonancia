@@ -158,11 +158,8 @@ export default function ExploreScreen() {
           </View>
         ) : (
           <>
-            {/* ── Continúa escuchando ── */}
+            {/* ── Continúa escuchando (sin título; el reproductor basta) ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Continúa escuchando
-              </Text>
               {lastSession ? (
                 <Pressable
                   onPress={() =>
@@ -210,11 +207,11 @@ export default function ExploreScreen() {
                       </View>
                     )}
                   </View>
-                  <View style={[styles.continuePlay, { backgroundColor: colors.primary }]}>
+                  <View style={[styles.continuePlay, { backgroundColor: "#3A2417" }]}>
                     <Feather
                       name={lastSessionLocked ? "lock" : "play"}
                       size={16}
-                      color="#18110C"
+                      color="#FFFFFF"
                       style={lastSessionLocked ? undefined : { marginLeft: 2 }}
                     />
                   </View>
