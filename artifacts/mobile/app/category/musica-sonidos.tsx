@@ -145,7 +145,7 @@ export default function MusicaSonidosScreen() {
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder={`Busca +${MUSICA_SESSIONS.length} sonidos`}
+              placeholder="Buscar..."
               placeholderTextColor="rgba(125,200,125,0.45)"
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
