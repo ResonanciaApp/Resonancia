@@ -261,6 +261,23 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     lockOwnerRef.current = first;
     lockPendingRef.current = true;
     lockSubRef.current = first.addListener("playbackStatusUpdate", (status) => {
+      // ── Enforcement del sleep timer en background ──────────────────
+      // El setInterval de JS se congela con la pantalla bloqueada, así que
+      // el timer no dispararía la pausa. Pero este listener SÍ se sigue
+      // ejecutando en background (lo maneja el motor de audio nativo, que
+      // sigue activo por UIBackgroundModes: ["audio"]). Por eso chequeamos
+      // aquí la expiración con Date.now(): se respeta aunque el interval no corra.
+      const endTs = sleepEndTimeRef.current;
+      if (endTs != null && Date.now() >= endTs) {
+        sleepEndTimeRef.current = null;
+        if (sleepIntervalRef.current) {
+          clearInterval(sleepIntervalRef.current);
+          sleepIntervalRef.current = null;
+        }
+        setSleepTimerRemaining(null);
+        applyPlayingRef.current(false);
+        return;
+      }
       // Activar recién cuando hay duración válida: tras replace() el item aún
       // no cargó → duration NaN, e iOS descarta TODA la entrada de Now Playing.
       if (lockPendingRef.current && (status.duration ?? 0) > 0) {
