@@ -270,47 +270,48 @@ export default function InmersivoScreen() {
                     <View key={cat.id} style={{ marginBottom: 18 }}>
                       <Text style={styles.catLabel}>{cat.label}</Text>
                       <View style={styles.pickerGrid}>
-                        {cat.sounds.map((sound) => {
-                          const isBase = sound.id === baseId;
-                          const active = activeSounds.some((s) => s.id === sound.id);
-                          const available = hasSoundFile(sound.id);
-                          const locked = !!sound.isPremium && !isPremium;
-                          return (
-                            <Pressable
-                              key={sound.id}
-                              disabled={!available || isBase}
-                              onPress={() => handleAddLayer(sound)}
-                              style={({ pressed }) => [
-                                styles.pickerItem,
-                                {
-                                  backgroundColor: active
-                                    ? "rgba(168,196,168,0.22)"
-                                    : "rgba(255,255,255,0.06)",
-                                  borderColor: active ? ACCENT : "rgba(255,255,255,0.1)",
-                                  opacity: !available ? 0.4 : pressed ? 0.8 : 1,
-                                },
-                              ]}
-                            >
-                              <SoundIcon
-                                sound={sound}
-                                size={18}
-                                color={active ? ACCENT : "#E8F5E0"}
-                              />
-                              <Text style={styles.pickerName} numberOfLines={1}>
-                                {sound.name}
-                              </Text>
-                              {isBase ? (
-                                <Text style={styles.pickerTag}>Fondo</Text>
-                              ) : !available ? (
-                                <Text style={styles.pickerTag}>Próximamente</Text>
-                              ) : locked ? (
-                                <Feather name="lock" size={11} color="#D6A85B" />
-                              ) : active ? (
-                                <Feather name="check" size={13} color={ACCENT} />
-                              ) : null}
-                            </Pressable>
-                          );
-                        })}
+                        {cat.sounds
+                          // El sonido base ES la pista de la sesión (el "fondo"):
+                          // no se lista como capa elegible para no confundir.
+                          .filter((sound) => sound.id !== baseId)
+                          .map((sound) => {
+                            const active = activeSounds.some((s) => s.id === sound.id);
+                            const available = hasSoundFile(sound.id);
+                            const locked = !!sound.isPremium && !isPremium;
+                            return (
+                              <Pressable
+                                key={sound.id}
+                                disabled={!available}
+                                onPress={() => handleAddLayer(sound)}
+                                style={({ pressed }) => [
+                                  styles.pickerItem,
+                                  {
+                                    backgroundColor: active
+                                      ? "rgba(168,196,168,0.22)"
+                                      : "rgba(255,255,255,0.06)",
+                                    borderColor: active ? ACCENT : "rgba(255,255,255,0.1)",
+                                    opacity: !available ? 0.4 : pressed ? 0.8 : 1,
+                                  },
+                                ]}
+                              >
+                                <SoundIcon
+                                  sound={sound}
+                                  size={18}
+                                  color={active ? ACCENT : "#E8F5E0"}
+                                />
+                                <Text style={styles.pickerName} numberOfLines={1}>
+                                  {sound.name}
+                                </Text>
+                                {!available ? (
+                                  <Text style={styles.pickerTag}>Próximamente</Text>
+                                ) : locked ? (
+                                  <Feather name="lock" size={11} color="#D6A85B" />
+                                ) : active ? (
+                                  <Feather name="check" size={13} color={ACCENT} />
+                                ) : null}
+                              </Pressable>
+                            );
+                          })}
                       </View>
                     </View>
                   ))}
