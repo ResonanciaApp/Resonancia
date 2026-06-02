@@ -91,7 +91,6 @@ function CollaboratorCard({
           <Feather name="map-pin" size={10} color={C.muted} />
           <Text style={styles.metaText}>{country}</Text>
           <View style={styles.dot} />
-          <Feather name="music" size={10} color={C.muted} />
           <Text style={styles.metaText}>
             {trackCount > 0 ? `${trackCount} ${trackLabel}` : "Próximamente"}
           </Text>
