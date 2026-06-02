@@ -62,7 +62,7 @@ export default function PodcastScreen() {
           <View style={[styles.catIconCircle, { backgroundColor: "rgba(138,170,212,0.12)", borderColor: "rgba(138,170,212,0.28)" }]}>
             <Feather name="mic" size={22} color="#8AAAD4" />
           </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>PodCast</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>PodCast · Presencia</Text>
           <Text style={[styles.pageSub, { color: "#9DB5D8" }]}>
             Conversaciones que despiertan el alma
           </Text>

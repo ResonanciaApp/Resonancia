@@ -53,7 +53,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "podcast",
-    title: "HaciaAdentro · PodCast",
+    title: "PodCast · Presencia",
     subtitle: "Conversaciones que despiertan el alma",
     icon: "mic",
     sessionCount: 1,
