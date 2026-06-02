@@ -132,6 +132,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   /** Un AudioPlayer por sonido activo, keyed por sound id */
   const playersRef = useRef<Map<string, AudioPlayer>>(new Map());
+  /** Subscripción de fallback de loop por sonido (para reiniciar al terminar). */
+  const loopSubsRef = useRef<Map<string, { remove: () => void }>>(new Map());
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
@@ -372,8 +374,28 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const player = createAudioPlayer(file);
       player.loop = true;
       player.volume = volume;
-      player.play();
+      // Fallback de loop: en web (react-native-web) y en algunas plataformas el
+      // flag `loop` nativo no siempre reinicia el audio al terminar, así que el
+      // sonido se cortaba al acabar el MP3. Escuchamos `didJustFinish` y
+      // reiniciamos manualmente. Si el loop nativo SÍ funciona, `didJustFinish`
+      // no dispara (HTML5 con loop no emite `ended`), así que esto es solo
+      // seguro de respaldo y no genera doble reinicio.
+      const sub = player.addListener("playbackStatusUpdate", (status) => {
+        if (status.didJustFinish && playersRef.current.get(id) === player) {
+          try {
+            player.seekTo(0);
+            player.play();
+          } catch {
+            // ignore
+          }
+        }
+      });
+      loopSubsRef.current.set(id, sub);
+      // Registrar el player en el map ANTES de play(): si un asset muy corto
+      // dispara didJustFinish antes de la asignación, el guard del fallback
+      // (playersRef.get(id) === player) fallaría y se perdería el primer loop.
       playersRef.current.set(id, player);
+      player.play();
       return player;
     } catch {
       return null;
@@ -381,6 +403,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const destroyPlayer = useCallback((id: string) => {
+    const sub = loopSubsRef.current.get(id);
+    if (sub) {
+      try {
+        sub.remove();
+      } catch {
+        // ignore
+      }
+      loopSubsRef.current.delete(id);
+    }
     const p = playersRef.current.get(id);
     if (!p) return;
     try {
@@ -514,6 +545,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [applyPlaying, syncLockScreen]);
 
   const stopAll = useCallback(() => {
+    loopSubsRef.current.forEach((s) => {
+      try {
+        s.remove();
+      } catch {
+        // ignore
+      }
+    });
+    loopSubsRef.current.clear();
     playersRef.current.forEach((p) => {
       try {
         p.pause();
@@ -606,6 +645,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // Soltar el lock screen del owner viejo antes de desmontarlo.
       clearLockScreen();
       // Desmontar la mezcla actual
+      loopSubsRef.current.forEach((s) => {
+        try {
+          s.remove();
+        } catch {
+          // ignore
+        }
+      });
+      loopSubsRef.current.clear();
       playersRef.current.forEach((p) => {
         try {
           p.pause();
@@ -734,6 +781,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     return () => {
       clearLockScreen();
+      loopSubsRef.current.forEach((s) => {
+        try {
+          s.remove();
+        } catch {
+          // ignore
+        }
+      });
+      loopSubsRef.current.clear();
       playersRef.current.forEach((p) => {
         try {
           p.remove();
