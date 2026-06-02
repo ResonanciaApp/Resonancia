@@ -20,7 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
-import { CATEGORIES, getCategoryTint, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
+import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS } from "@/data/sessions";
 import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
@@ -68,6 +68,7 @@ export default function ExploreScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const filteredSessions = SESSIONS.filter((s) => {
+    if (s.categoryId === "sabiduria-dia") return false;
     if (!query) return false;
     const q = query.toLowerCase();
     return (
@@ -143,7 +144,6 @@ export default function ExploreScreen() {
                 key={s.id}
                 session={s}
                 horizontal
-                cardBg={getCategoryTint(s.categoryId)}
               />
             ))}
             {filteredSessions.length === 0 && (

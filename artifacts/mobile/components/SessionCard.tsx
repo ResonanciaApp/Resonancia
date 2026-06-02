@@ -1,4 +1,4 @@
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { type Session } from "@/data/sessions";
+import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -29,11 +30,20 @@ function LockStar() {
   );
 }
 
+function CategoryIcon({ categoryId, size = 10 }: { categoryId: string; size?: number }) {
+  const cat = CATEGORIES.find((c) => c.id === categoryId);
+  if (!cat) return null;
+  const color = cat.color;
+  if (cat.iconFamily === "MaterialCommunityIcons") {
+    return <MaterialCommunityIcons name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]} size={size} color={color} />;
+  }
+  return <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={size} color={color} />;
+}
+
 export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
-  const bg = cardBg ?? "#2A2A2E";
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
@@ -47,19 +57,20 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         onPress={handlePress}
         style={({ pressed }) => [
           styles.hRow,
-          { backgroundColor: bg, opacity: pressed ? 0.8 : 1 },
+          { backgroundColor: "rgba(255,255,255,0.04)", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
         ]}
       >
-        {/* Warm tint sutil */}
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: tintOverlay, borderRadius: 18 }]} />
         <View style={{ width: 108, height: 96 }}>
           <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
         </View>
         <View style={styles.hContent}>
-          <Text style={[styles.hCategory, { color: colors.accent }]}>
-            {session.categoryLabel}
-          </Text>
+          <View style={styles.hCategoryRow}>
+            <CategoryIcon categoryId={session.categoryId} size={10} />
+            <Text style={[styles.hCategory, { color: colors.accent }]}>
+              {session.categoryLabel}
+            </Text>
+          </View>
           <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
@@ -162,11 +173,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     justifyContent: "center",
   },
+  hCategoryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 3,
+  },
   hCategory: {
     fontSize: 10,
     letterSpacing: 1,
     textTransform: "uppercase",
-    marginBottom: 3,
   },
   hTitle: {
     fontSize: 15,

@@ -17,7 +17,6 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
-import { getCategoryTint } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 
 export default function FavoritesScreen() {
@@ -29,7 +28,7 @@ export default function FavoritesScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const favSessions = useMemo(
-    () => SESSIONS.filter((s) => favorites.includes(s.id)),
+    () => SESSIONS.filter((s) => favorites.includes(s.id) && s.categoryId !== "sabiduria-dia"),
     [favorites],
   );
 
@@ -230,7 +229,6 @@ export default function FavoritesScreen() {
                     key={s.id}
                     session={s}
                     horizontal
-                    cardBg={getCategoryTint(s.categoryId)}
                   />
                 ))
               )}
