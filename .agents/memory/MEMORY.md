@@ -6,7 +6,7 @@
 - [Expo Router fullscreen player](expo-fullscreen-modal.md) — fullScreenModal + StatusBar hidden + botones flotantes absolute (sin navBar) para que decoraciones lleguen al borde
 - [Mi Música mixer](mi-musica-mixer.md) — mezclador ambiente: sonidos se activan con slot SOUND_MAP; premium gating de presets se sanea en la pantalla (context es premium-agnóstico)
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
-- [Mixer loop + lock-screen mirror](mixer-loop-and-lockscreen.md) — loop flag needs createAudioPlayer(source) constructor (not null+replace); status mirror onto whole mix must ignore didJustFinish/own pauses; bg timer checked in status listener
+- [Mixer loop + lock-screen mirror](mixer-loop-and-lockscreen.md) — seamless crossfade loop, idle-player cache for instant re-tap, lock-screen owner mirror; no full-volume warmup
 - [Codegen clean breaks Metro](codegen-metro-resolve.md) — Orval clean:true deletes generated/ mid-run; Metro caches "Unable to resolve ./generated/api" → restart expo after codegen
 - [iOS 26 Hermes PAC crash](ios26-hermes-pac-crash.md) — EXC_BAD_ACCESS on JS thread on physical iOS 26 devices; prebuilt Hermes fails PAC → fix = buildReactNativeFromSource (Xcode 26)
 - [expo-av launch SIGABRT](expo-av-launch-crash.md) — expo-av audio-session call at launch under SDK54 New Arch = uncatchable NSException→SIGABRT; keep expo-av off launch path, expo-audio owns session

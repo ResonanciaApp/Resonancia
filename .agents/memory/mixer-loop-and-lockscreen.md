@@ -35,6 +35,21 @@ so each layer's own wrap always happens at gain 0 (inaudible) regardless of the 
 layer's load state. The cost (first sound ramps from 0) is acceptable; B, once aligned
 ~dur/2 ahead, comes in near full almost immediately.
 
+### Idle-player cache: park (pause+mute) toggled-off sounds, don't destroy
+To make re-activating a sound instant (no mp3 decode wait), toggling a sound OFF
+"parks" its layer pair instead of destroying it: pause + set volume 0, move the pair
+from `playersRef` into `idlePlayersRef`, and KEEP its crossfade listeners attached.
+The listener guard (`playersRef.current.get(id)` identity check) makes parked players
+inert — they're not in `playersRef` so ticks early-return; while paused no ticks fire
+anyway. Toggling ON resumes from the idle cache (move back to `playersRef`, `play()`
+both) — `offsetConfirmed` is still true in the closure, so the crossfade resumes
+already-aligned with no re-confirm and no seam. Cache is LRU-capped (`IDLE_CACHE_MAX`);
+overflow is hard-destroyed. **Why:** the only real fix for start latency that doesn't
+risk the loop seam (a full-volume warmup does — see above). **How to apply:** any new
+teardown path (stopAll, loadPreset, unmount, eviction) MUST also drain `idlePlayersRef`,
+or parked players leak (their subs live in the shared `loopSubsRef`, so subs get cleared
+but the players themselves would survive). `destroyPlayer` looks in BOTH maps.
+
 ### Start latency is dominated by asset LOAD time, mostly a dev/Metro artifact
 First-tap delay (observed 3-7s, varies per sound) is NOT the gain logic — it's the time
 for `createAudioPlayer().replace(require(mp3))` to become ready. Mixer files are tiny

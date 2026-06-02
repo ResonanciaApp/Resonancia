@@ -63,6 +63,12 @@ function resolveMixArtworkUrl(imageKey?: string): string | undefined {
 
 /** Máximo de sonidos sonando a la vez (CPU/batería en móviles normales) */
 export const MAX_ACTIVE_SOUNDS = 10;
+/**
+ * Cuántos sonidos apagados se mantienen CARGADOS en memoria (pausados+muteados)
+ * para que volver a activarlos sea instantáneo (sin esperar el decode del mp3).
+ * Al superar el tope se descarta el más viejo de verdad (libera memoria).
+ */
+const IDLE_CACHE_MAX = 12;
 const PRESETS_KEY = "@resonance_mixer_presets";
 const DEFAULT_VOLUME = 0.7;
 
@@ -140,6 +146,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
    * `a` es además el ancla del lock-screen (siempre playing=true).
    */
   const playersRef = useRef<Map<string, SoundPlayers>>(new Map());
+  /**
+   * Caché de sonidos APAGADOS pero todavía cargados (pausados+muteados). Al
+   * apagar un sonido lo "estacionamos" acá en vez de destruirlo, así volver a
+   * activarlo es instantáneo (no hay que decodificar el mp3 de nuevo). Sus subs
+   * del crossfade siguen en loopSubsRef; el guard del listener los ignora porque
+   * el par ya no está en playersRef. Capado a IDLE_CACHE_MAX (LRU por inserción).
+   */
+  const idlePlayersRef = useRef<Map<string, SoundPlayers>>(new Map());
   /** Subscripciones de status (fade) por sonido: una por capa. */
   const loopSubsRef = useRef<Map<string, { remove: () => void }[]>>(new Map());
   /**
@@ -543,6 +557,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  /** Destruye de verdad un sonido (libera el player). Busca en activos e idle. */
   const destroyPlayer = useCallback((id: string) => {
     const subs = loopSubsRef.current.get(id);
     if (subs) {
@@ -556,7 +571,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       loopSubsRef.current.delete(id);
     }
     baseVolumesRef.current.delete(id);
-    const pair = playersRef.current.get(id);
+    const pair = playersRef.current.get(id) ?? idlePlayersRef.current.get(id);
+    playersRef.current.delete(id);
+    idlePlayersRef.current.delete(id);
     if (!pair) return;
     [pair.a, pair.b].forEach((p) => {
       try {
@@ -570,7 +587,69 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // ignore
       }
     });
-    playersRef.current.delete(id);
+  }, []);
+
+  /**
+   * "Estaciona" un sonido: lo pausa y mutea pero lo deja CARGADO en memoria
+   * (no destruye el player ni sus listeners), para que reactivarlo sea
+   * instantáneo. Capa el caché a IDLE_CACHE_MAX descartando el más viejo.
+   */
+  const parkPlayer = useCallback(
+    (id: string) => {
+      const pair = playersRef.current.get(id);
+      if (!pair) {
+        // Por si ya estaba idle (no debería): no dejar fantasmas.
+        if (idlePlayersRef.current.has(id)) return;
+        return;
+      }
+      [pair.a, pair.b].forEach((p) => {
+        try {
+          p.volume = 0; // muteado mientras está estacionado
+        } catch {
+          // ignore
+        }
+        try {
+          p.pause();
+        } catch {
+          // ignore
+        }
+      });
+      playersRef.current.delete(id);
+      // Reinsertar al final para que cuente como "el más reciente" (LRU).
+      idlePlayersRef.current.delete(id);
+      idlePlayersRef.current.set(id, pair);
+      while (idlePlayersRef.current.size > IDLE_CACHE_MAX) {
+        const oldest = idlePlayersRef.current.keys().next().value as string | undefined;
+        if (oldest === undefined) break;
+        destroyPlayer(oldest);
+      }
+    },
+    [destroyPlayer],
+  );
+
+  /**
+   * Reactiva un sonido estacionado (vuelve a playersRef y le da play). El
+   * crossfade ya estaba alineado (offsetConfirmed quedó true en su closure), así
+   * que retoma sin re-confirmar ni cortes. Devuelve el par o null si no estaba.
+   */
+  const resumePlayer = useCallback((id: string, vol: number): SoundPlayers | null => {
+    const pair = idlePlayersRef.current.get(id);
+    if (!pair) return null;
+    idlePlayersRef.current.delete(id);
+    baseVolumesRef.current.set(id, vol);
+    // Volver a registrar ANTES de play() (el guard del listener compara identidad).
+    playersRef.current.set(id, pair);
+    try {
+      pair.a.play();
+    } catch {
+      // ignore
+    }
+    try {
+      pair.b.play();
+    } catch {
+      // ignore
+    }
+    return pair;
   }, []);
 
   const clearSleepTimer = useCallback(() => {
@@ -590,7 +669,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       if (exists) {
         const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
         if (removingOwner) clearLockScreen();
-        destroyPlayer(id);
+        // Estacionar (no destruir) para que reactivarlo sea instantáneo.
+        parkPlayer(id);
         const next = prev.filter((s) => s.id !== id);
         setActiveSounds(next);
         setLoadedPresetId(null);
@@ -611,7 +691,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // Mezcla y sesión son mutuamente excluyentes (comparten Now Playing).
       stopSessionPlayback();
       void ensureAudioMode();
-      const player = createPlayerFor(id, DEFAULT_VOLUME);
+      // Si está estacionado (apagado hace poco), retomarlo al instante; si no,
+      // crear el player desde cero (decodifica el mp3).
+      const player = resumePlayer(id, DEFAULT_VOLUME) ?? createPlayerFor(id, DEFAULT_VOLUME);
       // Sin archivo de audio (o falla de carga): no agregar un sonido "fantasma"
       if (!player) return true;
       // Si la mezcla estaba pausada, retomar todos al sumar un sonido
@@ -625,7 +707,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     },
     [
       createPlayerFor,
-      destroyPlayer,
+      resumePlayer,
+      parkPlayer,
       ensureAudioMode,
       clearSleepTimer,
       applyPlaying,
@@ -660,7 +743,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     (id: string) => {
       const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
       if (removingOwner) clearLockScreen();
-      destroyPlayer(id);
+      // Estacionar (no destruir): si lo vuelven a agregar, arranca al instante.
+      parkPlayer(id);
       const next = activeSoundsRef.current.filter((s) => s.id !== id);
       setActiveSounds(next);
       setLoadedPresetId(null);
@@ -673,7 +757,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         syncLockScreen();
       }
     },
-    [destroyPlayer, clearSleepTimer, clearLockScreen, syncLockScreen],
+    [parkPlayer, clearSleepTimer, clearLockScreen, syncLockScreen],
   );
 
   const togglePlay = useCallback(() => {
@@ -713,6 +797,21 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       });
     });
     playersRef.current.clear();
+    idlePlayersRef.current.forEach((pair) => {
+      [pair.a, pair.b].forEach((p) => {
+        try {
+          p.pause();
+        } catch {
+          // ignore
+        }
+        try {
+          p.remove();
+        } catch {
+          // ignore
+        }
+      });
+    });
+    idlePlayersRef.current.clear();
     baseVolumesRef.current.clear();
     clearLockScreen();
     setActiveSounds([]);
@@ -818,6 +917,21 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         });
       });
       playersRef.current.clear();
+      idlePlayersRef.current.forEach((pair) => {
+        [pair.a, pair.b].forEach((p) => {
+          try {
+            p.pause();
+          } catch {
+            // ignore
+          }
+          try {
+            p.remove();
+          } catch {
+            // ignore
+          }
+        });
+      });
+      idlePlayersRef.current.clear();
       baseVolumesRef.current.clear();
 
       void ensureAudioMode();
@@ -954,6 +1068,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         });
       });
       playersRef.current.clear();
+      idlePlayersRef.current.forEach((pair) => {
+        [pair.a, pair.b].forEach((p) => {
+          try {
+            p.remove();
+          } catch {
+            // ignore
+          }
+        });
+      });
+      idlePlayersRef.current.clear();
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
     };
   }, [clearLockScreen]);
