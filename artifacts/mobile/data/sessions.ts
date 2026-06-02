@@ -84,7 +84,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "2",
-    isPremium: true,
     title: "Para dormir bien",
     subtitle: "Baño de Cuencos y Gongs",
     categoryId: "sonidos-ancestrales",
@@ -104,7 +103,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "4",
-    isPremium: true,
     title: "Dentro de uno",
     subtitle: "El Gran Despertar · Episodio 1",
     categoryId: "podcast",
@@ -124,7 +122,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "5",
-    isPremium: true,
     title: "Más allá del sonido",
     subtitle: "Consejo del Día",
     categoryId: "sabiduria-dia",
@@ -158,7 +155,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "8",
-    isPremium: true,
     title: "Ondas Delta para Dormir",
     subtitle: "Sonidos Binaurales con Cuencos",
     categoryId: "sonidos-ancestrales",
@@ -177,7 +173,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "9",
-    isPremium: true,
     title: "Theta Profundo con Cuencos",
     subtitle: "Sonidos Binaurales con Cuencos",
     categoryId: "sonidos-ancestrales",
@@ -215,7 +210,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "20",
-    isPremium: true,
     title: "Sonidos de la Naturaleza",
     subtitle: "Atmósfera Natural",
     categoryId: "musica-sonidos",
@@ -233,7 +227,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "21",
-    isPremium: true,
     title: "Lluvia de Bosque",
     subtitle: "Sonidos Naturales",
     categoryId: "musica-sonidos",
@@ -250,7 +243,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "22",
-    isPremium: true,
     title: "Orilla del Mar",
     subtitle: "Sonidos Naturales",
     categoryId: "musica-sonidos",
@@ -339,7 +331,6 @@ export const SESSIONS: Session[] = [
   },
   {
     id: "28",
-    isPremium: true,
     title: "Prueba 1",
     subtitle: "Meditación Guiada con Cuencos",
     categoryId: "meditaciones-guiadas",
