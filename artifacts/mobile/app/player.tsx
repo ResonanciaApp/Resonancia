@@ -267,6 +267,8 @@ export default function PlayerScreen() {
   const showArtist =
     isMusicaYSonidos &&
     (currentSession.soundTag === "Música Ambient" || currentSession.soundTag === "Música Enteógena");
+  // Música Ambient / Enteógena tienen duración fija → sin sleep timer.
+  const isFixedMusic = showArtist;
   const artist = getArtist(currentSession.artistId);
 
   const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
@@ -550,8 +552,9 @@ export default function PlayerScreen() {
           </View>
         )}
 
-        {/* Sleep Timer — at the bottom, hidden para loops (usan el picker de duración) */}
-        {!isLoopSession && (
+        {/* Sleep Timer — abajo. Oculto para loops (usan el picker de duración)
+            y para Música Ambient/Enteógena (duración fija). */}
+        {!isLoopSession && !isFixedMusic && (
           <View style={[styles.timerSection, { paddingTop: 24, marginTop: 8 }]}>
             <View style={styles.timerHeader}>
               <Feather name="moon" size={13} color={colors.mutedForeground} />
