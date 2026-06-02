@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -71,40 +70,6 @@ export default function MiMusicaScreen() {
     const locked = sound.isPremium && !isPremium;
     const image = getSoundImage(sound.id);
 
-    const overlay = (
-      <>
-        {/* Degradado para legibilidad del texto */}
-        <LinearGradient
-          colors={
-            active
-              ? ["rgba(198,155,79,0.10)", "rgba(24,17,12,0.20)", "rgba(24,17,12,0.85)"]
-              : ["rgba(24,17,12,0)", "rgba(24,17,12,0.12)", "rgba(24,17,12,0.82)"]
-          }
-          locations={[0, 0.55, 1]}
-          style={styles.cardOverlay}
-        />
-
-        {locked && (
-          <View style={styles.lockBadge}>
-            <Feather name="star" size={9} color="#18110C" />
-          </View>
-        )}
-
-        {active && (
-          <View style={[styles.activeBadge, { backgroundColor: colors.primary }]}>
-            <Feather name="check" size={11} color={colors.primaryForeground} />
-          </View>
-        )}
-
-        <View style={styles.cardContent}>
-          <Text style={styles.soundName} numberOfLines={1}>
-            {sound.name}
-          </Text>
-          {!available && <Text style={styles.soonText}>Próximamente</Text>}
-        </View>
-      </>
-    );
-
     return (
       <Pressable
         key={sound.id}
@@ -114,22 +79,46 @@ export default function MiMusicaScreen() {
           styles.soundCard,
           {
             backgroundColor: colors.card,
-            borderColor: active ? colors.primary : "rgba(0,0,0,0.25)",
+            borderColor: active ? colors.primary : "rgba(255,255,255,0.06)",
             borderWidth: active ? 2 : StyleSheet.hairlineWidth,
+            opacity: available ? 1 : 0.55,
           },
         ]}
       >
-        {image ? (
-          <ImageBackground
-            source={image}
-            style={styles.cardImage}
-            imageStyle={[styles.cardImageInner, { opacity: available ? 1 : 0.4 }]}
+        {/* Imagen — ocupa la parte superior cuadrada */}
+        <View style={styles.cardImageWrap}>
+          {image ? (
+            <ImageBackground
+              source={image}
+              style={styles.cardImage}
+              imageStyle={styles.cardImageInner}
+            />
+          ) : (
+            <View style={[styles.cardImage, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
+          )}
+
+          {locked && (
+            <View style={styles.lockBadge}>
+              <Feather name="star" size={9} color="#18110C" />
+            </View>
+          )}
+
+          {active && (
+            <View style={[styles.activeBadge, { backgroundColor: colors.primary }]}>
+              <Feather name="check" size={11} color={colors.primaryForeground} />
+            </View>
+          )}
+        </View>
+
+        {/* Título debajo de la imagen */}
+        <View style={styles.cardFooter}>
+          <Text
+            style={[styles.soundName, { color: colors.foreground }]}
+            numberOfLines={1}
           >
-            {overlay}
-          </ImageBackground>
-        ) : (
-          <View style={styles.cardImage}>{overlay}</View>
-        )}
+            {sound.name}
+          </Text>
+        </View>
       </Pressable>
     );
   };
@@ -278,34 +267,32 @@ const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   soundCard: {
     width: "31%",
-    aspectRatio: 1,
-    borderRadius: 16,
+    borderRadius: 14,
     overflow: "hidden",
   },
-  cardImage: { flex: 1, justifyContent: "flex-end" },
-  cardImageInner: { borderRadius: 16 },
-  cardOverlay: { ...StyleSheet.absoluteFillObject },
-  cardContent: { padding: 8 },
-  soundName: {
-    fontSize: 12.5,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+  cardImageWrap: {
+    width: "100%",
+    aspectRatio: 1,
+    overflow: "hidden",
   },
-  soonText: {
-    fontSize: 9,
-    letterSpacing: 0.2,
-    color: "rgba(237,225,211,0.85)",
-    marginTop: 2,
+  cardImage: { width: "100%", height: "100%" },
+  cardImageInner: { borderRadius: 0 },
+  cardFooter: {
+    paddingHorizontal: 6,
+    paddingTop: 5,
+    paddingBottom: 6,
+  },
+  soundName: {
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 0.1,
   },
   lockBadge: {
     position: "absolute",
-    top: 6,
-    right: 6,
-    width: 18,
-    height: 18,
+    top: 5,
+    right: 5,
+    width: 17,
+    height: 17,
     borderRadius: 9,
     backgroundColor: "#D6A85B",
     alignItems: "center",
@@ -313,10 +300,10 @@ const styles = StyleSheet.create({
   },
   activeBadge: {
     position: "absolute",
-    top: 6,
-    left: 6,
-    width: 20,
-    height: 20,
+    top: 5,
+    left: 5,
+    width: 19,
+    height: 19,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",

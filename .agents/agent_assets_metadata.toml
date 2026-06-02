@@ -462,6 +462,54 @@ uri = "file://artifacts/mobile/assets/images/mixer/categories/motivarme.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "dHnYUAKj20LZxOXli4I77"
+uri = "file://artifacts/mobile/assets/images/mixer/pajaros.png"
+type = "image"
+title = "birds forest sunlight"
+
+[[generated]]
+id = "4vBz9Hm6aaqZNsQjo-Xsd"
+uri = "file://artifacts/mobile/assets/images/mixer/cascada.png"
+type = "image"
+title = "waterfall tropical green"
+
+[[generated]]
+id = "vVaXOHVKEeme7x_u7Wyvf"
+uri = "file://artifacts/mobile/assets/images/mixer/cuarzo.png"
+type = "image"
+title = "crystal quartz bowls light"
+
+[[generated]]
+id = "EKbe1hTGdXt-S_P9wNb3d"
+uri = "file://artifacts/mobile/assets/images/mixer/gong.png"
+type = "image"
+title = "bronze gong ceremonial golden"
+
+[[generated]]
+id = "j8SPKCSy17zQ_CuIGTThq"
+uri = "file://artifacts/mobile/assets/images/mixer/campanas.png"
+type = "image"
+title = "bamboo wind chimes garden"
+
+[[generated]]
+id = "d4LYnlT7YAnxPZdbMoFCL"
+uri = "file://artifacts/mobile/assets/images/mixer/mantra.png"
+type = "image"
+title = "sacred mandala golden om"
+
+[[generated]]
+id = "p9QnHZRAE6ES3Wp68bq4c"
+uri = "file://artifacts/mobile/assets/images/mixer/solfeggio.png"
+type = "image"
+title = "cymatics sound water pattern"
+
+[[generated]]
+id = "J6jN0gn54yALGi-qH3os6"
+uri = "file://artifacts/mobile/assets/images/mixer/frecuencias.png"
+type = "image"
+title = "brain waves neon abstract"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
