@@ -173,16 +173,6 @@ export default function MiMusicaScreen() {
           ))}
         </View>
 
-        {/* ── Mezclador ── */}
-        <View style={styles.mixerHeader}>
-          <Text style={[styles.pageTitle, { color: colors.foreground, fontSize: 24 }]}>
-            Crea tu música
-          </Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Tocá un sonido para sumarlo. Tu mezcla se edita desde la barra de abajo.
-          </Text>
-        </View>
-
         {/* ── Tabs de categorías de sonido ── */}
         <ScrollView
           horizontal
@@ -284,8 +274,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
   },
-  mixerHeader: { marginBottom: 18 },
-
   // Grilla de sonidos
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   soundCard: {
