@@ -138,7 +138,7 @@ export default function MeditacionesGuiadasScreen() {
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Meditaciones"}
           </Text>
-          <Text style={[styles.pageSub, { color: "#B49ECB" }]}>
+          <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
             {selectedTag
               ? selectedCat?.description ?? ""
               : "Déjate llevar por la voz y el sonido"}

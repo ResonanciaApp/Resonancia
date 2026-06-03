@@ -111,7 +111,7 @@ export default function SonidosAncestalesScreen() {
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Ancestrales"}
           </Text>
-          <Text style={[styles.pageSub, { color: "#E8C87A" }]}>
+          <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
             {selectedTag
               ? selectedCat?.description ?? ""
               : "Cuencos, gongs y frecuencias sagradas"}
