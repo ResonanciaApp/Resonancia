@@ -135,7 +135,7 @@ export default function SonidosAncestalesScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <MaterialCommunityIcons name="bowl-mix" size={20} color="#E8C87A" />
+                      <MaterialCommunityIcons name="bowl-mix" size={26} color="#E8C87A" />
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
@@ -290,10 +290,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(232,200,122,0.10)",
+    width: 32,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
   },

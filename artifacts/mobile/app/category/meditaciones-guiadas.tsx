@@ -162,7 +162,7 @@ export default function MeditacionesGuiadasScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <Feather name={cat.icon} size={18} color="#C8B4E0" />
+                      <Feather name={cat.icon} size={24} color="#C8B4E0" />
                     </View>
 
                     <Text style={[styles.catName, { color: colors.foreground }]}>
@@ -347,10 +347,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(200,180,224,0.10)",
+    width: 32,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
   },
