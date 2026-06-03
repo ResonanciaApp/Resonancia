@@ -155,43 +155,34 @@ export default function HomeScreen() {
 
         {/* ── 2. CATEGORÍAS ── */}
         <View style={[styles.section, { marginBottom: 20 }]}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.catPillRow}
-          >
-            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat) => {
-              const bgColor = cat.gradient[1] + "CC";
-              const fgColor = cat.color;
-              return (
+          <View style={styles.catGrid}>
+            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat) => (
               <Pressable
                 key={cat.id}
                 onPress={() => router.push(`/category/${cat.id}` as never)}
-                style={({ pressed }) => [styles.catPillItem, { opacity: pressed ? 0.7 : 1 }]}
+                style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.75 : 1 }]}
               >
-                <View style={[styles.catPillCircle, { backgroundColor: "#18110C" }]}>
-                  <View style={[StyleSheet.absoluteFillObject, { backgroundColor: bgColor, borderRadius: Platform.OS === "web" ? 26 : 32 }]} />
+                <View style={[styles.catCardIconBox, { backgroundColor: cat.color + "28" }]}>
                   {cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={Platform.OS === "web" ? 20 : 26}
-                      color={fgColor}
+                      size={22}
+                      color={cat.color}
                     />
                   ) : (
                     <Feather
                       name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                      size={Platform.OS === "web" ? 20 : 26}
-                      color={fgColor}
+                      size={22}
+                      color={cat.color}
                     />
                   )}
                 </View>
-                <Text style={[styles.catPillLabel, { color: fgColor }]} numberOfLines={2}>
+                <Text style={styles.catCardLabel} numberOfLines={2}>
                   {cat.title}
                 </Text>
               </Pressable>
-              );
-            })}
-          </ScrollView>
+            ))}
+          </View>
         </View>
 
         {/* ── 3. SESIÓN DESTACADA ── */}
@@ -398,29 +389,35 @@ const styles = StyleSheet.create({
   historyEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
   historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
-  // Categories — pill icons row
-  catPillRow: {
-    gap: 14,
-    paddingRight: 20,
+  // Categories — 2×2 grid cards
+  catGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
   },
-  catPillItem: {
+  catCard: {
+    width: (width - GRID_PAD * 2 - 10) / 2,
+    flexDirection: "row",
     alignItems: "center",
-    width: Platform.OS === "web" ? 64 : 78,
-    gap: 8,
+    gap: 12,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 18,
   },
-  catPillCircle: {
-    width: Platform.OS === "web" ? 52 : 64,
-    height: Platform.OS === "web" ? 52 : 64,
-    borderRadius: Platform.OS === "web" ? 26 : 32,
+  catCardIconBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
   },
-  catPillLabel: {
-    fontSize: 11,
+  catCardLabel: {
+    fontSize: 14,
     fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 14,
-    letterSpacing: 0.1,
+    color: "#EDE1D3",
+    flex: 1,
+    lineHeight: 18,
   },
 
   // Hero
