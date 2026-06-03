@@ -1,8 +1,10 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  Animated,
+  LayoutChangeEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -96,16 +98,49 @@ export default function SonidosAncestalesScreen() {
   const [descExpanded, setDescExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
 
+  // Tab indicator animation
+  const indicatorAnim = useRef(new Animated.Value(0)).current;
+  const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const tabLayouts = useRef<{ x: number; width: number }[]>([]);
+
+  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
+    const { x, width } = e.nativeEvent.layout;
+    tabLayouts.current[idx] = { x, width };
+    if (idx === 0 && indicatorWidth === 0) {
+      setIndicatorWidth(width);
+      indicatorAnim.setValue(x);
+    }
+  };
+
+  const selectTab = (tab: ActiveTab, idx: number) => {
+    setActiveTab(tab);
+    const layout = tabLayouts.current[idx];
+    if (layout) {
+      setIndicatorWidth(layout.width);
+      Animated.spring(indicatorAnim, {
+        toValue: layout.x,
+        tension: 200,
+        friction: 24,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
   useEffect(() => {
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
       if (val) setRatings(JSON.parse(val));
     });
   }, []);
 
-  // Reset tab/expand when subcategory changes
   useEffect(() => {
     setDescExpanded(false);
     setActiveTab("Audios");
+    // Reset indicator to first tab
+    const layout = tabLayouts.current[0];
+    if (layout) {
+      setIndicatorWidth(layout.width);
+      indicatorAnim.setValue(layout.x);
+    }
   }, [selectedTag]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -127,7 +162,6 @@ export default function SonidosAncestalesScreen() {
 
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
-  // Most recently played session in this subcategory
   const recentlyPlayed = useMemo(() => {
     if (!selectedTag) return null;
     const subIds = new Set(filteredSessions.map((s) => s.id));
@@ -163,7 +197,6 @@ export default function SonidosAncestalesScreen() {
         ════════════════════════════════════ */}
         {!selectedTag && (
           <>
-            {/* Header centrado */}
             <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
               <Pressable onPress={() => router.back()} style={styles.backBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -254,37 +287,46 @@ export default function SonidosAncestalesScreen() {
               {selectedTag}
             </Text>
 
-            {/* Descripción expandible */}
-            <View style={{ paddingHorizontal: H_PAD, marginBottom: 20 }}>
+            {/* Descripción — tap para expandir/colapsar, sin botón */}
+            <Pressable
+              onPress={() => setDescExpanded((v) => !v)}
+              style={{ paddingHorizontal: H_PAD, marginBottom: 20 }}
+            >
               <Text
-                style={[styles.detailDesc, { color: colors.mutedForeground }]}
+                style={[styles.detailDesc, { color: colors.foreground }]}
                 numberOfLines={descExpanded ? undefined : 3}
               >
                 {selectedCat.longDescription}
               </Text>
-              <Pressable onPress={() => setDescExpanded((v) => !v)} hitSlop={8}>
-                <Text style={[styles.descToggle, { color: colors.primary }]}>
-                  {descExpanded ? "Ver menos" : "Ver más"}
-                </Text>
-              </Pressable>
-            </View>
+            </Pressable>
 
-            {/* Tabs */}
+            {/* Tabs con indicador animado */}
             <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD }]}>
-              {TABS.map((tab) => {
-                const active = tab === activeTab;
-                return (
-                  <Pressable
-                    key={tab}
-                    onPress={() => setActiveTab(tab)}
-                    style={[styles.tabItem, active && { borderBottomColor: colors.foreground, borderBottomWidth: 2 }]}
-                  >
-                    <Text style={[styles.tabLabel, { color: active ? colors.foreground : colors.mutedForeground }]}>
-                      {tab}
-                    </Text>
-                  </Pressable>
-                );
-              })}
+              {TABS.map((tab, idx) => (
+                <Pressable
+                  key={tab}
+                  onLayout={(e) => onTabLayout(idx, e)}
+                  onPress={() => selectTab(tab, idx)}
+                  style={styles.tabItem}
+                >
+                  <Text style={[
+                    styles.tabLabel,
+                    { color: tab === activeTab ? colors.foreground : colors.mutedForeground },
+                  ]}>
+                    {tab}
+                  </Text>
+                </Pressable>
+              ))}
+
+              {/* Indicador deslizante */}
+              {indicatorWidth > 0 && (
+                <Animated.View
+                  style={[
+                    styles.tabIndicator,
+                    { width: indicatorWidth, transform: [{ translateX: indicatorAnim }] },
+                  ]}
+                />
+              )}
             </View>
 
             {/* ── Tab: Audios ── */}
@@ -329,7 +371,7 @@ export default function SonidosAncestalesScreen() {
                       rating={ratings[session.id]}
                       isPremium={isPremium}
                       colors={colors}
-                      style={{ marginHorizontal: H_PAD, marginBottom: 6 }}
+                      style={{ marginHorizontal: H_PAD }}
                     />
                   ))
                 )}
@@ -400,11 +442,11 @@ function SessionRow({ session, rating, isPremium, colors, style }: SessionRowPro
 
       {/* Contenido */}
       <View style={styles.sessionContent}>
-        {/* Meta: rating · voz · duración */}
+        {/* Meta: rating · tipo · duración — todo en el mismo color */}
         <View style={styles.sessionMeta}>
-          <Feather name="star" size={11} color={colors.primary} />
+          <Feather name="star" size={11} color={colors.mutedForeground} />
           <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
-            {" "}{displayRating.toFixed(1)} · {hasVoice ? "Con Voz" : "Sin Voz"} · {session.durationLabel}
+            {" "}{displayRating.toFixed(1)} · {hasVoice ? "Guiada" : "Sin voz"} · {session.durationLabel}
           </Text>
         </View>
         {/* Título */}
@@ -468,22 +510,26 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   detailDesc: { fontSize: 14, lineHeight: 21 },
-  descToggle: { fontSize: 13, fontWeight: "600", marginTop: 4 },
 
   // Tabs
   tabBar: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    gap: 0,
+    position: "relative",
   },
   tabItem: {
     paddingVertical: 10,
     paddingHorizontal: 4,
     marginRight: 22,
-    borderBottomWidth: 2,
-    borderBottomColor: "transparent",
   },
   tabLabel: { fontSize: 15, fontWeight: "600" },
+  tabIndicator: {
+    position: "absolute",
+    bottom: 0,
+    height: 2,
+    backgroundColor: "#EDE1D3",
+    borderRadius: 1,
+  },
 
   // Section header
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
@@ -499,14 +545,12 @@ const styles = StyleSheet.create({
   },
   placeholderText: { flex: 1, fontSize: 13, lineHeight: 18 },
 
-  // Session row (Insight Timer style)
+  // Session row — sin línea divisora
   sessionRow: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 14,
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.05)",
   },
   sessionImgWrap: { width: 80, height: 80, borderRadius: 10, overflow: "hidden", position: "relative" },
   sessionImg: { width: 80, height: 80 },
@@ -524,7 +568,7 @@ const styles = StyleSheet.create({
   sessionTitle: { fontSize: 16, fontWeight: "700", lineHeight: 22, marginBottom: 4 },
   sessionAuthor: { fontSize: 13 },
 
-  // Empty / error
+  // Empty
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
   emptyText: { fontSize: 15, textAlign: "center" },
 });
