@@ -17,7 +17,7 @@ import { MiniPlayer } from "@/components/MiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 
-const ACTIVE_COLOR = "#6B9AB5";
+const ACTIVE_COLOR = "#FFFFFF";
 const INACTIVE_COLOR = "rgba(255,255,255,0.42)";
 const PILL_BG = "rgba(107,154,181,0.18)";
 const BAR_BORDER = "rgba(182,149,95,0.18)";
