@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     columnGap: GAP,
     rowGap: 24,
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
   },
 
   card: {
