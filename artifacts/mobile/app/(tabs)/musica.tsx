@@ -284,9 +284,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   // Grilla de sonidos
-  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 16, rowGap: 22 },
+  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 28 },
   soundCard: {
-    width: "30%",
+    width: "24%",
   },
   cardImageWrap: {
     width: "100%",
