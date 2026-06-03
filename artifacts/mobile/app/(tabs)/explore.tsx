@@ -277,7 +277,7 @@ export default function ExploreScreen() {
                   <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todas</Text>
                 </Pressable>
               </View>
-              <View style={[styles.tagGrid, { marginTop: 14 }]}>
+              <View style={styles.tagGrid}>
                 {TAG_CARDS.slice(0, TAGS_PREVIEW_COUNT).map((tag) => (
                   <Pressable
                     key={tag.id}
