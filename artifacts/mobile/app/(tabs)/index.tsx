@@ -162,21 +162,19 @@ export default function HomeScreen() {
                 onPress={() => router.push(`/category/${cat.id}` as never)}
                 style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.75 : 1 }]}
               >
-                <View style={[styles.catCardIconBox, { backgroundColor: cat.color + "28" }]}>
-                  {cat.iconFamily === "MaterialCommunityIcons" ? (
-                    <MaterialCommunityIcons
-                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={22}
-                      color={cat.color}
-                    />
-                  ) : (
-                    <Feather
-                      name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                      size={22}
-                      color={cat.color}
-                    />
-                  )}
-                </View>
+                {cat.iconFamily === "MaterialCommunityIcons" ? (
+                  <MaterialCommunityIcons
+                    name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                    size={26}
+                    color={cat.color}
+                  />
+                ) : (
+                  <Feather
+                    name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
+                    size={26}
+                    color={cat.color}
+                  />
+                )}
                 <Text style={styles.catCardLabel} numberOfLines={2}>
                   {cat.title}
                 </Text>
