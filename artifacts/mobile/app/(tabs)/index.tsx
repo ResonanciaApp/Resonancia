@@ -170,7 +170,7 @@ export default function HomeScreen() {
                 "musica-sonidos": "#5B9E7A",
                 "podcast": "#6B9AB5",
                 "mananas": "#E8C244",
-                "noches": "#4DB8A0",
+                "noches": "#C87BB5",
               };
               const iconColor = iconColors[cat.id] ?? colors.primary;
               return (
