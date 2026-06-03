@@ -183,9 +183,7 @@ export default function ExploreScreen() {
                   />
                   <View style={styles.continueMeta}>
                     <Text style={[styles.continueKicker, { color: colors.primary }]}>
-                      {lastSessionProgress > 0
-                        ? `RETOMA · ${Math.round(lastSessionProgress * 100)}% ESCUCHADO`
-                        : "RETOMA DONDE LO DEJASTE"}
+                      Sigue escuchando
                     </Text>
                     <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
                       {lastSession.title}
@@ -207,7 +205,7 @@ export default function ExploreScreen() {
                       </View>
                     )}
                   </View>
-                  <View style={[styles.continuePlay, { backgroundColor: "#1E4A7A" }]}>
+                  <View style={[styles.continuePlay, { backgroundColor: "#1A2A3A" }]}>
                     <Feather
                       name={lastSessionLocked ? "lock" : "play"}
                       size={16}
@@ -592,7 +590,7 @@ const styles = StyleSheet.create({
   continueMeta: { flex: 1 },
   continueKicker: {
     fontSize: 10,
-    fontWeight: "700",
+    fontWeight: "400",
     letterSpacing: 1.2,
     marginBottom: 4,
   },
