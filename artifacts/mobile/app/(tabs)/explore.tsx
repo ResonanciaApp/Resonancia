@@ -207,7 +207,7 @@ export default function ExploreScreen() {
                       </View>
                     )}
                   </View>
-                  <View style={[styles.continuePlay, { backgroundColor: "#3A2417" }]}>
+                  <View style={[styles.continuePlay, { backgroundColor: "#1E4A7A" }]}>
                     <Feather
                       name={lastSessionLocked ? "lock" : "play"}
                       size={16}
