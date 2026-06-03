@@ -6,22 +6,24 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { SacredBackground } from "@/components/SacredBackground";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { SessionCard } from "@/components/SessionCard";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS, type AncestralTag } from "@/data/sessions";
+import { getGuideById } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+import { VOICE_MAP } from "@/config/audio-map";
 
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
@@ -32,34 +34,79 @@ type CategoryDef = {
   tag: AncestralTag;
   icon: React.ComponentProps<typeof Feather>["name"];
   description: string;
+  longDescription: string;
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Cuencos Tibetanos",  icon: "triangle", description: "Vibraciones milenarias del Himalaya" },
-  { tag: "Cuencos de Cuarzo", icon: "droplet",  description: "Frecuencias cristalinas de alta pureza" },
-  { tag: "Mix de Cuencos",    icon: "wind",     description: "Lo mejor de ambos mundos sonoros" },
-  { tag: "Gongs",             icon: "sun",      description: "Ondas expansivas de transformación" },
-  { tag: "Cuencos y Gongs",   icon: "moon",     description: "Combinación sagrada de instrumentos" },
-  { tag: "Full Instrumentos", icon: "layers",   description: "Todos los instrumentos ancestrales" },
+  {
+    tag: "Cuencos Tibetanos",
+    icon: "triangle",
+    description: "Vibraciones milenarias del Himalaya",
+    longDescription:
+      "Los cuencos tibetanos generan tonos ricos y envolventes que aquietan el sistema nervioso. Sus armónicos resuenan en el cuerpo, disolviendo tensión acumulada y llevando la mente a un estado de quietud profunda. Una práctica sagrada presente en tradiciones de sanación desde hace siglos.",
+  },
+  {
+    tag: "Cuencos de Cuarzo",
+    icon: "droplet",
+    description: "Frecuencias cristalinas de alta pureza",
+    longDescription:
+      "Los cuencos de cuarzo producen frecuencias puras y cristalinas que se alinean con los centros energéticos del cuerpo. Su vibración limpia y eleva, facilitando estados de meditación profunda, claridad mental y bienestar integral. Ideales para quienes buscan una experiencia más etérea y luminosa.",
+  },
+  {
+    tag: "Mix de Cuencos",
+    icon: "wind",
+    description: "Lo mejor de ambos mundos sonoros",
+    longDescription:
+      "Una fusión entre la calidez de los cuencos tibetanos y la pureza de los de cuarzo. Esta combinación abarca un espectro sonoro más amplio, trabajando distintas capas del cuerpo energético en una sola experiencia. Lo mejor de ambos mundos, reunido en sesiones de integración profunda.",
+  },
+  {
+    tag: "Gongs",
+    icon: "sun",
+    description: "Ondas expansivas de transformación",
+    longDescription:
+      "Las ondas del gong se expanden como olas, borrando el ruido mental y llevando al oyente a estados profundos de conciencia. Sus frecuencias complejas estimulan el sistema nervioso parasimpático, favorecen la regeneración y liberan emociones estancadas. Una experiencia de transformación a cada escucha.",
+  },
+  {
+    tag: "Cuencos y Gongs",
+    icon: "moon",
+    description: "Combinación sagrada de instrumentos",
+    longDescription:
+      "Cuando los cuencos y los gongs se unen, crean un campo sonoro completo que envuelve todo el ser. Los cuencos anidan la mente, los gongs mueven lo que está quieto. Esta combinación es ideal para ceremonias, retiros y sesiones de sanación integral.",
+  },
+  {
+    tag: "Full Instrumentos",
+    icon: "layers",
+    description: "Todos los instrumentos ancestrales",
+    longDescription:
+      "La experiencia completa: cuencos tibetanos, cuencos de cuarzo, gongs, campanas y otros instrumentos actuando en conjunto. Una inmersión sonora que abarca todos los niveles, desde la relajación profunda hasta la expansión de la conciencia.",
+  },
 ];
+
+type ActiveTab = "Audios" | "Videos" | "Maestros";
+const TABS: ActiveTab[] = ["Audios", "Videos", "Maestros"];
 
 export default function SonidosAncestalesScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { history } = usePlayer();
   const insets = useSafeAreaInsets();
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
   const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [descExpanded, setDescExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
 
   useEffect(() => {
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
       if (val) setRatings(JSON.parse(val));
     });
   }, []);
-  const nuevasSessions = useMemo(
-    () => [...ANCESTRAL_SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 8),
-    []
-  );
+
+  // Reset tab/expand when subcategory changes
+  useEffect(() => {
+    setDescExpanded(false);
+    setActiveTab("Audios");
+  }, [selectedTag]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -67,7 +114,7 @@ export default function SonidosAncestalesScreen() {
   const filteredSessions = useMemo(() => {
     let list = ANCESTRAL_SESSIONS;
     if (selectedTag) list = list.filter((s) => s.ancestralTag === selectedTag);
-    return list;
+    return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
   }, [selectedTag]);
 
   const countByTag = useMemo(() => {
@@ -80,47 +127,56 @@ export default function SonidosAncestalesScreen() {
 
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
+  // Most recently played session in this subcategory
+  const recentlyPlayed = useMemo(() => {
+    if (!selectedTag) return null;
+    const subIds = new Set(filteredSessions.map((s) => s.id));
+    const entry = [...history]
+      .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime())
+      .find((e) => subIds.has(e.sessionId));
+    return entry ? filteredSessions.find((s) => s.id === entry.sessionId) ?? null : null;
+  }, [history, filteredSessions, selectedTag]);
+
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `Escuchá "${selectedTag}" en Resonancia — sonidos ancestrales para tu bienestar.`,
+      });
+    } catch {
+      // silent
+    }
+  };
+
   return (
     <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 40 + bottomPad, paddingTop: topPad + 8 }}
+        contentContainerStyle={{ paddingBottom: 40 + bottomPad }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
-        <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
-          <Pressable
-            onPress={() => {
-              if (selectedTag) {
-                setSelectedTag(null);
-              } else {
-                router.back();
-              }
-            }}
-            style={styles.backBtn}
-          >
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-            <MaterialCommunityIcons name="bowl-mix" size={44} color="#C4956A" />
-          </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-            {selectedTag ?? "Ancestrales"}
-          </Text>
-          <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
-            {selectedTag
-              ? selectedCat?.description ?? ""
-              : "Cuencos, gongs y frecuencias sagradas"}
-          </Text>
-        </View>
 
-        {/* ── CATEGORY LIST ── */}
+        {/* ════════════════════════════════════
+            VISTA LISTA DE SUBCATEGORÍAS
+        ════════════════════════════════════ */}
         {!selectedTag && (
           <>
+            {/* Header centrado */}
+            <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
+              <Pressable onPress={() => router.back()} style={styles.backBtn}>
+                <Feather name="arrow-left" size={22} color={colors.foreground} />
+              </Pressable>
+              <View style={styles.catIconCircle}>
+                <MaterialCommunityIcons name="bowl-mix" size={44} color="#C4956A" />
+              </View>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Ancestrales</Text>
+              <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
+                Cuencos, gongs y frecuencias sagradas
+              </Text>
+            </View>
+
             <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
               {CATEGORIES.map((cat, idx) => {
                 const isLast = idx === CATEGORIES.length - 1;
@@ -178,64 +234,123 @@ export default function SonidosAncestalesScreen() {
           </>
         )}
 
-        {/* ── SESSIONS LIST ── */}
-        {selectedTag && (
+        {/* ════════════════════════════════════
+            VISTA DETALLE DE SUBCATEGORÍA
+        ════════════════════════════════════ */}
+        {selectedTag && selectedCat && (
           <>
-            <View style={{ paddingHorizontal: H_PAD }}>
-              {filteredSessions.length === 0 ? (
-                <View style={styles.emptyWrap}>
-                  <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                    Sin resultados
-                  </Text>
-                </View>
-              ) : (
-                filteredSessions.map((session) => {
-                  const locked = !!session.isPremium && !isPremium;
-                  return (
-                  <Pressable
-                    key={session.id}
-                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
-                    style={({ pressed }) => [
-                      styles.card,
-                      {
-                        backgroundColor: "#151A23",
-                        borderColor: "transparent",
-                        opacity: pressed ? 0.82 : 1,
-                      },
-                    ]}
-                  >
-                    <View>
-                    <Image
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      source={session.image as any}
-                      style={styles.cardImage}
-                    />
-                    <PremiumBadge session={session} />
-                    </View>
-                    <View style={styles.cardContent}>
-                      <View style={styles.ratingRow}>
-                        <Feather name="star" size={11} color={colors.primary} />
-                        <Text style={styles.cardRating}>
-                          {" "}{ratings[session.id] ?? 5}/5
-                        </Text>
-                      </View>
-                      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
-                        {session.title}
-                      </Text>
-                      <View style={styles.metaRow}>
-                        <Feather name="clock" size={11} color={colors.mutedForeground} />
-                        <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-                          {" "}{session.durationLabel}
-                        </Text>
-                      </View>
-                    </View>
-                    <Feather name="chevron-right" size={16} color={colors.border} style={{ marginRight: 14 }} />
-                  </Pressable>
-                  );
-                })
-              )}
+            {/* Top bar: atrás + compartir */}
+            <View style={[styles.detailTopBar, { paddingTop: topPad + 8, paddingHorizontal: H_PAD }]}>
+              <Pressable onPress={() => setSelectedTag(null)} style={styles.iconBtn}>
+                <Feather name="arrow-left" size={22} color={colors.foreground} />
+              </Pressable>
+              <Pressable onPress={handleShare} style={styles.iconBtn}>
+                <Feather name="share" size={20} color={colors.foreground} />
+              </Pressable>
             </View>
+
+            {/* Título */}
+            <Text style={[styles.detailTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
+              {selectedTag}
+            </Text>
+
+            {/* Descripción expandible */}
+            <View style={{ paddingHorizontal: H_PAD, marginBottom: 20 }}>
+              <Text
+                style={[styles.detailDesc, { color: colors.mutedForeground }]}
+                numberOfLines={descExpanded ? undefined : 3}
+              >
+                {selectedCat.longDescription}
+              </Text>
+              <Pressable onPress={() => setDescExpanded((v) => !v)} hitSlop={8}>
+                <Text style={[styles.descToggle, { color: colors.primary }]}>
+                  {descExpanded ? "Ver menos" : "Ver más"}
+                </Text>
+              </Pressable>
+            </View>
+
+            {/* Tabs */}
+            <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD }]}>
+              {TABS.map((tab) => {
+                const active = tab === activeTab;
+                return (
+                  <Pressable
+                    key={tab}
+                    onPress={() => setActiveTab(tab)}
+                    style={[styles.tabItem, active && { borderBottomColor: colors.foreground, borderBottomWidth: 2 }]}
+                  >
+                    <Text style={[styles.tabLabel, { color: active ? colors.foreground : colors.mutedForeground }]}>
+                      {tab}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {/* ── Tab: Audios ── */}
+            {activeTab === "Audios" && (
+              <View style={{ paddingTop: 24 }}>
+
+                {/* Escuchado Recientemente */}
+                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
+                  Escuchado Recientemente
+                </Text>
+                {recentlyPlayed ? (
+                  <SessionRow
+                    session={recentlyPlayed}
+                    rating={ratings[recentlyPlayed.id]}
+                    isPremium={isPremium}
+                    colors={colors}
+                    style={{ marginHorizontal: H_PAD, marginTop: 10, marginBottom: 24 }}
+                  />
+                ) : (
+                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "#151A23" }]}>
+                    <Feather name="headphones" size={28} color={colors.mutedForeground} />
+                    <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
+                      Aún no escuchaste ninguna sesión en esta categoría
+                    </Text>
+                  </View>
+                )}
+
+                {/* Recientes */}
+                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
+                  Recientes
+                </Text>
+                {filteredSessions.length === 0 ? (
+                  <View style={styles.emptyWrap}>
+                    <Feather name="music" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+                    <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
+                  </View>
+                ) : (
+                  filteredSessions.map((session) => (
+                    <SessionRow
+                      key={session.id}
+                      session={session}
+                      rating={ratings[session.id]}
+                      isPremium={isPremium}
+                      colors={colors}
+                      style={{ marginHorizontal: H_PAD, marginBottom: 6 }}
+                    />
+                  ))
+                )}
+              </View>
+            )}
+
+            {/* ── Tab: Videos ── */}
+            {activeTab === "Videos" && (
+              <View style={styles.emptyWrap}>
+                <Feather name="video" size={36} color={colors.mutedForeground} style={{ marginBottom: 14 }} />
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
+              </View>
+            )}
+
+            {/* ── Tab: Maestros ── */}
+            {activeTab === "Maestros" && (
+              <View style={styles.emptyWrap}>
+                <Feather name="users" size={36} color={colors.mutedForeground} style={{ marginBottom: 14 }} />
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
+              </View>
+            )}
           </>
         )}
       </ScrollView>
@@ -243,169 +358,173 @@ export default function SonidosAncestalesScreen() {
   );
 }
 
+// ─────────────────────────────────────────
+// SessionRow: card estilo Insight Timer
+// ─────────────────────────────────────────
+type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
+
+type SessionRowProps = {
+  session: (typeof SESSIONS)[number];
+  rating?: number;
+  isPremium: boolean;
+  colors: Colors;
+  style?: object;
+};
+
+function SessionRow({ session, rating, isPremium, colors, style }: SessionRowProps) {
+  const locked = !!session.isPremium && !isPremium;
+  const hasVoice = session.id in VOICE_MAP;
+  const guide = session.guideId ? getGuideById(session.guideId) : null;
+  const author = guide?.name ?? "Casa del Cuenco";
+  const displayRating = rating ?? 4.7;
+
+  return (
+    <Pressable
+      onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
+      style={({ pressed }) => [styles.sessionRow, style, { opacity: pressed ? 0.78 : 1 }]}
+    >
+      {/* Imagen cuadrada */}
+      <View style={styles.sessionImgWrap}>
+        <Image
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          source={session.image as any}
+          style={styles.sessionImg}
+          placeholder={BLUR_PLACEHOLDER}
+          transition={IMAGE_TRANSITION}
+        />
+        <View style={styles.sessionImgOverlay}>
+          <Feather name="activity" size={16} color="rgba(255,255,255,0.7)" />
+        </View>
+        <PremiumBadge session={session} />
+      </View>
+
+      {/* Contenido */}
+      <View style={styles.sessionContent}>
+        {/* Meta: rating · voz · duración */}
+        <View style={styles.sessionMeta}>
+          <Feather name="star" size={11} color={colors.primary} />
+          <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
+            {" "}{displayRating.toFixed(1)} · {hasVoice ? "Con Voz" : "Sin Voz"} · {session.durationLabel}
+          </Text>
+        </View>
+        {/* Título */}
+        <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
+          {session.title}
+        </Text>
+        {/* Autor */}
+        <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+          {author}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
+// ─────────────────────────────────────────
+// Styles
+// ─────────────────────────────────────────
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  header: {
-    alignItems: "center",
-    marginBottom: 28,
-    paddingTop: 4,
-  },
+  // ── Lista de subcategorías ──
+  header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
   backBtn: {
     alignSelf: "flex-start",
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
+    width: 40, height: 40,
+    alignItems: "center", justifyContent: "center",
     marginBottom: 16,
   },
   catIconCircle: {
-    width: 56,
-    height: 56,
+    width: 56, height: 56,
     borderRadius: 18,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center", justifyContent: "center",
     marginBottom: 14,
   },
-  pageTitle: {
-    fontSize: 26,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-    marginBottom: 6,
-    textAlign: "center",
-  },
-  pageSub: {
-    fontSize: 13,
-    lineHeight: 19,
-    textAlign: "center",
-  },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 6, textAlign: "center" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
 
   catList: {},
-  catRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    gap: 14,
-  },
-  iconCircle: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  catName: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "600",
-    letterSpacing: 0.1,
-  },
-  catRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  catCount: {
-    fontSize: 13,
-    fontWeight: "500",
-  },
+  catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },
+  iconCircle: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+  catName: { flex: 1, fontSize: 15, fontWeight: "600", letterSpacing: 0.1 },
+  catRight: { flexDirection: "row", alignItems: "center", gap: 6 },
+  catCount: { fontSize: 13, fontWeight: "500" },
 
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    padding: 0,
-    margin: 0,
-  },
-
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 18,
-    borderWidth: 1,
-    overflow: "hidden",
-    marginBottom: 12,
-    height: 96,
-  },
-  cardImage: {
-    width: 108,
-    height: 96,
-    resizeMode: "cover",
-  },
-  cardContent: {
-    flex: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    justifyContent: "center",
-  },
-  ratingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 3,
-  },
-  cardRating: {
-    fontSize: 11,
-    fontWeight: "400",
-    letterSpacing: 0.3,
-    color: "#BE9650",
-  },
-  cardTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    lineHeight: 20,
-    marginBottom: 2,
-  },
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  metaText: {
-    fontSize: 11,
-  },
-  metaDot: {
-    fontSize: 11,
-  },
-
-  emptyWrap: {
-    alignItems: "center",
-    paddingVertical: 60,
-  },
-  emptyText: {
-    fontSize: 14,
-    textAlign: "center",
-  },
-
-  nuevasSection: {
-    marginTop: 32,
-    marginBottom: 8,
-  },
-  nuevasHeader: {
+  // ── Detalle de subcategoría ──
+  detailTopBar: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: H_PAD,
-    marginBottom: 14,
+    marginBottom: 18,
   },
-  nuevasTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    letterSpacing: 0.2,
+  iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+
+  detailTitle: {
+    fontSize: 32,
+    fontWeight: "800",
+    letterSpacing: -0.3,
+    lineHeight: 38,
+    marginBottom: 12,
   },
-  verTodas: {
-    fontSize: 13,
-    fontWeight: "600",
+  detailDesc: { fontSize: 14, lineHeight: 21 },
+  descToggle: { fontSize: 13, fontWeight: "600", marginTop: 4 },
+
+  // Tabs
+  tabBar: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    gap: 0,
   },
-  nuevasCarousel: {
-    paddingLeft: H_PAD,
-    paddingRight: 12,
-    gap: 12,
+  tabItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    marginRight: 22,
+    borderBottomWidth: 2,
+    borderBottomColor: "transparent",
   },
+  tabLabel: { fontSize: 15, fontWeight: "600" },
+
+  // Section header
+  sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
+
+  // Recently played placeholder
+  recentPlaceholder: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 28,
+  },
+  placeholderText: { flex: 1, fontSize: 13, lineHeight: 18 },
+
+  // Session row (Insight Timer style)
+  sessionRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 14,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.05)",
+  },
+  sessionImgWrap: { width: 80, height: 80, borderRadius: 10, overflow: "hidden", position: "relative" },
+  sessionImg: { width: 80, height: 80 },
+  sessionImgOverlay: {
+    position: "absolute",
+    bottom: 6, left: 6,
+    width: 28, height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center", justifyContent: "center",
+  },
+  sessionContent: { flex: 1, paddingTop: 2 },
+  sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
+  sessionMetaText: { fontSize: 12, lineHeight: 16 },
+  sessionTitle: { fontSize: 16, fontWeight: "700", lineHeight: 22, marginBottom: 4 },
+  sessionAuthor: { fontSize: 13 },
+
+  // Empty / error
+  emptyWrap: { alignItems: "center", paddingVertical: 60 },
+  emptyText: { fontSize: 15, textAlign: "center" },
 });
