@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: "center",
     overflow: "hidden",
-    marginBottom: 20,
+    marginBottom: 32,
     gap: 6,
   },
   avatarWrapper: { position: "relative", marginBottom: 8 },
@@ -722,7 +722,7 @@ const styles = StyleSheet.create({
   editBtnText: { fontSize: 13, fontWeight: "600" },
 
   // Stats
-  statsRow: { flexDirection: "row", gap: 10, marginBottom: 20 },
+  statsRow: { flexDirection: "row", gap: 10, marginBottom: 32 },
   statCard: { flex: 1, borderRadius: 18, padding: 16, alignItems: "center" },
   statIcon: { marginBottom: 8 },
   statValue: { fontSize: 22, fontWeight: "700", marginBottom: 2 },
@@ -735,7 +735,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    marginBottom: 20,
+    marginBottom: 32,
   },
   streakFlame: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(198,155,79,0.12)" },
   streakEmoji: { fontSize: 22 },
@@ -757,7 +757,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    marginBottom: 16,
+    marginBottom: 32,
   },
   membershipPlan: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
   membershipSub: { fontSize: 12 },
@@ -770,7 +770,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     overflow: "hidden",
-    marginBottom: 24,
+    marginBottom: 32,
     gap: 14,
     borderWidth: 1,
     borderColor: "rgba(169,122,52,0.45)",
@@ -793,7 +793,7 @@ const styles = StyleSheet.create({
   premiumBadge: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
 
   // Favoritos
-  section: { marginBottom: 24 },
+  section: { marginBottom: 32 },
   sectionTitle: { fontSize: 18, fontWeight: "700", marginBottom: 14 },
   emptyFav: {
     borderRadius: 16,

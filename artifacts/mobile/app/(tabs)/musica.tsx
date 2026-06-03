@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   },
 
   // Secciones
-  section: { marginBottom: 34 },
+  section: { marginBottom: 32 },
   sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
 
   // Tabs de categorías de sonido (reducidos ~25%)

@@ -344,7 +344,9 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Mezclas de la comunidad ── */}
-            <CommunityMixesCarousel />
+            <View style={{ marginBottom: 32 }}>
+              <CommunityMixesCarousel />
+            </View>
 
             {/* ── Programas (oculto temporalmente) ── */}
             {SHOW_PROGRAMAS && (
@@ -414,7 +416,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14 },
 
-  section: { paddingHorizontal: H_PAD, marginBottom: 50 },
+  section: { paddingHorizontal: H_PAD, marginBottom: 32 },
   sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
