@@ -1,69 +1,55 @@
 # RESONANCIA — Casa del Cuenco
 
-App de meditación y sueño en español (Expo SDK 54). Estética oscura y cálida (bronce/dorado).
+App de meditación y sueño en español (Expo SDK 54). Estética oscura navy + dorado.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `pnpm --filter @workspace/api-server run dev` — API server (port 5000)
+- `pnpm --filter @workspace/resonancia-admin run dev` — panel admin web (`/admin/`)
+- `pnpm run typecheck` — typecheck de todos los packages
+- `pnpm run build` — typecheck + build de todos los packages
+- `pnpm --filter @workspace/api-spec run codegen` — regenerar hooks + Zod desde el OpenAPI spec
+- `pnpm --filter @workspace/db run push` — push de cambios de schema DB (solo dev)
+- Env requerido: `DATABASE_URL` (Postgres)
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- Mobile: Expo SDK 54, React Native, expo-av para audio
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Mobile: Expo SDK 54, React Native, expo-av/expo-audio para audio
+- Web admin: react-vite + shadcn + Wouter + Clerk (cookie same-origin)
+- API: Express 5 · DB: PostgreSQL + Drizzle ORM
+- Validación: Zod (`zod/v4`), `drizzle-zod` · Codegen: Orval (desde OpenAPI) · Build: esbuild
 
 ## Where things live
 
-- `artifacts/mobile/data/sessions.ts` — todas las sesiones, tipos de tags, helper functions
-- `artifacts/mobile/data/tags.ts` — ThemeTag, SleepTag, TagCard, SleepTagCard
-- `artifacts/mobile/data/artists.ts` — tipo Artist, array ARTISTS, helpers getArtist/getArtistSessions/getArtistTrackCount/getFeaturedArtists
+- `artifacts/mobile/data/sessions.ts` — todas las sesiones, tipos de tags, helpers
+- `artifacts/mobile/data/{tags,artists,guides,videos,sounds}.ts` — catálogos y tipos
 - `artifacts/mobile/config/audio-map.ts` — AUDIO_MAP, VOICE_MAP, AMBIENT_MAP, LOOP_SESSIONS
-- `artifacts/mobile/context/PlayerContext.tsx` — reproductor de audio, timer, favoritos
-- `artifacts/mobile/context/AuthContext.tsx` — registro e isRegistered
-- `artifacts/mobile/context/UserProfileContext.tsx` — perfil del usuario (nombre, apellido, locación, descripción, foto)
-- `artifacts/mobile/assets/audio/` — archivos MP3
-- `artifacts/mobile/assets/images/sessions/` — imágenes de sesiones (session-1.png … session-28.png)
+- `artifacts/mobile/config/nature-base-map.ts` — base + ambient de Sonidos Naturaleza
+- `artifacts/mobile/context/{PlayerContext,AuthContext,UserProfileContext}.tsx`
+- `artifacts/mobile/assets/audio/` — MP3 · `assets/images/sessions/` — imágenes
+- `artifacts/resonancia-admin/` — panel admin web (usuarios/roles, moderación, categorías, stats)
+- `artifacts/api-server/src/routes/` — `admin.ts`, `catalog.ts`, `users.ts`, `activity.ts`, etc.
+- `lib/api-spec/openapi.yaml` — contrato; `lib/api-client-react`, `lib/api-zod` — generados
 
 ## Subir una nueva sesión
 
-El usuario envía los datos con este formato:
+El usuario envía los datos con este formato (adjunta los audios):
 
 ```
-Categoria:
-Subcategoria:
-Titulo:
-Descripción:
-Duración:
-Grupo 1:      ← ThemeTag (ej: "Para la ansiedad") — dejar vacío si no aplica
-Grupo 2:      ← SleepTag (ej: "Sonidos Binaurales") — dejar vacío si no aplica
-Premium:      ← "sí" / "no" (default no = free)
-Nombre Audio 1:
-Nombre Audio 2:  ← dejar vacío si no aplica
+Categoria:        Subcategoria:      Titulo:        Descripción:      Duración:
+Grupo 1:   ← ThemeTag (ej "Para la ansiedad") — vacío si no aplica
+Grupo 2:   ← SleepTag (ej "Sonidos Binaurales") — vacío si no aplica
+Premium:   ← "sí" / "no" (default no = free)
+Nombre Audio 1:   Nombre Audio 2:  ← vacío si no aplica
 ```
 
-> Si la sesión es premium, agregar `isPremium: true` al objeto en `sessions.ts`. Las cards muestran una estrellita dorada arriba a la derecha cuando el usuario no es premium, y el tap redirige a `/membresia`.
+Pasos:
 
-El usuario adjunta los archivos de audio. Los pasos para agregarla:
-
-1. **Copiar audios** → `artifacts/mobile/assets/audio/`
-2. **Copiar imagen** (si la hay) → `artifacts/mobile/assets/images/sessions/session-N.png`
-3. **Agregar sesión** a `artifacts/mobile/data/sessions.ts` con el próximo ID disponible
-4. **Actualizar `artifacts/mobile/config/audio-map.ts`**:
-   - `AUDIO_MAP` → audio 1 siempre
-   - Audio 2 según categoría:
-     - Meditaciones Guiadas → `VOICE_MAP` (voz regulable)
-     - Música y Sonidos / Sonidos Ancestrales (loop) → `AMBIENT_MAP` (capa ambiente)
-     - Sonidos Ancestrales (duración fija) → `VOICE_MAP` (se superpone al principal)
-   - `LOOP_SESSIONS` → agregar ID si la sesión debe repetirse (Música y Sonidos)
+1. **Copiar audios** → `assets/audio/`
+2. **Copiar imagen** (si la hay) → `assets/images/sessions/session-N.png` (si no hay, reutilizar `session-2.png` como placeholder y avisar)
+3. **Agregar sesión** a `data/sessions.ts` con el próximo ID (mayor ID + 1; verificar `grep -n '"id":' sessions.ts | tail`). Premium → `isPremium: true` (card muestra estrellita dorada; tap → `/membresia`)
+4. **Actualizar `config/audio-map.ts`**: `AUDIO_MAP` (audio 1 siempre); audio 2 según categoría (tabla abajo); `LOOP_SESSIONS` si debe repetirse (IDs como strings: `"20"`)
 
 ### Reglas de audio por categoría
 
@@ -75,7 +61,7 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 | Meditaciones Guiadas | ❌ | VOICE_MAP | No |
 | ASMR / Historias / Podcast | ❌ | — | No |
 
-> **Sonidos Naturaleza (modelo Pura Mente):** cada sesión trae **2 sonidos fijos** — un `base` (fondo/nativo) y un `ambient` (capa precargada, opcional) — definidos en `config/nature-base-map.ts` (`{ base, ambient? }`). NO hay picker "+ Sonidos" en la pantalla inmersiva. Igual que Sonidos Ancestrales (cuencos + voz guía): el `base` suena fijo y NO lleva barra de volumen; la única barra regulable es la del `ambient`. Para mezclas libres está "Mi Música". Al subir una sesión Sonidos Naturaleza, el usuario indica cuál audio es base y cuál ambiente; ambos deben existir en `data/sounds.ts` / `SOUND_MAP`. Al cerrar la inmersiva se hace `stopAll()` (secciones distintas → no debe quedar el MiniPlayer "Mi mezcla").
+> **Sonidos Naturaleza (modelo Pura Mente):** 2 sonidos fijos por sesión — `base` (fondo, sin barra de volumen) + `ambient` (capa precargada opcional, única barra regulable) en `config/nature-base-map.ts` (`{ base, ambient? }`). NO hay picker "+ Sonidos" en la inmersiva (para mezclas libres está "Mi Música"). Al subir, el usuario indica cuál es base y cuál ambiente; ambos deben existir en `data/sounds.ts`/`SOUND_MAP`. Al cerrar la inmersiva → `stopAll()`.
 
 ### Mapeo de campos a tipos
 
@@ -83,145 +69,43 @@ El usuario adjunta los archivos de audio. Los pasos para agregarla:
 |---|---|
 | Categoria | `categoryId` + `categoryLabel` |
 | Subcategoria | `ancestralTag` / `soundTag` / `meditationTag` / etc. |
-| Grupo 1 | `themeTag: [...]` |
-| Grupo 2 | `sleepTag` |
-| Artista (solo Música Ambient/Enteógena) | `artistId` (ID de `data/artists.ts`; si se omite → "resonancia") |
+| Grupo 1 / Grupo 2 | `themeTag: [...]` / `sleepTag` |
+| Artista (solo Música Ambient/Enteógena) | `artistId` (de `data/artists.ts`; omitido → "resonancia") |
+| Guiador (solo Meditaciones Guiadas) | `guideId` (de `data/guides.ts`; omitido → "casa-cuenco") |
 
-## Videos (sección dentro de Biblioteca)
+> **NEVER** agregar sesiones fuera del array `SESSIONS = [...]` — siempre antes del `];` de cierre.
 
-Sección de videos pregrabados que aparece como bloque "Videos" en `app/(tabs)/explore.tsx` (solo se muestra si hay videos cargados). Archivos:
+## Videos, Artistas, Guiadores (secciones dentro de Biblioteca)
 
-- `artifacts/mobile/data/videos.ts` — tipo `VideoItem`, array `VIDEOS`, helper `getVideoSourceUri` (mapea `objectPath` "/objects/..." → ruta de serving `/api/storage/objects/...` usando `EXPO_PUBLIC_API_URL`)
-- `artifacts/mobile/components/VideoCard.tsx` — card (carousel + horizontal) con gating premium y overlay de play
-- `artifacts/mobile/app/video/[id].tsx` — reproductor con `expo-video` (`useVideoPlayer` + `VideoView`); si es premium y el usuario no, redirige a `/membresia`
-- `artifacts/mobile/app/videos.tsx` — listado completo con empty state "Próximamente"
+- **Videos** (`data/videos.ts`, `components/VideoCard.tsx`, `app/video/[id].tsx`, `app/videos.tsx`): videos pregrabados con `expo-video`. NO se bundlean — viven en Object Storage, se sirven desde `GET /api/storage/objects/*` (soporta range → seek/streaming; `public-objects` NO sirve para video). Subir: presigned URL → guardar `objectPath`, thumbnail a `assets/images/videos/`, agregar a `VIDEOS`. **Gating premium = solo UI** (la ruta no exige ACL; enforcement real depende de RevenueCat). NO modificar esa ruta sin coordinar (la comparte el chat DM image/audio).
+- **Artistas** (`data/artists.ts`, `components/ArtistCard.tsx`, `app/artista/[id].tsx`): perfiles curados (en código, NO usuarios) de productores. Carrusel si `featured`. `getArtist(id?)` con fallback (player) vs `getArtistById` sin fallback (perfil). Subir: foto a `assets/images/`, objeto en `ARTISTS` con `id` slug único, `artistId` en cada sesión Ambient/Enteógena. Default `"resonancia"`. Actuales (Lumen Sonora, Raíz Profunda) son placeholders.
+- **Guiadores** (`data/guides.ts`, `components/GuideCard.tsx`, `app/guiador/[id].tsx`): espejo de Artistas para Meditaciones Guiadas. `guideId` por sesión; default `"casa-cuenco"`. Actuales (Sofía Ramírez, Mateo Luz) son placeholders.
 
-Los videos NO se bundlean (pesan demasiado): viven en Object Storage y se sirven desde `GET /api/storage/objects/*` (esa ruta soporta range requests → seek y streaming progresivo). `public-objects` NO sirve para video (sin range).
+## Panel de administración web (`resonancia-admin`, ruta `/admin/`)
 
-### Subir un video
-
-1. Subir el archivo a Object Storage (presigned URL flow) → guardar el `objectPath` devuelto ("/objects/...").
-2. Copiar el thumbnail a `artifacts/mobile/assets/images/videos/` (o reutilizar un placeholder).
-3. Agregar el objeto a `VIDEOS` en `data/videos.ts` con el próximo ID. Marcar `isPremium: true` si corresponde.
-
-> **Gating premium de videos = solo UI** (igual que las sesiones). La ruta `/api/storage/objects/*` no exige auth/ACL, así que un usuario podría pedir la URL directa. El enforcement real depende de tener el estado premium en backend (RevenueCat, ver pendientes). NO modificar esa ruta para gating sin coordinar: la comparte el chat (DM image/audio).
-
-## Artistas (sección dentro de Biblioteca)
-
-Perfiles curados (en código, NO usuarios reales) de productores certificados que crean música para la app. Aparecen como carrusel "Artistas" al final de `app/(tabs)/explore.tsx` (solo si hay artistas `featured`). Visibles para free y premium. Archivos:
-
-- `artifacts/mobile/data/artists.ts` — tipo `Artist` (id, name, photo, bio, country, genre, links[], certified, featured), array `ARTISTS`, `DEFAULT_ARTIST_ID = "resonancia"`, helpers `getArtist(id?)`, `getArtistSessions(id)`, `getArtistTrackCount(id)`, `getFeaturedArtists()`
-- `artifacts/mobile/components/ArtistCard.tsx` — card circular del carrusel (foto + nombre + sello certificado)
-- `artifacts/mobile/app/artista/[id].tsx` — perfil: foto, nombre + sello, país, género, bio, redes, contador de pistas y listado de sus sesiones (tap → `playSession` + `/player`; gating premium por sesión)
-
-Cada sesión de **Música Ambient / Música Enteógena** lleva crédito de artista, que se muestra en el player (línea tappable "por [Artista]" debajo del subtítulo) y enlaza al perfil.
-
-### Subir un artista
-
-1. Copiar la foto a `artifacts/mobile/assets/images/` (recomendado: cuadrada, se recorta circular).
-2. Agregar el objeto a `ARTISTS` en `data/artists.ts` con un `id` único (slug), `featured: true` para que salga en el carrusel, `certified: true` para el sello.
-3. En cada sesión Música Ambient/Enteógena de ese artista, poner `artistId: "<su-id>"` en `sessions.ts`. Si se omite → queda atribuida a "resonancia" (la casa).
-
-> Los artistas actuales **Lumen Sonora** y **Raíz Profunda** son ejemplos con fotos placeholder — reemplazar con artistas reales. El artista por defecto es **"Resonancia"** (cambiar `name` cuando se defina el nombre final de la app).
-
-## Guiadores (voces guía de Meditaciones Guiadas)
-
-Espejo del patrón Artistas, pero para Meditaciones Guiadas. Perfiles curados (en código, NO usuarios reales) de voces guía: foto, bio, país, especialidad, redes, certificado. Aparecen como carrusel "Guiadores" en Biblioteca (debajo de Artistas) y en la pantalla de categoría Meditaciones Guiadas. En cada sesión guiada, el bloque "Sobre la voz guía" muestra foto/nombre/país tappable al perfil. Archivos:
-
-- `artifacts/mobile/data/guides.ts` — tipo `Guide` (id, name, photo, bio, country, specialty, links[], certified, featured), array `GUIDES`, `DEFAULT_GUIDE_ID = "casa-cuenco"`, helpers `getGuide(id?)`, `getGuideById(id)`, `getGuideSessions(id)` (solo meditaciones-guiadas), `getGuideTrackCount(id)`, `getFeaturedGuides()`
-- `artifacts/mobile/components/GuideCard.tsx` — card circular del carrusel (foto + nombre + sello certificado + specialty) → `/guiador/[id]`
-- `artifacts/mobile/app/guiador/[id].tsx` — perfil: foto, nombre + sello, país, especialidad, bio, redes, contador de meditaciones y listado de sus sesiones (estado "no encontrado" incluido)
-
-Cada sesión de **Meditaciones Guiadas** lleva `guideId` (campo en `sessions.ts`). Si se omite → guiador por defecto **"Casa del Cuenco"** (la casa). El antiguo tipo `SessionGuide` / campo `guide` fue eliminado.
-
-### Subir un guiador
-
-1. Copiar la foto a `artifacts/mobile/assets/images/` (recomendado: cuadrada, se recorta circular).
-2. Agregar el objeto a `GUIDES` en `data/guides.ts` con un `id` único (slug), `featured: true` para el carrusel, `certified: true` para el sello.
-3. En cada sesión Meditación Guiada de ese guiador, poner `guideId: "<su-id>"` en `sessions.ts`. Si se omite → queda atribuida a "casa-cuenco".
-
-> Los guiadores actuales **Sofía Ramírez** y **Mateo Luz** son ejemplos con fotos placeholder — reemplazar con voces reales. El guiador por defecto es **"Casa del Cuenco"**.
+Panel admin-only que reusa la misma DB/API. Auth = **Clerk cookie-based same-origin** (NO Bearer, NO `setBaseUrl`). Gating real solo en el server (`requireAuth + requireRole("admin")`); el front solo muestra/oculta UI. Funciones: dashboard de estadísticas globales, usuarios (listar/buscar/cambiar rol user/creator/admin), moderación (cola por estado + aprobar/rechazar/editar/ocultar/mostrar), categorías (crear/editar). Endpoints en `routes/admin.ts` + hide/unhide en `routes/catalog.ts`.
 
 ## User preferences
 
-- **"RA"** = "Restart App" — cuando el usuario escribe "RA", reiniciar el workflow `artifacts/mobile: expo`
+- **"RA"** = "Restart App" — reiniciar el workflow `artifacts/mobile: expo`
 - Idioma: español neutro en toda la UI y en las respuestas del agente (no usar modismos argentinos)
-- Colores (paleta azul marina + dorado): bg `#0B0F14` (antes `#060A0F`), primary `#BE9650`, accent `#D6A85B`, card `#151A23` (antes `#10151E`), fg `#EDE1D3`, mutedForeground `#7A8FA8`. (Aclarados +2% en toda la app mobile; decks sin tocar. Antes era cálida café/bronce — ya migrada a navy en app y decks.)
+- Colores (navy + dorado): bg `#0B0F14`, primary `#BE9650`, accent `#D6A85B`, card `#151A23`, fg `#EDE1D3`, mutedForeground `#7A8FA8`. (Migrada de café/bronce a navy en app y decks; decks no se vuelven a tocar.)
 - Pre-existing TS errors (ignorar): VozInterior, MensajesAnon, MiniPlayer, session/[id], SessionCard, PlayerContext, player.tsx
 
-## Gotchas
+## Pendientes (backlog)
 
-- El próximo ID de sesión disponible es el número más alto en `sessions.ts` + 1. Verificar con `grep -n '"id":' sessions.ts | tail -10`
-- Si no se adjunta imagen, reutilizar `session-2.png` como placeholder y notificarlo
-- NEVER agregar sesiones fuera del array `SESSIONS = [...]` — siempre antes del `];` de cierre
-- LOOP_SESSIONS usa IDs como strings: `"20"`, no `20`
-
-## Pendientes (recordar más adelante)
-
-- **Sincronización en la nube (actividad del usuario)**: ya está armada (Fase 1). Estadísticas (eventos de reproducción), favoritos y progreso por sesión se sincronizan con el server cuando hay cuenta Clerk; sin cuenta todo sigue local (offline-first). Archivos: `lib/cloudSync.ts` (merge), `PlayerContext.tsx` (efecto de sync 1×/sesión gateado en `isSignedIn && localLoaded`, marca `@resonance_cloud_synced`), `api-server/src/routes/activity.ts` (`/me/plays`, `/me/favorites`, `/me/progress`), tablas Drizzle `playback_history`/`favorites`/`session_progress`. Reglas: eventos = unión (log append-only, dedup por `clientEventId`); favoritos/progreso = unión solo en el primer sync del dispositivo (recuperar de la nube), luego lo local es autoritativo (los borrados persisten). **Limitación conocida**: sin tombstones/LWW por ítem, un borrado hecho en paralelo en otro dispositivo puede reaparecer. Mejora futura: timestamps por ítem (`session_progress.updatedAt` ya existe). El historial (HISTORY_KEY) queda local-only por ahora (derivable de los eventos).
-- **Configuraciones → "Actividad de la comunidad"**: hoy solo guarda la preferencia local. Cuando exista backend de notificaciones, enchufar push real (suscribir/desuscribir según toggle).
-- **Notificaciones (campana)**: hoy abre un Alert "Próximamente". Cuando exista backend, restaurar `useGetUnreadNotificationCount` + ruta `/notificaciones` con badge de no leídas.
-- **Configuraciones → "Términos y privacidad"**: hoy apunta a `/terminos` con texto base interno. Cuando exista web oficial, opcionalmente reemplazar por link externo.
-- **Configuraciones → "Calificar la app"**: ya usa `expo-store-review` (`requestReview` → fallback a `storeUrl` → fallback a Alert). Funciona automáticamente cuando esté publicada en stores.
-- **Free vs Premium (gating de funcionalidades)**: `PremiumContext` + flag `isPremium` por sesión ya armados (mobile-only, pendiente mover a `lib/` cuando exista la web). Toggle de testing en Configuraciones → DESARROLLO (`__DEV__`). Falta: gating de features (no solo sesiones), y decidir qué sesiones marcar como premium al subirlas.
-- **Precarga de audios base de "Sonidos Naturaleza" (al salir a producción)**: hoy el arranque del loop ya es rápido (seek a `dur/2` + fade-in, ver `MixerContext.createPlayerFor`), pero queda la decodificación del archivo la primera vez. Cuando el usuario mande los audios finales: (1) **precalentar SOLO los ~4 sonidos base** (`config/nature-base-map.ts`: bosque, lluvia, océano, río) al ENTRAR a la pantalla "Música y Sonidos" (NO al abrir la app — cargar el catálogo completo de 30+ sonidos haría la app pesada de iniciar sin beneficio real). Así al tocar la card el sonido arranca casi instantáneo. (2) **Optimizar peso**: loops de ~20-30s en MP3 ~128-160 kbps (el tiempo de carga depende del peso). Si llegan en WAV, convertir con ffmpeg. (3) Cada sesión Sonidos Naturaleza ahora trae base + ambiente precargados (no hay picker "+ Sonidos"), así que conviene precalentar también el ambiente de la sesión junto con su base.
-- **Videos → migrar a Bunny.net Stream (más adelante)**: el usuario confirmó que quiere usar **Bunny.net** para servir los videos (50 videos de 20-50 min). Hoy los videos se sirven desde Object Storage (`/api/storage/objects/*`), que es caro en ancho de banda a escala. Bunny es ~10-20× más barato por GB + CDN + compresión automática + Token Authentication (gating premium real). Detalle completo y pasos en `COSTOS-Y-VIDEOS-BUNNY.md` (raíz del proyecto). Resumen: (1) usuario crea cuenta + Video Library en bunny.net y pasa Library ID + Pull Zone + API Key; (2) agente guarda credenciales como secrets, cambia `VideoItem` para usar `bunnyVideoId` (GUID), reapunta `getVideoSourceUri` a la URL HLS de Bunny, y agrega firmado de URLs premium en el server. Pendiente hasta que el usuario lo decida.
-
-### Propuesta de paquete Premium (a revisar y definir)
-
-**FREE incluye:**
-- Sesiones marcadas como gratuitas (hoy: #1 "Adentro de uno mismo" y #29 "Prueba Maestra 1") — pensar 5-8 sesiones sampler en total, repartidas entre categorías
-- Intención del día (ilimitada)
-- Frase del día (ver + compartir)
-- Diario: hasta **5 entradas** guardadas
-- Favoritos: hasta **5 sesiones** favoritas
-- Timer de sueño / meditación: hasta **30 min**
-- Comunidad: acceso completo (grupos, posts, actividades, chat, invitar, crear)
-- Configuraciones, perfil, ayuda, registro
-- Notificaciones (cuando exista backend)
-
-**PREMIUM desbloquea:**
-- Catálogo completo de sesiones
-- **Voz Interior**: grabar mensajes (hoy todos pueden)
-- **Diario / Mensajes del Alma**: entradas ilimitadas
-- **Favoritos**: ilimitados
-- **Timer**: hasta 8 hs (para dormir toda la noche)
-- **Descargas offline** de sesiones
-- **Mensajes anónimos**: enviar (no solo leer)
-- **Estadísticas / historial extendido** (más allá de últimos 7 días)
-- **Personalización avanzada**: temas, sonidos ambiente custom
-
-**Comunidad queda 100% FREE** (grupos, actividades, chat, invitar amigos, postear).
-
-**Notas de implementación cuando se confirme:**
-- Cada feature gateada usa `const { isPremium } = usePremium()` y muestra PremiumBadge / Alert → router.push("/membresia")
-- Mantener UX coherente: el free ve la opción pero al tocar le explica brevemente y le ofrece probar premium
-- Para los límites (5 diario, 30 min timer, etc.), guardar el contador local y al alcanzar el tope mostrar paywall
-
-- **Versión web (futura)**: la DB, API y lógica se reusan. Hay que reescribir UI (RN no corre en web). Pago: Stripe directo (no Apple/Google). Estimado: 2-4 semanas de trabajo dependiendo del scope.
-- **Cobro de Premium (pagos in-app)**: usar **RevenueCat** sobre Apple IAP / Google Play Billing (obligatorio para apps móviles — no se puede usar Stripe directo). Apple/Google se quedan 15-30%. Falta: definir precio (mensual/anual/lifetime), crear cuentas en App Store Connect + Google Play Console + RevenueCat. Para web (si llega) sí va Stripe directo.
-- **Prueba gratis de 7 días (free trial)**: estándar en la categoría (Calm, Headspace, Pura Mente). NO se programa en código — se configura como "oferta introductoria" en App Store Connect y Google Play Console, atada al producto de suscripción. RevenueCat la lee automáticamente y `isPremium` ya funciona durante el trial. Decisiones a tomar al implementar:
-  - Duración: 7 días (estándar) vs 14 (más conversión, más abuso)
-  - Solo en plan anual (recomendado, empuja al anual) vs también en mensual
-  - Pedir tarjeta upfront (default Apple/Google, mejor conversión post-trial) vs sin tarjeta
-  - Precio sugerido: ~$43.900/año (similar a Pura Mente) + opción mensual ~$4.900/mes — ajustar según mercado destino
-- **Disponibilidad por país + precios por región**: la app se puede vender en +150 países (todos los hispanohablantes incluidos). Al publicar se elige en qué países está disponible (default: todos, o solo Latam+España al inicio). Apple/Google cobran en moneda local automáticamente y retienen impuestos por país. Recomendación de estrategia de precios regional:
-  - **Localizar precios por región** (NO usar un precio global convertido): el poder adquisitivo varía mucho. Un precio que funciona en España (~€40/año) es caro para Latam.
-  - Sugerencia de tiers: España/EE.UU. ≈ €40-45/año; México/Chile/Colombia/Perú/Argentina ≈ equivalente a USD 15-25/año; ajustar por país con los precios que recomienda RevenueCat/App Store Connect (tienen sugerencias por paridad de compra).
-  - RevenueCat permite definir precios por país/región desde su panel sin tocar código — `isPremium` funciona igual sin importar el precio pagado.
-  - Plan anual como ancla (mejor retención) + mensual más caro proporcionalmente para empujar al anual.
-  - Al lanzar, arrancar con precios un poco más bajos (oferta de lanzamiento) para ganar reseñas y conversión, luego subir.
-- **Frase del día → contador "X compartieron"**: el número actual es decorativo (fórmula basada en el día del año, no en datos reales). Cuando exista backend, registrar cada compartida en DB y devolver el total real desde la API.
-- **Valoración en cards de Meditaciones Guiadas (promedio real)**: hoy las cards de las subcategorías muestran la valoración del **propio usuario** (guardada local en `@resonance_ratings`, mapa `{sessionId: estrellas}`); si no la valoró, no muestra nada. Cuando exista backend, registrar cada valoración en DB y mostrar el **promedio de la comunidad** (ej. 4.5/5) en lugar de la nota individual.
-- **EAS Build (publicar la app + activar push notifications reales)**: el código ya está armado (`eas.json` con perfiles dev/preview/production, hook de push, registro/unregistro de tokens, server enganchado a DM/amigos). Faltan los pasos manuales:
-  1. Crear cuenta gratis en https://expo.dev
-  2. `npm install -g eas-cli` + `eas login`
-  3. Desde `artifacts/mobile/`: `eas init` (genera `projectId` y lo agrega a `app.json` — lo necesita el hook de push para pedir el token)
-  4. Credenciales de push: iOS → `eas credentials` con APNs key (requiere cuenta Apple Developer USD 99/año); Android → subir `google-services.json` de Firebase para FCM
-  5. Reemplazar placeholders `REPLACE_WITH_…` en `eas.json` (submit.production) con Apple ID, ascAppId, teamId, y poner el service account de Google Play (USD 25 pago único)
-  6. Primer build: `eas build --profile preview --platform all`
-  - Costos: EAS Free tier (30 builds/mes) o Production (USD 19/mes). Cuando se decida avanzar, pedirle al agente que ayude con credenciales y primer build.
+- **Sync en la nube (actividad)**: armada (Fase 1) — eventos de reproducción, favoritos y progreso se sincronizan con cuenta Clerk; sin cuenta todo local (offline-first). `lib/cloudSync.ts`, `routes/activity.ts`. Reglas: eventos = unión append-only (dedup `clientEventId`); favoritos/progreso = unión solo en primer sync, luego local autoritativo. Limitación: sin tombstones/LWW, un borrado en otro dispositivo puede reaparecer (mejora futura: timestamps por ítem). Historial local-only.
+- **Free vs Premium (gating)**: `PremiumContext` + `isPremium` por sesión armados (mobile-only, mover a `lib/` cuando exista web). Toggle de testing en Configuraciones → DESARROLLO. Falta: gating de features (no solo sesiones) + decidir qué sesiones marcar premium. Propuesta de paquete free/premium en `docs/premium-propuesta.md`.
+- **Cobro Premium (in-app)**: RevenueCat sobre Apple IAP / Google Play (obligatorio en móvil; Apple/Google 15-30%). Web futura → Stripe directo. Free trial 7 días = se configura en stores, NO en código (RevenueCat lo lee, `isPremium` ya funciona). Precios localizados por región. Detalle/decisiones en `docs/premium-propuesta.md`.
+- **Videos → Bunny.net Stream (futuro)**: usuario confirmó migrar a Bunny (50 videos 20-50 min) — ~10-20× más barato + CDN + token auth (gating real). Pasos completos en `COSTOS-Y-VIDEOS-BUNNY.md`. Pendiente hasta que el usuario lo decida.
+- **EAS Build (publicar + push reales)**: código armado (`eas.json`, hook de push, registro de tokens). Faltan pasos manuales (cuenta expo.dev, `eas init`, credenciales APNs/FCM, reemplazar placeholders `REPLACE_WITH_…`, primer build). Costos: EAS Free (30 builds/mes) o USD 19/mes. Apple Developer USD 99/año, Google Play USD 25 único.
+- **Backend pendiente (cuando exista)**: notificaciones push reales (campana + "Actividad de la comunidad" toggle); contador real "X compartieron" de Frase del día; promedio real de valoración en cards de Meditaciones Guiadas (hoy muestra la nota del propio usuario, local en `@resonance_ratings`); "Términos y privacidad" → link externo oficial.
+- **Precarga audios Sonidos Naturaleza (a producción)**: precalentar SOLO los ~4 base al ENTRAR a "Música y Sonidos" (no al abrir la app) + el ambient de la sesión; loops ~20-30s MP3 128-160 kbps (convertir WAV con ffmpeg).
+- **Versión web (futura)**: reusar DB/API/lógica, reescribir UI (RN no corre en web). Pago Stripe directo. ~2-4 semanas según scope.
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Estructura del monorepo, TypeScript y packages → skill `pnpm-workspace`
+- Auth del panel admin → `.agents/memory/admin-web-auth.md`
+</content>
+</invoke>
