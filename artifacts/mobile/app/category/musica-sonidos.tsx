@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
   Modal,
@@ -38,9 +38,16 @@ const COLS = 3;
 const CARD_WIDTH = ((width - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85;
 const IMG_SIZE = CARD_WIDTH - 10;
 
-type Tab = "Todos" | SoundTag;
+type Tab = "Populares" | SoundTag;
 
-const TABS: Tab[] = ["Todos", "Sonidos Naturaleza", "Música Ambient", "Música Enteógena", "Música Ancestral"];
+const TABS: { label: string; value: Tab }[] = [
+  { label: "Populares", value: "Populares" },
+  { label: "Ambient",   value: "Música Ambient"   },
+  { label: "Enteógena", value: "Música Enteógena" },
+  { label: "Ancestral", value: "Música Ancestral" },
+];
+
+const PAGE_SIZE = 24;
 
 /** Timer del sonido. 5/10/20 min gratis; el resto (incluido "Sin límite") es premium. */
 const TIMER_OPTIONS: { minutes: number | null; label: string; free: boolean }[] = [
@@ -75,17 +82,19 @@ const TAG_BADGE_LABELS: Record<SoundTag, string> = {
 };
 
 const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
+const MUSICA_ORDER = new Map(MUSICA_SESSIONS.map((s, i) => [s.id, i]));
 
 export default function MusicaSonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
-  const { isFavorite, toggleFavorite, playSession } = usePlayer();
+  const { isFavorite, toggleFavorite, playSession, statEvents } = usePlayer();
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
 
   const featuredArtists = getFeaturedArtists();
 
-  const [activeTab, setActiveTab] = useState<Tab>("Todos");
+  const [activeTab, setActiveTab] = useState<Tab>("Populares");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
   const [query, setQuery] = useState("");
 
@@ -93,15 +102,32 @@ export default function MusicaSonidosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const filtered = useMemo(() => {
-    let list = MUSICA_SESSIONS;
-    if (activeTab !== "Todos") {
-      list = list.filter((s) => s.soundTag === activeTab);
+    let list: Session[];
+    if (activeTab === "Populares") {
+      // Ordenar por cantidad de reproducciones (statEvents = log append-only).
+      const counts: Record<string, number> = {};
+      for (const e of statEvents) counts[e.sessionId] = (counts[e.sessionId] ?? 0) + 1;
+      list = [...MUSICA_SESSIONS].sort((a, b) => {
+        const d = (counts[b.id] ?? 0) - (counts[a.id] ?? 0);
+        // Desempate determinista: si tienen las mismas reproducciones, mantener
+        // el orden original (no depender de la estabilidad del motor).
+        return d !== 0 ? d : (MUSICA_ORDER.get(a.id) ?? 0) - (MUSICA_ORDER.get(b.id) ?? 0);
+      });
+    } else {
+      list = MUSICA_SESSIONS.filter((s) => s.soundTag === activeTab);
     }
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((s) => s.title.toLowerCase().includes(q));
     }
     return list;
+  }, [activeTab, query, statEvents]);
+
+  // "Populares" pagina de a 24 con scroll infinito; las demás muestran todo.
+  const visible = activeTab === "Populares" ? filtered.slice(0, visibleCount) : filtered;
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
   }, [activeTab, query]);
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
@@ -161,6 +187,14 @@ export default function MusicaSonidosScreen() {
         }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        scrollEventThrottle={16}
+        onScroll={({ nativeEvent }) => {
+          if (activeTab !== "Populares") return;
+          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+          if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 500) {
+            setVisibleCount((c) => (c < filtered.length ? Math.min(filtered.length, c + PAGE_SIZE) : c));
+          }
+        }}
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
@@ -205,16 +239,16 @@ export default function MusicaSonidosScreen() {
           contentContainerStyle={[styles.tabsRow, { paddingHorizontal: H_PAD }]}
           style={{ marginBottom: 20 }}
         >
-          {TABS.map((tab) => {
-            const active = tab === activeTab;
+          {TABS.map(({ label, value }) => {
+            const active = value === activeTab;
             return (
               <Pressable
-                key={tab}
-                onPress={() => setActiveTab(tab)}
+                key={value}
+                onPress={() => setActiveTab(value)}
                 style={[
                   styles.tab,
                   {
-                    backgroundColor: active ? "#1A4A8A" : "#11161F",
+                    backgroundColor: active ? "#FFFFFF" : "#11161F",
                     borderColor: "transparent",
                     borderWidth: 0,
                   },
@@ -223,10 +257,10 @@ export default function MusicaSonidosScreen() {
                 <Text
                   style={[
                     styles.tabText,
-                    { color: active ? "#EDE1D3" : colors.foreground },
+                    { color: active ? "#0B0F14" : colors.foreground },
                   ]}
                 >
-                  {tab}
+                  {label}
                 </Text>
               </Pressable>
             );
@@ -244,7 +278,7 @@ export default function MusicaSonidosScreen() {
             </View>
           ) : (
             <View style={styles.gridRow}>
-              {filtered.map((session) => {
+              {visible.map((session) => {
                 const fav = isFavorite(session.id);
                 const tag = session.soundTag;
                 const tagStyle = tag ? TAG_COLORS[tag] : null;
