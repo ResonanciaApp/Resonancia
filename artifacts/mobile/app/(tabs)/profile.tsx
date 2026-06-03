@@ -259,7 +259,7 @@ export default function ProfileScreen() {
             hitSlop={10}
             style={({ pressed }) => [
               styles.settingsBtn,
-              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.75 : 1 },
+              { backgroundColor: colors.card, opacity: pressed ? 0.75 : 1 },
             ]}
           >
             <Feather name="settings" size={18} color={colors.foreground} />
@@ -326,7 +326,7 @@ export default function ProfileScreen() {
                   onPress={() => router.push(stat.href as never)}
                   style={({ pressed }) => [
                     styles.statCard,
-                    { backgroundColor: "#090E17", borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: "#090E17", opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   {content}
@@ -336,7 +336,7 @@ export default function ProfileScreen() {
             return (
               <View
                 key={stat.label}
-                style={[styles.statCard, { backgroundColor: "#090E17", borderColor: colors.border }]}
+                style={[styles.statCard, { backgroundColor: "#090E17" }]}
               >
                 {content}
               </View>
@@ -345,7 +345,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Racha ── */}
-        <View style={[styles.streakCard, { backgroundColor: "#090E17", borderColor: colors.border }]}>
+        <View style={[styles.streakCard, { backgroundColor: "#090E17" }]}>
           <View style={styles.streakFlame}>
             <Text style={styles.streakEmoji}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
           </View>
@@ -367,7 +367,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi viaje</Text>
           {activity.hasData ? (
-            <View style={[styles.journeyCard, { backgroundColor: "#090E17", borderColor: colors.border }]}>
+            <View style={[styles.journeyCard, { backgroundColor: "#090E17" }]}>
               <View style={styles.journeyRow}>
                 <Feather name="clock" size={16} color={colors.accent} />
                 <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Minutos esta semana</Text>
@@ -391,7 +391,7 @@ export default function ProfileScreen() {
               </View>
             </View>
           ) : (
-            <View style={[styles.emptyFav, { backgroundColor: "#090E17", borderColor: colors.border }]}>
+            <View style={[styles.emptyFav, { backgroundColor: "#090E17" }]}>
               <Feather name="compass" size={22} color={"rgba(198,155,79,0.3)"} />
               <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
                 Tu viaje empieza con la primera sesión.{"\n"}Aquí verás tus minutos, sesión favorita y más.
@@ -403,7 +403,7 @@ export default function ProfileScreen() {
         {/* ── Mis herramientas ── */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis herramientas</Text>
-          <View style={[styles.journeyCard, { backgroundColor: "#090E17", borderColor: colors.border }]}>
+          <View style={[styles.journeyCard, { backgroundColor: "#090E17" }]}>
             <Pressable
               onPress={() => router.push("/diario" as never)}
               style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
@@ -504,7 +504,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Favoritos</Text>
           {favSessions.length === 0 ? (
-            <View style={[styles.emptyFav, { backgroundColor: "#090E17", borderColor: colors.border }]}>
+            <View style={[styles.emptyFav, { backgroundColor: "#090E17" }]}>
               <Feather name="heart" size={22} color={"rgba(198,155,79,0.3)"} />
               <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
                 Aún no has guardado sesiones.{"\n"}Toca ❤️ en cualquier sesión para guardarla aquí.
@@ -520,7 +520,7 @@ export default function ProfileScreen() {
                   onPress={() => router.push(`/session/${s.id}` as never)}
                   style={({ pressed }) => [
                     styles.favRow,
-                    { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   <Image source={s.image as never} style={styles.favImg} contentFit="cover" />
@@ -670,7 +670,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -724,7 +723,7 @@ const styles = StyleSheet.create({
 
   // Stats
   statsRow: { flexDirection: "row", gap: 10, marginBottom: 20 },
-  statCard: { flex: 1, borderRadius: 18, padding: 16, alignItems: "center", borderWidth: 1 },
+  statCard: { flex: 1, borderRadius: 18, padding: 16, alignItems: "center" },
   statIcon: { marginBottom: 8 },
   statValue: { fontSize: 22, fontWeight: "700", marginBottom: 2 },
   statLabel: { fontSize: 11, letterSpacing: 0.5 },
@@ -732,7 +731,6 @@ const styles = StyleSheet.create({
   // Racha
   streakCard: {
     borderRadius: 18,
-    borderWidth: 1,
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
@@ -745,7 +743,7 @@ const styles = StyleSheet.create({
   streakSub: { fontSize: 12 },
 
   // Mi viaje
-  journeyCard: { borderRadius: 18, borderWidth: 1, paddingHorizontal: 16, paddingVertical: 4 },
+  journeyCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 4 },
   journeyRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 14 },
   journeyLabel: { flex: 1, fontSize: 13 },
   journeyValue: { fontSize: 14, fontWeight: "600", maxWidth: "45%", textAlign: "right" },
@@ -799,7 +797,6 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 18, fontWeight: "700", marginBottom: 14 },
   emptyFav: {
     borderRadius: 16,
-    borderWidth: 1,
     padding: 24,
     alignItems: "center",
     gap: 10,
@@ -809,7 +806,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
-    borderWidth: 1,
     padding: 10,
     gap: 12,
     marginBottom: 10,
