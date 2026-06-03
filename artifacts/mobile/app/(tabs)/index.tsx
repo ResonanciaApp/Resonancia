@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   },
 
   // Section
-  section: { marginBottom: 28, paddingHorizontal: GRID_PAD },
+  section: { marginBottom: 48, paddingHorizontal: GRID_PAD },
   sectionRow: {
     flexDirection: "row",
     alignItems: "center",
