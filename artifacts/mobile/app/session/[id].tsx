@@ -30,28 +30,6 @@ const { width } = Dimensions.get("window");
 const HEADER_H = 300;
 const RATINGS_KEY = "@resonance_ratings";
 
-/** Darken a hex color toward black. `amount` is 0..1 (1 = black). */
-function darkenHex(hex: string, amount: number): string {
-  const h = hex.replace("#", "");
-  if (h.length !== 6) return hex;
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  const k = Math.max(0, Math.min(1, 1 - amount));
-  const toHex = (n: number) => Math.round(n * k).toString(16).padStart(2, "0");
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-
-/** Convert a #RRGGBB hex to an rgba() string with the given alpha (0..1). */
-function hexToRgba(hex: string, alpha: number): string {
-  const h = hex.replace("#", "");
-  if (h.length !== 6) return hex;
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -118,21 +96,8 @@ export default function SessionDetailScreen() {
   // leve matiz más amarillo (un toque más de verde sobre el rojo dominante).
   // Sonidos Ancestrales: usar exactamente el fondo del reproductor (colors.background)
   // Sabiduría del Día: tono de Sonidos Ancestrales con un leve matiz más amarillo.
-  let categoryBg: string;
-  if (category?.id === "sonidos-ancestrales") {
-    categoryBg = colors.background;
-  } else {
-    const baseHex =
-      category?.id === "sabiduria-dia"
-        ? "#3E260A"
-        : category?.gradient[1] ?? colors.background;
-    categoryBg = darkenHex(baseHex, 0.6);
-  }
-  // Tinte suave para los botones Guardar/Compartir, derivado del color
-  // brillante de la categoría (gradient[0]) con baja opacidad.
-  const actionTint = category
-    ? hexToRgba(category.gradient[0], 0.35)
-    : "rgba(255,255,255,0.05)";
+  const categoryBg = colors.background;
+  const actionTint = colors.card;
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -167,16 +132,10 @@ export default function SessionDetailScreen() {
 
     if (isGuiada && session.meditationTag) {
       tag = session.meditationTag;
-      tagColor = "#C8B4E0";
-      tagBg = "rgba(200,180,224,0.15)";
-      tagBorder = "rgba(200,180,224,0.35)";
     }
     else if (isAncestral && session.ancestralTag) tag = session.ancestralTag;
     else if (isPodcast) {
       tag = "Podcast";
-      tagColor = "#8AAAD4";
-      tagBg = "rgba(138,170,212,0.15)";
-      tagBorder = "rgba(138,170,212,0.35)";
     } else if (isSabiduría && session.sabiduriaTag) tag = session.sabiduriaTag;
     else if (!isGuiada && !isAncestral && !isSabiduría && !isPodcast && !isMusica) {
       tag = session.categoryLabel;
@@ -245,7 +204,7 @@ export default function SessionDetailScreen() {
                   <Feather
                     name="star"
                     size={13}
-                    color={star <= rating ? "#E8B96A" : "rgba(182,149,95,0.28)"}
+                    color={star <= rating ? colors.primary : "rgba(198,155,79,0.28)"}
                   />
                 </Pressable>
               ))}
