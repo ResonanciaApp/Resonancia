@@ -22,6 +22,8 @@ export type PodcastTag =
   | "Sobrenatural"
   | "Neurociencia";
 
+export type SonidosTag = "Sonidos Binaurales" | "Sonidos Naturaleza" | "Sonidos Atmosféricos";
+
 export type AncestralTag =
   | "Cuencos Tibetanos"
   | "Cuencos de Cuarzo"
@@ -54,6 +56,7 @@ export type Session = {
   ancestralTag?: AncestralTag;
   sabiduriaTag?: SabiduriaTag;
   podcastTag?: PodcastTag;
+  sonidosTag?: SonidosTag;
   themeTag?: ThemeTag[];
   sleepTag?: SleepTag;
   /** Guiador de la meditación (ver data/guides.ts). Si se omite → Casa del Cuenco. */
@@ -466,6 +469,106 @@ export const SESSIONS: Session[] = [
     instruments: ["Didgeridoo", "Tambor chamánico", "Ambiente natural"],
     image: require("@/assets/images/sessions/session-27-musica-dark.jpg"),
     soundTag: "Música Ancestral" as const,
+    isNew: true,
+  },
+  {
+    id: "35",
+    isPremium: true,
+    title: "Delta Profundo",
+    subtitle: "Ondas Cerebrales",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
+    duration: 60,
+    durationLabel: "60 min",
+    description:
+      "Frecuencias binaurales en la banda Delta (0.5–4 Hz) para inducir sueño profundo y regeneración celular. Usar con auriculares para la experiencia completa.",
+    benefits: ["Sueño profundo", "Regeneración celular", "Descanso total", "Meditación profunda"],
+    instruments: ["Frecuencias binaurales delta", "Ruido rosa suave"],
+    image: require("@/assets/images/sessions/session-9.jpg"),
+    sonidosTag: "Sonidos Binaurales" as const,
+    isNew: true,
+  },
+  {
+    id: "36",
+    isPremium: true,
+    title: "Gamma 40Hz — Claridad",
+    subtitle: "Ondas Cerebrales",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
+    duration: 30,
+    durationLabel: "30 min",
+    description:
+      "Frecuencias Gamma (40 Hz) asociadas a estados de alta cognición, claridad mental y percepción expandida. Ideal para sesiones de estudio profundo o meditación activa.",
+    benefits: ["Claridad mental", "Cognición elevada", "Foco intenso", "Percepción expandida"],
+    instruments: ["Frecuencias binaurales gamma", "Tono base suave"],
+    image: require("@/assets/images/sessions/session-10.jpg"),
+    sonidosTag: "Sonidos Binaurales" as const,
+    isNew: true,
+  },
+  {
+    id: "37",
+    title: "Selva Tropical",
+    subtitle: "Sonidos Naturales",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
+    duration: 45,
+    durationLabel: "45 min",
+    description:
+      "La sinfonía viva de una selva tropical en su plenitud: aves exóticas, insectos nocturnos, lluvia suave sobre el dosel verde. Un refugio sonoro para salir del ruido mental.",
+    benefits: ["Conexión con la naturaleza", "Calma instantánea", "Presencia plena", "Sueño suave"],
+    instruments: ["Aves tropicales", "Insectos", "Lluvia de selva"],
+    image: require("@/assets/images/sessions/session-1.jpg"),
+    sonidosTag: "Sonidos Naturaleza" as const,
+    isNew: true,
+  },
+  {
+    id: "38",
+    title: "Río de Montaña",
+    subtitle: "Sonidos Naturales",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
+    duration: 30,
+    durationLabel: "30 min",
+    description:
+      "El fluir constante de un río de montaña limpio y fresco. Cada gorgoteo del agua sobre las piedras ancla la mente al momento presente y disuelve la tensión acumulada.",
+    benefits: ["Anclaje al presente", "Reducción del estrés", "Claridad mental", "Relajación natural"],
+    instruments: ["Agua corriente", "Viento suave", "Naturaleza andina"],
+    image: require("@/assets/images/sessions/session-2.jpg"),
+    sonidosTag: "Sonidos Naturaleza" as const,
+    isNew: true,
+  },
+  {
+    id: "39",
+    isPremium: true,
+    title: "Tormenta Eléctrica",
+    subtitle: "Atmósfera",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
+    duration: 50,
+    durationLabel: "50 min",
+    description:
+      "El drama sonoro de una tormenta eléctrica lejana: truenos que reverberan, lluvia intensa y el silencio eléctrico entre relámpagos. Ideal para enfocarse o conciliar el sueño.",
+    benefits: ["Concentración profunda", "Sueño reparador", "Presencia emocional", "Calma dramática"],
+    instruments: ["Truenos", "Lluvia intensa", "Viento", "Silencio eléctrico"],
+    image: require("@/assets/images/sessions/session-4.jpg"),
+    sonidosTag: "Sonidos Atmosféricos" as const,
+    isNew: true,
+  },
+  {
+    id: "40",
+    isPremium: true,
+    title: "Espacio Profundo",
+    subtitle: "Atmósfera",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
+    duration: 60,
+    durationLabel: "60 min",
+    description:
+      "Drones atmosféricos inspirados en los sonidos captados por la NASA del espacio profundo. Una experiencia de vastedad y silencio que disuelve los límites del yo.",
+    benefits: ["Expansión de consciencia", "Perspectiva cósmica", "Meditación profunda", "Silencio interior"],
+    instruments: ["Drones espaciales", "Texturas electrónicas", "Ruido blanco filtrado"],
+    image: require("@/assets/images/sessions/session-5.jpg"),
+    sonidosTag: "Sonidos Atmosféricos" as const,
     isNew: true,
   },
 ];
