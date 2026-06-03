@@ -33,7 +33,7 @@ export default function QuoteOfTheDay() {
   }
 
   return (
-    <View style={[styles.card, { backgroundColor: BLUE_BG }]}>
+    <View style={styles.card}>
       {/* Chip */}
       <View style={[styles.chip, { backgroundColor: BLUE_CHIP_BG }]}>
         <Text style={[styles.chipText, { color: BLUE_ACCENT }]}>Frase del día</Text>
@@ -50,7 +50,7 @@ export default function QuoteOfTheDay() {
       {/* Footer */}
       <View style={styles.footer}>
         {/* Avatars + count */}
-        <View style={[styles.countChip, { backgroundColor: BLUE_CHIP_BG }]}>
+        <View style={styles.countChip}>
           <View style={styles.avatarRow}>
             {AVATARS.map((src, i) => (
               <Image
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 16,
-    borderRadius: 20,
   },
   chip: {
     alignSelf: "flex-start",
@@ -119,9 +118,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    borderRadius: 50,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
   },
   avatarRow: {
     flexDirection: "row",
