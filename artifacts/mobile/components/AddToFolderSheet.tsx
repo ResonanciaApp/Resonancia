@@ -50,8 +50,7 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
   const handleCreate = () => {
     const name = newName.trim();
     if (!name) return;
-    const folder = createFolder(name);
-    addToFolder(folder.id, sessionId);
+    createFolder(name, sessionId);
     setStep("list");
     setNewName("");
   };

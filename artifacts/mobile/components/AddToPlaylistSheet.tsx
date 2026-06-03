@@ -50,8 +50,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
   const handleCreate = () => {
     const name = newName.trim();
     if (!name) return;
-    const pl = createPlaylist(name);
-    addToPlaylist(pl.id, sessionId);
+    createPlaylist(name, sessionId);
     setStep("list");
     setNewName("");
   };

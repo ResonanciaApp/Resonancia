@@ -169,7 +169,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
             colors={colors}
           />
           <ActionRow
-            icon="moon"
+            icon="clock"
             label="Temporizador"
             right={timerLabel}
             onPress={() => setShowTimer(true)}

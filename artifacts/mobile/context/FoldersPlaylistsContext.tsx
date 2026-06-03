@@ -27,13 +27,13 @@ interface FoldersPlaylistsCtx {
   folders: Folder[];
   playlists: Playlist[];
   // Folders
-  createFolder: (name: string) => Folder;
+  createFolder: (name: string, initialSessionId?: string) => Folder;
   addToFolder: (folderId: string, sessionId: string) => void;
   removeFromFolder: (folderId: string, sessionId: string) => void;
   deleteFolder: (folderId: string) => void;
   isInFolder: (folderId: string, sessionId: string) => boolean;
   // Playlists
-  createPlaylist: (name: string) => Playlist;
+  createPlaylist: (name: string, initialSessionId?: string) => Playlist;
   addToPlaylist: (playlistId: string, sessionId: string) => void;
   removeFromPlaylist: (playlistId: string, sessionId: string) => void;
   deletePlaylist: (playlistId: string) => void;
@@ -69,97 +69,126 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     });
   }, []);
 
-  // Persist helpers
-  const saveFolders = useCallback((updated: Folder[]) => {
-    setFolders(updated);
-    AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(updated));
+  // Functional updaters — always read latest state (no stale closure)
+  const updateFolders = useCallback((updater: (prev: Folder[]) => Folder[]) => {
+    setFolders((prev) => {
+      const next = updater(prev);
+      AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(next));
+      return next;
+    });
   }, []);
 
-  const savePlaylists = useCallback((updated: Playlist[]) => {
-    setPlaylists(updated);
-    AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(updated));
+  const updatePlaylists = useCallback((updater: (prev: Playlist[]) => Playlist[]) => {
+    setPlaylists((prev) => {
+      const next = updater(prev);
+      AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   // ── Folders ──────────────────────────────────────────────────────────────
 
-  const createFolder = useCallback((name: string): Folder => {
+  const createFolder = useCallback((name: string, initialSessionId?: string): Folder => {
     const folder: Folder = {
       id: `folder_${Date.now()}`,
       name: name.trim(),
-      sessionIds: [],
+      sessionIds: initialSessionId ? [initialSessionId] : [],
       createdAt: new Date().toISOString(),
     };
-    saveFolders([...folders, folder]);
+    updateFolders((prev) => [...prev, folder]);
     return folder;
-  }, [folders, saveFolders]);
+  }, [updateFolders]);
 
   const addToFolder = useCallback((folderId: string, sessionId: string) => {
-    saveFolders(folders.map((f) =>
-      f.id === folderId && !f.sessionIds.includes(sessionId)
-        ? { ...f, sessionIds: [...f.sessionIds, sessionId] }
-        : f
-    ));
-  }, [folders, saveFolders]);
+    updateFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId && !f.sessionIds.includes(sessionId)
+          ? { ...f, sessionIds: [...f.sessionIds, sessionId] }
+          : f
+      )
+    );
+  }, [updateFolders]);
 
   const removeFromFolder = useCallback((folderId: string, sessionId: string) => {
-    saveFolders(folders.map((f) =>
-      f.id === folderId
-        ? { ...f, sessionIds: f.sessionIds.filter((id) => id !== sessionId) }
-        : f
-    ));
-  }, [folders, saveFolders]);
+    updateFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId
+          ? { ...f, sessionIds: f.sessionIds.filter((id) => id !== sessionId) }
+          : f
+      )
+    );
+  }, [updateFolders]);
 
   const deleteFolder = useCallback((folderId: string) => {
-    saveFolders(folders.filter((f) => f.id !== folderId));
-  }, [folders, saveFolders]);
+    updateFolders((prev) => prev.filter((f) => f.id !== folderId));
+  }, [updateFolders]);
 
-  const isInFolder = useCallback((folderId: string, sessionId: string) =>
-    folders.find((f) => f.id === folderId)?.sessionIds.includes(sessionId) ?? false,
-  [folders]);
+  const isInFolder = useCallback(
+    (folderId: string, sessionId: string) =>
+      folders.find((f) => f.id === folderId)?.sessionIds.includes(sessionId) ?? false,
+    [folders]
+  );
 
   // ── Playlists ─────────────────────────────────────────────────────────────
 
-  const createPlaylist = useCallback((name: string): Playlist => {
+  const createPlaylist = useCallback((name: string, initialSessionId?: string): Playlist => {
     const pl: Playlist = {
       id: `playlist_${Date.now()}`,
       name: name.trim(),
-      sessionIds: [],
+      sessionIds: initialSessionId ? [initialSessionId] : [],
       createdAt: new Date().toISOString(),
     };
-    savePlaylists([...playlists, pl]);
+    updatePlaylists((prev) => [...prev, pl]);
     return pl;
-  }, [playlists, savePlaylists]);
+  }, [updatePlaylists]);
 
   const addToPlaylist = useCallback((playlistId: string, sessionId: string) => {
-    savePlaylists(playlists.map((p) =>
-      p.id === playlistId && !p.sessionIds.includes(sessionId)
-        ? { ...p, sessionIds: [...p.sessionIds, sessionId] }
-        : p
-    ));
-  }, [playlists, savePlaylists]);
+    updatePlaylists((prev) =>
+      prev.map((p) =>
+        p.id === playlistId && !p.sessionIds.includes(sessionId)
+          ? { ...p, sessionIds: [...p.sessionIds, sessionId] }
+          : p
+      )
+    );
+  }, [updatePlaylists]);
 
   const removeFromPlaylist = useCallback((playlistId: string, sessionId: string) => {
-    savePlaylists(playlists.map((p) =>
-      p.id === playlistId
-        ? { ...p, sessionIds: p.sessionIds.filter((id) => id !== sessionId) }
-        : p
-    ));
-  }, [playlists, savePlaylists]);
+    updatePlaylists((prev) =>
+      prev.map((p) =>
+        p.id === playlistId
+          ? { ...p, sessionIds: p.sessionIds.filter((id) => id !== sessionId) }
+          : p
+      )
+    );
+  }, [updatePlaylists]);
 
   const deletePlaylist = useCallback((playlistId: string) => {
-    savePlaylists(playlists.filter((p) => p.id !== playlistId));
-  }, [playlists, savePlaylists]);
+    updatePlaylists((prev) => prev.filter((p) => p.id !== playlistId));
+  }, [updatePlaylists]);
 
-  const isInPlaylist = useCallback((playlistId: string, sessionId: string) =>
-    playlists.find((p) => p.id === playlistId)?.sessionIds.includes(sessionId) ?? false,
-  [playlists]);
+  const isInPlaylist = useCallback(
+    (playlistId: string, sessionId: string) =>
+      playlists.find((p) => p.id === playlistId)?.sessionIds.includes(sessionId) ?? false,
+    [playlists]
+  );
 
   return (
-    <Ctx.Provider value={{
-      folders, playlists,
-      createFolder, addToFolder, removeFromFolder, deleteFolder, isInFolder,
-      createPlaylist, addToPlaylist, removeFromPlaylist, deletePlaylist, isInPlaylist,
-    }}>
+    <Ctx.Provider
+      value={{
+        folders,
+        playlists,
+        createFolder,
+        addToFolder,
+        removeFromFolder,
+        deleteFolder,
+        isInFolder,
+        createPlaylist,
+        addToPlaylist,
+        removeFromPlaylist,
+        deletePlaylist,
+        isInPlaylist,
+      }}
+    >
       {children}
     </Ctx.Provider>
   );
