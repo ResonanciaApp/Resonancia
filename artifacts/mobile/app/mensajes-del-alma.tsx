@@ -173,9 +173,9 @@ export default function MensajesDelAlmaScreen() {
                   ]}
                 >
                   {isSubmitting ? (
-                    <ActivityIndicator size="small" color="#18110C" />
+                    <ActivityIndicator size="small" color="#060A0F" />
                   ) : (
-                    <Text style={[styles.sendBtnText, { color: text.trim() ? "#18110C" : colors.mutedForeground }]}>
+                    <Text style={[styles.sendBtnText, { color: text.trim() ? "#060A0F" : colors.mutedForeground }]}>
                       Compartir
                     </Text>
                   )}

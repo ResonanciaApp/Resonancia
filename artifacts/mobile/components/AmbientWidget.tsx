@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#110C05",
+    backgroundColor: "#090E17",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(182,149,95,0.22)",
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#B6955F",
     borderWidth: 1.5,
-    borderColor: "#18110C",
+    borderColor: "#060A0F",
   },
   volBtn: {
     width: 24,

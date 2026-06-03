@@ -236,5 +236,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  addBtnText: { fontSize: 16, fontWeight: "700", color: "#18110C" },
+  addBtnText: { fontSize: 16, fontWeight: "700", color: "#060A0F" },
 });

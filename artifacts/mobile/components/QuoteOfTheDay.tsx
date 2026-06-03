@@ -57,7 +57,7 @@ export default function QuoteOfTheDay() {
               <Image
                 key={i}
                 source={src}
-                style={[styles.avatar, { marginLeft: i === 0 ? 0 : -10, borderColor: "#18110C" }]}
+                style={[styles.avatar, { marginLeft: i === 0 ? 0 : -10, borderColor: "#060A0F" }]}
               />
             ))}
           </View>

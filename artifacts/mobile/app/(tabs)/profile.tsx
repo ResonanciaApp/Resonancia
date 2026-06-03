@@ -326,7 +326,7 @@ export default function ProfileScreen() {
                   onPress={() => router.push(stat.href as never)}
                   style={({ pressed }) => [
                     styles.statCard,
-                    { backgroundColor: "#110C05", borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: "#090E17", borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   {content}
@@ -336,7 +336,7 @@ export default function ProfileScreen() {
             return (
               <View
                 key={stat.label}
-                style={[styles.statCard, { backgroundColor: "#110C05", borderColor: colors.border }]}
+                style={[styles.statCard, { backgroundColor: "#090E17", borderColor: colors.border }]}
               >
                 {content}
               </View>
@@ -345,7 +345,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Racha ── */}
-        <View style={[styles.streakCard, { backgroundColor: "#110C05", borderColor: colors.border }]}>
+        <View style={[styles.streakCard, { backgroundColor: "#090E17", borderColor: colors.border }]}>
           <View style={styles.streakFlame}>
             <Text style={styles.streakEmoji}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
           </View>
@@ -367,7 +367,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi viaje</Text>
           {activity.hasData ? (
-            <View style={[styles.journeyCard, { backgroundColor: "#110C05", borderColor: colors.border }]}>
+            <View style={[styles.journeyCard, { backgroundColor: "#090E17", borderColor: colors.border }]}>
               <View style={styles.journeyRow}>
                 <Feather name="clock" size={16} color={colors.accent} />
                 <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Minutos esta semana</Text>
@@ -391,7 +391,7 @@ export default function ProfileScreen() {
               </View>
             </View>
           ) : (
-            <View style={[styles.emptyFav, { backgroundColor: "#110C05", borderColor: colors.border }]}>
+            <View style={[styles.emptyFav, { backgroundColor: "#090E17", borderColor: colors.border }]}>
               <Feather name="compass" size={22} color={"rgba(198,155,79,0.3)"} />
               <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
                 Tu viaje empieza con la primera sesión.{"\n"}Aquí verás tus minutos, sesión favorita y más.
@@ -403,7 +403,7 @@ export default function ProfileScreen() {
         {/* ── Mis herramientas ── */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis herramientas</Text>
-          <View style={[styles.journeyCard, { backgroundColor: "#110C05", borderColor: colors.border }]}>
+          <View style={[styles.journeyCard, { backgroundColor: "#090E17", borderColor: colors.border }]}>
             <Pressable
               onPress={() => router.push("/diario" as never)}
               style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
@@ -504,7 +504,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Favoritos</Text>
           {favSessions.length === 0 ? (
-            <View style={[styles.emptyFav, { backgroundColor: "#110C05", borderColor: colors.border }]}>
+            <View style={[styles.emptyFav, { backgroundColor: "#090E17", borderColor: colors.border }]}>
               <Feather name="heart" size={22} color={"rgba(198,155,79,0.3)"} />
               <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
                 Aún no has guardado sesiones.{"\n"}Toca ❤️ en cualquier sesión para guardarla aquí.
@@ -705,7 +705,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#18110C",
+    borderColor: "#060A0F",
   },
   userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },

@@ -30,7 +30,7 @@ function PlayOverlay() {
   return (
     <View style={styles.playOverlay} pointerEvents="none">
       <View style={styles.playCircle}>
-        <Feather name="play" size={16} color="#18110C" style={{ marginLeft: 2 }} />
+        <Feather name="play" size={16} color="#060A0F" style={{ marginLeft: 2 }} />
       </View>
     </View>
   );

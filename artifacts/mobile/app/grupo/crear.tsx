@@ -104,13 +104,13 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#0D0906" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#060A0F" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontSize: 28, fontWeight: "700", color: "#C8C1B5" },
   name: { color: "#C8C1B5", fontSize: 18, fontWeight: "700", marginBottom: 4 },
   meta: { color: "rgba(237,225,211,0.55)", fontSize: 12, letterSpacing: 0.8, marginBottom: 14 },
   inviteRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 16 },
-  memberDot: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#3D2010", alignItems: "center", justifyContent: "center" },
+  memberDot: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#0F1A2A", alignItems: "center", justifyContent: "center" },
   memberDotText: { color: "#A8C4A8", fontSize: 13, fontWeight: "700" },
   inviteBtn: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(237,225,211,0.12)", borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6 },
   inviteBtnText: { color: "#C8C1B5", fontSize: 13, fontWeight: "600" },
@@ -201,7 +201,7 @@ export default function CrearGrupoScreen() {
   if (step === 1) {
     return (
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#0D0906" }]}
+        style={[styles.root, { backgroundColor: "#060A0F" }]}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <StatusBar barStyle="light-content" />
@@ -252,7 +252,7 @@ export default function CrearGrupoScreen() {
   // ── Steps 2-5: Group preview + bottom sheet ───────────────────────────────
   return (
     <KeyboardAvoidingView
-      style={[styles.root, { backgroundColor: "#0D0906" }]}
+      style={[styles.root, { backgroundColor: "#060A0F" }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={0}
     >

@@ -99,7 +99,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       {isIOS ? (
         <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
       ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0D0906" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#060A0F" }]} />
       )}
       <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
       <View style={[styles.row, isWeb && styles.rowWeb]}>
@@ -148,7 +148,7 @@ export default function TabLayout() {
   return (
     <View style={{ flex: 1 }}>
       <Tabs
-        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#0D0906" } }}
+        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#060A0F" } }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"    options={{ title: "Inicio" }} />

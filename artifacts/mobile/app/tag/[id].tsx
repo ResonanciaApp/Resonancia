@@ -89,7 +89,7 @@ export default function TagScreen() {
   if (!tag) return null;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0D0906" }]}>
+    <View style={[styles.root, { backgroundColor: "#060A0F" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -99,7 +99,7 @@ export default function TagScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#0D0906",
+            backgroundColor: "#060A0F",
             borderBottomColor: "rgba(182,149,95,0.15)",
             opacity: headerOpacity,
           },
