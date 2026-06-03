@@ -34,7 +34,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "musica-sonidos",
-    title: "Frecuencias",
+    title: "Música",
     subtitle: "Atmósferas sonoras para meditar",
     icon: "music",
     sessionCount: 2,
@@ -53,9 +53,10 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "podcast",
-    title: "Mezclador",
+    title: "Sonidos",
     subtitle: "Conversaciones que despiertan el alma",
-    icon: "sliders",
+    icon: "waveform",
+    iconFamily: "MaterialCommunityIcons",
     sessionCount: 1,
     color: "#8AAAD4",
     gradient: ["#243350", "#101A28"],
