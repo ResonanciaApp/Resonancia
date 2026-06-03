@@ -22,6 +22,7 @@ type Props = {
   horizontal?: boolean;
   tint?: "terracotta";
   cardBg?: string;
+  noBorder?: boolean;
 };
 
 function LockStar() {
@@ -35,7 +36,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -54,7 +55,12 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         onPress={handlePress}
         style={({ pressed }) => [
           styles.hRow,
-          { backgroundColor: "rgba(255,255,255,0.04)", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
+          {
+            backgroundColor: cardBg ?? "rgba(255,255,255,0.04)",
+            borderWidth: noBorder ? 0 : StyleSheet.hairlineWidth,
+            borderColor: noBorder ? "transparent" : "rgba(255,255,255,0.07)",
+            opacity: pressed ? 0.8 : 1,
+          },
         ]}
       >
         <View style={{ width: 108, height: 96 }}>

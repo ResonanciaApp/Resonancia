@@ -155,9 +155,9 @@ export default function MiMusicaScreen() {
                 <Pressable
                   key={cat.id}
                   onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                  style={[styles.catCard, { backgroundColor: "rgba(237,225,211,0.06)", borderColor: colors.border }]}
+                  style={[styles.catCard, { backgroundColor: "#150F07", borderColor: "transparent" }]}
                 >
-                  <View style={[styles.catIconWrap, { backgroundColor: "rgba(237,225,211,0.08)" }]}>
+                  <View style={[styles.catIconWrap, { backgroundColor: "rgba(237,225,211,0.06)" }]}>
                     {cat.iconFamily === "MaterialCommunityIcons" ? (
                       <MaterialCommunityIcons
                         name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
@@ -191,8 +191,8 @@ export default function MiMusicaScreen() {
                     style={[
                       styles.tab,
                       {
-                        backgroundColor: selected ? colors.primary : "rgba(237,225,211,0.06)",
-                        borderColor: selected ? colors.primary : colors.border,
+                        backgroundColor: selected ? colors.primary : "#150F07",
+                        borderColor: selected ? colors.primary : "transparent",
                       },
                     ]}
                   >
