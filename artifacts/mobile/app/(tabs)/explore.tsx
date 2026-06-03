@@ -117,7 +117,7 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Search bar ── */}
-        <View style={[styles.searchBar, { backgroundColor: "#150F07", borderColor: "transparent" }]}>
+        <View style={[styles.searchBar, { backgroundColor: "#100B05", borderColor: "transparent" }]}>
           <Feather name="search" size={16} color={colors.mutedForeground} />
           <TextInput
             value={query}
@@ -171,7 +171,7 @@ export default function ExploreScreen() {
                   }
                   style={({ pressed }) => [
                     styles.continueCard,
-                    { backgroundColor: "#150F07", opacity: pressed ? 0.85 : 1 },
+                    { backgroundColor: "#100B05", opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
                   <Image
@@ -220,7 +220,7 @@ export default function ExploreScreen() {
                 <View
                   style={[
                     styles.continuePlaceholder,
-                    { backgroundColor: "#150F07", borderColor: "transparent" },
+                    { backgroundColor: "#100B05", borderColor: "transparent" },
                   ]}
                 >
                   <View
@@ -250,7 +250,7 @@ export default function ExploreScreen() {
                     style={({ pressed }) => [
                       styles.timeChip,
                       {
-                        backgroundColor: "#150F07",
+                        backgroundColor: "#100B05",
                         opacity: pressed ? 0.6 : 1,
                       },
                     ]}
