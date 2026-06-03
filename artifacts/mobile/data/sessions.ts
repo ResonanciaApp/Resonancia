@@ -596,3 +596,79 @@ export function getSleepSessions(): Session[] {
 export function getShortSessions(): Session[] {
   return SESSIONS.filter((s) => s.duration <= 15);
 }
+
+/**
+ * Snapshot remoto de una sesión (lo que devuelve GET /catalog). No incluye los
+ * assets bundleados (`image`, `audio`), que se resuelven localmente por id.
+ */
+export type CatalogSessionSnapshot = {
+  id: string;
+  title: string;
+  subtitle: string;
+  categoryId: string;
+  categoryLabel: string;
+  duration: number;
+  durationLabel: string;
+  description: string;
+  benefits: string[];
+  instruments: string[];
+  isFeatured: boolean;
+  isNew: boolean;
+  isPremium: boolean;
+  frequency?: string | null;
+  soundTag?: string | null;
+  meditationTag?: string | null;
+  ancestralTag?: string | null;
+  sabiduriaTag?: string | null;
+  podcastTag?: string | null;
+  sonidosTag?: string | null;
+  themeTag?: string[] | null;
+  sleepTag?: string | null;
+  guideId?: string | null;
+  artistId?: string | null;
+  guests?: { name: string; role: string; instagram?: string | null }[] | null;
+};
+
+/**
+ * Hidrata SESSIONS in-place con el snapshot del servidor (merge por id),
+ * conservando `image` y `audio` bundleados. Las sesiones que no existen en el
+ * bundle se ignoran (no hay assets que resolver). No reordena el array → cero
+ * churn en pantallas que importan SESSIONS de forma síncrona.
+ */
+export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
+  const byId = new Map(remote.map((s) => [s.id, s]));
+  for (const local of SESSIONS) {
+    const r = byId.get(local.id);
+    if (!r) continue;
+    local.title = r.title;
+    local.subtitle = r.subtitle;
+    local.categoryId = r.categoryId;
+    local.categoryLabel = r.categoryLabel;
+    local.duration = r.duration;
+    local.durationLabel = r.durationLabel;
+    local.description = r.description;
+    local.benefits = r.benefits;
+    local.instruments = r.instruments;
+    local.isFeatured = r.isFeatured;
+    local.isNew = r.isNew;
+    local.isPremium = r.isPremium;
+    local.frequency = r.frequency ?? undefined;
+    local.soundTag = (r.soundTag ?? undefined) as SoundTag | undefined;
+    local.meditationTag = (r.meditationTag ?? undefined) as MeditationTag | undefined;
+    local.ancestralTag = (r.ancestralTag ?? undefined) as AncestralTag | undefined;
+    local.sabiduriaTag = (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined;
+    local.podcastTag = (r.podcastTag ?? undefined) as PodcastTag | undefined;
+    local.sonidosTag = (r.sonidosTag ?? undefined) as SonidosTag | undefined;
+    local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
+    local.sleepTag = (r.sleepTag ?? undefined) as SleepTag | undefined;
+    local.guideId = r.guideId ?? undefined;
+    local.artistId = r.artistId ?? undefined;
+    local.guests = r.guests
+      ? r.guests.map((g) => ({
+          name: g.name,
+          role: g.role,
+          instagram: g.instagram ?? undefined,
+        }))
+      : undefined;
+  }
+}

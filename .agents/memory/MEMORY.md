@@ -19,3 +19,4 @@
 - [Cloud sync activity](cloud-sync-activity.md) — historial derivable de eventos (no entidad); firstSync solo se marca si recovered (lecturas OK) o local vacío pisa la nube; merge post-await con update funcional
 - [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only
 - [Shared mix category enum](shared-mix-category-enum.md) — el set de categorías de mezclas compartidas vive en 5 lugares (DB zod, OpenAPI x3, route const, frontend cast); sincronizar o compartir/filtrar falla
+- [Catalog DB migration](catalog-db-migration.md) — catálogo en DB (GET /catalog, solo published) hidratado in-place sobre SESSIONS/CATEGORIES; assets siguen bundleados (resueltos por id), nunca se sobreescriben

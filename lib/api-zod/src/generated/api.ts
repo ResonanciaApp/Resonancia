@@ -786,3 +786,71 @@ export const SetMyProgressResponse = zod.object({
 })
 
 
+/**
+ * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
+ */
+export const GetCatalogResponse = zod.object({
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "icon": zod.string(),
+  "iconFamily": zod.string().nullish(),
+  "sessionCount": zod.number(),
+  "color": zod.string(),
+  "gradientStart": zod.string(),
+  "gradientEnd": zod.string(),
+  "isPrimary": zod.boolean(),
+  "sortOrder": zod.number()
+})),
+  "sessions": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "status": zod.enum(['draft', 'pending', 'published']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}))
+})
+
+

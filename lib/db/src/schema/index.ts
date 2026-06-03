@@ -29,3 +29,6 @@ export * from "./shared-mix-comments";
 export * from "./playback-history";
 export * from "./favorites";
 export * from "./session-progress";
+export * from "./catalog-categories";
+export * from "./catalog-sessions";
+export * from "./catalog-audio-files";

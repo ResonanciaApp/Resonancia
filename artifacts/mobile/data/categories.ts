@@ -113,3 +113,37 @@ export const getCategoryTint = (categoryId: string, alpha = 0.2) => {
   const color = TINT_COLOR_OVERRIDE[categoryId] ?? cat.color;
   return hexToRgba(color, TINT_ALPHA_OVERRIDE[categoryId] ?? alpha);
 };
+
+/** Snapshot remoto de una categoría (lo que devuelve GET /catalog). */
+export type CatalogCategorySnapshot = {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  iconFamily?: string | null;
+  sessionCount: number;
+  color: string;
+  gradientStart: string;
+  gradientEnd: string;
+  isPrimary: boolean;
+};
+
+/**
+ * Hidrata CATEGORIES in-place con el snapshot del servidor (merge por id).
+ * Las categorías no presentes en el bundle se ignoran. No reordena el array.
+ */
+export function applyCategoriesSnapshot(remote: CatalogCategorySnapshot[]): void {
+  const byId = new Map(remote.map((c) => [c.id, c]));
+  for (const local of CATEGORIES) {
+    const r = byId.get(local.id);
+    if (!r) continue;
+    local.title = r.title;
+    local.subtitle = r.subtitle;
+    local.icon = r.icon;
+    local.iconFamily = (r.iconFamily ?? undefined) as Category["iconFamily"];
+    local.sessionCount = r.sessionCount;
+    local.color = r.color;
+    local.gradient = [r.gradientStart, r.gradientEnd];
+    local.primary = r.isPrimary;
+  }
+}

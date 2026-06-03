@@ -9,6 +9,7 @@ import storageRouter from "./storage";
 import pushRouter from "./push";
 import mixesRouter from "./mixes";
 import activityRouter from "./activity";
+import catalogRouter from "./catalog";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(storageRouter);
 router.use(pushRouter);
 router.use(mixesRouter);
 router.use(activityRouter);
+router.use(catalogRouter);
 
 export default router;

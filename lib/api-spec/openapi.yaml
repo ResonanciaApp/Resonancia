@@ -26,6 +26,8 @@ tags:
     description: Mobile push notification tokens
   - name: mixes
     description: Community-shared "Mi Música" mixes
+  - name: catalog
+    description: Catálogo de sesiones, categorías y audios
 paths:
   /healthz:
     get:
@@ -1011,6 +1013,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /catalog:
+    get:
+      operationId: getCatalog
+      tags: [catalog]
+      summary: Catálogo público (categorías, sesiones y metadata de audio publicadas)
+      responses:
+        "200":
+          description: Catálogo publicado completo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogResponse"
 components:
   schemas:
     PlaybackEvent:
@@ -1528,3 +1542,178 @@ components:
         count:
           type: integer
       required: [count]
+    CatalogCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        icon:
+          type: string
+        iconFamily:
+          type: string
+          nullable: true
+        sessionCount:
+          type: integer
+        color:
+          type: string
+        gradientStart:
+          type: string
+        gradientEnd:
+          type: string
+        isPrimary:
+          type: boolean
+        sortOrder:
+          type: integer
+      required:
+        [id, title, subtitle, icon, sessionCount, color, gradientStart, gradientEnd, isPrimary, sortOrder]
+    CatalogSessionGuest:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: string
+        instagram:
+          type: string
+          nullable: true
+      required: [name, role]
+    CatalogAudioFile:
+      type: object
+      properties:
+        id:
+          type: integer
+        sessionId:
+          type: string
+          nullable: true
+        role:
+          type: string
+          enum: [main, voice, ambient, base, sound]
+        assetKey:
+          type: string
+          nullable: true
+        url:
+          type: string
+          nullable: true
+        name:
+          type: string
+        contentType:
+          type: string
+          nullable: true
+        sizeBytes:
+          type: integer
+          nullable: true
+        durationSeconds:
+          type: integer
+          nullable: true
+        isLoop:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, role, name, isLoop, createdAt]
+    CatalogSession:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        categoryId:
+          type: string
+        categoryLabel:
+          type: string
+        duration:
+          type: integer
+        durationLabel:
+          type: string
+        description:
+          type: string
+        benefits:
+          type: array
+          items:
+            type: string
+        instruments:
+          type: array
+          items:
+            type: string
+        imageKey:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        isFeatured:
+          type: boolean
+        isNew:
+          type: boolean
+        isPremium:
+          type: boolean
+        frequency:
+          type: string
+          nullable: true
+        soundTag:
+          type: string
+          nullable: true
+        meditationTag:
+          type: string
+          nullable: true
+        ancestralTag:
+          type: string
+          nullable: true
+        sabiduriaTag:
+          type: string
+          nullable: true
+        podcastTag:
+          type: string
+          nullable: true
+        sonidosTag:
+          type: string
+          nullable: true
+        themeTag:
+          type: array
+          nullable: true
+          items:
+            type: string
+        sleepTag:
+          type: string
+          nullable: true
+        guideId:
+          type: string
+          nullable: true
+        artistId:
+          type: string
+          nullable: true
+        guests:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/CatalogSessionGuest"
+        status:
+          type: string
+          enum: [draft, pending, published]
+        sortOrder:
+          type: integer
+        audioFiles:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogAudioFile"
+      required:
+        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isNew, isPremium, status, sortOrder, audioFiles]
+    CatalogResponse:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogCategory"
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogSession"
+      required: [categories, sessions]

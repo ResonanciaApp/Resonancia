@@ -441,6 +441,98 @@ export interface UnreadCount {
   count: number;
 }
 
+export interface CatalogCategory {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  iconFamily?: string | null;
+  sessionCount: number;
+  color: string;
+  gradientStart: string;
+  gradientEnd: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
+export interface CatalogSessionGuest {
+  name: string;
+  role: string;
+  instagram?: string | null;
+}
+
+export type CatalogAudioFileRole = typeof CatalogAudioFileRole[keyof typeof CatalogAudioFileRole];
+
+
+export const CatalogAudioFileRole = {
+  main: 'main',
+  voice: 'voice',
+  ambient: 'ambient',
+  base: 'base',
+  sound: 'sound',
+} as const;
+
+export interface CatalogAudioFile {
+  id: number;
+  sessionId?: string | null;
+  role: CatalogAudioFileRole;
+  assetKey?: string | null;
+  url?: string | null;
+  name: string;
+  contentType?: string | null;
+  sizeBytes?: number | null;
+  durationSeconds?: number | null;
+  isLoop: boolean;
+  createdAt: string;
+}
+
+export type CatalogSessionStatus = typeof CatalogSessionStatus[keyof typeof CatalogSessionStatus];
+
+
+export const CatalogSessionStatus = {
+  draft: 'draft',
+  pending: 'pending',
+  published: 'published',
+} as const;
+
+export interface CatalogSession {
+  id: string;
+  title: string;
+  subtitle: string;
+  categoryId: string;
+  categoryLabel: string;
+  duration: number;
+  durationLabel: string;
+  description: string;
+  benefits: string[];
+  instruments: string[];
+  imageKey?: string | null;
+  imageUrl?: string | null;
+  isFeatured: boolean;
+  isNew: boolean;
+  isPremium: boolean;
+  frequency?: string | null;
+  soundTag?: string | null;
+  meditationTag?: string | null;
+  ancestralTag?: string | null;
+  sabiduriaTag?: string | null;
+  podcastTag?: string | null;
+  sonidosTag?: string | null;
+  themeTag?: string[] | null;
+  sleepTag?: string | null;
+  guideId?: string | null;
+  artistId?: string | null;
+  guests?: CatalogSessionGuest[] | null;
+  status: CatalogSessionStatus;
+  sortOrder: number;
+  audioFiles: CatalogAudioFile[];
+}
+
+export interface CatalogResponse {
+  categories: CatalogCategory[];
+  sessions: CatalogSession[];
+}
+
 export type GetMessagesParams = {
 page?: number;
 };

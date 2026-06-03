@@ -24,6 +24,7 @@ import { DrawerMenu } from "@/components/DrawerMenu";
 import { MixerSheet } from "@/components/MixerSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
+import { CatalogProvider } from "@/context/CatalogContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
@@ -234,6 +235,7 @@ export default function RootLayout() {
         <SafeAreaProvider>
           <ErrorBoundary>
             <QueryClientProvider client={queryClient}>
+              <CatalogProvider>
               <AuthProvider>
                 <PremiumProvider>
                 <PlayerProvider>
@@ -258,6 +260,7 @@ export default function RootLayout() {
                 </PlayerProvider>
                 </PremiumProvider>
               </AuthProvider>
+              </CatalogProvider>
             </QueryClientProvider>
           </ErrorBoundary>
         </SafeAreaProvider>
