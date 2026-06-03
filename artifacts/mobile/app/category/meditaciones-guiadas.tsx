@@ -181,7 +181,7 @@ export default function MeditacionesGuiadasScreen() {
             </View>
 
             <CategoryInfoPanel
-              accentColor={colors.primary}
+              accentColor="#B09AC8"
               heading="¿Qué es la meditación guiada?"
               items={[
                 {
