@@ -299,7 +299,7 @@ export default function PlayerScreen() {
   } else {
     const baseHex =
       playerCategory?.id === "sabiduria-dia"
-        ? "#3E260A"
+        ? "#0F1A2A"
         : playerCategory?.gradient[1] ?? colors.background;
     playerBg = darkenHex(baseHex, 0.6);
   }
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
     borderRadius: 38,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#B6955F",
+    shadowColor: "#648CD2",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 16,

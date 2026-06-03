@@ -90,15 +90,15 @@ export function MiniPlayer() {
       {isIOS ? (
         <BlurView intensity={80} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 18 }]} />
       ) : Platform.OS === "web" ? (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(28,26,24,0.94)", borderRadius: 18 }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(6,10,15,0.94)", borderRadius: 18 }]} />
       ) : (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card, borderRadius: 18 }]} />
       )}
       <LinearGradient
-        colors={["rgba(182,149,95,0.08)", "rgba(60,36,21,0.4)"]}
+        colors={["rgba(100,140,210,0.08)", "rgba(6,10,15,0.4)"]}
         style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
       />
-      <View style={[styles.border, { borderColor: "rgba(182,149,95,0.2)" }]} />
+      <View style={[styles.border, { borderColor: "rgba(100,140,210,0.2)" }]} />
       {children}
     </Pressable>
   );
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   // ── Sesión ───────────────────────────────────────────────────
   progressBar: {
     height: 2,
-    backgroundColor: "rgba(182,149,95,0.15)",
+    backgroundColor: "rgba(100,140,210,0.15)",
   },
   progressFill: {
     height: 2,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   stackFallback: {
-    backgroundColor: "rgba(182,149,95,0.18)",
+    backgroundColor: "rgba(100,140,210,0.18)",
   },
   timerText: {
     fontSize: 14,
