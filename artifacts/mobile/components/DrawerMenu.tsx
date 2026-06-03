@@ -326,7 +326,13 @@ const styles = StyleSheet.create({
   },
 
   // Items
-  itemGroup: { gap: 2 },
+  itemGroup: {
+    gap: 2,
+    backgroundColor: "#090E17",
+    borderRadius: 14,
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+  },
   item: {
     flexDirection: "row",
     alignItems: "center",
@@ -335,7 +341,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  itemPressed: { backgroundColor: "rgba(182,149,95,0.1)" },
+  itemPressed: { backgroundColor: "rgba(182,149,95,0.08)" },
   itemIcon: { width: 26, alignItems: "center" },
   premiumCheck: {
     width: 18,
