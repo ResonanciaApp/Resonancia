@@ -290,12 +290,12 @@ export default function MusicaSonidosScreen() {
                       }
                     }}
                   >
-                    {/* Square image */}
-                    <View style={[styles.imgWrap, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: 8, overflow: "hidden" }]}>
+                    {/* Full-bleed image */}
+                    <View style={[styles.imgWrap, { width: CARD_WIDTH, height: CARD_WIDTH, borderTopLeftRadius: 16, borderTopRightRadius: 16, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, overflow: "hidden" }]}>
                       <ExpoImage
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         source={session.image as any}
-                        style={[styles.img, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: 0 }]}
+                        style={[styles.img, { width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 0 }]}
                         contentFit="cover"
                         transition={IMAGE_TRANSITION}
                         cachePolicy="memory-disk"
@@ -568,8 +568,8 @@ const styles = StyleSheet.create({
 
   card: {
     borderRadius: 16,
-    borderWidth: 1,
-    padding: 8,
+    borderWidth: 0,
+    overflow: "hidden",
     alignItems: "center",
     position: "relative",
     marginBottom: 4,
@@ -583,8 +583,8 @@ const styles = StyleSheet.create({
   },
   imgWrap: {
     position: "relative",
-    marginBottom: 8,
-    marginTop: 4,
+    marginBottom: 0,
+    marginTop: 0,
   },
   img: {},
   tagBadge: {
@@ -611,7 +611,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     lineHeight: 15,
-    marginBottom: 2,
+    paddingHorizontal: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
 
   emptyWrap: {
