@@ -155,12 +155,12 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.catGrid}>
             {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat, idx) => {
-              const R = 20;
+              const R = 20; const r = 4;
               const radii = [
-                { borderTopLeftRadius: 0,  borderTopRightRadius: 0,  borderBottomLeftRadius: 0,  borderBottomRightRadius: R }, // arriba-izq → esquina interna = abajo-der
-                { borderTopLeftRadius: 0,  borderTopRightRadius: 0,  borderBottomLeftRadius: R,  borderBottomRightRadius: 0 }, // arriba-der → esquina interna = abajo-izq
-                { borderTopLeftRadius: 0,  borderTopRightRadius: R,  borderBottomLeftRadius: 0,  borderBottomRightRadius: 0 }, // abajo-izq  → esquina interna = arriba-der
-                { borderTopLeftRadius: R,  borderTopRightRadius: 0,  borderBottomLeftRadius: 0,  borderBottomRightRadius: 0 }, // abajo-der  → esquina interna = arriba-izq
+                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // arriba-izq → externa = arriba-izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // arriba-der → externa = arriba-der
+                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // abajo-izq  → externa = abajo-izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // abajo-der  → externa = abajo-der
               ];
               const iconColors: Record<string, string> = {
                 "sonidos-ancestrales": "#D59D42",
