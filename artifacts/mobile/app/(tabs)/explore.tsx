@@ -139,9 +139,6 @@ export default function ExploreScreen() {
         {/* ── Mi Biblioteca (2×2 grid) ── */}
         {query.length === 0 && (
           <View style={[styles.section, { marginBottom: 32 }]}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
-              Mi Biblioteca
-            </Text>
             <View style={styles.libraryGrid}>
               {[
                 { label: "Carpetas",   icon: "folder"     as const, route: "/carpetas"  },
