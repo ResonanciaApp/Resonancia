@@ -54,7 +54,7 @@ export default function Slide01Portada() {
         {/* Phone group — relative container so phones align relative to each other */}
         <div style={{ position: "relative", width: "36vw", height: "38vw", zIndex: 1 }}>
 
-          {/* Back phone — home, offset top-right */}
+          {/* Back phone — Sonidos Ancestrales, offset top-right */}
           <div style={{
             position: "absolute",
             right: 0,
@@ -70,11 +70,11 @@ export default function Slide01Portada() {
           }}>
             <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.3vw", height: "0.72vw", backgroundColor: "#000", borderRadius: "0.48vw", zIndex: 10 }} />
             <div style={{ width: "100%", height: "100%", borderRadius: "2.1vw", overflow: "hidden", backgroundColor: "#060A0F" }}>
-              <img src={`${base}mockup-home.jpg`} crossOrigin="anonymous" alt="Inicio" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+              <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
           </div>
 
-          {/* Front phone — Sonidos Ancestrales, larger and to the left */}
+          {/* Front phone — Inicio, larger and to the left */}
           <div style={{
             position: "absolute",
             left: 0,
@@ -89,7 +89,7 @@ export default function Slide01Portada() {
           }}>
             <div style={{ position: "absolute", top: "1.4vw", left: "50%", transform: "translateX(-50%)", width: "4vw", height: "0.85vw", backgroundColor: "#000", borderRadius: "0.58vw", zIndex: 10 }} />
             <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#060A0F" }}>
-              <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+              <img src={`${base}mockup-home.jpg`} crossOrigin="anonymous" alt="Inicio" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
           </div>
 

@@ -57,48 +57,21 @@ export default function Slide04Producto() {
         {/* Ambient glow */}
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(190, 150, 80,0.06) 0%, rgba(6, 10, 15,0) 65%)" }} />
 
-        {/* Phone group */}
-        <div style={{ position: "relative", width: "36vw", height: "38vw", zIndex: 1 }}>
-
-          {/* Back phone — Mi Música, offset top-right */}
-          <div style={{
-            position: "absolute",
-            right: 0,
-            top: "10%",
-            width: "14vw",
-            height: "30.4vw",
-            backgroundColor: "#2C2C2E",
-            borderRadius: "2.5vw",
-            padding: "0.46vw",
-            boxShadow: "0 1vw 3.5vw rgba(0,0,0,0.75)",
-            zIndex: 1,
-            opacity: 0.6
-          }}>
-            <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.3vw", height: "0.72vw", backgroundColor: "#000", borderRadius: "0.48vw", zIndex: 10 }} />
-            <div style={{ width: "100%", height: "100%", borderRadius: "2.1vw", overflow: "hidden", backgroundColor: "#060A0F" }}>
-              <img src={`${base}mockup-musica.jpg`} crossOrigin="anonymous" alt="Mi Música" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
-            </div>
+        {/* Single phone — Mi Música, centered and large */}
+        <div style={{
+          position: "relative",
+          width: "20vw",
+          height: "43.4vw",
+          backgroundColor: "#1C1C1E",
+          borderRadius: "3.5vw",
+          padding: "0.65vw",
+          boxShadow: "0 2.4vw 9vw rgba(0,0,0,0.95), 0 0 0 0.14vw rgba(255,255,255,0.07)",
+          zIndex: 1
+        }}>
+          <div style={{ position: "absolute", top: "1.65vw", left: "50%", transform: "translateX(-50%)", width: "4.7vw", height: "1vw", backgroundColor: "#000", borderRadius: "0.68vw", zIndex: 10 }} />
+          <div style={{ width: "100%", height: "100%", borderRadius: "3vw", overflow: "hidden", backgroundColor: "#060A0F" }}>
+            <img src={`${base}mockup-musica.jpg`} crossOrigin="anonymous" alt="Mi Música" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
           </div>
-
-          {/* Front phone — Sonidos Ancestrales, large and prominent */}
-          <div style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: "17vw",
-            height: "36.9vw",
-            backgroundColor: "#1C1C1E",
-            borderRadius: "3vw",
-            padding: "0.55vw",
-            boxShadow: "0 2vw 8vw rgba(0,0,0,0.95), 0 0 0 0.12vw rgba(255,255,255,0.07)",
-            zIndex: 2
-          }}>
-            <div style={{ position: "absolute", top: "1.4vw", left: "50%", transform: "translateX(-50%)", width: "4vw", height: "0.85vw", backgroundColor: "#000", borderRadius: "0.58vw", zIndex: 10 }} />
-            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#060A0F" }}>
-              <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
-            </div>
-          </div>
-
         </div>
 
         {/* Blend gradient on left edge */}
