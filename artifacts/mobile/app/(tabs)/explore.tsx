@@ -141,27 +141,32 @@ export default function ExploreScreen() {
           <View style={[styles.section, { marginBottom: 32 }]}>
             <View style={styles.libraryGrid}>
               {[
-                { label: "Carpetas",   icon: "folder"     as const, route: "/carpetas"  },
-                { label: "Playlists",  icon: "list"       as const, route: "/playlists" },
-                { label: "Favoritos",  icon: "heart"      as const, route: "/favorites" },
-                { label: "Historial",  icon: "clock"      as const, route: "/historial" },
-              ].map((item) => (
-                <Pressable
-                  key={item.label}
-                  style={({ pressed }) => [
-                    styles.libraryCard,
-                    { backgroundColor: "#151A23", opacity: pressed ? 0.7 : 1 },
-                  ]}
-                  onPress={() => router.push(item.route as never)}
-                >
-                  <View style={styles.libraryIconWrap}>
-                    <Feather name={item.icon} size={22} color={colors.primary} />
-                  </View>
-                  <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
-                    {item.label}
-                  </Text>
-                </Pressable>
-              ))}
+                { label: "Carpetas",    icon: "folder"     as const, route: "/carpetas"    },
+                { label: "Playlists",   icon: "list"       as const, route: "/playlists"   },
+                { label: "Favoritos",   icon: "heart"      as const, route: "/favorites"   },
+                { label: "Historial",   icon: "clock"      as const, route: "/historial"   },
+                { label: "Creaciones",  icon: "layers"     as const, route: "/creaciones"  },
+              ].map((item, idx, arr) => {
+                const isLastOdd = idx === arr.length - 1 && arr.length % 2 !== 0;
+                return (
+                  <Pressable
+                    key={item.label}
+                    style={({ pressed }) => [
+                      styles.libraryCard,
+                      isLastOdd && styles.libraryCardFull,
+                      { backgroundColor: "#151A23", opacity: pressed ? 0.7 : 1 },
+                    ]}
+                    onPress={() => router.push(item.route as never)}
+                  >
+                    <View style={styles.libraryIconWrap}>
+                      <Feather name={item.icon} size={22} color={colors.primary} />
+                    </View>
+                    <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
           </View>
         )}
@@ -468,6 +473,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     alignItems: "center",
     gap: 7,
+  },
+  libraryCardFull: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+    paddingVertical: 12,
   },
   libraryIconWrap: {
     width: 34,
