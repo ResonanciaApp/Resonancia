@@ -61,12 +61,12 @@ export function MixerPanel() {
       {isIOS ? (
         <BlurView intensity={80} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 18 }]} />
       ) : Platform.OS === "web" ? (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(28,26,24,0.94)", borderRadius: 18 }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(6,10,24,0.94)", borderRadius: 18 }]} />
       ) : (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card, borderRadius: 18 }]} />
       )}
       <LinearGradient
-        colors={["rgba(182,149,95,0.08)", "rgba(60,36,21,0.4)"]}
+        colors={["rgba(14,26,42,0.06)", "rgba(6,10,15,0.35)"]}
         style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
       />
       <View style={styles.border} />

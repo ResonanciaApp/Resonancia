@@ -51,7 +51,7 @@ type SaveMode = "new" | "update";
 const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
-const DARK_GRADIENT = ["#1C150F", "#080503"] as const;
+const DARK_GRADIENT = ["#0C1828", "#060A0F"] as const;
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
 function TrackThumb({ sound }: { sound: MixSound }) {
