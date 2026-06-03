@@ -135,9 +135,9 @@ function VozCard({
     <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
       {/* Top row: badge + date + delete */}
       <View style={styles.topRow}>
-        <View style={[styles.badge, { backgroundColor: "#C69B4F22", borderColor: "#C69B4F55" }]}>
-          <Feather name="mic" size={9} color="#C69B4F" style={{ marginRight: 3 }} />
-          <Text style={[styles.badgeText, { color: "#C69B4F" }]}>Voz Interior</Text>
+        <View style={[styles.badge, { backgroundColor: "#98825A22", borderColor: "#98825A55" }]}>
+          <Feather name="mic" size={9} color="#98825A" style={{ marginRight: 3 }} />
+          <Text style={[styles.badgeText, { color: "#98825A" }]}>Voz Interior</Text>
         </View>
         <Text style={[styles.dateText, { color: colors.mutedForeground }]}>{formatDate(item.createdAt)}</Text>
         <Pressable onPress={confirmRemove} hitSlop={10} style={styles.deleteBtn}>

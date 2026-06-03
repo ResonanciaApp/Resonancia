@@ -14,7 +14,7 @@ import { type VozEntry, useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 
 const BAR_COUNT = 7;
-const ACCENT = "#C69B4F";
+const ACCENT = "#98825A";
 const PINK = "#D4709A";
 const GRADIENT: [string, string] = ["#241C0C", "#141008"];
 
