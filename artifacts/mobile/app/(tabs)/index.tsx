@@ -423,7 +423,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   catCard: {
-    width: (width - GRID_PAD * 2 - 10) / 2,
+    flexBasis: "40%",
+    flexGrow: 1,
+    minWidth: 140,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
