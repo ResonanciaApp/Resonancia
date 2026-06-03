@@ -188,9 +188,6 @@ export default function ExploreScreen() {
                     <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
                       {lastSession.title}
                     </Text>
-                    <Text style={[styles.continueSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {lastSession.categoryLabel} · {lastSession.durationLabel}
-                    </Text>
                     {lastSessionProgress > 0 && (
                       <View style={[styles.continueProgressTrack, { backgroundColor: "rgba(182,149,95,0.2)" }]}>
                         <View
