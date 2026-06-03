@@ -9,7 +9,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -61,7 +60,6 @@ export default function MeditacionesGuiadasScreen() {
   const featuredGuides = getFeaturedGuides();
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
 
   useEffect(() => {
@@ -88,14 +86,8 @@ export default function MeditacionesGuiadasScreen() {
         list = list.filter((s) => (s as Session & { meditationTag?: string }).meditationTag === selectedTag);
       }
     }
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (s) => s.title.toLowerCase().includes(q) || s.subtitle.toLowerCase().includes(q)
-      );
-    }
     return list;
-  }, [selectedTag, query]);
+  }, [selectedTag]);
 
   // Count per tag
   const countByTag = useMemo(() => {
@@ -132,7 +124,6 @@ export default function MeditacionesGuiadasScreen() {
             onPress={() => {
               if (selectedTag) {
                 setSelectedTag(null);
-                setQuery("");
               } else {
                 router.back();
               }
@@ -240,33 +231,13 @@ export default function MeditacionesGuiadasScreen() {
         {/* ── SESSIONS LIST view ── */}
         {selectedTag && (
           <>
-            {/* Search bar */}
-            <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: "#0B0612", borderColor: "transparent", borderWidth: 0 }]}>
-                <Feather name="search" size={16} color="rgba(200,180,224,0.5)" style={{ marginRight: 8 }} />
-                <TextInput
-                  value={query}
-                  onChangeText={setQuery}
-                  placeholder="Buscar..."
-                  placeholderTextColor="rgba(200,180,224,0.45)"
-                  style={[styles.searchInput, { color: colors.foreground }]}
-                  returnKeyType="search"
-                />
-                {query.length > 0 && (
-                  <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                    <Feather name="x" size={14} color="#C8B4E0" />
-                  </Pressable>
-                )}
-              </View>
-            </View>
-
             {/* Sessions */}
             <View style={{ paddingHorizontal: H_PAD }}>
               {filteredSessions.length === 0 ? (
                 <View style={styles.emptyWrap}>
                   <Feather name="search" size={32} color="#C8B4E0" style={{ marginBottom: 12 }} />
                   <Text style={[styles.emptyText, { color: "#C8B4E0" }]}>
-                    Sin resultados{query ? ` para "${query}"` : ""}
+                    Sin resultados
                   </Text>
                 </View>
               ) : (

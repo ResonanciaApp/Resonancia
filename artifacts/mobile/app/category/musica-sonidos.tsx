@@ -83,7 +83,6 @@ export default function MusicaSonidosScreen() {
   const featuredArtists = getFeaturedArtists();
 
   const [activeTab, setActiveTab] = useState<Tab>("Todos");
-  const [query, setQuery] = useState("");
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -94,17 +93,8 @@ export default function MusicaSonidosScreen() {
     if (activeTab !== "Todos") {
       list = list.filter((s) => s.soundTag === activeTab);
     }
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (s) =>
-          s.title.toLowerCase().includes(q) ||
-          s.subtitle.toLowerCase().includes(q) ||
-          (s.soundTag ?? "").toLowerCase().includes(q)
-      );
-    }
     return list;
-  }, [activeTab, query]);
+  }, [activeTab]);
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;
@@ -180,31 +170,6 @@ export default function MusicaSonidosScreen() {
           </Text>
         </View>
 
-        {/* Search bar */}
-        <View style={[styles.searchWrap, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-          <View
-            style={[
-              styles.searchBar,
-              { backgroundColor: "#111A0D", borderColor: "transparent", borderWidth: 0 },
-            ]}
-          >
-            <Feather name="search" size={16} color="rgba(125,200,125,0.5)" style={{ marginRight: 8 }} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Buscar..."
-              placeholderTextColor="rgba(125,200,125,0.45)"
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color="#B8D4B8" />
-              </Pressable>
-            )}
-          </View>
-        </View>
-
         {/* Filter Tabs */}
         <ScrollView
           horizontal
@@ -246,7 +211,7 @@ export default function MusicaSonidosScreen() {
             <View style={styles.emptyWrap}>
               <Feather name="search" size={32} color="#B8D4B8" style={{ marginBottom: 12 }} />
               <Text style={[styles.emptyText, { color: "#B8D4B8" }]}>
-                Sin resultados{query ? ` para "${query}"` : ""}
+                Sin resultados
               </Text>
             </View>
           ) : (

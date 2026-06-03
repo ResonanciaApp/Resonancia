@@ -9,7 +9,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -50,7 +49,6 @@ export default function SonidosAncestalesScreen() {
   const insets = useSafeAreaInsets();
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
-  const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
 
   useEffect(() => {
@@ -69,14 +67,8 @@ export default function SonidosAncestalesScreen() {
   const filteredSessions = useMemo(() => {
     let list = ANCESTRAL_SESSIONS;
     if (selectedTag) list = list.filter((s) => s.ancestralTag === selectedTag);
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (s) => s.title.toLowerCase().includes(q) || s.subtitle.toLowerCase().includes(q)
-      );
-    }
     return list;
-  }, [selectedTag, query]);
+  }, [selectedTag]);
 
   const countByTag = useMemo(() => {
     const map: Record<string, number> = {};
@@ -105,7 +97,6 @@ export default function SonidosAncestalesScreen() {
             onPress={() => {
               if (selectedTag) {
                 setSelectedTag(null);
-                setQuery("");
               } else {
                 router.back();
               }
@@ -195,36 +186,12 @@ export default function SonidosAncestalesScreen() {
         {/* ── SESSIONS LIST ── */}
         {selectedTag && (
           <>
-            <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View
-                style={[
-                  styles.searchBar,
-                  { backgroundColor: "#130D06", borderColor: "transparent", borderWidth: 0 },
-                ]}
-              >
-                <Feather name="search" size={16} color="rgba(198,155,79,0.5)" style={{ marginRight: 8 }} />
-                <TextInput
-                  value={query}
-                  onChangeText={setQuery}
-                  placeholder="Buscar..."
-                  placeholderTextColor="rgba(198,155,79,0.45)"
-                  style={[styles.searchInput, { color: colors.foreground }]}
-                  returnKeyType="search"
-                />
-                {query.length > 0 && (
-                  <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                    <Feather name="x" size={14} color="#E8C87A" />
-                  </Pressable>
-                )}
-              </View>
-            </View>
-
             <View style={{ paddingHorizontal: H_PAD }}>
               {filteredSessions.length === 0 ? (
                 <View style={styles.emptyWrap}>
                   <Feather name="search" size={32} color="#E8C87A" style={{ marginBottom: 12 }} />
                   <Text style={[styles.emptyText, { color: "#E8C87A" }]}>
-                    Sin resultados{query ? ` para "${query}"` : ""}
+                    Sin resultados
                   </Text>
                 </View>
               ) : (
