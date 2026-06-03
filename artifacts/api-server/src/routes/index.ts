@@ -8,6 +8,7 @@ import dmRouter from "./dm";
 import storageRouter from "./storage";
 import pushRouter from "./push";
 import mixesRouter from "./mixes";
+import activityRouter from "./activity";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use(dmRouter);
 router.use(storageRouter);
 router.use(pushRouter);
 router.use(mixesRouter);
+router.use(activityRouter);
 
 export default router;

@@ -21,6 +21,8 @@ import {
   registerSessionStopper,
   stopMixPlayback,
 } from "@/context/audioBridge";
+import { useAuth } from "@/context/AuthContext";
+import { syncActivity } from "@/lib/cloudSync";
 
 export interface HistoryEntry {
   sessionId: string;
@@ -87,6 +89,8 @@ const FAVORITES_KEY = "@resonance_favorites";
 const HISTORY_KEY = "@resonance_history";
 const SESSION_PROGRESS_KEY = "@resonance_session_progress";
 const STATS_KEY = "@resonance_stats";
+/** Marca de que este dispositivo ya hizo la sincronización inicial con la nube */
+const CLOUD_SYNCED_KEY = "@resonance_cloud_synced";
 const HISTORY_LIMIT = 50;
 /** Keep stat events for this many days (older ones are pruned on load) */
 const STATS_RETENTION_DAYS = 180;
@@ -128,6 +132,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [sessionProgress, setSessionProgress] = useState<Record<string, number>>({});
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
   const defaultSleepMinutesRef = useRef<number | null>(null);
+
+  // ── Sincronización con la nube (offline-first) ──────────────────────────────
+  const { isSignedIn } = useAuth();
+  /** True una vez que la actividad local terminó de hidratar desde AsyncStorage */
+  const [localLoaded, setLocalLoaded] = useState(false);
+  /** Evita re-sincronizar en cada render mientras dura la sesión de la app */
+  const syncedRef = useRef(false);
 
   /** Last persisted progress per session id — to throttle AsyncStorage writes */
   const lastSavedProgressRef = useRef<Record<string, number>>({});
@@ -192,49 +203,119 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   ambientVolumeRef.current = ambientVolume;
 
   useEffect(() => {
-    AsyncStorage.getItem(FAVORITES_KEY).then((val) => {
-      if (val) setFavorites(JSON.parse(val));
-    });
-    AsyncStorage.getItem(HISTORY_KEY).then((val) => {
-      if (!val) return;
-      const parsed: HistoryEntry[] = JSON.parse(val);
-      const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
-      const filtered = parsed.filter((e) => new Date(e.playedAt).getTime() > cutoff);
-      if (filtered.length !== parsed.length) {
-        AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(filtered));
+    let cancelled = false;
+    async function hydrate() {
+      await Promise.all([
+        AsyncStorage.getItem(FAVORITES_KEY).then((val) => {
+          if (val && !cancelled) setFavorites(JSON.parse(val));
+        }),
+        AsyncStorage.getItem(HISTORY_KEY).then((val) => {
+          if (!val || cancelled) return;
+          const parsed: HistoryEntry[] = JSON.parse(val);
+          const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+          const filtered = parsed.filter((e) => new Date(e.playedAt).getTime() > cutoff);
+          if (filtered.length !== parsed.length) {
+            AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(filtered));
+          }
+          setHistory(filtered);
+        }),
+        AsyncStorage.getItem(SESSION_PROGRESS_KEY).then((val) => {
+          if (!val || cancelled) return;
+          try {
+            const parsed: Record<string, number> = JSON.parse(val);
+            sessionProgressRef.current = parsed;
+            lastSavedProgressRef.current = { ...parsed };
+            setSessionProgress(parsed);
+          } catch (_) {}
+        }),
+        AsyncStorage.getItem("@resonance_settings").then((val) => {
+          if (!val || cancelled) return;
+          try {
+            const { defaultSleepMinutes } = JSON.parse(val);
+            if (typeof defaultSleepMinutes === "number" || defaultSleepMinutes === null) {
+              defaultSleepMinutesRef.current = defaultSleepMinutes ?? null;
+            }
+          } catch (_) {}
+        }),
+        AsyncStorage.getItem(STATS_KEY).then((val) => {
+          if (!val || cancelled) return;
+          try {
+            const parsed: StatEvent[] = JSON.parse(val);
+            const cutoff = Date.now() - STATS_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+            const filtered = parsed.filter((e) => new Date(e.playedAt).getTime() > cutoff);
+            if (filtered.length !== parsed.length) {
+              AsyncStorage.setItem(STATS_KEY, JSON.stringify(filtered)).catch(() => {});
+            }
+            setStatEvents(filtered);
+          } catch (_) {}
+        }),
+      ]);
+      if (!cancelled) setLocalLoaded(true);
+    }
+    hydrate();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // ── Merge bidireccional con la nube cuando hay cuenta ───────────────────────
+  // Corre una vez por sesión de la app: empuja lo local y trae lo del server,
+  // de modo que estadísticas, favoritos y progreso sobrevivan a reinstalar la
+  // app o cambiar de dispositivo. Si no hay cuenta, todo sigue siendo local.
+  useEffect(() => {
+    if (!isSignedIn) {
+      // Al cerrar sesión permitimos re-sincronizar en el próximo login y, por
+      // seguridad, limpiamos la marca para que el próximo login haga la unión
+      // de recuperación (no un reemplazo autoritativo con datos ajenos).
+      syncedRef.current = false;
+      AsyncStorage.removeItem(CLOUD_SYNCED_KEY).catch(() => {});
+      return;
+    }
+    if (!localLoaded || syncedRef.current) return;
+    syncedRef.current = true;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const firstSync = (await AsyncStorage.getItem(CLOUD_SYNCED_KEY)) === null;
+        const merged = await syncActivity(
+          {
+            statEvents,
+            favorites,
+            progress: sessionProgressRef.current,
+          },
+          { firstSync },
+        );
+        if (cancelled) return;
+
+        setStatEvents(merged.statEvents);
+        AsyncStorage.setItem(STATS_KEY, JSON.stringify(merged.statEvents)).catch(() => {});
+
+        setFavorites(merged.favorites);
+        AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(merged.favorites)).catch(() => {});
+
+        sessionProgressRef.current = merged.progress;
+        lastSavedProgressRef.current = { ...merged.progress };
+        setSessionProgress(merged.progress);
+        persistProgressMap(merged.progress);
+
+        // Marca: a partir de ahora lo local es autoritativo en este dispositivo.
+        AsyncStorage.setItem(CLOUD_SYNCED_KEY, "1").catch(() => {});
+      } catch {
+        // Reintentamos en el próximo arranque
+        if (!cancelled) syncedRef.current = false;
       }
-      setHistory(filtered);
-    });
-    AsyncStorage.getItem(SESSION_PROGRESS_KEY).then((val) => {
-      if (!val) return;
-      try {
-        const parsed: Record<string, number> = JSON.parse(val);
-        sessionProgressRef.current = parsed;
-        lastSavedProgressRef.current = { ...parsed };
-        setSessionProgress(parsed);
-      } catch (_) {}
-    });
-    AsyncStorage.getItem("@resonance_settings").then((val) => {
-      if (!val) return;
-      try {
-        const { defaultSleepMinutes } = JSON.parse(val);
-        if (typeof defaultSleepMinutes === "number" || defaultSleepMinutes === null) {
-          defaultSleepMinutesRef.current = defaultSleepMinutes ?? null;
-        }
-      } catch (_) {}
-    });
-    AsyncStorage.getItem(STATS_KEY).then((val) => {
-      if (!val) return;
-      try {
-        const parsed: StatEvent[] = JSON.parse(val);
-        const cutoff = Date.now() - STATS_RETENTION_DAYS * 24 * 60 * 60 * 1000;
-        const filtered = parsed.filter((e) => new Date(e.playedAt).getTime() > cutoff);
-        if (filtered.length !== parsed.length) {
-          AsyncStorage.setItem(STATS_KEY, JSON.stringify(filtered)).catch(() => {});
-        }
-        setStatEvents(filtered);
-      } catch (_) {}
-    });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSignedIn, localLoaded]);
+
+  /** Persist a specific progress map to AsyncStorage (fire-and-forget) */
+  const persistProgressMap = useCallback((map: Record<string, number>) => {
+    AsyncStorage.setItem(SESSION_PROGRESS_KEY, JSON.stringify(map)).catch(() => {});
   }, []);
 
   /** Persist current progress map to AsyncStorage (fire-and-forget) */

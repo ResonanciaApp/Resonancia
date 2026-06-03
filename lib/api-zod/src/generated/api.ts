@@ -602,3 +602,155 @@ export const UnregisterPushTokenBody = zod.object({
 })
 
 
+/**
+ * @summary Get the current user's playback events (for stats and history)
+ */
+export const GetMyPlaysQueryParams = zod.object({
+  "since": zod.date().optional()
+})
+
+export const getMyPlaysResponseEventsItemClientEventIdMax = 100;
+
+export const getMyPlaysResponseEventsItemSessionIdMax = 100;
+
+export const getMyPlaysResponseEventsItemCategoryIdMax = 100;
+
+export const getMyPlaysResponseEventsItemCategoryLabelMax = 200;
+
+export const getMyPlaysResponseEventsItemContentTypeMax = 100;
+
+export const getMyPlaysResponseEventsItemSourceMax = 100;
+
+export const getMyPlaysResponseEventsItemMinutesMin = 0;
+
+
+
+export const GetMyPlaysResponse = zod.object({
+  "events": zod.array(zod.object({
+  "clientEventId": zod.string().min(1).max(getMyPlaysResponseEventsItemClientEventIdMax),
+  "sessionId": zod.string().min(1).max(getMyPlaysResponseEventsItemSessionIdMax),
+  "categoryId": zod.string().min(1).max(getMyPlaysResponseEventsItemCategoryIdMax),
+  "categoryLabel": zod.string().min(1).max(getMyPlaysResponseEventsItemCategoryLabelMax),
+  "contentType": zod.string().max(getMyPlaysResponseEventsItemContentTypeMax).nullish(),
+  "source": zod.string().max(getMyPlaysResponseEventsItemSourceMax).nullish(),
+  "minutes": zod.number().min(getMyPlaysResponseEventsItemMinutesMin),
+  "completed": zod.boolean(),
+  "playedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Push (sync) playback events from the device
+ */
+export const pushMyPlaysBodyEventsItemClientEventIdMax = 100;
+
+export const pushMyPlaysBodyEventsItemSessionIdMax = 100;
+
+export const pushMyPlaysBodyEventsItemCategoryIdMax = 100;
+
+export const pushMyPlaysBodyEventsItemCategoryLabelMax = 200;
+
+export const pushMyPlaysBodyEventsItemContentTypeMax = 100;
+
+export const pushMyPlaysBodyEventsItemSourceMax = 100;
+
+export const pushMyPlaysBodyEventsItemMinutesMin = 0;
+
+export const pushMyPlaysBodyEventsMax = 600;
+
+
+
+export const PushMyPlaysBody = zod.object({
+  "events": zod.array(zod.object({
+  "clientEventId": zod.string().min(1).max(pushMyPlaysBodyEventsItemClientEventIdMax),
+  "sessionId": zod.string().min(1).max(pushMyPlaysBodyEventsItemSessionIdMax),
+  "categoryId": zod.string().min(1).max(pushMyPlaysBodyEventsItemCategoryIdMax),
+  "categoryLabel": zod.string().min(1).max(pushMyPlaysBodyEventsItemCategoryLabelMax),
+  "contentType": zod.string().max(pushMyPlaysBodyEventsItemContentTypeMax).nullish(),
+  "source": zod.string().max(pushMyPlaysBodyEventsItemSourceMax).nullish(),
+  "minutes": zod.number().min(pushMyPlaysBodyEventsItemMinutesMin),
+  "completed": zod.boolean(),
+  "playedAt": zod.coerce.date()
+})).max(pushMyPlaysBodyEventsMax)
+})
+
+
+/**
+ * @summary Get the current user's favorite session ids
+ */
+export const GetMyFavoritesResponse = zod.object({
+  "sessionIds": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Replace the current user's favorites with the provided list
+ */
+export const setMyFavoritesBodySessionIdsItemMax = 100;
+
+export const setMyFavoritesBodySessionIdsMax = 1000;
+
+
+
+export const SetMyFavoritesBody = zod.object({
+  "sessionIds": zod.array(zod.string().min(1).max(setMyFavoritesBodySessionIdsItemMax)).max(setMyFavoritesBodySessionIdsMax)
+})
+
+export const SetMyFavoritesResponse = zod.object({
+  "sessionIds": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Get the current user's per-session progress
+ */
+export const getMyProgressResponseItemsItemSessionIdMax = 100;
+
+export const getMyProgressResponseItemsItemProgressMin = 0;
+export const getMyProgressResponseItemsItemProgressMax = 1;
+
+
+
+export const GetMyProgressResponse = zod.object({
+  "items": zod.array(zod.object({
+  "sessionId": zod.string().min(1).max(getMyProgressResponseItemsItemSessionIdMax),
+  "progress": zod.number().min(getMyProgressResponseItemsItemProgressMin).max(getMyProgressResponseItemsItemProgressMax)
+}))
+})
+
+
+/**
+ * @summary Upsert per-session progress (merges with existing)
+ */
+export const setMyProgressBodyItemsItemSessionIdMax = 100;
+
+export const setMyProgressBodyItemsItemProgressMin = 0;
+export const setMyProgressBodyItemsItemProgressMax = 1;
+
+export const setMyProgressBodyItemsMax = 1000;
+
+
+
+export const SetMyProgressBody = zod.object({
+  "items": zod.array(zod.object({
+  "sessionId": zod.string().min(1).max(setMyProgressBodyItemsItemSessionIdMax),
+  "progress": zod.number().min(setMyProgressBodyItemsItemProgressMin).max(setMyProgressBodyItemsItemProgressMax)
+})).max(setMyProgressBodyItemsMax)
+})
+
+export const setMyProgressResponseItemsItemSessionIdMax = 100;
+
+export const setMyProgressResponseItemsItemProgressMin = 0;
+export const setMyProgressResponseItemsItemProgressMax = 1;
+
+
+
+export const SetMyProgressResponse = zod.object({
+  "items": zod.array(zod.object({
+  "sessionId": zod.string().min(1).max(setMyProgressResponseItemsItemSessionIdMax),
+  "progress": zod.number().min(setMyProgressResponseItemsItemProgressMin).max(setMyProgressResponseItemsItemProgressMax)
+}))
+})
+
+

@@ -26,10 +26,13 @@ import type {
   DirectMessage,
   ErrorEnvelope,
   ErrorResponse,
+  FavoritesInput,
+  FavoritesList,
   FriendRequest,
   FriendRequestInput,
   GetDirectMessagesParams,
   GetMessagesParams,
+  GetMyPlaysParams,
   GetSharedMixesParams,
   HealthStatus,
   MessagesPage,
@@ -37,6 +40,10 @@ import type {
   MixCommentInput,
   MixCommentsPage,
   Notification,
+  PlaybackEventList,
+  ProgressInput,
+  ProgressList,
+  PushPlaysBody,
   RegisterPushTokenBody,
   RequestUploadUrlBody,
   RequestUploadUrlResponse,
@@ -2673,5 +2680,456 @@ export const useUnregisterPushToken = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getUnregisterPushTokenMutationOptions(options));
+    }
+
+export const getGetMyPlaysUrl = (params?: GetMyPlaysParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/plays?${stringifiedParams}` : `/api/me/plays`
+}
+
+/**
+ * @summary Get the current user's playback events (for stats and history)
+ */
+export const getMyPlays = async (params?: GetMyPlaysParams, options?: RequestInit): Promise<PlaybackEventList> => {
+
+  return customFetch<PlaybackEventList>(getGetMyPlaysUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyPlaysQueryKey = (params?: GetMyPlaysParams,) => {
+    return [
+    `/api/me/plays`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetMyPlaysQueryOptions = <TData = Awaited<ReturnType<typeof getMyPlays>>, TError = ErrorType<ErrorResponse>>(params?: GetMyPlaysParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyPlays>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyPlaysQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPlays>>> = ({ signal }) => getMyPlays(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyPlays>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyPlaysQueryResult = NonNullable<Awaited<ReturnType<typeof getMyPlays>>>
+export type GetMyPlaysQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get the current user's playback events (for stats and history)
+ */
+
+export function useGetMyPlays<TData = Awaited<ReturnType<typeof getMyPlays>>, TError = ErrorType<ErrorResponse>>(
+ params?: GetMyPlaysParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyPlays>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyPlaysQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getPushMyPlaysUrl = () => {
+
+
+
+
+  return `/api/me/plays`
+}
+
+/**
+ * @summary Push (sync) playback events from the device
+ */
+export const pushMyPlays = async (pushPlaysBody: PushPlaysBody, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getPushMyPlaysUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      pushPlaysBody,)
+  }
+);}
+
+
+
+
+export const getPushMyPlaysMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pushMyPlays>>, TError,{data: BodyType<PushPlaysBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof pushMyPlays>>, TError,{data: BodyType<PushPlaysBody>}, TContext> => {
+
+const mutationKey = ['pushMyPlays'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof pushMyPlays>>, {data: BodyType<PushPlaysBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  pushMyPlays(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PushMyPlaysMutationResult = NonNullable<Awaited<ReturnType<typeof pushMyPlays>>>
+    export type PushMyPlaysMutationBody = BodyType<PushPlaysBody>
+    export type PushMyPlaysMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Push (sync) playback events from the device
+ */
+export const usePushMyPlays = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pushMyPlays>>, TError,{data: BodyType<PushPlaysBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof pushMyPlays>>,
+        TError,
+        {data: BodyType<PushPlaysBody>},
+        TContext
+      > => {
+      return useMutation(getPushMyPlaysMutationOptions(options));
+    }
+
+export const getGetMyFavoritesUrl = () => {
+
+
+
+
+  return `/api/me/favorites`
+}
+
+/**
+ * @summary Get the current user's favorite session ids
+ */
+export const getMyFavorites = async ( options?: RequestInit): Promise<FavoritesList> => {
+
+  return customFetch<FavoritesList>(getGetMyFavoritesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyFavoritesQueryKey = () => {
+    return [
+    `/api/me/favorites`
+    ] as const;
+    }
+
+
+export const getGetMyFavoritesQueryOptions = <TData = Awaited<ReturnType<typeof getMyFavorites>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyFavorites>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyFavoritesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFavorites>>> = ({ signal }) => getMyFavorites({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyFavorites>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyFavoritesQueryResult = NonNullable<Awaited<ReturnType<typeof getMyFavorites>>>
+export type GetMyFavoritesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get the current user's favorite session ids
+ */
+
+export function useGetMyFavorites<TData = Awaited<ReturnType<typeof getMyFavorites>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyFavorites>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyFavoritesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSetMyFavoritesUrl = () => {
+
+
+
+
+  return `/api/me/favorites`
+}
+
+/**
+ * @summary Replace the current user's favorites with the provided list
+ */
+export const setMyFavorites = async (favoritesInput: FavoritesInput, options?: RequestInit): Promise<FavoritesList> => {
+
+  return customFetch<FavoritesList>(getSetMyFavoritesUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      favoritesInput,)
+  }
+);}
+
+
+
+
+export const getSetMyFavoritesMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setMyFavorites>>, TError,{data: BodyType<FavoritesInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setMyFavorites>>, TError,{data: BodyType<FavoritesInput>}, TContext> => {
+
+const mutationKey = ['setMyFavorites'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setMyFavorites>>, {data: BodyType<FavoritesInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  setMyFavorites(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetMyFavoritesMutationResult = NonNullable<Awaited<ReturnType<typeof setMyFavorites>>>
+    export type SetMyFavoritesMutationBody = BodyType<FavoritesInput>
+    export type SetMyFavoritesMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Replace the current user's favorites with the provided list
+ */
+export const useSetMyFavorites = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setMyFavorites>>, TError,{data: BodyType<FavoritesInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setMyFavorites>>,
+        TError,
+        {data: BodyType<FavoritesInput>},
+        TContext
+      > => {
+      return useMutation(getSetMyFavoritesMutationOptions(options));
+    }
+
+export const getGetMyProgressUrl = () => {
+
+
+
+
+  return `/api/me/progress`
+}
+
+/**
+ * @summary Get the current user's per-session progress
+ */
+export const getMyProgress = async ( options?: RequestInit): Promise<ProgressList> => {
+
+  return customFetch<ProgressList>(getGetMyProgressUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyProgressQueryKey = () => {
+    return [
+    `/api/me/progress`
+    ] as const;
+    }
+
+
+export const getGetMyProgressQueryOptions = <TData = Awaited<ReturnType<typeof getMyProgress>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyProgress>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyProgressQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyProgress>>> = ({ signal }) => getMyProgress({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyProgress>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyProgressQueryResult = NonNullable<Awaited<ReturnType<typeof getMyProgress>>>
+export type GetMyProgressQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get the current user's per-session progress
+ */
+
+export function useGetMyProgress<TData = Awaited<ReturnType<typeof getMyProgress>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyProgress>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyProgressQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSetMyProgressUrl = () => {
+
+
+
+
+  return `/api/me/progress`
+}
+
+/**
+ * @summary Upsert per-session progress (merges with existing)
+ */
+export const setMyProgress = async (progressInput: ProgressInput, options?: RequestInit): Promise<ProgressList> => {
+
+  return customFetch<ProgressList>(getSetMyProgressUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      progressInput,)
+  }
+);}
+
+
+
+
+export const getSetMyProgressMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setMyProgress>>, TError,{data: BodyType<ProgressInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setMyProgress>>, TError,{data: BodyType<ProgressInput>}, TContext> => {
+
+const mutationKey = ['setMyProgress'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setMyProgress>>, {data: BodyType<ProgressInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  setMyProgress(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetMyProgressMutationResult = NonNullable<Awaited<ReturnType<typeof setMyProgress>>>
+    export type SetMyProgressMutationBody = BodyType<ProgressInput>
+    export type SetMyProgressMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Upsert per-session progress (merges with existing)
+ */
+export const useSetMyProgress = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setMyProgress>>, TError,{data: BodyType<ProgressInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setMyProgress>>,
+        TError,
+        {data: BodyType<ProgressInput>},
+        TContext
+      > => {
+      return useMutation(getSetMyProgressMutationOptions(options));
     }
 

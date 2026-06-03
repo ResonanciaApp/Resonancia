@@ -16,3 +16,4 @@
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
 - [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
+- [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only

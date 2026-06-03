@@ -5,6 +5,77 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface PlaybackEvent {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  clientEventId: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  sessionId: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  categoryId: string;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  categoryLabel: string;
+  /** @maxLength 100 */
+  contentType?: string | null;
+  /** @maxLength 100 */
+  source?: string | null;
+  /** @minimum 0 */
+  minutes: number;
+  completed: boolean;
+  playedAt: string;
+}
+
+export interface PlaybackEventList {
+  events: PlaybackEvent[];
+}
+
+export interface PushPlaysBody {
+  /** @maxItems 600 */
+  events: PlaybackEvent[];
+}
+
+export interface FavoritesList {
+  sessionIds: string[];
+}
+
+export interface FavoritesInput {
+  /** @maxItems 1000 */
+  sessionIds: string[];
+}
+
+export interface ProgressItem {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  sessionId: string;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  progress: number;
+}
+
+export interface ProgressList {
+  items: ProgressItem[];
+}
+
+export interface ProgressInput {
+  /** @maxItems 1000 */
+  items: ProgressItem[];
+}
+
 export type RegisterPushTokenBodyPlatform = typeof RegisterPushTokenBodyPlatform[keyof typeof RegisterPushTokenBodyPlatform];
 
 
@@ -377,5 +448,9 @@ before?: string;
  * @maximum 100
  */
 limit?: number;
+};
+
+export type GetMyPlaysParams = {
+since?: string;
 };
 

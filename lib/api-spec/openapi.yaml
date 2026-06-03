@@ -813,8 +813,254 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /me/plays:
+    get:
+      tags: [users]
+      operationId: getMyPlays
+      summary: Get the current user's playback events (for stats and history)
+      parameters:
+        - name: since
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: List of playback events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaybackEventList"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      tags: [users]
+      operationId: pushMyPlays
+      summary: Push (sync) playback events from the device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PushPlaysBody"
+      responses:
+        "204":
+          description: Synced
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /me/favorites:
+    get:
+      tags: [users]
+      operationId: getMyFavorites
+      summary: Get the current user's favorite session ids
+      responses:
+        "200":
+          description: Favorite session ids
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FavoritesList"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags: [users]
+      operationId: setMyFavorites
+      summary: Replace the current user's favorites with the provided list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FavoritesInput"
+      responses:
+        "200":
+          description: Updated favorite session ids
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FavoritesList"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /me/progress:
+    get:
+      tags: [users]
+      operationId: getMyProgress
+      summary: Get the current user's per-session progress
+      responses:
+        "200":
+          description: Per-session progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressList"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags: [users]
+      operationId: setMyProgress
+      summary: Upsert per-session progress (merges with existing)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProgressInput"
+      responses:
+        "200":
+          description: Updated per-session progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressList"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    PlaybackEvent:
+      type: object
+      properties:
+        clientEventId:
+          type: string
+          minLength: 1
+          maxLength: 100
+        sessionId:
+          type: string
+          minLength: 1
+          maxLength: 100
+        categoryId:
+          type: string
+          minLength: 1
+          maxLength: 100
+        categoryLabel:
+          type: string
+          minLength: 1
+          maxLength: 200
+        contentType:
+          type: string
+          maxLength: 100
+          nullable: true
+        source:
+          type: string
+          maxLength: 100
+          nullable: true
+        minutes:
+          type: number
+          minimum: 0
+        completed:
+          type: boolean
+        playedAt:
+          type: string
+          format: date-time
+      required:
+        [clientEventId, sessionId, categoryId, categoryLabel, minutes, completed, playedAt]
+    PlaybackEventList:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlaybackEvent"
+      required: [events]
+    PushPlaysBody:
+      type: object
+      properties:
+        events:
+          type: array
+          maxItems: 600
+          items:
+            $ref: "#/components/schemas/PlaybackEvent"
+      required: [events]
+    FavoritesList:
+      type: object
+      properties:
+        sessionIds:
+          type: array
+          items:
+            type: string
+      required: [sessionIds]
+    FavoritesInput:
+      type: object
+      properties:
+        sessionIds:
+          type: array
+          maxItems: 1000
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+      required: [sessionIds]
+    ProgressItem:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          minLength: 1
+          maxLength: 100
+        progress:
+          type: number
+          minimum: 0
+          maximum: 1
+      required: [sessionId, progress]
+    ProgressList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProgressItem"
+      required: [items]
+    ProgressInput:
+      type: object
+      properties:
+        items:
+          type: array
+          maxItems: 1000
+          items:
+            $ref: "#/components/schemas/ProgressItem"
+      required: [items]
     RegisterPushTokenBody:
       type: object
       properties:
