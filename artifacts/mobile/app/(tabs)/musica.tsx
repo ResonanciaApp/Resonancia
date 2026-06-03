@@ -208,6 +208,9 @@ export default function MiMusicaScreen() {
             </ScrollView>
           </View>
 
+          {/* Separador sutil entre tabs y contenido */}
+          <View style={styles.separator} />
+
           {/* ── Biblioteca de sonidos (con títulos por categoría, filtrada por tab) ── */}
           {SOUND_CATEGORIES.filter(
             (cat) => activeTab === "todos" || activeTab === cat.id,
@@ -246,7 +249,7 @@ const styles = StyleSheet.create({
 
   // Secciones
   section: { marginBottom: 34 },
-  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
 
   // Tabs de categorías de sonido (reducidos ~25%)
   tabsScroll: { marginBottom: 12, marginHorizontal: -20 },
@@ -283,10 +286,18 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
   },
-  // Grilla de sonidos
-  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 28 },
+  // Separador sutil
+  separator: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    marginTop: 8,
+    marginBottom: 24,
+  },
+
+  // Grilla de sonidos — 4 columnas uniformes
+  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 9, rowGap: 24 },
   soundCard: {
-    width: "24%",
+    width: "23%",
   },
   cardImageWrap: {
     width: "100%",
