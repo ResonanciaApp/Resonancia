@@ -20,9 +20,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { SESSIONS, type AncestralTag } from "@/data/sessions";
+import { SESSIONS, type AncestralTag, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { VOICE_MAP } from "@/config/audio-map";
@@ -97,6 +98,7 @@ export default function SonidosAncestalesScreen() {
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
+  const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
   // Tab indicator animation
   const indicatorAnim = useRef(new Animated.Value(0)).current;
@@ -344,6 +346,7 @@ export default function SonidosAncestalesScreen() {
                     isPremium={isPremium}
                     colors={colors}
                     style={{ marginHorizontal: H_PAD, marginTop: 10, marginBottom: 24 }}
+                    onActionsPress={() => setActionsSession(recentlyPlayed)}
                   />
                 ) : (
                   <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "#151A23" }]}>
@@ -364,14 +367,15 @@ export default function SonidosAncestalesScreen() {
                     <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
                   </View>
                 ) : (
-                  filteredSessions.map((session) => (
+                  filteredSessions.map((s) => (
                     <SessionRow
-                      key={session.id}
-                      session={session}
-                      rating={ratings[session.id]}
+                      key={s.id}
+                      session={s}
+                      rating={ratings[s.id]}
                       isPremium={isPremium}
                       colors={colors}
                       style={{ marginHorizontal: H_PAD }}
+                      onActionsPress={() => setActionsSession(s)}
                     />
                   ))
                 )}
@@ -396,6 +400,13 @@ export default function SonidosAncestalesScreen() {
           </>
         )}
       </ScrollView>
+
+      {/* Session actions sheet */}
+      <SessionActionsSheet
+        session={actionsSession}
+        visible={actionsSession !== null}
+        onClose={() => setActionsSession(null)}
+      />
     </View>
   );
 }
@@ -406,14 +417,15 @@ export default function SonidosAncestalesScreen() {
 type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 
 type SessionRowProps = {
-  session: (typeof SESSIONS)[number];
+  session: Session;
   rating?: number;
   isPremium: boolean;
   colors: Colors;
   style?: object;
+  onActionsPress?: () => void;
 };
 
-function SessionRow({ session, rating, isPremium, colors, style }: SessionRowProps) {
+function SessionRow({ session, rating, isPremium, colors, style, onActionsPress }: SessionRowProps) {
   const locked = !!session.isPremium && !isPremium;
   const hasVoice = session.id in VOICE_MAP;
   const guide = session.guideId ? getGuideById(session.guideId) : null;
@@ -421,44 +433,58 @@ function SessionRow({ session, rating, isPremium, colors, style }: SessionRowPro
   const displayRating = rating ?? 4.7;
 
   return (
-    <Pressable
-      onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
-      style={({ pressed }) => [styles.sessionRow, style, { opacity: pressed ? 0.78 : 1 }]}
-    >
-      {/* Imagen cuadrada */}
-      <View style={styles.sessionImgWrap}>
-        <Image
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          source={session.image as any}
-          style={styles.sessionImg}
-          placeholder={BLUR_PLACEHOLDER}
-          transition={IMAGE_TRANSITION}
-        />
-        <View style={styles.sessionImgOverlay}>
-          <Feather name="activity" size={16} color="rgba(255,255,255,0.7)" />
+    <View style={[styles.sessionRow, style]}>
+      {/* Tap principal → abre sesión */}
+      <Pressable
+        onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
+        style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
+      >
+        {/* Imagen cuadrada */}
+        <View style={styles.sessionImgWrap}>
+          <Image
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            source={session.image as any}
+            style={styles.sessionImg}
+            placeholder={BLUR_PLACEHOLDER}
+            transition={IMAGE_TRANSITION}
+          />
+          <View style={styles.sessionImgOverlay}>
+            <Feather name="activity" size={16} color="rgba(255,255,255,0.7)" />
+          </View>
+          <PremiumBadge session={session} />
         </View>
-        <PremiumBadge session={session} />
-      </View>
 
-      {/* Contenido */}
-      <View style={styles.sessionContent}>
-        {/* Meta: rating · tipo · duración — todo en el mismo color */}
-        <View style={styles.sessionMeta}>
-          <Feather name="star" size={11} color={colors.mutedForeground} />
-          <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
-            {" "}{displayRating.toFixed(1)} · {hasVoice ? "Guiada" : "Sin voz"} · {session.durationLabel}
+        {/* Contenido */}
+        <View style={styles.sessionContent}>
+          {/* Meta */}
+          <View style={styles.sessionMeta}>
+            <Feather name="star" size={11} color={colors.mutedForeground} />
+            <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
+              {" "}{displayRating.toFixed(1)} · {hasVoice ? "Guiada" : "Sin voz"} · {session.durationLabel}
+            </Text>
+          </View>
+          {/* Título */}
+          <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
+            {session.title}
+          </Text>
+          {/* Autor */}
+          <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+            {author}
           </Text>
         </View>
-        {/* Título */}
-        <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
-          {session.title}
-        </Text>
-        {/* Autor */}
-        <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-          {author}
-        </Text>
-      </View>
-    </Pressable>
+      </Pressable>
+
+      {/* Botón 3 puntitos */}
+      {onActionsPress && (
+        <Pressable
+          onPress={onActionsPress}
+          hitSlop={10}
+          style={({ pressed }) => [styles.moreBtn, { opacity: pressed ? 0.5 : 1 }]}
+        >
+          <Feather name="more-vertical" size={20} color={colors.mutedForeground} />
+        </Pressable>
+      )}
+    </View>
   );
 }
 
@@ -548,9 +574,20 @@ const styles = StyleSheet.create({
   // Session row — sin línea divisora
   sessionRow: {
     flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  sessionRowInner: {
+    flex: 1,
+    flexDirection: "row",
     alignItems: "flex-start",
     gap: 14,
-    paddingVertical: 10,
+  },
+  moreBtn: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
   },
   sessionImgWrap: { width: 80, height: 80, borderRadius: 10, overflow: "hidden", position: "relative" },
   sessionImg: { width: 80, height: 80 },

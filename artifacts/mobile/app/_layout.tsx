@@ -27,6 +27,7 @@ import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
+import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { DrawerProvider } from "@/context/DrawerContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
@@ -241,6 +242,7 @@ export default function RootLayout() {
                     <UserProfileProvider>
                       <ProfileSync />
                       <IntencionProvider>
+                        <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
                           <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#0B0F14" }}>
                             <KeyboardProvider>
@@ -248,6 +250,7 @@ export default function RootLayout() {
                             </KeyboardProvider>
                           </GestureHandlerRootView>
                         </DiarioFavoritesProvider>
+                        </FoldersPlaylistsProvider>
                       </IntencionProvider>
                     </UserProfileProvider>
                     </MixerProvider>
