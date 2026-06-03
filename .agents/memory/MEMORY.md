@@ -16,6 +16,7 @@
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
 - [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
+- [Admin web panel auth](admin-web-auth.md) — resonancia-admin usa Clerk cookie same-origin (NO Bearer/setBaseUrl como mobile); gating real solo server requireRole("admin"), front es UX
 - [Creator approval flow](creator-approval-flow.md) — catálogo DB pending→published/rejected; admin solo vía ADMIN_CLERK_USER_IDS; no hay UI para nombrar creadores; valida metadata en server; Orval query option exige queryKey
 - [Cloud sync activity](cloud-sync-activity.md) — historial derivable de eventos (no entidad); firstSync solo se marca si recovered (lecturas OK) o local vacío pisa la nube; merge post-await con update funcional
 - [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only

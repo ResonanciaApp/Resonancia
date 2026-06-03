@@ -250,6 +250,7 @@ export type UserRoleUpdateRole = typeof UserRoleUpdateRole[keyof typeof UserRole
 export const UserRoleUpdateRole = {
   user: 'user',
   creator: 'creator',
+  admin: 'admin',
 } as const;
 
 export interface UserRoleUpdate {
@@ -715,6 +716,146 @@ export interface ReviewEditBody {
   isNew?: boolean;
 }
 
+export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];
+
+
+export const AdminUserRole = {
+  user: 'user',
+  creator: 'creator',
+  admin: 'admin',
+} as const;
+
+export interface AdminUser {
+  id: number;
+  username: string;
+  displayName: string;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+  role: AdminUserRole;
+  submissionCount: number;
+  createdAt: string;
+}
+
+export interface AdminUsersPage {
+  users: AdminUser[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface AdminTopSession {
+  sessionId: string;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  categoryLabel: string | null;
+  plays: number;
+  minutes: number;
+}
+
+export interface AdminCategoryStat {
+  categoryId: string;
+  categoryLabel: string;
+  plays: number;
+  minutes: number;
+}
+
+export interface AdminStats {
+  totalUsers: number;
+  totalCreators: number;
+  totalAdmins: number;
+  totalSessions: number;
+  publishedSessions: number;
+  pendingSubmissions: number;
+  totalPlays: number;
+  totalMinutes: number;
+  activeCreators: number;
+  topSessions: AdminTopSession[];
+  categoryBreakdown: AdminCategoryStat[];
+}
+
+export interface AdminCategoryInput {
+  /**
+     * @minLength 1
+     * @maxLength 60
+     * @pattern ^[a-z0-9-]+$
+     */
+  id: string;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  subtitle: string;
+  /**
+     * @minLength 1
+     * @maxLength 60
+     */
+  icon: string;
+  /** @maxLength 60 */
+  iconFamily?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  color: string;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  gradientStart: string;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  gradientEnd: string;
+  isPrimary?: boolean;
+  sortOrder?: number;
+}
+
+export interface AdminCategoryUpdate {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  title?: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  subtitle?: string;
+  /**
+     * @minLength 1
+     * @maxLength 60
+     */
+  icon?: string;
+  /** @maxLength 60 */
+  iconFamily?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  color?: string;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  gradientStart?: string;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  gradientEnd?: string;
+  isPrimary?: boolean;
+  sortOrder?: number;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };
@@ -765,5 +906,28 @@ export const GetPendingSubmissionsStatus = {
   pending: 'pending',
   published: 'published',
   rejected: 'rejected',
+} as const;
+
+export type GetAdminUsersParams = {
+q?: string;
+role?: GetAdminUsersRole;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+pageSize?: number;
+};
+
+export type GetAdminUsersRole = typeof GetAdminUsersRole[keyof typeof GetAdminUsersRole];
+
+
+export const GetAdminUsersRole = {
+  user: 'user',
+  creator: 'creator',
+  admin: 'admin',
 } as const;
 

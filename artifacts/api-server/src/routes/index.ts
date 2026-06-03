@@ -10,6 +10,7 @@ import pushRouter from "./push";
 import mixesRouter from "./mixes";
 import activityRouter from "./activity";
 import catalogRouter from "./catalog";
+import adminRouter from "./admin";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(pushRouter);
 router.use(mixesRouter);
 router.use(activityRouter);
 router.use(catalogRouter);
+router.use(adminRouter);
 
 export default router;

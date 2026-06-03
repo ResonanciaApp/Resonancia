@@ -20,6 +20,11 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminCategoryInput,
+  AdminCategoryUpdate,
+  AdminStats,
+  AdminUsersPage,
+  CatalogCategory,
   CatalogResponse,
   CommunityMessage,
   Conversation,
@@ -32,6 +37,7 @@ import type {
   FavoritesList,
   FriendRequest,
   FriendRequestInput,
+  GetAdminUsersParams,
   GetDirectMessagesParams,
   GetMessagesParams,
   GetMyPlaysParams,
@@ -3734,5 +3740,449 @@ export const useEditSubmission = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getEditSubmissionMutationOptions(options));
+    }
+
+export const getHideSubmissionUrl = (id: string,) => {
+
+
+
+
+  return `/api/catalog/submissions/${id}/hide`
+}
+
+/**
+ * @summary Ocultar una pieza publicada (admin) — la saca del catálogo público
+ */
+export const hideSubmission = async (id: string, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getHideSubmissionUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getHideSubmissionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hideSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof hideSubmission>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['hideSubmission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof hideSubmission>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  hideSubmission(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type HideSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof hideSubmission>>>
+
+    export type HideSubmissionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Ocultar una pieza publicada (admin) — la saca del catálogo público
+ */
+export const useHideSubmission = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hideSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof hideSubmission>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getHideSubmissionMutationOptions(options));
+    }
+
+export const getUnhideSubmissionUrl = (id: string,) => {
+
+
+
+
+  return `/api/catalog/submissions/${id}/unhide`
+}
+
+/**
+ * @summary Volver a publicar una pieza ocultada (admin)
+ */
+export const unhideSubmission = async (id: string, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getUnhideSubmissionUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getUnhideSubmissionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unhideSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unhideSubmission>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['unhideSubmission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unhideSubmission>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  unhideSubmission(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnhideSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof unhideSubmission>>>
+
+    export type UnhideSubmissionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Volver a publicar una pieza ocultada (admin)
+ */
+export const useUnhideSubmission = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unhideSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof unhideSubmission>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getUnhideSubmissionMutationOptions(options));
+    }
+
+export const getGetAdminUsersUrl = (params?: GetAdminUsersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/users?${stringifiedParams}` : `/api/admin/users`
+}
+
+/**
+ * @summary Listar todos los usuarios con paginación y búsqueda (admin)
+ */
+export const getAdminUsers = async (params?: GetAdminUsersParams, options?: RequestInit): Promise<AdminUsersPage> => {
+
+  return customFetch<AdminUsersPage>(getGetAdminUsersUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminUsersQueryKey = (params?: GetAdminUsersParams,) => {
+    return [
+    `/api/admin/users`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminUsersQueryOptions = <TData = Awaited<ReturnType<typeof getAdminUsers>>, TError = ErrorType<ErrorResponse>>(params?: GetAdminUsersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminUsers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminUsersQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminUsers>>> = ({ signal }) => getAdminUsers(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminUsers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminUsers>>>
+export type GetAdminUsersQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar todos los usuarios con paginación y búsqueda (admin)
+ */
+
+export function useGetAdminUsers<TData = Awaited<ReturnType<typeof getAdminUsers>>, TError = ErrorType<ErrorResponse>>(
+ params?: GetAdminUsersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminUsers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminUsersQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminStatsUrl = () => {
+
+
+
+
+  return `/api/admin/stats`
+}
+
+/**
+ * @summary Estadísticas globales del panel (admin)
+ */
+export const getAdminStats = async ( options?: RequestInit): Promise<AdminStats> => {
+
+  return customFetch<AdminStats>(getGetAdminStatsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminStatsQueryKey = () => {
+    return [
+    `/api/admin/stats`
+    ] as const;
+    }
+
+
+export const getGetAdminStatsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminStats>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminStatsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminStats>>> = ({ signal }) => getAdminStats({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminStats>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminStatsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminStats>>>
+export type GetAdminStatsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Estadísticas globales del panel (admin)
+ */
+
+export function useGetAdminStats<TData = Awaited<ReturnType<typeof getAdminStats>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminStatsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminCategoryUrl = () => {
+
+
+
+
+  return `/api/admin/categories`
+}
+
+/**
+ * @summary Crear una categoría del catálogo (admin)
+ */
+export const createAdminCategory = async (adminCategoryInput: AdminCategoryInput, options?: RequestInit): Promise<CatalogCategory> => {
+
+  return customFetch<CatalogCategory>(getCreateAdminCategoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminCategoryInput,)
+  }
+);}
+
+
+
+
+export const getCreateAdminCategoryMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminCategory>>, TError,{data: BodyType<AdminCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminCategory>>, TError,{data: BodyType<AdminCategoryInput>}, TContext> => {
+
+const mutationKey = ['createAdminCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminCategory>>, {data: BodyType<AdminCategoryInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminCategory(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminCategory>>>
+    export type CreateAdminCategoryMutationBody = BodyType<AdminCategoryInput>
+    export type CreateAdminCategoryMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear una categoría del catálogo (admin)
+ */
+export const useCreateAdminCategory = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminCategory>>, TError,{data: BodyType<AdminCategoryInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminCategory>>,
+        TError,
+        {data: BodyType<AdminCategoryInput>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminCategoryMutationOptions(options));
+    }
+
+export const getUpdateAdminCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/categories/${id}`
+}
+
+/**
+ * @summary Editar una categoría del catálogo (admin)
+ */
+export const updateAdminCategory = async (id: string,
+    adminCategoryUpdate: AdminCategoryUpdate, options?: RequestInit): Promise<CatalogCategory> => {
+
+  return customFetch<CatalogCategory>(getUpdateAdminCategoryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminCategoryUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminCategoryMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminCategory>>, TError,{id: string;data: BodyType<AdminCategoryUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminCategory>>, TError,{id: string;data: BodyType<AdminCategoryUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminCategory>>, {id: string;data: BodyType<AdminCategoryUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminCategory(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminCategory>>>
+    export type UpdateAdminCategoryMutationBody = BodyType<AdminCategoryUpdate>
+    export type UpdateAdminCategoryMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Editar una categoría del catálogo (admin)
+ */
+export const useUpdateAdminCategory = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminCategory>>, TError,{id: string;data: BodyType<AdminCategoryUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminCategory>>,
+        TError,
+        {id: string;data: BodyType<AdminCategoryUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminCategoryMutationOptions(options));
     }
 

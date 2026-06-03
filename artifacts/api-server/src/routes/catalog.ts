@@ -513,4 +513,59 @@ router.patch(
   },
 );
 
+// POST /catalog/submissions/:id/hide — ocultar una pieza publicada (admin).
+// La saca del catálogo público pasándola a "draft" (recuperable con unhide).
+router.post(
+  "/catalog/submissions/:id/hide",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const id = String(req.params.id);
+    try {
+      const [updated] = await db
+        .update(catalogSessionsTable)
+        .set({ status: "draft", isNew: false, updatedAt: new Date() })
+        .where(eq(catalogSessionsTable.id, id))
+        .returning();
+      if (!updated) {
+        res.status(404).json({ error: "Pieza no encontrada" });
+        return;
+      }
+      const loaded = await loadSubmission(id);
+      req.log.info({ submissionId: id }, "submission hidden");
+      res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));
+    } catch (err) {
+      req.log.error({ err }, "error hiding submission");
+      res.status(500).json({ error: "Error al ocultar la pieza" });
+    }
+  },
+);
+
+// POST /catalog/submissions/:id/unhide — volver a publicar una pieza ocultada (admin).
+router.post(
+  "/catalog/submissions/:id/unhide",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const id = String(req.params.id);
+    try {
+      const [updated] = await db
+        .update(catalogSessionsTable)
+        .set({ status: "published", updatedAt: new Date() })
+        .where(eq(catalogSessionsTable.id, id))
+        .returning();
+      if (!updated) {
+        res.status(404).json({ error: "Pieza no encontrada" });
+        return;
+      }
+      const loaded = await loadSubmission(id);
+      req.log.info({ submissionId: id }, "submission unhidden");
+      res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));
+    } catch (err) {
+      req.log.error({ err }, "error unhiding submission");
+      res.status(500).json({ error: "Error al volver a publicar la pieza" });
+    }
+  },
+);
+
 export default router;

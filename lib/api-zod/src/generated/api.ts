@@ -289,7 +289,7 @@ export const SetUserRoleParams = zod.object({
 })
 
 export const SetUserRoleBody = zod.object({
-  "role": zod.enum(['user', 'creator'])
+  "role": zod.enum(['user', 'creator', 'admin'])
 })
 
 export const SetUserRoleResponse = zod.object({
@@ -1271,6 +1271,276 @@ export const EditSubmissionResponse = zod.object({
   "isLoop": zod.boolean(),
   "createdAt": zod.coerce.date()
 }))
+})
+
+
+/**
+ * @summary Ocultar una pieza publicada (admin) — la saca del catálogo público
+ */
+export const HideSubmissionParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const HideSubmissionResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Volver a publicar una pieza ocultada (admin)
+ */
+export const UnhideSubmissionParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UnhideSubmissionResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Listar todos los usuarios con paginación y búsqueda (admin)
+ */
+
+export const getAdminUsersQueryPageSizeMax = 100;
+
+
+
+export const GetAdminUsersQueryParams = zod.object({
+  "q": zod.coerce.string().optional(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "page": zod.coerce.number().min(1).optional(),
+  "pageSize": zod.coerce.number().min(1).max(getAdminUsersQueryPageSizeMax).optional()
+})
+
+export const GetAdminUsersResponse = zod.object({
+  "users": zod.array(zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "email": zod.string().nullable(),
+  "avatarUrl": zod.string().nullable(),
+  "role": zod.enum(['user', 'creator', 'admin']),
+  "submissionCount": zod.number(),
+  "createdAt": zod.coerce.date()
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+})
+
+
+/**
+ * @summary Estadísticas globales del panel (admin)
+ */
+export const GetAdminStatsResponse = zod.object({
+  "totalUsers": zod.number(),
+  "totalCreators": zod.number(),
+  "totalAdmins": zod.number(),
+  "totalSessions": zod.number(),
+  "publishedSessions": zod.number(),
+  "pendingSubmissions": zod.number(),
+  "totalPlays": zod.number(),
+  "totalMinutes": zod.number(),
+  "activeCreators": zod.number(),
+  "topSessions": zod.array(zod.object({
+  "sessionId": zod.string(),
+  "title": zod.string().nullable(),
+  "categoryLabel": zod.string().nullable(),
+  "plays": zod.number(),
+  "minutes": zod.number()
+})),
+  "categoryBreakdown": zod.array(zod.object({
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "plays": zod.number(),
+  "minutes": zod.number()
+}))
+})
+
+
+/**
+ * @summary Crear una categoría del catálogo (admin)
+ */
+export const createAdminCategoryBodyIdMax = 60;
+
+
+export const createAdminCategoryBodyIdRegExp = new RegExp('^[a-z0-9-]+$');
+export const createAdminCategoryBodyTitleMax = 80;
+
+export const createAdminCategoryBodySubtitleMax = 120;
+
+export const createAdminCategoryBodyIconMax = 60;
+
+export const createAdminCategoryBodyIconFamilyMax = 60;
+
+export const createAdminCategoryBodyColorMax = 40;
+
+export const createAdminCategoryBodyGradientStartMax = 40;
+
+export const createAdminCategoryBodyGradientEndMax = 40;
+
+
+
+export const CreateAdminCategoryBody = zod.object({
+  "id": zod.string().min(1).max(createAdminCategoryBodyIdMax).regex(createAdminCategoryBodyIdRegExp),
+  "title": zod.string().min(1).max(createAdminCategoryBodyTitleMax),
+  "subtitle": zod.string().min(1).max(createAdminCategoryBodySubtitleMax),
+  "icon": zod.string().min(1).max(createAdminCategoryBodyIconMax),
+  "iconFamily": zod.string().max(createAdminCategoryBodyIconFamilyMax).nullish(),
+  "color": zod.string().min(1).max(createAdminCategoryBodyColorMax),
+  "gradientStart": zod.string().min(1).max(createAdminCategoryBodyGradientStartMax),
+  "gradientEnd": zod.string().min(1).max(createAdminCategoryBodyGradientEndMax),
+  "isPrimary": zod.boolean().optional(),
+  "sortOrder": zod.number().optional()
+})
+
+
+/**
+ * @summary Editar una categoría del catálogo (admin)
+ */
+export const UpdateAdminCategoryParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const updateAdminCategoryBodyTitleMax = 80;
+
+export const updateAdminCategoryBodySubtitleMax = 120;
+
+export const updateAdminCategoryBodyIconMax = 60;
+
+export const updateAdminCategoryBodyIconFamilyMax = 60;
+
+export const updateAdminCategoryBodyColorMax = 40;
+
+export const updateAdminCategoryBodyGradientStartMax = 40;
+
+export const updateAdminCategoryBodyGradientEndMax = 40;
+
+
+
+export const UpdateAdminCategoryBody = zod.object({
+  "title": zod.string().min(1).max(updateAdminCategoryBodyTitleMax).optional(),
+  "subtitle": zod.string().min(1).max(updateAdminCategoryBodySubtitleMax).optional(),
+  "icon": zod.string().min(1).max(updateAdminCategoryBodyIconMax).optional(),
+  "iconFamily": zod.string().max(updateAdminCategoryBodyIconFamilyMax).nullish(),
+  "color": zod.string().min(1).max(updateAdminCategoryBodyColorMax).optional(),
+  "gradientStart": zod.string().min(1).max(updateAdminCategoryBodyGradientStartMax).optional(),
+  "gradientEnd": zod.string().min(1).max(updateAdminCategoryBodyGradientEndMax).optional(),
+  "isPrimary": zod.boolean().optional(),
+  "sortOrder": zod.number().optional()
+})
+
+export const UpdateAdminCategoryResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "icon": zod.string(),
+  "iconFamily": zod.string().nullish(),
+  "sessionCount": zod.number(),
+  "color": zod.string(),
+  "gradientStart": zod.string(),
+  "gradientEnd": zod.string(),
+  "isPrimary": zod.boolean(),
+  "sortOrder": zod.number()
 })
 
 
