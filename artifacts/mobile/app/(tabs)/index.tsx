@@ -253,7 +253,7 @@ export default function HomeScreen() {
             </Text>
           </View>
           {recommended.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal cardBg="#100B05" noBorder />
+            <SessionCard key={s.id} session={s} horizontal cardBg="#110C05" noBorder />
           ))}
         </View>
 
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#100B05",
+    backgroundColor: "#110C05",
     paddingHorizontal: 16,
     paddingVertical: 18,
   },
