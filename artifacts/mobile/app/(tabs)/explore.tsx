@@ -215,20 +215,27 @@ export default function ExploreScreen() {
                     transition={IMAGE_TRANSITION}
                   />
                   <View style={styles.continueMeta}>
-                    <Text style={[styles.continueKicker, { color: colors.primary }]}>
-                      Sigue escuchando
-                    </Text>
+                    <View style={styles.continueKickerRow}>
+                      <Text style={[styles.continueKicker, { color: "#5DADE2" }]}>
+                        Sigue escuchando
+                      </Text>
+                      {lastSessionProgress > 0 && (
+                        <Text style={[styles.continuePercent, { color: "#5DADE2" }]}>
+                          {Math.round(Math.min(100, lastSessionProgress * 100))}%
+                        </Text>
+                      )}
+                    </View>
                     <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
                       {lastSession.title}
                     </Text>
                     {lastSessionProgress > 0 && (
-                      <View style={[styles.continueProgressTrack, { backgroundColor: "rgba(182,149,95,0.2)" }]}>
+                      <View style={[styles.continueProgressTrack, { backgroundColor: "rgba(93,173,226,0.18)" }]}>
                         <View
                           style={[
                             styles.continueProgressFill,
                             {
                               width: `${Math.min(100, lastSessionProgress * 100)}%`,
-                              backgroundColor: colors.primary,
+                              backgroundColor: "#5DADE2",
                             },
                           ]}
                         />
@@ -645,11 +652,21 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
   continueMeta: { flex: 1 },
+  continueKickerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 4,
+  },
   continueKicker: {
     fontSize: 10,
     fontWeight: "400",
     letterSpacing: 1.2,
-    marginBottom: 4,
+  },
+  continuePercent: {
+    fontSize: 10,
+    fontWeight: "600",
+    letterSpacing: 0.5,
   },
   continueTitle: {
     fontSize: 16,
