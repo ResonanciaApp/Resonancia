@@ -162,7 +162,7 @@ export default function MeditacionesGuiadasScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <Feather name={cat.icon} size={24} color="#8B82BE" />
+                      <Feather name={cat.icon} size={22} color="#8B82BE" />
                     </View>
 
                     <Text style={[styles.catName, { color: colors.foreground }]}>
@@ -170,10 +170,10 @@ export default function MeditacionesGuiadasScreen() {
                     </Text>
 
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.catCount, { color: colors.foreground }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                      <Feather name="chevron-right" size={17} color={colors.foreground} />
                     </View>
                   </Pressable>
                 );
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   },
   catName: {
     flex: 1,
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: "600",
     letterSpacing: 0.1,
   },
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   catCount: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "500",
   },
 

@@ -137,14 +137,14 @@ export default function MananasScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <SubIcon sub={sub} size={24} />
+                      <SubIcon sub={sub} size={22} />
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{sub.tag}</Text>
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.catCount, { color: colors.foreground }]}>
                         {countByTag[sub.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                      <Feather name="chevron-right" size={17} color={colors.foreground} />
                     </View>
                   </Pressable>
                 );
@@ -229,9 +229,9 @@ const styles = StyleSheet.create({
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },
   iconCircle: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
-  catName: { flex: 1, fontSize: 17, fontWeight: "600", letterSpacing: 0.1 },
+  catName: { flex: 1, fontSize: 15, fontWeight: "600", letterSpacing: 0.1 },
   catRight: { flexDirection: "row", alignItems: "center", gap: 6 },
-  catCount: { fontSize: 14, fontWeight: "500" },
+  catCount: { fontSize: 13, fontWeight: "500" },
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
   emptyText: { fontSize: 16, textAlign: "center" },
 });

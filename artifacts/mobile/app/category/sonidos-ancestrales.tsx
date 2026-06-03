@@ -139,10 +139,10 @@ export default function SonidosAncestalesScreen() {
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.catCount, { color: colors.foreground }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                      <Feather name="chevron-right" size={17} color={colors.foreground} />
                     </View>
                   </Pressable>
                 );
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   },
   catName: {
     flex: 1,
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: "600",
     letterSpacing: 0.1,
   },
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   catCount: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "500",
   },
 
