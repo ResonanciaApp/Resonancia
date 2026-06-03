@@ -186,7 +186,7 @@ export default function MusicaSonidosScreen() {
                 style={[
                   styles.tab,
                   {
-                    backgroundColor: active ? "#A8C4A8" : "rgba(42,62,42,0.55)",
+                    backgroundColor: active ? colors.primary : "#11161F",
                     borderColor: "transparent",
                     borderWidth: 0,
                   },
@@ -195,7 +195,7 @@ export default function MusicaSonidosScreen() {
                 <Text
                   style={[
                     styles.tabText,
-                    { color: active ? "#1A2418" : "#B8D4B8" },
+                    { color: active ? "#060A0F" : colors.foreground },
                   ]}
                 >
                   {tab}
@@ -209,8 +209,8 @@ export default function MusicaSonidosScreen() {
         <View style={[styles.grid, { paddingHorizontal: H_PAD }]}>
           {filtered.length === 0 ? (
             <View style={styles.emptyWrap}>
-              <Feather name="search" size={32} color="#B8D4B8" style={{ marginBottom: 12 }} />
-              <Text style={[styles.emptyText, { color: "#B8D4B8" }]}>
+              <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                 Sin resultados
               </Text>
             </View>
