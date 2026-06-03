@@ -189,8 +189,8 @@ export default function MiMusicaScreen() {
                     style={[
                       styles.tab,
                       {
-                        backgroundColor: selected ? "#6B9AB5" : "#11161F",
-                        borderColor: selected ? "#6B9AB5" : "transparent",
+                        backgroundColor: selected ? colors.primary : "#11161F",
+                        borderColor: selected ? colors.primary : "transparent",
                       },
                     ]}
                   >
