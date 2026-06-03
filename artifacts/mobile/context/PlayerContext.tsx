@@ -35,6 +35,9 @@ export interface StatEvent {
   categoryId: string;
   categoryLabel: string;
   minutes: number;
+  /** Whether the session reached its natural/scheduled end (vs stopped early).
+   *  Optional for backward-compat with events stored before this field existed. */
+  completed?: boolean;
   playedAt: string;
 }
 
@@ -191,6 +194,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const statTrackerRef = useRef<Session | null>(null);
   /** Wall-clock accumulator of seconds actually played for the tracked session (seek-proof) */
   const listenedSecondsRef = useRef(0);
+  /** True when the active session reached its natural/scheduled end — consumed by recordStat */
+  const statCompletedRef = useRef(false);
   /** Timestamp (ms) when the current play chunk started, or null while paused */
   const playStartRef = useRef<number | null>(null);
   /** Stable wrapper so completion handlers defined earlier can flush stats */
@@ -299,8 +304,43 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setSessionProgress(merged.progress);
         persistProgressMap(merged.progress);
 
-        // Marca: a partir de ahora lo local es autoritativo en este dispositivo.
-        AsyncStorage.setItem(CLOUD_SYNCED_KEY, "1").catch(() => {});
+        // Recuperar el historial tras reinstalar / estrenar dispositivo. El
+        // historial no se sincroniza como tal: es derivable de los eventos de
+        // reproducción que ya volvieron de la nube. Solo cuando la recuperación
+        // de firstSync tuvo éxito (luego lo local es autoritativo). Se fusiona
+        // con el estado MÁS RECIENTE (update funcional) para no pisar reproducciones
+        // ocurridas mientras la sync estaba en vuelo, conservando la entrada con
+        // playedAt más reciente por sesión.
+        if (firstSync && merged.recovered) {
+          setHistory((prev) => {
+            const byId = new Map<string, HistoryEntry>();
+            const consider = (h: HistoryEntry) => {
+              const existing = byId.get(h.sessionId);
+              if (!existing || new Date(h.playedAt) > new Date(existing.playedAt)) {
+                byId.set(h.sessionId, h);
+              }
+            };
+            for (const e of merged.statEvents) {
+              consider({ sessionId: e.sessionId, playedAt: e.playedAt });
+            }
+            for (const h of prev) consider(h);
+            const mergedHistory = Array.from(byId.values())
+              .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime())
+              .slice(0, HISTORY_LIMIT);
+            AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(mergedHistory)).catch(() => {});
+            return mergedHistory;
+          });
+        }
+
+        if (merged.recovered) {
+          // Marca: a partir de ahora lo local es autoritativo en este dispositivo.
+          AsyncStorage.setItem(CLOUD_SYNCED_KEY, "1").catch(() => {});
+        } else {
+          // Primer arranque sin lecturas exitosas (offline): NO marcamos como
+          // sincronizado para reintentar firstSync en el próximo arranque y no
+          // sobrescribir la nube con un local vacío.
+          syncedRef.current = false;
+        }
       } catch {
         // Reintentamos en el próximo arranque
         if (!cancelled) syncedRef.current = false;
@@ -457,6 +497,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setElapsed(Math.floor(pos));
 
       if (status.didJustFinish) {
+        statCompletedRef.current = true;
         flushActiveStatRef.current();
         setIsPlaying(false);
         lastPlayingRef.current = false;
@@ -580,6 +621,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (sleepTimerRemaining !== 0) return;
     clearSleepInterval();
     setSleepTimerRemaining(null);
+    // The scheduled timer elapsed → count it as a completed listen.
+    statCompletedRef.current = true;
     flushActiveStatRef.current();
     // Stop audio without wiping the session from UI
     teardownPlayback();
@@ -655,12 +698,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   /** Append a StatEvent reflecting minutes actually listened (ignores very short plays) */
   const recordStat = useCallback((session: Session, secondsListened: number) => {
+    // Consume the completion marker regardless of whether we end up recording,
+    // so it never leaks into the next session's event.
+    const completed = statCompletedRef.current;
+    statCompletedRef.current = false;
     if (secondsListened < STAT_MIN_SECONDS) return;
     const event: StatEvent = {
       sessionId: session.id,
       categoryId: session.categoryId,
       categoryLabel: session.categoryLabel,
       minutes: Math.max(1, Math.round(secondsListened / 60)),
+      completed,
       playedAt: new Date().toISOString(),
     };
     setStatEvents((prev) => {

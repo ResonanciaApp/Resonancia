@@ -42,6 +42,9 @@ export interface SyncStatEvent {
   categoryId: string;
   categoryLabel: string;
   minutes: number;
+  /** Whether the session reached its natural/scheduled end. Optional for
+   *  backward-compat with events stored before this field existed. */
+  completed?: boolean;
   playedAt: string;
 }
 
@@ -72,6 +75,20 @@ export interface SyncOptions {
   firstSync: boolean;
 }
 
+export interface SyncResult extends ActivitySnapshot {
+  /**
+   * True si es seguro marcar este dispositivo como "ya sincronizado":
+   * o bien NO era una primera sincronización, o bien las lecturas de
+   * recuperación (plays + favoritos + progreso) tuvieron éxito.
+   *
+   * Si es false (p. ej. primer arranque offline), el llamador NO debe persistir
+   * la marca de sincronizado: el próximo arranque debe reintentar en modo
+   * firstSync. De lo contrario entraríamos en modo autoritativo-local y un local
+   * vacío (tras reinstalar) sobrescribiría los favoritos/progreso de la nube.
+   */
+  recovered: boolean;
+}
+
 /**
  * Sincroniza la actividad con la nube y devuelve el snapshot fusionado
  * listo para reflejar en el estado de la app.
@@ -79,22 +96,29 @@ export interface SyncOptions {
 export async function syncActivity(
   local: ActivitySnapshot,
   opts: SyncOptions,
-): Promise<ActivitySnapshot> {
+): Promise<SyncResult> {
   const { firstSync } = opts;
   const merged: ActivitySnapshot = {
     statEvents: local.statEvents,
     favorites: local.favorites,
     progress: local.progress,
   };
+  // En firstSync, cada lectura de recuperación debe confirmarse antes de
+  // declarar el dispositivo como recuperado (ver SyncResult.recovered).
+  let playsReadOk = false;
+  let favsReadOk = false;
+  let progressReadOk = false;
 
   // ── Eventos de reproducción (alimentan las estadísticas) ──────────────────
   try {
     const server = await getMyPlays();
+    playsReadOk = true;
     const serverEvents: SyncStatEvent[] = server.events.map((ev) => ({
       sessionId: ev.sessionId,
       categoryId: ev.categoryId,
       categoryLabel: ev.categoryLabel,
       minutes: ev.minutes,
+      completed: ev.completed,
       playedAt: ev.playedAt,
     }));
 
@@ -113,7 +137,7 @@ export async function syncActivity(
           categoryId: e.categoryId,
           categoryLabel: e.categoryLabel,
           minutes: e.minutes,
-          completed: false,
+          completed: e.completed ?? false,
           contentType: null,
           source: null,
           playedAt: e.playedAt,
@@ -131,6 +155,7 @@ export async function syncActivity(
     let next: string[];
     if (firstSync) {
       const server = await getMyFavorites();
+      favsReadOk = true;
       next = Array.from(new Set([...server.sessionIds, ...local.favorites]));
     } else {
       next = Array.from(new Set(local.favorites));
@@ -148,6 +173,7 @@ export async function syncActivity(
     let map: Record<string, number>;
     if (firstSync) {
       const server = await getMyProgress();
+      progressReadOk = true;
       map = {};
       for (const it of server.items) map[it.sessionId] = it.progress;
       for (const [id, p] of Object.entries(local.progress)) map[id] = p;
@@ -164,5 +190,6 @@ export async function syncActivity(
     // offline / error → conservamos lo local
   }
 
-  return merged;
+  const recovered = !firstSync || (playsReadOk && favsReadOk && progressReadOk);
+  return { ...merged, recovered };
 }
