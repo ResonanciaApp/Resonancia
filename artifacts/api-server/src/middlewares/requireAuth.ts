@@ -22,6 +22,20 @@ function defaultUsername(clerkUserId: string): string {
 }
 
 /**
+ * Clerk user ids that should always be treated as admins. Configured out of
+ * band via the `ADMIN_CLERK_USER_IDS` secret (comma-separated) so that the
+ * first admin can never be self-assigned from the app.
+ */
+function adminClerkUserIds(): Set<string> {
+  return new Set(
+    (process.env.ADMIN_CLERK_USER_IDS ?? "")
+      .split(",")
+      .map((id) => id.trim())
+      .filter(Boolean),
+  );
+}
+
+/**
  * Ensure there is a row in `users` for the Clerk-authenticated request,
  * creating it just-in-time on first call. Attaches `req.currentUser`.
  * Responds 401 if the request is not authenticated.
@@ -50,6 +64,15 @@ export const requireAuth: RequestHandler = async (req, res, next) => {
           username,
           displayName: username,
         })
+        .returning();
+    }
+
+    // Promote configured admins (idempotent; never demotes).
+    if (user.role !== "admin" && adminClerkUserIds().has(clerkUserId)) {
+      [user] = await db
+        .update(usersTable)
+        .set({ role: "admin" })
+        .where(eq(usersTable.id, user.id))
         .returning();
     }
 

@@ -96,7 +96,8 @@ export const GetSharedMixesResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 }),
   "createdAt": zod.coerce.date()
 })),
@@ -155,7 +156,8 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 }),
   "createdAt": zod.coerce.date()
 })
@@ -185,7 +187,8 @@ export const GetMixCommentsResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 }),
   "isMine": zod.boolean(),
   "createdAt": zod.coerce.date()
@@ -226,7 +229,8 @@ export const GetMeResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 })
 
 
@@ -252,7 +256,8 @@ export const UpdateMeResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 })
 
 
@@ -277,13 +282,34 @@ export const SearchUsersResponse = zod.array(SearchUsersResponseItem)
 
 
 /**
+ * @summary Assign a role to a user (admin only)
+ */
+export const SetUserRoleParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const SetUserRoleBody = zod.object({
+  "role": zod.enum(['user', 'creator'])
+})
+
+export const SetUserRoleResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+})
+
+
+/**
  * @summary List accepted friends
  */
 export const GetFriendsResponseItem = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 })
 export const GetFriendsResponse = zod.array(GetFriendsResponseItem)
 
@@ -307,13 +333,15 @@ export const GetFriendRequestsResponseItem = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 }),
   "addressee": zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 })
 })
 export const GetFriendRequestsResponse = zod.array(GetFriendRequestsResponseItem)
@@ -342,13 +370,15 @@ export const AcceptFriendRequestResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 }),
   "addressee": zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 })
 })
 
@@ -374,7 +404,8 @@ export const GetNotificationsResponseItem = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 })
 })
 export const GetNotificationsResponse = zod.array(GetNotificationsResponseItem)
@@ -442,7 +473,8 @@ export const GetConversationsResponseItem = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
 }),
   "lastMessage": zod.union([zod.object({
   "id": zod.number(),

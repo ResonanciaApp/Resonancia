@@ -1,8 +1,9 @@
 import { Router, type IRouter } from "express";
 import { and, eq, ilike, inArray, ne, or } from "drizzle-orm";
 import { db, usersTable, friendshipsTable, type User } from "@workspace/db";
-import { UpdateMeBody, SearchUsersQueryParams } from "@workspace/api-zod";
+import { UpdateMeBody, SearchUsersQueryParams, SetUserRoleBody } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
+import { requireRole } from "../middlewares/requireRole";
 
 const router: IRouter = Router();
 
@@ -12,6 +13,7 @@ function toProfile(u: User) {
     username: u.username,
     displayName: u.displayName,
     avatarUrl: u.avatarUrl,
+    role: u.role,
   };
 }
 
@@ -116,6 +118,35 @@ router.get("/users/search", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al buscar usuarios" });
+  }
+});
+
+router.patch("/users/:userId/role", requireAuth, requireRole("admin"), async (req, res) => {
+  const userId = Number(req.params.userId);
+  if (!Number.isInteger(userId) || userId <= 0) {
+    res.status(400).json({ error: "ID de usuario inválido" });
+    return;
+  }
+  const parsed = SetUserRoleBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos" });
+    return;
+  }
+
+  try {
+    const [updated] = await db
+      .update(usersTable)
+      .set({ role: parsed.data.role })
+      .where(eq(usersTable.id, userId))
+      .returning();
+    if (!updated) {
+      res.status(404).json({ error: "Usuario no encontrado" });
+      return;
+    }
+    res.json(toProfile(updated));
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al actualizar el rol" });
   }
 });
 

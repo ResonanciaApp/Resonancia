@@ -149,12 +149,22 @@ export const SharedMixCategory = {
   concentracion: 'concentracion',
 } as const;
 
+export type UserProfileRole = typeof UserProfileRole[keyof typeof UserProfileRole];
+
+
+export const UserProfileRole = {
+  user: 'user',
+  creator: 'creator',
+  admin: 'admin',
+} as const;
+
 export interface UserProfile {
   id: number;
   username: string;
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+  role?: UserProfileRole;
 }
 
 export interface SharedMix {
@@ -232,6 +242,18 @@ export interface MixCommentInput {
 
 export interface ErrorResponse {
   error: string;
+}
+
+export type UserRoleUpdateRole = typeof UserRoleUpdateRole[keyof typeof UserRoleUpdateRole];
+
+
+export const UserRoleUpdateRole = {
+  user: 'user',
+  creator: 'creator',
+} as const;
+
+export interface UserRoleUpdate {
+  role: UserRoleUpdateRole;
 }
 
 export interface UserProfileUpdate {

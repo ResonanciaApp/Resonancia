@@ -377,6 +377,54 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserSearchResult"
+  /users/{userId}/role:
+    patch:
+      operationId: setUserRole
+      tags: [users]
+      summary: Assign a role to a user (admin only)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRoleUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Not an admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /friends:
     get:
       operationId: getFriends
@@ -1264,7 +1312,17 @@ components:
           type: string
         avatarUrl:
           type: ["string", "null"]
+        role:
+          type: string
+          enum: ["user", "creator", "admin"]
       required: [id, username, displayName]
+    UserRoleUpdate:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: ["user", "creator"]
+      required: [role]
     UserProfileUpdate:
       type: object
       properties:

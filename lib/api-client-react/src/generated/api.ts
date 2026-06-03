@@ -58,6 +58,7 @@ import type {
   UnregisterPushTokenBody,
   UserProfile,
   UserProfileUpdate,
+  UserRoleUpdate,
   UserSearchResult
 } from './api.schemas';
 
@@ -1130,6 +1131,78 @@ export function useSearchUsers<TData = Awaited<ReturnType<typeof searchUsers>>, 
 
 
 
+
+export const getSetUserRoleUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/role`
+}
+
+/**
+ * @summary Assign a role to a user (admin only)
+ */
+export const setUserRole = async (userId: number,
+    userRoleUpdate: UserRoleUpdate, options?: RequestInit): Promise<UserProfile> => {
+
+  return customFetch<UserProfile>(getSetUserRoleUrl(userId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      userRoleUpdate,)
+  }
+);}
+
+
+
+
+export const getSetUserRoleMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setUserRole>>, TError,{userId: number;data: BodyType<UserRoleUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setUserRole>>, TError,{userId: number;data: BodyType<UserRoleUpdate>}, TContext> => {
+
+const mutationKey = ['setUserRole'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setUserRole>>, {userId: number;data: BodyType<UserRoleUpdate>}> = (props) => {
+          const {userId,data} = props ?? {};
+
+          return  setUserRole(userId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetUserRoleMutationResult = NonNullable<Awaited<ReturnType<typeof setUserRole>>>
+    export type SetUserRoleMutationBody = BodyType<UserRoleUpdate>
+    export type SetUserRoleMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Assign a role to a user (admin only)
+ */
+export const useSetUserRole = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setUserRole>>, TError,{userId: number;data: BodyType<UserRoleUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setUserRole>>,
+        TError,
+        {userId: number;data: BodyType<UserRoleUpdate>},
+        TContext
+      > => {
+      return useMutation(getSetUserRoleMutationOptions(options));
+    }
 
 export const getGetFriendsUrl = () => {
 

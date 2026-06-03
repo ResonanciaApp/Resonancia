@@ -2,6 +2,9 @@ import { pgTable, serial, text, timestamp, uniqueIndex } from "drizzle-orm/pg-co
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
+export const USER_ROLES = ["user", "creator", "admin"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
 export const usersTable = pgTable(
   "users",
   {
@@ -11,6 +14,7 @@ export const usersTable = pgTable(
     displayName: text("display_name").notNull(),
     email: text("email"),
     avatarUrl: text("avatar_url"),
+    role: text("role", { enum: USER_ROLES }).notNull().default("user"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
