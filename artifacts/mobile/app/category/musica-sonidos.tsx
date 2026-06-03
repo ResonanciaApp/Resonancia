@@ -84,6 +84,7 @@ export default function MusicaSonidosScreen() {
 
   const [activeTab, setActiveTab] = useState<Tab>("Todos");
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
+  const [query, setQuery] = useState("");
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -93,8 +94,12 @@ export default function MusicaSonidosScreen() {
     if (activeTab !== "Todos") {
       list = list.filter((s) => s.soundTag === activeTab);
     }
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      list = list.filter((s) => s.title.toLowerCase().includes(q));
+    }
     return list;
-  }, [activeTab]);
+  }, [activeTab, query]);
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;
@@ -170,6 +175,26 @@ export default function MusicaSonidosScreen() {
           </Text>
         </View>
 
+        {/* Search */}
+        <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
+          <View style={styles.searchBar}>
+            <Feather name="search" size={16} color="rgba(122,143,168,0.5)" style={{ marginRight: 8 }} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Buscar frecuencia..."
+              placeholderTextColor="rgba(122,143,168,0.45)"
+              style={[styles.searchInput, { color: colors.foreground }]}
+              returnKeyType="search"
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                <Feather name="x" size={14} color={colors.mutedForeground} />
+              </Pressable>
+            )}
+          </View>
+        </View>
+
         {/* Filter Tabs */}
         <ScrollView
           horizontal
@@ -186,7 +211,7 @@ export default function MusicaSonidosScreen() {
                 style={[
                   styles.tab,
                   {
-                    backgroundColor: active ? colors.primary : "#11161F",
+                    backgroundColor: active ? "#1A4A8A" : "#11161F",
                     borderColor: "transparent",
                     borderWidth: 0,
                   },
@@ -195,7 +220,7 @@ export default function MusicaSonidosScreen() {
                 <Text
                   style={[
                     styles.tabText,
-                    { color: active ? "#060A0F" : colors.foreground },
+                    { color: active ? "#EDE1D3" : colors.foreground },
                   ]}
                 >
                   {tab}
@@ -434,12 +459,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  searchWrap: {},
+  searchWrap: { marginBottom: 16 },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#090E17",
     borderRadius: 14,
-    borderWidth: 1,
+    borderWidth: 0,
     paddingHorizontal: 14,
     paddingVertical: Platform.OS === "ios" ? 12 : 10,
   },
