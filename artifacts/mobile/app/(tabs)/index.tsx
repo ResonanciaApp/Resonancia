@@ -105,7 +105,7 @@ export default function HomeScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0D0906" }]}>
+    <View style={[styles.root, { backgroundColor: "#030509" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
@@ -208,7 +208,7 @@ export default function HomeScreen() {
             >
               <Image source={featuredSession.image as number} style={styles.heroImage} resizeMode="cover" />
               <LinearGradient
-                colors={["transparent", "rgba(24,17,12,0.65)", colors.background]}
+                colors={["transparent", "rgba(6,10,15,0.65)", "#060A0F"]}
                 locations={[0, 0.5, 1]}
                 style={StyleSheet.absoluteFill}
               />
