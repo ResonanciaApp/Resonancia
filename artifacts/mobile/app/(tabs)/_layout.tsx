@@ -19,7 +19,7 @@ import { useMixer } from "@/context/MixerContext";
 
 const ACTIVE_COLOR = "#6B9AB5";
 const INACTIVE_COLOR = "rgba(255,255,255,0.42)";
-const PILL_BG = "rgba(255,255,255,0.13)";
+const PILL_BG = "rgba(107,154,181,0.18)";
 const BAR_BORDER = "rgba(182,149,95,0.18)";
 
 const TAB_CONFIG: Record<
