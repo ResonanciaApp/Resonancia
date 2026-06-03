@@ -237,7 +237,7 @@ export default function ExploreScreen() {
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
+              <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>¿Cuánto tiempo tienes hoy?</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14 },
 
   section: { paddingHorizontal: H_PAD, marginBottom: 32 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
+  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
