@@ -14,7 +14,7 @@ const C = {
   gold:     "#C69B4F",
   goldSoft: "#A97A34",
   fg:       "#EDE1D3",
-  muted:    "#9E8B7A",
+  muted:    "#7A8FA8",
   card:     "#090E17",
   border:   "rgba(198,155,79,0.18)",
   certified: "#5FB98C",
@@ -84,7 +84,6 @@ function CollaboratorCard({
       <View style={styles.info}>
         <View style={styles.nameRow}>
           <Text style={styles.name} numberOfLines={1}>{name}</Text>
-          <RoleBadge role={role} />
         </View>
 
         <View style={styles.metaRow}>
@@ -98,7 +97,7 @@ function CollaboratorCard({
       </View>
 
       {/* Chevron */}
-      <Feather name="chevron-right" size={18} color={C.goldSoft} style={{ marginLeft: 4 }} />
+      <Feather name="chevron-right" size={18} color={C.muted} style={{ marginLeft: 4 }} />
     </Pressable>
   );
 }
