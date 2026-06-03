@@ -44,7 +44,7 @@ import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { uploadLocalFile } from "@/lib/upload";
 
-const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#E8C87A", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
+const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f7ca8e", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 function initialsFor(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   const first = parts[0]?.[0] ?? "";

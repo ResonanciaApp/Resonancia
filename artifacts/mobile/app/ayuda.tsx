@@ -43,7 +43,7 @@ const FAQS = [
 ];
 
 const TOPICS = [
-  { icon: "credit-card" as const, label: "Pagos y facturación", color: "#E8C87A" },
+  { icon: "credit-card" as const, label: "Pagos y facturación", color: "#f7ca8e" },
   { icon: "headphones" as const, label: "Problemas de audio", color: "#8AAAD4" },
   { icon: "user" as const, label: "Cuenta y perfil", color: "#C8B4E0" },
   { icon: "shield" as const, label: "Privacidad y datos", color: "#A8C4A8" },

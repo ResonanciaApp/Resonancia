@@ -28,7 +28,7 @@ const ACTIVITIES = [
     type: "Presencial",
     attendees: 12,
     icon: "disc" as const,
-    color: "#E8C87A",
+    color: "#f7ca8e",
     gradient: ["#7A5520", "#3E2208"] as [string, string],
   },
   {
