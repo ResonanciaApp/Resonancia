@@ -79,6 +79,35 @@ export default function MiMusicaScreen() {
     { id: "todos", label: "Todos" },
     ...SOUND_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
   ];
+  const tabsHalf = Math.ceil(tabs.length / 2);
+  const tabsTopRow = tabs.slice(0, tabsHalf);
+  const tabsBottomRow = tabs.slice(tabsHalf);
+
+  const renderTab = (tab: { id: TabId; label: string }) => {
+    const selected = activeTab === tab.id;
+    return (
+      <Pressable
+        key={tab.id}
+        onPress={() => setActiveTab(tab.id)}
+        style={[
+          styles.tab,
+          {
+            backgroundColor: selected ? "#FFFFFF" : "#11161F",
+            borderColor: selected ? "#FFFFFF" : "transparent",
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.tabLabel,
+            { color: selected ? "#10151E" : colors.foreground },
+          ]}
+        >
+          {tab.label}
+        </Text>
+      </Pressable>
+    );
+  };
 
   const renderSoundCard = (sound: MixSound) => {
     const available = hasSoundFile(sound.id);
@@ -202,34 +231,18 @@ export default function MiMusicaScreen() {
               </View>
             )}
 
-            {/* Tabs de categorías de sonido (envueltos, todos visibles) */}
-            <View style={styles.tabsWrap}>
-              {tabs.map((tab) => {
-                const selected = activeTab === tab.id;
-                return (
-                  <Pressable
-                    key={tab.id}
-                    onPress={() => setActiveTab(tab.id)}
-                    style={[
-                      styles.tab,
-                      {
-                        backgroundColor: selected ? colors.primary : "#11161F",
-                        borderColor: selected ? colors.primary : "transparent",
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.tabLabel,
-                        { color: selected ? colors.primaryForeground : colors.foreground },
-                      ]}
-                    >
-                      {tab.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
+            {/* Tabs de categorías de sonido (2 filas que se deslizan juntas) */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.tabsScroll}
+              contentContainerStyle={styles.tabsScrollContent}
+            >
+              <View style={styles.tabsColumn}>
+                <View style={styles.tabRow}>{tabsTopRow.map(renderTab)}</View>
+                <View style={styles.tabRow}>{tabsBottomRow.map(renderTab)}</View>
+              </View>
+            </ScrollView>
           </View>
 
           {/* Separador sutil entre tabs y contenido */}
@@ -285,13 +298,11 @@ const styles = StyleSheet.create({
   },
   catToggleLabel: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
 
-  // Tabs de categorías de sonido (envueltos, todos visibles)
-  tabsWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 6,
-    marginBottom: 12,
-  },
+  // Tabs de categorías de sonido (2 filas, scroll horizontal conjunto)
+  tabsScroll: { marginHorizontal: -20, marginBottom: 12 },
+  tabsScrollContent: { paddingHorizontal: 20 },
+  tabsColumn: { gap: 10 },
+  tabRow: { flexDirection: "row", gap: 14 },
   tab: {
     paddingHorizontal: 12,
     paddingVertical: 7,
