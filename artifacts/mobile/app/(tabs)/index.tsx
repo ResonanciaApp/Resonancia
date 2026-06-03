@@ -261,7 +261,7 @@ export default function HomeScreen() {
         <QuoteOfTheDay />
 
         {/* ── VIDEOS ── */}
-        <View style={styles.section}>
+        <View style={[styles.section, { marginTop: 20 }]}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
               Videos
