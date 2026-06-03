@@ -206,24 +206,6 @@ export default function MeditacionesGuiadasScreen() {
                 { icon: "sun", text: "Porque la paz no viene de afuera — se cultiva desde adentro." },
               ]}
             />
-
-            {featuredGuides.length > 0 && (
-              <View style={styles.guidesSection}>
-                <Text style={[styles.guidesTitle, { color: colors.foreground }]}>Guiadores</Text>
-                <Text style={[styles.guidesSub, { color: colors.mutedForeground }]}>
-                  Voces certificadas que guían las meditaciones de Resonancia
-                </Text>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ paddingTop: 6 }}
-                >
-                  {featuredGuides.map((guide) => (
-                    <GuideCard key={guide.id} guide={guide} />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
           </>
         )}
 
