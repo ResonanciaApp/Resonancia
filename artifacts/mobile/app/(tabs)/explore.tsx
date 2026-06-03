@@ -333,7 +333,7 @@ export default function ExploreScreen() {
                     return (
                       <View key={`${session.id}-${playedAt}`} style={styles.historyRow}>
                         <View style={{ flex: 1 }}>
-                          <SessionCard session={session} horizontal cardBg="rgba(255,255,255,0.05)" />
+                          <SessionCard session={session} horizontal cardBg="#090E17" noBorder />
                           <Text style={[styles.historyDateOverlay, { color: colors.mutedForeground }]}>{dateLabel}</Text>
                         </View>
                       </View>
