@@ -461,10 +461,10 @@ export default function ProfileScreen() {
               {isPremium ? "Acceso completo activo" : "Acceso limitado al catálogo"}
             </Text>
           </View>
-          <Text style={[styles.membershipAction, { color: isPremium ? "#AA8D58" : colors.primary }]}>
+          <Text style={[styles.membershipAction, { color: isPremium ? "#BE9650" : colors.primary }]}>
             {isPremium ? "Gestionar" : "Mejorar"}
           </Text>
-          <Feather name="chevron-right" size={16} color={isPremium ? "#AA8D58" : colors.primary} />
+          <Feather name="chevron-right" size={16} color={isPremium ? "#BE9650" : colors.primary} />
         </Pressable>
 
         {!isPremium && (
@@ -489,7 +489,7 @@ export default function ProfileScreen() {
                 { icon: "users",      text: "Muro general de la comunidad" },
               ].map((f) => (
                 <View key={f.text} style={styles.premiumFeatureRow}>
-                  <Feather name={f.icon as never} size={11} color="#AA8D58" />
+                  <Feather name={f.icon as never} size={11} color="#BE9650" />
                   <Text style={[styles.premiumFeatureText, { color: "#D5C8B2" }]}>{f.text}</Text>
                 </View>
               ))}

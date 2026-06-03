@@ -386,7 +386,7 @@ export default function MusicaSonidosScreen() {
                                 </Text>
                                 {locked && (
                                   <View style={styles.timerLock}>
-                                    <Feather name="lock" size={9} color="#AA8D58" />
+                                    <Feather name="lock" size={9} color="#BE9650" />
                                   </View>
                                 )}
                               </>
