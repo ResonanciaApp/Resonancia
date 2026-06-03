@@ -55,7 +55,7 @@ export const CATEGORIES: Category[] = [
     id: "podcast",
     title: "Mezclador",
     subtitle: "Conversaciones que despiertan el alma",
-    icon: "mic",
+    icon: "sliders",
     sessionCount: 1,
     color: "#8AAAD4",
     gradient: ["#243350", "#101A28"],
