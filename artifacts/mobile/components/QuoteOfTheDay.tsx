@@ -2,7 +2,7 @@ import { View, Text, Image, Pressable, StyleSheet, Share } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
 
-const BLUE_BG       = "#090E17";
+const BLUE_BG       = "#10151E";
 const BLUE_CHIP_BG  = "#0F1A2A";
 const BLUE_ACCENT   = "#BE9650";
 const BLUE_MUTED    = "#7A8FA8";

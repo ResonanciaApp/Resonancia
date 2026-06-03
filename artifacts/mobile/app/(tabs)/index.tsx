@@ -215,7 +215,7 @@ export default function HomeScreen() {
           </View>
 
           {VIDEOS.length === 0 ? (
-            <View style={[styles.videosEmpty, { borderColor: "rgba(100,140,210,0.15)", backgroundColor: "#090E17" }]}>
+            <View style={[styles.videosEmpty, { borderColor: "rgba(100,140,210,0.15)", backgroundColor: "#10151E" }]}>
               <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
               <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
               <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
@@ -330,7 +330,7 @@ export default function HomeScreen() {
             </Text>
           </View>
           {recommended.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal cardBg="#090E17" noBorder />
+            <SessionCard key={s.id} session={s} horizontal cardBg="#10151E" noBorder />
           ))}
         </View>
 
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     height: RECENT_H,
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "#090E17",
+    backgroundColor: "#10151E",
   },
   recentImage: {
     width: "100%",

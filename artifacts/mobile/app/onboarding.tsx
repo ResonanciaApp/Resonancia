@@ -28,7 +28,7 @@ const PROFILE_KEY = "cdc_onboarding_profile";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
 const BG       = "#060A0F";
-const CARD     = "#090E17";
+const CARD     = "#10151E";
 const GOLD     = "#BE9650";
 const GOLD_LT  = "#BE9650";
 const MUTED    = "#7A8FA8";

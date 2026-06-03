@@ -199,7 +199,7 @@ export default function SonidosAncestalesScreen() {
                     style={({ pressed }) => [
                       styles.card,
                       {
-                        backgroundColor: "#090E17",
+                        backgroundColor: "#10151E",
                         borderColor: "transparent",
                         opacity: pressed ? 0.82 : 1,
                       },

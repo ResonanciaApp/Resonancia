@@ -254,7 +254,7 @@ export default function MusicaSonidosScreen() {
                       styles.card,
                       {
                         width: CARD_WIDTH,
-                        backgroundColor: "#090E17",
+                        backgroundColor: "#10151E",
                         borderColor: "transparent",
                         borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#090E17",
+    backgroundColor: "#10151E",
     borderRadius: 14,
     borderWidth: 0,
     paddingHorizontal: 14,

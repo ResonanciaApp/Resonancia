@@ -231,7 +231,7 @@ export default function MeditacionesGuiadasScreen() {
                     style={({ pressed }) => [
                       styles.card,
                       {
-                        backgroundColor: "#090E17",
+                        backgroundColor: "#10151E",
                         borderColor: "transparent",
                         borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,

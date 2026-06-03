@@ -155,7 +155,7 @@ export default function MiMusicaScreen() {
                 <Pressable
                   key={cat.id}
                   onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                  style={[styles.catCard, { backgroundColor: "#090E17", borderColor: "transparent" }]}
+                  style={[styles.catCard, { backgroundColor: "#10151E", borderColor: "transparent" }]}
                 >
                   {cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
