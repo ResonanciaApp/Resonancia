@@ -133,7 +133,7 @@ export default function MeditacionesGuiadasScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-            <Feather name="eye" size={44} color="#9D78CA" />
+            <Feather name="eye" size={44} color="#8B82BE" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Meditaciones"}
@@ -162,7 +162,7 @@ export default function MeditacionesGuiadasScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <Feather name={cat.icon} size={24} color="#9D78CA" />
+                      <Feather name={cat.icon} size={24} color="#8B82BE" />
                     </View>
 
                     <Text style={[styles.catName, { color: colors.foreground }]}>
