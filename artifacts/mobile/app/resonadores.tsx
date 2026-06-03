@@ -15,7 +15,7 @@ const C = {
   goldSoft: "#A97A34",
   fg:       "#EDE1D3",
   muted:    "#9E8B7A",
-  card:     "rgba(255,255,255,0.05)",
+  card:     "#090E17",
   border:   "rgba(198,155,79,0.18)",
   certified: "#5FB98C",
 };
@@ -332,8 +332,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: C.card,
     borderRadius: 18,
-    borderWidth: 1,
-    borderColor: C.border,
+    borderWidth: 0,
     padding: 16,
     marginBottom: 10,
     gap: 14,
