@@ -165,10 +165,10 @@ export default function HomeScreen() {
                 { borderTopLeftRadius: r,    borderTopRightRadius: r,    borderBottomLeftRadius: r,    borderBottomRightRadius: R },
               ];
               const iconColors: Record<string, string> = {
-                "sonidos-ancestrales": "#E8A030",
-                "meditaciones-guiadas": "#9B6ED4",
-                "musica-sonidos": "#44B86A",
-                "podcast": "#4A8ED6",
+                "sonidos-ancestrales": "#D59D42",
+                "meditaciones-guiadas": "#9D78CA",
+                "musica-sonidos": "#50AC6E",
+                "podcast": "#588EC8",
               };
               const iconColor = iconColors[cat.id] ?? cat.color;
               return (
