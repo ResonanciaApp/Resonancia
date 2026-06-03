@@ -225,11 +225,11 @@ export default function HomeScreen() {
               style={{ marginHorizontal: -GRID_PAD }}
               contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 12 }}
             >
-              {VIDEOS.map((v, i) => (
+              {VIDEOS.map((v) => (
                 <VideoCard
                   key={v.id}
                   video={v}
-                  width={i === 0 ? VIDEO_HERO_W : VIDEO_REG_W}
+                  width={VIDEO_HERO_W}
                 />
               ))}
             </ScrollView>
