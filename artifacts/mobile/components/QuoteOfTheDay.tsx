@@ -2,11 +2,10 @@ import { View, Text, Image, Pressable, StyleSheet, Share } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
 
-const GREEN_BG      = "#1A160A";
-const GREEN_ACCENT  = "#C8A860";
-const GREEN_CHIP_BG = "#2A200A";
-const GREEN_MUTED   = "#8A7A50";
-const GREEN_BORDER  = "rgba(182,149,95,0.25)";
+const BLUE_BG       = "#090E17";
+const BLUE_CHIP_BG  = "#0F1A2A";
+const BLUE_ACCENT   = "#C69B4F";
+const BLUE_MUTED    = "#7A8FA8";
 
 const AVATARS = [
   require("@/assets/images/sessions/session-1.jpg"),
@@ -34,10 +33,10 @@ export default function QuoteOfTheDay() {
   }
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: BLUE_BG }]}>
       {/* Chip */}
-      <View style={[styles.chip, { backgroundColor: GREEN_CHIP_BG }]}>
-        <Text style={[styles.chipText, { color: GREEN_ACCENT }]}>Frase del día</Text>
+      <View style={[styles.chip, { backgroundColor: BLUE_CHIP_BG }]}>
+        <Text style={[styles.chipText, { color: BLUE_ACCENT }]}>Frase del día</Text>
       </View>
 
       {/* Quote */}
@@ -46,35 +45,33 @@ export default function QuoteOfTheDay() {
       </Text>
 
       {/* Author */}
-      <Text style={[styles.author, { color: GREEN_ACCENT }]}>{quote.author}</Text>
+      <Text style={[styles.author, { color: BLUE_ACCENT }]}>{quote.author}</Text>
 
       {/* Footer */}
       <View style={styles.footer}>
         {/* Avatars + count */}
-        <View style={styles.footerLeft}>
+        <View style={[styles.countChip, { backgroundColor: BLUE_CHIP_BG }]}>
           <View style={styles.avatarRow}>
             {AVATARS.map((src, i) => (
               <Image
                 key={i}
                 source={src}
-                style={[styles.avatar, { marginLeft: i === 0 ? 0 : -10, borderColor: "#060A0F" }]}
+                style={[styles.avatar, { marginLeft: i === 0 ? 0 : -10, borderColor: BLUE_BG }]}
               />
             ))}
           </View>
-          <Text style={[styles.countText, { color: GREEN_MUTED }]}>
+          <Text style={[styles.countText, { color: BLUE_MUTED }]}>
             {formatCount(shareCount)} compartieron
           </Text>
         </View>
 
-        {/* Share button */}
+        {/* Share — solo icono */}
         <Pressable
           onPress={handleShare}
-          style={({ pressed }) => [
-            styles.shareBtn,
-            { backgroundColor: GREEN_CHIP_BG, borderColor: GREEN_BORDER, opacity: pressed ? 0.75 : 1 },
-          ]}
+          hitSlop={12}
+          style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}
         >
-          <Feather name="share-2" size={18} color={GREEN_ACCENT} />
+          <Feather name="share-2" size={20} color={BLUE_ACCENT} />
         </Pressable>
       </View>
     </View>
@@ -88,6 +85,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 16,
+    borderRadius: 20,
   },
   chip: {
     alignSelf: "flex-start",
@@ -117,10 +115,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  footerLeft: {
+  countChip: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
   avatarRow: {
     flexDirection: "row",
@@ -133,12 +134,5 @@ const styles = StyleSheet.create({
   },
   countText: {
     fontSize: 13,
-  },
-  shareBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
