@@ -258,7 +258,7 @@ export default function ExploreScreen() {
                     <Feather
                       name="clock"
                       size={13}
-                      color={colors.mutedForeground}
+                      color="white"
                       style={styles.timeIcon}
                     />
                     <Text style={[styles.timeLabel, { color: colors.foreground }]}>{bucket.label}</Text>

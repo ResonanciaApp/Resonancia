@@ -75,9 +75,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             {session.title}
           </Text>
           <View style={styles.hMeta}>
-            <Feather name="clock" size={11} color={colors.mutedForeground} />
             <Text style={[styles.hDuration, { color: colors.mutedForeground }]}>
-              {" "}{session.durationLabel}
+              {session.durationLabel}
             </Text>
           </View>
         </View>
@@ -101,9 +100,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         {session.title}
       </Text>
       <View style={styles.cardMeta}>
-        <Feather name="clock" size={11} color={colors.mutedForeground} />
         <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-          {" "}{session.durationLabel}
+          {session.durationLabel}
         </Text>
       </View>
     </Pressable>
