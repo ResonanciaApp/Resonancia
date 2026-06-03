@@ -136,6 +136,39 @@ export default function ExploreScreen() {
           )}
         </View>
 
+        {/* ── Mi Biblioteca (2×2 grid) ── */}
+        {query.length === 0 && (
+          <View style={[styles.section, { marginBottom: 32 }]}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+              Mi Biblioteca
+            </Text>
+            <View style={styles.libraryGrid}>
+              {[
+                { label: "Carpetas",   icon: "folder"     as const, route: "/carpetas"  },
+                { label: "Playlists",  icon: "list"       as const, route: "/playlists" },
+                { label: "Favoritos",  icon: "heart"      as const, route: "/favorites" },
+                { label: "Historial",  icon: "clock"      as const, route: "/historial" },
+              ].map((item) => (
+                <Pressable
+                  key={item.label}
+                  style={({ pressed }) => [
+                    styles.libraryCard,
+                    { backgroundColor: "#151A23", opacity: pressed ? 0.7 : 1 },
+                  ]}
+                  onPress={() => router.push(item.route as never)}
+                >
+                  <View style={[styles.libraryIconWrap, { backgroundColor: colors.primary + "22" }]}>
+                    <Feather name={item.icon} size={22} color={colors.primary} />
+                  </View>
+                  <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
+                    {item.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* ── Search results ── */}
         {query.length > 0 ? (
           <View style={styles.section}>
@@ -417,6 +450,33 @@ const styles = StyleSheet.create({
   section: { paddingHorizontal: H_PAD, marginBottom: 57 },
   sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   sectionSub: { fontSize: 12, marginBottom: 16 },
+
+  // Mi Biblioteca grid
+  libraryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  libraryCard: {
+    width: "47.5%",
+    borderRadius: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    gap: 10,
+  },
+  libraryIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  libraryLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
   emptyState: { alignItems: "center", paddingVertical: 48, gap: 10 },
