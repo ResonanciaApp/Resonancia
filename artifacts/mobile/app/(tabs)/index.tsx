@@ -154,7 +154,14 @@ export default function HomeScreen() {
         {/* ── 2. CATEGORÍAS ── */}
         <View style={styles.section}>
           <View style={styles.catGrid}>
-            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat) => {
+            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat, idx) => {
+              const iconColors: Record<string, string> = {
+                "sonidos-ancestrales": "#D59D42",
+                "meditaciones-guiadas": "#9D78CA",
+                "musica-sonidos": "#50AC6E",
+                "podcast": "#588EC8",
+              };
+              const iconColor = iconColors[cat.id] ?? colors.primary;
               return (
                 <Pressable
                   key={cat.id}
@@ -165,13 +172,13 @@ export default function HomeScreen() {
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                       size={26}
-                      color={colors.primary}
+                      color={iconColor}
                     />
                   ) : (
                     <Feather
                       name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
                       size={26}
-                      color={colors.primary}
+                      color={iconColor}
                     />
                   )}
                   <Text style={styles.catCardLabel} numberOfLines={2}>

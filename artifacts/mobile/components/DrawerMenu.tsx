@@ -326,13 +326,7 @@ const styles = StyleSheet.create({
   },
 
   // Items
-  itemGroup: {
-    gap: 2,
-    backgroundColor: "#090E17",
-    borderRadius: 14,
-    paddingVertical: 6,
-    paddingHorizontal: 4,
-  },
+  itemGroup: { gap: 2 },
   item: {
     flexDirection: "row",
     alignItems: "center",
