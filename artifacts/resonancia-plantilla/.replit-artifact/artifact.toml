@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/resonancia-plantilla/"
+title = "RESONANCIA — Plantilla"
+version = "1.0.0"
+id = "artifacts/resonancia-plantilla"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/resonancia-plantilla/" ]
+localPort = 22736
+
+[services.development]
+run = "pnpm --filter @workspace/resonancia-plantilla run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/resonancia-plantilla", "run", "build" ]
+publicDir = "artifacts/resonancia-plantilla/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22736"
+BASE_PATH = "/resonancia-plantilla/"
