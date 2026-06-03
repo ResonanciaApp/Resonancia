@@ -32,9 +32,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
 import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
+import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
 const { width } = Dimensions.get("window");
 const ART_SIZE = width * 0.72;
@@ -174,12 +176,20 @@ export default function PlayerScreen() {
     [setAmbientVolume]
   );
 
+  const { isPremium } = usePremium();
+
   const handleSelectTimer = useCallback(
     (minutes: number | null) => {
+      if (minutes !== null && minutes > FREE_TIMER_MAX_MINUTES && !isPremium) {
+        showPremiumGate(
+          `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para dormir con hasta 8 horas.`,
+        );
+        return;
+      }
       setSelectedTimerMinutes(minutes);
       setSleepTimer(minutes);
     },
-    [setSleepTimer]
+    [setSleepTimer, isPremium]
   );
 
   useEffect(() => {
@@ -572,6 +582,8 @@ export default function PlayerScreen() {
             >
               {TIMER_OPTIONS.map((opt) => {
                 const selected = opt.minutes === selectedTimerMinutes;
+                const locked =
+                  opt.minutes !== null && opt.minutes > FREE_TIMER_MAX_MINUTES && !isPremium;
                 return (
                   <Pressable
                     key={String(opt.minutes)}
@@ -581,9 +593,15 @@ export default function PlayerScreen() {
                       {
                         backgroundColor: selected ? colors.primary : "rgba(100,140,210,0.08)",
                         borderColor: selected ? colors.primary : "rgba(100,140,210,0.2)",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 4,
                       },
                     ]}
                   >
+                    {locked && (
+                      <Feather name="lock" size={11} color={colors.mutedForeground} />
+                    )}
                     <Text
                       style={[
                         styles.timerChipText,

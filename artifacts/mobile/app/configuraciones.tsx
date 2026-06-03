@@ -25,6 +25,7 @@ import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
+import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -159,6 +160,12 @@ export default function ConfiguracionesScreen() {
   };
 
   const onPickSleep = (minutes: number | null) => {
+    if (minutes !== null && minutes > FREE_TIMER_MAX_MINUTES && !isPremiumDev) {
+      showPremiumGate(
+        `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para dormir con hasta 8 horas.`,
+      );
+      return;
+    }
     update({ defaultSleepMinutes: minutes });
     updateDefaultSleepTimer(minutes);
   };
@@ -355,6 +362,8 @@ export default function ConfiguracionesScreen() {
             <View style={styles.chipsRow}>
               {SLEEP_OPTIONS.map((opt) => {
                 const active = settings.defaultSleepMinutes === opt.value;
+                const locked =
+                  opt.value !== null && opt.value > FREE_TIMER_MAX_MINUTES && !isPremiumDev;
                 return (
                   <Pressable
                     key={opt.label}
@@ -364,9 +373,15 @@ export default function ConfiguracionesScreen() {
                       {
                         backgroundColor: active ? colors.primary : "transparent",
                         borderColor: active ? colors.primary : "rgba(255,255,255,0.12)",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 4,
                       },
                     ]}
                   >
+                    {locked && (
+                      <Feather name="lock" size={11} color={colors.mutedForeground} />
+                    )}
                     <Text style={[styles.chipText, { color: active ? "#080F0A" : colors.foreground }]}>
                       {opt.label}
                     </Text>

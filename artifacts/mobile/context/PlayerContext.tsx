@@ -22,7 +22,9 @@ import {
   stopMixPlayback,
 } from "@/context/audioBridge";
 import { useAuth } from "@/context/AuthContext";
+import { usePremium } from "@/context/PremiumContext";
 import { syncActivity } from "@/lib/cloudSync";
+import { FREE_FAVORITES_LIMIT, FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
 export interface HistoryEntry {
   sessionId: string;
@@ -135,6 +137,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [sessionProgress, setSessionProgress] = useState<Record<string, number>>({});
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
   const defaultSleepMinutesRef = useRef<number | null>(null);
+  const isPremiumRef = useRef(false);
 
   // ── Sincronización con la nube (offline-first) ──────────────────────────────
   const { isSignedIn } = useAuth();
@@ -862,7 +865,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           markPlayStarted();
           // Aplicar timer por defecto al iniciar una nueva sesión
           if (defaultSleepMinutesRef.current !== null) {
-            setSleepTimerRemaining(defaultSleepMinutesRef.current * 60);
+            const capped =
+              !isPremiumRef.current &&
+              defaultSleepMinutesRef.current > FREE_TIMER_MAX_MINUTES
+                ? FREE_TIMER_MAX_MINUTES
+                : defaultSleepMinutesRef.current;
+            setSleepTimerRemaining(capped * 60);
           }
         } catch (err) {
           console.warn("[RESONANCE] Audio load failed:", err);
@@ -1276,15 +1284,28 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const { isPremium } = usePremium();
+
+  useEffect(() => {
+    isPremiumRef.current = isPremium;
+  }, [isPremium]);
+
   const toggleFavorite = useCallback(
     async (id: string) => {
-      const updated = favorites.includes(id)
-        ? favorites.filter((f) => f !== id)
-        : [...favorites, id];
+      const isAdding = !favorites.includes(id);
+      if (isAdding && !isPremium && favorites.length >= FREE_FAVORITES_LIMIT) {
+        showPremiumGate(
+          `Como usuario gratuito puedes guardar hasta ${FREE_FAVORITES_LIMIT} favoritos. Hazte Premium para guardar sesiones sin límite.`,
+        );
+        return;
+      }
+      const updated = isAdding
+        ? [...favorites, id]
+        : favorites.filter((f) => f !== id);
       setFavorites(updated);
       await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updated));
     },
-    [favorites]
+    [favorites, isPremium]
   );
 
   const isFavorite = useCallback(

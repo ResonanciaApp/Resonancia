@@ -11,7 +11,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
+import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
 // ─── Timer options ────────────────────────────────────────────────────────────
 
@@ -33,12 +35,20 @@ type Props = {
 export function TimerSheet({ visible, onClose }: Props) {
   const colors = useColors();
   const { sleepTimerRemaining, setSleepTimer } = usePlayer();
+  const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
 
   const activeMinutes =
     sleepTimerRemaining === null ? null : Math.ceil(sleepTimerRemaining / 60);
 
   const handleSelect = (value: number | null) => {
+    if (value !== null && value > FREE_TIMER_MAX_MINUTES && !isPremium) {
+      onClose();
+      showPremiumGate(
+        `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para dormir con hasta 8 horas.`,
+      );
+      return;
+    }
     setSleepTimer(value);
     onClose();
   };
@@ -80,6 +90,8 @@ export function TimerSheet({ visible, onClose }: Props) {
             const isActive = value === null
               ? sleepTimerRemaining === null
               : activeMinutes === value;
+            const locked =
+              value !== null && value > FREE_TIMER_MAX_MINUTES && !isPremium;
             return (
               <Pressable
                 key={idx}
@@ -91,13 +103,15 @@ export function TimerSheet({ visible, onClose }: Props) {
               >
                 <Text style={[
                   styles.optLabel,
-                  { color: isActive ? colors.primary : colors.foreground },
+                  { color: isActive ? colors.primary : locked ? colors.mutedForeground : colors.foreground },
                 ]}>
                   {label}
                 </Text>
-                {isActive && (
+                {isActive ? (
                   <Feather name="check" size={18} color={colors.primary} />
-                )}
+                ) : locked ? (
+                  <Feather name="lock" size={15} color={colors.mutedForeground} />
+                ) : null}
               </Pressable>
             );
           })}

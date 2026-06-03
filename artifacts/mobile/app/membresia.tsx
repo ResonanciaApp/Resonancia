@@ -4,6 +4,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -13,9 +15,10 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import type { PurchasesPackage } from "react-native-purchases";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { useColors } from "@/hooks/useColors";
+import { useSubscription } from "@/lib/revenuecat";
 
 const P = {
   bg0:        "#06150F",
@@ -39,18 +42,93 @@ const BENEFITS = [
   { icon: "headphones", text: "Acceso ilimitado a todas las sesiones" },
   { icon: "moon", text: "Sección Descanso completa con historias y binaurales" },
   { icon: "mic", text: "Voz Interior — grabaciones ilimitadas" },
-  { icon: "users", text: "Acceso a la comunidad y grupos espirituales" },
+  { icon: "heart", text: "Favoritos y diario ilimitados" },
+  { icon: "clock", text: "Temporizador de sueño hasta 8 horas" },
   { icon: "download", text: "Descarga para escuchar sin conexión" },
-  { icon: "zap", text: "Nuevas sesiones cada semana" },
   { icon: "star", text: "Contenido exclusivo para miembros" },
 ];
 
+/** Calcula el ahorro % del plan anual frente a 12 meses del mensual. */
+function computeSavings(
+  annual?: PurchasesPackage | null,
+  monthly?: PurchasesPackage | null,
+): number | null {
+  if (!annual || !monthly) return null;
+  const a = annual.product.price;
+  const m = monthly.product.price;
+  if (!a || !m) return null;
+  const pct = Math.round((1 - a / (m * 12)) * 100);
+  return pct > 0 ? pct : null;
+}
+
 export default function MembresiaScreen() {
-  const colors = useColors();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const [selected, setSelected] = useState<"anual" | "mensual">("anual");
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+
+  const {
+    offerings,
+    isSubscribed,
+    isLoading,
+    purchase,
+    restore,
+    isPurchasing,
+    isRestoring,
+  } = useSubscription();
+
+  const current = offerings?.current;
+  const annualPkg = current?.annual ?? null;
+  const monthlyPkg = current?.monthly ?? null;
+  const selectedPkg = selected === "anual" ? annualPkg : monthlyPkg;
+
+  const annualPrice = annualPkg?.product.priceString;
+  const monthlyPrice = monthlyPkg?.product.priceString;
+  const savings = computeSavings(annualPkg, monthlyPkg);
+
+  const handleStartPurchase = () => {
+    setFeedback(null);
+    if (!selectedPkg) {
+      setFeedback(
+        "Los planes todavía no están disponibles. Inténtalo de nuevo en unos momentos.",
+      );
+      return;
+    }
+    setConfirmVisible(true);
+  };
+
+  const confirmPurchase = async () => {
+    setConfirmVisible(false);
+    if (!selectedPkg) return;
+    try {
+      await purchase(selectedPkg);
+      setFeedback(null);
+    } catch (err: unknown) {
+      const e = err as { userCancelled?: boolean; message?: string };
+      if (e?.userCancelled) return;
+      setFeedback(e?.message ?? "No se pudo completar la compra. Inténtalo de nuevo.");
+    }
+  };
+
+  const handleRestore = async () => {
+    setFeedback(null);
+    try {
+      await restore();
+      setFeedback("Compras restauradas. Si tenías una suscripción activa, ya está aplicada.");
+    } catch {
+      setFeedback("No se pudieron restaurar las compras.");
+    }
+  };
+
+  const ctaPrice =
+    selected === "anual" ? annualPrice : monthlyPrice;
+  const ctaLabel = isPurchasing
+    ? "Procesando…"
+    : selected === "anual"
+      ? `Comenzar con plan anual${ctaPrice ? ` · ${ctaPrice}` : ""}`
+      : `Comenzar con plan mensual${ctaPrice ? ` · ${ctaPrice}` : ""}`;
 
   return (
     <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
@@ -83,7 +161,6 @@ export default function MembresiaScreen() {
           <Text style={[styles.heroTitle, { color: P.textMain }]}>
             Membresía{"\n"}Resonancia
           </Text>
-          {/* Divider dorado tipo banner premium */}
           <LinearGradient
             colors={["transparent", P.goldSoft, "transparent"]}
             start={{ x: 0, y: 0 }}
@@ -91,100 +168,182 @@ export default function MembresiaScreen() {
             style={styles.divider}
           />
           <Text style={[styles.heroSub, { color: P.textMuted }]}>
-            Accede a toda la experiencia sonora
+            {isSubscribed
+              ? "Tu membresía está activa"
+              : "Accede a toda la experiencia sonora"}
           </Text>
         </View>
 
-        {/* Plan selector */}
-        <View style={[styles.planRow, { paddingHorizontal: 20 }]}>
-          {/* Anual */}
-          <Pressable
-            onPress={() => setSelected("anual")}
-            style={({ pressed }) => [
-              styles.planCard,
-              {
-                borderColor: selected === "anual" ? P.borderSel : P.border,
-                backgroundColor: selected === "anual" ? P.cardSelBg : P.cardBg,
-                opacity: pressed ? 0.9 : 1,
-              },
-            ]}
-          >
-            {selected === "anual" && (
+        {isSubscribed ? (
+          /* Estado: ya es premium */
+          <View style={{ paddingHorizontal: 20 }}>
+            <View style={[styles.activeCard, { borderColor: P.border, backgroundColor: P.cardSelBg }]}>
+              <View style={styles.activeBadge}>
+                <Feather name="check" size={26} color={P.goldHi} />
+              </View>
+              <Text style={[styles.activeTitle, { color: P.gold }]}>Eres Premium</Text>
+              <Text style={[styles.activeSub, { color: P.textMuted }]}>
+                Tienes acceso completo a todo el contenido y las funciones de Resonancia.
+                Puedes gestionar o cancelar tu suscripción desde la tienda de tu dispositivo.
+              </Text>
+            </View>
+            <Pressable onPress={() => router.back()} style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}>
               <LinearGradient
-                colors={[P.goldHi, P.gold]}
+                colors={[P.goldHi, P.gold, P.goldSoft]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={styles.bestBadge}
+                style={styles.ctaGrad}
               >
-                <Text style={styles.bestText}>RECOMENDADO</Text>
+                <Text style={styles.ctaText}>Volver</Text>
               </LinearGradient>
-            )}
-            <Text style={[styles.planName, { color: P.textMain }]}>Anual</Text>
-            <View style={styles.priceRow}>
-              <Text style={[styles.currency, { color: P.gold }]}>$</Text>
-              <Text style={[styles.price, { color: P.gold }]}>89</Text>
-              <Text style={[styles.pricePer, { color: P.textMuted }]}>/año</Text>
-            </View>
-            <Text style={[styles.planSub, { color: P.goldSoft }]}>≈ $7.40/mes</Text>
-            <View style={[styles.saveBadge, { backgroundColor: P.saveBg }]}>
-              <Text style={[styles.saveText, { color: P.saveText }]}>Ahorrás 40%</Text>
-            </View>
-          </Pressable>
+            </Pressable>
+          </View>
+        ) : (
+          <>
+            {/* Plan selector */}
+            <View style={[styles.planRow, { paddingHorizontal: 20 }]}>
+              {/* Anual */}
+              <Pressable
+                onPress={() => setSelected("anual")}
+                style={({ pressed }) => [
+                  styles.planCard,
+                  {
+                    borderColor: selected === "anual" ? P.borderSel : P.border,
+                    backgroundColor: selected === "anual" ? P.cardSelBg : P.cardBg,
+                    opacity: pressed ? 0.9 : 1,
+                  },
+                ]}
+              >
+                {selected === "anual" && (
+                  <LinearGradient
+                    colors={[P.goldHi, P.gold]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.bestBadge}
+                  >
+                    <Text style={styles.bestText}>RECOMENDADO</Text>
+                  </LinearGradient>
+                )}
+                <Text style={[styles.planName, { color: P.textMain }]}>Anual</Text>
+                <View style={styles.priceRow}>
+                  <Text style={[styles.price, { color: P.gold }]}>{annualPrice ?? "—"}</Text>
+                  <Text style={[styles.pricePer, { color: P.textMuted }]}>/año</Text>
+                </View>
+                <Text style={[styles.planSub, { color: P.goldSoft }]}>Facturación anual</Text>
+                {savings != null && (
+                  <View style={[styles.saveBadge, { backgroundColor: P.saveBg }]}>
+                    <Text style={[styles.saveText, { color: P.saveText }]}>Ahorras {savings}%</Text>
+                  </View>
+                )}
+              </Pressable>
 
-          {/* Mensual */}
-          <Pressable
-            onPress={() => setSelected("mensual")}
-            style={({ pressed }) => [
-              styles.planCard,
-              {
-                borderColor: selected === "mensual" ? P.borderSel : P.border,
-                backgroundColor: selected === "mensual" ? P.cardSelBg : P.cardBg,
-                opacity: pressed ? 0.9 : 1,
-              },
-            ]}
-          >
-            <Text style={[styles.planName, { color: P.textMain }]}>Mensual</Text>
-            <View style={styles.priceRow}>
-              <Text style={[styles.currency, { color: P.gold }]}>$</Text>
-              <Text style={[styles.price, { color: P.gold }]}>12</Text>
-              <Text style={[styles.pricePer, { color: P.textMuted }]}>/mes</Text>
+              {/* Mensual */}
+              <Pressable
+                onPress={() => setSelected("mensual")}
+                style={({ pressed }) => [
+                  styles.planCard,
+                  {
+                    borderColor: selected === "mensual" ? P.borderSel : P.border,
+                    backgroundColor: selected === "mensual" ? P.cardSelBg : P.cardBg,
+                    opacity: pressed ? 0.9 : 1,
+                  },
+                ]}
+              >
+                <Text style={[styles.planName, { color: P.textMain }]}>Mensual</Text>
+                <View style={styles.priceRow}>
+                  <Text style={[styles.price, { color: P.gold }]}>{monthlyPrice ?? "—"}</Text>
+                  <Text style={[styles.pricePer, { color: P.textMuted }]}>/mes</Text>
+                </View>
+                <Text style={[styles.planSub, { color: P.textMuted }]}>Cancela cuando quieras</Text>
+              </Pressable>
             </View>
-            <Text style={[styles.planSub, { color: P.textMuted }]}>Cancelá cuando quieras</Text>
-          </Pressable>
-        </View>
 
-        {/* Benefits */}
-        <View style={[styles.benefitsBlock, { paddingHorizontal: 20 }]}>
-          <Text style={[styles.benefitsTitle, { color: P.textMain }]}>Todo incluido</Text>
-          {BENEFITS.map((b) => (
-            <View key={b.text} style={styles.benefitRow}>
-              <View style={[styles.benefitIcon, { backgroundColor: P.cardSelBg, borderColor: P.border }]}>
-                <Feather name={b.icon as any} size={14} color={P.gold} />
-              </View>
-              <Text style={[styles.benefitText, { color: P.textMain }]}>{b.text}</Text>
+            {/* Benefits */}
+            <View style={[styles.benefitsBlock, { paddingHorizontal: 20 }]}>
+              <Text style={[styles.benefitsTitle, { color: P.textMain }]}>Todo incluido</Text>
+              {BENEFITS.map((b) => (
+                <View key={b.text} style={styles.benefitRow}>
+                  <View style={[styles.benefitIcon, { backgroundColor: P.cardSelBg, borderColor: P.border }]}>
+                    <Feather name={b.icon as any} size={14} color={P.gold} />
+                  </View>
+                  <Text style={[styles.benefitText, { color: P.textMain }]}>{b.text}</Text>
+                </View>
+              ))}
             </View>
-          ))}
-        </View>
 
-        {/* CTA */}
-        <View style={{ paddingHorizontal: 20 }}>
-          <Pressable style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}>
-            <LinearGradient
-              colors={[P.goldHi, P.gold, P.goldSoft]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.ctaGrad}
-            >
-              <Text style={styles.ctaText}>
-                {selected === "anual" ? "Comenzar con plan anual · $89" : "Comenzar con plan mensual · $12"}
+            {/* CTA */}
+            <View style={{ paddingHorizontal: 20 }}>
+              {isLoading && !current ? (
+                <View style={styles.loadingRow}>
+                  <ActivityIndicator color={P.gold} />
+                  <Text style={[styles.legal, { color: P.textMuted, marginTop: 8 }]}>
+                    Cargando planes…
+                  </Text>
+                </View>
+              ) : null}
+
+              <Pressable
+                disabled={isPurchasing}
+                onPress={handleStartPurchase}
+                style={({ pressed }) => [styles.ctaBtn, { opacity: pressed || isPurchasing ? 0.85 : 1 }]}
+              >
+                <LinearGradient
+                  colors={[P.goldHi, P.gold, P.goldSoft]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.ctaGrad}
+                >
+                  <Text style={styles.ctaText}>{ctaLabel}</Text>
+                </LinearGradient>
+              </Pressable>
+
+              <Pressable onPress={handleRestore} disabled={isRestoring} style={styles.restoreBtn} hitSlop={8}>
+                <Text style={[styles.restoreText, { color: P.goldSoft }]}>
+                  {isRestoring ? "Restaurando…" : "Restaurar compras"}
+                </Text>
+              </Pressable>
+
+              {feedback && (
+                <Text style={[styles.feedback, { color: P.textMuted }]}>{feedback}</Text>
+              )}
+
+              <Text style={[styles.legal, { color: P.textMuted }]}>
+                Pago seguro · Se renueva automáticamente · Cancela en cualquier momento
               </Text>
-            </LinearGradient>
-          </Pressable>
-          <Text style={[styles.legal, { color: P.textMuted }]}>
-            Pago seguro · Se renueva automáticamente · Cancelá en cualquier momento
-          </Text>
-        </View>
+            </View>
+          </>
+        )}
       </ScrollView>
+
+      {/* Modal de confirmación de compra (no usar Alert en modo test) */}
+      <Modal visible={confirmVisible} transparent animationType="fade" onRequestClose={() => setConfirmVisible(false)}>
+        <Pressable style={styles.modalBackdrop} onPress={() => setConfirmVisible(false)} />
+        <View style={styles.modalWrap} pointerEvents="box-none">
+          <View style={[styles.modalCard, { backgroundColor: "#10251C", borderColor: P.border }]}>
+            <Text style={[styles.modalTitle, { color: P.textMain }]}>Confirmar suscripción</Text>
+            <Text style={[styles.modalBody, { color: P.textMuted }]}>
+              {selected === "anual"
+                ? `Plan anual${annualPrice ? ` · ${annualPrice}/año` : ""}`
+                : `Plan mensual${monthlyPrice ? ` · ${monthlyPrice}/mes` : ""}`}
+            </Text>
+            <View style={styles.modalBtnRow}>
+              <Pressable onPress={() => setConfirmVisible(false)} style={({ pressed }) => [styles.modalBtnGhost, { opacity: pressed ? 0.7 : 1 }]}>
+                <Text style={[styles.modalBtnGhostText, { color: P.textMuted }]}>Cancelar</Text>
+              </Pressable>
+              <Pressable onPress={confirmPurchase} style={({ pressed }) => [styles.modalBtnPrimary, { opacity: pressed ? 0.85 : 1 }]}>
+                <LinearGradient
+                  colors={[P.goldHi, P.gold]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.modalBtnPrimaryGrad}
+                >
+                  <Text style={styles.modalBtnPrimaryText}>Confirmar</Text>
+                </LinearGradient>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -216,10 +375,9 @@ const styles = StyleSheet.create({
   },
   bestText: { color: "#08150F", fontSize: 9, fontWeight: "800", letterSpacing: 1 },
   planName: { fontSize: 18, fontWeight: "700", marginTop: 8 },
-  priceRow: { flexDirection: "row", alignItems: "flex-end", gap: 1 },
-  currency: { fontSize: 16, fontWeight: "700", marginBottom: 4 },
-  price: { fontSize: 36, fontWeight: "700", lineHeight: 40 },
-  pricePer: { fontSize: 13, marginBottom: 6 },
+  priceRow: { flexDirection: "row", alignItems: "flex-end", gap: 2 },
+  price: { fontSize: 30, fontWeight: "700", lineHeight: 34 },
+  pricePer: { fontSize: 13, marginBottom: 5 },
   planSub: { fontSize: 11, fontWeight: "500" },
   saveBadge: { borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3, alignSelf: "flex-start", marginTop: 4 },
   saveText: { fontSize: 11, fontWeight: "700" },
@@ -235,8 +393,45 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   benefitText: { flex: 1, fontSize: 14, lineHeight: 20 },
+  loadingRow: { alignItems: "center", marginBottom: 16 },
   ctaBtn: { borderRadius: 50, overflow: "hidden", marginBottom: 14 },
   ctaGrad: { paddingVertical: 16, alignItems: "center" },
   ctaText: { color: "#08150F", fontWeight: "800", fontSize: 16, letterSpacing: 0.3 },
+  restoreBtn: { alignItems: "center", paddingVertical: 6, marginBottom: 10 },
+  restoreText: { fontSize: 13, fontWeight: "600", textDecorationLine: "underline" },
+  feedback: { fontSize: 12.5, textAlign: "center", lineHeight: 18, marginBottom: 12 },
   legal: { fontSize: 11, textAlign: "center", lineHeight: 16 },
+  // Estado premium activo
+  activeCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 24,
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  activeBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(214,161,77,0.14)",
+    borderWidth: 1.5,
+    borderColor: "rgba(214,161,77,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 14,
+  },
+  activeTitle: { fontSize: 24, fontWeight: "800", marginBottom: 10 },
+  activeSub: { fontSize: 13.5, textAlign: "center", lineHeight: 20 },
+  // Modal
+  modalBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.6)" },
+  modalWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
+  modalCard: { width: "100%", borderRadius: 18, borderWidth: 1, padding: 22 },
+  modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 8, textAlign: "center" },
+  modalBody: { fontSize: 14, textAlign: "center", marginBottom: 20, lineHeight: 20 },
+  modalBtnRow: { flexDirection: "row", gap: 12 },
+  modalBtnGhost: { flex: 1, borderRadius: 50, paddingVertical: 13, alignItems: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" },
+  modalBtnGhostText: { fontSize: 14, fontWeight: "600" },
+  modalBtnPrimary: { flex: 1, borderRadius: 50, overflow: "hidden" },
+  modalBtnPrimaryGrad: { paddingVertical: 14, alignItems: "center" },
+  modalBtnPrimaryText: { color: "#08150F", fontWeight: "800", fontSize: 14 },
 });

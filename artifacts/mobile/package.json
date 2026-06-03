@@ -73,6 +73,7 @@
     "expo-notifications": "^0.32.17",
     "expo-store-review": "^9.0.9",
     "expo-updates": "~29.0.18",
-    "expo-video": "~3.0.16"
+    "expo-video": "~3.0.16",
+    "react-native-purchases": "^10.2.0"
   }
 }

@@ -15,8 +15,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { usePremium } from "@/context/PremiumContext";
 import { useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
+import { FREE_DIARIO_LIMIT, showPremiumGate } from "@/lib/premiumGate";
 
 const MAX_CHARS = 5000;
 
@@ -29,6 +31,7 @@ export default function DiarioEntradaScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const isEditing = !!id;
   const { entries, saveEntry, updateEntry, deleteEntry } = useDiario("reflexiones");
+  const { isPremium } = usePremium();
 
   const [text, setText] = useState("");
   const initializedRef = useRef(false);
@@ -55,6 +58,12 @@ export default function DiarioEntradaScreen() {
 
   const handleSave = async () => {
     if (!canSave) return;
+    if (!isPremium && entries.length >= FREE_DIARIO_LIMIT) {
+      showPremiumGate(
+        `El diario gratuito permite hasta ${FREE_DIARIO_LIMIT} entradas. Hazte Premium para escribir sin límite.`,
+      );
+      return;
+    }
     await saveEntry(text);
     router.back();
   };

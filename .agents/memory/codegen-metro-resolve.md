@@ -8,3 +8,5 @@ Running `pnpm --filter @workspace/api-spec run codegen` uses Orval with `clean: 
 **Why:** Metro's resolution failure is transient — the file is regenerated within the same command — but Metro does not auto-recover its module graph after the file reappears.
 
 **How to apply:** After any codegen run, restart the `artifacts/mobile: expo` workflow (the user's "RA") to clear Metro's cache. Verify the file exists on disk (`ls lib/api-client-react/src/generated/api.ts`) before assuming a real bug. typecheck passing while Metro errors = stale Metro cache, not a code problem.
+
+**Same symptom, other trigger:** adding a new native module (e.g. `react-native-purchases`) and wiring it into a provider can produce a phantom "Invalid hook call" in the browser console from a stale Metro bundle, even when there is only ONE react copy in the pnpm store (verify with `ls node_modules/.pnpm/react@*` + compare `readlink -f` of nested copies — all symlink to the same store entry). Don't chase duplicate-React theories first: restart expo to rebuild the bundle; the error clears if it was just stale Metro.
