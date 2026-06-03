@@ -38,5 +38,13 @@
     "title": "Cierre",
     "description": "Slide de cierre con marca y contacto.",
     "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-0006-4000-8000-plantilla00006",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06Paleta.tsx",
+    "title": "Paleta de colores",
+    "description": "Muestras de la paleta navy+dorado sobre fondo blanco.",
+    "speakerNotes": ""
   }
 ]
