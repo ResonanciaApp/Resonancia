@@ -162,7 +162,7 @@ export default function MeditacionesGuiadasScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <Feather name={cat.icon} size={24} color={colors.primary} />
+                      <Feather name={cat.icon} size={24} color="#9D78CA" />
                     </View>
 
                     <Text style={[styles.catName, { color: colors.foreground }]}>
