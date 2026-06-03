@@ -156,30 +156,46 @@ export default function HomeScreen() {
         {/* ── 2. CATEGORÍAS ── */}
         <View style={[styles.section, { marginBottom: 20 }]}>
           <View style={styles.catGrid}>
-            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat) => (
+            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat, idx) => {
+              const R = 20; const r = 4;
+              const radii = [
+                { borderTopLeftRadius: R,    borderTopRightRadius: r,    borderBottomLeftRadius: r,    borderBottomRightRadius: r },
+                { borderTopLeftRadius: r,    borderTopRightRadius: R,    borderBottomLeftRadius: r,    borderBottomRightRadius: r },
+                { borderTopLeftRadius: r,    borderTopRightRadius: r,    borderBottomLeftRadius: R,    borderBottomRightRadius: r },
+                { borderTopLeftRadius: r,    borderTopRightRadius: r,    borderBottomLeftRadius: r,    borderBottomRightRadius: R },
+              ];
+              const iconColors: Record<string, string> = {
+                "sonidos-ancestrales": "#E8A030",
+                "meditaciones-guiadas": "#9B6ED4",
+                "musica-sonidos": "#44B86A",
+                "podcast": "#4A8ED6",
+              };
+              const iconColor = iconColors[cat.id] ?? cat.color;
+              return (
               <Pressable
                 key={cat.id}
                 onPress={() => router.push(`/category/${cat.id}` as never)}
-                style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.75 : 1 }]}
+                style={({ pressed }) => [styles.catCard, radii[idx], { opacity: pressed ? 0.75 : 1 }]}
               >
                 {cat.iconFamily === "MaterialCommunityIcons" ? (
                   <MaterialCommunityIcons
                     name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                     size={26}
-                    color={cat.color}
+                    color={iconColor}
                   />
                 ) : (
                   <Feather
                     name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
                     size={26}
-                    color={cat.color}
+                    color={iconColor}
                   />
                 )}
                 <Text style={styles.catCardLabel} numberOfLines={2}>
                   {cat.title}
                 </Text>
               </Pressable>
-            ))}
+              );
+            })}
           </View>
         </View>
 
@@ -398,8 +414,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#171008",
-    borderRadius: 16,
+    backgroundColor: "#150F07",
     paddingHorizontal: 16,
     paddingVertical: 18,
   },
