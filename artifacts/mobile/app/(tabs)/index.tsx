@@ -281,7 +281,7 @@ export default function HomeScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingTop: 12, paddingRight: 4 }}
+              contentContainerStyle={{ paddingRight: 4 }}
             >
               {VIDEOS.map((v) => (
                 <VideoCard key={v.id} video={v} />

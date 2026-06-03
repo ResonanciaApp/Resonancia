@@ -63,7 +63,6 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
             placeholder={BLUR_PLACEHOLDER}
             transition={IMAGE_TRANSITION}
           />
-          <PlayOverlay />
           {locked && <LockStar />}
         </View>
         <View style={styles.hContent}>
@@ -72,9 +71,8 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
             {video.title}
           </Text>
           <View style={styles.hMeta}>
-            <Feather name="clock" size={11} color={colors.mutedForeground} />
             <Text style={[styles.hDuration, { color: colors.mutedForeground }]}>
-              {" "}{video.durationLabel}
+              {video.durationLabel}
             </Text>
           </View>
         </View>
@@ -95,16 +93,14 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
           placeholder={BLUR_PLACEHOLDER}
           transition={IMAGE_TRANSITION}
         />
-        <PlayOverlay />
         {locked && <LockStar />}
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {video.title}
       </Text>
       <View style={styles.cardMeta}>
-        <Feather name="clock" size={11} color={colors.mutedForeground} />
         <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-          {" "}{video.durationLabel}
+          {video.durationLabel}
         </Text>
       </View>
     </Pressable>
