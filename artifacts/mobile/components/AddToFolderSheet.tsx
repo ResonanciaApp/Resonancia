@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
@@ -50,9 +51,9 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
   const handleCreate = () => {
     const name = newName.trim();
     if (!name) return;
-    createFolder(name, sessionId);
-    setStep("list");
-    setNewName("");
+    const folder = createFolder(name, sessionId);
+    handleClose();
+    router.push(`/carpeta/${folder.id}` as never);
   };
 
   return (
