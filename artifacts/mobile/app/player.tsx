@@ -86,9 +86,9 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
           height: ART_SIZE + 40,
           borderRadius: (ART_SIZE + 40) / 2,
           position: "absolute",
-          backgroundColor: "rgba(182,149,95,0.05)",
+          backgroundColor: "rgba(100,140,210,0.05)",
           borderWidth: 1,
-          borderColor: "rgba(182,149,95,0.15)",
+          borderColor: "rgba(100,140,210,0.15)",
         },
         animStyle,
       ]}
@@ -345,10 +345,10 @@ export default function PlayerScreen() {
       <ScrollView showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={[styles.scrollContent, { paddingTop: topPad + 8 }]}>
         {/* Art + Glow */}
         <View style={styles.artSection}>
-          <GlowRing size={ART_SIZE + 80} color="rgba(182,149,95,0.12)" delay={0} duration={4000} />
-          <GlowRing size={ART_SIZE + 120} color="rgba(182,149,95,0.07)" delay={700} duration={4000} />
+          <GlowRing size={ART_SIZE + 80} color="rgba(100,140,210,0.12)" delay={0} duration={4000} />
+          <GlowRing size={ART_SIZE + 120} color="rgba(100,140,210,0.07)" delay={700} duration={4000} />
           <BreathingPulse isPlaying={isPlaying} />
-          <View style={[styles.artFrame, { borderColor: "rgba(182,149,95,0.25)" }]}>
+          <View style={[styles.artFrame, { borderColor: "rgba(100,140,210,0.25)" }]}>
             <ExpoImage
               source={currentSession.image as any}
               style={styles.artImage}
@@ -357,7 +357,7 @@ export default function PlayerScreen() {
               transition={IMAGE_TRANSITION}
             />
             <LinearGradient
-              colors={["transparent", "rgba(24,17,12,0.4)"]}
+              colors={["transparent", "rgba(6,10,15,0.4)"]}
               style={[StyleSheet.absoluteFill, { borderRadius: ART_SIZE / 2 }]}
             />
           </View>
@@ -433,7 +433,7 @@ export default function PlayerScreen() {
           {Platform.OS !== "web" ? (
             <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
           ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(24,17,12,0.55)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(6,10,15,0.55)" }]} />
           )}
           <View style={styles.controls}>
             <Pressable onPress={skipBackward} style={styles.controlSide}>
@@ -442,7 +442,7 @@ export default function PlayerScreen() {
             </Pressable>
 
             <View style={styles.playOuter}>
-              <View style={[styles.playRing, { borderColor: "rgba(182,149,95,0.25)" }]} />
+              <View style={[styles.playRing, { borderColor: "rgba(100,140,210,0.25)" }]} />
               <Pressable
                 onPress={handlePlayPause}
                 disabled={isLoading}
@@ -579,8 +579,8 @@ export default function PlayerScreen() {
                     style={[
                       styles.timerChip,
                       {
-                        backgroundColor: selected ? colors.primary : "rgba(182,149,95,0.08)",
-                        borderColor: selected ? colors.primary : "rgba(182,149,95,0.2)",
+                        backgroundColor: selected ? colors.primary : "rgba(100,140,210,0.08)",
+                        borderColor: selected ? colors.primary : "rgba(100,140,210,0.2)",
                       },
                     ]}
                   >
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
   controlsWrapper: {
     overflow: "hidden",
     borderTopWidth: 1,
-    borderTopColor: "rgba(182,149,95,0.12)",
+    borderTopColor: "rgba(100,140,210,0.12)",
     paddingTop: 20,
   },
   controls: {
@@ -873,7 +873,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     marginBottom: 12,
     borderTopWidth: 1,
-    borderTopColor: "rgba(182,149,95,0.1)",
+    borderTopColor: "rgba(100,140,210,0.1)",
   },
   timerHeader: {
     flexDirection: "row",
