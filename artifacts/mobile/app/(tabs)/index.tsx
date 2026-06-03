@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   },
   intentionCard: {
     paddingVertical: 10,
-    marginBottom: 30,
+    marginBottom: 0,
     alignItems: "center",
   },
   intentionLabel: {
