@@ -30,6 +30,9 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
+import { usePremium } from "@/context/PremiumContext";
 import { VIDEOS } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
@@ -45,8 +48,7 @@ const HERO_HEIGHT = 320;
 
 const VIDEO_HERO_W = width - GRID_PAD * 2 - 56;
 const VIDEO_REG_W = 200;
-const RECENT_W = Math.round((width - GRID_PAD * 2) / 2.45) + 5;
-const RECENT_H = 133;
+const RECENT_CARD_W = 150;
 
 const SECTION_GAP = 57;
 
@@ -77,6 +79,7 @@ export default function HomeScreen() {
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
   const { playSession } = usePlayer();
+  const { isPremium } = usePremium();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   function handleIntentionPress() {
@@ -256,23 +259,52 @@ export default function HomeScreen() {
             style={{ marginHorizontal: -GRID_PAD }}
             contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
           >
-            {recentSessions.map((s) => (
-              <Pressable
-                key={s.id}
-                onPress={() => { playSession(s); router.push("/player" as never); }}
-                style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.8 : 1 }]}
-              >
-                <Image
-                  source={s.image as number}
-                  style={styles.recentImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.recentOverlay}>
+            {recentSessions.map((s) => {
+              const locked = !!s.isPremium && !isPremium;
+              const creator =
+                s.categoryId === "meditaciones-guiadas"
+                  ? getGuide(s.guideId)
+                  : getArtist(s.artistId);
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => {
+                    if (locked) { router.push("/membresia" as never); return; }
+                    playSession(s); router.push("/player" as never);
+                  }}
+                  style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.85 : 1 }]}
+                >
+                  <View style={styles.recentThumbWrap}>
+                    <Image
+                      source={s.image as number}
+                      style={styles.recentThumb}
+                      resizeMode="cover"
+                    />
+                    {locked && (
+                      <Image
+                        source={require("@/assets/images/estrella-premium.png")}
+                        style={styles.recentStar}
+                        resizeMode="contain"
+                      />
+                    )}
+                    <View style={styles.recentDurBadge}>
+                      <Text style={styles.recentDurText}>{s.durationLabel}</Text>
+                    </View>
+                  </View>
                   <Text style={styles.recentTitle} numberOfLines={2}>{s.title}</Text>
-                  <Text style={styles.recentDuration}>{s.durationLabel}</Text>
-                </View>
-              </Pressable>
-            ))}
+                  <View style={styles.recentCreatorRow}>
+                    <Image
+                      source={creator.photo as number}
+                      style={styles.recentAvatar}
+                      resizeMode="cover"
+                    />
+                    <Text style={styles.recentCreatorName} numberOfLines={1}>
+                      {creator.name}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -441,35 +473,65 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
-  // Escuchados recientemente — rectángulos horizontales
+  // Escuchados recientemente — foto + título + creador
   recentCard: {
-    width: RECENT_W,
-    height: RECENT_H,
-    borderRadius: 12,
+    width: RECENT_CARD_W,
+  },
+  recentThumbWrap: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: 14,
     overflow: "hidden",
     backgroundColor: "#10151E",
   },
-  recentImage: {
+  recentThumb: {
     width: "100%",
     height: "100%",
-    position: "absolute",
   },
-  recentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(6,10,15,0.52)",
-    justifyContent: "flex-end",
-    padding: 10,
+  recentStar: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    width: 24,
+    height: 24,
+  },
+  recentDurBadge: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    backgroundColor: "rgba(6,10,15,0.72)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  recentDurText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#EDE1D3",
   },
   recentTitle: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "700",
     color: "#EDE1D3",
-    lineHeight: 15,
-    marginBottom: 3,
+    lineHeight: 17,
+    marginTop: 8,
   },
-  recentDuration: {
-    fontSize: 10,
-    color: "rgba(237,225,211,0.7)",
+  recentCreatorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 6,
+  },
+  recentAvatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#10151E",
+  },
+  recentCreatorName: {
+    fontSize: 11,
+    color: "#7A8FA8",
+    flex: 1,
   },
 
   // Hero — sesión destacada del día
