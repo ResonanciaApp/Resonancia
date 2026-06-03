@@ -60,7 +60,7 @@ export default function PodcastScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-            <Feather name="mic" size={22} color="#8AAAD4" />
+            <Feather name="mic" size={44} color="#8AAAD4" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mezclador</Text>
           <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>

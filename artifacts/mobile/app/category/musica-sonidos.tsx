@@ -160,7 +160,7 @@ export default function MusicaSonidosScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-            <Feather name="music" size={22} color="#A8C4A8" />
+            <Feather name="music" size={44} color="#A8C4A8" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             Frecuencias
