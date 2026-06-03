@@ -315,7 +315,9 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 8. LO QUE SIENTE LA COMUNIDAD ── */}
-        <AlmaCommunitySection />
+        <View style={{ marginTop: 20 }}>
+          <AlmaCommunitySection />
+        </View>
 
         {/* ── 10. BANNER PREMIUM ── */}
         <PremiumBanner />
