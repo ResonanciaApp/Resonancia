@@ -283,50 +283,6 @@ export default function MusicaSonidosScreen() {
           )}
         </View>
 
-        <CategoryInfoPanel
-          accentColor="#A8C4A8"
-          heading="¿Qué es Frecuencias?"
-          items={[
-            {
-              icon: "music",
-              title: "Atmósferas para acompañar",
-              body: "Paisajes sonoros que sostienen el momento — para meditar, leer, trabajar o simplemente estar.",
-            },
-            {
-              icon: "repeat",
-              title: "Pensados para fluir",
-              body: "En Sonidos Naturaleza eliges cuánto tiempo permanecer dentro del sonido. Música Ambient y Enteógena son pistas de duración fija.",
-            },
-            {
-              icon: "headphones",
-              title: "Mejor con auriculares",
-              body: "El detalle estéreo y las capas sutiles cobran vida cuando escuchas con auriculares.",
-            },
-          ]}
-          quote="El sonido no llena el silencio — lo revela."
-          whyItems={[
-            { icon: "feather", text: "Porque la música también es un refugio." },
-            { icon: "wind", text: "Porque a veces basta con escuchar para volver al cuerpo." },
-          ]}
-        />
-
-        {featuredArtists.length > 0 && (
-          <View style={styles.artistsSection}>
-            <Text style={[styles.artistsTitle, { color: colors.foreground }]}>Artistas</Text>
-            <Text style={[styles.artistsSub, { color: colors.mutedForeground }]}>
-              Productores certificados que crean música para Resonancia
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingTop: 6 }}
-            >
-              {featuredArtists.map((artist) => (
-                <ArtistCard key={artist.id} artist={artist} />
-              ))}
-            </ScrollView>
-          </View>
-        )}
       </ScrollView>
 
       {/* Duration Picker Modal */}
