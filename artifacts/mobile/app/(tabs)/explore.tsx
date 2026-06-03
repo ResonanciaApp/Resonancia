@@ -162,7 +162,7 @@ export default function ExploreScreen() {
         ) : (
           <>
             {/* ── Continúa escuchando (sin título; el reproductor basta) ── */}
-            <View style={styles.section}>
+            <View style={[styles.section, { marginBottom: 38 }]}>
               {lastSession ? (
                 <Pressable
                   onPress={() =>
