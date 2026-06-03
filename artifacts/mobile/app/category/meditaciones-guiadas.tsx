@@ -133,7 +133,7 @@ export default function MeditacionesGuiadasScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-            <Feather name="eye" size={44} color="#C8B4E0" />
+            <Feather name="eye" size={44} color="#9D78CA" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Meditaciones"}

@@ -106,7 +106,7 @@ export default function SonidosAncestalesScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-            <MaterialCommunityIcons name="bowl-mix" size={44} color="#E8C87A" />
+            <MaterialCommunityIcons name="bowl-mix" size={44} color="#D59D42" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {selectedTag ?? "Ancestrales"}
