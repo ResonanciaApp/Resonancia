@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
   },
-  tabLabel: { fontSize: 12, fontWeight: "400", letterSpacing: 0.2 },
+  tabLabel: { fontSize: 13, fontWeight: "400", letterSpacing: 0.2 },
 
   // Categorías de mezclas (reducidas ~25%)
   catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
