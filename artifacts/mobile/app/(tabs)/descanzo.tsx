@@ -45,7 +45,7 @@ export default function DescansoScreen() {
             style={StyleSheet.absoluteFill}
           />
           <View style={styles.headerIcon}>
-            <Feather name="moon" size={20} color="#8AAAD4" />
+            <Feather name="moon" size={20} color="#6B9AB5" />
           </View>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Descanso</Text>
           <Text style={[styles.headerSub, { color: colors.mutedForeground }]}>

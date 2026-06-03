@@ -161,10 +161,10 @@ export default function MiMusicaScreen() {
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                       size={26}
-                      color={colors.accent}
+                      color="#6B9AB5"
                     />
                   ) : (
-                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color={colors.accent} />
+                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color="#6B9AB5" />
                   )}
                   <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
                     {cat.label}
