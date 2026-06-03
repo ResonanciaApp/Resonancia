@@ -26,7 +26,11 @@ const H_PAD = 20;
 
 type MusicTab = "Música Ambient" | "Música Ancestral" | "Música Enteógena";
 
-const TABS: MusicTab[] = ["Música Ambient", "Música Ancestral", "Música Enteógena"];
+const TABS: { label: string; value: MusicTab }[] = [
+  { label: "Ambient",    value: "Música Ambient"    },
+  { label: "Ancestral",  value: "Música Ancestral"  },
+  { label: "Enteógena",  value: "Música Enteógena"  },
+];
 
 const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
 
@@ -53,8 +57,8 @@ export default function MusicaSonidosScreen() {
     }
   };
 
-  const selectTab = (tab: MusicTab, idx: number) => {
-    setActiveTab(tab);
+  const selectTab = (value: MusicTab, idx: number) => {
+    setActiveTab(value);
     const layout = tabLayouts.current[idx];
     if (layout) {
       setIndicatorWidth(layout.width);
@@ -117,10 +121,10 @@ export default function MusicaSonidosScreen() {
               { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD },
             ]}
           >
-            {TABS.map((tab, idx) => (
+            {TABS.map(({ label, value }, idx) => (
               <Pressable
-                key={tab}
-                onPress={() => selectTab(tab, idx)}
+                key={value}
+                onPress={() => selectTab(value, idx)}
                 onLayout={(e) => onTabLayout(idx, e)}
                 style={styles.tabItem}
               >
@@ -129,13 +133,13 @@ export default function MusicaSonidosScreen() {
                     styles.tabLabel,
                     {
                       color:
-                        activeTab === tab
+                        activeTab === value
                           ? colors.foreground
                           : colors.mutedForeground,
                     },
                   ]}
                 >
-                  {tab}
+                  {label}
                 </Text>
               </Pressable>
             ))}
