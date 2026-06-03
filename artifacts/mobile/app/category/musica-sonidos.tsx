@@ -138,10 +138,10 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#050704" }]}>
+    <View style={[styles.root, { backgroundColor: "#060A0F" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#0B1008", "#0B1008"]}
+        colors={["#060A0F", "#060A0F"]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -229,7 +229,7 @@ export default function MusicaSonidosScreen() {
                       styles.card,
                       {
                         width: CARD_WIDTH,
-                        backgroundColor: "#121B0C",
+                        backgroundColor: "#090E17",
                         borderColor: "transparent",
                         borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,
