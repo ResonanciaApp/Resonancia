@@ -30,17 +30,17 @@ const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ance
 
 type CategoryDef = {
   tag: AncestralTag;
-  image: import("react-native").ImageSourcePropType;
+  icon: React.ComponentProps<typeof Feather>["name"];
   description: string;
 };
 
 const CATEGORIES: CategoryDef[] = [
-  { tag: "Cuencos Tibetanos",  image: require("@/assets/images/sessions/session-2.jpg"),              description: "Vibraciones milenarias del Himalaya" },
-  { tag: "Cuencos de Cuarzo", image: require("@/assets/images/sessions/session-8.jpg"),              description: "Frecuencias cristalinas de alta pureza" },
-  { tag: "Mix de Cuencos",    image: require("@/assets/images/sessions/session-9.jpg"),              description: "Lo mejor de ambos mundos sonoros" },
-  { tag: "Gongs",             image: require("@/assets/images/sessions/session-10.jpg"),             description: "Ondas expansivas de transformación" },
-  { tag: "Cuencos y Gongs",   image: require("@/assets/images/sessions/session-29.jpg"),             description: "Combinación sagrada de instrumentos" },
-  { tag: "Full Instrumentos", image: require("@/assets/images/sessions/ancestral-instrumentos.jpg"), description: "Todos los instrumentos ancestrales" },
+  { tag: "Cuencos Tibetanos",  icon: "triangle", description: "Vibraciones milenarias del Himalaya" },
+  { tag: "Cuencos de Cuarzo", icon: "droplet",  description: "Frecuencias cristalinas de alta pureza" },
+  { tag: "Mix de Cuencos",    icon: "wind",     description: "Lo mejor de ambos mundos sonoros" },
+  { tag: "Gongs",             icon: "sun",      description: "Ondas expansivas de transformación" },
+  { tag: "Cuencos y Gongs",   icon: "moon",     description: "Combinación sagrada de instrumentos" },
+  { tag: "Full Instrumentos", icon: "layers",   description: "Todos los instrumentos ancestrales" },
 ];
 
 export default function SonidosAncestalesScreen() {
@@ -105,7 +105,7 @@ export default function SonidosAncestalesScreen() {
           >
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: "rgba(232,200,122,0.12)", borderColor: "rgba(232,200,122,0.28)" }]}>
+          <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
             <MaterialCommunityIcons name="bowl-mix" size={22} color="#E8C87A" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
@@ -135,7 +135,7 @@ export default function SonidosAncestalesScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <MaterialCommunityIcons name="bowl-mix" size={26} color="#E8C87A" />
+                      <Feather name={cat.icon} size={22} color="#E8C87A" />
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>

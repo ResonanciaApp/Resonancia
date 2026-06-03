@@ -59,7 +59,7 @@ export default function PodcastScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: "rgba(138,170,212,0.12)", borderColor: "rgba(138,170,212,0.28)" }]}>
+          <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
             <Feather name="mic" size={22} color="#8AAAD4" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mezclador</Text>

@@ -159,7 +159,7 @@ export default function MusicaSonidosScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: "rgba(168,196,168,0.12)", borderColor: "rgba(168,196,168,0.28)" }]}>
+          <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
             <Feather name="music" size={22} color="#A8C4A8" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
