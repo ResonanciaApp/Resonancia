@@ -45,7 +45,7 @@ const HERO_HEIGHT = 320;
 
 const VIDEO_HERO_W = width - GRID_PAD * 2 - 56;
 const VIDEO_REG_W = 200;
-const RECENT_W = Math.round((width - GRID_PAD * 2) / 2.45);
+const RECENT_W = Math.round((width - GRID_PAD * 2) / 2.45) + 5;
 const RECENT_H = 133;
 
 const SECTION_GAP = 32;
