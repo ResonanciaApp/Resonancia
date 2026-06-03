@@ -143,10 +143,10 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#060A0F" }]}>
+    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#060A0F", "#060A0F"]}
+        colors={["#0B0F14", "#0B0F14"]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -254,7 +254,7 @@ export default function MusicaSonidosScreen() {
                       styles.card,
                       {
                         width: CARD_WIDTH,
-                        backgroundColor: "#10151E",
+                        backgroundColor: "#151A23",
                         borderColor: "transparent",
                         borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,
@@ -379,7 +379,7 @@ export default function MusicaSonidosScreen() {
                                 <Text
                                   style={[
                                     styles.durationNum,
-                                    { fontSize: 18, color: pressed ? "#060A0F" : colors.foreground },
+                                    { fontSize: 18, color: pressed ? "#0B0F14" : colors.foreground },
                                   ]}
                                 >
                                   {opt.label}
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#10151E",
+    backgroundColor: "#151A23",
     borderRadius: 14,
     borderWidth: 0,
     paddingHorizontal: 14,

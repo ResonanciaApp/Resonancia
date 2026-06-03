@@ -120,7 +120,7 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Search bar ── */}
-        <View style={[styles.searchBar, { backgroundColor: "#10151E", borderColor: "transparent" }]}>
+        <View style={[styles.searchBar, { backgroundColor: "#151A23", borderColor: "transparent" }]}>
           <Feather name="search" size={16} color={colors.mutedForeground} />
           <TextInput
             value={query}
@@ -174,7 +174,7 @@ export default function ExploreScreen() {
                   }
                   style={({ pressed }) => [
                     styles.continueCard,
-                    { backgroundColor: "#10151E", opacity: pressed ? 0.85 : 1 },
+                    { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
                   <Image
@@ -218,7 +218,7 @@ export default function ExploreScreen() {
                 <View
                   style={[
                     styles.continuePlaceholder,
-                    { backgroundColor: "#10151E", borderColor: "transparent" },
+                    { backgroundColor: "#151A23", borderColor: "transparent" },
                   ]}
                 >
                   <View
@@ -331,7 +331,7 @@ export default function ExploreScreen() {
                     return (
                       <View key={`${session.id}-${playedAt}`} style={styles.historyRow}>
                         <View style={{ flex: 1 }}>
-                          <SessionCard session={session} horizontal cardBg="#10151E" noBorder />
+                          <SessionCard session={session} horizontal cardBg="#151A23" noBorder />
                           <Text style={[styles.historyDateOverlay, { color: colors.mutedForeground }]}>{dateLabel}</Text>
                         </View>
                       </View>

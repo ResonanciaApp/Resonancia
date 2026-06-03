@@ -54,7 +54,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         style={({ pressed }) => [
           styles.hRow,
           {
-            backgroundColor: cardBg ?? "#10151E",
+            backgroundColor: cardBg ?? "#151A23",
             borderWidth: 0,
             borderColor: "transparent",
             opacity: pressed ? 0.8 : 1,

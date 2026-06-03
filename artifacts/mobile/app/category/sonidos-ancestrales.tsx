@@ -81,7 +81,7 @@ export default function SonidosAncestalesScreen() {
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#060A0F" }]}>
+    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -199,7 +199,7 @@ export default function SonidosAncestalesScreen() {
                     style={({ pressed }) => [
                       styles.card,
                       {
-                        backgroundColor: "#10151E",
+                        backgroundColor: "#151A23",
                         borderColor: "transparent",
                         opacity: pressed ? 0.82 : 1,
                       },

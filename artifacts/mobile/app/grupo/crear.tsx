@@ -104,7 +104,7 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#060A0F" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#0B0F14" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontSize: 28, fontWeight: "700", color: "#C8C1B5" },
   name: { color: "#C8C1B5", fontSize: 18, fontWeight: "700", marginBottom: 4 },
@@ -201,7 +201,7 @@ export default function CrearGrupoScreen() {
   if (step === 1) {
     return (
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#060A0F" }]}
+        style={[styles.root, { backgroundColor: "#0B0F14" }]}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <StatusBar barStyle="light-content" />
@@ -252,7 +252,7 @@ export default function CrearGrupoScreen() {
   // ── Steps 2-5: Group preview + bottom sheet ───────────────────────────────
   return (
     <KeyboardAvoidingView
-      style={[styles.root, { backgroundColor: "#060A0F" }]}
+      style={[styles.root, { backgroundColor: "#0B0F14" }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={0}
     >

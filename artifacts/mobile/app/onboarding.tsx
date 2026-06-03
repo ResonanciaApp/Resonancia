@@ -27,8 +27,8 @@ const STORAGE_KEY = "cdc_onboarding_done";
 const PROFILE_KEY = "cdc_onboarding_profile";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
-const BG       = "#060A0F";
-const CARD     = "#10151E";
+const BG       = "#0B0F14";
+const CARD     = "#151A23";
 const GOLD     = "#BE9650";
 const GOLD_LT  = "#BE9650";
 const MUTED    = "#7A8FA8";
@@ -296,7 +296,7 @@ export default function Onboarding() {
   if (step === -1) {
     return (
       <LinearGradient
-        colors={["#04070D", "#060A0F", "#0A0F18", "#060A0F"]}
+        colors={["#04070D", "#0B0F14", "#0A0F18", "#0B0F14"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
