@@ -1,4 +1,4 @@
-export type SoundTag = "Sonidos Naturaleza" | "Música Ambient" | "Música Enteógena";
+export type SoundTag = "Sonidos Naturaleza" | "Música Ambient" | "Música Enteógena" | "Música Ancestral";
 export type MeditationTag =
   | "No Duales"
   | "Visualizaciones"
@@ -396,6 +396,76 @@ export const SESSIONS: Session[] = [
     ancestralTag: "Cuencos Tibetanos" as const,
     themeTag: ["Para la ansiedad"] as const,
     sleepTag: "Sonidos Binaurales" as const,
+    isNew: true,
+  },
+  {
+    id: "31",
+    isPremium: true,
+    title: "Selva Enteógena",
+    subtitle: "Música Enteógena",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música",
+    duration: 40,
+    durationLabel: "40 min",
+    description:
+      "Una travesía sonora profunda inspirada en rituales amazónicos. Capas de percusión orgánica, drones y texturas enteógenas que disuelven la mente ordinaria y abren portales hacia lo invisible.",
+    benefits: ["Expansión de consciencia", "Profundidad emocional", "Soltar el control", "Viaje interior"],
+    instruments: ["Percusión ritual", "Drones", "Sintetizadores orgánicos"],
+    image: require("@/assets/images/sessions/session-9-musica-dark.jpg"),
+    soundTag: "Música Enteógena" as const,
+    artistId: "lumen-sonora",
+    isNew: true,
+  },
+  {
+    id: "32",
+    isPremium: true,
+    title: "Cacao Ceremonial",
+    subtitle: "Música Enteógena",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música",
+    duration: 50,
+    durationLabel: "50 min",
+    description:
+      "Composición diseñada para ceremonias de cacao: apertura del corazón, sentir la gratitud y conectar con la tierra. Un viaje musical que acompaña desde la apertura hasta la integración.",
+    benefits: ["Apertura del corazón", "Gratitud", "Conexión con la tierra", "Integración"],
+    instruments: ["Tambor chamánico", "Flautas nativas", "Texturas ambientales"],
+    image: require("@/assets/images/sessions/session-2-musica-dark.jpg"),
+    soundTag: "Música Enteógena" as const,
+    artistId: "raiz-profunda",
+    isNew: true,
+  },
+  {
+    id: "33",
+    isPremium: true,
+    title: "Cuencos del Alba",
+    subtitle: "Música Ancestral",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música",
+    duration: 30,
+    durationLabel: "30 min",
+    description:
+      "Una composición musical que incorpora cuencos tibetanos, gongs y campanas ancestrales sobre una base ambient. Distinta a la práctica de cuencos: aquí los sonidos ancestrales son el lenguaje de una pieza musical continua.",
+    benefits: ["Vibración profunda", "Limpieza energética", "Presencia plena", "Calma duradera"],
+    instruments: ["Cuencos tibetanos", "Gongs de borde", "Campanas tingsha"],
+    image: require("@/assets/images/sessions/session-20-musica-dark.jpg"),
+    soundTag: "Música Ancestral" as const,
+    isNew: true,
+  },
+  {
+    id: "34",
+    isPremium: true,
+    title: "Didgeridoo y Tambor",
+    subtitle: "Música Ancestral",
+    categoryId: "musica-sonidos",
+    categoryLabel: "Música",
+    duration: 25,
+    durationLabel: "25 min",
+    description:
+      "El resonar del didgeridoo se entrelaza con el pulso del tambor chamánico para crear un campo sonoro primitivo y poderoso. Música que ancla el cuerpo en la tierra y aquieta la mente.",
+    benefits: ["Conexión con la tierra", "Anclaje corporal", "Calma mental", "Vibración ancestral"],
+    instruments: ["Didgeridoo", "Tambor chamánico", "Ambiente natural"],
+    image: require("@/assets/images/sessions/session-27-musica-dark.jpg"),
+    soundTag: "Música Ancestral" as const,
     isNew: true,
   },
 ];
