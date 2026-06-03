@@ -522,15 +522,25 @@ router.post(
   async (req, res) => {
     const id = String(req.params.id);
     try {
-      const [updated] = await db
-        .update(catalogSessionsTable)
-        .set({ status: "draft", isNew: false, updatedAt: new Date() })
+      const [current] = await db
+        .select()
+        .from(catalogSessionsTable)
         .where(eq(catalogSessionsTable.id, id))
-        .returning();
-      if (!updated) {
+        .limit(1);
+      if (!current) {
         res.status(404).json({ error: "Pieza no encontrada" });
         return;
       }
+      if (current.status !== "published") {
+        res
+          .status(409)
+          .json({ error: "Solo se puede ocultar una pieza publicada" });
+        return;
+      }
+      await db
+        .update(catalogSessionsTable)
+        .set({ status: "draft", isNew: false, updatedAt: new Date() })
+        .where(eq(catalogSessionsTable.id, id));
       const loaded = await loadSubmission(id);
       req.log.info({ submissionId: id }, "submission hidden");
       res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));
@@ -549,15 +559,25 @@ router.post(
   async (req, res) => {
     const id = String(req.params.id);
     try {
-      const [updated] = await db
-        .update(catalogSessionsTable)
-        .set({ status: "published", updatedAt: new Date() })
+      const [current] = await db
+        .select()
+        .from(catalogSessionsTable)
         .where(eq(catalogSessionsTable.id, id))
-        .returning();
-      if (!updated) {
+        .limit(1);
+      if (!current) {
         res.status(404).json({ error: "Pieza no encontrada" });
         return;
       }
+      if (current.status !== "draft") {
+        res
+          .status(409)
+          .json({ error: "Solo se puede volver a publicar una pieza ocultada" });
+        return;
+      }
+      await db
+        .update(catalogSessionsTable)
+        .set({ status: "published", updatedAt: new Date() })
+        .where(eq(catalogSessionsTable.id, id));
       const loaded = await loadSubmission(id);
       req.log.info({ submissionId: id }, "submission unhidden");
       res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));
