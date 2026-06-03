@@ -294,10 +294,10 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 
-  // Grilla de sonidos — 4 columnas uniformes
-  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 9, rowGap: 24 },
+  // Grilla de sonidos — 3 columnas uniformes sin espacio a la derecha
+  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 24, justifyContent: "flex-start" },
   soundCard: {
-    width: "23%",
+    width: "31%",
   },
   cardImageWrap: {
     width: "100%",
