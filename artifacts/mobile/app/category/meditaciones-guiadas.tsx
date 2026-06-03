@@ -162,7 +162,7 @@ export default function MeditacionesGuiadasScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <Feather name={cat.icon} size={24} color="#C8B4E0" />
+                      <Feather name={cat.icon} size={24} color={colors.primary} />
                     </View>
 
                     <Text style={[styles.catName, { color: colors.foreground }]}>
@@ -170,10 +170,10 @@ export default function MeditacionesGuiadasScreen() {
                     </Text>
 
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: "#7A9BC4" }]}>
+                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color="#7A9BC4" />
+                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
                     </View>
                   </Pressable>
                 );
@@ -181,7 +181,7 @@ export default function MeditacionesGuiadasScreen() {
             </View>
 
             <CategoryInfoPanel
-              accentColor="#C8B4E0"
+              accentColor={colors.primary}
               heading="¿Qué es la meditación guiada?"
               items={[
                 {
@@ -234,8 +234,8 @@ export default function MeditacionesGuiadasScreen() {
             <View style={{ paddingHorizontal: H_PAD }}>
               {filteredSessions.length === 0 ? (
                 <View style={styles.emptyWrap}>
-                  <Feather name="search" size={32} color="#C8B4E0" style={{ marginBottom: 12 }} />
-                  <Text style={[styles.emptyText, { color: "#C8B4E0" }]}>
+                  <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                     Sin resultados
                   </Text>
                 </View>
@@ -268,7 +268,7 @@ export default function MeditacionesGuiadasScreen() {
                     </View>
                     <View style={styles.cardContent}>
                       <View style={styles.ratingRow}>
-                        <Feather name="star" size={11} color="#E8B96A" />
+                        <Feather name="star" size={11} color={colors.primary} />
                         <Text style={styles.cardRating}>
                           {" "}{ratings[session.id] ?? 5}/5
                         </Text>
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "400",
     letterSpacing: 0.3,
-    color: "#E8B96A",
+    color: "#C69B4F",
   },
   cardTitle: {
     fontSize: 15,

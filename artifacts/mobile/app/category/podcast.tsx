@@ -41,7 +41,7 @@ export default function PodcastScreen() {
   }, [query]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#030509" }]}>
+    <View style={[styles.root, { backgroundColor: "#060A0F" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={["#060A0F", "#060A0F"]}
@@ -70,19 +70,19 @@ export default function PodcastScreen() {
 
         {/* Search */}
         <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
-          <View style={[styles.searchBar, { backgroundColor: "#06080F", borderColor: "transparent", borderWidth: 0 }]}>
-            <Feather name="search" size={16} color="rgba(138,170,212,0.5)" style={{ marginRight: 8 }} />
+          <View style={[styles.searchBar, { backgroundColor: "#090E17", borderColor: "transparent", borderWidth: 0 }]}>
+            <Feather name="search" size={16} color="rgba(122,143,168,0.5)" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
               onChangeText={setQuery}
               placeholder="Buscar episodio..."
-              placeholderTextColor="rgba(138,170,212,0.45)"
+              placeholderTextColor="rgba(122,143,168,0.45)"
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
             />
             {query.length > 0 && (
               <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color="#9DB5D8" />
+                <Feather name="x" size={14} color={colors.mutedForeground} />
               </Pressable>
             )}
           </View>
@@ -90,17 +90,17 @@ export default function PodcastScreen() {
 
         {/* Episodes count */}
         <View style={[styles.countRow, { paddingHorizontal: H_PAD }]}>
-          <Feather name="mic" size={13} color="#8AAAD4" style={{ marginRight: 6 }} />
+          <Feather name="mic" size={13} color={colors.mutedForeground} style={{ marginRight: 6 }} />
           <Text style={[styles.countLabel, { color: colors.foreground }]}>Episodios</Text>
-          <Text style={[styles.countNum, { color: "#9DB5D8" }]}>{episodios.length}</Text>
+          <Text style={[styles.countNum, { color: colors.mutedForeground }]}>{episodios.length}</Text>
         </View>
 
         {/* Episodes list */}
         <View style={{ paddingHorizontal: H_PAD }}>
           {episodios.length === 0 ? (
             <View style={styles.emptyWrap}>
-              <Feather name="search" size={32} color="#9DB5D8" style={{ marginBottom: 12 }} />
-              <Text style={[styles.emptyText, { color: "#9DB5D8" }]}>
+              <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                 Sin resultados para "{query}"
               </Text>
             </View>
@@ -111,7 +111,7 @@ export default function PodcastScreen() {
                   onPress={() => router.push(`/session/${s.id}` as never)}
                   style={({ pressed }) => [
                     styles.episodeCard,
-                    { backgroundColor: "rgba(30,42,68,0.55)", borderColor: "transparent", borderWidth: 0, opacity: pressed ? 0.82 : 1 },
+                    { backgroundColor: "#090E17", borderColor: "transparent", borderWidth: 0, opacity: pressed ? 0.82 : 1 },
                   ]}
                 >
                   <ExpoImage
@@ -123,8 +123,8 @@ export default function PodcastScreen() {
                   />
                   <View style={styles.episodeBody}>
                     <View style={styles.episodeNumRow}>
-                      <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(138,170,212,0.15)" }]}>
-                        <Text style={[styles.episodeNum, { color: "#8AAAD4" }]}>EP {idx + 1}</Text>
+                      <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(122,143,168,0.12)" }]}>
+                        <Text style={[styles.episodeNum, { color: colors.mutedForeground }]}>EP {idx + 1}</Text>
                       </View>
                       {s.isNew && (
                         <View style={[styles.episodeNumBadge, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
@@ -135,12 +135,12 @@ export default function PodcastScreen() {
                     <Text style={[styles.episodeTitle, { color: colors.foreground }]} numberOfLines={2}>
                       {s.title}
                     </Text>
-                    <Text style={[styles.episodeSub, { color: "#FFFFFF" }]} numberOfLines={1}>
+                    <Text style={[styles.episodeSub, { color: colors.mutedForeground }]} numberOfLines={1}>
                       {s.subtitle}
                     </Text>
                     <View style={styles.episodeMeta}>
-                      <Feather name="clock" size={11} color="#FFFFFF" />
-                      <Text style={[styles.episodeMetaText, { color: "#FFFFFF" }]}>
+                      <Feather name="clock" size={11} color={colors.mutedForeground} />
+                      <Text style={[styles.episodeMetaText, { color: colors.mutedForeground }]}>
                         {" "}{s.durationLabel}
                       </Text>
                     </View>
@@ -150,7 +150,7 @@ export default function PodcastScreen() {
 
                 {idx === 0 && (
                   <CategoryInfoPanel
-                    accentColor="#8AAAD4"
+                    accentColor={colors.primary}
                     heading="¿Qué es el PodCast?"
                     items={[
                       {

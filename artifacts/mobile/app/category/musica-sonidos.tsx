@@ -344,32 +344,32 @@ export default function MusicaSonidosScreen() {
                 style={[
                   styles.modalSheet,
                   {
-                    backgroundColor: "rgba(20,32,18,0.98)",
+                    backgroundColor: "rgba(9,14,23,0.98)",
                     paddingBottom: Math.max(insets.bottom, 24) + 8,
                   },
                 ]}
               >
                 {/* Drag handle */}
-                <View style={[styles.dragHandle, { backgroundColor: "rgba(160,200,140,0.35)" }]} />
+                <View style={[styles.dragHandle, { backgroundColor: "rgba(198,155,79,0.25)" }]} />
 
                 {/* Session info */}
                 {pendingSession && (
                   <>
                     <View style={styles.modalHeader}>
-                      <View style={[styles.modalIcon, { backgroundColor: "rgba(160,200,140,0.12)" }]}>
-                        <Feather name="clock" size={20} color="#A8D49F" />
+                      <View style={[styles.modalIcon, { backgroundColor: "rgba(198,155,79,0.12)" }]}>
+                        <Feather name="clock" size={20} color={colors.primary} />
                       </View>
                       <View style={{ flex: 1 }}>
                         <Text style={[styles.modalTitle, { color: colors.foreground }]}>
                           ¿Cuánto tiempo?
                         </Text>
-                        <Text style={[styles.modalSub, { color: "#E8F5E0" }]} numberOfLines={1}>
+                        <Text style={[styles.modalSub, { color: colors.foreground }]} numberOfLines={1}>
                           {pendingSession.title}
                         </Text>
                       </View>
                     </View>
 
-                    <Text style={[styles.modalHint, { color: "#E8F5E0" }]}>
+                    <Text style={[styles.modalHint, { color: colors.mutedForeground }]}>
                       El sonido se detiene al terminar este tiempo · 5, 10 y 20 min gratis
                     </Text>
 
@@ -384,11 +384,11 @@ export default function MusicaSonidosScreen() {
                               styles.durationBtn,
                               {
                                 backgroundColor: pressed
-                                  ? "#A8D49F"
-                                  : "rgba(160,200,140,0.10)",
+                                  ? colors.primary
+                                  : "rgba(198,155,79,0.10)",
                                 borderColor: pressed
-                                  ? "#A8D49F"
-                                  : "rgba(160,200,140,0.28)",
+                                  ? colors.primary
+                                  : "rgba(198,155,79,0.28)",
                               },
                             ]}
                             onPress={() => handleSelectTimer(opt)}
@@ -398,7 +398,7 @@ export default function MusicaSonidosScreen() {
                                 <Text
                                   style={[
                                     styles.durationNum,
-                                    { fontSize: 18, color: pressed ? colors.primaryForeground : "#E8F5E0" },
+                                    { fontSize: 18, color: pressed ? "#060A0F" : colors.foreground },
                                   ]}
                                 >
                                   {opt.label}
@@ -417,10 +417,10 @@ export default function MusicaSonidosScreen() {
 
                     {/* Cancel */}
                     <Pressable
-                      style={[styles.cancelBtn, { borderColor: "rgba(160,200,140,0.22)" }]}
+                      style={[styles.cancelBtn, { borderColor: "rgba(198,155,79,0.22)" }]}
                       onPress={handleCancelTimer}
                     >
-                      <Text style={[styles.cancelText, { color: "#E8F5E0" }]}>
+                      <Text style={[styles.cancelText, { color: colors.foreground }]}>
                         Cancelar
                       </Text>
                     </Pressable>

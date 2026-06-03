@@ -135,14 +135,14 @@ export default function SonidosAncestalesScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <Feather name={cat.icon} size={22} color="#E8C87A" />
+                      <Feather name={cat.icon} size={22} color={colors.primary} />
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: "#7A9BC4" }]}>
+                      <Text style={[styles.catCount, { color: colors.mutedForeground }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color="#7A9BC4" />
+                      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
                     </View>
                   </Pressable>
                 );
@@ -150,7 +150,7 @@ export default function SonidosAncestalesScreen() {
             </View>
 
             <CategoryInfoPanel
-              accentColor="#E8C87A"
+              accentColor={colors.primary}
               heading="¿Qué son los sonidos ancestrales?"
               items={[
                 {
@@ -184,8 +184,8 @@ export default function SonidosAncestalesScreen() {
             <View style={{ paddingHorizontal: H_PAD }}>
               {filteredSessions.length === 0 ? (
                 <View style={styles.emptyWrap}>
-                  <Feather name="search" size={32} color="#E8C87A" style={{ marginBottom: 12 }} />
-                  <Text style={[styles.emptyText, { color: "#E8C87A" }]}>
+                  <Feather name="search" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                     Sin resultados
                   </Text>
                 </View>
@@ -215,7 +215,7 @@ export default function SonidosAncestalesScreen() {
                     </View>
                     <View style={styles.cardContent}>
                       <View style={styles.ratingRow}>
-                        <Feather name="star" size={11} color="#E8B96A" />
+                        <Feather name="star" size={11} color={colors.primary} />
                         <Text style={styles.cardRating}>
                           {" "}{ratings[session.id] ?? 5}/5
                         </Text>
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "400",
     letterSpacing: 0.3,
-    color: "#E8B96A",
+    color: "#C69B4F",
   },
   cardTitle: {
     fontSize: 15,
