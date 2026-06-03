@@ -2,7 +2,30 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View } from "react-native";
 
-export function SacredBackground() {
+/** Color sólido cálido por defecto para el modo `solid` (estilo Calm/Pura Mente). */
+const SOLID_BG = "#18110C";
+
+type SacredBackgroundProps = {
+  /**
+   * Modo de fondo:
+   * - "texture" (default): textura + glow dorado + viñeta (look original).
+   * - "solid": color plano cálido, sin textura ni degradados (look Calm).
+   */
+  variant?: "texture" | "solid";
+  /** Color del fondo sólido (solo aplica con variant="solid"). */
+  solidColor?: string;
+};
+
+export function SacredBackground({ variant = "texture", solidColor = SOLID_BG }: SacredBackgroundProps) {
+  if (variant === "solid") {
+    return (
+      <View
+        style={[StyleSheet.absoluteFill, { backgroundColor: solidColor }]}
+        pointerEvents="none"
+      />
+    );
+  }
+
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
       <Image

@@ -103,7 +103,7 @@ export default function ExploreScreen() {
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       <ScrollView
         style={styles.scroll}

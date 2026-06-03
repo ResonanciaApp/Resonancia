@@ -105,9 +105,9 @@ export default function HomeScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#2A1D14" }]}>
+    <View style={[styles.root, { backgroundColor: "#18110C" }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       <ScrollView
         style={styles.scroll}
