@@ -185,7 +185,7 @@ export default function MusicaSonidosScreen() {
           <View
             style={[
               styles.searchBar,
-              { backgroundColor: "#0A0E08", borderColor: "transparent", borderWidth: 0 },
+              { backgroundColor: "#111A0D", borderColor: "transparent", borderWidth: 0 },
             ]}
           >
             <Feather name="search" size={16} color="rgba(125,200,125,0.5)" style={{ marginRight: 8 }} />
