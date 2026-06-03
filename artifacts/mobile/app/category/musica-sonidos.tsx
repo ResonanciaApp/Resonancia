@@ -290,12 +290,12 @@ export default function MusicaSonidosScreen() {
                       }
                     }}
                   >
-                    {/* Circular image */}
-                    <View style={[styles.imgWrap, { width: IMG_SIZE, height: IMG_SIZE }]}>
+                    {/* Square image */}
+                    <View style={[styles.imgWrap, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: 8, overflow: "hidden" }]}>
                       <ExpoImage
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         source={session.image as any}
-                        style={[styles.img, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: IMG_SIZE / 2 }]}
+                        style={[styles.img, { width: IMG_SIZE, height: IMG_SIZE, borderRadius: 0 }]}
                         contentFit="cover"
                         transition={IMAGE_TRANSITION}
                         cachePolicy="memory-disk"
