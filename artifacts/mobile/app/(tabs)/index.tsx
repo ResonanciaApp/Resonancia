@@ -253,7 +253,7 @@ export default function HomeScreen() {
             </Text>
           </View>
           {recommended.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal cardBg="#110C05" noBorder />
+            <SessionCard key={s.id} session={s} horizontal cardBg="#090E17" noBorder />
           ))}
         </View>
 
@@ -273,7 +273,7 @@ export default function HomeScreen() {
             )}
           </View>
           {VIDEOS.length === 0 ? (
-            <View style={[styles.videosEmpty, { borderColor: "rgba(182,149,95,0.15)", backgroundColor: colors.card }]}>
+            <View style={[styles.videosEmpty, { borderColor: "rgba(100,140,210,0.15)", backgroundColor: "#090E17" }]}>
               <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
               <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>
                 Próximamente
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#110C05",
+    backgroundColor: "#090E17",
     paddingHorizontal: 16,
     paddingVertical: 18,
   },
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     padding: 16,
     borderWidth: 1,
-    borderColor: "rgba(182,149,95,0.18)",
+    borderColor: "rgba(100,140,210,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: "rgba(214,168,91,0.14)",
+    backgroundColor: "rgba(100,140,210,0.14)",
     alignItems: "center",
     justifyContent: "center",
   },
