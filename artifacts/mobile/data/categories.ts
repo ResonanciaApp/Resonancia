@@ -61,6 +61,26 @@ export const CATEGORIES: Category[] = [
     gradient: ["#243350", "#101A28"],
     primary: true,
   },
+  {
+    id: "mananas",
+    title: "Mañanas",
+    subtitle: "Rituales para comenzar el día con energía",
+    icon: "sun",
+    sessionCount: 0,
+    color: "#E8C244",
+    gradient: ["#5C4A10", "#2E2408"],
+    primary: true,
+  },
+  {
+    id: "noches",
+    title: "Noches",
+    subtitle: "Prepara tu cuerpo y mente para el descanso",
+    icon: "moon",
+    sessionCount: 0,
+    color: "#4DB8A0",
+    gradient: ["#1A4A42", "#0C2420"],
+    primary: true,
+  },
 
 ];
 

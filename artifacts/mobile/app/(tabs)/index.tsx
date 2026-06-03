@@ -157,16 +157,20 @@ export default function HomeScreen() {
             {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat, idx) => {
               const R = 20; const r = 4;
               const radii = [
-                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // arriba-izq → externa = arriba-izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // arriba-der → externa = arriba-der
-                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // abajo-izq  → externa = abajo-izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // abajo-der  → externa = abajo-der
+                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 1 izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 1 der
+                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 2 izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 2 der
+                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 3 izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // fila 3 der
               ];
               const iconColors: Record<string, string> = {
                 "sonidos-ancestrales": "#C4956A",
                 "meditaciones-guiadas": "#8B82BE",
                 "musica-sonidos": "#5B9E7A",
                 "podcast": "#6B9AB5",
+                "mananas": "#E8C244",
+                "noches": "#4DB8A0",
               };
               const iconColor = iconColors[cat.id] ?? colors.primary;
               return (
