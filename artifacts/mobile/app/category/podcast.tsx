@@ -27,7 +27,11 @@ const H_PAD = 20;
 
 type SonidosTab = SonidosTag;
 
-const TABS: SonidosTab[] = ["Sonidos Binaurales", "Sonidos Naturaleza", "Sonidos Atmosféricos"];
+const TABS: { label: string; value: SonidosTab }[] = [
+  { label: "Binaurales",   value: "Sonidos Binaurales"    },
+  { label: "Naturaleza",   value: "Sonidos Naturaleza"    },
+  { label: "Atmosféricos", value: "Sonidos Atmosféricos"  },
+];
 
 const SONIDOS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "podcast");
 
@@ -54,8 +58,8 @@ export default function SonidosScreen() {
     }
   };
 
-  const selectTab = (tab: SonidosTab, idx: number) => {
-    setActiveTab(tab);
+  const selectTab = (value: SonidosTab, idx: number) => {
+    setActiveTab(value);
     const layout = tabLayouts.current[idx];
     if (layout) {
       setIndicatorWidth(layout.width);
@@ -109,10 +113,10 @@ export default function SonidosScreen() {
               { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD },
             ]}
           >
-            {TABS.map((tab, idx) => (
+            {TABS.map(({ label, value }, idx) => (
               <Pressable
-                key={tab}
-                onPress={() => selectTab(tab, idx)}
+                key={value}
+                onPress={() => selectTab(value, idx)}
                 onLayout={(e) => onTabLayout(idx, e)}
                 style={styles.tabItem}
               >
@@ -121,13 +125,13 @@ export default function SonidosScreen() {
                     styles.tabLabel,
                     {
                       color:
-                        activeTab === tab
+                        activeTab === value
                           ? colors.foreground
                           : colors.mutedForeground,
                     },
                   ]}
                 >
-                  {tab}
+                  {label}
                 </Text>
               </Pressable>
             ))}
