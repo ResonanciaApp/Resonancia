@@ -148,10 +148,10 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#060905" }]}>
+    <View style={[styles.root, { backgroundColor: "#050704" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#0E140A", "#0E140A"]}
+        colors={["#0B1008", "#0B1008"]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -185,7 +185,7 @@ export default function MusicaSonidosScreen() {
           <View
             style={[
               styles.searchBar,
-              { backgroundColor: "rgba(125,200,125,0.08)", borderColor: "rgba(125,200,125,0.22)", borderWidth: 1 },
+              { backgroundColor: "#0A0E08", borderColor: "transparent", borderWidth: 0 },
             ]}
           >
             <Feather name="search" size={16} color="rgba(125,200,125,0.5)" style={{ marginRight: 8 }} />

@@ -113,10 +113,10 @@ export default function MeditacionesGuiadasScreen() {
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#060208" }]}>
+    <View style={[styles.root, { backgroundColor: "#050106" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#120C17", "#120C17"]}
+        colors={["#0E0A12", "#0E0A12"]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -242,7 +242,7 @@ export default function MeditacionesGuiadasScreen() {
           <>
             {/* Search bar */}
             <View style={[{ paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              <View style={[styles.searchBar, { backgroundColor: "rgba(200,180,224,0.08)", borderColor: "rgba(200,180,224,0.22)", borderWidth: 1 }]}>
+              <View style={[styles.searchBar, { backgroundColor: "#0B0612", borderColor: "transparent", borderWidth: 0 }]}>
                 <Feather name="search" size={16} color="rgba(200,180,224,0.5)" style={{ marginRight: 8 }} />
                 <TextInput
                   value={query}
@@ -279,7 +279,7 @@ export default function MeditacionesGuiadasScreen() {
                     style={({ pressed }) => [
                       styles.card,
                       {
-                        backgroundColor: "rgba(255,255,255,0.05)",
+                        backgroundColor: "#0B0612",
                         borderColor: "transparent",
                         borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,

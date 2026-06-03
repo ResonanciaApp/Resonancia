@@ -157,17 +157,15 @@ export default function MiMusicaScreen() {
                   onPress={() => router.push(`/mezclas/${cat.id}` as never)}
                   style={[styles.catCard, { backgroundColor: "#110C05", borderColor: "transparent" }]}
                 >
-                  <View style={[styles.catIconWrap, { backgroundColor: "rgba(237,225,211,0.06)" }]}>
-                    {cat.iconFamily === "MaterialCommunityIcons" ? (
-                      <MaterialCommunityIcons
-                        name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                        size={18}
-                        color={colors.accent}
-                      />
-                    ) : (
-                      <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={16} color={colors.accent} />
-                    )}
-                  </View>
+                  {cat.iconFamily === "MaterialCommunityIcons" ? (
+                    <MaterialCommunityIcons
+                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                      size={26}
+                      color={colors.accent}
+                    />
+                  ) : (
+                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color={colors.accent} />
+                  )}
                   <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
                     {cat.label}
                   </Text>

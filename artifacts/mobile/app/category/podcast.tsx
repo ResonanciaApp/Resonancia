@@ -41,10 +41,10 @@ export default function PodcastScreen() {
   }, [query]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#04060B" }]}>
+    <View style={[styles.root, { backgroundColor: "#030509" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#080C13", "#080C13"]}
+        colors={["#060A0F", "#060A0F"]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -70,7 +70,7 @@ export default function PodcastScreen() {
 
         {/* Search */}
         <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
-          <View style={[styles.searchBar, { backgroundColor: "rgba(138,170,212,0.08)", borderColor: "rgba(138,170,212,0.22)", borderWidth: 1 }]}>
+          <View style={[styles.searchBar, { backgroundColor: "#06080F", borderColor: "transparent", borderWidth: 0 }]}>
             <Feather name="search" size={16} color="rgba(138,170,212,0.5)" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
