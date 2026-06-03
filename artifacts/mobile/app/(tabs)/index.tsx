@@ -48,7 +48,7 @@ const VIDEO_REG_W = 200;
 const RECENT_W = Math.round((width - GRID_PAD * 2) / 2.45) + 5;
 const RECENT_H = 133;
 
-const SECTION_GAP = 32;
+const SECTION_GAP = 57;
 
 const ND = Platform.OS !== "web";
 
@@ -198,7 +198,7 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 3. VIDEOS DESTACADOS ── */}
-        <View style={[styles.section, { marginTop: 25 }]}>
+        <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
               Videos destacados
