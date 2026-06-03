@@ -470,8 +470,9 @@ const styles = StyleSheet.create({
   gridRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: GAP,
-    justifyContent: "center",
+    columnGap: GAP,
+    rowGap: 24,
+    justifyContent: "flex-start",
   },
 
   card: {
