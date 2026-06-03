@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     gap: 10,
-    marginBottom: 24,
+    marginBottom: 38,
   },
   searchInput: { flex: 1, fontSize: 14 },
 
@@ -552,15 +552,15 @@ const styles = StyleSheet.create({
   continueCard: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 16,
-    padding: 10,
-    gap: 12,
-    marginTop: 8,
+    borderRadius: 18,
+    padding: 16,
+    gap: 14,
+    marginTop: 4,
   },
   continueImg: {
-    width: 72,
-    height: 72,
-    borderRadius: 12,
+    width: 88,
+    height: 88,
+    borderRadius: 14,
   },
   continuePlaceholder: {
     flexDirection: "row",
@@ -592,10 +592,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   continueTitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "700",
-    lineHeight: 20,
-    marginBottom: 3,
+    lineHeight: 22,
+    marginBottom: 4,
   },
   continueSub: { fontSize: 12, lineHeight: 16 },
   continueProgressTrack: {
