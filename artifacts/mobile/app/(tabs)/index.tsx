@@ -202,24 +202,19 @@ export default function HomeScreen() {
         {/* ── 3. SESIÓN DESTACADA ── */}
         {featuredSession && (
           <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 12 }]}>
+              Sesión destacada del día
+            </Text>
             <Pressable
               style={[styles.heroCard]}
               onPress={() => router.push(`/session/${featuredSession.id}` as never)}
             >
               <Image source={featuredSession.image as number} style={styles.heroImage} resizeMode="cover" />
-              <LinearGradient
-                colors={["transparent", "rgba(6,10,15,0.65)", "#060A0F"]}
-                locations={[0, 0.5, 1]}
-                style={StyleSheet.absoluteFill}
-              />
               <View style={styles.glowCenter}>
                 <GlowRing size={110} color="rgba(182,149,95,0.18)" delay={0} duration={3500} />
                 <GlowRing size={170} color="rgba(182,149,95,0.1)" delay={600} duration={3500} />
               </View>
               <View style={styles.heroContent}>
-                <Text style={{ fontSize: 10, letterSpacing: 1.2, textTransform: "uppercase", color: colors.primary, marginBottom: 6, opacity: 0.9 }}>
-                  Sesión destacada del día
-                </Text>
                 <Text style={[styles.heroTitle, { color: colors.foreground }]}>
                   {featuredSession.title}
                 </Text>
