@@ -75,7 +75,7 @@ export const getSharedMixesQueryPageDefault = 1;
 
 export const GetSharedMixesQueryParams = zod.object({
   "page": zod.coerce.number().default(getSharedMixesQueryPageDefault),
-  "category": zod.enum(['dormir', 'trabajar', 'motivarme']).optional()
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion']).optional()
 })
 
 export const GetSharedMixesResponse = zod.object({
@@ -84,7 +84,7 @@ export const GetSharedMixesResponse = zod.object({
   "name": zod.string(),
   "description": zod.string().nullish(),
   "image": zod.string().nullish(),
-  "category": zod.enum(['dormir', 'trabajar', 'motivarme']),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion']),
   "sounds": zod.array(zod.object({
   "id": zod.string(),
   "volume": zod.number()
@@ -123,7 +123,7 @@ export const ShareMixBody = zod.object({
   "name": zod.string().min(1).max(shareMixBodyNameMax),
   "description": zod.string().max(shareMixBodyDescriptionMax).optional(),
   "image": zod.string().max(shareMixBodyImageMax).optional(),
-  "category": zod.enum(['dormir', 'trabajar', 'motivarme']),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion']),
   "sounds": zod.array(zod.object({
   "id": zod.string(),
   "volume": zod.number()
@@ -143,7 +143,7 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "name": zod.string(),
   "description": zod.string().nullish(),
   "image": zod.string().nullish(),
-  "category": zod.enum(['dormir', 'trabajar', 'motivarme']),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion']),
   "sounds": zod.array(zod.object({
   "id": zod.string(),
   "volume": zod.number()

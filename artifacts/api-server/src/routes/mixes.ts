@@ -21,7 +21,7 @@ import { sendPushToUsers } from "../lib/push";
 const router: IRouter = Router();
 const PAGE_SIZE = 20;
 
-const CATEGORIES = ["dormir", "trabajar", "motivarme"] as const;
+const CATEGORIES = ["dormir", "trabajar", "motivarme", "concentracion"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 function toProfile(u: User) {

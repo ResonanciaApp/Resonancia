@@ -108,7 +108,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [dormir, trabajar, motivarme]
+            enum: [dormir, trabajar, motivarme, concentracion]
       responses:
         "200":
           description: Paginated list of shared mixes
@@ -1157,7 +1157,7 @@ components:
           type: ["string", "null"]
         category:
           type: string
-          enum: [dormir, trabajar, motivarme]
+          enum: [dormir, trabajar, motivarme, concentracion]
         sounds:
           type: array
           items:
@@ -1204,7 +1204,7 @@ components:
           maxLength: 60
         category:
           type: string
-          enum: [dormir, trabajar, motivarme]
+          enum: [dormir, trabajar, motivarme, concentracion]
         sounds:
           type: array
           minItems: 1

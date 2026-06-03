@@ -17,3 +17,4 @@
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
 - [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
 - [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only
+- [Shared mix category enum](shared-mix-category-enum.md) — el set de categorías de mezclas compartidas vive en 5 lugares (DB zod, OpenAPI x3, route const, frontend cast); sincronizar o compartir/filtrar falla

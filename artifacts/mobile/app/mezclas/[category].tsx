@@ -115,7 +115,7 @@ export default function CategoryMixesScreen() {
           name: mix.name,
           description: mix.description,
           image: mix.image,
-          category: mix.category as "dormir" | "trabajar" | "motivarme",
+          category: mix.category as "dormir" | "trabajar" | "motivarme" | "concentracion",
           sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
         },
       },

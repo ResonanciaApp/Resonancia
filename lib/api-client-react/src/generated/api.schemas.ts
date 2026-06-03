@@ -146,6 +146,7 @@ export const SharedMixCategory = {
   dormir: 'dormir',
   trabajar: 'trabajar',
   motivarme: 'motivarme',
+  concentracion: 'concentracion',
 } as const;
 
 export interface UserProfile {
@@ -186,6 +187,7 @@ export const SharedMixInputCategory = {
   dormir: 'dormir',
   trabajar: 'trabajar',
   motivarme: 'motivarme',
+  concentracion: 'concentracion',
 } as const;
 
 export interface SharedMixInput {
@@ -433,6 +435,7 @@ export const GetSharedMixesCategory = {
   dormir: 'dormir',
   trabajar: 'trabajar',
   motivarme: 'motivarme',
+  concentracion: 'concentracion',
 } as const;
 
 export type SearchUsersParams = {
