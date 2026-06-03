@@ -320,7 +320,9 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 10. BANNER PREMIUM ── */}
-        <PremiumBanner />
+        <View style={{ marginTop: 20 }}>
+          <PremiumBanner />
+        </View>
 
       </ScrollView>
 
