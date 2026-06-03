@@ -132,7 +132,7 @@ export default function MiMusicaScreen() {
       <View style={[styles.inner, { paddingTop: topPad + 12 }]}>
         {/* Header fijo (no scrollea) */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mi Música</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mezclador</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Tus mezclas, organizadas por momento
           </Text>
@@ -255,18 +255,18 @@ const styles = StyleSheet.create({
   tabsScroll: { marginBottom: 12, marginHorizontal: -20 },
   tabsRow: { gap: 6, paddingHorizontal: 20 },
   tab: {
-    paddingHorizontal: 11,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: 999,
     borderWidth: 1,
   },
-  tabLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 0.2 },
+  tabLabel: { fontSize: 12, fontWeight: "700", letterSpacing: 0.2 },
 
   // Categorías de mezclas (reducidas ~25%)
   catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
   catCard: {
     flex: 1,
-    height: 82,
+    height: 98,
     borderRadius: 14,
     borderWidth: 1,
     padding: 8,
