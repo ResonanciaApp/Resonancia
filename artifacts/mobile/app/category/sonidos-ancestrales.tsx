@@ -109,7 +109,7 @@ export default function SonidosAncestalesScreen() {
             <MaterialCommunityIcons name="bowl-mix" size={22} color="#E8C87A" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-            {selectedTag ?? "Sonidos Ancestrales"}
+            {selectedTag ?? "Ancestrales"}
           </Text>
           <Text style={[styles.pageSub, { color: "#E8C87A" }]}>
             {selectedTag

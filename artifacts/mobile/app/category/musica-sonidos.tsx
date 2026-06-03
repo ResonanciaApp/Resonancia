@@ -163,7 +163,7 @@ export default function MusicaSonidosScreen() {
             <Feather name="music" size={22} color="#A8C4A8" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-            Música y Sonidos
+            Frecuencias
           </Text>
           <Text style={[styles.pageSub, { color: "#B8D4B8" }]}>
             Elige un sonido y conecta con el momento presente
@@ -285,7 +285,7 @@ export default function MusicaSonidosScreen() {
 
         <CategoryInfoPanel
           accentColor="#A8C4A8"
-          heading="¿Qué es Música y Sonidos?"
+          heading="¿Qué es Frecuencias?"
           items={[
             {
               icon: "music",

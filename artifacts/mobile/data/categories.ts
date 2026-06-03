@@ -13,7 +13,7 @@ export type Category = {
 export const CATEGORIES: Category[] = [
   {
     id: "sonidos-ancestrales",
-    title: "Sonidos Ancestrales",
+    title: "Ancestrales",
     subtitle: "Cuencos, gongs y frecuencias sagradas",
     icon: "bowl-mix",
     iconFamily: "MaterialCommunityIcons",
@@ -24,7 +24,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "meditaciones-guiadas",
-    title: "Meditaciones Guiadas",
+    title: "Meditaciones",
     subtitle: "Viajes interiores guiados por el sonido",
     icon: "eye",
     sessionCount: 3,
@@ -34,7 +34,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "musica-sonidos",
-    title: "Música y Sonidos",
+    title: "Frecuencias",
     subtitle: "Atmósferas sonoras para meditar",
     icon: "music",
     sessionCount: 2,
@@ -53,7 +53,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "podcast",
-    title: "PodCast · Presencia",
+    title: "Mezclador",
     subtitle: "Conversaciones que despiertan el alma",
     icon: "mic",
     sessionCount: 1,

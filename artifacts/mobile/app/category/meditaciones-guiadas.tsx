@@ -136,7 +136,7 @@ export default function MeditacionesGuiadasScreen() {
             <Feather name="eye" size={22} color="#C8B4E0" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-            {selectedTag ?? "Meditaciones Guiadas"}
+            {selectedTag ?? "Meditaciones"}
           </Text>
           <Text style={[styles.pageSub, { color: "#B49ECB" }]}>
             {selectedTag
