@@ -3,7 +3,7 @@ import React from "react";
 
 export default function AuthLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false, animation: "fade", contentStyle: { backgroundColor: "#18110C" } }}>
+    <Stack screenOptions={{ headerShown: false, animation: "fade", contentStyle: { backgroundColor: "#0D0906" } }}>
       <Stack.Screen name="sign-in" />
       <Stack.Screen name="sign-up" />
     </Stack>

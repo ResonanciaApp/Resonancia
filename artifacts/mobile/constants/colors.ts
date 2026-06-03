@@ -2,7 +2,7 @@ const colors = {
   light: {
     text: "#EDE1D3",
     tint: "#C69B4F",
-    background: "#18110C",
+    background: "#0D0906",
     foreground: "#EDE1D3",
     card: "#24160F",
     cardForeground: "#EDE1D3",
@@ -24,7 +24,7 @@ const colors = {
     premiumGold: "#C69B4F",
     deepBrown: "#3D2010",
     darkChocolate: "#24160F",
-    warmBlack: "#18110C",
+    warmBlack: "#0D0906",
     goldenGlow: "#D6A85B",
     copperLight: "#A07850",
   },

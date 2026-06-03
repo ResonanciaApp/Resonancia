@@ -91,7 +91,7 @@ function RootLayoutNav() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: "#18110C" },
+          contentStyle: { backgroundColor: "#0D0906" },
         }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
@@ -242,7 +242,7 @@ export default function RootLayout() {
                       <ProfileSync />
                       <IntencionProvider>
                         <DiarioFavoritesProvider>
-                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#18110C" }}>
+                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#0D0906" }}>
                             <KeyboardProvider>
                               <RootLayoutNav />
                             </KeyboardProvider>
