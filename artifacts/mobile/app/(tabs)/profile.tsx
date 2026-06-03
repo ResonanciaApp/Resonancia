@@ -345,7 +345,13 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Racha ── */}
-        <View style={[styles.streakCard, { backgroundColor: "#151A23" }]}>
+        <Pressable
+          onPress={() => router.push("/progreso" as never)}
+          style={({ pressed }) => [
+            styles.streakCard,
+            { backgroundColor: "#151A23", opacity: pressed ? 0.8 : 1 },
+          ]}
+        >
           <View style={styles.streakFlame}>
             <Text style={styles.streakEmoji}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
           </View>
@@ -361,7 +367,8 @@ export default function ProfileScreen() {
                 : "Escucha una sesión hoy para empezar"}
             </Text>
           </View>
-        </View>
+          <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+        </Pressable>
 
         {/* ── Mi viaje ── */}
         <View style={styles.section}>
