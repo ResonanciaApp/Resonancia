@@ -160,12 +160,12 @@ export default function HomeScreen() {
             {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat, idx) => {
               const R = 20; const r = 4;
               const radii = [
-                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 1 izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 1 der
-                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 2 izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: r }, // fila 2 der
-                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 3 izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: r,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // fila 3 der
+                { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 1 izq
+                { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // fila 1 der
+                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 2 izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // fila 2 der
+                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 der
               ];
               const iconColors: Record<string, string> = {
                 "sonidos-ancestrales": "#C4956A",
