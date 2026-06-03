@@ -2,7 +2,7 @@
 - [Warm theme palette](warm-theme.md) — colores cálidos dorado/café aplicados en colors.ts y archivos con paletas hardcodeadas
 - [Chat optimistic uploads + audio preload](chat-optimistic-uploads.md) — pattern para image/audio sends instantáneos en DM; dedup por serverObjectPath, no setQueryData
 - [session image shared pool](session-images-shared-pool.md) — session-N.jpg es pool decorativo compartido (grupos usan imageIdx); al borrar sesión, repuntar refs in-place, no quitar entradas
-- [SacredBackground gradient matching](sacred-background-gradient.md) — hero image overlays sobre SacredBackground deben fundir a ~#0F0A06, no al bg cálido del root, o aparece una banda visible
+- [SacredBackground solid + category colors](sacred-background-gradient.md) — fondos planos sólidos (Calm); SacredBackground solid por defecto, null sin solidColor → muestra root bg de cada pantalla; cada categoría conserva su color
 - [Expo Router fullscreen player](expo-fullscreen-modal.md) — fullScreenModal + StatusBar hidden + botones flotantes absolute (sin navBar) para que decoraciones lleguen al borde
 - [Mi Música mixer](mi-musica-mixer.md) — mezclador ambiente: sonidos se activan con slot SOUND_MAP; premium gating de presets se sanea en la pantalla (context es premium-agnóstico)
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions

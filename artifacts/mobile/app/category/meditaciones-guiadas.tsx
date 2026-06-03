@@ -116,7 +116,7 @@ export default function MeditacionesGuiadasScreen() {
     <View style={[styles.root, { backgroundColor: "#060208" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#120C17", "#09050C"]}
+        colors={["#120C17", "#120C17"]}
         style={StyleSheet.absoluteFill}
       />
 
