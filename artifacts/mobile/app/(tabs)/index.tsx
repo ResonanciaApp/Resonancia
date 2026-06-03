@@ -172,7 +172,7 @@ export default function HomeScreen() {
                 "meditaciones-guiadas": "#8B82BE",
                 "musica-sonidos": "#5B9E7A",
                 "podcast": "#6B9AB5",
-                "mananas": "#f7ca8e",
+                "mananas": "#f4c993",
                 "noches": "#C87BB5",
               };
               const iconColor = iconColors[cat.id] ?? colors.primary;

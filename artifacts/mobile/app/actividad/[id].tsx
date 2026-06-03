@@ -37,7 +37,7 @@ const ACTIVITIES: Record<string, {
     description:
       "Una experiencia profunda de sanación sonora al caer el sol. Los cuencos tibetanos y de cristal generarán un campo vibracional que guiará tu cuerpo y mente hacia un estado de relajación profunda.\n\nNo se necesita experiencia previa. Traé ropa cómoda, una mantita y dispónte a recibir.",
     gradient: ["#7A5520", "#3E2208"],
-    orgColor: "#f7ca8e",
+    orgColor: "#f4c993",
     orgInitials: "SH",
     tags: ["Cuencos tibetanos", "Relajación", "Al aire libre"],
   },

@@ -20,7 +20,7 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const ICON_COLOR = "#f7ca8e";
+const ICON_COLOR = "#f4c993";
 
 const MANANAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "mananas");
 

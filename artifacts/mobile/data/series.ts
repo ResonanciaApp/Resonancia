@@ -30,7 +30,7 @@ export const SERIES: Series[] = [
     subtitle: "Programa · 4 sesiones",
     description:
       "Una introducción al mundo de los cuencos tibetanos y las frecuencias ancestrales. Ideal para quien recién empieza su camino sonoro.",
-    accentColor: "#f7ca8e",
+    accentColor: "#f4c993",
     gradient: ["#7A5520", "#3E2208"],
     image: SESSIONS.find((s) => s.id === "2")?.image ?? SESSIONS[0].image,
     sessionIds: ["2", "8", "9", "10"],

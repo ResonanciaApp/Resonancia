@@ -54,7 +54,7 @@ const GRUPOS_UNIDOS = [
     lastActivity: "hace 3 días",
     gradient: ["#7A5520", "#3E2208"] as [string, string],
     icon: "disc" as const,
-    color: "#f7ca8e",
+    color: "#f4c993",
   },
 ];
 
@@ -63,7 +63,7 @@ const FEED_POSTS = [
     id: "f1",
     author: "Sofía Herrera",
     initials: "SH",
-    color: "#f7ca8e",
+    color: "#f4c993",
     group: "Meditación Vipassana",
     groupGradient: ["#3A5438", "#1E2E1C"] as [string, string],
     groupIcon: "wind" as const,
@@ -81,7 +81,7 @@ const FEED_POSTS = [
     group: "Cuencos y Frecuencias",
     groupGradient: ["#7A5520", "#3E2208"] as [string, string],
     groupIcon: "disc" as const,
-    groupColor: "#f7ca8e",
+    groupColor: "#f4c993",
     time: "hace 7 días",
     text: "Compartí fotos de mi set nuevo 🎶 Cuenco tibetano en FA, dos de cristal en SOL y RE. Tardé 3 años en armarlo y por fin está completo. ¿Alguien más colecciona?",
     likes: 33,
