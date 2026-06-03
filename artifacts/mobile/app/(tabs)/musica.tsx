@@ -300,8 +300,9 @@ const styles = StyleSheet.create({
     width: "31%",
   },
   cardImageWrap: {
-    width: "100%",
+    width: "77%",
     aspectRatio: 1,
+    alignSelf: "center",
     overflow: "hidden",
     borderRadius: 18,
     borderWidth: 3,
