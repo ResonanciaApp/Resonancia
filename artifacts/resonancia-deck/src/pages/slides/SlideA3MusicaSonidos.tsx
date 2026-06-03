@@ -1,6 +1,6 @@
 export default function SlideA3MusicaSonidos() {
   const accent = "#7DC87D";
-  const bg = "linear-gradient(135deg, #1E2E1C 0%, #18110C 60%, #1A2818 100%)";
+  const bg = "linear-gradient(135deg, #1E2E1C 0%, #060A0F 60%, #1A2818 100%)";
 
   const MusicIcon = () => (
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
@@ -89,7 +89,7 @@ export default function SlideA3MusicaSonidos() {
         <div style={{ fontSize: "1.15vw", color: `${accent}99`, fontStyle: "italic" }}>
           "La música es el lenguaje que el alma entiende sin traducción."
         </div>
-        <div style={{ fontSize: "0.95vw", color: "#3d2a18", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 07</div>
+        <div style={{ fontSize: "0.95vw", color: "#7A8FA8", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 07</div>
       </div>
     </div>
   );

@@ -15,27 +15,27 @@ function ScenarioCard({
     <div
       style={{
         flex: 1,
-        backgroundColor: highlight ? "#24160F" : "transparent",
-        border: highlight ? "1.5px solid #C69B4F" : "1.5px solid #3a2a1d",
+        backgroundColor: highlight ? "#090E17" : "transparent",
+        border: highlight ? "1.5px solid #BE9650" : "1.5px solid #3a2a1d",
         borderRadius: "1vw",
         padding: "3.2vh 1.9vw",
         boxSizing: "border-box",
       }}
     >
-      <div style={{ fontSize: "1.7vw", fontWeight: 700, color: highlight ? "#C69B4F" : "#EDE1D3", marginBottom: "2.4vh" }}>
+      <div style={{ fontSize: "1.7vw", fontWeight: 700, color: highlight ? "#BE9650" : "#EDE1D3", marginBottom: "2.4vh" }}>
         {label}
       </div>
       <div style={{ marginBottom: "2vh" }}>
-        <div style={{ fontSize: "1.2vw", color: "#7a6050", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INSTALACIONES</div>
+        <div style={{ fontSize: "1.2vw", color: "#7A8FA8", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INSTALACIONES</div>
         <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#EDE1D3", lineHeight: 1 }}>{installs}</div>
       </div>
       <div style={{ marginBottom: "2vh" }}>
-        <div style={{ fontSize: "1.2vw", color: "#7a6050", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES DE PAGO</div>
+        <div style={{ fontSize: "1.2vw", color: "#7A8FA8", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES DE PAGO</div>
         <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#EDE1D3", lineHeight: 1 }}>{subs}</div>
       </div>
       <div>
-        <div style={{ fontSize: "1.2vw", color: "#7a6050", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INGRESO NETO AÑO 1</div>
-        <div style={{ fontSize: "2.6vw", fontWeight: 700, color: "#C69B4F", lineHeight: 1 }}>{revenue}</div>
+        <div style={{ fontSize: "1.2vw", color: "#7A8FA8", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INGRESO NETO AÑO 1</div>
+        <div style={{ fontSize: "2.6vw", fontWeight: 700, color: "#BE9650", lineHeight: 1 }}>{revenue}</div>
       </div>
     </div>
   );
@@ -45,15 +45,15 @@ export default function SlideProyeccion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#18110C", color: "#EDE1D3", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
-        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "#7a6050", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
+        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "#7A8FA8", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
           10 · PROYECCIÓN A 12 MESES
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Un primer año <span style={{ color: "#C69B4F" }}>realista.</span>
+          Un primer año <span style={{ color: "#BE9650" }}>realista.</span>
         </div>
       </div>
 
@@ -65,11 +65,11 @@ export default function SlideProyeccion() {
       </div>
 
       {/* Assumptions */}
-      <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.55, maxWidth: "84vw" }}>
+      <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "#7A8FA8", lineHeight: 1.55, maxWidth: "84vw" }}>
         Supuestos: crecimiento orgánico desde la comunidad de +1.000.000 de seguidores (8–18% instala en el año 1),
         apoyado con US$ 5.000 de pauta · 3–7% de conversión a suscripción de pago ·
         ingreso neto ~US$ 25 por suscriptor/año (precios regionales, ya descontada la comisión de tienda).
-        <span style={{ color: "#5a4632", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
+        <span style={{ color: "#7A8FA8", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
           Canal propio = costo de adquisición casi nulo. Referencias de conversión freemium: Calm y Headspace (~3–5%). Escenarios ilustrativos, no garantizados.
         </span>
       </div>

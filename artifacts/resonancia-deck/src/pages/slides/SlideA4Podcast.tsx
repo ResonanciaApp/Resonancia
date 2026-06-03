@@ -1,6 +1,6 @@
 export default function SlideA4Podcast() {
   const accent = "#8AAAD4";
-  const bg = "linear-gradient(135deg, #101A28 0%, #18110C 60%, #121C2A 100%)";
+  const bg = "linear-gradient(135deg, #101A28 0%, #060A0F 60%, #121C2A 100%)";
 
   const MicIcon = () => (
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
@@ -90,7 +90,7 @@ export default function SlideA4Podcast() {
         <div style={{ fontSize: "1.15vw", color: `${accent}99`, fontStyle: "italic" }}>
           "Escuchar con atención es el acto más radical de presencia."
         </div>
-        <div style={{ fontSize: "0.95vw", color: "#3d2a18", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 08</div>
+        <div style={{ fontSize: "0.95vw", color: "#7A8FA8", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 08</div>
       </div>
     </div>
   );

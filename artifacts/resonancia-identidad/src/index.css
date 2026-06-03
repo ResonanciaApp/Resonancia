@@ -12,12 +12,12 @@
 }
 
 :root {
-  --slide-primary: #C69B4F;
+  --slide-primary: #BE9650;
   --slide-accent: #D6A85B;
-  --slide-bg: #18110C;
+  --slide-bg: #060A0F;
   --slide-text: #EDE1D3;
-  --slide-muted: #7a6050;
-  --slide-card: #24160F;
+  --slide-muted: #7A8FA8;
+  --slide-card: #090E17;
   --font-display-family: 'Space Grotesk', sans-serif;
   --font-body-family: 'Space Grotesk', sans-serif;
   color-scheme: dark;

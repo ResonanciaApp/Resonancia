@@ -2,41 +2,41 @@ export default function Slide09Estado() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#18110C", color: "#EDE1D3", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
-        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "#7a6050", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
+        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "#7A8FA8", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
           08 · ESTADO ACTUAL
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          El producto <span style={{ color: "#C69B4F" }}>ya existe.</span>
+          El producto <span style={{ color: "#BE9650" }}>ya existe.</span>
         </div>
       </div>
 
       {/* Two columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#24160F", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#C69B4F", marginBottom: "2.2vh", display: "flex", alignItems: "center", gap: "0.7vw" }}>
+        <div style={{ flex: 1, backgroundColor: "#090E17", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#BE9650", marginBottom: "2.2vh", display: "flex", alignItems: "center", gap: "0.7vw" }}>
             Construido
             <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "1.8vw", height: "1.8vw", flexShrink: 0 }}>
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </div>
-          <div style={{ fontSize: "1.6vw", color: "#cbb9a4", lineHeight: 1.7 }}>
+          <div style={{ fontSize: "1.6vw", color: "#7A8FA8", lineHeight: 1.7 }}>
             App iOS y Android funcional · Catálogo de sesiones y reproductor · Comunidad, diario y perfiles · Infraestructura de audio y backend · Diseño y marca definidos
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#24160F", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#C69B4F", marginBottom: "2.2vh" }}>En camino</div>
-          <div style={{ fontSize: "1.6vw", color: "#cbb9a4", lineHeight: 1.7 }}>
+        <div style={{ flex: 1, backgroundColor: "#090E17", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#BE9650", marginBottom: "2.2vh" }}>En camino</div>
+          <div style={{ fontSize: "1.6vw", color: "#7A8FA8", lineHeight: 1.7 }}>
             Cobros con RevenueCat · Publicación en App Store y Google Play · Notificaciones push · Migración de video a CDN · Crecimiento del catálogo
           </div>
         </div>
       </div>
 
       {/* Closing line */}
-      <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#7a6050", lineHeight: 1.5, maxWidth: "78vw" }}>
+      <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "#7A8FA8", lineHeight: 1.5, maxWidth: "78vw" }}>
         La mayor parte del riesgo técnico ya está resuelto. Lo que sigue es lanzar y crecer.
       </div>
     </div>

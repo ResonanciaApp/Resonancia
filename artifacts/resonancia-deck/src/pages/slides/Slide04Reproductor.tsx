@@ -4,7 +4,7 @@ export default function Slide04Reproductor() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden flex font-display"
-      style={{ backgroundColor: "#18110C", color: "#EDE1D3" }}
+      style={{ backgroundColor: "#060A0F", color: "#EDE1D3" }}
     >
       {/* Left column */}
       <div
@@ -14,17 +14,17 @@ export default function Slide04Reproductor() {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: "1.4vw", fontWeight: 700, letterSpacing: "-0.05em", color: "#C69B4F", marginBottom: "1vh" }}>RESONANCIA</div>
-            <div style={{ width: "4vw", height: "0.4vh", backgroundColor: "#C69B4F" }} />
+            <div style={{ fontSize: "1.4vw", fontWeight: 700, letterSpacing: "-0.05em", color: "#BE9650", marginBottom: "1vh" }}>RESONANCIA</div>
+            <div style={{ width: "4vw", height: "0.4vh", backgroundColor: "#BE9650" }} />
           </div>
           <h2 style={{ fontSize: "3vw", fontWeight: 300, color: "#EDE1D3", margin: 0, letterSpacing: "-0.02em" }}>
-            El <span style={{ fontWeight: 700, color: "#C69B4F" }}>reproductor</span>
+            El <span style={{ fontWeight: 700, color: "#BE9650" }}>reproductor</span>
           </h2>
         </div>
 
         {/* Features */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: "3.5vh" }}>
-          <div style={{ fontSize: "1.6vw", color: "#7a6050" }}>
+          <div style={{ fontSize: "1.6vw", color: "#7A8FA8" }}>
             Escucha inmersiva en cada sesión.
           </div>
 
@@ -36,18 +36,18 @@ export default function Slide04Reproductor() {
           ].map((f) => (
             <div key={f.title}>
               <div style={{ display: "flex", alignItems: "center", gap: "1.2vw", marginBottom: "0.4vh" }}>
-                <div style={{ width: "3vw", height: "0.35vh", backgroundColor: "#C69B4F", flexShrink: 0 }} />
+                <div style={{ width: "3vw", height: "0.35vh", backgroundColor: "#BE9650", flexShrink: 0 }} />
                 <div style={{ fontSize: "1.85vw", fontWeight: 600, color: "#EDE1D3" }}>{f.title}</div>
               </div>
-              <div style={{ fontSize: "1.4vw", color: "#7a6050", paddingLeft: "4.2vw" }}>{f.desc}</div>
+              <div style={{ fontSize: "1.4vw", color: "#7A8FA8", paddingLeft: "4.2vw" }}>{f.desc}</div>
             </div>
           ))}
         </div>
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#3d2a18", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026</div>
-          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#3d2a18" }}>04</div>
+          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#7A8FA8", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026</div>
+          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#7A8FA8" }}>04</div>
         </div>
       </div>
 
@@ -61,7 +61,7 @@ export default function Slide04Reproductor() {
           transform: "translate(-50%, -50%)",
           width: "34vw", height: "34vw",
           borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(198,155,79,0.10) 0%, rgba(24,17,12,0) 70%)",
+          background: "radial-gradient(ellipse, rgba(190, 150, 80,0.10) 0%, rgba(6, 10, 15,0) 70%)",
           zIndex: 0
         }} />
 
@@ -75,7 +75,7 @@ export default function Slide04Reproductor() {
           backgroundColor: "#1C1C1E",
           borderRadius: "3.3vw",
           padding: "0.58vw",
-          boxShadow: "0 3vw 10vw rgba(0,0,0,0.9), 0 0 0 0.12vw rgba(255,255,255,0.06), 0 0 4vw rgba(198,155,79,0.08)",
+          boxShadow: "0 3vw 10vw rgba(0,0,0,0.9), 0 0 0 0.12vw rgba(255,255,255,0.06), 0 0 4vw rgba(190, 150, 80,0.08)",
           zIndex: 1,
           boxSizing: "border-box",
         }}>
@@ -92,7 +92,7 @@ export default function Slide04Reproductor() {
             width: "100%", height: "100%",
             borderRadius: "2.8vw",
             overflow: "hidden",
-            backgroundColor: "#18110C",
+            backgroundColor: "#060A0F",
             position: "relative",
             display: "flex", flexDirection: "column", alignItems: "center",
           }}>
@@ -111,7 +111,7 @@ export default function Slide04Reproductor() {
             {/* Gradient overlay */}
             <div style={{
               position: "absolute", inset: 0,
-              background: "linear-gradient(180deg, #18110C 0%, transparent 30%, transparent 65%, #18110C 100%)",
+              background: "linear-gradient(180deg, #060A0F 0%, transparent 30%, transparent 65%, #060A0F 100%)",
               zIndex: 1
             }} />
 
@@ -156,8 +156,8 @@ export default function Slide04Reproductor() {
                   width: "11.8vw", height: "11.8vw",
                   borderRadius: "50%",
                   overflow: "hidden",
-                  border: "1.5px solid rgba(198,155,79,0.45)",
-                  boxShadow: "0 0 2vw rgba(198,155,79,0.15)",
+                  border: "1.5px solid rgba(190, 150, 80,0.45)",
+                  boxShadow: "0 0 2vw rgba(190, 150, 80,0.15)",
                 }}>
                   <img
                     src={`${base}session-1.jpg`}
@@ -169,13 +169,13 @@ export default function Slide04Reproductor() {
 
               {/* Session info */}
               <div style={{ textAlign: "center", marginBottom: "1vw", width: "100%" }}>
-                <div style={{ fontSize: "0.72vw", color: "#C69B4F", letterSpacing: "0.12em", fontWeight: 600, marginBottom: "0.3vw" }}>
+                <div style={{ fontSize: "0.72vw", color: "#BE9650", letterSpacing: "0.12em", fontWeight: 600, marginBottom: "0.3vw" }}>
                   SONIDOS ANCESTRALES
                 </div>
                 <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#EDE1D3", lineHeight: 1.2 }}>
                   Cuencos Tibetanos
                 </div>
-                <div style={{ fontSize: "0.68vw", color: "#7a6050", marginTop: "0.2vw" }}>
+                <div style={{ fontSize: "0.68vw", color: "#7A8FA8", marginTop: "0.2vw" }}>
                   Mix profundo · 35 min
                 </div>
               </div>
@@ -188,18 +188,18 @@ export default function Slide04Reproductor() {
                   borderRadius: "0.11vw",
                   position: "relative",
                 }}>
-                  <div style={{ position: "absolute", left: 0, top: 0, width: "38%", height: "100%", backgroundColor: "#C69B4F", borderRadius: "0.11vw" }} />
+                  <div style={{ position: "absolute", left: 0, top: 0, width: "38%", height: "100%", backgroundColor: "#BE9650", borderRadius: "0.11vw" }} />
                   <div style={{
                     position: "absolute", top: "50%",
                     left: "38%",
                     transform: "translate(-50%,-50%)",
                     width: "0.55vw", height: "0.55vw",
-                    borderRadius: "50%", backgroundColor: "#C69B4F"
+                    borderRadius: "50%", backgroundColor: "#BE9650"
                   }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.35vw" }}>
-                  <span style={{ fontSize: "0.58vw", color: "#7a6050" }}>8:23</span>
-                  <span style={{ fontSize: "0.58vw", color: "#7a6050" }}>-16:37</span>
+                  <span style={{ fontSize: "0.58vw", color: "#7A8FA8" }}>8:23</span>
+                  <span style={{ fontSize: "0.58vw", color: "#7A8FA8" }}>-16:37</span>
                 </div>
               </div>
 
@@ -215,23 +215,23 @@ export default function Slide04Reproductor() {
                   <svg width="1.1vw" height="1.1vw" viewBox="0 0 24 24" fill="none" stroke="#EDE1D3" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block", width: "1.4vw", height: "1.4vw" }}>
                     <polygon points="19 20 9 12 19 4 19 20" /><line x1="5" y1="19" x2="5" y2="5" />
                   </svg>
-                  <div style={{ fontSize: "0.5vw", color: "#7a6050", marginTop: "0.15vw" }}>10s</div>
+                  <div style={{ fontSize: "0.5vw", color: "#7A8FA8", marginTop: "0.15vw" }}>10s</div>
                 </div>
 
                 {/* Play button */}
                 <div style={{
                   width: "3.6vw", height: "3.6vw",
                   borderRadius: "50%",
-                  backgroundColor: "#C69B4F",
+                  backgroundColor: "#BE9650",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "0 0 1.5vw rgba(198,155,79,0.35)",
+                  boxShadow: "0 0 1.5vw rgba(190, 150, 80,0.35)",
                   position: "relative"
                 }}>
                   <div style={{
                     width: 0, height: 0,
                     borderTop: "0.72vw solid transparent",
                     borderBottom: "0.72vw solid transparent",
-                    borderLeft: "1.2vw solid #18110C",
+                    borderLeft: "1.2vw solid #060A0F",
                     marginLeft: "0.2vw"
                   }} />
                   {/* Outer ring */}
@@ -247,7 +247,7 @@ export default function Slide04Reproductor() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="#EDE1D3" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block", width: "1.4vw", height: "1.4vw" }}>
                     <polygon points="5 4 15 12 5 20 5 4" /><line x1="19" y1="5" x2="19" y2="19" />
                   </svg>
-                  <div style={{ fontSize: "0.5vw", color: "#7a6050", marginTop: "0.15vw" }}>10s</div>
+                  <div style={{ fontSize: "0.5vw", color: "#7A8FA8", marginTop: "0.15vw" }}>10s</div>
                 </div>
               </div>
 
@@ -255,12 +255,12 @@ export default function Slide04Reproductor() {
               <div style={{ width: "85%", marginBottom: "0.85vw" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3vw", alignItems: "center" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.3vw" }}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#7a6050" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "0.7vw", height: "0.7vw" }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#7A8FA8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "0.7vw", height: "0.7vw" }}>
                       <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
                     </svg>
-                    <span style={{ fontSize: "0.6vw", color: "#7a6050" }}>Voz guiada</span>
+                    <span style={{ fontSize: "0.6vw", color: "#7A8FA8" }}>Voz guiada</span>
                   </div>
-                  <span style={{ fontSize: "0.6vw", color: "#C69B4F" }}>80%</span>
+                  <span style={{ fontSize: "0.6vw", color: "#BE9650" }}>80%</span>
                 </div>
                 <div style={{ height: "0.2vw", backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "0.1vw", position: "relative" }}>
                   <div style={{ position: "absolute", left: 0, top: 0, width: "80%", height: "100%", backgroundColor: "#D6A85B", borderRadius: "0.1vw" }} />
@@ -276,19 +276,19 @@ export default function Slide04Reproductor() {
               {/* Timer section */}
               <div style={{ width: "85%" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.3vw", marginBottom: "0.4vw" }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#7a6050" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "0.7vw", height: "0.7vw" }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#7A8FA8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "0.7vw", height: "0.7vw" }}>
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                   </svg>
-                  <span style={{ fontSize: "0.6vw", color: "#7a6050" }}>Apagar en</span>
-                  <span style={{ fontSize: "0.6vw", color: "#C69B4F" }}>· 19:42</span>
+                  <span style={{ fontSize: "0.6vw", color: "#7A8FA8" }}>Apagar en</span>
+                  <span style={{ fontSize: "0.6vw", color: "#BE9650" }}>· 19:42</span>
                 </div>
                 <div style={{ display: "flex", gap: "0.45vw", flexWrap: "wrap" }}>
                   {["Sin timer", "5 min", "10 min", "20 min", "30 min"].map((opt, i) => (
                     <div key={opt} style={{
                       fontSize: "0.55vw",
-                      color: i === 3 ? "#18110C" : "#7a6050",
-                      backgroundColor: i === 3 ? "#C69B4F" : "rgba(182,149,95,0.06)",
-                      border: `1px solid ${i === 3 ? "#C69B4F" : "rgba(182,149,95,0.18)"}`,
+                      color: i === 3 ? "#060A0F" : "#7A8FA8",
+                      backgroundColor: i === 3 ? "#BE9650" : "rgba(182,149,95,0.06)",
+                      border: `1px solid ${i === 3 ? "#BE9650" : "rgba(182,149,95,0.18)"}`,
                       borderRadius: "0.5vw",
                       padding: "0.2vw 0.55vw",
                       fontWeight: i === 3 ? 600 : 400,
@@ -305,7 +305,7 @@ export default function Slide04Reproductor() {
         <div style={{
           position: "absolute", top: 0, left: 0,
           width: "8%", height: "100%",
-          background: "linear-gradient(90deg, #18110C 0%, rgba(24,17,12,0) 100%)",
+          background: "linear-gradient(90deg, #060A0F 0%, rgba(6, 10, 15,0) 100%)",
           zIndex: 3
         }} />
       </div>

@@ -1,6 +1,6 @@
 export default function SlideB1Herramientas() {
-  const accent = "#C69B4F";
-  const bg = "#18110C";
+  const accent = "#BE9650";
+  const bg = "#060A0F";
 
   const HeartIcon = () => (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -9,7 +9,7 @@ export default function SlideB1Herramientas() {
   );
   const FeatherIcon = () => (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-      <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5l6.74-6.76zM16 8L2 22" stroke="#C69B4F" strokeWidth="1.6" strokeLinecap="round"/>
+      <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5l6.74-6.76zM16 8L2 22" stroke="#BE9650" strokeWidth="1.6" strokeLinecap="round"/>
     </svg>
   );
   const UsersIcon = () => (
@@ -38,7 +38,7 @@ export default function SlideB1Herramientas() {
     },
     {
       icon: <FeatherIcon />,
-      color: "#C69B4F",
+      color: "#BE9650",
       title: "Diario",
       body: "Un cuaderno sagrado dentro de la app. Procesa emociones, registra insights de tus sesiones y da seguimiento a tu evolución interior.",
       highlight: "Introspección · Memoria emocional",
@@ -64,7 +64,7 @@ export default function SlideB1Herramientas() {
       className="w-screen h-screen overflow-hidden relative flex flex-col font-display"
       style={{ backgroundColor: bg, color: "#EDE1D3", padding: "7vh 7vw", boxSizing: "border-box" }}
     >
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 20%, rgba(198,155,79,0.07) 0%, transparent 60%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 20%, rgba(190, 150, 80,0.07) 0%, transparent 60%)", pointerEvents: "none" }} />
 
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "3.5vh" }}>
@@ -80,7 +80,7 @@ export default function SlideB1Herramientas() {
         </div>
       </div>
 
-      <div style={{ fontSize: "1.55vw", color: "#7a6050", fontWeight: 300, marginBottom: "4vh" }}>
+      <div style={{ fontSize: "1.55vw", color: "#7A8FA8", fontWeight: 300, marginBottom: "4vh" }}>
         Cuatro pilares que convierten RESONANCIA en un ecosistema espiritual completo.
       </div>
 
@@ -115,7 +115,7 @@ export default function SlideB1Herramientas() {
         <div style={{ fontSize: "1.15vw", color: `${accent}88`, fontStyle: "italic" }}>
           "Un refugio de sonido también es un espejo, una comunidad y un diario."
         </div>
-        <div style={{ fontSize: "0.95vw", color: "#3d2a18", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 10</div>
+        <div style={{ fontSize: "0.95vw", color: "#7A8FA8", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 10</div>
       </div>
     </div>
   );

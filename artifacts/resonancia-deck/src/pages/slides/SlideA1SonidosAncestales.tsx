@@ -1,6 +1,6 @@
 export default function SlideA1SonidosAncestales() {
   const accent = "#E8C87A";
-  const bg = "linear-gradient(135deg, #3E2208 0%, #18110C 60%, #2A1A08 100%)";
+  const bg = "linear-gradient(135deg, #3E2208 0%, #060A0F 60%, #2A1A08 100%)";
 
   const BowlIcon = () => (
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
@@ -78,7 +78,7 @@ export default function SlideA1SonidosAncestales() {
         <div style={{ fontSize: "1.15vw", color: `${accent}99`, fontStyle: "italic" }}>
           "El sonido es el puente entre lo visible y lo invisible."
         </div>
-        <div style={{ fontSize: "0.95vw", color: "#3d2a18", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 05</div>
+        <div style={{ fontSize: "0.95vw", color: "#7A8FA8", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 05</div>
       </div>
     </div>
   );

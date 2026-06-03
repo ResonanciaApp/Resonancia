@@ -1,6 +1,6 @@
 export default function SlideA2MeditacionesGuiadas() {
   const accent = "#C8B4E0";
-  const bg = "linear-gradient(135deg, #251633 0%, #18110C 60%, #1C1025 100%)";
+  const bg = "linear-gradient(135deg, #251633 0%, #060A0F 60%, #1C1025 100%)";
 
   const EyeIcon = () => (
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
@@ -89,7 +89,7 @@ export default function SlideA2MeditacionesGuiadas() {
         <div style={{ fontSize: "1.15vw", color: `${accent}99`, fontStyle: "italic" }}>
           "La mente quieta es el primer paso hacia uno mismo."
         </div>
-        <div style={{ fontSize: "0.95vw", color: "#3d2a18", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 06</div>
+        <div style={{ fontSize: "0.95vw", color: "#7A8FA8", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026 · 06</div>
       </div>
     </div>
   );

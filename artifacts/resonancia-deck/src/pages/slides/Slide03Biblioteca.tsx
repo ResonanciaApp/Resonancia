@@ -42,7 +42,7 @@ function PhoneFrame({ src, color, rot, z }: (typeof PHONES)[0]) {
         {/* Dynamic island */}
         <div style={{ position: "absolute", top: "1.1vw", left: "50%", transform: "translateX(-50%)", width: "2.8vw", height: "0.65vw", backgroundColor: "#000", borderRadius: "0.42vw", zIndex: 10 }} />
         {/* Screen */}
-        <div style={{ width: "100%", height: "100%", borderRadius: "1.8vw", overflow: "hidden", backgroundColor: "#18110C" }}>
+        <div style={{ width: "100%", height: "100%", borderRadius: "1.8vw", overflow: "hidden", backgroundColor: "#060A0F" }}>
           <img
             src={`${base}${src}`}
             crossOrigin="anonymous"
@@ -101,7 +101,7 @@ export default function Slide03Biblioteca() {
   return (
     <div
       className="relative w-screen h-screen flex font-display"
-      style={{ backgroundColor: "#18110C", color: "#EDE1D3", overflow: "hidden" }}
+      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", overflow: "hidden" }}
     >
       {/* ── Left content column ── */}
       <div
@@ -111,18 +111,18 @@ export default function Slide03Biblioteca() {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <div style={{ fontSize: "1.4vw", fontWeight: 700, letterSpacing: "-0.05em", color: "#C69B4F", marginBottom: "1vh" }}>RESONANCIA</div>
-            <div style={{ width: "4vw", height: "0.4vh", backgroundColor: "#C69B4F" }} />
+            <div style={{ fontSize: "1.4vw", fontWeight: 700, letterSpacing: "-0.05em", color: "#BE9650", marginBottom: "1vh" }}>RESONANCIA</div>
+            <div style={{ width: "4vw", height: "0.4vh", backgroundColor: "#BE9650" }} />
           </div>
           <h2 style={{ fontSize: "3vw", fontWeight: 300, color: "#EDE1D3", margin: 0, letterSpacing: "-0.02em" }}>
-            Biblioteca de <span style={{ fontWeight: 700, color: "#C69B4F" }}>sesiones</span>
+            Biblioteca de <span style={{ fontWeight: 700, color: "#BE9650" }}>sesiones</span>
           </h2>
         </div>
 
         {/* Stat */}
         <div>
-          <div style={{ fontSize: "8vw", fontWeight: 700, color: "#C69B4F", lineHeight: 1, letterSpacing: "-0.04em" }}>300+</div>
-          <div style={{ fontSize: "1.8vw", color: "#7a6050", marginTop: "1vh" }}>sesiones en 4 categorías</div>
+          <div style={{ fontSize: "8vw", fontWeight: 700, color: "#BE9650", lineHeight: 1, letterSpacing: "-0.04em" }}>300+</div>
+          <div style={{ fontSize: "1.8vw", color: "#7A8FA8", marginTop: "1vh" }}>sesiones en 4 categorías</div>
         </div>
 
         {/* Category list */}
@@ -139,22 +139,22 @@ export default function Slide03Biblioteca() {
             >
               <cat.Icon />
               <div style={{ fontSize: "1.65vw", fontWeight: 600, color: "#EDE1D3", flex: 1 }}>{cat.name}</div>
-              <div style={{ fontSize: "1.2vw", color: "#7a6050" }}>{cat.desc}</div>
+              <div style={{ fontSize: "1.2vw", color: "#7A8FA8" }}>{cat.desc}</div>
             </div>
           ))}
         </div>
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#3d2a18", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026</div>
-          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#3d2a18" }}>04</div>
+          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#7A8FA8", letterSpacing: "0.05em" }}>CASA DEL CUENCO · 2026</div>
+          <div style={{ fontSize: "1vw", fontWeight: 500, color: "#7A8FA8" }}>04</div>
         </div>
       </div>
 
       {/* ── Right — fan of 4 phone mockups ── */}
       <div style={{ flex: 1, height: "100vh", position: "relative", overflow: "visible" }}>
         {/* Ambient glow */}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 60%, rgba(198,155,79,0.06) 0%, transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 60%, rgba(190, 150, 80,0.06) 0%, transparent 65%)", pointerEvents: "none" }} />
 
         {/* Fan pivot — all phones share bottom-center here */}
         <div style={{ position: "absolute", bottom: "30vh", left: "50%" }}>
