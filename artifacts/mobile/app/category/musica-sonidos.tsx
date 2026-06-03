@@ -302,20 +302,6 @@ export default function MusicaSonidosScreen() {
                         placeholder={BLUR_PLACEHOLDER}
                       />
                       <PremiumBadge session={session} />
-                      {/* Tag badge on image */}
-                      {activeTab === "Todos" && tag && tagStyle && tagIcon && (
-                        <View
-                          style={[
-                            styles.tagBadge,
-                            { backgroundColor: tagStyle.bg },
-                          ]}
-                        >
-                          <Feather name={tagIcon} size={9} color={tagStyle.text} />
-                          <Text style={[styles.tagText, { color: tagStyle.text }]}>
-                            {TAG_BADGE_LABELS[tag]}
-                          </Text>
-                        </View>
-                      )}
                     </View>
 
                     {/* Title */}
