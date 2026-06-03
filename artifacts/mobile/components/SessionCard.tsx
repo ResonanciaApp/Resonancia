@@ -48,8 +48,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   };
 
   if (horizontal) {
-    const cat = CATEGORIES.find((c) => c.id === session.categoryId);
-    const catColor = cat?.color ?? colors.accent;
     return (
       <Pressable
         onPress={handlePress}
@@ -69,7 +67,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         </View>
         <View style={styles.hContent}>
           <View style={styles.hCategoryRow}>
-            <Text style={[styles.hCategory, { color: catColor }]}>
+            <Text style={[styles.hCategory, { color: colors.mutedForeground }]}>
               {session.categoryLabel}
             </Text>
           </View>
