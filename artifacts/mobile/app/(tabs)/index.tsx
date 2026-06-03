@@ -198,7 +198,7 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 3. VIDEOS DESTACADOS ── */}
-        <View style={styles.section}>
+        <View style={[styles.section, { marginTop: 25 }]}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
               Videos destacados
