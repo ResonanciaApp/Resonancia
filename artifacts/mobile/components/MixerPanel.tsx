@@ -9,10 +9,8 @@
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
-import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
@@ -58,17 +56,7 @@ export function MixerPanel() {
   return (
     <Pressable onPress={openSheet} style={styles.wrapper}>
       {/* Fondo */}
-      {isIOS ? (
-        <BlurView intensity={80} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 18 }]} />
-      ) : Platform.OS === "web" ? (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(6,10,24,0.94)", borderRadius: 18 }]} />
-      ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card, borderRadius: 18 }]} />
-      )}
-      <LinearGradient
-        colors={["rgba(14,26,42,0.06)", "rgba(6,10,15,0.35)"]}
-        style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
-      />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#060A0F", borderRadius: 18 }]} />
       <View style={styles.border} />
 
       {/* Contenido */}

@@ -244,13 +244,6 @@ export function MixerSheet() {
           ]}
           onPress={(e) => e.stopPropagation()}
         >
-          <LinearGradient
-            colors={DARK_GRADIENT}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.sheetGradient}
-            pointerEvents="none"
-          />
           <View style={[styles.handle, { backgroundColor: colors.border }]} />
 
           <View style={styles.headerRow}>
