@@ -123,7 +123,7 @@ export default function HomeScreen() {
               hitSlop={12}
               style={styles.iconBtnBare}
             >
-              <Feather name="menu" size={22} color="#BCAE9C" />
+              <Feather name="menu" size={22} color="white" />
             </Pressable>
             <NotificationBell />
           </View>
@@ -357,6 +357,7 @@ const styles = StyleSheet.create({
   },
   intentionCard: {
     paddingVertical: 10,
+    marginBottom: 30,
     alignItems: "center",
   },
   intentionLabel: {
