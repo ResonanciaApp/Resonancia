@@ -20,7 +20,7 @@ const COLORS = {
   bg: "#18110C",
   card: "#24160F",
   primary: "#C69B4F",
-  accent: "#D6A85B",
+  accent: "#C69B4F",
   fg: "#EDE1D3",
   muted: "rgba(200, 193, 181, 0.55)",
   border: "rgba(182, 149, 95, 0.25)",

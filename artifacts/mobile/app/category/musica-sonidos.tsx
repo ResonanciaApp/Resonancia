@@ -454,7 +454,7 @@ export default function MusicaSonidosScreen() {
                                 </Text>
                                 {locked && (
                                   <View style={styles.timerLock}>
-                                    <Feather name="lock" size={9} color="#D6A85B" />
+                                    <Feather name="lock" size={9} color="#C69B4F" />
                                   </View>
                                 )}
                               </>

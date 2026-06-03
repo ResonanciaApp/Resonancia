@@ -308,7 +308,7 @@ export default function RespiracionScreen() {
           style={({ pressed }) => [styles.mainBtn, { opacity: pressed ? 0.82 : 1 }]}
         >
           <LinearGradient
-            colors={["#D6A85B", "#C69B4F"]}
+            colors={["#C69B4F", "#C69B4F"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 50 }]}

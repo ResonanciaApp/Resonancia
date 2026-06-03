@@ -146,7 +146,7 @@ Cada sesión de **Meditaciones Guiadas** lleva `guideId` (campo en `sessions.ts`
 
 - **"RA"** = "Restart App" — cuando el usuario escribe "RA", reiniciar el workflow `artifacts/mobile: expo`
 - Idioma: español neutro en toda la UI y en las respuestas del agente (no usar modismos argentinos)
-- Colores: bg `#0D0906`, primary `#C69B4F`, accent `#D6A85B`, card `#24160F`, fg `#EDE1D3`
+- Colores: bg `#0D0906`, primary `#C69B4F`, accent `#C69B4F` (unificado), card `#24160F`, fg `#EDE1D3`
 - Pre-existing TS errors (ignorar): VozInterior, MensajesAnon, MiniPlayer, session/[id], SessionCard, PlayerContext, player.tsx
 
 ## Gotchas
