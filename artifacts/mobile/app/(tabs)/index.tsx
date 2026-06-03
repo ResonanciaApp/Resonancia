@@ -155,6 +155,13 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.catGrid}>
             {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat, idx) => {
+              const R = 20;
+              const radii = [
+                { borderTopLeftRadius: 0,  borderTopRightRadius: 0,  borderBottomLeftRadius: 0,  borderBottomRightRadius: R }, // arriba-izq → esquina interna = abajo-der
+                { borderTopLeftRadius: 0,  borderTopRightRadius: 0,  borderBottomLeftRadius: R,  borderBottomRightRadius: 0 }, // arriba-der → esquina interna = abajo-izq
+                { borderTopLeftRadius: 0,  borderTopRightRadius: R,  borderBottomLeftRadius: 0,  borderBottomRightRadius: 0 }, // abajo-izq  → esquina interna = arriba-der
+                { borderTopLeftRadius: R,  borderTopRightRadius: 0,  borderBottomLeftRadius: 0,  borderBottomRightRadius: 0 }, // abajo-der  → esquina interna = arriba-izq
+              ];
               const iconColors: Record<string, string> = {
                 "sonidos-ancestrales": "#D59D42",
                 "meditaciones-guiadas": "#9D78CA",
@@ -166,7 +173,7 @@ export default function HomeScreen() {
                 <Pressable
                   key={cat.id}
                   onPress={() => router.push(`/category/${cat.id}` as never)}
-                  style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.75 : 1 }]}
+                  style={({ pressed }) => [styles.catCard, radii[idx], { opacity: pressed ? 0.75 : 1 }]}
                 >
                   {cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
