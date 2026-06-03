@@ -1,0 +1,245 @@
+Quiero configurar el sistema completo de usuarios, perfiles, permisos, contenido y estadísticas para mi app de músicas de relajación, similar a Calm, Pura Mente o Insight Timer.
+
+La app funciona con una biblioteca de sonidos, sesiones, meditaciones, audios y contenidos distribuidos en distintas secciones. Necesito desarrollar la arquitectura de backend, base de datos, permisos y lógica interna para que cada usuario pueda interactuar con el contenido y, en ciertos casos, también subir contenido propio.
+
+Objetivo general:
+Crear un sistema robusto de usuarios donde cada persona tenga un perfil propio, pueda seguir a otros usuarios, ver sus estadísticas personales dentro de la app, reproducir contenido, guardar favoritos y, si tiene permisos especiales, subir audios o sesiones desde una sección interna de la app.
+
+Funcionalidades principales:
+
+Sistema de usuarios y autenticación
+Cada usuario debe poder crear una cuenta.
+Debe existir login, registro y recuperación de contraseña.
+Cada usuario debe tener un perfil público y privado.
+El perfil debe incluir:
+Nombre
+Foto de perfil
+Bio o descripción breve
+Fecha de creación de cuenta
+Contenidos escuchados
+Estadísticas personales
+Usuarios que sigue
+Usuarios que lo siguen
+Sistema de seguidores
+Cada usuario debe poder seguir y dejar de seguir a otros usuarios.
+Debe existir una tabla o colección para almacenar relaciones de seguimiento.
+En el perfil de cada usuario debe mostrarse:
+Número de seguidores
+Número de usuarios seguidos
+El sistema debe permitir en el futuro crear un feed personalizado basado en usuarios seguidos.
+Estadísticas del usuario
+Cada usuario debe tener una sección de estadísticas personales dentro de la app.
+
+Las estadísticas deben incluir:
+
+Racha de días consecutivos usando la app.
+Tiempo total escuchado.
+Cantidad total de reproducciones.
+Cantidad de sesiones completadas.
+Categoría más escuchada.
+Audio o sesión más reproducida.
+Fecha de última actividad.
+Historial de reproducciones.
+Progreso individual por sesión, audio o curso.
+
+La lógica debe registrar cada reproducción del usuario, incluyendo:
+
+ID del usuario.
+ID del contenido reproducido.
+Fecha y hora.
+Duración escuchada.
+Si completó o no el audio.
+Desde qué sección se reprodujo.
+Tipo de contenido reproducido.
+Roles y permisos
+La app debe tener distintos tipos de usuarios:
+Usuario normal:
+Puede escuchar contenido, guardar favoritos, seguir usuarios y ver sus estadísticas.
+Usuario creador:
+Puede subir contenido a la app desde una sección interna especial.
+Administrador:
+Puede aprobar, editar, ocultar, publicar o eliminar contenido.
+Puede asignar permisos de creador a otros usuarios.
+Puede gestionar categorías, sesiones, audios y usuarios.
+
+Debe existir un sistema de permisos claro para controlar qué puede hacer cada tipo de usuario.
+
+Subida de contenido por usuarios autorizados
+Solo los usuarios con permiso especial de creador pueden subir contenido.
+
+Debe existir una sección interna dentro de la app llamada, por ejemplo, “Panel de Creador” o “Subir Contenido”.
+
+Desde esta sección, el usuario creador podrá subir:
+
+Audios individuales.
+Sesiones completas.
+Imagen de portada.
+Título.
+Descripción.
+Categoría.
+Duración.
+Tipo de contenido.
+Estado del contenido: borrador, pendiente de revisión, publicado o rechazado.
+
+El contenido subido no debe publicarse automáticamente, salvo que el administrador así lo configure.
+
+Flujo recomendado:
+
+Usuario creador sube contenido.
+El contenido queda como “pendiente de revisión”.
+El administrador lo revisa.
+El administrador puede aprobarlo, rechazarlo o editarlo.
+Cuando se aprueba, el contenido se distribuye dentro de la app.
+Distribución del contenido en forma de sesiones
+El contenido subido por usuarios autorizados debe poder organizarse en sesiones.
+
+Una sesión puede contener:
+
+Uno o más audios.
+Título.
+Descripción.
+Imagen de portada.
+Duración total.
+Categoría.
+Nivel o intención.
+Orden de reproducción.
+Autor o creador.
+Estado de publicación.
+
+Ejemplos de sesiones:
+
+Meditación para dormir.
+Baño sonoro con cuencos.
+Sesión de respiración.
+Sonidos para enfoque.
+Relajación profunda.
+Viaje sonoro con gong.
+
+Cada audio puede pertenecer a una o más sesiones, si el sistema lo permite.
+
+Biblioteca de contenido
+Crear una estructura flexible para organizar el contenido en la app.
+
+El contenido debe poder clasificarse por:
+
+Categoría.
+Tipo de contenido.
+Autor.
+Duración.
+Popularidad.
+Más escuchados.
+Recomendados.
+Nuevos.
+Favoritos.
+Contenido premium o gratuito.
+
+Tipos de contenido posibles:
+
+Música de relajación.
+Meditaciones guiadas.
+Sonidos de cuencos.
+Gongs.
+ASMR.
+Respiraciones.
+Podcast.
+Pausas meditativas.
+Sesiones para dormir.
+Sesiones para enfoque.
+Favoritos y guardados
+Cada usuario debe poder guardar contenido como favorito.
+
+Debe existir una sección “Mis favoritos” donde el usuario pueda ver:
+
+Audios favoritos.
+Sesiones favoritas.
+Creadores favoritos.
+Historial de reproducción
+Cada usuario debe tener un historial de contenido escuchado.
+
+El historial debe permitir:
+
+Ver audios escuchados recientemente.
+Continuar una sesión donde quedó.
+Registrar progreso parcial.
+Marcar sesiones completadas.
+Backend y base de datos
+Crear una base de datos con tablas o colecciones para:
+Users
+UserProfiles
+Follows
+UserStats
+PlaybackHistory
+Content
+AudioFiles
+Sessions
+SessionItems
+Favorites
+Roles
+Permissions
+CreatorUploads
+AdminReviews
+Categories
+
+La estructura debe estar pensada para escalar en el futuro.
+
+Estados del contenido
+Cada contenido debe tener un estado:
+draft
+pending_review
+approved
+published
+rejected
+archived
+hidden
+
+Solo el contenido con estado “published” debe aparecer públicamente en la app.
+
+Panel de administración
+Crear una sección administrativa para que el administrador pueda:
+Ver usuarios registrados.
+Asignar roles.
+Revisar contenido subido por creadores.
+Aprobar o rechazar contenido.
+Editar metadatos.
+Crear categorías.
+Ocultar contenido.
+Ver estadísticas generales de uso.
+Ver reproducciones totales.
+Ver creadores activos.
+Ver contenido más escuchado.
+Seguridad
+Implementar validaciones para que:
+Solo usuarios autenticados puedan acceder a su perfil.
+Solo usuarios con rol de creador puedan subir contenido.
+Solo administradores puedan aprobar o publicar contenido.
+Un usuario no pueda editar contenido de otro usuario, salvo que sea administrador.
+Las rutas privadas estén protegidas.
+Los archivos subidos se validen por tipo, tamaño y duración.
+Almacenamiento de archivos
+Los audios e imágenes deben guardarse en un sistema de almacenamiento adecuado.
+
+Cada archivo debe guardar:
+
+URL del archivo.
+Nombre original.
+Tipo de archivo.
+Tamaño.
+Duración si es audio.
+Usuario que lo subió.
+Fecha de subida.
+Escalabilidad futura
+El sistema debe quedar preparado para agregar más adelante:
+Membresías premium.
+Contenido gratuito y pagado.
+Feed personalizado.
+Comentarios.
+Likes.
+Recomendaciones inteligentes.
+Notificaciones.
+Rankings.
+Programas o cursos por etapas.
+Analytics avanzados.
+
+Por favor, construye la arquitectura necesaria, crea los modelos de datos, rutas backend, controladores, validaciones, permisos y estructura frontend básica para gestionar usuarios, perfiles, estadísticas, seguidores, subida de contenido, sesiones y administración interna.
+
+Usa buenas prácticas de desarrollo, código limpio, separación clara entre frontend, backend, base de datos, autenticación, permisos y lógica de negocio.
