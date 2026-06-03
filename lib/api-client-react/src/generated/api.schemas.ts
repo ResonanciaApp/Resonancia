@@ -493,6 +493,7 @@ export const CatalogSessionStatus = {
   draft: 'draft',
   pending: 'pending',
   published: 'published',
+  rejected: 'rejected',
 } as const;
 
 export interface CatalogSession {
@@ -533,6 +534,187 @@ export interface CatalogResponse {
   sessions: CatalogSession[];
 }
 
+export type CreatorSubmissionAudioInputRole = typeof CreatorSubmissionAudioInputRole[keyof typeof CreatorSubmissionAudioInputRole];
+
+
+export const CreatorSubmissionAudioInputRole = {
+  main: 'main',
+  voice: 'voice',
+  ambient: 'ambient',
+  base: 'base',
+  sound: 'sound',
+} as const;
+
+export interface CreatorSubmissionAudioInput {
+  role?: CreatorSubmissionAudioInputRole;
+  /** @minLength 1 */
+  objectPath: string;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  contentType: string;
+  /** @minimum 1 */
+  sizeBytes: number;
+  /** @minimum 0 */
+  durationSeconds?: number | null;
+  isLoop?: boolean;
+}
+
+export interface CreatorSubmissionInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  subtitle: string;
+  /** @minLength 1 */
+  categoryId: string;
+  /**
+     * @minLength 1
+     * @maxLength 60
+     */
+  categoryLabel: string;
+  /**
+     * @minimum 1
+     * @maximum 600
+     */
+  duration: number;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  description: string;
+  /** @maxItems 8 */
+  benefits?: string[];
+  /** @maxItems 12 */
+  instruments?: string[];
+  isPremium?: boolean;
+  imageObjectPath?: string | null;
+  imageContentType?: string | null;
+  /** @minimum 1 */
+  imageSizeBytes?: number | null;
+  /** @maxLength 60 */
+  frequency?: string | null;
+  soundTag?: string | null;
+  meditationTag?: string | null;
+  ancestralTag?: string | null;
+  sabiduriaTag?: string | null;
+  podcastTag?: string | null;
+  sonidosTag?: string | null;
+  sleepTag?: string | null;
+  guideId?: string | null;
+  artistId?: string | null;
+  /**
+     * @minItems 1
+     * @maxItems 5
+     */
+  audioFiles: CreatorSubmissionAudioInput[];
+}
+
+export type SubmissionStatus = typeof SubmissionStatus[keyof typeof SubmissionStatus];
+
+
+export const SubmissionStatus = {
+  draft: 'draft',
+  pending: 'pending',
+  published: 'published',
+  rejected: 'rejected',
+} as const;
+
+export interface Submission {
+  id: string;
+  title: string;
+  subtitle: string;
+  categoryId: string;
+  categoryLabel: string;
+  duration: number;
+  durationLabel: string;
+  description: string;
+  benefits: string[];
+  instruments: string[];
+  imageKey?: string | null;
+  imageUrl?: string | null;
+  isFeatured: boolean;
+  isNew: boolean;
+  isPremium: boolean;
+  frequency?: string | null;
+  soundTag?: string | null;
+  meditationTag?: string | null;
+  ancestralTag?: string | null;
+  sabiduriaTag?: string | null;
+  podcastTag?: string | null;
+  sonidosTag?: string | null;
+  sleepTag?: string | null;
+  guideId?: string | null;
+  artistId?: string | null;
+  status: SubmissionStatus;
+  rejectionReason?: string | null;
+  sortOrder: number;
+  creator?: UserProfile | null;
+  createdAt: string;
+  updatedAt: string;
+  audioFiles: CatalogAudioFile[];
+}
+
+export interface SubmissionList {
+  submissions: Submission[];
+}
+
+export interface ReviewRejectBody {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  reason: string;
+}
+
+export interface ReviewEditBody {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  title?: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  subtitle?: string;
+  /** @minLength 1 */
+  categoryId?: string;
+  /**
+     * @minLength 1
+     * @maxLength 60
+     */
+  categoryLabel?: string;
+  /**
+     * @minimum 1
+     * @maximum 600
+     */
+  duration?: number;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  description?: string;
+  /** @maxItems 8 */
+  benefits?: string[];
+  /** @maxItems 12 */
+  instruments?: string[];
+  isPremium?: boolean;
+  isFeatured?: boolean;
+  isNew?: boolean;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };
@@ -570,4 +752,18 @@ limit?: number;
 export type GetMyPlaysParams = {
 since?: string;
 };
+
+export type GetPendingSubmissionsParams = {
+status?: GetPendingSubmissionsStatus;
+};
+
+export type GetPendingSubmissionsStatus = typeof GetPendingSubmissionsStatus[keyof typeof GetPendingSubmissionsStatus];
+
+
+export const GetPendingSubmissionsStatus = {
+  draft: 'draft',
+  pending: 'pending',
+  published: 'published',
+  rejected: 'rejected',
+} as const;
 

@@ -24,6 +24,7 @@ import type {
   CommunityMessage,
   Conversation,
   CreateMessageBody,
+  CreatorSubmissionInput,
   DirectMessage,
   ErrorEnvelope,
   ErrorResponse,
@@ -34,6 +35,7 @@ import type {
   GetDirectMessagesParams,
   GetMessagesParams,
   GetMyPlaysParams,
+  GetPendingSubmissionsParams,
   GetSharedMixesParams,
   HealthStatus,
   MessagesPage,
@@ -48,11 +50,15 @@ import type {
   RegisterPushTokenBody,
   RequestUploadUrlBody,
   RequestUploadUrlResponse,
+  ReviewEditBody,
+  ReviewRejectBody,
   SearchUsersParams,
   SendDirectMessageBody,
   SharedMix,
   SharedMixInput,
   SharedMixesPage,
+  Submission,
+  SubmissionList,
   TopMessageResponse,
   TypingStatus,
   UnreadCount,
@@ -3283,4 +3289,450 @@ export function useGetCatalog<TData = Awaited<ReturnType<typeof getCatalog>>, TE
 
 
 
+
+export const getCreateSubmissionUrl = () => {
+
+
+
+
+  return `/api/catalog/submissions`
+}
+
+/**
+ * @summary Crear una pieza de contenido (creador) — queda pendiente de revisión
+ */
+export const createSubmission = async (creatorSubmissionInput: CreatorSubmissionInput, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getCreateSubmissionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      creatorSubmissionInput,)
+  }
+);}
+
+
+
+
+export const getCreateSubmissionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSubmission>>, TError,{data: BodyType<CreatorSubmissionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createSubmission>>, TError,{data: BodyType<CreatorSubmissionInput>}, TContext> => {
+
+const mutationKey = ['createSubmission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createSubmission>>, {data: BodyType<CreatorSubmissionInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createSubmission(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof createSubmission>>>
+    export type CreateSubmissionMutationBody = BodyType<CreatorSubmissionInput>
+    export type CreateSubmissionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear una pieza de contenido (creador) — queda pendiente de revisión
+ */
+export const useCreateSubmission = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSubmission>>, TError,{data: BodyType<CreatorSubmissionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createSubmission>>,
+        TError,
+        {data: BodyType<CreatorSubmissionInput>},
+        TContext
+      > => {
+      return useMutation(getCreateSubmissionMutationOptions(options));
+    }
+
+export const getGetPendingSubmissionsUrl = (params?: GetPendingSubmissionsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/catalog/submissions?${stringifiedParams}` : `/api/catalog/submissions`
+}
+
+/**
+ * @summary Cola de revisión (admin) — envíos por estado (default pending)
+ */
+export const getPendingSubmissions = async (params?: GetPendingSubmissionsParams, options?: RequestInit): Promise<SubmissionList> => {
+
+  return customFetch<SubmissionList>(getGetPendingSubmissionsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPendingSubmissionsQueryKey = (params?: GetPendingSubmissionsParams,) => {
+    return [
+    `/api/catalog/submissions`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetPendingSubmissionsQueryOptions = <TData = Awaited<ReturnType<typeof getPendingSubmissions>>, TError = ErrorType<ErrorResponse>>(params?: GetPendingSubmissionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPendingSubmissions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPendingSubmissionsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPendingSubmissions>>> = ({ signal }) => getPendingSubmissions(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPendingSubmissions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPendingSubmissionsQueryResult = NonNullable<Awaited<ReturnType<typeof getPendingSubmissions>>>
+export type GetPendingSubmissionsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Cola de revisión (admin) — envíos por estado (default pending)
+ */
+
+export function useGetPendingSubmissions<TData = Awaited<ReturnType<typeof getPendingSubmissions>>, TError = ErrorType<ErrorResponse>>(
+ params?: GetPendingSubmissionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPendingSubmissions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPendingSubmissionsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetMySubmissionsUrl = () => {
+
+
+
+
+  return `/api/catalog/my-submissions`
+}
+
+/**
+ * @summary Envíos del creador autenticado (con estado y motivo de rechazo)
+ */
+export const getMySubmissions = async ( options?: RequestInit): Promise<SubmissionList> => {
+
+  return customFetch<SubmissionList>(getGetMySubmissionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMySubmissionsQueryKey = () => {
+    return [
+    `/api/catalog/my-submissions`
+    ] as const;
+    }
+
+
+export const getGetMySubmissionsQueryOptions = <TData = Awaited<ReturnType<typeof getMySubmissions>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMySubmissions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMySubmissionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMySubmissions>>> = ({ signal }) => getMySubmissions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMySubmissions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMySubmissionsQueryResult = NonNullable<Awaited<ReturnType<typeof getMySubmissions>>>
+export type GetMySubmissionsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Envíos del creador autenticado (con estado y motivo de rechazo)
+ */
+
+export function useGetMySubmissions<TData = Awaited<ReturnType<typeof getMySubmissions>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMySubmissions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMySubmissionsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getApproveSubmissionUrl = (id: string,) => {
+
+
+
+
+  return `/api/catalog/submissions/${id}/approve`
+}
+
+/**
+ * @summary Aprobar un envío (admin) — pasa a published y notifica al creador
+ */
+export const approveSubmission = async (id: string, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getApproveSubmissionUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getApproveSubmissionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof approveSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof approveSubmission>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['approveSubmission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof approveSubmission>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  approveSubmission(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ApproveSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof approveSubmission>>>
+
+    export type ApproveSubmissionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Aprobar un envío (admin) — pasa a published y notifica al creador
+ */
+export const useApproveSubmission = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof approveSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof approveSubmission>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getApproveSubmissionMutationOptions(options));
+    }
+
+export const getRejectSubmissionUrl = (id: string,) => {
+
+
+
+
+  return `/api/catalog/submissions/${id}/reject`
+}
+
+/**
+ * @summary Rechazar un envío (admin) — pasa a rejected y notifica al creador
+ */
+export const rejectSubmission = async (id: string,
+    reviewRejectBody: ReviewRejectBody, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getRejectSubmissionUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reviewRejectBody,)
+  }
+);}
+
+
+
+
+export const getRejectSubmissionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rejectSubmission>>, TError,{id: string;data: BodyType<ReviewRejectBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof rejectSubmission>>, TError,{id: string;data: BodyType<ReviewRejectBody>}, TContext> => {
+
+const mutationKey = ['rejectSubmission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rejectSubmission>>, {id: string;data: BodyType<ReviewRejectBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  rejectSubmission(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RejectSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof rejectSubmission>>>
+    export type RejectSubmissionMutationBody = BodyType<ReviewRejectBody>
+    export type RejectSubmissionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Rechazar un envío (admin) — pasa a rejected y notifica al creador
+ */
+export const useRejectSubmission = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rejectSubmission>>, TError,{id: string;data: BodyType<ReviewRejectBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof rejectSubmission>>,
+        TError,
+        {id: string;data: BodyType<ReviewRejectBody>},
+        TContext
+      > => {
+      return useMutation(getRejectSubmissionMutationOptions(options));
+    }
+
+export const getEditSubmissionUrl = (id: string,) => {
+
+
+
+
+  return `/api/catalog/submissions/${id}`
+}
+
+/**
+ * @summary Editar metadata de un envío (admin)
+ */
+export const editSubmission = async (id: string,
+    reviewEditBody: ReviewEditBody, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getEditSubmissionUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reviewEditBody,)
+  }
+);}
+
+
+
+
+export const getEditSubmissionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editSubmission>>, TError,{id: string;data: BodyType<ReviewEditBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof editSubmission>>, TError,{id: string;data: BodyType<ReviewEditBody>}, TContext> => {
+
+const mutationKey = ['editSubmission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editSubmission>>, {id: string;data: BodyType<ReviewEditBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  editSubmission(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof editSubmission>>>
+    export type EditSubmissionMutationBody = BodyType<ReviewEditBody>
+    export type EditSubmissionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Editar metadata de un envío (admin)
+ */
+export const useEditSubmission = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editSubmission>>, TError,{id: string;data: BodyType<ReviewEditBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof editSubmission>>,
+        TError,
+        {id: string;data: BodyType<ReviewEditBody>},
+        TContext
+      > => {
+      return useMutation(getEditSubmissionMutationOptions(options));
+    }
 

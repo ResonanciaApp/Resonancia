@@ -1025,6 +1025,228 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CatalogResponse"
+  /catalog/submissions:
+    post:
+      operationId: createSubmission
+      tags: [catalog]
+      summary: Crear una pieza de contenido (creador) — queda pendiente de revisión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatorSubmissionInput"
+      responses:
+        "201":
+          description: Envío creado (estado pending)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol creator o admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      operationId: getPendingSubmissions
+      tags: [catalog]
+      summary: Cola de revisión (admin) — envíos por estado (default pending)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [draft, pending, published, rejected]
+      responses:
+        "200":
+          description: Lista de envíos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionList"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /catalog/my-submissions:
+    get:
+      operationId: getMySubmissions
+      tags: [catalog]
+      summary: Envíos del creador autenticado (con estado y motivo de rechazo)
+      responses:
+        "200":
+          description: Lista de envíos propios
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionList"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol creator o admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /catalog/submissions/{id}/approve:
+    post:
+      operationId: approveSubmission
+      tags: [catalog]
+      summary: Aprobar un envío (admin) — pasa a published y notifica al creador
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Envío aprobado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Envío no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /catalog/submissions/{id}/reject:
+    post:
+      operationId: rejectSubmission
+      tags: [catalog]
+      summary: Rechazar un envío (admin) — pasa a rejected y notifica al creador
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewRejectBody"
+      responses:
+        "200":
+          description: Envío rechazado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Envío no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /catalog/submissions/{id}:
+    patch:
+      operationId: editSubmission
+      tags: [catalog]
+      summary: Editar metadata de un envío (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewEditBody"
+      responses:
+        "200":
+          description: Envío actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Envío no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     PlaybackEvent:
@@ -1696,7 +1918,7 @@ components:
             $ref: "#/components/schemas/CatalogSessionGuest"
         status:
           type: string
-          enum: [draft, pending, published]
+          enum: [draft, pending, published, rejected]
         sortOrder:
           type: integer
         audioFiles:
@@ -1717,3 +1939,272 @@ components:
           items:
             $ref: "#/components/schemas/CatalogSession"
       required: [categories, sessions]
+    CreatorSubmissionAudioInput:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [main, voice, ambient, base, sound]
+        objectPath:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        contentType:
+          type: string
+          minLength: 1
+          maxLength: 120
+        sizeBytes:
+          type: integer
+          minimum: 1
+        durationSeconds:
+          type: integer
+          minimum: 0
+          nullable: true
+        isLoop:
+          type: boolean
+      required: [objectPath, name, contentType, sizeBytes]
+    CreatorSubmissionInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        subtitle:
+          type: string
+          minLength: 1
+          maxLength: 120
+        categoryId:
+          type: string
+          minLength: 1
+        categoryLabel:
+          type: string
+          minLength: 1
+          maxLength: 60
+        duration:
+          type: integer
+          minimum: 1
+          maximum: 600
+        description:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        benefits:
+          type: array
+          maxItems: 8
+          items:
+            type: string
+            maxLength: 80
+        instruments:
+          type: array
+          maxItems: 12
+          items:
+            type: string
+            maxLength: 80
+        isPremium:
+          type: boolean
+        imageObjectPath:
+          type: string
+          nullable: true
+        imageContentType:
+          type: string
+          nullable: true
+        imageSizeBytes:
+          type: integer
+          minimum: 1
+          nullable: true
+        frequency:
+          type: string
+          maxLength: 60
+          nullable: true
+        soundTag:
+          type: string
+          nullable: true
+        meditationTag:
+          type: string
+          nullable: true
+        ancestralTag:
+          type: string
+          nullable: true
+        sabiduriaTag:
+          type: string
+          nullable: true
+        podcastTag:
+          type: string
+          nullable: true
+        sonidosTag:
+          type: string
+          nullable: true
+        sleepTag:
+          type: string
+          nullable: true
+        guideId:
+          type: string
+          nullable: true
+        artistId:
+          type: string
+          nullable: true
+        audioFiles:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/CreatorSubmissionAudioInput"
+      required:
+        [title, subtitle, categoryId, categoryLabel, duration, description, audioFiles]
+    Submission:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        categoryId:
+          type: string
+        categoryLabel:
+          type: string
+        duration:
+          type: integer
+        durationLabel:
+          type: string
+        description:
+          type: string
+        benefits:
+          type: array
+          items:
+            type: string
+        instruments:
+          type: array
+          items:
+            type: string
+        imageKey:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        isFeatured:
+          type: boolean
+        isNew:
+          type: boolean
+        isPremium:
+          type: boolean
+        frequency:
+          type: string
+          nullable: true
+        soundTag:
+          type: string
+          nullable: true
+        meditationTag:
+          type: string
+          nullable: true
+        ancestralTag:
+          type: string
+          nullable: true
+        sabiduriaTag:
+          type: string
+          nullable: true
+        podcastTag:
+          type: string
+          nullable: true
+        sonidosTag:
+          type: string
+          nullable: true
+        sleepTag:
+          type: string
+          nullable: true
+        guideId:
+          type: string
+          nullable: true
+        artistId:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [draft, pending, published, rejected]
+        rejectionReason:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+        creator:
+          oneOf:
+            - $ref: "#/components/schemas/UserProfile"
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        audioFiles:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogAudioFile"
+      required:
+        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isNew, isPremium, status, sortOrder, createdAt, updatedAt, audioFiles]
+    SubmissionList:
+      type: object
+      properties:
+        submissions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Submission"
+      required: [submissions]
+    ReviewRejectBody:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required: [reason]
+    ReviewEditBody:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        subtitle:
+          type: string
+          minLength: 1
+          maxLength: 120
+        categoryId:
+          type: string
+          minLength: 1
+        categoryLabel:
+          type: string
+          minLength: 1
+          maxLength: 60
+        duration:
+          type: integer
+          minimum: 1
+          maximum: 600
+        description:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        benefits:
+          type: array
+          maxItems: 8
+          items:
+            type: string
+            maxLength: 80
+        instruments:
+          type: array
+          maxItems: 12
+          items:
+            type: string
+            maxLength: 80
+        isPremium:
+          type: boolean
+        isFeatured:
+          type: boolean
+        isNew:
+          type: boolean

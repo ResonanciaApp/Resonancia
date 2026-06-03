@@ -69,6 +69,7 @@
     "expo-av": "^16.0.8",
     "expo-build-properties": "~1.0.10",
     "expo-dev-client": "~6.0.21",
+    "expo-document-picker": "~14.0.8",
     "expo-file-system": "^19.0.23",
     "expo-notifications": "^0.32.17",
     "expo-store-review": "^9.0.9",

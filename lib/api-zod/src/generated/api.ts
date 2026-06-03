@@ -835,7 +835,7 @@ export const GetCatalogResponse = zod.object({
   "role": zod.string(),
   "instagram": zod.string().nullish()
 })).nullish(),
-  "status": zod.enum(['draft', 'pending', 'published']),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "sortOrder": zod.number(),
   "audioFiles": zod.array(zod.object({
   "id": zod.number(),
@@ -850,6 +850,426 @@ export const GetCatalogResponse = zod.object({
   "isLoop": zod.boolean(),
   "createdAt": zod.coerce.date()
 }))
+}))
+})
+
+
+/**
+ * @summary Crear una pieza de contenido (creador) — queda pendiente de revisión
+ */
+export const createSubmissionBodyTitleMax = 120;
+
+export const createSubmissionBodySubtitleMax = 120;
+
+
+export const createSubmissionBodyCategoryLabelMax = 60;
+
+export const createSubmissionBodyDurationMax = 600;
+
+export const createSubmissionBodyDescriptionMax = 2000;
+
+export const createSubmissionBodyBenefitsItemMax = 80;
+
+export const createSubmissionBodyBenefitsMax = 8;
+
+export const createSubmissionBodyInstrumentsItemMax = 80;
+
+export const createSubmissionBodyInstrumentsMax = 12;
+
+
+export const createSubmissionBodyFrequencyMax = 60;
+
+
+export const createSubmissionBodyAudioFilesItemNameMax = 200;
+
+export const createSubmissionBodyAudioFilesItemContentTypeMax = 120;
+
+
+export const createSubmissionBodyAudioFilesItemDurationSecondsMin = 0;
+
+export const createSubmissionBodyAudioFilesMax = 5;
+
+
+
+export const CreateSubmissionBody = zod.object({
+  "title": zod.string().min(1).max(createSubmissionBodyTitleMax),
+  "subtitle": zod.string().min(1).max(createSubmissionBodySubtitleMax),
+  "categoryId": zod.string().min(1),
+  "categoryLabel": zod.string().min(1).max(createSubmissionBodyCategoryLabelMax),
+  "duration": zod.number().min(1).max(createSubmissionBodyDurationMax),
+  "description": zod.string().min(1).max(createSubmissionBodyDescriptionMax),
+  "benefits": zod.array(zod.string().max(createSubmissionBodyBenefitsItemMax)).max(createSubmissionBodyBenefitsMax).optional(),
+  "instruments": zod.array(zod.string().max(createSubmissionBodyInstrumentsItemMax)).max(createSubmissionBodyInstrumentsMax).optional(),
+  "isPremium": zod.boolean().optional(),
+  "imageObjectPath": zod.string().nullish(),
+  "imageContentType": zod.string().nullish(),
+  "imageSizeBytes": zod.number().min(1).nullish(),
+  "frequency": zod.string().max(createSubmissionBodyFrequencyMax).nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "audioFiles": zod.array(zod.object({
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']).optional(),
+  "objectPath": zod.string().min(1),
+  "name": zod.string().min(1).max(createSubmissionBodyAudioFilesItemNameMax),
+  "contentType": zod.string().min(1).max(createSubmissionBodyAudioFilesItemContentTypeMax),
+  "sizeBytes": zod.number().min(1),
+  "durationSeconds": zod.number().min(createSubmissionBodyAudioFilesItemDurationSecondsMin).nullish(),
+  "isLoop": zod.boolean().optional()
+})).min(1).max(createSubmissionBodyAudioFilesMax)
+})
+
+
+/**
+ * @summary Cola de revisión (admin) — envíos por estado (default pending)
+ */
+export const GetPendingSubmissionsQueryParams = zod.object({
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']).optional()
+})
+
+export const GetPendingSubmissionsResponse = zod.object({
+  "submissions": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}))
+})
+
+
+/**
+ * @summary Envíos del creador autenticado (con estado y motivo de rechazo)
+ */
+export const GetMySubmissionsResponse = zod.object({
+  "submissions": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}))
+})
+
+
+/**
+ * @summary Aprobar un envío (admin) — pasa a published y notifica al creador
+ */
+export const ApproveSubmissionParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const ApproveSubmissionResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Rechazar un envío (admin) — pasa a rejected y notifica al creador
+ */
+export const RejectSubmissionParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const rejectSubmissionBodyReasonMax = 500;
+
+
+
+export const RejectSubmissionBody = zod.object({
+  "reason": zod.string().min(1).max(rejectSubmissionBodyReasonMax)
+})
+
+export const RejectSubmissionResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Editar metadata de un envío (admin)
+ */
+export const EditSubmissionParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const editSubmissionBodyTitleMax = 120;
+
+export const editSubmissionBodySubtitleMax = 120;
+
+
+export const editSubmissionBodyCategoryLabelMax = 60;
+
+export const editSubmissionBodyDurationMax = 600;
+
+export const editSubmissionBodyDescriptionMax = 2000;
+
+export const editSubmissionBodyBenefitsItemMax = 80;
+
+export const editSubmissionBodyBenefitsMax = 8;
+
+export const editSubmissionBodyInstrumentsItemMax = 80;
+
+export const editSubmissionBodyInstrumentsMax = 12;
+
+
+
+export const EditSubmissionBody = zod.object({
+  "title": zod.string().min(1).max(editSubmissionBodyTitleMax).optional(),
+  "subtitle": zod.string().min(1).max(editSubmissionBodySubtitleMax).optional(),
+  "categoryId": zod.string().min(1).optional(),
+  "categoryLabel": zod.string().min(1).max(editSubmissionBodyCategoryLabelMax).optional(),
+  "duration": zod.number().min(1).max(editSubmissionBodyDurationMax).optional(),
+  "description": zod.string().min(1).max(editSubmissionBodyDescriptionMax).optional(),
+  "benefits": zod.array(zod.string().max(editSubmissionBodyBenefitsItemMax)).max(editSubmissionBodyBenefitsMax).optional(),
+  "instruments": zod.array(zod.string().max(editSubmissionBodyInstrumentsItemMax)).max(editSubmissionBodyInstrumentsMax).optional(),
+  "isPremium": zod.boolean().optional(),
+  "isFeatured": zod.boolean().optional(),
+  "isNew": zod.boolean().optional()
+})
+
+export const EditSubmissionResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
 }))
 })
 

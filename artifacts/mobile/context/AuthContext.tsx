@@ -8,6 +8,11 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import {
+  useGetMe,
+  getGetMeQueryKey,
+  type UserProfileRole,
+} from "@workspace/api-client-react";
 
 /**
  * Auth model — two layers:
@@ -39,6 +44,10 @@ interface AuthContextValue extends AuthState {
   authLoading: boolean;
   /** True only when the user has a Clerk session (for social features). */
   isSignedIn: boolean;
+  /** Rol del usuario en el server (user | creator | admin). Solo con cuenta Clerk. */
+  role: UserProfileRole | null;
+  isCreator: boolean;
+  isAdmin: boolean;
   register: (data: Omit<AuthState, "isRegistered">) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -60,6 +69,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { isLoaded: clerkLoaded, isSignedIn: clerkSignedIn } = useClerkAuth();
   const { user: clerkUser } = useUser();
   const { signOut } = useClerk();
+
+  // Rol del server (solo significativo con cuenta Clerk activa).
+  const meQ = useGetMe({
+    query: {
+      queryKey: getGetMeQueryKey(),
+      enabled: Boolean(clerkSignedIn),
+      staleTime: 60_000,
+    },
+  });
+  const role = clerkSignedIn ? meQ.data?.role ?? null : null;
 
   // Load local registration on mount
   useEffect(() => {
@@ -111,6 +130,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       method: localState.method,
       authLoading: localLoading || !clerkLoaded,
       isSignedIn,
+      role,
+      isCreator: role === "creator" || role === "admin",
+      isAdmin: role === "admin",
       register,
       logout,
     };
@@ -120,6 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     clerkLoaded,
     clerkSignedIn,
     clerkUser,
+    role,
     register,
     logout,
   ]);

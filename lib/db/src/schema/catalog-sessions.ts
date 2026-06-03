@@ -11,7 +11,7 @@ import { z } from "zod/v4";
 import { usersTable } from "./users";
 
 /** Estados de publicación de una pieza del catálogo. */
-export const CATALOG_STATUS = ["draft", "pending", "published"] as const;
+export const CATALOG_STATUS = ["draft", "pending", "published", "rejected"] as const;
 export type CatalogStatus = (typeof CATALOG_STATUS)[number];
 
 export type SessionGuest = { name: string; role: string; instagram?: string };
@@ -59,6 +59,13 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   createdBy: integer("created_by").references(() => usersTable.id, {
     onDelete: "set null",
   }),
+  /** Motivo de rechazo (solo cuando status = "rejected"). */
+  rejectionReason: text("rejection_reason"),
+  /** Admin que aprobó/rechazó la pieza (trail de revisión). */
+  reviewedBy: integer("reviewed_by").references(() => usersTable.id, {
+    onDelete: "set null",
+  }),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

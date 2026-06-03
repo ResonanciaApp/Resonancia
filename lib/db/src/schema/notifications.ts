@@ -19,6 +19,8 @@ export const NOTIFICATION_TYPES = [
   "group_message",
   "mix_like",
   "mix_comment",
+  "content_approved",
+  "content_rejected",
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 

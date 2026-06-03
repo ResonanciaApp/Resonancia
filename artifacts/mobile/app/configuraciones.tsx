@@ -99,7 +99,7 @@ export default function ConfiguracionesScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const { logout } = useAuth();
+  const { logout, isCreator, isAdmin } = useAuth();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { updateDefaultSleepTimer } = usePlayer();
 
@@ -410,6 +410,41 @@ export default function ConfiguracionesScreen() {
             disabled
           />
         </View>
+
+        {/* ── Creadores ── */}
+        {(isCreator || isAdmin) && (
+          <>
+            <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CREADORES</Text>
+            <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+              {isCreator && (
+                <ActionRow
+                  icon="upload-cloud"
+                  label="Subir contenido"
+                  onPress={() => router.push("/crear-contenido" as never)}
+                  colors={colors}
+                />
+              )}
+              {isCreator && (
+                <ActionRow
+                  icon="inbox"
+                  label="Mis envíos"
+                  onPress={() => router.push("/mis-envios" as never)}
+                  colors={colors}
+                  border
+                />
+              )}
+              {isAdmin && (
+                <ActionRow
+                  icon="check-square"
+                  label="Revisión de contenido"
+                  onPress={() => router.push("/revision" as never)}
+                  colors={colors}
+                  border={isCreator}
+                />
+              )}
+            </View>
+          </>
+        )}
 
         {/* ── App ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APP</Text>
