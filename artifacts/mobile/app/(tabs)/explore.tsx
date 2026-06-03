@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14 },
 
   section: { paddingHorizontal: H_PAD, marginBottom: 32 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
+  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 14,
   },
   verTodasLink: { fontSize: 13, fontWeight: "600" },
 

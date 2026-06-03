@@ -794,7 +794,7 @@ const styles = StyleSheet.create({
 
   // Favoritos
   section: { marginBottom: 32 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", marginBottom: 14 },
+  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
   emptyFav: {
     borderRadius: 16,
     padding: 24,
