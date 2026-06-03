@@ -53,7 +53,7 @@ export default function MembresiaScreen() {
   const [selected, setSelected] = useState<"anual" | "mensual">("anual");
 
   return (
-    <View style={[styles.root, { backgroundColor: "#241710" }]}>
+    <View style={[styles.root, { backgroundColor: "#060A0F" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
       <LinearGradient
