@@ -1,0 +1,180 @@
+1. Autenticación y cuentas de usuario
+Lo que YA hay:
+
+✅ Registro y login funcionando vía Clerk (email/contraseña, Google, Apple).
+✅ Recuperación de contraseña (la maneja Clerk automáticamente).
+✅ Sistema "híbrido": el usuario puede usar casi toda la app de forma local/anónima (onboarding con nombre, año de nacimiento, email) sin crear cuenta en la nube. La cuenta Clerk solo se necesita para lo social (amigos, mezclas comunitarias, chat).
+✅ Tabla users en la base de datos (id, clerk_user_id, username, display_name, email, avatar_url, fechas).
+Lo que FALTA:
+
+⚠️ No hay distinción real entre perfil "público" y "privado" — hoy si entrás a lo social, tu perfil es visible.
+Implicancia: Esta parte está prácticamente resuelta. No requiere trabajo grande. Es la base más sólida que tenés.
+
+2. Perfiles de usuario
+Lo que YA hay:
+
+✅ Perfil con nombre, foto, descripción/bio, ubicación, apellido (local en el dispositivo).
+✅ Perfil en servidor con username, display_name, avatar (foto sube a Object Storage).
+✅ Sincronización local↔servidor (ProfileSync).
+Lo que FALTA:
+
+❌ "Fecha de creación de cuenta" visible en el perfil (el dato existe en DB, no se muestra).
+❌ "Contenidos escuchados" y "estadísticas" mostrados en el perfil público — hoy las stats son solo locales (ver punto 4).
+❌ Contador de seguidores/seguidos en el perfil (ver punto 3).
+Implicancia: El perfil base está, pero para mostrar stats/seguidores públicamente hay que mover esos datos al servidor primero.
+
+3. Sistema de seguidores
+Lo que YA hay:
+
+✅ Existe un sistema de amistad bidireccional (solicitar → aceptar), con tabla friendships. Es simétrico: los dos tienen que aceptar.
+Lo que FALTA:
+
+❌ El prompt pide seguidores asimétricos (yo te sigo sin que vos me sigas, tipo Instagram/Insight Timer). Eso es un modelo distinto al de amistad que ya tenés.
+❌ Contadores de seguidores/seguidos.
+❌ Feed personalizado basado en a quién seguís.
+Implicancia: Tenés dos caminos: (a) reusar el sistema de amigos que ya funciona, o (b) agregar un modelo de "follow" separado además de los amigos. La opción (b) es más trabajo y puede confundir al usuario (¿amigos Y seguidores?). Decisión de producto importante antes de tocar código.
+
+4. Estadísticas del usuario
+Lo que YA hay (TODO local en el dispositivo):
+
+✅ Racha de días consecutivos (actual y máxima).
+✅ Tiempo total escuchado.
+✅ Cantidad de sesiones/reproducciones.
+✅ Categoría más escuchada.
+✅ Heatmap de actividad (8 semanas).
+✅ Historial de reproducciones (últimas 50).
+✅ Progreso por sesión (retoma donde quedaste, marca completadas al 97%).
+✅ Pantalla "Tu Progreso" ya construida mostrando todo esto.
+Lo que FALTA:
+
+❌ Todo esto vive solo en el teléfono. Si el usuario cambia de dispositivo o reinstala, pierde todas sus stats. No se sincroniza con el servidor.
+❌ Registro detallado de cada reproducción en la base de datos (el prompt pide guardar: id usuario, id contenido, fecha/hora, duración, si completó, desde qué sección, tipo de contenido).
+❌ "Audio/sesión más reproducida" como dato persistente.
+Implicancia: Esta es una de las partes más importantes. Hoy funciona muy bien localmente, pero para que las stats sobrevivan a un cambio de teléfono, salgan en el perfil público, o alimenten rankings/recomendaciones, hay que crear tablas en el servidor (playback_history, user_stats) y empezar a enviar cada reproducción al backend. Trabajo medio-grande, pero la lógica de cálculo ya está hecha — solo hay que "subirla a la nube".
+
+5. Roles y permisos (normal / creador / admin)
+Lo que YA hay:
+
+⚠️ Casi nada. Hay "badges de ADMIN" hardcodeados para grupos (cosmético) y chequeos de "esto es mío" para borrar tus propios comentarios/mezclas.
+Lo que FALTA:
+
+❌ Sistema real de roles (usuario normal / creador / administrador).
+❌ Tabla de roles y permisos.
+❌ Lógica que controle qué puede hacer cada tipo de usuario.
+Implicancia: Esto es prácticamente desde cero. Es el cimiento de todo lo que pide el prompt sobre "creadores que suben contenido" y "admin que aprueba". Sin esto, nada de los puntos 6, 7 y 12 funciona.
+
+6. Subida de contenido por usuarios (Panel de Creador)
+Lo que YA hay:
+
+✅ Infraestructura técnica de subida de archivos (imágenes y audio) a Object Storage — se usa hoy para fotos de perfil y audios del chat.
+✅ Los usuarios SÍ pueden crear cierto contenido: mezclas propias (mixer), actividades de comunidad, entradas de diario.
+Lo que FALTA:
+
+❌ No existe un "Panel de Creador" para subir audios/sesiones propias al catálogo.
+❌ No existe el flujo: subir → "pendiente de revisión" → admin aprueba → se publica.
+❌ Estados de contenido (borrador, pendiente, aprobado, publicado, rechazado).
+Implicancia: Esta es la parte más grande y nueva del prompt. Hoy todo el catálogo (sesiones, meditaciones, sonidos) está escrito a mano por vos en el código — no se carga desde una base de datos. Para que usuarios suban contenido, hay que:
+
+Mover el catálogo entero del código a la base de datos.
+Construir el panel de subida.
+Construir el flujo de revisión/aprobación.
+Es un proyecto en sí mismo. Y abre temas legales/operativos importantes (ver "Implicancias generales" al final).
+
+7. Distribución de contenido en sesiones
+Lo que YA hay:
+
+✅ Modelo de "sesión" muy completo (título, descripción, imagen, duración, categoría, tags, artista/guía, premium/free) — pero en código, no en base de datos.
+Lo que FALTA:
+
+❌ Que las sesiones vivan en la base de datos para poder crearse dinámicamente.
+❌ Que un audio pueda pertenecer a varias sesiones.
+❌ Orden de reproducción configurable, autor, estado de publicación.
+Implicancia: Depende 100% del punto 6. Es la "otra cara" de la migración del catálogo a la base de datos.
+
+8. Biblioteca de contenido (clasificación)
+Lo que YA hay:
+
+✅ Clasificación por categoría, tipo, autor/artista/guía, duración, premium/free, favoritos.
+✅ Tipos de contenido: música, meditaciones, cuencos, gongs, ASMR, sonidos naturaleza, podcast, sesiones para dormir/enfoque — todos ya existen.
+Lo que FALTA:
+
+❌ "Más escuchados", "populares", "recomendados" basados en datos reales (hoy no hay datos de reproducción en el servidor, ver punto 4).
+Implicancia: La estructura está muy bien. Lo que falta (popularidad/recomendados) depende de tener stats en el servidor (punto 4).
+
+9. Favoritos
+Lo que YA hay:
+
+✅ Favoritos de sesiones (local).
+✅ Favoritos de diario (local).
+Lo que FALTA:
+
+❌ Favoritos guardados en el servidor (hoy se pierden si cambiás de teléfono).
+❌ "Creadores favoritos".
+Implicancia: Igual que las stats — funciona local, falta llevarlo a la nube. Trabajo chico-medio.
+
+10. Historial de reproducción
+Lo que YA hay:
+
+✅ Historial local, continuar donde quedaste, progreso parcial, marcar completadas.
+Lo que FALTA:
+
+❌ Persistencia en servidor.
+Implicancia: Mismo caso que stats/favoritos.
+
+11. Base de datos
+Lo que YA hay (tablas existentes):
+
+✅ users, friendships, shared_mixes, shared_mix_likes, shared_mix_comments, direct_messages, messages, notifications, push_tokens.
+Lo que FALTA (tablas que pide el prompt):
+
+❌ user_profiles (hoy está dentro de users, podría servir igual)
+❌ user_stats, playback_history
+❌ content, audio_files, sessions, session_items
+❌ favorites
+❌ roles, permissions
+❌ creator_uploads, admin_reviews
+❌ categories
+Implicancia: Tenés ~9 tablas; el prompt pide ~14 más. Es bastante, pero se puede hacer por etapas.
+
+12. Panel de administración
+Lo que YA hay:
+
+⚠️ Nada real (solo badges cosméticos).
+Lo que FALTA:
+
+❌ Todo: ver usuarios, asignar roles, revisar/aprobar/rechazar contenido, gestionar categorías, ver estadísticas globales, creadores activos, contenido más escuchado.
+Implicancia: Proyecto grande y separado. Normalmente esto es una web aparte (un panel de admin no se hace dentro de la app móvil). Depende de los puntos 5, 6 y 7.
+
+13. Seguridad
+Lo que YA hay:
+
+✅ Rutas privadas protegidas con autenticación (Clerk).
+✅ Chequeo de propiedad (no podés borrar lo de otro).
+✅ Subida de archivos vía URLs firmadas.
+Lo que FALTA:
+
+❌ Validación de archivos por tipo/tamaño/duración al subir.
+❌ Permisos por rol (depende del punto 5).
+Implicancia: La base de seguridad está bien. Lo que falta crece junto con roles y subida de contenido.
+
+14. Almacenamiento de archivos
+Lo que YA hay:
+
+✅ Object Storage funcionando (S3-compatible), con URLs firmadas.
+Lo que FALTA:
+
+❌ Guardar metadatos completos de cada archivo (nombre original, tipo, tamaño, duración, quién lo subió, fecha) en una tabla.
+Implicancia: La infraestructura está; falta el "registro contable" de archivos. Trabajo chico.
+
+⚠️ Importante (ya está anotado en tu proyecto): para los videos ya decidiste migrar a Bunny.net por costos. Si los usuarios empiezan a subir audios masivamente, el costo de ancho de banda y almacenamiento se vuelve un tema serio.
+
+15. Escalabilidad futura (membresías, comentarios, likes, etc.)
+Lo que YA hay:
+
+✅ Likes y comentarios (en mezclas comunitarias).
+✅ Notificaciones (tabla + push tokens listos).
+✅ Sistema premium/free a nivel de UI (flag isPremium).
+Lo que FALTA:
+
+❌ Cobro real de premium (RevenueCat — ya planificado en tu proyecto).
+❌ Feed personalizado, recomendaciones inteligentes, rankings, cursos por etapas, analytics avanzados.
