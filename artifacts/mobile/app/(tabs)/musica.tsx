@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import {
   Alert,
   ImageBackground,
+  LayoutAnimation,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  UIManager,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -31,12 +33,25 @@ import { useColors } from "@/hooks/useColors";
 
 type TabId = "todos" | SoundCategoryId;
 
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 export default function MiMusicaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { isActive, toggleSound } = useMixer();
   const [activeTab, setActiveTab] = useState<TabId>("todos");
+  const [catsOpen, setCatsOpen] = useState(false);
+
+  const toggleCats = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setCatsOpen((v) => !v);
+  };
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -149,37 +164,46 @@ export default function MiMusicaScreen() {
         >
           {/* ── Barra sticky: categorías de mezclas + tabs de sonido ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
-            {/* Categorías de mezclas */}
-            <View style={styles.catRow}>
-              {MIX_CATEGORIES.map((cat) => (
-                <Pressable
-                  key={cat.id}
-                  onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                  style={[styles.catCard, { backgroundColor: "#10151E", borderColor: "transparent" }]}
-                >
-                  {cat.iconFamily === "MaterialCommunityIcons" ? (
-                    <MaterialCommunityIcons
-                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={26}
-                      color="#6B9AB5"
-                    />
-                  ) : (
-                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color="#6B9AB5" />
-                  )}
-                  <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
-                    {cat.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+            {/* Toggle "Categorías" */}
+            <Pressable onPress={toggleCats} style={styles.catToggle}>
+              <Text style={[styles.catToggleLabel, { color: colors.foreground }]}>
+                Categorías
+              </Text>
+              <Feather
+                name={catsOpen ? "chevron-up" : "chevron-down"}
+                size={20}
+                color={colors.mutedForeground}
+              />
+            </Pressable>
 
-            {/* Tabs de categorías de sonido */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.tabsRow}
-              style={styles.tabsScroll}
-            >
+            {/* Categorías de mezclas (colapsables) */}
+            {catsOpen && (
+              <View style={styles.catRow}>
+                {MIX_CATEGORIES.map((cat) => (
+                  <Pressable
+                    key={cat.id}
+                    onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+                    style={[styles.catCard, { backgroundColor: "#10151E", borderColor: "transparent" }]}
+                  >
+                    {cat.iconFamily === "MaterialCommunityIcons" ? (
+                      <MaterialCommunityIcons
+                        name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                        size={26}
+                        color="#6B9AB5"
+                      />
+                    ) : (
+                      <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color="#6B9AB5" />
+                    )}
+                    <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
+                      {cat.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+
+            {/* Tabs de categorías de sonido (envueltos, todos visibles) */}
+            <View style={styles.tabsWrap}>
               {tabs.map((tab) => {
                 const selected = activeTab === tab.id;
                 return (
@@ -205,7 +229,7 @@ export default function MiMusicaScreen() {
                   </Pressable>
                 );
               })}
-            </ScrollView>
+            </View>
           </View>
 
           {/* Separador sutil entre tabs y contenido */}
@@ -251,16 +275,30 @@ const styles = StyleSheet.create({
   section: { marginBottom: 32 },
   sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
 
-  // Tabs de categorías de sonido (reducidos ~25%)
-  tabsScroll: { marginBottom: 12, marginHorizontal: -20 },
-  tabsRow: { gap: 6, paddingHorizontal: 20 },
+  // Toggle "Categorías"
+  catToggle: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 4,
+    marginBottom: 14,
+  },
+  catToggleLabel: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
+
+  // Tabs de categorías de sonido (envueltos, todos visibles)
+  tabsWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginBottom: 12,
+  },
   tab: {
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 999,
     borderWidth: 1,
   },
-  tabLabel: { fontSize: 12, fontWeight: "700", letterSpacing: 0.2 },
+  tabLabel: { fontSize: 12, fontWeight: "400", letterSpacing: 0.2 },
 
   // Categorías de mezclas (reducidas ~25%)
   catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
@@ -273,13 +311,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 7,
-  },
-  catIconWrap: {
-    width: 33,
-    height: 33,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
   },
   catLabel: {
     fontSize: 11,
