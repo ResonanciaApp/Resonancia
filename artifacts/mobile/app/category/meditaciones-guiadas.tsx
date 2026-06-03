@@ -161,20 +161,19 @@ export default function MeditacionesGuiadasScreen() {
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    {/* Category image */}
-                    <Image source={cat.image} style={styles.iconCircle} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+                    <View style={styles.iconCircle}>
+                      <Feather name={cat.icon} size={18} color="#C8B4E0" />
+                    </View>
 
-                    {/* Name */}
                     <Text style={[styles.catName, { color: colors.foreground }]}>
                       {cat.tag}
                     </Text>
 
-                    {/* Count + chevron */}
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: "#C8B4E0" }]}>
+                      <Text style={[styles.catCount, { color: "#7A9BC4" }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color="#C8B4E0" />
+                      <Feather name="chevron-right" size={18} color="#7A9BC4" />
                     </View>
                   </Pressable>
                 );
@@ -344,14 +343,14 @@ const styles = StyleSheet.create({
   catRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 18,
-    gap: 16,
+    paddingVertical: 12,
+    gap: 14,
   },
   iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 1,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(200,180,224,0.10)",
     alignItems: "center",
     justifyContent: "center",
   },

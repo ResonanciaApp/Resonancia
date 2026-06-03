@@ -130,24 +130,19 @@ export default function SonidosAncestalesScreen() {
                     onPress={() => setSelectedTag(cat.tag)}
                     style={({ pressed }) => [
                       styles.catRow,
-                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(182,149,95,0.1)" },
+                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(182,149,95,0.08)" },
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    <Image
-                      source={cat.image}
-                      style={styles.iconCircle}
-                      contentFit="cover"
-                      cachePolicy="memory-disk"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
+                    <View style={styles.iconCircle}>
+                      <MaterialCommunityIcons name="bowl-mix" size={20} color="#E8C87A" />
+                    </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: "#E8C87A" }]}>
+                      <Text style={[styles.catCount, { color: "#7A9BC4" }]}>
                         {countByTag[cat.tag] ?? 0}
                       </Text>
-                      <Feather name="chevron-right" size={18} color="#E8C87A" />
+                      <Feather name="chevron-right" size={18} color="#7A9BC4" />
                     </View>
                   </Pressable>
                 );
@@ -291,14 +286,16 @@ const styles = StyleSheet.create({
   catRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 18,
-    gap: 16,
+    paddingVertical: 12,
+    gap: 14,
   },
   iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    overflow: "hidden",
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(232,200,122,0.10)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   catName: {
     flex: 1,
