@@ -250,7 +250,7 @@ export default function ExploreScreen() {
                     style={({ pressed }) => [
                       styles.timeChip,
                       {
-                        backgroundColor: "#090E17",
+                        backgroundColor: "#0E1929",
                         opacity: pressed ? 0.6 : 1,
                       },
                     ]}
