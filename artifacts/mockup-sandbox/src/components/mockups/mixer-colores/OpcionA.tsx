@@ -1,5 +1,6 @@
 import React from "react";
-// Opción A: Teal · Rosa · Melocotón
+// Opción A: Teal · Rosa · Melocotón — con variantes de ícono Meditación
+
 const COLORS = {
   descanso: "#B2DFDB",
   meditacion: "#F7D6E7",
@@ -10,6 +11,19 @@ function MoonIcon({ color }: { color: string }) {
   return (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
       <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" fill={color} />
+    </svg>
+  );
+}
+
+function ZenStonesIcon({ color }: { color: string }) {
+  return (
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+      {/* Piedra base — grande */}
+      <ellipse cx="15" cy="23.5" rx="8" ry="4.2" fill={color} opacity="0.95" />
+      {/* Piedra media */}
+      <ellipse cx="15.6" cy="16.5" rx="5.8" ry="3.3" fill={color} opacity="0.85" />
+      {/* Piedra top — pequeña */}
+      <ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity="0.75" />
     </svg>
   );
 }
@@ -27,6 +41,17 @@ function LotusIcon({ color }: { color: string }) {
   );
 }
 
+function YinYangIcon({ color }: { color: string }) {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" fill={color} opacity="0.15" />
+      <path d="M12 3a9 9 0 010 18 4.5 4.5 0 000-9 4.5 4.5 0 010-9z" fill={color} opacity="0.9" />
+      <circle cx="12" cy="7.5" r="1.5" fill={color} opacity="0.3" />
+      <circle cx="12" cy="16.5" r="1.5" fill={color} opacity="0.9" />
+    </svg>
+  );
+}
+
 function MountainIcon({ color }: { color: string }) {
   return (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -40,10 +65,12 @@ function Card({
   label,
   color,
   icon,
+  tag,
 }: {
   label: string;
   color: string;
   icon: React.ReactNode;
+  tag?: string;
 }) {
   return (
     <div
@@ -51,15 +78,35 @@ function Card({
         flex: 1,
         backgroundColor: "#151A23",
         borderRadius: 14,
-        padding: "18px 12px",
+        padding: "18px 12px 14px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 10,
+        gap: 8,
         minHeight: 110,
+        position: "relative",
       }}
     >
+      {tag && (
+        <div
+          style={{
+            position: "absolute",
+            top: 6,
+            right: 8,
+            background: "#BE9650",
+            color: "#090F17",
+            fontSize: 8,
+            fontWeight: 800,
+            borderRadius: 4,
+            padding: "1px 5px",
+            fontFamily: "system-ui, sans-serif",
+            letterSpacing: 0.5,
+          }}
+        >
+          {tag}
+        </div>
+      )}
       {icon}
       <span
         style={{
@@ -76,6 +123,39 @@ function Card({
   );
 }
 
+function Row({
+  label,
+  meditIcon,
+  tag,
+}: {
+  label: string;
+  meditIcon: React.ReactNode;
+  tag?: string;
+}) {
+  return (
+    <div style={{ width: "100%", maxWidth: 420 }}>
+      <div
+        style={{
+          color: "#7A8FA8",
+          fontSize: 9,
+          fontWeight: 600,
+          letterSpacing: 1.5,
+          textTransform: "uppercase",
+          fontFamily: "system-ui, sans-serif",
+          marginBottom: 6,
+        }}
+      >
+        {label}
+      </div>
+      <div style={{ display: "flex", gap: 10 }}>
+        <Card label="Descanso" color={COLORS.descanso} icon={<MoonIcon color={COLORS.descanso} />} />
+        <Card label="Meditación" color={COLORS.meditacion} icon={meditIcon} tag={tag} />
+        <Card label="Enfoque" color={COLORS.enfoque} icon={<MountainIcon color={COLORS.enfoque} />} />
+      </div>
+    </div>
+  );
+}
+
 export function OpcionA() {
   return (
     <div
@@ -85,9 +165,9 @@ export function OpcionA() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "32px 24px",
+        padding: "28px 24px",
         flexDirection: "column",
-        gap: 20,
+        gap: 18,
       }}
     >
       <span
@@ -98,17 +178,26 @@ export function OpcionA() {
           letterSpacing: 2,
           textTransform: "uppercase",
           fontFamily: "system-ui, -apple-system, sans-serif",
-          marginBottom: 4,
         }}
       >
         Opción A — Teal · Rosa · Melocotón
       </span>
-      <div style={{ display: "flex", gap: 10, width: "100%", maxWidth: 420 }}>
-        <Card label="Descanso" color={COLORS.descanso} icon={<MoonIcon color={COLORS.descanso} />} />
-        <Card label="Meditación" color={COLORS.meditacion} icon={<LotusIcon color={COLORS.meditacion} />} />
-        <Card label="Enfoque" color={COLORS.enfoque} icon={<MountainIcon color={COLORS.enfoque} />} />
-      </div>
-      <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
+
+      <Row
+        label="① Piedras zen"
+        meditIcon={<ZenStonesIcon color={COLORS.meditacion} />}
+        tag="NUEVO"
+      />
+      <Row
+        label="② Loto actual"
+        meditIcon={<LotusIcon color={COLORS.meditacion} />}
+      />
+      <Row
+        label="③ Yin-yang"
+        meditIcon={<YinYangIcon color={COLORS.meditacion} />}
+      />
+
+      <div style={{ display: "flex", gap: 16, marginTop: 4 }}>
         {Object.entries(COLORS).map(([k, v]) => (
           <div key={k} style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div style={{ width: 14, height: 14, borderRadius: "50%", backgroundColor: v }} />
