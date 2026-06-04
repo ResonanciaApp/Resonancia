@@ -151,7 +151,7 @@ export default function ExploreScreen() {
             <View style={styles.libraryGrid}>
               {[
                 { label: "Carpetas",    icon: "folder"     as const, route: "/carpetas"    },
-                { label: "Creaciones",  icon: "layers"     as const, route: "/creaciones"  },
+                { label: "Creaciones",  icon: "sliders"    as const, route: "/creaciones"  },
                 { label: "Playlists",   icon: "list"       as const, route: "/playlists"   },
                 { label: "Favoritos",   icon: "heart"      as const, route: "/favorites"   },
                 { label: "Historial",   icon: "clock"      as const, route: "/historial"   },
