@@ -349,15 +349,9 @@ export default function ExploreScreen() {
               {/* ── VER TODAS (bloque completo) ── */}
               <Pressable
                 onPress={() => router.push("/todas-las-tematicas" as never)}
-                style={({ pressed }) => [styles.verTodasBlock, { opacity: pressed ? 0.82 : 1 }]}
+                style={({ pressed }) => [styles.verTodasBlock, { opacity: pressed ? 0.75 : 1 }]}
               >
-                <LinearGradient
-                  colors={["rgba(10,6,4,0.18)", "rgba(10,6,4,0.55)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Text style={[styles.sectionTitle, { color: "#F5EDD8", marginBottom: 0, letterSpacing: 1.4 }]}>
-                  VER TODAS
-                </Text>
+                <Text style={styles.verTodasBlockText}>Ver todas  ›</Text>
               </Pressable>
             </View>
 
@@ -551,13 +545,18 @@ const styles = StyleSheet.create({
   },
   verTodasBlock: {
     width: "100%",
-    height: TAG_H,
-    borderRadius: 16,
-    overflow: "hidden",
+    height: 48,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#151A23",
     marginTop: GAP,
+  },
+  verTodasBlockText: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#EDE1D3",
+    letterSpacing: 0.2,
   },
   tagLabel: {
     color: "#F5EDD8",
