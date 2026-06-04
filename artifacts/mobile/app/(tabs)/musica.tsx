@@ -59,7 +59,7 @@ export default function MiMusicaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { isActive, toggleSound } = useMixer();
+  const { isActive, toggleSound, activeSounds } = useMixer();
   const [activeTab, setActiveTab] = useState<TabId>("popular");
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
@@ -225,6 +225,9 @@ export default function MiMusicaScreen() {
               style={styles.titleChevron}
             />
           </Pressable>
+          <Text style={styles.activeCount}>
+            {activeSounds.length}/{MAX_ACTIVE_SOUNDS} sonidos activos
+          </Text>
           {descExpanded && (
             <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
               Crea tu ambiente sonoro combinando loops de naturaleza, mantras y frecuencias.{"\n"}
@@ -322,6 +325,7 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   titleChevron: { marginTop: 4 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5 },
+  activeCount: { fontSize: 13, fontWeight: "500", color: "#89C5E0", marginTop: 3, letterSpacing: 0.2 },
   pageSub: { fontSize: 13, lineHeight: 19, marginTop: 6 },
 
   // Barra sticky (categorías de mezclas + tabs de sonido)
@@ -377,6 +381,10 @@ const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 24, justifyContent: "flex-start" },
   soundCard: {
     width: "31%",
+    backgroundColor: "#151A23",
+    borderRadius: 14,
+    paddingTop: 10,
+    paddingBottom: 8,
   },
   cardImageWrap: {
     width: "77%",
