@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   durBadge: {
     position: "absolute",
     bottom: 8,
-    right: 8,
+    left: 8,
     backgroundColor: "rgba(6,10,15,0.72)",
     borderRadius: 8,
     paddingHorizontal: 8,
