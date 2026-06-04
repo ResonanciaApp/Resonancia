@@ -54,7 +54,7 @@ const VIDEO_HERO_W = width - GRID_PAD * 2 - 56;
 const VIDEO_REG_W = 200;
 const RECENT_CARD_W = 150;
 
-const SECTION_GAP = 38;
+const SECTION_GAP = 43;
 
 const ND = Platform.OS !== "web";
 
@@ -527,9 +527,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 14,
+    marginBottom: 11,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7 },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,
