@@ -56,7 +56,7 @@ export default function UsuarioScreen() {
   const { data: me } = useGetMe();
   const queryClient = useQueryClient();
   const { data: myFollowing } = useGetUserFollowing(me?.id ?? 0, {
-    query: { enabled: !!me?.id },
+    query: { enabled: !!me?.id, queryKey: getGetUserFollowingQueryKey(me?.id ?? 0) },
   });
   const isFollowing = (myFollowing ?? []).some((u) => u.id === userId);
   const isOwnProfile = me?.id === userId;

@@ -1,16 +1,15 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
-  LayoutAnimation,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  UIManager,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -25,38 +24,45 @@ import {
   type MixSound,
   type SoundCategoryId,
   SOUND_CATEGORIES,
+  SOUNDS,
   getSoundsByCategory,
   hasSoundFile,
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
-type TabId = "todos" | SoundCategoryId;
+type TabId = "popular" | SoundCategoryId;
 
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+const COUNTS_KEY = "@resonance_sound_play_counts";
 
 export default function MiMusicaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { isActive, toggleSound } = useMixer();
-  const [activeTab, setActiveTab] = useState<TabId>("todos");
-  const [catsOpen, setCatsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>("popular");
+  const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
 
-  const toggleCats = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setCatsOpen((v) => !v);
+  useEffect(() => {
+    AsyncStorage.getItem(COUNTS_KEY)
+      .then((raw) => {
+        if (raw) setPlayCounts(JSON.parse(raw));
+      })
+      .catch(() => {});
+  }, []);
+
+  const incrementCount = (soundId: string) => {
+    setPlayCounts((prev) => {
+      const next = { ...prev, [soundId]: (prev[soundId] ?? 0) + 1 };
+      AsyncStorage.setItem(COUNTS_KEY, JSON.stringify(next)).catch(() => {});
+      return next;
+    });
   };
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const handleSoundPress = (sound: MixSound) => {
-    if (!hasSoundFile(sound.id)) return; // "Próximamente"
+    if (!hasSoundFile(sound.id)) return;
     if (sound.isPremium && !isPremium) {
       router.push("/membresia" as never);
       return;
@@ -68,6 +74,8 @@ export default function MiMusicaScreen() {
           "Límite alcanzado",
           `Podés mezclar hasta ${MAX_ACTIVE_SOUNDS} sonidos a la vez. Quitá uno para agregar otro.`,
         );
+      } else {
+        incrementCount(sound.id);
       }
     } else {
       toggleSound(sound.id);
@@ -75,7 +83,7 @@ export default function MiMusicaScreen() {
   };
 
   const tabs: { id: TabId; label: string }[] = [
-    { id: "todos", label: "Todos" },
+    { id: "popular", label: "Popular" },
     ...SOUND_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
   ];
   const tabsHalf = Math.ceil(tabs.length / 2);
@@ -91,15 +99,15 @@ export default function MiMusicaScreen() {
         style={[
           styles.tab,
           {
-            backgroundColor: selected ? "#FFFFFF" : "#11161F",
-            borderColor: selected ? "#FFFFFF" : "transparent",
+            backgroundColor: selected ? colors.primary : "#11161F",
+            borderColor: selected ? colors.primary : "transparent",
           },
         ]}
       >
         <Text
           style={[
             styles.tabLabel,
-            { color: selected ? "#151A23" : colors.foreground },
+            { color: selected ? colors.primaryForeground : colors.foreground },
           ]}
         >
           {tab.label}
@@ -121,7 +129,6 @@ export default function MiMusicaScreen() {
         disabled={!available}
         style={[styles.soundCard, { opacity: available ? 1 : 0.5 }]}
       >
-        {/* Imagen — ocupa la parte superior cuadrada */}
         <View
           style={[
             styles.cardImageWrap,
@@ -154,7 +161,6 @@ export default function MiMusicaScreen() {
           )}
         </View>
 
-        {/* Título debajo de la imagen */}
         <View style={styles.cardFooter}>
           <Text
             style={[styles.soundName, { color: colors.foreground }]}
@@ -166,6 +172,11 @@ export default function MiMusicaScreen() {
       </Pressable>
     );
   };
+
+  const popularSounds = SOUNDS.filter(hasSoundFile ? (s) => hasSoundFile(s.id) : () => true)
+    .slice()
+    .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
+    .slice(0, 50);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -192,43 +203,29 @@ export default function MiMusicaScreen() {
         >
           {/* ── Barra sticky: categorías de mezclas + tabs de sonido ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
-            {/* Toggle "Categorías" */}
-            <Pressable onPress={toggleCats} style={styles.catToggle}>
-              <Text style={[styles.catToggleLabel, { color: colors.foreground }]}>
-                Categorías
-              </Text>
-              <Feather
-                name={catsOpen ? "chevron-up" : "chevron-down"}
-                size={20}
-                color={colors.mutedForeground}
-              />
-            </Pressable>
-
-            {/* Categorías de mezclas (colapsables) */}
-            {catsOpen && (
-              <View style={styles.catRow}>
-                {MIX_CATEGORIES.map((cat) => (
-                  <Pressable
-                    key={cat.id}
-                    onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                    style={[styles.catCard, { backgroundColor: "#151A23", borderColor: "transparent" }]}
-                  >
-                    {cat.iconFamily === "MaterialCommunityIcons" ? (
-                      <MaterialCommunityIcons
-                        name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                        size={26}
-                        color="#6B9AB5"
-                      />
-                    ) : (
-                      <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color="#6B9AB5" />
-                    )}
-                    <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
-                      {cat.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
+            {/* Categorías de mezclas (siempre visibles) */}
+            <View style={styles.catRow}>
+              {MIX_CATEGORIES.map((cat) => (
+                <Pressable
+                  key={cat.id}
+                  onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+                  style={[styles.catCard, { backgroundColor: "#151A23", borderColor: "transparent" }]}
+                >
+                  {cat.iconFamily === "MaterialCommunityIcons" ? (
+                    <MaterialCommunityIcons
+                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                      size={26}
+                      color={colors.primary}
+                    />
+                  ) : (
+                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color={colors.primary} />
+                  )}
+                  <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
+                    {cat.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
 
             {/* Tabs de categorías de sonido (2 filas que se deslizan juntas) */}
             <ScrollView
@@ -247,21 +244,27 @@ export default function MiMusicaScreen() {
           {/* Separador sutil entre tabs y contenido */}
           <View style={styles.separator} />
 
-          {/* ── Biblioteca de sonidos (con títulos por categoría, filtrada por tab) ── */}
-          {SOUND_CATEGORIES.filter(
-            (cat) => activeTab === "todos" || activeTab === cat.id,
-          ).map((cat) => {
-            const sounds = getSoundsByCategory(cat.id);
-            if (sounds.length === 0) return null;
-            return (
-              <View key={cat.id} style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                  {cat.label}
-                </Text>
-                <View style={styles.grid}>{sounds.map(renderSoundCard)}</View>
-              </View>
-            );
-          })}
+          {/* ── Biblioteca de sonidos ── */}
+          {activeTab === "popular" ? (
+            /* Popular: todos los sonidos ordenados por selecciones, sin títulos */
+            <View style={styles.grid}>
+              {popularSounds.map(renderSoundCard)}
+            </View>
+          ) : (
+            /* Categoría específica: con título */
+            SOUND_CATEGORIES.filter((cat) => activeTab === cat.id).map((cat) => {
+              const sounds = getSoundsByCategory(cat.id);
+              if (sounds.length === 0) return null;
+              return (
+                <View key={cat.id} style={styles.section}>
+                  <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                    {cat.label}
+                  </Text>
+                  <View style={styles.grid}>{sounds.map(renderSoundCard)}</View>
+                </View>
+              );
+            })
+          )}
         </ScrollView>
       </View>
     </View>
@@ -283,19 +286,9 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
 
-  // Secciones
+  // Secciones (categorías individuales)
   section: { marginBottom: 57 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
-
-  // Toggle "Categorías"
-  catToggle: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingVertical: 4,
-    marginBottom: 14,
-  },
-  catToggleLabel: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
 
   // Tabs de categorías de sonido (2 filas, scroll horizontal conjunto)
   tabsScroll: { marginHorizontal: -20, marginBottom: 12 },
@@ -310,7 +303,7 @@ const styles = StyleSheet.create({
   },
   tabLabel: { fontSize: 13, fontWeight: "400", letterSpacing: 0.2 },
 
-  // Categorías de mezclas (reducidas ~25%)
+  // Categorías de mezclas
   catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
   catCard: {
     flex: 1,
@@ -327,6 +320,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
   },
+
   // Separador sutil
   separator: {
     height: 1,
@@ -335,7 +329,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 
-  // Grilla de sonidos — 3 columnas uniformes sin espacio a la derecha
+  // Grilla de sonidos — 3 columnas uniformes
   grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 24, justifyContent: "flex-start" },
   soundCard: {
     width: "31%",
@@ -349,7 +343,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "transparent",
   },
-  // Al seleccionar: se inclina, se levanta (sombra) y crece un poco.
   cardImageWrapActive: {
     transform: [{ rotate: "-5deg" }, { scale: 1.05 }],
     shadowColor: "#000",

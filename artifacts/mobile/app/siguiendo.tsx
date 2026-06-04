@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   useGetUserFollowing,
+  getGetUserFollowingQueryKey,
   useGetMe,
   useFollowUser,
   useUnfollowUser,
@@ -31,11 +32,11 @@ export default function SiguiendoScreen() {
   const targetId = userId ? Number(userId) : me?.id;
 
   const { data: following, isLoading } = useGetUserFollowing(targetId ?? 0, {
-    query: { enabled: !!targetId },
+    query: { enabled: !!targetId, queryKey: getGetUserFollowingQueryKey(targetId ?? 0) },
   });
 
   const { data: myFollowing } = useGetUserFollowing(me?.id ?? 0, {
-    query: { enabled: !!me?.id },
+    query: { enabled: !!me?.id, queryKey: getGetUserFollowingQueryKey(me?.id ?? 0) },
   });
 
   const followMutation = useFollowUser();
