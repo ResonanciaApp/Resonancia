@@ -331,6 +331,65 @@ export const SetUserRoleResponse = zod.object({
 
 
 /**
+ * @summary Get my follower and following counts
+ */
+export const GetMyFollowCountsResponse = zod.object({
+  "followersCount": zod.number(),
+  "followingCount": zod.number()
+})
+
+
+/**
+ * @summary Follow a user
+ */
+export const FollowUserParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+
+/**
+ * @summary Unfollow a user
+ */
+export const UnfollowUserParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+
+/**
+ * @summary List followers of a user
+ */
+export const GetUserFollowersParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetUserFollowersResponseItem = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "followedAt": zod.coerce.date()
+})
+export const GetUserFollowersResponse = zod.array(GetUserFollowersResponseItem)
+
+
+/**
+ * @summary List users that a user follows
+ */
+export const GetUserFollowingParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetUserFollowingResponseItem = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "followedAt": zod.coerce.date()
+})
+export const GetUserFollowingResponse = zod.array(GetUserFollowingResponseItem)
+
+
+/**
  * @summary List accepted friends
  */
 export const GetFriendsResponseItem = zod.object({

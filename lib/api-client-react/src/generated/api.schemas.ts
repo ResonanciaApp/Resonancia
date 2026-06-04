@@ -889,6 +889,19 @@ export interface AdminCategoryUpdate {
   sortOrder?: number;
 }
 
+export interface FollowCounts {
+  followersCount: number;
+  followingCount: number;
+}
+
+export interface FollowedUser {
+  id: number;
+  username: string;
+  displayName: string;
+  avatarUrl?: string | null;
+  followedAt: string;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };

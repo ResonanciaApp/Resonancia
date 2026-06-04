@@ -21,7 +21,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
+import {
+  useGetMe,
+  getGetMeQueryKey,
+  useGetMyFollowCounts,
+  getGetMyFollowCountsQueryKey,
+} from "@workspace/api-client-react";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -106,6 +111,9 @@ export default function ProfileScreen() {
   } = useUserProfile();
 
   const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 60_000 } });
+  const { data: followCounts } = useGetMyFollowCounts({
+    query: { queryKey: getGetMyFollowCountsQueryKey(), staleTime: 30_000 },
+  });
   const memberSince = me?.createdAt
     ? new Date(me.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
     : null;
@@ -352,6 +360,29 @@ export default function ProfileScreen() {
               </Text>
             </View>
           ) : null}
+
+          {/* Seguidores / Siguiendo */}
+          <View style={styles.followCountsRow}>
+            <Pressable
+              onPress={() => router.push("/seguidores" as never)}
+              style={styles.followCountItem}
+            >
+              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
+                {followCounts?.followersCount ?? 0}
+              </Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
+            </Pressable>
+            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#1E2A38" }]} />
+            <Pressable
+              onPress={() => router.push("/siguiendo" as never)}
+              style={styles.followCountItem}
+            >
+              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
+                {followCounts?.followingCount ?? 0}
+              </Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
+            </Pressable>
+          </View>
 
           {/* Editar Detalles button */}
           <Pressable
@@ -747,6 +778,13 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   editBtnText: { fontSize: 13, fontWeight: "600" },
+
+  // Seguidores / Siguiendo
+  followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
+  followCountItem: { alignItems: "center", paddingHorizontal: 20 },
+  followCountNum: { fontSize: 18, fontWeight: "700" },
+  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountDivider: { width: 1, height: 28 },
 
   // Plan card
   planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10 },

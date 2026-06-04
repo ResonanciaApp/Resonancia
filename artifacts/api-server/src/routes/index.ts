@@ -11,6 +11,7 @@ import mixesRouter from "./mixes";
 import activityRouter from "./activity";
 import catalogRouter from "./catalog";
 import adminRouter from "./admin";
+import followsRouter from "./follows";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(mixesRouter);
 router.use(activityRouter);
 router.use(catalogRouter);
 router.use(adminRouter);
+router.use(followsRouter);
 
 export default router;

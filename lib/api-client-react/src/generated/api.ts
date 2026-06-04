@@ -35,6 +35,8 @@ import type {
   ErrorResponse,
   FavoritesInput,
   FavoritesList,
+  FollowCounts,
+  FollowedUser,
   FriendRequest,
   FriendRequestInput,
   GetAdminUsersParams,
@@ -1296,6 +1298,377 @@ export const useSetUserRole = <TError = ErrorType<ErrorResponse>,
       > => {
       return useMutation(getSetUserRoleMutationOptions(options));
     }
+
+export const getGetMyFollowCountsUrl = () => {
+
+
+
+
+  return `/api/me/follow-counts`
+}
+
+/**
+ * @summary Get my follower and following counts
+ */
+export const getMyFollowCounts = async ( options?: RequestInit): Promise<FollowCounts> => {
+
+  return customFetch<FollowCounts>(getGetMyFollowCountsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyFollowCountsQueryKey = () => {
+    return [
+    `/api/me/follow-counts`
+    ] as const;
+    }
+
+
+export const getGetMyFollowCountsQueryOptions = <TData = Awaited<ReturnType<typeof getMyFollowCounts>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyFollowCounts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyFollowCountsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFollowCounts>>> = ({ signal }) => getMyFollowCounts({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyFollowCounts>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyFollowCountsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyFollowCounts>>>
+export type GetMyFollowCountsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get my follower and following counts
+ */
+
+export function useGetMyFollowCounts<TData = Awaited<ReturnType<typeof getMyFollowCounts>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyFollowCounts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyFollowCountsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getFollowUserUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/follow`
+}
+
+/**
+ * @summary Follow a user
+ */
+export const followUser = async (userId: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getFollowUserUrl(userId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getFollowUserMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof followUser>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof followUser>>, TError,{userId: number}, TContext> => {
+
+const mutationKey = ['followUser'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof followUser>>, {userId: number}> = (props) => {
+          const {userId} = props ?? {};
+
+          return  followUser(userId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type FollowUserMutationResult = NonNullable<Awaited<ReturnType<typeof followUser>>>
+
+    export type FollowUserMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Follow a user
+ */
+export const useFollowUser = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof followUser>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof followUser>>,
+        TError,
+        {userId: number},
+        TContext
+      > => {
+      return useMutation(getFollowUserMutationOptions(options));
+    }
+
+export const getUnfollowUserUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/follow`
+}
+
+/**
+ * @summary Unfollow a user
+ */
+export const unfollowUser = async (userId: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getUnfollowUserUrl(userId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getUnfollowUserMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unfollowUser>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unfollowUser>>, TError,{userId: number}, TContext> => {
+
+const mutationKey = ['unfollowUser'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unfollowUser>>, {userId: number}> = (props) => {
+          const {userId} = props ?? {};
+
+          return  unfollowUser(userId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnfollowUserMutationResult = NonNullable<Awaited<ReturnType<typeof unfollowUser>>>
+
+    export type UnfollowUserMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Unfollow a user
+ */
+export const useUnfollowUser = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unfollowUser>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof unfollowUser>>,
+        TError,
+        {userId: number},
+        TContext
+      > => {
+      return useMutation(getUnfollowUserMutationOptions(options));
+    }
+
+export const getGetUserFollowersUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/followers`
+}
+
+/**
+ * @summary List followers of a user
+ */
+export const getUserFollowers = async (userId: number, options?: RequestInit): Promise<FollowedUser[]> => {
+
+  return customFetch<FollowedUser[]>(getGetUserFollowersUrl(userId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetUserFollowersQueryKey = (userId: number,) => {
+    return [
+    `/api/users/${userId}/followers`
+    ] as const;
+    }
+
+
+export const getGetUserFollowersQueryOptions = <TData = Awaited<ReturnType<typeof getUserFollowers>>, TError = ErrorType<ErrorResponse>>(userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserFollowers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetUserFollowersQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserFollowers>>> = ({ signal }) => getUserFollowers(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserFollowers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetUserFollowersQueryResult = NonNullable<Awaited<ReturnType<typeof getUserFollowers>>>
+export type GetUserFollowersQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List followers of a user
+ */
+
+export function useGetUserFollowers<TData = Awaited<ReturnType<typeof getUserFollowers>>, TError = ErrorType<ErrorResponse>>(
+ userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserFollowers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetUserFollowersQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetUserFollowingUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/following`
+}
+
+/**
+ * @summary List users that a user follows
+ */
+export const getUserFollowing = async (userId: number, options?: RequestInit): Promise<FollowedUser[]> => {
+
+  return customFetch<FollowedUser[]>(getGetUserFollowingUrl(userId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetUserFollowingQueryKey = (userId: number,) => {
+    return [
+    `/api/users/${userId}/following`
+    ] as const;
+    }
+
+
+export const getGetUserFollowingQueryOptions = <TData = Awaited<ReturnType<typeof getUserFollowing>>, TError = ErrorType<ErrorResponse>>(userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserFollowing>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetUserFollowingQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserFollowing>>> = ({ signal }) => getUserFollowing(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserFollowing>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetUserFollowingQueryResult = NonNullable<Awaited<ReturnType<typeof getUserFollowing>>>
+export type GetUserFollowingQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List users that a user follows
+ */
+
+export function useGetUserFollowing<TData = Awaited<ReturnType<typeof getUserFollowing>>, TError = ErrorType<ErrorResponse>>(
+ userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserFollowing>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetUserFollowingQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getGetFriendsUrl = () => {
 
