@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 14,
   },
-  verTodasLink: { fontSize: 13, fontWeight: "600" },
+  verTodasLink: { fontSize: 13, fontWeight: "400" },
 
   // Continúa escuchando
   continueCard: {

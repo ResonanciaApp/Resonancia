@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
-  verTodasLink: { fontSize: 13, fontWeight: "600" },
+  verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,
     borderWidth: 1,
