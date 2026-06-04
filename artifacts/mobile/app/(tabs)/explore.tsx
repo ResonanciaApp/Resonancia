@@ -284,7 +284,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-            <View style={styles.section}>
+            <View style={[styles.section, { marginBottom: 38 }]}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
               <ScrollView
                 horizontal
