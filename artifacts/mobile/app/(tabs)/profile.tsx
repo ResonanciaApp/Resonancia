@@ -522,47 +522,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* ── Favoritos ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis Favoritos</Text>
-          {favSessions.length === 0 ? (
-            <View style={[styles.emptyFav, { backgroundColor: "#151A23" }]}>
-              <Feather name="heart" size={22} color={"rgba(198,155,79,0.3)"} />
-              <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
-                Aún no has guardado sesiones.{"\n"}Toca ❤️ en cualquier sesión para guardarla aquí.
-              </Text>
-            </View>
-          ) : (
-            favSessions.map((s) => {
-              if (!s) return null;
-              const playing = currentSession?.id === s.id && isPlaying;
-              return (
-                <Pressable
-                  key={s.id}
-                  onPress={() => router.push(`/session/${s.id}` as never)}
-                  style={({ pressed }) => [
-                    styles.favRow,
-                    { backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.8 : 1 },
-                  ]}
-                >
-                  <Image source={s.image as never} style={styles.favImg} contentFit="cover" />
-                  <View style={styles.favInfo}>
-                    <Text style={[styles.favTitle, { color: colors.foreground }]} numberOfLines={1}>{s.title}</Text>
-                    <Text style={[styles.favSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {s.categoryLabel} · {s.durationLabel}
-                    </Text>
-                  </View>
-                  {playing ? (
-                    <Feather name="volume-2" size={16} color={colors.primary} />
-                  ) : (
-                    <Feather name="chevron-right" size={16} color={colors.border} />
-                  )}
-                </Pressable>
-              );
-            })
-          )}
-        </View>
-
         <Text style={[styles.footer, { color: colors.border }]}>
           RESONANCE · Sonidos que te regresan a ti mismo.
         </Text>
