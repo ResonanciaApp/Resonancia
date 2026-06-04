@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
-  ImageBackground,
   LayoutAnimation,
   Platform,
   Pressable,
@@ -131,13 +130,13 @@ export default function MiMusicaScreen() {
           ]}
         >
           {image ? (
-            <ImageBackground
+            <Image
               source={image}
-              style={styles.cardImage}
-              imageStyle={styles.cardImageInner}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
             />
           ) : (
-            <View style={[styles.cardImage, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
           )}
 
           {locked && (

@@ -205,7 +205,7 @@ export default function MusicaSonidosScreen() {
             <Feather name="music" size={44} color="#5B9E7A" />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
-            Frecuencias
+            Música
           </Text>
           <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
             Elige un sonido y conecta con el momento presente
