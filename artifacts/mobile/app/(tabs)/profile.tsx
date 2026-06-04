@@ -389,7 +389,7 @@ export default function ProfileScreen() {
               {isPremium ? "Plan Premium" : "Plan Free"}
             </Text>
             <Text style={[styles.planSub, { color: colors.mutedForeground }]}>
-              {isPremium ? "¡Tienes acceso completo al catálogo y funciones!" : "Acceso limitado al catálogo"}
+              {isPremium ? "¡Tienes acceso completo al catálogo!" : "Acceso limitado al catálogo"}
             </Text>
           </View>
           {isPremium ? (
