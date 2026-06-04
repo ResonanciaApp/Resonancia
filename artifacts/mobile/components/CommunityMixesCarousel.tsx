@@ -1,15 +1,7 @@
-/**
- * CommunityMixesCarousel — carrusel de mezclas compartidas por la comunidad.
- * ─────────────────────────────────────────────────────────────────
- * Aparece en Inicio (debajo de las secciones). Cualquiera puede ver y
- * reproducir. Dar like requiere cuenta (Clerk); un invitado es enviado
- * a registrarse. Tocar una card carga la mezcla y abre el mezclador.
- * ─────────────────────────────────────────────────────────────────
- */
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useGetSharedMixes } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
@@ -18,23 +10,23 @@ import { getMixImage } from "@/config/mix-images";
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
 
+const MAX_VISIBLE = 5;
+
 export function CommunityMixesCarousel() {
   const colors = useColors();
-
   const { data } = useGetSharedMixes();
-
   const mixes = data?.mixes ?? [];
 
-  // Si la foto del autor no carga (URL caída/expirada), caemos al icono.
   const [failedAvatars, setFailedAvatars] = useState<Record<number, boolean>>({});
 
   const handlePlay = useCallback((mix: SharedMix) => {
-    // Abre el reproductor de la mezcla de la comunidad (la presenta como un
-    // todo, sin exponer las pistas/volúmenes del creador).
     router.push(`/mezcla/${mix.id}` as never);
   }, []);
 
   if (mixes.length === 0) return null;
+
+  const visible = mixes.slice(0, MAX_VISIBLE);
+  const hasMore = mixes.length > MAX_VISIBLE;
 
   return (
     <View style={styles.section}>
@@ -42,82 +34,106 @@ export function CommunityMixesCarousel() {
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
           Mezclas de la comunidad
         </Text>
+        {hasMore && (
+          <Pressable onPress={() => router.push("/mezclas-comunidad" as never)} hitSlop={8}>
+            <Text style={[styles.verTodas, { color: colors.primary }]}>Ver todos</Text>
+          </Pressable>
+        )}
       </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.hScroll}
-      >
-        {mixes.map((mix) => (
-          <View
-            key={mix.id}
-            style={[styles.card, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: colors.border }]}
-          >
-            <Pressable onPress={() => handlePlay(mix)}>
+
+      <View style={styles.list}>
+        {visible.map((mix) => {
+          const avatar = resolveAvatarUrl(mix.author.avatarUrl);
+          return (
+            <Pressable
+              key={mix.id}
+              onPress={() => handlePlay(mix)}
+              style={({ pressed }) => [
+                styles.row,
+                { backgroundColor: "#151A23", opacity: pressed ? 0.75 : 1 },
+              ]}
+            >
               <ImageBackground
                 source={getMixImage(mix.image ?? undefined)}
                 style={styles.thumb}
                 imageStyle={styles.thumbInner}
               >
                 <View style={styles.playBubble}>
-                  <Feather name="play" size={16} color="#FFFFFF" />
+                  <Feather name="play" size={13} color="#FFFFFF" />
                 </View>
               </ImageBackground>
-            </Pressable>
 
-            <View style={styles.cardBody}>
-              <Text style={[styles.cardName, { color: colors.foreground }]} numberOfLines={1}>
-                {mix.name}
-              </Text>
-              <View style={styles.authorRow}>
-                {(() => {
-                  const avatar = resolveAvatarUrl(mix.author.avatarUrl);
-                  return avatar && !failedAvatars[mix.id] ? (
+              <View style={styles.meta}>
+                <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={1}>
+                  {mix.name}
+                </Text>
+                <View style={styles.authorRow}>
+                  {avatar && !failedAvatars[mix.id] ? (
                     <Image
                       source={{ uri: avatar }}
-                      style={[styles.authorAvatar, { backgroundColor: colors.border }]}
+                      style={[styles.avatar, { backgroundColor: colors.border }]}
                       onError={() =>
                         setFailedAvatars((prev) => ({ ...prev, [mix.id]: true }))
                       }
                     />
                   ) : (
-                    <Feather name="user" size={12} color={colors.mutedForeground} />
-                  );
-                })()}
-                <Text
-                  style={[styles.cardAuthor, { color: colors.mutedForeground }]}
-                  numberOfLines={1}
-                >
-                  {mix.author.displayName}
-                </Text>
+                    <Feather name="user" size={11} color={colors.mutedForeground} />
+                  )}
+                  <Text style={[styles.authorName, { color: colors.mutedForeground }]} numberOfLines={1}>
+                    {mix.author.displayName}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+
+              <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+            </Pressable>
+          );
+        })}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  section: { marginBottom: 22, paddingHorizontal: 20 },
-  sectionRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
+  section: { paddingHorizontal: 20 },
+  sectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 11,
+  },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
-  hScroll: { paddingRight: 12, gap: 12 },
-  card: { width: 150, borderRadius: 16, borderWidth: 1, overflow: "hidden" },
-  thumb: { height: 96, justifyContent: "center", alignItems: "center" },
-  thumbInner: {},
+  verTodas: { fontSize: 13, fontWeight: "500" },
+
+  list: { gap: 10 },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    borderRadius: 14,
+    padding: 10,
+  },
+  thumb: {
+    width: 52,
+    height: 52,
+    borderRadius: 10,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(190,150,80,0.15)",
+  },
+  thumbInner: { borderRadius: 10 },
   playBubble: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "rgba(24,17,12,0.55)",
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "rgba(24,17,12,0.6)",
     alignItems: "center",
     justifyContent: "center",
   },
-  cardBody: { padding: 10 },
-  cardName: { fontSize: 14, fontWeight: "700" },
-  authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 4 },
-  authorAvatar: { width: 16, height: 16, borderRadius: 8 },
-  cardAuthor: { fontSize: 12, flexShrink: 1 },
+  meta: { flex: 1 },
+  mixName: { fontSize: 14, fontWeight: "600", marginBottom: 3 },
+  authorRow: { flexDirection: "row", alignItems: "center", gap: 5 },
+  avatar: { width: 14, height: 14, borderRadius: 7 },
+  authorName: { fontSize: 12, flexShrink: 1 },
 });
