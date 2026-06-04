@@ -167,6 +167,19 @@ export function MixerSheet() {
     router.push("/(tabs)/musica" as never);
   };
 
+  /** Actualiza el preset de origen directamente, sin abrir el modal. */
+  const handleUpdateDirect = () => {
+    if (!mixHasChanged || !canUpdate || !originId || !originPreset) return;
+    updatePreset(originId, {
+      name: originPreset.name,
+      description: originPreset.description ?? "",
+      image: originPreset.image ?? DEFAULT_MIX_IMAGE_KEY,
+      category: originPreset.category,
+    });
+    setSnapshotSounds(activeSounds.map((s) => ({ id: s.id, volume: s.volume })));
+    Alert.alert("Mezcla actualizada", "Se guardaron los cambios en tu mezcla.");
+  };
+
   const openSaveModal = (mode: SaveMode) => {
     if (activeSounds.length === 0) return;
     setSaveMode(mode);
@@ -396,7 +409,7 @@ export function MixerSheet() {
             {true ? (
               <>
                 <Pressable
-                  onPress={() => mixHasChanged && openSaveModal(canUpdate ? "update" : "new")}
+                  onPress={() => canUpdate ? handleUpdateDirect() : (mixHasChanged && openSaveModal("new"))}
                   style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder, opacity: mixHasChanged ? 1 : 0.4 }]}
                 >
                   <Feather name="check" size={16} color={WARM.saveText} />
