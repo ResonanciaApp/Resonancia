@@ -281,7 +281,9 @@ export default function ExploreScreen() {
 
             {/* ── Tu Biblioteca (2×2 grid) ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Tu biblioteca</Text>
+              <View style={styles.sectionRow}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 0 }]}>Tu biblioteca</Text>
+              </View>
               <View style={styles.libraryGrid}>
                 {[
                   { label: "Carpetas",   icon: "folder"  as const, route: "/carpetas"   },
