@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   hRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 0,
+    marginBottom: 10,
     height: 96,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(122,143,168,0.13)",
