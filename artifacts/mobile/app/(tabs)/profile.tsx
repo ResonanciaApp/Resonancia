@@ -363,6 +363,33 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
+        {/* ── Plan ── */}
+        <Pressable
+          onPress={() => !isPremium && router.push("/membresia" as never)}
+          style={({ pressed }) => [
+            styles.planCard,
+            { backgroundColor: "#151A23", opacity: pressed && !isPremium ? 0.85 : 1 },
+          ]}
+        >
+          <View style={[styles.planIconWrap, { backgroundColor: "rgba(122,143,168,0.12)" }]}>
+            <Feather name="user" size={20} color={colors.mutedForeground} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.planTitle, { color: colors.foreground }]}>
+              {isPremium ? "Plan Premium" : "Plan Free"}
+            </Text>
+            <Text style={[styles.planSub, { color: colors.mutedForeground }]}>
+              {isPremium ? "Acceso completo al catálogo" : "Acceso limitado al catálogo"}
+            </Text>
+          </View>
+          {!isPremium && (
+            <View style={styles.planMejorar}>
+              <Text style={[styles.planMejorarText, { color: colors.primary }]}>Mejorar</Text>
+              <Feather name="chevron-right" size={15} color={colors.primary} />
+            </View>
+          )}
+        </Pressable>
+
         {/* ── Tu Progreso (racha card) ── */}
         <View style={[styles.rachaCard, { backgroundColor: "#151A23" }]}>
           {/* Header: flame + title */}
@@ -791,6 +818,14 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   editBtnText: { fontSize: 13, fontWeight: "600" },
+
+  // Plan card
+  planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10 },
+  planIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+  planTitle: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
+  planSub: { fontSize: 12 },
+  planMejorar: { flexDirection: "row", alignItems: "center", gap: 2 },
+  planMejorarText: { fontSize: 14, fontWeight: "700" },
 
   // Tu Progreso — racha card
   rachaCard: { borderRadius: 18, padding: 18, marginBottom: 12 },
