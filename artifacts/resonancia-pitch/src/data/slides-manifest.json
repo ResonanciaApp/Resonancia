@@ -110,5 +110,21 @@
     "title": "Anexo · Escenarios de inversión",
     "description": "Matriz de monto a levantar vs valoración vs porcentaje cedido.",
     "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000015",
+    "position": 15,
+    "filepath": "src/pages/slides/SlideFinanzas1.tsx",
+    "title": "Anexo Financiero · Flujo de caja año 1",
+    "description": "Tabla mes a mes: suscriptores, ingresos netos, costos fijos, costos de contenido y resultado.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000016",
+    "position": 16,
+    "filepath": "src/pages/slides/SlideFinanzas2.tsx",
+    "title": "Anexo Financiero · Curva de crecimiento y escenarios",
+    "description": "Gráfico de barras de suscriptores + tabla de 3 escenarios + KPIs clave del año 1.",
+    "speakerNotes": ""
   }
 ]
