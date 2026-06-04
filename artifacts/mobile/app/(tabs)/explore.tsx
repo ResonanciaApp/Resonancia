@@ -288,7 +288,7 @@ export default function ExploreScreen() {
                   >
                     <Feather
                       name="clock"
-                      size={13}
+                      size={16}
                       color="white"
                       style={styles.timeIcon}
                     />
@@ -773,14 +773,14 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   timeChip: {
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    paddingVertical: 13,
     flexDirection: "row",
     alignItems: "center",
     overflow: "hidden",
     justifyContent: "center",
   },
-  timeIcon: { marginRight: 5 },
-  timeLabel: { fontSize: 13, fontWeight: "600" },
+  timeIcon: { marginRight: 6 },
+  timeLabel: { fontSize: 15, fontWeight: "600" },
 });
