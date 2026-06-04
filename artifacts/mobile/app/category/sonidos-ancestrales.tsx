@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Animated,
+  Dimensions,
   LayoutChangeEvent,
   Platform,
   Pressable,
@@ -29,6 +30,10 @@ import { useColors } from "@/hooks/useColors";
 import { VOICE_MAP } from "@/config/audio-map";
 
 const H_PAD = 20;
+const GAP = 10;
+const COLS = 3;
+const SCREEN_W = Dimensions.get("window").width;
+const CARD_WIDTH = ((SCREEN_W - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 12;
 const RATINGS_KEY = "@resonance_ratings";
 
 const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
@@ -333,51 +338,47 @@ export default function SonidosAncestalesScreen() {
 
             {/* ── Tab: Audios ── */}
             {activeTab === "Audios" && (
-              <View style={{ paddingTop: 24 }}>
-
-                {/* Escuchado Recientemente */}
-                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
-                  Escuchado Recientemente
-                </Text>
-                {recentlyPlayed ? (
-                  <SessionRow
-                    session={recentlyPlayed}
-                    rating={ratings[recentlyPlayed.id]}
-                    isPremium={isPremium}
-                    colors={colors}
-                    style={{ marginHorizontal: H_PAD, marginTop: 10, marginBottom: 24 }}
-                    onActionsPress={() => setActionsSession(recentlyPlayed)}
-                  />
-                ) : (
-                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "#151A23" }]}>
-                    <Feather name="headphones" size={28} color={colors.mutedForeground} />
-                    <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
-                      Aún no escuchaste ninguna sesión en esta categoría
-                    </Text>
-                  </View>
-                )}
-
-                {/* Recientes */}
-                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
-                  Recientes
-                </Text>
+              <View style={[styles.grid, { paddingHorizontal: H_PAD, paddingTop: 24 }]}>
                 {filteredSessions.length === 0 ? (
                   <View style={styles.emptyWrap}>
                     <Feather name="music" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
                     <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
                   </View>
                 ) : (
-                  filteredSessions.map((s) => (
-                    <SessionRow
-                      key={s.id}
-                      session={s}
-                      rating={ratings[s.id]}
-                      isPremium={isPremium}
-                      colors={colors}
-                      style={{ marginHorizontal: H_PAD }}
-                      onActionsPress={() => setActionsSession(s)}
-                    />
-                  ))
+                  <View style={styles.gridRow}>
+                    {filteredSessions.map((s) => {
+                      const locked = !!s.isPremium && !isPremium;
+                      return (
+                        <Pressable
+                          key={s.id}
+                          style={({ pressed }) => [
+                            styles.gridCard,
+                            { width: CARD_WIDTH, opacity: pressed ? 0.82 : 1 },
+                          ]}
+                          onPress={() => router.push((locked ? "/membresia" : `/session/${s.id}`) as never)}
+                          onLongPress={() => setActionsSession(s)}
+                        >
+                          <View style={{ width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 16, overflow: "hidden" }}>
+                            <Image
+                              source={s.image as never}
+                              style={{ width: CARD_WIDTH, height: CARD_WIDTH }}
+                              contentFit="cover"
+                              transition={IMAGE_TRANSITION}
+                              cachePolicy="memory-disk"
+                              placeholder={BLUR_PLACEHOLDER}
+                            />
+                            <PremiumBadge session={s} />
+                          </View>
+                          <Text
+                            style={[styles.gridCardTitle, { color: colors.foreground }]}
+                            numberOfLines={2}
+                          >
+                            {s.title}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
                 )}
               </View>
             )}
@@ -544,9 +545,10 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   tabItem: {
+    flex: 1,
     paddingVertical: 10,
-    paddingHorizontal: 4,
-    marginRight: 22,
+    alignItems: "center",
+    justifyContent: "center",
   },
   tabLabel: { fontSize: 15, fontWeight: "600" },
   tabIndicator: {
@@ -608,4 +610,27 @@ const styles = StyleSheet.create({
   // Empty
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
   emptyText: { fontSize: 15, textAlign: "center" },
+
+  grid: {},
+  gridRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: GAP,
+    rowGap: 24,
+    justifyContent: "space-between",
+  },
+  gridCard: {
+    borderRadius: 16,
+    overflow: "hidden",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  gridCardTitle: {
+    fontSize: 11,
+    fontWeight: "600",
+    marginTop: 6,
+    textAlign: "center",
+    lineHeight: 15,
+    width: "100%",
+  },
 });
