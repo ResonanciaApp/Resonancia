@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   },
   libraryCardThird: {
     width: "31.5%",
-    borderRadius: 14,
+    borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 6,
     alignItems: "center",
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
   },
   libraryCardWide: {
     width: "48.5%",
-    borderRadius: 16,
+    borderRadius: 10,
     paddingVertical: 24,
     paddingHorizontal: 11,
     alignItems: "center",
