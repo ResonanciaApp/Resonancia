@@ -207,7 +207,7 @@ export default function HomeScreen() {
               };
               const catImages: Record<string, ReturnType<typeof require>> = {
                 "musica-sonidos": require("../../assets/images/cat-musica.png"),
-                "mananas":        require("../../assets/images/cat-mañanas.png"),
+                "mananas":        require("../../assets/images/cat-mananas.png"),
                 "noches":         require("../../assets/images/cat-noches.png"),
                 "podcast":        require("../../assets/images/cat-sonidos.png"),
               };
@@ -226,7 +226,7 @@ export default function HomeScreen() {
                       resizeMode="contain"
                     />
                   ) : cat.id === "meditaciones-guiadas" ? (
-                    <ZenStonesIcon color={iconColor} size={26} />
+                    <ZenStonesIcon color={iconColor} size={28} />
                   ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
