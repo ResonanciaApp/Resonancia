@@ -256,11 +256,8 @@ export default function MiMusicaScreen() {
               const sounds = getSoundsByCategory(cat.id);
               if (sounds.length === 0) return null;
               return (
-                <View key={cat.id} style={styles.section}>
-                  <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                    {cat.label}
-                  </Text>
-                  <View style={styles.grid}>{sounds.map(renderSoundCard)}</View>
+                <View key={cat.id} style={styles.grid}>
+                  {sounds.map(renderSoundCard)}
                 </View>
               );
             })
