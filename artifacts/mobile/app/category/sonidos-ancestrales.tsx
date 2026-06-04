@@ -226,7 +226,7 @@ export default function SonidosAncestalesScreen() {
                     ]}
                   >
                     <View style={styles.iconCircle}>
-                      <Feather name={cat.icon} size={22} color={colors.primary} />
+                      <Feather name={cat.icon} size={22} color="#C4956A" />
                     </View>
                     <Text style={[styles.catName, { color: colors.foreground }]}>{cat.tag}</Text>
                     <View style={styles.catRight}>
@@ -241,7 +241,7 @@ export default function SonidosAncestalesScreen() {
             </View>
 
             <CategoryInfoPanel
-              accentColor={colors.primary}
+              accentColor="#C4956A"
               heading="¿Qué son los sonidos ancestrales?"
               items={[
                 {
