@@ -365,10 +365,10 @@ export default function ProfileScreen() {
 
         {/* ── Plan ── */}
         <Pressable
-          onPress={() => !isPremium && router.push("/membresia" as never)}
+          onPress={() => router.push("/membresia" as never)}
           style={({ pressed }) => [
             styles.planCard,
-            { backgroundColor: "#151A23", opacity: pressed && !isPremium ? 0.85 : 1 },
+            { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
           ]}
         >
           {isPremium ? (
@@ -389,10 +389,12 @@ export default function ProfileScreen() {
               {isPremium ? "Plan Premium" : "Plan Free"}
             </Text>
             <Text style={[styles.planSub, { color: colors.mutedForeground }]}>
-              {isPremium ? "Acceso completo al catálogo" : "Acceso limitado al catálogo"}
+              {isPremium ? "¡Tienes acceso completo al catálogo y funciones!" : "Acceso limitado al catálogo"}
             </Text>
           </View>
-          {!isPremium && (
+          {isPremium ? (
+            <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+          ) : (
             <View style={styles.planMejorar}>
               <Text style={[styles.planMejorarText, { color: colors.primary }]}>Mejorar</Text>
               <Feather name="chevron-right" size={15} color={colors.primary} />
