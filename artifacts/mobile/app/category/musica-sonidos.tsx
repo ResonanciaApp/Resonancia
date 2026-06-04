@@ -1,8 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
+  LayoutChangeEvent,
   Modal,
   Platform,
   Pressable,
@@ -38,10 +40,9 @@ const COLS = 3;
 const CARD_WIDTH = ((width - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 12;
 const IMG_SIZE = CARD_WIDTH - 10;
 
-type Tab = "Populares" | SoundTag;
+type Tab = SoundTag;
 
 const TABS: { label: string; value: Tab }[] = [
-  { label: "Populares", value: "Populares" },
   { label: "Ambient",   value: "Música Ambient"   },
   { label: "Enteógena", value: "Música Enteógena" },
   { label: "Ancestral", value: "Música Ancestral" },
@@ -88,47 +89,55 @@ export default function MusicaSonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
-  const { isFavorite, toggleFavorite, playSession, statEvents } = usePlayer();
+  const { isFavorite, toggleFavorite, playSession } = usePlayer();
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
 
   const featuredArtists = getFeaturedArtists();
 
-  const [activeTab, setActiveTab] = useState<Tab>("Populares");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [activeTab, setActiveTab] = useState<Tab>("Música Ambient");
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
+
+  const indicatorAnim = useRef(new Animated.Value(0)).current;
+  const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const tabLayouts = useRef<Record<number, { x: number; width: number }>>({});
+
+  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
+    const { x, width: w } = e.nativeEvent.layout;
+    tabLayouts.current[idx] = { x, width: w };
+    if (idx === 0) {
+      setIndicatorWidth(w);
+      indicatorAnim.setValue(x);
+    }
+  };
+
+  const selectTab = (tab: Tab, idx: number) => {
+    setActiveTab(tab);
+    const layout = tabLayouts.current[idx];
+    if (layout) {
+      setIndicatorWidth(layout.width);
+      Animated.spring(indicatorAnim, {
+        toValue: layout.x,
+        useNativeDriver: true,
+        tension: 60,
+        friction: 9,
+      }).start();
+    }
+  };
   const [query, setQuery] = useState("");
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const filtered = useMemo(() => {
-    let list: Session[];
-    if (activeTab === "Populares") {
-      // Ordenar por cantidad de reproducciones (statEvents = log append-only).
-      const counts: Record<string, number> = {};
-      for (const e of statEvents) counts[e.sessionId] = (counts[e.sessionId] ?? 0) + 1;
-      list = [...MUSICA_SESSIONS].sort((a, b) => {
-        const d = (counts[b.id] ?? 0) - (counts[a.id] ?? 0);
-        // Desempate determinista: si tienen las mismas reproducciones, mantener
-        // el orden original (no depender de la estabilidad del motor).
-        return d !== 0 ? d : (MUSICA_ORDER.get(a.id) ?? 0) - (MUSICA_ORDER.get(b.id) ?? 0);
-      });
-    } else {
-      list = MUSICA_SESSIONS.filter((s) => s.soundTag === activeTab);
-    }
+    let list = MUSICA_SESSIONS.filter((s) => s.soundTag === activeTab);
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((s) => s.title.toLowerCase().includes(q));
     }
     return list;
-  }, [activeTab, query, statEvents]);
-
-  // "Populares" pagina de a 24 con scroll infinito; las demás muestran todo.
-  const visible = activeTab === "Populares" ? filtered.slice(0, visibleCount) : filtered;
-
-  useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
   }, [activeTab, query]);
+
+  const visible = filtered;
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;
@@ -188,13 +197,6 @@ export default function MusicaSonidosScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         scrollEventThrottle={16}
-        onScroll={({ nativeEvent }) => {
-          if (activeTab !== "Populares") return;
-          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
-          if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 500) {
-            setVisibleCount((c) => (c < filtered.length ? Math.min(filtered.length, c + PAGE_SIZE) : c));
-          }
-        }}
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
@@ -237,39 +239,31 @@ export default function MusicaSonidosScreen() {
         </View>
 
         {/* Filter Tabs */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[styles.tabsRow, { paddingHorizontal: H_PAD }]}
-          style={{ marginBottom: 20 }}
-        >
-          {TABS.map(({ label, value }) => {
-            const active = value === activeTab;
-            return (
-              <Pressable
-                key={value}
-                onPress={() => setActiveTab(value)}
-                style={[
-                  styles.tab,
-                  {
-                    backgroundColor: active ? "#FFFFFF" : "#11161F",
-                    borderColor: "transparent",
-                    borderWidth: 0,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    { color: active ? "#090F17" : colors.foreground },
-                  ]}
-                >
-                  {label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD }]}>
+          {TABS.map(({ label, value }, idx) => (
+            <Pressable
+              key={value}
+              onLayout={(e) => onTabLayout(idx, e)}
+              onPress={() => selectTab(value, idx)}
+              style={styles.tabItem}
+            >
+              <Text style={[
+                styles.tabLabel,
+                { color: value === activeTab ? colors.foreground : colors.mutedForeground },
+              ]}>
+                {label}
+              </Text>
+            </Pressable>
+          ))}
+          {indicatorWidth > 0 && (
+            <Animated.View
+              style={[
+                styles.tabIndicator,
+                { width: indicatorWidth, transform: [{ translateX: indicatorAnim }] },
+              ]}
+            />
+          )}
+        </View>
 
         {/* Grid */}
         <View style={[styles.grid, { paddingHorizontal: H_PAD }]}>
@@ -517,20 +511,25 @@ const styles = StyleSheet.create({
     margin: 0,
   },
 
-  tabsRow: {
+  tabBar: {
     flexDirection: "row",
-    gap: 8,
-    paddingBottom: 2,
+    borderBottomWidth: 1,
+    position: "relative",
+    marginBottom: 20,
   },
-  tab: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 24,
-    borderWidth: 1,
+  tabItem: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  tabText: {
-    fontSize: 13,
-    fontWeight: "600",
+  tabLabel: { fontSize: 15, fontWeight: "600" },
+  tabIndicator: {
+    position: "absolute",
+    bottom: 0,
+    height: 2,
+    backgroundColor: "#5B9E7A",
+    borderRadius: 1,
   },
 
   grid: {},
