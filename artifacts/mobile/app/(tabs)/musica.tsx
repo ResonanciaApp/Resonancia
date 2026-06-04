@@ -287,6 +287,9 @@ export default function MiMusicaScreen() {
             </ScrollView>
           </View>
 
+          {/* Separador sutil entre tabs y contenido */}
+          <View style={styles.separator} />
+
           {/* ── Biblioteca de sonidos ── */}
           {activeTab === "popular" ? (
             /* Popular: todos los sonidos ordenados por selecciones, sin títulos */
@@ -361,6 +364,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     textAlign: "center",
+  },
+
+  separator: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.13)",
+    marginTop: 8,
+    marginBottom: 24,
   },
 
   // Grilla de sonidos — 3 columnas uniformes
