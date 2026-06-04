@@ -149,9 +149,11 @@ export default function SlideFinanzas3() {
                 <div style={{ fontSize: "0.8vw", color: "#3D4F62" }}>$0 en Mes 1–2</div>
               </div>
             </div>
-            <CostRow label="Artistas / productores" sub="~25 sesiones × $70.000" value="$1.750.000" />
-            <CostRow label="Voces guía" sub="~15 sesiones × $70.000" value="$1.050.000" />
-            <CostRow label="Postproducción / edición" sub="~3 sesiones × $70.000" value="$200.000" />
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5vw", fontSize: "0.95vw", color: "#7A8FA8", paddingTop: "0.5vh" }}>
+              <span>Artistas <strong style={{ color: "#EDE1D3" }}>$1,75M</strong></span>
+              <span>Voces guía <strong style={{ color: "#EDE1D3" }}>$1,05M</strong></span>
+              <span>Postprod. <strong style={{ color: "#EDE1D3" }}>$200K</strong></span>
+            </div>
           </div>
         </div>
 
