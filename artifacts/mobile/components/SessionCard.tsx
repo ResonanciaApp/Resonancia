@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     height: 96,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(182,149,95,0.09)",
+    borderBottomColor: "rgba(122,143,168,0.13)",
   },
   hImage: {
     width: 108,
