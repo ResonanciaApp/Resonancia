@@ -229,11 +229,11 @@ export default function ExploreScreen() {
                   />
                   <View style={styles.continueMeta}>
                     <View style={styles.continueKickerRow}>
-                      <Text style={[styles.continueKicker, { color: "#5DADE2" }]}>
+                      <Text style={[styles.continueKicker, { color: colors.primary }]}>
                         Sigue escuchando
                       </Text>
                       {lastSessionProgress > 0 && (
-                        <Text style={[styles.continuePercent, { color: "#5DADE2" }]}>
+                        <Text style={[styles.continuePercent, { color: colors.primary }]}>
                           {Math.round(Math.min(100, lastSessionProgress * 100))}%
                         </Text>
                       )}
