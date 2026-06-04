@@ -53,6 +53,26 @@ const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#0C1828", "#090F17"] as const;
 
+/** Ivory Warm — paleta para el sheet del mezclador. */
+const WARM = {
+  bg: "#100D09",
+  handle: "rgba(190,150,80,0.25)",
+  trackBg: "rgba(190,150,80,0.05)",
+  trackBorder: "rgba(190,150,80,0.12)",
+  sliderThumb: "#C4A97D",
+  sliderTrack: "rgba(190,150,80,0.35)",
+  addBorder: "rgba(190,150,80,0.2)",
+  addText: "rgba(190,150,80,0.5)",
+  separator: "rgba(190,150,80,0.08)",
+  playBg: "rgba(190,150,80,0.14)",
+  playBorder: "rgba(190,150,80,0.24)",
+  playText: "#C4A97D",
+  saveBg: "rgba(190,150,80,0.05)",
+  saveBorder: "rgba(190,150,80,0.14)",
+  saveText: "rgba(190,150,80,0.45)",
+  caption: "rgba(190,150,80,0.45)",
+} as const;
+
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
 function TrackThumb({ sound }: { sound: MixSound }) {
   const image = getSoundImage(sound.id);
@@ -240,19 +260,20 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: DARK_GRADIENT[1], paddingBottom: insets.bottom + 16 },
+            { backgroundColor: WARM.bg, paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
-          <View style={[styles.handle, { backgroundColor: colors.border }]} />
+          <View style={[styles.handle, { backgroundColor: WARM.handle }]} />
 
           <View style={styles.headerRow}>
             <View style={{ flex: 1 }}>
+              <Text style={[styles.caption, { color: WARM.caption }]}>MEZCLADOR</Text>
               <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
               <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-                {activeMix.length}/{MAX_ACTIVE_SOUNDS} sonidos
+                {activeMix.length} sonido{activeMix.length !== 1 ? "s" : ""} activo{activeMix.length !== 1 ? "s" : ""}
               </Text>
             </View>
             <Pressable
@@ -283,7 +304,7 @@ export function MixerSheet() {
             {activeMix.map(({ active, sound }, index) => (
               <View
                 key={sound.id}
-                style={[styles.trackRow, { backgroundColor: colors.background, borderColor: colors.border }]}
+                style={[styles.trackRow, { backgroundColor: WARM.trackBg, borderColor: WARM.trackBorder }]}
               >
                 <TrackThumb sound={sound} />
 
@@ -294,8 +315,8 @@ export function MixerSheet() {
                   <VolumeSlider
                     value={active.volume}
                     onChange={(v) => setVolume(sound.id, v)}
-                    color={colors.accent}
-                    trackColor={colors.secondary}
+                    color={WARM.sliderThumb}
+                    trackColor={WARM.sliderTrack}
                   />
                 </View>
 
@@ -313,25 +334,31 @@ export function MixerSheet() {
 
             <Pressable
               onPress={handleAddSounds}
-              style={[styles.addBtn, { borderColor: colors.border }]}
+              style={[styles.addBtn, { borderColor: WARM.addBorder }]}
             >
-              <Feather name="plus" size={18} color={colors.primary} />
-              <Text style={[styles.addBtnText, { color: colors.primary }]}>Agregar sonidos</Text>
+              <Feather name="plus" size={18} color={WARM.addText} />
+              <Text style={[styles.addBtnText, { color: WARM.addText }]}>Agregar sonidos</Text>
             </Pressable>
           </ScrollView>
 
+          {/* Separador warm */}
+          <View style={[styles.warmSeparator, { backgroundColor: WARM.separator }]} />
+
           {/* Controles */}
           <View style={styles.controlsRow}>
-            <Pressable onPress={togglePlay} style={[styles.playBtn, { backgroundColor: colors.primary }]}>
-              <Feather name={isPlaying ? "pause" : "play"} size={20} color={colors.primaryForeground} />
-              <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
+            <Pressable
+              onPress={togglePlay}
+              style={[styles.playBtn, { backgroundColor: WARM.playBg, borderWidth: 1, borderColor: WARM.playBorder }]}
+            >
+              <Feather name={isPlaying ? "pause" : "play"} size={20} color={WARM.playText} />
+              <Text style={[styles.playBtnText, { color: WARM.playText }]}>
                 {isPlaying ? "Pausar" : "Reproducir"}
               </Text>
             </Pressable>
 
             <Pressable
               onPress={handleTimerPress}
-              style={[styles.iconBtn, { borderColor: colors.border, backgroundColor: TRANSLUCENT_SURFACE }]}
+              style={[styles.iconBtn, { borderColor: WARM.playBorder, backgroundColor: WARM.saveBg }]}
               accessibilityRole="button"
               accessibilityLabel={
                 sleepTimerRemaining != null
@@ -342,10 +369,10 @@ export function MixerSheet() {
               <Feather
                 name="clock"
                 size={18}
-                color={sleepTimerRemaining != null ? colors.accent : colors.foreground}
+                color={sleepTimerRemaining != null ? WARM.playText : WARM.addText}
               />
               {sleepTimerRemaining != null && (
-                <Text style={[styles.timerText, { color: colors.accent }]}>
+                <Text style={[styles.timerText, { color: WARM.playText }]}>
                   {formatTimer(sleepTimerRemaining)}
                 </Text>
               )}
@@ -358,26 +385,26 @@ export function MixerSheet() {
               <>
                 <Pressable
                   onPress={() => openSaveModal("update")}
-                  style={[styles.saveBtn, { backgroundColor: TRANSLUCENT_SURFACE, borderColor: colors.border }]}
+                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
                 >
-                  <Feather name="check" size={16} color={colors.foreground} />
-                  <Text style={[styles.saveBtnText, { color: colors.foreground }]}>Actualizar</Text>
+                  <Feather name="check" size={16} color={WARM.saveText} />
+                  <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Actualizar</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => openSaveModal("new")}
-                  style={[styles.saveBtn, { backgroundColor: TRANSLUCENT_SURFACE, borderColor: colors.border }]}
+                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
                 >
-                  <Feather name="save" size={16} color={colors.foreground} />
-                  <Text style={[styles.saveBtnText, { color: colors.foreground }]}>Guardar nueva</Text>
+                  <Feather name="save" size={16} color={WARM.saveText} />
+                  <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Guardar nueva</Text>
                 </Pressable>
               </>
             ) : (
               <Pressable
                 onPress={() => openSaveModal("new")}
-                style={[styles.saveBtn, styles.saveBtnFull, { backgroundColor: TRANSLUCENT_SURFACE, borderColor: colors.border }]}
+                style={[styles.saveBtn, styles.saveBtnFull, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
               >
-                <Feather name="save" size={16} color={colors.foreground} />
-                <Text style={[styles.saveBtnText, { color: colors.foreground }]}>Guardar mezcla</Text>
+                <Feather name="save" size={16} color={WARM.saveText} />
+                <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Guardar mezcla</Text>
               </Pressable>
             )}
           </View>
@@ -537,21 +564,22 @@ const styles = StyleSheet.create({
   },
   handle: {
     alignSelf: "center",
-    width: 40,
-    height: 4,
+    width: 36,
+    height: 3,
     borderRadius: 2,
-    marginBottom: 14,
+    marginBottom: 18,
   },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   headerBtn: { paddingHorizontal: 4, justifyContent: "center" },
-  title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
-  subtitle: { fontSize: 12, marginTop: 2 },
-  clearText: { fontSize: 12, fontWeight: "600" },
+  caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
+  title: { fontSize: 19, fontWeight: "300", letterSpacing: 0.2 },
+  subtitle: { fontSize: 12, marginTop: 3, fontWeight: "300" },
+  clearText: { fontSize: 12, fontWeight: "400" },
 
   trackScroll: { flexGrow: 0 },
   trackRow: {
@@ -559,15 +587,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 8,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    marginBottom: 10,
   },
+  warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -2 },
   thumb: { width: 44, height: 44, borderRadius: 10, overflow: "hidden" },
   thumbRadius: { borderRadius: 10 },
   trackInfo: { flex: 1 },
-  trackName: { fontSize: 15, fontWeight: "400", marginBottom: 2 },
+  trackName: { fontSize: 15, fontWeight: "300", marginBottom: 4 },
   _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",
