@@ -11,7 +11,7 @@ function Diamond() {
 
 function CostRow({ label, sub, value }: { label: string; sub?: string; value: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "flex-start", gap: "0.7vw", padding: "0.42vh 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <div style={{ display: "flex", alignItems: "flex-start", gap: "0.7vw", padding: "0.32vh 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
       <Diamond />
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: "1.15vw", fontWeight: 600, color: "#EDE1D3", lineHeight: 1.2 }}>{label}</div>
@@ -37,7 +37,7 @@ export default function SlideFinanzas3() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
-      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", padding: "5vh 6vw 4.5vh", boxSizing: "border-box", gap: "1.4vh" }}
+      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", padding: "4.5vh 6vw 4vh", boxSizing: "border-box", gap: "1.1vh" }}
     >
       {/* Header */}
       <div>
@@ -68,6 +68,49 @@ export default function SlideFinanzas3() {
         </div>
       </div>
 
+      {/* Plan mix → blended ARPU */}
+      <div style={{
+        backgroundColor: "#090E17",
+        border: "1px solid rgba(190,150,80,0.18)",
+        borderRadius: "0.6vw",
+        padding: "0.85vh 1.4vw",
+        display: "flex",
+        alignItems: "center",
+        gap: "1.8vw",
+        flexShrink: 0,
+      }}>
+        <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", flexShrink: 0 }}>MEZCLA DE PLANES</div>
+
+        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
+          <div style={{ fontSize: "0.82vw", color: "#7A8FA8" }}>Mensual · ~60% de usuarios</div>
+          <div style={{ fontSize: "1.0vw", color: "#EDE1D3" }}>$6.900/mes → <strong style={{ color: "#EDE1D3" }}>$4.059</strong> neto/mes</div>
+        </div>
+
+        <div style={{ width: "1px", alignSelf: "stretch", backgroundColor: "rgba(255,255,255,0.08)" }} />
+
+        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
+          <div style={{ fontSize: "0.82vw", color: "#7A8FA8" }}>Anual · ~40% de usuarios</div>
+          <div style={{ fontSize: "1.0vw", color: "#EDE1D3" }}>$43.900/año → <strong style={{ color: "#EDE1D3" }}>$2.152</strong> neto/mes equiv.</div>
+        </div>
+
+        <div style={{ fontSize: "1.6vw", color: "rgba(190,150,80,0.5)", margin: "0 0.3vw" }}>→</div>
+
+        <div style={{
+          marginLeft: "auto",
+          display: "flex",
+          alignItems: "baseline",
+          gap: "0.7vw",
+          backgroundColor: "rgba(190,150,80,0.1)",
+          border: "1px solid rgba(190,150,80,0.3)",
+          borderRadius: "0.5vw",
+          padding: "0.6vh 1vw",
+          flexShrink: 0,
+        }}>
+          <div style={{ fontSize: "0.85vw", color: "#7A8FA8" }}>ARPU NETO BLENDED</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#BE9650", lineHeight: 1 }}>$3.300/mes</div>
+        </div>
+      </div>
+
       {/* Main: two columns */}
       <div style={{ display: "flex", gap: "3.5vw", flex: 1, minHeight: 0 }}>
 
@@ -85,7 +128,7 @@ export default function SlideFinanzas3() {
             <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#BE9650" }}>$3.650.000</div>
           </div>
 
-          <div style={{ marginTop: "1.2vh" }}>
+          <div style={{ marginTop: "0.8vh" }}>
             <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS CONTENIDO / MES</div>
             <div style={{
               backgroundColor: "rgba(190,150,80,0.06)",
