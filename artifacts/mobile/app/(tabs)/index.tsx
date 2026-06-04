@@ -32,7 +32,8 @@ import { VOICE_MAP } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
-import { SESSIONS, getFeaturedSessions, type Session } from "@/data/sessions";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
+import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
@@ -99,6 +100,18 @@ export default function HomeScreen() {
   }, []);
 
   const recentSessions = React.useMemo(() => [...SESSIONS].reverse().slice(0, 6), []);
+
+  const { data: popular } = useGetPopularSessions(
+    { limit: 10 },
+    { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 10 }), staleTime: 5 * 60_000 } },
+  );
+  const popularSessions = React.useMemo(
+    () =>
+      (popular?.sessions ?? [])
+        .map((s) => getSessionById(s.id))
+        .filter((s): s is NonNullable<ReturnType<typeof getSessionById>> => s != null),
+    [popular],
+  );
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
@@ -365,7 +378,23 @@ export default function HomeScreen() {
           <QuoteOfTheDay />
         </View>
 
-        {/* ── 7. DESCUBRÍ ALGO NUEVO ── */}
+        {/* ── 7. MÁS ESCUCHADOS ── */}
+        {popularSessions.length > 0 && (
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Más escuchados</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.hScroll}
+            >
+              {popularSessions.map((session) => (
+                <SessionCard key={session.id} session={session} width={200} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* ── 8. DESCUBRÍ ALGO NUEVO ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>

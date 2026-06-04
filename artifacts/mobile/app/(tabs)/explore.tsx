@@ -345,25 +345,21 @@ export default function ExploreScreen() {
                   </Pressable>
                 ))}
               </View>
-            </View>
 
-            {/* ── Más escuchados ── */}
-            {popularSessions.length > 0 && (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                  Más escuchados
+              {/* ── VER TODAS (bloque completo) ── */}
+              <Pressable
+                onPress={() => router.push("/todas-las-tematicas" as never)}
+                style={({ pressed }) => [styles.verTodasBlock, { opacity: pressed ? 0.82 : 1 }]}
+              >
+                <LinearGradient
+                  colors={["rgba(10,6,4,0.18)", "rgba(10,6,4,0.55)"]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Text style={[styles.sectionTitle, { color: "#F5EDD8", marginBottom: 0, letterSpacing: 1.4 }]}>
+                  VER TODAS
                 </Text>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ gap: GAP, paddingRight: H_PAD }}
-                >
-                  {popularSessions.map((session) => (
-                    <SessionCard key={session.id} session={session} width={200} />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
+              </Pressable>
+            </View>
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={{ marginBottom: 38 }}>
@@ -552,6 +548,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 12,
+  },
+  verTodasBlock: {
+    width: "100%",
+    height: TAG_H,
+    borderRadius: 16,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#151A23",
+    marginTop: GAP,
   },
   tagLabel: {
     color: "#F5EDD8",
