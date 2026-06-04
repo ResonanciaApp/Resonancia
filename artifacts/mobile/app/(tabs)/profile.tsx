@@ -371,11 +371,21 @@ export default function ProfileScreen() {
             { backgroundColor: "#151A23", opacity: pressed && !isPremium ? 0.85 : 1 },
           ]}
         >
-          <View style={[styles.planIconWrap, { backgroundColor: "rgba(122,143,168,0.12)" }]}>
-            <Feather name="user" size={20} color={colors.mutedForeground} />
-          </View>
+          {isPremium ? (
+            <View style={[styles.planIconWrap, { backgroundColor: "rgba(26,90,60,0.5)" }]}>
+              <Image
+                source={require("../../assets/images/estrella-premium.png")}
+                style={{ width: 20, height: 20 }}
+                contentFit="contain"
+              />
+            </View>
+          ) : (
+            <View style={[styles.planIconWrap, { backgroundColor: "rgba(122,143,168,0.12)" }]}>
+              <Feather name="user" size={20} color={colors.mutedForeground} />
+            </View>
+          )}
           <View style={{ flex: 1 }}>
-            <Text style={[styles.planTitle, { color: colors.foreground }]}>
+            <Text style={[styles.planTitle, { color: isPremium ? colors.primary : colors.foreground }]}>
               {isPremium ? "Plan Premium" : "Plan Free"}
             </Text>
             <Text style={[styles.planSub, { color: colors.mutedForeground }]}>
@@ -389,6 +399,40 @@ export default function ProfileScreen() {
             </View>
           )}
         </Pressable>
+
+        {/* Banner premium (solo Free) */}
+        {!isPremium && (
+          <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
+            <LinearGradient
+              colors={["#0D261D", "#06150F"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+            />
+            <View style={styles.premiumGlow} />
+            <View style={styles.premiumLeft}>
+              <View style={styles.premiumTitleRow}>
+                <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 13, height: 13, marginRight: 6 }} contentFit="contain" />
+                <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>Prueba Premium</Text>
+              </View>
+              <Text style={[styles.premiumSub, { color: "#D5C8B2", marginBottom: 10 }]}>
+                Lleva tu relajación al siguiente nivel y accede a:
+              </Text>
+              {[
+                { icon: "headphones", text: "+500 meditaciones" },
+                { icon: "music",      text: "+50 Música y sonidos relajantes" },
+                { icon: "users",      text: "Muro general de la comunidad" },
+              ].map((f) => (
+                <View key={f.text} style={styles.premiumFeatureRow}>
+                  <Feather name={f.icon as never} size={11} color="#BE9650" />
+                  <Text style={[styles.premiumFeatureText, { color: "#D5C8B2" }]}>{f.text}</Text>
+                </View>
+              ))}
+            </View>
+            <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
+              <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
+            </View>
+          </Pressable>
+        )}
 
         {/* ── Tu Progreso (racha card) ── */}
         <View style={[styles.rachaCard, { backgroundColor: "#151A23" }]}>
