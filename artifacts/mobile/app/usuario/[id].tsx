@@ -175,7 +175,7 @@ export default function UsuarioScreen() {
             onPress={() => router.push(`/chat/${profile.id}` as never)}
             style={({ pressed }) => [styles.messageBtn, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.messageGrad}>
+            <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.messageGrad}>
               <Feather name="message-circle" size={16} color="#080F0A" />
               <Text style={styles.messageText}>Enviar mensaje</Text>
             </LinearGradient>

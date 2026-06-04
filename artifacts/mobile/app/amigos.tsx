@@ -110,7 +110,7 @@ function GuestPrompt() {
         onPress={() => router.push("/(auth)/sign-up")}
         style={({ pressed }) => [styles.guestBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
-        <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.guestBtnGrad}>
+        <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.guestBtnGrad}>
           <Text style={styles.guestBtnText}>Crear cuenta</Text>
           <Feather name="arrow-right" size={16} color="#080F0A" />
         </LinearGradient>
@@ -303,7 +303,7 @@ function SearchResultRow({
       </View>
       {status === "none" && (
         <Pressable onPress={onAdd} style={styles.acceptBtn}>
-          <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
+          <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.acceptGrad}>
             <Feather name="user-plus" size={14} color="#080F0A" />
           </LinearGradient>
         </Pressable>
@@ -313,7 +313,7 @@ function SearchResultRow({
       )}
       {status === "pending_incoming" && (
         <Pressable onPress={onAdd} style={styles.acceptBtn}>
-          <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
+          <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.acceptGrad}>
             <Feather name="check" size={14} color="#080F0A" />
           </LinearGradient>
         </Pressable>
@@ -345,7 +345,7 @@ function RequestRow({
       </View>
       <View style={styles.requestBtns}>
         <Pressable style={styles.acceptBtn} onPress={onAccept}>
-          <LinearGradient colors={["#C8C1B5", "#B6955F"]} style={styles.acceptGrad}>
+          <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.acceptGrad}>
             <Feather name="check" size={14} color="#080F0A" />
           </LinearGradient>
         </Pressable>

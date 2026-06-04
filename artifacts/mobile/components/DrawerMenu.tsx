@@ -154,7 +154,7 @@ export function DrawerMenu() {
                 <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
               ) : (
                 <View style={styles.profilePhotoFallback}>
-                  <Feather name="user" size={22} color="#B6955F" />
+                  <Feather name="user" size={22} color="#BE9650" />
                 </View>
               )}
               <View style={styles.profileInfo}>
@@ -164,17 +164,17 @@ export function DrawerMenu() {
                   style={styles.verPerfilBtn}
                 >
                   <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                  <Feather name="chevron-right" size={11} color="#B6955F" />
+                  <Feather name="chevron-right" size={11} color="#BE9650" />
                 </Pressable>
               </View>
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#B6955F" />
+                <Feather name="x" size={20} color="#BE9650" />
               </Pressable>
             </View>
           ) : (
             <View style={styles.closeBtnRow}>
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#B6955F" />
+                <Feather name="x" size={20} color="#BE9650" />
               </Pressable>
             </View>
           )}
@@ -215,7 +215,7 @@ export function DrawerMenu() {
               ))}
             </View>
 
-            <View style={[styles.divider, { backgroundColor: "#B6955F10", marginVertical: 16 }]} />
+            <View style={[styles.divider, { backgroundColor: "#BE965010", marginVertical: 16 }]} />
 
             <View style={styles.itemGroup}>
               {SECONDARY_ITEMS.map((item) => (
@@ -290,14 +290,14 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#B6955F",
+    borderColor: "#BE9650",
   },
   profilePhotoFallback: {
     width: 48,
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#B6955F",
+    borderColor: "#BE9650",
     backgroundColor: "rgba(182,149,95,0.12)",
     alignItems: "center",
     justifyContent: "center",
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   verPerfilText: {
-    color: "#B6955F",
+    color: "#BE9650",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
