@@ -94,15 +94,13 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
           transition={IMAGE_TRANSITION}
         />
         {locked && <LockStar />}
+        <View style={styles.durBadge}>
+          <Text style={styles.durText}>{video.durationLabel}</Text>
+        </View>
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {video.title}
       </Text>
-      <View style={styles.cardMeta}>
-        <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-          {video.durationLabel}
-        </Text>
-      </View>
     </Pressable>
   );
 }
@@ -123,13 +121,16 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingHorizontal: 2,
   },
-  cardMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 4,
-    paddingHorizontal: 2,
+  durBadge: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    backgroundColor: "rgba(6,10,15,0.72)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
-  metaText: { fontSize: 11 },
+  durText: { fontSize: 11, fontWeight: "600", color: "#EDE1D3" },
 
   hRow: {
     flexDirection: "row",
