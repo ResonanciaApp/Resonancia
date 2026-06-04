@@ -3,10 +3,12 @@
  *
  * Acciones:
  *  1. Compartir
- *  2. Temporizador  → abre TimerSheet
+ *  2. Temporizador  → abre TimerSheet (dentro del mismo Modal, igual que SessionActionsSheet)
  *  3. Marcar como favorita / Quitar de favoritas
- *  4. Duplicar
- *  5. Eliminar
+ *  4. Añadir a una carpeta   → "Próximamente"
+ *  5. Añadir al Playlist     → "Próximamente"
+ *  6. Duplicar
+ *  7. Eliminar
  */
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
@@ -26,6 +28,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TimerSheet } from "@/components/TimerSheet";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 
 type Props = {
@@ -48,13 +51,7 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
       {visible.map((s, i) => {
         const img = getSoundImage(s.id);
         return (
-          <View
-            key={s.id}
-            style={[
-              styles.stackThumb,
-              { left: i * SHIFT, zIndex: i },
-            ]}
-          >
+          <View key={s.id} style={[styles.stackThumb, { left: i * SHIFT, zIndex: i }]}>
             {img ? (
               <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
             ) : (
@@ -70,17 +67,27 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
 export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { togglePresetFavorite, sleepTimerRemaining } = useMixer();
+  const { togglePresetFavorite } = useMixer();
+  // TimerSheet usa usePlayer internamente → leemos el mismo valor para la etiqueta
+  const { sleepTimerRemaining } = usePlayer();
 
   const [showTimer, setShowTimer] = useState(false);
 
   const [toastVisible, setToastVisible] = useState(false);
-  const [toastAdded, setToastAdded] = useState(true);
+  const [toastMsg, setToastMsg] = useState("");
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (visible) setShowTimer(false);
+    if (visible) {
+      setShowTimer(false);
+      setToastVisible(false);
+    }
+    return () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
   }, [visible]);
 
   if (!mix) return null;
@@ -94,15 +101,19 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
         ? `${Math.round(sleepTimerRemaining / 3600)}h`
         : `${Math.round(sleepTimerRemaining / 60)} min`;
 
-  const showToast = (added: boolean) => {
-    setToastAdded(added);
+  const showToast = (msg: string, autoClose = false) => {
+    setToastMsg(msg);
     setToastVisible(true);
     if (toastTimer.current) clearTimeout(toastTimer.current);
+    if (closeTimer.current) clearTimeout(closeTimer.current);
     Animated.sequence([
       Animated.timing(toastAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
       Animated.delay(1400),
       Animated.timing(toastAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
     ]).start(() => setToastVisible(false));
+    if (autoClose) {
+      closeTimer.current = setTimeout(onClose, 2000);
+    }
   };
 
   const handleShare = async () => {
@@ -117,8 +128,7 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
   const handleFavorite = () => {
     const willAdd = !favorited;
     togglePresetFavorite(mix.id);
-    showToast(willAdd);
-    toastTimer.current = setTimeout(onClose, 2000);
+    showToast(willAdd ? "Guardada en Favoritas" : "Eliminada de Favoritas", true);
   };
 
   const handleDelete = () => {
@@ -136,94 +146,98 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
   };
 
   return (
-    <>
-      <Modal
-        visible={visible}
-        transparent
-        animationType="slide"
-        onRequestClose={onClose}
-        statusBarTranslucent
-      >
-        <Pressable style={styles.backdrop} onPress={onClose} />
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+      statusBarTranslucent
+    >
+      <Pressable style={styles.backdrop} onPress={onClose} />
 
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
-          <View style={styles.handle} />
+      <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+        <View style={styles.handle} />
 
-          {/* Cabecera */}
-          <View style={styles.header}>
-            <MiniStack sounds={mix.sounds} />
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={2}>
-                {mix.name}
-              </Text>
-              <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
-                {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-              </Text>
-            </View>
-            <Pressable onPress={onClose} style={styles.closeBtn}>
-              <Feather name="x" size={20} color={colors.mutedForeground} />
-            </Pressable>
+        {/* Cabecera */}
+        <View style={styles.header}>
+          <MiniStack sounds={mix.sounds} />
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={2}>
+              {mix.name}
+            </Text>
+            <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
+              {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+            </Text>
           </View>
-
-          <View style={[styles.divider, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-
-          <ActionRow icon="share" label="Compartir" onPress={handleShare} colors={colors} />
-          <ActionRow
-            icon="clock"
-            label="Temporizador"
-            right={timerLabel}
-            onPress={() => setShowTimer(true)}
-            colors={colors}
-          />
-          <ActionRow
-            icon="heart"
-            label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
-            iconColor={favorited ? "#E05C5C" : undefined}
-            onPress={handleFavorite}
-            colors={colors}
-          />
-          <ActionRow
-            icon="copy"
-            label="Duplicar"
-            onPress={() => { onClose(); onDuplicate(mix); }}
-            colors={colors}
-          />
-          <ActionRow
-            icon="trash-2"
-            label="Eliminar"
-            iconColor="#E05C5C"
-            onPress={handleDelete}
-            colors={colors}
-            last
-          />
-
-          {toastVisible && (
-            <Animated.View
-              style={[
-                styles.toast,
-                {
-                  backgroundColor: "rgba(21,26,35,0.96)",
-                  opacity: toastAnim,
-                  transform: [{ translateY: toastAnim.interpolate({ inputRange: [0, 1], outputRange: [10, 0] }) }],
-                },
-              ]}
-            >
-              <Feather
-                name="heart"
-                size={16}
-                color={toastAdded ? "#E05C5C" : colors.mutedForeground}
-                style={{ marginRight: 8 }}
-              />
-              <Text style={[styles.toastText, { color: colors.foreground }]}>
-                {toastAdded ? "Guardada en Favoritas" : "Eliminada de Favoritas"}
-              </Text>
-            </Animated.View>
-          )}
+          <Pressable onPress={onClose} style={styles.closeBtn}>
+            <Feather name="x" size={20} color={colors.mutedForeground} />
+          </Pressable>
         </View>
 
-        <TimerSheet visible={showTimer} onClose={() => setShowTimer(false)} />
-      </Modal>
-    </>
+        <View style={[styles.divider, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+
+        <ActionRow icon="share" label="Compartir" onPress={handleShare} colors={colors} />
+        <ActionRow
+          icon="clock"
+          label="Temporizador"
+          right={timerLabel}
+          onPress={() => setShowTimer(true)}
+          colors={colors}
+        />
+        <ActionRow
+          icon="heart"
+          label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
+          iconColor={favorited ? "#E05C5C" : undefined}
+          onPress={handleFavorite}
+          colors={colors}
+        />
+        <ActionRow
+          icon="folder-plus"
+          label="Añadir a una carpeta"
+          onPress={() => showToast("Próximamente")}
+          colors={colors}
+        />
+        <ActionRow
+          icon="list"
+          label="Añadir al Playlist"
+          onPress={() => showToast("Próximamente")}
+          colors={colors}
+        />
+        <ActionRow
+          icon="copy"
+          label="Duplicar"
+          onPress={() => { onClose(); onDuplicate(mix); }}
+          colors={colors}
+        />
+        <ActionRow
+          icon="trash-2"
+          label="Eliminar"
+          iconColor="#E05C5C"
+          onPress={handleDelete}
+          colors={colors}
+          last
+        />
+
+        {toastVisible && (
+          <Animated.View
+            style={[
+              styles.toast,
+              {
+                backgroundColor: "rgba(21,26,35,0.96)",
+                opacity: toastAnim,
+                transform: [{ translateY: toastAnim.interpolate({ inputRange: [0, 1], outputRange: [10, 0] }) }],
+              },
+            ]}
+          >
+            <Feather name="check-circle" size={16} color={colors.primary} style={{ marginRight: 8 }} />
+            <Text style={[styles.toastText, { color: colors.foreground }]}>{toastMsg}</Text>
+          </Animated.View>
+        )}
+      </View>
+
+      {/* TimerSheet va DENTRO del Modal padre (igual que SessionActionsSheet) */}
+      <TimerSheet visible={showTimer} onClose={() => setShowTimer(false)} />
+    </Modal>
   );
 }
 
