@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -124,6 +123,8 @@ export default function CrearContenidoScreen() {
   }
 
   async function pickAudio(setter: (a: PickedAudio | null) => void) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const DocumentPicker = require("expo-document-picker") as typeof import("expo-document-picker");
     const result = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       copyToCacheDirectory: true,
