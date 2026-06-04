@@ -147,7 +147,7 @@ export default function ExploreScreen() {
 
         {/* ── Mi Biblioteca (2×2 grid) ── */}
         {query.length === 0 && (
-          <View style={[styles.section, { marginBottom: 32 }]}>
+          <View style={styles.section}>
             <View style={styles.libraryGrid}>
               {[
                 { label: "Carpetas",    icon: "folder"     as const, route: "/carpetas"    },
@@ -205,7 +205,7 @@ export default function ExploreScreen() {
         ) : (
           <>
             {/* ── Continúa escuchando (sin título; el reproductor basta) ── */}
-            <View style={[styles.section, { marginBottom: 38 }]}>
+            <View style={styles.section}>
               {lastSession ? (
                 <Pressable
                   onPress={() =>
@@ -284,7 +284,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-            <View style={[styles.section, { marginBottom: 38 }]}>
+            <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
               <ScrollView
                 horizontal
@@ -410,7 +410,7 @@ export default function ExploreScreen() {
             )}
 
             {/* ── Mezclas de la comunidad ── */}
-            <View style={{ marginBottom: 57 }}>
+            <View style={{ marginBottom: 38 }}>
               <CommunityMixesCarousel />
             </View>
 
@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14 },
 
-  section: { paddingHorizontal: H_PAD, marginBottom: 57 },
+  section: { paddingHorizontal: H_PAD, marginBottom: 38 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
