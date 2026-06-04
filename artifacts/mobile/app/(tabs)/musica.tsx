@@ -381,10 +381,6 @@ const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 24, justifyContent: "flex-start" },
   soundCard: {
     width: "31%",
-    backgroundColor: "#151A23",
-    borderRadius: 14,
-    paddingTop: 10,
-    paddingBottom: 8,
   },
   cardImageWrap: {
     width: "77%",

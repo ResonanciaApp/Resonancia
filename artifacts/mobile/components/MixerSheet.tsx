@@ -57,7 +57,7 @@ const DARK_GRADIENT = ["#0C1828", "#090F17"] as const;
 const WARM = {
   bg: "#090F17",
   handle: "rgba(255,255,255,0.12)",
-  trackBg: "transparent",
+  trackBg: "#151A23",
   trackBorder: "rgba(255,255,255,0.07)",
   sliderThumb: "#BE9650",
   sliderTrack: "rgba(190,150,80,0.55)",
