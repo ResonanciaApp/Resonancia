@@ -114,7 +114,7 @@ function PremiumActiveBanner() {
 
 export default function PremiumBanner() {
   const { isPremium } = usePremium();
-  if (isPremium) return <PremiumActiveBanner />;
+  if (isPremium) return null;
 
   return (
     <View style={styles.outer}>
