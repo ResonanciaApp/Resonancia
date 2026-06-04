@@ -323,15 +323,16 @@ const styles = StyleSheet.create({
   // Categorías de mezclas
   catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
   catCard: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 13,
+    borderRadius: 10,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   catLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
     textAlign: "center",
   },
