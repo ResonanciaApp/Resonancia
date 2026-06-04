@@ -1,9 +1,8 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  Animated,
   Alert,
   LayoutAnimation,
   Platform,
@@ -96,20 +95,20 @@ export default function MiMusicaScreen() {
     ...SOUND_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
   ];
 
-  // ── Animación de la línea de categorías ──────────────────────────
-  const [catTabW, setCatTabW] = useState(0);
-  const catIndicatorX = useRef(new Animated.Value(-300)).current;
-
-  const handleCatPress = (cat: typeof MIX_CATEGORIES[0], idx: number) => {
-    // Offset = tab * idx + centering margin (0.225 * tabW so indicator is centered within tab)
-    Animated.spring(catIndicatorX, {
-      toValue: catTabW * idx + catTabW * 0.225,
-      useNativeDriver: true,
-      damping: 16,
-      stiffness: 160,
-      mass: 0.8,
-    }).start();
-    router.push(`/mezclas/${cat.id}` as never);
+  // ── Ícono por categoría (Feather / MCI / Custom) ────────────────
+  const renderCatIcon = (cat: typeof MIX_CATEGORIES[0], color: string) => {
+    const size = 26;
+    if (cat.iconFamily === "Feather") {
+      return <Feather name={cat.icon as any} size={size} color={color} />;
+    }
+    if (cat.iconFamily === "MaterialCommunityIcons") {
+      return <MaterialCommunityIcons name={cat.icon as any} size={size} color={color} />;
+    }
+    // Custom — mapeo a íconos disponibles
+    if (cat.icon === "moon-crescent") return <Feather name="moon" size={size} color={color} />;
+    if (cat.icon === "zen-stones")
+      return <MaterialCommunityIcons name="meditation" size={size} color={color} />;
+    return <Feather name="circle" size={size} color={color} />;
   };
 
   const renderTab = (tab: { id: TabId; label: string }) => {
@@ -121,8 +120,8 @@ export default function MiMusicaScreen() {
         style={[
           styles.tab,
           {
-            backgroundColor: selected ? colors.primary : "transparent",
-            borderColor: selected ? colors.primary : "rgba(255,255,255,0.12)",
+            backgroundColor: selected ? "rgba(190,150,80,0.13)" : "transparent",
+            borderColor: selected ? "rgba(190,150,80,0.40)" : "rgba(255,255,255,0.11)",
           },
         ]}
       >
@@ -130,8 +129,8 @@ export default function MiMusicaScreen() {
           style={[
             styles.tabLabel,
             {
-              color: selected ? "#0B0F14" : colors.mutedForeground,
-              fontWeight: selected ? "700" : "400",
+              color: selected ? colors.primary : colors.mutedForeground,
+              fontWeight: selected ? "600" : "400",
             },
           ]}
         >
@@ -243,39 +242,40 @@ export default function MiMusicaScreen() {
         >
           {/* ── Barra sticky: categorías de mezclas + tabs de sonido ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
-            {/* Categorías — tabs con texto + línea animada */}
-            <View
-              style={[styles.catTabRow, { borderBottomColor: "rgba(255,255,255,0.10)" }]}
-              onLayout={(e) => {
-                const w = e.nativeEvent.layout.width / MIX_CATEGORIES.length;
-                setCatTabW(w);
-              }}
-            >
-              {MIX_CATEGORIES.map((cat, idx) => (
-                <Pressable
-                  key={cat.id}
-                  onPress={() => handleCatPress(cat, idx)}
-                  style={({ pressed }) => [styles.catTab, { opacity: pressed ? 0.6 : 1 }]}
-                >
-                  <Text style={[styles.catTabLabel, { color: colors.foreground }]} numberOfLines={1}>
-                    {cat.label}
-                  </Text>
-                </Pressable>
-              ))}
-
-              {/* Línea indicadora animada */}
-              {catTabW > 0 && (
-                <Animated.View
-                  style={[
-                    styles.catIndicator,
-                    {
-                      backgroundColor: colors.primary,
-                      width: catTabW * 0.55,
-                      transform: [{ translateX: catIndicatorX }],
-                    },
-                  ]}
-                />
-              )}
+            {/* Categorías — ícono + etiqueta, 3 tarjetas iguales */}
+            <View style={styles.catRow}>
+              {MIX_CATEGORIES.map((cat) => {
+                const accent = cat.color ?? colors.primary;
+                return (
+                  <Pressable
+                    key={cat.id}
+                    onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+                    style={({ pressed }) => [
+                      styles.catCard,
+                      {
+                        backgroundColor: pressed ? accent + "18" : "#151A23",
+                        borderColor: pressed ? accent : "rgba(255,255,255,0.09)",
+                        transform: [{ scale: pressed ? 0.96 : 1 }],
+                      },
+                    ]}
+                  >
+                    {({ pressed }) => (
+                      <>
+                        {renderCatIcon(cat, pressed ? accent : colors.mutedForeground)}
+                        <Text
+                          style={[
+                            styles.catLabel,
+                            { color: pressed ? colors.foreground : colors.mutedForeground },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {cat.label}
+                        </Text>
+                      </>
+                    )}
+                  </Pressable>
+                );
+              })}
             </View>
 
             {/* Filtros de sonido — fila única scrollable */}
@@ -350,39 +350,24 @@ const styles = StyleSheet.create({
   },
   tabLabel: { fontSize: 13, fontWeight: "400", letterSpacing: 0.2 },
 
-  // Categorías de mezclas — tabs con texto + línea animada
-  catTabRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    position: "relative",
-    paddingBottom: 0,
-  },
-  catTab: {
+  // Categorías de mezclas — ícono + etiqueta, 3 tarjetas iguales
+  catRow: { flexDirection: "row", gap: 8, marginBottom: 16 },
+  catCard: {
     flex: 1,
-    paddingVertical: 12,
+    paddingTop: 14,
+    paddingBottom: 12,
+    paddingHorizontal: 8,
+    borderRadius: 14,
+    borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
   },
-  catTabLabel: {
-    fontSize: 14,
-    fontWeight: "600",
+  catLabel: {
+    fontSize: 12,
+    fontWeight: "500",
     textAlign: "center",
     letterSpacing: 0.2,
-  },
-  catIndicator: {
-    position: "absolute",
-    bottom: -1,
-    left: 0,
-    height: 2.5,
-    borderRadius: 2,
-  },
-  // compat (no usados en nuevo diseño, mantenidos por si hay refs)
-  catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
-  catCard: { flex: 1, paddingHorizontal: 12, paddingVertical: 18, borderRadius: 10, borderWidth: 1, alignItems: "center", justifyContent: "center" },
-  catLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    textAlign: "center",
   },
 
   separator: {
