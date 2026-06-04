@@ -123,9 +123,6 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Biblioteca</Text>
-          <Text style={[styles.sectionSub, { color: colors.mutedForeground, marginBottom: 0 }]}>
-            Tu espacio de sonido y bienestar
-          </Text>
         </View>
 
         {/* ── Search bar ── */}
