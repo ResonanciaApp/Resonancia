@@ -126,5 +126,13 @@
     "title": "Anexo Financiero · Curva de crecimiento y escenarios",
     "description": "Gráfico de barras de suscriptores + tabla de 3 escenarios + KPIs clave del año 1.",
     "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000017",
+    "position": 17,
+    "filepath": "src/pages/slides/SlideFinanzas3.tsx",
+    "title": "Anexo Financiero · Desglose de costos mensuales",
+    "description": "Costos fijos, variables (contenido), marketing ramp-up y totales por fase.",
+    "speakerNotes": ""
   }
 ]
