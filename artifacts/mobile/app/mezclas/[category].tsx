@@ -1,11 +1,9 @@
-import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
 import {
   Alert,
   Image,
-  ImageBackground,
   Platform,
   Pressable,
   ScrollView,
@@ -14,6 +12,7 @@ import {
   Text,
   View,
 } from "react-native";
+import Svg, { Ellipse, Path } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -34,6 +33,26 @@ import { type MixCategory, getCategoryMeta } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { getMixImage } from "@/config/mix-images";
+
+// ── Íconos de categoría ──────────────────────────────────────────
+function MoonIcon({ color, size = 40 }: { color: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" fill={color} />
+    </Svg>
+  );
+}
+
+function ZenStonesIcon({ color, size = 40 }: { color: string; size?: number }) {
+  const s = size;
+  return (
+    <Svg width={s} height={s} viewBox="0 0 30 30">
+      <Ellipse cx="15" cy="23.5" rx="8" ry="4.2" fill={color} opacity={0.95} />
+      <Ellipse cx="15.6" cy="16.5" rx="5.8" ry="3.3" fill={color} opacity={0.85} />
+      <Ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity={0.75} />
+    </Svg>
+  );
+}
 
 // ── Stack de imágenes ────────────────────────────────────────────
 const THUMB = 44;
@@ -265,22 +284,21 @@ export default function CategoryMixesScreen() {
         {/* Hero de la categoría */}
         {meta && (
           <View style={styles.hero}>
-            <ImageBackground source={meta.image} style={styles.heroImage} imageStyle={styles.heroImageInner}>
-              <LinearGradient
-                colors={["rgba(24,17,12,0.10)", "rgba(24,17,12,0.45)", "rgba(24,17,12,0.95)"]}
-                locations={[0, 0.5, 1]}
-                style={StyleSheet.absoluteFill}
+            {meta.iconFamily === "Custom" ? (
+              meta.icon === "moon-crescent"
+                ? <MoonIcon color={meta.color ?? "#EDE1D3"} size={44} />
+                : <ZenStonesIcon color={meta.color ?? "#EDE1D3"} size={44} />
+            ) : meta.iconFamily === "MaterialCommunityIcons" ? (
+              <MaterialCommunityIcons
+                name={meta.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                size={44}
+                color={meta.color ?? "#EDE1D3"}
               />
-              <View style={styles.heroContent}>
-                <View style={styles.heroIconWrap}>
-                  <Feather name={meta.icon as React.ComponentProps<typeof Feather>["name"]} size={20} color="#FFFFFF" />
-                </View>
-                <View style={styles.heroText}>
-                  <Text style={styles.heroLabel}>{meta.label}</Text>
-                  <Text style={styles.heroSub}>{meta.subtitle}</Text>
-                </View>
-              </View>
-            </ImageBackground>
+            ) : (
+              <Feather name={meta.icon as React.ComponentProps<typeof Feather>["name"]} size={44} color={meta.color ?? "#EDE1D3"} />
+            )}
+            <Text style={[styles.heroLabel, { color: colors.foreground }]}>{meta.label}</Text>
+            <Text style={[styles.heroSub, { color: colors.mutedForeground }]}>{meta.subtitle}</Text>
           </View>
         )}
 
@@ -318,30 +336,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  hero: { borderRadius: 18, overflow: "hidden", marginBottom: 22 },
-  heroImage: { height: 150, justifyContent: "flex-end" },
-  heroImageInner: { borderRadius: 18 },
-  heroContent: { padding: 16, flexDirection: "row", alignItems: "center", gap: 12 },
-  heroIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(237,225,211,0.14)",
-    borderWidth: 1,
-    borderColor: "rgba(237,225,211,0.25)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  heroText: { flex: 1 },
-  heroLabel: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  heroSub: { fontSize: 13, color: "rgba(237,225,211,0.9)", marginTop: 2 },
+  hero: { alignItems: "center", marginBottom: 28, gap: 10 },
+  heroLabel: { fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
+  heroSub: { fontSize: 14, lineHeight: 20, textAlign: "center" },
 
   section: { marginBottom: 22 },
   sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
