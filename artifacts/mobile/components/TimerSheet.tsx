@@ -30,13 +30,19 @@ const TIMER_OPTS: { label: string; value: number | null }[] = [
 type Props = {
   visible: boolean;
   onClose: () => void;
+  /** Pasar estos props para usar el timer del MixerContext en lugar del PlayerContext */
+  sleepTimerRemaining?: number | null;
+  setSleepTimer?: (minutes: number | null) => void;
 };
 
-export function TimerSheet({ visible, onClose }: Props) {
+export function TimerSheet({ visible, onClose, sleepTimerRemaining: propRemaining, setSleepTimer: propSetTimer }: Props) {
   const colors = useColors();
-  const { sleepTimerRemaining, setSleepTimer } = usePlayer();
+  const { sleepTimerRemaining: playerRemaining, setSleepTimer: playerSetTimer } = usePlayer();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
+
+  const sleepTimerRemaining = propRemaining !== undefined ? propRemaining : playerRemaining;
+  const setSleepTimer = propSetTimer ?? playerSetTimer;
 
   const activeMinutes =
     sleepTimerRemaining === null ? null : Math.ceil(sleepTimerRemaining / 60);

@@ -25,10 +25,11 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useQueryClient } from "@tanstack/react-query";
+import { useShareMix, getGetSharedMixesQueryKey } from "@workspace/api-client-react";
 import { TimerSheet } from "@/components/TimerSheet";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
-import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 
 type Props = {
@@ -67,9 +68,9 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
 export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { togglePresetFavorite } = useMixer();
-  // TimerSheet usa usePlayer internamente → leemos el mismo valor para la etiqueta
-  const { sleepTimerRemaining } = usePlayer();
+  const { togglePresetFavorite, sleepTimerRemaining, setSleepTimer } = useMixer();
+  const queryClient = useQueryClient();
+  const shareMixMutation = useShareMix();
 
   const [showTimer, setShowTimer] = useState(false);
 
@@ -125,6 +126,31 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
     }
   };
 
+  const handleShareToCommunity = () => {
+    if (shareMixMutation.isPending) return;
+    shareMixMutation.mutate(
+      {
+        data: {
+          name: mix.name,
+          description: mix.description ?? "",
+          image: mix.image ?? "",
+          category: mix.category as never,
+          sounds: mix.sounds.slice(0, 5).map((s) => ({ id: s.id, volume: s.volume })),
+        },
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
+          onClose();
+          Alert.alert("Mezcla compartida", "Tu mezcla ya aparece en el carrusel de la comunidad en Biblioteca.");
+        },
+        onError: () => {
+          Alert.alert("Error", "No se pudo compartir. Intenta de nuevo.");
+        },
+      },
+    );
+  };
+
   const handleFavorite = () => {
     const willAdd = !favorited;
     togglePresetFavorite(mix.id);
@@ -176,7 +202,13 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
 
         <View style={[styles.divider, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
 
-        <ActionRow icon="share" label="Compartir" onPress={handleShare} colors={colors} />
+        <ActionRow
+          icon="users"
+          label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
+          onPress={handleShareToCommunity}
+          colors={colors}
+        />
+        <ActionRow icon="share-2" label="Compartir" onPress={handleShare} colors={colors} />
         <ActionRow
           icon="clock"
           label="Temporizador"
@@ -189,18 +221,6 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
           label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
           iconColor={favorited ? "#E05C5C" : undefined}
           onPress={handleFavorite}
-          colors={colors}
-        />
-        <ActionRow
-          icon="folder-plus"
-          label="Añadir a una carpeta"
-          onPress={() => showToast("Próximamente")}
-          colors={colors}
-        />
-        <ActionRow
-          icon="list"
-          label="Añadir al Playlist"
-          onPress={() => showToast("Próximamente")}
           colors={colors}
         />
         <ActionRow
@@ -235,8 +255,13 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
         )}
       </View>
 
-      {/* TimerSheet va DENTRO del Modal padre (igual que SessionActionsSheet) */}
-      <TimerSheet visible={showTimer} onClose={() => setShowTimer(false)} />
+      {/* TimerSheet va DENTRO del Modal padre — usa el timer del MixerContext */}
+      <TimerSheet
+        visible={showTimer}
+        onClose={() => setShowTimer(false)}
+        sleepTimerRemaining={sleepTimerRemaining}
+        setSleepTimer={setSleepTimer}
+      />
     </Modal>
   );
 }
