@@ -95,15 +95,13 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         {locked && <LockStar />}
+        <View style={styles.durationBadge}>
+          <Text style={styles.durationBadgeText}>{session.durationLabel}</Text>
+        </View>
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
       </Text>
-      <View style={styles.cardMeta}>
-        <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
-          {session.durationLabel}
-        </Text>
-      </View>
     </Pressable>
   );
 }
@@ -137,14 +135,19 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingHorizontal: 2,
   },
-  cardMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 4,
-    paddingHorizontal: 2,
+  durationBadge: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    backgroundColor: "rgba(6,10,15,0.72)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
-  metaText: {
+  durationBadgeText: {
     fontSize: 11,
+    fontWeight: "600",
+    color: "#EDE1D3",
   },
   hRow: {
     flexDirection: "row",
