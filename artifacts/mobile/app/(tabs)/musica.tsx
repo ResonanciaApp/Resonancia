@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   inner: { flex: 1, paddingHorizontal: 20 },
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#090F17" },
-  header: { marginBottom: 16 },
+  header: { marginBottom: 18 },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   titleChevron: { marginTop: 4 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5 },
