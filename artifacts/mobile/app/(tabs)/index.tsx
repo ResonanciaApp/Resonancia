@@ -224,7 +224,7 @@ export default function HomeScreen() {
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                       size={26}
                       color={iconColor}
-                      style={cat.id === "sonidos-ancestrales" ? { marginTop: -3 } : undefined}
+                      style={cat.id === "sonidos-ancestrales" ? { marginTop: -4 } : undefined}
                     />
                   ) : (
                     <Feather
