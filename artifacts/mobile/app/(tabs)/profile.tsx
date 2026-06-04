@@ -860,8 +860,8 @@ const styles = StyleSheet.create({
   premiumBadge: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
 
   // Favoritos
-  section: { marginBottom: 32 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
+  section: { marginBottom: 43 },
+  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7 },
   emptyFav: {
     borderRadius: 16,
     padding: 24,

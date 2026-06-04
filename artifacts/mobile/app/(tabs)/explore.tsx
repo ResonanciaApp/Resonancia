@@ -356,7 +356,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Mezclas de la comunidad ── */}
-            <View style={{ marginBottom: 38 }}>
+            <View style={{ marginBottom: 43 }}>
               <CommunityMixesCarousel />
             </View>
 
@@ -424,12 +424,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     gap: 10,
-    marginBottom: 38,
+    marginBottom: 43,
   },
   searchInput: { flex: 1, fontSize: 14 },
 
-  section: { paddingHorizontal: H_PAD, marginBottom: 38 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
+  section: { paddingHorizontal: H_PAD, marginBottom: 43 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7 },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
   // Mi Biblioteca grid
@@ -611,7 +611,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 14,
+    marginBottom: 11,
   },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
 
