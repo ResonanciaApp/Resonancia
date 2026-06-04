@@ -1,3 +1,4 @@
+import React from "react";
 // Opción B: Menta · Malva · Teal
 const COLORS = {
   descanso: "#E6F6EC",

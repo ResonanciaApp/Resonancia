@@ -1,3 +1,4 @@
+import React from "react";
 // Opción C: Rosa · Melocotón · Malva
 const COLORS = {
   descanso: "#F7D6E7",

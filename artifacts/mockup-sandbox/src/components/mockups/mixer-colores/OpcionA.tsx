@@ -1,3 +1,4 @@
+import React from "react";
 // Opción A: Teal · Rosa · Melocotón
 const COLORS = {
   descanso: "#B2DFDB",
