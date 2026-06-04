@@ -144,17 +144,17 @@ export default function SlideAnexoInversion() {
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
             <ScenarioCard
-              label="Conservador"
-              subs="10.000"
-              arr="US$ 440K"
-              multiple="5× ARR"
-              valuation="US$ 2,2M"
-              stakeVal="US$ 66K"
-              returnX="2,2×"
-            />
-            <ScenarioCard
               label="Base"
               highlight
+              subs="12.000"
+              arr="US$ 528K"
+              multiple="6× ARR"
+              valuation="US$ 3,2M"
+              stakeVal="US$ 96K"
+              returnX="3,2×"
+            />
+            <ScenarioCard
+              label="Optimista"
               subs="15.000"
               arr="US$ 660K"
               multiple="7× ARR"
@@ -163,7 +163,7 @@ export default function SlideAnexoInversion() {
               returnX="4,6×"
             />
             <ScenarioCard
-              label="Optimista"
+              label="Agresivo"
               subs="25.000"
               arr="US$ 1,1M"
               multiple="8× ARR"

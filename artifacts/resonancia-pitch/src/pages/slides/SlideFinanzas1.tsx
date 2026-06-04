@@ -1,14 +1,13 @@
 export default function SlideFinanzas1() {
-  // Escenario base · ARPU neto $3.300/mes
-  // Fijos $3,65M/mes (incl. gerente $2M + otros $350K) · Contenido $0 M1-2; $3,0M desde M3
-  // Marketing: $0→$0,5M→$1,0M→$1,5M
-  // Costos totales: M1-2=$3,65M · M3-6=$7,15M · M7-10=$7,65M · M11-12=$8,15M
+  // Escenario base · 12.000 premium al M12 (1M seguidores → 20% free → 5% premium = 10.000 orgánico + ~2.000 marketing)
+  // ARPU neto $3.300/mes · Fijos $3,65M/mes (incl. gerente $2M + otros $350K) · Contenido $0 M1-2; $3,0M desde M3
+  // Marketing: $0→$0,5M→$1,0M→$1,5M · Costos totales: M1-2=$3,65M · M3-6=$7,15M · M7-9=$7,65M · M10-12=$8,15M
   const rows = [
     { mes: "Mes 1–2",  subs: "0 → 500",  ingreso: "– / $1,7M",  costoFijo: "$3,65M", costoVar: "$0",     resultado: "–$3,7M / –$2,0M", neg: true  },
     { mes: "Mes 3",    subs: "1.500",     ingreso: "$5,0M",       costoFijo: "$4,15M", costoVar: "$3,0M",  resultado: "–$2,2M",          neg: true  },
-    { mes: "Mes 6",    subs: "7.500",     ingreso: "$24,8M",      costoFijo: "$4,15M", costoVar: "$3,0M",  resultado: "+$17,6M",         neg: false },
-    { mes: "Mes 9",    subs: "13.000",    ingreso: "$42,9M",      costoFijo: "$4,65M", costoVar: "$3,0M",  resultado: "+$35,3M",         neg: false },
-    { mes: "Mes 12",   subs: "15.000",    ingreso: "$49,5M",      costoFijo: "$5,15M", costoVar: "$3,0M",  resultado: "+$41,4M",         neg: false },
+    { mes: "Mes 6",    subs: "6.000",     ingreso: "$19,8M",      costoFijo: "$4,15M", costoVar: "$3,0M",  resultado: "+$12,7M",         neg: false },
+    { mes: "Mes 9",    subs: "10.000",    ingreso: "$33,0M",      costoFijo: "$4,65M", costoVar: "$3,0M",  resultado: "+$25,4M",         neg: false },
+    { mes: "Mes 12",   subs: "12.000",    ingreso: "$39,6M",      costoFijo: "$5,15M", costoVar: "$3,0M",  resultado: "+$31,5M",         neg: false },
   ];
 
   return (
@@ -76,11 +75,11 @@ export default function SlideFinanzas1() {
           borderRadius: "0.6vw",
         }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#BE9650" }}>AÑO 1 TOTAL</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>15.000 al cierre</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>~$314M</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>12.000 al cierre</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>~$251M</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$53M</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$30M</div>
-          <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#6EC49A" }}>+$231M neto</div>
+          <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#6EC49A" }}>+$168M neto</div>
         </div>
       </div>
 

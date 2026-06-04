@@ -30,6 +30,31 @@ export default function Slide08Modelo() {
         </div>
       </div>
 
+      {/* Embudo de conversión */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
+        {[
+          { big: "1.000.000+", small: "seguidores", gold: false },
+          { big: "200.000", small: "free · 20% instala", gold: false },
+          { big: "10.000", small: "premium · 5% convierte", gold: true },
+          { big: "12.000", small: "base M12 · + marketing", gold: true },
+        ].map((s, i) => (
+          <div key={s.big} style={{ display: "flex", alignItems: "center", gap: "0.8vw", flex: 1 }}>
+            <div style={{
+              flex: 1,
+              backgroundColor: s.gold ? "rgba(190,150,80,0.08)" : "#090E17",
+              border: s.gold ? "1.5px solid #BE9650" : "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "0.8vw",
+              padding: "1.8vh 0.8vw",
+              textAlign: "center",
+            }}>
+              <div style={{ fontSize: "2vw", fontWeight: 700, color: s.gold ? "#BE9650" : "#EDE1D3", lineHeight: 1 }}>{s.big}</div>
+              <div style={{ fontSize: "0.95vw", color: "#7A8FA8", marginTop: "0.6vh" }}>{s.small}</div>
+            </div>
+            {i < 3 && <div style={{ fontSize: "1.6vw", color: "rgba(190,150,80,0.5)", flexShrink: 0 }}>→</div>}
+          </div>
+        ))}
+      </div>
+
       {/* Pricing line */}
       <div style={{ display: "flex", gap: "4vw", alignItems: "baseline" }}>
         <div style={{ fontSize: "1.6vw", color: "#7A8FA8", lineHeight: 1.4, maxWidth: "44vw" }}>

@@ -5,23 +5,23 @@ export default function SlideFinanzas2() {
     { label: "M1",  subs: 0     },
     { label: "M2",  subs: 500   },
     { label: "M3",  subs: 1500  },
-    { label: "M4",  subs: 3000  },
-    { label: "M5",  subs: 5000  },
-    { label: "M6",  subs: 7500  },
-    { label: "M7",  subs: 9500  },
-    { label: "M8",  subs: 11500 },
-    { label: "M9",  subs: 13000 },
-    { label: "M10", subs: 14000 },
-    { label: "M11", subs: 14500 },
-    { label: "M12", subs: 15000 },
+    { label: "M4",  subs: 2800  },
+    { label: "M5",  subs: 4300  },
+    { label: "M6",  subs: 6000  },
+    { label: "M7",  subs: 7500  },
+    { label: "M8",  subs: 8900  },
+    { label: "M9",  subs: 10000 },
+    { label: "M10", subs: 11000 },
+    { label: "M11", subs: 11600 },
+    { label: "M12", subs: 12000 },
   ];
 
-  const maxSubs = 15000;
+  const maxSubs = 12000;
 
   const scenarios = [
-    { label: "Conservador", subs12: "10.000", ing12: "$33,0M/mes", ingAnual: "~$121M", color: "#3D4F62" },
-    { label: "Base",        subs12: "15.000", ing12: "$49,5M/mes", ingAnual: "~$314M", color: "#BE9650", highlight: true },
-    { label: "Optimista",   subs12: "25.000", ing12: "$82,5M/mes", ingAnual: "~$475M", color: "#6EC49A" },
+    { label: "Base",        subs12: "12.000", ing12: "$39,6M/mes", ingAnual: "~$251M", color: "#BE9650", highlight: true },
+    { label: "Optimista",   subs12: "15.000", ing12: "$49,5M/mes", ingAnual: "~$314M", color: "#6EC49A" },
+    { label: "Agresivo",    subs12: "25.000", ing12: "$82,5M/mes", ingAnual: "~$475M", color: "#6EC49A" },
   ];
 
   return (
@@ -70,7 +70,7 @@ export default function SlideFinanzas2() {
             })}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.8vh" }}>
-            {[0, 5000, 10000, 15000].map(v => (
+            {[0, 4000, 8000, 12000].map(v => (
               <div key={v} style={{ fontSize: "1vw", color: "#3D4F62" }}>{v === 0 ? "0" : `${v.toLocaleString("es-CL")}`}</div>
             ))}
           </div>
@@ -114,7 +114,7 @@ export default function SlideFinanzas2() {
           { label: "Inversión inicial",   value: "$27M CLP",  sub: "US$30.000 · TC $900" },
           { label: "Break-even acum.",    value: "Mes 7",       sub: "incl. recuperar inversión" },
           { label: "ARPU neto mensual",   value: "$3.300 CLP",  sub: "post IVA 19% + tienda 30%" },
-          { label: "ROI proyectado año 1",value: "+$231M neto", sub: "excl. inversión inicial" },
+          { label: "ROI proyectado año 1",value: "+$168M neto", sub: "excl. inversión inicial" },
         ].map((k) => (
           <div
             key={k.label}

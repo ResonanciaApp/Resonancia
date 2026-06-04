@@ -6,7 +6,7 @@ export default function SlideValleDeCaja() {
     { mes: "Mes 1", subs: "0 subs", val: "–$3,7M", h: 100 },
     { mes: "Mes 2", subs: "500 subs", val: "–$2,0M", h: 54 },
     { mes: "Mes 3", subs: "1.500 subs", val: "–$2,2M", h: 59 },
-    { mes: "Mes 4", subs: "~3.500 subs", val: "+$4,4M", h: 0, positive: true },
+    { mes: "Mes 4", subs: "~2.800 subs", val: "+$2,1M", h: 0, positive: true },
   ];
 
   return (
