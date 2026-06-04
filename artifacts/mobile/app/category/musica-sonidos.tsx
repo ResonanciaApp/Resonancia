@@ -172,10 +172,10 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={["#0B0F14", "#0B0F14"]}
+        colors={["#090F17", "#090F17"]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -257,7 +257,7 @@ export default function MusicaSonidosScreen() {
                 <Text
                   style={[
                     styles.tabText,
-                    { color: active ? "#0B0F14" : colors.foreground },
+                    { color: active ? "#090F17" : colors.foreground },
                   ]}
                 >
                   {label}
@@ -416,7 +416,7 @@ export default function MusicaSonidosScreen() {
                                 <Text
                                   style={[
                                     styles.durationNum,
-                                    { fontSize: 18, color: pressed ? "#0B0F14" : colors.foreground },
+                                    { fontSize: 18, color: pressed ? "#090F17" : colors.foreground },
                                   ]}
                                 >
                                   {opt.label}

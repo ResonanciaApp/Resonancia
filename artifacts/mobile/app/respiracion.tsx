@@ -316,7 +316,7 @@ export default function RespiracionScreen() {
           <Feather
             name={btnIcon}
             size={22}
-            color="#0B0F14"
+            color="#090F17"
             style={!running && !completed ? { marginLeft: 3 } : undefined}
           />
           <Text style={styles.mainBtnText}>{btnLabel}</Text>
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
   mainBtnText: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#0B0F14",
+    color: "#090F17",
     letterSpacing: 0.3,
   },
 });

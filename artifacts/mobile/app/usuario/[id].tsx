@@ -58,9 +58,9 @@ export default function UsuarioScreen() {
 
   if (isLoading) {
     return (
-      <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+      <View style={[styles.root, { backgroundColor: "#090F17" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#11161F", "#0B0F14"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#11161F", "#090F17"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <ActivityIndicator color={colors.primary} />
@@ -71,9 +71,9 @@ export default function UsuarioScreen() {
 
   if (isError || !profile) {
     return (
-      <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+      <View style={[styles.root, { backgroundColor: "#090F17" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#11161F", "#0B0F14"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#11161F", "#090F17"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />
@@ -101,9 +101,9 @@ export default function UsuarioScreen() {
   ];
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#11161F", "#0B0F14"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#11161F", "#090F17"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}

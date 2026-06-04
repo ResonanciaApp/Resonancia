@@ -206,7 +206,7 @@ export default function NochesScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
       <StatusBar barStyle="light-content" />
 
       <ScrollView

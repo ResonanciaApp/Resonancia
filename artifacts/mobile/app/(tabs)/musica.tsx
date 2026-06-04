@@ -271,7 +271,7 @@ export default function MiMusicaScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   inner: { flex: 1, paddingHorizontal: 20 },
-  scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0B0F14" },
+  scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#090F17" },
   header: { marginBottom: 16 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   pageSub: { fontSize: 13, lineHeight: 18 },

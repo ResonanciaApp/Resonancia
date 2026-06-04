@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#BE9650",
     borderWidth: 1.5,
-    borderColor: "#0B0F14",
+    borderColor: "#090F17",
   },
   volBtn: {
     width: 24,

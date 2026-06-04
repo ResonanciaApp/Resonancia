@@ -404,7 +404,7 @@ export default function ProgresoScreen() {
                         ]}
                       >
                         {done && (
-                          <Feather name="check" size={13} color="#0B0F14" />
+                          <Feather name="check" size={13} color="#090F17" />
                         )}
                       </View>
                     </View>

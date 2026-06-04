@@ -37,7 +37,7 @@ export default function CarpetaDetailScreen() {
 
   if (!folder) {
     return (
-      <View style={[styles.root, { backgroundColor: "#0B0F14", alignItems: "center", justifyContent: "center" }]}>
+      <View style={[styles.root, { backgroundColor: "#090F17", alignItems: "center", justifyContent: "center" }]}>
         <Feather name="folder" size={48} color="#7A8FA8" style={{ marginBottom: 16 }} />
         <Text style={{ color: "#7A8FA8", fontSize: 16 }}>Carpeta no encontrada</Text>
         <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
@@ -74,7 +74,7 @@ export default function CarpetaDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}

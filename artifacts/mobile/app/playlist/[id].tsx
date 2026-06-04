@@ -39,7 +39,7 @@ export default function PlaylistDetailScreen() {
 
   if (!playlist) {
     return (
-      <View style={[styles.root, { backgroundColor: "#0B0F14", alignItems: "center", justifyContent: "center" }]}>
+      <View style={[styles.root, { backgroundColor: "#090F17", alignItems: "center", justifyContent: "center" }]}>
         <Feather name="list" size={48} color="#7A8FA8" style={{ marginBottom: 16 }} />
         <Text style={{ color: "#7A8FA8", fontSize: 16 }}>Playlist no encontrada</Text>
         <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
@@ -83,7 +83,7 @@ export default function PlaylistDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -111,7 +111,7 @@ export default function PlaylistDetailScreen() {
             { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
           ]}
         >
-          <Feather name="play" size={18} color="#0B0F14" style={{ marginRight: 8 }} />
+          <Feather name="play" size={18} color="#090F17" style={{ marginRight: 8 }} />
           <Text style={styles.playAllLabel}>
             Reproducir todo · {sessions.length} sesión{sessions.length !== 1 ? "es" : ""}
           </Text>
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 14,
   },
-  playAllLabel: { fontSize: 15, fontWeight: "700", color: "#0B0F14" },
+  playAllLabel: { fontSize: 15, fontWeight: "700", color: "#090F17" },
   row: {
     flexDirection: "row",
     alignItems: "center",

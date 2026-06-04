@@ -22,7 +22,7 @@ export default function CarpetasScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}

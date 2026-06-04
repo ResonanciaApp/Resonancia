@@ -65,7 +65,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
       statusBarTranslucent
     >
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#0B0F14" }]}
+        style={[styles.root, { backgroundColor: "#090F17" }]}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         {/* ── Paso: Lista de playlists ── */}
@@ -145,7 +145,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 style={({ pressed }) => [styles.createRow, { opacity: pressed ? 0.75 : 1 }]}
               >
                 <View style={[styles.plusCircle, { backgroundColor: "#EDE1D3" }]}>
-                  <Feather name="plus" size={18} color="#0B0F14" />
+                  <Feather name="plus" size={18} color="#090F17" />
                 </View>
                 <Text style={[styles.createLabel, { color: colors.foreground }]}>
                   Crear una Playlist
@@ -202,7 +202,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 },
               ]}
             >
-              <Text style={[styles.createBtnLabel, { color: "#0B0F14" }]}>
+              <Text style={[styles.createBtnLabel, { color: "#090F17" }]}>
                 Crear Playlist
               </Text>
             </Pressable>

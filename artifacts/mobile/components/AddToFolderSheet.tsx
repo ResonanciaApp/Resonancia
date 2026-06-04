@@ -128,7 +128,7 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                 ]}
               >
                 <View style={[styles.plusCircle, { backgroundColor: colors.primary }]}>
-                  <Feather name="plus" size={14} color="#0B0F14" />
+                  <Feather name="plus" size={14} color="#090F17" />
                 </View>
                 <Text style={[styles.newLabel, { color: colors.foreground }]}>
                   Nueva Carpeta
@@ -179,7 +179,7 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                   },
                 ]}
               >
-                <Text style={[styles.createBtnLabel, { color: "#0B0F14" }]}>
+                <Text style={[styles.createBtnLabel, { color: "#090F17" }]}>
                   Crear carpeta
                 </Text>
               </Pressable>

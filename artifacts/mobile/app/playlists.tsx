@@ -22,7 +22,7 @@ export default function PlaylistsScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
+    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -80,7 +80,7 @@ export default function PlaylistsScreen() {
                   style={[styles.playBtn, { backgroundColor: colors.primary }]}
                   hitSlop={8}
                 >
-                  <Feather name="play" size={14} color="#0B0F14" />
+                  <Feather name="play" size={14} color="#090F17" />
                 </Pressable>
               )}
               <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.25)" />

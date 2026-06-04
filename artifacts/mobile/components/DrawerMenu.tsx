@@ -146,7 +146,7 @@ export function DrawerMenu() {
       </Animated.View>
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
-        <View style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#0B0F14" }]}>
+        <View style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#090F17" }]}>
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
           {loggedIn ? (
             <View style={styles.profileSection}>
