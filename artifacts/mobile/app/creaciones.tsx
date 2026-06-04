@@ -94,9 +94,10 @@ export default function CreacionesScreen() {
           >
             <Feather name="arrow-left" size={18} color={colors.foreground} />
           </Pressable>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-            Mis creaciones
-          </Text>
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <Feather name="sliders" size={18} color={colors.primary} />
+            <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mis creaciones</Text>
+          </View>
           <View style={{ width: 38 }} />
         </View>
 

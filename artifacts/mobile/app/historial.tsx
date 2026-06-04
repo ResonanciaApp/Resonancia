@@ -98,11 +98,14 @@ export default function HistorialScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.pageTitle, { color: colors.foreground }]}>Historial</Text>
-            <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-              Últimos 30 días
-            </Text>
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <Feather name="clock" size={26} color={colors.primary} />
+            <View>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Historial</Text>
+              <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+                Últimos 30 días
+              </Text>
+            </View>
           </View>
           {grouped.length > 0 && (
             <Pressable

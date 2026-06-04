@@ -30,7 +30,10 @@ export default function CarpetasScreen() {
         <Pressable onPress={() => router.back()} style={styles.backBtn}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
-        <Text style={[styles.title, { color: colors.foreground }]}>Mis Carpetas</Text>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Feather name="folder" size={20} color={colors.primary} />
+          <Text style={[styles.title, { flex: 0, color: colors.foreground }]}>Mis Carpetas</Text>
+        </View>
         <View style={{ width: 40 }} />
       </View>
 

@@ -140,10 +140,15 @@ export default function FavoritesScreen() {
         </View>
 
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Favoritos</Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Tus viajes sonoros y reflexiones guardados
-          </Text>
+          <View style={styles.headerInner}>
+            <Feather name="heart" size={28} color={colors.primary} style={{ marginTop: 2 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Favoritos</Text>
+              <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+                Tus viajes sonoros y reflexiones guardados
+              </Text>
+            </View>
+          </View>
         </View>
 
         {/* Buscador (solo si hay sesiones) */}
@@ -279,6 +284,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   header: { marginBottom: 20 },
+  headerInner: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
   searchWrap: {
     flexDirection: "row",
     alignItems: "center",
