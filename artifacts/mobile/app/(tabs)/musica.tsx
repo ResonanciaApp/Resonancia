@@ -101,8 +101,9 @@ export default function MiMusicaScreen() {
   const catIndicatorX = useRef(new Animated.Value(-300)).current;
 
   const handleCatPress = (cat: typeof MIX_CATEGORIES[0], idx: number) => {
+    // Offset = tab * idx + centering margin (0.225 * tabW so indicator is centered within tab)
     Animated.spring(catIndicatorX, {
-      toValue: catTabW * idx,
+      toValue: catTabW * idx + catTabW * 0.225,
       useNativeDriver: true,
       damping: 16,
       stiffness: 160,
@@ -270,7 +271,6 @@ export default function MiMusicaScreen() {
                     {
                       backgroundColor: colors.primary,
                       width: catTabW * 0.55,
-                      marginLeft: catTabW * 0.225,
                       transform: [{ translateX: catIndicatorX }],
                     },
                   ]}
