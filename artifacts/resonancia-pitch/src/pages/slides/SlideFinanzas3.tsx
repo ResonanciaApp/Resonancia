@@ -25,13 +25,13 @@ function CostRow({ label, sub, value }: { label: string; sub?: string; value: st
 }
 
 export default function SlideFinanzas3() {
-  // Fijos: $3.650.000 (gerente $2M + coordinador $700K + TI $200K + hosting $150K + admin $250K + otros $350K)
-  // Contenido $3.000.000 desde M3
+  // Fijos: $3.050.000 (gerente $1,3M + coordinador $700K + TI $200K + hosting $250K + admin $250K + otros $350K)
+  // Contenido $2.000.000 desde M3
   const phases = [
-    { fase: "Lanzamiento\nMes 1–2",  fijo: "$3.650.000", contenido: "$0",         mkt: "$0",         total: "$3.650.000",   note: "Mkt cubierto por\ninversión inicial" },
-    { fase: "Tracción\nMes 3–6",     fijo: "$3.650.000", contenido: "$3.000.000", mkt: "$500.000",   total: "$7.150.000",   note: "Pauta social\nbásica + orgánico" },
-    { fase: "Crecimiento\nMes 7–12", fijo: "$3.650.000", contenido: "$3.000.000", mkt: "$1,0M–$1,5M",total: "$7,7M–$8,2M", note: "Pauta + influencers\nnicho wellness" },
-    { fase: "Escala\nMes 13–24",     fijo: "$3.650.000", contenido: "$3.000.000", mkt: "$2,0M–$2,5M",total: "$8,7M–$9,2M", note: "Retargeting +\ncampañas LATAM" },
+    { fase: "Lanzamiento\nMes 1–2",  fijo: "$3.050.000", contenido: "$0",         mkt: "$0",         total: "$3.050.000",   note: "Mkt cubierto por\ninversión inicial" },
+    { fase: "Tracción\nMes 3–6",     fijo: "$3.050.000", contenido: "$2.000.000", mkt: "$500.000",   total: "$5.550.000",   note: "Pauta social\nbásica + orgánico" },
+    { fase: "Crecimiento\nMes 7–12", fijo: "$3.050.000", contenido: "$2.000.000", mkt: "$1,0M–$1,5M",total: "$6,1M–$6,6M", note: "Pauta + influencers\nnicho wellness" },
+    { fase: "Escala\nMes 13–24",     fijo: "$3.050.000", contenido: "$2.000.000", mkt: "$2,0M–$2,5M",total: "$7,1M–$7,6M", note: "Retargeting +\ncampañas LATAM" },
   ];
 
   return (
@@ -117,15 +117,15 @@ export default function SlideFinanzas3() {
         {/* Left: fixed + content costs */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS FIJOS / MES</div>
-          <CostRow label="Gerente general" sub="Dirección estratégica y comercial" value="$2.000.000" />
+          <CostRow label="Gerente general" sub="Dirección estratégica y comercial" value="$1.300.000" />
           <CostRow label="Coordinador general" sub="Gestión operativa y de artistas" value="$700.000" />
           <CostRow label="Asesoría TI" sub="Soporte técnico y mantenimiento" value="$200.000" />
-          <CostRow label="Hosting e infraestructura" sub="Servidores, storage, CDN" value="$150.000" />
+          <CostRow label="Hosting e infraestructura" sub="Replit + Postgres + Bunny.net CDN" value="$250.000" />
           <CostRow label="Gastos admin / oficina" sub="Arriendo base, servicios" value="$250.000" />
           <CostRow label="Otros" sub="Imprevistos, contingencias, varios" value="$350.000" />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0.6vh 0 0", borderTop: "1px solid rgba(190,150,80,0.3)", marginTop: "0.3vh" }}>
             <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#EDE1D3" }}>Total fijos</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#BE9650" }}>$3.650.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#BE9650" }}>$3.050.000</div>
           </div>
 
           <div style={{ marginTop: "0.8vh" }}>
@@ -141,18 +141,18 @@ export default function SlideFinanzas3() {
               justifyContent: "space-between",
             }}>
               <div>
-                <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#EDE1D3" }}>~43 sesiones / mes</div>
+                <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#EDE1D3" }}>~28 sesiones / mes</div>
                 <div style={{ fontSize: "0.85vw", color: "#7A8FA8" }}>$70.000 promedio/sesión</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "#BE9650" }}>$3.000.000</div>
+                <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "#BE9650" }}>$2.000.000</div>
                 <div style={{ fontSize: "0.8vw", color: "#3D4F62" }}>$0 en Mes 1–2</div>
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5vw", fontSize: "0.95vw", color: "#7A8FA8", paddingTop: "0.5vh" }}>
-              <span>Artistas <strong style={{ color: "#EDE1D3" }}>$1,75M</strong></span>
-              <span>Voces guía <strong style={{ color: "#EDE1D3" }}>$1,05M</strong></span>
-              <span>Postprod. <strong style={{ color: "#EDE1D3" }}>$200K</strong></span>
+              <span>Artistas <strong style={{ color: "#EDE1D3" }}>$1,15M</strong></span>
+              <span>Voces guía <strong style={{ color: "#EDE1D3" }}>$0,70M</strong></span>
+              <span>Postprod. <strong style={{ color: "#EDE1D3" }}>$150K</strong></span>
             </div>
           </div>
         </div>

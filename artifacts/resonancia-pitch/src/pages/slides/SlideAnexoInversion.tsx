@@ -146,30 +146,30 @@ export default function SlideAnexoInversion() {
             <ScenarioCard
               label="Base"
               highlight
-              subs="12.000"
-              arr="US$ 528K"
+              subs="5.000"
+              arr="US$ 220K"
               multiple="4× ARR"
-              valuation="US$ 2,1M"
-              stakeVal="US$ 63K"
-              returnX="2,1×"
+              valuation="US$ 0,9M"
+              stakeVal="US$ 26K"
+              returnX="0,9×"
             />
             <ScenarioCard
               label="Optimista"
-              subs="15.000"
-              arr="US$ 660K"
+              subs="8.000"
+              arr="US$ 352K"
               multiple="5× ARR"
-              valuation="US$ 3,3M"
-              stakeVal="US$ 99K"
-              returnX="3,3×"
+              valuation="US$ 1,8M"
+              stakeVal="US$ 53K"
+              returnX="1,8×"
             />
             <ScenarioCard
               label="Agresivo"
-              subs="25.000"
-              arr="US$ 1,1M"
+              subs="10.000"
+              arr="US$ 440K"
               multiple="6× ARR"
-              valuation="US$ 6,6M"
-              stakeVal="US$ 198K"
-              returnX="6,6×"
+              valuation="US$ 2,6M"
+              stakeVal="US$ 79K"
+              returnX="2,6×"
             />
           </div>
         </div>

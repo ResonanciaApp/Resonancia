@@ -35,8 +35,8 @@ export default function Slide08Modelo() {
         {[
           { big: "1.000.000+", small: "seguidores", gold: false },
           { big: "200.000", small: "free · 20% instala", gold: false },
-          { big: "10.000", small: "premium · 5% convierte", gold: true },
-          { big: "12.000", small: "base M12 · + marketing", gold: true },
+          { big: "10.000", small: "techo · 5% a madurez", gold: true },
+          { big: "5.000", small: "base año 1 · 2,5%", gold: true },
         ].map((s, i) => (
           <div key={s.big} style={{ display: "flex", alignItems: "center", gap: "0.8vw", flex: 1 }}>
             <div style={{

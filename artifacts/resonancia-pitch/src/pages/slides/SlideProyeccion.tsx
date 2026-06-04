@@ -65,33 +65,33 @@ export default function SlideProyeccion() {
         <ScenarioCard
           label="Base"
           highlight
-          installs="240.000"
-          subs="12.000"
-          revenue="$251M CLP"
-          revenueUSD="≈ US$ 279.000"
+          installs="200.000"
+          subs="5.000"
+          revenue="$121M CLP"
+          revenueUSD="≈ US$ 134.000"
         />
         <ScenarioCard
           label="Optimista"
-          installs="300.000"
-          subs="15.000"
-          revenue="$314M CLP"
-          revenueUSD="≈ US$ 349.000"
+          installs="250.000"
+          subs="8.000"
+          revenue="$193M CLP"
+          revenueUSD="≈ US$ 214.000"
         />
         <ScenarioCard
           label="Agresivo"
-          installs="500.000"
-          subs="25.000"
-          revenue="$475M CLP"
-          revenueUSD="≈ US$ 528.000"
+          installs="300.000"
+          subs="10.000"
+          revenue="$241M CLP"
+          revenueUSD="≈ US$ 268.000"
         />
       </div>
 
       {/* Assumptions */}
       <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "#7A8FA8", lineHeight: 1.55, maxWidth: "84vw" }}>
-        Supuestos: 1.000.000+ seguidores → 20% instala (200.000 usuarios free) → 5% convierte a premium (~10.000) · la pauta paga suma el resto hasta la base de 12.000 ·
+        Supuestos: 1.000.000+ seguidores → 20% instala (200.000 usuarios free) → en año 1 convierte ~2,5% a premium (5.000); a madurez ~5% (techo 10.000) ·
         precio $6.900/mes (IVA incl. 19%), $43.900/año · ARPU neto ~$3.300/mes (descontado IVA + comisión tienda 30%) · TC $900 CLP/USD.
         <span style={{ color: "#7A8FA8", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
-          Núcleo orgánico = costo de adquisición casi nulo; la pauta paga es crecimiento incremental. Recuperación de la inversión (US$30.000) estimada en mes 6–7. Escenarios ilustrativos, no garantizados.
+          Núcleo orgánico = costo de adquisición casi nulo; la pauta paga es crecimiento incremental. Recuperación de la inversión (US$30.000) estimada en mes 9–10. Escenarios ilustrativos, no garantizados.
         </span>
       </div>
     </div>

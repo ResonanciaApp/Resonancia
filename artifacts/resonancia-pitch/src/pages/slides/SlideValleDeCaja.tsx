@@ -1,12 +1,12 @@
 export default function SlideValleDeCaja() {
   // Escenario base · ARPU neto $3.300/mes · TC $900/USD · sueldos en efectivo desde el mes 1
-  // Meses en rojo (1-3): –$3,7M + –$2,0M + –$2,2M = –$7,9M CLP ≈ US$8.800 (runway operativo)
-  // Ronda US$30.000 ($27M) = upfront $17M (US$18.880) + runway $7,9M (US$8.800) + colchón $2,1M (US$2.320)
+  // Meses en rojo (1-3): –$3,1M + –$1,7M + –$2,3M = –$7,1M CLP ≈ US$7.900 (runway operativo)
+  // Ronda US$30.000 ($27M) = upfront $17M (US$18.880) + runway $7,1M (US$7.900) + colchón $2,9M (US$3.220)
   const valley = [
-    { mes: "Mes 1", subs: "0 subs", val: "–$3,7M", h: 100 },
-    { mes: "Mes 2", subs: "500 subs", val: "–$2,0M", h: 54 },
-    { mes: "Mes 3", subs: "1.500 subs", val: "–$2,2M", h: 59 },
-    { mes: "Mes 4", subs: "~2.800 subs", val: "+$2,1M", h: 0, positive: true },
+    { mes: "Mes 1", subs: "0 subs", val: "–$3,1M", h: 100 },
+    { mes: "Mes 2", subs: "400 subs", val: "–$1,7M", h: 55 },
+    { mes: "Mes 3", subs: "1.000 subs", val: "–$2,3M", h: 74 },
+    { mes: "Mes 4", subs: "~2.000 subs", val: "+$1,1M", h: 0, positive: true },
   ];
 
   return (
@@ -84,8 +84,8 @@ export default function SlideValleDeCaja() {
               <div style={{ fontSize: "1vw", color: "#7A8FA8" }}>A partir del mes 4 la operación es rentable mes a mes</div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#E07070", lineHeight: 1 }}>–$7,9M</div>
-              <div style={{ fontSize: "1.1vw", color: "#7A8FA8", marginTop: "0.3vh" }}>≈ US$ 8.800</div>
+              <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#E07070", lineHeight: 1 }}>–$7,1M</div>
+              <div style={{ fontSize: "1.1vw", color: "#7A8FA8", marginTop: "0.3vh" }}>≈ US$ 7.900</div>
             </div>
           </div>
         </div>
@@ -121,11 +121,11 @@ export default function SlideValleDeCaja() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <div style={{ fontSize: "1.2vw", color: "#EDE1D3" }}>Runway operativo <span style={{ color: "#7A8FA8", fontSize: "0.95vw" }}>(valle meses 1–3)</span></div>
-              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#E07070" }}>US$ 8.800</div>
+              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#E07070" }}>US$ 7.900</div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <div style={{ fontSize: "1.2vw", color: "#EDE1D3" }}>Colchón / imprevistos</div>
-              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#6EC49A" }}>US$ 2.320</div>
+              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#6EC49A" }}>US$ 3.220</div>
             </div>
 
             <div style={{ height: "1px", backgroundColor: "rgba(190,150,80,0.2)" }} />
@@ -140,8 +140,8 @@ export default function SlideValleDeCaja() {
 
       {/* Footnote */}
       <div style={{ fontSize: "1.2vw", color: "#3D4F62", lineHeight: 1.5, marginTop: "2vh" }}>
-        Escenario base · ARPU neto blended ~$3.300/mes (post IVA 19% + comisión tienda 30%) · Fijos $3,65M/mes (sueldos en efectivo desde el mes 1) ·
-        Contenido $0 en M1–2, $3,0M/mes desde M3 · El negocio se autofinancia desde el mes 4; la inversión cubre el arranque, no la operación continua.
+        Escenario base · ARPU neto blended ~$3.300/mes (post IVA 19% + comisión tienda 30%) · Fijos $3,05M/mes (sueldos en efectivo desde el mes 1) ·
+        Contenido $0 en M1–2, $2,0M/mes desde M3 · El negocio se autofinancia desde el mes 4; la inversión cubre el arranque, no la operación continua.
       </div>
     </div>
   );

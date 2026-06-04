@@ -3,25 +3,25 @@ export default function SlideFinanzas2() {
   // ARPU neto: $3.300/mes
   const meses = [
     { label: "M1",  subs: 0     },
-    { label: "M2",  subs: 500   },
-    { label: "M3",  subs: 1500  },
-    { label: "M4",  subs: 2800  },
-    { label: "M5",  subs: 4300  },
-    { label: "M6",  subs: 6000  },
-    { label: "M7",  subs: 7500  },
-    { label: "M8",  subs: 8900  },
-    { label: "M9",  subs: 10000 },
-    { label: "M10", subs: 11000 },
-    { label: "M11", subs: 11600 },
-    { label: "M12", subs: 12000 },
+    { label: "M2",  subs: 400   },
+    { label: "M3",  subs: 1000  },
+    { label: "M4",  subs: 2000  },
+    { label: "M5",  subs: 2700  },
+    { label: "M6",  subs: 3300  },
+    { label: "M7",  subs: 3800  },
+    { label: "M8",  subs: 4200  },
+    { label: "M9",  subs: 4500  },
+    { label: "M10", subs: 4750  },
+    { label: "M11", subs: 4900  },
+    { label: "M12", subs: 5000  },
   ];
 
-  const maxSubs = 12000;
+  const maxSubs = 5000;
 
   const scenarios = [
-    { label: "Base",        subs12: "12.000", ing12: "$39,6M/mes", ingAnual: "~$251M", color: "#BE9650", highlight: true },
-    { label: "Optimista",   subs12: "15.000", ing12: "$49,5M/mes", ingAnual: "~$314M", color: "#6EC49A" },
-    { label: "Agresivo",    subs12: "25.000", ing12: "$82,5M/mes", ingAnual: "~$475M", color: "#6EC49A" },
+    { label: "Base",        subs12: "5.000",  ing12: "$16,5M/mes", ingAnual: "~$121M", color: "#BE9650", highlight: true },
+    { label: "Optimista",   subs12: "8.000",  ing12: "$26,4M/mes", ingAnual: "~$193M", color: "#6EC49A" },
+    { label: "Agresivo",    subs12: "10.000", ing12: "$33,0M/mes", ingAnual: "~$241M", color: "#6EC49A" },
   ];
 
   return (
@@ -70,7 +70,7 @@ export default function SlideFinanzas2() {
             })}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.8vh" }}>
-            {[0, 4000, 8000, 12000].map(v => (
+            {[0, 1700, 3400, 5000].map(v => (
               <div key={v} style={{ fontSize: "1vw", color: "#3D4F62" }}>{v === 0 ? "0" : `${v.toLocaleString("es-CL")}`}</div>
             ))}
           </div>
@@ -112,9 +112,9 @@ export default function SlideFinanzas2() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.5vw", marginTop: "3vh" }}>
         {[
           { label: "Inversión inicial",   value: "$27M CLP",  sub: "US$30.000 · TC $900" },
-          { label: "Break-even acum.",    value: "Mes 7",       sub: "incl. recuperar inversión" },
+          { label: "Break-even acum.",    value: "Mes 10",      sub: "incl. recuperar inversión" },
           { label: "ARPU neto mensual",   value: "$3.300 CLP",  sub: "post IVA 19% + tienda 30%" },
-          { label: "ROI proyectado año 1",value: "+$168M neto", sub: "excl. inversión inicial" },
+          { label: "ROI proyectado año 1",value: "+$55M neto",  sub: "excl. inversión inicial" },
         ].map((k) => (
           <div
             key={k.label}
@@ -135,7 +135,7 @@ export default function SlideFinanzas2() {
       {/* Footnote */}
       <div style={{ fontSize: "1.1vw", color: "#3D4F62", lineHeight: 1.5, marginTop: "2vh" }}>
         Precio $6.900/mes (IVA 19% incl.) · $43.900/año · ARPU neto blended ~$3.300/mes (descontado IVA + comisión tienda 30%) ·
-        Fijos $3,65M/mes (gerente $2M + coordinador $700K + TI $200K + hosting $150K + admin $250K + otros $350K) · Contenido $3,0M/mes desde M3 · Escenarios ilustrativos.
+        Fijos $3,05M/mes (gerente $1,3M + coordinador $700K + TI $200K + hosting $250K + admin $250K + otros $350K) · Contenido $2,0M/mes desde M3 · Escenarios ilustrativos.
       </div>
     </div>
   );
