@@ -8,10 +8,10 @@ export const modules: ModuleMap = {
   "./components/mockups/cat-palettes/Niebla.tsx": () => import("../components/mockups/cat-palettes/Niebla.tsx"),
   "./components/mockups/cat-palettes/Primavera.tsx": () => import("../components/mockups/cat-palettes/Primavera.tsx"),
   "./components/mockups/cat-palettes/TierraCAlida.tsx": () => import("../components/mockups/cat-palettes/TierraCAlida.tsx"),
+  "./components/mockups/iconos/IconPicker.tsx": () => import("../components/mockups/iconos/IconPicker.tsx"),
+  "./components/mockups/iconos/IconosMeditacion.tsx": () => import("../components/mockups/iconos/IconosMeditacion.tsx"),
   "./components/mockups/premium-colores/VarianteDos.tsx": () => import("../components/mockups/premium-colores/VarianteDos.tsx"),
   "./components/mockups/premium-colores/VarianteTres.tsx": () => import("../components/mockups/premium-colores/VarianteTres.tsx"),
   "./components/mockups/premium-colores/VarianteUno.tsx": () => import("../components/mockups/premium-colores/VarianteUno.tsx"),
-  "./components/mockups/iconos/IconPicker.tsx": () => import("../components/mockups/iconos/IconPicker.tsx"),
-  "./components/mockups/iconos/IconosMeditacion.tsx": () => import("../components/mockups/iconos/IconosMeditacion.tsx"),
   "./components/mockups/progreso/TuProgreso.tsx": () => import("../components/mockups/progreso/TuProgreso.tsx")
 };

@@ -17,6 +17,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   useGetPublicUserProfile,
   getGetPublicUserProfileQueryKey,
+  useGetMe,
+  useGetUserFollowing,
+  useFollowUser,
+  useUnfollowUser,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -44,6 +48,16 @@ export default function UsuarioScreen() {
       enabled: Number.isInteger(userId) && userId > 0,
     },
   });
+
+  const { data: me } = useGetMe();
+  const { data: myFollowing } = useGetUserFollowing(me?.id ?? 0, {
+    query: { enabled: !!me?.id },
+  });
+  const isFollowing = (myFollowing ?? []).some((u) => u.id === userId);
+  const isOwnProfile = me?.id === userId;
+
+  const followMutation = useFollowUser();
+  const unfollowMutation = useUnfollowUser();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -169,15 +183,48 @@ export default function UsuarioScreen() {
           </View>
         ) : null}
 
-        {/* Message */}
-        <View style={[styles.section, { paddingHorizontal: H_PAD, marginTop: 20 }]}>
+        {/* Actions */}
+        <View style={[styles.section, { paddingHorizontal: H_PAD, marginTop: 20, gap: 10 }]}>
+          {!isOwnProfile && (
+            <Pressable
+              onPress={() => {
+                if (isFollowing) {
+                  unfollowMutation.mutate({ userId });
+                } else {
+                  followMutation.mutate({ userId });
+                }
+              }}
+              style={({ pressed }) => [
+                styles.followBtn,
+                {
+                  backgroundColor: isFollowing ? "transparent" : "#BE9650",
+                  borderColor: "#BE9650",
+                  opacity: pressed ? 0.8 : 1,
+                },
+              ]}
+            >
+              <Feather
+                name={isFollowing ? "user-check" : "user-plus"}
+                size={15}
+                color={isFollowing ? "#BE9650" : "#090F17"}
+              />
+              <Text style={[styles.followBtnText, { color: isFollowing ? "#BE9650" : "#090F17" }]}>
+                {isFollowing ? "Siguiendo" : "Seguir"}
+              </Text>
+            </Pressable>
+          )}
           <Pressable
             onPress={() => router.push(`/chat/${profile.id}` as never)}
             style={({ pressed }) => [styles.messageBtn, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.messageGrad}>
-              <Feather name="message-circle" size={16} color="#080F0A" />
-              <Text style={styles.messageText}>Enviar mensaje</Text>
+            <LinearGradient
+              colors={isFollowing || isOwnProfile ? ["#1E2A38", "#1E2A38"] : ["#C8C1B5", "#BE9650"]}
+              style={styles.messageGrad}
+            >
+              <Feather name="message-circle" size={16} color={isFollowing || isOwnProfile ? "#BE9650" : "#080F0A"} />
+              <Text style={[styles.messageText, { color: isFollowing || isOwnProfile ? "#BE9650" : "#080F0A" }]}>
+                Enviar mensaje
+              </Text>
             </LinearGradient>
           </Pressable>
         </View>
@@ -223,6 +270,17 @@ const styles = StyleSheet.create({
   },
   topCatLabel: { fontSize: 13 },
   topCatValue: { fontSize: 14, fontWeight: "700", flex: 1, textAlign: "right" },
+
+  followBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    borderRadius: 999,
+    borderWidth: 1.5,
+    paddingVertical: 13,
+  },
+  followBtnText: { fontSize: 15, fontWeight: "700" },
 
   messageBtn: { borderRadius: 999, overflow: "hidden" },
   messageGrad: {
