@@ -26,12 +26,12 @@ export const modules: ModuleMap = {
   "./components/mockups/premium-colores/VarianteTres.tsx": () => import("../components/mockups/premium-colores/VarianteTres.tsx"),
   "./components/mockups/premium-colores/VarianteUno.tsx": () => import("../components/mockups/premium-colores/VarianteUno.tsx"),
   "./components/mockups/progreso/TuProgreso.tsx": () => import("../components/mockups/progreso/TuProgreso.tsx"),
-  "./components/mockups/sesion-destacada/FrostedGlass.tsx": () => import("../components/mockups/sesion-destacada/FrostedGlass.tsx"),
-  "./components/mockups/sesion-destacada/GradientEditorial.tsx": () => import("../components/mockups/sesion-destacada/GradientEditorial.tsx"),
-  "./components/mockups/sesion-destacada/SplitCard.tsx": () => import("../components/mockups/sesion-destacada/SplitCard.tsx"),
   "./components/mockups/tab-hover/TabHover.tsx": () => import("../components/mockups/tab-hover/TabHover.tsx"),
   "./components/mockups/tab-hover/TabHover1.tsx": () => import("../components/mockups/tab-hover/TabHover1.tsx"),
   "./components/mockups/tab-hover/TabHover2.tsx": () => import("../components/mockups/tab-hover/TabHover2.tsx"),
   "./components/mockups/tab-hover/TabHover3.tsx": () => import("../components/mockups/tab-hover/TabHover3.tsx"),
-  "./components/mockups/tab-hover/TabHover4.tsx": () => import("../components/mockups/tab-hover/TabHover4.tsx")
+  "./components/mockups/tab-hover/TabHover4.tsx": () => import("../components/mockups/tab-hover/TabHover4.tsx"),
+  "./components/mockups/sesion-destacada/FrostedGlass.tsx": () => import("../components/mockups/sesion-destacada/FrostedGlass.tsx"),
+  "./components/mockups/sesion-destacada/GradientEditorial.tsx": () => import("../components/mockups/sesion-destacada/GradientEditorial.tsx"),
+  "./components/mockups/sesion-destacada/SplitCard.tsx": () => import("../components/mockups/sesion-destacada/SplitCard.tsx")
 };
