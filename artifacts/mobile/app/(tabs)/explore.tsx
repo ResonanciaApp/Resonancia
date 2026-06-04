@@ -151,10 +151,10 @@ export default function ExploreScreen() {
             <View style={styles.libraryGrid}>
               {[
                 { label: "Carpetas",    icon: "folder"     as const, route: "/carpetas"    },
+                { label: "Creaciones",  icon: "layers"     as const, route: "/creaciones"  },
                 { label: "Playlists",   icon: "list"       as const, route: "/playlists"   },
                 { label: "Favoritos",   icon: "heart"      as const, route: "/favorites"   },
                 { label: "Historial",   icon: "clock"      as const, route: "/historial"   },
-                { label: "Creaciones",  icon: "layers"     as const, route: "/creaciones"  },
               ].map((item, idx, arr) => {
                 const isLastOdd = idx === arr.length - 1 && arr.length % 2 !== 0;
                 return (
@@ -168,7 +168,7 @@ export default function ExploreScreen() {
                     onPress={() => router.push(item.route as never)}
                   >
                     <View style={styles.libraryIconWrap}>
-                      <Feather name={item.icon} size={22} color={colors.primary} />
+                      <Feather name={item.icon} size={22} color="rgba(140, 190, 235, 0.6)" />
                     </View>
                     <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
                       {item.label}
