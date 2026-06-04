@@ -268,12 +268,8 @@ export function MixerSheet() {
 
           <View style={styles.headerRow}>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.caption, { color: WARM.caption }]}>MEZCLADOR</Text>
               <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
-              </Text>
-              <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-                {activeMix.length} sonido{activeMix.length !== 1 ? "s" : ""} activo{activeMix.length !== 1 ? "s" : ""}
               </Text>
             </View>
             <Pressable
@@ -369,7 +365,7 @@ export function MixerSheet() {
               <Feather
                 name="clock"
                 size={18}
-                color={sleepTimerRemaining != null ? WARM.playText : WARM.addText}
+                color={WARM.playText}
               />
               {sleepTimerRemaining != null && (
                 <Text style={[styles.timerText, { color: WARM.playText }]}>
@@ -381,11 +377,11 @@ export function MixerSheet() {
 
           {/* Guardar / Actualizar */}
           <View style={styles.saveRow}>
-            {canUpdate ? (
+            {true ? (
               <>
                 <Pressable
-                  onPress={() => openSaveModal("update")}
-                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
+                  onPress={() => canUpdate && openSaveModal("update")}
+                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder, opacity: canUpdate ? 1 : 0.4 }]}
                 >
                   <Feather name="check" size={16} color={WARM.saveText} />
                   <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Actualizar</Text>
@@ -581,16 +577,16 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 12, marginTop: 2 },
   clearText: { fontSize: 12, fontWeight: "400" },
   clearPill: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "700",
     letterSpacing: 0.8,
     textTransform: "uppercase",
     color: "#090F17",
     backgroundColor: "#FFFFFF",
     overflow: "hidden",
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
+    borderRadius: 9,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
   },
 
   trackScroll: { flexGrow: 0 },
