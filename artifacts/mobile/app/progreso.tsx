@@ -310,9 +310,12 @@ export default function ProgresoScreen() {
           >
             <Feather name="arrow-left" size={18} color={colors.foreground} />
           </Pressable>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-            Tu progreso
-          </Text>
+          <View style={styles.headerTitleRow}>
+            <Text style={{ fontSize: 20 }}>🏆</Text>
+            <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+              Tu progreso
+            </Text>
+          </View>
           <View style={{ width: 38 }} />
         </View>
 
@@ -340,7 +343,7 @@ export default function ProgresoScreen() {
               </Text>
               {tab === t && (
                 <View
-                  style={[styles.tabIndicator, { backgroundColor: colors.foreground }]}
+                  style={[styles.tabIndicator, { backgroundColor: colors.primary }]}
                 />
               )}
             </Pressable>
@@ -557,6 +560,20 @@ export default function ProgresoScreen() {
                 </View>
               );
             })}
+
+            <View
+              style={[
+                styles.comingSoonCard,
+                { backgroundColor: "rgba(190,150,80,0.07)", borderColor: "rgba(190,150,80,0.22)" },
+              ]}
+            >
+              <Text style={[styles.comingSoonLabel, { color: colors.primary }]}>
+                {"PRÓXIMAMENTE"}
+              </Text>
+              <Text style={[styles.comingSoonText, { color: colors.mutedForeground }]}>
+                {"Insignias, compartir tu progreso y ranking de la comunidad llegan en futuras versiones."}
+              </Text>
+            </View>
           </View>
         )}
 
@@ -758,7 +775,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { flex: 1, fontSize: 22, fontWeight: "700", textAlign: "center" },
+  headerTitleRow: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
+  headerTitle: { fontSize: 22, fontWeight: "700" },
 
   // Tabs
   tabBar: {
@@ -911,4 +929,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   emptyStateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
+
+  // Coming soon
+  comingSoonCard: { borderRadius: 14, padding: 16, borderWidth: 1 },
+  comingSoonLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 0.8, marginBottom: 6 },
+  comingSoonText: { fontSize: 13, lineHeight: 19 },
 });
