@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import Svg, { Ellipse } from "react-native-svg";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -74,6 +75,17 @@ function BlinkingCursor({ color }: { color: string }) {
     <Animated.Text style={{ opacity, color, fontSize: 17, lineHeight: 24, fontWeight: "300" }}>
       |
     </Animated.Text>
+  );
+}
+
+function ZenStonesIcon({ color, size = 26 }: { color: string; size?: number }) {
+  const s = size;
+  return (
+    <Svg width={s} height={s} viewBox="0 0 30 30">
+      <Ellipse cx="15" cy="23.5" rx="8" ry="4.2" fill={color} opacity={0.95} />
+      <Ellipse cx="15.6" cy="16.5" rx="5.8" ry="3.3" fill={color} opacity={0.85} />
+      <Ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity={0.75} />
+    </Svg>
   );
 }
 
@@ -213,6 +225,8 @@ export default function HomeScreen() {
                       style={styles.catCardImage}
                       resizeMode="contain"
                     />
+                  ) : cat.id === "meditaciones-guiadas" ? (
+                    <ZenStonesIcon color={iconColor} size={26} />
                   ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
