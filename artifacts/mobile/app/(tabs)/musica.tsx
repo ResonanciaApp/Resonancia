@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   catCard: {
     flex: 1,
     paddingHorizontal: 12,
-    paddingVertical: 13,
+    paddingVertical: 18,
     borderRadius: 10,
     borderWidth: 1,
     alignItems: "center",
