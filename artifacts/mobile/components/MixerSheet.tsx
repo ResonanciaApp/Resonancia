@@ -316,7 +316,7 @@ export function MixerSheet() {
             {activeMix.map(({ active, sound }, index) => (
               <View
                 key={sound.id}
-                style={[styles.trackRow, { backgroundColor: WARM.trackBg, borderColor: WARM.trackBorder }]}
+                style={[styles.trackRow, { backgroundColor: WARM.trackBg }]}
               >
                 <TrackThumb sound={sound} />
 
@@ -611,7 +611,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     borderRadius: 16,
-    borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 14,
     marginBottom: 10,
