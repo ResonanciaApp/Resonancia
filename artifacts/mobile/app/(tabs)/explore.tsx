@@ -318,7 +318,7 @@ export default function ExploreScreen() {
             {/* ── Otras Temáticas ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 0 }]}>
                   Otras Temáticas
                 </Text>
                 <Pressable onPress={() => router.push("/todas-las-tematicas" as never)} hitSlop={8}>
@@ -353,7 +353,7 @@ export default function ExploreScreen() {
             {/* ── Historial ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 0 }]}>
                   Historial
                 </Text>
                 {historySessions.length > 5 && (

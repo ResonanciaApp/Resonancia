@@ -101,8 +101,8 @@ export function CommunityMixesCarousel() {
 
 const styles = StyleSheet.create({
   section: { marginBottom: 22, paddingHorizontal: 20 },
-  sectionRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
-  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3 },
+  sectionRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   hScroll: { paddingRight: 12, gap: 12 },
   card: { width: 150, borderRadius: 16, borderWidth: 1, overflow: "hidden" },
   thumb: { height: 96, justifyContent: "center", alignItems: "center" },
