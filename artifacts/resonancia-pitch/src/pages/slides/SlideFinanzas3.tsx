@@ -25,12 +25,12 @@ function CostRow({ label, sub, value }: { label: string; sub?: string; value: st
 }
 
 export default function SlideFinanzas3() {
-  // $3.000.000 / $70.000 por sesión = 42,8 ≈ 43 sesiones/mes
+  // Fijos: $3.300.000 (incl. gerente $2M) · Contenido $3.000.000 desde M3
   const phases = [
-    { fase: "Lanzamiento\nMes 1–2",  fijo: "$1.300.000", contenido: "$0",         mkt: "$0",         total: "$1.300.000",  note: "Mkt cubierto por\ninversión inicial" },
-    { fase: "Tracción\nMes 3–6",     fijo: "$1.300.000", contenido: "$3.000.000", mkt: "$500.000",   total: "$4.800.000",  note: "Pauta social\nbásica + orgánico" },
-    { fase: "Crecimiento\nMes 7–12", fijo: "$1.300.000", contenido: "$3.000.000", mkt: "$1,0M–$1,5M",total: "$5,3M–$5,8M", note: "Pauta + influencers\nnicho wellness" },
-    { fase: "Escala\nMes 13–24",     fijo: "$1.300.000", contenido: "$3.000.000", mkt: "$2,0M–$2,5M",total: "$6,3M–$6,8M", note: "Retargeting +\ncampañas LATAM" },
+    { fase: "Lanzamiento\nMes 1–2",  fijo: "$3.300.000", contenido: "$0",         mkt: "$0",         total: "$3.300.000",   note: "Mkt cubierto por\ninversión inicial" },
+    { fase: "Tracción\nMes 3–6",     fijo: "$3.300.000", contenido: "$3.000.000", mkt: "$500.000",   total: "$6.800.000",   note: "Pauta social\nbásica + orgánico" },
+    { fase: "Crecimiento\nMes 7–12", fijo: "$3.300.000", contenido: "$3.000.000", mkt: "$1,0M–$1,5M",total: "$7,3M–$7,8M", note: "Pauta + influencers\nnicho wellness" },
+    { fase: "Escala\nMes 13–24",     fijo: "$3.300.000", contenido: "$3.000.000", mkt: "$2,0M–$2,5M",total: "$8,3M–$8,8M", note: "Retargeting +\ncampañas LATAM" },
   ];
 
   return (
@@ -73,19 +73,18 @@ export default function SlideFinanzas3() {
         {/* Left: fixed + content costs */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "0.7vh" }}>COSTOS FIJOS / MES</div>
+          <CostRow label="Gerente general" sub="Dirección estratégica y comercial" value="$2.000.000" />
           <CostRow label="Coordinador general" sub="Gestión operativa y de artistas" value="$700.000" />
           <CostRow label="Asesoría TI" sub="Soporte técnico y mantenimiento" value="$200.000" />
           <CostRow label="Hosting e infraestructura" sub="Servidores, storage, CDN" value="$150.000" />
           <CostRow label="Gastos admin / oficina" sub="Arriendo base, servicios, colchón" value="$250.000" />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0.7vh 0 0", borderTop: "1px solid rgba(190,150,80,0.3)", marginTop: "0.4vh" }}>
             <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#EDE1D3" }}>Total fijos</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#BE9650" }}>$1.300.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#BE9650" }}>$3.300.000</div>
           </div>
 
-          <div style={{ marginTop: "1.6vh" }}>
+          <div style={{ marginTop: "1.4vh" }}>
             <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "0.7vh" }}>COSTOS CONTENIDO / MES</div>
-
-            {/* Sessions highlight card */}
             <div style={{
               backgroundColor: "rgba(190,150,80,0.06)",
               border: "1px solid rgba(190,150,80,0.2)",
@@ -105,7 +104,6 @@ export default function SlideFinanzas3() {
                 <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>$0 en Mes 1–2</div>
               </div>
             </div>
-
             <CostRow label="Artistas / productores" sub="~25 sesiones × $70.000" value="$1.750.000" />
             <CostRow label="Voces guía" sub="~15 sesiones × $70.000" value="$1.050.000" />
             <CostRow label="Postproducción / edición" sub="~3 sesiones × $70.000" value="$200.000" />

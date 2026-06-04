@@ -69,7 +69,6 @@ export default function SlideFinanzas2() {
               );
             })}
           </div>
-          {/* Etiquetas eje Y */}
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.8vh" }}>
             {[0, 5000, 10000, 15000].map(v => (
               <div key={v} style={{ fontSize: "1vw", color: "#3D4F62" }}>{v === 0 ? "0" : `${v.toLocaleString("es-CL")}`}</div>
@@ -113,9 +112,9 @@ export default function SlideFinanzas2() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.5vw", marginTop: "3vh" }}>
         {[
           { label: "Inversión inicial",   value: "$22,5M CLP",  sub: "US$25.000 · TC $900" },
-          { label: "Break-even acum.",    value: "Mes 5–6",     sub: "incl. recuperar inversión" },
+          { label: "Break-even acum.",    value: "Mes 6",       sub: "incl. recuperar inversión" },
           { label: "ARPU neto mensual",   value: "$3.300 CLP",  sub: "post IVA 19% + tienda 30%" },
-          { label: "ROI proyectado año 1",value: "+$274M neto", sub: "excl. inversión inicial" },
+          { label: "ROI proyectado año 1",value: "+$235M neto", sub: "excl. inversión inicial" },
         ].map((k) => (
           <div
             key={k.label}
@@ -136,7 +135,7 @@ export default function SlideFinanzas2() {
       {/* Footnote */}
       <div style={{ fontSize: "1.1vw", color: "#3D4F62", lineHeight: 1.5, marginTop: "2vh" }}>
         Precio $6.900/mes (IVA 19% incl.) · $43.900/año · ARPU neto blended ~$3.300/mes (descontado IVA + comisión tienda 30%) ·
-        Contenido $0 en M1-2, $1,5M/mes desde M3 · Escenarios ilustrativos, no garantizados.
+        Fijos $3,3M/mes (gerente $2M + coordinador $700K + TI $200K + hosting $150K + admin $250K) · Contenido $3,0M/mes desde M3 · Escenarios ilustrativos.
       </div>
     </div>
   );

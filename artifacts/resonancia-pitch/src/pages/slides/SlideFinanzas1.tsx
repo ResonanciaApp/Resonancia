@@ -1,14 +1,14 @@
 export default function SlideFinanzas1() {
   // Escenario base · ARPU neto $3.300/mes
-  // Contenido $0 M1-2; $3,0M/mes desde M3 (~43 sesiones × $70.000 prom.)
-  // Costos fijos $1,3M/mes · Marketing: $0→$0,5M→$1,0M→$1,5M
-  // Costos totales por período: M1-2=$1,3M · M3-6=$4,8M · M7-10=$5,3M · M11-12=$5,8M
+  // Fijos $3,3M/mes (incl. gerente $2M) · Contenido $0 M1-2; $3,0M desde M3
+  // Marketing: $0→$0,5M→$1,0M→$1,5M
+  // Costos totales: M1-2=$3,3M · M3-6=$6,8M · M7-10=$7,3M · M11-12=$7,8M
   const rows = [
-    { mes: "Mes 1–2",  subs: "0 → 500",  ingreso: "– / $1,7M",  costoFijo: "$1,3M",  costoVar: "$0",     resultado: "–$1,3M / +$0,4M", neg: true  },
-    { mes: "Mes 3",    subs: "1.500",     ingreso: "$5,0M",       costoFijo: "$1,8M",  costoVar: "$3,0M",  resultado: "+$0,2M",           neg: false },
-    { mes: "Mes 6",    subs: "7.500",     ingreso: "$24,8M",      costoFijo: "$1,8M",  costoVar: "$3,0M",  resultado: "+$20,0M",          neg: false },
-    { mes: "Mes 9",    subs: "13.000",    ingreso: "$42,9M",      costoFijo: "$2,3M",  costoVar: "$3,0M",  resultado: "+$37,6M",          neg: false },
-    { mes: "Mes 12",   subs: "15.000",    ingreso: "$49,5M",      costoFijo: "$2,8M",  costoVar: "$3,0M",  resultado: "+$43,7M",          neg: false },
+    { mes: "Mes 1–2",  subs: "0 → 500",  ingreso: "– / $1,7M",  costoFijo: "$3,3M",  costoVar: "$0",     resultado: "–$3,3M / –$1,7M", neg: true  },
+    { mes: "Mes 3",    subs: "1.500",     ingreso: "$5,0M",       costoFijo: "$3,8M",  costoVar: "$3,0M",  resultado: "–$1,8M",          neg: true  },
+    { mes: "Mes 6",    subs: "7.500",     ingreso: "$24,8M",      costoFijo: "$3,8M",  costoVar: "$3,0M",  resultado: "+$18,0M",         neg: false },
+    { mes: "Mes 9",    subs: "13.000",    ingreso: "$42,9M",      costoFijo: "$4,3M",  costoVar: "$3,0M",  resultado: "+$35,6M",         neg: false },
+    { mes: "Mes 12",   subs: "15.000",    ingreso: "$49,5M",      costoFijo: "$4,8M",  costoVar: "$3,0M",  resultado: "+$41,7M",         neg: false },
   ];
 
   return (
@@ -78,16 +78,17 @@ export default function SlideFinanzas1() {
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#BE9650" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>15.000 al cierre</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>~$314M</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$21M</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$46M</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$30M</div>
-          <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#6EC49A" }}>+$259M neto</div>
+          <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#6EC49A" }}>+$235M neto</div>
         </div>
       </div>
 
       {/* Footnote */}
       <div style={{ fontSize: "1.2vw", color: "#3D4F62", lineHeight: 1.5 }}>
         Ingresos netos = precio excl. IVA (19%) × 70% (comisión Apple/Google 30%) · ARPU neto blended ~$3.300/mes ·
-        Contenido $0 en M1-2, $3,0M/mes desde M3 (~43 sesiones × $70.000 promedio) · Fijo + mkt incluye coordinador $700K + hosting $150K + asesoría TI $200K + admin $250K + marketing variable ·
+        Contenido $0 en M1-2, $3,0M/mes desde M3 (~43 sesiones × $70.000 promedio) ·
+        Fijo + mkt: gerente $2M + coordinador $700K + hosting $150K + asesoría TI $200K + admin $250K + marketing variable ·
         Inversión inicial US$25.000 ($22,5M CLP) no incluida · Break-even acumulado estimado mes 6.
       </div>
     </div>
