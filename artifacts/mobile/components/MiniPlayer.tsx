@@ -40,6 +40,9 @@ export function MiniPlayer() {
     loadedPresetId,
     openSheet,
   } = useMixer();
+  // Track if the mix was ever played (to distinguish "never started" from "paused")
+  const everPlayedRef = useRef(false);
+  if (mixPlaying) everPlayedRef.current = true;
   const colors = useColors();
 
   const isIOS = Platform.OS === "ios";
@@ -150,20 +153,33 @@ export function MiniPlayer() {
           })}
         </View>
 
-        {/* Título + conteo */}
-        <View style={styles.info}>
-          <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
-            {title}
-          </Text>
-          <Text style={[styles.sub, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {count} {count === 1 ? "sonido" : "sonidos"}
-          </Text>
-        </View>
-
-        {/* Timer de reproducción */}
-        <Text style={[styles.timerText, { color: colors.foreground }]}>
-          {formatElapsed(elapsed)}
-        </Text>
+        {mixPlaying ? (
+          <>
+            {/* Título + conteo */}
+            <View style={styles.info}>
+              <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
+                {title}
+              </Text>
+              <Text style={[styles.sub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                {count} {count === 1 ? "sonido" : "sonidos"}
+              </Text>
+            </View>
+            {/* Timer de reproducción */}
+            <Text style={[styles.timerText, { color: colors.foreground }]}>
+              {formatElapsed(elapsed)}
+            </Text>
+          </>
+        ) : (
+          /* TERMINAR — visible solo cuando está pausado */
+          <Pressable
+            onPress={(e) => { e.stopPropagation(); stopAll(); everPlayedRef.current = false; }}
+            style={styles.terminarBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Terminar mezcla"
+          >
+            <Text style={[styles.terminarText, { color: colors.primary }]}>TERMINAR</Text>
+          </Pressable>
+        )}
 
         {/* Play / pausa */}
         <Pressable
@@ -327,5 +343,18 @@ const styles = StyleSheet.create({
     height: 32,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  // ── TERMINAR (pausado) ────────────────────────────────────────
+  terminarBtn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+  },
+  terminarText: {
+    fontSize: 13,
+    fontWeight: "700",
+    letterSpacing: 1.2,
   },
 });

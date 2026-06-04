@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo, useState } from "react";
+import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Alert,
   Image,
@@ -16,7 +16,7 @@ import Svg, { Ellipse, Path } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MixActionsSheet } from "@/components/MixActionsSheet";
-import { MixerPanel } from "@/components/MixerPanel";
+import { MiniPlayer } from "@/components/MiniPlayer";
 import { SacredBackground } from "@/components/SacredBackground";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
@@ -77,11 +77,18 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
 export default function CategoryMixesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { presets, deletePreset, duplicatePreset, loadedPresetId, isPlaying } = useMixer();
+  const { presets, deletePreset, duplicatePreset, loadedPresetId, isPlaying, stopAll } = useMixer();
   const loadMix = useLoadMix();
   const { isPremium } = usePremium();
 
   const [menuMix, setMenuMix] = useState<MixPreset | null>(null);
+
+  // Detener la mezcla al salir de la pantalla (volver al Mezclador)
+  useFocusEffect(
+    useCallback(() => {
+      return () => { stopAll(); };
+    }, [stopAll]),
+  );
 
   const params = useLocalSearchParams<{ category: string }>();
   const categoryId = params.category as MixCategory;
@@ -205,9 +212,6 @@ export default function CategoryMixesScreen() {
           </View>
         )}
 
-        {/* Mezcla activa */}
-        <MixerPanel />
-
         {/* Mezclas del usuario */}
         {userMixes.length > 0 ? (
           <View style={styles.section}>
@@ -230,6 +234,11 @@ export default function CategoryMixesScreen() {
         onDuplicate={(mix) => { setMenuMix(null); handleDuplicate(mix); }}
         onDelete={(mix) => deletePreset(mix.id)}
       />
+
+      {/* Reproductor flotante — mismo que en las tabs */}
+      <View style={[styles.miniPlayerFloat, { bottom: 16 + bottomPad }]}>
+        <MiniPlayer />
+      </View>
     </View>
   );
 }
@@ -237,6 +246,11 @@ export default function CategoryMixesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
+  miniPlayerFloat: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+  },
   headerTop: { marginBottom: 14 },
   backBtn: {
     width: 36,
