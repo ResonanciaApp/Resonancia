@@ -89,7 +89,7 @@ export default function SlideFinanzas1() {
         Ingresos netos = precio excl. IVA (19%) × 70% (comisión Apple/Google 30%) · ARPU neto blended ~$3.300/mes ·
         Contenido $0 en M1-2, $3,0M/mes desde M3 (~43 sesiones × $70.000 promedio) ·
         Fijo + mkt: gerente $2M + coordinador $700K + hosting $150K + asesoría TI $200K + admin $250K + otros $350K + marketing variable ·
-        Inversión inicial US$25.000 ($22,5M CLP) no incluida · Break-even acumulado estimado mes 7.
+        Inversión inicial US$30.000 ($27M CLP) no incluida · Break-even acumulado estimado mes 7.
       </div>
     </div>
   );

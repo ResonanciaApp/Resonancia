@@ -111,7 +111,7 @@ export default function SlideFinanzas2() {
       {/* KPIs row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.5vw", marginTop: "3vh" }}>
         {[
-          { label: "Inversión inicial",   value: "$22,5M CLP",  sub: "US$25.000 · TC $900" },
+          { label: "Inversión inicial",   value: "$27M CLP",  sub: "US$30.000 · TC $900" },
           { label: "Break-even acum.",    value: "Mes 7",       sub: "incl. recuperar inversión" },
           { label: "ARPU neto mensual",   value: "$3.300 CLP",  sub: "post IVA 19% + tienda 30%" },
           { label: "ROI proyectado año 1",value: "+$231M neto", sub: "excl. inversión inicial" },

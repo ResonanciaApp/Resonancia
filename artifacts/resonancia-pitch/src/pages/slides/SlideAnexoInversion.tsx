@@ -46,7 +46,7 @@ function ScenarioCard({
       </div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh" }}>
-        <div style={{ fontSize: "0.85vw", color: "#7A8FA8", marginBottom: "0.3vh" }}>STAKE 2,5% VALE</div>
+        <div style={{ fontSize: "0.85vw", color: "#7A8FA8", marginBottom: "0.3vh" }}>STAKE 3,0% VALE</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>{stakeVal}</div>
           <div style={{
@@ -109,23 +109,23 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(190,150,80,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "#7A8FA8", marginBottom: "0.5vh" }}>
-                US$25.000 ÷ post-money US$1M = <span style={{ color: "#BE9650", fontWeight: 700 }}>2,5%</span> exacto
+                US$30.000 ÷ post-money US$1,005M ≈ <span style={{ color: "#BE9650", fontWeight: 700 }}>3,0%</span>
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>Ticket</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#EDE1D3" }}>US$ 25K</div>
-                  <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>$22,5M CLP</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#EDE1D3" }}>US$ 30K</div>
+                  <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>$27M CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>Equity</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#BE9650" }}>2,5%</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#BE9650" }}>3,0%</div>
                   <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>fijo</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>Post-money</div>
                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#EDE1D3" }}>US$ 1,0M</div>
-                  <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>$900M CLP</div>
+                  <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>$905M CLP</div>
                 </div>
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function SlideAnexoInversion() {
               arr="US$ 440K"
               multiple="5× ARR"
               valuation="US$ 2,2M"
-              stakeVal="US$ 55K"
+              stakeVal="US$ 66K"
               returnX="2,2×"
             />
             <ScenarioCard
@@ -159,7 +159,7 @@ export default function SlideAnexoInversion() {
               arr="US$ 660K"
               multiple="7× ARR"
               valuation="US$ 4,6M"
-              stakeVal="US$ 115K"
+              stakeVal="US$ 138K"
               returnX="4,6×"
             />
             <ScenarioCard
@@ -168,7 +168,7 @@ export default function SlideAnexoInversion() {
               arr="US$ 1,1M"
               multiple="8× ARR"
               valuation="US$ 8,8M"
-              stakeVal="US$ 220K"
+              stakeVal="US$ 264K"
               returnX="8,8×"
             />
           </div>

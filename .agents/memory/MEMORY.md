@@ -1,4 +1,5 @@
 - [Slide decks](slide-decks.md) — dos artifacts slides distintos: resonancia-deck (Brochure del producto) y resonancia-pitch (Pitch Inversionistas); no mezclarlos
+- [Pitch financial coherence](pitch-financial-coherence.md) — cifras del modelo (ronda/equity/uso de fondos/valle/stakes) viven en 6+ slides hardcodeadas; cambiar una = propagar a todas o se contradicen
 - [Navy + gold palette (rebrand)](warm-theme.md) — marca migrada de café/bronce a azul marina #060A0F + dorado #BE9650; mapeo de reemplazo + slides hardcodean hex inline (no usan CSS vars); mockups de decks pendientes
 - [Chat optimistic uploads + audio preload](chat-optimistic-uploads.md) — pattern para image/audio sends instantáneos en DM; dedup por serverObjectPath, no setQueryData
 - [session image shared pool](session-images-shared-pool.md) — session-N.jpg es pool decorativo compartido (grupos usan imageIdx); al borrar sesión, repuntar refs in-place, no quitar entradas

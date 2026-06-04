@@ -162,7 +162,7 @@ export default function SlideFinanzas3() {
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>MARKETING: RAMP-UP MENSUAL</div>
           <div style={{ backgroundColor: "#090E17", border: "1px solid rgba(190,150,80,0.15)", borderRadius: "0.7vw", padding: "0.8vh 1.1vw", marginBottom: "1.2vh" }}>
             {[
-              { rango: "Mes 1–2",   desc: "Cubierto por inversión inicial (US$5.000)",  valor: "$0" },
+              { rango: "Mes 1–2",   desc: "Cubierto por campaña de lanzamiento (US$4.440 upfront)",  valor: "$0" },
               { rango: "Mes 3–6",   desc: "Pauta social básica + contenido orgánico",    valor: "$500.000" },
               { rango: "Mes 7–12",  desc: "Pauta ampliada + influencers nicho wellness", valor: "$1,0M – $1,5M" },
               { rango: "Mes 13–18", desc: "Retargeting + campañas multiregión LATAM",    valor: "$2.000.000" },

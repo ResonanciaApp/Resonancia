@@ -91,7 +91,7 @@ export default function SlideProyeccion() {
         Supuestos: crecimiento orgánico desde la comunidad de +1.000.000 de seguidores · precio $6.900/mes (IVA incl. 19%) · $43.900/año ·
         ARPU neto ~$3.300/mes (descontado IVA + comisión tienda 30%) · 3–6% de conversión a suscripción de pago · TC $900 CLP/USD.
         <span style={{ color: "#7A8FA8", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
-          Canal propio = costo de adquisición casi nulo. Recuperación de inversión inicial (US$25.000) estimada en mes 5–6. Escenarios ilustrativos, no garantizados.
+          Canal propio = costo de adquisición casi nulo. Recuperación de inversión inicial (US$30.000) estimada en mes 6–7. Escenarios ilustrativos, no garantizados.
         </span>
       </div>
     </div>

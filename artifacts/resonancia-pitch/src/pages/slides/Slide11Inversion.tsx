@@ -16,29 +16,37 @@ export default function Slide11Inversion() {
             12 · LA INVERSIÓN
           </div>
           <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "48vw" }}>
-            Buscamos <span style={{ color: "#BE9650" }}>US$ 25.000</span>
+            Buscamos <span style={{ color: "#BE9650" }}>US$ 30.000</span>
           </div>
           <div style={{ fontSize: "1.9vw", fontWeight: 400, color: "#7A8FA8", lineHeight: 1.5, marginTop: "2vh", maxWidth: "46vw" }}>
-            para producir el catálogo, equipar el estudio y lanzar al mercado.
+            para producir el catálogo, equipar el estudio, lanzar al mercado y operar hasta alcanzar flujo positivo.
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.9vh" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.35vh" }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.65vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>40% · $10.000</span> — Contenido: pistas con artistas certificados y pago a guiadores de voz.</div>
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>22% · US$6.670</span> — Contenido: pistas con artistas certificados y pago a guiadores de voz.</div>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.65vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>20% · $5.000</span> — Marketing de lanzamiento (orgánico + pauta).</div>
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>15% · US$4.440</span> — Equipos de estudio: micrófonos, tratamiento acústico y ambientación.</div>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.65vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>20% · $5.000</span> — Equipos de estudio: micrófonos, tratamiento acústico y ambientación.</div>
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>15% · US$4.440</span> — Marketing de lanzamiento (orgánico + pauta).</div>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.65vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>20% · $5.000</span> — Operación, publicación en tiendas y colchón.</div>
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>11% · US$3.330</span> — Legal, constitución, T&C y publicación en tiendas.</div>
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
+            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>29% · US$8.800</span> — Runway operativo: sueldos del equipo en los meses 1–3 (hasta flujo positivo).</div>
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
+            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>8% · US$2.320</span> — Colchón para imprevistos.</div>
           </div>
         </div>
 
