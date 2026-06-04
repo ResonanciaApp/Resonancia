@@ -98,14 +98,14 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
           <Text style={styles.durText}>{video.durationLabel}</Text>
         </View>
       </View>
+      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+        {video.title}
+      </Text>
       {video.author && (
         <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
           {video.author}
         </Text>
       )}
-      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
-        {video.title}
-      </Text>
     </Pressable>
   );
 }
@@ -119,16 +119,16 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   cardImage: { width: "100%", height: "100%" },
-  cardAuthor: {
-    fontSize: 11,
-    marginTop: 8,
-    paddingHorizontal: 2,
-  },
   cardTitle: {
     fontSize: 13,
     fontWeight: "600",
     lineHeight: 18,
-    marginTop: 2,
+    marginTop: 8,
+    paddingHorizontal: 2,
+  },
+  cardAuthor: {
+    fontSize: 11,
+    marginTop: 4,
     paddingHorizontal: 2,
   },
   durBadge: {

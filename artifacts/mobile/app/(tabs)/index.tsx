@@ -541,6 +541,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#7A8FA8",
     flex: 1,
+    marginTop: 4,
   },
 
   // Hero — sesión destacada del día
