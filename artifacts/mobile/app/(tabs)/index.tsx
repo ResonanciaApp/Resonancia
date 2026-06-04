@@ -226,12 +226,15 @@ export default function HomeScreen() {
                       resizeMode="contain"
                     />
                   ) : cat.id === "meditaciones-guiadas" ? (
-                    <ZenStonesIcon color={iconColor} size={28} />
+                    <View style={{ marginTop: -2 }}>
+                      <ZenStonesIcon color={iconColor} size={30} />
+                    </View>
                   ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                       size={26}
                       color={iconColor}
+                      style={cat.id === "sonidos-ancestrales" ? { marginTop: -3 } : undefined}
                     />
                   ) : (
                     <Feather
