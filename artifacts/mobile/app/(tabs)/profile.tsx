@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
@@ -404,7 +404,7 @@ export default function ProfileScreen() {
         >
           {isPremium ? (
             <View style={[styles.planIconWrap, { backgroundColor: "rgba(26,90,60,0.5)" }]}>
-              <Feather name="star" size={20} color={colors.primary} />
+              <MaterialCommunityIcons name="star" size={20} color={colors.primary} />
             </View>
           ) : (
             <View style={[styles.planIconWrap, { backgroundColor: "rgba(122,143,168,0.12)" }]}>
