@@ -1,12 +1,14 @@
 export default function SlideFinanzas1() {
-  // Escenario base · ARPU neto $3.300/mes · Contenido $0 M1-2; $1,5M/mes desde M3
-  // Costos fijos $1,3M/mes · Marketing: $0 (M1-2) → $0,5M (M3-6) → $1,0M (M7-10) → $1,5M (M11-12)
+  // Escenario base · ARPU neto $3.300/mes
+  // Contenido $0 M1-2; $3,0M/mes desde M3 (~43 sesiones × $70.000 prom.)
+  // Costos fijos $1,3M/mes · Marketing: $0→$0,5M→$1,0M→$1,5M
+  // Costos totales por período: M1-2=$1,3M · M3-6=$4,8M · M7-10=$5,3M · M11-12=$5,8M
   const rows = [
     { mes: "Mes 1–2",  subs: "0 → 500",  ingreso: "– / $1,7M",  costoFijo: "$1,3M",  costoVar: "$0",     resultado: "–$1,3M / +$0,4M", neg: true  },
-    { mes: "Mes 3",    subs: "1.500",     ingreso: "$5,0M",       costoFijo: "$1,3M",  costoVar: "$1,5M",  resultado: "+$1,7M",           neg: false },
-    { mes: "Mes 6",    subs: "7.500",     ingreso: "$24,8M",      costoFijo: "$1,3M",  costoVar: "$1,5M",  resultado: "+$21,4M",          neg: false },
-    { mes: "Mes 9",    subs: "13.000",    ingreso: "$42,9M",      costoFijo: "$1,3M",  costoVar: "$1,5M",  resultado: "+$39,1M",          neg: false },
-    { mes: "Mes 12",   subs: "15.000",    ingreso: "$49,5M",      costoFijo: "$1,3M",  costoVar: "$1,5M",  resultado: "+$45,2M",          neg: false },
+    { mes: "Mes 3",    subs: "1.500",     ingreso: "$5,0M",       costoFijo: "$1,8M",  costoVar: "$3,0M",  resultado: "+$0,2M",           neg: false },
+    { mes: "Mes 6",    subs: "7.500",     ingreso: "$24,8M",      costoFijo: "$1,8M",  costoVar: "$3,0M",  resultado: "+$20,0M",          neg: false },
+    { mes: "Mes 9",    subs: "13.000",    ingreso: "$42,9M",      costoFijo: "$2,3M",  costoVar: "$3,0M",  resultado: "+$37,6M",          neg: false },
+    { mes: "Mes 12",   subs: "15.000",    ingreso: "$49,5M",      costoFijo: "$2,8M",  costoVar: "$3,0M",  resultado: "+$43,7M",          neg: false },
   ];
 
   return (
@@ -37,7 +39,7 @@ export default function SlideFinanzas1() {
           borderBottom: "1px solid rgba(190,150,80,0.35)",
           marginBottom: "0.5vh",
         }}>
-          {["Período", "Suscriptores", "Ingresos netos", "Costos fijos", "Costos contenido", "Resultado mes"].map((h) => (
+          {["Período", "Suscriptores", "Ingresos netos", "Fijo + mkt", "Contenido", "Resultado mes"].map((h) => (
             <div key={h} style={{ fontSize: "1.15vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.06em" }}>{h}</div>
           ))}
         </div>
@@ -76,17 +78,17 @@ export default function SlideFinanzas1() {
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#BE9650" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>15.000 al cierre</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>~$314M</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$16M</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$15M</div>
-          <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#6EC49A" }}>+$274M neto</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$21M</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$30M</div>
+          <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#6EC49A" }}>+$259M neto</div>
         </div>
       </div>
 
       {/* Footnote */}
       <div style={{ fontSize: "1.2vw", color: "#3D4F62", lineHeight: 1.5 }}>
         Ingresos netos = precio excl. IVA (19%) × 70% (comisión Apple/Google 30%) · ARPU neto blended ~$3.300/mes ·
-        Contenido $0 en M1-2 (cubierto por inversión inicial), $1,5M/mes desde M3 · Costos fijos: coordinador $700K + hosting $150K + asesoría TI $200K + admin/oficina $250K ·
-        Inversión inicial US$25.000 ($22,5M CLP) no incluida · Break-even acumulado estimado mes 5–6.
+        Contenido $0 en M1-2, $3,0M/mes desde M3 (~43 sesiones × $70.000 promedio) · Fijo + mkt incluye coordinador $700K + hosting $150K + asesoría TI $200K + admin $250K + marketing variable ·
+        Inversión inicial US$25.000 ($22,5M CLP) no incluida · Break-even acumulado estimado mes 6.
       </div>
     </div>
   );
