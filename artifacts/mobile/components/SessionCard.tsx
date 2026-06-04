@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   durationBadgeText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#EDE1D3",
+    color: "#FFFFFF",
   },
   hRow: {
     flexDirection: "row",

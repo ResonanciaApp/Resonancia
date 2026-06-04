@@ -328,8 +328,8 @@ export default function HomeScreen() {
                   {featuredSession.title}
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14, marginTop: 2 }}>
-                  <Feather name="clock" size={12} color="#EDE1D3" style={{ marginRight: 4, marginTop: 1 }} />
-                  <Text style={{ fontSize: 13, color: "#EDE1D3", opacity: 0.85, lineHeight: 16 }}>
+                  <Feather name="clock" size={12} color="#FFFFFF" style={{ marginRight: 4, marginTop: 1 }} />
+                  <Text style={{ fontSize: 13, color: "#FFFFFF", opacity: 0.85, lineHeight: 16 }}>
                     {featuredSession.durationLabel}
                   </Text>
                 </View>
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   catCardLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#EDE1D3",
+    color: "#FFFFFF",
     flex: 1,
     lineHeight: 18,
   },
@@ -507,12 +507,12 @@ const styles = StyleSheet.create({
   recentDurText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#EDE1D3",
+    color: "#FFFFFF",
   },
   recentTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#EDE1D3",
+    color: "#FFFFFF",
     lineHeight: 17,
     marginTop: 8,
   },

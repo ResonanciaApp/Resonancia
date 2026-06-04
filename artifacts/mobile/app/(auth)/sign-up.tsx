@@ -21,7 +21,7 @@ const COLORS = {
   card: "#151A23",
   primary: "#BE9650",
   accent: "#BE9650",
-  fg: "#EDE1D3",
+  fg: "#FFFFFF",
   muted: "rgba(200, 193, 181, 0.55)",
   border: "rgba(182, 149, 95, 0.25)",
   error: "#D87856",

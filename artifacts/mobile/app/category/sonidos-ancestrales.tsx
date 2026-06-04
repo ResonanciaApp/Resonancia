@@ -207,7 +207,7 @@ export default function SonidosAncestalesScreen() {
                 <MaterialCommunityIcons name="bowl-mix" size={44} color="#C4956A" />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Ancestrales</Text>
-              <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
+              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
                 Cuencos, gongs y frecuencias sagradas
               </Text>
             </View>
@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     height: 2,
-    backgroundColor: "#EDE1D3",
+    backgroundColor: "#FFFFFF",
     borderRadius: 1,
   },
 

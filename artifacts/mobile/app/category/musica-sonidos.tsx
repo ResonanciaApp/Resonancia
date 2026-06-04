@@ -207,7 +207,7 @@ export default function MusicaSonidosScreen() {
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             Música
           </Text>
-          <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
+          <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
             Elige un sonido y conecta con el momento presente
           </Text>
         </View>

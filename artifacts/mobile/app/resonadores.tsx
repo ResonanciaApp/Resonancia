@@ -13,7 +13,7 @@ import { useColors } from "@/hooks/useColors";
 const C = {
   gold:     "#BE9650",
   goldSoft: "#A97A34",
-  fg:       "#EDE1D3",
+  fg:       "#FFFFFF",
   muted:    "#7A8FA8",
   card:     "#151A23",
   border:   "rgba(198,155,79,0.18)",

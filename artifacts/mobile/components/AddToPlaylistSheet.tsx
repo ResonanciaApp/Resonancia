@@ -144,7 +144,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 onPress={() => setStep("create")}
                 style={({ pressed }) => [styles.createRow, { opacity: pressed ? 0.75 : 1 }]}
               >
-                <View style={[styles.plusCircle, { backgroundColor: "#EDE1D3" }]}>
+                <View style={[styles.plusCircle, { backgroundColor: "#FFFFFF" }]}>
                   <Feather name="plus" size={18} color="#090F17" />
                 </View>
                 <Text style={[styles.createLabel, { color: colors.foreground }]}>

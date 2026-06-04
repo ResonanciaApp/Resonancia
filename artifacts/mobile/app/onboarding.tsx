@@ -32,7 +32,7 @@ const CARD     = "#151A23";
 const GOLD     = "#BE9650";
 const GOLD_LT  = "#BE9650";
 const MUTED    = "#7A8FA8";
-const FG       = "#EDE1D3";
+const FG       = "#FFFFFF";
 const BORDER   = "rgba(182,149,95,0.25)";
 
 // ── Survey definition ─────────────────────────────────────────────────────────

@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  durText: { fontSize: 11, fontWeight: "600", color: "#EDE1D3" },
+  durText: { fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
 
   hRow: {
     flexDirection: "row",

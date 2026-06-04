@@ -114,7 +114,7 @@ export const THEME_B = {
   vozInterior: {
     panelBg:          "#111E16",
     gradient:         ["#111E16", "#0D1810"] as [string, string],
-    headerTitle:      "#EDE1D3",
+    headerTitle:      "#FFFFFF",
     headerSubtitle:   "rgba(237,225,211,0.50)",
     historyCount:     "rgba(237,225,211,0.7)",
     historyIcon:      "rgba(237,225,211,0.6)",
@@ -125,7 +125,7 @@ export const THEME_B = {
   diario: {
     panelBg:       "#111E16",
     gradient:      ["#111E16", "#0D1810"] as [string, string],
-    panelTitle:    "#EDE1D3",
+    panelTitle:    "#FFFFFF",
     panelSubtitle: "rgba(237,225,211,0.50)",
     historyIcon:   "rgba(237,225,211,0.6)",
     modules: {
@@ -138,7 +138,7 @@ export const THEME_B = {
   // ── components/MensajesAnonimosPanel.tsx ────────────────────────────────
   mensajesDelAlma: {
     gradient:       ["#111E16", "#0D1810"] as [string, string],
-    headerTitle:    "#EDE1D3",
+    headerTitle:    "#FFFFFF",
     headerSubtitle: "rgba(237,225,211,0.50)",
     cycleBadgeBg:   "rgba(237,225,211,0.10)",
     cycleBadgeText: "rgba(237,225,211,0.7)",

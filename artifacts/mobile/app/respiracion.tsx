@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   phaseLabel: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#EDE1D3",
+    color: "#FFFFFF",
     letterSpacing: 0.4,
   },
   countdownNum: {

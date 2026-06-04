@@ -220,7 +220,7 @@ export default function MananasScreen() {
                 <Feather name="sun" size={44} color={ICON_COLOR} />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
-              <Text style={[styles.pageSub, { color: "#EDE1D3" }]}>
+              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
                 Rituales para comenzar el día con energía
               </Text>
             </View>
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 15, fontWeight: "600" },
   tabIndicator: {
     position: "absolute", bottom: 0, height: 2,
-    backgroundColor: "#EDE1D3", borderRadius: 1,
+    backgroundColor: "#FFFFFF", borderRadius: 1,
   },
 
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
