@@ -26,6 +26,8 @@ export type VideoItem = {
   objectPath: string;
   isPremium?: boolean;
   isNew?: boolean;
+  /** Nombre del usuario o cuenta que subió el video. */
+  author?: string;
 };
 
 export const VIDEOS: VideoItem[] = [
@@ -38,6 +40,7 @@ export const VIDEOS: VideoItem[] = [
     durationLabel: "0:04",
     thumbnail: require("@/assets/images/videos/video-1.jpg"),
     objectPath: "/objects/uploads/032d9237-beea-4d88-8c58-c84ea7b500a6",
+    author: "Casa del Cuenco",
   },
   {
     id: "2",
@@ -48,6 +51,7 @@ export const VIDEOS: VideoItem[] = [
     durationLabel: "0:22",
     thumbnail: require("@/assets/images/videos/video-2.jpg"),
     objectPath: "/objects/uploads/61890768-8f25-42f2-88a0-b389056b471a",
+    author: "Casa del Cuenco",
   },
   {
     id: "3",
@@ -58,6 +62,7 @@ export const VIDEOS: VideoItem[] = [
     durationLabel: "0:24",
     thumbnail: require("@/assets/images/videos/video-3.jpg"),
     objectPath: "/objects/uploads/49bb34bb-fbce-4d71-a914-b5ee6d04d8d8",
+    author: "Casa del Cuenco",
   },
 ];
 

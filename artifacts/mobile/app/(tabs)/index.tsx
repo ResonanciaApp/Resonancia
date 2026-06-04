@@ -292,16 +292,9 @@ export default function HomeScreen() {
                     </View>
                   </View>
                   <Text style={styles.recentTitle} numberOfLines={2}>{s.title}</Text>
-                  <View style={styles.recentCreatorRow}>
-                    <Image
-                      source={creator.photo as number}
-                      style={styles.recentAvatar}
-                      resizeMode="cover"
-                    />
-                    <Text style={styles.recentCreatorName} numberOfLines={1}>
-                      {creator.name}
-                    </Text>
-                  </View>
+                  <Text style={styles.recentCreatorName} numberOfLines={1}>
+                    {creator.name}
+                  </Text>
                 </Pressable>
               );
             })}
@@ -358,12 +351,14 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Descubrí algo nuevo
+              Descubrir algo nuevo
             </Text>
           </View>
-          {recommended.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal />
-          ))}
+          <View style={{ gap: 8 }}>
+            {recommended.map((s) => (
+              <SessionCard key={s.id} session={s} horizontal />
+            ))}
+          </View>
         </View>
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
