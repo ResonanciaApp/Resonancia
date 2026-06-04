@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import Svg, { Ellipse } from "react-native-svg";
+import Svg, { Ellipse, Path } from "react-native-svg";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -43,6 +43,14 @@ function ZenStonesIcon({ color, size = 26 }: { color: string; size?: number }) {
       <Ellipse cx="15" cy="23.5" rx="8" ry="4.2" fill={color} opacity={0.95} />
       <Ellipse cx="15.6" cy="16.5" rx="5.8" ry="3.3" fill={color} opacity={0.85} />
       <Ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity={0.75} />
+    </Svg>
+  );
+}
+
+function MoonIcon({ color, size = 26 }: { color: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" fill={color} />
     </Svg>
   );
 }
@@ -246,7 +254,9 @@ export default function MiMusicaScreen() {
                   style={[styles.catCard, { backgroundColor: "#151A23", borderColor: "transparent" }]}
                 >
                   {cat.iconFamily === "Custom" ? (
-                    <ZenStonesIcon color={cat.color ?? colors.primary} size={26} />
+                    cat.icon === "moon-crescent"
+                      ? <MoonIcon color={cat.color ?? colors.primary} size={26} />
+                      : <ZenStonesIcon color={cat.color ?? colors.primary} size={26} />
                   ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
