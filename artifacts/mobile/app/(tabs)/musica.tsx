@@ -235,22 +235,9 @@ export default function MiMusicaScreen() {
                 <Pressable
                   key={cat.id}
                   onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                  style={[styles.catCard, { backgroundColor: "#151A23", borderColor: "transparent" }]}
+                  style={({ pressed }) => [styles.catCard, { backgroundColor: "#151A23", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.7 : 1 }]}
                 >
-                  {cat.iconFamily === "Custom" ? (
-                    cat.icon === "moon-crescent"
-                      ? <Image source={require("../../assets/images/mix-descanso.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
-                      : <Image source={require("../../assets/images/mix-meditacion.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
-                  ) : cat.iconFamily === "MaterialCommunityIcons" ? (
-                    <MaterialCommunityIcons
-                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={26}
-                      color={cat.color ?? colors.primary}
-                    />
-                  ) : (
-                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color={cat.color ?? colors.primary} />
-                  )}
-                  <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
+                  <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={1}>
                     {cat.label}
                   </Text>
                 </Pressable>
@@ -336,18 +323,16 @@ const styles = StyleSheet.create({
   // Categorías de mezclas
   catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
   catCard: {
-    flex: 1,
-    height: 108,
-    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
     borderWidth: 1,
-    padding: 9,
     alignItems: "center",
     justifyContent: "center",
-    gap: 7,
   },
   catLabel: {
-    fontSize: 11,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "600",
     textAlign: "center",
   },
 
