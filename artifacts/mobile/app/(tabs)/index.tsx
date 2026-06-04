@@ -23,7 +23,9 @@ import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
+import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
+import { SessionRow } from "@/components/SessionRow";
 import { VideoCard } from "@/components/VideoCard";
 import { useDrawer } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -96,6 +98,8 @@ export default function HomeScreen() {
   }, []);
 
   const recentSessions = React.useMemo(() => [...SESSIONS].reverse().slice(0, 6), []);
+
+  const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
   const recommended = React.useMemo<Session[]>(() => {
     const pool = [...SESSIONS];
@@ -354,9 +358,13 @@ export default function HomeScreen() {
               Descubrir algo nuevo
             </Text>
           </View>
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: 0 }}>
             {recommended.map((s) => (
-              <SessionCard key={s.id} session={s} horizontal />
+              <SessionRow
+                key={s.id}
+                session={s}
+                onActionsPress={() => setActionsSession(s)}
+              />
             ))}
           </View>
         </View>
@@ -372,6 +380,12 @@ export default function HomeScreen() {
         </View>
 
       </ScrollView>
+
+      <SessionActionsSheet
+        session={actionsSession}
+        visible={actionsSession !== null}
+        onClose={() => setActionsSession(null)}
+      />
     </View>
   );
 }
