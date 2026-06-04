@@ -207,7 +207,7 @@ export default function HomeScreen() {
         {/* ── 3. VIDEOS DESTACADOS ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: "#F4F0EB" }]}>
+            <Text style={[styles.sectionTitle, { color: "#F9EEDC" }]}>
               Videos destacados
             </Text>
             {VIDEOS.length > 0 && (
@@ -246,7 +246,7 @@ export default function HomeScreen() {
         {/* ── 4. ESCUCHADOS RECIENTEMENTE ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: "#F4F0EB" }]}>
+            <Text style={[styles.sectionTitle, { color: "#F9EEDC" }]}>
               Escuchados recientemente
             </Text>
             <Pressable onPress={() => router.push("/explore" as never)} hitSlop={8}>
@@ -311,7 +311,7 @@ export default function HomeScreen() {
         {/* ── 5. SESIÓN DESTACADA DEL DÍA ── */}
         {featuredSession && (
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: "#F4F0EB", marginBottom: 14 }]}>
+            <Text style={[styles.sectionTitle, { color: "#F9EEDC", marginBottom: 14 }]}>
               Sesión destacada del día
             </Text>
             <Pressable
@@ -357,7 +357,7 @@ export default function HomeScreen() {
         {/* ── 7. DESCUBRÍ ALGO NUEVO ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: "#F4F0EB" }]}>
+            <Text style={[styles.sectionTitle, { color: "#F9EEDC" }]}>
               Descubrí algo nuevo
             </Text>
           </View>
