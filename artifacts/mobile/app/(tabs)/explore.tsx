@@ -25,6 +25,7 @@ import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
+import { TEMAS } from "@/data/temas";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
@@ -41,17 +42,6 @@ const TAG_W = (width - H_PAD * 2 - GAP) / 2;
 const TAG_H = 130;
 const TEMA_W = (width - H_PAD * 2 - GAP * 2) / 3;
 
-const TEMAS: { id: string; label: string; icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"]; color: string }[] = [
-  { id: "ansiedad",     label: "Ansiedad",     icon: "heart-pulse",         color: "#F0A0A8" },
-  { id: "respiracion",  label: "Respiración",   icon: "weather-windy",       color: "#A8D8EA" },
-  { id: "yoga",         label: "Yoga",          icon: "meditation",          color: "#B8E0B0" },
-  { id: "para-padres",  label: "Para padres",   icon: "account-group",       color: "#F5C87A" },
-  { id: "estres",       label: "Estrés",        icon: "lightning-bolt",      color: "#C4A8E0" },
-  { id: "angustia",     label: "Angustia",      icon: "weather-cloudy",      color: "#8FC8C0" },
-  { id: "energia",      label: "Energía",       icon: "white-balance-sunny", color: "#F5D88A" },
-  { id: "psicodelia",   label: "Psicodelia",    icon: "eye",                 color: "#C0A0D8" },
-  { id: "amor-propio",  label: "Amor propio",   icon: "heart",               color: "#F0B8C8" },
-];
 
 
 const TIME_BUCKETS = [
@@ -187,7 +177,7 @@ export default function ExploreScreen() {
                 {TEMAS.map((t) => (
                   <Pressable
                     key={t.id}
-                    onPress={() => router.push(`/tag/${t.id}` as never)}
+                    onPress={() => router.push(`/tema/${t.id}` as never)}
                     style={({ pressed }) => [styles.temaCard, { backgroundColor: "#151A23", opacity: pressed ? 0.75 : 1 }]}
                   >
                     <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
