@@ -392,13 +392,13 @@ export default function ProfileScreen() {
             <View style={[styles.journeyCard, { backgroundColor: "#151A23" }]}>
               <View style={styles.journeyRow}>
                 <Feather name="clock" size={16} color={colors.accent} />
-                <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Minutos esta semana</Text>
+                <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Minutos esta semana</Text>
                 <Text style={[styles.journeyValue, { color: colors.foreground }]}>{activity.weeklyMinutes}</Text>
               </View>
               <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
               <View style={styles.journeyRow}>
                 <Feather name="heart" size={16} color={colors.accent} />
-                <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Sesión favorita</Text>
+                <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Sesión favorita</Text>
                 <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
                   {activity.topSession?.title ?? "—"}
                 </Text>
@@ -406,7 +406,7 @@ export default function ProfileScreen() {
               <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
               <View style={styles.journeyRow}>
                 <Feather name="bar-chart-2" size={16} color={colors.accent} />
-                <Text style={[styles.journeyLabel, { color: colors.mutedForeground }]}>Categoría más escuchada</Text>
+                <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Categoría más escuchada</Text>
                 <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
                   {activity.topCategory ?? "—"}
                 </Text>
@@ -768,7 +768,7 @@ const styles = StyleSheet.create({
   journeyCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 4 },
   journeyRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 14 },
   journeyLabel: { flex: 1, fontSize: 13 },
-  journeyValue: { fontSize: 14, fontWeight: "600", maxWidth: "45%", textAlign: "right" },
+  journeyValue: { fontSize: 11, fontWeight: "600", maxWidth: "45%", textAlign: "right" },
   journeyDivider: { height: StyleSheet.hairlineWidth, opacity: 0.5 },
 
   // Membresía
