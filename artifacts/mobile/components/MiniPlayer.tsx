@@ -177,7 +177,7 @@ export function MiniPlayer() {
             accessibilityRole="button"
             accessibilityLabel="Terminar mezcla"
           >
-            <Text style={[styles.terminarText, { color: colors.primary }]}>TERMINAR</Text>
+            <Text style={styles.terminarText}>TERMINAR</Text>
           </Pressable>
         )}
 
@@ -358,8 +358,8 @@ const styles = StyleSheet.create({
     color: "#090F17",
     backgroundColor: "#FFFFFF",
     overflow: "hidden",
-    borderRadius: 20,
-    paddingHorizontal: 18,
+    borderRadius: 10,
+    paddingHorizontal: 16,
     paddingVertical: 7,
   },
 });
