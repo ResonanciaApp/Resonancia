@@ -636,7 +636,7 @@ export default function ChatScreen() {
                 </Text>
               </View>
               <Pressable onPress={sendRecording} style={styles.sendBtn}>
-                <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>
@@ -675,7 +675,7 @@ export default function ChatScreen() {
                 disabled={draft.trim().length === 0 || sendMsg.isPending}
                 style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
               >
-                <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>
@@ -1328,7 +1328,7 @@ function AttachMenuModal({
             icon="mic"
             label="Grabar mensaje de voz"
             sublabel="Mantén grabando hasta 5 min"
-            tint="#C8C1B5"
+            tint="#FFFFFF"
             onPress={onRecordVoice}
           />
           <AttachOption

@@ -40,7 +40,7 @@ export default function QuoteOfTheDay() {
       </View>
 
       {/* Quote */}
-      <Text style={[styles.quoteText, { color: "#C8C1B5" }]}>
+      <Text style={[styles.quoteText, { color: "#FFFFFF" }]}>
         "{quote.text}"
       </Text>
 

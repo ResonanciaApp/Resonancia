@@ -87,7 +87,7 @@ function GroupPreview({
           <Text style={preview.memberDotText}>T</Text>
         </View>
         <Pressable style={preview.inviteBtn}>
-          <Feather name="plus" size={13} color="#C8C1B5" />
+          <Feather name="plus" size={13} color="#FFFFFF" />
           <Text style={preview.inviteBtnText}>Invitar</Text>
         </Pressable>
       </View>
@@ -106,17 +106,17 @@ function GroupPreview({
 const preview = StyleSheet.create({
   root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#090F17" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
-  initial: { fontSize: 28, fontWeight: "700", color: "#C8C1B5" },
-  name: { color: "#C8C1B5", fontSize: 18, fontWeight: "700", marginBottom: 4 },
+  initial: { fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
+  name: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },
   meta: { color: "rgba(237,225,211,0.55)", fontSize: 12, letterSpacing: 0.8, marginBottom: 14 },
   inviteRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 16 },
   memberDot: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#0F1A2A", alignItems: "center", justifyContent: "center" },
   memberDotText: { color: "#A8C4A8", fontSize: 13, fontWeight: "700" },
   inviteBtn: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(237,225,211,0.12)", borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6 },
-  inviteBtnText: { color: "#C8C1B5", fontSize: 13, fontWeight: "600" },
+  inviteBtnText: { color: "#FFFFFF", fontSize: 13, fontWeight: "600" },
   tabs: { flexDirection: "row", width: "100%", borderTopWidth: 1, paddingHorizontal: 16 },
   tab: { paddingVertical: 12, marginRight: 24, color: "rgba(237,225,211,0.4)", fontSize: 14 },
-  tabActive: { color: "#C8C1B5", borderBottomWidth: 2, borderBottomColor: "#C8C1B5", fontWeight: "600" },
+  tabActive: { color: "#FFFFFF", borderBottomWidth: 2, borderBottomColor: "#FFFFFF", fontWeight: "600" },
 });
 
 // ─── Bottom sheet wrapper ─────────────────────────────────────────────────────
@@ -209,7 +209,7 @@ export default function CrearGrupoScreen() {
           {/* Close */}
           <Pressable onPress={() => router.back()} hitSlop={12} style={styles.closeBtn}>
             <View style={styles.closeBtnInner}>
-              <Feather name="x" size={18} color="#C8C1B5" />
+              <Feather name="x" size={18} color="#FFFFFF" />
             </View>
           </Pressable>
 
@@ -261,7 +261,7 @@ export default function CrearGrupoScreen() {
       {/* Back arrow top-left */}
       <View style={{ paddingTop: topPad + 8, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between" }}>
         <Pressable onPress={() => setStep((s) => Math.max(1, s - 1) as Step)} hitSlop={12}>
-          <Feather name="arrow-left" size={22} color="#C8C1B5" />
+          <Feather name="arrow-left" size={22} color="#FFFFFF" />
         </Pressable>
         <Feather name="settings" size={20} color="rgba(237,225,211,0.3)" />
       </View>
@@ -390,7 +390,7 @@ export default function CrearGrupoScreen() {
           {step === 5 && (
             <>
               <View style={styles.successIcon}>
-                <LinearGradient colors={["#C8C1B5", "#BE9650"]} style={styles.successGrad}>
+                <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.successGrad}>
                   <Feather name="check" size={28} color="#070E09" />
                 </LinearGradient>
               </View>
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   // Step 1
   closeBtn: { marginBottom: 36, alignSelf: "flex-start" },
   closeBtnInner: { width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(237,225,211,0.12)", alignItems: "center", justifyContent: "center" },
-  stepTitle: { color: "#C8C1B5", fontSize: 24, fontWeight: "700", marginBottom: 24 },
+  stepTitle: { color: "#FFFFFF", fontSize: 24, fontWeight: "700", marginBottom: 24 },
   nameInputBox: {
     flexDirection: "row", alignItems: "center",
     borderRadius: 14, borderWidth: 1,

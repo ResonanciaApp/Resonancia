@@ -24,7 +24,7 @@ const P = {
   goldSoft:   "#C89544",
   goldHi:     "#F0C36A",
   textMain:   "#EDE7DA",
-  textMuted:  "#D5C8B2",
+  textMuted:  "#FFFFFF",
   btnFrom:    "#173A2B",
   btnTo:      "#244935",
   border:     "#A97A34",

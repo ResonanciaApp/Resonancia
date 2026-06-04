@@ -66,10 +66,10 @@ const WARM = {
   separator: "rgba(255,255,255,0.06)",
   playBg: "transparent",
   playBorder: "rgba(255,255,255,0.12)",
-  playText: "#EDE1D3",
+  playText: "#FFFFFF",
   saveBg: "transparent",
   saveBorder: "rgba(255,255,255,0.1)",
-  saveText: "#EDE1D3",
+  saveText: "#FFFFFF",
   caption: "rgba(122,143,168,0.7)",
 } as const;
 

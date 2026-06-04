@@ -443,7 +443,7 @@ export default function ProfileScreen() {
                 <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 13, height: 13, marginRight: 6 }} contentFit="contain" />
                 <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>Prueba Premium</Text>
               </View>
-              <Text style={[styles.premiumSub, { color: "#D5C8B2", marginBottom: 10 }]}>
+              <Text style={[styles.premiumSub, { color: "#FFFFFF", marginBottom: 10 }]}>
                 Lleva tu relajación al siguiente nivel y accede a:
               </Text>
               {[
@@ -453,7 +453,7 @@ export default function ProfileScreen() {
               ].map((f) => (
                 <View key={f.text} style={styles.premiumFeatureRow}>
                   <Feather name={f.icon as never} size={11} color="#BE9650" />
-                  <Text style={[styles.premiumFeatureText, { color: "#D5C8B2" }]}>{f.text}</Text>
+                  <Text style={[styles.premiumFeatureText, { color: "#FFFFFF" }]}>{f.text}</Text>
                 </View>
               ))}
             </View>

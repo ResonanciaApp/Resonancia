@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   },
   primaryIcon: { marginBottom: 12 },
   primaryLabel: {
-    color: "#F5EDD8",
+    color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "700",
     textAlign: "center",
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
   },
   secondaryIcon: { marginBottom: 8 },
   secondaryLabel: {
-    color: "#F5EDD8",
+    color: "#FFFFFF",
     fontSize: 11,
     fontWeight: "600",
     textAlign: "center",
@@ -555,11 +555,11 @@ const styles = StyleSheet.create({
   verTodasBlockText: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#EDE1D3",
+    color: "#FFFFFF",
     letterSpacing: 0.2,
   },
   tagLabel: {
-    color: "#F5EDD8",
+    color: "#FFFFFF",
     fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   seriesTitle: {
-    color: "#F5EDD8",
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
     lineHeight: 21,

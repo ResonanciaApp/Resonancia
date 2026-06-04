@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   profileName: {
-    color: "#C8C1B5",
+    color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   },
   premiumIconText: { fontSize: 11, color: "#F0C36A" },
   itemLabel: {
-    color: "#C8C1B5",
+    color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "500",
     letterSpacing: 0.2,

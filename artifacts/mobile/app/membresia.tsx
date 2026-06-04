@@ -31,7 +31,7 @@ const P = {
   goldSoft:   "#C89544",
   goldHi:     "#F0C36A",
   textMain:   "#EDE7DA",
-  textMuted:  "#D5C8B2",
+  textMuted:  "#FFFFFF",
   border:     "rgba(169,122,52,0.35)",
   borderSel:  "#D6A14D",
   saveBg:     "#1F4A2E",

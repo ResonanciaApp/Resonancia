@@ -212,7 +212,7 @@ export default function SessionDetailScreen() {
           </View>
 
           {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#C8C1B5" }]}>
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
             {session.description}
           </Text>
 

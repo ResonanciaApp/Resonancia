@@ -196,16 +196,16 @@ export default function CategoryMixesScreen() {
           <View style={styles.hero}>
             {meta.iconFamily === "Custom" ? (
               meta.icon === "moon-crescent"
-                ? <MoonIcon color={meta.color ?? "#EDE1D3"} size={44} />
-                : <ZenStonesIcon color={meta.color ?? "#EDE1D3"} size={44} />
+                ? <MoonIcon color={meta.color ?? "#FFFFFF"} size={44} />
+                : <ZenStonesIcon color={meta.color ?? "#FFFFFF"} size={44} />
             ) : meta.iconFamily === "MaterialCommunityIcons" ? (
               <MaterialCommunityIcons
                 name={meta.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                 size={44}
-                color={meta.color ?? "#EDE1D3"}
+                color={meta.color ?? "#FFFFFF"}
               />
             ) : (
-              <Feather name={meta.icon as React.ComponentProps<typeof Feather>["name"]} size={44} color={meta.color ?? "#EDE1D3"} />
+              <Feather name={meta.icon as React.ComponentProps<typeof Feather>["name"]} size={44} color={meta.color ?? "#FFFFFF"} />
             )}
             <Text style={[styles.heroLabel, { color: colors.foreground }]}>{meta.label}</Text>
             <Text style={[styles.heroSub, { color: colors.mutedForeground }]}>{meta.subtitle}</Text>

@@ -431,10 +431,10 @@ export default function GrupoDetailScreen() {
         <LinearGradient colors={grupo.gradient} style={[styles.header, { paddingTop: topPad + 12 }]}>
           <View style={styles.headerTop}>
             <Pressable onPress={() => router.back()} hitSlop={12}>
-              <Feather name="arrow-left" size={22} color="#C8C1B5" />
+              <Feather name="arrow-left" size={22} color="#FFFFFF" />
             </Pressable>
             <Pressable hitSlop={12}>
-              <Feather name="more-horizontal" size={22} color="#C8C1B5" />
+              <Feather name="more-horizontal" size={22} color="#FFFFFF" />
             </Pressable>
           </View>
 
@@ -450,7 +450,7 @@ export default function GrupoDetailScreen() {
               <Text style={styles.groupName}>{grupo.name}</Text>
               <Text style={styles.groupSub} numberOfLines={1}>{grupo.description}</Text>
               <View style={styles.groupMeta}>
-                <Feather name="users" size={11} color="#C8C1B5AA" />
+                <Feather name="users" size={11} color="rgba(255,255,255,0.55)" />
                 <Text style={styles.groupMetaText}>
                   {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
                 </Text>
@@ -465,7 +465,7 @@ export default function GrupoDetailScreen() {
           <View style={styles.tabs}>
             {(["discusion", "miembros", "info"] as TabType[]).map((t) => (
               <Pressable key={t} onPress={() => setTab(t)} style={[styles.tabItem, tab === t && styles.tabItemActive]}>
-                <Text style={[styles.tabText, { color: tab === t ? "#C8C1B5" : "#C8C1B588" }]}>
+                <Text style={[styles.tabText, { color: tab === t ? "#FFFFFF" : "rgba(255,255,255,0.35)" }]}>
                   {t === "discusion" ? "Discusión" : t === "miembros" ? "Miembros" : "Info"}
                 </Text>
               </Pressable>
@@ -760,15 +760,15 @@ const styles = StyleSheet.create({
   headerBody: { flexDirection: "row", gap: 12, alignItems: "flex-start", marginBottom: 16 },
   groupIcon: { width: 52, height: 52, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   groupIconImg: { width: 52, height: 52, borderRadius: 14 },
-  groupName: { color: "#C8C1B5", fontSize: 18, fontWeight: "700", marginBottom: 3 },
-  groupSub: { color: "#C8C1B5AA", fontSize: 12, marginBottom: 6 },
+  groupName: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 3 },
+  groupSub: { color: "rgba(255,255,255,0.55)", fontSize: 12, marginBottom: 6 },
   groupMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
-  groupMetaText: { color: "#C8C1B5AA", fontSize: 11 },
-  groupMetaDot: { color: "#C8C1B5AA", fontSize: 11 },
+  groupMetaText: { color: "rgba(255,255,255,0.55)", fontSize: 11 },
+  groupMetaDot: { color: "rgba(255,255,255,0.55)", fontSize: 11 },
   activeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#7ED65A" },
   tabs: { flexDirection: "row" },
   tabItem: { flex: 1, alignItems: "center", paddingVertical: 12 },
-  tabItemActive: { borderBottomWidth: 2, borderBottomColor: "#C8C1B5" },
+  tabItemActive: { borderBottomWidth: 2, borderBottomColor: "#FFFFFF" },
   tabText: { fontSize: 14, fontWeight: "600" },
   // Posts
   postCard: { borderRadius: 16, borderWidth: 1, padding: 14, marginBottom: 12, gap: 10 },

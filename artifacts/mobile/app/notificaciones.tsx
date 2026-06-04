@@ -59,7 +59,7 @@ function iconFor(type: Notification["type"]): { name: FeatherName; color: string
     case "group_message":   return { name: "users",          color: "#C8B4E0" };
     case "mix_like":        return { name: "heart",          color: "#D4709A" };
     case "mix_comment":     return { name: "message-square", color: "#BE9650" };
-    default:                return { name: "bell",           color: "#C8C1B5" };
+    default:                return { name: "bell",           color: "#FFFFFF" };
   }
 }
 
