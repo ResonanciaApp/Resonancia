@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
+  LayoutAnimation,
   Platform,
   Pressable,
   ScrollView,
@@ -53,6 +54,12 @@ export default function MiMusicaScreen() {
   const { isActive, toggleSound } = useMixer();
   const [activeTab, setActiveTab] = useState<TabId>("popular");
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
+  const [descExpanded, setDescExpanded] = useState(false);
+
+  const toggleDesc = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setDescExpanded((v) => !v);
+  };
 
   useEffect(() => {
     AsyncStorage.getItem(COUNTS_KEY)
@@ -198,10 +205,22 @@ export default function MiMusicaScreen() {
       <View style={[styles.inner, { paddingTop: topPad + 12 }]}>
         {/* Header fijo (no scrollea) */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mezclador</Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Tus mezclas, organizadas por momento
-          </Text>
+          <Pressable onPress={toggleDesc} style={styles.titleRow} hitSlop={10}>
+            <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mezclador</Text>
+            <Feather
+              name={descExpanded ? "chevron-up" : "chevron-down"}
+              size={20}
+              color={colors.mutedForeground}
+              style={styles.titleChevron}
+            />
+          </Pressable>
+          {descExpanded && (
+            <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+              Crea tu ambiente sonoro combinando loops de naturaleza, mantras y frecuencias.{"\n"}
+              Activa hasta {MAX_ACTIVE_SOUNDS} sonidos a la vez y regula el volumen de cada uno.{"\n"}
+              Tus mezclas favoritas se guardan en cada categoría.
+            </Text>
+          )}
         </View>
 
         <ScrollView
@@ -287,8 +306,10 @@ const styles = StyleSheet.create({
   inner: { flex: 1, paddingHorizontal: 20 },
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#090F17" },
   header: { marginBottom: 16 },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
-  pageSub: { fontSize: 13, lineHeight: 18 },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  titleChevron: { marginTop: 4 },
+  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5 },
+  pageSub: { fontSize: 13, lineHeight: 19, marginTop: 6 },
 
   // Barra sticky (categorías de mezclas + tabs de sonido)
   stickyBar: {
