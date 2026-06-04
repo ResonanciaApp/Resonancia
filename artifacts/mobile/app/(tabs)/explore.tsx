@@ -145,6 +145,7 @@ export default function ExploreScreen() {
         {/* ── Mi Biblioteca (2×2 grid) ── */}
         {query.length === 0 && (
           <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Tu biblioteca</Text>
             <View style={styles.libraryGrid}>
               {[
                 { label: "Carpetas",    icon: "folder"     as const, route: "/carpetas"    },
@@ -164,7 +165,7 @@ export default function ExploreScreen() {
                     onPress={() => router.push(item.route as never)}
                   >
                     <View style={styles.libraryIconWrap}>
-                      <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.primary} />
+                      <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.foreground} />
                     </View>
                     <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
                       {item.label}
