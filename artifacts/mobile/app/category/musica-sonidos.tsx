@@ -35,7 +35,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const GAP = 10;
 const COLS = 3;
-const CARD_WIDTH = ((width - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 5;
+const CARD_WIDTH = ((width - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 12;
 const IMG_SIZE = CARD_WIDTH - 10;
 
 type Tab = "Populares" | SoundTag;
@@ -291,7 +291,7 @@ export default function MusicaSonidosScreen() {
                       styles.card,
                       {
                         width: CARD_WIDTH,
-                        backgroundColor: "#151A23",
+                        backgroundColor: "transparent",
                         borderColor: "transparent",
                         borderWidth: 0,
                         opacity: pressed ? 0.82 : 1,
