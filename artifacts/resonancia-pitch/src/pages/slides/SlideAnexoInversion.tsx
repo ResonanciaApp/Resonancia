@@ -145,12 +145,12 @@ export default function SlideAnexoInversion() {
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
             <ScenarioCard
               label="Conservador"
-              subs="7.000"
-              arr="US$ 308K"
+              subs="10.000"
+              arr="US$ 440K"
               multiple="5× ARR"
-              valuation="US$ 1,5M"
-              stakeVal="US$ 38K"
-              returnX="1,5×"
+              valuation="US$ 2,2M"
+              stakeVal="US$ 55K"
+              returnX="2,2×"
             />
             <ScenarioCard
               label="Base"

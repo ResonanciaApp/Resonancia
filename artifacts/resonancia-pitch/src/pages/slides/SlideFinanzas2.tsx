@@ -19,7 +19,7 @@ export default function SlideFinanzas2() {
   const maxSubs = 15000;
 
   const scenarios = [
-    { label: "Conservador", subs12: "7.000",  ing12: "$23,1M/mes", ingAnual: "~$85M",  color: "#3D4F62" },
+    { label: "Conservador", subs12: "10.000", ing12: "$33,0M/mes", ingAnual: "~$121M", color: "#3D4F62" },
     { label: "Base",        subs12: "15.000", ing12: "$49,5M/mes", ingAnual: "~$314M", color: "#BE9650", highlight: true },
     { label: "Optimista",   subs12: "25.000", ing12: "$82,5M/mes", ingAnual: "~$475M", color: "#6EC49A" },
   ];

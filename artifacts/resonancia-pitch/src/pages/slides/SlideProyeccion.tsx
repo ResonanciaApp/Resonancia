@@ -64,10 +64,10 @@ export default function SlideProyeccion() {
       <div style={{ display: "flex", gap: "2vw" }}>
         <ScenarioCard
           label="Conservador"
-          installs="140.000"
-          subs="7.000"
-          revenue="$85M CLP"
-          revenueUSD="≈ US$ 94.000"
+          installs="200.000"
+          subs="10.000"
+          revenue="$121M CLP"
+          revenueUSD="≈ US$ 134.000"
         />
         <ScenarioCard
           label="Base"
