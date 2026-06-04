@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   tab: {
     paddingHorizontal: 12,
     paddingVertical: 7,
-    borderRadius: 999,
+    borderRadius: 8,
     borderWidth: 1,
   },
   tabLabel: { fontSize: 13, fontWeight: "400", letterSpacing: 0.2 },
@@ -318,10 +318,10 @@ const styles = StyleSheet.create({
   catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
   catCard: {
     flex: 1,
-    height: 98,
+    height: 108,
     borderRadius: 14,
     borderWidth: 1,
-    padding: 8,
+    padding: 9,
     alignItems: "center",
     justifyContent: "center",
     gap: 7,
