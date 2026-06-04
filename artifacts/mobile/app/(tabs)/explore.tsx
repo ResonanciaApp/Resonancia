@@ -155,20 +155,19 @@ export default function ExploreScreen() {
                 { label: "Playlists",   icon: "list"       as const, route: "/playlists"   },
                 { label: "Favoritos",   icon: "heart"      as const, route: "/favorites"   },
                 { label: "Historial",   icon: "clock"      as const, route: "/historial"   },
-              ].map((item, idx, arr) => {
-                const isLastOdd = idx === arr.length - 1 && arr.length % 2 !== 0;
+              ].map((item, idx) => {
+                const isTop = idx < 3;
                 return (
                   <Pressable
                     key={item.label}
                     style={({ pressed }) => [
-                      styles.libraryCard,
-                      isLastOdd && styles.libraryCardFull,
+                      isTop ? styles.libraryCardThird : styles.libraryCardWide,
                       { backgroundColor: "#151A23", opacity: pressed ? 0.7 : 1 },
                     ]}
                     onPress={() => router.push(item.route as never)}
                   >
                     <View style={styles.libraryIconWrap}>
-                      <Feather name={item.icon} size={22} color="rgba(140, 190, 235, 0.6)" />
+                      <Feather name={item.icon} size={isTop ? 22 : 26} color="rgba(140, 190, 235, 0.6)" />
                     </View>
                     <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
                       {item.label}
@@ -493,20 +492,21 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 8,
   },
-  libraryCard: {
-    width: "47.5%",
+  libraryCardThird: {
+    width: "31.5%",
     borderRadius: 14,
     paddingVertical: 14,
-    paddingHorizontal: 11,
+    paddingHorizontal: 6,
     alignItems: "center",
     gap: 7,
   },
-  libraryCardFull: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 10,
-    paddingVertical: 12,
+  libraryCardWide: {
+    width: "48.5%",
+    borderRadius: 16,
+    paddingVertical: 24,
+    paddingHorizontal: 11,
+    alignItems: "center",
+    gap: 9,
   },
   libraryIconWrap: {
     width: 34,
