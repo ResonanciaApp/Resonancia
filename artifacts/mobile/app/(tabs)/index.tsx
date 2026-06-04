@@ -329,30 +329,30 @@ export default function HomeScreen() {
                 const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
                 return (
                   <View style={styles.heroFrosted}>
-                    {/* Meta: ★ rating · Guiada/Sin voz · duración */}
+                    {/* Meta: ★ rating · Guiada/Sin voz · duración — dorado */}
                     <View style={styles.heroMetaRow}>
-                      <Feather name="star" size={11} color={colors.mutedForeground} />
-                      <Text style={[styles.heroMetaText, { color: colors.mutedForeground }]}>
+                      <Feather name="star" size={11} color={colors.primary} />
+                      <Text style={[styles.heroMetaText, { color: colors.primary }]}>
                         {" "}4.7 · {hasVoice ? "Guiada" : "Sin voz"} · {featuredSession.durationLabel}
                       </Text>
                     </View>
-                    {/* Título */}
-                    <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
-                      {featuredSession.title}
-                    </Text>
-                    {/* Autor */}
-                    <Text style={[styles.heroAuthor, { color: colors.primary }]} numberOfLines={1}>
-                      {heroAuthor}
-                    </Text>
-                    {/* Botón outline */}
-                    <Pressable
-                      onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
-                      style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.82 : 1 }]}
-                    >
-                      <Text style={[styles.heroBtnText, { color: colors.primary }]}>
-                        ▶  Escuchar ahora
-                      </Text>
-                    </Pressable>
+                    {/* Fila inferior: título+autor a la izq, botón a la der */}
+                    <View style={styles.heroBottom}>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
+                          {featuredSession.title}
+                        </Text>
+                        <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
+                          {heroAuthor}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
+                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.82 : 1 }]}
+                      >
+                        <Text style={[styles.heroBtnText, { color: colors.primary }]}>Escuchar</Text>
+                      </Pressable>
+                    </View>
                   </View>
                 );
               })()}
@@ -590,9 +590,14 @@ const styles = StyleSheet.create({
   },
   heroMetaText: { fontSize: 11, lineHeight: 14 },
   heroTitle: { fontSize: 20, fontWeight: "700", lineHeight: 26, marginBottom: 4 },
-  heroAuthor: { fontSize: 12, marginBottom: 14 },
+  heroAuthor: { fontSize: 12, marginTop: 2 },
+  heroBottom: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
   heroBtn: {
-    alignSelf: "flex-start",
+    flexShrink: 0,
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
