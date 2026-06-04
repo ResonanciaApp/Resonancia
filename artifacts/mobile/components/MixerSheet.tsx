@@ -53,24 +53,24 @@ const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#0C1828", "#090F17"] as const;
 
-/** Ivory Warm — paleta para el sheet del mezclador. */
+/** Minimal Frost — paleta para el sheet del mezclador. */
 const WARM = {
-  bg: "#100D09",
-  handle: "rgba(190,150,80,0.25)",
-  trackBg: "rgba(190,150,80,0.05)",
-  trackBorder: "rgba(190,150,80,0.12)",
-  sliderThumb: "#C4A97D",
-  sliderTrack: "rgba(190,150,80,0.35)",
-  addBorder: "rgba(190,150,80,0.2)",
-  addText: "rgba(190,150,80,0.5)",
-  separator: "rgba(190,150,80,0.08)",
-  playBg: "rgba(190,150,80,0.14)",
-  playBorder: "rgba(190,150,80,0.24)",
-  playText: "#C4A97D",
-  saveBg: "rgba(190,150,80,0.05)",
-  saveBorder: "rgba(190,150,80,0.14)",
-  saveText: "rgba(190,150,80,0.45)",
-  caption: "rgba(190,150,80,0.45)",
+  bg: "#090F17",
+  handle: "rgba(255,255,255,0.12)",
+  trackBg: "transparent",
+  trackBorder: "rgba(255,255,255,0.07)",
+  sliderThumb: "#BE9650",
+  sliderTrack: "rgba(190,150,80,0.55)",
+  addBorder: "rgba(255,255,255,0.1)",
+  addText: "rgba(190,150,80,0.65)",
+  separator: "rgba(255,255,255,0.06)",
+  playBg: "transparent",
+  playBorder: "rgba(255,255,255,0.12)",
+  playText: "#EDE1D3",
+  saveBg: "transparent",
+  saveBorder: "rgba(255,255,255,0.1)",
+  saveText: "#EDE1D3",
+  caption: "rgba(122,143,168,0.7)",
 } as const;
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
@@ -283,7 +283,7 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel="Terminar mezcla"
             >
-              <Text style={[styles.clearText, { color: colors.mutedForeground }]}>Terminar</Text>
+              <Text style={styles.clearPill}>TERMINAR</Text>
             </Pressable>
             <Pressable
               onPress={closeSheet}
@@ -577,9 +577,21 @@ const styles = StyleSheet.create({
   },
   headerBtn: { paddingHorizontal: 4, justifyContent: "center" },
   caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
-  title: { fontSize: 19, fontWeight: "300", letterSpacing: 0.2 },
-  subtitle: { fontSize: 12, marginTop: 3, fontWeight: "300" },
+  title: { fontSize: 18, fontWeight: "600", letterSpacing: 0.3 },
+  subtitle: { fontSize: 12, marginTop: 2 },
   clearText: { fontSize: 12, fontWeight: "400" },
+  clearPill: {
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: "#090F17",
+    backgroundColor: "#FFFFFF",
+    overflow: "hidden",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+  },
 
   trackScroll: { flexGrow: 0 },
   trackRow: {
