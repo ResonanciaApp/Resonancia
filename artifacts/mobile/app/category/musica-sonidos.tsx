@@ -318,7 +318,7 @@ export default function MusicaSonidosScreen() {
                     }}
                   >
                     {/* Full-bleed image */}
-                    <View style={[styles.imgWrap, { width: CARD_WIDTH, height: CARD_WIDTH, borderTopLeftRadius: 16, borderTopRightRadius: 16, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, overflow: "hidden" }]}>
+                    <View style={[styles.imgWrap, { width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 16, overflow: "hidden" }]}>
                       <ExpoImage
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         source={session.image as any}
