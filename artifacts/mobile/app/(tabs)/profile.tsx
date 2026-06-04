@@ -404,11 +404,7 @@ export default function ProfileScreen() {
         >
           {isPremium ? (
             <View style={[styles.planIconWrap, { backgroundColor: "rgba(26,90,60,0.5)" }]}>
-              <Image
-                source={require("../../assets/images/estrella-premium.png")}
-                style={{ width: 20, height: 20 }}
-                contentFit="contain"
-              />
+              <Feather name="star" size={20} color={colors.primary} />
             </View>
           ) : (
             <View style={[styles.planIconWrap, { backgroundColor: "rgba(122,143,168,0.12)" }]}>
