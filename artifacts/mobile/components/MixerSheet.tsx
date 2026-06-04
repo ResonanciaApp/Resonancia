@@ -146,6 +146,15 @@ export function MixerSheet() {
     [originId, presets],
   );
 
+  /** Detecta si la mezcla actual difiere del preset de origen (nuevo sonido o volumen cambiado). */
+  const mixHasChanged = useMemo(() => {
+    if (!originPreset) return false;
+    const origSounds = originPreset.sounds ?? [];
+    if (activeSounds.length !== origSounds.length) return true;
+    const origMap = new Map(origSounds.map((s) => [s.id, s.volume]));
+    return activeSounds.some((a) => origMap.get(a.id) !== a.volume);
+  }, [activeSounds, originPreset]);
+
   const handleAddSounds = () => {
     closeSheet();
     router.push("/(tabs)/musica" as never);
@@ -330,7 +339,7 @@ export function MixerSheet() {
 
             <Pressable
               onPress={handleAddSounds}
-              style={[styles.addBtn, { borderColor: WARM.addBorder }]}
+              style={styles.addBtn}
             >
               <Feather name="plus" size={18} color={WARM.addText} />
               <Text style={[styles.addBtnText, { color: WARM.addText }]}>Agregar sonidos</Text>
@@ -380,8 +389,8 @@ export function MixerSheet() {
             {true ? (
               <>
                 <Pressable
-                  onPress={() => canUpdate && openSaveModal("update")}
-                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder, opacity: canUpdate ? 1 : 0.4 }]}
+                  onPress={() => (canUpdate && mixHasChanged) && openSaveModal("update")}
+                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder, opacity: (canUpdate && mixHasChanged) ? 1 : 0.4 }]}
                 >
                   <Feather name="check" size={16} color={WARM.saveText} />
                   <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Actualizar</Text>
@@ -623,8 +632,6 @@ const styles = StyleSheet.create({
     gap: 8,
     height: 46,
     borderRadius: 14,
-    borderWidth: 1,
-    borderStyle: "dashed",
     marginTop: 14,
   },
   addBtnText: { fontSize: 14, fontWeight: "600" },
