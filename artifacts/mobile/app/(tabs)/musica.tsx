@@ -284,8 +284,8 @@ const styles = StyleSheet.create({
   },
 
   // Secciones
-  section: { marginBottom: 32 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
+  section: { marginBottom: 57 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
 
   // Toggle "Categorías"
   catToggle: {

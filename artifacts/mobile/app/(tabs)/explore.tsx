@@ -285,7 +285,7 @@ export default function ExploreScreen() {
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>¿Cuánto tiempo tienes hoy?</Text>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -394,7 +394,7 @@ export default function ExploreScreen() {
             {/* ── Más escuchados ── */}
             {popularSessions.length > 0 && (
               <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
                   Más escuchados
                 </Text>
                 <ScrollView
@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14 },
 
   section: { paddingHorizontal: H_PAD, marginBottom: 57 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
   // Mi Biblioteca grid
