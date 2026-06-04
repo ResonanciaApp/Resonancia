@@ -381,15 +381,56 @@ export default function HomeScreen() {
         {/* ── 7. MÁS ESCUCHADOS ── */}
         {popularSessions.length > 0 && (
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Más escuchados</Text>
+            <View style={styles.sectionRow}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                Más escuchados
+              </Text>
+            </View>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.hScroll}
+              style={{ marginHorizontal: -GRID_PAD }}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
             >
-              {popularSessions.map((session) => (
-                <SessionCard key={session.id} session={session} width={200} />
-              ))}
+              {popularSessions.map((session) => {
+                const locked = !!session.isPremium && !isPremium;
+                const creator =
+                  session.categoryId === "meditaciones-guiadas"
+                    ? getGuide(session.guideId)
+                    : getArtist(session.artistId);
+                return (
+                  <Pressable
+                    key={session.id}
+                    onPress={() => {
+                      if (locked) { router.push("/membresia" as never); return; }
+                      playSession(session); router.push("/player" as never);
+                    }}
+                    style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.85 : 1 }]}
+                  >
+                    <View style={styles.recentThumbWrap}>
+                      <Image
+                        source={session.image as number}
+                        style={styles.recentThumb}
+                        resizeMode="cover"
+                      />
+                      {locked && (
+                        <Image
+                          source={require("@/assets/images/estrella-premium.png")}
+                          style={styles.recentStar}
+                          resizeMode="contain"
+                        />
+                      )}
+                      <View style={styles.recentDurBadge}>
+                        <Text style={styles.recentDurText}>{session.durationLabel}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.recentTitle} numberOfLines={2}>{session.title}</Text>
+                    <Text style={styles.recentCreatorName} numberOfLines={1}>
+                      {creator.name}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </ScrollView>
           </View>
         )}
