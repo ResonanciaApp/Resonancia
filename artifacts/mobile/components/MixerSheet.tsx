@@ -128,9 +128,17 @@ export function MixerSheet() {
     image: string;
   } | null>(null);
 
-  // Al abrir la hoja, recordamos de qué preset partió (si aplica).
+  // Snapshot de la mezcla en el momento en que se abrió la hoja.
+  // Se usa para detectar cambios (agregar/quitar/volumen) sin depender de
+  // si hay un preset cargado o no.
+  const [snapshotSounds, setSnapshotSounds] = useState<{ id: string; volume: number }[]>([]);
+
+  // Al abrir la hoja: recordamos el preset de origen Y tomamos snapshot de la mezcla.
   useEffect(() => {
-    if (isSheetOpen) setOriginId(loadedPresetId);
+    if (isSheetOpen) {
+      setOriginId(loadedPresetId);
+      setSnapshotSounds(activeSounds.map((s) => ({ id: s.id, volume: s.volume })));
+    }
   }, [isSheetOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const activeMix = useMemo(
@@ -146,14 +154,13 @@ export function MixerSheet() {
     [originId, presets],
   );
 
-  /** Detecta si la mezcla actual difiere del preset de origen (nuevo sonido o volumen cambiado). */
+  /** Detecta si la mezcla actual difiere del snapshot al abrir la hoja. */
   const mixHasChanged = useMemo(() => {
-    if (!originPreset) return false;
-    const origSounds = originPreset.sounds ?? [];
-    if (activeSounds.length !== origSounds.length) return true;
-    const origMap = new Map(origSounds.map((s) => [s.id, s.volume]));
-    return activeSounds.some((a) => origMap.get(a.id) !== a.volume);
-  }, [activeSounds, originPreset]);
+    if (snapshotSounds.length === 0 && activeSounds.length === 0) return false;
+    if (activeSounds.length !== snapshotSounds.length) return true;
+    const snapMap = new Map(snapshotSounds.map((s) => [s.id, s.volume]));
+    return activeSounds.some((a) => snapMap.get(a.id) !== a.volume);
+  }, [activeSounds, snapshotSounds]);
 
   const handleAddSounds = () => {
     closeSheet();
@@ -389,8 +396,8 @@ export function MixerSheet() {
             {true ? (
               <>
                 <Pressable
-                  onPress={() => (canUpdate && mixHasChanged) && openSaveModal("update")}
-                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder, opacity: (canUpdate && mixHasChanged) ? 1 : 0.4 }]}
+                  onPress={() => mixHasChanged && openSaveModal(canUpdate ? "update" : "new")}
+                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder, opacity: mixHasChanged ? 1 : 0.4 }]}
                 >
                   <Feather name="check" size={16} color={WARM.saveText} />
                   <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Actualizar</Text>
