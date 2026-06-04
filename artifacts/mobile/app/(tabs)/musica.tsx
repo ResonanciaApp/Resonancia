@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   catCard: {
     flex: 1,
     height: 108,
-    borderRadius: 14,
+    borderRadius: 10,
     borderWidth: 1,
     padding: 9,
     alignItems: "center",
