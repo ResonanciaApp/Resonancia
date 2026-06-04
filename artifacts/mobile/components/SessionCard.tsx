@@ -49,6 +49,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
 
   if (horizontal) {
     return (
+      <View>
       <Pressable
         onPress={handlePress}
         style={({ pressed }) => [
@@ -81,6 +82,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           </View>
         </View>
       </Pressable>
+      <View style={styles.hDivider} />
+      </View>
     );
   }
 
@@ -152,10 +155,12 @@ const styles = StyleSheet.create({
   hRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
     height: 96,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(122,143,168,0.13)",
+  },
+  hDivider: {
+    height: 1,
+    marginVertical: 5,
+    backgroundColor: "rgba(140,190,225,0.08)",
   },
   hImage: {
     width: 108,
