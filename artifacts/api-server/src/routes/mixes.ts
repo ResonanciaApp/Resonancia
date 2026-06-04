@@ -30,6 +30,8 @@ function toProfile(u: User) {
     username: u.username,
     displayName: u.displayName,
     avatarUrl: u.avatarUrl,
+    role: u.role,
+    createdAt: u.createdAt.toISOString(),
   };
 }
 

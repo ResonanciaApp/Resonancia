@@ -381,6 +381,36 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserSearchResult"
+  /users/{userId}/public:
+    get:
+      operationId: getPublicUserProfile
+      tags: [users]
+      summary: Public profile of a user (aggregate stats + friends count)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Public user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicUserProfile"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /users/{userId}/role:
     patch:
       operationId: setUserRole
@@ -1027,6 +1057,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CatalogResponse"
+  /catalog/popular:
+    get:
+      operationId: getPopularSessions
+      tags: [catalog]
+      summary: Sesiones más escuchadas (ranking por reproducciones reales)
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+      responses:
+        "200":
+          description: Sesiones populares ordenadas por reproducciones
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PopularSessionsResponse"
   /catalog/submissions:
     post:
       operationId: createSubmission
@@ -1794,7 +1844,42 @@ components:
         role:
           type: string
           enum: ["user", "creator", "admin"]
-      required: [id, username, displayName]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, username, displayName, createdAt]
+    PublicUserStats:
+      type: object
+      properties:
+        totalSessions:
+          type: integer
+        totalMinutes:
+          type: integer
+        topCategoryLabel:
+          type: ["string", "null"]
+        friendsCount:
+          type: integer
+      required: [totalSessions, totalMinutes, friendsCount]
+    PublicUserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        displayName:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+        role:
+          type: string
+          enum: ["user", "creator", "admin"]
+        createdAt:
+          type: string
+          format: date-time
+        stats:
+          $ref: "#/components/schemas/PublicUserStats"
+      required: [id, username, displayName, createdAt, stats]
     UserRoleUpdate:
       type: object
       properties:
@@ -2176,6 +2261,14 @@ components:
           items:
             $ref: "#/components/schemas/CatalogSession"
       required: [categories, sessions]
+    PopularSessionsResponse:
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogSession"
+      required: [sessions]
     CreatorSubmissionAudioInput:
       type: object
       properties:

@@ -97,7 +97,8 @@ export const GetSharedMixesResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
 })),
@@ -157,7 +158,8 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
 })
@@ -188,7 +190,8 @@ export const GetMixCommentsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }),
   "isMine": zod.boolean(),
   "createdAt": zod.coerce.date()
@@ -230,7 +233,8 @@ export const GetMeResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 })
 
 
@@ -257,7 +261,8 @@ export const UpdateMeResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 })
 
 
@@ -282,6 +287,29 @@ export const SearchUsersResponse = zod.array(SearchUsersResponseItem)
 
 
 /**
+ * @summary Public profile of a user (aggregate stats + friends count)
+ */
+export const GetPublicUserProfileParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetPublicUserProfileResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date(),
+  "stats": zod.object({
+  "totalSessions": zod.number(),
+  "totalMinutes": zod.number(),
+  "topCategoryLabel": zod.string().nullish(),
+  "friendsCount": zod.number()
+})
+})
+
+
+/**
  * @summary Assign a role to a user (admin only)
  */
 export const SetUserRoleParams = zod.object({
@@ -297,7 +325,8 @@ export const SetUserRoleResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 })
 
 
@@ -309,7 +338,8 @@ export const GetFriendsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 })
 export const GetFriendsResponse = zod.array(GetFriendsResponseItem)
 
@@ -334,14 +364,16 @@ export const GetFriendRequestsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }),
   "addressee": zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 })
 })
 export const GetFriendRequestsResponse = zod.array(GetFriendRequestsResponseItem)
@@ -371,14 +403,16 @@ export const AcceptFriendRequestResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }),
   "addressee": zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 })
 })
 
@@ -405,7 +439,8 @@ export const GetNotificationsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 })
 })
 export const GetNotificationsResponse = zod.array(GetNotificationsResponseItem)
@@ -474,7 +509,8 @@ export const GetConversationsResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }),
   "lastMessage": zod.union([zod.object({
   "id": zod.number(),
@@ -855,6 +891,69 @@ export const GetCatalogResponse = zod.object({
 
 
 /**
+ * @summary Sesiones más escuchadas (ranking por reproducciones reales)
+ */
+export const getPopularSessionsQueryLimitMax = 50;
+
+
+
+export const GetPopularSessionsQueryParams = zod.object({
+  "limit": zod.coerce.number().min(1).max(getPopularSessionsQueryLimitMax).optional()
+})
+
+export const GetPopularSessionsResponse = zod.object({
+  "sessions": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "sleepTag": zod.string().nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}))
+})
+
+
+/**
  * @summary Crear una pieza de contenido (creador) — queda pendiente de revisión
  */
 export const createSubmissionBodyTitleMax = 120;
@@ -968,7 +1067,8 @@ export const GetPendingSubmissionsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
@@ -1027,7 +1127,8 @@ export const GetMySubmissionsResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
@@ -1089,7 +1190,8 @@ export const ApproveSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
@@ -1158,7 +1260,8 @@ export const RejectSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
@@ -1254,7 +1357,8 @@ export const EditSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
@@ -1315,7 +1419,8 @@ export const HideSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
@@ -1376,7 +1481,8 @@ export const UnhideSubmissionResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional()
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),

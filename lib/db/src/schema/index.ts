@@ -32,3 +32,4 @@ export * from "./session-progress";
 export * from "./catalog-categories";
 export * from "./catalog-sessions";
 export * from "./catalog-audio-files";
+export * from "./uploads";

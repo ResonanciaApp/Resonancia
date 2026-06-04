@@ -21,6 +21,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -96,6 +97,11 @@ export default function ProfileScreen() {
     updateProfile,
     setPhotoUri,
   } = useUserProfile();
+
+  const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 60_000 } });
+  const memberSince = me?.createdAt
+    ? new Date(me.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
+    : null;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -297,6 +303,15 @@ export default function ProfileScreen() {
 
           {description ? (
             <Text style={[styles.bioText, { color: colors.mutedForeground }]}>{description}</Text>
+          ) : null}
+
+          {memberSince ? (
+            <View style={styles.locationRow}>
+              <Feather name="calendar" size={12} color={colors.mutedForeground} />
+              <Text style={[styles.locationText, { color: colors.mutedForeground }]}>
+                Miembro desde {memberSince}
+              </Text>
+            </View>
           ) : null}
 
           {/* Editar Detalles button */}

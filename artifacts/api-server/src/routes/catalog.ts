@@ -1,11 +1,12 @@
 import { Router, type IRouter } from "express";
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import {
   db,
   catalogCategoriesTable,
   catalogSessionsTable,
   catalogAudioFilesTable,
+  playbackHistoryTable,
   notificationsTable,
   usersTable,
   type CatalogCategory,
@@ -102,6 +103,7 @@ function toProfile(u: User) {
     displayName: u.displayName,
     avatarUrl: u.avatarUrl,
     role: u.role,
+    createdAt: u.createdAt.toISOString(),
   };
 }
 
@@ -221,6 +223,65 @@ router.get("/catalog", async (req, res) => {
   res.json({
     categories: categories.map(serializeCategory),
     sessions: sessions.map((s) => serializeSession(s, audioBySession.get(s.id) ?? [])),
+  });
+});
+
+// GET /catalog/popular — sesiones más escuchadas (ranking real por reproducciones).
+router.get("/catalog/popular", async (req, res) => {
+  const limitRaw = Number(req.query.limit);
+  const limit =
+    Number.isInteger(limitRaw) && limitRaw > 0 && limitRaw <= 50 ? limitRaw : 10;
+
+  const ranked = await db
+    .select({
+      sessionId: playbackHistoryTable.sessionId,
+      plays: sql<number>`count(*)`,
+    })
+    .from(playbackHistoryTable)
+    .groupBy(playbackHistoryTable.sessionId)
+    .orderBy(desc(sql`count(*)`))
+    .limit(limit * 4);
+
+  const rankedIds = ranked.map((r) => r.sessionId);
+  if (rankedIds.length === 0) {
+    res.json({ sessions: [] });
+    return;
+  }
+
+  const published = await db
+    .select()
+    .from(catalogSessionsTable)
+    .where(
+      and(
+        eq(catalogSessionsTable.status, "published"),
+        inArray(catalogSessionsTable.id, rankedIds),
+      ),
+    );
+  const sessionById = new Map(published.map((s) => [s.id, s]));
+  const ordered = rankedIds
+    .map((id) => sessionById.get(id))
+    .filter((s): s is CatalogSession => s != null)
+    .slice(0, limit);
+
+  const ids = ordered.map((s) => s.id);
+  const audioFiles =
+    ids.length > 0
+      ? await db
+          .select()
+          .from(catalogAudioFilesTable)
+          .where(inArray(catalogAudioFilesTable.sessionId, ids))
+          .orderBy(asc(catalogAudioFilesTable.id))
+      : [];
+  const audioBySession = new Map<string, CatalogAudioFile[]>();
+  for (const a of audioFiles) {
+    if (!a.sessionId) continue;
+    const list = audioBySession.get(a.sessionId) ?? [];
+    list.push(a);
+    audioBySession.set(a.sessionId, list);
+  }
+
+  res.json({
+    sessions: ordered.map((s) => serializeSession(s, audioBySession.get(s.id) ?? [])),
   });
 });
 

@@ -265,7 +265,8 @@ function SignedInAmigos() {
             <FriendRow
               key={f.id}
               friend={f}
-              onOpen={() => router.push(`/chat/${f.id}` as never)}
+              onOpen={() => router.push(`/usuario/${f.id}` as never)}
+              onMessage={() => router.push(`/chat/${f.id}` as never)}
               onRemove={() => onRemove(f)}
             />
           ))}
@@ -362,10 +363,12 @@ function RequestRow({
 function FriendRow({
   friend,
   onOpen,
+  onMessage,
   onRemove,
 }: {
   friend: UserProfile;
   onOpen: () => void;
+  onMessage: () => void;
   onRemove: () => void;
 }) {
   const colors = useColors();
@@ -386,7 +389,9 @@ function FriendRow({
           @{friend.username}
         </Text>
       </View>
-      <Feather name="message-circle" size={18} color={colors.accent} />
+      <Pressable onPress={onMessage} hitSlop={10} style={styles.friendMsgBtn}>
+        <Feather name="message-circle" size={18} color={colors.accent} />
+      </Pressable>
     </Pressable>
   );
 }
@@ -477,6 +482,7 @@ const styles = StyleSheet.create({
   initials: { fontSize: 15, fontWeight: "700" },
   friendName: { fontSize: 14, fontWeight: "600", marginBottom: 2 },
   friendSub: { fontSize: 12 },
+  friendMsgBtn: { width: 34, height: 34, alignItems: "center", justifyContent: "center" },
   requestBtns: { flexDirection: "row", gap: 8 },
   acceptBtn: { width: 34, height: 34, borderRadius: 10, overflow: "hidden" },
   acceptGrad: { flex: 1, alignItems: "center", justifyContent: "center" },

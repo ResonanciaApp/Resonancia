@@ -1,6 +1,12 @@
 import { Router, type IRouter } from "express";
-import { and, eq, ilike, inArray, ne, or } from "drizzle-orm";
-import { db, usersTable, friendshipsTable, type User } from "@workspace/db";
+import { and, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
+import {
+  db,
+  usersTable,
+  friendshipsTable,
+  playbackHistoryTable,
+  type User,
+} from "@workspace/db";
 import { UpdateMeBody, SearchUsersQueryParams, SetUserRoleBody } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
@@ -14,6 +20,7 @@ function toProfile(u: User) {
     displayName: u.displayName,
     avatarUrl: u.avatarUrl,
     role: u.role,
+    createdAt: u.createdAt.toISOString(),
   };
 }
 
@@ -118,6 +125,76 @@ router.get("/users/search", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al buscar usuarios" });
+  }
+});
+
+router.get("/users/:userId/public", requireAuth, async (req, res) => {
+  const userId = Number(req.params.userId);
+  if (!Number.isInteger(userId) || userId <= 0) {
+    res.status(400).json({ error: "ID de usuario inválido" });
+    return;
+  }
+
+  try {
+    const [user] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
+    if (!user) {
+      res.status(404).json({ error: "Usuario no encontrado" });
+      return;
+    }
+
+    const [agg] = await db
+      .select({
+        totalSessions: sql<number>`count(distinct ${playbackHistoryTable.sessionId})`,
+        totalMinutes: sql<number>`coalesce(sum(${playbackHistoryTable.minutes}), 0)`,
+      })
+      .from(playbackHistoryTable)
+      .where(eq(playbackHistoryTable.userId, userId));
+
+    const [topCategory] = await db
+      .select({
+        categoryLabel: playbackHistoryTable.categoryLabel,
+        minutes: sql<number>`coalesce(sum(${playbackHistoryTable.minutes}), 0)`,
+      })
+      .from(playbackHistoryTable)
+      .where(eq(playbackHistoryTable.userId, userId))
+      .groupBy(playbackHistoryTable.categoryLabel)
+      .orderBy(desc(sql`coalesce(sum(${playbackHistoryTable.minutes}), 0)`))
+      .limit(1);
+
+    const [friends] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(friendshipsTable)
+      .where(
+        and(
+          eq(friendshipsTable.status, "accepted"),
+          or(
+            eq(friendshipsTable.requesterId, userId),
+            eq(friendshipsTable.addresseeId, userId),
+          ),
+        ),
+      );
+
+    res.json({
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      role: user.role,
+      createdAt: user.createdAt.toISOString(),
+      stats: {
+        totalSessions: Number(agg?.totalSessions ?? 0),
+        totalMinutes: Math.round(Number(agg?.totalMinutes ?? 0)),
+        topCategoryLabel: topCategory?.categoryLabel ?? null,
+        friendsCount: Number(friends?.count ?? 0),
+      },
+    });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al obtener el perfil" });
   }
 });
 

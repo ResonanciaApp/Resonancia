@@ -165,6 +165,7 @@ export interface UserProfile {
   /** @nullable */
   avatarUrl?: string | null;
   role?: UserProfileRole;
+  createdAt: string;
 }
 
 export interface SharedMix {
@@ -242,6 +243,34 @@ export interface MixCommentInput {
 
 export interface ErrorResponse {
   error: string;
+}
+
+export interface PublicUserStats {
+  totalSessions: number;
+  totalMinutes: number;
+  /** @nullable */
+  topCategoryLabel?: string | null;
+  friendsCount: number;
+}
+
+export type PublicUserProfileRole = typeof PublicUserProfileRole[keyof typeof PublicUserProfileRole];
+
+
+export const PublicUserProfileRole = {
+  user: 'user',
+  creator: 'creator',
+  admin: 'admin',
+} as const;
+
+export interface PublicUserProfile {
+  id: number;
+  username: string;
+  displayName: string;
+  /** @nullable */
+  avatarUrl?: string | null;
+  role?: PublicUserProfileRole;
+  createdAt: string;
+  stats: PublicUserStats;
 }
 
 export type UserRoleUpdateRole = typeof UserRoleUpdateRole[keyof typeof UserRoleUpdateRole];
@@ -532,6 +561,10 @@ export interface CatalogSession {
 
 export interface CatalogResponse {
   categories: CatalogCategory[];
+  sessions: CatalogSession[];
+}
+
+export interface PopularSessionsResponse {
   sessions: CatalogSession[];
 }
 
@@ -892,6 +925,14 @@ limit?: number;
 
 export type GetMyPlaysParams = {
 since?: string;
+};
+
+export type GetPopularSessionsParams = {
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
 };
 
 export type GetPendingSubmissionsParams = {

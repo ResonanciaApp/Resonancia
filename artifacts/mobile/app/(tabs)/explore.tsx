@@ -17,11 +17,12 @@ import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
-import { SESSIONS } from "@/data/sessions";
+import { SESSIONS, getSessionById } from "@/data/sessions";
 import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
 import { usePlayer } from "@/context/PlayerContext";
@@ -55,6 +56,14 @@ export default function ExploreScreen() {
   const [query, setQuery] = useState("");
   const { history, playSession, getSessionProgress, sessionProgress } = usePlayer();
   const { isPremium } = usePremium();
+
+  const { data: popular } = useGetPopularSessions(
+    { limit: 10 },
+    { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 10 }), staleTime: 5 * 60_000 } },
+  );
+  const popularSessions = (popular?.sessions ?? [])
+    .map((s) => getSessionById(s.id))
+    .filter((s): s is NonNullable<ReturnType<typeof getSessionById>> => s != null);
 
   const historySessions = history
     .map((entry) => ({
@@ -382,6 +391,24 @@ export default function ExploreScreen() {
                 </View>
               )}
             </View>
+
+            {/* ── Más escuchados ── */}
+            {popularSessions.length > 0 && (
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+                  Más escuchados
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: GAP, paddingRight: H_PAD }}
+                >
+                  {popularSessions.map((session) => (
+                    <SessionCard key={session.id} session={session} width={200} />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={{ marginBottom: 57 }}>

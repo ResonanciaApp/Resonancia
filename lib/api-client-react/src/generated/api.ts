@@ -42,6 +42,7 @@ import type {
   GetMessagesParams,
   GetMyPlaysParams,
   GetPendingSubmissionsParams,
+  GetPopularSessionsParams,
   GetSharedMixesParams,
   HealthStatus,
   MessagesPage,
@@ -50,8 +51,10 @@ import type {
   MixCommentsPage,
   Notification,
   PlaybackEventList,
+  PopularSessionsResponse,
   ProgressInput,
   ProgressList,
+  PublicUserProfile,
   PushPlaysBody,
   RegisterPushTokenBody,
   RequestUploadUrlBody,
@@ -1133,6 +1136,83 @@ export function useSearchUsers<TData = Awaited<ReturnType<typeof searchUsers>>, 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getSearchUsersQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetPublicUserProfileUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/public`
+}
+
+/**
+ * @summary Public profile of a user (aggregate stats + friends count)
+ */
+export const getPublicUserProfile = async (userId: number, options?: RequestInit): Promise<PublicUserProfile> => {
+
+  return customFetch<PublicUserProfile>(getGetPublicUserProfileUrl(userId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPublicUserProfileQueryKey = (userId: number,) => {
+    return [
+    `/api/users/${userId}/public`
+    ] as const;
+    }
+
+
+export const getGetPublicUserProfileQueryOptions = <TData = Awaited<ReturnType<typeof getPublicUserProfile>>, TError = ErrorType<ErrorResponse>>(userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicUserProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPublicUserProfileQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicUserProfile>>> = ({ signal }) => getPublicUserProfile(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPublicUserProfile>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPublicUserProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getPublicUserProfile>>>
+export type GetPublicUserProfileQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Public profile of a user (aggregate stats + friends count)
+ */
+
+export function useGetPublicUserProfile<TData = Awaited<ReturnType<typeof getPublicUserProfile>>, TError = ErrorType<ErrorResponse>>(
+ userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicUserProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPublicUserProfileQueryOptions(userId,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -3284,6 +3364,90 @@ export function useGetCatalog<TData = Awaited<ReturnType<typeof getCatalog>>, TE
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetCatalogQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetPopularSessionsUrl = (params?: GetPopularSessionsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/catalog/popular?${stringifiedParams}` : `/api/catalog/popular`
+}
+
+/**
+ * @summary Sesiones más escuchadas (ranking por reproducciones reales)
+ */
+export const getPopularSessions = async (params?: GetPopularSessionsParams, options?: RequestInit): Promise<PopularSessionsResponse> => {
+
+  return customFetch<PopularSessionsResponse>(getGetPopularSessionsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPopularSessionsQueryKey = (params?: GetPopularSessionsParams,) => {
+    return [
+    `/api/catalog/popular`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetPopularSessionsQueryOptions = <TData = Awaited<ReturnType<typeof getPopularSessions>>, TError = ErrorType<unknown>>(params?: GetPopularSessionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPopularSessions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPopularSessionsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPopularSessions>>> = ({ signal }) => getPopularSessions(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPopularSessions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPopularSessionsQueryResult = NonNullable<Awaited<ReturnType<typeof getPopularSessions>>>
+export type GetPopularSessionsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Sesiones más escuchadas (ranking por reproducciones reales)
+ */
+
+export function useGetPopularSessions<TData = Awaited<ReturnType<typeof getPopularSessions>>, TError = ErrorType<unknown>>(
+ params?: GetPopularSessionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPopularSessions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPopularSessionsQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

@@ -4,12 +4,35 @@ import {
   RequestUploadUrlBody,
   RequestUploadUrlResponse,
 } from "@workspace/api-zod";
+import { db, uploadsTable } from "@workspace/db";
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
 import { ObjectPermission } from "../lib/objectAcl";
 import { requireAuth } from "../middlewares/requireAuth";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
+
+/** Tipos de archivo aceptados para subida (imágenes + audio). */
+const ALLOWED_CONTENT_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/heic",
+  "image/heif",
+  "audio/mpeg",
+  "audio/mp3",
+  "audio/mp4",
+  "audio/m4a",
+  "audio/x-m4a",
+  "audio/aac",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/ogg",
+  "audio/webm",
+]);
+const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
+const MAX_AUDIO_BYTES = 200 * 1024 * 1024; // 200 MB
 
 /**
  * POST /storage/uploads/request-url
@@ -28,11 +51,34 @@ router.post("/storage/uploads/request-url", requireAuth, async (req: Request, re
     return;
   }
 
-  try {
-    const { name, size, contentType } = parsed.data;
+  const { name, size, contentType } = parsed.data;
+  const normalizedType = contentType.toLowerCase();
+  if (!ALLOWED_CONTENT_TYPES.has(normalizedType)) {
+    res.status(400).json({ error: "Tipo de archivo no permitido" });
+    return;
+  }
+  const maxBytes = normalizedType.startsWith("image/") ? MAX_IMAGE_BYTES : MAX_AUDIO_BYTES;
+  if (size > maxBytes) {
+    res.status(413).json({ error: "El archivo supera el tamaño máximo permitido" });
+    return;
+  }
 
+  try {
     const uploadURL = await objectStorageService.getObjectEntityUploadURL();
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+
+    // Registro contable de la subida (no bloquea la subida si el registro falla).
+    try {
+      await db.insert(uploadsTable).values({
+        userId: req.currentUser!.id,
+        objectPath,
+        name,
+        contentType,
+        sizeBytes: size,
+      });
+    } catch (recordErr) {
+      req.log.error({ err: recordErr }, "Failed to record upload metadata");
+    }
 
     res.json(
       RequestUploadUrlResponse.parse({
