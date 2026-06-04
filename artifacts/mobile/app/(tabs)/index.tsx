@@ -217,7 +217,7 @@ export default function HomeScreen() {
                     />
                   ) : cat.id === "meditaciones-guiadas" ? (
                     <View style={{ marginTop: -4 }}>
-                      <ZenStonesIcon color={iconColor} size={30} />
+                      <ZenStonesIcon color={iconColor} size={31} />
                     </View>
                   ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
