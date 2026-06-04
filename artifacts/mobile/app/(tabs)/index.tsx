@@ -193,14 +193,27 @@ export default function HomeScreen() {
                 "mananas": "#f4c993",
                 "noches": "#C87BB5",
               };
+              const catImages: Record<string, ReturnType<typeof require>> = {
+                "musica-sonidos": require("../../assets/images/cat-musica.png"),
+                "mananas":        require("../../assets/images/cat-mañanas.png"),
+                "noches":         require("../../assets/images/cat-noches.png"),
+                "podcast":        require("../../assets/images/cat-sonidos.png"),
+              };
               const iconColor = iconColors[cat.id] ?? colors.primary;
+              const catImg = catImages[cat.id];
               return (
                 <Pressable
                   key={cat.id}
                   onPress={() => router.push(`/category/${cat.id}` as never)}
                   style={({ pressed }) => [styles.catCard, radii[idx], { opacity: pressed ? 0.75 : 1 }]}
                 >
-                  {cat.iconFamily === "MaterialCommunityIcons" ? (
+                  {catImg ? (
+                    <Image
+                      source={catImg}
+                      style={styles.catCardImage}
+                      resizeMode="contain"
+                    />
+                  ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                       size={26}
@@ -557,6 +570,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#151A23",
     paddingHorizontal: 16,
     paddingVertical: 18,
+  },
+  catCardImage: {
+    width: 26,
+    height: 26,
   },
   catCardLabel: {
     fontSize: 14,
