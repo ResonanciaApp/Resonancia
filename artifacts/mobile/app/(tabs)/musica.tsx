@@ -1,8 +1,9 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  Animated,
   Alert,
   LayoutAnimation,
   Platform,
@@ -94,9 +95,21 @@ export default function MiMusicaScreen() {
     { id: "popular", label: "Popular" },
     ...SOUND_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
   ];
-  const tabsHalf = Math.ceil(tabs.length / 2);
-  const tabsTopRow = tabs.slice(0, tabsHalf);
-  const tabsBottomRow = tabs.slice(tabsHalf);
+
+  // ── Animación de la línea de categorías ──────────────────────────
+  const [catTabW, setCatTabW] = useState(0);
+  const catIndicatorX = useRef(new Animated.Value(-300)).current;
+
+  const handleCatPress = (cat: typeof MIX_CATEGORIES[0], idx: number) => {
+    Animated.spring(catIndicatorX, {
+      toValue: catTabW * idx,
+      useNativeDriver: true,
+      damping: 16,
+      stiffness: 160,
+      mass: 0.8,
+    }).start();
+    router.push(`/mezclas/${cat.id}` as never);
+  };
 
   const renderTab = (tab: { id: TabId; label: string }) => {
     const selected = activeTab === tab.id;
@@ -107,8 +120,8 @@ export default function MiMusicaScreen() {
         style={[
           styles.tab,
           {
-            backgroundColor: "transparent",
-            borderColor: selected ? "rgba(237,225,211,0.55)" : "rgba(255,255,255,0.12)",
+            backgroundColor: selected ? colors.primary : "transparent",
+            borderColor: selected ? colors.primary : "rgba(255,255,255,0.12)",
           },
         ]}
       >
@@ -116,8 +129,8 @@ export default function MiMusicaScreen() {
           style={[
             styles.tabLabel,
             {
-              color: selected ? colors.foreground : colors.mutedForeground,
-              fontWeight: selected ? "600" : "400",
+              color: selected ? "#0B0F14" : colors.mutedForeground,
+              fontWeight: selected ? "700" : "400",
             },
           ]}
         >
@@ -229,32 +242,50 @@ export default function MiMusicaScreen() {
         >
           {/* ── Barra sticky: categorías de mezclas + tabs de sonido ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
-            {/* Categorías de mezclas (siempre visibles) */}
-            <View style={styles.catRow}>
-              {MIX_CATEGORIES.map((cat) => (
+            {/* Categorías — tabs con texto + línea animada */}
+            <View
+              style={[styles.catTabRow, { borderBottomColor: "rgba(255,255,255,0.10)" }]}
+              onLayout={(e) => {
+                const w = e.nativeEvent.layout.width / MIX_CATEGORIES.length;
+                setCatTabW(w);
+              }}
+            >
+              {MIX_CATEGORIES.map((cat, idx) => (
                 <Pressable
                   key={cat.id}
-                  onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                  style={({ pressed }) => [styles.catCard, { backgroundColor: "#151A23", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.7 : 1 }]}
+                  onPress={() => handleCatPress(cat, idx)}
+                  style={({ pressed }) => [styles.catTab, { opacity: pressed ? 0.6 : 1 }]}
                 >
-                  <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={1}>
+                  <Text style={[styles.catTabLabel, { color: colors.foreground }]} numberOfLines={1}>
                     {cat.label}
                   </Text>
                 </Pressable>
               ))}
+
+              {/* Línea indicadora animada */}
+              {catTabW > 0 && (
+                <Animated.View
+                  style={[
+                    styles.catIndicator,
+                    {
+                      backgroundColor: colors.primary,
+                      width: catTabW * 0.55,
+                      marginLeft: catTabW * 0.225,
+                      transform: [{ translateX: catIndicatorX }],
+                    },
+                  ]}
+                />
+              )}
             </View>
 
-            {/* Tabs de categorías de sonido (2 filas que se deslizan juntas) */}
+            {/* Filtros de sonido — fila única scrollable */}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.tabsScroll}
               contentContainerStyle={styles.tabsScrollContent}
             >
-              <View style={styles.tabsColumn}>
-                <View style={styles.tabRow}>{tabsTopRow.map(renderTab)}</View>
-                <View style={styles.tabRow}>{tabsBottomRow.map(renderTab)}</View>
-              </View>
+              <View style={styles.tabRow}>{tabs.map(renderTab)}</View>
             </ScrollView>
           </View>
 
@@ -307,30 +338,47 @@ const styles = StyleSheet.create({
   section: { marginBottom: 57 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
 
-  // Tabs de categorías de sonido (2 filas, scroll horizontal conjunto)
-  tabsScroll: { marginHorizontal: -20, marginBottom: 12 },
+  // Tabs de categorías de sonido (fila única, scroll horizontal)
+  tabsScroll: { marginHorizontal: -20, marginTop: 14, marginBottom: 4 },
   tabsScrollContent: { paddingHorizontal: 20 },
-  tabsColumn: { gap: 10 },
-  tabRow: { flexDirection: "row", gap: 14 },
+  tabRow: { flexDirection: "row", gap: 10 },
   tab: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 13,
     paddingVertical: 7,
-    borderRadius: 8,
+    borderRadius: 6,
     borderWidth: 1,
   },
   tabLabel: { fontSize: 13, fontWeight: "400", letterSpacing: 0.2 },
 
-  // Categorías de mezclas
-  catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
-  catCard: {
+  // Categorías de mezclas — tabs con texto + línea animada
+  catTabRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    position: "relative",
+    paddingBottom: 0,
+  },
+  catTab: {
     flex: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 18,
-    borderRadius: 10,
-    borderWidth: 1,
+    paddingVertical: 12,
     alignItems: "center",
     justifyContent: "center",
   },
+  catTabLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
+    letterSpacing: 0.2,
+  },
+  catIndicator: {
+    position: "absolute",
+    bottom: -1,
+    left: 0,
+    height: 2.5,
+    borderRadius: 2,
+  },
+  // compat (no usados en nuevo diseño, mantenidos por si hay refs)
+  catRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
+  catCard: { flex: 1, paddingHorizontal: 12, paddingVertical: 18, borderRadius: 10, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   catLabel: {
     fontSize: 14,
     fontWeight: "600",
