@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import Svg, { Ellipse } from "react-native-svg";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,6 +34,17 @@ import { useColors } from "@/hooks/useColors";
 type TabId = "popular" | SoundCategoryId;
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
+
+function ZenStonesIcon({ color, size = 26 }: { color: string; size?: number }) {
+  const s = size;
+  return (
+    <Svg width={s} height={s} viewBox="0 0 30 30">
+      <Ellipse cx="15" cy="23.5" rx="8" ry="4.2" fill={color} opacity={0.95} />
+      <Ellipse cx="15.6" cy="16.5" rx="5.8" ry="3.3" fill={color} opacity={0.85} />
+      <Ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity={0.75} />
+    </Svg>
+  );
+}
 
 export default function MiMusicaScreen() {
   const colors = useColors();
@@ -211,14 +223,16 @@ export default function MiMusicaScreen() {
                   onPress={() => router.push(`/mezclas/${cat.id}` as never)}
                   style={[styles.catCard, { backgroundColor: "#151A23", borderColor: "transparent" }]}
                 >
-                  {cat.iconFamily === "MaterialCommunityIcons" ? (
+                  {cat.iconFamily === "Custom" ? (
+                    <ZenStonesIcon color={cat.color ?? colors.primary} size={26} />
+                  ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                       size={26}
-                      color={colors.primary}
+                      color={cat.color ?? colors.primary}
                     />
                   ) : (
-                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color={colors.primary} />
+                    <Feather name={cat.icon as React.ComponentProps<typeof Feather>["name"]} size={24} color={cat.color ?? colors.primary} />
                   )}
                   <Text style={[styles.catLabel, { color: colors.foreground }]} numberOfLines={2}>
                     {cat.label}

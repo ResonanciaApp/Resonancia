@@ -20,8 +20,9 @@ export type MixCategoryMeta = {
   id: MixCategory;
   label: string;
   subtitle: string;
-  icon: FeatherIconName | MCIIconName;
-  iconFamily?: "Feather" | "MaterialCommunityIcons";
+  icon: FeatherIconName | MCIIconName | string;
+  iconFamily?: "Feather" | "MaterialCommunityIcons" | "Custom";
+  color?: string;
   image: ImageSourcePropType;
 };
 
@@ -31,14 +32,16 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     label: "Descanso",
     subtitle: "Mezclas para descansar",
     icon: "moon",
+    color: "#B2DFDB",
     image: require("@/assets/images/mixer/categories/dormir.jpg"),
   },
   {
     id: "motivarme",
     label: "Meditación",
     subtitle: "Calma y presencia",
-    icon: "meditation",
-    iconFamily: "MaterialCommunityIcons",
+    icon: "zen-stones",
+    iconFamily: "Custom",
+    color: "#F7D6E7",
     image: require("@/assets/images/mixer/categories/motivarme.jpg"),
   },
   {
@@ -47,6 +50,7 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     subtitle: "Foco y claridad mental",
     icon: "image-filter-hdr",
     iconFamily: "MaterialCommunityIcons",
+    color: "#FFC1A6",
     image: require("@/assets/images/mixer/categories/concentracion.jpg"),
   },
 ];
