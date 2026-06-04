@@ -23,8 +23,6 @@ export function CommunityMixesCarousel() {
     router.push(`/mezcla/${mix.id}` as never);
   }, []);
 
-  if (mixes.length === 0) return null;
-
   const visible = mixes.slice(0, MAX_VISIBLE);
   const hasMore = mixes.length > MAX_VISIBLE;
 
@@ -40,6 +38,14 @@ export function CommunityMixesCarousel() {
           </Pressable>
         )}
       </View>
+
+      {mixes.length === 0 && (
+        <View style={styles.emptyState}>
+          <Feather name="music" size={28} color="rgba(190,150,80,0.35)" />
+          <Text style={styles.emptyText}>Aún no hay mezclas compartidas</Text>
+          <Text style={styles.emptySub}>Sé el primero en compartir tu ambiente sonoro</Text>
+        </View>
+      )}
 
       <View style={styles.list}>
         {visible.map((mix) => {
@@ -104,6 +110,16 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
+
+  emptyState: {
+    alignItems: "center",
+    paddingVertical: 24,
+    gap: 6,
+    backgroundColor: "#151A23",
+    borderRadius: 14,
+  },
+  emptyText: { fontSize: 14, fontWeight: "600", color: "#FFFFFF" },
+  emptySub: { fontSize: 12, color: "#7A8FA8", textAlign: "center", paddingHorizontal: 20 },
 
   list: { gap: 10 },
   row: {
