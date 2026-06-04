@@ -358,7 +358,7 @@ export default function HomeScreen() {
               Descubrir algo nuevo
             </Text>
           </View>
-          <View style={{ gap: 0 }}>
+          <View style={{ gap: 0, marginTop: -10 }}>
             {recommended.map((s) => (
               <SessionRow
                 key={s.id}
