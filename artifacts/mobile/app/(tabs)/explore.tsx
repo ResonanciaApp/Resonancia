@@ -142,40 +142,6 @@ export default function ExploreScreen() {
           )}
         </View>
 
-        {/* ── Mi Biblioteca (2×2 grid) ── */}
-        {query.length === 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Tu biblioteca</Text>
-            <View style={styles.libraryGrid}>
-              {[
-                { label: "Carpetas",    icon: "folder"     as const, route: "/carpetas"    },
-                { label: "Creaciones",  icon: "sliders"    as const, route: "/creaciones"  },
-                { label: "Playlists",   icon: "list"       as const, route: "/playlists"   },
-                { label: "Favoritos",   icon: "heart"      as const, route: "/favorites"   },
-                { label: "Historial",   icon: "clock"      as const, route: "/historial"   },
-              ].map((item, idx) => {
-                const isTop = idx < 3;
-                return (
-                  <Pressable
-                    key={item.label}
-                    style={({ pressed }) => [
-                      isTop ? styles.libraryCardThird : styles.libraryCardWide,
-                      { backgroundColor: "#151A23", opacity: pressed ? 0.7 : 1 },
-                    ]}
-                    onPress={() => router.push(item.route as never)}
-                  >
-                    <View style={styles.libraryIconWrap}>
-                      <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.foreground} />
-                    </View>
-                    <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
-                      {item.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-        )}
 
         {/* ── Search results ── */}
         {query.length > 0 ? (
@@ -311,6 +277,39 @@ export default function ExploreScreen() {
                   </Pressable>
                 ))}
               </ScrollView>
+            </View>
+
+            {/* ── Tu Biblioteca (2×2 grid) ── */}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Tu biblioteca</Text>
+              <View style={styles.libraryGrid}>
+                {[
+                  { label: "Carpetas",   icon: "folder"  as const, route: "/carpetas"   },
+                  { label: "Creaciones", icon: "sliders" as const, route: "/creaciones" },
+                  { label: "Playlists",  icon: "list"    as const, route: "/playlists"  },
+                  { label: "Favoritos",  icon: "heart"   as const, route: "/favorites"  },
+                  { label: "Historial",  icon: "clock"   as const, route: "/historial"  },
+                ].map((item, idx) => {
+                  const isTop = idx < 3;
+                  return (
+                    <Pressable
+                      key={item.label}
+                      style={({ pressed }) => [
+                        isTop ? styles.libraryCardThird : styles.libraryCardWide,
+                        { backgroundColor: "#151A23", opacity: pressed ? 0.7 : 1 },
+                      ]}
+                      onPress={() => router.push(item.route as never)}
+                    >
+                      <View style={styles.libraryIconWrap}>
+                        <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.foreground} />
+                      </View>
+                      <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
+                        {item.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
             </View>
 
             {/* ── Otras Temáticas ── */}
