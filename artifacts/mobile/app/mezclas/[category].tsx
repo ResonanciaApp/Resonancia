@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Alert,
   Image,
@@ -15,24 +15,15 @@ import {
 import Svg, { Ellipse, Path } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useQueryClient } from "@tanstack/react-query";
-
-import {
-  getGetSharedMixesQueryKey,
-  useShareMix,
-  useUnshareMix,
-} from "@workspace/api-client-react";
-
+import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixerPanel } from "@/components/MixerPanel";
 import { SacredBackground } from "@/components/SacredBackground";
 import { getSoundImage } from "@/config/sound-images";
-import { useAuth } from "@/context/AuthContext";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { type MixCategory, getCategoryMeta } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
-import { getMixImage } from "@/config/mix-images";
 
 // ── Íconos de categoría ──────────────────────────────────────────
 function MoonIcon({ color, size = 40 }: { color: string; size?: number }) {
@@ -86,14 +77,11 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
 export default function CategoryMixesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { presets, deletePreset, duplicatePreset, setPresetShared, loadedPresetId, isPlaying } =
-    useMixer();
+  const { presets, deletePreset, duplicatePreset, loadedPresetId, isPlaying } = useMixer();
   const loadMix = useLoadMix();
-  const { isSignedIn } = useAuth();
   const { isPremium } = usePremium();
-  const queryClient = useQueryClient();
-  const shareMix = useShareMix();
-  const unshareMix = useUnshareMix();
+
+  const [menuMix, setMenuMix] = useState<MixPreset | null>(null);
 
   const params = useLocalSearchParams<{ category: string }>();
   const categoryId = params.category as MixCategory;
@@ -127,91 +115,6 @@ export default function CategoryMixesScreen() {
     duplicatePreset(mix.id);
   };
 
-  const doShare = (mix: MixPreset) => {
-    shareMix.mutate(
-      {
-        data: {
-          name: mix.name,
-          description: mix.description,
-          image: mix.image,
-          category: mix.category as "dormir" | "trabajar" | "motivarme" | "concentracion",
-          sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
-        },
-      },
-      {
-        onSuccess: (shared) => {
-          setPresetShared(mix.id, shared.id);
-          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
-          Alert.alert("¡Compartida!", "Tu mezcla ya está disponible para la comunidad.");
-        },
-        onError: () => {
-          Alert.alert("Error", "No se pudo compartir la mezcla. Intenta de nuevo.");
-        },
-      },
-    );
-  };
-
-  const handleShare = (mix: MixPreset) => {
-    if (!isSignedIn) {
-      Alert.alert(
-        "Crea tu cuenta",
-        "Necesitas una cuenta para compartir tus mezclas con la comunidad.",
-        [
-          { text: "Ahora no", style: "cancel" },
-          { text: "Registrarme", onPress: () => router.push("/(auth)/sign-up" as never) },
-        ],
-      );
-      return;
-    }
-    if (!isPremium) {
-      Alert.alert(
-        "Función Premium",
-        "Compartir mezclas con la comunidad es una función exclusiva de Premium.",
-        [
-          { text: "Ahora no", style: "cancel" },
-          { text: "Ver Premium", onPress: () => router.push("/membresia" as never) },
-        ],
-      );
-      return;
-    }
-    doShare(mix);
-  };
-
-  const handleUnshare = (mix: MixPreset) => {
-    if (mix.sharedId == null) return;
-    unshareMix.mutate(
-      { id: mix.sharedId },
-      {
-        onSuccess: () => {
-          setPresetShared(mix.id, null);
-          queryClient.invalidateQueries({ queryKey: getGetSharedMixesQueryKey() });
-        },
-        onError: () => {
-          Alert.alert("Error", "No se pudo quitar la mezcla. Intenta de nuevo.");
-        },
-      },
-    );
-  };
-
-  const handleMenu = (mix: MixPreset) => {
-    Alert.alert(mix.name, undefined, [
-      {
-        text: mix.sharedId != null ? "Dejar de compartir" : "Compartir",
-        onPress: () => (mix.sharedId != null ? handleUnshare(mix) : handleShare(mix)),
-      },
-      { text: "Duplicar", onPress: () => handleDuplicate(mix) },
-      {
-        text: "Eliminar",
-        style: "destructive",
-        onPress: () =>
-          Alert.alert("Eliminar mezcla", `¿Eliminar "${mix.name}"?`, [
-            { text: "Cancelar", style: "cancel" },
-            { text: "Eliminar", style: "destructive", onPress: () => deletePreset(mix.id) },
-          ]),
-      },
-      { text: "Cancelar", style: "cancel" },
-    ]);
-  };
 
   const renderMix = (mix: MixPreset) => {
     const isPlayingThis = loadedPresetId === mix.id && isPlaying;
@@ -249,7 +152,7 @@ export default function CategoryMixesScreen() {
         {/* 3 puntitos */}
         <View onStartShouldSetResponder={() => true}>
           <Pressable
-            onPress={() => handleMenu(mix)}
+            onPress={() => setMenuMix(mix)}
             hitSlop={12}
             style={styles.menuBtn}
           >
@@ -319,6 +222,14 @@ export default function CategoryMixesScreen() {
           </View>
         )}
       </ScrollView>
+
+      <MixActionsSheet
+        mix={menuMix}
+        visible={menuMix !== null}
+        onClose={() => setMenuMix(null)}
+        onDuplicate={(mix) => { setMenuMix(null); handleDuplicate(mix); }}
+        onDelete={(mix) => deletePreset(mix.id)}
+      />
     </View>
   );
 }
