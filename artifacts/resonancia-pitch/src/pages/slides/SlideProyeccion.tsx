@@ -4,12 +4,14 @@ function ScenarioCard({
   installs,
   subs,
   revenue,
+  revenueUSD,
 }: {
   label: string;
   highlight?: boolean;
   installs: string;
   subs: string;
   revenue: string;
+  revenueUSD: string;
 }) {
   return (
     <div
@@ -30,12 +32,13 @@ function ScenarioCard({
         <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#EDE1D3", lineHeight: 1 }}>{installs}</div>
       </div>
       <div style={{ marginBottom: "2vh" }}>
-        <div style={{ fontSize: "1.2vw", color: "#7A8FA8", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES DE PAGO</div>
+        <div style={{ fontSize: "1.2vw", color: "#7A8FA8", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES MES 12</div>
         <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#EDE1D3", lineHeight: 1 }}>{subs}</div>
       </div>
       <div>
         <div style={{ fontSize: "1.2vw", color: "#7A8FA8", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INGRESO NETO AÑO 1</div>
-        <div style={{ fontSize: "2.6vw", fontWeight: 700, color: "#BE9650", lineHeight: 1 }}>{revenue}</div>
+        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#BE9650", lineHeight: 1 }}>{revenue}</div>
+        <div style={{ fontSize: "1.25vw", color: "#7A8FA8", marginTop: "0.4vh" }}>{revenueUSD}</div>
       </div>
     </div>
   );
@@ -59,18 +62,36 @@ export default function SlideProyeccion() {
 
       {/* Scenario cards */}
       <div style={{ display: "flex", gap: "2vw" }}>
-        <ScenarioCard label="Conservador" installs="80.000" subs="2.400" revenue="US$ 60.000" />
-        <ScenarioCard label="Base" highlight installs="120.000" subs="6.000" revenue="US$ 150.000" />
-        <ScenarioCard label="Optimista" installs="180.000" subs="12.600" revenue="US$ 315.000" />
+        <ScenarioCard
+          label="Conservador"
+          installs="140.000"
+          subs="7.000"
+          revenue="$85M CLP"
+          revenueUSD="≈ US$ 94.000"
+        />
+        <ScenarioCard
+          label="Base"
+          highlight
+          installs="300.000"
+          subs="15.000"
+          revenue="$314M CLP"
+          revenueUSD="≈ US$ 349.000"
+        />
+        <ScenarioCard
+          label="Optimista"
+          installs="500.000"
+          subs="25.000"
+          revenue="$475M CLP"
+          revenueUSD="≈ US$ 528.000"
+        />
       </div>
 
       {/* Assumptions */}
       <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "#7A8FA8", lineHeight: 1.55, maxWidth: "84vw" }}>
-        Supuestos: crecimiento orgánico desde la comunidad de +1.000.000 de seguidores (8–18% instala en el año 1),
-        apoyado con US$ 5.000 de pauta · 3–7% de conversión a suscripción de pago ·
-        ingreso neto ~US$ 25 por suscriptor/año (precios regionales, ya descontada la comisión de tienda).
+        Supuestos: crecimiento orgánico desde la comunidad de +1.000.000 de seguidores · precio $6.900/mes (IVA incl. 19%) · $43.900/año ·
+        ARPU neto ~$3.300/mes (descontado IVA + comisión tienda 30%) · 3–6% de conversión a suscripción de pago · TC $900 CLP/USD.
         <span style={{ color: "#7A8FA8", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
-          Canal propio = costo de adquisición casi nulo. Referencias de conversión freemium: Calm y Headspace (~3–5%). Escenarios ilustrativos, no garantizados.
+          Canal propio = costo de adquisición casi nulo. Recuperación de inversión inicial (US$25.000) estimada en mes 5–6. Escenarios ilustrativos, no garantizados.
         </span>
       </div>
     </div>
