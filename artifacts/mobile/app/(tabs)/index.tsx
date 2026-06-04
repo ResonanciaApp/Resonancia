@@ -28,6 +28,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { VideoCard } from "@/components/VideoCard";
 import { useDrawer } from "@/context/DrawerContext";
+import { VOICE_MAP } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
@@ -320,28 +321,41 @@ export default function HomeScreen() {
                 <GlowRing size={110} color="rgba(182,149,95,0.18)" delay={0} duration={3500} />
                 <GlowRing size={170} color="rgba(182,149,95,0.1)" delay={600} duration={3500} />
               </View>
-              <View style={styles.heroContent}>
-                <Text style={[styles.heroTitle, { color: colors.foreground }]}>
-                  {featuredSession.title}
-                </Text>
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14, marginTop: 2 }}>
-                  <Feather name="clock" size={12} color="#FFFFFF" style={{ marginRight: 4, marginTop: 1 }} />
-                  <Text style={{ fontSize: 13, color: "#FFFFFF", opacity: 0.85, lineHeight: 16 }}>
-                    {featuredSession.durationLabel}
-                  </Text>
-                </View>
-                <Pressable
-                  onPress={() => playSession(featuredSession)}
-                  style={({ pressed }) => [
-                    styles.heroBtn,
-                    { backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 },
-                  ]}
-                >
-                  <Text style={[styles.heroBtnText, { color: colors.primaryForeground }]}>
-                    Escuchar ahora
-                  </Text>
-                </Pressable>
-              </View>
+              {/* Frosted glass panel */}
+              {(() => {
+                const hasVoice = featuredSession.id in VOICE_MAP;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const guideId = (featuredSession as any).guideId as string | undefined;
+                const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
+                return (
+                  <View style={styles.heroFrosted}>
+                    {/* Meta: ★ rating · Guiada/Sin voz · duración */}
+                    <View style={styles.heroMetaRow}>
+                      <Feather name="star" size={11} color={colors.mutedForeground} />
+                      <Text style={[styles.heroMetaText, { color: colors.mutedForeground }]}>
+                        {" "}4.7 · {hasVoice ? "Guiada" : "Sin voz"} · {featuredSession.durationLabel}
+                      </Text>
+                    </View>
+                    {/* Título */}
+                    <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
+                      {featuredSession.title}
+                    </Text>
+                    {/* Autor */}
+                    <Text style={[styles.heroAuthor, { color: colors.primary }]} numberOfLines={1}>
+                      {heroAuthor}
+                    </Text>
+                    {/* Botón outline */}
+                    <Pressable
+                      onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
+                      style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.82 : 1 }]}
+                    >
+                      <Text style={[styles.heroBtnText, { color: colors.primary }]}>
+                        ▶  Escuchar ahora
+                      </Text>
+                    </Pressable>
+                  </View>
+                );
+              })()}
             </Pressable>
           </View>
         )}
@@ -547,7 +561,7 @@ const styles = StyleSheet.create({
   // Hero — sesión destacada del día
   heroCard: {
     height: HERO_HEIGHT,
-    borderRadius: 16,
+    borderRadius: 18,
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
@@ -555,25 +569,40 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
+    paddingBottom: 100,
   },
-  heroContent: {
+  heroFrosted: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    padding: 22,
+    paddingHorizontal: 18,
+    paddingTop: 16,
+    paddingBottom: 18,
+    backgroundColor: "rgba(9,15,23,0.80)",
+    borderTopWidth: 1,
+    borderTopColor: "rgba(190,150,80,0.18)",
   },
-  heroTitle: { fontSize: 26, fontWeight: "700", marginBottom: 4, lineHeight: 32 },
-  heroBtn: {
+  heroMetaRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    alignSelf: "flex-start",
-    paddingHorizontal: 22,
-    paddingVertical: 12,
-    borderRadius: 30,
+    marginBottom: 8,
   },
-  heroBtnText: { fontSize: 14, fontWeight: "700", letterSpacing: 0.5 },
+  heroMetaText: { fontSize: 11, lineHeight: 14 },
+  heroTitle: { fontSize: 20, fontWeight: "700", lineHeight: 26, marginBottom: 4 },
+  heroAuthor: { fontSize: 12, marginBottom: 14 },
+  heroBtn: {
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.42)",
+    backgroundColor: "rgba(190,150,80,0.12)",
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 9,
+  },
+  heroBtnText: { fontSize: 13, fontWeight: "700", letterSpacing: 0.5 },
 
   // Horizontal scroll
   hScroll: { paddingRight: 20 },
