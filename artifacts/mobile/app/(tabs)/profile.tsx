@@ -58,6 +58,13 @@ function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 
+const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
+
+/** Day-of-week index Mon=0 … Sun=6 (ISO aligned) */
+function isoDow(d: Date): number {
+  return (d.getDay() + 6) % 7;
+}
+
 /** Count consecutive active days ending today or yesterday */
 function computeStreak(events: { playedAt: string }[]): number {
   if (events.length === 0) return 0;
@@ -238,11 +245,43 @@ export default function ProfileScreen() {
     const topSession = topSessionId ? getSessionById(topSessionId) : null;
     const streak = computeStreak(statEvents);
 
+    // Max streak
+    const days = Array.from(new Set(statEvents.map((e) => dayKey(new Date(e.playedAt))))).sort();
+    let maxStreak = 0;
+    let run = 0;
+    for (let i = 0; i < days.length; i++) {
+      if (i === 0) { run = 1; }
+      else {
+        const prev = new Date(days[i - 1].split("-").map(Number).join("-"));
+        const curr = new Date(days[i].split("-").map(Number).join("-"));
+        const diffMs = curr.getTime() - prev.getTime();
+        run = diffMs <= 24 * 60 * 60 * 1000 + 60_000 ? run + 1 : 1;
+      }
+      if (run > maxStreak) maxStreak = run;
+    }
+
+    // This-week day activity (Mon=0..Sun=6)
+    const minutesByDay = new Map<string, number>();
+    for (const e of statEvents) {
+      const k = dayKey(new Date(e.playedAt));
+      minutesByDay.set(k, (minutesByDay.get(k) ?? 0) + e.minutes);
+    }
+    const today = new Date();
+    const todayDow = isoDow(today);
+    const weekActivity: boolean[] = Array(7).fill(false);
+    for (let d = 0; d <= todayDow; d++) {
+      const target = new Date(today);
+      target.setDate(today.getDate() - (todayDow - d));
+      weekActivity[d] = minutesByDay.has(dayKey(target));
+    }
+
     return {
       weeklyMinutes: Math.round(weeklyMinutes),
       topCategory,
       topSession,
       streak,
+      maxStreak,
+      weekActivity,
       hasData: statEvents.length > 0,
     };
   }, [statEvents]);
@@ -324,27 +363,76 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* ── Tu Progreso ── */}
-        <Pressable
-          onPress={() => router.push("/progreso" as never)}
-          style={({ pressed }) => [
-            styles.progresoCard,
-            { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
-          ]}
-        >
-          <View style={styles.progresoLeft}>
-            <Feather name="trending-up" size={22} color={colors.accent} />
+        {/* ── Tu Progreso (racha card) ── */}
+        <View style={[styles.rachaCard, { backgroundColor: "#151A23" }]}>
+          {/* Header: flame + title */}
+          <View style={styles.rachaTop}>
+            <View style={[styles.rachaBubble, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
+              <Text style={styles.rachaFlame}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
+            </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.progresoTitle, { color: colors.foreground }]}>Tu Progreso</Text>
-              <Text style={[styles.progresoSub, { color: colors.mutedForeground }]}>
-                {activity.hasData
-                  ? `${activity.weeklyMinutes} min esta semana · ${activity.streak > 0 ? `${activity.streak} día${activity.streak !== 1 ? "s" : ""} de racha` : "sin racha aún"}`
-                  : "Empieza a escuchar para ver tu progreso"}
+              <Text style={[styles.rachaValue, { color: colors.foreground }]}>
+                {activity.streak > 0
+                  ? `${activity.streak} día${activity.streak !== 1 ? "s" : ""} de racha`
+                  : "Comienza tu racha"}
+              </Text>
+              <Text style={[styles.rachaSub, { color: colors.mutedForeground }]}>
+                {activity.streak > 0
+                  ? "Sigue así, no pierdas tu constancia"
+                  : "Escucha una sesión hoy para empezar"}
               </Text>
             </View>
           </View>
-          <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
-        </Pressable>
+
+          {/* Week day circles */}
+          <View style={styles.rachaWeekRow}>
+            {WEEK_INITIALS.map((label, i) => {
+              const done = activity.weekActivity[i];
+              const isToday = i === isoDow(new Date());
+              return (
+                <View key={i} style={styles.rachaDayPill}>
+                  <Text style={[styles.rachaDayLabel, { color: isToday ? colors.foreground : colors.mutedForeground }]}>
+                    {label}
+                  </Text>
+                  <View
+                    style={[
+                      styles.rachaDayCircle,
+                      {
+                        backgroundColor: done ? colors.primary : "transparent",
+                        borderColor: done ? colors.primary : isToday ? colors.foreground : colors.border ?? "#1E2A38",
+                      },
+                    ]}
+                  >
+                    {done && <Feather name="check" size={13} color="#090F17" />}
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+
+          {/* Max streak row */}
+          <View style={[styles.rachaMaxRow, { borderTopColor: colors.border ?? "#1E2A38" }]}>
+            <View style={[styles.rachaMaxIcon, { backgroundColor: "rgba(190,150,80,0.10)" }]}>
+              <Text style={{ fontSize: 16 }}>🛡️</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.rachaMaxLabel, { color: colors.foreground }]}>Racha máxima</Text>
+              <Text style={[styles.rachaMaxSub, { color: colors.mutedForeground }]}>Tu récord personal</Text>
+            </View>
+            <Text style={[styles.rachaMaxValue, { color: colors.primary }]}>
+              {activity.maxStreak > 0 ? `${activity.maxStreak} días` : "—"}
+            </Text>
+          </View>
+
+          {/* Ver más */}
+          <Pressable
+            onPress={() => router.push("/progreso" as never)}
+            style={({ pressed }) => [styles.rachaVerMas, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Text style={[styles.rachaVerMasText, { color: colors.primary }]}>Ver progreso completo</Text>
+            <Feather name="chevron-right" size={14} color={colors.primary} />
+          </Pressable>
+        </View>
 
         {/* ── Mi viaje ── */}
         <View style={styles.section}>
@@ -704,19 +792,24 @@ const styles = StyleSheet.create({
   },
   editBtnText: { fontSize: 13, fontWeight: "600" },
 
-  // Tu Progreso
-  progresoCard: {
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 12,
-  },
-  progresoLeft: { flex: 1, flexDirection: "row", alignItems: "center", gap: 14 },
-  progresoTitle: { fontSize: 15, fontWeight: "700", marginBottom: 3 },
-  progresoSub: { fontSize: 12, lineHeight: 17 },
+  // Tu Progreso — racha card
+  rachaCard: { borderRadius: 18, padding: 18, marginBottom: 12 },
+  rachaTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
+  rachaBubble: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
+  rachaFlame: { fontSize: 24 },
+  rachaValue: { fontSize: 17, fontWeight: "700", marginBottom: 3 },
+  rachaSub: { fontSize: 12, lineHeight: 16 },
+  rachaWeekRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 2 },
+  rachaDayPill: { alignItems: "center", gap: 5 },
+  rachaDayLabel: { fontSize: 11, fontWeight: "600" },
+  rachaDayCircle: { width: 34, height: 34, borderRadius: 17, borderWidth: 2, alignItems: "center", justifyContent: "center" },
+  rachaMaxRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 16, paddingTop: 14, borderTopWidth: 1 },
+  rachaMaxIcon: { width: 38, height: 38, borderRadius: 10, alignItems: "center", justifyContent: "center" },
+  rachaMaxLabel: { fontSize: 13, fontWeight: "600" },
+  rachaMaxSub: { fontSize: 11, marginTop: 1 },
+  rachaMaxValue: { fontSize: 17, fontWeight: "700" },
+  rachaVerMas: { flexDirection: "row", alignItems: "center", justifyContent: "flex-end", gap: 4, marginTop: 14 },
+  rachaVerMasText: { fontSize: 13, fontWeight: "600" },
 
   // Mi viaje
   journeyCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 4 },
