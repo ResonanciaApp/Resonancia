@@ -167,7 +167,7 @@ export default function ExploreScreen() {
                     onPress={() => router.push(item.route as never)}
                   >
                     <View style={styles.libraryIconWrap}>
-                      <Feather name={item.icon} size={isTop ? 22 : 26} color="rgba(140, 190, 235, 0.6)" />
+                      <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.primary} />
                     </View>
                     <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
                       {item.label}
