@@ -324,65 +324,26 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* ── Stats ── */}
-        <View style={styles.statsRow}>
-          {stats.map((stat) => {
-            const content = (
-              <>
-                <Feather name={stat.icon} size={18} color={colors.accent} style={styles.statIcon} />
-                <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
-                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
-              </>
-            );
-            if (stat.href) {
-              return (
-                <Pressable
-                  key={stat.label}
-                  onPress={() => router.push(stat.href as never)}
-                  style={({ pressed }) => [
-                    styles.statCard,
-                    { backgroundColor: "#151A23", opacity: pressed ? 0.8 : 1 },
-                  ]}
-                >
-                  {content}
-                </Pressable>
-              );
-            }
-            return (
-              <View
-                key={stat.label}
-                style={[styles.statCard, { backgroundColor: "#151A23" }]}
-              >
-                {content}
-              </View>
-            );
-          })}
-        </View>
-
-        {/* ── Racha ── */}
+        {/* ── Tu Progreso ── */}
         <Pressable
           onPress={() => router.push("/progreso" as never)}
           style={({ pressed }) => [
-            styles.streakCard,
-            { backgroundColor: "#151A23", opacity: pressed ? 0.8 : 1 },
+            styles.progresoCard,
+            { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
           ]}
         >
-          <View style={styles.streakFlame}>
-            <Text style={styles.streakEmoji}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
+          <View style={styles.progresoLeft}>
+            <Feather name="trending-up" size={22} color={colors.accent} />
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.progresoTitle, { color: colors.foreground }]}>Tu Progreso</Text>
+              <Text style={[styles.progresoSub, { color: colors.mutedForeground }]}>
+                {activity.hasData
+                  ? `${activity.weeklyMinutes} min esta semana · ${activity.streak > 0 ? `${activity.streak} día${activity.streak !== 1 ? "s" : ""} de racha` : "sin racha aún"}`
+                  : "Empieza a escuchar para ver tu progreso"}
+              </Text>
+            </View>
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.streakValue, { color: colors.foreground }]}>
-              {activity.streak > 0
-                ? `${activity.streak} día${activity.streak !== 1 ? "s" : ""} seguidos`
-                : "Comienza tu racha"}
-            </Text>
-            <Text style={[styles.streakSub, { color: colors.mutedForeground }]}>
-              {activity.streak > 0
-                ? "Sigue así, no pierdas tu constancia"
-                : "Escucha una sesión hoy para empezar"}
-            </Text>
-          </View>
-          <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+          <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
         </Pressable>
 
         {/* ── Mi viaje ── */}
@@ -743,26 +704,19 @@ const styles = StyleSheet.create({
   },
   editBtnText: { fontSize: 13, fontWeight: "600" },
 
-  // Stats
-  statsRow: { flexDirection: "row", gap: 10, marginBottom: 32 },
-  statCard: { flex: 1, borderRadius: 18, padding: 16, alignItems: "center" },
-  statIcon: { marginBottom: 8 },
-  statValue: { fontSize: 22, fontWeight: "700", marginBottom: 2 },
-  statLabel: { fontSize: 11, letterSpacing: 0.5 },
-
-  // Racha
-  streakCard: {
+  // Tu Progreso
+  progresoCard: {
     borderRadius: 18,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    marginBottom: 32,
+    gap: 12,
+    marginBottom: 12,
   },
-  streakFlame: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(198,155,79,0.12)" },
-  streakEmoji: { fontSize: 22 },
-  streakValue: { fontSize: 16, fontWeight: "700", marginBottom: 2 },
-  streakSub: { fontSize: 12 },
+  progresoLeft: { flex: 1, flexDirection: "row", alignItems: "center", gap: 14 },
+  progresoTitle: { fontSize: 15, fontWeight: "700", marginBottom: 3 },
+  progresoSub: { fontSize: 12, lineHeight: 17 },
 
   // Mi viaje
   journeyCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 4 },
