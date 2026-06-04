@@ -362,7 +362,7 @@ export default function HomeScreen() {
             </Text>
           </View>
           {recommended.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal cardBg="#151A23" noBorder />
+            <SessionCard key={s.id} session={s} horizontal />
           ))}
         </View>
 
