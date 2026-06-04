@@ -13,12 +13,16 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 import {
   useGetPublicUserProfile,
   getGetPublicUserProfileQueryKey,
   useGetMe,
   useGetUserFollowing,
+  getGetUserFollowingQueryKey,
+  getGetMyFollowCountsQueryKey,
   useFollowUser,
   useUnfollowUser,
 } from "@workspace/api-client-react";
@@ -50,14 +54,26 @@ export default function UsuarioScreen() {
   });
 
   const { data: me } = useGetMe();
+  const queryClient = useQueryClient();
   const { data: myFollowing } = useGetUserFollowing(me?.id ?? 0, {
     query: { enabled: !!me?.id },
   });
   const isFollowing = (myFollowing ?? []).some((u) => u.id === userId);
   const isOwnProfile = me?.id === userId;
 
-  const followMutation = useFollowUser();
-  const unfollowMutation = useUnfollowUser();
+  const invalidateFollows = () => {
+    if (me?.id) {
+      queryClient.invalidateQueries({ queryKey: getGetUserFollowingQueryKey(me.id) });
+    }
+    queryClient.invalidateQueries({ queryKey: getGetMyFollowCountsQueryKey() });
+  };
+
+  const followMutation = useFollowUser({
+    mutation: { onSuccess: invalidateFollows },
+  });
+  const unfollowMutation = useUnfollowUser({
+    mutation: { onSuccess: invalidateFollows },
+  });
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -215,17 +231,15 @@ export default function UsuarioScreen() {
           )}
           <Pressable
             onPress={() => router.push(`/chat/${profile.id}` as never)}
-            style={({ pressed }) => [styles.messageBtn, { opacity: pressed ? 0.85 : 1 }]}
+            style={({ pressed }) => [
+              styles.messageBtn,
+              { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
+            ]}
           >
-            <LinearGradient
-              colors={isFollowing || isOwnProfile ? ["#1E2A38", "#1E2A38"] : ["#C8C1B5", "#BE9650"]}
-              style={styles.messageGrad}
-            >
-              <Feather name="message-circle" size={16} color={isFollowing || isOwnProfile ? "#BE9650" : "#080F0A"} />
-              <Text style={[styles.messageText, { color: isFollowing || isOwnProfile ? "#BE9650" : "#080F0A" }]}>
-                Enviar mensaje
-              </Text>
-            </LinearGradient>
+            <Feather name="message-circle" size={16} color={colors.primary} />
+            <Text style={[styles.messageText, { color: colors.primary }]}>
+              Enviar mensaje
+            </Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -282,15 +296,15 @@ const styles = StyleSheet.create({
   },
   followBtnText: { fontSize: 15, fontWeight: "700" },
 
-  messageBtn: { borderRadius: 999, overflow: "hidden" },
-  messageGrad: {
+  messageBtn: {
+    borderRadius: 999,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
     paddingVertical: 14,
   },
-  messageText: { fontSize: 15, fontWeight: "700", color: "#080F0A" },
+  messageText: { fontSize: 15, fontWeight: "700" },
 
   notFound: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 10 },
   notFoundTitle: { fontSize: 18, fontWeight: "700" },
