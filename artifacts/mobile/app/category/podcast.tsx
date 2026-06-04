@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import { Image } from "react-native";
 import { router } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
@@ -97,7 +98,11 @@ export default function SonidosScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={styles.iconCircle}>
-            <MaterialCommunityIcons name="waveform" size={38} color={colors.primary} />
+            <Image
+              source={require("../../assets/images/cat-sonidos.png")}
+              style={{ width: 44, height: 44 }}
+              resizeMode="contain"
+            />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>

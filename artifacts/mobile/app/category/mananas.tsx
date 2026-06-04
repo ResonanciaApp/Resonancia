@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image } from "react-native";
 import {
   Animated,
   LayoutChangeEvent,
@@ -217,7 +218,11 @@ export default function MananasScreen() {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <View style={styles.catIconCircle}>
-                <Feather name="sun" size={44} color={ICON_COLOR} />
+                <Image
+                  source={require("../../assets/images/cat-mananas.png")}
+                  style={{ width: 44, height: 44 }}
+                  resizeMode="contain"
+                />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
               <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>

@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { ZenStonesIcon } from "@/components/ZenStonesIcon";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -213,7 +214,7 @@ export default function MeditacionesGuiadasScreen() {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <View style={styles.catIconCircle}>
-                <Feather name="eye" size={44} color={ICON_COLOR} />
+                <ZenStonesIcon color={ICON_COLOR} size={44} />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
               <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>

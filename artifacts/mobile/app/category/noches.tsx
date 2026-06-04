@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image } from "react-native";
 import {
   Animated,
   LayoutChangeEvent,
@@ -225,7 +226,11 @@ export default function NochesScreen() {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <View style={styles.catIconCircle}>
-                <Feather name="moon" size={44} color={ICON_COLOR} />
+                <Image
+                  source={require("../../assets/images/cat-noches.png")}
+                  style={{ width: 40, height: 40 }}
+                  resizeMode="contain"
+                />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Noches</Text>
               <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>

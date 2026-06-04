@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -11,6 +12,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { ZenStonesIcon } from "@/components/ZenStonesIcon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
@@ -64,7 +66,17 @@ export default function CategoryScreen() {
                 { backgroundColor: "rgba(182,149,95,0.15)", borderColor: "rgba(182,149,95,0.25)" },
               ]}
             >
-              {category.iconFamily === "MaterialCommunityIcons" ? (
+              {category.id === "meditaciones-guiadas" ? (
+                <ZenStonesIcon color={category.color} size={28} />
+              ) : category.id === "musica-sonidos" ? (
+                <Image source={require("../../assets/images/cat-musica.png")} style={{ width: 28, height: 28 }} resizeMode="contain" />
+              ) : category.id === "mananas" ? (
+                <Image source={require("../../assets/images/cat-mananas.png")} style={{ width: 28, height: 28 }} resizeMode="contain" />
+              ) : category.id === "noches" ? (
+                <Image source={require("../../assets/images/cat-noches.png")} style={{ width: 26, height: 26 }} resizeMode="contain" />
+              ) : category.id === "podcast" ? (
+                <Image source={require("../../assets/images/cat-sonidos.png")} style={{ width: 28, height: 28 }} resizeMode="contain" />
+              ) : category.iconFamily === "MaterialCommunityIcons" ? (
                 <MaterialCommunityIcons
                   name={category.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                   size={28}

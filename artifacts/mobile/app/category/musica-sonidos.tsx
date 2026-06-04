@@ -202,7 +202,11 @@ export default function MusicaSonidosScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.catIconCircle, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-            <Feather name="music" size={44} color="#5B9E7A" />
+            <ExpoImage
+              source={require("../../assets/images/cat-musica.png")}
+              style={{ width: 44, height: 44 }}
+              contentFit="contain"
+            />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             Música
