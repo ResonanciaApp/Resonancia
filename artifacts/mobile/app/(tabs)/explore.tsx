@@ -347,47 +347,6 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Historial ── */}
-            <View style={styles.section}>
-              <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 0 }]}>
-                  Historial
-                </Text>
-                {historySessions.length > 5 && (
-                  <Pressable onPress={() => router.push("/historial" as never)} hitSlop={8}>
-                    <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todo</Text>
-                  </Pressable>
-                )}
-              </View>
-
-              {historySessions.length === 0 ? (
-                <View style={[styles.historyEmpty, { borderColor: "rgba(182,149,95,0.15)", backgroundColor: colors.card }]}>
-                  <Feather name="clock" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
-                  <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>
-                    Aún no hay sesiones
-                  </Text>
-                  <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
-                    Cuando empieces a escuchar, tu historial aparecerá aquí.
-                  </Text>
-                </View>
-              ) : (
-                <View style={{ gap: 8 }}>
-                  {historySessions.slice(0, 5).map(({ session, playedAt }) => {
-                    const date = new Date(playedAt);
-                    const dateLabel = date.toLocaleDateString("es", { day: "numeric", month: "short" });
-                    return (
-                      <View key={`${session.id}-${playedAt}`} style={styles.historyRow}>
-                        <View style={{ flex: 1 }}>
-                          <SessionCard session={session} horizontal />
-                          <Text style={[styles.historyDateOverlay, { color: colors.mutedForeground }]}>{dateLabel}</Text>
-                        </View>
-                      </View>
-                    );
-                  })}
-                </View>
-              )}
-            </View>
-
             {/* ── Más escuchados ── */}
             {popularSessions.length > 0 && (
               <View style={styles.section}>
