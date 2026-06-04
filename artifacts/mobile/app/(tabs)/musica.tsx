@@ -118,15 +118,18 @@ export default function MiMusicaScreen() {
         style={[
           styles.tab,
           {
-            backgroundColor: selected ? colors.primary : "#11161F",
-            borderColor: selected ? colors.primary : "transparent",
+            backgroundColor: "transparent",
+            borderColor: selected ? "rgba(237,225,211,0.55)" : "rgba(255,255,255,0.12)",
           },
         ]}
       >
         <Text
           style={[
             styles.tabLabel,
-            { color: selected ? colors.primaryForeground : colors.foreground },
+            {
+              color: selected ? colors.foreground : colors.mutedForeground,
+              fontWeight: selected ? "600" : "400",
+            },
           ]}
         >
           {tab.label}
