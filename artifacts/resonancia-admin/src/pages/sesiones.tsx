@@ -380,6 +380,21 @@ export default function SesionesPage() {
             />
             <span className="text-xs text-muted-foreground">{description.length}/2000</span>
           </Field>
+
+          {categoryId === "meditaciones-guiadas" && (
+            <Field label="ID del guiador *">
+              <Input value={guideId} onChange={(e) => setGuideId(e.target.value)} placeholder="sofia-ramirez" />
+              <span className="text-xs text-muted-foreground">Slug del guiador en data/guides.ts · default: casa-cuenco</span>
+            </Field>
+          )}
+
+          {categoryId === "musica-sonidos" && (
+            <Field label="ID del artista *">
+              <Input value={artistId} onChange={(e) => setArtistId(e.target.value)} placeholder="lumen-sonora" />
+              <span className="text-xs text-muted-foreground">Slug del artista en data/artists.ts · default: resonancia</span>
+            </Field>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             <Field label="Duración (minutos) *">
               <Input
@@ -461,25 +476,13 @@ export default function SesionesPage() {
                     ))}
                   </div>
                 </div>
-                <Field label="ID del guiador (opcional)">
-                  <Input value={guideId} onChange={(e) => setGuideId(e.target.value)} placeholder="sofia-ramirez" />
-                  <span className="text-xs text-muted-foreground">Slug del guiador en data/guides.ts · default: casa-cuenco</span>
-                </Field>
               </>
             )}
 
             {categoryId === "musica-sonidos" && (
-              <>
-                <Field label="Subcategoría *">
-                  <SelectField value={soundTag} onChange={setSoundTag} placeholder="Elegí la subcategoría" options={SOUND_TAGS} />
-                </Field>
-                {(soundTag === "Música Ambient" || soundTag === "Música Enteógena") && (
-                  <Field label="ID del artista (recomendado)">
-                    <Input value={artistId} onChange={(e) => setArtistId(e.target.value)} placeholder="lumen-sonora" />
-                    <span className="text-xs text-muted-foreground">Slug del artista en data/artists.ts · default: resonancia</span>
-                  </Field>
-                )}
-              </>
+              <Field label="Subcategoría *">
+                <SelectField value={soundTag} onChange={setSoundTag} placeholder="Elegí la subcategoría" options={SOUND_TAGS} />
+              </Field>
             )}
 
             {categoryId === "podcast" && (
