@@ -22,6 +22,9 @@ import type {
 import type {
   AdminCategoryInput,
   AdminCategoryUpdate,
+  AdminMixHideInput,
+  AdminMixHideResponse,
+  AdminMixesPage,
   AdminStats,
   AdminUsersPage,
   CatalogCategory,
@@ -52,6 +55,7 @@ import type {
   MixCommentInput,
   MixCommentsPage,
   Notification,
+  OkResponse,
   PlaybackEventList,
   PopularSessionsResponse,
   ProgressInput,
@@ -67,6 +71,7 @@ import type {
   SendDirectMessageBody,
   SharedMix,
   SharedMixInput,
+  SharedMixReportInput,
   SharedMixesPage,
   Submission,
   SubmissionList,
@@ -418,7 +423,7 @@ export const getGetSharedMixesUrl = (params?: GetSharedMixesParams,) => {
 }
 
 /**
- * @summary List community-shared mixes (newest first)
+ * @summary List community-shared mixes (most popular first, then newest)
  */
 export const getSharedMixes = async (params?: GetSharedMixesParams, options?: RequestInit): Promise<SharedMixesPage> => {
 
@@ -465,7 +470,7 @@ export type GetSharedMixesQueryError = ErrorType<unknown>
 
 
 /**
- * @summary List community-shared mixes (newest first)
+ * @summary List community-shared mixes (most popular first, then newest)
  */
 
 export function useGetSharedMixes<TData = Awaited<ReturnType<typeof getSharedMixes>>, TError = ErrorType<unknown>>(
@@ -625,6 +630,78 @@ export const useToggleSharedMixLike = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getToggleSharedMixLikeMutationOptions(options));
+    }
+
+export const getReportSharedMixUrl = (id: number,) => {
+
+
+
+
+  return `/api/mixes/${id}/report`
+}
+
+/**
+ * @summary Report a shared mix (requires account)
+ */
+export const reportSharedMix = async (id: number,
+    sharedMixReportInput: SharedMixReportInput, options?: RequestInit): Promise<OkResponse> => {
+
+  return customFetch<OkResponse>(getReportSharedMixUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      sharedMixReportInput,)
+  }
+);}
+
+
+
+
+export const getReportSharedMixMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportSharedMix>>, TError,{id: number;data: BodyType<SharedMixReportInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof reportSharedMix>>, TError,{id: number;data: BodyType<SharedMixReportInput>}, TContext> => {
+
+const mutationKey = ['reportSharedMix'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reportSharedMix>>, {id: number;data: BodyType<SharedMixReportInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  reportSharedMix(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReportSharedMixMutationResult = NonNullable<Awaited<ReturnType<typeof reportSharedMix>>>
+    export type ReportSharedMixMutationBody = BodyType<SharedMixReportInput>
+    export type ReportSharedMixMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Report a shared mix (requires account)
+ */
+export const useReportSharedMix = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportSharedMix>>, TError,{id: number;data: BodyType<SharedMixReportInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof reportSharedMix>>,
+        TError,
+        {id: number;data: BodyType<SharedMixReportInput>},
+        TContext
+      > => {
+      return useMutation(getReportSharedMixMutationOptions(options));
     }
 
 export const getUnshareMixUrl = (id: number,) => {
@@ -4579,6 +4656,225 @@ export function useGetAdminStats<TData = Awaited<ReturnType<typeof getAdminStats
 
 
 
+
+export const getGetAdminMixesUrl = () => {
+
+
+
+
+  return `/api/admin/mixes`
+}
+
+/**
+ * @summary Listar mezclas reportadas u ocultas para moderación (admin)
+ */
+export const getAdminMixes = async ( options?: RequestInit): Promise<AdminMixesPage> => {
+
+  return customFetch<AdminMixesPage>(getGetAdminMixesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminMixesQueryKey = () => {
+    return [
+    `/api/admin/mixes`
+    ] as const;
+    }
+
+
+export const getGetAdminMixesQueryOptions = <TData = Awaited<ReturnType<typeof getAdminMixes>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminMixes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminMixesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminMixes>>> = ({ signal }) => getAdminMixes({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminMixes>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminMixesQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminMixes>>>
+export type GetAdminMixesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar mezclas reportadas u ocultas para moderación (admin)
+ */
+
+export function useGetAdminMixes<TData = Awaited<ReturnType<typeof getAdminMixes>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminMixes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminMixesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSetAdminMixHiddenUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/mixes/${id}/hide`
+}
+
+/**
+ * @summary Ocultar o mostrar una mezcla (admin)
+ */
+export const setAdminMixHidden = async (id: number,
+    adminMixHideInput: AdminMixHideInput, options?: RequestInit): Promise<AdminMixHideResponse> => {
+
+  return customFetch<AdminMixHideResponse>(getSetAdminMixHiddenUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminMixHideInput,)
+  }
+);}
+
+
+
+
+export const getSetAdminMixHiddenMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setAdminMixHidden>>, TError,{id: number;data: BodyType<AdminMixHideInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setAdminMixHidden>>, TError,{id: number;data: BodyType<AdminMixHideInput>}, TContext> => {
+
+const mutationKey = ['setAdminMixHidden'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setAdminMixHidden>>, {id: number;data: BodyType<AdminMixHideInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  setAdminMixHidden(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetAdminMixHiddenMutationResult = NonNullable<Awaited<ReturnType<typeof setAdminMixHidden>>>
+    export type SetAdminMixHiddenMutationBody = BodyType<AdminMixHideInput>
+    export type SetAdminMixHiddenMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Ocultar o mostrar una mezcla (admin)
+ */
+export const useSetAdminMixHidden = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setAdminMixHidden>>, TError,{id: number;data: BodyType<AdminMixHideInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setAdminMixHidden>>,
+        TError,
+        {id: number;data: BodyType<AdminMixHideInput>},
+        TContext
+      > => {
+      return useMutation(getSetAdminMixHiddenMutationOptions(options));
+    }
+
+export const getDeleteAdminMixUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/mixes/${id}`
+}
+
+/**
+ * @summary Eliminar una mezcla definitivamente (admin)
+ */
+export const deleteAdminMix = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminMixUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminMixMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminMix>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminMix>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteAdminMix'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminMix>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminMix(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminMixMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminMix>>>
+
+    export type DeleteAdminMixMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar una mezcla definitivamente (admin)
+ */
+export const useDeleteAdminMix = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminMix>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminMix>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminMixMutationOptions(options));
+    }
 
 export const getCreateAdminCategoryUrl = () => {
 

@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -26,11 +27,12 @@ export const sharedMixesTable = pgTable("shared_mixes", {
   category: text("category").$type<SharedMixCategory>().notNull(),
   sounds: jsonb("sounds").$type<SharedMixSound[]>().notNull(),
   likes: integer("likes").default(0).notNull(),
+  hidden: boolean("hidden").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const insertSharedMixSchema = createInsertSchema(sharedMixesTable)
-  .omit({ id: true, authorId: true, likes: true, createdAt: true })
+  .omit({ id: true, authorId: true, likes: true, hidden: true, createdAt: true })
   .extend({
     name: z.string().min(1).max(40),
     description: z.string().max(120).optional(),

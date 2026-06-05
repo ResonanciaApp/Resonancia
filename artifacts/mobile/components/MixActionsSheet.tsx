@@ -151,7 +151,23 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
           onClose();
           Alert.alert("Mezcla compartida", "Tu mezcla ya aparece en el carrusel de la comunidad en Biblioteca.");
         },
-        onError: () => {
+        onError: (err) => {
+          const status = (err as { status?: number })?.status;
+          if (status === 409) {
+            const msg = String((err as { message?: string })?.message ?? "");
+            if (/duplic|ya comparti|already/i.test(msg)) {
+              Alert.alert(
+                "Ya la compartiste",
+                "Ya tienes una mezcla con estos mismos sonidos en la comunidad.",
+              );
+            } else {
+              Alert.alert(
+                "Límite alcanzado",
+                "Llegaste al máximo de mezclas compartidas. Elimina alguna desde el carrusel de la comunidad para compartir otra.",
+              );
+            }
+            return;
+          }
           Alert.alert("Error", "No se pudo compartir. Intenta de nuevo.");
         },
       },

@@ -6,10 +6,12 @@ import {
   sharedMixesTable,
   sharedMixLikesTable,
   sharedMixCommentsTable,
+  sharedMixReportsTable,
   notificationsTable,
   usersTable,
   insertSharedMixSchema,
   insertSharedMixCommentSchema,
+  insertSharedMixReportSchema,
   type NotificationType,
   type SharedMix,
   type SharedMixComment,
@@ -20,8 +22,14 @@ import { sendPushToUsers } from "../lib/push";
 
 const router: IRouter = Router();
 const PAGE_SIZE = 20;
-// Una mezcla es "tendencia" cuando acumula al menos estos likes.
+// Una mezcla es "tendencia" cuando junta al menos estos likes en la ventana reciente.
 const TRENDING_THRESHOLD = 3;
+// Ventana (días) para considerar una mezcla "tendencia" por likes recientes.
+const TRENDING_WINDOW_DAYS = 7;
+// Máximo de mezclas que un usuario puede tener compartidas a la vez.
+const MAX_MIXES_PER_USER = 20;
+// Reportes (de distintos usuarios) que ocultan automáticamente una mezcla.
+const REPORT_HIDE_THRESHOLD = 3;
 
 const CATEGORIES = ["dormir", "trabajar", "motivarme", "concentracion"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -42,6 +50,7 @@ function serialize(
   author: User,
   likedByMe: boolean,
   currentUserId: number | null,
+  trending = false,
 ) {
   return {
     id: mix.id,
@@ -51,7 +60,7 @@ function serialize(
     category: mix.category,
     sounds: mix.sounds,
     likes: mix.likes,
-    trending: mix.likes >= TRENDING_THRESHOLD,
+    trending,
     likedByMe,
     isMine: currentUserId != null && mix.authorId === currentUserId,
     author: toProfile(author),
@@ -154,10 +163,19 @@ router.get("/mixes", async (req, res) => {
     typeof categoryRaw === "string" && CATEGORIES.includes(categoryRaw as Category)
       ? (categoryRaw as Category)
       : null;
+  const authorRaw = req.query.author;
+  const authorId =
+    typeof authorRaw === "string" && Number.isInteger(parseInt(authorRaw, 10))
+      ? parseInt(authorRaw, 10)
+      : null;
 
   try {
     const me = await getOptionalUser(req);
-    const where = category ? eq(sharedMixesTable.category, category) : undefined;
+    // Las mezclas ocultas (auto/manual) nunca aparecen en el feed público.
+    const conditions = [eq(sharedMixesTable.hidden, false)];
+    if (category) conditions.push(eq(sharedMixesTable.category, category));
+    if (authorId != null) conditions.push(eq(sharedMixesTable.authorId, authorId));
+    const where = and(...conditions);
 
     const [rows, countResult] = await Promise.all([
       db
@@ -174,9 +192,30 @@ router.get("/mixes", async (req, res) => {
         .where(where),
     ]);
 
+    const mixIds = rows.map((r) => r.mix.id);
+
+    // Likes recientes (ventana de tendencia) por mezcla → flag trending.
+    let recentByMix = new Map<number, number>();
+    if (mixIds.length > 0) {
+      const since = new Date(Date.now() - TRENDING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+      const recent = await db
+        .select({
+          mixId: sharedMixLikesTable.mixId,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(sharedMixLikesTable)
+        .where(
+          and(
+            inArray(sharedMixLikesTable.mixId, mixIds),
+            sql`${sharedMixLikesTable.createdAt} >= ${since}`,
+          ),
+        )
+        .groupBy(sharedMixLikesTable.mixId);
+      recentByMix = new Map(recent.map((r) => [r.mixId, r.count]));
+    }
+
     let likedIds = new Set<number>();
-    if (me && rows.length > 0) {
-      const mixIds = rows.map((r) => r.mix.id);
+    if (me && mixIds.length > 0) {
       const likes = await db
         .select({ mixId: sharedMixLikesTable.mixId })
         .from(sharedMixLikesTable)
@@ -191,7 +230,13 @@ router.get("/mixes", async (req, res) => {
 
     res.json({
       mixes: rows.map((r) =>
-        serialize(r.mix, r.author, likedIds.has(r.mix.id), me?.id ?? null),
+        serialize(
+          r.mix,
+          r.author,
+          likedIds.has(r.mix.id),
+          me?.id ?? null,
+          (recentByMix.get(r.mix.id) ?? 0) >= TRENDING_THRESHOLD,
+        ),
       ),
       total: countResult[0]?.count ?? 0,
       page,
@@ -211,7 +256,35 @@ router.post("/mixes", requireAuth, async (req, res) => {
   }
 
   const me = req.currentUser!;
+  // Firma normalizada del set de sonidos (ids ordenados) para detectar duplicados.
+  const soundSignature = [...new Set(parsed.data.sounds.map((s) => s.id))]
+    .sort()
+    .join(",");
+
   try {
+    const mine = await db
+      .select({ id: sharedMixesTable.id, sounds: sharedMixesTable.sounds })
+      .from(sharedMixesTable)
+      .where(eq(sharedMixesTable.authorId, me.id));
+
+    if (mine.length >= MAX_MIXES_PER_USER) {
+      res.status(409).json({
+        error: `Alcanzaste el máximo de ${MAX_MIXES_PER_USER} mezclas compartidas. Eliminá alguna para compartir otra.`,
+      });
+      return;
+    }
+
+    const isDuplicate = mine.some((m) => {
+      const sig = [...new Set((m.sounds ?? []).map((s) => s.id))].sort().join(",");
+      return sig === soundSignature;
+    });
+    if (isDuplicate) {
+      res.status(409).json({
+        error: "Ya compartiste una mezcla con estos mismos sonidos.",
+      });
+      return;
+    }
+
     const [mix] = await db
       .insert(sharedMixesTable)
       .values({ ...parsed.data, authorId: me.id })
@@ -220,6 +293,58 @@ router.post("/mixes", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al compartir la mezcla" });
+  }
+});
+
+router.post("/mixes/:id/report", requireAuth, async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (!Number.isInteger(id)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+
+  const parsed = insertSharedMixReportSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Motivo del reporte inválido" });
+    return;
+  }
+
+  const me = req.currentUser!;
+  try {
+    const [mix] = await db
+      .select()
+      .from(sharedMixesTable)
+      .where(eq(sharedMixesTable.id, id))
+      .limit(1);
+    if (!mix) {
+      res.status(404).json({ error: "Mezcla no encontrada" });
+      return;
+    }
+
+    await db
+      .insert(sharedMixReportsTable)
+      .values({ mixId: id, reporterId: me.id, reason: parsed.data.reason })
+      .onConflictDoNothing({
+        target: [sharedMixReportsTable.mixId, sharedMixReportsTable.reporterId],
+      });
+
+    // Auto-ocultar si distintos usuarios alcanzan el umbral de reportes.
+    const [{ count }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(sharedMixReportsTable)
+      .where(eq(sharedMixReportsTable.mixId, id));
+
+    if (count >= REPORT_HIDE_THRESHOLD && !mix.hidden) {
+      await db
+        .update(sharedMixesTable)
+        .set({ hidden: true })
+        .where(eq(sharedMixesTable.id, id));
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al reportar la mezcla" });
   }
 });
 
@@ -304,7 +429,26 @@ router.post("/mixes/:id/like", requireAuth, async (req, res) => {
       });
     }
 
-    res.json(serialize(updated, existing.author, likedByMe, me.id));
+    const since = new Date(Date.now() - TRENDING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+    const [{ count: recentCount }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(sharedMixLikesTable)
+      .where(
+        and(
+          eq(sharedMixLikesTable.mixId, id),
+          sql`${sharedMixLikesTable.createdAt} >= ${since}`,
+        ),
+      );
+
+    res.json(
+      serialize(
+        updated,
+        existing.author,
+        likedByMe,
+        me.id,
+        recentCount >= TRENDING_THRESHOLD,
+      ),
+    );
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al registrar el like" });

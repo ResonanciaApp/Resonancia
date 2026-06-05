@@ -113,6 +113,11 @@ paths:
           schema:
             type: string
             enum: [dormir, trabajar, motivarme, concentracion]
+        - name: author
+          in: query
+          description: Filtra las mezclas por id de autor (perfil del creador)
+          schema:
+            type: integer
       responses:
         "200":
           description: Paginated list of shared mixes
@@ -167,6 +172,48 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SharedMix"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /mixes/{id}/report:
+    post:
+      operationId: reportSharedMix
+      tags: [mixes]
+      summary: Report a shared mix (requires account)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SharedMixReportInput"
+      responses:
+        "200":
+          description: Report recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Not authenticated
           content:
@@ -1571,6 +1618,104 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/mixes:
+    get:
+      operationId: getAdminMixes
+      tags: [admin]
+      summary: Listar mezclas reportadas u ocultas para moderación (admin)
+      responses:
+        "200":
+          description: Mezclas para moderación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminMixesPage"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/mixes/{id}/hide:
+    post:
+      operationId: setAdminMixHidden
+      tags: [admin]
+      summary: Ocultar o mostrar una mezcla (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminMixHideInput"
+      responses:
+        "200":
+          description: Visibilidad actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminMixHideResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/mixes/{id}:
+    delete:
+      operationId: deleteAdminMix
+      tags: [admin]
+      summary: Eliminar una mezcla definitivamente (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Eliminada
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/categories:
     post:
       operationId: createAdminCategory
@@ -1918,6 +2063,74 @@ components:
           items:
             $ref: "#/components/schemas/SharedMixSound"
       required: [name, category, sounds]
+    SharedMixReportInput:
+      type: object
+      properties:
+        reason:
+          type: string
+          enum: [spam, inapropiado, ofensivo, otro]
+      required: [reason]
+    OkResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required: [ok]
+    AdminMix:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        image:
+          type: ["string", "null"]
+        category:
+          type: string
+          enum: [dormir, trabajar, motivarme, concentracion]
+        sounds:
+          type: array
+          items:
+            $ref: "#/components/schemas/SharedMixSound"
+        likes:
+          type: integer
+        hidden:
+          type: boolean
+        reportCount:
+          type: integer
+        author:
+          $ref: "#/components/schemas/UserProfile"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        [id, name, category, sounds, likes, hidden, reportCount, author, createdAt]
+    AdminMixesPage:
+      type: object
+      properties:
+        mixes:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminMix"
+        total:
+          type: integer
+      required: [mixes, total]
+    AdminMixHideInput:
+      type: object
+      properties:
+        hidden:
+          type: boolean
+      required: [hidden]
+    AdminMixHideResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        hidden:
+          type: boolean
+      required: [ok, hidden]
     MixComment:
       type: object
       properties:

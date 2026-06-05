@@ -220,6 +220,64 @@ export interface SharedMixInput {
   sounds: SharedMixSound[];
 }
 
+export type SharedMixReportInputReason = typeof SharedMixReportInputReason[keyof typeof SharedMixReportInputReason];
+
+
+export const SharedMixReportInputReason = {
+  spam: 'spam',
+  inapropiado: 'inapropiado',
+  ofensivo: 'ofensivo',
+  otro: 'otro',
+} as const;
+
+export interface SharedMixReportInput {
+  reason: SharedMixReportInputReason;
+}
+
+export interface OkResponse {
+  ok: boolean;
+}
+
+export type AdminMixCategory = typeof AdminMixCategory[keyof typeof AdminMixCategory];
+
+
+export const AdminMixCategory = {
+  dormir: 'dormir',
+  trabajar: 'trabajar',
+  motivarme: 'motivarme',
+  concentracion: 'concentracion',
+} as const;
+
+export interface AdminMix {
+  id: number;
+  name: string;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  image?: string | null;
+  category: AdminMixCategory;
+  sounds: SharedMixSound[];
+  likes: number;
+  hidden: boolean;
+  reportCount: number;
+  author: UserProfile;
+  createdAt: string;
+}
+
+export interface AdminMixesPage {
+  mixes: AdminMix[];
+  total: number;
+}
+
+export interface AdminMixHideInput {
+  hidden: boolean;
+}
+
+export interface AdminMixHideResponse {
+  ok: boolean;
+  hidden: boolean;
+}
+
 export interface MixComment {
   id: number;
   mixId: number;
@@ -910,6 +968,10 @@ page?: number;
 export type GetSharedMixesParams = {
 page?: number;
 category?: GetSharedMixesCategory;
+/**
+ * Filtra las mezclas por id de autor (perfil del creador)
+ */
+author?: number;
 };
 
 export type GetSharedMixesCategory = typeof GetSharedMixesCategory[keyof typeof GetSharedMixesCategory];

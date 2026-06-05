@@ -69,13 +69,14 @@ export const GetTopMessageResponse = zod.object({
 
 
 /**
- * @summary List community-shared mixes (newest first)
+ * @summary List community-shared mixes (most popular first, then newest)
  */
 export const getSharedMixesQueryPageDefault = 1;
 
 export const GetSharedMixesQueryParams = zod.object({
   "page": zod.coerce.number().default(getSharedMixesQueryPageDefault),
-  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion']).optional()
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion']).optional(),
+  "author": zod.coerce.number().optional().describe('Filtra las mezclas por id de autor (perfil del creador)')
 })
 
 export const GetSharedMixesResponse = zod.object({
@@ -165,6 +166,22 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Report a shared mix (requires account)
+ */
+export const ReportSharedMixParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const ReportSharedMixBody = zod.object({
+  "reason": zod.enum(['spam', 'inapropiado', 'ofensivo', 'otro'])
+})
+
+export const ReportSharedMixResponse = zod.object({
+  "ok": zod.boolean()
 })
 
 
@@ -1622,6 +1639,62 @@ export const GetAdminStatsResponse = zod.object({
   "plays": zod.number(),
   "minutes": zod.number()
 }))
+})
+
+
+/**
+ * @summary Listar mezclas reportadas u ocultas para moderación (admin)
+ */
+export const GetAdminMixesResponse = zod.object({
+  "mixes": zod.array(zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "image": zod.string().nullish(),
+  "category": zod.enum(['dormir', 'trabajar', 'motivarme', 'concentracion']),
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "volume": zod.number()
+})),
+  "likes": zod.number(),
+  "hidden": zod.boolean(),
+  "reportCount": zod.number(),
+  "author": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
+}),
+  "createdAt": zod.coerce.date()
+})),
+  "total": zod.number()
+})
+
+
+/**
+ * @summary Ocultar o mostrar una mezcla (admin)
+ */
+export const SetAdminMixHiddenParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const SetAdminMixHiddenBody = zod.object({
+  "hidden": zod.boolean()
+})
+
+export const SetAdminMixHiddenResponse = zod.object({
+  "ok": zod.boolean(),
+  "hidden": zod.boolean()
+})
+
+
+/**
+ * @summary Eliminar una mezcla definitivamente (admin)
+ */
+export const DeleteAdminMixParams = zod.object({
+  "id": zod.coerce.number()
 })
 
 

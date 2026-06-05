@@ -19,7 +19,7 @@ import {
 import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useGetSharedMixes } from "@workspace/api-client-react";
+import { useGetSharedMixes, useReportSharedMix } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
 import { getSoundImage } from "@/config/sound-images";
@@ -47,6 +47,7 @@ export function CommunityMixesCarousel() {
   const { data } = useGetSharedMixes();
   const allMixes = data?.mixes ?? [];
   const { importPreset, presets } = useMixer();
+  const reportMix = useReportSharedMix();
 
   // ── Tab state ─────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<CategoryFilter>("dormir");
@@ -125,9 +126,51 @@ export function CommunityMixesCarousel() {
 
   const handleViewCreator = useCallback((mix: SharedMix) => {
     setMenuMix(null);
-    // Navegar al perfil del creador cuando exista la ruta
+    router.push({
+      pathname: "/mezcla-creador/[userId]",
+      params: { userId: String(mix.author.id), name: mix.author.displayName },
+    } as never);
+  }, []);
+
+  const handleOpenMix = useCallback((mix: SharedMix) => {
     router.push({ pathname: "/mezcla/[id]", params: { id: String(mix.id) } } as never);
   }, []);
+
+  const handleReport = useCallback(
+    (mix: SharedMix) => {
+      setMenuMix(null);
+      const reasons: { key: "spam" | "inapropiado" | "ofensivo" | "otro"; label: string }[] = [
+        { key: "spam", label: "Spam o engañosa" },
+        { key: "inapropiado", label: "Contenido inapropiado" },
+        { key: "ofensivo", label: "Lenguaje ofensivo" },
+        { key: "otro", label: "Otro motivo" },
+      ];
+      Alert.alert(
+        "Reportar mezcla",
+        `¿Por qué querés reportar "${mix.name}"?`,
+        [
+          ...reasons.map((r) => ({
+            text: r.label,
+            onPress: () =>
+              reportMix.mutate(
+                { id: mix.id, data: { reason: r.key } },
+                {
+                  onSuccess: () =>
+                    Alert.alert(
+                      "Gracias",
+                      "Recibimos tu reporte. Nuestro equipo lo revisará.",
+                    ),
+                  onError: () =>
+                    Alert.alert("Ups", "No pudimos enviar el reporte. Intentá de nuevo."),
+                },
+              ),
+          })),
+          { text: "Cancelar", style: "cancel" as const },
+        ],
+      );
+    },
+    [reportMix],
+  );
 
   // ── Render ────────────────────────────────────────────────────
   return (
@@ -199,6 +242,7 @@ export function CommunityMixesCarousel() {
               mix={mix}
               rank={i + 1}
               colors={colors}
+              onPress={() => handleOpenMix(mix)}
               onDotsPress={() => setMenuMix(mix)}
             />
           ))}
@@ -227,6 +271,7 @@ export function CommunityMixesCarousel() {
         onClose={() => setMenuMix(null)}
         onAddFavorite={handleAddFavorite}
         onViewCreator={handleViewCreator}
+        onReport={handleReport}
         colors={colors}
       />
     </View>
@@ -240,11 +285,13 @@ function MixRow({
   mix,
   rank,
   colors,
+  onPress,
   onDotsPress,
 }: {
   mix: SharedMix;
   rank: number;
   colors: Colors;
+  onPress: () => void;
   onDotsPress: () => void;
 }) {
   const trending = mix.trending === true;
@@ -253,7 +300,10 @@ function MixRow({
 
   return (
     <View>
-      <View style={styles.row}>
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+      >
         {/* Rank */}
         <Text style={[styles.rank, { color: isFirst ? GOLD : "#3A4A5A" }]}>
           {rank}
@@ -290,7 +340,7 @@ function MixRow({
         >
           <Feather name="more-vertical" size={18} color={colors.mutedForeground} />
         </Pressable>
-      </View>
+      </Pressable>
 
       {/* Divider */}
       <View style={[styles.divider, { backgroundColor: dividerColor }]} />
@@ -334,12 +384,14 @@ function MixContextMenu({
   onClose,
   onAddFavorite,
   onViewCreator,
+  onReport,
   colors,
 }: {
   mix: SharedMix | null;
   onClose: () => void;
   onAddFavorite: (mix: SharedMix) => void;
   onViewCreator: (mix: SharedMix) => void;
+  onReport: (mix: SharedMix) => void;
   colors: Colors;
 }) {
   const insets = useSafeAreaInsets();
@@ -399,6 +451,20 @@ function MixContextMenu({
           <Feather name="user" size={20} color={colors.foreground} style={menuStyles.actionIcon} />
           <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
             Ver perfil del creador
+          </Text>
+          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+        </Pressable>
+
+        <View style={[menuStyles.sep, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+
+        {/* Reportar mezcla */}
+        <Pressable
+          onPress={() => onReport(mix)}
+          style={({ pressed }) => [menuStyles.action, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Feather name="flag" size={20} color="#D08B7A" style={menuStyles.actionIcon} />
+          <Text style={[menuStyles.actionLabel, { color: "#D08B7A" }]}>
+            Reportar mezcla
           </Text>
           <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
         </Pressable>

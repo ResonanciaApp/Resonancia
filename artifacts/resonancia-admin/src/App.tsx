@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Users,
   ShieldCheck,
+  ListMusic,
   FolderTree,
   LogOut,
 } from "lucide-react";
@@ -25,6 +26,7 @@ import NotFound from "@/pages/not-found";
 import DashboardPage from "@/pages/dashboard";
 import UsuariosPage from "@/pages/usuarios";
 import ModeracionPage from "@/pages/moderacion";
+import MezclasPage from "@/pages/mezclas";
 import CategoriasPage from "@/pages/categorias";
 
 const clerkPubKey = publishableKeyFromHost(
@@ -141,6 +143,7 @@ const NAV = [
   { href: "/", label: "Panel", icon: LayoutDashboard },
   { href: "/usuarios", label: "Usuarios", icon: Users },
   { href: "/moderacion", label: "Moderación", icon: ShieldCheck },
+  { href: "/mezclas", label: "Mezclas", icon: ListMusic },
   { href: "/categorias", label: "Categorías", icon: FolderTree },
 ];
 
@@ -252,6 +255,7 @@ function AdminGate() {
         <Route path="/" component={DashboardPage} />
         <Route path="/usuarios" component={UsuariosPage} />
         <Route path="/moderacion" component={ModeracionPage} />
+        <Route path="/mezclas" component={MezclasPage} />
         <Route path="/categorias" component={CategoriasPage} />
         <Route component={NotFound} />
       </Switch>

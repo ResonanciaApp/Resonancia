@@ -3,7 +3,7 @@ name: Shared-mix likes denormalization + trending ordering
 description: La columna shared_mixes.likes es denormalizada y alimenta orden y trending; debe recalcularse bajo row lock
 ---
 
-El feed de "Mezclas de la comunidad" (`GET /mixes`) ordena por `likes DESC, createdAt DESC` y el flag `trending` = `likes >= TRENDING_THRESHOLD` (3). Ambos dependen de la columna **denormalizada** `shared_mixes.likes`.
+El feed de "Mezclas de la comunidad" (`GET /mixes`) ordena por `likes DESC, createdAt DESC` (depende de la columna **denormalizada** `shared_mixes.likes`). El flag `trending` NO usa el total denormalizado: cuenta los likes de la **ventana reciente** (`TRENDING_WINDOW_DAYS=7`) desde `shared_mix_likes.createdAt` y lo compara con `TRENDING_THRESHOLD=3`. Se recomputa en `GET /mixes` (param `trending` del serialize) y en la respuesta del toggle de like.
 
 **Regla:** el toggle de like (`POST /mixes/:id/like`) recalcula `likes` desde `COUNT(*)` de `shared_mix_likes` dentro de una transacción que **primero bloquea la fila de la mezcla con `SELECT ... .for("update")`**.
 

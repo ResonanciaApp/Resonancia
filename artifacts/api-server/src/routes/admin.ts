@@ -6,7 +6,11 @@ import {
   catalogCategoriesTable,
   catalogSessionsTable,
   playbackHistoryTable,
+  sharedMixesTable,
+  sharedMixReportsTable,
   type CatalogCategory,
+  type SharedMix,
+  type User,
 } from "@workspace/db";
 import {
   GetAdminUsersQueryParams,
@@ -276,6 +280,122 @@ router.patch("/admin/categories/:id", requireAuth, requireRole("admin"), async (
   } catch (err) {
     req.log.error({ err }, "error updating category");
     res.status(500).json({ error: "Error al actualizar la categoría" });
+  }
+});
+
+function serializeAdminMix(
+  mix: SharedMix,
+  author: User,
+  reportCount: number,
+) {
+  return {
+    id: mix.id,
+    name: mix.name,
+    description: mix.description,
+    image: mix.image,
+    category: mix.category,
+    sounds: mix.sounds,
+    likes: mix.likes,
+    hidden: mix.hidden,
+    reportCount,
+    author: {
+      id: author.id,
+      username: author.username,
+      displayName: author.displayName,
+      avatarUrl: author.avatarUrl,
+      role: author.role,
+      createdAt: author.createdAt.toISOString(),
+    },
+    createdAt: mix.createdAt.toISOString(),
+  };
+}
+
+// GET /admin/mixes — mezclas reportadas u ocultas para moderación (admin).
+router.get("/admin/mixes", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    const reportCounts = db
+      .select({
+        mixId: sharedMixReportsTable.mixId,
+        reportCount: count(sharedMixReportsTable.id).as("report_count"),
+      })
+      .from(sharedMixReportsTable)
+      .groupBy(sharedMixReportsTable.mixId)
+      .as("report_counts");
+
+    const rows = await db
+      .select({
+        mix: sharedMixesTable,
+        author: usersTable,
+        reportCount: sql<number>`coalesce(${reportCounts.reportCount}, 0)::int`,
+      })
+      .from(sharedMixesTable)
+      .innerJoin(usersTable, eq(usersTable.id, sharedMixesTable.authorId))
+      .leftJoin(reportCounts, eq(reportCounts.mixId, sharedMixesTable.id))
+      .where(
+        or(
+          eq(sharedMixesTable.hidden, true),
+          sql`${reportCounts.reportCount} > 0`,
+        ),
+      )
+      .orderBy(desc(sql`coalesce(${reportCounts.reportCount}, 0)`), desc(sharedMixesTable.createdAt));
+
+    res.json({
+      mixes: rows.map((r) => serializeAdminMix(r.mix, r.author, r.reportCount)),
+      total: rows.length,
+    });
+  } catch (err) {
+    req.log.error({ err }, "error listing admin mixes");
+    res.status(500).json({ error: "Error al obtener las mezclas" });
+  }
+});
+
+// POST /admin/mixes/:id/hide — ocultar/mostrar una mezcla (admin).
+router.post("/admin/mixes/:id/hide", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (!Number.isInteger(id)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+  const hidden = req.body?.hidden !== false;
+  try {
+    const [updated] = await db
+      .update(sharedMixesTable)
+      .set({ hidden })
+      .where(eq(sharedMixesTable.id, id))
+      .returning();
+    if (!updated) {
+      res.status(404).json({ error: "Mezcla no encontrada" });
+      return;
+    }
+    req.log.info({ mixId: id, hidden }, "admin mix visibility changed");
+    res.json({ ok: true, hidden });
+  } catch (err) {
+    req.log.error({ err }, "error hiding mix");
+    res.status(500).json({ error: "Error al actualizar la mezcla" });
+  }
+});
+
+// DELETE /admin/mixes/:id — eliminar una mezcla definitivamente (admin).
+router.delete("/admin/mixes/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (!Number.isInteger(id)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+  try {
+    const [deleted] = await db
+      .delete(sharedMixesTable)
+      .where(eq(sharedMixesTable.id, id))
+      .returning();
+    if (!deleted) {
+      res.status(404).json({ error: "Mezcla no encontrada" });
+      return;
+    }
+    req.log.info({ mixId: id }, "admin mix deleted");
+    res.status(204).end();
+  } catch (err) {
+    req.log.error({ err }, "error deleting mix");
+    res.status(500).json({ error: "Error al eliminar la mezcla" });
   }
 });
 
