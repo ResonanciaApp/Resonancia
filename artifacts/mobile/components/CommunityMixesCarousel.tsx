@@ -327,12 +327,18 @@ function MixRow({
               </View>
             )}
           </View>
+          <Text
+            style={[styles.mixAuthor, { color: colors.mutedForeground }]}
+            numberOfLines={1}
+          >
+            {mix.author.displayName}
+          </Text>
           <View style={styles.metaRow}>
             <Text
-              style={[styles.mixMeta, { color: colors.mutedForeground, flexShrink: 1 }]}
+              style={[styles.mixCount, { color: colors.foreground }]}
               numberOfLines={1}
             >
-              {mix.author.displayName} · {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+              {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
             </Text>
             {mix.likes > 0 && (
               <View style={styles.likeChip}>
@@ -581,8 +587,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
+  mixAuthor: { fontSize: 10, marginTop: 2 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
-  mixMeta: { fontSize: 10 },
+  mixCount: { fontSize: 10, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
   likeCount: { fontSize: 10, fontWeight: "600", color: GOLD },
   dotsBtn: {
