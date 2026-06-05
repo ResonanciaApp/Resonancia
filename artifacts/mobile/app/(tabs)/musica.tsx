@@ -324,11 +324,16 @@ export default function MiMusicaScreen() {
                     }}
                     style={styles.mainTabItem}
                   >
-                    <Feather
-                      name={tab.icon as any}
-                      size={18}
-                      color={selected ? colors.foreground : colors.mutedForeground}
-                    />
+                    <View style={[
+                      styles.mainTabIconBg,
+                      { backgroundColor: selected ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)" },
+                    ]}>
+                      <Feather
+                        name={tab.icon as any}
+                        size={22}
+                        color={selected ? colors.foreground : colors.mutedForeground}
+                      />
+                    </View>
                     <Text
                       style={[
                         styles.mainTabText,
@@ -446,7 +451,8 @@ const styles = StyleSheet.create({
     position: "relative",
     paddingHorizontal: 20,
   },
-  mainTabItem: { paddingVertical: 10, marginRight: 24, flexDirection: "column", alignItems: "center", gap: 4 },
+  mainTabItem: { paddingVertical: 10, marginRight: 24, flexDirection: "column", alignItems: "center", gap: 5 },
+  mainTabIconBg: { width: 44, height: 44, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   mainTabText: { fontSize: 13, letterSpacing: 0.2 },
   mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
 
