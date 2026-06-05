@@ -190,11 +190,6 @@ export default function MiMusicaScreen() {
             />
           )}
 
-          {active && (
-            <View style={[styles.activeBadge, { backgroundColor: colors.primary }]}>
-              <Feather name="check" size={11} color={colors.primaryForeground} />
-            </View>
-          )}
         </View>
 
         <View style={styles.cardFooter}>
@@ -440,15 +435,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 4,
     right: 4,
-  },
-  activeBadge: {
-    position: "absolute",
-    top: 5,
-    left: 5,
-    width: 19,
-    height: 19,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
