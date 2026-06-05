@@ -339,11 +339,16 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* ── 5. SESIÓN DESTACADA DEL DÍA ── */}
+        {/* ── 5. FRASE DEL DÍA ── */}
+        <View style={{ marginBottom: SECTION_GAP }}>
+          <QuoteOfTheDay />
+        </View>
+
+        {/* ── 6. SESIÓN DESTACADA ── */}
         {featuredSession && (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
-              Sesión destacada del día
+              Sesión destacada
             </Text>
             <Pressable
               style={styles.heroCard}
@@ -392,11 +397,6 @@ export default function HomeScreen() {
             </Pressable>
           </View>
         )}
-
-        {/* ── 6. FRASE DEL DÍA ── */}
-        <View style={{ marginBottom: SECTION_GAP }}>
-          <QuoteOfTheDay />
-        </View>
 
         {/* ── 7. MÁS ESCUCHADOS ── */}
         {popularSessions.length > 0 && (
