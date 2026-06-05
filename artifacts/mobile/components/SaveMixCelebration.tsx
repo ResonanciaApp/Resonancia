@@ -165,7 +165,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
             { opacity: msgOpacity, transform: [{ translateY: msgY }] },
           ]}
         >
-          <View style={[styles.checkWrap, { backgroundColor: colors.primary }]}>
+          <View style={styles.checkWrap}>
             <MaterialCommunityIcons name="heart" size={22} color="#E05252" />
           </View>
           <Text style={[styles.msgTitle, { color: colors.foreground }]}>¡Mezcla guardada!</Text>
