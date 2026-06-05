@@ -352,8 +352,10 @@ export default function MiMusicaScreen() {
               )}
             </ScrollView>
 
-            {/* ── Sub-tabs (píldoras) — solo si el tab principal tiene > 1 categoría ── */}
-            {subTabCategories && subTabCategories.length > 1 && (
+            {/* ── Sub-tabs (píldoras) — solo si el tab principal tiene > 1 categoría ──
+                 Cuando NO hay sub-tabs, el View rellena el hueco bajo la línea con
+                 el color del contenido para que no se note el fondo del header. ── */}
+            {subTabCategories && subTabCategories.length > 1 ? (
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -388,6 +390,8 @@ export default function MiMusicaScreen() {
                   );
                 })}
               </ScrollView>
+            ) : (
+              <View style={{ height: 6, backgroundColor: "#0E141C" }} />
             )}
           </View>
 
@@ -419,7 +423,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -20,
     paddingHorizontal: 20,
     paddingTop: 10,
-    paddingBottom: 4,
+    paddingBottom: 0,
   },
   // Secciones
   section: { marginBottom: 57 },
@@ -430,7 +434,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -20,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.07)",
-    marginBottom: 2,
+    marginBottom: 0,
   },
   mainTabBarContent: {
     flexDirection: "row",
