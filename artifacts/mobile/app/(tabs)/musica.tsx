@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
   header: { marginBottom: 12 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 6 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 16 },
-  subSectionTitle: { fontSize: 19, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
   mezclasHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10, paddingVertical: 4 },
 
   // Barra sticky
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   mainTabItem: { paddingVertical: 10, marginRight: 24 },
-  mainTabText: { fontSize: 15, letterSpacing: 0.2 },
+  mainTabText: { fontSize: 13, letterSpacing: 0.2 },
   mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
 
   // Sub-tabs píldoras
