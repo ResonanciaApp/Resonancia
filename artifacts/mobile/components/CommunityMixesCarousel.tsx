@@ -1,73 +1,126 @@
+/**
+ * CommunityMixesCarousel — sección "Mezclas de la comunidad"
+ * Diseño V2D (minimalista líneas): ranking, nombre, autor, 3-dot menu.
+ * Tabs con indicador dorado animado (estilo musica-sonidos.tsx).
+ */
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { Image as ExpoImage } from "expo-image";
+import React, { useCallback, useRef, useState } from "react";
+import {
+  Alert,
+  Animated,
+  LayoutChangeEvent,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useGetSharedMixes } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
-import { getMixImage } from "@/config/mix-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
-import { type MixCategory } from "@/data/mix-categories";
+import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
-import { useLoadMix } from "@/hooks/useLoadMix";
-import { resolveAvatarUrl } from "@/lib/avatar";
 
-const CATEGORY_GRADIENTS: Record<string, readonly [string, string, string]> = {
-  dormir:        ["#1e3a2a", "#0e1f15", "#0B0F14"],
-  motivarme:     ["#2a2040", "#160d28", "#0B0F14"],
-  concentracion: ["#1e2a3a", "#0f1520", "#0B0F14"],
-};
-const DEFAULT_GRADIENT: readonly [string, string, string] = ["#1a2030", "#0e141e", "#0B0F14"];
+// ── Tipos ──────────────────────────────────────────────────────────
+type CategoryFilter = "todos" | MixCategory;
 
-const CATEGORY_LABELS: Record<string, string> = {
-  dormir:        "DESCANSO",
-  motivarme:     "MEDITACIÓN",
-  concentracion: "ENFOQUE",
-};
+const TABS: { id: CategoryFilter; label: string }[] = [
+  { id: "todos",         label: "Todos"      },
+  { id: "dormir",        label: "Descanso"   },
+  { id: "motivarme",     label: "Meditación" },
+  { id: "concentracion", label: "Enfoque"    },
+];
 
-const MAX_LIST = 3;
+const GOLD = "#BE9650";
+const MAX_VISIBLE = 8;
 
+// ── Componente principal ───────────────────────────────────────────
 export function CommunityMixesCarousel() {
   const colors = useColors();
   const { data } = useGetSharedMixes();
-  const mixes = data?.mixes ?? [];
-  const loadMix = useLoadMix();
-  const { loadedPresetId } = useMixer();
+  const allMixes = data?.mixes ?? [];
+  const { importPreset, presets } = useMixer();
 
-  const [failedAvatars, setFailedAvatars] = useState<Record<number, boolean>>({});
+  // ── Tab state ─────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<CategoryFilter>("todos");
+  const indicatorAnim = useRef(new Animated.Value(0)).current;
+  const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const tabLayouts = useRef<Record<number, { x: number; width: number }>>({});
 
-  const handlePlay = useCallback(
+  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
+    const { x, width } = e.nativeEvent.layout;
+    tabLayouts.current[idx] = { x, width };
+    if (idx === 0) {
+      setIndicatorWidth(width);
+      indicatorAnim.setValue(x);
+    }
+  };
+
+  const selectTab = (id: CategoryFilter, idx: number) => {
+    setActiveTab(id);
+    const layout = tabLayouts.current[idx];
+    if (layout) {
+      setIndicatorWidth(layout.width);
+      Animated.spring(indicatorAnim, {
+        toValue: layout.x,
+        useNativeDriver: true,
+        tension: 60,
+        friction: 9,
+      }).start();
+    }
+  };
+
+  // ── 3-dot menu state ──────────────────────────────────────────
+  const [menuMix, setMenuMix] = useState<SharedMix | null>(null);
+
+  // ── Filtrado ──────────────────────────────────────────────────
+  const filtered = activeTab === "todos"
+    ? allMixes
+    : allMixes.filter((m) => m.category === activeTab);
+
+  const visible = filtered.slice(0, MAX_VISIBLE);
+  const remaining = filtered.length - visible.length;
+
+  // ── Helpers ───────────────────────────────────────────────────
+  const isFavorited = useCallback(
+    (mix: SharedMix) => presets.some((p) => p.id === `community-fav-${mix.id}`),
+    [presets],
+  );
+
+  const handleAddFavorite = useCallback(
     (mix: SharedMix) => {
-      const presetId = `community-${mix.id}`;
+      if (isFavorited(mix)) {
+        Alert.alert("Ya en favoritos", "Esta mezcla ya está en tus mezclas favoritas.");
+        return;
+      }
       const preset: MixPreset = {
-        id: presetId,
+        id: `community-fav-${mix.id}`,
         name: mix.name,
         description: mix.description ?? undefined,
         image: mix.image ?? undefined,
         category: mix.category as MixCategory,
         sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
         createdAt: mix.createdAt,
+        favorited: true,
       };
-      loadMix(preset);
+      importPreset(preset);
+      setMenuMix(null);
+      Alert.alert("Guardada", `"${mix.name}" se agregó a tus mezclas favoritas.`);
     },
-    [loadMix],
+    [importPreset, isFavorited],
   );
 
-  const hero = mixes[0] ?? null;
-  const listItems = mixes.slice(1, 1 + MAX_LIST);
-  const remaining = mixes.length - 1 - listItems.length;
+  const handleViewCreator = useCallback((mix: SharedMix) => {
+    setMenuMix(null);
+    // Navegar al perfil del creador cuando exista la ruta
+    router.push({ pathname: "/mezcla/[id]", params: { id: String(mix.id) } } as never);
+  }, []);
 
-  // ── Helper: iniciales del autor ──────────────────────────────
-  const initials = (name: string) =>
-    name
-      .split(" ")
-      .slice(0, 2)
-      .map((w) => w[0]?.toUpperCase() ?? "")
-      .join("");
-
+  // ── Render ────────────────────────────────────────────────────
   return (
     <View style={styles.section}>
       {/* Header */}
@@ -75,170 +128,70 @@ export function CommunityMixesCarousel() {
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
           Mezclas de la comunidad
         </Text>
-        {mixes.length > 1 + MAX_LIST && (
+        {filtered.length > MAX_VISIBLE && (
           <Pressable onPress={() => router.push("/mezclas-comunidad" as never)} hitSlop={8}>
             <Text style={[styles.verTodas, { color: colors.primary }]}>Ver todos</Text>
           </Pressable>
         )}
       </View>
 
+      {/* ── Tabs ── */}
+      <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)" }]}>
+        {TABS.map(({ id, label }, idx) => (
+          <Pressable
+            key={id}
+            onLayout={(e) => onTabLayout(idx, e)}
+            onPress={() => selectTab(id, idx)}
+            style={styles.tabItem}
+          >
+            <Text
+              style={[
+                styles.tabLabel,
+                {
+                  color: id === activeTab ? colors.foreground : colors.mutedForeground,
+                  fontWeight: id === activeTab ? "600" : "400",
+                },
+              ]}
+            >
+              {label}
+            </Text>
+          </Pressable>
+        ))}
+        {indicatorWidth > 0 && (
+          <Animated.View
+            style={[
+              styles.tabIndicator,
+              { width: indicatorWidth, backgroundColor: GOLD, transform: [{ translateX: indicatorAnim }] },
+            ]}
+          />
+        )}
+      </View>
+
       {/* Empty state */}
-      {mixes.length === 0 && (
+      {visible.length === 0 && (
         <View style={[styles.emptyState, { backgroundColor: colors.card }]}>
           <Feather name="music" size={28} color="rgba(190,150,80,0.35)" />
-          <Text style={styles.emptyText}>Aún no hay mezclas compartidas</Text>
-          <Text style={styles.emptySub}>Sé el primero en compartir tu ambiente sonoro</Text>
+          <Text style={[styles.emptyText, { color: colors.foreground }]}>
+            Aún no hay mezclas compartidas
+          </Text>
+          <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+            Sé el primero en compartir tu ambiente sonoro
+          </Text>
         </View>
       )}
 
-      {/* ── Hero card ── */}
-      {hero && (() => {
-        const heroImage = getMixImage(hero.image ?? undefined);
-        const grad = CATEGORY_GRADIENTS[hero.category] ?? DEFAULT_GRADIENT;
-        const heroAvatar = resolveAvatarUrl(hero.author.avatarUrl);
-        const isLoaded = loadedPresetId === `community-${hero.id}`;
-        const catLabel = CATEGORY_LABELS[hero.category] ?? hero.category.toUpperCase();
-
-        return (
-          <Pressable
-            onPress={() => handlePlay(hero)}
-            style={({ pressed }) => [styles.heroCard, { opacity: pressed ? 0.88 : 1 }]}
-          >
-            {/* Background */}
-            {heroImage ? (
-              <ExpoImage
-                source={heroImage}
-                style={StyleSheet.absoluteFill}
-                contentFit="cover"
-              />
-            ) : (
-              <LinearGradient
-                colors={grad as unknown as [string, string, string]}
-                style={StyleSheet.absoluteFill}
-                start={{ x: 0.15, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              />
-            )}
-
-            {/* Bottom overlay */}
-            <LinearGradient
-              colors={["transparent", "rgba(11,15,20,0.92)"]}
-              style={StyleSheet.absoluteFill}
-              start={{ x: 0, y: 0.35 }}
-              end={{ x: 0, y: 1 }}
-              pointerEvents="none"
+      {/* ── Lista V2D ── */}
+      {visible.length > 0 && (
+        <View style={{ marginTop: 4 }}>
+          {visible.map((mix, i) => (
+            <MixRow
+              key={mix.id}
+              mix={mix}
+              rank={i + 1}
+              colors={colors}
+              onDotsPress={() => setMenuMix(mix)}
             />
-
-            {/* Category badge */}
-            <View style={styles.catBadge}>
-              <Text style={[styles.catBadgeText, { color: colors.primary }]}>{catLabel}</Text>
-            </View>
-
-            {/* Sounds badge */}
-            <View style={styles.soundsBadge}>
-              <Text style={styles.soundsBadgeText}>🎵 {hero.sounds.length} sonidos</Text>
-            </View>
-
-            {/* Active dot */}
-            {isLoaded && (
-              <View style={[styles.activeDot, { backgroundColor: colors.primary }]} />
-            )}
-
-            {/* Bottom content */}
-            <View style={styles.heroBottom}>
-              <Text style={styles.heroName} numberOfLines={2}>{hero.name}</Text>
-              <View style={styles.heroMeta}>
-                <View style={styles.heroAuthorRow}>
-                  {heroAvatar && !failedAvatars[hero.id] ? (
-                    <Image
-                      source={{ uri: heroAvatar }}
-                      style={[styles.heroAvatar, { backgroundColor: colors.border }]}
-                      onError={() => setFailedAvatars((p) => ({ ...p, [hero.id]: true }))}
-                    />
-                  ) : (
-                    <View style={styles.heroAvatarFallback}>
-                      <Text style={[styles.heroAvatarInitials, { color: colors.primary }]}>
-                        {initials(hero.author.displayName)}
-                      </Text>
-                    </View>
-                  )}
-                  <Text style={styles.heroAuthorName} numberOfLines={1}>
-                    {hero.author.displayName}
-                  </Text>
-                </View>
-
-                {/* Play button */}
-                <View style={[styles.heroPlayBtn, { backgroundColor: colors.primary }]}>
-                  <View style={styles.playTriangle} />
-                </View>
-              </View>
-            </View>
-          </Pressable>
-        );
-      })()}
-
-      {/* ── Compact list ── */}
-      {listItems.length > 0 && (
-        <View style={styles.list}>
-          {listItems.map((mix) => {
-            const image = getMixImage(mix.image ?? undefined);
-            const avatar = resolveAvatarUrl(mix.author.avatarUrl);
-            const isLoaded = loadedPresetId === `community-${mix.id}`;
-            const grad = CATEGORY_GRADIENTS[mix.category] ?? DEFAULT_GRADIENT;
-
-            return (
-              <Pressable
-                key={mix.id}
-                onPress={() => handlePlay(mix)}
-                style={({ pressed }) => [styles.row, { opacity: pressed ? 0.72 : 1 }]}
-              >
-                {/* Thumbnail */}
-                <View style={styles.thumbWrap}>
-                  {image ? (
-                    <ExpoImage
-                      source={image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                    />
-                  ) : (
-                    <LinearGradient
-                      colors={grad as unknown as [string, string]}
-                      style={StyleSheet.absoluteFill}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                    />
-                  )}
-                </View>
-
-                <View style={styles.meta}>
-                  <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={1}>
-                    {mix.name}
-                  </Text>
-                  <Text style={[styles.soundCount, { color: colors.mutedForeground }]}>
-                    Pista con {mix.sounds.length} {mix.sounds.length === 1 ? "sonido" : "sonidos"}
-                  </Text>
-                  <View style={styles.authorRow}>
-                    {avatar && !failedAvatars[mix.id] ? (
-                      <Image
-                        source={{ uri: avatar }}
-                        style={[styles.avatar, { backgroundColor: colors.border }]}
-                        onError={() => setFailedAvatars((p) => ({ ...p, [mix.id]: true }))}
-                      />
-                    ) : (
-                      <Feather name="user" size={11} color={colors.mutedForeground} />
-                    )}
-                    <Text style={[styles.authorName, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {mix.author.displayName}
-                    </Text>
-                  </View>
-                </View>
-
-                {isLoaded && (
-                  <View style={[styles.rowActiveDot, { backgroundColor: colors.primary }]} />
-                )}
-              </Pressable>
-            );
-          })}
+          ))}
         </View>
       )}
 
@@ -248,21 +201,169 @@ export function CommunityMixesCarousel() {
           onPress={() => router.push("/mezclas-comunidad" as never)}
           style={({ pressed }) => [
             styles.verMasBtn,
-            {
-              borderColor: "rgba(190,150,80,0.2)",
-              opacity: pressed ? 0.7 : 1,
-            },
+            { borderColor: "rgba(190,150,80,0.2)", opacity: pressed ? 0.7 : 1 },
           ]}
         >
           <Text style={[styles.verMasText, { color: colors.mutedForeground }]}>
-            Ver los {mixes.length} ambientes de la comunidad →
+            Ver las {filtered.length} mezclas →
           </Text>
         </Pressable>
       )}
+
+      {/* ── 3-dot Menu Modal ── */}
+      <MixContextMenu
+        mix={menuMix}
+        onClose={() => setMenuMix(null)}
+        onAddFavorite={handleAddFavorite}
+        onViewCreator={handleViewCreator}
+        colors={colors}
+      />
     </View>
   );
 }
 
+// ── Fila de mezcla (V2D) ───────────────────────────────────────────
+type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
+
+function MixRow({
+  mix,
+  rank,
+  colors,
+  onDotsPress,
+}: {
+  mix: SharedMix;
+  rank: number;
+  colors: Colors;
+  onDotsPress: () => void;
+}) {
+  const trending = (mix as any).trending === true;
+  const isFirst = rank === 1;
+  const dividerColor = "rgba(255,255,255,0.05)";
+
+  return (
+    <View>
+      <View style={styles.row}>
+        {/* Rank */}
+        <Text style={[styles.rank, { color: isFirst ? GOLD : "#3A4A5A" }]}>
+          {rank}
+        </Text>
+
+        {/* Info */}
+        <View style={styles.info}>
+          <View style={styles.nameRow}>
+            <Text
+              style={[styles.mixName, { color: colors.foreground }]}
+              numberOfLines={1}
+            >
+              {mix.name}
+            </Text>
+            {trending && (
+              <View style={styles.trendBadge}>
+                <Text style={[styles.trendText, { color: GOLD }]}>↑</Text>
+              </View>
+            )}
+          </View>
+          <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
+            {mix.author.displayName} · {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+          </Text>
+        </View>
+
+        {/* 3 puntitos */}
+        <Pressable
+          onPress={onDotsPress}
+          hitSlop={12}
+          style={({ pressed }) => [styles.dotsBtn, { opacity: pressed ? 0.5 : 1 }]}
+        >
+          <Feather name="more-vertical" size={18} color={colors.mutedForeground} />
+        </Pressable>
+      </View>
+
+      {/* Divider */}
+      <View style={[styles.divider, { backgroundColor: dividerColor }]} />
+    </View>
+  );
+}
+
+// ── Menú contextual (3 puntitos) ───────────────────────────────────
+function MixContextMenu({
+  mix,
+  onClose,
+  onAddFavorite,
+  onViewCreator,
+  colors,
+}: {
+  mix: SharedMix | null;
+  onClose: () => void;
+  onAddFavorite: (mix: SharedMix) => void;
+  onViewCreator: (mix: SharedMix) => void;
+  colors: Colors;
+}) {
+  const insets = useSafeAreaInsets();
+
+  if (!mix) return null;
+
+  return (
+    <Modal
+      visible={!!mix}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+      statusBarTranslucent
+    >
+      <Pressable style={menuStyles.backdrop} onPress={onClose} />
+
+      <View style={[menuStyles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+        {/* Handle */}
+        <View style={menuStyles.handle} />
+
+        {/* Título de la mezcla */}
+        <View style={menuStyles.header}>
+          <View style={{ flex: 1 }}>
+            <Text style={[menuStyles.mixName, { color: colors.foreground }]} numberOfLines={1}>
+              {mix.name}
+            </Text>
+            <Text style={[menuStyles.mixMeta, { color: colors.mutedForeground }]}>
+              {mix.author.displayName} · {mix.sounds.length} sonidos
+            </Text>
+          </View>
+          <Pressable onPress={onClose} style={menuStyles.closeBtn} hitSlop={8}>
+            <Feather name="x" size={20} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
+
+        <View style={[menuStyles.sep, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+
+        {/* Agregar a favoritos */}
+        <Pressable
+          onPress={() => onAddFavorite(mix)}
+          style={({ pressed }) => [menuStyles.action, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Feather name="heart" size={20} color={GOLD} style={menuStyles.actionIcon} />
+          <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
+            Agregar a favoritos
+          </Text>
+          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+        </Pressable>
+
+        <View style={[menuStyles.sep, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+
+        {/* Ver perfil del creador */}
+        <Pressable
+          onPress={() => onViewCreator(mix)}
+          style={({ pressed }) => [menuStyles.action, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Feather name="user" size={20} color={colors.foreground} style={menuStyles.actionIcon} />
+          <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
+            Ver perfil del creador
+          </Text>
+          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+        </Pressable>
+      </View>
+    </Modal>
+  );
+}
+
+// ── Estilos ────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   section: { paddingHorizontal: 20 },
 
@@ -275,118 +376,71 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
+  // Tabs
+  tabBar: {
+    flexDirection: "row",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    position: "relative",
+    marginBottom: 4,
+  },
+  tabItem: {
+    paddingVertical: 9,
+    paddingHorizontal: 12,
+    alignItems: "center",
+  },
+  tabLabel: { fontSize: 13, letterSpacing: 0.2 },
+  tabIndicator: {
+    position: "absolute",
+    bottom: 0,
+    height: 2,
+    borderRadius: 1,
+  },
+
+  // Empty
   emptyState: {
     alignItems: "center",
     paddingVertical: 24,
     gap: 6,
     borderRadius: 14,
+    marginTop: 12,
   },
-  emptyText: { fontSize: 14, fontWeight: "600", color: "#FFFFFF" },
-  emptySub: { fontSize: 12, color: "#7A8FA8", textAlign: "center", paddingHorizontal: 20 },
+  emptyText: { fontSize: 14, fontWeight: "600" },
+  emptySub: { fontSize: 12, textAlign: "center", paddingHorizontal: 20 },
 
-  // ── Hero ──
-  heroCard: {
-    height: 190,
-    borderRadius: 18,
-    overflow: "hidden",
-    marginBottom: 16,
-    position: "relative",
-  },
-  catBadge: {
-    position: "absolute",
-    top: 14,
-    left: 14,
-    backgroundColor: "rgba(190,150,80,0.2)",
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.3)",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  catBadgeText: { fontSize: 9, fontWeight: "700", letterSpacing: 1.2 },
-  soundsBadge: {
-    position: "absolute",
-    top: 14,
-    right: 14,
-    backgroundColor: "rgba(11,15,20,0.65)",
-    borderWidth: 1,
-    borderColor: "rgba(237,225,211,0.15)",
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  soundsBadgeText: { color: "#7A8FA8", fontSize: 10 },
-  activeDot: {
-    position: "absolute",
-    top: 14,
-    left: "50%",
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  heroBottom: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 14,
-    gap: 6,
-  },
-  heroName: { color: "#EDE1D3", fontSize: 17, fontWeight: "700", lineHeight: 22 },
-  heroMeta: {
+  // Fila
+  row: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 14,
+    paddingVertical: 11,
   },
-  heroAuthorRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  heroAvatar: { width: 22, height: 22, borderRadius: 11 },
-  heroAvatarFallback: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: "rgba(190,150,80,0.25)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  heroAvatarInitials: { fontSize: 9, fontWeight: "700" },
-  heroAuthorName: { color: "#7A8FA8", fontSize: 12 },
-  heroPlayBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  playTriangle: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 7,
-    borderBottomWidth: 7,
-    borderLeftWidth: 12,
-    borderTopColor: "transparent",
-    borderBottomColor: "transparent",
-    borderLeftColor: "#0B0F14",
-    marginLeft: 2,
-  },
-
-  // ── List ──
-  list: { gap: 14, marginBottom: 16 },
-  row: { flexDirection: "row", alignItems: "center", gap: 12 },
-  thumbWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 12,
-    overflow: "hidden",
-    backgroundColor: "rgba(190,150,80,0.1)",
+  rank: {
+    width: 20,
+    textAlign: "right",
+    fontSize: 13,
+    fontWeight: "700",
     flexShrink: 0,
   },
-  meta: { flex: 1, gap: 2 },
-  mixName: { fontSize: 14, fontWeight: "600" },
-  soundCount: { fontSize: 11, fontWeight: "500" },
-  authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
-  avatar: { width: 14, height: 14, borderRadius: 7 },
-  authorName: { fontSize: 11, flexShrink: 1 },
-  rowActiveDot: { width: 8, height: 8, borderRadius: 4, flexShrink: 0 },
+  info: { flex: 1, minWidth: 0 },
+  nameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  mixName: { fontSize: 13, fontWeight: "600", flexShrink: 1 },
+  trendBadge: {
+    backgroundColor: "rgba(190,150,80,0.12)",
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    flexShrink: 0,
+  },
+  trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
+  mixMeta: { fontSize: 10, marginTop: 2 },
+  dotsBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  divider: { height: 1, marginLeft: 34 },
 
   // Ver más
   verMasBtn: {
@@ -395,6 +449,41 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     alignItems: "center",
+    marginTop: 8,
   },
   verMasText: { fontSize: 13 },
+});
+
+const menuStyles = StyleSheet.create({
+  backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
+  sheet: {
+    backgroundColor: "#151A23",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    overflow: "hidden",
+  },
+  handle: {
+    width: 36, height: 4, borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignSelf: "center", marginBottom: 16,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 14,
+  },
+  mixName: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
+  mixMeta: { fontSize: 12 },
+  closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+  sep: { height: StyleSheet.hairlineWidth },
+  action: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+  },
+  actionIcon: { width: 32, marginRight: 12 },
+  actionLabel: { flex: 1, fontSize: 16 },
 });

@@ -123,6 +123,8 @@ type MixerContextType = {
   setPresetShared: (id: string, sharedId: number | null) => void;
   /** Alterna el favorito de un preset. */
   togglePresetFavorite: (id: string) => void;
+  /** Guarda directamente un preset completo (con sus sonidos) como favorito local. */
+  importPreset: (preset: MixPreset) => void;
   /** ID del preset cargado actualmente (null si la mezcla activa no proviene de uno guardado o fue modificada). */
   loadedPresetId: string | null;
   sleepTimerRemaining: number | null;
@@ -866,6 +868,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
   const closeSheet = useCallback(() => setIsSheetOpen(false), []);
 
+  const importPreset = useCallback(
+    (preset: MixPreset) => {
+      const alreadyExists = presetsRef.current.some((p) => p.id === preset.id);
+      if (alreadyExists) return;
+      persistPresets([preset, ...presetsRef.current]);
+    },
+    [persistPresets],
+  );
+
   const savePreset = useCallback(
     (input: SaveMixInput) => {
       if (activeSoundsRef.current.length === 0) return;
@@ -1163,6 +1174,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         deletePreset,
         setPresetShared,
         togglePresetFavorite,
+        importPreset,
         loadedPresetId,
         sleepTimerRemaining,
         setSleepTimer,
