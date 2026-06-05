@@ -26,6 +26,7 @@ import {
   type MixSound,
   type SoundCategoryId,
   SOUNDS,
+  SOUND_CATEGORIES,
   hasSoundFile,
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
@@ -51,6 +52,7 @@ export default function MiMusicaScreen() {
   const { isPremium } = usePremium();
   const { isActive, toggleSound, activeSounds } = useMixer();
   const [mainTab, setMainTab] = useState<MainTabId>("popular");
+  const [subTab, setSubTab] = useState<SoundCategoryId | null>(null);
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [mezclasOpen, setMezclasOpen] = useState(true);
@@ -69,6 +71,7 @@ export default function MiMusicaScreen() {
 
   const selectMainTab = (id: MainTabId, idx: number) => {
     setMainTab(id);
+    setSubTab(null);
     const layout = mainTabLayouts.current[idx];
     if (layout) {
       setMainTabIndicatorWidth(layout.width);
@@ -210,13 +213,16 @@ export default function MiMusicaScreen() {
     .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
     .slice(0, 50);
 
+  const currentTabDef = MAIN_TABS.find((t) => t.id === mainTab);
+  const subTabCategories = currentTabDef?.categories ?? null;
+
   const displayedSounds = useMemo(() => {
-    const tab = MAIN_TABS.find((t) => t.id === mainTab);
-    if (!tab?.categories) return popularSounds;
+    if (!subTabCategories) return popularSounds;
+    const catFilter = subTab ? [subTab] : subTabCategories;
     return SOUNDS.filter(
-      (s) => tab.categories!.includes(s.category as SoundCategoryId) && hasSoundFile(s.id),
+      (s) => catFilter.includes(s.category as SoundCategoryId) && hasSoundFile(s.id),
     );
-  }, [mainTab, popularSounds]);
+  }, [mainTab, subTab, popularSounds, subTabCategories]);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -299,7 +305,7 @@ export default function MiMusicaScreen() {
           stickyHeaderIndices={[0]}
           showsVerticalScrollIndicator={false}
         >
-          {/* ── Barra sticky: categorías principales ── */}
+          {/* ── Barra sticky: categorías principales + sub-tabs ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
             <View style={styles.mainTabBar}>
               {MAIN_TABS.map((tab, idx) => {
@@ -341,6 +347,44 @@ export default function MiMusicaScreen() {
                 />
               )}
             </View>
+
+            {/* ── Sub-tabs (píldoras) — solo si el tab principal tiene > 1 categoría ── */}
+            {subTabCategories && subTabCategories.length > 1 && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.subTabRow}
+              >
+                {subTabCategories.map((catId) => {
+                  const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
+                  if (!cat) return null;
+                  const selected = subTab === catId;
+                  return (
+                    <Pressable
+                      key={catId}
+                      onPress={() => setSubTab(selected ? null : catId)}
+                      style={[
+                        styles.subTabPill,
+                        {
+                          backgroundColor: selected
+                            ? colors.primary
+                            : "rgba(255,255,255,0.07)",
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.subTabPillText,
+                          { color: selected ? "#0B0F14" : colors.mutedForeground },
+                        ]}
+                      >
+                        {cat.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            )}
           </View>
 
 
@@ -390,6 +434,11 @@ const styles = StyleSheet.create({
   mainTabItem: { paddingVertical: 10, marginRight: 24 },
   mainTabText: { fontSize: 15, letterSpacing: 0.2 },
   mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
+
+  // Sub-tabs píldoras
+  subTabRow: { flexDirection: "row", gap: 8, paddingTop: 10, paddingBottom: 6 },
+  subTabPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20 },
+  subTabPillText: { fontSize: 13, fontWeight: "600", letterSpacing: 0.1 },
 
   // Categorías de mezclas — 3 tarjetas iguales
   catRow: { flexDirection: "row", gap: 8 },
