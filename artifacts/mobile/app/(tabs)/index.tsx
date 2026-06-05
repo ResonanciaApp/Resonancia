@@ -383,7 +383,7 @@ export default function HomeScreen() {
                         onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
                         style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.82 : 1 }]}
                       >
-                        <Text style={[styles.heroBtnText, { color: colors.primary }]}>Escuchar</Text>
+                        <Text style={[styles.heroBtnText, { color: "#FFFFFF" }]}>Escuchar</Text>
                       </Pressable>
                     </View>
                   </View>
