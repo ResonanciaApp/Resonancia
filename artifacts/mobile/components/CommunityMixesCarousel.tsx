@@ -16,11 +16,13 @@ import {
   Text,
   View,
 } from "react-native";
+import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useGetSharedMixes } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
+import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
@@ -36,6 +38,8 @@ const TABS: { id: CategoryFilter; label: string }[] = [
 ];
 
 const GOLD = "#BE9650";
+const STACK_THUMB = 30;
+const STACK_SHIFT = 19;
 const MAX_VISIBLE = 8;
 
 // ── Componente principal ───────────────────────────────────────────
@@ -248,6 +252,9 @@ function MixRow({
           {rank}
         </Text>
 
+        {/* Miniaturas apiladas de los sonidos */}
+        <SoundStack sounds={mix.sounds} />
+
         {/* Info */}
         <View style={styles.info}>
           <View style={styles.nameRow}>
@@ -280,6 +287,33 @@ function MixRow({
 
       {/* Divider */}
       <View style={[styles.divider, { backgroundColor: dividerColor }]} />
+    </View>
+  );
+}
+
+// ── Miniaturas apiladas de los sonidos ─────────────────────────────
+function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
+  if (!sounds || sounds.length === 0) return null;
+  return (
+    <View style={[styles.stack, { width: STACK_THUMB + (sounds.length - 1) * STACK_SHIFT }]}>
+      {sounds.map((s, i) => {
+        const img = getSoundImage(s.id);
+        return (
+          <View
+            key={`${s.id}-${i}`}
+            style={[
+              styles.stackThumb,
+              { left: i * STACK_SHIFT, zIndex: sounds.length - i },
+            ]}
+          >
+            {img ? (
+              <ExpoImage source={img} style={styles.stackImg} contentFit="cover" />
+            ) : (
+              <View style={[styles.stackImg, { backgroundColor: "#1F2937" }]} />
+            )}
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -421,6 +455,24 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     flexShrink: 0,
+  },
+  stack: {
+    height: STACK_THUMB,
+    flexShrink: 0,
+  },
+  stackThumb: {
+    position: "absolute",
+    top: 0,
+    width: STACK_THUMB,
+    height: STACK_THUMB,
+    borderRadius: STACK_THUMB / 2,
+    borderWidth: 1.5,
+    borderColor: "#0B0F14",
+    overflow: "hidden",
+  },
+  stackImg: {
+    width: "100%",
+    height: "100%",
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
