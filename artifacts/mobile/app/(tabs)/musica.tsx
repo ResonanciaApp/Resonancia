@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   stickyBar: {
     marginHorizontal: -20,
     paddingHorizontal: 20,
-    paddingTop: 6,
+    paddingTop: 16,
     paddingBottom: 0,
   },
   // Secciones
