@@ -534,6 +534,32 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
+        {/* ── Comunidad ── */}
+        <View style={styles.communityRow}>
+          {[
+            { label: "Amigos",  icon: "users"     as const, route: "/amigos"  },
+            { label: "Diario",  icon: "book-open" as const, route: "/diario"  },
+            { label: "Grupos",  icon: "globe"     as const, route: "/grupos"  },
+          ].map(({ label, icon, route }) => (
+            <Pressable
+              key={label}
+              onPress={() => router.push(route as never)}
+              style={({ pressed }) => [
+                styles.communityCard,
+                {
+                  backgroundColor: pressed ? "rgba(190,150,80,0.12)" : "#151A23",
+                  transform: [{ scale: pressed ? 0.96 : 1 }],
+                },
+              ]}
+            >
+              <Feather name={icon} size={22} color={colors.primary} />
+              <Text style={[styles.communityLabel, { color: colors.mutedForeground }]}>
+                {label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
         {/* ── Mi viaje ── */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi viaje</Text>
@@ -926,4 +952,17 @@ const styles = StyleSheet.create({
   fieldInput: { flex: 1, fontSize: 15, backgroundColor: "transparent" },
   saveBtn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 8 },
   saveBtnText: { fontSize: 16, fontWeight: "700" },
+
+  communityRow: { flexDirection: "row", gap: 8 },
+  communityCard: {
+    flex: 1,
+    paddingTop: 14,
+    paddingBottom: 12,
+    paddingHorizontal: 8,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  communityLabel: { fontSize: 12, fontWeight: "500", textAlign: "center", letterSpacing: 0.2 },
 });
