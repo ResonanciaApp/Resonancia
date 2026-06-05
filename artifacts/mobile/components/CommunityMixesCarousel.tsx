@@ -53,17 +53,25 @@ export function CommunityMixesCarousel() {
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const [indicatorWidth, setIndicatorWidth] = useState(0);
   const tabLayouts = useRef<Record<number, { x: number; width: number }>>({});
+  const activeIdxRef = useRef(0);
+  const initializedRef = useRef(false);
 
   const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
     const { x, width } = e.nativeEvent.layout;
     tabLayouts.current[idx] = { x, width };
-    if (idx === 0) {
+    // Posicionar el indicador SOLO una vez (sobre la tab activa inicial).
+    // Re-layouts posteriores (al filtrar la lista) no deben moverlo, o
+    // el indicador "salta" de vuelta a la primera tab.
+    if (!initializedRef.current && idx === activeIdxRef.current) {
+      initializedRef.current = true;
       setIndicatorWidth(width);
       indicatorAnim.setValue(x);
     }
   };
 
   const selectTab = (id: CategoryFilter, idx: number) => {
+    if (id === activeTab) return;
+    activeIdxRef.current = idx;
     setActiveTab(id);
     const layout = tabLayouts.current[idx];
     if (layout) {
@@ -291,15 +299,13 @@ function MixRow({
 }
 
 // ── Miniaturas apiladas de los sonidos ─────────────────────────────
-const STACK_MAX = 5;
+const STACK_MAX = 2;
 
 function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
   if (!sounds || sounds.length === 0) return null;
   const visible = sounds.slice(0, STACK_MAX);
-  const extra = sounds.length - visible.length;
-  const slots = visible.length + (extra > 0 ? 1 : 0);
   return (
-    <View style={[styles.stack, { width: STACK_THUMB + (slots - 1) * STACK_SHIFT }]}>
+    <View style={[styles.stack, { width: STACK_THUMB + (visible.length - 1) * STACK_SHIFT }]}>
       {visible.map((s, i) => {
         const img = getSoundImage(s.id);
         return (
@@ -307,7 +313,7 @@ function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
             key={`${s.id}-${i}`}
             style={[
               styles.stackThumb,
-              { left: i * STACK_SHIFT, zIndex: slots - i },
+              { left: i * STACK_SHIFT, zIndex: visible.length - i },
             ]}
           >
             {img ? (
@@ -318,17 +324,6 @@ function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
           </View>
         );
       })}
-      {extra > 0 && (
-        <View
-          style={[
-            styles.stackThumb,
-            styles.stackMore,
-            { left: visible.length * STACK_SHIFT, zIndex: 0 },
-          ]}
-        >
-          <Text style={styles.stackMoreText}>+{extra}</Text>
-        </View>
-      )}
     </View>
   );
 }
@@ -497,16 +492,6 @@ const styles = StyleSheet.create({
   stackImg: {
     width: "100%",
     height: "100%",
-  },
-  stackMore: {
-    backgroundColor: "#1F2937",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stackMoreText: {
-    color: "#EDE1D3",
-    fontSize: 11,
-    fontWeight: "700",
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6 },

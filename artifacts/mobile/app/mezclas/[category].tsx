@@ -52,14 +52,12 @@ function ZenStonesIcon({ color, size = 40 }: { color: string; size?: number }) {
 // ── Stack de imágenes ────────────────────────────────────────────
 const THUMB = 44;
 const SHIFT = 26;
-const MAX_STACK = 5;
+const MAX_STACK = 2;
 
 function SoundStack({ sounds }: { sounds: { id: string }[] }) {
   const colors = useColors();
   const visible = sounds.slice(0, MAX_STACK);
-  const extra = sounds.length - visible.length;
-  const slots = visible.length + (extra > 0 ? 1 : 0);
-  const stackWidth = THUMB + Math.max(0, slots - 1) * SHIFT;
+  const stackWidth = THUMB + Math.max(0, visible.length - 1) * SHIFT;
   return (
     <View style={[styles.stackWrap, { width: stackWidth }]}>
       {visible.map((s, i) => {
@@ -76,11 +74,6 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
           </View>
         );
       })}
-      {extra > 0 && (
-        <View style={[styles.stackThumb, styles.stackMore, { left: visible.length * SHIFT, zIndex: MAX_STACK }]}>
-          <Text style={styles.stackMoreText}>+{extra}</Text>
-        </View>
-      )}
     </View>
   );
 }
@@ -304,12 +297,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  stackMore: {
-    backgroundColor: "rgba(182,149,95,0.15)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stackMoreText: { color: "#EDE1D3", fontSize: 13, fontWeight: "700" },
 
   // ── Info ────────────────────────────────────────────────────────
   mixInfo: { flex: 1, minWidth: 0 },
