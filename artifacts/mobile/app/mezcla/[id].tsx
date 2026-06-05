@@ -246,13 +246,6 @@ export default function CommunityMixScreen() {
       style={[styles.root, { backgroundColor: colors.background }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      {/* Ambient blobs decorativos */}
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={[styles.blob, { top: -60, left: -60, width: 260, height: 260, backgroundColor: "rgba(30,60,120,0.18)", borderRadius: 130 }]} />
-        <View style={[styles.blob, { top: 80, right: -40, width: 200, height: 200, backgroundColor: "rgba(14,58,58,0.14)", borderRadius: 100 }]} />
-        <View style={[styles.blob, { top: 220, left: 40, width: 160, height: 160, backgroundColor: "rgba(74,32,16,0.12)", borderRadius: 80 }]} />
-      </View>
-
       <ScrollView
         style={styles.root}
         contentContainerStyle={{ paddingBottom: insets.bottom + 28 }}
@@ -452,8 +445,6 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 14 },
   notFound: { fontSize: 16, fontWeight: "600", textAlign: "center" },
   backPill: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 22, borderWidth: 1 },
-
-  blob: { position: "absolute" },
 
   topBar: { paddingHorizontal: 12, paddingBottom: 8 },
   backBtn: {

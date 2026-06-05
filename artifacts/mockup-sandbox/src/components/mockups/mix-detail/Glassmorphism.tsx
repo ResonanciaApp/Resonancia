@@ -20,13 +20,6 @@ export function Glassmorphism() {
   return (
     <div className="min-h-screen overflow-y-auto relative" style={{ background: BG, fontFamily: "system-ui, sans-serif" }}>
 
-      {/* Ambient blobs de fondo */}
-      <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: -80, left: -80, width: 340, height: 340, borderRadius: "50%", background: "radial-gradient(circle, rgba(30,60,120,0.55) 0%, transparent 70%)", filter: "blur(40px)" }} />
-        <div style={{ position: "absolute", top: 60, right: -60, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(14,58,58,0.45) 0%, transparent 70%)", filter: "blur(35px)" }} />
-        <div style={{ position: "absolute", top: 200, left: 50, width: 200, height: 200, borderRadius: "50%", background: "radial-gradient(circle, rgba(74,32,16,0.35) 0%, transparent 70%)", filter: "blur(30px)" }} />
-      </div>
-
       {/* Back */}
       <div className="relative flex items-center px-4 pt-12 pb-6">
         <button className="w-9 h-9 flex items-center justify-center rounded-full" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}>
