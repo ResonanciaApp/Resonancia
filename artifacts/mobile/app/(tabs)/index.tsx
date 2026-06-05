@@ -282,7 +282,7 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 4. ESCUCHADOS RECIENTEMENTE ── */}
-        <View style={styles.section}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 10 }]}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
               Escuchados recientemente
