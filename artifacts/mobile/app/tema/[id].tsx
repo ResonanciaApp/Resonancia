@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { Image as ExpoImage } from "expo-image";
 import React, { useState } from "react";
 import {
   Platform,
@@ -76,18 +77,19 @@ export default function TemaScreen() {
       >
         {/* Hero: icon + title + description */}
         <View style={styles.hero}>
-          <View
-            style={[
-              styles.iconCircle,
-              { backgroundColor: `${tema.color}22` },
-            ]}
-          >
+          {tema.image != null ? (
+            <ExpoImage
+              source={tema.image}
+              style={styles.heroIcon}
+              contentFit="contain"
+            />
+          ) : (
             <MaterialCommunityIcons
               name={tema.icon}
-              size={44}
+              size={56}
               color={tema.color}
             />
-          </View>
+          )}
 
           <Text style={[styles.title, { color: colors.foreground }]}>
             {tema.label}
@@ -170,12 +172,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingBottom: 32,
   },
-  iconCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    alignItems: "center",
-    justifyContent: "center",
+  heroIcon: {
+    width: 64,
+    height: 64,
     marginBottom: 20,
   },
   title: {

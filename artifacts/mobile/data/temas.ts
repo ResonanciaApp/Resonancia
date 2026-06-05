@@ -30,7 +30,7 @@ export const TEMAS: TemaItem[] = [
   },
   {
     id: "angustia",
-    label: "Angustia",
+    label: "Ansiedad",
     icon: "weather-cloudy",
     color: "#C8A85C",
     description: "Acompañamiento sonoro y guiado para atravesar momentos de incertidumbre con serenidad.",
@@ -38,12 +38,12 @@ export const TEMAS: TemaItem[] = [
   },
   {
     id: "ansiedad",
-    label: "Ansiedad",
+    label: "Rituales",
     icon: "heart-pulse",
-    color: "#C4A560",
+    color: "#0AA99A",
     description: "Sesiones diseñadas para calmar la mente y encontrar equilibrio en momentos de tensión.",
     themeTagMatch: "Para la ansiedad",
-    image: require("@/assets/images/tema-ansiedad.png"),
+    image: require("@/assets/images/cat-rituales.png"),
   },
   {
     id: "familia",
