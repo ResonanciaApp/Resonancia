@@ -314,7 +314,7 @@ export default function MiMusicaScreen() {
 
           {/* ── Biblioteca de sonidos ── */}
           {activeTab === "popular" ? (
-            <View style={styles.grid}>
+            <View style={[styles.grid, { marginTop: 33 }]}>
               {popularSounds.map(renderSoundCard)}
             </View>
           ) : (
@@ -322,7 +322,7 @@ export default function MiMusicaScreen() {
               const sounds = getSoundsByCategory(cat.id);
               if (sounds.length === 0) return null;
               return (
-                <View key={cat.id} style={styles.grid}>
+                <View key={cat.id} style={[styles.grid, { marginTop: 33 }]}>
                   {sounds.map(renderSoundCard)}
                 </View>
               );
