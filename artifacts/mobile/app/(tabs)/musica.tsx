@@ -307,7 +307,12 @@ export default function MiMusicaScreen() {
         >
           {/* ── Barra sticky: categorías principales + sub-tabs ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
-            <View style={styles.mainTabBar}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.mainTabBar}
+              contentContainerStyle={styles.mainTabBarContent}
+            >
               {MAIN_TABS.map((tab, idx) => {
                 const selected = mainTab === tab.id;
                 return (
@@ -346,7 +351,7 @@ export default function MiMusicaScreen() {
                   ]}
                 />
               )}
-            </View>
+            </ScrollView>
 
             {/* ── Sub-tabs (píldoras) — solo si el tab principal tiene > 1 categoría ── */}
             {subTabCategories && subTabCategories.length > 1 && (
@@ -423,13 +428,15 @@ const styles = StyleSheet.create({
 
   // Tabs principales de categoría (estilo línea dorada)
   mainTabBar: {
-    flexDirection: "row",
-    position: "relative",
     marginHorizontal: -20,
-    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.07)",
     marginBottom: 2,
+  },
+  mainTabBarContent: {
+    flexDirection: "row",
+    position: "relative",
+    paddingHorizontal: 20,
   },
   mainTabItem: { paddingVertical: 10, marginRight: 24 },
   mainTabText: { fontSize: 13, letterSpacing: 0.2 },
