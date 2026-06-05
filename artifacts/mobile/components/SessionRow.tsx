@@ -47,9 +47,6 @@ export function SessionRow({ session, rating, style, onActionsPress, onPress }: 
             placeholder={BLUR_PLACEHOLDER}
             transition={IMAGE_TRANSITION}
           />
-          <View style={styles.sessionImgOverlay}>
-            <Feather name="activity" size={16} color="rgba(255,255,255,0.7)" />
-          </View>
           <PremiumBadge session={session} />
         </View>
 
@@ -108,17 +105,6 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   sessionImg: { width: 80, height: 80 },
-  sessionImgOverlay: {
-    position: "absolute",
-    bottom: 6,
-    right: 6,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.45)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   sessionContent: { flex: 1, paddingTop: 4 },
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
   sessionMetaText: { fontSize: 11, lineHeight: 14 },
