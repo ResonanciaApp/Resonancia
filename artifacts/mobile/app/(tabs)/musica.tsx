@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
-  Animated,
   LayoutAnimation,
   Platform,
   Pressable,
@@ -57,32 +56,6 @@ export default function MiMusicaScreen() {
   const [descExpanded, setDescExpanded] = useState(false);
   const [mezclasOpen, setMezclasOpen] = useState(false);
 
-  const mainTabIndicatorAnim = useRef(new Animated.Value(0)).current;
-  const [mainTabIndicatorWidth, setMainTabIndicatorWidth] = useState(0);
-  const mainTabLayouts = useRef<{ x: number; width: number }[]>([]);
-
-  const onMainTabLayout = (idx: number, x: number, width: number) => {
-    mainTabLayouts.current[idx] = { x, width };
-    if (idx === 0 && mainTabIndicatorWidth === 0) {
-      setMainTabIndicatorWidth(width);
-      mainTabIndicatorAnim.setValue(x);
-    }
-  };
-
-  const selectMainTab = (id: MainTabId, idx: number) => {
-    setMainTab(id);
-    setSubTab(null);
-    const layout = mainTabLayouts.current[idx];
-    if (layout) {
-      setMainTabIndicatorWidth(layout.width);
-      Animated.spring(mainTabIndicatorAnim, {
-        toValue: layout.x,
-        tension: 200,
-        friction: 24,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
 
   const toggleDesc = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -306,34 +279,28 @@ export default function MiMusicaScreen() {
         >
           {/* ── Barra sticky: categorías principales + sub-tabs ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
+            <View style={styles.segmentedContainer}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={styles.mainTabBar}
               contentContainerStyle={styles.mainTabBarContent}
             >
-              {MAIN_TABS.map((tab, idx) => {
+              {MAIN_TABS.map((tab) => {
                 const selected = mainTab === tab.id;
                 return (
                   <Pressable
                     key={tab.id}
-                    onPress={() => selectMainTab(tab.id, idx)}
-                    onLayout={(e) => {
-                      const { x, width } = e.nativeEvent.layout;
-                      onMainTabLayout(idx, x, width);
-                    }}
-                    style={styles.mainTabItem}
+                    onPress={() => { setMainTab(tab.id); setSubTab(null); }}
+                    style={[
+                      styles.mainTabItem,
+                      selected && styles.mainTabItemActive,
+                    ]}
                   >
-                    <View style={[
-                      styles.mainTabIconBg,
-                      { backgroundColor: selected ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)" },
-                    ]}>
-                      <Feather
-                        name={tab.icon as any}
-                        size={22}
-                        color={selected ? colors.foreground : colors.mutedForeground}
-                      />
-                    </View>
+                    <Feather
+                      name={tab.icon as any}
+                      size={20}
+                      color={selected ? colors.primary : colors.mutedForeground}
+                    />
                     <Text
                       style={[
                         styles.mainTabText,
@@ -348,23 +315,10 @@ export default function MiMusicaScreen() {
                   </Pressable>
                 );
               })}
-              {mainTabIndicatorWidth > 0 && (
-                <Animated.View
-                  style={[
-                    styles.mainTabIndicator,
-                    {
-                      width: mainTabIndicatorWidth,
-                      backgroundColor: colors.primary,
-                      transform: [{ translateX: mainTabIndicatorAnim }],
-                    },
-                  ]}
-                />
-              )}
             </ScrollView>
+            </View>
 
-            {/* ── Sub-tabs (píldoras) — solo si el tab principal tiene > 1 categoría ──
-                 Cuando NO hay sub-tabs, el View rellena el hueco bajo la línea con
-                 el color del contenido para que no se note el fondo del header. ── */}
+            {/* ── Sub-tabs — solo si el tab principal tiene > 1 categoría ── */}
             {subTabCategories && subTabCategories.length > 1 ? (
               <ScrollView
                 horizontal
@@ -383,9 +337,8 @@ export default function MiMusicaScreen() {
                       style={[
                         styles.subTabPill,
                         {
-                          backgroundColor: "rgba(255,255,255,0.07)",
-                          borderWidth: 1,
-                          borderColor: selected ? "rgba(255,255,255,0.85)" : "transparent",
+                          borderLeftColor: selected ? "rgba(190,150,80,0.85)" : "transparent",
+                          backgroundColor: selected ? "rgba(190,150,80,0.08)" : "rgba(255,255,255,0.05)",
                         },
                       ]}
                     >
@@ -440,26 +393,44 @@ const styles = StyleSheet.create({
   section: { marginBottom: 57 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
 
-  // Tabs principales de categoría (estilo línea dorada)
-  mainTabBar: {
-    marginHorizontal: -20,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
-    marginBottom: 0,
+  // Tabs principales — segmented control (Variante C)
+  segmentedContainer: {
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 18,
+    overflow: "hidden",
+    marginBottom: 2,
   },
   mainTabBarContent: {
     flexDirection: "row",
-    position: "relative",
-    paddingHorizontal: 20,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+    gap: 2,
   },
-  mainTabItem: { paddingVertical: 10, marginRight: 24, flexDirection: "column", alignItems: "center", gap: 5 },
-  mainTabIconBg: { width: 44, height: 44, borderRadius: 14, alignItems: "center", justifyContent: "center" },
-  mainTabText: { fontSize: 13, letterSpacing: 0.2 },
-  mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
+  mainTabItem: {
+    paddingVertical: 9,
+    paddingHorizontal: 14,
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 5,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  mainTabItemActive: {
+    borderColor: "rgba(190,150,80,0.3)",
+    backgroundColor: "rgba(190,150,80,0.11)",
+  },
+  mainTabText: { fontSize: 12, letterSpacing: 0.2 },
 
-  // Sub-tabs píldoras
-  subTabRow: { flexDirection: "row", gap: 8, paddingTop: 10, paddingBottom: 10, paddingHorizontal: 20 },
-  subTabPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20 },
+  // Sub-tabs — left-border accent
+  subTabRow: { flexDirection: "row", gap: 6, paddingTop: 10, paddingBottom: 10, paddingHorizontal: 20 },
+  subTabPill: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderLeftWidth: 2,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+  },
   subTabPillText: { fontSize: 13, fontWeight: "600", letterSpacing: 0.1 },
 
   // Categorías de mezclas — 3 tarjetas iguales
