@@ -101,7 +101,7 @@ paths:
     get:
       operationId: getSharedMixes
       tags: [mixes]
-      summary: List community-shared mixes (newest first)
+      summary: List community-shared mixes (most popular first, then newest)
       parameters:
         - name: page
           in: query
@@ -1868,6 +1868,8 @@ components:
             $ref: "#/components/schemas/SharedMixSound"
         likes:
           type: integer
+        trending:
+          type: boolean
         likedByMe:
           type: boolean
         isMine:
@@ -1878,7 +1880,7 @@ components:
           type: string
           format: date-time
       required:
-        [id, name, category, sounds, likes, likedByMe, isMine, author, createdAt]
+        [id, name, category, sounds, likes, trending, likedByMe, isMine, author, createdAt]
     SharedMixesPage:
       type: object
       properties:
@@ -1911,7 +1913,7 @@ components:
           enum: [dormir, trabajar, motivarme, concentracion]
         sounds:
           type: array
-          minItems: 1
+          minItems: 2
           maxItems: 10
           items:
             $ref: "#/components/schemas/SharedMixSound"

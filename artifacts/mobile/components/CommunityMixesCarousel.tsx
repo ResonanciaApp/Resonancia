@@ -247,7 +247,7 @@ function MixRow({
   colors: Colors;
   onDotsPress: () => void;
 }) {
-  const trending = (mix as any).trending === true;
+  const trending = mix.trending === true;
   const isFirst = rank === 1;
   const dividerColor = "rgba(255,255,255,0.05)";
 

@@ -128,6 +128,13 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
 
   const handleShareToCommunity = () => {
     if (shareMixMutation.isPending) return;
+    if (mix.sounds.length < 2) {
+      Alert.alert(
+        "Agrega más sonidos",
+        "Una mezcla necesita al menos 2 sonidos para compartirse con la comunidad.",
+      );
+      return;
+    }
     shareMixMutation.mutate(
       {
         data: {

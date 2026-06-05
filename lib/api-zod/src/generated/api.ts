@@ -90,6 +90,7 @@ export const GetSharedMixesResponse = zod.object({
   "volume": zod.number()
 })),
   "likes": zod.number(),
+  "trending": zod.boolean(),
   "likedByMe": zod.boolean(),
   "isMine": zod.boolean(),
   "author": zod.object({
@@ -117,6 +118,7 @@ export const shareMixBodyDescriptionMax = 120;
 
 export const shareMixBodyImageMax = 60;
 
+export const shareMixBodySoundsMin = 2;
 export const shareMixBodySoundsMax = 10;
 
 
@@ -129,7 +131,7 @@ export const ShareMixBody = zod.object({
   "sounds": zod.array(zod.object({
   "id": zod.string(),
   "volume": zod.number()
-})).min(1).max(shareMixBodySoundsMax)
+})).min(shareMixBodySoundsMin).max(shareMixBodySoundsMax)
 })
 
 
@@ -151,6 +153,7 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "volume": zod.number()
 })),
   "likes": zod.number(),
+  "trending": zod.boolean(),
   "likedByMe": zod.boolean(),
   "isMine": zod.boolean(),
   "author": zod.object({

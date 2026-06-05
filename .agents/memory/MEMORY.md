@@ -24,3 +24,4 @@
 - [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only
 - [Shared mix category enum](shared-mix-category-enum.md) — el set de categorías de mezclas compartidas vive en 5 lugares (DB zod, OpenAPI x3, route const, frontend cast); sincronizar o compartir/filtrar falla
 - [Catalog DB migration](catalog-db-migration.md) — catálogo en DB (GET /catalog, solo published) hidratado in-place sobre SESSIONS/CATEGORIES; assets siguen bundleados (resueltos por id), nunca se sobreescriben
+- [Shared-mix likes consistency](shared-mix-likes-consistency.md) — feed ordena por likes DESC + trending=likes>=3; columna likes denormalizada se recalcula bajo row lock (.for("update")); compartir exige min 2 sonidos

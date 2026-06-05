@@ -38,7 +38,7 @@ export const insertSharedMixSchema = createInsertSchema(sharedMixesTable)
     category: z.enum(SHARED_MIX_CATEGORIES),
     sounds: z
       .array(z.object({ id: z.string().min(1).max(40), volume: z.number().min(0).max(1) }))
-      .min(1)
+      .min(2)
       .max(10),
   });
 

@@ -178,6 +178,7 @@ export interface SharedMix {
   category: SharedMixCategory;
   sounds: SharedMixSound[];
   likes: number;
+  trending: boolean;
   likedByMe: boolean;
   isMine: boolean;
   author: UserProfile;
@@ -213,7 +214,7 @@ export interface SharedMixInput {
   image?: string;
   category: SharedMixInputCategory;
   /**
-     * @minItems 1
+     * @minItems 2
      * @maxItems 10
      */
   sounds: SharedMixSound[];

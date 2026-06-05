@@ -20,6 +20,8 @@ import { sendPushToUsers } from "../lib/push";
 
 const router: IRouter = Router();
 const PAGE_SIZE = 20;
+// Una mezcla es "tendencia" cuando acumula al menos estos likes.
+const TRENDING_THRESHOLD = 3;
 
 const CATEGORIES = ["dormir", "trabajar", "motivarme", "concentracion"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -49,6 +51,7 @@ function serialize(
     category: mix.category,
     sounds: mix.sounds,
     likes: mix.likes,
+    trending: mix.likes >= TRENDING_THRESHOLD,
     likedByMe,
     isMine: currentUserId != null && mix.authorId === currentUserId,
     author: toProfile(author),
@@ -162,7 +165,7 @@ router.get("/mixes", async (req, res) => {
         .from(sharedMixesTable)
         .innerJoin(usersTable, eq(usersTable.id, sharedMixesTable.authorId))
         .where(where)
-        .orderBy(desc(sharedMixesTable.createdAt))
+        .orderBy(desc(sharedMixesTable.likes), desc(sharedMixesTable.createdAt))
         .limit(PAGE_SIZE)
         .offset(offset),
       db
@@ -245,6 +248,15 @@ router.post("/mixes/:id/like", requireAuth, async (req, res) => {
     // conteo real de filas en una sola transacción, para que carreras de
     // peticiones concurrentes nunca dejen el contador inconsistente.
     const { updated, likedByMe } = await db.transaction(async (tx) => {
+      // Bloquea la fila de la mezcla para serializar toggles concurrentes:
+      // bajo READ COMMITTED dos likes simultáneos podrían contar sin verse y
+      // dejar `likes` desincronizado del conteo real (afecta orden y trending).
+      await tx
+        .select({ id: sharedMixesTable.id })
+        .from(sharedMixesTable)
+        .where(eq(sharedMixesTable.id, id))
+        .for("update");
+
       const [alreadyLiked] = await tx
         .select({ id: sharedMixLikesTable.id })
         .from(sharedMixLikesTable)
