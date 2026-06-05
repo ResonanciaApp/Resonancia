@@ -1,9 +1,10 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
+  Animated,
   LayoutAnimation,
   Platform,
   Pressable,
@@ -24,9 +25,7 @@ import { MIX_CATEGORIES } from "@/data/mix-categories";
 import {
   type MixSound,
   type SoundCategoryId,
-  SOUND_CATEGORIES,
   SOUNDS,
-  getSoundsByCategory,
   hasSoundFile,
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
@@ -34,7 +33,15 @@ import { useColors } from "@/hooks/useColors";
 const IMG_DESCANSO = require("../../assets/images/cat-descanso.png");
 const IMG_MEDITACION = require("../../assets/images/cat-meditacion.png");
 
-type TabId = "popular" | SoundCategoryId;
+type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "voces";
+
+const MAIN_TABS: { id: MainTabId; label: string; categories: SoundCategoryId[] | null }[] = [
+  { id: "popular",       label: "Popular",       categories: null },
+  { id: "naturaleza",    label: "Naturaleza",    categories: ["naturaleza", "agua", "ruidos"] },
+  { id: "ancestrales",   label: "Ancestrales",   categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento"] },
+  { id: "sintetizadores",label: "Sintetizadores",categories: ["solfeggio", "frecuencias"] },
+  { id: "voces",         label: "Voces",         categories: ["mantras"] },
+];
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
 
@@ -43,10 +50,36 @@ export default function MiMusicaScreen() {
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { isActive, toggleSound, activeSounds } = useMixer();
-  const [activeTab, setActiveTab] = useState<TabId>("popular");
+  const [mainTab, setMainTab] = useState<MainTabId>("popular");
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [mezclasOpen, setMezclasOpen] = useState(true);
+
+  const mainTabIndicatorAnim = useRef(new Animated.Value(0)).current;
+  const [mainTabIndicatorWidth, setMainTabIndicatorWidth] = useState(0);
+  const mainTabLayouts = useRef<{ x: number; width: number }[]>([]);
+
+  const onMainTabLayout = (idx: number, x: number, width: number) => {
+    mainTabLayouts.current[idx] = { x, width };
+    if (idx === 0 && mainTabIndicatorWidth === 0) {
+      setMainTabIndicatorWidth(width);
+      mainTabIndicatorAnim.setValue(x);
+    }
+  };
+
+  const selectMainTab = (id: MainTabId, idx: number) => {
+    setMainTab(id);
+    const layout = mainTabLayouts.current[idx];
+    if (layout) {
+      setMainTabIndicatorWidth(layout.width);
+      Animated.spring(mainTabIndicatorAnim, {
+        toValue: layout.x,
+        tension: 200,
+        friction: 24,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   const toggleDesc = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -93,10 +126,6 @@ export default function MiMusicaScreen() {
     }
   };
 
-  const tabs: { id: TabId; label: string }[] = [
-    { id: "popular", label: "Popular" },
-    ...SOUND_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
-  ];
 
   // ── Ícono por categoría ────────────────────────────────────────
   const renderCatIcon = (cat: typeof MIX_CATEGORIES[0]) => {
@@ -119,38 +148,6 @@ export default function MiMusicaScreen() {
     }
     return <Feather name="circle" size={size} color={color} />;
   };
-
-  const renderTab = (tab: { id: TabId; label: string }) => {
-    const selected = activeTab === tab.id;
-    return (
-      <Pressable
-        key={tab.id}
-        onPress={() => setActiveTab(tab.id)}
-        style={[
-          styles.tab,
-          {
-            backgroundColor: "#151A23",
-            borderColor: selected ? "rgba(100,185,220,0.45)" : "transparent",
-          },
-        ]}
-      >
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color: selected ? "#EDE1D3" : colors.mutedForeground,
-              fontWeight: selected ? "600" : "400",
-            },
-          ]}
-        >
-          {tab.label}
-        </Text>
-      </Pressable>
-    );
-  };
-
-  const tabRow1 = tabs.slice(0, Math.ceil(tabs.length / 2));
-  const tabRow2 = tabs.slice(Math.ceil(tabs.length / 2));
 
   const renderSoundCard = (sound: MixSound) => {
     const available = hasSoundFile(sound.id);
@@ -208,6 +205,14 @@ export default function MiMusicaScreen() {
     .slice()
     .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
     .slice(0, 50);
+
+  const displayedSounds = useMemo(() => {
+    const tab = MAIN_TABS.find((t) => t.id === mainTab);
+    if (!tab?.categories) return popularSounds;
+    return SOUNDS.filter(
+      (s) => tab.categories!.includes(s.category as SoundCategoryId) && hasSoundFile(s.id),
+    );
+  }, [mainTab, popularSounds]);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -290,41 +295,55 @@ export default function MiMusicaScreen() {
           stickyHeaderIndices={[0]}
           showsVerticalScrollIndicator={false}
         >
-          {/* ── Barra sticky: título Sonidos + tabs ── */}
+          {/* ── Barra sticky: categorías principales ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
-            <Text style={[styles.soundsSectionTitle, { color: colors.foreground }]}>Sonidos</Text>
-
-            {/* Filtros de sonido — 2 filas scrollables juntas */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.tabsScroll}
-              contentContainerStyle={styles.tabsScrollContent}
-            >
-              <View style={styles.tabsBlock}>
-                <View style={styles.tabRow}>{tabRow1.map(renderTab)}</View>
-                <View style={styles.tabRow}>{tabRow2.map(renderTab)}</View>
-              </View>
-            </ScrollView>
+            <View style={styles.mainTabBar}>
+              {MAIN_TABS.map((tab, idx) => {
+                const selected = mainTab === tab.id;
+                return (
+                  <Pressable
+                    key={tab.id}
+                    onPress={() => selectMainTab(tab.id, idx)}
+                    onLayout={(e) => {
+                      const { x, width } = e.nativeEvent.layout;
+                      onMainTabLayout(idx, x, width);
+                    }}
+                    style={styles.mainTabItem}
+                  >
+                    <Text
+                      style={[
+                        styles.mainTabText,
+                        {
+                          color: selected ? colors.foreground : colors.mutedForeground,
+                          fontWeight: selected ? "600" : "400",
+                        },
+                      ]}
+                    >
+                      {tab.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+              {mainTabIndicatorWidth > 0 && (
+                <Animated.View
+                  style={[
+                    styles.mainTabIndicator,
+                    {
+                      width: mainTabIndicatorWidth,
+                      backgroundColor: colors.primary,
+                      transform: [{ translateX: mainTabIndicatorAnim }],
+                    },
+                  ]}
+                />
+              )}
+            </View>
           </View>
 
 
           {/* ── Biblioteca de sonidos ── */}
-          {activeTab === "popular" ? (
-            <View style={[styles.grid, { marginTop: 33 }]}>
-              {popularSounds.map(renderSoundCard)}
-            </View>
-          ) : (
-            SOUND_CATEGORIES.filter((cat) => activeTab === cat.id).map((cat) => {
-              const sounds = getSoundsByCategory(cat.id);
-              if (sounds.length === 0) return null;
-              return (
-                <View key={cat.id} style={[styles.grid, { marginTop: 33 }]}>
-                  {sounds.map(renderSoundCard)}
-                </View>
-              );
-            })
-          )}
+          <View style={[styles.grid, { marginTop: 33 }]}>
+            {displayedSounds.map(renderSoundCard)}
+          </View>
         </ScrollView>
       </View>
     </View>
@@ -350,25 +369,23 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 4,
   },
-  soundsSectionTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
-
   // Secciones
   section: { marginBottom: 57 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14 },
 
-  // Tabs de categorías de sonido
-  tabsScroll: { marginHorizontal: -20, marginBottom: 4 },
-  tabsScrollContent: { paddingHorizontal: 20 },
-  tabsBlock: { flexDirection: "column", gap: 8 },
-  tabRow: { flexDirection: "row", gap: 8 },
-  tab: {
-    paddingHorizontal: 13,
-    paddingVertical: 7,
-    borderRadius: 14,
-    borderWidth: 1,
+  // Tabs principales de categoría (estilo línea dorada)
+  mainTabBar: {
+    flexDirection: "row",
+    position: "relative",
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
+    marginBottom: 2,
   },
-  // borderColor is set dynamically; borderWidth stays 1 so layout doesn't shift
-  tabLabel: { fontSize: 13, fontWeight: "400", letterSpacing: 0.2 },
+  mainTabItem: { paddingVertical: 10, marginRight: 24 },
+  mainTabText: { fontSize: 15, letterSpacing: 0.2 },
+  mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
 
   // Categorías de mezclas — 3 tarjetas iguales
   catRow: { flexDirection: "row", gap: 8 },
