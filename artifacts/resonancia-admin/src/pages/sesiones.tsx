@@ -37,7 +37,7 @@ const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica"];
 const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosféricos"];
 const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
-const THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
+const THEME_TAGS = ["Mañanas","Noches","Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
 const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -107,7 +107,7 @@ export default function SesionesPage() {
 
   // Secciones expandidas
   const [openSections, setOpenSections] = useState({
-    basicos: true, categoria: true, tags: true,
+    basicos: true, categoria: true, subcategoria: true, tags: true,
     audios: true, imagen: false, extras: false,
   });
 
@@ -397,26 +397,24 @@ export default function SesionesPage() {
         </div>
       </Section>
 
-      {/* ── SECCIÓN: Tags ── */}
+      {/* ── SECCIÓN: Subcategoría ── */}
       {categoryId && (
         <Section
-          title="Etiquetas"
-          open={openSections.tags}
-          onToggle={() => toggleSection("tags")}
+          title="Subcategoría"
+          open={openSections.subcategoria}
+          onToggle={() => toggleSection("subcategoria")}
         >
           <div className="space-y-4">
-
-            {/* Tags específicos por categoría */}
             {categoryId === "sonidos-ancestrales" && (
-              <Field label="Tipo de ancestral *">
-                <SelectField value={ancestralTag} onChange={setAncestralTag} placeholder="Elegí el tipo" options={ANCESTRAL_TAGS} />
+              <Field label="Subcategoría *">
+                <SelectField value={ancestralTag} onChange={setAncestralTag} placeholder="Elegí la subcategoría" options={ANCESTRAL_TAGS} />
               </Field>
             )}
 
             {categoryId === "meditaciones-guiadas" && (
               <>
-                <Field label="Tipo de meditación *">
-                  <SelectField value={meditationTag} onChange={setMeditationTag} placeholder="Elegí el tipo" options={MEDITATION_TAGS} />
+                <Field label="Subcategoría *">
+                  <SelectField value={meditationTag} onChange={setMeditationTag} placeholder="Elegí la subcategoría" options={MEDITATION_TAGS} />
                 </Field>
                 <Field label="ID del guiador (opcional)">
                   <Input value={guideId} onChange={(e) => setGuideId(e.target.value)} placeholder="sofia-ramirez" />
@@ -427,8 +425,8 @@ export default function SesionesPage() {
 
             {categoryId === "musica-sonidos" && (
               <>
-                <Field label="Tipo de música *">
-                  <SelectField value={soundTag} onChange={setSoundTag} placeholder="Elegí el tipo" options={SOUND_TAGS} />
+                <Field label="Subcategoría *">
+                  <SelectField value={soundTag} onChange={setSoundTag} placeholder="Elegí la subcategoría" options={SOUND_TAGS} />
                 </Field>
                 {(soundTag === "Música Ambient" || soundTag === "Música Enteógena") && (
                   <Field label="ID del artista (recomendado)">
@@ -458,18 +456,29 @@ export default function SesionesPage() {
                   </button>
                 </div>
                 {podcastMode === "sonidos" ? (
-                  <Field label="Tipo de sonido *">
-                    <SelectField value={sonidosTag} onChange={setSonidosTag} placeholder="Elegí el tipo" options={SONIDOS_TAGS} />
+                  <Field label="Subcategoría *">
+                    <SelectField value={sonidosTag} onChange={setSonidosTag} placeholder="Elegí la subcategoría" options={SONIDOS_TAGS} />
                   </Field>
                 ) : (
-                  <Field label="Categoría de podcast *">
-                    <SelectField value={podcastTag} onChange={setPodcastTag} placeholder="Elegí la categoría" options={PODCAST_TAGS} />
+                  <Field label="Subcategoría *">
+                    <SelectField value={podcastTag} onChange={setPodcastTag} placeholder="Elegí la subcategoría" options={PODCAST_TAGS} />
                   </Field>
                 )}
               </>
             )}
+          </div>
+        </Section>
+      )}
 
-            {/* Sleep tag — aplica a cualquier categoría */}
+      {/* ── SECCIÓN: Etiquetas ── */}
+      {categoryId && (
+        <Section
+          title="Etiquetas"
+          open={openSections.tags}
+          onToggle={() => toggleSection("tags")}
+        >
+          <div className="space-y-4">
+            {/* Sleep tag */}
             <Field label="Grupo descanso (opcional)">
               <SelectField value={sleepTag} onChange={setSleepTag} placeholder="Ninguno" options={SLEEP_TAGS} clearable />
             </Field>
