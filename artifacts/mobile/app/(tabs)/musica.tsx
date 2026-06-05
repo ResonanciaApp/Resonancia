@@ -247,16 +247,23 @@ export default function MiMusicaScreen() {
                     <Pressable
                       key={cat.id}
                       onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                      style={({ pressed }) => [
-                        styles.mezclasInlinePill,
-                        {
-                          backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.05)",
-                          borderColor: pressed ? accent + "55" : accent + "40",
-                          transform: [{ scale: pressed ? 0.96 : 1 }],
-                        },
-                      ]}
+                      style={({ pressed }) => ({
+                        flex: 1,
+                        paddingVertical: 8,
+                        paddingHorizontal: 6,
+                        borderRadius: 13,
+                        borderWidth: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.06)",
+                        borderColor: accent + "50",
+                        transform: [{ scale: pressed ? 0.96 : 1 }],
+                      })}
                     >
-                      <Text style={[styles.mezclasInlineLabel, { color: colors.foreground }]} numberOfLines={1}>
+                      <Text
+                        numberOfLines={1}
+                        style={{ fontSize: 12, fontWeight: "600", color: colors.foreground, textAlign: "center", width: "100%" }}
+                      >
                         {cat.label}
                       </Text>
                     </Pressable>
