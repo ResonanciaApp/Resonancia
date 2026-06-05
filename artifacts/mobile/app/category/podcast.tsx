@@ -15,6 +15,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -65,6 +66,7 @@ export default function SonidosScreen() {
   const insets = useSafeAreaInsets();
 
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
+  const [query, setQuery] = useState("");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
@@ -100,10 +102,14 @@ export default function SonidosScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const filtered = useMemo(
-    () => SONIDOS_SESSIONS.filter((s) => s.sonidosTag === activeTab),
-    [activeTab],
-  );
+  const filtered = useMemo(() => {
+    let list = SONIDOS_SESSIONS.filter((s) => s.sonidosTag === activeTab);
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      list = list.filter((s) => s.title.toLowerCase().includes(q));
+    }
+    return list;
+  }, [activeTab, query]);
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;
@@ -153,7 +159,7 @@ export default function SonidosScreen() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 120 + bottomPad, paddingTop: topPad + 8 }}
         showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[1]}
+        stickyHeaderIndices={[2]}
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
@@ -171,6 +177,26 @@ export default function SonidosScreen() {
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Frecuencias, naturaleza y atmósferas para transformar tu estado
           </Text>
+        </View>
+
+        {/* Search */}
+        <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
+          <View style={[styles.searchBar, { backgroundColor: "#151A23" }]}>
+            <Feather name="search" size={16} color="rgba(122,143,168,0.5)" style={{ marginRight: 8 }} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Buscar sonido..."
+              placeholderTextColor="rgba(122,143,168,0.45)"
+              style={[styles.searchInput, { color: colors.foreground }]}
+              returnKeyType="search"
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                <Feather name="x" size={14} color={colors.mutedForeground} />
+              </Pressable>
+            )}
+          </View>
         </View>
 
         {/* Sticky tab bar */}
@@ -437,6 +463,16 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
   },
+
+  searchWrap: { marginBottom: 16 },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === "ios" ? 12 : 10,
+  },
+  searchInput: { flex: 1, fontSize: 14, padding: 0, margin: 0 },
 
   tabBarWrap: {
     paddingBottom: 0,
