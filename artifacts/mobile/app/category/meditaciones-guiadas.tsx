@@ -318,7 +318,7 @@ export default function MeditacionesGuiadasScreen() {
             </Pressable>
 
             {/* Tabs */}
-            <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD }]}>
+            <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)" }]}>
               {TABS.map((tab, idx) => (
                 <Pressable
                   key={tab}
@@ -338,7 +338,7 @@ export default function MeditacionesGuiadasScreen() {
                 <Animated.View
                   style={[
                     styles.tabIndicator,
-                    { width: indicatorWidth, transform: [{ translateX: indicatorAnim }] },
+                    { width: indicatorWidth, backgroundColor: ICON_COLOR, transform: [{ translateX: indicatorAnim }] },
                   ]}
                 />
               )}
@@ -455,12 +455,9 @@ const styles = StyleSheet.create({
   detailDesc: { fontSize: 14, lineHeight: 21 },
 
   tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative" },
-  tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
+  tabItem: { flex: 1, alignItems: "center", paddingVertical: 10 },
   tabLabel: { fontSize: 15, fontWeight: "600" },
-  tabIndicator: {
-    position: "absolute", bottom: 0, height: 2,
-    backgroundColor: "#FFFFFF", borderRadius: 1,
-  },
+  tabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
 
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
   recentPlaceholder: {
