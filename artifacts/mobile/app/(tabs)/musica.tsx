@@ -120,8 +120,8 @@ export default function MiMusicaScreen() {
         style={[
           styles.tab,
           {
-            backgroundColor: selected ? "rgba(190,150,80,0.13)" : "transparent",
-            borderColor: selected ? "rgba(190,150,80,0.40)" : "rgba(255,255,255,0.11)",
+            backgroundColor: "transparent",
+            borderColor: selected ? "rgba(237,225,211,0.55)" : "rgba(255,255,255,0.12)",
           },
         ]}
       >
@@ -129,7 +129,7 @@ export default function MiMusicaScreen() {
           style={[
             styles.tabLabel,
             {
-              color: selected ? colors.primary : colors.mutedForeground,
+              color: selected ? "#EDE1D3" : colors.mutedForeground,
               fontWeight: selected ? "600" : "400",
             },
           ]}
@@ -139,6 +139,9 @@ export default function MiMusicaScreen() {
       </Pressable>
     );
   };
+
+  const tabRow1 = tabs.slice(0, Math.ceil(tabs.length / 2));
+  const tabRow2 = tabs.slice(Math.ceil(tabs.length / 2));
 
   const renderSoundCard = (sound: MixSound) => {
     const available = hasSoundFile(sound.id);
@@ -278,14 +281,17 @@ export default function MiMusicaScreen() {
               })}
             </View>
 
-            {/* Filtros de sonido — fila única scrollable */}
+            {/* Filtros de sonido — 2 filas scrollables juntas */}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.tabsScroll}
               contentContainerStyle={styles.tabsScrollContent}
             >
-              <View style={styles.tabRow}>{tabs.map(renderTab)}</View>
+              <View style={styles.tabsBlock}>
+                <View style={styles.tabRow}>{tabRow1.map(renderTab)}</View>
+                <View style={styles.tabRow}>{tabRow2.map(renderTab)}</View>
+              </View>
             </ScrollView>
           </View>
 
@@ -341,7 +347,8 @@ const styles = StyleSheet.create({
   // Tabs de categorías de sonido (fila única, scroll horizontal)
   tabsScroll: { marginHorizontal: -20, marginTop: 14, marginBottom: 4 },
   tabsScrollContent: { paddingHorizontal: 20 },
-  tabRow: { flexDirection: "row", gap: 10 },
+  tabsBlock: { flexDirection: "column", gap: 8 },
+  tabRow: { flexDirection: "row", gap: 8 },
   tab: {
     paddingHorizontal: 13,
     paddingVertical: 7,
