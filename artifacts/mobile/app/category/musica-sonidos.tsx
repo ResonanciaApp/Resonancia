@@ -24,10 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArtistCard } from "@/components/ArtistCard";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { getNatureSounds } from "@/config/nature-base-map";
-import { hasSoundFile } from "@/data/sounds";
 import { getFeaturedArtists } from "@/data/artists";
-import { useMixer } from "@/context/MixerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session, type SoundTag } from "@/data/sessions";
@@ -45,41 +42,27 @@ type Tab = SoundTag;
 const TABS: { label: string; value: Tab }[] = [
   { label: "Ambient",   value: "Música Ambient"   },
   { label: "Enteógena", value: "Música Enteógena" },
-  { label: "Ancestral", value: "Música Ancestral" },
+  { label: "Étnica", value: "Música Étnica" },
 ];
 
 const PAGE_SIZE = 24;
 
-/** Timer del sonido. 5/10/20 min gratis; el resto (incluido "Sin límite") es premium. */
-const TIMER_OPTIONS: { minutes: number | null; label: string; free: boolean }[] = [
-  { minutes: 5, label: "5 min", free: true },
-  { minutes: 10, label: "10 min", free: true },
-  { minutes: 20, label: "20 min", free: true },
-  { minutes: 30, label: "30 min", free: false },
-  { minutes: 40, label: "40 min", free: false },
-  { minutes: 60, label: "1 h", free: false },
-  { minutes: null, label: "Sin límite", free: false },
-];
-
 const TAG_COLORS: Record<SoundTag, { bg: string; text: string }> = {
-  "Sonidos Naturaleza": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   "Música Ambient": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
   "Música Enteógena": { bg: "rgba(182,149,95,0.18)", text: "rgba(230,195,120,0.9)" },
-  "Música Ancestral": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
+  "Música Étnica": { bg: "rgba(255,255,255,0.1)", text: "rgba(255,255,255,0.65)" },
 };
 
 const TAG_ICONS: Record<SoundTag, React.ComponentProps<typeof Feather>["name"]> = {
-  "Sonidos Naturaleza": "wind",
   "Música Ambient": "music",
   "Música Enteógena": "zap",
-  "Música Ancestral": "music",
+  "Música Étnica": "music",
 };
 
 const TAG_BADGE_LABELS: Record<SoundTag, string> = {
-  "Sonidos Naturaleza": "Natural",
   "Música Ambient": "Ambient",
   "Música Enteógena": "Enteógena",
-  "Música Ancestral": "Ancestral",
+  "Música Étnica": "Étnica",
 };
 
 const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
@@ -90,12 +73,10 @@ export default function MusicaSonidosScreen() {
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
   const { isFavorite, toggleFavorite, playSession } = usePlayer();
-  const { stopAll, toggleSound, setSleepTimer } = useMixer();
 
   const featuredArtists = getFeaturedArtists();
 
   const [activeTab, setActiveTab] = useState<Tab>("Música Ambient");
-  const [pendingSession, setPendingSession] = useState<Session | null>(null);
 
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const [indicatorWidth, setIndicatorWidth] = useState(0);
@@ -138,47 +119,6 @@ export default function MusicaSonidosScreen() {
   }, [activeTab, query]);
 
   const visible = filtered;
-
-  const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
-    if (!pendingSession) return;
-    // Gating premium: solo 5/10/20 min son gratis.
-    if (!opt.free && !isPremium) {
-      setPendingSession(null);
-      stopAll();
-      router.push("/membresia" as never);
-      return;
-    }
-    const session = pendingSession;
-    setPendingSession(null);
-    const nature = getNatureSounds(session.id);
-    const base = nature?.base;
-    // Sin sonido base válido (mapeado y con archivo) no hay nada que reproducir:
-    // limpiar y abortar para no entrar a la inmersiva heredando una mezcla vieja.
-    if (!base || !hasSoundFile(base)) {
-      stopAll();
-      return;
-    }
-    // El ambiente viene precargado en la sesión: se pasa a la inmersiva para
-    // que lo cargue como segunda capa (el usuario solo regula su volumen).
-    const ambient =
-      nature?.ambient && hasSoundFile(nature.ambient) ? nature.ambient : undefined;
-    // null = "Sin límite": setSleepTimer(null) deja sonando sin temporizador.
-    setSleepTimer(opt.minutes);
-    router.push({
-      pathname: "/inmersivo",
-      params: {
-        title: session.title,
-        baseId: base,
-        ...(ambient ? { ambientId: ambient } : {}),
-      },
-    } as never);
-  };
-
-  // Cancelar el timer detiene el sonido que arrancó al tocar la card.
-  const handleCancelTimer = () => {
-    setPendingSession(null);
-    stopAll();
-  };
 
   return (
     <View style={[styles.root, { backgroundColor: "#090F17" }]}>
@@ -298,18 +238,8 @@ export default function MusicaSonidosScreen() {
                     onPress={() => {
                       if (session.isPremium && !isPremium) {
                         router.push("/membresia" as never);
-                      } else if (session.soundTag === "Sonidos Naturaleza") {
-                        // Modelo Pura Mente: arranca el sonido base (fondo) al
-                        // instante y abre el timer. El ambiente precargado se
-                        // suma en la inmersiva; no hay picker de sonidos.
-                        const base = getNatureSounds(session.id)?.base;
-                        if (base && hasSoundFile(base)) {
-                          stopAll();
-                          toggleSound(base);
-                          setPendingSession(session);
-                        }
                       } else {
-                        // Música Ambient / Enteógena → pistas con duración fija
+                        // Música Ambient / Enteógena / Étnica → duración fija
                         playSession(session);
                         router.push("/player" as never);
                       }
@@ -349,109 +279,6 @@ export default function MusicaSonidosScreen() {
         </View>
 
       </ScrollView>
-
-      {/* Duration Picker Modal */}
-      <Modal
-        visible={!!pendingSession}
-        transparent
-        animationType="slide"
-        statusBarTranslucent
-        onRequestClose={handleCancelTimer}
-      >
-        <TouchableWithoutFeedback onPress={handleCancelTimer}>
-          <View style={styles.modalOverlay}>
-            <TouchableWithoutFeedback>
-              <View
-                style={[
-                  styles.modalSheet,
-                  {
-                    backgroundColor: "rgba(9,14,23,0.98)",
-                    paddingBottom: Math.max(insets.bottom, 24) + 8,
-                  },
-                ]}
-              >
-                {/* Drag handle */}
-                <View style={[styles.dragHandle, { backgroundColor: "rgba(198,155,79,0.25)" }]} />
-
-                {/* Session info */}
-                {pendingSession && (
-                  <>
-                    <View style={styles.modalHeader}>
-                      <View style={[styles.modalIcon, { backgroundColor: "rgba(198,155,79,0.12)" }]}>
-                        <Feather name="clock" size={20} color={colors.primary} />
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-                          ¿Cuánto tiempo?
-                        </Text>
-                        <Text style={[styles.modalSub, { color: colors.foreground }]} numberOfLines={1}>
-                          {pendingSession.title}
-                        </Text>
-                      </View>
-                    </View>
-
-                    <Text style={[styles.modalHint, { color: colors.mutedForeground }]}>
-                      El sonido se detiene al terminar este tiempo · 5, 10 y 20 min gratis
-                    </Text>
-
-                    {/* Timer options */}
-                    <View style={styles.durationGrid}>
-                      {TIMER_OPTIONS.map((opt) => {
-                        const locked = !opt.free && !isPremium;
-                        return (
-                          <Pressable
-                            key={opt.label}
-                            style={({ pressed }) => [
-                              styles.durationBtn,
-                              {
-                                backgroundColor: pressed
-                                  ? colors.primary
-                                  : "rgba(198,155,79,0.10)",
-                                borderColor: pressed
-                                  ? colors.primary
-                                  : "rgba(198,155,79,0.28)",
-                              },
-                            ]}
-                            onPress={() => handleSelectTimer(opt)}
-                          >
-                            {({ pressed }) => (
-                              <>
-                                <Text
-                                  style={[
-                                    styles.durationNum,
-                                    { fontSize: 18, color: pressed ? "#090F17" : colors.foreground },
-                                  ]}
-                                >
-                                  {opt.label}
-                                </Text>
-                                {locked && (
-                                  <View style={styles.timerLock}>
-                                    <Feather name="lock" size={9} color="#BE9650" />
-                                  </View>
-                                )}
-                              </>
-                            )}
-                          </Pressable>
-                        );
-                      })}
-                    </View>
-
-                    {/* Cancel */}
-                    <Pressable
-                      style={[styles.cancelBtn, { borderColor: "rgba(198,155,79,0.22)" }]}
-                      onPress={handleCancelTimer}
-                    >
-                      <Text style={[styles.cancelText, { color: colors.foreground }]}>
-                        Cancelar
-                      </Text>
-                    </Pressable>
-                  </>
-                )}
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
     </View>
   );
 }

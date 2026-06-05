@@ -47,21 +47,9 @@ export const SEED_CATEGORIES: InsertCatalogCategory[] = [
     "sortOrder": 2
   },
   {
-    "id": "sabiduria-dia",
-    "title": "3 Minutos de Sabiduría",
-    "subtitle": "Sabiduría condensada en 3 minutos",
-    "icon": "sun",
-    "sessionCount": 1,
-    "color": "#F0CC82",
-    "gradientStart": "#5E4A22",
-    "gradientEnd": "#3A2E12",
-    "isPrimary": false,
-    "sortOrder": 3
-  },
-  {
     "id": "podcast",
     "title": "Sonidos",
-    "subtitle": "Conversaciones que despiertan el alma",
+    "subtitle": "Frecuencias, naturaleza y atmósferas para transformar tu estado",
     "icon": "waveform",
     "sessionCount": 1,
     "color": "#8AAAD4",
@@ -158,45 +146,11 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "sleepTag": "Sonidos Ancestrales"
   },
   {
-    "id": "4",
-    "title": "Dentro de uno",
-    "subtitle": "El Gran Despertar · Episodio 1",
-    "categoryId": "podcast",
-    "categoryLabel": "Mezclador",
-    "duration": 35,
-    "durationLabel": "35 min",
-    "description": "Una conversación profunda sobre el despertar de la conciencia y el camino hacia el autoconocimiento. Reflexiones que invitan a mirar adentro con honestidad y compasión.",
-    "benefits": [
-      "Autoconocimiento",
-      "Inspiración profunda",
-      "Claridad de vida",
-      "Perspectiva nueva"
-    ],
-    "instruments": [
-      "Voz",
-      "Cuenco tibetano de apertura",
-      "Silencio consciente"
-    ],
-    "imageKey": "session-4.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": false,
-    "status": "published",
-    "sortOrder": 2,
-    "podcastTag": "Espiritualidad",
-    "guests": [
-      {
-        "name": "Ricardo Galdamez",
-        "role": "Profesor de Yoga"
-      }
-    ]
-  },
-  {
     "id": "5",
     "title": "Más allá del sonido",
     "subtitle": "Consejo del Día",
-    "categoryId": "sabiduria-dia",
-    "categoryLabel": "3 Minutos de Sabiduría",
+    "categoryId": "meditaciones-guiadas",
+    "categoryLabel": "Meditaciones",
     "duration": 5,
     "durationLabel": "5 min",
     "description": "Una pequeña semilla de sabiduría para plantar en tu jornada. El sonido del cuenco abre el espacio, y la reflexión que le sigue puede cambiar el rumbo de tu día.",
@@ -216,7 +170,7 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "isPremium": false,
     "status": "published",
     "sortOrder": 3,
-    "sabiduriaTag": "Silencio Interior"
+    "meditationTag": "3 Minutos de Sabiduría"
   },
   {
     "id": "7",
@@ -337,8 +291,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "id": "20",
     "title": "Sonidos de la Naturaleza",
     "subtitle": "Atmósfera Natural",
-    "categoryId": "musica-sonidos",
-    "categoryLabel": "Frecuencias",
+    "categoryId": "podcast",
+    "categoryLabel": "Sonidos",
     "duration": 10,
     "durationLabel": "10 min",
     "description": "Un paisaje sonoro envuelto en el pad cálido de Mi mayor. Cierra los ojos y habita el momento presente.",
@@ -358,14 +312,14 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "isPremium": false,
     "status": "published",
     "sortOrder": 8,
-    "soundTag": "Sonidos Naturaleza"
+    "sonidosTag": "Sonidos Naturaleza"
   },
   {
     "id": "21",
     "title": "Lluvia de Bosque",
     "subtitle": "Sonidos Naturales",
-    "categoryId": "musica-sonidos",
-    "categoryLabel": "Frecuencias",
+    "categoryId": "podcast",
+    "categoryLabel": "Sonidos",
     "duration": 15,
     "durationLabel": "15 min",
     "description": "El sonido suave de la lluvia cayendo sobre hojas de bosque antiguo. Una experiencia sonora que disuelve el ruido mental y devuelve la calma natural.",
@@ -386,14 +340,14 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "isPremium": false,
     "status": "published",
     "sortOrder": 9,
-    "soundTag": "Sonidos Naturaleza"
+    "sonidosTag": "Sonidos Naturaleza"
   },
   {
     "id": "22",
     "title": "Orilla del Mar",
     "subtitle": "Sonidos Naturales",
-    "categoryId": "musica-sonidos",
-    "categoryLabel": "Frecuencias",
+    "categoryId": "podcast",
+    "categoryLabel": "Sonidos",
     "duration": 20,
     "durationLabel": "20 min",
     "description": "Las olas llegando y retirándose sobre la arena. Cada ciclo del mar es un recordatorio de que todo pasa y todo vuelve. Suéltate al ritmo del océano.",
@@ -414,7 +368,7 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "isPremium": false,
     "status": "published",
     "sortOrder": 10,
-    "soundTag": "Sonidos Naturaleza"
+    "sonidosTag": "Sonidos Naturaleza"
   },
   {
     "id": "23",
@@ -561,8 +515,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "id": "27",
     "title": "Riachuelo con Pájaros",
     "subtitle": "Sonidos Naturales",
-    "categoryId": "musica-sonidos",
-    "categoryLabel": "Frecuencias",
+    "categoryId": "podcast",
+    "categoryLabel": "Sonidos",
     "duration": 10,
     "durationLabel": "10 min",
     "description": "El suave murmullo de un riachuelo de montaña acompañado por el canto de los pájaros. Un refugio sonoro que devuelve a la mente su ritmo natural, disuelve la tensión y abre el corazón a la presencia.",
@@ -583,7 +537,7 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "isPremium": true,
     "status": "published",
     "sortOrder": 16,
-    "soundTag": "Sonidos Naturaleza"
+    "sonidosTag": "Sonidos Naturaleza"
   },
   {
     "id": "30",
@@ -707,7 +661,7 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
   {
     "id": "33",
     "title": "Cuencos del Alba",
-    "subtitle": "Música Ancestral",
+    "subtitle": "Música Étnica",
     "categoryId": "musica-sonidos",
     "categoryLabel": "Música",
     "duration": 30,
@@ -730,12 +684,12 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "isPremium": true,
     "status": "published",
     "sortOrder": 21,
-    "soundTag": "Música Ancestral"
+    "soundTag": "Música Étnica"
   },
   {
     "id": "34",
     "title": "Didgeridoo y Tambor",
-    "subtitle": "Música Ancestral",
+    "subtitle": "Música Étnica",
     "categoryId": "musica-sonidos",
     "categoryLabel": "Música",
     "duration": 25,
@@ -758,7 +712,7 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "isPremium": true,
     "status": "published",
     "sortOrder": 22,
-    "soundTag": "Música Ancestral"
+    "soundTag": "Música Étnica"
   },
   {
     "id": "35",

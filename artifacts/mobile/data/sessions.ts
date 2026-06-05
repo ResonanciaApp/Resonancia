@@ -1,10 +1,11 @@
-export type SoundTag = "Sonidos Naturaleza" | "Música Ambient" | "Música Enteógena" | "Música Ancestral";
+export type SoundTag = "Música Ambient" | "Música Enteógena" | "Música Étnica";
 export type MeditationTag =
   | "No Duales"
   | "Visualizaciones"
   | "Mantras"
   | "Escaneo Corporal"
-  | "Manifestación";
+  | "Manifestación"
+  | "3 Minutos de Sabiduría";
 
 export type SabiduriaTag =
   | "Silencio Interior"
@@ -105,31 +106,12 @@ export const SESSIONS: Session[] = [
     frequency: "Delta 0.5–4 Hz",
   },
   {
-    id: "4",
-    title: "Dentro de uno",
-    subtitle: "El Gran Despertar · Episodio 1",
-    categoryId: "podcast",
-    categoryLabel: "Mezclador",
-    podcastTag: "Espiritualidad" as const,
-    duration: 35,
-    durationLabel: "35 min",
-    description:
-      "Una conversación profunda sobre el despertar de la conciencia y el camino hacia el autoconocimiento. Reflexiones que invitan a mirar adentro con honestidad y compasión.",
-    benefits: ["Autoconocimiento", "Inspiración profunda", "Claridad de vida", "Perspectiva nueva"],
-    instruments: ["Voz", "Cuenco tibetano de apertura", "Silencio consciente"],
-    image: require("@/assets/images/sessions/session-4.jpg"),
-    isNew: true,
-    guests: [
-      { name: "Ricardo Galdamez", role: "Profesor de Yoga" },
-    ],
-  },
-  {
     id: "5",
     title: "Más allá del sonido",
     subtitle: "Consejo del Día",
-    categoryId: "sabiduria-dia",
-    categoryLabel: "3 Minutos de Sabiduría",
-    sabiduriaTag: "Silencio Interior" as const,
+    categoryId: "meditaciones-guiadas",
+    categoryLabel: "Meditaciones",
+    meditationTag: "3 Minutos de Sabiduría" as const,
     duration: 5,
     durationLabel: "5 min",
     description:
@@ -215,8 +197,8 @@ export const SESSIONS: Session[] = [
     id: "20",
     title: "Sonidos de la Naturaleza",
     subtitle: "Atmósfera Natural",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Frecuencias",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
     duration: 10,
     durationLabel: "10 min",
     description:
@@ -226,14 +208,14 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-20-musica-dark.jpg"),
     audio: require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
     isNew: true,
-    soundTag: "Sonidos Naturaleza",
+    sonidosTag: "Sonidos Naturaleza",
   },
   {
     id: "21",
     title: "Lluvia de Bosque",
     subtitle: "Sonidos Naturales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Frecuencias",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
     duration: 15,
     durationLabel: "15 min",
     description:
@@ -242,14 +224,14 @@ export const SESSIONS: Session[] = [
     instruments: ["Lluvia", "Viento suave", "Naturaleza"],
     image: require("@/assets/images/sessions/session-3-musica-dark.jpg"),
     isNew: true,
-    soundTag: "Sonidos Naturaleza",
+    sonidosTag: "Sonidos Naturaleza",
   },
   {
     id: "22",
     title: "Orilla del Mar",
     subtitle: "Sonidos Naturales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Frecuencias",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
     duration: 20,
     durationLabel: "20 min",
     description:
@@ -258,7 +240,7 @@ export const SESSIONS: Session[] = [
     instruments: ["Olas del mar", "Brisa marina", "Naturaleza costera"],
     image: require("@/assets/images/sessions/session-5-musica-dark.jpg"),
     isNew: true,
-    soundTag: "Sonidos Naturaleza",
+    sonidosTag: "Sonidos Naturaleza",
   },
   {
     id: "23",
@@ -353,8 +335,8 @@ export const SESSIONS: Session[] = [
     isPremium: true,
     title: "Riachuelo con Pájaros",
     subtitle: "Sonidos Naturales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Frecuencias",
+    categoryId: "podcast",
+    categoryLabel: "Sonidos",
     duration: 10,
     durationLabel: "10 min",
     description:
@@ -364,7 +346,7 @@ export const SESSIONS: Session[] = [
     image: require("@/assets/images/sessions/session-27-musica-dark.jpg"),
     audio: require("@/assets/audio/riachuelo_pajaros.mp3"),
     isNew: true,
-    soundTag: "Sonidos Naturaleza",
+    sonidosTag: "Sonidos Naturaleza",
   },
   {
     id: "30",
@@ -441,7 +423,7 @@ export const SESSIONS: Session[] = [
     id: "33",
     isPremium: true,
     title: "Cuencos del Alba",
-    subtitle: "Música Ancestral",
+    subtitle: "Música Étnica",
     categoryId: "musica-sonidos",
     categoryLabel: "Música",
     duration: 30,
@@ -451,14 +433,14 @@ export const SESSIONS: Session[] = [
     benefits: ["Vibración profunda", "Limpieza energética", "Presencia plena", "Calma duradera"],
     instruments: ["Cuencos tibetanos", "Gongs de borde", "Campanas tingsha"],
     image: require("@/assets/images/sessions/session-20-musica-dark.jpg"),
-    soundTag: "Música Ancestral" as const,
+    soundTag: "Música Étnica" as const,
     isNew: true,
   },
   {
     id: "34",
     isPremium: true,
     title: "Didgeridoo y Tambor",
-    subtitle: "Música Ancestral",
+    subtitle: "Música Étnica",
     categoryId: "musica-sonidos",
     categoryLabel: "Música",
     duration: 25,
@@ -468,7 +450,7 @@ export const SESSIONS: Session[] = [
     benefits: ["Conexión con la tierra", "Anclaje corporal", "Calma mental", "Vibración ancestral"],
     instruments: ["Didgeridoo", "Tambor chamánico", "Ambiente natural"],
     image: require("@/assets/images/sessions/session-27-musica-dark.jpg"),
-    soundTag: "Música Ancestral" as const,
+    soundTag: "Música Étnica" as const,
     isNew: true,
   },
   {

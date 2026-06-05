@@ -30,7 +30,7 @@ const ICON_COLOR = "#8B82BE";
 const RATINGS_KEY = "@resonance_ratings";
 
 const ALL_SESSIONS = SESSIONS.filter(
-  (s) => s.categoryId === "meditaciones-guiadas" || s.categoryId === "sabiduria-dia"
+  (s) => s.categoryId === "meditaciones-guiadas"
 );
 const GUIADAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
 
@@ -84,7 +84,6 @@ const CATEGORIES: CategoryDef[] = [
     description: "Sabiduría condensada en 3 minutos",
     longDescription:
       "La profundidad no requiere tiempo: requiere presencia. Estos fragmentos condensan enseñanzas de distintas tradiciones en forma accesible, para que la sabiduría no quede solo en los libros sino que se integre en el día a día.",
-    categoryIdFilter: "sabiduria-dia",
   },
 ];
 

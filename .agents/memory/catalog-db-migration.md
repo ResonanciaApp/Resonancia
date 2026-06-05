@@ -16,8 +16,14 @@ perder arranque rápido ni offline, y sin tocar el player ni los mapeos de audio
   una sesión que existe en DB pero no en el bundle se ignora (no hay assets que
   resolver) → contenido nuevo requiere update de app hasta migrar assets a remoto.
 - El seed es idempotente: upsert por id; audio = delete+insert por sessionId (no
-  hay clave natural). Si cambia el shape del catálogo, regenerar el snapshot desde
-  `data/*.ts`, no editar el seed a mano.
+  hay clave natural). NO hay extractor: `scripts/seed-catalog.ts` solo siembra, no
+  regenera. El snapshot `lib/db/src/seed/catalog-data.ts` se mantiene **a mano** en
+  lockstep con `data/*.ts`.
+- **Cambios de taxonomía deben aplicarse a 3 sitios o quedan inconsistentes:** (1)
+  los `data/*.ts` del mobile, (2) el snapshot del seed, y (3) la **DB dev en vivo**
+  (executeSql). La app sirve la DB por encima del código (hidratación in-place), así
+  que editar solo el código NO cambia lo que ve el usuario hasta re-seed o mutación
+  directa. Prod la migra el flujo de Publish, no scripts.
 - `CatalogContext` es offline-first y NO bloquea render ni remonta el árbol; las
   pantallas importan los arrays síncronamente, así que cambios remotos se reflejan
   al re-renderizar (consistencia eventual), no instantáneamente.

@@ -33,6 +33,7 @@ import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { getNatureSounds } from "@/config/nature-base-map";
 import { getArtist } from "@/data/artists";
 import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
@@ -270,9 +271,11 @@ export default function PlayerScreen() {
   }
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
-  // Solo los "Sonidos Naturaleza" son loops con duración elegida por el usuario.
+  // Los "Sonidos Naturaleza" (mapeados en NATURE_BASE_MAP) son loops con
+  // duración elegida por el usuario. Ahora viven en la categoría "Sonidos".
   // "Música Ambient" / "Música Enteógena" son pistas con duración fija.
-  const isLoopSession = isMusicaYSonidos && currentSession.soundTag === "Sonidos Naturaleza";
+  const isNature = !!getNatureSounds(currentSession.id);
+  const isLoopSession = isNature;
   // Música Ambient / Enteógena llevan crédito de artista (default Resonancia).
   const showArtist =
     isMusicaYSonidos &&
@@ -521,11 +524,11 @@ export default function PlayerScreen() {
         {hasAmbientTrack && (
           <View style={[styles.sliderSection, { paddingHorizontal: 32, marginTop: 20, marginBottom: 8 }]}>
             <View style={styles.sliderHeader}>
-              {!isMusicaYSonidos && (
+              {!isNature && (
                 <Feather name="wind" size={13} color={colors.mutedForeground} />
               )}
               <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>
-                {isMusicaYSonidos ? "Sonidos Ambiente" : "Pájaros"}
+                {isNature ? "Sonidos Ambiente" : "Pájaros"}
               </Text>
               <Text style={[styles.sliderPercent, { color: colors.accent }]}>
                 {Math.round(ambientVolume * 100)}%
@@ -555,7 +558,7 @@ export default function PlayerScreen() {
             </View>
             <View style={styles.sliderHints}>
               <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>
-                {isMusicaYSonidos ? "Sin ambiente" : "Sin pájaros"}
+                {isNature ? "Sin ambiente" : "Sin pájaros"}
               </Text>
               <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
             </View>

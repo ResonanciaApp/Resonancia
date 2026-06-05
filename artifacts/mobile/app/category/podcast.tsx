@@ -8,12 +8,14 @@ import {
   Animated,
   Dimensions,
   LayoutChangeEvent,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,8 +24,11 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
+import { getNatureSounds } from "@/config/nature-base-map";
+import { useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session, type SonidosTag } from "@/data/sessions";
+import { hasSoundFile } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
@@ -43,6 +48,17 @@ const TABS: { label: string; value: SonidosTab }[] = [
 
 const SONIDOS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "podcast");
 
+/** Timer del sonido. 5/10/20 min gratis; el resto (incluido "Sin límite") es premium. */
+const TIMER_OPTIONS: { minutes: number | null; label: string; free: boolean }[] = [
+  { minutes: 5, label: "5 min", free: true },
+  { minutes: 10, label: "10 min", free: true },
+  { minutes: 20, label: "20 min", free: true },
+  { minutes: 30, label: "30 min", free: false },
+  { minutes: 40, label: "40 min", free: false },
+  { minutes: 60, label: "1 h", free: false },
+  { minutes: null, label: "Sin límite", free: false },
+];
+
 export default function SonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
@@ -50,6 +66,8 @@ export default function SonidosScreen() {
 
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const [pendingSession, setPendingSession] = useState<Session | null>(null);
+  const { stopAll, toggleSound, setSleepTimer } = useMixer();
 
   // Tab indicator animation
   const indicatorAnim = useRef(new Animated.Value(0)).current;
@@ -86,6 +104,45 @@ export default function SonidosScreen() {
     () => SONIDOS_SESSIONS.filter((s) => s.sonidosTag === activeTab),
     [activeTab],
   );
+
+  const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
+    if (!pendingSession) return;
+    // Gating premium: solo 5/10/20 min son gratis.
+    if (!opt.free && !isPremium) {
+      setPendingSession(null);
+      stopAll();
+      router.push("/membresia" as never);
+      return;
+    }
+    const session = pendingSession;
+    setPendingSession(null);
+    const nature = getNatureSounds(session.id);
+    const base = nature?.base;
+    // Sin sonido base válido (mapeado y con archivo) no hay nada que reproducir.
+    if (!base || !hasSoundFile(base)) {
+      stopAll();
+      return;
+    }
+    // El ambiente viene precargado: se pasa a la inmersiva como segunda capa.
+    const ambient =
+      nature?.ambient && hasSoundFile(nature.ambient) ? nature.ambient : undefined;
+    // null = "Sin límite": setSleepTimer(null) deja sonando sin temporizador.
+    setSleepTimer(opt.minutes);
+    router.push({
+      pathname: "/inmersivo",
+      params: {
+        title: session.title,
+        baseId: base,
+        ...(ambient ? { ambientId: ambient } : {}),
+      },
+    } as never);
+  };
+
+  // Cancelar el timer detiene el sonido que arrancó al tocar la card.
+  const handleCancelTimer = () => {
+    setPendingSession(null);
+    stopAll();
+  };
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -183,9 +240,23 @@ export default function SonidosScreen() {
                       styles.card,
                       { width: CARD_WIDTH, opacity: pressed ? 0.82 : 1 },
                     ]}
-                    onPress={() =>
-                      router.push((locked ? "/membresia" : `/session/${session.id}`) as never)
-                    }
+                    onPress={() => {
+                      if (locked) {
+                        router.push("/membresia" as never);
+                        return;
+                      }
+                      // Sonidos Naturaleza (modelo Pura Mente): arranca el sonido
+                      // base al instante y abre el timer; el ambiente precargado
+                      // se suma como segunda capa en la inmersiva.
+                      const base = getNatureSounds(session.id)?.base;
+                      if (base && hasSoundFile(base)) {
+                        stopAll();
+                        toggleSound(base);
+                        setPendingSession(session);
+                        return;
+                      }
+                      router.push(`/session/${session.id}` as never);
+                    }}
                     onLongPress={() => setActionsSession(session)}
                   >
                     <View
@@ -225,6 +296,100 @@ export default function SonidosScreen() {
           )}
         </View>
       </ScrollView>
+
+      {/* Duration Picker Modal — Sonidos Naturaleza */}
+      <Modal
+        visible={!!pendingSession}
+        transparent
+        animationType="slide"
+        statusBarTranslucent
+        onRequestClose={handleCancelTimer}
+      >
+        <TouchableWithoutFeedback onPress={handleCancelTimer}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View
+                style={[
+                  styles.modalSheet,
+                  {
+                    backgroundColor: "rgba(9,14,23,0.98)",
+                    paddingBottom: Math.max(insets.bottom, 24) + 8,
+                  },
+                ]}
+              >
+                <View style={[styles.dragHandle, { backgroundColor: "rgba(198,155,79,0.25)" }]} />
+                {pendingSession && (
+                  <>
+                    <View style={styles.modalHeader}>
+                      <View style={[styles.modalIcon, { backgroundColor: "rgba(198,155,79,0.12)" }]}>
+                        <Feather name="clock" size={20} color={colors.primary} />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+                          ¿Cuánto tiempo?
+                        </Text>
+                        <Text style={[styles.modalSub, { color: colors.foreground }]} numberOfLines={1}>
+                          {pendingSession.title}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <Text style={[styles.modalHint, { color: colors.mutedForeground }]}>
+                      El sonido se detiene al terminar este tiempo · 5, 10 y 20 min gratis
+                    </Text>
+
+                    <View style={styles.durationGrid}>
+                      {TIMER_OPTIONS.map((opt) => {
+                        const lockedOpt = !opt.free && !isPremium;
+                        return (
+                          <Pressable
+                            key={opt.label}
+                            style={({ pressed }) => [
+                              styles.durationBtn,
+                              {
+                                backgroundColor: pressed ? colors.primary : "rgba(198,155,79,0.10)",
+                                borderColor: pressed ? colors.primary : "rgba(198,155,79,0.28)",
+                              },
+                            ]}
+                            onPress={() => handleSelectTimer(opt)}
+                          >
+                            {({ pressed }) => (
+                              <>
+                                <Text
+                                  style={[
+                                    styles.durationNum,
+                                    { fontSize: 18, color: pressed ? "#090F17" : colors.foreground },
+                                  ]}
+                                >
+                                  {opt.label}
+                                </Text>
+                                {lockedOpt && (
+                                  <View style={styles.timerLock}>
+                                    <Feather name="lock" size={9} color="#BE9650" />
+                                  </View>
+                                )}
+                              </>
+                            )}
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+
+                    <Pressable
+                      style={[styles.cancelBtn, { borderColor: "rgba(198,155,79,0.22)" }]}
+                      onPress={handleCancelTimer}
+                    >
+                      <Text style={[styles.cancelText, { color: colors.foreground }]}>
+                        Cancelar
+                      </Text>
+                    </Pressable>
+                  </>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
 
       <SessionActionsSheet
         session={actionsSession}
@@ -332,5 +497,92 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     textAlign: "center",
+  },
+
+  // Modal — Sonidos Naturaleza timer
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.65)",
+    justifyContent: "flex-end",
+  },
+  modalSheet: {
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: 24,
+    paddingTop: 12,
+  },
+  dragHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 10,
+  },
+  modalIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  modalSub: {
+    fontSize: 13,
+  },
+  modalHint: {
+    fontSize: 12,
+    marginBottom: 22,
+    lineHeight: 18,
+  },
+  durationGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginBottom: 20,
+  },
+  durationBtn: {
+    width: (SCREEN_W - 48 - 20) / 3,
+    paddingVertical: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  timerLock: {
+    position: "absolute",
+    top: 7,
+    right: 8,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: "rgba(214,168,91,0.16)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durationNum: {
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 26,
+  },
+  cancelBtn: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  cancelText: {
+    fontSize: 14,
+    fontWeight: "600",
   },
 });
