@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 0,
     borderTopWidth: 1,
-    borderTopColor: "rgba(122,143,168,0.2)",
+    borderTopColor: "rgba(122,143,168,0.1)",
   },
   // Secciones
   section: { marginBottom: 57 },
