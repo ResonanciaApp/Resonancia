@@ -243,10 +243,10 @@ export default function MiMusicaScreen() {
             }}
             style={styles.mezclasHeader}
           >
-            <MaterialCommunityIcons name="heart" size={16} color="#E05252" style={{ marginRight: 7 }} />
             <Text style={[styles.subSectionTitle, { color: colors.foreground, flex: 1, marginBottom: 0 }]}>
-              Tus mezclas
+              Tus
             </Text>
+            <MaterialCommunityIcons name="heart" size={16} color="#E05252" style={{ marginLeft: 7, marginRight: 6 }} />
             <Feather
               name={mezclasOpen ? "chevron-up" : "chevron-down"}
               size={17}
