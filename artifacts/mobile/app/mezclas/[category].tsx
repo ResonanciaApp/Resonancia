@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
+import { Image as ExpoImage } from "expo-image";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   Alert,
@@ -24,6 +25,9 @@ import { usePremium } from "@/context/PremiumContext";
 import { type MixCategory, getCategoryMeta } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
+
+const IMG_DESCANSO = require("../../assets/images/cat-descanso.png");
+const IMG_MEDITACION = require("../../assets/images/cat-meditacion.png");
 
 // ── Íconos de categoría ──────────────────────────────────────────
 function MoonIcon({ color, size = 40 }: { color: string; size?: number }) {
@@ -194,6 +198,16 @@ export default function CategoryMixesScreen() {
         {/* Hero de la categoría */}
         {meta && (
           <View style={styles.hero}>
+            {/* Ícono de la categoría */}
+            {meta.id === "dormir" && (
+              <ExpoImage source={IMG_DESCANSO} style={styles.heroIcon} contentFit="contain" />
+            )}
+            {meta.id === "motivarme" && (
+              <ExpoImage source={IMG_MEDITACION} style={styles.heroIcon} contentFit="contain" />
+            )}
+            {meta.id === "concentracion" && (
+              <MaterialCommunityIcons name="image-filter-hdr" size={44} color={meta.color ?? "#d49f6b"} />
+            )}
             <Text style={[styles.heroLabel, { color: colors.foreground }]}>{meta.label}</Text>
             <Text style={[styles.heroSub, { color: colors.mutedForeground }]}>{meta.subtitle}</Text>
           </View>
@@ -249,6 +263,7 @@ const styles = StyleSheet.create({
   },
 
   hero: { alignItems: "center", marginBottom: 28, gap: 10 },
+  heroIcon: { width: 44, height: 44 },
   heroLabel: { fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
   heroSub: { fontSize: 14, lineHeight: 20, textAlign: "center" },
 

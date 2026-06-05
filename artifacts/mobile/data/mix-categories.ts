@@ -51,7 +51,7 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     subtitle: "Sonidos que te alinean con tus metas.",
     icon: "image-filter-hdr",
     iconFamily: "MaterialCommunityIcons",
-    color: "#e2e9a5",
+    color: "#d49f6b",
     image: require("@/assets/images/mixer/categories/concentracion.jpg"),
   },
 ];
