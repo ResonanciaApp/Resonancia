@@ -17,9 +17,10 @@ type Props = {
   rating?: number;
   style?: object;
   onActionsPress?: () => void;
+  onPress?: () => void;
 };
 
-export function SessionRow({ session, rating, style, onActionsPress }: Props) {
+export function SessionRow({ session, rating, style, onActionsPress, onPress }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
@@ -30,10 +31,12 @@ export function SessionRow({ session, rating, style, onActionsPress }: Props) {
   const author = guide?.name ?? "Casa del Cuenco";
   const displayRating = rating ?? 4.7;
 
+  const defaultPress = () => router.push((locked ? "/membresia" : `/session/${session.id}`) as never);
+
   return (
     <View style={[styles.sessionRow, style]}>
       <Pressable
-        onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
+        onPress={onPress ?? defaultPress}
         style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
       >
         <View style={styles.sessionImgWrap}>
