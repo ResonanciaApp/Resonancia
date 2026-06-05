@@ -85,7 +85,6 @@ export default function ExploreScreen() {
   const temaW = (contentW - H_PAD * 2 - GAP * 2) / 3;
 
   const filteredSessions = SESSIONS.filter((s) => {
-    if (s.categoryId === "sabiduria-dia") return false;
     if (!query) return false;
     const q = query.toLowerCase();
     return (

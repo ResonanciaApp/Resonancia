@@ -177,7 +177,7 @@ export default function HomeScreen() {
         {/* ── 2. CATEGORÍAS ── */}
         <View style={styles.section}>
           <View style={styles.catGrid}>
-            {CATEGORIES.filter((cat) => cat.id !== "sabiduria-dia").map((cat, idx) => {
+            {CATEGORIES.map((cat, idx) => {
               const R = 20; const r = 4;
               const radii = [
                 { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 1 izq

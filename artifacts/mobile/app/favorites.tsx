@@ -126,7 +126,7 @@ export default function FavoritesScreen() {
 
   // ── Datos ─────────────────────────────────────────────────────
   const favSessions = useMemo(
-    () => SESSIONS.filter((s) => favorites.includes(s.id) && s.categoryId !== "sabiduria-dia"),
+    () => SESSIONS.filter((s) => favorites.includes(s.id)),
     [favorites],
   );
 

@@ -310,10 +310,7 @@ export default function PlayerScreen() {
   if (playerCategory?.id === "sonidos-ancestrales") {
     playerBg = colors.background;
   } else {
-    const baseHex =
-      playerCategory?.id === "sabiduria-dia"
-        ? "#0F1A2A"
-        : playerCategory?.gradient[1] ?? colors.background;
+    const baseHex = playerCategory?.gradient[1] ?? colors.background;
     playerBg = darkenHex(baseHex, 0.6);
   }
 

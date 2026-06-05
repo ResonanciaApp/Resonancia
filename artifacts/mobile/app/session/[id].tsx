@@ -79,7 +79,6 @@ export default function SessionDetailScreen() {
   const isMusica = session.categoryId === "musica-sonidos";
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
-  const isSabiduría = session.categoryId === "sabiduria-dia";
   const isPodcast = session.categoryId === "podcast";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const fav = localFav !== null ? localFav : isFavorite(session.id);
@@ -92,10 +91,6 @@ export default function SessionDetailScreen() {
   // Tinted background derived from the session's category (gradient[1] = darker shade)
   // Darkened ~60% to keep a subtle tint without being too bright.
   const category = CATEGORIES.find((c) => c.id === session.categoryId);
-  // Sabiduría del Día: usar el mismo tono que Sonidos Ancestrales pero con un
-  // leve matiz más amarillo (un toque más de verde sobre el rojo dominante).
-  // Sonidos Ancestrales: usar exactamente el fondo del reproductor (colors.background)
-  // Sabiduría del Día: tono de Sonidos Ancestrales con un leve matiz más amarillo.
   const categoryBg = colors.background;
   const actionTint = colors.card;
 
@@ -136,8 +131,7 @@ export default function SessionDetailScreen() {
     else if (isAncestral && session.ancestralTag) tag = session.ancestralTag;
     else if (isPodcast) {
       tag = "Podcast";
-    } else if (isSabiduría && session.sabiduriaTag) tag = session.sabiduriaTag;
-    else if (!isGuiada && !isAncestral && !isSabiduría && !isPodcast && !isMusica) {
+    } else if (!isGuiada && !isAncestral && !isPodcast && !isMusica) {
       tag = session.categoryLabel;
     }
 
