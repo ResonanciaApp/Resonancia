@@ -1,8 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import {
+  Animated,
   Image,
+  LayoutChangeEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -22,6 +24,16 @@ import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
+
+// ── Constantes ────────────────────────────────────────────────────
+const TABS = [
+  { id: "sesiones" as const, label: "Sesiones" },
+  { id: "mezclas"  as const, label: "Mezclas"  },
+  { id: "musica"   as const, label: "Música"   },
+];
+type TabId = (typeof TABS)[number]["id"];
+
+const TAB_INDICATOR_COLOR = "#BE9650";
 
 // ── Mini-stack de imágenes de sonidos ────────────────────────────
 const THUMB = 38;
@@ -83,6 +95,36 @@ export default function FavoritesScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  // ── Tab state ─────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<TabId>("sesiones");
+  const indicatorAnim = useRef(new Animated.Value(0)).current;
+  const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const tabLayouts = useRef<Record<number, { x: number; width: number }>>({});
+
+  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
+    const { x, width } = e.nativeEvent.layout;
+    tabLayouts.current[idx] = { x, width };
+    if (idx === 0) {
+      setIndicatorWidth(width);
+      indicatorAnim.setValue(x);
+    }
+  };
+
+  const selectTab = (id: TabId, idx: number) => {
+    setActiveTab(id);
+    const layout = tabLayouts.current[idx];
+    if (layout) {
+      setIndicatorWidth(layout.width);
+      Animated.spring(indicatorAnim, {
+        toValue: layout.x,
+        useNativeDriver: true,
+        tension: 60,
+        friction: 9,
+      }).start();
+    }
+  };
+
+  // ── Datos ─────────────────────────────────────────────────────
   const favSessions = useMemo(
     () => SESSIONS.filter((s) => favorites.includes(s.id) && s.categoryId !== "sabiduria-dia"),
     [favorites],
@@ -113,7 +155,103 @@ export default function FavoritesScreen() {
     });
   }, [favSessions, query]);
 
-  const hasAnything = favSessions.length > 0 || favMixes.length > 0;
+  // ── Render por tab ────────────────────────────────────────────
+  const renderSesiones = () => (
+    <View>
+      {/* Buscador */}
+      {favSessions.length > 0 && (
+        <View
+          style={[
+            styles.searchWrap,
+            {
+              backgroundColor: "rgba(255,255,255,0.04)",
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: "rgba(255,255,255,0.07)",
+            },
+          ]}
+        >
+          <Feather name="search" size={16} color={colors.mutedForeground} />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Buscar en favoritos…"
+            placeholderTextColor={colors.mutedForeground}
+            style={[styles.searchInput, { color: colors.foreground }]}
+            returnKeyType="search"
+            autoCorrect={false}
+          />
+          {query.length > 0 && (
+            <Pressable onPress={() => setQuery("")} hitSlop={8}>
+              <Feather name="x" size={16} color={colors.mutedForeground} />
+            </Pressable>
+          )}
+        </View>
+      )}
+
+      {favSessions.length === 0 ? (
+        <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
+          <Feather name="heart" size={20} color={colors.border} />
+          <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+            Aún no guardaste sesiones favoritas
+          </Text>
+          <Pressable
+            onPress={() => router.push("/(tabs)/explore" as never)}
+            style={styles.emptyLink}
+          >
+            <Text style={[styles.emptyLinkText, { color: colors.accent }]}>Explorar</Text>
+          </Pressable>
+        </View>
+      ) : filteredSessions.length === 0 ? (
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.04)" }]}>
+          <Feather name="search" size={18} color={colors.border} />
+          <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+            Ninguna sesión coincide con tu búsqueda.
+          </Text>
+        </View>
+      ) : (
+        filteredSessions.map((s) => <SessionCard key={s.id} session={s} horizontal />)
+      )}
+    </View>
+  );
+
+  const renderMezclas = () => (
+    <View>
+      {favMixes.length === 0 ? (
+        <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
+          <Feather name="heart" size={20} color={colors.border} />
+          <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+            Aún no guardaste mezclas favoritas
+          </Text>
+          <Pressable
+            onPress={() => router.push("/(tabs)/musica" as never)}
+            style={styles.emptyLink}
+          >
+            <Text style={[styles.emptyLinkText, { color: colors.accent }]}>Ir al Mezclador</Text>
+          </Pressable>
+        </View>
+      ) : (
+        favMixes.map((mix) => (
+          <FavMixRow
+            key={mix.id}
+            mix={mix}
+            onPress={() => {
+              loadMix(mix);
+              router.back();
+            }}
+          />
+        ))
+      )}
+    </View>
+  );
+
+  const renderMusica = () => (
+    <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
+      <Feather name="music" size={20} color={colors.border} />
+      <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+        Próximamente
+      </Text>
+    </View>
+  );
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -128,7 +266,9 @@ export default function FavoritesScreen() {
           paddingHorizontal: 20,
         }}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
+        {/* Back */}
         <View style={styles.headerTop}>
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
@@ -139,6 +279,7 @@ export default function FavoritesScreen() {
           </Pressable>
         </View>
 
+        {/* Título */}
         <View style={styles.header}>
           <View style={styles.headerInner}>
             <Feather name="heart" size={28} color={colors.primary} style={{ marginTop: 2 }} />
@@ -151,91 +292,52 @@ export default function FavoritesScreen() {
           </View>
         </View>
 
-        {/* Buscador (solo si hay sesiones) */}
-        {favSessions.length > 0 && (
-          <View
-            style={[
-              styles.searchWrap,
-              {
-                backgroundColor: "rgba(255,255,255,0.04)",
-                borderWidth: StyleSheet.hairlineWidth,
-                borderColor: "rgba(255,255,255,0.07)",
-              },
-            ]}
-          >
-            <Feather name="search" size={16} color={colors.mutedForeground} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Buscar en favoritos…"
-              placeholderTextColor={colors.mutedForeground}
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-              autoCorrect={false}
+        {/* ── Tabs ── */}
+        <View
+          style={[
+            styles.tabBar,
+            { borderBottomColor: "rgba(255,255,255,0.08)" },
+          ]}
+        >
+          {TABS.map(({ id, label }, idx) => (
+            <Pressable
+              key={id}
+              onLayout={(e) => onTabLayout(idx, e)}
+              onPress={() => selectTab(id, idx)}
+              style={styles.tabItem}
+            >
+              <Text
+                style={[
+                  styles.tabLabel,
+                  {
+                    color: id === activeTab ? colors.foreground : colors.mutedForeground,
+                    fontWeight: id === activeTab ? "600" : "400",
+                  },
+                ]}
+              >
+                {label}
+              </Text>
+            </Pressable>
+          ))}
+          {indicatorWidth > 0 && (
+            <Animated.View
+              style={[
+                styles.tabIndicator,
+                {
+                  width: indicatorWidth,
+                  backgroundColor: TAB_INDICATOR_COLOR,
+                  transform: [{ translateX: indicatorAnim }],
+                },
+              ]}
             />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={16} color={colors.mutedForeground} />
-              </Pressable>
-            )}
-          </View>
-        )}
-
-        {/* ── Mezclas favoritas ── */}
-        {favMixes.length > 0 && (
-          <View style={styles.sectionBlock}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mezclas</Text>
-            {favMixes.map((mix) => (
-              <FavMixRow
-                key={mix.id}
-                mix={mix}
-                onPress={() => {
-                  loadMix(mix);
-                  router.back();
-                }}
-              />
-            ))}
-          </View>
-        )}
-
-        {/* ── Sesiones favoritas ── */}
-        <View style={styles.sectionBlock}>
-          {favMixes.length > 0 && favSessions.length > 0 && (
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Sesiones</Text>
           )}
-          {favSessions.length === 0 ? (
-            !hasAnything ? (
-              <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
-                <Feather name="heart" size={20} color={colors.border} />
-                <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
-                  Aún no guardaste favoritos
-                </Text>
-                <Pressable
-                  onPress={() => router.push("/(tabs)/explore" as never)}
-                  style={styles.emptyLink}
-                >
-                  <Text style={[styles.emptyLinkText, { color: colors.accent }]}>Explorar</Text>
-                </Pressable>
-              </View>
-            ) : null
-          ) : (
-            <View>
-              {filteredSessions.length === 0 ? (
-                <View
-                  style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.04)" }]}
-                >
-                  <Feather name="search" size={18} color={colors.border} />
-                  <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
-                    Ninguna sesión coincide con tu búsqueda.
-                  </Text>
-                </View>
-              ) : (
-                filteredSessions.map((s) => (
-                  <SessionCard key={s.id} session={s} horizontal />
-                ))
-              )}
-            </View>
-          )}
+        </View>
+
+        {/* ── Contenido del tab activo ── */}
+        <View style={{ marginTop: 20 }}>
+          {activeTab === "sesiones" && renderSesiones()}
+          {activeTab === "mezclas"  && renderMezclas()}
+          {activeTab === "musica"   && renderMusica()}
         </View>
       </ScrollView>
     </View>
@@ -285,6 +387,31 @@ const styles = StyleSheet.create({
   },
   header: { marginBottom: 20 },
   headerInner: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
+
+  // Tabs
+  tabBar: {
+    flexDirection: "row",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    position: "relative",
+    marginBottom: 0,
+  },
+  tabItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: "center",
+  },
+  tabLabel: {
+    fontSize: 15,
+    letterSpacing: 0.2,
+  },
+  tabIndicator: {
+    position: "absolute",
+    bottom: 0,
+    height: 2,
+    borderRadius: 1,
+  },
+
+  // Búsqueda
   searchWrap: {
     flexDirection: "row",
     alignItems: "center",
@@ -292,17 +419,19 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === "ios" ? 10 : 6,
-    marginBottom: 22,
+    marginBottom: 16,
   },
   searchInput: {
     flex: 1,
     fontSize: 14,
     padding: 0,
   },
+
+  // Textos
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   pageSub: { fontSize: 13 },
-  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
-  sectionBlock: { marginBottom: 32 },
+
+  // Empty
   emptySmall: {
     flexDirection: "row",
     alignItems: "center",
