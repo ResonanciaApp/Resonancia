@@ -9,7 +9,7 @@
  * la mezcla. Si no hay sonidos activos, no renderiza nada.
  * ─────────────────────────────────────────────────────────────────
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -419,7 +419,7 @@ export function MixerSheet() {
                   onPress={() => openSaveModal("new")}
                   style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
                 >
-                  <Feather name="save" size={16} color={WARM.saveText} />
+                  <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
                   <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Guardar nueva</Text>
                 </Pressable>
               </>
