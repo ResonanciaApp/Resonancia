@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0E141C" },
 
   // Header
-  header: { marginBottom: 6 },
+  header: { marginBottom: 11 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 6 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 14 },
   subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
