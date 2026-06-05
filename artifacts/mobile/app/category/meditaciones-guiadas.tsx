@@ -214,13 +214,17 @@ export default function MeditacionesGuiadasScreen() {
               <Pressable onPress={() => router.back()} style={styles.backBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
-              <View style={styles.catIconCircle}>
-                <ZenStonesIcon color={ICON_COLOR} size={44} />
+              <View style={styles.titleRow}>
+                <View style={[styles.catIconCircle, { backgroundColor: "rgba(139,130,190,0.16)" }]}>
+                  <ZenStonesIcon color={ICON_COLOR} size={28} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
+                  <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+                    Déjate llevar por la voz y el sonido
+                  </Text>
+                </View>
               </View>
-              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
-              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                Déjate llevar por la voz y el sonido
-              </Text>
             </View>
 
             <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
@@ -423,14 +427,14 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     marginBottom: 16,
   },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   catIconCircle: {
     width: 56, height: 56,
-    borderRadius: 18,
+    borderRadius: 28,
     alignItems: "center", justifyContent: "center",
-    marginBottom: 14,
   },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 6, textAlign: "center" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "left" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "left" },
 
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },
