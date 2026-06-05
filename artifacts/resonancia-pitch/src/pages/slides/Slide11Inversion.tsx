@@ -42,11 +42,11 @@ export default function Slide11Inversion() {
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>29% · US$8.800</span> — Runway operativo: sueldos del equipo en los meses 1–3 (hasta flujo positivo).</div>
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>26% · US$7.900</span> — Runway operativo: sueldos del equipo en los meses 1–3 (hasta flujo positivo).</div>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
             <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#BE9650", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>8% · US$2.320</span> — Colchón para imprevistos.</div>
+            <div style={{ fontSize: "1.5vw", color: "#7A8FA8", lineHeight: 1.4 }}><span style={{ color: "#BE9650", fontWeight: 700 }}>11% · US$3.220</span> — Colchón para imprevistos.</div>
           </div>
         </div>
 

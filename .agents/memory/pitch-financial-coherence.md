@@ -5,22 +5,30 @@ description: Las cifras del modelo financiero del pitch viven repartidas en much
 
 # Coherencia financiera del pitch (resonancia-pitch)
 
-Las cifras del modelo financiero NO están centralizadas: viven hardcodeadas inline (vw/vh, hex inline, sin CSS vars) repartidas en varias slides. Un cambio en el tamaño de ronda, equity o uso de fondos debe propagarse a TODAS o las slides se contradicen entre sí.
+Las cifras del modelo financiero NO están centralizadas: están hardcodeadas inline (vw/vh, hex inline, sin CSS vars ni constantes compartidas) repartidas en varias slides. Un cambio en tamaño de ronda, equity, valoración o uso de fondos debe propagarse a TODAS o las slides se contradicen entre sí.
 
-Slides que comparten números del modelo:
-- `Slide11Inversion.tsx` — monto de ronda + uso de fondos (% · US$ por línea, deben sumar 100% y el total de la ronda)
-- `SlideAnexoInversion.tsx` — valoración pre/post-money, equity %, ticket, y 3 escenarios (stake = equity% × valoración M12; retorno = valoración/post-money)
-- `SlideValleDeCaja.tsx` — reparto de la ronda: upfront + runway operativo + colchón (debe sumar el total)
-- `SlideFinanzas1.tsx` / `SlideFinanzas2.tsx` — footnote/KPI "inversión inicial"
-- `SlideFinanzas3.tsx` — marketing ramp M1–2 "cubierto por..." referencia el monto upfront
-- `SlideProyeccion.tsx` — "recuperación de inversión inicial (US$...)"
+**Why:** el deck ya tuvo dos historias contradictorias del mismo dinero (el uso de fondos contado "se gasta en crear/lanzar" en una slide vs "es runway que cubre pérdidas" en otra). Se reconcilió como un único reparto: **upfront (pre-mes 1) + runway operativo (valle meses 1–3) + colchón**, que debe sumar el total de la ronda.
 
-**Modelo acordado (jun 2026):** ronda US$30.000 ($27M CLP, TC $900) = upfront pre-mes 1 ~$17M (contenido, equipos, marketing lanzamiento, legal, ASO) + runway operativo valle meses 1–3 ~$7,9M + colchón ~$2,1M. Equity ~3,0% (US$30K ÷ post-money US$1,005M; pre-money US$975K).
+## Dónde viven los números (mover en lockstep)
 
-**Embudo de conversión (jun 2026, aprobado):** 1.000.000 seguidores → 20% instala (200.000 free) → 5% convierte (10.000 premium orgánico) → base M12 = 12.000 (10.000 orgánico + ~2.000 marketing). ARPU neto $3.300/mes (post IVA 19% + tienda 30%). Escenarios = **Base 12.000 / Optimista 15.000 / Agresivo 25.000** (NO hay columna "Conservador 10.000"; el 10K orgánico se muestra como composición del base). Ramp base: M1-0,M2-500,M3-1.500,M4-2.800,M5-4.300,M6-6.000,M7-7.500,M8-8.900,M9-10.000,M10-11.000,M11-11.600,M12-12.000. Ingreso anual base ~$251M CLP, neto +$168M; break-even mes 7.
+- `Slide11Inversion.tsx` — monto de ronda + uso de fondos línea por línea (`% · US$`). Los % deben sumar 100% y los US$ el total de la ronda. El upfront aquí = suma de las líneas pre-lanzamiento (contenido + equipos + marketing + legal); runway y colchón deben coincidir exactamente con los de `SlideValleDeCaja`.
+- `SlideAnexoInversion.tsx` — valoración pre/post-money, equity %, ticket, y 3 escenarios (Base/Optimista/Agresivo).
+- `SlideValleDeCaja.tsx` — reparto de la ronda en 3 buckets (upfront + runway + colchón) + valle acumulado meses 1–3. **La pérdida acumulada del valle ES la cifra autoritativa del runway**; el colchón es el resto. Si el valle cambia, runway/colchón cambian en ambas slides.
+- `SlideFinanzas1/2/3.tsx` — footnote/KPI "inversión inicial", desglose de costos fijos/contenido/marketing por fase.
+- `SlideProyeccion.tsx` — escenarios + "recuperación de la inversión (mes N)".
 
-**Fórmulas escenarios (Anexo valoración):** ARR neto = subs × $3.300 × 12 / 900 (US$); valoración = múltiplo × ARR; stake = 3% × valoración; retorno = stake / US$30K (= valoración en US$M). Múltiplos = elección de mercado (NO cálculo), ancla = "Calm valuó ~4–8× ARR en rondas tempranas". Múltiplos actuales **4×/5×/6×** (Base/Opt/Agr) → valoración US$2,1M/3,3M/6,6M, stake US$63K/99K/198K, retorno 2,1×/3,3×/6,6×. (Antes eran 6/7/8× → 3,2M/4,6M/8,8M; el usuario los bajó a un término medio.)
+## Fórmulas (no inventar, recalcular)
 
-**Why:** los sueldos ($3,65M/mes, gerente $2M incl.) se pagan en EFECTIVO desde el mes 1 → US$25.000 no alcanzaba (uso real ~US$27.700). El deck tenía dos historias contradictorias del mismo dinero ("se gasta en crear/lanzar" vs "es runway que cubre pérdidas"); se reconcilió como upfront + runway + colchón.
+- **Equity:** `equity% = ronda / post-money`; `pre-money = post-money − ronda`. Bajar el post-money = dar más equity por el mismo ticket.
+- **Retorno por escenario:** `stake_M12 = equity% × valoración_M12`; `múltiplo = stake_M12 / ronda`.
+- **Valoración M12:** `ARR neto = subs_M12 × ARPU_neto × 12` (en US$ con TC); `valoración = múltiplo_ARR × ARR`. Los múltiplos ARR son **elección de mercado, no cálculo** (ancla: "Calm valuó ~4–8× ARR en rondas tempranas").
+- **Trampa clave (la que motivó el último ajuste):** si el post-money es mayor que la valoración M12 del caso base, el retorno base cae por debajo de 1× (el inversor pierde en su propio caso conservador) → señal de ronda sobrevalorada. Fix = dar más equity (bajar post-money), no subir múltiplos.
 
-**How to apply:** al tocar cualquier número financiero, grep el set legacy (monto viejo, equity viejo, montos de stake) en `pages/slides/*.tsx` antes de cerrar; correr typecheck + validate-slides; screenshot de inversión/valoración/valle.
+## Otros invariantes
+
+- Los sueldos del equipo se pagan en EFECTIVO desde el mes 1 (no hay equity-for-salary), así que el runway debe cubrir el valle completo hasta flujo positivo.
+- ARPU neto = precio usuario − IVA 19% − comisión tienda 30%. IVA/ARPU/mezcla de planes son estables; no se tocan al ajustar escenarios.
+
+## How to apply
+
+Al tocar cualquier número financiero: (1) grep el set legacy (monto viejo, equity viejo, valores de stake/valoración) en `pages/slides/*.tsx` y en las `description` de `data/slides-manifest.json`; (2) recalcular con las fórmulas de arriba; (3) `pnpm --filter @workspace/resonancia-pitch run typecheck` + `run validate-slides`; (4) screenshot de las slides de inversión/valoración/valle para verificar visualmente.
