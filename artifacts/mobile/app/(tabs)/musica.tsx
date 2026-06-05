@@ -46,6 +46,7 @@ export default function MiMusicaScreen() {
   const [activeTab, setActiveTab] = useState<TabId>("popular");
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
+  const [mezclasOpen, setMezclasOpen] = useState(false);
 
   const toggleDesc = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -236,36 +237,54 @@ export default function MiMusicaScreen() {
             </Text>
           </Pressable>
 
-          {/* Tus mezclas */}
-          <Text style={[styles.subSectionTitle, { color: colors.foreground }]}>Tus mezclas</Text>
+          {/* Tus mezclas — colapsable */}
+          <Pressable
+            onPress={() => {
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+              setMezclasOpen((v) => !v);
+            }}
+            style={styles.mezclasHeader}
+          >
+            <Feather name="heart" size={15} color="#E05252" style={{ marginRight: 7 }} />
+            <Text style={[styles.subSectionTitle, { color: colors.foreground, flex: 1, marginBottom: 0 }]}>
+              Tus mezclas
+            </Text>
+            <Feather
+              name={mezclasOpen ? "chevron-up" : "chevron-down"}
+              size={17}
+              color={colors.mutedForeground}
+            />
+          </Pressable>
 
           {/* 3 bloques de categoría */}
-          <View style={styles.catRow}>
-            {MIX_CATEGORIES.map((cat) => {
-              const accent = cat.color ?? colors.primary;
-              return (
-                <Pressable
-                  key={cat.id}
-                  onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                  style={({ pressed }) => [
-                    styles.catCard,
-                    {
-                      backgroundColor: pressed ? accent + "18" : "#151A23",
-                      transform: [{ scale: pressed ? 0.96 : 1 }],
-                    },
-                  ]}
-                >
-                  {renderCatIcon(cat)}
-                  <Text
-                    style={[styles.catLabel, { color: colors.mutedForeground }]}
-                    numberOfLines={1}
+          {mezclasOpen && (
+            <View style={styles.catRow}>
+              {MIX_CATEGORIES.map((cat) => {
+                const accent = cat.color ?? colors.primary;
+                return (
+                  <Pressable
+                    key={cat.id}
+                    onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+                    style={({ pressed }) => [
+                      styles.catCard,
+                      {
+                        backgroundColor: pressed ? accent + "18" : "#151A23",
+                        transform: [{ scale: pressed ? 0.96 : 1 }],
+                      },
+                    ]}
                   >
-                    {cat.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+                    {renderCatIcon(cat)}
+                    <Text
+                      style={[styles.catLabel, { color: colors.mutedForeground }]}
+                      numberOfLines={1}
+                    >
+                      {cat.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
         </View>
 
         <ScrollView
@@ -330,6 +349,7 @@ const styles = StyleSheet.create({
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 6 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 16 },
   subSectionTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  mezclasHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10, paddingVertical: 4 },
 
   // Barra sticky
   stickyBar: {
