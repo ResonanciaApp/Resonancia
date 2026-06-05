@@ -419,16 +419,48 @@ export default function SesionesPage() {
         >
           <div className="space-y-4">
             {categoryId === "sonidos-ancestrales" && (
-              <Field label="Subcategoría *">
-                <SelectField value={ancestralTag} onChange={setAncestralTag} placeholder="Elegí la subcategoría" options={ANCESTRAL_TAGS} />
-              </Field>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Subcategoría *</Label>
+                <div className="flex flex-wrap gap-2">
+                  {ANCESTRAL_TAGS.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setAncestralTag(tag)}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                        ancestralTag === tag
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border text-muted-foreground hover:border-foreground"
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
 
             {categoryId === "meditaciones-guiadas" && (
               <>
-                <Field label="Subcategoría *">
-                  <SelectField value={meditationTag} onChange={setMeditationTag} placeholder="Elegí la subcategoría" options={MEDITATION_TAGS} />
-                </Field>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Subcategoría *</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {MEDITATION_TAGS.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => setMeditationTag(tag)}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                          meditationTag === tag
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground hover:border-foreground"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <Field label="ID del guiador (opcional)">
                   <Input value={guideId} onChange={(e) => setGuideId(e.target.value)} placeholder="sofia-ramirez" />
                   <span className="text-xs text-muted-foreground">Slug del guiador en data/guides.ts · default: casa-cuenco</span>
