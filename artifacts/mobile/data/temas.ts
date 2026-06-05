@@ -46,12 +46,12 @@ export const TEMAS: TemaItem[] = [
     image: require("@/assets/images/cat-rituales.png"),
   },
   {
-    id: "familia",
-    label: "Familia",
-    icon: "account-group",
-    color: "#0AA99A",
-    description: "Momentos de paz y presencia plena para compartir con quienes más queremos.",
-    image: require("@/assets/images/tema-familia.png"),
+    id: "crecimiento",
+    label: "Crecimiento",
+    icon: "sprout",
+    color: "#4A7C59",
+    description: "Herramientas para cultivar tu desarrollo personal desde adentro hacia afuera.",
+    image: require("@/assets/images/tema-crecimiento.png"),
   },
   {
     id: "asmr",
@@ -78,12 +78,12 @@ export const TEMAS: TemaItem[] = [
     image: require("@/assets/images/tema-spa.png"),
   },
   {
-    id: "crecimiento",
-    label: "Crecimiento",
-    icon: "sprout",
-    color: "#4A7C59",
-    description: "Herramientas para cultivar tu desarrollo personal desde adentro hacia afuera.",
-    image: require("@/assets/images/tema-crecimiento.png"),
+    id: "familia",
+    label: "Familia",
+    icon: "account-group",
+    color: "#0AA99A",
+    description: "Momentos de paz y presencia plena para compartir con quienes más queremos.",
+    image: require("@/assets/images/tema-familia.png"),
   },
 ];
 
