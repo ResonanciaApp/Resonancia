@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -78,6 +79,10 @@ export default function ExploreScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const { width: winW } = useWindowDimensions();
+  const contentW = Platform.OS === "web" ? Math.min(winW, 480) : winW;
+  const temaW = (contentW - H_PAD * 2 - GAP * 2) / 3;
 
   const filteredSessions = SESSIONS.filter((s) => {
     if (s.categoryId === "sabiduria-dia") return false;
@@ -173,17 +178,40 @@ export default function ExploreScreen() {
           <>
             {/* ── 9 Temáticas ── */}
             <View style={[styles.section, { paddingHorizontal: H_PAD }]}>
-              <View style={styles.temaGrid}>
-                {TEMAS.map((t) => (
-                  <Pressable
-                    key={t.id}
-                    onPress={() => router.push(`/tema/${t.id}` as never)}
-                    style={({ pressed }) => [styles.temaCard, { backgroundColor: "#151A23", opacity: pressed ? 0.75 : 1 }]}
-                  >
-                    <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
-                    <Text style={[styles.temaLabel, { color: colors.foreground }]}>{t.label}</Text>
-                  </Pressable>
-                ))}
+              <View style={Platform.OS === "web" ? styles.temaGridWebWrap : undefined}>
+                <View style={styles.temaGrid}>
+                  {TEMAS.map((t) => (
+                    <Pressable
+                      key={t.id}
+                      onPress={() => router.push(`/tema/${t.id}` as never)}
+                      style={({ pressed }) => [
+                        styles.temaCard,
+                        { width: temaW, height: temaW, backgroundColor: "#151A23" },
+                        { opacity: pressed ? 0.75 : 1 },
+                      ]}
+                    >
+                      {t.image != null ? (
+                        <>
+                          <Image
+                            source={t.image}
+                            style={StyleSheet.absoluteFill}
+                            contentFit="cover"
+                          />
+                          <LinearGradient
+                            colors={["transparent", "rgba(0,0,0,0.58)"]}
+                            style={StyleSheet.absoluteFill}
+                          />
+                          <Text style={[styles.temaLabel, styles.temaLabelImg]}>{t.label}</Text>
+                        </>
+                      ) : (
+                        <>
+                          <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
+                          <Text style={[styles.temaLabel, { color: colors.foreground }]}>{t.label}</Text>
+                        </>
+                      )}
+                    </Pressable>
+                  ))}
+                </View>
               </View>
             </View>
 
@@ -568,6 +596,21 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     lineHeight: 14,
+  },
+  temaLabelImg: {
+    position: "absolute",
+    bottom: 8,
+    left: 4,
+    right: 4,
+    color: "#FFFFFF",
+    textShadowColor: "rgba(0,0,0,0.7)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  temaGridWebWrap: {
+    maxWidth: 480,
+    alignSelf: "center" as const,
+    width: "100%" as unknown as number,
   },
 
   // Tag cards — "Otras Categorías"
