@@ -277,7 +277,7 @@ export default function MiMusicaScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* ── Barra sticky: categorías principales + sub-tabs ── */}
-          <View style={[styles.stickyBar, { backgroundColor: colors.background, paddingBottom: subTabCategories && subTabCategories.length > 1 ? 0 : 12 }]}>
+          <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -353,7 +353,7 @@ export default function MiMusicaScreen() {
                 })}
               </ScrollView>
             ) : (
-              <View style={{ height: 16, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
+              <View style={{ height: 46, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
             )}
           </View>
 
