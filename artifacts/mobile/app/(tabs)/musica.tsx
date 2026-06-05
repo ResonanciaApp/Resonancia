@@ -245,7 +245,7 @@ export default function MiMusicaScreen() {
           >
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7 }]}>
-                Tus
+                Mi
               </Text>
               <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
             </View>
