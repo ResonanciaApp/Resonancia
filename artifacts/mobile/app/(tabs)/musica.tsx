@@ -382,16 +382,16 @@ export default function MiMusicaScreen() {
                       style={[
                         styles.subTabPill,
                         {
-                          backgroundColor: selected
-                            ? colors.primary
-                            : "rgba(255,255,255,0.07)",
+                          backgroundColor: "rgba(255,255,255,0.07)",
+                          borderWidth: 1,
+                          borderColor: selected ? "rgba(255,255,255,0.85)" : "transparent",
                         },
                       ]}
                     >
                       <Text
                         style={[
                           styles.subTabPillText,
-                          { color: selected ? "#0B0F14" : colors.mutedForeground },
+                          { color: selected ? colors.foreground : colors.mutedForeground },
                         ]}
                       >
                         {cat.label}
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
 
   // Sub-tabs píldoras
-  subTabRow: { flexDirection: "row", gap: 8, paddingTop: 10, paddingBottom: 6 },
+  subTabRow: { flexDirection: "row", gap: 8, paddingTop: 10, paddingBottom: 10 },
   subTabPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20 },
   subTabPillText: { fontSize: 13, fontWeight: "600", letterSpacing: 0.1 },
 
