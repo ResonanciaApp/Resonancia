@@ -398,6 +398,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 0,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(122,143,168,0.2)",
   },
   // Secciones
   section: { marginBottom: 57 },
