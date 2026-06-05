@@ -55,7 +55,7 @@ export default function MiMusicaScreen() {
   const [subTab, setSubTab] = useState<SoundCategoryId | null>(null);
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
-  const [mezclasOpen, setMezclasOpen] = useState(true);
+  const [mezclasOpen, setMezclasOpen] = useState(false);
 
   const mainTabIndicatorAnim = useRef(new Animated.Value(0)).current;
   const [mainTabIndicatorWidth, setMainTabIndicatorWidth] = useState(0);
@@ -253,16 +253,15 @@ export default function MiMusicaScreen() {
             }}
             style={styles.mezclasHeader}
           >
-            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-              <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7 }]}>
-                Mi
-              </Text>
-              <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
-            </View>
+            <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7 }]}>
+              Mi
+            </Text>
+            <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
             <Feather
               name={mezclasOpen ? "chevron-up" : "chevron-down"}
-              size={17}
+              size={15}
               color={colors.mutedForeground}
+              style={{ marginLeft: 6 }}
             />
           </Pressable>
 
@@ -409,7 +408,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0E141C" },
 
   // Header
-  header: { marginBottom: 12 },
+  header: { marginBottom: 2 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 6 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 16 },
   subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
