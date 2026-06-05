@@ -353,7 +353,7 @@ export default function MiMusicaScreen() {
                 })}
               </ScrollView>
             ) : (
-              <View style={{ height: 46, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
+              <View style={{ height: 24, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
             )}
           </View>
 
