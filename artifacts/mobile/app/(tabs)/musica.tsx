@@ -359,7 +359,7 @@ export default function MiMusicaScreen() {
 
 
           {/* ── Biblioteca de sonidos ── */}
-          <View style={[styles.grid, { marginTop: subTabCategories && subTabCategories.length > 1 ? 33 : 14 }]}>
+          <View style={[styles.grid, { marginTop: 14 }]}>
             {displayedSounds.map((s, i) => renderSoundCard(s, i))}
           </View>
         </ScrollView>
