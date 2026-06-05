@@ -46,7 +46,7 @@ export default function MiMusicaScreen() {
   const [activeTab, setActiveTab] = useState<TabId>("popular");
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
-  const [mezclasOpen, setMezclasOpen] = useState(false);
+  const [mezclasOpen, setMezclasOpen] = useState(true);
 
   const toggleDesc = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 12,
     paddingHorizontal: 8,
-    borderRadius: 14,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
