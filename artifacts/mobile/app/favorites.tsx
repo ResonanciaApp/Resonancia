@@ -155,39 +155,51 @@ export default function FavoritesScreen() {
     });
   }, [favSessions, query]);
 
+  const filteredMixes = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return favMixes;
+    return favMixes.filter((m) => {
+      const hay = [m.name, m.description, ...m.sounds.map((s) => s.id)]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [favMixes, query]);
+
+  const searchBar = (
+    <View
+      style={[
+        styles.searchWrap,
+        {
+          backgroundColor: "rgba(255,255,255,0.04)",
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: "rgba(255,255,255,0.07)",
+        },
+      ]}
+    >
+      <Feather name="search" size={16} color={colors.mutedForeground} />
+      <TextInput
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Buscar en favoritos…"
+        placeholderTextColor={colors.mutedForeground}
+        style={[styles.searchInput, { color: colors.foreground }]}
+        returnKeyType="search"
+        autoCorrect={false}
+      />
+      {query.length > 0 && (
+        <Pressable onPress={() => setQuery("")} hitSlop={8}>
+          <Feather name="x" size={16} color={colors.mutedForeground} />
+        </Pressable>
+      )}
+    </View>
+  );
+
   // ── Render por tab ────────────────────────────────────────────
   const renderSesiones = () => (
     <View>
-      {/* Buscador */}
-      {favSessions.length > 0 && (
-        <View
-          style={[
-            styles.searchWrap,
-            {
-              backgroundColor: "rgba(255,255,255,0.04)",
-              borderWidth: StyleSheet.hairlineWidth,
-              borderColor: "rgba(255,255,255,0.07)",
-            },
-          ]}
-        >
-          <Feather name="search" size={16} color={colors.mutedForeground} />
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Buscar en favoritos…"
-            placeholderTextColor={colors.mutedForeground}
-            style={[styles.searchInput, { color: colors.foreground }]}
-            returnKeyType="search"
-            autoCorrect={false}
-          />
-          {query.length > 0 && (
-            <Pressable onPress={() => setQuery("")} hitSlop={8}>
-              <Feather name="x" size={16} color={colors.mutedForeground} />
-            </Pressable>
-          )}
-        </View>
-      )}
-
+      {favSessions.length > 0 && searchBar}
       {favSessions.length === 0 ? (
         <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
           <Feather name="heart" size={20} color={colors.border} />
@@ -216,6 +228,7 @@ export default function FavoritesScreen() {
 
   const renderMezclas = () => (
     <View>
+      {favMixes.length > 0 && searchBar}
       {favMixes.length === 0 ? (
         <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
           <Feather name="heart" size={20} color={colors.border} />
@@ -229,8 +242,15 @@ export default function FavoritesScreen() {
             <Text style={[styles.emptyLinkText, { color: colors.accent }]}>Ir al Mezclador</Text>
           </Pressable>
         </View>
+      ) : filteredMixes.length === 0 ? (
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.04)" }]}>
+          <Feather name="search" size={18} color={colors.border} />
+          <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+            Ninguna mezcla coincide con tu búsqueda.
+          </Text>
+        </View>
       ) : (
-        favMixes.map((mix) => (
+        filteredMixes.map((mix) => (
           <FavMixRow
             key={mix.id}
             mix={mix}
@@ -281,15 +301,10 @@ export default function FavoritesScreen() {
 
         {/* Título */}
         <View style={styles.header}>
-          <View style={styles.headerInner}>
-            <Feather name="heart" size={28} color={colors.primary} style={{ marginTop: 2 }} />
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Favoritos</Text>
-              <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-                Tus viajes sonoros y reflexiones guardados
-              </Text>
-            </View>
-          </View>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Favoritos</Text>
+          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+            Aquí guardas lo que te encanta
+          </Text>
         </View>
 
         {/* ── Tabs ── */}
