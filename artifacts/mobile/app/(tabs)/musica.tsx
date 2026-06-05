@@ -230,7 +230,7 @@ export default function MiMusicaScreen() {
               <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7, fontSize: 16 }]}>
                 Mi
               </Text>
-              <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
+              <MaterialCommunityIcons name="heart" size={16} color="#FFFFFF" />
               <Feather
                 name={mezclasOpen ? "chevron-left" : "chevron-right"}
                 size={15}
