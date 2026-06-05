@@ -333,21 +333,21 @@ function MixRow({
           >
             {mix.author.displayName}
           </Text>
-          <View style={styles.metaRow}>
-            <Text
-              style={[styles.mixCount, { color: colors.foreground }]}
-              numberOfLines={1}
-            >
-              {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-            </Text>
-            {mix.likes > 0 && (
-              <View style={styles.likeChip}>
-                <Feather name="heart" size={10} color={GOLD} />
-                <Text style={styles.likeCount}>{mix.likes}</Text>
-              </View>
-            )}
-          </View>
+          <Text
+            style={[styles.mixCount, { color: colors.foreground }]}
+            numberOfLines={1}
+          >
+            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+          </Text>
         </View>
+
+        {/* Likes */}
+        {mix.likes > 0 && (
+          <View style={styles.likeChip}>
+            <Feather name="heart" size={11} color={GOLD} />
+            <Text style={styles.likeCount}>{mix.likes}</Text>
+          </View>
+        )}
 
         {/* 3 puntitos */}
         <Pressable
@@ -588,8 +588,7 @@ const styles = StyleSheet.create({
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
   mixAuthor: { fontSize: 10, marginTop: 2 },
-  metaRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
-  mixCount: { fontSize: 10, fontWeight: "500" },
+  mixCount: { fontSize: 10, fontWeight: "500", marginTop: 2 },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
   likeCount: { fontSize: 10, fontWeight: "600", color: GOLD },
   dotsBtn: {
