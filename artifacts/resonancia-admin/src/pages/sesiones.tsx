@@ -145,6 +145,26 @@ export default function SesionesPage() {
     if (v && instruments.length < 12) { setInstruments((p) => [...p, v]); setInstrumentInput(""); }
   };
 
+  // ── Leer duración de un archivo de audio ──
+  const readAudioDuration = (file: File): Promise<number> =>
+    new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const audio = new Audio(url);
+      audio.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        resolve(Math.round(audio.duration / 60)); // en minutos
+      };
+      audio.onerror = () => { URL.revokeObjectURL(url); resolve(0); };
+    });
+
+  const handleAudio1Change = async (slot: AudioSlot) => {
+    setAudio1(slot);
+    if (slot.file) {
+      const mins = await readAudioDuration(slot.file);
+      if (mins > 0) setDuration(String(mins));
+    }
+  };
+
   // ── Upload de un archivo ──
   const uploadFile = async (file: File): Promise<UploadedFile> => {
     const { uploadURL, objectPath } = await requestUrl({
@@ -396,15 +416,20 @@ export default function SesionesPage() {
           )}
 
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Duración (minutos) *">
+            <Field label={`Duración (minutos)${duration ? "" : " *"}`}>
               <Input
                 type="number"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
-                placeholder="30"
+                placeholder="Se detecta del audio"
                 min={1}
                 max={600}
               />
+              {duration ? (
+                <span className="text-xs text-primary">✓ Detectada automáticamente del audio</span>
+              ) : (
+                <span className="text-xs text-muted-foreground">Se rellena sola al subir el audio</span>
+              )}
             </Field>
             <Field label="Frecuencia (opcional)">
               <Input
@@ -587,7 +612,7 @@ export default function SesionesPage() {
               <AudioUploadSlot
                 label={audio1Label}
                 slot={audio1}
-                onChange={setAudio1}
+                onChange={handleAudio1Change}
                 inputRef={audio1Ref}
               />
 
