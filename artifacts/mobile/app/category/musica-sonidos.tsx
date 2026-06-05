@@ -274,12 +274,12 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0, margin: 0 },
 
-  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginBottom: 0 },
-  tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
+  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginBottom: 20 },
+  tabItem: { flex: 1, paddingVertical: 10, alignItems: "center", justifyContent: "center" },
   tabLabel: { fontSize: 15, fontWeight: "600" },
   tabIndicator: {
     position: "absolute", bottom: 0, height: 2,
-    backgroundColor: "#FFFFFF", borderRadius: 1,
+    backgroundColor: "#5B9E7A", borderRadius: 1,
   },
 
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
