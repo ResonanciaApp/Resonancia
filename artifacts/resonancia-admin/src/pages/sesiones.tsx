@@ -320,6 +320,17 @@ export default function SesionesPage() {
                 // reset tags al cambiar categoría
                 setAncestralTag(""); setMeditationTag(""); setSoundTag("");
                 setSonidosTag(""); setPodcastTag(""); setGuideId(""); setArtistId("");
+                // auto-mostrar audio2 con rol correcto según categoría
+                if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas") {
+                  setShowAudio2(true);
+                  setAudio2((a) => ({ ...a, role: "voice" }));
+                } else if (cat.id === "podcast") {
+                  setShowAudio2(true);
+                  setAudio2((a) => ({ ...a, role: "ambient" }));
+                } else {
+                  setShowAudio2(false);
+                  setAudio2(emptyAudioSlot());
+                }
               }}
               className={`relative flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all ${
                 categoryId === cat.id
@@ -531,43 +542,53 @@ export default function SesionesPage() {
         open={openSections.audios}
         onToggle={() => toggleSection("audios")}
       >
-        <div className="space-y-6">
-          <AudioUploadSlot
-            label="Audio 1 *"
-            slot={audio1}
-            onChange={setAudio1}
-            inputRef={audio1Ref}
-          />
-
-          {showAudio2 ? (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">Audio 2 (opcional)</Label>
-                <button
-                  type="button"
-                  onClick={() => { setShowAudio2(false); setAudio2(emptyAudioSlot()); }}
-                  className="text-xs text-muted-foreground hover:text-foreground"
-                >
-                  Quitar
-                </button>
-              </div>
+        {(() => {
+          const isAncestralOrMed = categoryId === "sonidos-ancestrales" || categoryId === "meditaciones-guiadas";
+          const isPodcast = categoryId === "podcast";
+          const audio1Label = isPodcast ? "Sonido base *" : "Audio base *";
+          const audio2Label = isPodcast ? "Sonido ambiente (opcional)" : "Voz guía (opcional)";
+          return (
+            <div className="space-y-6">
               <AudioUploadSlot
-                label="Audio 2"
-                slot={audio2}
-                onChange={setAudio2}
-                inputRef={audio2Ref}
+                label={audio1Label}
+                slot={audio1}
+                onChange={setAudio1}
+                inputRef={audio1Ref}
               />
+
+              {showAudio2 ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">{audio2Label}</Label>
+                    <button
+                      type="button"
+                      onClick={() => { setShowAudio2(false); setAudio2(emptyAudioSlot()); }}
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                  <AudioUploadSlot
+                    label={audio2Label}
+                    slot={audio2}
+                    onChange={setAudio2}
+                    inputRef={audio2Ref}
+                  />
+                </div>
+              ) : (
+                !isAncestralOrMed && !isPodcast && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAudio2(true)}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    + Agregar segundo audio
+                  </button>
+                )
+              )}
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setShowAudio2(true)}
-              className="text-sm text-primary hover:underline"
-            >
-              + Agregar segundo audio (voice, ambient, base…)
-            </button>
-          )}
-        </div>
+          );
+        })()}
       </Section>
 
       {/* ── SECCIÓN: Imagen ── */}
