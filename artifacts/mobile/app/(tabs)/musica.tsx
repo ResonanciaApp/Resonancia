@@ -218,54 +218,53 @@ export default function MiMusicaScreen() {
             </Text>
           </Pressable>
 
-          {/* Tus mezclas — colapsable */}
-          <Pressable
-            onPress={() => {
-              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-              setMezclasOpen((v) => !v);
-            }}
-            style={styles.mezclasHeader}
-          >
-            <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7 }]}>
-              Mi
-            </Text>
-            <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
-            <Feather
-              name={mezclasOpen ? "chevron-up" : "chevron-down"}
-              size={15}
-              color={colors.mutedForeground}
-              style={{ marginLeft: 6 }}
-            />
-          </Pressable>
+          {/* Tus mezclas — expande hacia la derecha */}
+          <View style={styles.mezclasRow}>
+            <Pressable
+              onPress={() => {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                setMezclasOpen((v) => !v);
+              }}
+              style={styles.mezclasHeader}
+            >
+              <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7 }]}>
+                Mi
+              </Text>
+              <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
+              <Feather
+                name={mezclasOpen ? "chevron-left" : "chevron-right"}
+                size={15}
+                color={colors.mutedForeground}
+                style={{ marginLeft: 6 }}
+              />
+            </Pressable>
 
-          {/* 3 bloques de categoría */}
-          {mezclasOpen && (
-            <View style={styles.catRow}>
-              {MIX_CATEGORIES.map((cat) => {
-                const accent = cat.color ?? colors.primary;
-                return (
-                  <Pressable
-                    key={cat.id}
-                    onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                    style={({ pressed }) => [
-                      styles.catCard,
-                      {
-                        backgroundColor: pressed ? accent + "18" : "#151A23",
-                        transform: [{ scale: pressed ? 0.96 : 1 }],
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[styles.catLabel, { color: colors.mutedForeground }]}
-                      numberOfLines={1}
+            {mezclasOpen && (
+              <View style={styles.mezclasInlineCats}>
+                {MIX_CATEGORIES.map((cat) => {
+                  const accent = cat.color ?? colors.primary;
+                  return (
+                    <Pressable
+                      key={cat.id}
+                      onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+                      style={({ pressed }) => [
+                        styles.mezclasInlinePill,
+                        {
+                          backgroundColor: pressed ? accent + "28" : accent + "14",
+                          borderColor: accent + "55",
+                          transform: [{ scale: pressed ? 0.96 : 1 }],
+                        },
+                      ]}
                     >
-                      {cat.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          )}
+                      <Text style={[styles.mezclasInlineLabel, { color: colors.foreground }]} numberOfLines={1}>
+                        {cat.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+          </View>
         </View>
 
         <ScrollView
@@ -376,17 +375,29 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0E141C" },
 
   // Header
-  header: { marginBottom: 12 },
+  header: { marginBottom: 6 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 6 },
-  pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 16 },
+  pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 14 },
   subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
-  mezclasHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10, paddingVertical: 4 },
+  mezclasRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  mezclasHeader: { flexDirection: "row", alignItems: "center", paddingVertical: 4 },
+  mezclasInlineCats: { flex: 1, flexDirection: "row", gap: 6 },
+  mezclasInlinePill: {
+    flex: 1,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mezclasInlineLabel: { fontSize: 12, fontWeight: "600", letterSpacing: 0.1 },
 
   // Barra sticky
   stickyBar: {
     marginHorizontal: -20,
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 6,
     paddingBottom: 0,
   },
   // Secciones
@@ -430,25 +441,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   subTabPillText: { fontSize: 13, fontWeight: "600", letterSpacing: 0.1 },
-
-  // Categorías de mezclas — 3 tarjetas iguales
-  catRow: { flexDirection: "row", gap: 8 },
-  catCard: {
-    flex: 1,
-    paddingTop: 14,
-    paddingBottom: 12,
-    paddingHorizontal: 8,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  catLabel: {
-    fontSize: 12,
-    fontWeight: "500",
-    textAlign: "center",
-    letterSpacing: 0.2,
-  },
 
   separator: {
     height: 1,
