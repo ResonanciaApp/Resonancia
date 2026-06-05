@@ -346,9 +346,9 @@ export default function ExploreScreen() {
                       onPress={() => router.push(item.route as never)}
                     >
                       <View style={styles.libraryIconWrap}>
-                        <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.foreground} />
+                        <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.mutedForeground} />
                       </View>
-                      <Text style={[styles.libraryLabel, { color: colors.foreground }]}>
+                      <Text style={[styles.libraryLabel, { color: colors.mutedForeground }]}>
                         {item.label}
                       </Text>
                     </Pressable>
