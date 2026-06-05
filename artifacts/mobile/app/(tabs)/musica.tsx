@@ -251,7 +251,6 @@ export default function MiMusicaScreen() {
                     styles.catCard,
                     {
                       backgroundColor: pressed ? accent + "18" : "#151A23",
-                      borderColor: pressed ? accent : "rgba(255,255,255,0.09)",
                       transform: [{ scale: pressed ? 0.96 : 1 }],
                     },
                   ]}
@@ -339,7 +338,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 4,
   },
-  soundsSectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 12 },
+  soundsSectionTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
 
   // Secciones
   section: { marginBottom: 57 },
@@ -366,7 +365,6 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingHorizontal: 8,
     borderRadius: 14,
-    borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
