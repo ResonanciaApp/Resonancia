@@ -273,7 +273,6 @@ export default function MiMusicaScreen() {
                       },
                     ]}
                   >
-                    {renderCatIcon(cat)}
                     <Text
                       style={[styles.catLabel, { color: colors.mutedForeground }]}
                       numberOfLines={1}

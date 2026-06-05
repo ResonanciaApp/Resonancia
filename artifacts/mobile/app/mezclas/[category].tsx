@@ -198,16 +198,6 @@ export default function CategoryMixesScreen() {
         {/* Hero de la categoría */}
         {meta && (
           <View style={styles.hero}>
-            {/* Ícono de la categoría */}
-            {meta.id === "dormir" && (
-              <ExpoImage source={IMG_DESCANSO} style={styles.heroIcon} contentFit="contain" />
-            )}
-            {meta.id === "motivarme" && (
-              <ExpoImage source={IMG_MEDITACION} style={styles.heroIcon} contentFit="contain" />
-            )}
-            {meta.id === "concentracion" && (
-              <MaterialCommunityIcons name="image-filter-hdr" size={44} color={meta.color ?? "#d49f6b"} />
-            )}
             <Text style={[styles.heroLabel, { color: colors.foreground }]}>{meta.label}</Text>
             <Text style={[styles.heroSub, { color: colors.mutedForeground }]}>{meta.subtitle}</Text>
           </View>
