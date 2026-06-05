@@ -588,8 +588,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   temaIcon: {
-    width: 44,
-    height: 44,
+    width: 26,
+    height: 26,
   },
   temaLabel: {
     fontSize: 11,
