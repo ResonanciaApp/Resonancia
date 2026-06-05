@@ -38,6 +38,7 @@ const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosf�
 const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 const THEME_TAGS = ["Mañanas","Noches","Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
+const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
 const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -479,14 +480,9 @@ export default function SesionesPage() {
           onToggle={() => toggleSection("tags")}
         >
           <div className="space-y-4">
-            {/* Sleep tag */}
-            <Field label="Grupo descanso (opcional)">
-              <SelectField value={sleepTag} onChange={setSleepTag} placeholder="Ninguno" options={SLEEP_TAGS} clearable />
-            </Field>
-
             {/* Etiquetas Nivel 1 */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Etiquetas Nivel 1</Label>
+              <Label className="text-sm font-medium">Etiquetas Nivel 1 (opcional)</Label>
               <div className="flex flex-wrap gap-2">
                 {THEME_TAGS.map((tag) => (
                   <button
@@ -505,49 +501,23 @@ export default function SesionesPage() {
               </div>
             </div>
 
-            {/* Otras temáticas — etiquetas libres */}
+            {/* Otras temáticas */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Otras temáticas</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={otherTagInput}
-                  onChange={(e) => setOtherTagInput(e.target.value)}
-                  placeholder="Ej: Chakras, Luna llena…"
-                  maxLength={60}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      const v = otherTagInput.trim();
-                      if (v && !themeTag.includes(v)) {
-                        setThemeTag((p) => [...p, v]);
-                        setOtherTagInput("");
-                      }
-                    }
-                  }}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    const v = otherTagInput.trim();
-                    if (v && !themeTag.includes(v)) {
-                      setThemeTag((p) => [...p, v]);
-                      setOtherTagInput("");
-                    }
-                  }}
-                >
-                  Agregar
-                </Button>
-              </div>
-              {/* Muestra las etiquetas libres agregadas (las que no están en THEME_TAGS) */}
+              <Label className="text-sm font-medium">Otras temáticas (opcional)</Label>
               <div className="flex flex-wrap gap-2">
-                {themeTag.filter((t) => !THEME_TAGS.includes(t)).map((t) => (
-                  <Badge key={t} variant="secondary" className="gap-1">
-                    {t}
-                    <button type="button" onClick={() => setThemeTag((p) => p.filter((x) => x !== t))}>
-                      <X className="w-3 h-3" />
-                    </button>
-                  </Badge>
+                {OTHER_THEME_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTheme(tag)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                      themeTag.includes(tag)
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground hover:border-foreground"
+                    }`}
+                  >
+                    {tag}
+                  </button>
                 ))}
               </div>
             </div>
