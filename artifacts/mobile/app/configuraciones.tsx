@@ -442,6 +442,18 @@ export default function ConfiguracionesScreen() {
                   border={isCreator}
                 />
               )}
+              {isAdmin && (
+                <ActionRow
+                  icon="shield"
+                  label="Panel de administración"
+                  onPress={() => {
+                    const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/api\/?$/, "");
+                    openExternal(`${base}/admin/`);
+                  }}
+                  colors={colors}
+                  border
+                />
+              )}
             </View>
           </>
         )}
