@@ -36,12 +36,12 @@ const IMG_MEDITACION = require("../../assets/images/cat-meditacion.png");
 
 type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "voces";
 
-const MAIN_TABS: { id: MainTabId; label: string; categories: SoundCategoryId[] | null }[] = [
-  { id: "popular",       label: "Popular",       categories: null },
-  { id: "naturaleza",    label: "Naturaleza",    categories: ["naturaleza", "agua", "ruidos"] },
-  { id: "ancestrales",   label: "Ancestrales",   categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento"] },
-  { id: "sintetizadores",label: "Sintetizadores",categories: ["solfeggio", "frecuencias"] },
-  { id: "voces",         label: "Voces",         categories: ["mantras"] },
+const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: SoundCategoryId[] | null }[] = [
+  { id: "popular",        label: "Popular",        icon: "trending-up", categories: null },
+  { id: "naturaleza",     label: "Naturaleza",     icon: "wind",        categories: ["naturaleza", "agua", "ruidos"] },
+  { id: "ancestrales",    label: "Ancestrales",    icon: "bell",        categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento"] },
+  { id: "sintetizadores", label: "Sintetizadores", icon: "sliders",     categories: ["solfeggio", "frecuencias"] },
+  { id: "voces",          label: "Voces",          icon: "mic",         categories: ["mantras"] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
@@ -324,6 +324,11 @@ export default function MiMusicaScreen() {
                     }}
                     style={styles.mainTabItem}
                   >
+                    <Feather
+                      name={tab.icon as any}
+                      size={13}
+                      color={selected ? colors.foreground : colors.mutedForeground}
+                    />
                     <Text
                       style={[
                         styles.mainTabText,
@@ -441,7 +446,7 @@ const styles = StyleSheet.create({
     position: "relative",
     paddingHorizontal: 20,
   },
-  mainTabItem: { paddingVertical: 10, marginRight: 24 },
+  mainTabItem: { paddingVertical: 10, marginRight: 24, flexDirection: "row", alignItems: "center", gap: 5 },
   mainTabText: { fontSize: 13, letterSpacing: 0.2 },
   mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
 
