@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
   recentPlaceholder: {
     flexDirection: "row", alignItems: "center", gap: 14,
-    borderRadius: 14, padding: 16, marginBottom: 28,
+    borderRadius: 14, padding: 16, marginTop: 10, marginBottom: 28,
   },
   placeholderText: { flex: 1, fontSize: 13, lineHeight: 18 },
 
