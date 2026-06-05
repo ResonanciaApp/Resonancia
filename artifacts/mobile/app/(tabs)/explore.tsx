@@ -194,14 +194,10 @@ export default function ExploreScreen() {
                         <>
                           <Image
                             source={t.image}
-                            style={StyleSheet.absoluteFill}
-                            contentFit="cover"
+                            style={styles.temaIcon}
+                            contentFit="contain"
                           />
-                          <LinearGradient
-                            colors={["transparent", "rgba(0,0,0,0.58)"]}
-                            style={StyleSheet.absoluteFill}
-                          />
-                          <Text style={[styles.temaLabel, styles.temaLabelImg]}>{t.label}</Text>
+                          <Text style={[styles.temaLabel, { color: colors.foreground }]}>{t.label}</Text>
                         </>
                       ) : (
                         <>
@@ -591,21 +587,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
+  temaIcon: {
+    width: 44,
+    height: 44,
+  },
   temaLabel: {
     fontSize: 11,
     fontWeight: "600",
     textAlign: "center",
     lineHeight: 14,
-  },
-  temaLabelImg: {
-    position: "absolute",
-    bottom: 8,
-    left: 4,
-    right: 4,
-    color: "#FFFFFF",
-    textShadowColor: "rgba(0,0,0,0.7)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   temaGridWebWrap: {
     maxWidth: 480,
