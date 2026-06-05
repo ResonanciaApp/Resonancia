@@ -227,7 +227,7 @@ export default function MiMusicaScreen() {
               }}
               style={styles.mezclasHeader}
             >
-              <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7 }]}>
+              <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7, fontSize: 16 }]}>
                 Mi
               </Text>
               <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
