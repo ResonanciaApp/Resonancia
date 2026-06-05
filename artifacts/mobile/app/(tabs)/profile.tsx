@@ -552,7 +552,7 @@ export default function ProfileScreen() {
                 },
               ]}
             >
-              <Feather name={icon} size={22} color={colors.primary} />
+              <Feather name={icon} size={22} color={colors.mutedForeground} />
               <Text style={[styles.communityLabel, { color: colors.mutedForeground }]}>
                 {label}
               </Text>
@@ -953,7 +953,7 @@ const styles = StyleSheet.create({
   saveBtn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 8 },
   saveBtnText: { fontSize: 16, fontWeight: "700" },
 
-  communityRow: { flexDirection: "row", gap: 8 },
+  communityRow: { flexDirection: "row", gap: 8, marginBottom: 43 },
   communityCard: {
     flex: 1,
     paddingTop: 14,
