@@ -369,6 +369,7 @@ export default function MiMusicaScreen() {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
+                style={{ marginHorizontal: -20 }}
                 contentContainerStyle={styles.subTabRow}
               >
                 {subTabCategories.map((catId) => {
@@ -457,7 +458,7 @@ const styles = StyleSheet.create({
   mainTabIndicator: { position: "absolute", bottom: 0, height: 2, borderRadius: 1 },
 
   // Sub-tabs píldoras
-  subTabRow: { flexDirection: "row", gap: 8, paddingTop: 10, paddingBottom: 10 },
+  subTabRow: { flexDirection: "row", gap: 8, paddingTop: 10, paddingBottom: 10, paddingHorizontal: 20 },
   subTabPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20 },
   subTabPillText: { fontSize: 13, fontWeight: "600", letterSpacing: 0.1 },
 
