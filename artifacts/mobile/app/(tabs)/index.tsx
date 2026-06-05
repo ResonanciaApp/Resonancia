@@ -461,6 +461,9 @@ export default function HomeScreen() {
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
               Descubrir algo nuevo
             </Text>
+            <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
+              <Text style={[styles.seeAll, { color: colors.primary }]}>Ver todo</Text>
+            </Pressable>
           </View>
           <View style={{ gap: 0, marginTop: -10 }}>
             {recommended.map((s) => (
