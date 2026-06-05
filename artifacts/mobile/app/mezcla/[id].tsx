@@ -19,7 +19,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -50,7 +49,6 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 export default function CommunityMixScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id: string }>();
   const mixId = Number(id);
 
@@ -235,12 +233,6 @@ export default function CommunityMixScreen() {
   const authorInitial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
   const authorAvatar = resolveAvatarUrl(mix.author.avatarUrl) ?? (mix.isMine ? photoUri : null);
 
-  // Tamaño de celda para 4 columnas con padding 20 y gap 8
-  const GRID_PADDING = 20;
-  const GRID_GAP = 8;
-  const COLS = 4;
-  const cellSize = Math.floor((width - GRID_PADDING * 2 - GRID_GAP * (COLS - 1)) / COLS);
-
   return (
     <KeyboardAvoidingView
       style={[styles.root, { backgroundColor: colors.background }]}
@@ -263,21 +255,21 @@ export default function CommunityMixScreen() {
           </Pressable>
         </View>
 
-        {/* Grid 4 columnas de sonidos */}
-        <View style={[styles.soundsGrid, { paddingHorizontal: GRID_PADDING, gap: GRID_GAP }]}>
+        {/* Fila de sonidos — scroll horizontal, una sola fila */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.soundsRow}
+        >
           {mix.sounds.map((s) => {
             const soundMeta = SOUNDS.find((x) => x.id === s.id);
             const img = getSoundImage(s.id);
             return (
-              <View key={s.id} style={{ width: cellSize, alignItems: "center", gap: 6 }}>
+              <View key={s.id} style={styles.soundCard}>
                 {img ? (
-                  <Image
-                    source={img}
-                    style={{ width: cellSize, height: cellSize, borderRadius: 12 }}
-                    contentFit="cover"
-                  />
+                  <Image source={img} style={styles.soundImg} contentFit="cover" />
                 ) : (
-                  <View style={{ width: cellSize, height: cellSize, borderRadius: 12, backgroundColor: colors.card }} />
+                  <View style={[styles.soundImg, { backgroundColor: colors.card }]} />
                 )}
                 <Text
                   style={[styles.soundLabel, { color: colors.mutedForeground }]}
@@ -288,7 +280,7 @@ export default function CommunityMixScreen() {
               </View>
             );
           })}
-        </View>
+        </ScrollView>
 
         {/* Glass panel */}
         <View style={[styles.glassPanel, { backgroundColor: "rgba(21,26,35,0.82)", borderColor: "rgba(255,255,255,0.09)" }]}>
@@ -453,12 +445,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
   },
 
-  soundsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 20,
+  soundsRow: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    gap: 10,
   },
-  soundLabel: { fontSize: 10, textAlign: "center", width: "100%" },
+  soundCard: { width: 72, alignItems: "center", gap: 6 },
+  soundImg: { width: 72, height: 72, borderRadius: 12 },
+  soundLabel: { fontSize: 10, textAlign: "center", width: 72 },
 
   glassPanel: {
     marginHorizontal: 16,

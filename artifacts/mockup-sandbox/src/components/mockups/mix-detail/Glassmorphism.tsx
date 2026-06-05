@@ -27,23 +27,20 @@ export function Glassmorphism() {
         </button>
       </div>
 
-      {/* Grid de sonidos — 4 columnas con imágenes */}
-      <div className="relative px-5 mb-6">
-        <div className="grid grid-cols-4 gap-2">
-          {SOUNDS.map((s) => (
-            <div key={s.id} className="flex flex-col items-center gap-1.5">
-              <div className="w-full aspect-square rounded-2xl overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>
-                <img
-                  src={s.img}
-                  alt={s.name}
-                  className="w-full h-full"
-                  style={{ objectFit: "cover", display: "block" }}
-                />
-              </div>
-              <span className="text-center leading-tight" style={{ fontSize: 9, color: MUTED }}>{s.name}</span>
+      {/* Fila de sonidos — scroll horizontal */}
+      <div className="relative mb-6" style={{ overflowX: "auto", display: "flex", paddingLeft: 20, paddingRight: 20, gap: 10 }}>
+        {SOUNDS.map((s) => (
+          <div key={s.id} className="flex flex-col items-center gap-1.5" style={{ flexShrink: 0, width: 72 }}>
+            <div style={{ width: 72, height: 72, borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>
+              <img
+                src={s.img}
+                alt={s.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
             </div>
-          ))}
-        </div>
+            <span className="text-center leading-tight" style={{ fontSize: 9, color: MUTED }}>{s.name}</span>
+          </div>
+        ))}
       </div>
 
       {/* Glass panel principal */}
