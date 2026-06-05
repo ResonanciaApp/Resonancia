@@ -21,13 +21,12 @@ import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useCatalog } from "@/context/CatalogContext";
 import { SESSIONS, type AncestralTag, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
-
-const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
 
 type CategoryDef = {
   tag: AncestralTag;
@@ -88,6 +87,7 @@ export default function SonidosAncestalesScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { history } = usePlayer();
+  const { version } = useCatalog();
   const insets = useSafeAreaInsets();
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
@@ -142,19 +142,24 @@ export default function SonidosAncestalesScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const ancestralSessions = useMemo(
+    () => SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales"),
+    [version],
+  );
+
   const filteredSessions = useMemo(() => {
-    let list = ANCESTRAL_SESSIONS;
+    let list = ancestralSessions;
     if (selectedTag) list = list.filter((s) => s.ancestralTag === selectedTag);
     return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
-  }, [selectedTag]);
+  }, [ancestralSessions, selectedTag]);
 
   const countByTag = useMemo(() => {
     const map: Record<string, number> = {};
     for (const cat of CATEGORIES) {
-      map[cat.tag] = ANCESTRAL_SESSIONS.filter((s) => s.ancestralTag === cat.tag).length;
+      map[cat.tag] = ancestralSessions.filter((s) => s.ancestralTag === cat.tag).length;
     }
     return map;
-  }, []);
+  }, [ancestralSessions]);
 
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 

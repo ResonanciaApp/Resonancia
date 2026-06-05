@@ -21,6 +21,7 @@ import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
 import { usePlayer } from "@/context/PlayerContext";
+import { useCatalog } from "@/context/CatalogContext";
 import { SESSIONS } from "@/data/sessions";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -28,11 +29,6 @@ import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
 const ICON_COLOR = "#8B82BE";
 const RATINGS_KEY = "@resonance_ratings";
-
-const ALL_SESSIONS = SESSIONS.filter(
-  (s) => s.categoryId === "meditaciones-guiadas"
-);
-const GUIADAS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
 
 type CategoryDef = {
   tag: string;
@@ -94,6 +90,7 @@ export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { history } = usePlayer();
+  const { version } = useCatalog();
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [ratings, setRatings] = useState<Record<string, number>>({});
@@ -147,8 +144,13 @@ export default function MeditacionesGuiadasScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const allSessions = useMemo(
+    () => SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas"),
+    [version],
+  );
+
   const filteredSessions = useMemo(() => {
-    let list: typeof ALL_SESSIONS = ALL_SESSIONS;
+    let list = allSessions;
     if (selectedTag) {
       const cat = CATEGORIES.find((c) => c.tag === selectedTag);
       if (cat?.categoryIdFilter) {
@@ -158,19 +160,19 @@ export default function MeditacionesGuiadasScreen() {
       }
     }
     return list;
-  }, [selectedTag]);
+  }, [allSessions, selectedTag]);
 
   const countByTag = useMemo(() => {
     const map: Record<string, number> = {};
     for (const cat of CATEGORIES) {
       if (cat.categoryIdFilter) {
-        map[cat.tag] = ALL_SESSIONS.filter((s) => s.categoryId === cat.categoryIdFilter).length;
+        map[cat.tag] = allSessions.filter((s) => s.categoryId === cat.categoryIdFilter).length;
       } else {
-        map[cat.tag] = GUIADAS_SESSIONS.filter((s) => (s as Session & { meditationTag?: string }).meditationTag === cat.tag).length;
+        map[cat.tag] = allSessions.filter((s) => (s as Session & { meditationTag?: string }).meditationTag === cat.tag).length;
       }
     }
     return map;
-  }, []);
+  }, [allSessions]);
 
   const selectedCat = CATEGORIES.find((c) => c.tag === selectedTag);
 

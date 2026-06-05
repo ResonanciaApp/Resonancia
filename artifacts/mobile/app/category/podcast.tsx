@@ -29,6 +29,7 @@ import { getNatureSounds } from "@/config/nature-base-map";
 import { useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session, type SonidosTag } from "@/data/sessions";
+import { useCatalog } from "@/context/CatalogContext";
 import { hasSoundFile } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
@@ -47,8 +48,6 @@ const TABS: { label: string; value: SonidosTab }[] = [
   { label: "Atmosféricos", value: "Sonidos Atmosféricos"  },
 ];
 
-const SONIDOS_SESSIONS = SESSIONS.filter((s) => s.categoryId === "podcast");
-
 /** Timer del sonido. 5/10/20 min gratis; el resto (incluido "Sin límite") es premium. */
 const TIMER_OPTIONS: { minutes: number | null; label: string; free: boolean }[] = [
   { minutes: 5, label: "5 min", free: true },
@@ -64,6 +63,7 @@ export default function SonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
+  const { version } = useCatalog();
 
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
   const [query, setQuery] = useState("");
@@ -102,14 +102,19 @@ export default function SonidosScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const sonidosSessions = useMemo(
+    () => SESSIONS.filter((s) => s.categoryId === "podcast"),
+    [version],
+  );
+
   const filtered = useMemo(() => {
-    let list = SONIDOS_SESSIONS.filter((s) => s.sonidosTag === activeTab);
+    let list = sonidosSessions.filter((s) => s.sonidosTag === activeTab);
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((s) => s.title.toLowerCase().includes(q));
     }
     return list;
-  }, [activeTab, query]);
+  }, [sonidosSessions, activeTab, query]);
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;

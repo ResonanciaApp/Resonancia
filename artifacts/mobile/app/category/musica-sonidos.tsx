@@ -23,6 +23,7 @@ import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useCatalog } from "@/context/CatalogContext";
 import { SESSIONS, type Session, type SoundTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -37,13 +38,12 @@ const TABS: { label: string; value: Tab }[] = [
   { label: "Étnica",    value: "Música Étnica"    },
 ];
 
-const MUSICA_SESSIONS = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
-
 export default function MusicaSonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
   const { playSession, history } = usePlayer();
+  const { version } = useCatalog();
 
   const [activeTab, setActiveTab] = useState<Tab>("Música Ambient");
   const [query, setQuery] = useState("");
@@ -86,9 +86,14 @@ export default function MusicaSonidosScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const musicaSessions = useMemo(
+    () => SESSIONS.filter((s) => s.categoryId === "musica-sonidos"),
+    [version],
+  );
+
   const tabSessions = useMemo(
-    () => MUSICA_SESSIONS.filter((s) => s.soundTag === activeTab),
-    [activeTab],
+    () => musicaSessions.filter((s) => s.soundTag === activeTab),
+    [musicaSessions, activeTab],
   );
 
   const filtered = useMemo(() => {
