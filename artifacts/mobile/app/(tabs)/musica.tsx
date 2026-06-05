@@ -397,7 +397,6 @@ const styles = StyleSheet.create({
   segmentedContainer: {
     backgroundColor: "rgba(255,255,255,0.04)",
     borderRadius: 18,
-    overflow: "hidden",
     marginBottom: 2,
   },
   mainTabBarContent: {
@@ -428,8 +427,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderLeftWidth: 2,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
+    borderRadius: 10,
   },
   subTabPillText: { fontSize: 13, fontWeight: "600", letterSpacing: 0.1 },
 
