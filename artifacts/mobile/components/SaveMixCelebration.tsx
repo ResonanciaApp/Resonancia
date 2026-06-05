@@ -8,7 +8,7 @@
  * Usa solo la Animated API de React Native (sin dependencias extra).
  * ─────────────────────────────────────────────────────────────────
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
 import { Animated, Dimensions, Easing, Modal, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -174,7 +174,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
           ]}
         >
           <View style={[styles.checkWrap, { backgroundColor: colors.primary }]}>
-            <Feather name="check" size={20} color={colors.primaryForeground} />
+            <MaterialCommunityIcons name="heart" size={22} color="#E05252" />
           </View>
           <Text style={[styles.msgTitle, { color: colors.foreground }]}>¡Mezcla guardada!</Text>
           <Text style={[styles.msgSub, { color: colors.mutedForeground }]}>
