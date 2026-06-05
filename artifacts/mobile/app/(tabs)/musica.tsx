@@ -245,7 +245,7 @@ export default function MiMusicaScreen() {
             }}
             style={styles.mezclasHeader}
           >
-            <Feather name="heart" size={15} color="#E05252" style={{ marginRight: 7 }} />
+            <MaterialCommunityIcons name="heart" size={16} color="#E05252" style={{ marginRight: 7 }} />
             <Text style={[styles.subSectionTitle, { color: colors.foreground, flex: 1, marginBottom: 0 }]}>
               Tus mezclas
             </Text>
