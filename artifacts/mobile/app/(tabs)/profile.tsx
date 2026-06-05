@@ -566,13 +566,13 @@ export default function ProfileScreen() {
           {activity.hasData ? (
             <View style={[styles.journeyCard, { backgroundColor: "#151A23" }]}>
               <View style={styles.journeyRow}>
-                <Feather name="clock" size={16} color={colors.accent} />
+                <Feather name="clock" size={16} color="#FFFFFF" />
                 <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Minutos esta semana</Text>
                 <Text style={[styles.journeyValue, { color: colors.foreground }]}>{activity.weeklyMinutes}</Text>
               </View>
               <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
               <View style={styles.journeyRow}>
-                <Feather name="heart" size={16} color={colors.accent} />
+                <Feather name="heart" size={16} color="#FFFFFF" />
                 <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Sesión favorita</Text>
                 <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
                   {activity.topSession?.title ?? "—"}
@@ -580,7 +580,7 @@ export default function ProfileScreen() {
               </View>
               <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
               <View style={styles.journeyRow}>
-                <Feather name="bar-chart-2" size={16} color={colors.accent} />
+                <Feather name="bar-chart-2" size={16} color="#FFFFFF" />
                 <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Categoría más escuchada</Text>
                 <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
                   {activity.topCategory ?? "—"}
@@ -602,11 +602,11 @@ export default function ProfileScreen() {
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis herramientas</Text>
           <View style={[styles.journeyCard, { backgroundColor: "#151A23" }]}>
             <Pressable
-              onPress={() => router.push("/diario" as never)}
+              onPress={() => router.push("/(tabs)/musica" as never)}
               style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
             >
-              <Feather name="feather" size={16} color={colors.accent} />
-              <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Mi Diario</Text>
+              <Feather name="sliders" size={16} color="#FFFFFF" />
+              <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Crea tu música</Text>
               <Feather name="chevron-right" size={16} color={colors.border} />
             </Pressable>
             <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
@@ -614,7 +614,7 @@ export default function ProfileScreen() {
               onPress={() => router.push("/respiracion" as never)}
               style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
             >
-              <Feather name="wind" size={16} color={colors.accent} />
+              <Feather name="wind" size={16} color="#FFFFFF" />
               <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Ejercicios de respiración</Text>
               <Feather name="chevron-right" size={16} color={colors.border} />
             </Pressable>
