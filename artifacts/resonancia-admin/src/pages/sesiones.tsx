@@ -617,34 +617,21 @@ export default function SesionesPage() {
               />
 
               {showAudio2 ? (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">{audio2Label}</Label>
-                    <button
-                      type="button"
-                      onClick={() => { setShowAudio2(false); setAudio2(emptyAudioSlot()); }}
-                      className="text-xs text-muted-foreground hover:text-foreground"
-                    >
-                      Quitar
-                    </button>
-                  </div>
-                  <AudioUploadSlot
-                    label={audio2Label}
-                    slot={audio2}
-                    onChange={setAudio2}
-                    inputRef={audio2Ref}
-                  />
-                </div>
+                <AudioUploadSlot
+                  label={audio2Label}
+                  slot={audio2}
+                  onChange={setAudio2}
+                  inputRef={audio2Ref}
+                  onRemove={() => { setShowAudio2(false); setAudio2(emptyAudioSlot()); }}
+                />
               ) : (
-                !isAncestralOrMed && !isPodcast && (
-                  <button
-                    type="button"
-                    onClick={() => setShowAudio2(true)}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    + Agregar segundo audio
-                  </button>
-                )
+                <button
+                  type="button"
+                  onClick={() => setShowAudio2(true)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  + {audio2Label}
+                </button>
               )}
             </div>
           );
@@ -868,15 +855,24 @@ function AudioUploadSlot({
   slot,
   onChange,
   inputRef,
+  onRemove,
 }: {
   label: string;
   slot: AudioSlot;
   onChange: (s: AudioSlot) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
+  onRemove?: () => void;
 }) {
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium">{label}</Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">{label}</Label>
+        {onRemove && (
+          <button type="button" onClick={onRemove} className="text-xs text-muted-foreground hover:text-foreground">
+            Quitar
+          </button>
+        )}
+      </div>
       <input
         ref={inputRef}
         type="file"
