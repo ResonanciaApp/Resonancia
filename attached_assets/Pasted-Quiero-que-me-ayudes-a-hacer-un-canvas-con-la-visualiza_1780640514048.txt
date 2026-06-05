@@ -1,0 +1,94 @@
+Quiero que me ayudes a hacer un canvas, con la visualización del mapa visual de como se categoriza cada track que se sube a la app, acá te explico de lo más general a lo más especifico.
+
+Luego, quiero que razone lo que te acabo de decir y me dices si tienes alguna duda, ya que esto nos ayudará al momento de subir los tracks a la APP.
+
+Principales:
+
+- 4 SUPER CATEGORIAS: Sesiones, Sonidos, Mezclas, Música 
+- ETIQUETAS
+- OTRAS TEMÁTICAS
+
+Leyendas:
+
+- Track se el nombre que engloba al archivo mp3 en cuestion, dependiendo de la Súpercategoria que se asocie este track, a este se le puede llamar: Sesiones, Sonidos, Mezclas, Temas.
+
+
+1) SESIONES
+(Esta es la única SÚPER CATEGORIA que tiene subcategorias). 
+(Si tapeo una card → detalle de sesión → reproductor.)
+(Los tracks se llaman sesiones)
+(Se puede poner temporizador)
+
+Sonidos Ancestrales 
+
+- Cuencos Tibetanos
+- Cuencos de Cuarzo
+- Mix de Cuencos
+- Gongs
+- Cuencos y Gongs
+- Full instrumentos
+
+Meditaciones
+
+- No duales
+- Visualizaciones
+- Mantras
+- Escaneo Corporal
+- Manifestación
+- 3 Minutos de sabiduría
+
+
+2) SONIDOS. 
+(Si tapeo una card  → reproductor)
+(Los tracks se llaman "Sonidos")
+(Se puede poner temporizador)
+
+Binaurles
+Naturaleza
+Atmosféricos
+
+3) MEZCLAS
+(Si tapeo una card  → reproductor chico → reproductor grande)
+(Los tracks se llaman "Mezclas"
+(Se puede poner temporizador)
+
+Mis mezclas
+Mezclas de la comunidad 
+
+4) MÚSICA 
+(Si tapeo una card  → reproductor)
+(Los tracks se llaman "Temas")
+(Se puede poner temporizador)
+
+- Ambient
+- Enteógena
+- Ancestral
+
+Luego vendrían las ETIQUETAS:
+Estas etiquetas pueden aparearse a cualquier track de las 4 SUPER CATEGORIAS, se transforma en una segunda derivada que especifica aun más la naturaleza del track)
+
+Etiquetas NIVEL 1 (Estás tienen iconos)
+Mañanas
+Noches
+Yoga
+Respiración
+Ansiedad
+Rituales
+Crecimiento
+ASMR
+Estrés
+Spa
+Familia 
+
+Luego vendrían las OTRAS TEMÁTICAS 
+- Estas temáticas se pueden aparear con cualquier sesión de las 4 SUPER CATEGORIA, se transforma en una segunda derivada que especifica aun más la naturaleza del track, es como una etiqueta pero con otro nombre)
+
+Para la ansiedad
+Energiza tus mañanas
+Foco y concentracion
+Suelto la rabia
+Crecimiento personal
+Armonía Familiar
+Respiración consciente
+Meditaciones activas
+Astrología
