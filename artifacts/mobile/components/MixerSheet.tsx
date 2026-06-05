@@ -308,7 +308,7 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel="Terminar mezcla"
             >
-              <Text style={styles.clearPill}>TERMINAR</Text>
+              <Text style={styles.clearPill}>Cerrar</Text>
             </Pressable>
             <Pressable
               onPress={closeSheet}
@@ -577,15 +577,9 @@ const styles = StyleSheet.create({
   clearText: { fontSize: 12, fontWeight: "400" },
   clearPill: {
     fontSize: 13,
-    fontWeight: "700",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    color: "#090F17",
-    backgroundColor: "#FFFFFF",
-    overflow: "hidden",
-    borderRadius: 9,
-    paddingHorizontal: 13,
-    paddingVertical: 5,
+    fontWeight: "400",
+    letterSpacing: 0.3,
+    color: "#FFFFFF",
   },
 
   trackScroll: { flexGrow: 0 },
