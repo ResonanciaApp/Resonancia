@@ -311,8 +311,6 @@ export default function MiMusicaScreen() {
             </ScrollView>
           </View>
 
-          {/* Separador sutil entre tabs y contenido */}
-          <View style={styles.separator} />
 
           {/* ── Biblioteca de sonidos ── */}
           {activeTab === "popular" ? (
