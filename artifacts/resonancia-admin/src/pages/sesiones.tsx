@@ -84,6 +84,7 @@ export default function SesionesPage() {
   const [podcastMode, setPodcastMode] = useState<"sonidos"|"podcast">("sonidos");
   const [sleepTag, setSleepTag] = useState("");
   const [themeTag, setThemeTag] = useState<string[]>([]);
+  const [otherTagInput, setOtherTagInput] = useState("");
   const [guideId, setGuideId] = useState("");
   const [artistId, setArtistId] = useState("");
 
@@ -483,9 +484,9 @@ export default function SesionesPage() {
               <SelectField value={sleepTag} onChange={setSleepTag} placeholder="Ninguno" options={SLEEP_TAGS} clearable />
             </Field>
 
-            {/* Theme tags — multi-select */}
+            {/* Etiquetas Nivel 1 */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Temáticas (opcional)</Label>
+              <Label className="text-sm font-medium">Etiquetas Nivel 1</Label>
               <div className="flex flex-wrap gap-2">
                 {THEME_TAGS.map((tag) => (
                   <button
@@ -500,6 +501,53 @@ export default function SesionesPage() {
                   >
                     {tag}
                   </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Otras temáticas — etiquetas libres */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Otras temáticas</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={otherTagInput}
+                  onChange={(e) => setOtherTagInput(e.target.value)}
+                  placeholder="Ej: Chakras, Luna llena…"
+                  maxLength={60}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const v = otherTagInput.trim();
+                      if (v && !themeTag.includes(v)) {
+                        setThemeTag((p) => [...p, v]);
+                        setOtherTagInput("");
+                      }
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const v = otherTagInput.trim();
+                    if (v && !themeTag.includes(v)) {
+                      setThemeTag((p) => [...p, v]);
+                      setOtherTagInput("");
+                    }
+                  }}
+                >
+                  Agregar
+                </Button>
+              </div>
+              {/* Muestra las etiquetas libres agregadas (las que no están en THEME_TAGS) */}
+              <div className="flex flex-wrap gap-2">
+                {themeTag.filter((t) => !THEME_TAGS.includes(t)).map((t) => (
+                  <Badge key={t} variant="secondary" className="gap-1">
+                    {t}
+                    <button type="button" onClick={() => setThemeTag((p) => p.filter((x) => x !== t))}>
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
                 ))}
               </div>
             </div>
