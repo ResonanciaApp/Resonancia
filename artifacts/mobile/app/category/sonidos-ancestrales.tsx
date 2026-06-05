@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Animated,
-  Dimensions,
   LayoutChangeEvent,
   Platform,
   Pressable,
@@ -15,25 +14,17 @@ import {
   Text,
   View,
 } from "react-native";
-import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
-import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
+import { SessionRow } from "@/components/SessionRow";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS, type AncestralTag, type Session } from "@/data/sessions";
-import { getGuideById } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
-import { VOICE_MAP } from "@/config/audio-map";
 
 const H_PAD = 20;
-const GAP = 10;
-const COLS = 3;
-const SCREEN_W = Dimensions.get("window").width;
-const CARD_WIDTH = ((SCREEN_W - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 12;
 const RATINGS_KEY = "@resonance_ratings";
 
 const ANCESTRAL_SESSIONS = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
@@ -105,7 +96,6 @@ export default function SonidosAncestalesScreen() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
-  // Tab indicator animation
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const [indicatorWidth, setIndicatorWidth] = useState(0);
   const tabLayouts = useRef<{ x: number; width: number }[]>([]);
@@ -142,7 +132,6 @@ export default function SonidosAncestalesScreen() {
   useEffect(() => {
     setDescExpanded(false);
     setActiveTab("Audios");
-    // Reset indicator to first tab
     const layout = tabLayouts.current[0];
     if (layout) {
       setIndicatorWidth(layout.width);
@@ -294,7 +283,7 @@ export default function SonidosAncestalesScreen() {
               {selectedTag}
             </Text>
 
-            {/* Descripción — tap para expandir/colapsar, sin botón */}
+            {/* Descripción colapsable */}
             <Pressable
               onPress={() => setDescExpanded((v) => !v)}
               style={{ paddingHorizontal: H_PAD, marginBottom: 20 }}
@@ -324,8 +313,6 @@ export default function SonidosAncestalesScreen() {
                   </Text>
                 </Pressable>
               ))}
-
-              {/* Indicador deslizante */}
               {indicatorWidth > 0 && (
                 <Animated.View
                   style={[
@@ -338,47 +325,44 @@ export default function SonidosAncestalesScreen() {
 
             {/* ── Tab: Audios ── */}
             {activeTab === "Audios" && (
-              <View style={[styles.grid, { paddingHorizontal: H_PAD, paddingTop: 24 }]}>
+              <View style={{ paddingTop: 24 }}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
+                  Escuchado Recientemente
+                </Text>
+                {recentlyPlayed ? (
+                  <SessionRow
+                    session={recentlyPlayed}
+                    rating={ratings[recentlyPlayed.id]}
+                    style={{ marginHorizontal: H_PAD, marginTop: 10, marginBottom: 24 }}
+                    onActionsPress={() => setActionsSession(recentlyPlayed)}
+                  />
+                ) : (
+                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "#151A23" }]}>
+                    <Feather name="headphones" size={28} color={colors.mutedForeground} />
+                    <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
+                      Aún no escuchaste ninguna sesión en esta categoría
+                    </Text>
+                  </View>
+                )}
+
+                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
+                  Recientes
+                </Text>
                 {filteredSessions.length === 0 ? (
                   <View style={styles.emptyWrap}>
                     <Feather name="music" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
                     <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
                   </View>
                 ) : (
-                  <View style={styles.gridRow}>
-                    {filteredSessions.map((s) => {
-                      const locked = !!s.isPremium && !isPremium;
-                      return (
-                        <Pressable
-                          key={s.id}
-                          style={({ pressed }) => [
-                            styles.gridCard,
-                            { width: CARD_WIDTH, opacity: pressed ? 0.82 : 1 },
-                          ]}
-                          onPress={() => router.push((locked ? "/membresia" : `/session/${s.id}`) as never)}
-                          onLongPress={() => setActionsSession(s)}
-                        >
-                          <View style={{ width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 16, overflow: "hidden" }}>
-                            <Image
-                              source={s.image as never}
-                              style={{ width: CARD_WIDTH, height: CARD_WIDTH }}
-                              contentFit="cover"
-                              transition={IMAGE_TRANSITION}
-                              cachePolicy="memory-disk"
-                              placeholder={BLUR_PLACEHOLDER}
-                            />
-                            <PremiumBadge session={s} />
-                          </View>
-                          <Text
-                            style={[styles.gridCardTitle, { color: colors.foreground }]}
-                            numberOfLines={2}
-                          >
-                            {s.title}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
+                  filteredSessions.map((s) => (
+                    <SessionRow
+                      key={s.id}
+                      session={s}
+                      rating={ratings[s.id]}
+                      style={{ marginHorizontal: H_PAD }}
+                      onActionsPress={() => setActionsSession(s)}
+                    />
+                  ))
                 )}
               </View>
             )}
@@ -402,7 +386,6 @@ export default function SonidosAncestalesScreen() {
         )}
       </ScrollView>
 
-      {/* Session actions sheet */}
       <SessionActionsSheet
         session={actionsSession}
         visible={actionsSession !== null}
@@ -412,91 +395,10 @@ export default function SonidosAncestalesScreen() {
   );
 }
 
-// ─────────────────────────────────────────
-// SessionRow: card estilo Insight Timer
-// ─────────────────────────────────────────
-type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
-
-type SessionRowProps = {
-  session: Session;
-  rating?: number;
-  isPremium: boolean;
-  colors: Colors;
-  style?: object;
-  onActionsPress?: () => void;
-};
-
-function SessionRow({ session, rating, isPremium, colors, style, onActionsPress }: SessionRowProps) {
-  const locked = !!session.isPremium && !isPremium;
-  const hasVoice = session.id in VOICE_MAP;
-  const guide = session.guideId ? getGuideById(session.guideId) : null;
-  const author = guide?.name ?? "Casa del Cuenco";
-  const displayRating = rating ?? 4.7;
-
-  return (
-    <View style={[styles.sessionRow, style]}>
-      {/* Tap principal → abre sesión */}
-      <Pressable
-        onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
-        style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
-      >
-        {/* Imagen cuadrada */}
-        <View style={styles.sessionImgWrap}>
-          <Image
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            source={session.image as any}
-            style={styles.sessionImg}
-            placeholder={BLUR_PLACEHOLDER}
-            transition={IMAGE_TRANSITION}
-          />
-          <View style={styles.sessionImgOverlay}>
-            <Feather name="activity" size={16} color="rgba(255,255,255,0.7)" />
-          </View>
-          <PremiumBadge session={session} />
-        </View>
-
-        {/* Contenido */}
-        <View style={styles.sessionContent}>
-          {/* Meta */}
-          <View style={styles.sessionMeta}>
-            <Feather name="star" size={11} color={colors.mutedForeground} />
-            <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
-              {" "}{displayRating.toFixed(1)} · {hasVoice ? "Guiada" : "Sin voz"} · {session.durationLabel}
-            </Text>
-          </View>
-          {/* Título */}
-          <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
-            {session.title}
-          </Text>
-          {/* Autor */}
-          <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {author}
-          </Text>
-        </View>
-      </Pressable>
-
-      {/* Botón 3 puntitos */}
-      {onActionsPress && (
-        <Pressable
-          onPress={onActionsPress}
-          hitSlop={10}
-          style={({ pressed }) => [styles.moreBtn, { opacity: pressed ? 0.5 : 1 }]}
-        >
-          <Feather name="more-vertical" size={20} color={colors.mutedForeground} />
-        </Pressable>
-      )}
-    </View>
-  );
-}
-
-// ─────────────────────────────────────────
-// Styles
-// ─────────────────────────────────────────
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  // ── Lista de subcategorías ──
   header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
   backBtn: {
     alignSelf: "flex-start",
@@ -520,117 +422,32 @@ const styles = StyleSheet.create({
   catRight: { flexDirection: "row", alignItems: "center", gap: 6 },
   catCount: { fontSize: 13, fontWeight: "500" },
 
-  // ── Detalle de subcategoría ──
   detailTopBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 18,
+    flexDirection: "row", alignItems: "center",
+    justifyContent: "space-between", marginBottom: 18,
   },
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-
   detailTitle: {
-    fontSize: 32,
-    fontWeight: "800",
-    letterSpacing: -0.3,
-    lineHeight: 38,
-    marginBottom: 12,
+    fontSize: 32, fontWeight: "800", letterSpacing: -0.3,
+    lineHeight: 38, marginBottom: 12,
   },
   detailDesc: { fontSize: 14, lineHeight: 21 },
 
-  // Tabs
-  tabBar: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    position: "relative",
-  },
-  tabItem: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative" },
+  tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
   tabLabel: { fontSize: 15, fontWeight: "600" },
   tabIndicator: {
-    position: "absolute",
-    bottom: 0,
-    height: 2,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 1,
+    position: "absolute", bottom: 0, height: 2,
+    backgroundColor: "#FFFFFF", borderRadius: 1,
   },
 
-  // Section header
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
-
-  // Recently played placeholder
   recentPlaceholder: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 28,
+    flexDirection: "row", alignItems: "center", gap: 14,
+    borderRadius: 14, padding: 16, marginBottom: 28,
   },
   placeholderText: { flex: 1, fontSize: 13, lineHeight: 18 },
 
-  // Session row — sin línea divisora
-  sessionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  sessionRowInner: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 14,
-  },
-  moreBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  sessionImgWrap: { width: 80, height: 80, borderRadius: 10, overflow: "hidden", position: "relative" },
-  sessionImg: { width: 80, height: 80 },
-  sessionImgOverlay: {
-    position: "absolute",
-    bottom: 6, left: 6,
-    width: 28, height: 28,
-    borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.55)",
-    alignItems: "center", justifyContent: "center",
-  },
-  sessionContent: { flex: 1, paddingTop: 2 },
-  sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
-  sessionMetaText: { fontSize: 12, lineHeight: 16 },
-  sessionTitle: { fontSize: 16, fontWeight: "700", lineHeight: 22, marginBottom: 4 },
-  sessionAuthor: { fontSize: 13 },
-
-  // Empty
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
-  emptyText: { fontSize: 15, textAlign: "center" },
-
-  grid: {},
-  gridRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    columnGap: GAP,
-    rowGap: 24,
-    justifyContent: "space-between",
-  },
-  gridCard: {
-    borderRadius: 16,
-    overflow: "hidden",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  gridCardTitle: {
-    fontSize: 11,
-    fontWeight: "600",
-    marginTop: 6,
-    textAlign: "center",
-    lineHeight: 15,
-    width: "100%",
-  },
+  emptyText: { fontSize: 16, textAlign: "center" },
 });
