@@ -1,4 +1,4 @@
-import { ChevronLeft, Play, Heart, Share2, CloudRain, Waves, Flame, Leaf, Wind, Droplets, Bird, MessageCircle, Send } from "lucide-react";
+import { ChevronLeft, Play, Heart, Share2, MessageCircle, Send } from "lucide-react";
 
 const GOLD = "#BE9650";
 const BG = "#090F17";
@@ -7,13 +7,13 @@ const MUTED = "#7A8FA8";
 const FG = "#EDE1D3";
 
 const SOUNDS = [
-  { id: "lluvia",  name: "Lluvia",  Icon: CloudRain, color: "#1a3a6a", accent: "#4A90D9" },
-  { id: "arroyo",  name: "Arroyo",  Icon: Waves,     color: "#0e3a3a", accent: "#4ABFBF" },
-  { id: "fogata",  name: "Fogata",  Icon: Flame,     color: "#4a2010", accent: "#E07040" },
-  { id: "bosque",  name: "Bosque",  Icon: Leaf,      color: "#1a3020", accent: "#60AA60" },
-  { id: "viento",  name: "Viento",  Icon: Wind,      color: "#1c2a3a", accent: "#80A0C0" },
-  { id: "oceano",  name: "Océano",  Icon: Droplets,  color: "#0e2a4a", accent: "#3080C0" },
-  { id: "pajaros", name: "Pájaros", Icon: Bird,      color: "#24301a", accent: "#90B050" },
+  { id: "lluvia",  name: "Lluvia",  img: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=160&q=70&fit=crop" },
+  { id: "arroyo",  name: "Arroyo",  img: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=160&q=70&fit=crop" },
+  { id: "fogata",  name: "Fogata",  img: "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?w=160&q=70&fit=crop" },
+  { id: "bosque",  name: "Bosque",  img: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=160&q=70&fit=crop" },
+  { id: "viento",  name: "Viento",  img: "https://images.unsplash.com/photo-1505816014357-96b5ff457e9a?w=160&q=70&fit=crop" },
+  { id: "oceano",  name: "Océano",  img: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=160&q=70&fit=crop" },
+  { id: "pajaros", name: "Pájaros", img: "https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=160&q=70&fit=crop" },
 ];
 
 export function Glassmorphism() {
@@ -34,13 +34,18 @@ export function Glassmorphism() {
         </button>
       </div>
 
-      {/* Grid de sonidos — 4 columnas */}
+      {/* Grid de sonidos — 4 columnas con imágenes */}
       <div className="relative px-5 mb-6">
         <div className="grid grid-cols-4 gap-2">
           {SOUNDS.map((s) => (
             <div key={s.id} className="flex flex-col items-center gap-1.5">
-              <div className="w-full aspect-square rounded-2xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${s.color} 0%, rgba(9,15,23,0.8) 100%)`, border: `1px solid ${s.accent}33` }}>
-                <s.Icon size={20} color={s.accent} />
+              <div className="w-full aspect-square rounded-2xl overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>
+                <img
+                  src={s.img}
+                  alt={s.name}
+                  className="w-full h-full"
+                  style={{ objectFit: "cover", display: "block" }}
+                />
               </div>
               <span className="text-center leading-tight" style={{ fontSize: 9, color: MUTED }}>{s.name}</span>
             </div>
@@ -73,22 +78,22 @@ export function Glassmorphism() {
           </button>
         </div>
 
-        {/* Like + Share */}
+        {/* Like + Share — sin borde */}
         <div className="flex gap-3 mb-5">
-          <button className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: FG }}>
+          <button className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold" style={{ background: "rgba(255,255,255,0.05)", color: FG }}>
             <Heart size={17} color={MUTED} /> Me gusta
           </button>
-          <button className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: FG }}>
+          <button className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold" style={{ background: "rgba(255,255,255,0.05)", color: FG }}>
             <Share2 size={17} color={MUTED} /> Compartir
           </button>
         </div>
 
-        {/* Comments */}
+        {/* Comments — sin borde en el input */}
         <div className="flex items-center gap-2 mb-3">
           <MessageCircle size={15} color={GOLD} />
           <span className="font-bold text-sm" style={{ color: FG }}>Comentarios</span>
         </div>
-        <div className="flex items-end gap-2 p-3 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="flex items-end gap-2 p-3 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)" }}>
           <input className="flex-1 text-sm bg-transparent outline-none" placeholder="Deja un comentario…" style={{ color: FG }} readOnly />
           <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: CARD }}>
             <Send size={13} color={MUTED} />
