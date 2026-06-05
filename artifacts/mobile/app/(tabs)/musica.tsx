@@ -278,10 +278,10 @@ export default function MiMusicaScreen() {
         >
           {/* ── Barra sticky: categorías principales + sub-tabs ── */}
           <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
-            <View style={styles.segmentedContainer}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
+              style={styles.segmentedContainer}
               contentContainerStyle={styles.mainTabBarContent}
             >
               {MAIN_TABS.map((tab) => {
@@ -315,7 +315,6 @@ export default function MiMusicaScreen() {
                 );
               })}
             </ScrollView>
-            </View>
 
             {/* ── Sub-tabs — solo si el tab principal tiene > 1 categoría ── */}
             {subTabCategories && subTabCategories.length > 1 ? (
