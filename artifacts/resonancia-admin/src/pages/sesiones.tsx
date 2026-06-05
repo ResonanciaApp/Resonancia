@@ -115,6 +115,7 @@ export default function SesionesPage() {
 
   // Estado de submit
   const [submitting, setSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{ label: string; pct: number } | null>(null);
   const [done, setDone] = useState(false);
 
   // Refs para inputs de archivo
@@ -165,16 +166,32 @@ export default function SesionesPage() {
     }
   };
 
-  // ── Upload de un archivo ──
-  const uploadFile = async (file: File): Promise<UploadedFile> => {
+  // ── Upload de un archivo con progreso ──
+  const uploadFile = async (
+    file: File,
+    progressLabel?: string,
+  ): Promise<UploadedFile> => {
     const { uploadURL, objectPath } = await requestUrl({
       data: { name: file.name, size: file.size, contentType: file.type },
     });
-    await fetch(uploadURL, {
-      method: "PUT",
-      headers: { "Content-Type": file.type },
-      body: file,
+
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", uploadURL);
+      xhr.setRequestHeader("Content-Type", file.type);
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && progressLabel) {
+          setUploadProgress({ label: progressLabel, pct: Math.round((e.loaded / e.total) * 100) });
+        }
+      };
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) resolve();
+        else reject(new Error(`Error al subir archivo: ${xhr.status}`));
+      };
+      xhr.onerror = () => reject(new Error("Error de red al subir archivo"));
+      xhr.send(file);
     });
+
     return { file, objectPath, contentType: file.type, sizeBytes: file.size, name: file.name };
   };
 
@@ -198,17 +215,22 @@ export default function SesionesPage() {
     if (err) { toast.error(err); return; }
 
     setSubmitting(true);
+    setUploadProgress({ label: "Preparando subida…", pct: 0 });
     try {
       // 1. Upload archivos
-      const a1 = await uploadFile(audio1.file!);
+      const a1 = await uploadFile(audio1.file!, "Subiendo audio principal");
       let a2: UploadedFile | null = null;
-      if (showAudio2 && audio2.file) a2 = await uploadFile(audio2.file);
+      if (showAudio2 && audio2.file) {
+        a2 = await uploadFile(audio2.file, "Subiendo audio secundario");
+      }
 
       let imgUploaded: UploadedFile | null = uploadedImage;
       if (imageFile && !uploadedImage) {
-        imgUploaded = await uploadFile(imageFile);
+        imgUploaded = await uploadFile(imageFile, "Subiendo imagen");
         setUploadedImage(imgUploaded);
       }
+
+      setUploadProgress({ label: "Guardando sesión…", pct: 100 });
 
       // 2. Crear submission
       const audioFiles: Parameters<typeof createSubmission>[0]["data"]["audioFiles"] = [
@@ -278,6 +300,7 @@ export default function SesionesPage() {
       toast.error(msg);
     } finally {
       setSubmitting(false);
+      setUploadProgress(null);
     }
   };
 
@@ -752,7 +775,7 @@ export default function SesionesPage() {
       {/* ── Footer de submit ── */}
       <div className="border-t border-border pt-6 space-y-4">
         <div className="flex items-center gap-3">
-          <Switch id="publish" checked={publishDirectly} onCheckedChange={setPublishDirectly} />
+          <Switch id="publish" checked={publishDirectly} onCheckedChange={setPublishDirectly} disabled={submitting} />
           <Label htmlFor="publish" className="cursor-pointer">
             Publicar directamente
             <span className="ml-2 text-xs text-muted-foreground">
@@ -760,6 +783,28 @@ export default function SesionesPage() {
             </span>
           </Label>
         </div>
+
+        {uploadProgress && (
+          <div className="rounded-xl border border-border bg-card p-4 space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                <span>{uploadProgress.label}</span>
+              </div>
+              <span className="font-semibold text-primary">{uploadProgress.pct}%</span>
+            </div>
+            <div className="w-full h-2 rounded-full bg-secondary overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-300"
+                style={{ width: `${uploadProgress.pct}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              No cierres ni recargues esta página mientras se sube el archivo.
+            </p>
+          </div>
+        )}
+
         <Button
           onClick={handleSubmit}
           disabled={submitting}
@@ -768,7 +813,7 @@ export default function SesionesPage() {
           {submitting ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Subiendo...
+              Procesando...
             </>
           ) : publishDirectly ? (
             "Publicar sesión"
