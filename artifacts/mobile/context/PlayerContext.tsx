@@ -1338,7 +1338,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setSleepTimer,
         updateDefaultSleepTimer,
         clearHistory,
-        hasVoiceTrack: !!VOICE_MAP[currentSession?.id ?? ""],
+        hasVoiceTrack: !!(VOICE_MAP[currentSession?.id ?? ""] || currentSession?.voiceUri),
         voiceVolume,
         setVoiceVolume,
         hasAmbientTrack: !!AMBIENT_MAP[currentSession?.id ?? ""],
