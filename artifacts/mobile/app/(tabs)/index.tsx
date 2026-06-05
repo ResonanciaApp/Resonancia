@@ -459,7 +459,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Descubrir algo nuevo
+              Las más recientes
             </Text>
             <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
               <Text style={[styles.seeAll, { color: colors.primary }]}>Ver todo</Text>
