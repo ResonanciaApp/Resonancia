@@ -339,6 +339,11 @@ export default function MusicaSonidosScreen() {
                   </Pressable>
                 );
               })}
+              {Array.from({
+                length: (COLS - (visible.length % COLS)) % COLS,
+              }).map((_, i) => (
+                <View key={`ghost-${i}`} style={{ width: CARD_WIDTH }} />
+              ))}
             </View>
           )}
         </View>
