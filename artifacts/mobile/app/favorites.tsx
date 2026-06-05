@@ -401,7 +401,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   header: { marginBottom: 20 },
-  headerInner: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
 
   // Tabs
   tabBar: {

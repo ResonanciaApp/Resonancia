@@ -24,7 +24,7 @@ import type { SharedMix } from "@workspace/api-client-react";
 
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
-import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
+import { type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 
 // ── Tipos ──────────────────────────────────────────────────────────

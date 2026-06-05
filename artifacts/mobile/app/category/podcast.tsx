@@ -1,10 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "react-native";
+import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
   LayoutChangeEvent,
   Platform,
   Pressable,
@@ -16,15 +18,20 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
-import { SessionRow } from "@/components/SessionRow";
-import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session, type SonidosTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
+const GAP = 10;
+const COLS = 3;
+const SCREEN_W = Dimensions.get("window").width;
+const CARD_WIDTH = ((SCREEN_W - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 12;
+const SONIDOS_ACCENT = "#6B9AB5";
 
 type SonidosTab = SonidosTag;
 
@@ -40,7 +47,6 @@ export default function SonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
-  const { playSession } = usePlayer();
 
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
@@ -152,8 +158,8 @@ export default function SonidosScreen() {
           </View>
         </View>
 
-        {/* Session list */}
-        <View style={{ paddingHorizontal: H_PAD, paddingTop: 16 }}>
+        {/* Session grid */}
+        <View style={[styles.grid, { paddingHorizontal: H_PAD, paddingTop: 24 }]}>
           {filtered.length === 0 ? (
             <View style={styles.emptyWrap}>
               <MaterialCommunityIcons
@@ -167,13 +173,50 @@ export default function SonidosScreen() {
               </Text>
             </View>
           ) : (
-            filtered.map((session) => (
-              <SessionRow
-                key={session.id}
-                session={session}
-                onActionsPress={() => setActionsSession(session)}
-              />
-            ))
+            <View style={styles.gridRow}>
+              {filtered.map((session) => {
+                const locked = !!session.isPremium && !isPremium;
+                return (
+                  <Pressable
+                    key={session.id}
+                    style={({ pressed }) => [
+                      styles.card,
+                      { width: CARD_WIDTH, opacity: pressed ? 0.82 : 1 },
+                    ]}
+                    onPress={() =>
+                      router.push((locked ? "/membresia" : `/session/${session.id}`) as never)
+                    }
+                    onLongPress={() => setActionsSession(session)}
+                  >
+                    <View
+                      style={{
+                        width: CARD_WIDTH,
+                        height: CARD_WIDTH,
+                        borderRadius: 16,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <ExpoImage
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        source={session.image as any}
+                        style={{ width: CARD_WIDTH, height: CARD_WIDTH }}
+                        contentFit="cover"
+                        transition={IMAGE_TRANSITION}
+                        cachePolicy="memory-disk"
+                        placeholder={BLUR_PLACEHOLDER}
+                      />
+                      <PremiumBadge session={session} />
+                    </View>
+                    <Text
+                      style={[styles.cardTitle, { color: colors.foreground }]}
+                      numberOfLines={2}
+                    >
+                      {session.title}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
           )}
         </View>
       </ScrollView>
@@ -235,8 +278,10 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   tabItem: {
+    flex: 1,
     paddingVertical: 10,
-    marginRight: 22,
+    alignItems: "center",
+    justifyContent: "center",
   },
   tabLabel: {
     fontSize: 15,
@@ -246,8 +291,33 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     height: 2,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: SONIDOS_ACCENT,
     borderRadius: 1,
+  },
+
+  grid: {},
+  gridRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: GAP,
+    rowGap: 24,
+    justifyContent: "space-between",
+  },
+  card: {
+    borderRadius: 16,
+    overflow: "hidden",
+    alignItems: "center",
+    position: "relative",
+    marginBottom: 4,
+  },
+  cardTitle: {
+    fontSize: 11,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 15,
+    paddingHorizontal: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
 
   emptyWrap: {
