@@ -292,18 +292,23 @@ function MixRow({
 }
 
 // ── Miniaturas apiladas de los sonidos ─────────────────────────────
+const STACK_MAX = 5;
+
 function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
   if (!sounds || sounds.length === 0) return null;
+  const visible = sounds.slice(0, STACK_MAX);
+  const extra = sounds.length - visible.length;
+  const slots = visible.length + (extra > 0 ? 1 : 0);
   return (
-    <View style={[styles.stack, { width: STACK_THUMB + (sounds.length - 1) * STACK_SHIFT }]}>
-      {sounds.map((s, i) => {
+    <View style={[styles.stack, { width: STACK_THUMB + (slots - 1) * STACK_SHIFT }]}>
+      {visible.map((s, i) => {
         const img = getSoundImage(s.id);
         return (
           <View
             key={`${s.id}-${i}`}
             style={[
               styles.stackThumb,
-              { left: i * STACK_SHIFT, zIndex: sounds.length - i },
+              { left: i * STACK_SHIFT, zIndex: slots - i },
             ]}
           >
             {img ? (
@@ -314,6 +319,17 @@ function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
           </View>
         );
       })}
+      {extra > 0 && (
+        <View
+          style={[
+            styles.stackThumb,
+            styles.stackMore,
+            { left: visible.length * STACK_SHIFT, zIndex: 0 },
+          ]}
+        >
+          <Text style={styles.stackMoreText}>+{extra}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -473,6 +489,16 @@ const styles = StyleSheet.create({
   stackImg: {
     width: "100%",
     height: "100%",
+  },
+  stackMore: {
+    backgroundColor: "#1F2937",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  stackMoreText: {
+    color: "#EDE1D3",
+    fontSize: 11,
+    fontWeight: "700",
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
