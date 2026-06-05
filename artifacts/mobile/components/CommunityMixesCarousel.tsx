@@ -327,9 +327,20 @@ function MixRow({
               </View>
             )}
           </View>
-          <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
-            {mix.author.displayName} · {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-          </Text>
+          <View style={styles.metaRow}>
+            <Text
+              style={[styles.mixMeta, { color: colors.mutedForeground, flexShrink: 1 }]}
+              numberOfLines={1}
+            >
+              {mix.author.displayName} · {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+            </Text>
+            {mix.likes > 0 && (
+              <View style={styles.likeChip}>
+                <Feather name="heart" size={10} color={GOLD} />
+                <Text style={styles.likeCount}>{mix.likes}</Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* 3 puntitos */}
@@ -570,7 +581,10 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
-  mixMeta: { fontSize: 10, marginTop: 2 },
+  metaRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
+  mixMeta: { fontSize: 10 },
+  likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
+  likeCount: { fontSize: 10, fontWeight: "600", color: GOLD },
   dotsBtn: {
     width: 32,
     height: 32,
