@@ -305,7 +305,7 @@ export default function MiMusicaScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* ── Barra sticky: categorías principales + sub-tabs ── */}
-          <View style={[styles.stickyBar, { backgroundColor: "#0E141C" }]}>
+          <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0E141C" },
 
   // Header
-  header: { marginBottom: 2 },
+  header: { marginBottom: 12 },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 6 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 16 },
   subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -20,
     paddingHorizontal: 20,
     paddingTop: 10,
-    paddingBottom: 0,
+    paddingBottom: 4,
   },
   // Secciones
   section: { marginBottom: 57 },
