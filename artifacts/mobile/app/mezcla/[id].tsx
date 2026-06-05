@@ -10,13 +10,12 @@
 import { Feather } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
-import { LinearGradient } from "expo-linear-gradient";
+
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -42,7 +41,8 @@ import type { MixComment, SharedMixesPage } from "@workspace/api-client-react";
 
 import { Image } from "expo-image";
 
-import { getMixImage } from "@/config/mix-images";
+import { getSoundImage } from "@/config/sound-images";
+import { SOUNDS } from "@/data/sounds";
 import { useAuth } from "@/context/AuthContext";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -59,7 +59,10 @@ export default function CommunityMixScreen() {
 
   const { isSignedIn } = useAuth();
   const { photoUri } = useUserProfile();
-  const { isPlaying, togglePlay, loadedPresetId } = useMixer();
+  const { isPlaying, togglePlay, loadedPresetId, stopAll } = useMixer();
+
+  // Parar reproducción al salir de la pantalla
+  useEffect(() => () => { stopAll(); }, []);
   const loadMix = useLoadMix();
   const queryClient = useQueryClient();
   const toggleLike = useToggleSharedMixLike();
@@ -258,25 +261,43 @@ export default function CommunityMixScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Hero con la portada de la mezcla */}
-        <ImageBackground
-          source={getMixImage(mix.image ?? undefined)}
-          style={styles.hero}
-          resizeMode="cover"
-        >
-          <LinearGradient
-            colors={["rgba(15,10,6,0.25)", "rgba(15,10,6,0.65)", colors.background]}
-            locations={[0, 0.55, 1]}
-            style={StyleSheet.absoluteFill}
-          />
+        {/* Botón volver */}
+        <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
           <Pressable
             onPress={() => router.back()}
             hitSlop={12}
-            style={[styles.backBtn, { top: insets.top + 8 }]}
+            style={styles.backBtn}
           >
-            <Feather name="chevron-left" size={26} color="#FFFFFF" />
+            <Feather name="chevron-left" size={26} color={colors.foreground} />
           </Pressable>
-        </ImageBackground>
+        </View>
+
+        {/* Fila de sonidos del creador */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.soundsRow}
+        >
+          {mix.sounds.map((s) => {
+            const soundMeta = SOUNDS.find((x) => x.id === s.id);
+            const img = getSoundImage(s.id);
+            return (
+              <View key={s.id} style={styles.soundCard}>
+                {img ? (
+                  <Image source={img} style={styles.soundImg} contentFit="cover" />
+                ) : (
+                  <View style={[styles.soundImg, { backgroundColor: colors.card }]} />
+                )}
+                <Text
+                  style={[styles.soundLabel, { color: colors.mutedForeground }]}
+                  numberOfLines={1}
+                >
+                  {soundMeta?.name ?? s.id}
+                </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
 
         {/* Contenido */}
         <View style={styles.content}>
@@ -431,18 +452,38 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 14 },
   notFound: { fontSize: 16, fontWeight: "600", textAlign: "center" },
   backPill: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 22, borderWidth: 1 },
-  hero: { height: 320, justifyContent: "flex-start" },
+  topBar: {
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+  },
   backBtn: {
-    position: "absolute",
-    left: 16,
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(24,17,12,0.5)",
     alignItems: "center",
     justifyContent: "center",
   },
-  content: { flex: 1, paddingHorizontal: 24, marginTop: -8 },
+  soundsRow: {
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+    gap: 12,
+  },
+  soundCard: {
+    width: 80,
+    alignItems: "center",
+    gap: 6,
+  },
+  soundImg: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+  },
+  soundLabel: {
+    fontSize: 11,
+    textAlign: "center",
+    width: 80,
+  },
+  content: { flex: 1, paddingHorizontal: 24 },
   category: { fontSize: 12, fontWeight: "700", letterSpacing: 1.5, marginBottom: 8 },
   title: { fontSize: 28, fontWeight: "800", letterSpacing: 0.3, lineHeight: 34 },
   authorRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 16 },
