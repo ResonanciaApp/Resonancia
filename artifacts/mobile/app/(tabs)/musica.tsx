@@ -250,8 +250,8 @@ export default function MiMusicaScreen() {
                       style={({ pressed }) => [
                         styles.mezclasInlinePill,
                         {
-                          backgroundColor: pressed ? accent + "28" : accent + "14",
-                          borderColor: accent + "55",
+                          backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.05)",
+                          borderColor: pressed ? accent + "55" : accent + "40",
                           transform: [{ scale: pressed ? 0.96 : 1 }],
                         },
                       ]}
@@ -383,14 +383,14 @@ const styles = StyleSheet.create({
   mezclasInlineCats: { flex: 1, flexDirection: "row", gap: 6 },
   mezclasInlinePill: {
     flex: 1,
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 10,
-    borderRadius: 10,
+    borderRadius: 13,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  mezclasInlineLabel: { fontSize: 12, fontWeight: "600", letterSpacing: 0.1 },
+  mezclasInlineLabel: { fontSize: 12, fontWeight: "600", letterSpacing: 0.1, textAlign: "center" },
 
   // Barra sticky
   stickyBar: {
