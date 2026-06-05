@@ -277,7 +277,7 @@ export default function MiMusicaScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* ── Barra sticky: categorías principales + sub-tabs ── */}
-          <View style={[styles.stickyBar, { backgroundColor: colors.background }]}>
+          <View style={[styles.stickyBar, { backgroundColor: "#0E141C" }]}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -353,13 +353,13 @@ export default function MiMusicaScreen() {
                 })}
               </ScrollView>
             ) : (
-              <View style={{ height: 24, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
+              <View style={{ height: 8, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
             )}
           </View>
 
 
           {/* ── Biblioteca de sonidos ── */}
-          <View style={[styles.grid, { marginTop: 33 }]}>
+          <View style={[styles.grid, { marginTop: subTabCategories && subTabCategories.length > 1 ? 33 : 14 }]}>
             {displayedSounds.map((s, i) => renderSoundCard(s, i))}
           </View>
         </ScrollView>
