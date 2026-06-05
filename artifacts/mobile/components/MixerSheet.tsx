@@ -483,7 +483,7 @@ export function MixerSheet() {
                           style={[
                             styles.catChip,
                             {
-                              backgroundColor: "rgba(100,185,220,0.15)",
+                              backgroundColor: "#151A23",
                               borderColor: selected
                                 ? "rgba(100,185,220,0.45)"
                                 : "transparent",
