@@ -1,50 +1,58 @@
 [
   {
-    "id": "b2c3d4e5-0001-4000-8000-plantilla00001",
+    "id": "c3d4e5f6-0001-4000-8000-invitacion0001",
     "position": 1,
-    "filepath": "src/pages/slides/Slide01Portada.tsx",
-    "title": "Portada — Modelo de Negocios",
-    "description": "Slide de apertura con los 3 datos clave.",
+    "filepath": "src/pages/slides/Slide01Invitacion.tsx",
+    "title": "La invitación",
+    "description": "Portada: una invitación a conversar, no un pitch de venta.",
     "speakerNotes": ""
   },
   {
-    "id": "b2c3d4e5-0002-4000-8000-plantilla00002",
+    "id": "c3d4e5f6-0002-4000-8000-invitacion0002",
     "position": 2,
-    "filepath": "src/pages/slides/Slide02Contenido.tsx",
-    "title": "El Problema",
-    "description": "Un mercado de 580M sin solución nativa.",
+    "filepath": "src/pages/slides/Slide02PorQue.tsx",
+    "title": "Por qué importa",
+    "description": "Una necesidad real mal atendida en español.",
     "speakerNotes": ""
   },
   {
-    "id": "b2c3d4e5-0003-4000-8000-plantilla00003",
+    "id": "c3d4e5f6-0003-4000-8000-invitacion0003",
     "position": 3,
-    "filepath": "src/pages/slides/Slide03DosColumnas.tsx",
-    "title": "La Solución",
-    "description": "Diferenciadores clave de RESONANCIA.",
+    "filepath": "src/pages/slides/Slide03Producto.tsx",
+    "title": "Qué es RESONANCIA",
+    "description": "El producto de un vistazo, con mockups de la app.",
     "speakerNotes": ""
   },
   {
-    "id": "b2c3d4e5-0004-4000-8000-plantilla00004",
+    "id": "c3d4e5f6-0004-4000-8000-invitacion0004",
     "position": 4,
-    "filepath": "src/pages/slides/Slide04Estadistica.tsx",
-    "title": "Modelo de Negocios",
-    "description": "Freemium: Free vs Premium + canales de cobro.",
+    "filepath": "src/pages/slides/Slide04Hecho.tsx",
+    "title": "Lo que ya está hecho",
+    "description": "Tracción: app funcional, 180 pistas, +1.000.000 seguidores, suscripciones.",
     "speakerNotes": ""
   },
   {
-    "id": "b2c3d4e5-0005-4000-8000-plantilla00005",
+    "id": "c3d4e5f6-0005-4000-8000-invitacion0005",
     "position": 5,
-    "filepath": "src/pages/slides/Slide05Cierre.tsx",
-    "title": "Mercado y Oportunidad",
-    "description": "TAM / SAM / SOM y tendencias a favor.",
+    "filepath": "src/pages/slides/Slide05Modelo.tsx",
+    "title": "El modelo, en simple",
+    "description": "Freemium: Free vs Premium, $6.900/mes y ARPU neto.",
     "speakerNotes": ""
   },
   {
-    "id": "b2c3d4e5-0006-4000-8000-plantilla00006",
+    "id": "c3d4e5f6-0006-4000-8000-invitacion0006",
     "position": 6,
-    "filepath": "src/pages/slides/Slide06Paleta.tsx",
-    "title": "Tracción y Próximos Pasos",
-    "description": "Estado actual y roadmap a 6 meses.",
+    "filepath": "src/pages/slides/Slide06Vision.tsx",
+    "title": "Hacia dónde vamos",
+    "description": "Visión a 12 meses: lanzar, crecer y expandir en LATAM.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "c3d4e5f6-0007-4000-8000-invitacion0007",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07Reunamonos.tsx",
+    "title": "Reunámonos",
+    "description": "Cierre e invitación a reunirse, con datos de contacto.",
     "speakerNotes": ""
   }
 ]
