@@ -1090,6 +1090,7 @@ export const CreateSubmissionBody = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "audioFiles": zod.array(zod.object({

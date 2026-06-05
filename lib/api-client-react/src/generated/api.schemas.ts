@@ -705,6 +705,7 @@ export interface CreatorSubmissionInput {
   podcastTag?: string | null;
   sonidosTag?: string | null;
   sleepTag?: string | null;
+  themeTag?: string[] | null;
   guideId?: string | null;
   artistId?: string | null;
   /**

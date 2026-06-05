@@ -18,6 +18,7 @@ import {
   ListMusic,
   FolderTree,
   LogOut,
+  PlusCircle,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -28,6 +29,7 @@ import UsuariosPage from "@/pages/usuarios";
 import ModeracionPage from "@/pages/moderacion";
 import MezclasPage from "@/pages/mezclas";
 import CategoriasPage from "@/pages/categorias";
+import SesionesPage from "@/pages/sesiones";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -145,6 +147,7 @@ const NAV = [
   { href: "/moderacion", label: "Moderación", icon: ShieldCheck },
   { href: "/mezclas", label: "Mezclas", icon: ListMusic },
   { href: "/categorias", label: "Categorías", icon: FolderTree },
+  { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
 ];
 
 function isActive(location: string, href: string) {
@@ -257,6 +260,7 @@ function AdminGate() {
         <Route path="/moderacion" component={ModeracionPage} />
         <Route path="/mezclas" component={MezclasPage} />
         <Route path="/categorias" component={CategoriasPage} />
+        <Route path="/sesiones/nueva" component={SesionesPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardShell>
