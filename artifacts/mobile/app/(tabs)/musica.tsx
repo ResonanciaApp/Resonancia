@@ -231,9 +231,7 @@ export default function MiMusicaScreen() {
               style={[styles.pageSub, { color: colors.mutedForeground }]}
               numberOfLines={descExpanded ? undefined : 2}
             >
-              Crea tu ambiente sonoro combinando loops de naturaleza, mantras y frecuencias.
-              Activa hasta {MAX_ACTIVE_SOUNDS} sonidos a la vez y regula el volumen de cada uno.
-              Tus mezclas favoritas se guardan en cada categoría.
+              Aquí es donde tú eres el creador, ¡comparte tus mezclas!
             </Text>
           </Pressable>
 
