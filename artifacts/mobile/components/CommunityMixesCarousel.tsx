@@ -28,10 +28,9 @@ import { type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 
 // ── Tipos ──────────────────────────────────────────────────────────
-type CategoryFilter = "todos" | MixCategory;
+type CategoryFilter = MixCategory;
 
 const TABS: { id: CategoryFilter; label: string }[] = [
-  { id: "todos",         label: "Todos"      },
   { id: "dormir",        label: "Descanso"   },
   { id: "motivarme",     label: "Meditación" },
   { id: "concentracion", label: "Enfoque"    },
@@ -50,7 +49,7 @@ export function CommunityMixesCarousel() {
   const { importPreset, presets } = useMixer();
 
   // ── Tab state ─────────────────────────────────────────────────
-  const [activeTab, setActiveTab] = useState<CategoryFilter>("todos");
+  const [activeTab, setActiveTab] = useState<CategoryFilter>("dormir");
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const [indicatorWidth, setIndicatorWidth] = useState(0);
   const tabLayouts = useRef<Record<number, { x: number; width: number }>>({});
@@ -82,9 +81,7 @@ export function CommunityMixesCarousel() {
   const [menuMix, setMenuMix] = useState<SharedMix | null>(null);
 
   // ── Filtrado ──────────────────────────────────────────────────
-  const filtered = activeTab === "todos"
-    ? allMixes
-    : allMixes.filter((m) => m.category === activeTab);
+  const filtered = allMixes.filter((m) => m.category === activeTab);
 
   const visible = filtered.slice(0, MAX_VISIBLE);
   const remaining = filtered.length - visible.length;
