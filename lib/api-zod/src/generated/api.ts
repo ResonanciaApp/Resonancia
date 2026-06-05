@@ -117,7 +117,7 @@ export const shareMixBodyDescriptionMax = 120;
 
 export const shareMixBodyImageMax = 60;
 
-export const shareMixBodySoundsMax = 5;
+export const shareMixBodySoundsMax = 10;
 
 
 

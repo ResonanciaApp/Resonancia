@@ -214,7 +214,7 @@ export interface SharedMixInput {
   category: SharedMixInputCategory;
   /**
      * @minItems 1
-     * @maxItems 5
+     * @maxItems 10
      */
   sounds: SharedMixSound[];
 }

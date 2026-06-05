@@ -39,7 +39,7 @@ export const insertSharedMixSchema = createInsertSchema(sharedMixesTable)
     sounds: z
       .array(z.object({ id: z.string().min(1).max(40), volume: z.number().min(0).max(1) }))
       .min(1)
-      .max(5),
+      .max(10),
   });
 
 export type InsertSharedMix = z.infer<typeof insertSharedMixSchema>;

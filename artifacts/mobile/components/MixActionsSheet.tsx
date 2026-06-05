@@ -135,7 +135,7 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
           description: mix.description ?? "",
           image: mix.image ?? "",
           category: mix.category as never,
-          sounds: mix.sounds.slice(0, 5).map((s) => ({ id: s.id, volume: s.volume })),
+          sounds: mix.sounds.slice(0, 10).map((s) => ({ id: s.id, volume: s.volume })),
         },
       },
       {
