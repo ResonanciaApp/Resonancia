@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
   tab: {
     paddingHorizontal: 13,
     paddingVertical: 7,
-    borderRadius: 6,
+    borderRadius: 14,
     borderWidth: 1,
   },
   // borderColor is set dynamically; borderWidth stays 1 so layout doesn't shift
