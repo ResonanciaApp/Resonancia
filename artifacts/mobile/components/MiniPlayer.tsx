@@ -171,9 +171,10 @@ export function MiniPlayer() {
           </>
         ) : (
           /* TERMINAR — visible solo cuando está pausado */
+          <View style={{ flex: 1 }} />
           <Pressable
             onPress={(e) => { e.stopPropagation(); stopAll(); everPlayedRef.current = false; }}
-            style={styles.terminarBtn}
+            style={[styles.terminarBtn, { marginRight: 10 }]}
             accessibilityRole="button"
             accessibilityLabel="Terminar mezcla"
           >
@@ -353,7 +354,6 @@ const styles = StyleSheet.create({
 
   // ── TERMINAR (pausado) ────────────────────────────────────────
   terminarBtn: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
