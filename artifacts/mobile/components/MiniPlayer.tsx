@@ -195,7 +195,13 @@ export function MiniPlayer() {
           />
         </Pressable>
       </View>,
-      () => openSheet(),
+      () => {
+        if (loadedPresetId?.startsWith("community-")) {
+          router.push("/(tabs)/musica" as never);
+        } else {
+          openSheet();
+        }
+      },
     );
   }
 
