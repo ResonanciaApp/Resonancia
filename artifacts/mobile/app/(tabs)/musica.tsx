@@ -129,8 +129,8 @@ export default function MiMusicaScreen() {
         style={[
           styles.tab,
           {
-            backgroundColor: "transparent",
-            borderColor: selected ? "rgba(237,225,211,0.55)" : "rgba(255,255,255,0.12)",
+            backgroundColor: "#151A23",
+            borderColor: selected ? "rgba(100,185,220,0.45)" : "transparent",
           },
         ]}
       >
@@ -372,6 +372,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
   },
+  // borderColor is set dynamically; borderWidth stays 1 so layout doesn't shift
   tabLabel: { fontSize: 13, fontWeight: "400", letterSpacing: 0.2 },
 
   // Categorías de mezclas — 3 tarjetas iguales
