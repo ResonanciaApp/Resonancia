@@ -66,6 +66,10 @@ export type Session = {
   guests?: { name: string; role: string; instagram?: string }[];
   /** ID del artista (de data/artists.ts). Solo para Música Ambient/Enteógena. Si se omite → Resonancia. */
   artistId?: string;
+  /** URL de audio principal para sesiones subidas vía admin (no bundleadas). */
+  audioUri?: string;
+  /** URL de voz guía para sesiones subidas vía admin (no bundleadas). */
+  voiceUri?: string;
 };
 
 export const SESSIONS: Session[] = [
@@ -609,16 +613,35 @@ export type CatalogSessionSnapshot = {
   guideId?: string | null;
   artistId?: string | null;
   guests?: { name: string; role: string; instagram?: string | null }[] | null;
+  /** URL de imagen (para sesiones nuevas no bundleadas). */
+  imageUrl?: string | null;
+  /** Archivos de audio (para sesiones nuevas no bundleadas). */
+  audioFiles?: { role: string; url?: string | null; name: string }[];
 };
+
+/** Convierte un objectPath de storage en URL absoluta cargable. */
+function resolveObjectPath(path: string | null | undefined): string | undefined {
+  if (!path) return undefined;
+  if (/^https?:/i.test(path)) return path;
+  const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
+  const serving = path.startsWith("/objects/")
+    ? path.replace(/^\/objects\//, "/api/storage/objects/")
+    : path.startsWith("/")
+      ? path
+      : `/${path}`;
+  return `${base}${serving}`;
+}
 
 /**
  * Hidrata SESSIONS in-place con el snapshot del servidor (merge por id),
- * conservando `image` y `audio` bundleados. Las sesiones que no existen en el
- * bundle se ignoran (no hay assets que resolver). No reordena el array → cero
- * churn en pantallas que importan SESSIONS de forma síncrona.
+ * conservando `image` y `audio` bundleados.
+ * Sesiones del servidor que no existen en el bundle se insertan al final
+ * del array con los assets resueltos desde Object Storage.
  */
 export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
   const byId = new Map(remote.map((s) => [s.id, s]));
+
+  // 1. Actualizar sesiones bundleadas in-place.
   for (const local of SESSIONS) {
     const r = byId.get(local.id);
     if (!r) continue;
@@ -652,5 +675,51 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
           instagram: g.instagram ?? undefined,
         }))
       : undefined;
+    // Si ya tenía audioUri del ciclo previo, no pisar.
+    if (!local.audioUri && r.audioFiles?.length) {
+      const main = r.audioFiles.find((a) => a.role === "main" || a.role === "base") ?? r.audioFiles[0];
+      local.audioUri = resolveObjectPath(main.url);
+      const voice = r.audioFiles.find((a) => a.role === "voice");
+      if (voice) local.voiceUri = resolveObjectPath(voice.url);
+    }
+  }
+
+  // 2. Insertar sesiones nuevas (subidas vía admin) que no están en el bundle.
+  for (const r of remote) {
+    if (SESSIONS.some((s) => s.id === r.id)) continue;
+    const main = r.audioFiles?.find((a) => a.role === "main" || a.role === "base") ?? r.audioFiles?.[0];
+    const voice = r.audioFiles?.find((a) => a.role === "voice");
+    const image: import("react-native").ImageSourcePropType = r.imageUrl
+      ? { uri: resolveObjectPath(r.imageUrl) }
+      : require("@/assets/images/sessions/session-2.jpg");
+    SESSIONS.push({
+      id: r.id,
+      title: r.title,
+      subtitle: r.subtitle,
+      categoryId: r.categoryId,
+      categoryLabel: r.categoryLabel,
+      duration: r.duration,
+      durationLabel: r.durationLabel,
+      description: r.description,
+      benefits: r.benefits,
+      instruments: r.instruments,
+      image,
+      isFeatured: r.isFeatured,
+      isNew: r.isNew,
+      isPremium: r.isPremium,
+      frequency: r.frequency ?? undefined,
+      soundTag: (r.soundTag ?? undefined) as SoundTag | undefined,
+      meditationTag: (r.meditationTag ?? undefined) as MeditationTag | undefined,
+      ancestralTag: (r.ancestralTag ?? undefined) as AncestralTag | undefined,
+      sabiduriaTag: (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined,
+      podcastTag: (r.podcastTag ?? undefined) as PodcastTag | undefined,
+      sonidosTag: (r.sonidosTag ?? undefined) as SonidosTag | undefined,
+      themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
+      sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,
+      guideId: r.guideId ?? undefined,
+      artistId: r.artistId ?? undefined,
+      audioUri: main ? resolveObjectPath(main.url) : undefined,
+      voiceUri: voice ? resolveObjectPath(voice.url) : undefined,
+    });
   }
 }

@@ -821,7 +821,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       void addToHistory(session);
       startStatTracking(session);
 
-      const audioFile = AUDIO_MAP[session.id];
+      const audioFile = AUDIO_MAP[session.id] ?? (session.audioUri ? { uri: session.audioUri } : undefined);
 
       if (audioFile) {
         setIsLoading(true);
@@ -845,7 +845,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           main.play();
 
           // Voice track plays simultaneously with the main track
-          const voiceFile = VOICE_MAP[session.id];
+          const voiceFile = VOICE_MAP[session.id] ?? (session.voiceUri ? { uri: session.voiceUri } : undefined);
           if (voiceFile) {
             const voice = ensureVoicePlayer();
             voice.loop = false;
