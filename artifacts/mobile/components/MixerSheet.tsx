@@ -484,10 +484,10 @@ export function MixerSheet() {
                             styles.catChip,
                             {
                               backgroundColor: selected
-                                ? "rgba(198,155,79,0.22)"
+                                ? "rgba(100,185,220,0.15)"
                                 : "rgba(255,255,255,0.05)",
                               borderColor: selected
-                                ? "rgba(198,155,79,0.6)"
+                                ? "rgba(100,185,220,0.45)"
                                 : "rgba(255,255,255,0.1)",
                             },
                           ]}
@@ -497,7 +497,7 @@ export function MixerSheet() {
                               styles.catChipText,
                               {
                                 color: selected
-                                  ? colors.primary
+                                  ? "rgba(130,205,235,1)"
                                   : colors.mutedForeground,
                               },
                             ]}
@@ -509,34 +509,20 @@ export function MixerSheet() {
                     })}
                   </ScrollView>
 
-                  <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Imagen</Text>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.imgGallery}
-                  >
-                    {MIX_IMAGE_GALLERY.map((key) => {
-                      const selected = mixImage === key;
-                      return (
-                        <Pressable key={key} onPress={() => setMixImage(key)} style={styles.imgThumbWrap}>
-                          <ImageBackground
-                            source={getMixImage(key)}
-                            style={styles.imgThumb}
-                            imageStyle={[
-                              styles.imgThumbInner,
-                              { borderColor: selected ? colors.primary : "transparent" },
-                            ]}
-                          >
-                            {selected && (
-                              <View style={[styles.imgCheck, { backgroundColor: colors.primary }]}>
-                                <Feather name="check" size={12} color={colors.primaryForeground} />
-                              </View>
-                            )}
-                          </ImageBackground>
-                        </Pressable>
-                      );
-                    })}
-                  </ScrollView>
+                  <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Descripción</Text>
+                  <TextInput
+                    value={mixDescription}
+                    onChangeText={setMixDescription}
+                    placeholder="Ej: Para relajarme antes de dormir"
+                    placeholderTextColor={colors.mutedForeground}
+                    multiline
+                    numberOfLines={3}
+                    style={[
+                      styles.modalInput,
+                      { color: colors.foreground, borderColor: "rgba(182,149,95,0.2)", backgroundColor: colors.card, minHeight: 72, textAlignVertical: "top" },
+                    ]}
+                    maxLength={120}
+                  />
                 </ScrollView>
 
                 <View style={styles.modalActions}>
