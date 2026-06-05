@@ -149,11 +149,12 @@ export default function MiMusicaScreen() {
     return <Feather name="circle" size={size} color={color} />;
   };
 
-  const renderSoundCard = (sound: MixSound) => {
+  const renderSoundCard = (sound: MixSound, idx: number) => {
     const available = hasSoundFile(sound.id);
     const active = isActive(sound.id);
     const locked = sound.isPremium && !isPremium;
     const image = getSoundImage(sound.id);
+    const tiltDir = idx % 2 === 0 ? "-5deg" : "5deg";
 
     return (
       <Pressable
@@ -165,7 +166,10 @@ export default function MiMusicaScreen() {
         <View
           style={[
             styles.cardImageWrap,
-            active && styles.cardImageWrapActive,
+            active && [
+              styles.cardImageWrapActive,
+              { transform: [{ rotate: tiltDir }, { scale: 1.05 }] },
+            ],
             { borderColor: active ? "#FFFFFF" : "transparent" },
           ]}
         >
@@ -342,7 +346,7 @@ export default function MiMusicaScreen() {
 
           {/* ── Biblioteca de sonidos ── */}
           <View style={[styles.grid, { marginTop: 33 }]}>
-            {displayedSounds.map(renderSoundCard)}
+            {displayedSounds.map((s, i) => renderSoundCard(s, i))}
           </View>
         </ScrollView>
       </View>
