@@ -384,9 +384,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   tabItem: {
+    flex: 1,
     paddingVertical: 9,
-    paddingHorizontal: 12,
     alignItems: "center",
+    justifyContent: "center",
   },
   tabLabel: { fontSize: 13, letterSpacing: 0.2 },
   tabIndicator: {
