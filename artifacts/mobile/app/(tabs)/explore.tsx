@@ -233,10 +233,10 @@ export default function ExploreScreen() {
                     <Feather
                       name="clock"
                       size={16}
-                      color="white"
+                      color="#F3ECE1"
                       style={styles.timeIcon}
                     />
-                    <Text style={[styles.timeLabel, { color: colors.foreground }]}>{bucket.label}</Text>
+                    <Text style={[styles.timeLabel, { color: "#F3ECE1" }]}>{bucket.label}</Text>
                   </Pressable>
                 ))}
               </ScrollView>
