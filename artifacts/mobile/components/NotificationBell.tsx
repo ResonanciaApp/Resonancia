@@ -40,7 +40,7 @@ export function NotificationBell() {
       style={styles.btn}
     >
       <Image
-        source={require("@/assets/images/flor-de-loto.png")}
+        source={require("@/assets/images/fuego.png")}
         style={styles.lotus}
         resizeMode="contain"
       />
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   lotus: {
     width: 26,
     height: 26,
-    tintColor: "#FFFFFF",
+    opacity: 0.2,
   },
   badge: {
     position: "absolute",
