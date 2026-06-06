@@ -37,7 +37,7 @@ const TABS: TabDef[] = [
   { label: "Cuencos",       value: "Cuencos",       icon: "bowl-mix",       tags: ["Cuencos Tibetanos", "Cuencos de Cuarzo", "Mix de Cuencos"] },
   { label: "Gongs",         value: "Gongs",         icon: "record-circle-outline", tags: ["Gongs"] },
   { label: "Campanas",      value: "Campanas",      icon: "bell-outline",   tags: [] },
-  { label: "Mix Ancestral", value: "Mix Ancestral", icon: "layers-triple",  tags: ["Cuencos y Gongs", "Full Instrumentos"] },
+  { label: "Mix",           value: "Mix Ancestral", icon: "layers-triple",  tags: ["Cuencos y Gongs", "Full Instrumentos"] },
 ];
 
 export default function SonidosAncestalesScreen() {

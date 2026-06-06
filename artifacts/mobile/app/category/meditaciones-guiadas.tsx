@@ -39,7 +39,6 @@ const TABS: TabDef[] = [
   { label: "Observación",      value: "Observación",      icon: "eye-outline",     tags: ["No Duales"] },
   { label: "Visualizaciones",  value: "Visualizaciones",  icon: "creation",        tags: ["Visualizaciones"] },
   { label: "Escaneo Corporal", value: "Escaneo Corporal", icon: "human",           tags: ["Escaneo Corporal"] },
-  { label: "Manifestación",    value: "Manifestación",    icon: "lightning-bolt",  tags: ["Manifestación"] },
 ];
 
 export default function MeditacionesGuiadasScreen() {
