@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   },
 
   // Tab bar
-  tabContent:  { flexDirection: "row", gap: 4, paddingHorizontal: 12, paddingBottom: 12 },
+  tabContent:  { flexDirection: "row", gap: 3, paddingHorizontal: 8, paddingBottom: 12 },
   tabItem: {
     flex: 1,
     flexDirection: "column",
@@ -439,13 +439,13 @@ const styles = StyleSheet.create({
     gap: 5,
     paddingTop: 20,
     paddingBottom: 18,
-    paddingHorizontal: 10,
+    paddingHorizontal: 2,
     borderRadius: 14,
     minWidth: 62,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabItemActive: { backgroundColor: "rgba(107,154,181,0.14)" },
-  tabLabel: { fontSize: 15, letterSpacing: 0.1 },
+  tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
 
   // Separador
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginHorizontal: 16 },
