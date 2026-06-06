@@ -392,7 +392,7 @@ export default function MiMusicaScreen() {
                         <Image
                           source={NATURE_ICONS[catId]}
                           style={{ width: 14, height: 14, marginRight: 5 }}
-                          tintColor={sel ? FG : MUTED}
+                          tintColor={sel ? GOLD : MUTED}
                           contentFit="contain"
                         />
                       )}
