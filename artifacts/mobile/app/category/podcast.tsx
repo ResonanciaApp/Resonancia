@@ -137,10 +137,10 @@ export default function SonidosScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={styles.titleRow}>
-            <View style={[styles.iconCircle, { backgroundColor: "rgba(0,154,223,0.16)" }]}>
+            <View style={[styles.iconCircle, { backgroundColor: "rgba(0,154,223,0.21)" }]}>
               <Image
                 source={require("../../assets/images/cat-sonidos.png")}
-                style={{ width: 44, height: 44 }}
+                style={{ width: 32, height: 32 }}
                 resizeMode="contain"
               />
             </View>

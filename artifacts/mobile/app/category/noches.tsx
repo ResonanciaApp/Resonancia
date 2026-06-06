@@ -226,10 +226,10 @@ export default function NochesScreen() {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <View style={styles.titleRow}>
-                <View style={[styles.catIconCircle, { backgroundColor: "rgba(200,123,181,0.16)" }]}>
+                <View style={[styles.catIconCircle, { backgroundColor: "rgba(200,123,181,0.21)" }]}>
                   <Image
                     source={require("../../assets/images/cat-noches.png")}
-                    style={{ width: 40, height: 40 }}
+                    style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
                 </View>

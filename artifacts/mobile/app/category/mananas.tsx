@@ -218,10 +218,10 @@ export default function MananasScreen() {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <View style={styles.titleRow}>
-                <View style={[styles.catIconCircle, { backgroundColor: "rgba(244,201,147,0.16)" }]}>
+                <View style={[styles.catIconCircle, { backgroundColor: "rgba(244,201,147,0.21)" }]}>
                   <Image
                     source={require("../../assets/images/cat-mananas.png")}
-                    style={{ width: 44, height: 44 }}
+                    style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
                 </View>

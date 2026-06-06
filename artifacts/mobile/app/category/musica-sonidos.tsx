@@ -104,7 +104,7 @@ export default function MusicaSonidosScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={styles.titleRow}>
-            <View style={[styles.catIconCircle, { backgroundColor: "rgba(0,165,130,0.16)" }]}>
+            <View style={[styles.catIconCircle, { backgroundColor: "rgba(0,165,130,0.21)" }]}>
               <ExpoImage
                 source={require("../../assets/images/cat-musica.png")}
                 style={{ width: 32, height: 32 }}
