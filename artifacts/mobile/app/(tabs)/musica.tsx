@@ -38,6 +38,14 @@ const MUTED    = "#7A8FA8";
 const BORDER   = "#1E2733";
 const TAB_PILL = "#1E2733";
 
+const NATURE_ICONS: Partial<Record<SoundCategoryId, number>> = {
+  animales: require("@/assets/images/nature/animales.png"),
+  bosque:   require("@/assets/images/nature/bosque.png"),
+  mar:      require("@/assets/images/nature/mar.png"),
+  fuego:    require("@/assets/images/nature/fuego.png"),
+  desierto: require("@/assets/images/nature/desierto.png"),
+};
+
 type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "voces";
 
 const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: SoundCategoryId[] | null }[] = [
@@ -388,6 +396,14 @@ export default function MiMusicaScreen() {
                         },
                       ]}
                     >
+                      {NATURE_ICONS[catId] && (
+                        <Image
+                          source={NATURE_ICONS[catId]}
+                          style={{ width: 14, height: 14, marginRight: 5 }}
+                          tintColor={sel ? FG : MUTED}
+                          contentFit="contain"
+                        />
+                      )}
                       <Text style={[styles.subTabText, { color: sel ? FG : MUTED }]}>
                         {cat.label}
                       </Text>
@@ -450,6 +466,8 @@ const styles = StyleSheet.create({
   // Sub-tabs
   subTabRow: { flexDirection: "row", gap: 8, paddingBottom: 14 },
   subTabPill: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 10,
