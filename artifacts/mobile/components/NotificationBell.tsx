@@ -11,7 +11,6 @@ const GOAL_MINUTES = 5;
 /** Opacidad de reposo del fuego y del número (estado atenuado). */
 const REST_OPACITY = 0.2;
 
-const GOLD = "#BE9650";
 const STREAK_ANIM_KEY = "@resonance_streak_anim_date";
 /** Flag DEV: fuerza la animación la próxima vez que se abre el Inicio. */
 const STREAK_FORCE_KEY = "@resonance_streak_force";
@@ -216,6 +215,7 @@ export function NotificationBell() {
       hitSlop={12}
       style={styles.btn}
     >
+      <Animated.View pointerEvents="none" style={[styles.pill, { opacity: fireOpacity }]} />
       {displayNumber != null && (
         <Animated.Text style={[styles.num, { opacity: numOpacity }]}>
           {displayNumber}
@@ -232,20 +232,30 @@ export function NotificationBell() {
 
 const styles = StyleSheet.create({
   btn: {
-    minWidth: 38,
-    height: 38,
+    height: 34,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     gap: 5,
+    paddingHorizontal: 10,
+  },
+  pill: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+    borderRadius: 17,
   },
   num: {
-    color: GOLD,
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
   },
   fire: {
-    width: 26,
-    height: 26,
+    width: 23,
+    height: 23,
   },
 });
