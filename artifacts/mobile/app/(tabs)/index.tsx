@@ -190,10 +190,10 @@ export default function HomeScreen() {
                 { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 der
               ];
               const iconColors: Record<string, string> = {
-                "sonidos-ancestrales": "#BE9650",
-                "meditaciones-guiadas": "#BE9650",
-                "musica-sonidos": "#BE9650",
-                "podcast": "#BE9650",
+                "sonidos-ancestrales": "#6BA8C8",
+                "meditaciones-guiadas": "#6BA8C8",
+                "musica-sonidos": "#6BA8C8",
+                "podcast": "#6BA8C8",
                 "mananas": "#f4c993",
                 "noches": "#C87BB5",
               };
@@ -213,7 +213,7 @@ export default function HomeScreen() {
                   {catImg ? (
                     <Image
                       source={catImg}
-                      tintColor="#BE9650"
+                      tintColor="#6BA8C8"
                       style={[styles.catCardImage, cat.id === "musica-sonidos" && { width: 27, height: 27 }]}
                       resizeMode="contain"
                     />
