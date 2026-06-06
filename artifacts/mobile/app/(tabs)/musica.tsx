@@ -68,10 +68,10 @@ const NATURE_ICONS: Partial<Record<SoundCategoryId, number>> = {
 type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores";
 
 const MAIN_TABS: { id: MainTabId; label: string; categories: SoundCategoryId[] | null }[] = [
-  { id: "popular",        label: "Popular",        categories: null },
-  { id: "naturaleza",     label: "Naturaleza",     categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
-  { id: "ancestrales",    label: "Ancestrales",    categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
-  { id: "sintetizadores", label: "Digitales",       categories: ["solfeggio", "frecuencias"] },
+  { id: "popular",        label: "Todos",     categories: null },
+  { id: "naturaleza",     label: "Naturales", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
+  { id: "ancestrales",    label: "Sagrados",  categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
+  { id: "sintetizadores", label: "Digital",   categories: ["solfeggio", "frecuencias"] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
