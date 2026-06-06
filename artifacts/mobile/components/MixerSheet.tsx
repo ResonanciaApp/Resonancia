@@ -258,21 +258,23 @@ export function MixerSheet() {
       category: mixCategory,
     });
     setSaveModalOpen(false);
-    // Primero notifica al ♥ (animación en musica.tsx)
     notifySaved();
-    // Detener el spring de entrada si todavía está en movimiento,
-    // luego fade-out suave y zen
+    // Mantener el Modal visible durante el fade aunque stopAll vacíe activeMix
+    setForceShowModal(true);
+    // Limpiar sonidos AHORA: el backdrop (opacidad 0.6→0) cubre el MixerPanel
+    // mientras dura el fade, evitando que aparezca por un frame
+    stopAll();
+    // Detener el spring de entrada si está en movimiento
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
     Animated.timing(sheetOpacity, {
       toValue: 0,
-      duration: 380,
+      duration: 480,
       useNativeDriver: true,
     }).start(() => {
-      // NO restablecer opacidad aquí: setValue(1) antes de closeSheet()
-      // crea un frame visible que titila. El useEffect de isSheetOpen ya lo resetea al abrir.
+      // Ambos estados en el mismo tick (React 18 batch) → un solo re-render
+      setForceShowModal(false);
       closeSheet();
-      stopAll();
     });
   };
 
@@ -297,18 +299,25 @@ export function MixerSheet() {
   const canShow = isSheetOpen && activeMix.length > 0;
   const canUpdate = originId != null && originPreset != null;
 
+  // Mantiene el Modal visible durante el fade de cierre aunque canShow
+  // cambie a false (por stopAll). Se libera al terminar la animación.
+  const [forceShowModal, setForceShowModal] = useState(false);
+  const modalVisible = canShow || forceShowModal;
+
   return (
     <Modal
-      visible={canShow}
+      visible={modalVisible}
       transparent
       animationType="none"
       onRequestClose={closeSheet}
     >
+      {/* La opacidad envuelve TODA la superficie (backdrop + sheet) para que
+          el fade cubra el MixerPanel subyacente sin flashes */}
+      <Animated.View style={{ flex: 1, opacity: sheetOpacity }}>
       <Pressable style={styles.backdrop} onPress={closeSheet}>
         <Animated.View
           style={{
             transform: [{ translateY: sheetEnterY }],
-            opacity: sheetOpacity,
           }}
         >
         <Pressable
@@ -554,6 +563,7 @@ export function MixerSheet() {
         </Pressable>
         </Animated.View>
       </Pressable>
+      </Animated.View>
     </Modal>
   );
 }

@@ -119,10 +119,10 @@ export default function MiMusicaScreen() {
     heartAnim.stopAnimation(() => {
       heartAnim.setValue(0);
       Animated.sequence([
-        Animated.timing(heartAnim, { toValue: 0.5, duration: 200, useNativeDriver: false }),
-        Animated.timing(heartAnim, { toValue: 0.4, duration: 80,  useNativeDriver: false }),
-        Animated.delay(280),
-        Animated.timing(heartAnim, { toValue: 0,   duration: 550, useNativeDriver: false }),
+        Animated.timing(heartAnim, { toValue: 0.5, duration: 350, useNativeDriver: false }),
+        Animated.timing(heartAnim, { toValue: 0.4, duration: 100, useNativeDriver: false }),
+        Animated.delay(500),
+        Animated.timing(heartAnim, { toValue: 0,   duration: 750, useNativeDriver: false }),
       ]).start();
     });
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
