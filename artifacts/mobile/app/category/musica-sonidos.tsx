@@ -29,7 +29,7 @@ const RATINGS_KEY = "@resonance_ratings";
 
 type Tab = SoundTag;
 
-const MUSICA_ACCENT = "#5B9E7A";
+const MUSICA_ACCENT = "#00A582";
 
 const TABS: { label: string; value: Tab; icon: string }[] = [
   { label: "Ambient",   value: "Música Ambient",   icon: "weather-cloudy"  },
