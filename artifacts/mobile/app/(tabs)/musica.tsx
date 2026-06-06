@@ -38,6 +38,25 @@ const FG       = "#EDE1D3";
 const MUTED    = "#7A8FA8";
 const TAB_PILL = "#1E2733";
 
+const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
+  animales:          "paw",
+  bosque:            "tree",
+  mar:               "waves",
+  fuego:             "fire",
+  desierto:          "weather-sunny",
+  cuencos_tibetanos: "bowl-mix",
+  cuencos_cuarzo:    "circle-outline",
+  gongs:             "bell-outline",
+  campanas_viento:   "weather-windy",
+  vientos:           "weather-windy",
+  cantos:            "microphone",
+  percusion:         "music-note",
+  mantras:           "om",
+  solfeggio:         "music-clef-treble",
+  frecuencias:       "sine-wave",
+  ruidos:            "volume-vibrate",
+};
+
 const NATURE_ICONS: Partial<Record<SoundCategoryId, number>> = {
   animales: require("@/assets/images/nature/animales.png"),
   bosque:   require("@/assets/images/nature/bosque.png"),
@@ -386,6 +405,14 @@ export default function MiMusicaScreen() {
                         },
                       ]}
                     >
+                      {SUB_TAB_ICONS[catId] && (
+                        <MaterialCommunityIcons
+                          name={SUB_TAB_ICONS[catId] as any}
+                          size={13}
+                          color={sel ? GOLD : MUTED}
+                          style={{ marginRight: 5 }}
+                        />
+                      )}
                       <Text style={[styles.subTabText, { color: "#FFFFFF" }]}>
                         {cat.label}
                       </Text>
@@ -473,7 +500,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  subTabText: { fontSize: 15, fontWeight: "600" },
+  subTabText: { fontSize: 14, fontWeight: "600" },
 
   // Grilla de sonidos — 3 columnas uniformes
   grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
