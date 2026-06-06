@@ -297,7 +297,7 @@ export default function MiMusicaScreen() {
                     <Feather
                       name={tab.icon as any}
                       size={20}
-                      color={selected ? colors.primary : colors.mutedForeground}
+                      color={selected ? "#FFFFFF" : colors.mutedForeground}
                     />
                     <Text
                       style={[
