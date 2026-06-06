@@ -44,6 +44,7 @@ const TABS: { label: string; value: SonidosTab; icon: string }[] = [
   { label: "Binaurales",   value: "Sonidos Binaurales",   icon: "headphones" },
   { label: "Naturaleza",   value: "Sonidos Naturaleza",   icon: "wind"       },
   { label: "Atmosféricos", value: "Sonidos Atmosféricos", icon: "cloud"      },
+  { label: "Hipnóticos",   value: "Sonidos Hipnóticos",   icon: "target"     },
 ];
 
 /** Timer del sonido. 5/10/20 min gratis; el resto (incluido "Sin límite") es premium. */

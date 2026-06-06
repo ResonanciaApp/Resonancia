@@ -23,7 +23,7 @@ export type PodcastTag =
   | "Sobrenatural"
   | "Neurociencia";
 
-export type SonidosTag = "Sonidos Binaurales" | "Sonidos Naturaleza" | "Sonidos Atmosféricos";
+export type SonidosTag = "Sonidos Binaurales" | "Sonidos Naturaleza" | "Sonidos Atmosféricos" | "Sonidos Hipnóticos";
 
 export type AncestralTag =
   | "Cuencos Tibetanos"
