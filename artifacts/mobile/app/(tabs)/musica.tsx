@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabItemActive: { backgroundColor: "rgba(70,60,200,0.22)", borderColor: "rgba(190,150,80,0.45)" },
+  tabItemActive: { backgroundColor: "rgba(55,65,212,0.24)", borderColor: "rgba(190,150,80,0.45)" },
   tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
 
   // Separador
