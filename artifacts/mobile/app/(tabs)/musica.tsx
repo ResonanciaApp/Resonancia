@@ -470,11 +470,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 16,
     right: 16,
-    top: "50%",
+    bottom: 0,
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
   },
-  subTabRow: { flexDirection: "row", gap: 8, paddingVertical: 12, paddingHorizontal: 16 },
+  subTabRow: { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
   subTabPill: {
     flexDirection: "row",
     alignItems: "center",
