@@ -269,7 +269,6 @@ export default function MiMusicaScreen() {
                       <Pressable
                         onPress={() => router.push(`/mezclas/${cat.id}` as never)}
                         style={({ pressed }) => ({
-                          flex: 1,
                           paddingVertical: 8,
                           paddingHorizontal: 6,
                           borderRadius: 13,
@@ -278,7 +277,6 @@ export default function MiMusicaScreen() {
                           justifyContent: "center",
                           backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.06)",
                           borderColor: accent + "50",
-                          transform: [{ scale: pressed ? 0.96 : 1 }],
                         })}
                       >
                         <Text
