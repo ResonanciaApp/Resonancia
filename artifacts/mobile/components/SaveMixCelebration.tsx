@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  pillLabel: { fontSize: 14, fontWeight: "700", textAlign: "center", paddingLeft: 2 },
+  pillLabel: { fontSize: 14, fontWeight: "700", textAlign: "center", paddingLeft: 3 },
 
   token: {
     width: 96,
