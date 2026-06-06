@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  subTabText: { fontSize: 17, fontWeight: "600" },
+  subTabText: { fontSize: 15, fontWeight: "600" },
 
   // Grilla de sonidos — 3 columnas uniformes
   grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
