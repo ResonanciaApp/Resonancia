@@ -639,7 +639,7 @@ export default function PlayerScreen() {
         style={[styles.floatingBtn, { top: topPad + 8, right: 16 }]}
         hitSlop={12}
       >
-        <Feather name="heart" size={22} color={fav ? colors.primary : colors.mutedForeground} />
+        <Feather name="heart" size={22} color={fav ? "#FFFFFF" : colors.mutedForeground} />
       </Pressable>
       <Pressable
         onPress={handleShare}
