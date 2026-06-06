@@ -124,7 +124,7 @@ export default function MeditacionesGuiadasScreen() {
         </View>
 
         {/* Tabs — bloques con ícono */}
-        <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
+        <View style={[styles.tabRow, { paddingHorizontal: 14 }]}>
           {TABS.map(({ label, value, icon }) => {
             const sel = activeTab === value;
             return (
@@ -275,15 +275,15 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
-  tabRow: { flexDirection: "row", gap: 10 },
+  tabRow: { flexDirection: "row", gap: 8 },
   tabBlock: {
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
     gap: 8,
-    paddingTop: 14,
-    paddingBottom: 12,
-    paddingHorizontal: 4,
+    paddingTop: 16,
+    paddingBottom: 14,
+    paddingHorizontal: 8,
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
