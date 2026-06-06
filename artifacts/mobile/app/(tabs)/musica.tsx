@@ -106,23 +106,19 @@ export default function MiMusicaScreen() {
   const { lastSavedAt } = useSaveEvent();
 
   // ── Animación del ♥ al guardar mezcla ──────────────────────────────────────
-  // Un solo Animated.Value: 0=blanco/reposo → 1=pico dorado → 0=vuelta
-  const heartAnim = useRef(new Animated.Value(0)).current;
-
-  const heartScale = heartAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.45, 1] });
-  const heartGold  = heartAnim.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 1, 0] });
-  const heartGlow  = heartAnim.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 0.28, 0] });
+  // Corazón relleno semitransparente en reposo; fade-in a blanco pleno al guardar.
+  // useNativeDriver:true → hilo nativo, sin jank.
+  const HEART_DIM  = 0.28;  // opacidad en reposo
+  const heartOpacity = useRef(new Animated.Value(HEART_DIM)).current;
 
   useEffect(() => {
     if (!lastSavedAt) return;
-    // Detener cualquier secuencia en curso (guardados rápidos) y reiniciar limpio
-    heartAnim.stopAnimation(() => {
-      heartAnim.setValue(0);
+    heartOpacity.stopAnimation(() => {
+      heartOpacity.setValue(HEART_DIM);
       Animated.sequence([
-        Animated.timing(heartAnim, { toValue: 0.5, duration: 350, useNativeDriver: false }),
-        Animated.timing(heartAnim, { toValue: 0.4, duration: 100, useNativeDriver: false }),
+        Animated.timing(heartOpacity, { toValue: 1,         duration: 400, useNativeDriver: true }),
         Animated.delay(500),
-        Animated.timing(heartAnim, { toValue: 0,   duration: 750, useNativeDriver: false }),
+        Animated.timing(heartOpacity, { toValue: HEART_DIM, duration: 750, useNativeDriver: true }),
       ]).start();
     });
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -266,16 +262,9 @@ export default function MiMusicaScreen() {
             accessibilityRole="button"
             accessibilityLabel="Mis mezclas guardadas"
           >
-            {/* Contenedor animado — scale afecta a todo */}
-            <Animated.View style={{ transform: [{ scale: heartScale }], alignItems: "center", justifyContent: "center" }}>
-              {/* Glow dorado de fondo */}
-              <Animated.View style={[styles.heartGlow, { opacity: heartGlow }]} />
-              {/* Ícono dorado encima */}
-              <Animated.View style={[StyleSheet.absoluteFill, styles.heartIconAbsolute, { opacity: heartGold }]}>
-                <MaterialCommunityIcons name="heart" size={24} color={GOLD} />
-              </Animated.View>
-              {/* Ícono base — contorno en reposo */}
-              <MaterialCommunityIcons name="heart-outline" size={24} color={FG} />
+            {/* Relleno sólido, semitransparente en reposo; se ilumina al guardar */}
+            <Animated.View style={{ opacity: heartOpacity }}>
+              <MaterialCommunityIcons name="heart" size={24} color={FG} />
             </Animated.View>
           </Pressable>
         </View>
@@ -376,12 +365,6 @@ const styles = StyleSheet.create({
     width: 42, height: 42, alignItems: "center", justifyContent: "center",
     borderRadius: 21, marginLeft: 12,
   },
-  heartGlow: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 21,
-    backgroundColor: GOLD,
-  },
-  heartIconAbsolute: { alignItems: "center", justifyContent: "center" },
 
   // Tab bar
   tabScroll:   { flexGrow: 0 },
