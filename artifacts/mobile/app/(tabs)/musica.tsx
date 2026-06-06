@@ -47,6 +47,54 @@ const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: Sound
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
 
+// ── Slide+Fade al cambiar de tab ────────────────────────────────────────────
+const ContentSlide = memo(function ContentSlide({
+  dir,
+  children,
+}: {
+  dir: "right" | "left";
+  children: React.ReactNode;
+}) {
+  const slideX  = useRef(new Animated.Value(dir === "right" ? 38 : -38)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useLayoutEffect(() => {
+    const anim = Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true }),
+      Animated.timing(slideX,  { toValue: 0, duration: 220, useNativeDriver: true }),
+    ]);
+    anim.start();
+    return () => anim.stop();
+  }, []);
+
+  return (
+    <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>
+      {children}
+    </Animated.View>
+  );
+});
+
+// ── Slide+Fade para sub-tabs al aparecer ────────────────────────────────────
+const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.ReactNode }) {
+  const slideX  = useRef(new Animated.Value(-20)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useLayoutEffect(() => {
+    const anim = Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.timing(slideX,  { toValue: 0, duration: 200, useNativeDriver: true }),
+    ]);
+    anim.start();
+    return () => anim.stop();
+  }, []);
+
+  return (
+    <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>
+      {children}
+    </Animated.View>
+  );
+});
+
 // Sub-componente aislado: monta solo cuando mezclasOpen=true.
 // useLayoutEffect([]) corre exactamente una vez al montar, con cleanup
 // que cancela la animación si React desmonta/remonta (Strict Mode, hot reload).
@@ -124,6 +172,19 @@ export default function MiMusicaScreen() {
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [mezclasOpen, setMezclasOpen] = useState(false);
+  const [contentAnimKey, setContentAnimKey] = useState(0);
+  const [contentDir, setContentDir] = useState<"right" | "left">("right");
+  const [subTabAnimKey, setSubTabAnimKey] = useState(0);
+
+  const handleMainTab = (id: MainTabId) => {
+    if (id === mainTab) return;
+    const ids = MAIN_TABS.map((t) => t.id);
+    setContentDir(ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
+    setMainTab(id);
+    setSubTab(null);
+    setContentAnimKey((k) => k + 1);
+    setSubTabAnimKey((k) => k + 1);
+  };
 
   const toggleDesc = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -321,7 +382,7 @@ export default function MiMusicaScreen() {
                 return (
                   <Pressable
                     key={tab.id}
-                    onPress={() => { setMainTab(tab.id); setSubTab(null); }}
+                    onPress={() => handleMainTab(tab.id)}
                     style={[
                       styles.mainTabItem,
                       selected && styles.mainTabItemActive,
@@ -350,40 +411,42 @@ export default function MiMusicaScreen() {
 
             {/* ── Sub-tabs — solo si el tab principal tiene > 1 categoría ── */}
             {subTabCategories && subTabCategories.length > 1 ? (
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{ marginHorizontal: -20 }}
-                contentContainerStyle={styles.subTabRow}
-              >
-                {subTabCategories.map((catId) => {
-                  const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
-                  if (!cat) return null;
-                  const selected = subTab === catId;
-                  return (
-                    <Pressable
-                      key={catId}
-                      onPress={() => setSubTab(selected ? null : catId)}
-                      style={[
-                        styles.subTabPill,
-                        {
-                          borderLeftColor: selected ? "rgba(190,150,80,0.85)" : "transparent",
-                          backgroundColor: selected ? "rgba(190,150,80,0.08)" : "rgba(255,255,255,0.05)",
-                        },
-                      ]}
-                    >
-                      <Text
+              <SubTabSlide key={subTabAnimKey}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={{ marginHorizontal: -20 }}
+                  contentContainerStyle={styles.subTabRow}
+                >
+                  {subTabCategories.map((catId) => {
+                    const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
+                    if (!cat) return null;
+                    const selected = subTab === catId;
+                    return (
+                      <Pressable
+                        key={catId}
+                        onPress={() => setSubTab(selected ? null : catId)}
                         style={[
-                          styles.subTabPillText,
-                          { color: selected ? colors.foreground : colors.mutedForeground },
+                          styles.subTabPill,
+                          {
+                            borderLeftColor: selected ? "rgba(190,150,80,0.85)" : "transparent",
+                            backgroundColor: selected ? "rgba(190,150,80,0.08)" : "rgba(255,255,255,0.05)",
+                          },
                         ]}
                       >
-                        {cat.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </ScrollView>
+                        <Text
+                          style={[
+                            styles.subTabPillText,
+                            { color: selected ? colors.foreground : colors.mutedForeground },
+                          ]}
+                        >
+                          {cat.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              </SubTabSlide>
             ) : (
               <View style={{ height: 8, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
             )}
@@ -391,9 +454,11 @@ export default function MiMusicaScreen() {
 
 
           {/* ── Biblioteca de sonidos ── */}
-          <View style={[styles.grid, { marginTop: 14 }]}>
-            {displayedSounds.map((s, i) => renderSoundCard(s, i))}
-          </View>
+          <ContentSlide key={contentAnimKey} dir={contentDir}>
+            <View style={[styles.grid, { marginTop: 14 }]}>
+              {displayedSounds.map((s, i) => renderSoundCard(s, i))}
+            </View>
+          </ContentSlide>
         </ScrollView>
       </View>
     </View>
