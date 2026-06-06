@@ -345,12 +345,12 @@ export default function MiMusicaScreen() {
                 <Feather
                   name={tab.icon as any}
                   size={24}
-                  color={sel ? "#FFFFFF" : MUTED}
+                  color="#FFFFFF"
                   strokeWidth={sel ? 2.2 : 1.8}
                 />
                 <Text
                   numberOfLines={1}
-                  style={[styles.tabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "400" }]}
+                  style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}
                 >
                   {tab.label}
                 </Text>
@@ -389,11 +389,11 @@ export default function MiMusicaScreen() {
                         <Image
                           source={NATURE_ICONS[catId]}
                           style={{ width: 14, height: 14, marginRight: 5 }}
-                          tintColor={sel ? "#FFFFFF" : MUTED}
+                          tintColor="#FFFFFF"
                           contentFit="contain"
                         />
                       )}
-                      <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED }]}>
+                      <Text style={[styles.subTabText, { color: "#FFFFFF" }]}>
                         {cat.label}
                       </Text>
                     </Pressable>
