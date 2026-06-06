@@ -212,7 +212,7 @@ export default function HomeScreen() {
                   {catImg ? (
                     <Image
                       source={catImg}
-                      style={[styles.catCardImage, cat.id === "noches" && { width: 24, height: 24 }, cat.id === "musica-sonidos" && { width: 25, height: 25 }]}
+                      style={[styles.catCardImage, cat.id === "noches" && { width: 22, height: 22 }, cat.id === "musica-sonidos" && { width: 24, height: 24 }]}
                       resizeMode="contain"
                     />
                   ) : cat.id === "meditaciones-guiadas" ? (
@@ -222,7 +222,7 @@ export default function HomeScreen() {
                   ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={26}
+                      size={25}
                       color={iconColor}
                       style={cat.id === "sonidos-ancestrales" ? { marginTop: -4 } : undefined}
                     />
@@ -582,8 +582,8 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   catCardImage: {
-    width: 26,
-    height: 26,
+    width: 25,
+    height: 25,
   },
   catCardLabel: {
     fontSize: 14,
