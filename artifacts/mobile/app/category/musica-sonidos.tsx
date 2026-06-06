@@ -34,7 +34,7 @@ const MUSICA_ACCENT = "#00A582";
 const TABS: { label: string; value: Tab; icon: string }[] = [
   { label: "Ambient",   value: "Música Ambient",   icon: "weather-cloudy"  },
   { label: "Enteógena", value: "Música Enteógena", icon: "leaf"            },
-  { label: "Tribal",    value: "Música Tribal",    icon: "drum"            },
+  { label: "Tribal",    value: "Música Tribal",    icon: "ocarina"         },
   { label: "Étnica",    value: "Música Étnica",    icon: "guitar-acoustic" },
 ];
 
