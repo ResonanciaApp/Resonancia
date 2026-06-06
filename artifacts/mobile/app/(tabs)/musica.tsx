@@ -264,16 +264,13 @@ export default function MiMusicaScreen() {
           })}
         </ScrollView>
 
-        {/* ── Separador ── */}
-        <View style={styles.separator} />
-
         {/* ── Scroll principal ── */}
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
         >
-          {/* Sub-tabs (si aplica) */}
+          {/* Sub-tabs (si aplica) — arriba del separador */}
           {subTabCategories && subTabCategories.length > 1 && (
             <SubTabSlide key={subTabAnimKey}>
               <ScrollView
@@ -306,6 +303,9 @@ export default function MiMusicaScreen() {
               </ScrollView>
             </SubTabSlide>
           )}
+
+          {/* ── Separador — entre tabs/subtabs y cards ── */}
+          <View style={styles.separator} />
 
           {/* Grilla de sonidos — 3 columnas */}
           <ContentSlide key={contentAnimKey} dir={contentDir}>
