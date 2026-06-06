@@ -376,7 +376,7 @@ export default function ExploreScreen() {
                       <View style={styles.libraryIconWrap}>
                         <Feather name={item.icon} size={isTop ? 22 : 26} color="#BE9650" />
                       </View>
-                      <Text style={[styles.libraryLabel, { color: colors.mutedForeground }]}>
+                      <Text style={[styles.libraryLabel, { color: "#FFFFFF" }]}>
                         {item.label}
                       </Text>
                     </Pressable>
