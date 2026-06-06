@@ -9,6 +9,8 @@ export type TemaItem = {
   description: string;
   themeTagMatch?: string;
   image?: number;
+  /** Ruta personalizada (ej. categorías propias). Por defecto navega a /tema/{id}. */
+  route?: string;
 };
 
 export const TEMAS: TemaItem[] = [
@@ -84,6 +86,30 @@ export const TEMAS: TemaItem[] = [
     color: "#0AA99A",
     description: "Momentos de paz y presencia plena para compartir con quienes más queremos.",
     image: require("@/assets/images/tema-familia.png"),
+  },
+  {
+    id: "mananas",
+    label: "Mañanas",
+    icon: "weather-sunny",
+    color: "#f4c993",
+    description: "Rituales para comenzar el día con energía.",
+    route: "/category/mananas",
+  },
+  {
+    id: "noches",
+    label: "Noches",
+    icon: "weather-night",
+    color: "#C87BB5",
+    description: "Prepara tu cuerpo y mente para el descanso.",
+    route: "/category/noches",
+  },
+  {
+    id: "angustia-acompanamiento",
+    label: "Angustia",
+    icon: "emoticon-sad-outline",
+    color: "#9B72CF",
+    description: "Acompañamiento sonoro y guiado para atravesar momentos difíciles con serenidad.",
+    themeTagMatch: "Para la ansiedad",
   },
 ];
 

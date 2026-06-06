@@ -178,7 +178,7 @@ export default function HomeScreen() {
         {/* ── 2. CATEGORÍAS ── */}
         <View style={styles.section}>
           <View style={styles.catGrid}>
-            {CATEGORIES.map((cat, idx) => {
+            {CATEGORIES.filter((c) => c.id !== "mananas" && c.id !== "noches").map((cat, idx) => {
               const R = 20; const r = 4;
               const radii = [
                 { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 1 izq

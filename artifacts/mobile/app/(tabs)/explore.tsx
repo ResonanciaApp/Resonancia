@@ -191,14 +191,14 @@ export default function ExploreScreen() {
           </View>
         ) : (
           <>
-            {/* ── 9 Temáticas ── */}
+            {/* ── 12 Temáticas ── */}
             <View style={[styles.section, { paddingHorizontal: H_PAD }]}>
               <View style={Platform.OS === "web" ? styles.temaGridWebWrap : undefined}>
                 <View style={styles.temaGrid}>
                   {TEMAS.map((t) => (
                     <Pressable
                       key={t.id}
-                      onPress={() => router.push(`/tema/${t.id}` as never)}
+                      onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
                       style={({ pressed }) => [
                         styles.temaCard,
                         { width: temaW, height: temaW, backgroundColor: "#151A23" },
