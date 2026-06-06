@@ -167,18 +167,17 @@ export function TabsGuardados() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 4,
-            background: "none",
+            justifyContent: "center",
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.06)",
             border: "none",
             cursor: "pointer",
-            color: MUTED,
-            fontSize: 13,
-            fontWeight: 500,
-            padding: "0 0 14px 0",
+            marginBottom: 14,
           }}
         >
-          <ChevronLeft size={18} color={MUTED} />
-          Mi Música
+          <ChevronLeft size={20} color={FG} />
         </button>
         <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: -0.4, color: FG }}>
           Mis Mezclas
