@@ -469,9 +469,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     borderRadius: 14,
     minWidth: 62,
+    borderWidth: 1,
+    borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabItemActive: { backgroundColor: "rgba(107,154,181,0.14)" },
+  tabItemActive: { backgroundColor: "rgba(107,154,181,0.14)", borderColor: "rgba(190,150,80,0.45)" },
   tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
 
   // Separador
