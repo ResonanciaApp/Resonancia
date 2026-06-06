@@ -344,7 +344,7 @@ export default function MiMusicaScreen() {
               >
                 <Feather
                   name={tab.icon as any}
-                  size={20}
+                  size={24}
                   color={sel ? "#FFFFFF" : MUTED}
                   strokeWidth={sel ? 2.2 : 1.8}
                 />
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
 
   // Header
   header:    { paddingHorizontal: 20, paddingBottom: 16, flexDirection: "row", alignItems: "center" },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, color: FG },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, color: FG },
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 3 },
   heartBtn: {
     width: 42, height: 42, alignItems: "center", justifyContent: "center",
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabItemActive: { backgroundColor: "rgba(107,154,181,0.14)" },
-  tabLabel: { fontSize: 10, letterSpacing: 0.1 },
+  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
 
   // Separador
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginHorizontal: 16 },
