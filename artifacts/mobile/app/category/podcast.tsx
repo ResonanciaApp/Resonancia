@@ -13,7 +13,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -65,7 +64,6 @@ export default function SonidosScreen() {
   const { version } = useCatalog();
 
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
-  const [query, setQuery] = useState("");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
@@ -78,14 +76,10 @@ export default function SonidosScreen() {
     [version],
   );
 
-  const filtered = useMemo(() => {
-    let list = sonidosSessions.filter((s) => s.sonidosTag === activeTab);
-    if (query.trim()) {
-      const q = query.trim().toLowerCase();
-      list = list.filter((s) => s.title.toLowerCase().includes(q));
-    }
-    return list;
-  }, [sonidosSessions, activeTab, query]);
+  const filtered = useMemo(
+    () => sonidosSessions.filter((s) => s.sonidosTag === activeTab),
+    [sonidosSessions, activeTab],
+  );
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;
@@ -155,25 +149,8 @@ export default function SonidosScreen() {
           </Text>
         </View>
 
-        {/* Search */}
-        <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
-          <View style={[styles.searchBar, { backgroundColor: "#151A23" }]}>
-            <Feather name="search" size={16} color="rgba(122,143,168,0.5)" style={{ marginRight: 8 }} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Buscar sonido..."
-              placeholderTextColor="rgba(122,143,168,0.45)"
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color={colors.mutedForeground} />
-              </Pressable>
-            )}
-          </View>
-        </View>
+        {/* Línea divisora */}
+        <View style={[styles.divider, { marginHorizontal: H_PAD }]} />
 
         {/* Sticky tab bar — bloques con ícono */}
         <View style={[styles.tabBarWrap, { backgroundColor: colors.background }]}>
@@ -433,15 +410,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  searchWrap: { marginBottom: 16 },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 10,
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    marginBottom: 16,
   },
-  searchInput: { flex: 1, fontSize: 14, padding: 0, margin: 0 },
 
   tabBarWrap: {
     paddingBottom: 0,
