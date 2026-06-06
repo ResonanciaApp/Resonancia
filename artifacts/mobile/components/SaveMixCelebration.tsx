@@ -185,13 +185,12 @@ const styles = StyleSheet.create({
   pill: {
     position: "absolute",
     alignSelf: "center",
-    flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    justifyContent: "center",
     paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 999,
-    borderWidth: 1.5,
+    paddingHorizontal: 18,
+    borderRadius: 13,
+    borderWidth: 1,
   },
   pillGlow: {
     ...StyleSheet.absoluteFillObject,
