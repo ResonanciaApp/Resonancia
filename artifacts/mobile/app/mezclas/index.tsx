@@ -202,7 +202,7 @@ export default function MezclasIndexScreen() {
                 accessibilityState={{ selected: sel }}
               >
                 <CategoryIcon id={cat.id} color={sel ? "#FFFFFF" : MUTED} size={26} />
-                <Text style={[styles.tabLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}>
+                <Text style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}>
                   {cat.label}
                 </Text>
               </Pressable>
