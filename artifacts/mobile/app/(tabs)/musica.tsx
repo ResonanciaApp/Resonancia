@@ -333,12 +333,7 @@ export default function MiMusicaScreen() {
         </View>
 
         {/* ── Tab bar — individual pills ── */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.tabScroll}
-          contentContainerStyle={styles.tabContent}
-        >
+        <View style={styles.tabContent}>
           {MAIN_TABS.map((tab) => {
             const sel = mainTab === tab.id;
             return (
@@ -353,13 +348,16 @@ export default function MiMusicaScreen() {
                   color={sel ? "#FFFFFF" : MUTED}
                   strokeWidth={sel ? 2.2 : 1.8}
                 />
-                <Text style={[styles.tabLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}>
+                <Text
+                  numberOfLines={1}
+                  style={[styles.tabLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
+                >
                   {tab.label}
                 </Text>
               </Pressable>
             );
           })}
-        </ScrollView>
+        </View>
 
         {/* ── Separador / Sub-tabs sobre la línea ── */}
         {subTabCategories && subTabCategories.length > 1 ? (
@@ -440,8 +438,7 @@ const styles = StyleSheet.create({
   },
 
   // Tab bar
-  tabScroll:   { flexGrow: 0 },
-  tabContent:  { flexDirection: "row", gap: 4, paddingHorizontal: 12, paddingBottom: 12, flexGrow: 1 },
+  tabContent:  { flexDirection: "row", gap: 4, paddingHorizontal: 12, paddingBottom: 12 },
   tabItem: {
     flex: 1,
     flexDirection: "column",
