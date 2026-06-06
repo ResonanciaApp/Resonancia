@@ -55,23 +55,23 @@ const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#0C1828", "#090F17"] as const;
 
-/** Minimal Frost — paleta para el sheet del mezclador. */
+/** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
   bg: "#090F17",
   handle: "rgba(255,255,255,0.12)",
   trackBg: "#151A23",
   trackBorder: "rgba(255,255,255,0.07)",
-  sliderThumb: "#BE9650",
-  sliderTrack: "rgba(190,150,80,0.55)",
-  addBorder: "rgba(255,255,255,0.1)",
-  addText: "rgba(190,150,80,0.65)",
+  sliderThumb: "#FFFFFF",
+  sliderTrack: "rgba(255,255,255,0.10)",
+  addBorder: "transparent",
+  addText: "rgba(255,255,255,0.30)",
   separator: "rgba(255,255,255,0.06)",
   playBg: "transparent",
-  playBorder: "rgba(255,255,255,0.12)",
-  playText: "#FFFFFF",
+  playBorder: "transparent",
+  playText: "rgba(255,255,255,0.75)",
   saveBg: "transparent",
-  saveBorder: "rgba(255,255,255,0.1)",
-  saveText: "#FFFFFF",
+  saveBorder: "transparent",
+  saveText: "rgba(190,150,80,0.80)",
   caption: "rgba(122,143,168,0.7)",
 } as const;
 
@@ -427,21 +427,22 @@ export function MixerSheet() {
           {/* Separador warm */}
           <View style={[styles.warmSeparator, { backgroundColor: WARM.separator }]} />
 
-          {/* Controles */}
+          {/* Controles — Flotante Zen */}
           <View style={styles.controlsRow}>
             <Pressable
               onPress={togglePlay}
-              style={[styles.playBtn, { backgroundColor: WARM.playBg, borderWidth: 1, borderColor: WARM.playBorder }]}
+              style={styles.zenCtrlBtn}
+              accessibilityRole="button"
             >
-              <Feather name={isPlaying ? "pause" : "play"} size={20} color={WARM.playText} />
-              <Text style={[styles.playBtnText, { color: WARM.playText }]}>
-                {isPlaying ? "Pausar" : "Reproducir"}
+              <Feather name={isPlaying ? "pause" : "play"} size={36} color={WARM.playText} strokeWidth={1} />
+              <Text style={styles.zenCtrlLabel}>
+                {isPlaying ? "PAUSAR" : "REPRODUCIR"}
               </Text>
             </Pressable>
 
             <Pressable
               onPress={handleTimerPress}
-              style={[styles.iconBtn, { borderColor: WARM.playBorder, backgroundColor: WARM.saveBg }]}
+              style={styles.zenCtrlBtn}
               accessibilityRole="button"
               accessibilityLabel={
                 sleepTimerRemaining != null
@@ -449,45 +450,39 @@ export function MixerSheet() {
                   : "Configurar temporizador de sueño"
               }
             >
-              <Feather
-                name="clock"
-                size={18}
-                color={WARM.playText}
-              />
-              {sleepTimerRemaining != null && (
-                <Text style={[styles.timerText, { color: WARM.playText }]}>
-                  {formatTimer(sleepTimerRemaining)}
-                </Text>
-              )}
+              <Feather name="clock" size={36} color={WARM.playText} strokeWidth={1} />
+              <Text style={styles.zenCtrlLabel}>
+                {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "TIMER"}
+              </Text>
             </Pressable>
           </View>
 
-          {/* Guardar / Actualizar */}
+          {/* Guardar / Actualizar — Flotante Zen */}
           <View style={styles.saveRow}>
             {true ? (
               <>
                 <Pressable
                   onPress={() => canUpdate ? handleUpdateDirect() : (mixHasChanged && openSaveModal("new"))}
-                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder, opacity: mixHasChanged ? 1 : 0.4 }]}
+                  style={[styles.zenSaveBtn, { opacity: mixHasChanged ? 1 : 0.35 }]}
                 >
-                  <Feather name="check" size={16} color={WARM.saveText} />
-                  <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Actualizar</Text>
+                  <Feather name="check" size={14} color={WARM.saveText} />
+                  <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>ACTUALIZAR</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => openSaveModal("new")}
-                  style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
+                  style={styles.zenSaveBtn}
                 >
-                  <MaterialCommunityIcons name="heart" size={16} color="#FFFFFF" />
-                  <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Guardar nueva</Text>
+                  <MaterialCommunityIcons name="heart-outline" size={14} color={WARM.saveText} />
+                  <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>GUARDAR NUEVA</Text>
                 </Pressable>
               </>
             ) : (
               <Pressable
                 onPress={() => openSaveModal("new")}
-                style={[styles.saveBtn, styles.saveBtnFull, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
+                style={styles.zenSaveBtn}
               >
-                <Feather name="save" size={16} color={WARM.saveText} />
-                <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Guardar mezcla</Text>
+                <Feather name="save" size={14} color={WARM.saveText} />
+                <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>GUARDAR MEZCLA</Text>
               </Pressable>
             )}
           </View>
@@ -664,57 +659,61 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
-    height: 46,
-    borderRadius: 14,
-    marginTop: 14,
+    gap: 6,
+    height: 40,
+    marginTop: 10,
   },
-  addBtnText: { fontSize: 14, fontWeight: "600" },
+  addBtnText: { fontSize: 10, fontWeight: "400", letterSpacing: 2, textTransform: "uppercase" },
 
   controlsRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    gap: 56,
+    marginTop: 20,
+    marginBottom: 4,
+  },
+  zenCtrlBtn: {
+    alignItems: "center",
+    justifyContent: "center",
     gap: 10,
-    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
-  playBtn: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    height: 50,
-    borderRadius: 14,
+  zenCtrlLabel: {
+    fontSize: 10,
+    fontWeight: "400",
+    letterSpacing: 2,
+    color: "rgba(255,255,255,0.45)",
   },
+  // kept for TS compat — no longer rendered
+  playBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 50, borderRadius: 14 },
   playBtnText: { fontSize: 15, fontWeight: "700" },
-  iconBtn: {
-    height: 50,
-    minWidth: 50,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    borderWidth: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-  },
+  iconBtn: { height: 50, minWidth: 50, paddingHorizontal: 12, borderRadius: 14, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
   timerText: { fontSize: 12, fontWeight: "700" },
 
   saveRow: {
     flexDirection: "row",
-    gap: 10,
-    marginTop: 10,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 8,
+    marginTop: 14,
+    marginBottom: 2,
   },
-  saveBtn: {
-    flex: 1,
+  zenSaveBtn: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    height: 46,
-    borderRadius: 14,
-    borderWidth: 1,
+    gap: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
+  zenSaveBtnText: {
+    fontSize: 10,
+    fontWeight: "400",
+    letterSpacing: 2,
+  },
+  // kept for TS compat — no longer rendered
+  saveBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 46, borderRadius: 14 },
   saveBtnFull: { flex: 1 },
   saveBtnText: { fontSize: 14, fontWeight: "600" },
 
