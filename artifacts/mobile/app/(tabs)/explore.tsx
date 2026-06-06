@@ -24,6 +24,8 @@ import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
 import { SESSIONS, getSessionById } from "@/data/sessions";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
 import { TEMAS } from "@/data/temas";
@@ -44,6 +46,13 @@ const TAG_H = 130;
 const TEMA_W = (width - H_PAD * 2 - GAP * 2) / 3;
 
 
+
+function fmtTime(totalSeconds: number): string {
+  const s = Math.max(0, Math.floor(totalSeconds));
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
 
 const TIME_BUCKETS = [
   { label: "5 min",  min: 0,   max: 5   },
@@ -114,6 +123,13 @@ export default function ExploreScreen() {
     historySessions[0]?.session ??
     null;
   const lastSessionProgress = lastSession ? getSessionProgress(lastSession.id) : 0;
+  const lastAuthor = lastSession
+    ? lastSession.guideId
+      ? getGuide(lastSession.guideId).name
+      : getArtist(lastSession.artistId).name
+    : "";
+  const lastDurationSec = lastSession ? lastSession.duration * 60 : 0;
+  const lastElapsedSec = Math.round(lastDurationSec * Math.min(1, lastSessionProgress));
   const lastSessionLocked = !!lastSession?.isPremium && !isPremium;
 
   return (
@@ -279,17 +295,30 @@ export default function ExploreScreen() {
                     <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
                       {lastSession.title}
                     </Text>
+                    {!!lastAuthor && (
+                      <Text style={[styles.continueAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+                        {lastAuthor}
+                      </Text>
+                    )}
                     {lastSessionProgress > 0 && (
-                      <View style={[styles.continueProgressTrack, { backgroundColor: "rgba(93,173,226,0.18)" }]}>
-                        <View
-                          style={[
-                            styles.continueProgressFill,
-                            {
-                              width: `${Math.min(100, lastSessionProgress * 100)}%`,
-                              backgroundColor: "#5DADE2",
-                            },
-                          ]}
-                        />
+                      <View style={styles.continueProgressRow}>
+                        <Text style={[styles.continueTimeText, { color: colors.mutedForeground }]}>
+                          {fmtTime(lastElapsedSec)}
+                        </Text>
+                        <View style={[styles.continueProgressTrack, { backgroundColor: "rgba(93,173,226,0.18)" }]}>
+                          <View
+                            style={[
+                              styles.continueProgressFill,
+                              {
+                                width: `${Math.min(100, lastSessionProgress * 100)}%`,
+                                backgroundColor: "#5DADE2",
+                              },
+                            ]}
+                          />
+                        </View>
+                        <Text style={[styles.continueTimeText, { color: colors.mutedForeground }]}>
+                          {fmtTime(lastDurationSec)}
+                        </Text>
                       </View>
                     )}
                   </View>
@@ -749,10 +778,23 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   continueSub: { fontSize: 12, lineHeight: 16 },
+  continueAuthor: { fontSize: 12, lineHeight: 16, marginBottom: 2 },
+  continueProgressRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 8,
+  },
+  continueTimeText: {
+    fontSize: 10,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+    minWidth: 30,
+  },
   continueProgressTrack: {
+    flex: 1,
     height: 3,
     borderRadius: 2,
-    marginTop: 8,
     overflow: "hidden",
   },
   continueProgressFill: {
