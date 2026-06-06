@@ -259,25 +259,18 @@ export function MixerSheet() {
     });
     setSaveModalOpen(false);
     notifySaved();
-    // Mantener el Modal del reproductor visible durante todo el cierre
     setForceShowModal(true);
     stopAll();
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
-    // El modal interno usa animationType="fade" (nativo, ~300ms iOS/Android).
-    // Si empezamos el fade del reproductor antes de que ese fade interno termine,
-    // el reproductor ya lleva parte del fade hecho cuando queda expuesto →
-    // aparece "a medio camino" (efecto pegado). Esperamos a que cierre primero.
-    setTimeout(() => {
-      Animated.timing(sheetOpacity, {
-        toValue: 0,
-        duration: 480,
-        useNativeDriver: true,
-      }).start(() => {
-        setForceShowModal(false);
-        closeSheet();
-      });
-    }, 310);
+    Animated.timing(sheetOpacity, {
+      toValue: 0,
+      duration: 480,
+      useNativeDriver: true,
+    }).start(() => {
+      setForceShowModal(false);
+      closeSheet();
+    });
   };
 
   const handleTimerPress = () => {
