@@ -15,8 +15,11 @@ import { SOUND_MAP } from "@/config/sound-map";
 
 export type SoundIconSet = "feather" | "ionicons";
 export type SoundCategoryId =
-  | "naturaleza"
-  | "agua"
+  | "animales"
+  | "bosque"
+  | "mar"
+  | "fuego"
+  | "desierto"
   | "cuencos_tibetanos"
   | "cuencos_cuarzo"
   | "gongs"
@@ -32,8 +35,11 @@ export interface SoundCategory {
 }
 
 export const SOUND_CATEGORIES: SoundCategory[] = [
-  { id: "naturaleza", label: "Naturaleza" },
-  { id: "agua", label: "Agua" },
+  { id: "animales", label: "Animales" },
+  { id: "bosque",   label: "Bosque" },
+  { id: "mar",      label: "Mar" },
+  { id: "fuego",    label: "Fuego" },
+  { id: "desierto", label: "Desierto" },
   { id: "cuencos_tibetanos", label: "Cuencos Tibetanos" },
   { id: "cuencos_cuarzo", label: "Cuencos de Cuarzo" },
   { id: "gongs", label: "Gongs" },
@@ -56,21 +62,27 @@ export interface MixSound {
 }
 
 export const SOUNDS: MixSound[] = [
-  // ── Naturaleza ──────────────────────────────────────────────
-  { id: "viento", name: "Viento", icon: "wind", iconSet: "feather", category: "naturaleza" },
-  { id: "fogata", name: "Fogata", icon: "flame", iconSet: "ionicons", category: "naturaleza", isPremium: true },
-  { id: "bosque", name: "Bosque", icon: "leaf", iconSet: "ionicons", category: "naturaleza" },
-  { id: "noche", name: "Noche", icon: "moon", iconSet: "feather", category: "naturaleza", isPremium: true },
-  { id: "tormenta", name: "Tormenta", icon: "thunderstorm", iconSet: "ionicons", category: "naturaleza" },
-  { id: "pajaros", name: "Pájaros", icon: "leaf", iconSet: "ionicons", category: "naturaleza" },
-  { id: "grillos", name: "Grillos", icon: "moon", iconSet: "feather", category: "naturaleza" },
+  // ── Animales ────────────────────────────────────────────────
+  { id: "pajaros",  name: "Pájaros",  icon: "leaf",        iconSet: "ionicons", category: "animales" },
+  { id: "grillos",  name: "Grillos",  icon: "moon",        iconSet: "feather",  category: "animales" },
 
-  // ── Agua ────────────────────────────────────────────────────
-  { id: "lluvia", name: "Lluvia", icon: "rainy", iconSet: "ionicons", category: "agua" },
-  { id: "oceano", name: "Océano", icon: "water", iconSet: "ionicons", category: "agua" },
-  { id: "rio", name: "Río", icon: "droplet", iconSet: "feather", category: "agua" },
-  { id: "arroyo", name: "Arroyo", icon: "droplet", iconSet: "feather", category: "agua" },
-  { id: "cascada", name: "Cascada", icon: "water", iconSet: "ionicons", category: "agua", isPremium: true },
+  // ── Bosque ──────────────────────────────────────────────────
+  { id: "bosque",   name: "Bosque",   icon: "leaf",        iconSet: "ionicons", category: "bosque" },
+  { id: "viento",   name: "Viento",   icon: "wind",        iconSet: "feather",  category: "bosque" },
+
+  // ── Mar ─────────────────────────────────────────────────────
+  { id: "oceano",   name: "Océano",   icon: "water",       iconSet: "ionicons", category: "mar" },
+  { id: "lluvia",   name: "Lluvia",   icon: "rainy",       iconSet: "ionicons", category: "mar" },
+  { id: "rio",      name: "Río",      icon: "droplet",     iconSet: "feather",  category: "mar" },
+  { id: "arroyo",   name: "Arroyo",   icon: "droplet",     iconSet: "feather",  category: "mar" },
+  { id: "cascada",  name: "Cascada",  icon: "water",       iconSet: "ionicons", category: "mar", isPremium: true },
+
+  // ── Fuego ───────────────────────────────────────────────────
+  { id: "fogata",   name: "Fogata",   icon: "flame",       iconSet: "ionicons", category: "fuego", isPremium: true },
+
+  // ── Desierto ────────────────────────────────────────────────
+  { id: "tormenta", name: "Tormenta", icon: "thunderstorm", iconSet: "ionicons", category: "desierto" },
+  { id: "noche",    name: "Noche",    icon: "moon",         iconSet: "feather",  category: "desierto", isPremium: true },
 
   // ── Cuencos Tibetanos ───────────────────────────────────────
   { id: "cuencos", name: "Cuenco tibetano", icon: "musical-notes", iconSet: "ionicons", category: "cuencos_tibetanos" },

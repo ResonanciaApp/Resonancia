@@ -42,7 +42,7 @@ type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "
 
 const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: SoundCategoryId[] | null }[] = [
   { id: "popular",        label: "Popular",        icon: "trending-up", categories: null },
-  { id: "naturaleza",     label: "Naturaleza",     icon: "wind",        categories: ["naturaleza", "agua", "ruidos"] },
+  { id: "naturaleza",     label: "Naturaleza",     icon: "wind",        categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
   { id: "ancestrales",    label: "Ancestrales",    icon: "bell",        categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento"] },
   { id: "sintetizadores", label: "Sintetizadores", icon: "sliders",     categories: ["solfeggio", "frecuencias"] },
   { id: "voces",          label: "Voces",          icon: "mic",         categories: ["mantras"] },
