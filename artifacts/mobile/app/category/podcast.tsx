@@ -140,7 +140,12 @@ export default function SonidosScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.iconCircle, { backgroundColor: SONIDOS_ACCENT + "1A" }]}>
-            <MaterialCommunityIcons name="headphones" size={34} color={SONIDOS_ACCENT} />
+            <ExpoImage
+              source={require("../../assets/images/cat-sonidos.png")}
+              tintColor={SONIDOS_ACCENT}
+              style={{ width: 34, height: 34 }}
+              contentFit="contain"
+            />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
