@@ -368,7 +368,7 @@ export default function MiMusicaScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   inner: { flex: 1, paddingHorizontal: 20 },
-  scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0E141C" },
+  scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0B0F14" },
 
   // Header
   header: { marginBottom: 16 },
