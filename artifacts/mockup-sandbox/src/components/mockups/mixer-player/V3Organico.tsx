@@ -76,7 +76,7 @@ export function V3Organico() {
             <div 
               className="absolute left-0 h-1 rounded-l-full pointer-events-none"
               style={{ 
-                width: \`\${tormentaVol}%\`,
+                width: `${tormentaVol}%`,
                 background: 'linear-gradient(90deg, rgba(190,150,80,0.2) 0%, rgba(190,150,80,0.6) 100%)'
               }}
             />
@@ -101,7 +101,7 @@ export function V3Organico() {
             <div 
               className="absolute left-0 h-1 rounded-l-full pointer-events-none"
               style={{ 
-                width: \`\${nocheVol}%\`,
+                width: `${nocheVol}%`,
                 background: 'linear-gradient(90deg, rgba(190,150,80,0.2) 0%, rgba(190,150,80,0.6) 100%)'
               }}
             />
