@@ -66,20 +66,18 @@ export default function MiMusicaScreen() {
   ).current;
 
   useEffect(() => {
+    if (!mezclasOpen) return;
+    // Reset al punto de partida antes de animar
+    pillAnims.forEach((anim) => {
+      anim.opacity.setValue(0);
+      anim.translateX.setValue(-18);
+    });
     const animations = pillAnims.map((anim, i) =>
       Animated.sequence([
-        Animated.delay(mezclasOpen ? i * 40 : 0),
+        Animated.delay(i * 40),
         Animated.parallel([
-          Animated.timing(anim.opacity, {
-            toValue: mezclasOpen ? 1 : 0,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(anim.translateX, {
-            toValue: mezclasOpen ? 0 : -18,
-            duration: 200,
-            useNativeDriver: true,
-          }),
+          Animated.timing(anim.opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+          Animated.timing(anim.translateX, { toValue: 0, duration: 200, useNativeDriver: true }),
         ]),
       ])
     );
@@ -255,44 +253,46 @@ export default function MiMusicaScreen() {
               />
             </Pressable>
 
-            <View style={styles.mezclasInlineCats} pointerEvents={mezclasOpen ? "auto" : "none"}>
-              {MIX_CATEGORIES.map((cat, i) => {
-                const accent = cat.color ?? colors.primary;
-                return (
-                  <Animated.View
-                    key={cat.id}
-                    style={{
-                      flex: 1,
-                      opacity: pillAnims[i].opacity,
-                      transform: [{ translateX: pillAnims[i].translateX }],
-                    }}
-                  >
-                    <Pressable
-                      onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                      style={({ pressed }) => ({
+            {mezclasOpen && (
+              <View style={styles.mezclasInlineCats}>
+                {MIX_CATEGORIES.map((cat, i) => {
+                  const accent = cat.color ?? colors.primary;
+                  return (
+                    <Animated.View
+                      key={cat.id}
+                      style={{
                         flex: 1,
-                        paddingVertical: 8,
-                        paddingHorizontal: 6,
-                        borderRadius: 13,
-                        borderWidth: 1,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.06)",
-                        borderColor: accent + "50",
-                        transform: [{ scale: pressed ? 0.96 : 1 }],
-                      })}
+                        opacity: pillAnims[i].opacity,
+                        transform: [{ translateX: pillAnims[i].translateX }],
+                      }}
                     >
-                      <Text
-                        numberOfLines={1}
-                        style={{ fontSize: 12, fontWeight: "600", color: colors.foreground, textAlign: "center", width: "100%" }}
+                      <Pressable
+                        onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+                        style={({ pressed }) => ({
+                          flex: 1,
+                          paddingVertical: 8,
+                          paddingHorizontal: 6,
+                          borderRadius: 13,
+                          borderWidth: 1,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.06)",
+                          borderColor: accent + "50",
+                          transform: [{ scale: pressed ? 0.96 : 1 }],
+                        })}
                       >
-                        {cat.label}
-                      </Text>
-                    </Pressable>
-                  </Animated.View>
-                );
-              })}
-            </View>
+                        <Text
+                          numberOfLines={1}
+                          style={{ fontSize: 12, fontWeight: "600", color: colors.foreground, textAlign: "center" }}
+                        >
+                          {cat.label}
+                        </Text>
+                      </Pressable>
+                    </Animated.View>
+                  );
+                })}
+              </View>
+            )}
           </View>
         </View>
 
