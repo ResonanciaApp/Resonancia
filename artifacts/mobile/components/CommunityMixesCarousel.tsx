@@ -1,21 +1,20 @@
 /**
  * CommunityMixesCarousel — sección "Mezclas de la comunidad"
  * Diseño V2D (minimalista líneas): ranking, nombre, autor, 3-dot menu.
- * Tabs con indicador dorado animado (estilo musica-sonidos.tsx).
+ * Tabs = bloques tipo tarjeta con ícono arriba (mismo diseño que Mis Mezclas).
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Alert,
-  Animated,
-  LayoutChangeEvent,
   Modal,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import Svg, { Ellipse, Path } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -41,6 +40,31 @@ const STACK_THUMB = 30;
 const STACK_SHIFT = 19;
 const MAX_VISIBLE = 8;
 
+// ── Íconos de categoría (mismos que Mis Mezclas) ───────────────────
+function MoonIcon({ color, size = 26 }: { color: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" fill={color} />
+    </Svg>
+  );
+}
+
+function ZenStonesIcon({ color, size = 26 }: { color: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 30 30">
+      <Ellipse cx="15"   cy="23.5" rx="8"   ry="4.2" fill={color} opacity={0.95} />
+      <Ellipse cx="15.6" cy="16.5" rx="5.8" ry="3.3" fill={color} opacity={0.85} />
+      <Ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity={0.75} />
+    </Svg>
+  );
+}
+
+function CategoryIcon({ id, color, size = 26 }: { id: CategoryFilter; color: string; size?: number }) {
+  if (id === "dormir")    return <MoonIcon color={color} size={size} />;
+  if (id === "motivarme") return <ZenStonesIcon color={color} size={size} />;
+  return <MaterialCommunityIcons name="image-filter-hdr" size={size} color={color} />;
+}
+
 // ── Componente principal ───────────────────────────────────────────
 export function CommunityMixesCarousel() {
   const colors = useColors();
@@ -51,40 +75,6 @@ export function CommunityMixesCarousel() {
 
   // ── Tab state ─────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<CategoryFilter>("dormir");
-  const indicatorAnim = useRef(new Animated.Value(0)).current;
-  const [indicatorWidth, setIndicatorWidth] = useState(0);
-  const tabLayouts = useRef<Record<number, { x: number; width: number }>>({});
-  const activeIdxRef = useRef(0);
-  const initializedRef = useRef(false);
-
-  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
-    const { x, width } = e.nativeEvent.layout;
-    tabLayouts.current[idx] = { x, width };
-    // Posicionar el indicador SOLO una vez (sobre la tab activa inicial).
-    // Re-layouts posteriores (al filtrar la lista) no deben moverlo, o
-    // el indicador "salta" de vuelta a la primera tab.
-    if (!initializedRef.current && idx === activeIdxRef.current) {
-      initializedRef.current = true;
-      setIndicatorWidth(width);
-      indicatorAnim.setValue(x);
-    }
-  };
-
-  const selectTab = (id: CategoryFilter, idx: number) => {
-    if (id === activeTab) return;
-    activeIdxRef.current = idx;
-    setActiveTab(id);
-    const layout = tabLayouts.current[idx];
-    if (layout) {
-      setIndicatorWidth(layout.width);
-      Animated.spring(indicatorAnim, {
-        toValue: layout.x,
-        useNativeDriver: true,
-        tension: 60,
-        friction: 9,
-      }).start();
-    }
-  };
 
   // ── 3-dot menu state ──────────────────────────────────────────
   const [menuMix, setMenuMix] = useState<SharedMix | null>(null);
@@ -188,36 +178,33 @@ export function CommunityMixesCarousel() {
       </View>
 
       <View style={styles.panel}>
-      {/* ── Tabs ── */}
-      <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)" }]}>
-        {TABS.map(({ id, label }, idx) => (
-          <Pressable
-            key={id}
-            onLayout={(e) => onTabLayout(idx, e)}
-            onPress={() => selectTab(id, idx)}
-            style={styles.tabItem}
-          >
-            <Text
-              style={[
-                styles.tabLabel,
-                {
-                  color: id === activeTab ? colors.foreground : colors.mutedForeground,
-                  fontWeight: id === activeTab ? "600" : "400",
-                },
-              ]}
+      {/* ── Tabs — 3 bloques con ícono arriba ── */}
+      <View style={styles.tabRow}>
+        {TABS.map(({ id, label }) => {
+          const sel = id === activeTab;
+          return (
+            <Pressable
+              key={id}
+              onPress={() => setActiveTab(id)}
+              style={[styles.tabBlock, sel && styles.tabBlockActive]}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: sel }}
             >
-              {label}
-            </Text>
-          </Pressable>
-        ))}
-        {indicatorWidth > 0 && (
-          <Animated.View
-            style={[
-              styles.tabIndicator,
-              { width: indicatorWidth, backgroundColor: GOLD, transform: [{ translateX: indicatorAnim }] },
-            ]}
-          />
-        )}
+              <CategoryIcon id={id} color={sel ? GOLD : colors.mutedForeground} size={26} />
+              <Text
+                style={[
+                  styles.tabLabel,
+                  {
+                    color: sel ? colors.foreground : colors.mutedForeground,
+                    fontWeight: sel ? "700" : "400",
+                  },
+                ]}
+              >
+                {label}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
       {/* Empty state */}
@@ -504,26 +491,20 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
-  // Tabs
-  tabBar: {
-    flexDirection: "row",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    position: "relative",
-    marginBottom: 0,
-  },
-  tabItem: {
+  // Tabs (bloques con ícono)
+  tabRow: { flexDirection: "row", gap: 10, marginBottom: 16 },
+  tabBlock: {
     flex: 1,
-    paddingVertical: 10,
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    gap: 8,
+    paddingTop: 14,
+    paddingBottom: 12,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabLabel: { fontSize: 15, letterSpacing: 0.2 },
-  tabIndicator: {
-    position: "absolute",
-    bottom: 0,
-    height: 2,
-    borderRadius: 1,
-  },
+  tabBlockActive: { backgroundColor: "rgba(190,150,80,0.12)" },
+  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
 
   // Empty
   emptyState: {
