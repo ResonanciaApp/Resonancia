@@ -30,6 +30,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { VideoCard } from "@/components/VideoCard";
 import { useDrawer } from "@/context/DrawerContext";
+import { useCatalog } from "@/context/CatalogContext";
 import { VOICE_MAP } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
@@ -102,7 +103,11 @@ export default function HomeScreen() {
     return featured[dayOfYear % featured.length];
   }, []);
 
-  const recentSessions = React.useMemo(() => [...SESSIONS].reverse().slice(0, 6), []);
+  const { version: catalogVersion } = useCatalog();
+  const recentSessions = React.useMemo(
+    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 6),
+    [catalogVersion],
+  );
 
   const { data: popular } = useGetPopularSessions(
     { limit: 10 },
@@ -118,14 +123,10 @@ export default function HomeScreen() {
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
-  const recommended = React.useMemo<Session[]>(() => {
-    const pool = [...SESSIONS];
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    return pool.slice(0, 4);
-  }, []);
+  const newestSessions = React.useMemo<Session[]>(
+    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 5),
+    [catalogVersion],
+  );
 
   const { open: openDrawer } = useDrawer();
 
@@ -469,7 +470,7 @@ export default function HomeScreen() {
             </Pressable>
           </View>
           <View style={{ gap: 0, marginTop: -10 }}>
-            {recommended.map((s) => (
+            {newestSessions.map((s) => (
               <SessionRow
                 key={s.id}
                 session={s}

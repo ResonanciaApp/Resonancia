@@ -15,24 +15,29 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { usePremium } from "@/context/PremiumContext";
+import { useCatalog } from "@/context/CatalogContext";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const PAGE_SIZE = 10;
 
-const ALL_SESSIONS = [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id));
-
 export default function NuevasSessionesScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { version: catalogVersion } = useCatalog();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const allSessions = React.useMemo(
+    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)),
+    [catalogVersion],
+  );
+
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const visibleSessions = ALL_SESSIONS.slice(0, visibleCount);
-  const hasMore = visibleCount < ALL_SESSIONS.length;
+  const visibleSessions = allSessions.slice(0, visibleCount);
+  const hasMore = visibleCount < allSessions.length;
 
   function loadMore() {
     if (hasMore) setVisibleCount((c) => c + PAGE_SIZE);
@@ -63,7 +68,7 @@ export default function NuevasSessionesScreen() {
                 Nuevas Sesiones
               </Text>
               <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-                {ALL_SESSIONS.length} sesiones · orden de llegada
+                {allSessions.length} sesiones · orden de llegada
               </Text>
             </View>
           </View>
