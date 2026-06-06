@@ -189,20 +189,12 @@ export default function HomeScreen() {
                 { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 izq
                 { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 der
               ];
-              const iconColors: Record<string, string> = {
-                "sonidos-ancestrales": "#6BA8C8",
-                "meditaciones-guiadas": "#6BA8C8",
-                "musica-sonidos": "#6BA8C8",
-                "podcast": "#6BA8C8",
-                "mananas": "#f4c993",
-                "noches": "#C87BB5",
-              };
               const catImages: Record<string, ReturnType<typeof require>> = {
                 "musica-sonidos": require("../../assets/images/cat-musica.png"),
                 "mananas":        require("../../assets/images/cat-mananas.png"),
                 "podcast":        require("../../assets/images/cat-sonidos.png"),
               };
-              const iconColor = iconColors[cat.id] ?? colors.primary;
+              const iconColor = colors.foreground;
               const catImg = catImages[cat.id];
               return (
                 <Pressable
@@ -213,7 +205,6 @@ export default function HomeScreen() {
                   {catImg ? (
                     <Image
                       source={catImg}
-                      tintColor="#6BA8C8"
                       style={[styles.catCardImage, cat.id === "musica-sonidos" && { width: 27, height: 27 }]}
                       resizeMode="contain"
                     />
