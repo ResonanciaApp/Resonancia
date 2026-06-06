@@ -212,7 +212,7 @@ export default function ExploreScreen() {
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempos tienes?</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
