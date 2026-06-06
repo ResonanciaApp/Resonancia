@@ -333,22 +333,18 @@ export default function MiMusicaScreen() {
       <View style={[styles.inner, { paddingTop: topPad + 12, backgroundColor: "#0B0F14" }]}>
         {/* ── Header fijo ── */}
         <View style={styles.header}>
-          {/* Título — sin flecha */}
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mezclador</Text>
 
-          {/* Tus mezclas — expande hacia la derecha */}
           <View style={styles.mezclasRow}>
             <Pressable
               onPress={() => setMezclasOpen((v) => !v)}
               style={styles.mezclasHeader}
             >
-              <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7, fontSize: 16 }]}>
-                Mis
-              </Text>
-              <MaterialCommunityIcons name="heart" size={16} color="#FFFFFF" />
+              <Text style={[styles.mezclasLabel, { color: colors.foreground }]}>Mis</Text>
+              <MaterialCommunityIcons name="heart" size={15} color="#FFFFFF" />
               <Feather
                 name={mezclasOpen ? "chevron-left" : "chevron-right"}
-                size={15}
+                size={14}
                 color={colors.mutedForeground}
                 style={{ marginLeft: 6 }}
               />
@@ -357,6 +353,9 @@ export default function MiMusicaScreen() {
             {mezclasOpen && <MezclasAnimPills colors={colors} />}
           </View>
         </View>
+
+        {/* ── Separador fijo header / scroll ── */}
+        <View style={styles.headerSeparator} />
 
         <ScrollView
           style={styles.scroll}
@@ -470,12 +469,18 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0B0F14" },
 
   // Header
-  header: { marginBottom: 16 },
+  header: { marginBottom: 12 },
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: -0.5, marginBottom: 12 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 14 },
   subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  mezclasLabel: { fontSize: 15, fontWeight: "700", marginRight: 6 },
   mezclasRow: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 36 },
   mezclasHeader: { flexDirection: "row", alignItems: "center", paddingVertical: 4 },
+  headerSeparator: {
+    height: 1,
+    backgroundColor: "rgba(122,143,168,0.14)",
+    marginHorizontal: -20,
+  },
   mezclasInlineCats: { flex: 1, flexDirection: "row", gap: 6 },
   mezclasInlinePill: {
     flex: 1,
@@ -494,8 +499,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 0,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(122,143,168,0.14)",
   },
   // Secciones
   section: { marginBottom: 57 },
