@@ -419,7 +419,7 @@ export function MixerSheet() {
                   onPress={() => openSaveModal("new")}
                   style={[styles.saveBtn, { backgroundColor: WARM.saveBg, borderColor: WARM.saveBorder }]}
                 >
-                  <MaterialCommunityIcons name="heart" size={16} color="#E05252" />
+                  <MaterialCommunityIcons name="heart" size={16} color="#FFFFFF" />
                   <Text style={[styles.saveBtnText, { color: WARM.saveText }]}>Guardar nueva</Text>
                 </Pressable>
               </>
