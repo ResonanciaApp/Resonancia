@@ -20,7 +20,7 @@ import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
-import { VOICE_MAP } from "@/config/audio-map";
+import { getVoiceLabel } from "@/config/audio-map";
 import { useColors } from "@/hooks/useColors";
 
 export default function CarpetaDetailScreen() {
@@ -153,7 +153,7 @@ function FolderSessionRow({
   onRemove: () => void;
 }) {
   const locked = !!session.isPremium && !isPremium;
-  const hasVoice = session.id in VOICE_MAP;
+  const voiceLabel = getVoiceLabel(session);
   const guide = session.guideId ? getGuideById(session.guideId) : null;
   const author = guide?.name ?? "Casa del Cuenco";
 
@@ -176,7 +176,7 @@ function FolderSessionRow({
             {session.title}
           </Text>
           <Text style={[styles.rowMeta, { color: colors.mutedForeground }]}>
-            {author} · {hasVoice ? "Guiada" : "Sin voz"} · {session.durationLabel}
+            {author}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
           </Text>
         </View>
       </Pressable>

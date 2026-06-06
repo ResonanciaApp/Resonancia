@@ -60,6 +60,13 @@ export type Session = {
   sonidosTag?: SonidosTag;
   themeTag?: ThemeTag[];
   sleepTag?: SleepTag;
+  /**
+   * Etiqueta de voz mostrada en las cards. Controlada desde el panel admin.
+   * - `undefined` → sesión bundleada (caption derivado de VOICE_MAP: "Guiada"/"Sin voz").
+   * - `null` → sesión de DB sin etiqueta (caption vacío).
+   * - `"Guiada" | "Sin voz"` → caption fijado por el admin.
+   */
+  voiceTag?: "Guiada" | "Sin voz" | null;
   /** Guiador de la meditación (ver data/guides.ts). Si se omite → Casa del Cuenco. */
   guideId?: string;
   /** Invitados del podcast (además del anfitrión fijo). instagram opcional → fila tappable. */
@@ -610,6 +617,7 @@ export type CatalogSessionSnapshot = {
   sonidosTag?: string | null;
   themeTag?: string[] | null;
   sleepTag?: string | null;
+  voiceTag?: string | null;
   guideId?: string | null;
   artistId?: string | null;
   guests?: { name: string; role: string; instagram?: string | null }[] | null;
@@ -666,6 +674,12 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.sonidosTag = (r.sonidosTag ?? undefined) as SonidosTag | undefined;
     local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
     local.sleepTag = (r.sleepTag ?? undefined) as SleepTag | undefined;
+    // Sesión bundleada: solo sobrescribir si el admin fijó una etiqueta explícita.
+    // Si el remoto viene vacío (null), dejar `undefined` para conservar el fallback
+    // legacy de VOICE_MAP (la DB no distingue "sin fijar" de "vacío explícito" para bundles).
+    if (r.voiceTag != null) {
+      local.voiceTag = r.voiceTag as "Guiada" | "Sin voz";
+    }
     local.guideId = r.guideId ?? undefined;
     local.artistId = r.artistId ?? undefined;
     local.guests = r.guests
@@ -716,6 +730,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       sonidosTag: (r.sonidosTag ?? undefined) as SonidosTag | undefined,
       themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
       sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,
+      voiceTag: (r.voiceTag ?? null) as "Guiada" | "Sin voz" | null,
       guideId: r.guideId ?? undefined,
       artistId: r.artistId ?? undefined,
       audioUri: main ? resolveObjectPath(main.url) : undefined,

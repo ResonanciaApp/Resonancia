@@ -51,6 +51,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   sonidosTag: text("sonidos_tag"),
   themeTag: text("theme_tag").array(),
   sleepTag: text("sleep_tag"),
+  /** Etiqueta de voz mostrada en las cards ("Guiada" / "Sin voz"). Vacío = sin etiqueta. */
+  voiceTag: text("voice_tag"),
   guideId: text("guide_id"),
   artistId: text("artist_id"),
   guests: jsonb("guests").$type<SessionGuest[]>(),

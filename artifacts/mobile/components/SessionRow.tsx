@@ -6,7 +6,7 @@ import { Image } from "expo-image";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { VOICE_MAP } from "@/config/audio-map";
+import { getVoiceLabel } from "@/config/audio-map";
 import { getGuideById } from "@/data/guides";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -24,7 +24,7 @@ export function SessionRow({ session, rating, style, onActionsPress, onPress }: 
   const colors = useColors();
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
-  const hasVoice = session.id in VOICE_MAP;
+  const voiceLabel = getVoiceLabel(session);
   const guide = (session as Session & { guideId?: string }).guideId
     ? getGuideById((session as Session & { guideId?: string }).guideId!)
     : null;
@@ -54,7 +54,7 @@ export function SessionRow({ session, rating, style, onActionsPress, onPress }: 
           <View style={styles.sessionMeta}>
             <Feather name="star" size={11} color={colors.mutedForeground} />
             <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
-              {" "}{displayRating.toFixed(1)} · {hasVoice ? "Guiada" : "Sin voz"} · {session.durationLabel}
+              {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
             </Text>
           </View>
           <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>

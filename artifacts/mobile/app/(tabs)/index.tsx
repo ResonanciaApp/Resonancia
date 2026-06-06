@@ -31,7 +31,7 @@ import { SessionRow } from "@/components/SessionRow";
 import { VideoCard } from "@/components/VideoCard";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
-import { VOICE_MAP } from "@/config/audio-map";
+import { getVoiceLabel } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
@@ -365,7 +365,7 @@ export default function HomeScreen() {
               </View>
               {/* Frosted glass panel */}
               {(() => {
-                const hasVoice = featuredSession.id in VOICE_MAP;
+                const voiceLabel = getVoiceLabel(featuredSession);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const guideId = (featuredSession as any).guideId as string | undefined;
                 const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
@@ -375,7 +375,7 @@ export default function HomeScreen() {
                     <View style={styles.heroMetaRow}>
                       <Feather name="star" size={11} color={colors.primary} />
                       <Text style={[styles.heroMetaText, { color: colors.primary }]}>
-                        {" "}4.7 · {hasVoice ? "Guiada" : "Sin voz"} · {featuredSession.durationLabel}
+                        {" "}4.7{voiceLabel ? ` · ${voiceLabel}` : ""} · {featuredSession.durationLabel}
                       </Text>
                     </View>
                     {/* Fila inferior: título+autor a la izq, botón a la der */}

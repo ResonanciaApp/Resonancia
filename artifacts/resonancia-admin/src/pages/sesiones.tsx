@@ -75,6 +75,7 @@ export default function SesionesPage() {
   const [duration, setDuration] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [frequency, setFrequency] = useState("");
+  const [voiceTag, setVoiceTag] = useState("");
 
   // Tags por categoría
   const [ancestralTag, setAncestralTag] = useState("");
@@ -267,6 +268,7 @@ export default function SesionesPage() {
         duration: Number(duration),
         isPremium,
         frequency: frequency.trim() || null,
+        voiceTag: (voiceTag as Parameters<typeof createSubmission>[0]["data"]["voiceTag"]) || undefined,
         benefits: benefits.length ? benefits : undefined,
         instruments: instruments.length ? instruments : undefined,
         themeTag: themeTag.length ? (themeTag as Parameters<typeof createSubmission>[0]["data"]["themeTag"]) : undefined,
@@ -307,7 +309,7 @@ export default function SesionesPage() {
   const handleReset = () => {
     setDone(false);
     setCategoryId(""); setTitle(""); setSubtitle(""); setDescription("");
-    setDuration(""); setIsPremium(false); setFrequency("");
+    setDuration(""); setIsPremium(false); setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag(""); setSoundTag("");
     setSonidosTag(""); setPodcastTag(""); setSleepTag(""); setThemeTag([]);
     setGuideId(""); setArtistId("");
@@ -460,6 +462,14 @@ export default function SesionesPage() {
                 onChange={(e) => setFrequency(e.target.value)}
                 placeholder="Ej: 432 Hz"
                 maxLength={60}
+              />
+            </Field>
+            <Field label="Etiqueta de voz (opcional)">
+              <SelectField
+                value={voiceTag}
+                onChange={setVoiceTag}
+                placeholder="Sin etiqueta"
+                options={["Guiada", "Sin voz"]}
               />
             </Field>
           </div>

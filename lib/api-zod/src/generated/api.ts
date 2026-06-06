@@ -943,6 +943,7 @@ export const GetCatalogResponse = zod.object({
   "sonidosTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
@@ -1006,6 +1007,7 @@ export const GetPopularSessionsResponse = zod.object({
   "sonidosTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
@@ -1090,6 +1092,7 @@ export const CreateSubmissionBody = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
@@ -1137,6 +1140,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
@@ -1197,6 +1201,7 @@ export const GetMySubmissionsResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
@@ -1260,6 +1265,7 @@ export const ApproveSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
@@ -1330,6 +1336,7 @@ export const RejectSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
@@ -1400,7 +1407,8 @@ export const EditSubmissionBody = zod.object({
   "instruments": zod.array(zod.string().max(editSubmissionBodyInstrumentsItemMax)).max(editSubmissionBodyInstrumentsMax).optional(),
   "isPremium": zod.boolean().optional(),
   "isFeatured": zod.boolean().optional(),
-  "isNew": zod.boolean().optional()
+  "isNew": zod.boolean().optional(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish()
 })
 
 export const EditSubmissionResponse = zod.object({
@@ -1427,6 +1435,7 @@ export const EditSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
@@ -1489,6 +1498,7 @@ export const HideSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
@@ -1551,6 +1561,7 @@ export const UnhideSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),

@@ -2739,6 +2739,10 @@ components:
         sleepTag:
           type: string
           nullable: true
+        voiceTag:
+          type: string
+          nullable: true
+          enum: [Guiada, "Sin voz"]
         guideId:
           type: string
           nullable: true
@@ -2883,6 +2887,10 @@ components:
         sleepTag:
           type: string
           nullable: true
+        voiceTag:
+          type: string
+          nullable: true
+          enum: [Guiada, "Sin voz"]
         themeTag:
           type: array
           nullable: true
@@ -2965,6 +2973,10 @@ components:
         sleepTag:
           type: string
           nullable: true
+        voiceTag:
+          type: string
+          nullable: true
+          enum: [Guiada, "Sin voz"]
         guideId:
           type: string
           nullable: true
@@ -3055,6 +3067,10 @@ components:
           type: boolean
         isNew:
           type: boolean
+        voiceTag:
+          type: string
+          nullable: true
+          enum: [Guiada, "Sin voz"]
     AdminUser:
       type: object
       properties:

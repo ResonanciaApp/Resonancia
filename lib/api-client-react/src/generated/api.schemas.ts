@@ -575,6 +575,14 @@ export interface CatalogAudioFile {
   createdAt: string;
 }
 
+export type CatalogSessionVoiceTag = typeof CatalogSessionVoiceTag[keyof typeof CatalogSessionVoiceTag] | null;
+
+
+export const CatalogSessionVoiceTag = {
+  Guiada: 'Guiada',
+  Sin_voz: 'Sin voz',
+} as const;
+
 export type CatalogSessionStatus = typeof CatalogSessionStatus[keyof typeof CatalogSessionStatus];
 
 
@@ -610,6 +618,7 @@ export interface CatalogSession {
   sonidosTag?: string | null;
   themeTag?: string[] | null;
   sleepTag?: string | null;
+  voiceTag?: CatalogSessionVoiceTag;
   guideId?: string | null;
   artistId?: string | null;
   guests?: CatalogSessionGuest[] | null;
@@ -659,6 +668,14 @@ export interface CreatorSubmissionAudioInput {
   isLoop?: boolean;
 }
 
+export type CreatorSubmissionInputVoiceTag = typeof CreatorSubmissionInputVoiceTag[keyof typeof CreatorSubmissionInputVoiceTag] | null;
+
+
+export const CreatorSubmissionInputVoiceTag = {
+  Guiada: 'Guiada',
+  Sin_voz: 'Sin voz',
+} as const;
+
 export interface CreatorSubmissionInput {
   /**
      * @minLength 1
@@ -705,6 +722,7 @@ export interface CreatorSubmissionInput {
   podcastTag?: string | null;
   sonidosTag?: string | null;
   sleepTag?: string | null;
+  voiceTag?: CreatorSubmissionInputVoiceTag;
   themeTag?: string[] | null;
   guideId?: string | null;
   artistId?: string | null;
@@ -714,6 +732,14 @@ export interface CreatorSubmissionInput {
      */
   audioFiles: CreatorSubmissionAudioInput[];
 }
+
+export type SubmissionVoiceTag = typeof SubmissionVoiceTag[keyof typeof SubmissionVoiceTag] | null;
+
+
+export const SubmissionVoiceTag = {
+  Guiada: 'Guiada',
+  Sin_voz: 'Sin voz',
+} as const;
 
 export type SubmissionStatus = typeof SubmissionStatus[keyof typeof SubmissionStatus];
 
@@ -749,6 +775,7 @@ export interface Submission {
   podcastTag?: string | null;
   sonidosTag?: string | null;
   sleepTag?: string | null;
+  voiceTag?: SubmissionVoiceTag;
   guideId?: string | null;
   artistId?: string | null;
   status: SubmissionStatus;
@@ -771,6 +798,14 @@ export interface ReviewRejectBody {
      */
   reason: string;
 }
+
+export type ReviewEditBodyVoiceTag = typeof ReviewEditBodyVoiceTag[keyof typeof ReviewEditBodyVoiceTag] | null;
+
+
+export const ReviewEditBodyVoiceTag = {
+  Guiada: 'Guiada',
+  Sin_voz: 'Sin voz',
+} as const;
 
 export interface ReviewEditBody {
   /**
@@ -807,6 +842,7 @@ export interface ReviewEditBody {
   isPremium?: boolean;
   isFeatured?: boolean;
   isNew?: boolean;
+  voiceTag?: ReviewEditBodyVoiceTag;
 }
 
 export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];

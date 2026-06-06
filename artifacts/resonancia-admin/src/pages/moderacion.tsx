@@ -35,6 +35,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const STATUS_TABS: { value: GetPendingSubmissionsStatus; label: string }[] = [
   { value: "pending", label: "Pendientes" },
@@ -126,6 +133,7 @@ function EditDialog({
   const qc = useQueryClient();
   const [title, setTitle] = useState(submission.title);
   const [subtitle, setSubtitle] = useState(submission.subtitle);
+  const [voiceTag, setVoiceTag] = useState(submission.voiceTag ?? "__none__");
   const mutation = useEditSubmission({
     mutation: {
       onSuccess: () => {
@@ -160,6 +168,19 @@ function EditDialog({
               onChange={(e) => setSubtitle(e.target.value)}
             />
           </div>
+          <div className="space-y-2">
+            <Label>Etiqueta de voz</Label>
+            <Select value={voiceTag} onValueChange={setVoiceTag}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sin etiqueta" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">Sin etiqueta</SelectItem>
+                <SelectItem value="Guiada">Guiada</SelectItem>
+                <SelectItem value="Sin voz">Sin voz</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -174,7 +195,11 @@ function EditDialog({
             onClick={() =>
               mutation.mutate({
                 id: submission.id,
-                data: { title: title.trim(), subtitle: subtitle.trim() },
+                data: {
+                  title: title.trim(),
+                  subtitle: subtitle.trim(),
+                  voiceTag: voiceTag === "__none__" ? null : (voiceTag as "Guiada" | "Sin voz"),
+                },
               })
             }
           >

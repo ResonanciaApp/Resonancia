@@ -50,3 +50,19 @@ export const VOICE_MAP: Record<string, ReturnType<typeof require> | undefined> =
   "28": require("@/assets/audio/meditacion_voz_profunda.mp3"),
   "29": require("@/assets/audio/voz.mp3"),
 };
+
+/**
+ * Etiqueta de voz mostrada en las cards ("Guiada" / "Sin voz" / vacío).
+ * - `voiceTag === undefined` → sesión bundleada: caption derivado de VOICE_MAP.
+ * - `voiceTag === null` → sesión de DB sin etiqueta: caption vacío.
+ * - `voiceTag` con valor → caption fijado por el admin.
+ */
+export function getVoiceLabel(session: {
+  id: string;
+  voiceTag?: "Guiada" | "Sin voz" | null;
+}): string | null {
+  if (session.voiceTag === undefined) {
+    return session.id in VOICE_MAP ? "Guiada" : "Sin voz";
+  }
+  return session.voiceTag ?? null;
+}
