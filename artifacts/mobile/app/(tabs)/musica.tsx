@@ -106,27 +106,21 @@ export default function MiMusicaScreen() {
   const { lastSavedAt } = useSaveEvent();
 
   // ── Animación del ♥ al guardar mezcla ──────────────────────────────────────
-  const heartScale   = useRef(new Animated.Value(1)).current;
-  const heartGlow    = useRef(new Animated.Value(0)).current;
-  const heartGold    = useRef(new Animated.Value(0)).current;
+  // Un solo Animated.Value: 0=blanco/reposo → 1=pico dorado → 0=vuelta
+  const heartAnim = useRef(new Animated.Value(0)).current;
+
+  const heartScale = heartAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.45, 1] });
+  const heartGold  = heartAnim.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 1, 0] });
+  const heartGlow  = heartAnim.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 0.4, 0] });
 
   useEffect(() => {
     if (!lastSavedAt) return;
-    heartScale.setValue(1);
-    heartGlow.setValue(0);
-    heartGold.setValue(0);
+    heartAnim.setValue(0);
     Animated.sequence([
-      Animated.parallel([
-        Animated.spring(heartScale, { toValue: 1.6, friction: 3, tension: 100, useNativeDriver: true }),
-        Animated.timing(heartGlow,  { toValue: 0.35, duration: 180, useNativeDriver: true }),
-        Animated.timing(heartGold,  { toValue: 1,    duration: 180, useNativeDriver: true }),
-      ]),
-      Animated.delay(300),
-      Animated.parallel([
-        Animated.spring(heartScale, { toValue: 1, friction: 5, tension: 60, useNativeDriver: true }),
-        Animated.timing(heartGlow,  { toValue: 0, duration: 600, useNativeDriver: true }),
-        Animated.timing(heartGold,  { toValue: 0, duration: 600, useNativeDriver: true }),
-      ]),
+      Animated.timing(heartAnim, { toValue: 0.5, duration: 200, useNativeDriver: false }),
+      Animated.timing(heartAnim, { toValue: 0.4, duration: 80,  useNativeDriver: false }),
+      Animated.delay(280),
+      Animated.timing(heartAnim, { toValue: 0,   duration: 550, useNativeDriver: false }),
     ]).start();
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -269,14 +263,15 @@ export default function MiMusicaScreen() {
             accessibilityRole="button"
             accessibilityLabel="Mis mezclas guardadas"
           >
-            {/* Glow dorado detrás */}
-            <Animated.View style={[styles.heartGlow, { opacity: heartGlow }]} />
-            {/* Ícono dorado (aparece durante la animación) */}
-            <Animated.View style={[StyleSheet.absoluteFill, styles.heartIconAbsolute, { opacity: heartGold }]}>
-              <MaterialCommunityIcons name="heart" size={24} color={GOLD} />
-            </Animated.View>
-            {/* Ícono blanco base */}
-            <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+            {/* Contenedor animado — scale afecta a todo */}
+            <Animated.View style={{ transform: [{ scale: heartScale }], alignItems: "center", justifyContent: "center" }}>
+              {/* Glow dorado de fondo */}
+              <Animated.View style={[styles.heartGlow, { opacity: heartGlow }]} />
+              {/* Ícono dorado encima */}
+              <Animated.View style={[StyleSheet.absoluteFill, styles.heartIconAbsolute, { opacity: heartGold }]}>
+                <MaterialCommunityIcons name="heart" size={24} color={GOLD} />
+              </Animated.View>
+              {/* Ícono blanco base */}
               <MaterialCommunityIcons name="heart" size={24} color={FG} />
             </Animated.View>
           </Pressable>

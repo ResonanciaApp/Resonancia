@@ -16,7 +16,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
-  Easing,
   ImageBackground,
   Modal,
   Pressable,
@@ -127,12 +126,8 @@ export function MixerSheet() {
 
   const { notifySaved } = useSaveEvent();
 
-  // Valores animados: entrada (slideIn) + succión al guardar
-  const sheetScale   = useRef(new Animated.Value(1)).current;
-  const sheetSlideX  = useRef(new Animated.Value(0)).current;
-  const sheetSlideY  = useRef(new Animated.Value(0)).current;
+  // Valores animados: entrada (slideIn) + fade al guardar
   const sheetOpacity = useRef(new Animated.Value(1)).current;
-  // Para la entrada: translateY empieza en 400 (fuera de pantalla) y baja a 0
   const sheetEnterY  = useRef(new Animated.Value(400)).current;
 
   // Snapshot de la mezcla en el momento en que se abrió la hoja.
@@ -140,12 +135,9 @@ export function MixerSheet() {
   // si hay un preset cargado o no.
   const [snapshotSounds, setSnapshotSounds] = useState<{ id: string; volume: number }[]>([]);
 
-  // Al abrir: reset valores de animación + entrada deslizante + snapshot
+  // Al abrir: reset + entrada deslizante desde abajo
   useEffect(() => {
     if (isSheetOpen) {
-      sheetScale.setValue(1);
-      sheetSlideX.setValue(0);
-      sheetSlideY.setValue(0);
       sheetOpacity.setValue(1);
       sheetEnterY.setValue(400);
       Animated.spring(sheetEnterY, {
@@ -266,18 +258,14 @@ export function MixerSheet() {
       category: mixCategory,
     });
     setSaveModalOpen(false);
-    // Notifica al ♥ en Mi Música para que se ilumine
+    // Primero notifica al ♥ (animación en musica.tsx)
     notifySaved();
-    // Animación de succión: el sheet se encoge hacia la esquina superior-derecha
-    Animated.parallel([
-      Animated.timing(sheetScale,   { toValue: 0.06, duration: 500, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(sheetSlideX,  { toValue: 150,  duration: 500, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(sheetSlideY,  { toValue: -650, duration: 500, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(sheetOpacity, { toValue: 0,    duration: 400, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-    ]).start(() => {
-      sheetScale.setValue(1);
-      sheetSlideX.setValue(0);
-      sheetSlideY.setValue(0);
+    // Fade-out suave y zen del sheet
+    Animated.timing(sheetOpacity, {
+      toValue: 0,
+      duration: 380,
+      useNativeDriver: true,
+    }).start(() => {
       sheetOpacity.setValue(1);
       closeSheet();
       stopAll();
@@ -315,11 +303,7 @@ export function MixerSheet() {
       <Pressable style={styles.backdrop} onPress={closeSheet}>
         <Animated.View
           style={{
-            transform: [
-              { translateY: Animated.add(sheetEnterY, sheetSlideY) },
-              { translateX: sheetSlideX },
-              { scale: sheetScale },
-            ],
+            transform: [{ translateY: sheetEnterY }],
             opacity: sheetOpacity,
           }}
         >
