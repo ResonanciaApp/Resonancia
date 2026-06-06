@@ -137,14 +137,14 @@ export default function SonidosAncestalesScreen() {
               <Pressable
                 key={value}
                 onPress={() => setActiveTab(value)}
-                style={[styles.tabBlock, sel && { backgroundColor: ACCENT + "24" }]}
+                style={[styles.tabBlock, sel && styles.tabBlockActive]}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
                 <MaterialCommunityIcons
                   name={icon as never}
                   size={24}
-                  color={sel ? ACCENT : colors.mutedForeground}
+                  color={sel ? "#FFFFFF" : colors.mutedForeground}
                 />
                 <Text
                   style={[
@@ -170,14 +170,14 @@ export default function SonidosAncestalesScreen() {
               <Pressable
                 key={value}
                 onPress={() => setActiveTab(value)}
-                style={[styles.tabBlock, sel && { backgroundColor: ACCENT + "24" }]}
+                style={[styles.tabBlock, sel && styles.tabBlockActive]}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
                 <MaterialCommunityIcons
                   name={icon as never}
                   size={24}
-                  color={sel ? ACCENT : colors.mutedForeground}
+                  color={sel ? "#FFFFFF" : colors.mutedForeground}
                 />
                 <Text
                   style={[
@@ -325,6 +325,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
+  },
+  tabBlockActive: {
+    backgroundColor: "rgba(107,154,181,0.14)",
   },
   tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
   divider: {
