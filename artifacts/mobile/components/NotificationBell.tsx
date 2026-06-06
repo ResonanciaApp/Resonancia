@@ -179,9 +179,12 @@ export function NotificationBell() {
         if (cancelled) return;
 
         // DEV: disparo forzado para probar la animación (ignora meta y gating).
+        // Pequeño retraso para que termine la transición de pantalla y se vea
+        // completa la fase brillante del fuego.
         if (force) {
           AsyncStorage.removeItem(STREAK_FORCE_KEY).catch(() => {});
-          runAnimation(streak > 0 ? streak : 3);
+          const t = setTimeout(() => runAnimation(streak > 0 ? streak : 3), 550);
+          timersRef.current.push(t);
           return;
         }
 

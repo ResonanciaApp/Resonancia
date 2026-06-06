@@ -510,7 +510,7 @@ export default function ConfiguracionesScreen() {
               <Pressable
                 onPress={async () => {
                   await AsyncStorage.setItem("@resonance_streak_force", "1");
-                  router.push("/(tabs)" as never);
+                  router.replace("/(tabs)" as never);
                 }}
                 style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
               >
