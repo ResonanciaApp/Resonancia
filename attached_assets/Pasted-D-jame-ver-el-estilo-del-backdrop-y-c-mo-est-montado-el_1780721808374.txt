@@ -1,0 +1,42 @@
+Déjame ver el estilo del backdrop y cómo está montado el MixerPanel detrás del sheet, para entender qué se ve "por detrás" durante el fade:
+
+
+6 actions
+Veo el problema real. Hay dos causas que se encadenan:
+
+El backdrop (rgba(0,0,0,0.6)) está fuera del Animated.View — no se desvanece junto con el sheet, así que el oscurecimiento persiste visiblemente hasta que el Modal se desmonta de golpe
+stopAll() se llama DESPUÉS de closeSheet() — hay un frame donde el Modal cerró pero los sonidos siguen activos → el MixerPanel aparece brevemente → flash
+La solución correcta: mover la animación de opacidad para que cubra todo (backdrop + sheet), llamar stopAll() al inicio del fade (el backdrop cubre el MixerPanel mientras dura), y usar un flag forceShowModal para mantener el Modal visible durante esos 380ms aunque canShow se ponga en false.
+
+
+2 actions
+Tengo el contexto suficiente para aplicar los tres cambios en paralelo:
+
+
+2 actions
+Necesito cerrar el nuevo Animated.View externo y actualizar confirmSave. Primero busco el cierre del Modal:
+
+
+4 actions
+Cierro el Animated.View externo y corrijo confirmSave — todo en paralelo:
+
+
+3 actions
+También alargo la animación del ♥ (el usuario dijo que todo pasa muy rápido):
+
+
+6 actions
+Listo. Resumen de los tres cambios aplicados:
+
+MixerSheet — el flash del reproductor:
+
+El Animated.View de opacidad ahora envuelve todo (backdrop oscuro + sheet), no solo el sheet. El oscurecimiento desaparece suave junto con el contenido, sin dejar una capa negra flotante
+stopAll() se llama al inicio del fade — el backdrop cubre el MixerPanel mientras dura la animación, así no aparece por un frame
+forceShowModal mantiene el Modal vivo durante esos 480ms aunque activeMix ya esté vacío, y lo libera junto con closeSheet() en el mismo ciclo de render (React 18 batch → sin flash)
+Duración del fade: 380ms → 480ms (un poco más suave)
+musica.tsx — el ♥ demasiado rápido:
+
+Build-up: 200ms → 350ms
+Hold: 280ms → 500ms
+Fade-out: 550ms → 750ms
+Total: ~1.1s → ~1.7s — más zen, respira

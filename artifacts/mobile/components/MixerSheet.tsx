@@ -16,6 +16,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
+  Easing,
   ImageBackground,
   Modal,
   Pressable,
@@ -263,9 +264,14 @@ export function MixerSheet() {
     stopAll();
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
+    // Easing cúbico: arranca despacio mientras el modal interno (animationType="fade"
+    // ~300ms) todavía cubre el sheet, luego acelera cuando queda expuesto.
+    // A t=300ms ya va al 95% de opacidad (casi sin cambio visible); el fade
+    // perceptible ocurre en los ~500ms restantes. Sin setTimeout, sin conflictos.
     Animated.timing(sheetOpacity, {
       toValue: 0,
-      duration: 480,
+      duration: 800,
+      easing: Easing.in(Easing.cubic),
       useNativeDriver: true,
     }).start(() => {
       setForceShowModal(false);
