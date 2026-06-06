@@ -408,9 +408,9 @@ export default function MiMusicaScreen() {
                       {SUB_TAB_ICONS[catId] && (
                         <MaterialCommunityIcons
                           name={SUB_TAB_ICONS[catId] as any}
-                          size={13}
+                          size={26}
                           color={sel ? GOLD : MUTED}
-                          style={{ marginRight: 5 }}
+                          style={{ marginBottom: 5 }}
                         />
                       )}
                       <Text style={[styles.subTabText, { color: "#FFFFFF" }]}>
@@ -493,14 +493,15 @@ const styles = StyleSheet.create({
   },
   subTabRow: { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
   subTabPill: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 10,
+    justifyContent: "center",
+    width: 80,
+    height: 80,
+    borderRadius: 14,
     borderWidth: 1,
   },
-  subTabText: { fontSize: 14, fontWeight: "600" },
+  subTabText: { fontSize: 11, fontWeight: "600", textAlign: "center" },
 
   // Grilla de sonidos — 3 columnas uniformes
   grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
