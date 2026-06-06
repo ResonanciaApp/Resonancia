@@ -848,7 +848,7 @@ const styles = StyleSheet.create({
   },
   timeChip: {
     borderRadius: 24,
-    paddingHorizontal: 18,
+    paddingHorizontal: 16,
     paddingVertical: 13,
     flexDirection: "row",
     alignItems: "center",
