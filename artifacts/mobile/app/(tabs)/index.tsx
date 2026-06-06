@@ -579,6 +579,7 @@ const styles = StyleSheet.create({
     minWidth: 140,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 12,
     backgroundColor: "#151A23",
     paddingHorizontal: 16,
@@ -592,7 +593,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#FFFFFF",
-    flex: 1,
+    textAlign: "center",
     lineHeight: 18,
   },
 
