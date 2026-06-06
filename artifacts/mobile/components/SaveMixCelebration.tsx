@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   pillGlow: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 999,
+    borderRadius: 13,
     borderWidth: 2,
   },
   pillIcon: {
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  pillLabel: { fontSize: 14, fontWeight: "700", paddingRight: 4 },
+  pillLabel: { fontSize: 14, fontWeight: "700", textAlign: "center" },
 
   token: {
     width: 96,
