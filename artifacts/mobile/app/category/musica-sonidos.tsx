@@ -1,17 +1,14 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  Animated,
-  LayoutChangeEvent,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { Image as ExpoImage } from "expo-image";
@@ -32,10 +29,13 @@ const RATINGS_KEY = "@resonance_ratings";
 
 type Tab = SoundTag;
 
-const TABS: { label: string; value: Tab }[] = [
-  { label: "Ambient",   value: "Música Ambient"   },
-  { label: "Enteógena", value: "Música Enteógena" },
-  { label: "Étnica",    value: "Música Étnica"    },
+const MUSICA_ACCENT = "#5B9E7A";
+
+const TABS: { label: string; value: Tab; icon: string }[] = [
+  { label: "Ambient",   value: "Música Ambient",   icon: "weather-cloudy"  },
+  { label: "Enteógena", value: "Música Enteógena", icon: "leaf"            },
+  { label: "Tribal",    value: "Música Tribal",    icon: "drum"            },
+  { label: "Étnica",    value: "Música Étnica",    icon: "guitar-acoustic" },
 ];
 
 export default function MusicaSonidosScreen() {
@@ -46,36 +46,8 @@ export default function MusicaSonidosScreen() {
   const { version } = useCatalog();
 
   const [activeTab, setActiveTab] = useState<Tab>("Música Ambient");
-  const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
-
-  const indicatorAnim = useRef(new Animated.Value(0)).current;
-  const [indicatorWidth, setIndicatorWidth] = useState(0);
-  const tabLayouts = useRef<Record<number, { x: number; width: number }>>({});
-
-  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
-    const { x, width: w } = e.nativeEvent.layout;
-    tabLayouts.current[idx] = { x, width: w };
-    if (idx === 0) {
-      setIndicatorWidth(w);
-      indicatorAnim.setValue(x);
-    }
-  };
-
-  const selectTab = (tab: Tab, idx: number) => {
-    setActiveTab(tab);
-    const layout = tabLayouts.current[idx];
-    if (layout) {
-      setIndicatorWidth(layout.width);
-      Animated.spring(indicatorAnim, {
-        toValue: layout.x,
-        useNativeDriver: true,
-        tension: 60,
-        friction: 9,
-      }).start();
-    }
-  };
 
   useEffect(() => {
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
@@ -96,11 +68,7 @@ export default function MusicaSonidosScreen() {
     [musicaSessions, activeTab],
   );
 
-  const filtered = useMemo(() => {
-    if (!query.trim()) return tabSessions;
-    const q = query.trim().toLowerCase();
-    return tabSessions.filter((s) => s.title.toLowerCase().includes(q));
-  }, [tabSessions, query]);
+  const filtered = tabSessions;
 
   const recentlyPlayed = useMemo(() => {
     const subIds = new Set(tabSessions.map((s) => s.id));
@@ -148,49 +116,41 @@ export default function MusicaSonidosScreen() {
           </Text>
         </View>
 
-        {/* Search */}
-        <View style={[styles.searchWrap, { paddingHorizontal: H_PAD }]}>
-          <View style={styles.searchBar}>
-            <Feather name="search" size={16} color="rgba(122,143,168,0.5)" style={{ marginRight: 8 }} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Buscar frecuencia..."
-              placeholderTextColor="rgba(122,143,168,0.45)"
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color={colors.mutedForeground} />
+        {/* Tabs — bloques con ícono */}
+        <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
+          {TABS.map(({ label, value, icon }) => {
+            const sel = activeTab === value;
+            return (
+              <Pressable
+                key={value}
+                onPress={() => setActiveTab(value)}
+                style={[styles.tabBlock, sel && styles.tabBlockActive]}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: sel }}
+              >
+                <MaterialCommunityIcons
+                  name={icon as any}
+                  size={24}
+                  color={sel ? MUSICA_ACCENT : colors.mutedForeground}
+                />
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    {
+                      color: sel ? colors.foreground : colors.mutedForeground,
+                      fontWeight: sel ? "700" : "400",
+                    },
+                  ]}
+                >
+                  {label}
+                </Text>
               </Pressable>
-            )}
-          </View>
+            );
+          })}
         </View>
 
-        {/* Tabs */}
-        <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD }]}>
-          {TABS.map(({ label, value }, idx) => (
-            <Pressable
-              key={value}
-              onLayout={(e) => onTabLayout(idx, e)}
-              onPress={() => selectTab(value, idx)}
-              style={styles.tabItem}
-            >
-              <Text style={[
-                styles.tabLabel,
-                { color: value === activeTab ? colors.foreground : colors.mutedForeground },
-              ]}>
-                {label}
-              </Text>
-            </Pressable>
-          ))}
-          {indicatorWidth > 0 && (
-            <Animated.View
-              style={[styles.tabIndicator, { width: indicatorWidth, transform: [{ translateX: indicatorAnim }] }]}
-            />
-          )}
-        </View>
+        {/* Línea divisora entre tabs y sesiones */}
+        <View style={[styles.divider, { marginHorizontal: H_PAD }]} />
 
         {/* Contenido */}
         {filtered.length === 0 ? (
@@ -268,23 +228,23 @@ const styles = StyleSheet.create({
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 6, textAlign: "center" },
   pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
 
-  searchWrap: { marginBottom: 16 },
-  searchBar: {
-    flexDirection: "row",
+  tabRow: { flexDirection: "row", gap: 10 },
+  tabBlock: {
+    flex: 1,
+    flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "#151A23",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 10,
+    gap: 8,
+    paddingTop: 14,
+    paddingBottom: 12,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
-  searchInput: { flex: 1, fontSize: 14, padding: 0, margin: 0 },
-
-  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginBottom: 20 },
-  tabItem: { flex: 1, paddingVertical: 10, alignItems: "center", justifyContent: "center" },
-  tabLabel: { fontSize: 15, fontWeight: "600" },
-  tabIndicator: {
-    position: "absolute", bottom: 0, height: 2,
-    backgroundColor: "#5B9E7A", borderRadius: 1,
+  tabBlockActive: { backgroundColor: "rgba(91,158,122,0.14)" },
+  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    marginTop: 16,
   },
 
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },

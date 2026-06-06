@@ -1,4 +1,4 @@
-export type SoundTag = "Música Ambient" | "Música Enteógena" | "Música Étnica";
+export type SoundTag = "Música Ambient" | "Música Enteógena" | "Música Tribal" | "Música Étnica";
 export type MeditationTag =
   | "No Duales"
   | "Visualizaciones"
