@@ -61,7 +61,7 @@ const WARM = {
   handle: "rgba(255,255,255,0.12)",
   trackBg: "#151A23",
   trackBorder: "rgba(255,255,255,0.07)",
-  sliderThumb: "#BE9650",
+  sliderThumb: "#C1AA8A",
   sliderTrack: "rgba(190,150,80,0.55)",
   addBorder: "rgba(255,255,255,0.1)",
   addText: "rgba(190,150,80,0.65)",

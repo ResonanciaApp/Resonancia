@@ -10,6 +10,8 @@ La marca migró de cálido (café/bronce) a **azul marina + dorado**. Aplicada e
 - card: `#090E17` (azul profundo)  ← antes `#24160F`
 - primary: `#BE9650` (dorado)  ← antes `#C69B4F`
 - accent: `#D6A85B` (ámbar/dorado claro)
+
+> **App móvil (solo): dorado migrado `#BE9650` → `#C1AA8A`** (tan más suave). Barrido global en todos los `.ts/.tsx` de `artifacts/mobile` (textos, íconos, bordes, fondos tint, hardcodeados incluidos). `colors.ts` ahora usa `#C1AA8A` en sus tokens dorados. NO tocado: `constants/themes-reference.ts` (archivo de referencia, no se importa) ni las decks (siguen en `#BE9650`). `#D6A85B` (accent secundario, solo Diario) quedó sin cambiar. **Why:** el usuario pidió cambiar "el color amarillo de todos los textos/tema" a `#C1AA8A` para coherencia con los íconos de categorías ya migrados.
 - foreground / text: `#EDE1D3` (crema, sin cambios)
 - mutedForeground / muted: `#7A8FA8` (azul-gris frío)  ← antes `#7a6050` / `#8A7060` (café)
 

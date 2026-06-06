@@ -43,7 +43,7 @@ export default function PlaylistDetailScreen() {
         <Feather name="list" size={48} color="#7A8FA8" style={{ marginBottom: 16 }} />
         <Text style={{ color: "#7A8FA8", fontSize: 16 }}>Playlist no encontrada</Text>
         <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
-          <Text style={{ color: "#BE9650", fontSize: 15 }}>← Volver</Text>
+          <Text style={{ color: "#C1AA8A", fontSize: 15 }}>← Volver</Text>
         </Pressable>
       </View>
     );

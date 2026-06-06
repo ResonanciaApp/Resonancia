@@ -227,7 +227,7 @@ export default function CrearGrupoScreen() {
               returnKeyType="done"
               onSubmitEditing={() => canNext1 && setStep(2)}
             />
-            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#BE9650" : colors.mutedForeground }]}>
+            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#C1AA8A" : colors.mutedForeground }]}>
               {remaining}
             </Text>
           </View>
@@ -390,7 +390,7 @@ export default function CrearGrupoScreen() {
           {step === 5 && (
             <>
               <View style={styles.successIcon}>
-                <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.successGrad}>
+                <LinearGradient colors={["#FFFFFF", "#C1AA8A"]} style={styles.successGrad}>
                   <Feather name="check" size={28} color="#070E09" />
                 </LinearGradient>
               </View>
@@ -470,9 +470,9 @@ const styles = StyleSheet.create({
   // Gallery
   galleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   galleryItem: { borderRadius: 10, overflow: "hidden", position: "relative" },
-  galleryItemSelected: { borderWidth: 2.5, borderColor: "#BE9650", borderRadius: 10 },
+  galleryItemSelected: { borderWidth: 2.5, borderColor: "#C1AA8A", borderRadius: 10 },
   galleryImg: { width: 68, height: 68 },
-  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#BE9650", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
+  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#C1AA8A", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
 
   // Success
   successIcon: { alignSelf: "center", marginBottom: 16, borderRadius: 30, overflow: "hidden" },

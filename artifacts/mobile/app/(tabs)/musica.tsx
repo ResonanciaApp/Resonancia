@@ -32,7 +32,7 @@ import { useColors } from "@/hooks/useColors";
 
 const BG       = "#0B0F14";
 const CARD     = "#151A23";
-const GOLD     = "#BE9650";
+const GOLD     = "#C1AA8A";
 const FG       = "#EDE1D3";
 const MUTED    = "#7A8FA8";
 const TAB_PILL = "#1E2733";

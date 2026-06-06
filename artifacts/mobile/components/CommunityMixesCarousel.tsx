@@ -35,7 +35,7 @@ const TABS: { id: CategoryFilter; label: string }[] = [
   { id: "concentracion", label: "Enfoque"    },
 ];
 
-const GOLD = "#BE9650";
+const GOLD = "#C1AA8A";
 const STACK_THUMB = 30;
 const STACK_SHIFT = 19;
 const MAX_VISIBLE = 8;

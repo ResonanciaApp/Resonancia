@@ -4,7 +4,7 @@ import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
 
 const BLUE_BG       = "#151A23";
 const BLUE_CHIP_BG  = "#0F1A2A";
-const BLUE_ACCENT   = "#BE9650";
+const BLUE_ACCENT   = "#C1AA8A";
 const BLUE_MUTED    = "#7A8FA8";
 
 const AVATARS = [

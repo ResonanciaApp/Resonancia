@@ -18,7 +18,7 @@ import { useColors } from "@/hooks/useColors";
 
 const SHARE_OPTIONS = [
   { icon: "message-circle" as const, label: "WhatsApp", color: "#25D366" },
-  { icon: "mail" as const, label: "Email", color: "#BE9650" },
+  { icon: "mail" as const, label: "Email", color: "#C1AA8A" },
   { icon: "instagram" as const, label: "Instagram", color: "#E4405F" },
   { icon: "share-2" as const, label: "Más opciones", color: "#8AAAD4" },
 ];

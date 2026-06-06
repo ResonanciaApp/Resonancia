@@ -206,12 +206,12 @@ export default function RespiracionScreen() {
                   style={[
                     styles.chip,
                     {
-                      borderColor: active ? "#BE9650" : "rgba(255,255,255,0.14)",
+                      borderColor: active ? "#C1AA8A" : "rgba(255,255,255,0.14)",
                       backgroundColor: active ? "rgba(198,155,79,0.18)" : "rgba(255,255,255,0.06)",
                     },
                   ]}
                 >
-                  <Text style={[styles.chipText, { color: active ? "#BE9650" : colors.mutedForeground }]}>
+                  <Text style={[styles.chipText, { color: active ? "#C1AA8A" : colors.mutedForeground }]}>
                     {p.name}
                   </Text>
                 </Pressable>
@@ -264,7 +264,7 @@ export default function RespiracionScreen() {
                 {
                   backgroundColor:
                     i < cycles
-                      ? "#BE9650"
+                      ? "#C1AA8A"
                       : i === cycles && running
                         ? "rgba(198,155,79,0.45)"
                         : "rgba(255,255,255,0.14)",
@@ -291,7 +291,7 @@ export default function RespiracionScreen() {
                 <View
                   style={[
                     styles.legendDot,
-                    { backgroundColor: active ? "#BE9650" : "rgba(255,255,255,0.2)" },
+                    { backgroundColor: active ? "#C1AA8A" : "rgba(255,255,255,0.2)" },
                   ]}
                 />
                 <Text style={[styles.legendText, { color: active ? colors.foreground : colors.mutedForeground }]}>
@@ -308,7 +308,7 @@ export default function RespiracionScreen() {
           style={({ pressed }) => [styles.mainBtn, { opacity: pressed ? 0.82 : 1 }]}
         >
           <LinearGradient
-            colors={["#BE9650", "#BE9650"]}
+            colors={["#C1AA8A", "#C1AA8A"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 50 }]}
@@ -388,13 +388,13 @@ const styles = StyleSheet.create({
   countdownNum: {
     fontSize: 38,
     fontWeight: "200",
-    color: "#BE9650",
+    color: "#C1AA8A",
     marginTop: 2,
     lineHeight: 44,
   },
   completedIcon: {
     fontSize: 44,
-    color: "#BE9650",
+    color: "#C1AA8A",
   },
 
   cycleRow: {

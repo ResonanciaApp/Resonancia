@@ -28,7 +28,7 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 const BG      = "#0B0F14";
 const FG      = "#EDE1D3";
 const MUTED   = "#7A8FA8";
-const GOLD    = "#BE9650";
+const GOLD    = "#C1AA8A";
 const BORDER  = "#1E2733";
 const TAB_ACTIVE_BG = "rgba(190,150,80,0.12)";
 const THUMB   = 44;

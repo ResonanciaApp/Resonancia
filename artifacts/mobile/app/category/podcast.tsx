@@ -352,7 +352,7 @@ export default function SonidosScreen() {
                                 </Text>
                                 {lockedOpt && (
                                   <View style={styles.timerLock}>
-                                    <Feather name="lock" size={9} color="#BE9650" />
+                                    <Feather name="lock" size={9} color="#C1AA8A" />
                                   </View>
                                 )}
                               </>

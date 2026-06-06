@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   avatarInitial: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#BE9650",
+    color: "#C1AA8A",
   },
   msgBody: { flex: 1 },
   msgAuthor: { fontSize: 11, fontWeight: "600", marginBottom: 3, opacity: 0.75 },

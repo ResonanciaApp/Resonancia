@@ -33,7 +33,7 @@ async function ensureAndroidChannel() {
     name: "RESONANCIA",
     importance: Notifications.AndroidImportance.DEFAULT,
     vibrationPattern: [0, 250, 250, 250],
-    lightColor: "#BE9650",
+    lightColor: "#C1AA8A",
   });
 }
 

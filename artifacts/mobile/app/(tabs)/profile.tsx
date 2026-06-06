@@ -452,7 +452,7 @@ export default function ProfileScreen() {
                 { icon: "users",      text: "Muro general de la comunidad" },
               ].map((f) => (
                 <View key={f.text} style={styles.premiumFeatureRow}>
-                  <Feather name={f.icon as never} size={11} color="#BE9650" />
+                  <Feather name={f.icon as never} size={11} color="#C1AA8A" />
                   <Text style={[styles.premiumFeatureText, { color: "#FFFFFF" }]}>{f.text}</Text>
                 </View>
               ))}
@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#BE9650",
+    backgroundColor: "#C1AA8A",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
