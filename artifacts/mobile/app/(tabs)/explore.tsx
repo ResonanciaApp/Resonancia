@@ -228,7 +228,7 @@ export default function ExploreScreen() {
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempos tienes?</Text>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes?</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -241,7 +241,7 @@ export default function ExploreScreen() {
                     style={({ pressed }) => [
                       styles.timeChip,
                       {
-                        backgroundColor: "#11161F",
+                        backgroundColor: "#151A23",
                         opacity: pressed ? 0.6 : 1,
                       },
                     ]}
