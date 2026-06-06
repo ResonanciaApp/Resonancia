@@ -31,7 +31,7 @@ import {
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#0B1024", "#0A0C1B", "#080912"] as const;
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 const CARD     = "#151A23";
 const GOLD     = "#BE9650";
 const FG       = "#EDE1D3";
