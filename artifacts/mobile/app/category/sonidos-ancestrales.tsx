@@ -24,7 +24,7 @@ import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
-const ACCENT = "#C1AA8A";
+const ACCENT = "#BE9650";
 
 type TabDef = {
   label: string;

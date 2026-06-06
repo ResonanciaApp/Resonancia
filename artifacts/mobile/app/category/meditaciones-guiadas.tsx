@@ -25,7 +25,7 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const ICON_COLOR = "#C1AA8A";
+const ICON_COLOR = "#BE9650";
 const RATINGS_KEY = "@resonance_ratings";
 
 type TabDef = {

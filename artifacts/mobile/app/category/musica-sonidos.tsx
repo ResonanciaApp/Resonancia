@@ -30,7 +30,7 @@ const RATINGS_KEY = "@resonance_ratings";
 
 type Tab = SoundTag;
 
-const MUSICA_ACCENT = "#C1AA8A";
+const MUSICA_ACCENT = "#BE9650";
 
 const TABS: { label: string; value: Tab; icon: string }[] = [
   { label: "Ambient",   value: "Música Ambient",   icon: "weather-cloudy"  },
@@ -112,7 +112,7 @@ export default function MusicaSonidosScreen() {
             <ExpoImage
               source={require("../../assets/images/cat-musica.png")}
               style={{ width: 34, height: 34 }}
-              tintColor="#C1AA8A"
+              tintColor="#BE9650"
               contentFit="contain"
             />
           </View>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "#C1AA8A24" },
+  tabBlockActive: { backgroundColor: "#BE965024" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1 },
   divider: {
     height: StyleSheet.hairlineWidth,
