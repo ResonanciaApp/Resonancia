@@ -194,7 +194,11 @@ export default function HomeScreen() {
                 "mananas":        require("../../assets/images/cat-mananas.png"),
                 "podcast":        require("../../assets/images/cat-sonidos.png"),
               };
-              const iconColor = colors.foreground;
+              const iconColors: Record<string, string> = {
+                "sonidos-ancestrales": "#D6933A",
+                "meditaciones-guiadas": "#A87ED4",
+              };
+              const iconColor = iconColors[cat.id] ?? colors.foreground;
               const catImg = catImages[cat.id];
               return (
                 <Pressable
