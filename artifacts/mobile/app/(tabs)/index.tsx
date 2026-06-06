@@ -212,7 +212,7 @@ export default function HomeScreen() {
                   {catImg ? (
                     <Image
                       source={catImg}
-                      style={[styles.catCardImage, cat.id === "noches" && { width: 22, height: 22 }, cat.id === "musica-sonidos" && { width: 24, height: 24 }]}
+                      style={[styles.catCardImage, cat.id === "noches" && { width: 22, height: 22 }, cat.id === "musica-sonidos" && { width: 23, height: 23 }]}
                       resizeMode="contain"
                     />
                   ) : cat.id === "meditaciones-guiadas" ? (
