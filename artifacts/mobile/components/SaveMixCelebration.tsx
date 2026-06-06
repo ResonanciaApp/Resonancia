@@ -130,7 +130,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
             {
               top: insets.top + 40,
               backgroundColor: colors.card,
-              borderColor: colors.primary,
+              borderColor: (category.color ?? colors.primary) + "50",
               transform: [{ scale: pillScale }],
             },
           ]}
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  pillLabel: { fontSize: 14, fontWeight: "700", textAlign: "center" },
+  pillLabel: { fontSize: 14, fontWeight: "700", textAlign: "center", paddingLeft: 2 },
 
   token: {
     width: 96,
