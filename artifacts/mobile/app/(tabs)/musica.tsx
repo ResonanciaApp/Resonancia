@@ -362,17 +362,10 @@ export default function MiMusicaScreen() {
           })}
         </ScrollView>
 
-        {/* ── Separador ── */}
-        <View style={styles.separator} />
-
-        {/* ── Scroll principal ── */}
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Sub-tabs (si aplica) */}
-          {subTabCategories && subTabCategories.length > 1 && (
+        {/* ── Separador / Sub-tabs sobre la línea ── */}
+        {subTabCategories && subTabCategories.length > 1 ? (
+          <View style={styles.subTabZone}>
+            <View style={styles.subTabLine} pointerEvents="none" />
             <SubTabSlide key={subTabAnimKey}>
               <ScrollView
                 horizontal
@@ -411,8 +404,17 @@ export default function MiMusicaScreen() {
                 })}
               </ScrollView>
             </SubTabSlide>
-          )}
+          </View>
+        ) : (
+          <View style={styles.separator} />
+        )}
 
+        {/* ── Scroll principal ── */}
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Grilla de sonidos — 3 columnas */}
           <ContentSlide key={contentAnimKey} dir={contentDir}>
             <View style={[styles.grid, { marginTop: 14 }]}>
@@ -462,8 +464,17 @@ const styles = StyleSheet.create({
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
-  // Sub-tabs
-  subTabRow: { flexDirection: "row", gap: 8, paddingBottom: 14 },
+  // Sub-tabs sobre la línea divisora
+  subTabZone: { position: "relative", justifyContent: "center" },
+  subTabLine: {
+    position: "absolute",
+    left: 16,
+    right: 16,
+    top: "50%",
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  subTabRow: { flexDirection: "row", gap: 8, paddingVertical: 12, paddingHorizontal: 16 },
   subTabPill: {
     flexDirection: "row",
     alignItems: "center",
