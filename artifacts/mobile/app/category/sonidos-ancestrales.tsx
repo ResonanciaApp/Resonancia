@@ -12,6 +12,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -91,6 +92,7 @@ export default function SonidosAncestalesScreen() {
   const insets = useSafeAreaInsets();
 
   const [selectedTag, setSelectedTag] = useState<AncestralTag | null>(null);
+  const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
@@ -153,6 +155,12 @@ export default function SonidosAncestalesScreen() {
     return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
   }, [ancestralSessions, selectedTag]);
 
+  const visibleCats = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return CATEGORIES;
+    return CATEGORIES.filter((c) => c.tag.toLowerCase().includes(q));
+  }, [query]);
+
   const countByTag = useMemo(() => {
     const map: Record<string, number> = {};
     for (const cat of CATEGORIES) {
@@ -202,22 +210,34 @@ export default function SonidosAncestalesScreen() {
               <Pressable onPress={() => router.back()} style={styles.backBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
-              <View style={styles.titleRow}>
-                <View style={styles.catIconCircle}>
-                  <MaterialCommunityIcons name="bowl-mix" size={32} color="#C4956A" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.pageTitle, { color: colors.foreground }]}>Ancestrales</Text>
-                  <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                    Cuencos, gongs y frecuencias sagradas
-                  </Text>
-                </View>
+              <View style={styles.catIconCircle}>
+                <MaterialCommunityIcons name="bowl-mix" size={34} color="#C4956A" />
+              </View>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Ancestrales</Text>
+              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+                Cuencos, gongs y frecuencias sagradas
+              </Text>
+              <View style={styles.searchBar}>
+                <Feather name="search" size={17} color={colors.mutedForeground} />
+                <TextInput
+                  style={[styles.searchInput, { color: colors.foreground }]}
+                  placeholder="Buscar en Ancestrales…"
+                  placeholderTextColor={colors.mutedForeground}
+                  value={query}
+                  onChangeText={setQuery}
+                  returnKeyType="search"
+                />
               </View>
             </View>
 
             <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
-              {CATEGORIES.map((cat, idx) => {
-                const isLast = idx === CATEGORIES.length - 1;
+              {visibleCats.length === 0 && (
+                <Text style={[styles.noResults, { color: colors.mutedForeground }]}>
+                  Sin resultados para “{query.trim()}”
+                </Text>
+              )}
+              {visibleCats.map((cat, idx) => {
+                const isLast = idx === visibleCats.length - 1;
                 return (
                   <Pressable
                     key={cat.tag}
@@ -415,14 +435,26 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     marginBottom: 16,
   },
-  titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   catIconCircle: {
-    width: 56, height: 56,
-    borderRadius: 28,
+    width: 60, height: 60,
+    borderRadius: 30,
+    backgroundColor: "rgba(196,149,106,0.10)",
     alignItems: "center", justifyContent: "center",
+    marginBottom: 12,
   },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "left" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "left" },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
+  searchBar: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    alignSelf: "stretch",
+    backgroundColor: "#151A23",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === "ios" ? 12 : 8,
+    marginTop: 18,
+  },
+  searchInput: { flex: 1, fontSize: 14, padding: 0 },
+  noResults: { fontSize: 14, textAlign: "center", paddingVertical: 24 },
 
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },

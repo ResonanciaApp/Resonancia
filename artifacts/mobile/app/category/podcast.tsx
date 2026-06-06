@@ -13,6 +13,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -64,6 +65,7 @@ export default function SonidosScreen() {
   const { version } = useCatalog();
 
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
+  const [query, setQuery] = useState("");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
@@ -76,10 +78,11 @@ export default function SonidosScreen() {
     [version],
   );
 
-  const filtered = useMemo(
-    () => sonidosSessions.filter((s) => s.sonidosTag === activeTab),
-    [sonidosSessions, activeTab],
-  );
+  const filtered = useMemo(() => {
+    const base = sonidosSessions.filter((s) => s.sonidosTag === activeTab);
+    const q = query.trim().toLowerCase();
+    return q ? base.filter((s) => s.title.toLowerCase().includes(q)) : base;
+  }, [sonidosSessions, activeTab, query]);
 
   const handleSelectTimer = (opt: (typeof TIMER_OPTIONS)[number]) => {
     if (!pendingSession) return;
@@ -136,20 +139,27 @@ export default function SonidosScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={styles.titleRow}>
-            <View style={styles.iconCircle}>
-              <Image
-                source={require("../../assets/images/cat-sonidos.png")}
-                style={{ width: 34, height: 34 }}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
-              <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-                Ponte audífonos y a dormir
-              </Text>
-            </View>
+          <View style={[styles.iconCircle, { backgroundColor: SONIDOS_ACCENT + "1A" }]}>
+            <Image
+              source={require("../../assets/images/cat-sonidos.png")}
+              style={{ width: 34, height: 34 }}
+              resizeMode="contain"
+            />
+          </View>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
+          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+            Ponte audífonos y a dormir
+          </Text>
+          <View style={styles.searchBar}>
+            <Feather name="search" size={17} color={colors.mutedForeground} />
+            <TextInput
+              style={[styles.searchInput, { color: colors.foreground }]}
+              placeholder="Buscar en Sonidos…"
+              placeholderTextColor={colors.mutedForeground}
+              value={query}
+              onChangeText={setQuery}
+              returnKeyType="search"
+            />
           </View>
         </View>
 
@@ -394,11 +404,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   iconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   pageTitle: {
@@ -406,13 +417,25 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.2,
     marginBottom: 4,
-    textAlign: "left",
+    textAlign: "center",
   },
   pageSub: {
     fontSize: 13,
     lineHeight: 19,
-    textAlign: "left",
+    textAlign: "center",
   },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    alignSelf: "stretch",
+    backgroundColor: "#151A23",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === "ios" ? 12 : 8,
+    marginTop: 18,
+  },
+  searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
   divider: {
     height: StyleSheet.hairlineWidth,

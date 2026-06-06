@@ -13,6 +13,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -113,6 +114,7 @@ export default function MananasScreen() {
   const { history } = usePlayer();
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
@@ -217,26 +219,44 @@ export default function MananasScreen() {
               <Pressable onPress={() => router.back()} style={styles.backBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
-              <View style={styles.titleRow}>
-                <View style={styles.catIconCircle}>
-                  <Image
-                    source={require("../../assets/images/cat-mananas.png")}
-                    style={{ width: 34, height: 34 }}
-                    resizeMode="contain"
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
-                  <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                    Rituales para comenzar el día con energía
-                  </Text>
-                </View>
+              <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
+                <Image
+                  source={require("../../assets/images/cat-mananas.png")}
+                  style={{ width: 34, height: 34 }}
+                  resizeMode="contain"
+                />
+              </View>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
+              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+                Rituales para comenzar el día con energía
+              </Text>
+              <View style={styles.searchBar}>
+                <Feather name="search" size={17} color={colors.mutedForeground} />
+                <TextInput
+                  style={[styles.searchInput, { color: colors.foreground }]}
+                  placeholder="Buscar en Mañanas…"
+                  placeholderTextColor={colors.mutedForeground}
+                  value={query}
+                  onChangeText={setQuery}
+                  returnKeyType="search"
+                />
               </View>
             </View>
 
             <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
-              {SUBCATEGORIES.map((sub, idx) => {
-                const isLast = idx === SUBCATEGORIES.length - 1;
+              {SUBCATEGORIES.filter((c) => {
+                const q = query.trim().toLowerCase();
+                return !q || c.tag.toLowerCase().includes(q);
+              }).length === 0 && (
+                <Text style={[styles.noResults, { color: colors.mutedForeground }]}>
+                  Sin resultados para “{query.trim()}”
+                </Text>
+              )}
+              {SUBCATEGORIES.filter((c) => {
+                const q = query.trim().toLowerCase();
+                return !q || c.tag.toLowerCase().includes(q);
+              }).map((sub, idx, arr) => {
+                const isLast = idx === arr.length - 1;
                 return (
                   <Pressable
                     key={sub.tag}
@@ -435,13 +455,25 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   catIconCircle: {
-    width: 56, height: 56,
-    borderRadius: 28,
+    width: 60, height: 60,
+    borderRadius: 30,
     alignItems: "center", justifyContent: "center",
+    marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "left" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "left" },
+  searchBar: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    alignSelf: "stretch",
+    backgroundColor: "#151A23",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === "ios" ? 12 : 8,
+    marginTop: 18,
+  },
+  searchInput: { flex: 1, fontSize: 14, padding: 0 },
+  noResults: { fontSize: 14, textAlign: "center", paddingVertical: 24 },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
 
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },

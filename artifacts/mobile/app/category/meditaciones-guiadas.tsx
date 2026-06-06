@@ -13,6 +13,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -93,6 +94,7 @@ export default function MeditacionesGuiadasScreen() {
   const { version } = useCatalog();
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
@@ -214,22 +216,40 @@ export default function MeditacionesGuiadasScreen() {
               <Pressable onPress={() => router.back()} style={styles.backBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
-              <View style={styles.titleRow}>
-                <View style={styles.catIconCircle}>
-                  <ZenStonesIcon color={ICON_COLOR} size={42} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
-                  <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                    Déjate llevar por la voz y el sonido
-                  </Text>
-                </View>
+              <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
+                <ZenStonesIcon color={ICON_COLOR} size={42} />
+              </View>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
+              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+                Déjate llevar por la voz y el sonido
+              </Text>
+              <View style={styles.searchBar}>
+                <Feather name="search" size={17} color={colors.mutedForeground} />
+                <TextInput
+                  style={[styles.searchInput, { color: colors.foreground }]}
+                  placeholder="Buscar en Meditaciones…"
+                  placeholderTextColor={colors.mutedForeground}
+                  value={query}
+                  onChangeText={setQuery}
+                  returnKeyType="search"
+                />
               </View>
             </View>
 
             <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
-              {CATEGORIES.map((cat, idx) => {
-                const isLast = idx === CATEGORIES.length - 1;
+              {CATEGORIES.filter((c) => {
+                const q = query.trim().toLowerCase();
+                return !q || c.tag.toLowerCase().includes(q);
+              }).length === 0 && (
+                <Text style={[styles.noResults, { color: colors.mutedForeground }]}>
+                  Sin resultados para “{query.trim()}”
+                </Text>
+              )}
+              {CATEGORIES.filter((c) => {
+                const q = query.trim().toLowerCase();
+                return !q || c.tag.toLowerCase().includes(q);
+              }).map((cat, idx, arr) => {
+                const isLast = idx === arr.length - 1;
                 return (
                   <Pressable
                     key={cat.tag}
@@ -429,12 +449,24 @@ const styles = StyleSheet.create({
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   catIconCircle: {
-    width: 56, height: 56,
-    borderRadius: 28,
+    width: 60, height: 60,
+    borderRadius: 30,
     alignItems: "center", justifyContent: "center",
+    marginBottom: 12,
   },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "left" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "left" },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
+  searchBar: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    alignSelf: "stretch",
+    backgroundColor: "#151A23",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === "ios" ? 12 : 8,
+    marginTop: 18,
+  },
+  searchInput: { flex: 1, fontSize: 14, padding: 0 },
+  noResults: { fontSize: 14, textAlign: "center", paddingVertical: 24 },
 
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },

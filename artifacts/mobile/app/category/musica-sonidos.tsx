@@ -9,6 +9,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { Image as ExpoImage } from "expo-image";
@@ -46,6 +47,7 @@ export default function MusicaSonidosScreen() {
   const { version } = useCatalog();
 
   const [activeTab, setActiveTab] = useState<Tab>("Música Ambient");
+  const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
@@ -68,7 +70,10 @@ export default function MusicaSonidosScreen() {
     [musicaSessions, activeTab],
   );
 
-  const filtered = tabSessions;
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return q ? tabSessions.filter((s) => s.title.toLowerCase().includes(q)) : tabSessions;
+  }, [tabSessions, query]);
 
   const recentlyPlayed = useMemo(() => {
     const subIds = new Set(tabSessions.map((s) => s.id));
@@ -103,20 +108,27 @@ export default function MusicaSonidosScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={styles.titleRow}>
-            <View style={styles.catIconCircle}>
-              <ExpoImage
-                source={require("../../assets/images/cat-musica.png")}
-                style={{ width: 34, height: 34 }}
-                contentFit="contain"
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Música</Text>
-              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                Temas exclusivos para ti
-              </Text>
-            </View>
+          <View style={[styles.catIconCircle, { backgroundColor: MUSICA_ACCENT + "1A" }]}>
+            <ExpoImage
+              source={require("../../assets/images/cat-musica.png")}
+              style={{ width: 34, height: 34 }}
+              contentFit="contain"
+            />
+          </View>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Música</Text>
+          <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+            Temas exclusivos para ti
+          </Text>
+          <View style={styles.searchBar}>
+            <Feather name="search" size={17} color={colors.mutedForeground} />
+            <TextInput
+              style={[styles.searchInput, { color: colors.foreground }]}
+              placeholder="Buscar en Música…"
+              placeholderTextColor={colors.mutedForeground}
+              value={query}
+              onChangeText={setQuery}
+              returnKeyType="search"
+            />
           </View>
         </View>
 
@@ -224,13 +236,24 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   catIconCircle: {
-    width: 56, height: 56,
-    borderRadius: 28,
+    width: 60, height: 60,
+    borderRadius: 30,
     alignItems: "center", justifyContent: "center",
+    marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "left" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "left" },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
+  searchBar: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    alignSelf: "stretch",
+    backgroundColor: "#151A23",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: Platform.OS === "ios" ? 12 : 8,
+    marginTop: 18,
+  },
+  searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
   tabRow: { flexDirection: "row", gap: 10 },
   tabBlock: {
