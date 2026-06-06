@@ -277,19 +277,23 @@ export function MixerSheet() {
     });
     notifySaved();
     setForceShowModal(true);
-    stopAll();
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
-    // El popup vive DENTRO del contenedor que hace el fade (ya no es un Modal
-    // aparte), así que reproductor + popup + su dim desvanecen como UNA sola unidad
-    // a la misma velocidad. Sin el des-oscurecimiento del backdrop que antes
-    // "frenaba" al reproductor: una única animación lineal de opacidad para todo.
+    // Fade único de todo el contenedor (reproductor + popup + dim como una sola
+    // unidad). Dos detalles para que NO se "clave" a la mitad:
+    //  • stopAll() (frena varios audios) se difiere al callback: si corre antes
+    //    bloquea el hilo JS unos frames a mitad de la animación → tirón. Así el
+    //    fade corre limpio y el audio acompaña y se corta al final.
+    //  • Easing.out en vez de lineal: la opacidad baja rápido al inicio para
+    //    compensar la percepción gamma (a opacidad 0.5 el ojo aún ve ~73% de
+    //    brillo, por eso un fade lineal parece detenerse al 50%).
     Animated.timing(sheetOpacity, {
       toValue: 0,
-      duration: 350,
-      easing: Easing.linear,
+      duration: 360,
+      easing: Easing.out(Easing.quad),
       useNativeDriver: true,
     }).start(() => {
+      stopAll();
       setForceShowModal(false);
       setSaveModalOpen(false);
       saveOverlayOpacity.setValue(0);

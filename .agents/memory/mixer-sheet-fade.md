@@ -31,3 +31,20 @@ capa de abajo y produce un mínimo/rebote de brillo intermedio.
 abrir y fade-out al cancelar; en el flujo que cierra TODO (confirmar guardado), NO
 cierres el popup antes del fade global — dejá que la opacidad del contenedor lo
 arrastre y reseteá el estado en el callback de la animación.
+
+## Segundo síntoma: el fade unificado "se clava a la mitad"
+
+Una vez unificado, el fade lineal se percibía detenido al 50%. Dos causas:
+
+1. **Percepción gamma (la principal):** el brillo percibido ≈ opacidad^0.45. Con
+   opacidad lineal, al llegar al 50% del tiempo (opacidad 0.5) el ojo todavía ve
+   ~73% de brillo → parece que "no avanza" y luego cae de golpe al final. Fix:
+   `Easing.out(Easing.quad)` (o cubic) en vez de `Easing.linear` — baja la
+   opacidad rápido al inicio para que el desvanecido percibido sea parejo.
+   **Regla:** para fades de opacidad usá ease-out, NO lineal; lineal SIEMPRE se
+   ve "pesado/clavado" en la mitad por gamma.
+2. **Bloqueo del hilo JS:** trabajo pesado disparado junto con la animación
+   (acá `stopAll()` que frena varios reproductores de audio) bloquea unos frames
+   a mitad del fade y produce un tirón real. Fix: diferir ese trabajo al callback
+   `.start(() => ...)` de la animación, no ejecutarlo antes de `.start()`. Bonus:
+   el audio acompaña el fade y se corta al terminar.
