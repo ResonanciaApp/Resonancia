@@ -216,7 +216,7 @@ export default function HomeScreen() {
                       resizeMode="contain"
                     />
                   ) : cat.id === "noches" ? (
-                    <MoonCrescentIcon color="#FFA58E" size={24} />
+                    <MoonCrescentIcon color="#FFA58E" size={25} />
                   ) : cat.id === "meditaciones-guiadas" ? (
                     <View style={{ marginTop: -4 }}>
                       <ZenStonesIcon color={iconColor} size={31} />
