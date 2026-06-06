@@ -327,11 +327,10 @@ export default function MiMusicaScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories]);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#0B0F14" }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
 
-      <View style={[styles.inner, { paddingTop: topPad + 12 }]}>
+      <View style={[styles.inner, { paddingTop: topPad + 12, backgroundColor: "#0B0F14" }]}>
         {/* ── Header fijo ── */}
         <View style={styles.header}>
           {/* Título — sin flecha */}
@@ -364,13 +363,13 @@ export default function MiMusicaScreen() {
           contentContainerStyle={{
             paddingBottom: 200 + bottomPad,
             paddingHorizontal: 20,
-            backgroundColor: "#0E141C",
+            backgroundColor: "#0B0F14",
           }}
           stickyHeaderIndices={[0]}
           showsVerticalScrollIndicator={false}
         >
           {/* ── Barra sticky: categorías principales + sub-tabs ── */}
-          <View style={[styles.stickyBar, { backgroundColor: "#0E141C" }]}>
+          <View style={[styles.stickyBar, { backgroundColor: "#0B0F14" }]}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -391,7 +390,7 @@ export default function MiMusicaScreen() {
                     <Feather
                       name={tab.icon as any}
                       size={20}
-                      color={selected ? "#FFFFFF" : colors.mutedForeground}
+                      color={selected ? "#BE9650" : colors.mutedForeground}
                     />
                     <Text
                       style={[
