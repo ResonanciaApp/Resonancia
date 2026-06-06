@@ -447,7 +447,7 @@ export default function MiMusicaScreen() {
                 </ScrollView>
               </SubTabSlide>
             ) : (
-              <View style={{ height: 8, backgroundColor: "#0E141C", marginHorizontal: -20 }} />
+              <View style={{ height: 10, backgroundColor: "#0B0F14", marginHorizontal: -20 }} />
             )}
           </View>
 
@@ -470,8 +470,8 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, marginHorizontal: -20, backgroundColor: "#0B0F14" },
 
   // Header
-  header: { marginBottom: 24 },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 14 },
+  header: { marginBottom: 16 },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: -0.5, marginBottom: 12 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 14 },
   subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
   mezclasRow: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 36 },
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   stickyBar: {
     marginHorizontal: -20,
     paddingHorizontal: 20,
-    paddingTop: 28,
+    paddingTop: 20,
     paddingBottom: 0,
     borderTopWidth: 1,
     borderTopColor: "rgba(122,143,168,0.14)",
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
   },
 
   // Grilla de sonidos — 3 columnas uniformes
-  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 24, justifyContent: "flex-start" },
+  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
   soundCard: {
     width: "31%",
   },
