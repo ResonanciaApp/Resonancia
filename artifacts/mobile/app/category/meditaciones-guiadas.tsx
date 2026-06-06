@@ -131,20 +131,20 @@ export default function MeditacionesGuiadasScreen() {
               <Pressable
                 key={value}
                 onPress={() => setActiveTab(value)}
-                style={[styles.tabBlock, sel && { backgroundColor: ICON_COLOR + "24" }]}
+                style={[styles.tabBlock, sel && styles.tabBlockActive]}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
                 <MaterialCommunityIcons
                   name={icon as never}
                   size={24}
-                  color={sel ? ICON_COLOR : colors.mutedForeground}
+                  color={sel ? "#FFFFFF" : colors.mutedForeground}
                 />
                 <Text
                   style={[
                     styles.tabLabel,
                     {
-                      color: sel ? colors.foreground : colors.mutedForeground,
+                      color: sel ? "#FFFFFF" : colors.mutedForeground,
                       fontWeight: sel ? "700" : "400",
                     },
                   ]}
@@ -287,6 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
+  tabBlockActive: { backgroundColor: "rgba(107,154,181,0.14)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
   divider: {
     height: StyleSheet.hairlineWidth,

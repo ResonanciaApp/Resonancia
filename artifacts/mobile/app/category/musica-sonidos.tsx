@@ -148,13 +148,13 @@ export default function MusicaSonidosScreen() {
                 <MaterialCommunityIcons
                   name={icon as any}
                   size={24}
-                  color={sel ? MUSICA_ACCENT : colors.mutedForeground}
+                  color={sel ? "#FFFFFF" : colors.mutedForeground}
                 />
                 <Text
                   style={[
                     styles.tabLabel,
                     {
-                      color: sel ? colors.foreground : colors.mutedForeground,
+                      color: sel ? "#FFFFFF" : colors.mutedForeground,
                       fontWeight: sel ? "700" : "400",
                     },
                   ]}
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "#BE965024" },
+  tabBlockActive: { backgroundColor: "rgba(107,154,181,0.14)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1 },
   divider: {
     height: StyleSheet.hairlineWidth,
