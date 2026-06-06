@@ -215,8 +215,8 @@ export default function MeditacionesGuiadasScreen() {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <View style={styles.titleRow}>
-                <View style={[styles.catIconCircle, { backgroundColor: "rgba(139,130,190,0.21)" }]}>
-                  <ZenStonesIcon color={ICON_COLOR} size={40} />
+                <View style={styles.catIconCircle}>
+                  <ZenStonesIcon color={ICON_COLOR} size={42} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>

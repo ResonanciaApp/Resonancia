@@ -203,8 +203,8 @@ export default function SonidosAncestalesScreen() {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <View style={styles.titleRow}>
-                <View style={[styles.catIconCircle, { backgroundColor: "rgba(196,149,106,0.21)" }]}>
-                  <MaterialCommunityIcons name="bowl-mix" size={30} color="#C4956A" />
+                <View style={styles.catIconCircle}>
+                  <MaterialCommunityIcons name="bowl-mix" size={32} color="#C4956A" />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.pageTitle, { color: colors.foreground }]}>Ancestrales</Text>
