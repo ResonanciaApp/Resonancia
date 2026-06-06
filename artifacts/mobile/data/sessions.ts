@@ -31,7 +31,10 @@ export type AncestralTag =
   | "Mix de Cuencos"
   | "Gongs"
   | "Cuencos y Gongs"
-  | "Full Instrumentos";
+  | "Full Instrumentos"
+  | "Vientos"
+  | "Cantos"
+  | "Percusión";
 
 import type { SleepTag, ThemeTag } from "@/data/tags";
 

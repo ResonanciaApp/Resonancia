@@ -34,10 +34,16 @@ type TabDef = {
 };
 
 const TABS: TabDef[] = [
-  { label: "Cuencos",       value: "Cuencos",       icon: "bowl-mix",       tags: ["Cuencos Tibetanos", "Cuencos de Cuarzo", "Mix de Cuencos"] },
+  { label: "Cuencos",       value: "Cuencos",       icon: "bowl-mix",              tags: ["Cuencos Tibetanos", "Cuencos de Cuarzo", "Mix de Cuencos"] },
   { label: "Gongs",         value: "Gongs",         icon: "record-circle-outline", tags: ["Gongs"] },
-  { label: "Campanas",      value: "Campanas",      icon: "bell-outline",   tags: [] },
-  { label: "Mix",           value: "Mix Ancestral", icon: "layers-triple",  tags: ["Cuencos y Gongs", "Full Instrumentos"] },
+  { label: "Campanas",      value: "Campanas",      icon: "bell-outline",          tags: [] },
+  { label: "Mix",           value: "Mix Ancestral", icon: "layers-triple",         tags: ["Cuencos y Gongs", "Full Instrumentos"] },
+];
+
+const TABS_EXTRA: TabDef[] = [
+  { label: "Vientos",   value: "Vientos",   icon: "weather-windy",  tags: ["Vientos"] },
+  { label: "Cantos",    value: "Cantos",    icon: "account-voice",  tags: ["Cantos"] },
+  { label: "Percusión", value: "Percusión", icon: "drum",           tags: ["Percusión"] },
 ];
 
 export default function SonidosAncestalesScreen() {
@@ -66,7 +72,7 @@ export default function SonidosAncestalesScreen() {
   );
 
   const tabSessions = useMemo(() => {
-    const tab = TABS.find((t) => t.value === activeTab);
+    const tab = [...TABS, ...TABS_EXTRA].find((t) => t.value === activeTab);
     const tags = tab?.tags ?? [];
     const list = ancestralSessions.filter(
       (s) => s.ancestralTag != null && tags.includes(s.ancestralTag),
@@ -122,7 +128,7 @@ export default function SonidosAncestalesScreen() {
           </View>
         </View>
 
-        {/* Tabs — bloques con ícono */}
+        {/* Tabs — bloques con ícono, fila 1 */}
         <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
           {TABS.map(({ label, value, icon }) => {
             const sel = activeTab === value;
@@ -143,7 +149,40 @@ export default function SonidosAncestalesScreen() {
                   style={[
                     styles.tabLabel,
                     {
-                      color: sel ? colors.foreground : colors.mutedForeground,
+                      color: sel ? "#FFFFFF" : colors.mutedForeground,
+                      fontWeight: sel ? "700" : "400",
+                    },
+                  ]}
+                >
+                  {label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* Tabs — bloques con ícono, fila 2 */}
+        <View style={[styles.tabRow, { paddingHorizontal: H_PAD, marginTop: 10 }]}>
+          {TABS_EXTRA.map(({ label, value, icon }) => {
+            const sel = activeTab === value;
+            return (
+              <Pressable
+                key={value}
+                onPress={() => setActiveTab(value)}
+                style={[styles.tabBlock, sel && { backgroundColor: ACCENT + "24" }]}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: sel }}
+              >
+                <MaterialCommunityIcons
+                  name={icon as never}
+                  size={24}
+                  color={sel ? ACCENT : colors.mutedForeground}
+                />
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    {
+                      color: sel ? "#FFFFFF" : colors.mutedForeground,
                       fontWeight: sel ? "700" : "400",
                     },
                   ]}
