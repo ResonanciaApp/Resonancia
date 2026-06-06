@@ -24,6 +24,9 @@ export type SoundCategoryId =
   | "cuencos_cuarzo"
   | "gongs"
   | "campanas_viento"
+  | "vientos"
+  | "cantos"
+  | "percusion"
   | "mantras"
   | "solfeggio"
   | "ruidos"
@@ -44,6 +47,9 @@ export const SOUND_CATEGORIES: SoundCategory[] = [
   { id: "cuencos_cuarzo", label: "Cuencos de Cuarzo" },
   { id: "gongs", label: "Gongs" },
   { id: "campanas_viento", label: "Campanas de Viento" },
+  { id: "vientos", label: "Vientos" },
+  { id: "cantos", label: "Cantos" },
+  { id: "percusion", label: "Percusión" },
   { id: "mantras", label: "Mantras" },
   { id: "solfeggio", label: "Solfeggio" },
   { id: "ruidos", label: "Ruidos" },
