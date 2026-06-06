@@ -30,6 +30,8 @@ tags:
     description: Catálogo de sesiones, categorías y audios
   - name: admin
     description: Panel de administración (solo rol admin)
+  - name: mixer-sounds
+    description: Sonidos del mixer Mi Música
 paths:
   /healthz:
     get:
@@ -1806,6 +1808,174 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /sounds:
+    get:
+      operationId: getMixerSounds
+      tags: [mixer-sounds]
+      summary: Listar sonidos activos del mixer
+      responses:
+        "200":
+          description: Lista de sonidos activos
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sounds]
+                properties:
+                  sounds:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MixerSoundItem"
+  /admin/sounds:
+    get:
+      operationId: getAdminSounds
+      tags: [admin]
+      summary: Listar todos los sonidos del mixer (admin)
+      responses:
+        "200":
+          description: Lista de sonidos
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sounds]
+                properties:
+                  sounds:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AdminMixerSoundItem"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminSound
+      tags: [admin]
+      summary: Crear un sonido del mixer (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMixerSoundBody"
+      responses:
+        "201":
+          description: Sonido creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminMixerSoundItem"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Ya existe un sonido con ese ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/sounds/{id}:
+    patch:
+      operationId: updateAdminSound
+      tags: [admin]
+      summary: Actualizar un sonido del mixer (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMixerSoundBody"
+      responses:
+        "200":
+          description: Sonido actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminMixerSoundItem"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sonido no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminSound
+      tags: [admin]
+      summary: Eliminar un sonido del mixer (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Sonido eliminado
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sonido no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     PlaybackEvent:
@@ -3078,3 +3248,102 @@ components:
         followedAt:
           type: string
           format: date-time
+    MixerSoundItem:
+      type: object
+      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        categoryId:
+          type: string
+        iconName:
+          type: string
+        iconSet:
+          type: string
+        isPremium:
+          type: boolean
+        isActive:
+          type: boolean
+        sortOrder:
+          type: integer
+        objectPath:
+          type: string
+          nullable: true
+    AdminMixerSoundItem:
+      type: object
+      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath, createdAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        categoryId:
+          type: string
+        iconName:
+          type: string
+        iconSet:
+          type: string
+        isPremium:
+          type: boolean
+        isActive:
+          type: boolean
+        sortOrder:
+          type: integer
+        objectPath:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    CreateMixerSoundBody:
+      type: object
+      required: [id, name, categoryId, iconName, iconSet]
+      properties:
+        id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        categoryId:
+          type: string
+          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, mantras, solfeggio, ruidos, frecuencias]
+        iconName:
+          type: string
+          minLength: 1
+        iconSet:
+          type: string
+          enum: [feather, ionicons]
+        isPremium:
+          type: boolean
+        objectPath:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+    UpdateMixerSoundBody:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        categoryId:
+          type: string
+          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, mantras, solfeggio, ruidos, frecuencias]
+        iconName:
+          type: string
+          minLength: 1
+        iconSet:
+          type: string
+          enum: [feather, ionicons]
+        isPremium:
+          type: boolean
+        isActive:
+          type: boolean
+        objectPath:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer

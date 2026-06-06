@@ -24,6 +24,7 @@ import type {
   AdminCategoryUpdate,
   AdminMixHideInput,
   AdminMixHideResponse,
+  AdminMixerSoundItem,
   AdminMixesPage,
   AdminStats,
   AdminUsersPage,
@@ -32,6 +33,7 @@ import type {
   CommunityMessage,
   Conversation,
   CreateMessageBody,
+  CreateMixerSoundBody,
   CreatorSubmissionInput,
   DirectMessage,
   ErrorEnvelope,
@@ -42,9 +44,11 @@ import type {
   FollowedUser,
   FriendRequest,
   FriendRequestInput,
+  GetAdminSounds200,
   GetAdminUsersParams,
   GetDirectMessagesParams,
   GetMessagesParams,
+  GetMixerSounds200,
   GetMyPlaysParams,
   GetPendingSubmissionsParams,
   GetPopularSessionsParams,
@@ -79,6 +83,7 @@ import type {
   TypingStatus,
   UnreadCount,
   UnregisterPushTokenBody,
+  UpdateMixerSoundBody,
   UserProfile,
   UserProfileUpdate,
   UserRoleUpdate,
@@ -5017,5 +5022,372 @@ export const useUpdateAdminCategory = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getUpdateAdminCategoryMutationOptions(options));
+    }
+
+export const getGetMixerSoundsUrl = () => {
+
+
+
+
+  return `/api/sounds`
+}
+
+/**
+ * @summary Listar sonidos activos del mixer
+ */
+export const getMixerSounds = async ( options?: RequestInit): Promise<GetMixerSounds200> => {
+
+  return customFetch<GetMixerSounds200>(getGetMixerSoundsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMixerSoundsQueryKey = () => {
+    return [
+    `/api/sounds`
+    ] as const;
+    }
+
+
+export const getGetMixerSoundsQueryOptions = <TData = Awaited<ReturnType<typeof getMixerSounds>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMixerSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMixerSoundsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMixerSounds>>> = ({ signal }) => getMixerSounds({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMixerSounds>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMixerSoundsQueryResult = NonNullable<Awaited<ReturnType<typeof getMixerSounds>>>
+export type GetMixerSoundsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Listar sonidos activos del mixer
+ */
+
+export function useGetMixerSounds<TData = Awaited<ReturnType<typeof getMixerSounds>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMixerSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMixerSoundsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminSoundsUrl = () => {
+
+
+
+
+  return `/api/admin/sounds`
+}
+
+/**
+ * @summary Listar todos los sonidos del mixer (admin)
+ */
+export const getAdminSounds = async ( options?: RequestInit): Promise<GetAdminSounds200> => {
+
+  return customFetch<GetAdminSounds200>(getGetAdminSoundsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminSoundsQueryKey = () => {
+    return [
+    `/api/admin/sounds`
+    ] as const;
+    }
+
+
+export const getGetAdminSoundsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminSounds>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminSoundsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminSounds>>> = ({ signal }) => getAdminSounds({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminSounds>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminSoundsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminSounds>>>
+export type GetAdminSoundsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar todos los sonidos del mixer (admin)
+ */
+
+export function useGetAdminSounds<TData = Awaited<ReturnType<typeof getAdminSounds>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminSoundsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminSoundUrl = () => {
+
+
+
+
+  return `/api/admin/sounds`
+}
+
+/**
+ * @summary Crear un sonido del mixer (admin)
+ */
+export const createAdminSound = async (createMixerSoundBody: CreateMixerSoundBody, options?: RequestInit): Promise<AdminMixerSoundItem> => {
+
+  return customFetch<AdminMixerSoundItem>(getCreateAdminSoundUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createMixerSoundBody,)
+  }
+);}
+
+
+
+
+export const getCreateAdminSoundMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSound>>, TError,{data: BodyType<CreateMixerSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminSound>>, TError,{data: BodyType<CreateMixerSoundBody>}, TContext> => {
+
+const mutationKey = ['createAdminSound'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminSound>>, {data: BodyType<CreateMixerSoundBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminSound(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminSoundMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminSound>>>
+    export type CreateAdminSoundMutationBody = BodyType<CreateMixerSoundBody>
+    export type CreateAdminSoundMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear un sonido del mixer (admin)
+ */
+export const useCreateAdminSound = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSound>>, TError,{data: BodyType<CreateMixerSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminSound>>,
+        TError,
+        {data: BodyType<CreateMixerSoundBody>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminSoundMutationOptions(options));
+    }
+
+export const getUpdateAdminSoundUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/sounds/${id}`
+}
+
+/**
+ * @summary Actualizar un sonido del mixer (admin)
+ */
+export const updateAdminSound = async (id: string,
+    updateMixerSoundBody: UpdateMixerSoundBody, options?: RequestInit): Promise<AdminMixerSoundItem> => {
+
+  return customFetch<AdminMixerSoundItem>(getUpdateAdminSoundUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateMixerSoundBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminSoundMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSound>>, TError,{id: string;data: BodyType<UpdateMixerSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminSound>>, TError,{id: string;data: BodyType<UpdateMixerSoundBody>}, TContext> => {
+
+const mutationKey = ['updateAdminSound'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminSound>>, {id: string;data: BodyType<UpdateMixerSoundBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminSound(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminSoundMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminSound>>>
+    export type UpdateAdminSoundMutationBody = BodyType<UpdateMixerSoundBody>
+    export type UpdateAdminSoundMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Actualizar un sonido del mixer (admin)
+ */
+export const useUpdateAdminSound = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSound>>, TError,{id: string;data: BodyType<UpdateMixerSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminSound>>,
+        TError,
+        {id: string;data: BodyType<UpdateMixerSoundBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminSoundMutationOptions(options));
+    }
+
+export const getDeleteAdminSoundUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/sounds/${id}`
+}
+
+/**
+ * @summary Eliminar un sonido del mixer (admin)
+ */
+export const deleteAdminSound = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminSoundUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminSoundMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSound>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSound>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteAdminSound'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminSound>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminSound(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminSoundMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminSound>>>
+
+    export type DeleteAdminSoundMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar un sonido del mixer (admin)
+ */
+export const useDeleteAdminSound = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSound>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminSound>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminSoundMutationOptions(options));
     }
 

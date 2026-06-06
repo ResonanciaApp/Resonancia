@@ -32,6 +32,7 @@ import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { DrawerProvider } from "@/context/DrawerContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
+import { SoundsProvider } from "@/context/SoundsContext";
 import { SaveEventProvider } from "@/context/SaveEventContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { PremiumProvider } from "@/context/PremiumContext";
@@ -236,6 +237,7 @@ export default function RootLayout() {
         <SafeAreaProvider>
           <ErrorBoundary>
             <QueryClientProvider client={queryClient}>
+              <SoundsProvider>
               <CatalogProvider>
               <AuthProvider>
                 <PremiumProvider>
@@ -264,6 +266,7 @@ export default function RootLayout() {
                 </PremiumProvider>
               </AuthProvider>
               </CatalogProvider>
+              </SoundsProvider>
             </QueryClientProvider>
           </ErrorBoundary>
         </SafeAreaProvider>

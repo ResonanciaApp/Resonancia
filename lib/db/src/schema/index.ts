@@ -35,3 +35,4 @@ export * from "./catalog-sessions";
 export * from "./catalog-audio-files";
 export * from "./uploads";
 export * from "./follows";
+export * from "./mixer-sounds";

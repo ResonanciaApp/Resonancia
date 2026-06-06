@@ -12,6 +12,7 @@ import activityRouter from "./activity";
 import catalogRouter from "./catalog";
 import adminRouter from "./admin";
 import followsRouter from "./follows";
+import soundsRouter from "./sounds";
 
 const router: IRouter = Router();
 
@@ -28,5 +29,6 @@ router.use(activityRouter);
 router.use(catalogRouter);
 router.use(adminRouter);
 router.use(followsRouter);
+router.use(soundsRouter);
 
 export default router;

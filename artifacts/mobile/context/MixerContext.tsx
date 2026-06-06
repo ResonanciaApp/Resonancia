@@ -11,6 +11,7 @@ import React, {
 } from "react";
 
 import { SOUND_MAP } from "@/config/sound-map";
+import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
 import {
@@ -444,7 +445,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [ensureAudioMode]);
 
   const createPlayerFor = useCallback((id: string, volume: number): SoundPlayers | null => {
-    const file = SOUND_MAP[id];
+    const file: Parameters<AudioPlayer["replace"]>[0] | null =
+      SOUND_MAP[id] ?? (REMOTE_SOUND_MAP[id] ? { uri: REMOTE_SOUND_MAP[id] } : null);
     if (!file) return null;
     try {
       baseVolumesRef.current.set(id, volume);

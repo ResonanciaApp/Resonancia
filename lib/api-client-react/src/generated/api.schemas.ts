@@ -962,6 +962,112 @@ export interface FollowedUser {
   followedAt: string;
 }
 
+export interface MixerSoundItem {
+  id: string;
+  name: string;
+  categoryId: string;
+  iconName: string;
+  iconSet: string;
+  isPremium: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  objectPath: string | null;
+}
+
+export interface AdminMixerSoundItem {
+  id: string;
+  name: string;
+  categoryId: string;
+  iconName: string;
+  iconSet: string;
+  isPremium: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  objectPath: string | null;
+  createdAt: string;
+}
+
+export type CreateMixerSoundBodyCategoryId = typeof CreateMixerSoundBodyCategoryId[keyof typeof CreateMixerSoundBodyCategoryId];
+
+
+export const CreateMixerSoundBodyCategoryId = {
+  animales: 'animales',
+  bosque: 'bosque',
+  mar: 'mar',
+  fuego: 'fuego',
+  desierto: 'desierto',
+  cuencos_tibetanos: 'cuencos_tibetanos',
+  cuencos_cuarzo: 'cuencos_cuarzo',
+  gongs: 'gongs',
+  campanas_viento: 'campanas_viento',
+  mantras: 'mantras',
+  solfeggio: 'solfeggio',
+  ruidos: 'ruidos',
+  frecuencias: 'frecuencias',
+} as const;
+
+export type CreateMixerSoundBodyIconSet = typeof CreateMixerSoundBodyIconSet[keyof typeof CreateMixerSoundBodyIconSet];
+
+
+export const CreateMixerSoundBodyIconSet = {
+  feather: 'feather',
+  ionicons: 'ionicons',
+} as const;
+
+export interface CreateMixerSoundBody {
+  /** @minLength 1 */
+  id: string;
+  /** @minLength 1 */
+  name: string;
+  categoryId: CreateMixerSoundBodyCategoryId;
+  /** @minLength 1 */
+  iconName: string;
+  iconSet: CreateMixerSoundBodyIconSet;
+  isPremium?: boolean;
+  objectPath?: string | null;
+  sortOrder?: number;
+}
+
+export type UpdateMixerSoundBodyCategoryId = typeof UpdateMixerSoundBodyCategoryId[keyof typeof UpdateMixerSoundBodyCategoryId];
+
+
+export const UpdateMixerSoundBodyCategoryId = {
+  animales: 'animales',
+  bosque: 'bosque',
+  mar: 'mar',
+  fuego: 'fuego',
+  desierto: 'desierto',
+  cuencos_tibetanos: 'cuencos_tibetanos',
+  cuencos_cuarzo: 'cuencos_cuarzo',
+  gongs: 'gongs',
+  campanas_viento: 'campanas_viento',
+  mantras: 'mantras',
+  solfeggio: 'solfeggio',
+  ruidos: 'ruidos',
+  frecuencias: 'frecuencias',
+} as const;
+
+export type UpdateMixerSoundBodyIconSet = typeof UpdateMixerSoundBodyIconSet[keyof typeof UpdateMixerSoundBodyIconSet];
+
+
+export const UpdateMixerSoundBodyIconSet = {
+  feather: 'feather',
+  ionicons: 'ionicons',
+} as const;
+
+export interface UpdateMixerSoundBody {
+  /** @minLength 1 */
+  name?: string;
+  categoryId?: UpdateMixerSoundBodyCategoryId;
+  /** @minLength 1 */
+  iconName?: string;
+  iconSet?: UpdateMixerSoundBodyIconSet;
+  isPremium?: boolean;
+  isActive?: boolean;
+  objectPath?: string | null;
+  sortOrder?: number;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };
@@ -1048,4 +1154,12 @@ export const GetAdminUsersRole = {
   creator: 'creator',
   admin: 'admin',
 } as const;
+
+export type GetMixerSounds200 = {
+  sounds: MixerSoundItem[];
+};
+
+export type GetAdminSounds200 = {
+  sounds: AdminMixerSoundItem[];
+};
 

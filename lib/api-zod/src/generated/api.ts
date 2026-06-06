@@ -1786,3 +1786,104 @@ export const UpdateAdminCategoryResponse = zod.object({
 })
 
 
+/**
+ * @summary Listar sonidos activos del mixer
+ */
+export const GetMixerSoundsResponse = zod.object({
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.string(),
+  "iconName": zod.string(),
+  "iconSet": zod.string(),
+  "isPremium": zod.boolean(),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number(),
+  "objectPath": zod.string().nullable()
+}))
+})
+
+
+/**
+ * @summary Listar todos los sonidos del mixer (admin)
+ */
+export const GetAdminSoundsResponse = zod.object({
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.string(),
+  "iconName": zod.string(),
+  "iconSet": zod.string(),
+  "isPremium": zod.boolean(),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number(),
+  "objectPath": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Crear un sonido del mixer (admin)
+ */
+
+
+
+
+
+export const CreateAdminSoundBody = zod.object({
+  "id": zod.string().min(1),
+  "name": zod.string().min(1),
+  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'mantras', 'solfeggio', 'ruidos', 'frecuencias']),
+  "iconName": zod.string().min(1),
+  "iconSet": zod.enum(['feather', 'ionicons']),
+  "isPremium": zod.boolean().optional(),
+  "objectPath": zod.string().nullish(),
+  "sortOrder": zod.number().optional()
+})
+
+
+/**
+ * @summary Actualizar un sonido del mixer (admin)
+ */
+export const UpdateAdminSoundParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+
+
+
+export const UpdateAdminSoundBody = zod.object({
+  "name": zod.string().min(1).optional(),
+  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'mantras', 'solfeggio', 'ruidos', 'frecuencias']).optional(),
+  "iconName": zod.string().min(1).optional(),
+  "iconSet": zod.enum(['feather', 'ionicons']).optional(),
+  "isPremium": zod.boolean().optional(),
+  "isActive": zod.boolean().optional(),
+  "objectPath": zod.string().nullish(),
+  "sortOrder": zod.number().optional()
+})
+
+export const UpdateAdminSoundResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.string(),
+  "iconName": zod.string(),
+  "iconSet": zod.string(),
+  "isPremium": zod.boolean(),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number(),
+  "objectPath": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Eliminar un sonido del mixer (admin)
+ */
+export const DeleteAdminSoundParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+

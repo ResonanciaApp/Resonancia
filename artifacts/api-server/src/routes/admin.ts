@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, count, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import {
   db,
   usersTable,
@@ -8,9 +8,13 @@ import {
   playbackHistoryTable,
   sharedMixesTable,
   sharedMixReportsTable,
+  mixerSoundsTable,
+  insertMixerSoundSchema,
+  updateMixerSoundSchema,
   type CatalogCategory,
   type SharedMix,
   type User,
+  type MixerSound,
 } from "@workspace/db";
 import {
   GetAdminUsersQueryParams,
@@ -372,6 +376,109 @@ router.post("/admin/mixes/:id/hide", requireAuth, requireRole("admin"), async (r
   } catch (err) {
     req.log.error({ err }, "error hiding mix");
     res.status(500).json({ error: "Error al actualizar la mezcla" });
+  }
+});
+
+// ── Sonidos del Mixer ─────────────────────────────────────────────────────
+
+function serializeMixerSound(s: MixerSound) {
+  return {
+    id: s.id,
+    name: s.name,
+    categoryId: s.categoryId,
+    iconName: s.iconName,
+    iconSet: s.iconSet,
+    isPremium: s.isPremium,
+    isActive: s.isActive,
+    sortOrder: s.sortOrder,
+    objectPath: s.objectPath ?? null,
+    createdAt: s.createdAt.toISOString(),
+  };
+}
+
+// GET /admin/sounds — listar todos los sonidos del mixer.
+router.get("/admin/sounds", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    const rows = await db
+      .select()
+      .from(mixerSoundsTable)
+      .orderBy(asc(mixerSoundsTable.categoryId), asc(mixerSoundsTable.sortOrder), asc(mixerSoundsTable.name));
+    res.json({ sounds: rows.map(serializeMixerSound) });
+  } catch (err) {
+    req.log.error({ err }, "error listing mixer sounds");
+    res.status(500).json({ error: "Error al obtener sonidos" });
+  }
+});
+
+// POST /admin/sounds — crear un sonido del mixer.
+router.post("/admin/sounds", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = insertMixerSoundSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+    return;
+  }
+  try {
+    const [existing] = await db.select().from(mixerSoundsTable).where(eq(mixerSoundsTable.id, parsed.data.id)).limit(1);
+    if (existing) {
+      res.status(409).json({ error: "Ya existe un sonido con ese ID" });
+      return;
+    }
+    const [created] = await db.insert(mixerSoundsTable).values(parsed.data).returning();
+    req.log.info({ soundId: created.id }, "mixer sound created");
+    res.status(201).json(serializeMixerSound(created));
+  } catch (err) {
+    req.log.error({ err }, "error creating mixer sound");
+    res.status(500).json({ error: "Error al crear el sonido" });
+  }
+});
+
+// PATCH /admin/sounds/:id — actualizar un sonido del mixer.
+router.patch("/admin/sounds/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = String(req.params.id);
+  const parsed = updateMixerSoundSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+    return;
+  }
+  if (Object.keys(parsed.data).length === 0) {
+    res.status(400).json({ error: "No hay campos para actualizar" });
+    return;
+  }
+  try {
+    const [updated] = await db
+      .update(mixerSoundsTable)
+      .set({ ...parsed.data, updatedAt: new Date() })
+      .where(eq(mixerSoundsTable.id, id))
+      .returning();
+    if (!updated) {
+      res.status(404).json({ error: "Sonido no encontrado" });
+      return;
+    }
+    req.log.info({ soundId: id }, "mixer sound updated");
+    res.json(serializeMixerSound(updated));
+  } catch (err) {
+    req.log.error({ err }, "error updating mixer sound");
+    res.status(500).json({ error: "Error al actualizar el sonido" });
+  }
+});
+
+// DELETE /admin/sounds/:id — eliminar un sonido del mixer.
+router.delete("/admin/sounds/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = String(req.params.id);
+  try {
+    const [deleted] = await db
+      .delete(mixerSoundsTable)
+      .where(eq(mixerSoundsTable.id, id))
+      .returning();
+    if (!deleted) {
+      res.status(404).json({ error: "Sonido no encontrado" });
+      return;
+    }
+    req.log.info({ soundId: id }, "mixer sound deleted");
+    res.status(204).end();
+  } catch (err) {
+    req.log.error({ err }, "error deleting mixer sound");
+    res.status(500).json({ error: "Error al eliminar el sonido" });
   }
 });
 
