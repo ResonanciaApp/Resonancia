@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
-    maxHeight: "93%",
+    height: "93%",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
