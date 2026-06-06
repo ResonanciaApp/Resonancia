@@ -30,7 +30,7 @@ const FG      = "#EDE1D3";
 const MUTED   = "#7A8FA8";
 const GOLD    = "#BE9650";
 const BORDER  = "#1E2733";
-const TAB_ACTIVE_BG = "rgba(190,150,80,0.12)";
+const TAB_ACTIVE_BG = "rgba(255,255,255,0.08)";
 const THUMB   = 44;
 const SHIFT   = 26;
 const MAX_STACK = 2;
@@ -201,7 +201,7 @@ export default function MezclasIndexScreen() {
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
-                <CategoryIcon id={cat.id} color={sel ? GOLD : MUTED} size={26} />
+                <CategoryIcon id={cat.id} color={sel ? "#FFFFFF" : MUTED} size={26} />
                 <Text style={[styles.tabLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}>
                   {cat.label}
                 </Text>
