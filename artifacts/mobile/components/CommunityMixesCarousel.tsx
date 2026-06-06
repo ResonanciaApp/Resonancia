@@ -190,7 +190,7 @@ export function CommunityMixesCarousel() {
               accessibilityRole="tab"
               accessibilityState={{ selected: sel }}
             >
-              <CategoryIcon id={id} color={sel ? GOLD : colors.mutedForeground} size={26} />
+              <CategoryIcon id={id} color={sel ? "#FFFFFF" : colors.mutedForeground} size={26} />
               <Text
                 style={[
                   styles.tabLabel,
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "rgba(190,150,80,0.12)" },
+  tabBlockActive: { backgroundColor: "rgba(255,255,255,0.08)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1 },
 
   // Empty
