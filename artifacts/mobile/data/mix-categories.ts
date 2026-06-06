@@ -29,7 +29,7 @@ export type MixCategoryMeta = {
 export const MIX_CATEGORIES: MixCategoryMeta[] = [
   {
     id: "dormir",
-    label: "Descanso",
+    label: "Para descansar",
     subtitle: "Sonidos para un descanso reparador.",
     icon: "moon-crescent",
     iconFamily: "Custom",
@@ -38,7 +38,7 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
   },
   {
     id: "motivarme",
-    label: "Meditación",
+    label: "Para meditar",
     subtitle: "Sonidos que te recuerdan quien eres.",
     icon: "zen-stones",
     iconFamily: "Custom",
@@ -47,7 +47,7 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
   },
   {
     id: "concentracion",
-    label: "Enfoque",
+    label: "Para enfocarse",
     subtitle: "Sonidos que te alinean con tus metas.",
     icon: "image-filter-hdr",
     iconFamily: "MaterialCommunityIcons",
