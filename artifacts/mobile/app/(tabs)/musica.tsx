@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getSoundImage } from "@/config/sound-images";
@@ -30,7 +31,7 @@ import {
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
-const BG       = "#090F17";
+const BG_GRADIENT = ["#0B1024", "#0A0C1B", "#080912"] as const;
 const CARD     = "#151A23";
 const GOLD     = "#BE9650";
 const FG       = "#EDE1D3";
@@ -307,7 +308,13 @@ export default function MiMusicaScreen() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: BG }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
 
       <View style={[styles.inner, { paddingTop: topPad + 22 }]}>
@@ -412,7 +419,7 @@ export default function MiMusicaScreen() {
           </ContentSlide>
         </ScrollView>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
