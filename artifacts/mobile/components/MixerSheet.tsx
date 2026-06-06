@@ -127,24 +127,33 @@ export function MixerSheet() {
 
   const { notifySaved } = useSaveEvent();
 
-  // Valores animados para la succión al guardar
-  const sheetScale  = useRef(new Animated.Value(1)).current;
-  const sheetSlideX = useRef(new Animated.Value(0)).current;
-  const sheetSlideY = useRef(new Animated.Value(0)).current;
+  // Valores animados: entrada (slideIn) + succión al guardar
+  const sheetScale   = useRef(new Animated.Value(1)).current;
+  const sheetSlideX  = useRef(new Animated.Value(0)).current;
+  const sheetSlideY  = useRef(new Animated.Value(0)).current;
   const sheetOpacity = useRef(new Animated.Value(1)).current;
+  // Para la entrada: translateY empieza en 400 (fuera de pantalla) y baja a 0
+  const sheetEnterY  = useRef(new Animated.Value(400)).current;
 
   // Snapshot de la mezcla en el momento en que se abrió la hoja.
   // Se usa para detectar cambios (agregar/quitar/volumen) sin depender de
   // si hay un preset cargado o no.
   const [snapshotSounds, setSnapshotSounds] = useState<{ id: string; volume: number }[]>([]);
 
-  // Al abrir: reset valores de animación + snapshot de la mezcla
+  // Al abrir: reset valores de animación + entrada deslizante + snapshot
   useEffect(() => {
     if (isSheetOpen) {
       sheetScale.setValue(1);
       sheetSlideX.setValue(0);
       sheetSlideY.setValue(0);
       sheetOpacity.setValue(1);
+      sheetEnterY.setValue(400);
+      Animated.spring(sheetEnterY, {
+        toValue: 0,
+        tension: 65,
+        friction: 11,
+        useNativeDriver: true,
+      }).start();
       setOriginId(loadedPresetId);
       setSnapshotSounds(activeSounds.map((s) => ({ id: s.id, volume: s.volume })));
     }
@@ -300,16 +309,16 @@ export function MixerSheet() {
     <Modal
       visible={canShow}
       transparent
-      animationType="slide"
+      animationType="none"
       onRequestClose={closeSheet}
     >
       <Pressable style={styles.backdrop} onPress={closeSheet}>
         <Animated.View
           style={{
             transform: [
-              { scale: sheetScale },
+              { translateY: Animated.add(sheetEnterY, sheetSlideY) },
               { translateX: sheetSlideX },
-              { translateY: sheetSlideY },
+              { scale: sheetScale },
             ],
             opacity: sheetOpacity,
           }}
