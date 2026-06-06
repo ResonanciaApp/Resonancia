@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     minWidth: 62,
     backgroundColor: "transparent",
   },
-  tabItemActive: { backgroundColor: TAB_PILL },
+  tabItemActive: { backgroundColor: "rgba(190,150,80,0.12)" },
   tabLabel: { fontSize: 10, letterSpacing: 0.1 },
 
   // Separador
