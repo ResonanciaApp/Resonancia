@@ -259,23 +259,25 @@ export function MixerSheet() {
     });
     setSaveModalOpen(false);
     notifySaved();
-    // Mantener el Modal visible durante el fade aunque stopAll vacíe activeMix
+    // Mantener el Modal del reproductor visible durante todo el cierre
     setForceShowModal(true);
-    // Limpiar sonidos AHORA: el backdrop (opacidad 0.6→0) cubre el MixerPanel
-    // mientras dura el fade, evitando que aparezca por un frame
     stopAll();
-    // Detener el spring de entrada si está en movimiento
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
-    Animated.timing(sheetOpacity, {
-      toValue: 0,
-      duration: 480,
-      useNativeDriver: true,
-    }).start(() => {
-      // Ambos estados en el mismo tick (React 18 batch) → un solo re-render
-      setForceShowModal(false);
-      closeSheet();
-    });
+    // El modal interno usa animationType="fade" (nativo, ~300ms iOS/Android).
+    // Si empezamos el fade del reproductor antes de que ese fade interno termine,
+    // el reproductor ya lleva parte del fade hecho cuando queda expuesto →
+    // aparece "a medio camino" (efecto pegado). Esperamos a que cierre primero.
+    setTimeout(() => {
+      Animated.timing(sheetOpacity, {
+        toValue: 0,
+        duration: 480,
+        useNativeDriver: true,
+      }).start(() => {
+        setForceShowModal(false);
+        closeSheet();
+      });
+    }, 310);
   };
 
   const handleTimerPress = () => {
