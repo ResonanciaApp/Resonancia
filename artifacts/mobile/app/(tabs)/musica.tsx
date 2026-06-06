@@ -269,6 +269,7 @@ export default function MiMusicaScreen() {
           contentContainerStyle={{
             paddingBottom: 200 + bottomPad,
             paddingHorizontal: 20,
+            backgroundColor: "#0E141C",
           }}
           stickyHeaderIndices={[0]}
           showsVerticalScrollIndicator={false}
