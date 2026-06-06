@@ -350,7 +350,7 @@ export default function MiMusicaScreen() {
                 />
                 <Text
                   numberOfLines={1}
-                  style={[styles.tabLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
+                  style={[styles.tabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "400" }]}
                 >
                   {tab.label}
                 </Text>
@@ -393,7 +393,7 @@ export default function MiMusicaScreen() {
                           contentFit="contain"
                         />
                       )}
-                      <Text style={[styles.subTabText, { color: sel ? FG : MUTED }]}>
+                      <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED }]}>
                         {cat.label}
                       </Text>
                     </Pressable>
