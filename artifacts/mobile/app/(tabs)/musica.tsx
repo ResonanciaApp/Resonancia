@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   },
   mainTabItem: {
     paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 7,
     flexDirection: "column",
     alignItems: "center",
     gap: 4,
