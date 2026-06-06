@@ -552,7 +552,7 @@ export default function ProfileScreen() {
                 },
               ]}
             >
-              <Feather name={icon} size={22} color={colors.mutedForeground} />
+              <Feather name={icon} size={22} color={colors.primary} />
               <Text style={[styles.communityLabel, { color: colors.mutedForeground }]}>
                 {label}
               </Text>
