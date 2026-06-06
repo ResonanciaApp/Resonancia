@@ -112,7 +112,6 @@ export default function MusicaSonidosScreen() {
             <ExpoImage
               source={require("../../assets/images/cat-musica.png")}
               style={{ width: 34, height: 34 }}
-              tintColor="#BE9650"
               contentFit="contain"
             />
           </View>

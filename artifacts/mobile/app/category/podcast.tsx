@@ -142,7 +142,6 @@ export default function SonidosScreen() {
           <View style={[styles.iconCircle, { backgroundColor: SONIDOS_ACCENT + "1A" }]}>
             <ExpoImage
               source={require("../../assets/images/cat-sonidos.png")}
-              tintColor={SONIDOS_ACCENT}
               style={{ width: 34, height: 34 }}
               contentFit="contain"
             />
