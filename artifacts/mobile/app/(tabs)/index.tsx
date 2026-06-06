@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ZenStonesIcon } from "@/components/ZenStonesIcon";
+import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -198,7 +199,6 @@ export default function HomeScreen() {
               const catImages: Record<string, ReturnType<typeof require>> = {
                 "musica-sonidos": require("../../assets/images/cat-musica.png"),
                 "mananas":        require("../../assets/images/cat-mananas.png"),
-                "noches":         require("../../assets/images/cat-noches.png"),
                 "podcast":        require("../../assets/images/cat-sonidos.png"),
               };
               const iconColor = iconColors[cat.id] ?? colors.primary;
@@ -212,9 +212,11 @@ export default function HomeScreen() {
                   {catImg ? (
                     <Image
                       source={catImg}
-                      style={[styles.catCardImage, cat.id === "noches" && { width: 22, height: 22 }, cat.id === "musica-sonidos" && { width: 23, height: 23 }]}
+                      style={[styles.catCardImage, cat.id === "musica-sonidos" && { width: 23, height: 23 }]}
                       resizeMode="contain"
                     />
+                  ) : cat.id === "noches" ? (
+                    <MoonCrescentIcon color="#FFA58E" size={24} />
                   ) : cat.id === "meditaciones-guiadas" ? (
                     <View style={{ marginTop: -4 }}>
                       <ZenStonesIcon color={iconColor} size={31} />
