@@ -380,7 +380,7 @@ export default function MiMusicaScreen() {
                       style={[
                         styles.subTabPill,
                         {
-                          backgroundColor: sel ? "rgba(190,150,80,0.12)" : "rgba(255,255,255,0.03)",
+                          backgroundColor: sel ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.03)",
                           borderColor: "transparent",
                         },
                       ]}
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     minWidth: 62,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabItemActive: { backgroundColor: "rgba(190,150,80,0.12)" },
+  tabItemActive: { backgroundColor: "rgba(255,255,255,0.10)" },
   tabLabel: { fontSize: 10, letterSpacing: 0.1 },
 
   // Separador
