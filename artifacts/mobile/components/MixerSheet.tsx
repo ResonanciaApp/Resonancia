@@ -269,7 +269,8 @@ export function MixerSheet() {
       duration: 380,
       useNativeDriver: true,
     }).start(() => {
-      sheetOpacity.setValue(1);
+      // NO restablecer opacidad aquí: setValue(1) antes de closeSheet()
+      // crea un frame visible que titila. El useEffect de isSheetOpen ya lo resetea al abrir.
       closeSheet();
       stopAll();
     });
