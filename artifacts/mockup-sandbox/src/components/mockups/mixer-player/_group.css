@@ -1,0 +1,93 @@
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(0.97);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.15;
+  }
+}
+
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe-bg {
+  0%, 100% {
+    background: radial-gradient(circle at center, rgba(190,150,80,0.02) 0%, rgba(9,15,23,0) 60%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba(190,150,80,0.05) 0%, rgba(9,15,23,0) 70%);
+  }
+}
+
+.animate-breathe-bg {
+  animation: breathe-bg 3s ease-in-out infinite;
+  background-color: #090F17; /* Fallback */
+}
+
+/* Custom slider thumb and track */
+.slider-ethereal {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+.slider-ethereal::-webkit-slider-runnable-track {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1px;
+  transition: background 0.3s ease;
+}
+
+.slider-ethereal:hover::-webkit-slider-runnable-track,
+.slider-ethereal:active::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.slider-ethereal::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #BE9650;
+  margin-top: -5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.slider-ethereal:hover::-webkit-slider-thumb,
+.slider-ethereal:active::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.slider-ethereal::-moz-range-track {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1px;
+  transition: background 0.3s ease;
+}
+
+.slider-ethereal:hover::-moz-range-track,
+.slider-ethereal:active::-moz-range-track {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.slider-ethereal::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #BE9650;
+  border: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.slider-ethereal:hover::-moz-range-thumb,
+.slider-ethereal:active::-moz-range-thumb {
+  opacity: 1;
+}
