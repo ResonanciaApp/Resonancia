@@ -341,13 +341,14 @@ export function MixerSheet() {
       <Pressable style={styles.backdrop} onPress={closeSheet}>
         <Animated.View
           style={{
+            flex: 1,
             transform: [{ translateY: sheetEnterY }],
           }}
         >
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: WARM.bg, paddingBottom: insets.bottom + 16 },
+            { backgroundColor: WARM.bg, paddingTop: insets.top + 10, paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
@@ -590,14 +591,10 @@ const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
-    justifyContent: "flex-end",
   },
   sheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 10,
-    maxHeight: "85%",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
@@ -629,7 +626,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
 
-  trackScroll: { flexGrow: 0 },
+  trackScroll: { flex: 1 },
   trackRow: {
     flexDirection: "row",
     alignItems: "center",
