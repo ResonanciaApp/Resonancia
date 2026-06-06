@@ -385,14 +385,6 @@ export default function MiMusicaScreen() {
                         },
                       ]}
                     >
-                      {NATURE_ICONS[catId] && (
-                        <Image
-                          source={NATURE_ICONS[catId]}
-                          style={{ width: 14, height: 14, marginRight: 5 }}
-                          tintColor={sel ? "#FFFFFF" : MUTED}
-                          contentFit="contain"
-                        />
-                      )}
                       <Text style={[styles.subTabText, { color: "#FFFFFF" }]}>
                         {cat.label}
                       </Text>
