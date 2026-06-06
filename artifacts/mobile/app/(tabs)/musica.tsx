@@ -196,6 +196,7 @@ const SoundCard = memo(function SoundCard({
         ) : (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
         )}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(50,30,120,0.28)" }]} />
         {locked && (
           <Image
             source={require("../../assets/images/estrella-premium.png")}
