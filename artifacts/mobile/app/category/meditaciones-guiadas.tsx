@@ -25,7 +25,7 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const ICON_COLOR = "#8B82BE";
+const ICON_COLOR = "#C1AA8A";
 const RATINGS_KEY = "@resonance_ratings";
 
 type TabDef = {
@@ -209,7 +209,7 @@ export default function MeditacionesGuiadasScreen() {
         )}
 
         <CategoryInfoPanel
-          accentColor={ICON_COLOR}
+          accentColor={"#8B82BE"}
           heading="¿Qué es la meditación guiada?"
           items={[
             {

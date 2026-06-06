@@ -24,7 +24,7 @@ import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
-const ACCENT = "#C4956A";
+const ACCENT = "#C1AA8A";
 
 type TabDef = {
   label: string;
@@ -208,7 +208,7 @@ export default function SonidosAncestalesScreen() {
         )}
 
         <CategoryInfoPanel
-          accentColor={ACCENT}
+          accentColor={"#C4956A"}
           heading="¿Qué son los sonidos ancestrales?"
           items={[
             {

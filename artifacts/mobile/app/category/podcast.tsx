@@ -36,7 +36,7 @@ const GAP = 10;
 const COLS = 3;
 const SCREEN_W = Dimensions.get("window").width;
 const CARD_WIDTH = ((SCREEN_W - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 12;
-const SONIDOS_ACCENT = "#009ADF";
+const SONIDOS_ACCENT = "#C1AA8A";
 
 type SonidosTab = SonidosTag;
 
@@ -142,6 +142,7 @@ export default function SonidosScreen() {
           <View style={[styles.iconCircle, { backgroundColor: SONIDOS_ACCENT + "1A" }]}>
             <Image
               source={require("../../assets/images/cat-sonidos.png")}
+              tintColor="#C1AA8A"
               style={{ width: 34, height: 34 }}
               resizeMode="contain"
             />
@@ -457,7 +458,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "rgba(107,154,181,0.14)" },
+  tabBlockActive: { backgroundColor: "#C1AA8A24" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1 },
 
   grid: {},
