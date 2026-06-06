@@ -213,19 +213,19 @@ export default function HomeScreen() {
                     <Image
                       source={catImg}
                       tintColor="#DCCDB8"
-                      style={[styles.catCardImage, cat.id === "musica-sonidos" && { width: 23, height: 23 }]}
+                      style={[styles.catCardImage, cat.id === "musica-sonidos" && { width: 27, height: 27 }]}
                       resizeMode="contain"
                     />
                   ) : cat.id === "noches" ? (
                     <MoonCrescentIcon color="#FFA58E" size={25} />
                   ) : cat.id === "meditaciones-guiadas" ? (
                     <View style={{ marginTop: -4 }}>
-                      <ZenStonesIcon color={iconColor} size={31} />
+                      <ZenStonesIcon color={iconColor} size={35} />
                     </View>
                   ) : cat.iconFamily === "MaterialCommunityIcons" ? (
                     <MaterialCommunityIcons
                       name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={25}
+                      size={29}
                       color={iconColor}
                       style={cat.id === "sonidos-ancestrales" ? { marginTop: -4 } : undefined}
                     />
@@ -586,8 +586,8 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   catCardImage: {
-    width: 25,
-    height: 25,
+    width: 29,
+    height: 29,
   },
   catCardLabel: {
     fontSize: 14,
