@@ -3,11 +3,9 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
-  Animated,
   Dimensions,
-  LayoutChangeEvent,
   Modal,
   Platform,
   Pressable,
@@ -42,10 +40,10 @@ const SONIDOS_ACCENT = "#6B9AB5";
 
 type SonidosTab = SonidosTag;
 
-const TABS: { label: string; value: SonidosTab }[] = [
-  { label: "Binaurales",   value: "Sonidos Binaurales"    },
-  { label: "Naturaleza",   value: "Sonidos Naturaleza"    },
-  { label: "Atmosféricos", value: "Sonidos Atmosféricos"  },
+const TABS: { label: string; value: SonidosTab; icon: string }[] = [
+  { label: "Binaurales",   value: "Sonidos Binaurales",   icon: "headphones" },
+  { label: "Naturaleza",   value: "Sonidos Naturaleza",   icon: "wind"       },
+  { label: "Atmosféricos", value: "Sonidos Atmosféricos", icon: "cloud"      },
 ];
 
 /** Timer del sonido. 5/10/20 min gratis; el resto (incluido "Sin límite") es premium. */
@@ -70,34 +68,6 @@ export default function SonidosScreen() {
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
-
-  // Tab indicator animation
-  const indicatorAnim = useRef(new Animated.Value(0)).current;
-  const [indicatorWidth, setIndicatorWidth] = useState(0);
-  const tabLayouts = useRef<{ x: number; width: number }[]>([]);
-
-  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
-    const { x, width } = e.nativeEvent.layout;
-    tabLayouts.current[idx] = { x, width };
-    if (idx === 0 && indicatorWidth === 0) {
-      setIndicatorWidth(width);
-      indicatorAnim.setValue(x);
-    }
-  };
-
-  const selectTab = (value: SonidosTab, idx: number) => {
-    setActiveTab(value);
-    const layout = tabLayouts.current[idx];
-    if (layout) {
-      setIndicatorWidth(layout.width);
-      Animated.spring(indicatorAnim, {
-        toValue: layout.x,
-        tension: 200,
-        friction: 24,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -204,45 +174,38 @@ export default function SonidosScreen() {
           </View>
         </View>
 
-        {/* Sticky tab bar */}
+        {/* Sticky tab bar — bloques con ícono */}
         <View style={[styles.tabBarWrap, { backgroundColor: colors.background }]}>
-          <View
-            style={[
-              styles.tabBar,
-              { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD },
-            ]}
-          >
-            {TABS.map(({ label, value }, idx) => (
-              <Pressable
-                key={value}
-                onPress={() => selectTab(value, idx)}
-                onLayout={(e) => onTabLayout(idx, e)}
-                style={styles.tabItem}
-              >
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    {
-                      color:
-                        activeTab === value
-                          ? colors.foreground
-                          : colors.mutedForeground,
-                    },
-                  ]}
+          <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
+            {TABS.map(({ label, value, icon }) => {
+              const sel = activeTab === value;
+              return (
+                <Pressable
+                  key={value}
+                  onPress={() => setActiveTab(value)}
+                  style={[styles.tabBlock, sel && styles.tabBlockActive]}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: sel }}
                 >
-                  {label}
-                </Text>
-              </Pressable>
-            ))}
-
-            {indicatorWidth > 0 && (
-              <Animated.View
-                style={[
-                  styles.tabIndicator,
-                  { width: indicatorWidth, transform: [{ translateX: indicatorAnim }] },
-                ]}
-              />
-            )}
+                  <Feather
+                    name={icon as any}
+                    size={24}
+                    color={sel ? SONIDOS_ACCENT : colors.mutedForeground}
+                  />
+                  <Text
+                    style={[
+                      styles.tabLabel,
+                      {
+                        color: sel ? colors.foreground : colors.mutedForeground,
+                        fontWeight: sel ? "700" : "400",
+                      },
+                    ]}
+                  >
+                    {label}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
 
@@ -482,29 +445,19 @@ const styles = StyleSheet.create({
   tabBarWrap: {
     paddingBottom: 0,
   },
-  tabBar: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    position: "relative",
-    paddingBottom: 0,
-  },
-  tabItem: {
+  tabRow: { flexDirection: "row", gap: 10 },
+  tabBlock: {
     flex: 1,
-    paddingVertical: 10,
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    gap: 8,
+    paddingTop: 14,
+    paddingBottom: 12,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  tabIndicator: {
-    position: "absolute",
-    bottom: 0,
-    height: 2,
-    backgroundColor: SONIDOS_ACCENT,
-    borderRadius: 1,
-  },
+  tabBlockActive: { backgroundColor: "rgba(107,154,181,0.14)" },
+  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
 
   grid: {},
   gridRow: {
