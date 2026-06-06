@@ -478,12 +478,8 @@ const styles = StyleSheet.create({
   },
   tabItemActive: {
     backgroundColor: "rgba(100,142,195,0.14)",
-    borderColor: "rgba(185,155,235,0.55)",
-    shadowColor: "#B090E8",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.45,
-    shadowRadius: 7,
-    elevation: 4,
+    borderColor: "rgba(200,170,255,0.82)",
+    borderWidth: 1.5,
   },
   tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
 
