@@ -36,7 +36,7 @@ const GAP = 10;
 const COLS = 3;
 const SCREEN_W = Dimensions.get("window").width;
 const CARD_WIDTH = ((SCREEN_W - H_PAD * 2 - GAP * (COLS - 1)) / COLS) * 0.85 + 12;
-const SONIDOS_ACCENT = "#BE9650";
+const SONIDOS_ACCENT = "#6BA8C8";
 
 type SonidosTab = SonidosTag;
 
