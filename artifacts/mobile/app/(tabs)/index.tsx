@@ -183,8 +183,8 @@ export default function HomeScreen() {
               const radii = [
                 { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 1 izq
                 { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // fila 1 der
-                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 2 izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // fila 2 der
+                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 2 izq
+                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 2 der
                 { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 izq
                 { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 der
               ];
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: "#151A23",
     paddingHorizontal: 16,
-    paddingVertical: 18,
+    paddingVertical: 23,
   },
   catCardImage: {
     width: 25,
