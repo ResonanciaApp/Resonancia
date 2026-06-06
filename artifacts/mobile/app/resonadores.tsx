@@ -11,7 +11,7 @@ import { GUIDES, getGuideTrackCount } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 
 const C = {
-  gold:     "#C1AA8A",
+  gold:     "#BE9650",
   goldSoft: "#A97A34",
   fg:       "#FFFFFF",
   muted:    "#7A8FA8",

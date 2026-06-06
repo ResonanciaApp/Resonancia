@@ -213,8 +213,8 @@ export default function UsuarioScreen() {
               style={({ pressed }) => [
                 styles.followBtn,
                 {
-                  backgroundColor: isFollowing ? "transparent" : "#C1AA8A",
-                  borderColor: "#C1AA8A",
+                  backgroundColor: isFollowing ? "transparent" : "#BE9650",
+                  borderColor: "#BE9650",
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
@@ -222,9 +222,9 @@ export default function UsuarioScreen() {
               <Feather
                 name={isFollowing ? "user-check" : "user-plus"}
                 size={15}
-                color={isFollowing ? "#C1AA8A" : "#090F17"}
+                color={isFollowing ? "#BE9650" : "#090F17"}
               />
-              <Text style={[styles.followBtnText, { color: isFollowing ? "#C1AA8A" : "#090F17" }]}>
+              <Text style={[styles.followBtnText, { color: isFollowing ? "#BE9650" : "#090F17" }]}>
                 {isFollowing ? "Siguiendo" : "Seguir"}
               </Text>
             </Pressable>

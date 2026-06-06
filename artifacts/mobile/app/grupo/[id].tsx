@@ -91,7 +91,7 @@ const SEED_GRUPOS: Record<string, {
     name: "Cuencos y Frecuencias",
     description: "Todo sobre cuencos tibetanos, de cristal y terapia de sonido",
     moderator: "Casa del Cuenco",
-    modColor: "#C1AA8A",
+    modColor: "#BE9650",
     modInitials: "CC",
     members: 567,
     icon: "disc",
@@ -99,7 +99,7 @@ const SEED_GRUPOS: Record<string, {
     gradient: ["#7A5520", "#3E2208"],
     rules: ["Compartir con generosidad y apertura", "Incluir fuente cuando sea posible", "Cero spam comercial"],
     memberList: [
-      { name: "Casa del Cuenco", role: "Moderador", color: "#C1AA8A", initials: "CC", active: true },
+      { name: "Casa del Cuenco", role: "Moderador", color: "#BE9650", initials: "CC", active: true },
       { name: "Sofía Herrera", role: "Miembro", color: "#f4c993", initials: "SH", active: true },
       { name: "Luna Vega", role: "Miembro", color: "#C8B4E0", initials: "LV", active: true },
       { name: "Pablo Torres", role: "Miembro", color: "#8AAAD4", initials: "PT", active: false },
@@ -107,7 +107,7 @@ const SEED_GRUPOS: Record<string, {
       { name: "Tomás Blanco", role: "Miembro", color: "#A8C4A8", initials: "TB", active: false },
     ],
     posts: [
-      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#C1AA8A", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
+      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#BE9650", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
       { id: "p2", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 09:30", text: "Compartí unas fotos de mi set nuevo 🎶 Cuenco tibetano en FA, dos de cristal en SOL y RE. Tardé 3 años en armarlo y por fin está completo. ¿Alguien más colecciona?", likes: 33, replies: 9 },
       { id: "p3", author: "Pablo Torres", initials: "PT", color: "#8AAAD4", time: "Ayer · 20:15", text: "Pregunta para los que practican: ¿cada cuánto hacen sesiones personales en casa? Yo estoy tratando de instalar una rutina diaria de 20 minutos.", likes: 15, replies: 14 },
       { id: "p4", author: "Ana Quiroga", initials: "AQ", color: "#EDD9B8", time: "Ayer · 16:00", text: "Descubrí que el cuenco en nota SI tiene un efecto increíble cuando trabajo con el chakra corona en clientes. ¿Alguien más trabaja en sesiones terapéuticas?", likes: 19, replies: 6 },
@@ -213,7 +213,7 @@ function buildLocalViewModel(
   localPosts: ReturnType<typeof useGrupoPosts>["posts"],
 ): ViewModel {
   const userInitials = initialsFrom(userName);
-  const userColor = "#C1AA8A";
+  const userColor = "#BE9650";
 
   // welcome aparece arriba (pinned); el resto, más recientes después.
   const welcome = localPosts.find((p) => p.id === "welcome");
@@ -242,8 +242,8 @@ function buildLocalViewModel(
     modInitials: userInitials,
     members: 1,
     icon: "users",
-    color: "#C1AA8A",
-    gradient: ["#C1AA8A", "#3E2208"],
+    color: "#BE9650",
+    gradient: ["#BE9650", "#3E2208"],
     rules: DEFAULT_RULES_LOCAL,
     memberList: [
       { name: `${userName} (vos)`, role: "Admin", color: userColor, initials: userInitials, active: true },
@@ -334,7 +334,7 @@ export default function GrupoDetailScreen() {
     ensureWelcomePost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#C1AA8A",
+      color: "#BE9650",
       text: localGrupo.bienvenida,
     });
   }, [localGrupo, userName, ensureWelcomePost]);
@@ -372,7 +372,7 @@ export default function GrupoDetailScreen() {
     addPost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#C1AA8A",
+      color: "#BE9650",
       text,
     });
     setCompose("");

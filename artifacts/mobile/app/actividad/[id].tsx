@@ -82,7 +82,7 @@ const ACTIVITIES: Record<string, {
     description:
       "Un fin de semana de silencio, sonido y naturaleza en un entorno privilegiado de los Andes mendocinos. El programa incluye baños de cuencos, meditaciones guiadas, caminatas conscientes y momentos de silencio profundo.\n\nIncluye alojamiento y alimentación vegetariana. Cupos muy limitados.",
     gradient: ["#3A5438", "#1E2E1C"],
-    orgColor: "#C1AA8A",
+    orgColor: "#BE9650",
     orgInitials: "CC",
     tags: ["Retiro", "Silencio", "Naturaleza", "Full weekend"],
   },
@@ -237,7 +237,7 @@ export default function ActividadDetailScreen() {
             onPress={() => setShowReserva(true)}
             style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <LinearGradient colors={["#FFFFFF", "#C1AA8A"]} style={styles.ctaGrad}>
+            <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.ctaGrad}>
               <Feather name="send" size={17} color="#080F0A" />
               <Text style={styles.ctaText}>Solicitar reserva</Text>
             </LinearGradient>
@@ -286,7 +286,7 @@ export default function ActividadDetailScreen() {
               onPress={handleEnviarReserva}
               style={({ pressed }) => [styles.modalBtn, { opacity: pressed ? 0.85 : 1 }]}
             >
-              <LinearGradient colors={["#FFFFFF", "#C1AA8A"]} style={styles.modalBtnGrad}>
+              <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.modalBtnGrad}>
                 <Text style={styles.modalBtnText}>Enviar solicitud</Text>
               </LinearGradient>
             </Pressable>
@@ -353,7 +353,7 @@ export default function ActividadDetailScreen() {
                   onPress={handleEnviarMensaje}
                   style={({ pressed }) => [styles.modalBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["#FFFFFF", "#C1AA8A"]} style={styles.modalBtnGrad}>
+                  <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.modalBtnGrad}>
                     <Feather name="send" size={16} color="#080F0A" />
                     <Text style={styles.modalBtnText}>Enviar mensaje</Text>
                   </LinearGradient>
