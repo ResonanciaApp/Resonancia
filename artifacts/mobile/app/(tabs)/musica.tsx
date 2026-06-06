@@ -265,11 +265,6 @@ export default function MiMusicaScreen() {
           </View>
         </View>
 
-        <LinearGradient
-          colors={["#0B0F14", "#0E141C"]}
-          style={{ height: 22, marginHorizontal: -20 }}
-        />
-
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={{
@@ -402,6 +397,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 0,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(122,143,168,0.14)",
   },
   // Secciones
   section: { marginBottom: 57 },
