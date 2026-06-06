@@ -264,16 +264,20 @@ export function MixerSheet() {
     stopAll();
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
-    // Easing cúbico: arranca despacio mientras el modal interno (animationType="fade"
-    // ~300ms) todavía cubre el sheet, luego acelera cuando queda expuesto.
-    // A t=300ms ya va al 95% de opacidad (casi sin cambio visible); el fade
-    // perceptible ocurre en los ~500ms restantes. Sin setTimeout, sin conflictos.
-    Animated.timing(sheetOpacity, {
-      toValue: 0,
-      duration: 800,
-      easing: Easing.in(Easing.cubic),
-      useNativeDriver: true,
-    }).start(() => {
+    // Secuencia: 1) delay mientras el modal interno (animationType="fade" ~300ms)
+    // hace su propio fade y cubre el sheet; 2) recién entonces el sheet desvanece
+    // de 1→0 con curva lineal suave y bien visible. El delay corre en el native
+    // driver, así que el arranque es preciso (sin el flash de opacidad plena que
+    // tenía el setTimeout). Resultado: primero se va el popup, después el reproductor.
+    Animated.sequence([
+      Animated.delay(250),
+      Animated.timing(sheetOpacity, {
+        toValue: 0,
+        duration: 500,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
       setForceShowModal(false);
       closeSheet();
     });
