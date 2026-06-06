@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
@@ -65,9 +65,9 @@ export default function MiMusicaScreen() {
     }))
   ).current;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!mezclasOpen) return;
-    // Reset al punto de partida antes de animar
+    // Reset sincrónico antes del paint para evitar parpadeo
     pillAnims.forEach((anim) => {
       anim.opacity.setValue(0);
       anim.translateX.setValue(-18);
