@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -48,11 +48,11 @@ const NATURE_ICONS: Partial<Record<SoundCategoryId, number>> = {
 
 type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores";
 
-const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: SoundCategoryId[] | null }[] = [
-  { id: "popular",        label: "Popular",        icon: "trending-up", categories: null },
-  { id: "naturaleza",     label: "Naturaleza",     icon: "wind",        categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
-  { id: "ancestrales",    label: "Ancestrales",    icon: "bell",        categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
-  { id: "sintetizadores", label: "Digitales",       icon: "sliders",     categories: ["solfeggio", "frecuencias"] },
+const MAIN_TABS: { id: MainTabId; label: string; categories: SoundCategoryId[] | null }[] = [
+  { id: "popular",        label: "Popular",        categories: null },
+  { id: "naturaleza",     label: "Naturaleza",     categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
+  { id: "ancestrales",    label: "Ancestrales",    categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
+  { id: "sintetizadores", label: "Digitales",       categories: ["solfeggio", "frecuencias"] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
@@ -349,12 +349,6 @@ export default function MiMusicaScreen() {
                 onPress={() => handleMainTab(tab.id)}
                 style={[styles.tabItem, sel && styles.tabItemActive]}
               >
-                <Feather
-                  name={tab.icon as any}
-                  size={24}
-                  color={sel ? "#FFFFFF" : MUTED}
-                  strokeWidth={sel ? 2.2 : 1.8}
-                />
                 <Text
                   numberOfLines={1}
                   style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}
