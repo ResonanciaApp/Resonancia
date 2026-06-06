@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
@@ -47,6 +47,73 @@ const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: Sound
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
 
+// Sub-componente aislado: monta solo cuando mezclasOpen=true.
+// useLayoutEffect([]) corre exactamente una vez al montar, con cleanup
+// que cancela la animación si React desmonta/remonta (Strict Mode, hot reload).
+const MezclasAnimPills = memo(function MezclasAnimPills({ colors }: { colors: ReturnType<typeof useColors> }) {
+  const pillAnims = useRef(
+    MIX_CATEGORIES.map(() => ({
+      opacity: new Animated.Value(0),
+      translateX: new Animated.Value(-18),
+    }))
+  ).current;
+
+  useLayoutEffect(() => {
+    const composite = Animated.parallel(
+      pillAnims.map((anim, i) =>
+        Animated.sequence([
+          Animated.delay(i * 40),
+          Animated.parallel([
+            Animated.timing(anim.opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+            Animated.timing(anim.translateX, { toValue: 0, duration: 200, useNativeDriver: true }),
+          ]),
+        ])
+      )
+    );
+    composite.start();
+    return () => composite.stop();
+  }, []);
+
+  return (
+    <View style={styles.mezclasInlineCats}>
+      {MIX_CATEGORIES.map((cat, i) => {
+        const accent = cat.color ?? colors.primary;
+        return (
+          <Animated.View
+            key={cat.id}
+            style={{
+              flex: 1,
+              opacity: pillAnims[i].opacity,
+              transform: [{ translateX: pillAnims[i].translateX }],
+            }}
+          >
+            <Pressable
+              onPress={() => router.push(`/mezclas/${cat.id}` as never)}
+              style={({ pressed }) => ({
+                paddingVertical: 8,
+                paddingHorizontal: 6,
+                borderRadius: 13,
+                borderWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.06)",
+                borderColor: accent + "50",
+              })}
+            >
+              <Text
+                numberOfLines={1}
+                style={{ fontSize: 12, fontWeight: "600", color: colors.foreground, textAlign: "center" }}
+              >
+                {cat.label}
+              </Text>
+            </Pressable>
+          </Animated.View>
+        );
+      })}
+    </View>
+  );
+});
+
 export default function MiMusicaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -57,32 +124,6 @@ export default function MiMusicaScreen() {
   const [playCounts, setPlayCounts] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [mezclasOpen, setMezclasOpen] = useState(false);
-
-  const pillAnims = useRef(
-    MIX_CATEGORIES.map(() => ({
-      opacity: new Animated.Value(0),
-      translateX: new Animated.Value(-18),
-    }))
-  ).current;
-
-  useLayoutEffect(() => {
-    if (!mezclasOpen) return;
-    // Reset sincrónico antes del paint para evitar parpadeo
-    pillAnims.forEach((anim) => {
-      anim.opacity.setValue(0);
-      anim.translateX.setValue(-18);
-    });
-    const animations = pillAnims.map((anim, i) =>
-      Animated.sequence([
-        Animated.delay(i * 40),
-        Animated.parallel([
-          Animated.timing(anim.opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
-          Animated.timing(anim.translateX, { toValue: 0, duration: 200, useNativeDriver: true }),
-        ]),
-      ])
-    );
-    Animated.parallel(animations).start();
-  }, [mezclasOpen]);
 
   const toggleDesc = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -253,44 +294,7 @@ export default function MiMusicaScreen() {
               />
             </Pressable>
 
-            {mezclasOpen && (
-              <View style={styles.mezclasInlineCats}>
-                {MIX_CATEGORIES.map((cat, i) => {
-                  const accent = cat.color ?? colors.primary;
-                  return (
-                    <Animated.View
-                      key={cat.id}
-                      style={{
-                        flex: 1,
-                        opacity: pillAnims[i].opacity,
-                        transform: [{ translateX: pillAnims[i].translateX }],
-                      }}
-                    >
-                      <Pressable
-                        onPress={() => router.push(`/mezclas/${cat.id}` as never)}
-                        style={({ pressed }) => ({
-                          paddingVertical: 8,
-                          paddingHorizontal: 6,
-                          borderRadius: 13,
-                          borderWidth: 1,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backgroundColor: pressed ? accent + "28" : "rgba(255,255,255,0.06)",
-                          borderColor: accent + "50",
-                        })}
-                      >
-                        <Text
-                          numberOfLines={1}
-                          style={{ fontSize: 12, fontWeight: "600", color: colors.foreground, textAlign: "center" }}
-                        >
-                          {cat.label}
-                        </Text>
-                      </Pressable>
-                    </Animated.View>
-                  );
-                })}
-              </View>
-            )}
+            {mezclasOpen && <MezclasAnimPills colors={colors} />}
           </View>
         </View>
 
