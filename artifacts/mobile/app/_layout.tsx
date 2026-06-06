@@ -32,6 +32,7 @@ import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { DrawerProvider } from "@/context/DrawerContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
+import { SaveEventProvider } from "@/context/SaveEventContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
@@ -241,6 +242,7 @@ export default function RootLayout() {
                 <PlayerProvider>
                   <AmbientPlayerProvider>
                     <MixerProvider>
+                    <SaveEventProvider>
                     <UserProfileProvider>
                       <ProfileSync />
                       <IntencionProvider>
@@ -255,6 +257,7 @@ export default function RootLayout() {
                         </FoldersPlaylistsProvider>
                       </IntencionProvider>
                     </UserProfileProvider>
+                    </SaveEventProvider>
                     </MixerProvider>
                   </AmbientPlayerProvider>
                 </PlayerProvider>

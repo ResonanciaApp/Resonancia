@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
+import { useSaveEvent } from "@/context/SaveEventContext";
 import {
   type MixSound,
   type SoundCategoryId,
@@ -102,6 +103,32 @@ export default function MiMusicaScreen() {
   const insets    = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { isActive, toggleSound } = useMixer();
+  const { lastSavedAt } = useSaveEvent();
+
+  // ── Animación del ♥ al guardar mezcla ──────────────────────────────────────
+  const heartScale   = useRef(new Animated.Value(1)).current;
+  const heartGlow    = useRef(new Animated.Value(0)).current;
+  const heartGold    = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!lastSavedAt) return;
+    heartScale.setValue(1);
+    heartGlow.setValue(0);
+    heartGold.setValue(0);
+    Animated.sequence([
+      Animated.parallel([
+        Animated.spring(heartScale, { toValue: 1.6, friction: 3, tension: 100, useNativeDriver: true }),
+        Animated.timing(heartGlow,  { toValue: 0.35, duration: 180, useNativeDriver: true }),
+        Animated.timing(heartGold,  { toValue: 1,    duration: 180, useNativeDriver: true }),
+      ]),
+      Animated.delay(300),
+      Animated.parallel([
+        Animated.spring(heartScale, { toValue: 1, friction: 5, tension: 60, useNativeDriver: true }),
+        Animated.timing(heartGlow,  { toValue: 0, duration: 600, useNativeDriver: true }),
+        Animated.timing(heartGold,  { toValue: 0, duration: 600, useNativeDriver: true }),
+      ]),
+    ]).start();
+  }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
@@ -231,8 +258,28 @@ export default function MiMusicaScreen() {
 
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Text style={styles.pageTitle}>Mi Música</Text>
-          <Text style={styles.pageSub}>Mezclador de sonidos</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.pageTitle}>Mi Música</Text>
+            <Text style={styles.pageSub}>Mezclador de sonidos</Text>
+          </View>
+          <Pressable
+            onPress={() => router.push("/mezclas" as never)}
+            style={styles.heartBtn}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Mis mezclas guardadas"
+          >
+            {/* Glow dorado detrás */}
+            <Animated.View style={[styles.heartGlow, { opacity: heartGlow }]} />
+            {/* Ícono dorado (aparece durante la animación) */}
+            <Animated.View style={[StyleSheet.absoluteFill, styles.heartIconAbsolute, { opacity: heartGold }]}>
+              <MaterialCommunityIcons name="heart" size={24} color={GOLD} />
+            </Animated.View>
+            {/* Ícono blanco base */}
+            <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+              <MaterialCommunityIcons name="heart" size={24} color={FG} />
+            </Animated.View>
+          </Pressable>
         </View>
 
         {/* ── Tab bar — individual pills ── */}
@@ -324,9 +371,19 @@ const styles = StyleSheet.create({
   inner: { flex: 1 },
 
   // Header
-  header:    { paddingHorizontal: 20, paddingBottom: 16 },
+  header:    { paddingHorizontal: 20, paddingBottom: 16, flexDirection: "row", alignItems: "center" },
   pageTitle: { fontSize: 20, fontWeight: "700", letterSpacing: -0.4, color: FG },
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 3 },
+  heartBtn: {
+    width: 42, height: 42, alignItems: "center", justifyContent: "center",
+    borderRadius: 21, marginLeft: 12,
+  },
+  heartGlow: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 21,
+    backgroundColor: GOLD,
+  },
+  heartIconAbsolute: { alignItems: "center", justifyContent: "center" },
 
   // Tab bar
   tabScroll:   { flexGrow: 0 },

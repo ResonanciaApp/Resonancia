@@ -12,9 +12,11 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
+  Easing,
   ImageBackground,
   Modal,
   Pressable,
@@ -26,13 +28,13 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SaveMixCelebration } from "@/components/SaveMixCelebration";
+import { useSaveEvent } from "@/context/SaveEventContext";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { MIX_CATEGORIES, type MixCategory, getCategoryMeta } from "@/data/mix-categories";
+import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
@@ -123,19 +125,26 @@ export function MixerSheet() {
   const [mixImage, setMixImage] = useState<string>(DEFAULT_MIX_IMAGE_KEY);
   const [mixCategory, setMixCategory] = useState<MixCategory>("dormir");
 
-  const [celebration, setCelebration] = useState<{
-    category: MixCategory;
-    image: string;
-  } | null>(null);
+  const { notifySaved } = useSaveEvent();
+
+  // Valores animados para la succión al guardar
+  const sheetScale  = useRef(new Animated.Value(1)).current;
+  const sheetSlideX = useRef(new Animated.Value(0)).current;
+  const sheetSlideY = useRef(new Animated.Value(0)).current;
+  const sheetOpacity = useRef(new Animated.Value(1)).current;
 
   // Snapshot de la mezcla en el momento en que se abrió la hoja.
   // Se usa para detectar cambios (agregar/quitar/volumen) sin depender de
   // si hay un preset cargado o no.
   const [snapshotSounds, setSnapshotSounds] = useState<{ id: string; volume: number }[]>([]);
 
-  // Al abrir la hoja: recordamos el preset de origen Y tomamos snapshot de la mezcla.
+  // Al abrir: reset valores de animación + snapshot de la mezcla
   useEffect(() => {
     if (isSheetOpen) {
+      sheetScale.setValue(1);
+      sheetSlideX.setValue(0);
+      sheetSlideY.setValue(0);
+      sheetOpacity.setValue(1);
       setOriginId(loadedPresetId);
       setSnapshotSounds(activeSounds.map((s) => ({ id: s.id, volume: s.volume })));
     }
@@ -248,13 +257,22 @@ export function MixerSheet() {
       category: mixCategory,
     });
     setSaveModalOpen(false);
-    setCelebration({ category: mixCategory, image: mixImage });
-  };
-
-  const handleCelebrationDone = () => {
-    setCelebration(null);
-    closeSheet();
-    stopAll();
+    // Notifica al ♥ en Mi Música para que se ilumine
+    notifySaved();
+    // Animación de succión: el sheet se encoge hacia la esquina superior-derecha
+    Animated.parallel([
+      Animated.timing(sheetScale,   { toValue: 0.06, duration: 500, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(sheetSlideX,  { toValue: 150,  duration: 500, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(sheetSlideY,  { toValue: -650, duration: 500, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(sheetOpacity, { toValue: 0,    duration: 400, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+    ]).start(() => {
+      sheetScale.setValue(1);
+      sheetSlideX.setValue(0);
+      sheetSlideY.setValue(0);
+      sheetOpacity.setValue(1);
+      closeSheet();
+      stopAll();
+    });
   };
 
   const handleTimerPress = () => {
@@ -286,6 +304,16 @@ export function MixerSheet() {
       onRequestClose={closeSheet}
     >
       <Pressable style={styles.backdrop} onPress={closeSheet}>
+        <Animated.View
+          style={{
+            transform: [
+              { scale: sheetScale },
+              { translateX: sheetSlideX },
+              { translateY: sheetSlideY },
+            ],
+            opacity: sheetOpacity,
+          }}
+        >
         <Pressable
           style={[
             styles.sheet,
@@ -526,14 +554,8 @@ export function MixerSheet() {
             </Pressable>
           </Modal>
 
-          {/* Animación de confirmación al guardar (solo mezclas nuevas) */}
-          <SaveMixCelebration
-            visible={celebration != null}
-            category={celebration ? getCategoryMeta(celebration.category) : undefined}
-            imageKey={celebration?.image}
-            onDone={handleCelebrationDone}
-          />
         </Pressable>
+        </Animated.View>
       </Pressable>
     </Modal>
   );
