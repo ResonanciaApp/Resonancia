@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreVertical, Music, BarChart2 } from "lucide-react";
+import { MoreVertical, Music, BarChart2, ChevronLeft } from "lucide-react";
 
 const BG = "#0B0F14";
 const FG = "#EDE1D3";
@@ -161,7 +161,25 @@ export function TabsGuardados() {
       }}
     >
       {/* Header */}
-      <div style={{ padding: "56px 20px 16px" }}>
+      <div style={{ padding: "52px 20px 16px" }}>
+        {/* Botón retroceder */}
+        <button
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: MUTED,
+            fontSize: 13,
+            fontWeight: 500,
+            padding: "0 0 14px 0",
+          }}
+        >
+          <ChevronLeft size={18} color={MUTED} />
+          Mi Música
+        </button>
         <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: -0.4, color: FG }}>
           Mis Mezclas
         </div>
@@ -187,7 +205,7 @@ export function TabsGuardados() {
                 borderRadius: 16,
                 cursor: "pointer",
                 background: sel ? PILL_BG : "rgba(255,255,255,0.03)",
-                border: `1px solid ${sel ? PILL_BORDER : BORDER}`,
+                border: "none",
                 transition: "all 0.18s ease",
               }}
             >
