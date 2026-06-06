@@ -700,11 +700,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   zenCtrlBtn: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
     paddingVertical: 8,
-    paddingHorizontal: 16,
   },
   zenCtrlLabel: {
     fontSize: 10,
