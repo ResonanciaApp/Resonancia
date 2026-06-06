@@ -210,6 +210,38 @@ export default function ExploreScreen() {
               </View>
             </View>
 
+            {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.timeRow}
+              >
+                {TIME_BUCKETS.map((bucket) => (
+                  <Pressable
+                    key={bucket.label}
+                    onPress={() => handleTimeBucket(bucket)}
+                    style={({ pressed }) => [
+                      styles.timeChip,
+                      {
+                        backgroundColor: "#11161F",
+                        opacity: pressed ? 0.6 : 1,
+                      },
+                    ]}
+                  >
+                    <Feather
+                      name="clock"
+                      size={16}
+                      color="white"
+                      style={styles.timeIcon}
+                    />
+                    <Text style={[styles.timeLabel, { color: colors.foreground }]}>{bucket.label}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+
             {/* ── Continúa escuchando (sin título; el reproductor basta) ── */}
             <View style={styles.section}>
               {lastSession ? (
@@ -287,38 +319,6 @@ export default function ExploreScreen() {
                   </Text>
                 </View>
               )}
-            </View>
-
-            {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes hoy?</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.timeRow}
-              >
-                {TIME_BUCKETS.map((bucket) => (
-                  <Pressable
-                    key={bucket.label}
-                    onPress={() => handleTimeBucket(bucket)}
-                    style={({ pressed }) => [
-                      styles.timeChip,
-                      {
-                        backgroundColor: "#11161F",
-                        opacity: pressed ? 0.6 : 1,
-                      },
-                    ]}
-                  >
-                    <Feather
-                      name="clock"
-                      size={16}
-                      color="white"
-                      style={styles.timeIcon}
-                    />
-                    <Text style={[styles.timeLabel, { color: colors.foreground }]}>{bucket.label}</Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
             </View>
 
             {/* ── Tu Biblioteca (2×2 grid) ── */}
