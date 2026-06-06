@@ -35,7 +35,6 @@ const CARD     = "#151A23";
 const GOLD     = "#BE9650";
 const FG       = "#EDE1D3";
 const MUTED    = "#7A8FA8";
-const BORDER   = "#1E2733";
 const TAB_PILL = "#1E2733";
 
 const NATURE_ICONS: Partial<Record<SoundCategoryId, number>> = {
@@ -457,7 +456,7 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 10, letterSpacing: 0.1 },
 
   // Separador
-  separator: { height: 1, backgroundColor: BORDER, marginHorizontal: 16 },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginHorizontal: 16 },
 
   // Scroll
   scroll:        { flex: 1 },
