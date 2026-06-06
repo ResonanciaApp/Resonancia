@@ -13,8 +13,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import {
@@ -99,7 +101,7 @@ export default function MiMusicaScreen() {
   const colors    = useColors();
   const insets    = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { isActive, toggleSound, getVolume } = useMixer();
+  const { isActive, toggleSound } = useMixer();
 
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
@@ -175,46 +177,48 @@ export default function MiMusicaScreen() {
     );
   }, [mainTab, subTab, popularSounds, subTabCategories]);
 
-  // Agrupar en filas de 2 para la grilla
-  const soundRows = useMemo(() => {
-    const rows: MixSound[][] = [];
-    for (let i = 0; i < displayedSounds.length; i += 2) {
-      rows.push(displayedSounds.slice(i, i + 2));
-    }
-    return rows;
-  }, [displayedSounds]);
-
-  const renderSoundCard = (sound: MixSound) => {
+  const renderSoundCard = (sound: MixSound, idx: number) => {
+    const available = hasSoundFile(sound.id);
     const active    = isActive(sound.id);
     const locked    = sound.isPremium && !isPremium;
-    const available = hasSoundFile(sound.id);
-    const catLabel  = SOUND_CATEGORIES.find((c) => c.id === sound.category)?.label ?? "";
-    const vol       = getVolume(sound.id);
+    const image     = getSoundImage(sound.id);
+    const tiltDir   = idx % 2 === 0 ? "-5deg" : "5deg";
 
     return (
       <Pressable
         key={sound.id}
         onPress={() => handleSoundPress(sound)}
         disabled={!available}
-        style={({ pressed }) => [
-          styles.soundCard,
-          {
-            opacity: available ? (pressed ? 0.8 : 1) : 0.45,
-            backgroundColor: active ? `${GOLD}18` : CARD,
-            borderColor: active ? `${GOLD}50` : BORDER,
-          },
-        ]}
+        style={[styles.soundCard, { opacity: available ? 1 : 0.5 }]}
       >
-        <Text style={styles.soundName} numberOfLines={2}>{sound.name}</Text>
-        <Text style={[styles.soundCat, { color: active ? GOLD : MUTED }]}>{catLabel}</Text>
-        {locked && (
-          <Text style={styles.lockBadge}>★ Premium</Text>
-        )}
-        {active && (
-          <View style={styles.volTrack}>
-            <View style={[styles.volFill, { width: `${Math.round(Math.max(0.15, vol) * 100)}%` as any }]} />
-          </View>
-        )}
+        <View
+          style={[
+            styles.cardImageWrap,
+            active && [
+              styles.cardImageWrapActive,
+              { transform: [{ rotate: tiltDir }, { scale: 1.05 }] },
+            ],
+            { borderColor: active ? "#FFFFFF" : "transparent" },
+          ]}
+        >
+          {image ? (
+            <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
+          )}
+          {locked && (
+            <Image
+              source={require("../../assets/images/estrella-premium.png")}
+              style={[styles.lockBadge, { width: 22, height: 22 }]}
+              contentFit="contain"
+            />
+          )}
+        </View>
+        <View style={styles.cardFooter}>
+          <Text style={[styles.soundName, { color: colors.foreground }]} numberOfLines={1}>
+            {sound.name}
+          </Text>
+        </View>
       </Pressable>
     );
   };
@@ -303,15 +307,10 @@ export default function MiMusicaScreen() {
             </SubTabSlide>
           )}
 
-          {/* Grilla de sonidos */}
+          {/* Grilla de sonidos — 3 columnas */}
           <ContentSlide key={contentAnimKey} dir={contentDir}>
-            <View style={styles.grid}>
-              {soundRows.map((row, rowIdx) => (
-                <View key={rowIdx} style={styles.cardRow}>
-                  {row.map((s) => renderSoundCard(s))}
-                  {row.length < 2 && <View style={{ flex: 1 }} />}
-                </View>
-              ))}
+            <View style={[styles.grid, { marginTop: 14 }]}>
+              {displayedSounds.map((s, i) => renderSoundCard(s, i))}
             </View>
           </ContentSlide>
         </ScrollView>
@@ -363,29 +362,26 @@ const styles = StyleSheet.create({
   },
   subTabText: { fontSize: 13, fontWeight: "600" },
 
-  // Grilla
-  grid:    { gap: 10 },
-  cardRow: { flexDirection: "row", gap: 10 },
-  soundCard: {
-    flex: 1,
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-  },
-  soundName: { fontSize: 13, fontWeight: "600", color: FG, lineHeight: 18 },
-  soundCat:  { fontSize: 11, marginTop: 5 },
-  lockBadge: { fontSize: 10, color: GOLD, marginTop: 4 },
-  volTrack: {
-    marginTop: 8,
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: `${GOLD}60`,
+  // Grilla de sonidos — 3 columnas uniformes
+  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
+  soundCard: { width: "31%" },
+  cardImageWrap: {
+    width: "77%",
+    aspectRatio: 1,
+    alignSelf: "center",
     overflow: "hidden",
+    borderRadius: 18,
+    borderWidth: 3,
+    borderColor: "transparent",
   },
-  volFill: {
-    height: "100%",
-    backgroundColor: GOLD,
-    borderRadius: 1,
+  cardImageWrapActive: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 8,
+    elevation: 8,
   },
+  cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
+  soundName: { fontSize: 12, fontWeight: "600", letterSpacing: 0.1, textAlign: "center" },
+  lockBadge: { position: "absolute", top: 4, right: 4 },
 });
