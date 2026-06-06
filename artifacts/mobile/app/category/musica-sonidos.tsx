@@ -103,17 +103,21 @@ export default function MusicaSonidosScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={styles.catIconCircle}>
-            <ExpoImage
-              source={require("../../assets/images/cat-musica.png")}
-              style={{ width: 44, height: 44 }}
-              contentFit="contain"
-            />
+          <View style={styles.titleRow}>
+            <View style={[styles.catIconCircle, { backgroundColor: "rgba(0,165,130,0.16)" }]}>
+              <ExpoImage
+                source={require("../../assets/images/cat-musica.png")}
+                style={{ width: 44, height: 44 }}
+                contentFit="contain"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Música</Text>
+              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+                Elige un sonido y conecta con el momento presente
+              </Text>
+            </View>
           </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Música</Text>
-          <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-            Elige un sonido y conecta con el momento presente
-          </Text>
         </View>
 
         {/* Tabs — bloques con ícono */}
@@ -221,12 +225,12 @@ const styles = StyleSheet.create({
   },
   catIconCircle: {
     width: 56, height: 56,
-    borderRadius: 18,
+    borderRadius: 28,
     alignItems: "center", justifyContent: "center",
-    marginBottom: 14,
   },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 6, textAlign: "center" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "left" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "left" },
 
   tabRow: { flexDirection: "row", gap: 10 },
   tabBlock: {

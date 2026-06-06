@@ -217,17 +217,21 @@ export default function MananasScreen() {
               <Pressable onPress={() => router.back()} style={styles.backBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
-              <View style={styles.catIconCircle}>
-                <Image
-                  source={require("../../assets/images/cat-mananas.png")}
-                  style={{ width: 44, height: 44 }}
-                  resizeMode="contain"
-                />
+              <View style={styles.titleRow}>
+                <View style={[styles.catIconCircle, { backgroundColor: "rgba(244,201,147,0.16)" }]}>
+                  <Image
+                    source={require("../../assets/images/cat-mananas.png")}
+                    style={{ width: 44, height: 44 }}
+                    resizeMode="contain"
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
+                  <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+                    Rituales para comenzar el día con energía
+                  </Text>
+                </View>
               </View>
-              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
-              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                Rituales para comenzar el día con energía
-              </Text>
             </View>
 
             <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
@@ -432,12 +436,12 @@ const styles = StyleSheet.create({
   },
   catIconCircle: {
     width: 56, height: 56,
-    borderRadius: 18,
+    borderRadius: 28,
     alignItems: "center", justifyContent: "center",
-    marginBottom: 14,
   },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 6, textAlign: "center" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "left" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "left" },
 
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },

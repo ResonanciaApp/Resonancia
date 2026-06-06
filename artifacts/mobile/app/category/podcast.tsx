@@ -136,17 +136,21 @@ export default function SonidosScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={styles.iconCircle}>
-            <Image
-              source={require("../../assets/images/cat-sonidos.png")}
-              style={{ width: 44, height: 44 }}
-              resizeMode="contain"
-            />
+          <View style={styles.titleRow}>
+            <View style={[styles.iconCircle, { backgroundColor: "rgba(0,154,223,0.16)" }]}>
+              <Image
+                source={require("../../assets/images/cat-sonidos.png")}
+                style={{ width: 44, height: 44 }}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
+              <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+                Ponte audífonos y a dormir
+              </Text>
+            </View>
           </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Ponte audífonos y a dormir
-          </Text>
         </View>
 
         {/* Sticky tab bar — bloques con ícono */}
@@ -390,24 +394,24 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   iconCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 14,
   },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   pageTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
     letterSpacing: 0.2,
-    marginBottom: 6,
-    textAlign: "center",
+    marginBottom: 4,
+    textAlign: "left",
   },
   pageSub: {
     fontSize: 13,
     lineHeight: 19,
-    textAlign: "center",
+    textAlign: "left",
   },
 
   divider: {
