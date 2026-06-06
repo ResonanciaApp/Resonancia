@@ -147,7 +147,7 @@ export default function MusicaSonidosScreen() {
                 <MaterialCommunityIcons
                   name={icon as any}
                   size={24}
-                  color={sel ? "#FFFFFF" : colors.mutedForeground}
+                  color={sel ? MUSICA_ACCENT : colors.mutedForeground}
                 />
                 <Text
                   style={[

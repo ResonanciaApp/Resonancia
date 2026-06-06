@@ -138,7 +138,7 @@ export default function MeditacionesGuiadasScreen() {
                 <MaterialCommunityIcons
                   name={icon as never}
                   size={24}
-                  color={sel ? "#FFFFFF" : colors.mutedForeground}
+                  color={sel ? ICON_COLOR : colors.mutedForeground}
                 />
                 <Text
                   style={[

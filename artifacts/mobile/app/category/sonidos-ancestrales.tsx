@@ -144,7 +144,7 @@ export default function SonidosAncestalesScreen() {
                 <MaterialCommunityIcons
                   name={icon as never}
                   size={24}
-                  color={sel ? "#FFFFFF" : colors.mutedForeground}
+                  color={sel ? "#D6933A" : colors.mutedForeground}
                 />
                 <Text
                   style={[
@@ -177,7 +177,7 @@ export default function SonidosAncestalesScreen() {
                 <MaterialCommunityIcons
                   name={icon as never}
                   size={24}
-                  color={sel ? "#FFFFFF" : colors.mutedForeground}
+                  color={sel ? "#D6933A" : colors.mutedForeground}
                 />
                 <Text
                   style={[

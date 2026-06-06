@@ -179,7 +179,7 @@ export default function SonidosScreen() {
                   <Feather
                     name={icon as any}
                     size={24}
-                    color={sel ? "#FFFFFF" : colors.mutedForeground}
+                    color={sel ? SONIDOS_ACCENT : colors.mutedForeground}
                   />
                   <Text
                     style={[
