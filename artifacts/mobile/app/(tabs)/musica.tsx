@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 14 },
   pageSub: { fontSize: 13, lineHeight: 19, marginBottom: 14 },
   subSectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
-  mezclasRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  mezclasRow: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 36 },
   mezclasHeader: { flexDirection: "row", alignItems: "center", paddingVertical: 4 },
   mezclasInlineCats: { flex: 1, flexDirection: "row", gap: 6 },
   mezclasInlinePill: {
