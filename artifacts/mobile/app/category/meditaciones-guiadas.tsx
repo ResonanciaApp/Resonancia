@@ -144,7 +144,7 @@ export default function MeditacionesGuiadasScreen() {
                   style={[
                     styles.tabLabel,
                     {
-                      color: sel ? "#FFFFFF" : colors.mutedForeground,
+                      color: "#FFFFFF",
                       fontWeight: sel ? "700" : "400",
                     },
                   ]}

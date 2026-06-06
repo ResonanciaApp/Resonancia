@@ -186,7 +186,7 @@ export default function SonidosScreen() {
                     style={[
                       styles.tabLabel,
                       {
-                        color: sel ? "#FFFFFF" : colors.mutedForeground,
+                        color: "#FFFFFF",
                         fontWeight: sel ? "700" : "400",
                       },
                     ]}
