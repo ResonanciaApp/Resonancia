@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
+  Animated,
   LayoutAnimation,
   Platform,
   Pressable,
@@ -57,6 +58,33 @@ export default function MiMusicaScreen() {
   const [descExpanded, setDescExpanded] = useState(false);
   const [mezclasOpen, setMezclasOpen] = useState(false);
 
+  const pillAnims = useRef(
+    MIX_CATEGORIES.map(() => ({
+      opacity: new Animated.Value(0),
+      translateX: new Animated.Value(-18),
+    }))
+  ).current;
+
+  useEffect(() => {
+    const animations = pillAnims.map((anim, i) =>
+      Animated.sequence([
+        Animated.delay(mezclasOpen ? i * 40 : 0),
+        Animated.parallel([
+          Animated.timing(anim.opacity, {
+            toValue: mezclasOpen ? 1 : 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(anim.translateX, {
+            toValue: mezclasOpen ? 0 : -18,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]),
+      ])
+    );
+    Animated.parallel(animations).start();
+  }, [mezclasOpen]);
 
   const toggleDesc = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -212,10 +240,7 @@ export default function MiMusicaScreen() {
           {/* Tus mezclas — expande hacia la derecha */}
           <View style={styles.mezclasRow}>
             <Pressable
-              onPress={() => {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                setMezclasOpen((v) => !v);
-              }}
+              onPress={() => setMezclasOpen((v) => !v)}
               style={styles.mezclasHeader}
             >
               <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7, fontSize: 16 }]}>
@@ -230,13 +255,19 @@ export default function MiMusicaScreen() {
               />
             </Pressable>
 
-            {mezclasOpen && (
-              <View style={styles.mezclasInlineCats}>
-                {MIX_CATEGORIES.map((cat) => {
-                  const accent = cat.color ?? colors.primary;
-                  return (
+            <View style={styles.mezclasInlineCats} pointerEvents={mezclasOpen ? "auto" : "none"}>
+              {MIX_CATEGORIES.map((cat, i) => {
+                const accent = cat.color ?? colors.primary;
+                return (
+                  <Animated.View
+                    key={cat.id}
+                    style={{
+                      flex: 1,
+                      opacity: pillAnims[i].opacity,
+                      transform: [{ translateX: pillAnims[i].translateX }],
+                    }}
+                  >
                     <Pressable
-                      key={cat.id}
                       onPress={() => router.push(`/mezclas/${cat.id}` as never)}
                       style={({ pressed }) => ({
                         flex: 1,
@@ -258,10 +289,10 @@ export default function MiMusicaScreen() {
                         {cat.label}
                       </Text>
                     </Pressable>
-                  );
-                })}
-              </View>
-            )}
+                  </Animated.View>
+                );
+              })}
+            </View>
           </View>
         </View>
 
