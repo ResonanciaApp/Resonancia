@@ -1055,3 +1055,9 @@ id = "SNg-jJofgIkEHWdJvyc7Y"
 uri = "file://.local/outputs/Sound-Sanctuary.pdf"
 type = "pdf"
 title = "Sound Sanctuary.pdf"
+
+[[outputs]]
+id = "9YDgK0AFxJ3tutbpJ_mRs"
+uri = "file://attached_assets/screenshots/5427b858-8852-4aed-954b-cd80d9fa4b6b-00-cbe31mq0gv12_riker_replit_dev_mockup_preview_guardados_TabsGuardados.png"
+type = "image"
+title = "Guardados — diseño con 3 tabs"
