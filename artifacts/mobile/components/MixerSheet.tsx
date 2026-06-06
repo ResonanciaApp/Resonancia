@@ -19,6 +19,7 @@ import {
   Easing,
   ImageBackground,
   Modal,
+  PanResponder,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -131,6 +132,29 @@ export function MixerSheet() {
   const sheetOpacity = useRef(new Animated.Value(1)).current;
   const sheetEnterY  = useRef(new Animated.Value(400)).current;
   const saveOverlayOpacity = useRef(new Animated.Value(0)).current;
+
+  // PanResponder para arrastrar hacia abajo y cerrar
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, g) => g.dy > 5,
+      onPanResponderMove: (_, g) => {
+        if (g.dy > 0) sheetEnterY.setValue(g.dy);
+      },
+      onPanResponderRelease: (_, g) => {
+        if (g.dy > 80 || g.vy > 0.5) {
+          closeSheet();
+        } else {
+          Animated.spring(sheetEnterY, {
+            toValue: 0,
+            tension: 65,
+            friction: 14,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    }),
+  ).current;
 
   // Snapshot de la mezcla en el momento en que se abrió la hoja.
   // Se usa para detectar cambios (agregar/quitar/volumen) sin depender de
@@ -340,26 +364,33 @@ export function MixerSheet() {
       <Animated.View style={{ flex: 1, opacity: sheetOpacity }}>
       <Pressable style={styles.backdrop} onPress={closeSheet}>
         <Animated.View
-          style={{
-            flex: 1,
-            transform: [{ translateY: sheetEnterY }],
-          }}
+          style={{ transform: [{ translateY: sheetEnterY }] }}
         >
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: WARM.bg, paddingTop: insets.top + 10, paddingBottom: insets.bottom + 16 },
+            { backgroundColor: WARM.bg, paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
-          <View style={[styles.handle, { backgroundColor: WARM.handle }]} />
+          {/* Handle con PanResponder para arrastrar y cerrar */}
+          <View style={styles.handleZone} {...panResponder.panHandlers}>
+            <View style={[styles.handle, { backgroundColor: WARM.handle }]} />
+          </View>
 
           <View style={styles.headerRow}>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
-                {originPreset?.name ?? "Tu mezcla"}
-              </Text>
-            </View>
+            <Pressable
+              onPress={closeSheet}
+              hitSlop={10}
+              style={styles.headerBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar editor de mezcla"
+            >
+              <Feather name="chevron-down" size={24} color={colors.foreground} />
+            </Pressable>
+            <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={1}>
+              {originPreset?.name ?? "Tu mezcla"}
+            </Text>
             <Pressable
               onPress={handleClear}
               hitSlop={8}
@@ -368,15 +399,6 @@ export function MixerSheet() {
               accessibilityLabel="Terminar mezcla"
             >
               <Text style={styles.clearPill}>Cerrar</Text>
-            </Pressable>
-            <Pressable
-              onPress={closeSheet}
-              hitSlop={8}
-              style={styles.headerBtn}
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar editor de mezcla"
-            >
-              <Feather name="chevron-down" size={22} color={colors.foreground} />
             </Pressable>
           </View>
 
@@ -591,22 +613,29 @@ const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "flex-end",
   },
   sheet: {
-    flex: 1,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     paddingHorizontal: 20,
+    maxHeight: "93%",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
+  handleZone: {
+    alignSelf: "stretch",
+    alignItems: "center",
+    paddingTop: 10,
+    paddingBottom: 16,
+  },
   handle: {
-    alignSelf: "center",
     width: 36,
     height: 3,
     borderRadius: 2,
-    marginBottom: 18,
   },
   headerRow: {
     flexDirection: "row",
@@ -616,7 +645,7 @@ const styles = StyleSheet.create({
   },
   headerBtn: { paddingHorizontal: 4, justifyContent: "center" },
   caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
-  title: { fontSize: 18, fontWeight: "600", letterSpacing: 0.3 },
+  title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   subtitle: { fontSize: 12, marginTop: 2 },
   clearText: { fontSize: 12, fontWeight: "400" },
   clearPill: {
