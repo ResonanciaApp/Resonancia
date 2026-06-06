@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
   // Sub-tabs sobre la línea divisora
-  subTabZone: { position: "relative", justifyContent: "center" },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
   subTabLine: {
     position: "absolute",
     left: 16,
