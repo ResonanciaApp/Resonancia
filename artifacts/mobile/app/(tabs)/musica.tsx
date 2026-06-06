@@ -345,7 +345,7 @@ export default function MiMusicaScreen() {
                 <Feather
                   name={tab.icon as any}
                   size={24}
-                  color="#FFFFFF"
+                  color={sel ? "#FFFFFF" : MUTED}
                   strokeWidth={sel ? 2.2 : 1.8}
                 />
                 <Text
@@ -389,7 +389,7 @@ export default function MiMusicaScreen() {
                         <Image
                           source={NATURE_ICONS[catId]}
                           style={{ width: 14, height: 14, marginRight: 5 }}
-                          tintColor="#FFFFFF"
+                          tintColor={sel ? "#FFFFFF" : MUTED}
                           contentFit="contain"
                         />
                       )}
