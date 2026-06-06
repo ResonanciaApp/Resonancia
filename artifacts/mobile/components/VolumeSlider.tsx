@@ -75,26 +75,32 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
 
 const styles = StyleSheet.create({
   hitArea: {
-    paddingVertical: 10,
+    paddingVertical: 14,
     justifyContent: "center",
   },
   track: {
-    height: 3,
-    borderRadius: 2,
+    height: 2,
+    borderRadius: 1,
     justifyContent: "center",
   },
   fill: {
     position: "absolute",
     left: 0,
-    height: 3,
-    borderRadius: 2,
+    height: 2,
+    borderRadius: 1,
+    opacity: 0.5,
   },
   thumb: {
     position: "absolute",
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    marginLeft: -9,
-    top: -8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginLeft: -4,
+    top: -3,
+    shadowColor: "#ffffff",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 4,
   },
 });
