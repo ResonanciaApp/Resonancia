@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 14,
     minWidth: 62,
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabItemActive: { backgroundColor: "rgba(190,150,80,0.12)" },
   tabLabel: { fontSize: 10, letterSpacing: 0.1 },
