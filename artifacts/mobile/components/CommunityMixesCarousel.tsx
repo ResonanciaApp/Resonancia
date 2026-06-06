@@ -207,6 +207,9 @@ export function CommunityMixesCarousel() {
         })}
       </View>
 
+      {/* Divisor tabs → lista */}
+      <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.07)", marginBottom: 4 }} />
+
       {/* Empty state */}
       {visible.length === 0 && (
         <View style={[styles.emptyState, { backgroundColor: colors.card }]}>
