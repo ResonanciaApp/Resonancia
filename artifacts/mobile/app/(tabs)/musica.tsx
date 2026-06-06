@@ -422,11 +422,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     borderRadius: 13,
-    borderWidth: 1,
-    borderColor: "transparent",
   },
   mainTabItemActive: {
-    borderColor: "rgba(190,150,80,0.3)",
     backgroundColor: "rgba(190,150,80,0.11)",
   },
   mainTabText: { fontSize: 12, letterSpacing: 0.2 },
