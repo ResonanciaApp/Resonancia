@@ -149,9 +149,6 @@ export default function SonidosScreen() {
           </Text>
         </View>
 
-        {/* Línea divisora */}
-        <View style={[styles.divider, { marginHorizontal: H_PAD }]} />
-
         {/* Sticky tab bar — bloques con ícono */}
         <View style={[styles.tabBarWrap, { backgroundColor: colors.background }]}>
           <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
@@ -186,6 +183,9 @@ export default function SonidosScreen() {
             })}
           </View>
         </View>
+
+        {/* Línea divisora entre tabs y sesiones */}
+        <View style={[styles.divider, { marginHorizontal: H_PAD }]} />
 
         {/* Session grid */}
         <View style={[styles.grid, { paddingHorizontal: H_PAD, paddingTop: 24 }]}>
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
-    marginBottom: 16,
+    marginTop: 16,
   },
 
   tabBarWrap: {
