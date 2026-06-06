@@ -111,17 +111,20 @@ export default function MiMusicaScreen() {
 
   const heartScale = heartAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.45, 1] });
   const heartGold  = heartAnim.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 1, 0] });
-  const heartGlow  = heartAnim.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 0.4, 0] });
+  const heartGlow  = heartAnim.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 0.28, 0] });
 
   useEffect(() => {
     if (!lastSavedAt) return;
-    heartAnim.setValue(0);
-    Animated.sequence([
-      Animated.timing(heartAnim, { toValue: 0.5, duration: 200, useNativeDriver: false }),
-      Animated.timing(heartAnim, { toValue: 0.4, duration: 80,  useNativeDriver: false }),
-      Animated.delay(280),
-      Animated.timing(heartAnim, { toValue: 0,   duration: 550, useNativeDriver: false }),
-    ]).start();
+    // Detener cualquier secuencia en curso (guardados rápidos) y reiniciar limpio
+    heartAnim.stopAnimation(() => {
+      heartAnim.setValue(0);
+      Animated.sequence([
+        Animated.timing(heartAnim, { toValue: 0.5, duration: 200, useNativeDriver: false }),
+        Animated.timing(heartAnim, { toValue: 0.4, duration: 80,  useNativeDriver: false }),
+        Animated.delay(280),
+        Animated.timing(heartAnim, { toValue: 0,   duration: 550, useNativeDriver: false }),
+      ]).start();
+    });
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
@@ -271,8 +274,8 @@ export default function MiMusicaScreen() {
               <Animated.View style={[StyleSheet.absoluteFill, styles.heartIconAbsolute, { opacity: heartGold }]}>
                 <MaterialCommunityIcons name="heart" size={24} color={GOLD} />
               </Animated.View>
-              {/* Ícono blanco base */}
-              <MaterialCommunityIcons name="heart" size={24} color={FG} />
+              {/* Ícono base — contorno en reposo */}
+              <MaterialCommunityIcons name="heart-outline" size={24} color={FG} />
             </Animated.View>
           </Pressable>
         </View>
