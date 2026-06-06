@@ -30,7 +30,7 @@ import {
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
-const BG       = "#0B0F14";
+const BG       = "#090F17";
 const CARD     = "#151A23";
 const GOLD     = "#BE9650";
 const FG       = "#EDE1D3";
