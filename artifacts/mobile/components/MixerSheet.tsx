@@ -143,7 +143,7 @@ export function MixerSheet() {
       Animated.spring(sheetEnterY, {
         toValue: 0,
         tension: 65,
-        friction: 11,
+        friction: 14,
         useNativeDriver: true,
       }).start();
       setOriginId(loadedPresetId);
@@ -260,7 +260,10 @@ export function MixerSheet() {
     setSaveModalOpen(false);
     // Primero notifica al ♥ (animación en musica.tsx)
     notifySaved();
-    // Fade-out suave y zen del sheet
+    // Detener el spring de entrada si todavía está en movimiento,
+    // luego fade-out suave y zen
+    sheetEnterY.stopAnimation();
+    sheetEnterY.setValue(0);
     Animated.timing(sheetOpacity, {
       toValue: 0,
       duration: 380,
