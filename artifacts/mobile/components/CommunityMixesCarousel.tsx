@@ -509,15 +509,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: StyleSheet.hairlineWidth,
     position: "relative",
-    marginBottom: 4,
+    marginBottom: 0,
   },
   tabItem: {
     flex: 1,
-    paddingVertical: 9,
+    paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
   },
-  tabLabel: { fontSize: 13, letterSpacing: 0.2 },
+  tabLabel: { fontSize: 15, letterSpacing: 0.2 },
   tabIndicator: {
     position: "absolute",
     bottom: 0,
