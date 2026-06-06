@@ -83,16 +83,17 @@ export function NotificationBell() {
       clearTimers();
       const target = Math.max(1, finalStreak);
 
-      // 1. Se enciende el fuego + aparece el número en 1.
-      setDisplayNumber(1);
+      // 1. Se enciende el fuego y aparece el número del día (sin progresión).
+      setDisplayNumber(target);
       fireOpacity.setValue(REST_OPACITY);
       numOpacity.setValue(0);
       fireScale.setValue(1);
 
+      const FADE_IN = 400;
       Animated.parallel([
         Animated.timing(fireOpacity, {
           toValue: 1,
-          duration: 450,
+          duration: FADE_IN,
           easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
@@ -112,43 +113,31 @@ export function NotificationBell() {
         ]),
         Animated.timing(numOpacity, {
           toValue: 1,
-          duration: 300,
+          duration: FADE_IN,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
       ]).start();
 
-      // 2. Conteo 1 → racha.
-      const stepMs = target <= 1 ? 0 : Math.min(220, Math.max(70, Math.round(700 / (target - 1))));
-      let n = 1;
-      if (target > 1) {
-        for (let i = 2; i <= target; i++) {
-          const value = i;
-          const t = setTimeout(() => setDisplayNumber(value), stepMs * (i - 1));
-          timersRef.current.push(t);
-        }
-        n = target;
-      }
-      const countDur = target <= 1 ? 0 : stepMs * (target - 1);
-
-      // 3. Tras unos segundos, fuego y número quedan atenuados.
+      // 2. Tras unos segundos, fuego y número se atenúan juntos (mismo timing).
+      const FADE_OUT = 700;
       const fade = setTimeout(() => {
         Animated.parallel([
           Animated.timing(fireOpacity, {
             toValue: REST_OPACITY,
-            duration: 700,
+            duration: FADE_OUT,
             easing: Easing.in(Easing.quad),
             useNativeDriver: true,
           }),
           Animated.timing(numOpacity, {
             toValue: REST_OPACITY,
-            duration: 700,
+            duration: FADE_OUT,
+            easing: Easing.in(Easing.quad),
             useNativeDriver: true,
           }),
         ]).start();
-      }, countDur + 2000);
+      }, FADE_IN + 2000);
       timersRef.current.push(fade);
-
-      void n;
     },
     [clearTimers, fireOpacity, fireScale, numOpacity],
   );
@@ -255,7 +244,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   fire: {
-    width: 23,
-    height: 23,
+    width: 21,
+    height: 21,
   },
 });
