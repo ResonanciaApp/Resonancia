@@ -30,9 +30,9 @@ import { useColors } from "@/hooks/useColors";
 type CategoryFilter = MixCategory;
 
 const TABS: { id: CategoryFilter; label: string }[] = [
-  { id: "dormir",        label: "Descanso"   },
-  { id: "motivarme",     label: "Meditación" },
-  { id: "concentracion", label: "Enfoque"    },
+  { id: "dormir",        label: "Para descansar" },
+  { id: "motivarme",     label: "Para meditar"   },
+  { id: "concentracion", label: "Para enfocarse" },
 ];
 
 const GOLD = "#BE9650";
@@ -195,7 +195,7 @@ export function CommunityMixesCarousel() {
                 style={[
                   styles.tabLabel,
                   {
-                    color: sel ? colors.foreground : colors.mutedForeground,
+                    color: sel ? "#FFFFFF" : colors.mutedForeground,
                     fontWeight: sel ? "700" : "400",
                   },
                 ]}
