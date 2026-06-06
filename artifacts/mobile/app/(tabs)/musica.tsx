@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   stickyBar: {
     marginHorizontal: -20,
     paddingHorizontal: 20,
-    paddingTop: 22,
+    paddingTop: 28,
     paddingBottom: 0,
     borderTopWidth: 1,
     borderTopColor: "rgba(122,143,168,0.14)",
