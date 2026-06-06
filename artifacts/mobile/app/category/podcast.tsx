@@ -145,7 +145,7 @@ export default function SonidosScreen() {
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Frecuencias, naturaleza y atmósferas para transformar tu estado
+            Ponte audífonos y a dormir
           </Text>
         </View>
 
