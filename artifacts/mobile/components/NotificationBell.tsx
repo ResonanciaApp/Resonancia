@@ -1,6 +1,7 @@
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Pressable, StyleSheet } from "react-native";
+import { Image as ExpoImage } from "expo-image";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { usePlayer } from "@/context/PlayerContext";
@@ -73,6 +74,13 @@ export function NotificationBell() {
   const animatedDateRef = useRef<string | null>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
+  // Readiness del fuego: si la animación se dispara antes de que el PNG esté
+  // decodificado, se difiere hasta onLoad (evita que píldora/número aparezcan
+  // antes que el fuego).
+  const fireReadyRef = useRef(false);
+  const pendingStreakRef = useRef<number | null>(null);
+  const pendingRestingRef = useRef<number | null>(null);
+
   const clearTimers = useCallback(() => {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
@@ -80,6 +88,10 @@ export function NotificationBell() {
 
   const runAnimation = useCallback(
     (finalStreak: number) => {
+      if (!fireReadyRef.current) {
+        pendingStreakRef.current = finalStreak;
+        return;
+      }
       clearTimers();
       const target = Math.max(1, finalStreak);
 
@@ -143,8 +155,13 @@ export function NotificationBell() {
   );
 
   // Mostrar estado de reposo (ya animado hoy): fuego + número atenuados.
+  // También se difiere hasta que el fuego esté listo.
   const showRestingNumber = useCallback(
     (value: number) => {
+      if (!fireReadyRef.current) {
+        pendingRestingRef.current = value;
+        return;
+      }
       clearTimers();
       setDisplayNumber(value);
       fireOpacity.setValue(REST_OPACITY);
@@ -153,6 +170,22 @@ export function NotificationBell() {
     },
     [clearTimers, fireOpacity, fireScale, numOpacity],
   );
+
+  // El fuego ya está decodificado (o falló): se marca listo y se drena
+  // cualquier animación/estado de reposo en espera.
+  const markFireReady = useCallback(() => {
+    fireReadyRef.current = true;
+    if (pendingStreakRef.current != null) {
+      const s = pendingStreakRef.current;
+      pendingStreakRef.current = null;
+      pendingRestingRef.current = null;
+      runAnimation(s);
+    } else if (pendingRestingRef.current != null) {
+      const v = pendingRestingRef.current;
+      pendingRestingRef.current = null;
+      showRestingNumber(v);
+    }
+  }, [runAnimation, showRestingNumber]);
 
   useFocusEffect(
     useCallback(() => {
@@ -210,11 +243,18 @@ export function NotificationBell() {
           {displayNumber}
         </Animated.Text>
       )}
-      <Animated.Image
-        source={require("@/assets/images/fuego.png")}
+      <Animated.View
         style={[styles.fire, { opacity: fireOpacity, transform: [{ scale: fireScale }] }]}
-        resizeMode="contain"
-      />
+      >
+        <ExpoImage
+          source={require("@/assets/images/fuego.png")}
+          style={styles.fireImg}
+          contentFit="contain"
+          cachePolicy="memory-disk"
+          onLoad={markFireReady}
+          onError={markFireReady}
+        />
+      </Animated.View>
     </Pressable>
   );
 }
@@ -246,5 +286,9 @@ const styles = StyleSheet.create({
   fire: {
     width: 21,
     height: 21,
+  },
+  fireImg: {
+    width: "100%",
+    height: "100%",
   },
 });
