@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
   Animated,
+  Easing,
   Platform,
   Pressable,
   ScrollView,
@@ -98,6 +99,94 @@ const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.Re
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+type SoundCardProps = {
+  sound: MixSound;
+  idx: number;
+  active: boolean;
+  locked: boolean;
+  available: boolean;
+  image: ReturnType<typeof getSoundImage>;
+  foreground: string;
+  onPress: () => void;
+};
+
+/**
+ * Card de sonido del mezclador. El estado seleccionado (giro + escala + borde
+ * blanco) se ANIMA con `anim` (0↔1) en vez de aplicarse de golpe: así al
+ * deseleccionar (tap o cierre de la mezcla) la imagen vuelve a su posición con
+ * un giro sutil que acompaña al fade, sin saltos. El borde se anima con color
+ * (no native driver) junto al transform.
+ */
+const SoundCard = memo(function SoundCard({
+  sound,
+  idx,
+  active,
+  locked,
+  available,
+  image,
+  foreground,
+  onPress,
+}: SoundCardProps) {
+  const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
+  const [decorated, setDecorated] = useState(active);
+
+  useEffect(() => {
+    if (active) setDecorated(true);
+    const a = Animated.timing(anim, {
+      toValue: active ? 1 : 0,
+      duration: 260,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: false,
+    });
+    a.start(({ finished }) => {
+      if (finished && !active) setDecorated(false);
+    });
+    return () => a.stop();
+  }, [active, anim]);
+
+  const tiltDir = idx % 2 === 0 ? "-5deg" : "5deg";
+  const rotate = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
+  const scale = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
+  const borderColor = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,1)"],
+  });
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={!available}
+      style={[styles.soundCard, { opacity: available ? 1 : 0.5 }]}
+    >
+      <Animated.View
+        style={[
+          styles.cardImageWrap,
+          decorated && styles.cardImageWrapActive,
+          { transform: [{ rotate }, { scale }], borderColor },
+        ]}
+      >
+        {image ? (
+          <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
+        )}
+        {locked && (
+          <Image
+            source={require("../../assets/images/estrella-premium.png")}
+            style={[styles.lockBadge, { width: 22, height: 22 }]}
+            contentFit="contain"
+          />
+        )}
+      </Animated.View>
+      <View style={styles.cardFooter}>
+        <Text style={[styles.soundName, { color: foreground }]} numberOfLines={1}>
+          {sound.name}
+        </Text>
+      </View>
+    </Pressable>
+  );
+});
+
 export default function MiMusicaScreen() {
   const colors    = useColors();
   const insets    = useSafeAreaInsets();
@@ -197,51 +286,19 @@ export default function MiMusicaScreen() {
     );
   }, [mainTab, subTab, popularSounds, subTabCategories]);
 
-  const renderSoundCard = (sound: MixSound, idx: number) => {
-    const available = hasSoundFile(sound.id);
-    const active    = isActive(sound.id);
-    const locked    = sound.isPremium && !isPremium;
-    const image     = getSoundImage(sound.id);
-    const tiltDir   = idx % 2 === 0 ? "-5deg" : "5deg";
-
-    return (
-      <Pressable
-        key={sound.id}
-        onPress={() => handleSoundPress(sound)}
-        disabled={!available}
-        style={[styles.soundCard, { opacity: available ? 1 : 0.5 }]}
-      >
-        <View
-          style={[
-            styles.cardImageWrap,
-            active && [
-              styles.cardImageWrapActive,
-              { transform: [{ rotate: tiltDir }, { scale: 1.05 }] },
-            ],
-            { borderColor: active ? "#FFFFFF" : "transparent" },
-          ]}
-        >
-          {image ? (
-            <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
-          ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
-          )}
-          {locked && (
-            <Image
-              source={require("../../assets/images/estrella-premium.png")}
-              style={[styles.lockBadge, { width: 22, height: 22 }]}
-              contentFit="contain"
-            />
-          )}
-        </View>
-        <View style={styles.cardFooter}>
-          <Text style={[styles.soundName, { color: colors.foreground }]} numberOfLines={1}>
-            {sound.name}
-          </Text>
-        </View>
-      </Pressable>
-    );
-  };
+  const renderSoundCard = (sound: MixSound, idx: number) => (
+    <SoundCard
+      key={sound.id}
+      sound={sound}
+      idx={idx}
+      active={isActive(sound.id)}
+      locked={!!sound.isPremium && !isPremium}
+      available={hasSoundFile(sound.id)}
+      image={getSoundImage(sound.id)}
+      foreground={colors.foreground}
+      onPress={() => handleSoundPress(sound)}
+    />
+  );
 
   return (
     <View style={[styles.root, { backgroundColor: BG }]}>

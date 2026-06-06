@@ -279,21 +279,22 @@ export function MixerSheet() {
     setForceShowModal(true);
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
+    // stopAll() arranca AL INICIO del fade (no en el callback): así el audio se
+    // desvanece (fade-out interno) y las cards de "Mi Música" se deseleccionan
+    // —giro/escala de vuelta— ACOMPAÑANDO el fade de la hoja, sin demora ni corte
+    // de golpe. El trabajo pesado (pause/remove de players) ya está diferido
+    // dentro de stopAll, así que esto no traba el hilo a mitad de la animación.
+    stopAll();
     // Fade único de todo el contenedor (reproductor + popup + dim como una sola
-    // unidad). Dos detalles para que NO se "clave" a la mitad:
-    //  • stopAll() (frena varios audios) se difiere al callback: si corre antes
-    //    bloquea el hilo JS unos frames a mitad de la animación → tirón. Así el
-    //    fade corre limpio y el audio acompaña y se corta al final.
-    //  • Easing.out en vez de lineal: la opacidad baja rápido al inicio para
-    //    compensar la percepción gamma (a opacidad 0.5 el ojo aún ve ~73% de
-    //    brillo, por eso un fade lineal parece detenerse al 50%).
+    // unidad). Easing.out en vez de lineal: la opacidad baja rápido al inicio
+    // para compensar la percepción gamma (a opacidad 0.5 el ojo aún ve ~73% de
+    // brillo, por eso un fade lineal parece detenerse al 50%).
     Animated.timing(sheetOpacity, {
       toValue: 0,
       duration: 360,
       easing: Easing.out(Easing.quad),
       useNativeDriver: true,
     }).start(() => {
-      stopAll();
       setForceShowModal(false);
       setSaveModalOpen(false);
       saveOverlayOpacity.setValue(0);

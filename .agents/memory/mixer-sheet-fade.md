@@ -45,6 +45,35 @@ Una vez unificado, el fade lineal se percibía detenido al 50%. Dos causas:
    ve "pesado/clavado" en la mitad por gamma.
 2. **Bloqueo del hilo JS:** trabajo pesado disparado junto con la animación
    (acá `stopAll()` que frena varios reproductores de audio) bloquea unos frames
-   a mitad del fade y produce un tirón real. Fix: diferir ese trabajo al callback
-   `.start(() => ...)` de la animación, no ejecutarlo antes de `.start()`. Bonus:
-   el audio acompaña el fade y se corta al terminar.
+   a mitad del fade y produce un tirón real. La causa NO es el momento de la
+   llamada sino el trabajo SÍNCRONO pesado (pause/remove de N players). Fix
+   correcto: hacer ese trabajo barato/asíncrono, no diferirlo en bloque (ver
+   abajo).
+
+## Cierre con fade-out de audio + cards que se deseleccionan acompañando (modelo actual)
+
+Reemplaza el "diferí stopAll al callback" de arriba (que dejaba el corte de
+audio + el snap de las cards PARA EL FINAL del fade → se percibían demorados y
+de golpe). El modelo correcto separa lo visual de lo pesado:
+
+- **`stopAll()` se llama al INICIO del cierre** (no en el callback). Resetea la
+  UI de forma SÍNCRONA (`setActiveSounds([])`, refs) para que las cards de "Mi
+  Música" empiecen a deseleccionarse YA y animen junto al fade de la hoja.
+- **El audio hace su propio fade-out** dentro de stopAll: captura los players,
+  DESACOPLA los refs sincrónicamente (clear de los maps) y rampa el volumen a 0
+  por RAF (~340ms); recién al terminar hace pause+remove. Así no hay corte de
+  golpe y el trabajo pesado cae al final del ramp, no en el frame de arranque.
+- **Las cards animan tilt/scale/border** con un `Animated.Value` propio por card
+  (0↔1, ease-out). El borde se anima por color → `useNativeDriver:false`.
+
+**Regla de re-entrancy (bug sutil, NO obvio):** como los players del fade ya
+están desacoplados de los refs, si una nueva llamada a stopAll cancela el fade
+en curso (`cancelAnimationFrame`), esos players quedan HUÉRFANOS sonando a
+volumen parcial — nadie más los apagaría. Hay que guardar el teardown del fade
+en un ref (`fadeTeardownRef`) y ejecutarlo inmediatamente al cancelar, antes de
+arrancar el nuevo. Vale para closes rápidos repetidos y para el chain
+`stopAll()+toggleSound()` de re-entrar a Sonidos Naturaleza.
+
+**Why:** desacoplar los refs es necesario para que un `toggleSound()` encadenado
+entre en maps limpios, pero eso mismo deja los players viejos inalcanzables; el
+único puntero que queda es el closure del RAF, que al cancelarse se pierde.

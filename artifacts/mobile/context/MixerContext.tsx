@@ -168,6 +168,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
    * así que la fuente de verdad del nivel deseado vive acá, no en player.volume.
    */
   const baseVolumesRef = useRef<Map<string, number>>(new Map());
+  /** RAF del fade-out de audio en curso (lo cancela una nueva llamada a stopAll). */
+  const fadeRafRef = useRef<number | null>(null);
+  /**
+   * Teardown (pause+remove) de los players del fade-out en curso. Si una nueva
+   * llamada a stopAll cancela ese fade, hay que ejecutarlo YA: esos players ya
+   * fueron desacoplados de los refs, así que nadie más los apagaría → quedarían
+   * sonando huérfanos a volumen parcial.
+   */
+  const fadeTeardownRef = useRef<(() => void) | null>(null);
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
@@ -808,6 +817,21 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [applyPlaying, syncLockScreen]);
 
   const stopAll = useCallback(() => {
+    // Cancelar cualquier fade-out de audio en curso (re-entradas rápidas) y
+    // apagar de inmediato sus players: ya están desacoplados de los refs, así
+    // que si no los frenamos acá quedan sonando huérfanos a volumen parcial.
+    if (fadeRafRef.current != null) {
+      cancelAnimationFrame(fadeRafRef.current);
+      fadeRafRef.current = null;
+    }
+    if (fadeTeardownRef.current != null) {
+      const prevTeardown = fadeTeardownRef.current;
+      fadeTeardownRef.current = null;
+      prevTeardown();
+    }
+
+    // Quitar los listeners del loop YA: si siguen vivos, modulan el volumen en
+    // cada tick y pelean contra el fade-out manual de abajo.
     loopSubsRef.current.forEach((subs) => {
       subs.forEach((s) => {
         try {
@@ -818,50 +842,70 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       });
     });
     loopSubsRef.current.clear();
-    playersRef.current.forEach((pair) => {
-      [pair.a, pair.b].forEach((p) => {
-        try {
-          p.pause();
-        } catch {
-          // ignore
-        }
-        try {
-          p.remove();
-        } catch {
-          // ignore
-        }
-      });
-    });
+
+    // Capturar los players a apagar y DESACOPLAR los refs de forma SÍNCRONA: si
+    // alguien encadena stopAll() + toggleSound() en el mismo tick (p. ej. el tap
+    // de una card de Sonidos Naturaleza al re-entrar), el nuevo player entra en
+    // un map limpio y NO lo toca el fade/teardown de la mezcla anterior.
+    const pairsToStop = [
+      ...playersRef.current.values(),
+      ...idlePlayersRef.current.values(),
+    ];
     playersRef.current.clear();
-    idlePlayersRef.current.forEach((pair) => {
-      [pair.a, pair.b].forEach((p) => {
-        try {
-          p.pause();
-        } catch {
-          // ignore
-        }
-        try {
-          p.remove();
-        } catch {
-          // ignore
-        }
-      });
-    });
     idlePlayersRef.current.clear();
     baseVolumesRef.current.clear();
+
+    // La UI reacciona AHORA (mismo tick): las cards se deseleccionan y animan su
+    // giro/escala junto con el fade de la hoja, sin demora ni salto. El audio se
+    // apaga aparte, abajo, con su propio fade-out. activeSoundsRef se resetea de
+    // forma síncrona para que un toggleSound() encadenado lea el estado vacío.
     clearLockScreen();
     setActiveSounds([]);
-    // Resetear el ref de forma SÍNCRONA: el estado (setActiveSounds) recién se
-    // refleja en el próximo render, pero si alguien encadena stopAll() +
-    // toggleSound() en el mismo tick (p. ej. el tap de una card de Sonidos
-    // Naturaleza al re-entrar), toggleSound leería activeSoundsRef con el sonido
-    // todavía "presente" y lo quitaría en vez de agregarlo → no suena nada.
     activeSoundsRef.current = [];
     setIsPlaying(false);
     isPlayingRef.current = false;
     setLoadedPresetId(null);
     setIsSheetOpen(false);
     clearSleepTimer();
+
+    // Fade-out de audio (~340 ms) y recién después pause+remove: nada de corte
+    // de golpe. El trabajo pesado (remove de varios players) queda al final del
+    // fade, no en el mismo frame que arranca, para no trabar la animación.
+    if (pairsToStop.length === 0) return;
+    const startVols = pairsToStop.map((pair) => {
+      let a = 0;
+      let b = 0;
+      try { a = pair.a.volume; } catch { /* ignore */ }
+      try { b = pair.b.volume; } catch { /* ignore */ }
+      return { pair, a, b };
+    });
+    const FADE_MS = 340;
+    const t0 = Date.now();
+    const teardown = () => {
+      pairsToStop.forEach((pair) => {
+        [pair.a, pair.b].forEach((p) => {
+          try { p.pause(); } catch { /* ignore */ }
+          try { p.remove(); } catch { /* ignore */ }
+        });
+      });
+    };
+    fadeTeardownRef.current = teardown;
+    const step = () => {
+      const k = Math.min(1, (Date.now() - t0) / FADE_MS);
+      const m = 1 - k;
+      startVols.forEach(({ pair, a, b }) => {
+        try { pair.a.volume = a * m; } catch { /* ignore */ }
+        try { pair.b.volume = b * m; } catch { /* ignore */ }
+      });
+      if (k < 1) {
+        fadeRafRef.current = requestAnimationFrame(step);
+      } else {
+        fadeRafRef.current = null;
+        fadeTeardownRef.current = null;
+        teardown();
+      }
+    };
+    fadeRafRef.current = requestAnimationFrame(step);
   }, [clearSleepTimer, clearLockScreen]);
   stopAllRef.current = stopAll;
 
