@@ -814,5 +814,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   timeIcon: { marginRight: 6 },
-  timeLabel: { fontSize: 15, fontWeight: "600" },
+  timeLabel: { fontSize: 14, fontWeight: "600" },
 });
