@@ -6,6 +6,7 @@
 - [SacredBackground solid + category colors](sacred-background-gradient.md) — fondos planos sólidos (Calm); SacredBackground solid por defecto, null sin solidColor → muestra root bg de cada pantalla; cada categoría conserva su color
 - [Expo Router fullscreen player](expo-fullscreen-modal.md) — fullScreenModal + StatusBar hidden + botones flotantes absolute (sin navBar) para que decoraciones lleguen al borde
 - [Mi Música mixer](mi-musica-mixer.md) — mezclador ambiente: sonidos se activan con slot SOUND_MAP; premium gating de presets se sanea en la pantalla (context es premium-agnóstico)
+- [MixerSheet save-popup fade](mixer-sheet-fade.md) — un popup que es <Modal> aparte NO puede desvanecer sincronizado con el contenido detrás (su backdrop lo aclara); ponerlo in-tree dentro del mismo Animated.View de opacidad
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
 - [Mixer loop + lock-screen mirror](mixer-loop-and-lockscreen.md) — seamless crossfade loop, idle-player cache for instant re-tap, lock-screen owner mirror; no full-volume warmup
 - [Codegen clean breaks Metro](codegen-metro-resolve.md) — Orval clean:true deletes generated/ mid-run; Metro caches "Unable to resolve ./generated/api" → restart expo after codegen

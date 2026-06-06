@@ -130,6 +130,7 @@ export function MixerSheet() {
   // Valores animados: entrada (slideIn) + fade al guardar
   const sheetOpacity = useRef(new Animated.Value(1)).current;
   const sheetEnterY  = useRef(new Animated.Value(400)).current;
+  const saveOverlayOpacity = useRef(new Animated.Value(0)).current;
 
   // Snapshot de la mezcla en el momento en que se abrió la hoja.
   // Se usa para detectar cambios (agregar/quitar/volumen) sin depender de
@@ -205,7 +206,23 @@ export function MixerSheet() {
       setMixImage(DEFAULT_MIX_IMAGE_KEY);
       setMixCategory("dormir");
     }
+    saveOverlayOpacity.setValue(0);
     setSaveModalOpen(true);
+    Animated.timing(saveOverlayOpacity, {
+      toValue: 1,
+      duration: 220,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const cancelSave = () => {
+    Animated.timing(saveOverlayOpacity, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.in(Easing.quad),
+      useNativeDriver: true,
+    }).start(() => setSaveModalOpen(false));
   };
 
   const confirmSave = () => {
@@ -258,16 +275,15 @@ export function MixerSheet() {
       image: mixImage,
       category: mixCategory,
     });
-    setSaveModalOpen(false);
     notifySaved();
     setForceShowModal(true);
     stopAll();
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
-    // El sheet desvanece a la par del modal interno (animationType="fade" ~300ms):
-    // mismo arranque (sin delay) y misma velocidad (~350ms, lineal) para que popup
-    // y reproductor se disuelvan juntos. El popup, semitransparente durante su fade,
-    // deja ver el reproductor desvaneciéndose detrás → transición sincronizada.
+    // El popup vive DENTRO del contenedor que hace el fade (ya no es un Modal
+    // aparte), así que reproductor + popup + su dim desvanecen como UNA sola unidad
+    // a la misma velocidad. Sin el des-oscurecimiento del backdrop que antes
+    // "frenaba" al reproductor: una única animación lineal de opacidad para todo.
     Animated.timing(sheetOpacity, {
       toValue: 0,
       duration: 350,
@@ -275,6 +291,8 @@ export function MixerSheet() {
       useNativeDriver: true,
     }).start(() => {
       setForceShowModal(false);
+      setSaveModalOpen(false);
+      saveOverlayOpacity.setValue(0);
       closeSheet();
     });
   };
@@ -469,18 +487,21 @@ export function MixerSheet() {
             )}
           </View>
 
-          {/* Modal: guardar / actualizar */}
-          <Modal
-            visible={saveModalOpen}
-            transparent
-            animationType="fade"
-            onRequestClose={() => setSaveModalOpen(false)}
+        </Pressable>
+        </Animated.View>
+      </Pressable>
+
+      {/* Popup guardar/actualizar: in-tree (NO es un Modal aparte) para que
+          desvanezca DENTRO del mismo contenedor que sheetOpacity → reproductor +
+          popup + su dim como UNA sola unidad, sin que el des-oscurecimiento del
+          backdrop "frene" al reproductor durante el cierre. */}
+      {saveModalOpen && (
+        <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
+          <Pressable
+            style={[styles.modalCard, { backgroundColor: colors.background, borderColor: "rgba(182,149,95,0.25)" }]}
+            onPress={(e) => e.stopPropagation()}
           >
-            <Pressable style={styles.modalOverlay} onPress={() => setSaveModalOpen(false)}>
-              <Pressable
-                style={[styles.modalCard, { backgroundColor: colors.background, borderColor: "rgba(182,149,95,0.25)" }]}
-                onPress={(e) => e.stopPropagation()}
-              >
                 <Text style={[styles.modalTitle, { color: colors.foreground }]}>
                   {saveMode === "update" ? "Actualizar mezcla" : "Guardar mezcla"}
                 </Text>
@@ -545,7 +566,7 @@ export function MixerSheet() {
                 </ScrollView>
 
                 <View style={styles.modalActions}>
-                  <Pressable onPress={() => setSaveModalOpen(false)} style={styles.modalBtn}>
+                  <Pressable onPress={cancelSave} style={styles.modalBtn}>
                     <Text style={[styles.modalBtnText, { color: colors.mutedForeground }]}>Cancelar</Text>
                   </Pressable>
                   <Pressable
@@ -557,13 +578,9 @@ export function MixerSheet() {
                     </Text>
                   </Pressable>
                 </View>
-              </Pressable>
-            </Pressable>
-          </Modal>
-
-        </Pressable>
+          </Pressable>
         </Animated.View>
-      </Pressable>
+      )}
       </Animated.View>
     </Modal>
   );
@@ -698,7 +715,7 @@ const styles = StyleSheet.create({
 
   // Modal guardar
   modalOverlay: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.7)",
     alignItems: "center",
     justifyContent: "center",
