@@ -34,16 +34,17 @@ type TabDef = {
 };
 
 const TABS: TabDef[] = [
-  { label: "Cuencos",       value: "Cuencos",       icon: "bowl-mix",              tags: ["Cuencos Tibetanos", "Cuencos de Cuarzo", "Mix de Cuencos"] },
-  { label: "Gongs",         value: "Gongs",         icon: "record-circle-outline", tags: ["Gongs"] },
-  { label: "Campanas",      value: "Campanas",      icon: "bell-outline",          tags: [] },
-  { label: "Mix",           value: "Mix Ancestral", icon: "layers-triple",         tags: ["Cuencos y Gongs", "Full Instrumentos"] },
+  { label: "Cuencos",  value: "Cuencos",  icon: "bowl-mix",              tags: ["Cuencos Tibetanos", "Cuencos de Cuarzo", "Mix de Cuencos"] },
+  { label: "Gongs",    value: "Gongs",    icon: "record-circle-outline", tags: ["Gongs"] },
+  { label: "Campanas", value: "Campanas", icon: "bell-outline",          tags: [] },
+  { label: "Vientos",  value: "Vientos",  icon: "weather-windy",         tags: ["Vientos"] },
 ];
 
 const TABS_EXTRA: TabDef[] = [
-  { label: "Vientos",   value: "Vientos",   icon: "weather-windy",  tags: ["Vientos"] },
   { label: "Cantos",    value: "Cantos",    icon: "account-voice",  tags: ["Cantos"] },
   { label: "Percusión", value: "Percusión", icon: "drum",           tags: ["Percusión"] },
+  { label: "Selva",     value: "Selva",     icon: "tree",           tags: ["Selva"] },
+  { label: "Mixto",     value: "Mixto",     icon: "layers-triple",  tags: ["Cuencos y Gongs", "Full Instrumentos"] },
 ];
 
 export default function SonidosAncestalesScreen() {

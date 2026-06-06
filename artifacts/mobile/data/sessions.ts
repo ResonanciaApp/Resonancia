@@ -34,7 +34,8 @@ export type AncestralTag =
   | "Full Instrumentos"
   | "Vientos"
   | "Cantos"
-  | "Percusión";
+  | "Percusión"
+  | "Selva";
 
 import type { SleepTag, ThemeTag } from "@/data/tags";
 
