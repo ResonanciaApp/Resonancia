@@ -264,20 +264,16 @@ export function MixerSheet() {
     stopAll();
     sheetEnterY.stopAnimation();
     sheetEnterY.setValue(0);
-    // Secuencia: 1) delay mientras el modal interno (animationType="fade" ~300ms)
-    // hace su propio fade y cubre el sheet; 2) recién entonces el sheet desvanece
-    // de 1→0 con curva lineal suave y bien visible. El delay corre en el native
-    // driver, así que el arranque es preciso (sin el flash de opacidad plena que
-    // tenía el setTimeout). Resultado: primero se va el popup, después el reproductor.
-    Animated.sequence([
-      Animated.delay(250),
-      Animated.timing(sheetOpacity, {
-        toValue: 0,
-        duration: 500,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
+    // El sheet desvanece a la par del modal interno (animationType="fade" ~300ms):
+    // mismo arranque (sin delay) y misma velocidad (~350ms, lineal) para que popup
+    // y reproductor se disuelvan juntos. El popup, semitransparente durante su fade,
+    // deja ver el reproductor desvaneciéndose detrás → transición sincronizada.
+    Animated.timing(sheetOpacity, {
+      toValue: 0,
+      duration: 350,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start(() => {
       setForceShowModal(false);
       closeSheet();
     });
