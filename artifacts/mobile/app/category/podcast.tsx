@@ -140,12 +140,7 @@ export default function SonidosScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={[styles.iconCircle, { backgroundColor: SONIDOS_ACCENT + "1A" }]}>
-            <Image
-              source={require("../../assets/images/cat-sonidos.png")}
-              tintColor="#BE9650"
-              style={{ width: 34, height: 34 }}
-              resizeMode="contain"
-            />
+            <MaterialCommunityIcons name="headphones" size={34} color={SONIDOS_ACCENT} />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
@@ -180,13 +175,13 @@ export default function SonidosScreen() {
                   <Feather
                     name={icon as any}
                     size={24}
-                    color={sel ? SONIDOS_ACCENT : colors.mutedForeground}
+                    color={sel ? "#FFFFFF" : colors.mutedForeground}
                   />
                   <Text
                     style={[
                       styles.tabLabel,
                       {
-                        color: sel ? colors.foreground : colors.mutedForeground,
+                        color: sel ? "#FFFFFF" : colors.mutedForeground,
                         fontWeight: sel ? "700" : "400",
                       },
                     ]}
@@ -458,7 +453,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "#BE965024" },
+  tabBlockActive: { backgroundColor: "rgba(107,154,181,0.14)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1 },
 
   grid: {},
