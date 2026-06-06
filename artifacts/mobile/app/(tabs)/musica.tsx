@@ -441,8 +441,9 @@ const styles = StyleSheet.create({
 
   // Tab bar
   tabScroll:   { flexGrow: 0 },
-  tabContent:  { flexDirection: "row", gap: 4, paddingHorizontal: 12, paddingBottom: 12 },
+  tabContent:  { flexDirection: "row", gap: 4, paddingHorizontal: 12, paddingBottom: 12, flexGrow: 1 },
   tabItem: {
+    flex: 1,
     flexDirection: "column",
     alignItems: "center",
     gap: 5,
