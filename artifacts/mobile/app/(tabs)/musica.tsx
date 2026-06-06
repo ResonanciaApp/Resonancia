@@ -208,16 +208,6 @@ export default function MiMusicaScreen() {
           {/* Título — sin flecha */}
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mezclador</Text>
 
-          {/* Descripción: 2 líneas → tap para ver todo */}
-          <Pressable onPress={toggleDesc} hitSlop={8}>
-            <Text
-              style={[styles.pageSub, { color: colors.mutedForeground }]}
-              numberOfLines={descExpanded ? undefined : 2}
-            >
-              Aquí es donde tú eres el creador, ¡comparte tus mezclas!
-            </Text>
-          </Pressable>
-
           {/* Tus mezclas — expande hacia la derecha */}
           <View style={styles.mezclasRow}>
             <Pressable
