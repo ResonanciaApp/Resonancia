@@ -107,14 +107,14 @@ export default function MusicaSonidosScreen() {
             <View style={[styles.catIconCircle, { backgroundColor: "rgba(0,165,130,0.16)" }]}>
               <ExpoImage
                 source={require("../../assets/images/cat-musica.png")}
-                style={{ width: 44, height: 44 }}
+                style={{ width: 32, height: 32 }}
                 contentFit="contain"
               />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Música</Text>
               <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                Elige un sonido y conecta con el momento presente
+                Temas exclusivos para ti
               </Text>
             </View>
           </View>
