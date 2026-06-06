@@ -507,6 +507,17 @@ export default function ConfiguracionesScreen() {
                   thumbColor={isPremiumDev ? colors.primary : "#888"}
                 />
               </View>
+              <Pressable
+                onPress={async () => {
+                  await AsyncStorage.setItem("@resonance_streak_force", "1");
+                  router.push("/(tabs)" as never);
+                }}
+                style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+              >
+                <RowIcon icon="zap" colors={colors} />
+                <Text style={[styles.rowLabel, { color: colors.foreground }]}>Probar animación de racha</Text>
+                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              </Pressable>
             </View>
           </>
         )}

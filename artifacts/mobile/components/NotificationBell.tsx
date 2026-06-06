@@ -13,6 +13,8 @@ const REST_OPACITY = 0.2;
 
 const GOLD = "#BE9650";
 const STREAK_ANIM_KEY = "@resonance_streak_anim_date";
+/** Flag DEV: fuerza la animación la próxima vez que se abre el Inicio. */
+const STREAK_FORCE_KEY = "@resonance_streak_force";
 
 function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
@@ -170,8 +172,18 @@ export function NotificationBell() {
       const todayK = dayKey(new Date());
 
       (async () => {
-        const last = await AsyncStorage.getItem(STREAK_ANIM_KEY).catch(() => null);
+        const [last, force] = await Promise.all([
+          AsyncStorage.getItem(STREAK_ANIM_KEY).catch(() => null),
+          AsyncStorage.getItem(STREAK_FORCE_KEY).catch(() => null),
+        ]);
         if (cancelled) return;
+
+        // DEV: disparo forzado para probar la animación (ignora meta y gating).
+        if (force) {
+          AsyncStorage.removeItem(STREAK_FORCE_KEY).catch(() => {});
+          runAnimation(streak > 0 ? streak : 3);
+          return;
+        }
 
         const alreadyToday = last === todayK || animatedDateRef.current === todayK;
 
