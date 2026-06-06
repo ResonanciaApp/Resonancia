@@ -217,10 +217,9 @@ export default function MiMusicaScreen() {
               }}
               style={styles.mezclasHeader}
             >
-              <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 7, fontSize: 16 }]}>
-                Mi
+              <Text style={[styles.subSectionTitle, { color: colors.foreground, marginBottom: 0, marginRight: 4, fontSize: 16 }]}>
+                Mis 🤍
               </Text>
-              <MaterialCommunityIcons name="heart" size={16} color="#FFFFFF" />
               <Feather
                 name={mezclasOpen ? "chevron-left" : "chevron-right"}
                 size={15}
