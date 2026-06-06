@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: "#151A23",
     paddingHorizontal: 16,
-    paddingVertical: 30,
+    paddingVertical: 26,
   },
   catCardImage: {
     width: 29,
