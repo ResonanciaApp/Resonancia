@@ -98,17 +98,15 @@ function SoundStack({ thumbs }: { thumbs: string[] }) {
   );
 }
 
-function MixRow({ mix }: { mix: Mix }) {
+function MixRow({ mix, isLast }: { mix: Mix; isLast: boolean }) {
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
         gap: 14,
-        background: ROW_BG,
-        borderRadius: 16,
-        padding: "12px 14px",
-        marginBottom: 10,
+        padding: "14px 4px",
+        borderBottom: isLast ? "none" : `1px solid rgba(30,39,51,1)`,
       }}
     >
       <SoundStack thumbs={mix.thumbs} />
@@ -230,7 +228,7 @@ export function TabsGuardados() {
       {/* Lista de mezclas — una debajo de otra */}
       <div style={{ flex: 1, padding: "0 16px" }}>
         {mixes.length > 0 ? (
-          mixes.map((m) => <MixRow key={m.id} mix={m} />)
+          mixes.map((m, i) => <MixRow key={m.id} mix={m} isLast={i === mixes.length - 1} />)
         ) : (
           <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.5, paddingTop: 8 }}>
             Todavía no guardaste mezclas en esta categoría.

@@ -132,7 +132,7 @@ export default function MezclasIndexScreen() {
       <Pressable
         key={mix.id}
         onPress={() => loadMix(mix)}
-        style={[styles.mixRow, { backgroundColor: "rgba(255,255,255,0.06)" }]}
+        style={styles.mixRow}
       >
         <SoundStack sounds={mix.sounds} />
 
@@ -291,10 +291,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    marginBottom: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: BORDER,
   },
   mixInfo:    { flex: 1, minWidth: 0 },
   mixName:    { fontSize: 15, fontWeight: "700" },
