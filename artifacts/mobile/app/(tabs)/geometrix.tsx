@@ -672,10 +672,10 @@ export default function GeometrixScreen() {
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
   const previewFree = height - sheetHeight - insets.top - 12 - 36;
-  // El panel por capa ahora tiene más controles (más alto), así que la vista
-  // previa se achica proporcionalmente para que no domine la pantalla.
+  // Vista previa más grande (los controles del panel se compactaron para
+  // dejarle más aire), limitada por el ancho y el espacio libre medido.
   const previewSize = sheetHeight
-    ? Math.max(96, Math.min((width - 32) * 0.62, previewFree * 0.78))
+    ? Math.max(96, Math.min((width - 32) * 0.744, previewFree * 0.936))
     : 0;
   // Vista previa del panel general (mismo cálculo, anclada a su propio sheet).
   const generalPreviewFree = height - generalSheetHeight - insets.top - 12 - 36;
@@ -1257,6 +1257,8 @@ export default function GeometrixScreen() {
             </Pressable>
           </View>
 
+          <View style={styles.sheetHeaderDivider} />
+
           {!settingsGeo ? (
             <View style={styles.sheetEmpty}>
               <Feather name="hexagon" size={26} color="rgba(190,150,80,0.4)" />
@@ -1274,12 +1276,14 @@ export default function GeometrixScreen() {
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
-                  {/* Cabecera: ícono + título (blanco puro) */}
+                  {/* Cabecera: ícono + título en píldora (sin relleno, borde sutil) */}
                   <View style={styles.geoCardHead}>
-                    <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2.4} />
-                    <Text style={styles.geoCardName} numberOfLines={1}>
-                      {g.name}
-                    </Text>
+                    <SacredGlyph id={g.id} color={s.color} size={24} strokeWidth={2.4} />
+                    <View style={styles.geoNamePill}>
+                      <Text style={styles.geoCardName} numberOfLines={1}>
+                        {g.name}
+                      </Text>
+                    </View>
                   </View>
 
                   {/* Tres toggles (on/off) en una fila, debajo del título */}
@@ -1761,22 +1765,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: 10,
+  },
+  sheetHeaderDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    marginBottom: 14,
   },
   sheetTitle: { fontSize: 20, fontWeight: "700", color: colors.foreground },
   sheetEmpty: { alignItems: "center", gap: 10, paddingVertical: 40 },
   sheetEmptyText: { fontSize: 14, color: colors.mutedForeground, textAlign: "center" },
 
   geoCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: CARD_BORDER,
-    backgroundColor: "rgba(255,255,255,0.02)",
-    padding: 14,
-    gap: 10,
+    gap: 8,
   },
-  geoCardHead: { flexDirection: "row", alignItems: "center", gap: 10 },
-  geoCardName: { flex: 1, minWidth: 0, fontSize: 15, fontWeight: "700", color: "#FFFFFF" },
+  geoCardHead: { flexDirection: "row", alignItems: "center", gap: 8 },
+  geoNamePill: {
+    flexShrink: 1,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.16)",
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  geoCardName: { minWidth: 0, fontSize: 13, fontWeight: "700", color: "#FFFFFF" },
   toggleTriRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -1788,7 +1800,7 @@ const styles = StyleSheet.create({
   toggleTriItem: { flexDirection: "row", alignItems: "center", gap: 7 },
   toggleTriLabel: { fontSize: 12, fontWeight: "600", color: colors.foreground, flexShrink: 1 },
 
-  fieldLabel: { fontSize: 13, fontWeight: "600", color: colors.mutedForeground },
+  fieldLabel: { fontSize: 12, fontWeight: "600", color: colors.mutedForeground },
   fieldRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -1796,13 +1808,13 @@ const styles = StyleSheet.create({
   },
   twoCol: { flexDirection: "row", gap: 16 },
   col: { flex: 1, minWidth: 0 },
-  fieldValue: { fontSize: 13, fontWeight: "600", color: colors.foreground },
+  fieldValue: { fontSize: 12, fontWeight: "600", color: colors.foreground },
 
-  swatchRow: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  swatchRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   swatch: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: "transparent",
   },
