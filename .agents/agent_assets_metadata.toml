@@ -660,6 +660,24 @@ uri = "file://artifacts/mobile/assets/images/geometrix/nature-3.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "RgaV0CCWq_iDHVk8UcVg9"
+uri = "file://artifacts/mobile/assets/images/geometrix/freq-1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fSz7JmW3qaN8Jr2KSRc-J"
+uri = "file://artifacts/mobile/assets/images/geometrix/freq-2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "SgnTQNAFHXhD24lB3L2dK"
+uri = "file://artifacts/mobile/assets/images/geometrix/freq-3.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

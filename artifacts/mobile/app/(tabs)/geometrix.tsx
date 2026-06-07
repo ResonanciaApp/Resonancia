@@ -64,9 +64,10 @@ type MusicModule = { key: string; label: string; tracks: MusicTrack[] };
 
 const MUSIC_MODULES: MusicModule[] = [
   {
-    key: "cosmos",
-    label: "Música energética",
+    key: "music",
+    label: "Música de fondo",
     tracks: [
+      // ── Universo ──────────────────────────────────────────────
       {
         id: "cosmos-1",
         image: require("@/assets/images/geometrix/cosmos-1.png"),
@@ -82,12 +83,7 @@ const MUSIC_MODULES: MusicModule[] = [
         image: require("@/assets/images/geometrix/cosmos-3.png"),
         sound: SOUND_MAP["solfeggio_528"],
       },
-    ],
-  },
-  {
-    key: "nature",
-    label: "Música meditativa",
-    tracks: [
+      // ── Naturaleza ────────────────────────────────────────────
       {
         id: "nature-1",
         image: require("@/assets/images/geometrix/nature-1.png"),
@@ -102,6 +98,22 @@ const MUSIC_MODULES: MusicModule[] = [
         id: "nature-3",
         image: require("@/assets/images/geometrix/nature-3.png"),
         sound: SOUND_MAP["lluvia"],
+      },
+      // ── Frecuencias ───────────────────────────────────────────
+      {
+        id: "freq-1",
+        image: require("@/assets/images/geometrix/freq-1.png"),
+        sound: SOUND_MAP["onda_alpha"],
+      },
+      {
+        id: "freq-2",
+        image: require("@/assets/images/geometrix/freq-2.png"),
+        sound: SOUND_MAP["onda_theta"],
+      },
+      {
+        id: "freq-3",
+        image: require("@/assets/images/geometrix/freq-3.png"),
+        sound: SOUND_MAP["onda_delta"],
       },
     ],
   },
