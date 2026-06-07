@@ -164,7 +164,8 @@ export default function GeometrixScreen() {
   }, []);
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
-  const tileW = (width - 20 * 2 - 12 * 2) / 3;
+  // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
+  const tileW = (width - 20 * 2 - 12 * 3) / 3.3;
   // La capa se ajusta al lado MENOR del lienzo para que la geometría entre
   // completa al rotar (no se corta contra los bordes).
   const layerSize = canvas.w > 0 ? Math.min(canvas.w, canvas.h) * 0.96 : 0;
@@ -202,11 +203,12 @@ export default function GeometrixScreen() {
           </Pressable>
         </View>
 
-        {/* Galería de geometrías (3 columnas, scrolleable) */}
+        {/* Galería de geometrías (una fila horizontal, scrolleable) */}
         <ScrollView
+          horizontal
           style={styles.grid}
           contentContainerStyle={styles.gridContent}
-          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
         >
           <View style={styles.gridRow}>
             {GEOMETRIES.map((g) => {
@@ -353,9 +355,9 @@ const styles = StyleSheet.create({
   soundThumbActive: { borderColor: colors.primary },
   soundThumbImg: { width: "100%", height: "100%" },
 
-  grid: { maxHeight: "40%", flexGrow: 0 },
-  gridContent: { paddingBottom: 4 },
-  gridRow: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+  grid: { flexGrow: 0 },
+  gridContent: { paddingVertical: 2, paddingRight: 20 },
+  gridRow: { flexDirection: "row", gap: 12 },
   tile: {
     aspectRatio: 1,
     borderRadius: 16,
