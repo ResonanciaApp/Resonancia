@@ -494,39 +494,55 @@ export default function GeometrixScreen() {
                       })}
                     </View>
 
-                    {/* Girar */}
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Girar</Text>
-                      <Toggle
-                        value={s.rotate}
-                        onChange={(v) => updateSetting(g.id, "rotate", v)}
-                        color={s.color}
-                      />
+                    {/* Girar + Respiración (dos columnas) */}
+                    <View style={styles.twoCol}>
+                      <View style={[styles.col, styles.fieldRow]}>
+                        <Text style={styles.fieldLabel}>Girar</Text>
+                        <Toggle
+                          value={s.rotate}
+                          onChange={(v) => updateSetting(g.id, "rotate", v)}
+                          color={s.color}
+                        />
+                      </View>
+                      <View style={[styles.col, styles.fieldRow]}>
+                        <Text style={styles.fieldLabel}>Respiración</Text>
+                        <Toggle
+                          value={s.breathe}
+                          onChange={(v) => updateSetting(g.id, "breathe", v)}
+                          color={s.color}
+                        />
+                      </View>
                     </View>
 
-                    {/* Respiración */}
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Respiración</Text>
-                      <Toggle
-                        value={s.breathe}
-                        onChange={(v) => updateSetting(g.id, "breathe", v)}
-                        color={s.color}
-                      />
+                    {/* Opacidad + Grosor (dos columnas) */}
+                    <View style={styles.twoCol}>
+                      <View style={styles.col}>
+                        <View style={styles.fieldRow}>
+                          <Text style={styles.fieldLabel}>Opacidad</Text>
+                          <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
+                        </View>
+                        <VolumeSlider
+                          value={s.opacity}
+                          onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
+                          color={s.color}
+                          trackColor="rgba(255,255,255,0.12)"
+                        />
+                      </View>
+                      <View style={styles.col}>
+                        <View style={styles.fieldRow}>
+                          <Text style={styles.fieldLabel}>Grosor</Text>
+                          <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}%</Text>
+                        </View>
+                        <VolumeSlider
+                          value={s.thickness}
+                          onChange={(v) => updateSetting(g.id, "thickness", v)}
+                          color={s.color}
+                          trackColor="rgba(255,255,255,0.12)"
+                        />
+                      </View>
                     </View>
 
-                    {/* Opacidad */}
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Opacidad</Text>
-                      <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.opacity}
-                      onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
-                      color={s.color}
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-
-                    {/* Tamaño */}
+                    {/* Tamaño (ancho completo) */}
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Tamaño</Text>
                       <Text style={styles.fieldValue}>{Math.round(s.scale * 100)}%</Text>
@@ -534,18 +550,6 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.scale}
                       onChange={(v) => updateSetting(g.id, "scale", v)}
-                      color={s.color}
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-
-                    {/* Grosor de línea */}
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Grosor</Text>
-                      <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}%</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.thickness}
-                      onChange={(v) => updateSetting(g.id, "thickness", v)}
                       color={s.color}
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -773,6 +777,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  twoCol: { flexDirection: "row", gap: 16 },
+  col: { flex: 1, minWidth: 0 },
   fieldValue: { fontSize: 13, fontWeight: "600", color: colors.foreground },
 
   swatchRow: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
