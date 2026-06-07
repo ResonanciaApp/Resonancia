@@ -1519,7 +1519,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   headerText: { flex: 1, paddingRight: 12 },
-  title: { fontSize: 30, fontWeight: "700", color: colors.foreground, letterSpacing: 0.3 },
+  title: { fontSize: 30, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 14, color: colors.mutedForeground, marginTop: 3 },
 
   soundModules: { flexDirection: "row", gap: 10 },

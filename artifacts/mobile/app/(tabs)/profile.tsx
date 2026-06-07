@@ -314,7 +314,7 @@ export default function ProfileScreen() {
       >
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Perfil</Text>
+          <Text style={[styles.pageTitle, { color: "#FFFFFF" }]}>Perfil</Text>
           <Pressable
             onPress={() => router.push("/configuraciones" as never)}
             hitSlop={10}
