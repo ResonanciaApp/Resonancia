@@ -401,19 +401,20 @@ export default function GeometrixScreen() {
             <Animated.View
               entering={FadeIn.duration(360)}
               exiting={FadeOut.duration(220)}
-              style={styles.actionRow}
+              style={styles.actionPill}
             >
               <Pressable
                 onPress={() => setSettingsOpen(true)}
-                style={styles.settingsBtn}
+                style={styles.pillBtn}
                 accessibilityRole="button"
                 accessibilityLabel="Personaliza las geometrías"
               >
-                <Text style={styles.settingsBtnText}>Personaliza</Text>
+                <Feather name="sliders" size={18} color={colors.mutedForeground} />
               </Pressable>
+              <View style={styles.pillDivider} />
               <Pressable
                 onPress={() => setImmersive(true)}
-                style={styles.fullscreenBtn}
+                style={styles.pillBtn}
                 accessibilityRole="button"
                 accessibilityLabel="Pantalla completa"
               >
@@ -765,34 +766,30 @@ const styles = StyleSheet.create({
   },
   layer: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
 
-  actionRow: {
+  actionPill: {
     marginTop: 16,
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(122,143,168,0.35)",
   },
-  settingsBtn: {
-    alignItems: "center",
-    gap: 3,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-  },
-  fullscreenBtn: {
+  pillBtn: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+  },
+  pillDivider: {
+    width: StyleSheet.hairlineWidth,
+    alignSelf: "stretch",
+    marginVertical: 6,
+    backgroundColor: "rgba(122,143,168,0.35)",
   },
   immersiveRoot: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  settingsBtnText: {
-    fontSize: 13,
-    fontWeight: "300",
-    color: colors.mutedForeground,
-    letterSpacing: 0.3,
   },
 
   // Interruptor
