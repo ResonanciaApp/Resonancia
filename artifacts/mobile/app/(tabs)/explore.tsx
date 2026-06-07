@@ -418,16 +418,13 @@ export default function ExploreScreen() {
                   >
                     <Image
                       source={tag.image}
-                      style={{ position: "absolute", width: TAG_W, height: TAG_H }}
+                      style={StyleSheet.absoluteFill}
                       contentFit="cover"
                       cachePolicy="memory-disk"
                       placeholder={BLUR_PLACEHOLDER}
                       transition={IMAGE_TRANSITION}
                     />
-                    <LinearGradient
-                      colors={["#090D20", "#080A18", "#06070F"]}
-                      style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-                    />
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(4,0,7,0.50)" }]} />
                     <Text style={styles.tagLabel}>{tag.label}</Text>
                   </Pressable>
                 ))}
