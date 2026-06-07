@@ -135,11 +135,11 @@ export default function MeditacionesGuiadasScreen() {
             </Text>
           )}
           <View style={styles.searchBar}>
-            <Feather name="search" size={17} color={colors.mutedForeground} style={{ opacity: 0.05 }} />
+            <Feather name="search" size={17} color={colors.mutedForeground} />
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
               placeholder="Buscar en Meditaciones…"
-              placeholderTextColor={colors.mutedForeground + "0D"}
+              placeholderTextColor={colors.mutedForeground}
               value={query}
               onChangeText={setQuery}
               returnKeyType="search"
