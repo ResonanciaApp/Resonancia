@@ -403,7 +403,7 @@ export default function MiMusicaScreen() {
                       style={[
                         styles.subTabPill,
                         {
-                          backgroundColor: sel ? "rgba(107,154,181,0.14)" : "rgba(255,255,255,0.03)",
+                          backgroundColor: sel ? "rgba(100,142,195,0.14)" : "rgba(255,255,255,0.03)",
                           borderColor: "transparent",
                         },
                       ]}
