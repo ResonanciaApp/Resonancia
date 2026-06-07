@@ -22,6 +22,7 @@ import Animated, {
   Easing,
   FadeIn,
   FadeOut,
+  LinearTransition,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -422,6 +423,29 @@ export default function GeometrixScreen() {
               </Pressable>
             </Animated.View>
           )}
+
+          {/* Thumbnails de geometrías activas: fila centrada que se reacomoda
+              al agregar/quitar (LinearTransition desplaza para dar espacio). */}
+          {activeMetas.length > 0 && (
+            <View style={styles.thumbsRow}>
+              {activeMetas.map((g) => {
+                const s = getSettings(g.id);
+                return (
+                  <Animated.View
+                    key={g.id}
+                    entering={FadeIn.duration(320)}
+                    exiting={FadeOut.duration(200)}
+                    layout={LinearTransition.duration(320).easing(
+                      Easing.inOut(Easing.ease),
+                    )}
+                    style={[styles.thumb, { borderColor: s.color + "55" }]}
+                  >
+                    <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2} />
+                  </Animated.View>
+                );
+              })}
+            </View>
+          )}
         </View>
       </View>
 
@@ -785,6 +809,23 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     marginVertical: 6,
     backgroundColor: "rgba(122,143,168,0.35)",
+  },
+  thumbsRow: {
+    marginTop: 14,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  thumb: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.02)",
   },
   immersiveRoot: {
     flex: 1,
