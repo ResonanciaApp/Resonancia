@@ -562,7 +562,7 @@ export default function GeometrixScreen() {
                     >
                       <Feather
                         name="chevron-down"
-                        size={16}
+                        size={18}
                         color={colors.mutedForeground}
                       />
                     </Pressable>
@@ -1024,10 +1024,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.02)",
   },
   thumbItem: {
+    flexDirection: "row",
     alignItems: "center",
   },
   thumbCaret: {
-    marginTop: 2,
+    marginLeft: 2,
     alignItems: "center",
     justifyContent: "center",
   },
