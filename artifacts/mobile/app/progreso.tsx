@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo, useState } from "react";
 import {
   Platform,
@@ -167,6 +168,8 @@ function buildChallenges(
   ];
 }
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -281,7 +284,19 @@ export default function ProgresoScreen() {
       : `${stats.totalMinutes} min`;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+
+      style={styles.root}
+
+      colors={BG_GRADIENT}
+
+      locations={[0, 0.5, 1]}
+
+      start={{ x: 0, y: 0 }}
+
+      end={{ x: 0, y: 1 }}
+
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -621,7 +636,7 @@ export default function ProgresoScreen() {
                                 level < 0
                                   ? "transparent"
                                   : level === 0
-                                  ? colors.card === "#151A23"
+                                  ? colors.card === "rgba(255,255,255,0.03)"
                                     ? "#1C2230"
                                     : colors.border
                                   : level === 1
@@ -752,7 +767,7 @@ export default function ProgresoScreen() {
           </View>
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 

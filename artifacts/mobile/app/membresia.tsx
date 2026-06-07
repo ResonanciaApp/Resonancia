@@ -61,6 +61,8 @@ function computeSavings(
   return pct > 0 ? pct : null;
 }
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function MembresiaScreen() {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -131,7 +133,13 @@ export default function MembresiaScreen() {
       : `Comenzar con plan mensual${ctaPrice ? ` · ${ctaPrice}` : ""}`;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
       <LinearGradient
@@ -344,7 +352,7 @@ export default function MembresiaScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </LinearGradient>
   );
 }
 

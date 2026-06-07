@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   Platform,
@@ -15,6 +16,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function PlaylistsScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -22,7 +25,13 @@ export default function PlaylistsScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -91,7 +100,7 @@ export default function PlaylistsScreen() {
           ))
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 

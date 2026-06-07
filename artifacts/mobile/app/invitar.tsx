@@ -55,7 +55,7 @@ export default function InvitarScreen() {
 
         {/* Invite card */}
         <View style={[styles.inviteCard, { borderColor: colors.primary + "44" }]}>
-          <LinearGradient colors={["#12221A", "#080F0A"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={StyleSheet.absoluteFill} />
           <View style={styles.inviteTop}>
             <Feather name="gift" size={20} color={colors.primary} />
             <Text style={[styles.inviteLabel, { color: colors.primary }]}>7 días gratis para tu amigo</Text>

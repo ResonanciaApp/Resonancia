@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "react-native";
@@ -116,6 +117,8 @@ function SubIcon({ sub, size }: { sub: SubDef; size: number }) {
 type ActiveTab = "Audios" | "Videos" | "Maestros";
 const TABS: ActiveTab[] = ["Audios", "Videos", "Maestros"];
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function NochesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -209,7 +212,13 @@ export default function NochesScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -393,7 +402,7 @@ export default function NochesScreen() {
                     onActionsPress={() => setActionsSession(recentlyPlayed)}
                   />
                 ) : (
-                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "#151A23" }]}>
+                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "rgba(255,255,255,0.03)" }]}>
                     <Feather name="headphones" size={28} color={colors.mutedForeground} />
                     <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
                       Aún no escuchaste ninguna sesión en esta categoría
@@ -447,7 +456,7 @@ export default function NochesScreen() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -474,7 +483,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
     alignSelf: "stretch",
-    backgroundColor: "#151A23",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: Platform.OS === "ios" ? 12 : 8,

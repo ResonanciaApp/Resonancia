@@ -636,7 +636,7 @@ export default function ChatScreen() {
                 </Text>
               </View>
               <Pressable onPress={sendRecording} style={styles.sendBtn}>
-                <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>
@@ -675,7 +675,7 @@ export default function ChatScreen() {
                 disabled={draft.trim().length === 0 || sendMsg.isPending}
                 style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
               >
-                <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>

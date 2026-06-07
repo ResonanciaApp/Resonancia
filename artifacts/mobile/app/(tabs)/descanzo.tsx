@@ -20,6 +20,8 @@ import { getSessionsBySleepTag } from "@/data/sessions";
 import { SLEEP_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 const { width } = Dimensions.get("window");
 
 export default function DescansoScreen() {
@@ -29,7 +31,19 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+
+      style={styles.root}
+
+      colors={BG_GRADIENT}
+
+      locations={[0, 0.5, 1]}
+
+      start={{ x: 0, y: 0 }}
+
+      end={{ x: 0, y: 1 }}
+
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -41,7 +55,7 @@ export default function DescansoScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <LinearGradient
-            colors={["rgba(15,10,30,0)", "rgba(30,18,50,0.0)"]}
+            colors={["#090D20", "#080A18", "#06070F"]}
             style={StyleSheet.absoluteFill}
           />
           <View style={styles.headerIcon}>
@@ -93,7 +107,7 @@ export default function DescansoScreen() {
           );
         })}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 

@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo, useState } from "react";
 import {
   Dimensions,
@@ -57,6 +58,8 @@ const TIMER_OPTIONS: { minutes: number | null; label: string; free: boolean }[] 
   { minutes: 60, label: "1 h", free: false },
   { minutes: null, label: "Sin límite", free: false },
 ];
+
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 export default function SonidosScreen() {
   const colors = useColors();
@@ -124,7 +127,19 @@ export default function SonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+
+      style={styles.root}
+
+      colors={BG_GRADIENT}
+
+      locations={[0, 0.5, 1]}
+
+      start={{ x: 0, y: 0 }}
+
+      end={{ x: 0, y: 1 }}
+
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -382,7 +397,7 @@ export default function SonidosScreen() {
         visible={!!actionsSession}
         onClose={() => setActionsSession(null)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -429,7 +444,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     alignSelf: "stretch",
-    backgroundColor: "#151A23",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: Platform.OS === "ios" ? 12 : 8,
@@ -457,7 +472,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "rgba(107,154,181,0.14)" },
+  tabBlockActive: { backgroundColor: "rgba(100,142,195,0.14)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1 },
 
   grid: {},

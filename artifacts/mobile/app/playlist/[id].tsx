@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   Alert,
@@ -24,6 +25,8 @@ import { getGuideById } from "@/data/guides";
 import { getVoiceLabel } from "@/config/audio-map";
 import { useColors } from "@/hooks/useColors";
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -39,7 +42,7 @@ export default function PlaylistDetailScreen() {
 
   if (!playlist) {
     return (
-      <View style={[styles.root, { backgroundColor: "#090F17", alignItems: "center", justifyContent: "center" }]}>
+      <View style={[styles.root, { backgroundColor: "#090D20", alignItems: "center", justifyContent: "center" }]}>
         <Feather name="list" size={48} color="#7A8FA8" style={{ marginBottom: 16 }} />
         <Text style={{ color: "#7A8FA8", fontSize: 16 }}>Playlist no encontrada</Text>
         <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
@@ -83,7 +86,13 @@ export default function PlaylistDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -154,7 +163,7 @@ export default function PlaylistDetailScreen() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 

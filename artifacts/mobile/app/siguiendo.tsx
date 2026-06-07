@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   ActivityIndicator,
@@ -22,6 +23,8 @@ import {
 } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
+
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 export default function SiguiendoScreen() {
   const colors = useColors();
@@ -48,7 +51,19 @@ export default function SiguiendoScreen() {
   const title = isOwn ? "Siguiendo" : "Siguiendo";
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+
+      style={styles.root}
+
+      colors={BG_GRADIENT}
+
+      locations={[0, 0.5, 1]}
+
+      start={{ x: 0, y: 0 }}
+
+      end={{ x: 0, y: 1 }}
+
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -128,7 +143,7 @@ export default function SiguiendoScreen() {
           })}
         </ScrollView>
       )}
-    </View>
+    </LinearGradient>
   );
 }
 

@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback } from "react";
 import {
   Alert,
@@ -61,6 +62,8 @@ function groupByDay(entries: DiarioEntry[]): DiarioDayGroup[] {
   }
   return groups;
 }
+
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 export default function DiarioScreen() {
   const colors = useColors();
@@ -128,7 +131,19 @@ export default function DiarioScreen() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+
+      style={styles.root}
+
+      colors={BG_GRADIENT}
+
+      locations={[0, 0.5, 1]}
+
+      start={{ x: 0, y: 0 }}
+
+      end={{ x: 0, y: 1 }}
+
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -179,7 +194,7 @@ export default function DiarioScreen() {
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 

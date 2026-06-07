@@ -232,7 +232,7 @@ export default function SonidosAncestalesScreen() {
                 onActionsPress={() => setActionsSession(recentlyPlayed)}
               />
             ) : (
-              <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "#151A23" }]}>
+              <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "rgba(255,255,255,0.03)" }]}>
                 <Feather name="headphones" size={28} color={colors.mutedForeground} />
                 <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
                   Aún no escuchaste ninguna sesión en esta categoría

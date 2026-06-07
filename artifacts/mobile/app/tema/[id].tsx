@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   Platform,
@@ -21,6 +22,8 @@ import { SESSIONS, type Session } from "@/data/sessions";
 import { getTemaById } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
+
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 export default function TemaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -48,7 +51,13 @@ export default function TemaScreen() {
       : SESSIONS.filter((s) => s.isFeatured || s.isNew).slice(0, 10);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -143,7 +152,7 @@ export default function TemaScreen() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 

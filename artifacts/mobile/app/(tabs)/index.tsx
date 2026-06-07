@@ -262,7 +262,7 @@ export default function HomeScreen() {
           </View>
 
           {VIDEOS.length === 0 ? (
-            <View style={[styles.videosEmpty, { borderColor: "rgba(100,140,210,0.15)", backgroundColor: "#151A23" }]}>
+            <View style={[styles.videosEmpty, { borderColor: "rgba(100,140,210,0.15)", backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
               <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
               <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "#151A23",
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   recentThumb: {
     width: "100%",
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#151A23",
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   recentCreatorName: {
     fontSize: 11,

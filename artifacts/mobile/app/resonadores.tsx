@@ -15,7 +15,7 @@ const C = {
   goldSoft: "#A97A34",
   fg:       "#FFFFFF",
   muted:    "#7A8FA8",
-  card:     "#151A23",
+  card:     "rgba(255,255,255,0.03)",
   border:   "rgba(198,155,79,0.18)",
   certified: "#5FB98C",
 };
@@ -74,7 +74,7 @@ function CollaboratorCard({
         <Image source={photo} style={styles.photo} contentFit="cover" />
         {role === "LA CASA" && (
           <LinearGradient
-            colors={["rgba(198,155,79,0.35)", "transparent"]}
+            colors={["#090D20", "#080A18", "#06070F"]}
             style={StyleSheet.absoluteFill}
           />
         )}
@@ -132,7 +132,7 @@ export default function ResonadoresScreen() {
       >
         {/* ── Hero ── */}
         <LinearGradient
-          colors={["rgba(198,155,79,0.08)", "transparent"]}
+          colors={["#090D20", "#080A18", "#06070F"]}
           style={[styles.hero, { paddingTop: topPad + 16 }]}
         >
           <Pressable

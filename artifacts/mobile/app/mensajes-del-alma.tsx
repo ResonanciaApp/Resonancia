@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -63,6 +64,8 @@ function AuthorAvatar({ uri, name, size = 38 }: { uri?: string | null; name?: st
   );
 }
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function MensajesDelAlmaScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -105,7 +108,19 @@ export default function MensajesDelAlmaScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <LinearGradient
+
+        style={styles.root}
+
+        colors={BG_GRADIENT}
+
+        locations={[0, 0.5, 1]}
+
+        start={{ x: 0, y: 0 }}
+
+        end={{ x: 0, y: 1 }}
+
+      >
         <StatusBar barStyle="light-content" />
         <SacredBackground />
 
@@ -251,7 +266,7 @@ export default function MensajesDelAlmaScreen() {
             </View>
           )}
         </ScrollView>
-      </View>
+      </LinearGradient>
     </TouchableWithoutFeedback>
   );
 }

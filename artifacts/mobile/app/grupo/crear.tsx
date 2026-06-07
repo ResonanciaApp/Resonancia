@@ -21,6 +21,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useGrupos } from "@/hooks/useGrupos";
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 // ─── Image library ────────────────────────────────────────────────────────────
 const GALLERY = [
   require("@/assets/images/sessions/session-1.jpg"),
@@ -73,7 +75,7 @@ function GroupPreview({
       {imageIdx !== null ? (
         <Image source={GALLERY[imageIdx]} style={preview.image} />
       ) : (
-        <LinearGradient colors={["#2D4A3E", "#152820"]} style={preview.image}>
+        <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={preview.image}>
           <Text style={preview.initial}>{initial}</Text>
         </LinearGradient>
       )}
@@ -104,7 +106,7 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#090F17" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#090D20" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
   name: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },
@@ -201,10 +203,17 @@ export default function CrearGrupoScreen() {
   if (step === 1) {
     return (
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#090F17" }]}
+        style={styles.root}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <StatusBar barStyle="light-content" />
+        <LinearGradient
+          style={StyleSheet.absoluteFill}
+          colors={BG_GRADIENT}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
         <View style={{ paddingTop: topPad + 12, paddingHorizontal: 20, flex: 1 }}>
           {/* Close */}
           <Pressable onPress={() => router.back()} hitSlop={12} style={styles.closeBtn}>
@@ -252,11 +261,18 @@ export default function CrearGrupoScreen() {
   // ── Steps 2-5: Group preview + bottom sheet ───────────────────────────────
   return (
     <KeyboardAvoidingView
-      style={[styles.root, { backgroundColor: "#090F17" }]}
+      style={styles.root}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={0}
     >
       <StatusBar barStyle="light-content" />
+        <LinearGradient
+          style={StyleSheet.absoluteFill}
+          colors={BG_GRADIENT}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
 
       {/* Back arrow top-left */}
       <View style={{ paddingTop: topPad + 8, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between" }}>
@@ -390,7 +406,7 @@ export default function CrearGrupoScreen() {
           {step === 5 && (
             <>
               <View style={styles.successIcon}>
-                <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.successGrad}>
+                <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.successGrad}>
                   <Feather name="check" size={28} color="#070E09" />
                 </LinearGradient>
               </View>

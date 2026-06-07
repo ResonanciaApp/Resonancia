@@ -235,7 +235,7 @@ export default function RespiracionScreen() {
             ]}
           >
             <LinearGradient
-              colors={["rgba(198,155,79,0.32)", "rgba(198,155,79,0.07)"]}
+              colors={["#090D20", "#080A18", "#06070F"]}
               style={StyleSheet.absoluteFill}
             />
 
@@ -308,7 +308,7 @@ export default function RespiracionScreen() {
           style={({ pressed }) => [styles.mainBtn, { opacity: pressed ? 0.82 : 1 }]}
         >
           <LinearGradient
-            colors={["#BE9650", "#BE9650"]}
+            colors={["#090D20", "#080A18", "#06070F"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 50 }]}

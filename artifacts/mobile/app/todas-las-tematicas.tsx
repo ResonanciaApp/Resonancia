@@ -72,7 +72,7 @@ export default function TodasLasTemáticasScreen() {
                 resizeMode="cover"
               />
               <LinearGradient
-                colors={["rgba(10,6,4,0.15)", "rgba(10,6,4,0.78)"]}
+                colors={["#090D20", "#080A18", "#06070F"]}
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
               />
               <View

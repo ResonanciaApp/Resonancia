@@ -420,7 +420,7 @@ export default function CrearContenidoScreen() {
             style={({ pressed }) => [styles.publishBtn, { opacity: pressed || busy ? 0.85 : 1 }]}
             onPress={onSubmit}
           >
-            <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.publishGrad}>
+            <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.publishGrad}>
               {busy ? (
                 <ActivityIndicator color="#080F0A" />
               ) : (

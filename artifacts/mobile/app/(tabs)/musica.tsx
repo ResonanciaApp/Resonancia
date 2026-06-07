@@ -32,7 +32,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 
 const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
-const CARD     = "#151A23";
+const CARD     = "rgba(255,255,255,0.03)";
 const GOLD     = "#BE9650";
 const FG       = "#EDE1D3";
 const MUTED    = "#7A8FA8";

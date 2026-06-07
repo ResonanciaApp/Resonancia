@@ -40,6 +40,8 @@ function initialsFor(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function UsuarioScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -88,22 +90,34 @@ export default function UsuarioScreen() {
 
   if (isLoading) {
     return (
-      <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+          <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#11161F", "#090F17"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#090D20", "#06070F"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <ActivityIndicator color={colors.primary} />
         </View>
-      </View>
+      </LinearGradient>
     );
   }
 
   if (isError || !profile) {
     return (
-      <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+          <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#11161F", "#090F17"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#090D20", "#06070F"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />
@@ -112,7 +126,7 @@ export default function UsuarioScreen() {
             Este perfil no existe o no se pudo cargar.
           </Text>
         </View>
-      </View>
+      </LinearGradient>
     );
   }
 
@@ -131,9 +145,15 @@ export default function UsuarioScreen() {
   ];
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#11161F", "#090F17"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#090D20", "#06070F"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}
@@ -178,7 +198,7 @@ export default function UsuarioScreen() {
         {/* Stats */}
         <View style={[styles.statsRow, { paddingHorizontal: H_PAD }]}>
           {statCards.map((stat) => (
-            <View key={stat.label} style={[styles.statCard, { backgroundColor: "#151A23" }]}>
+            <View key={stat.label} style={[styles.statCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
               <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
             </View>
@@ -187,7 +207,7 @@ export default function UsuarioScreen() {
 
         {profile.stats.topCategoryLabel ? (
           <View style={[styles.section, { paddingHorizontal: H_PAD }]}>
-            <View style={[styles.topCatCard, { backgroundColor: "#151A23" }]}>
+            <View style={[styles.topCatCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <Feather name="headphones" size={16} color={colors.accent} />
               <Text style={[styles.topCatLabel, { color: colors.mutedForeground }]}>
                 Categoría más escuchada
@@ -233,7 +253,7 @@ export default function UsuarioScreen() {
             onPress={() => router.push(`/chat/${profile.id}` as never)}
             style={({ pressed }) => [
               styles.messageBtn,
-              { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
+              { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.85 : 1 },
             ]}
           >
             <Feather name="message-circle" size={16} color={colors.primary} />
@@ -243,7 +263,7 @@ export default function UsuarioScreen() {
           </Pressable>
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 

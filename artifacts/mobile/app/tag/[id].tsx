@@ -37,6 +37,8 @@ const DURATION_FILTERS = [
   { label: "30+ min",   min: 31, max: 9999 },
 ];
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function TagScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -89,7 +91,13 @@ export default function TagScreen() {
   if (!tag) return null;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -99,7 +107,7 @@ export default function TagScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#090F17",
+            backgroundColor: "#090D20",
             borderBottomColor: "rgba(182,149,95,0.15)",
             opacity: headerOpacity,
           },
@@ -298,7 +306,7 @@ export default function TagScreen() {
           </>
         )}
       </Animated.ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 

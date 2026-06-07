@@ -94,6 +94,8 @@ function computeStreak(events: { playedAt: string }[]): number {
   return count;
 }
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -295,7 +297,19 @@ export default function ProfileScreen() {
   }, [statEvents]);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+
+      style={styles.root}
+
+      colors={BG_GRADIENT}
+
+      locations={[0, 0.5, 1]}
+
+      start={{ x: 0, y: 0 }}
+
+      end={{ x: 0, y: 1 }}
+
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -399,7 +413,7 @@ export default function ProfileScreen() {
           onPress={() => router.push("/membresia" as never)}
           style={({ pressed }) => [
             styles.planCard,
-            { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
+            { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.85 : 1 },
           ]}
         >
           {isPremium ? (
@@ -433,7 +447,7 @@ export default function ProfileScreen() {
         {!isPremium && (
           <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
             <LinearGradient
-              colors={["#0D261D", "#06150F"]}
+              colors={["#090D20", "#080A18", "#06070F"]}
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
             />
@@ -464,7 +478,7 @@ export default function ProfileScreen() {
         )}
 
         {/* ── Tu Progreso (racha card) ── */}
-        <View style={[styles.rachaCard, { backgroundColor: "#151A23" }]}>
+        <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
           {/* Header: flame + title */}
           <View style={styles.rachaTop}>
             <View style={[styles.rachaBubble, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
@@ -547,7 +561,7 @@ export default function ProfileScreen() {
               style={({ pressed }) => [
                 styles.communityCard,
                 {
-                  backgroundColor: pressed ? "rgba(190,150,80,0.12)" : "#151A23",
+                  backgroundColor: pressed ? "rgba(190,150,80,0.12)" : "rgba(255,255,255,0.03)",
                   transform: [{ scale: pressed ? 0.96 : 1 }],
                 },
               ]}
@@ -564,7 +578,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi viaje</Text>
           {activity.hasData ? (
-            <View style={[styles.journeyCard, { backgroundColor: "#151A23" }]}>
+            <View style={[styles.journeyCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <View style={styles.journeyRow}>
                 <Feather name="clock" size={16} color={colors.primary} />
                 <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Minutos esta semana</Text>
@@ -588,7 +602,7 @@ export default function ProfileScreen() {
               </View>
             </View>
           ) : (
-            <View style={[styles.emptyFav, { backgroundColor: "#151A23" }]}>
+            <View style={[styles.emptyFav, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <Feather name="compass" size={22} color={"rgba(198,155,79,0.3)"} />
               <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
                 Tu viaje empieza con la primera sesión.{"\n"}Aquí verás tus minutos, sesión favorita y más.
@@ -600,7 +614,7 @@ export default function ProfileScreen() {
         {/* ── Mis herramientas ── */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis herramientas</Text>
-          <View style={[styles.journeyCard, { backgroundColor: "#151A23" }]}>
+          <View style={[styles.journeyCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
             <Pressable
               onPress={() => router.push("/(tabs)/musica" as never)}
               style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
@@ -694,7 +708,7 @@ export default function ProfileScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
-    </View>
+    </LinearGradient>
   );
 }
 

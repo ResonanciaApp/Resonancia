@@ -64,7 +64,7 @@ export default function CrearActividadScreen() {
 
           {/* Preview card */}
           <View style={[styles.previewCard, { backgroundColor: colors.card, borderColor: colors.primary + "55" }]}>
-            <LinearGradient colors={["#7A5520", "#3E2208"]} style={styles.previewAccent} />
+            <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.previewAccent} />
             <View style={styles.previewInner}>
               <View style={styles.previewTop}>
                 <View style={[styles.previewIcon, { backgroundColor: colors.primary + "22" }]}>
@@ -129,7 +129,7 @@ export default function CrearActividadScreen() {
             style={({ pressed }) => [styles.publishBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={() => router.back()}
           >
-            <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.publishGrad}>
+            <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.publishGrad}>
               <Feather name="check-circle" size={18} color="#080F0A" />
               <Text style={styles.publishText}>Publicar actividad</Text>
             </LinearGradient>
@@ -284,7 +284,7 @@ export default function CrearActividadScreen() {
             style={({ pressed }) => [styles.publishBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={() => setStep("preview")}
           >
-            <LinearGradient colors={["#FFFFFF", "#BE9650"]} style={styles.publishGrad}>
+            <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.publishGrad}>
               <Text style={styles.publishText}>Continuar</Text>
               <Feather name="arrow-right" size={18} color="#080F0A" />
             </LinearGradient>

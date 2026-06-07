@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ZenStonesIcon } from "@/components/ZenStonesIcon";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -40,6 +41,8 @@ const TABS: TabDef[] = [
   { label: "Visualizaciones",  value: "Visualizaciones",  icon: "creation",        tags: ["Visualizaciones"] },
   { label: "Escaneo Corporal", value: "Escaneo Corporal", icon: "human",           tags: ["Escaneo Corporal"] },
 ];
+
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
@@ -89,7 +92,13 @@ export default function MeditacionesGuiadasScreen() {
   }, [history, tabSessions]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+        <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -185,7 +194,7 @@ export default function MeditacionesGuiadasScreen() {
                 onActionsPress={() => setActionsSession(recentlyPlayed)}
               />
             ) : (
-              <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "#151A23" }]}>
+              <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "rgba(255,255,255,0.03)" }]}>
                 <Feather name="headphones" size={28} color={colors.mutedForeground} />
                 <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
                   Aún no escuchaste ninguna sesión en esta categoría
@@ -241,7 +250,7 @@ export default function MeditacionesGuiadasScreen() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -267,7 +276,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
     alignSelf: "stretch",
-    backgroundColor: "#151A23",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: Platform.OS === "ios" ? 12 : 8,
@@ -287,7 +296,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "rgba(107,154,181,0.14)" },
+  tabBlockActive: { backgroundColor: "rgba(100,142,195,0.14)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
   divider: {
     height: StyleSheet.hairlineWidth,

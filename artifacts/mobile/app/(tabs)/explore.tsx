@@ -33,6 +33,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 // Sección "Programas" oculta temporalmente — se lanzará más adelante.
 // Poner en true para volver a mostrarla.
 const SHOW_PROGRAMAS = false;
@@ -133,7 +135,19 @@ export default function ExploreScreen() {
   const lastSessionLocked = !!lastSession?.isPremium && !isPremium;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+
+      style={styles.root}
+
+      colors={BG_GRADIENT}
+
+      locations={[0, 0.5, 1]}
+
+      start={{ x: 0, y: 0 }}
+
+      end={{ x: 0, y: 1 }}
+
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
@@ -149,7 +163,7 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Search bar ── */}
-        <View style={[styles.searchBar, { backgroundColor: "#151A23", borderColor: "transparent" }]}>
+        <View style={[styles.searchBar, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
           <Feather name="search" size={16} color={colors.mutedForeground} />
           <TextInput
             value={query}
@@ -201,7 +215,7 @@ export default function ExploreScreen() {
                       onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
                       style={({ pressed }) => [
                         styles.temaCard,
-                        { width: temaW, height: temaW, backgroundColor: "#151A23" },
+                        { width: temaW, height: temaW, backgroundColor: "rgba(255,255,255,0.03)" },
                         { opacity: pressed ? 0.75 : 1 },
                       ]}
                     >
@@ -241,7 +255,7 @@ export default function ExploreScreen() {
                     style={({ pressed }) => [
                       styles.timeChip,
                       {
-                        backgroundColor: "#151A23",
+                        backgroundColor: "rgba(255,255,255,0.03)",
                         opacity: pressed ? 0.6 : 1,
                       },
                     ]}
@@ -271,7 +285,7 @@ export default function ExploreScreen() {
                   }
                   style={({ pressed }) => [
                     styles.continueCard,
-                    { backgroundColor: "#151A23", opacity: pressed ? 0.85 : 1 },
+                    { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
                   <Image
@@ -335,7 +349,7 @@ export default function ExploreScreen() {
                 <View
                   style={[
                     styles.continuePlaceholder,
-                    { backgroundColor: "#151A23", borderColor: "transparent" },
+                    { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" },
                   ]}
                 >
                   <View
@@ -369,7 +383,7 @@ export default function ExploreScreen() {
                       key={item.label}
                       style={({ pressed }) => [
                         isTop ? styles.libraryCardThird : styles.libraryCardWide,
-                        { backgroundColor: "#151A23", opacity: pressed ? 0.7 : 1 },
+                        { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.7 : 1 },
                       ]}
                       onPress={() => router.push(item.route as never)}
                     >
@@ -411,7 +425,7 @@ export default function ExploreScreen() {
                       transition={IMAGE_TRANSITION}
                     />
                     <LinearGradient
-                      colors={["rgba(10,6,4,0.22)", "rgba(10,6,4,0.72)"]}
+                      colors={["#090D20", "#080A18", "#06070F"]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
                     />
                     <Text style={styles.tagLabel}>{tag.label}</Text>
@@ -459,7 +473,7 @@ export default function ExploreScreen() {
                       transition={IMAGE_TRANSITION}
                     />
                     <LinearGradient
-                      colors={["rgba(10,6,4,0.15)", "rgba(10,6,4,0.85)"]}
+                      colors={["#090D20", "#080A18", "#06070F"]}
                       style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
                     />
                     <View style={styles.seriesContent}>
@@ -477,7 +491,7 @@ export default function ExploreScreen() {
           </>
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -652,7 +666,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#151A23",
+    backgroundColor: "rgba(255,255,255,0.03)",
     marginTop: GAP,
   },
   verTodasBlockText: {
