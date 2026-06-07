@@ -560,7 +560,7 @@ export function MixerSheet() {
                     placeholderTextColor={colors.mutedForeground}
                     style={[
                       styles.modalInput,
-                      { color: colors.foreground, backgroundColor: colors.card },
+                      { color: colors.foreground, backgroundColor: "rgba(255,255,255,0.03)" },
                     ]}
                     maxLength={40}
                   />
