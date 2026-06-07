@@ -857,7 +857,7 @@ export default function GeometrixScreen() {
                       style={styles.emptyLogoWrap}
                     >
                       <Image
-                        source={require("@/assets/images/geometrix/cubo-2.png")}
+                        source={require("@/assets/images/geometrix/cubo-3.png")}
                         style={styles.emptyLogo}
                         contentFit="contain"
                       />
@@ -1852,7 +1852,7 @@ const styles = StyleSheet.create({
   empty: { alignItems: "center", gap: 6 },
   emptyLogoWrap: { marginBottom: 10 },
   emptyLogo: { width: 43, height: 43, opacity: 0.9 },
-  emptyText: { fontSize: 14, fontWeight: "600", color: colors.foreground, marginTop: 4 },
+  emptyText: { fontSize: 14, fontWeight: "600", color: "#FFFFFF", marginTop: 4 },
   emptySub: { fontSize: 12, color: colors.mutedForeground },
 
   soundMenu: {
