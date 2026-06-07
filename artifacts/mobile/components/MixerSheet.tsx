@@ -54,11 +54,11 @@ type SaveMode = "new" | "update";
 const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
-const DARK_GRADIENT = ["#0C1828", "#090F17"] as const;
+const DARK_GRADIENT = ["#151A23", "#0B0F14"] as const;
 
 /** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
-  bg: "#090F17",
+  bg: "#0B0F14",
   handle: "rgba(255,255,255,0.12)",
   trackBg: "#151A23",
   trackBorder: "rgba(255,255,255,0.07)",
