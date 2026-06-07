@@ -25,7 +25,6 @@ import Animated, {
   cancelAnimation,
   Easing,
   FadeIn,
-  FadeInDown,
   FadeOut,
   LinearTransition,
   runOnJS,
@@ -785,7 +784,7 @@ export default function GeometrixScreen() {
 
               {pillOpen && (
                 <Animated.View
-                  entering={FadeInDown.duration(240).easing(Easing.out(Easing.quad))}
+                  entering={FadeIn.duration(240)}
                   exiting={FadeOut.duration(160)}
                   style={styles.pillRow}
                 >
@@ -801,7 +800,7 @@ export default function GeometrixScreen() {
                       accessibilityLabel={a.label}
                       hitSlop={6}
                     >
-                      <Feather name={a.icon} size={20} color={colors.accent} />
+                      <Feather name={a.icon} size={20} color={colors.mutedForeground} />
                     </Pressable>
                   ))}
                 </Animated.View>
@@ -1459,9 +1458,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 10,
     borderRadius: 999,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(122,143,168,0.30)",
-    backgroundColor: "rgba(11,15,20,0.88)",
+    borderWidth: 1,
+    borderColor: CARD_BORDER,
+    backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillBtn: {
     width: 40,
