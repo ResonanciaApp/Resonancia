@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,6 +26,7 @@ import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
 const ACCENT = "#BE9650";
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 type TabDef = {
   label: string;
@@ -95,7 +97,13 @@ export default function SonidosAncestalesScreen() {
   }, [history, tabSessions]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#090F17" }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -280,7 +288,7 @@ export default function SonidosAncestalesScreen() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -324,10 +332,13 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingHorizontal: 4,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabBlockActive: {
-    backgroundColor: "rgba(107,154,181,0.14)",
+    backgroundColor: "rgba(100,142,195,0.14)",
+    borderColor: "rgba(200,170,255,0.30)",
   },
   tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
   divider: {
