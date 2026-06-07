@@ -124,7 +124,6 @@ const MUSIC_MODULES: MusicModule[] = [
 /** Paleta de colores para personalizar cada geometría. */
 const PALETTE = [
   "#BE9650",
-  "#D6A85B",
   "#EDE1D3",
   "#7FD1C0",
   "#7AA8E0",
