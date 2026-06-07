@@ -186,16 +186,7 @@ export default function HomeScreen() {
         {/* ── 2. CATEGORÍAS ── */}
         <View style={styles.section}>
           <View style={styles.catGrid}>
-            {CATEGORIES.filter((c) => c.id !== "mananas" && c.id !== "noches").map((cat, idx) => {
-              const R = 20; const r = 4;
-              const radii = [
-                { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: r }, // fila 1 izq
-                { borderTopLeftRadius: R,  borderTopRightRadius: R,  borderBottomLeftRadius: r,  borderBottomRightRadius: R }, // fila 1 der
-                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 2 izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 2 der
-                { borderTopLeftRadius: R,  borderTopRightRadius: r,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 izq
-                { borderTopLeftRadius: r,  borderTopRightRadius: R,  borderBottomLeftRadius: R,  borderBottomRightRadius: R }, // fila 3 der
-              ];
+            {CATEGORIES.filter((c) => c.id !== "mananas" && c.id !== "noches").map((cat) => {
               const catImages: Record<string, ReturnType<typeof require>> = {
                 "musica-sonidos": require("../../assets/images/cat-musica.png"),
                 "mananas":        require("../../assets/images/cat-mananas.png"),
@@ -211,7 +202,7 @@ export default function HomeScreen() {
                 <Pressable
                   key={cat.id}
                   onPress={() => router.push(`/category/${cat.id}` as never)}
-                  style={({ pressed }) => [styles.catCard, radii[idx], { opacity: pressed ? 0.75 : 1 }]}
+                  style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.75 : 1 }]}
                 >
                   {catImg ? (
                     <Image
@@ -585,6 +576,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 26,
   },
