@@ -110,9 +110,9 @@ function GuestPrompt() {
         onPress={() => router.push("/(auth)/sign-up")}
         style={({ pressed }) => [styles.guestBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
-        <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.guestBtnGrad}>
+        <LinearGradient colors={["#C8A55E", "#BE9650", "#B08840"]} style={styles.guestBtnGrad}>
           <Text style={styles.guestBtnText}>Crear cuenta</Text>
-          <Feather name="arrow-right" size={16} color="#080F0A" />
+          <Feather name="arrow-right" size={16} color="#0B0F14" />
         </LinearGradient>
       </Pressable>
       <Pressable onPress={() => router.push("/(auth)/sign-in")}>
@@ -302,20 +302,20 @@ function SearchResultRow({
         <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{user.username}</Text>
       </View>
       {status === "none" && (
-        <Pressable onPress={onAdd} style={styles.acceptBtn}>
-          <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.acceptGrad}>
-            <Feather name="user-plus" size={14} color="#080F0A" />
-          </LinearGradient>
+        <Pressable onPress={onAdd} style={[styles.acceptBtn, { backgroundColor: colors.primary }]}>
+          <View style={styles.acceptGrad}>
+            <Feather name="user-plus" size={14} color="#0B0F14" />
+          </View>
         </Pressable>
       )}
       {status === "pending_outgoing" && (
         <Text style={[styles.statusBadge, { color: colors.mutedForeground }]}>Enviada</Text>
       )}
       {status === "pending_incoming" && (
-        <Pressable onPress={onAdd} style={styles.acceptBtn}>
-          <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#080F0A" />
-          </LinearGradient>
+        <Pressable onPress={onAdd} style={[styles.acceptBtn, { backgroundColor: colors.primary }]}>
+          <View style={styles.acceptGrad}>
+            <Feather name="check" size={14} color="#0B0F14" />
+          </View>
         </Pressable>
       )}
       {status === "accepted" && (
@@ -344,10 +344,10 @@ function RequestRow({
         <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{requester.username}</Text>
       </View>
       <View style={styles.requestBtns}>
-        <Pressable style={styles.acceptBtn} onPress={onAccept}>
-          <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#080F0A" />
-          </LinearGradient>
+        <Pressable style={[styles.acceptBtn, { backgroundColor: colors.primary }]} onPress={onAccept}>
+          <View style={styles.acceptGrad}>
+            <Feather name="check" size={14} color="#0B0F14" />
+          </View>
         </Pressable>
         <Pressable
           style={[styles.rejectBtn, { borderColor: colors.border }]}
