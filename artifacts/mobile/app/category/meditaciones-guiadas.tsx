@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 14,
     paddingHorizontal: 8,
-    borderRadius: 16,
+    borderRadius: 10,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabBlockActive: { backgroundColor: "rgba(100,142,195,0.14)" },
