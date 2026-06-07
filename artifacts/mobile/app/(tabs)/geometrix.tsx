@@ -309,6 +309,16 @@ export default function GeometrixScreen() {
   const glow = useSharedValue(0);
   const glowStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
 
+  // Al desplegar el menú, oscurecer sutilmente el thumbnail (efecto zen).
+  const dim = useSharedValue(0);
+  const dimStyle = useAnimatedStyle(() => ({ opacity: dim.value }));
+  useEffect(() => {
+    dim.value = withTiming(openModule ? 1 : 0, {
+      duration: 450,
+      easing: Easing.inOut(Easing.ease),
+    });
+  }, [openModule, dim]);
+
   // Al salir de Geometrix (las pestañas quedan montadas): detener el sonido y
   // resetear la UI. Al entrar: disparar el glow de bienvenida una sola vez.
   useFocusEffect(
@@ -509,6 +519,11 @@ export default function GeometrixScreen() {
                     transition={0}
                     cachePolicy="memory-disk"
                     recyclingKey="geometrix-sound-thumb"
+                  />
+                  {/* Oscurecido sutil mientras el desplegable está abierto. */}
+                  <Animated.View
+                    pointerEvents="none"
+                    style={[styles.thumbDim, dimStyle]}
                   />
                   {!isActive && (
                     <>
@@ -1082,6 +1097,11 @@ const styles = StyleSheet.create({
   thumbOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.45)",
+  },
+  thumbDim: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 14,
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   thumbGlow: {
     ...StyleSheet.absoluteFillObject,
