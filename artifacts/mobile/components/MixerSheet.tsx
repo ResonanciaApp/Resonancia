@@ -474,22 +474,6 @@ export function MixerSheet() {
                 {isPlaying ? "PAUSAR" : "REPRODUCIR"}
               </Text>
             </Pressable>
-
-            <Pressable
-              onPress={handleTimerPress}
-              style={styles.zenCtrlBtn}
-              accessibilityRole="button"
-              accessibilityLabel={
-                sleepTimerRemaining != null
-                  ? "Temporizador de sueño activo"
-                  : "Configurar temporizador de sueño"
-              }
-            >
-              <Feather name="clock" size={36} color={WARM.playText} strokeWidth={1} />
-              <Text style={styles.zenCtrlLabel}>
-                {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "TIMER"}
-              </Text>
-            </Pressable>
           </View>
 
           {/* Guardar / Actualizar — Flotante Zen */}
@@ -504,11 +488,26 @@ export function MixerSheet() {
                   <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>ACTUALIZAR</Text>
                 </Pressable>
                 <Pressable
+                  onPress={handleTimerPress}
+                  style={styles.zenTimerBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel={
+                    sleepTimerRemaining != null
+                      ? "Temporizador de sueño activo"
+                      : "Configurar temporizador de sueño"
+                  }
+                >
+                  <Feather name="clock" size={16} color={WARM.playText} strokeWidth={1} />
+                  <Text style={styles.zenTimerText}>
+                    {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "TIMER"}
+                  </Text>
+                </Pressable>
+                <Pressable
                   onPress={() => openSaveModal("new")}
                   style={styles.zenSaveBtn}
                 >
                   <MaterialCommunityIcons name="heart-outline" size={14} color={WARM.saveText} />
-                  <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>GUARDAR NUEVA</Text>
+                  <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>GUARDAR</Text>
                 </Pressable>
               </>
             ) : (
@@ -750,6 +749,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "400",
     letterSpacing: 2,
+  },
+  zenTimerBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  zenTimerText: {
+    fontSize: 11,
+    fontWeight: "400",
+    letterSpacing: 1.5,
+    fontVariant: ["tabular-nums"],
+    color: "rgba(255,255,255,0.55)",
   },
   // kept for TS compat — no longer rendered
   saveBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 46, borderRadius: 14 },
