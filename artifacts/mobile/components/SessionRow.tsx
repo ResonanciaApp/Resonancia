@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   sessionRowInner: {
     flex: 1,
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     gap: 14,
   },
   moreBtn: {
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   sessionImg: { width: 80, height: 80 },
-  sessionContent: { flex: 1, paddingTop: 4 },
+  sessionContent: { flex: 1 },
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
   sessionMetaText: { fontSize: 11, lineHeight: 14 },
   sessionTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 4 },
