@@ -23,11 +23,14 @@ import Animated, {
   FadeIn,
   FadeOut,
   LinearTransition,
+  runOnJS,
+  type SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
@@ -67,6 +70,9 @@ type GeoSettings = {
   thickness: number;
   /** Tamaño: 0 = más chica, 1 = tamaño completo. */
   scale: number;
+  /** Zoom de pellizco (pinch): multiplicador libre, 1 = sin zoom. Permite
+      pasar los márgenes (efecto wallpaper). */
+  zoom: number;
 };
 
 function defaultSettings(id: GeometryId): GeoSettings {
@@ -78,6 +84,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     breathe: true,
     thickness: 0,
     scale: 1,
+    zoom: 1,
   };
 }
 
@@ -109,15 +116,19 @@ function GeometryLayer({
   index,
   size,
   settings,
+  liveZoom,
 }: {
   geo: GeometryMeta;
   index: number;
   size: number;
   settings: GeoSettings;
+  /** Shared value de zoom en vivo (pellizco). Si se pasa, manda sobre
+      settings.zoom (lo usa solo la geometría seleccionada en el lienzo). */
+  liveZoom?: SharedValue<number>;
 }) {
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
-  const { color, rotate, opacity, breathe, thickness, scale } = settings;
+  const { color, rotate, opacity, breathe, thickness, scale, zoom } = settings;
 
   useEffect(() => {
     rot.value = withRepeat(
@@ -136,13 +147,22 @@ function GeometryLayer({
   // Defensa ante estado corrupto/parcial: nunca dejar pasar NaN al worklet/SVG.
   const safeScale = Number.isFinite(scale) ? scale : 1;
   const safeThickness = Number.isFinite(thickness) ? thickness : 0;
-  // Tamaño: 0 → 0.4×, 1 → 1.0× (tope en 1.0 para no cortar contra los bordes).
+  const safeZoom = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
+  // Tamaño base ("fit"): 0 → 0.4×, 1 → 1.0× (no corta contra los bordes).
   const userScale = 0.4 + safeScale * 0.6;
+  // Zoom de pellizco: si hay shared value en vivo (geometría seleccionada en
+  // el lienzo) manda ese; si no, el valor confirmado en settings. Espejo local
+  // para reflejar cambios de settings cuando no hay pellizco activo.
+  const localZoom = useSharedValue(safeZoom);
+  useEffect(() => {
+    if (!liveZoom) localZoom.value = safeZoom;
+  }, [safeZoom, liveZoom, localZoom]);
+  const zoomSV = liveZoom ?? localZoom;
   const aStyle = useAnimatedStyle(() => ({
     transform: [
       { rotate: rotate ? `${rot.value * 360 * dir}deg` : "0deg" },
-      // Respiración: escala 0.9–1.0, multiplicada por el tamaño elegido.
-      { scale: (breathe ? 0.9 + pulse.value * 0.1 : 1) * userScale },
+      // Respiración (0.9–1.0) × tamaño elegido × zoom de pellizco.
+      { scale: (breathe ? 0.9 + pulse.value * 0.1 : 1) * userScale * zoomSV.value },
     ],
     opacity,
   }));
@@ -178,6 +198,11 @@ export default function GeometrixScreen() {
   const [menuGeoId, setMenuGeoId] = useState<GeometryId | null>(null);
   // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
   const [soloId, setSoloId] = useState<GeometryId | null>(null);
+  // Geometría seleccionada para el pellizco (pinch) que ajusta su zoom.
+  const [selectedId, setSelectedId] = useState<GeometryId | null>(null);
+  // Zoom en vivo del pellizco (UI thread); se confirma a settings al soltar.
+  const livePinch = useSharedValue(1);
+  const pinchStart = useSharedValue(1);
 
   const playerRef = useRef<AudioPlayer | null>(null);
 
@@ -252,6 +277,8 @@ export default function GeometrixScreen() {
     );
     // Sembrar ajustes por defecto la primera vez que se activa (conservar si re-activa).
     setSettings((prev) => (prev[id] ? prev : { ...prev, [id]: defaultSettings(id) }));
+    // Seleccionarla para el pellizco (si se quita, el effect reasigna).
+    setSelectedId(id);
   }, []);
 
   const updateSetting = useCallback(
@@ -269,6 +296,12 @@ export default function GeometrixScreen() {
     // creado antes de que existieran `scale`/`thickness`).
     (id: GeometryId): GeoSettings => ({ ...defaultSettings(id), ...(settings[id] ?? {}) }),
     [settings],
+  );
+
+  // Confirmar el zoom del pellizco a settings al soltar (corre en JS thread).
+  const commitZoom = useCallback(
+    (id: GeometryId, z: number) => updateSetting(id, "zoom", z),
+    [updateSetting],
   );
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
@@ -289,11 +322,45 @@ export default function GeometrixScreen() {
     : undefined;
   const soundImg = activeSound ? getSoundImage(activeSound) : undefined;
 
-  // Si una geometría se quita, limpiar su aislamiento / menú abierto.
+  // Si una geometría se quita, limpiar su aislamiento / menú abierto y
+  // reasignar la selección del pellizco a otra activa (o ninguna).
   useEffect(() => {
     if (soloId && !active.includes(soloId)) setSoloId(null);
     if (menuGeoId && !active.includes(menuGeoId)) setMenuGeoId(null);
-  }, [active, soloId, menuGeoId]);
+    if (selectedId && !active.includes(selectedId)) {
+      setSelectedId(active.length ? active[active.length - 1] : null);
+    }
+  }, [active, soloId, menuGeoId, selectedId]);
+
+  // Geometría que responde al pellizco. Si hay "Aislar", solo esa es visible,
+  // así que el pellizco debe apuntar a ella; si no, la seleccionada (o la
+  // última activa).
+  const pinchTargetId = soloId
+    ? soloId
+    : selectedId && active.includes(selectedId)
+      ? selectedId
+      : active.length
+        ? active[active.length - 1]
+        : null;
+
+  // Mantener el zoom en vivo sincronizado con el valor confirmado del objetivo
+  // (al cambiar de geometría o tras confirmar un pellizco).
+  useEffect(() => {
+    livePinch.value = pinchTargetId ? getSettings(pinchTargetId).zoom : 1;
+  }, [pinchTargetId, getSettings, livePinch]);
+
+  // Gesto de pellizco: escala libre del objetivo, permitiendo pasar los
+  // márgenes (efecto wallpaper). Se confirma a settings al soltar.
+  const pinchGesture = Gesture.Pinch()
+    .onStart(() => {
+      pinchStart.value = livePinch.value;
+    })
+    .onUpdate((e) => {
+      livePinch.value = Math.min(6, Math.max(0.3, pinchStart.value * e.scale));
+    })
+    .onEnd(() => {
+      if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
+    });
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
@@ -394,26 +461,29 @@ export default function GeometrixScreen() {
           }}
         >
           {canvasSide > 0 && (
-            <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
-              {layerSize > 0 &&
-                visibleMetas.map((g, i) => (
-                  <GeometryLayer
-                    key={g.id}
-                    geo={g}
-                    index={i}
-                    size={layerSize}
-                    settings={getSettings(g.id)}
-                  />
-                ))}
+            <GestureDetector gesture={pinchGesture}>
+              <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
+                {layerSize > 0 &&
+                  visibleMetas.map((g, i) => (
+                    <GeometryLayer
+                      key={g.id}
+                      geo={g}
+                      index={i}
+                      size={layerSize}
+                      settings={getSettings(g.id)}
+                      liveZoom={g.id === pinchTargetId ? livePinch : undefined}
+                    />
+                  ))}
 
-              {active.length === 0 && (
-                <View style={styles.empty} pointerEvents="none">
-                  <Feather name="hexagon" size={30} color="rgba(190,150,80,0.4)" />
-                  <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
-                  <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
-                </View>
-              )}
-            </View>
+                {active.length === 0 && (
+                  <View style={styles.empty} pointerEvents="none">
+                    <Feather name="hexagon" size={30} color="rgba(190,150,80,0.4)" />
+                    <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
+                    <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
+                  </View>
+                )}
+              </View>
+            </GestureDetector>
           )}
 
           {/* Aparece en fade al activar la primera geometría */}
@@ -450,6 +520,7 @@ export default function GeometrixScreen() {
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
                 const isSolo = soloId === g.id;
+                const isSelected = pinchTargetId === g.id;
                 const dimmed = soloId !== null && !isSolo;
                 return (
                   <Animated.View
@@ -461,11 +532,18 @@ export default function GeometrixScreen() {
                     )}
                   >
                     <Pressable
-                      onPress={() => setMenuGeoId(g.id)}
+                      onPress={() => {
+                        setSelectedId(g.id);
+                        setMenuGeoId(g.id);
+                      }}
                       style={[
                         styles.thumb,
-                        { borderColor: isSolo ? s.color : s.color + "55" },
-                        isSolo && { borderWidth: 2 },
+                        {
+                          borderColor:
+                            isSolo || isSelected ? s.color : s.color + "55",
+                        },
+                        (isSolo || isSelected) && { borderWidth: 2 },
+                        isSelected && styles.thumbSelected,
                         dimmed && { opacity: 0.4 },
                       ]}
                       accessibilityRole="button"
@@ -929,6 +1007,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.02)",
+  },
+  thumbSelected: {
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   menuBackdrop: {
     flex: 1,
