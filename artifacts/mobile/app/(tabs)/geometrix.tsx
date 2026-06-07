@@ -455,6 +455,13 @@ export default function GeometrixScreen() {
             activeMetas.length > 0 && { maxHeight: "68%" },
           ]}
         >
+          {/* Mismo fondo que la pantalla de inicio, recortado al radius. */}
+          <LinearGradient
+            colors={HOME_GRADIENT}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={styles.sheetHandle} />
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>Ajustes</Text>
@@ -765,11 +772,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   sheet: {
-    backgroundColor: "#0B0F14",
+    backgroundColor: "#06070F",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    borderTopWidth: 1,
-    borderColor: CARD_BORDER,
+    overflow: "hidden",
     paddingHorizontal: 18,
     paddingTop: 10,
     maxHeight: "78%",
