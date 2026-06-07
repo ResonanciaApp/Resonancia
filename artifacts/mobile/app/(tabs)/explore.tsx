@@ -635,7 +635,8 @@ const styles = StyleSheet.create({
   tagGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: GAP,
+    columnGap: GAP,
+    rowGap: 20,
   },
   tagCard: {
     width: TAG_W,
