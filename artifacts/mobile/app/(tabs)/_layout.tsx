@@ -97,9 +97,12 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <View style={[styles.bar, { paddingBottom: pb }]}>
       {isIOS ? (
-        <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
+        <>
+          <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(12, 16, 50, 0.55)" }]} />
+        </>
       ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(8, 14, 22, 0.92)" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(12, 16, 50, 0.85)" }]} />
       )}
       <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
       <View style={[styles.row, isWeb && styles.rowWeb]}>
