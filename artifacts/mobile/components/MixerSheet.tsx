@@ -56,6 +56,9 @@ const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#151A23", "#0B0F14"] as const;
 
+/** Mismo degradé que el fondo de la pantalla de Inicio. */
+const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 /** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
   bg: "#0B0F14",
@@ -369,10 +372,17 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: WARM.bg, paddingBottom: insets.bottom + 16 },
+            { backgroundColor: HOME_GRADIENT[2], paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
+          <LinearGradient
+            colors={HOME_GRADIENT}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={styles.sheetGradient}
+            pointerEvents="none"
+          />
           {/* Handle con PanResponder para arrastrar y cerrar */}
           <View style={styles.handleZone} {...panResponder.panHandlers}>
             <View style={[styles.handle, { backgroundColor: WARM.handle }]} />
@@ -623,8 +633,8 @@ const styles = StyleSheet.create({
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   handleZone: {
     alignSelf: "stretch",
