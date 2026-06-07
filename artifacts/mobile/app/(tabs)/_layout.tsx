@@ -93,6 +93,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const isIOS = Platform.OS === "ios";
   const isWeb = Platform.OS === "web";
   const pb = isWeb ? 8 : insets.bottom;
+  const extra = Math.round(pb / 2);
 
   return (
     <View style={[styles.bar, { paddingBottom: pb }]}>
@@ -105,7 +106,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.90)" }]} />
       )}
       <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
-      <View style={[styles.row, isWeb && styles.rowWeb]}>
+      <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 56 + extra }]}>
         {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
           const { options } = descriptors[route.key];
           if ((options as { href?: null }).href === null) return null;
@@ -141,7 +142,8 @@ export default function TabLayout() {
   const { activeSounds } = useMixer();
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
-  const tabBarHeight = 56 + (isWeb ? 34 : insets.bottom);
+  const bottomPb = isWeb ? 8 : insets.bottom;
+  const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
 
   // La barra flotante (sesión o mezcla) abre el editor en hoja inferior; se
   // muestra en todas las tabs, incluida "Mi Música".
