@@ -457,8 +457,18 @@ export default function MiMusicaScreen() {
         >
           {/* Grilla de sonidos — 3 columnas */}
           <ContentSlide key={contentAnimKey} dir={contentDir}>
-            <View style={[styles.grid, { marginTop: 14 }]}>
-              {displayedSounds.map((s, i) => renderSoundCard(s, i))}
+            <View style={{ marginTop: 14 }}>
+              {Array.from({ length: Math.ceil(displayedSounds.length / 3) }).map((_, rowIdx) => {
+                const row = displayedSounds.slice(rowIdx * 3, rowIdx * 3 + 3);
+                return (
+                  <View key={rowIdx} style={styles.gridRow}>
+                    {row.map((s, i) => renderSoundCard(s, rowIdx * 3 + i))}
+                    {Array.from({ length: 3 - row.length }).map((_, k) => (
+                      <View key={`sp-${k}`} style={styles.soundCard} />
+                    ))}
+                  </View>
+                );
+              })}
             </View>
           </ContentSlide>
         </ScrollView>
@@ -534,7 +544,7 @@ const styles = StyleSheet.create({
   subTabText: { fontSize: 11, fontWeight: "600", textAlign: "center" },
 
   // Grilla de sonidos — 3 columnas uniformes
-  grid: { flexDirection: "row", flexWrap: "wrap", rowGap: 22, justifyContent: "space-between" },
+  gridRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 22 },
   soundCard: { width: "24%" },
   cardImageWrap: {
     width: "100%",
