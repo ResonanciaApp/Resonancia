@@ -31,3 +31,5 @@
 - [Mixer sounds DB system](mixer-sounds-db.md) — sonidos gestionados desde DB; SOUND_MAP (bundle) → REMOTE_SOUND_MAP (API) como fallback en MixerContext; SoundsContext fusiona local + DB al init
 - [Recientes/Nuevas ordering](recientes-sort-by-id.md) — listas "más recientes/nuevas" deben sort por parseInt(id) desc + dep en useCatalog().version, o las sesiones de DB (SESSIONS.push runtime) no salen primeras
 - [voiceTag three-state caption](voice-tag-three-state.md) — caption de voz: undefined=fallback VOICE_MAP, null=DB vacío, string=admin; fase 1 de applyCatalogSnapshot NO debe clobbear undefined→null
+
+- [Session sort/filter](session-sort-filter.md) — filtro de orden dinámico en pantallas de categoría; "más escuchadas"=GET /catalog/popular (no historial local deduplicado), "mejores puntuadas"=ratings locales (no promedio global)

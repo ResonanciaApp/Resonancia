@@ -19,7 +19,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
-import { usePlayer } from "@/context/PlayerContext";
+import { SessionSortHeader } from "@/components/SessionSortHeader";
+import { useSessionSort } from "@/hooks/useSessionSort";
 import { useCatalog } from "@/context/CatalogContext";
 import { SESSIONS } from "@/data/sessions";
 import type { Session } from "@/data/sessions";
@@ -47,8 +48,8 @@ const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 export default function MeditacionesGuiadasScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { history } = usePlayer();
   const { version } = useCatalog();
+  const { sortKey, setSortKey, sortLabel, sortSessions } = useSessionSort();
 
   const [activeTab, setActiveTab] = useState<string>(TABS[0].value);
   const [query, setQuery] = useState("");
@@ -84,13 +85,10 @@ export default function MeditacionesGuiadasScreen() {
     return q ? tabSessions.filter((s) => s.title.toLowerCase().includes(q)) : tabSessions;
   }, [tabSessions, query]);
 
-  const recentlyPlayed = useMemo(() => {
-    const subIds = new Set(tabSessions.map((s) => s.id));
-    const entry = [...history]
-      .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime())
-      .find((e) => subIds.has(e.sessionId));
-    return entry ? tabSessions.find((s) => s.id === entry.sessionId) ?? null : null;
-  }, [history, tabSessions]);
+  const sorted = useMemo(
+    () => sortSessions(filtered, ratings),
+    [filtered, sortSessions, ratings],
+  );
 
   return (
         <LinearGradient
@@ -198,29 +196,14 @@ export default function MeditacionesGuiadasScreen() {
           </View>
         ) : (
           <View style={{ paddingTop: 24 }}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
-              Escuchado Recientemente
-            </Text>
-            {recentlyPlayed ? (
-              <SessionRow
-                session={recentlyPlayed}
-                rating={ratings[recentlyPlayed.id]}
-                style={{ marginHorizontal: H_PAD, marginTop: 10, marginBottom: 24 }}
-                onActionsPress={() => setActionsSession(recentlyPlayed)}
-              />
-            ) : (
-              <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "rgba(255,255,255,0.03)" }]}>
-                <Feather name="headphones" size={28} color={colors.mutedForeground} />
-                <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
-                  Aún no escuchaste ninguna sesión en esta categoría
-                </Text>
-              </View>
-            )}
-
-            <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
-              Recientes
-            </Text>
-            {filtered.map((s) => (
+            <SessionSortHeader
+              title={sortLabel}
+              sortKey={sortKey}
+              onChange={setSortKey}
+              accentColor={ICON_COLOR}
+              style={{ paddingHorizontal: H_PAD, marginBottom: 12 }}
+            />
+            {sorted.map((s) => (
               <SessionRow
                 key={s.id}
                 session={s}
@@ -320,13 +303,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
     marginTop: 16,
   },
-
-  sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
-  recentPlaceholder: {
-    flexDirection: "row", alignItems: "center", gap: 14,
-    borderRadius: 14, padding: 16, marginTop: 10, marginBottom: 28,
-  },
-  placeholderText: { flex: 1, fontSize: 13, lineHeight: 18 },
 
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
   emptyText: { fontSize: 16, textAlign: "center" },
