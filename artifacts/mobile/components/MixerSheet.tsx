@@ -678,8 +678,8 @@ const styles = StyleSheet.create({
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -2 },
   thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "#FFFFFF" },
   thumbRadius: { borderRadius: 11 },
-  trackInfo: { flex: 1 },
-  trackName: { fontSize: 15, fontWeight: "300", marginBottom: 4 },
+  trackInfo: { flex: 1, justifyContent: "center" },
+  trackName: { fontSize: 15, fontWeight: "700", marginBottom: 4 },
   _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",
