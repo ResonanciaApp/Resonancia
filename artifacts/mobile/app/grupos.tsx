@@ -20,6 +20,8 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 import { type GrupoLocal, isAdminGrupo, useGrupos } from "@/hooks/useGrupos";
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 // ─── Image gallery (same as crear.tsx) ───────────────────────────────────────
 const GALLERY = [
   require("@/assets/images/sessions/session-1.jpg"),
@@ -431,9 +433,15 @@ export default function GruposScreen() {
   ];
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       {/* Fixed header */}
       <View style={[styles.fixedHeader, { paddingTop: topPad }]}>
@@ -491,7 +499,7 @@ export default function GruposScreen() {
       </View>
 
       <CreateGroupSheet visible={showCreate} onClose={() => setShowCreate(false)} />
-    </View>
+    </LinearGradient>
   );
 }
 
