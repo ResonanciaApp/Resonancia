@@ -614,15 +614,17 @@ export default function GeometrixScreen() {
         <View style={styles.divider} />
 
         {/* Fondo interactivo (cuadrado, centrado) */}
-        <View
-          style={styles.canvasWrap}
-          onLayout={(e) => {
-            const { width: w, height: h } = e.nativeEvent.layout;
-            setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
-          }}
-        >
-          {canvasSide > 0 && (
-            <GestureDetector gesture={pinchGesture}>
+        <View style={styles.canvasWrap}>
+          {/* Escenario: centra la animación en el espacio disponible. */}
+          <View
+            style={styles.stage}
+            onLayout={(e) => {
+              const { width: w, height: h } = e.nativeEvent.layout;
+              setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+            }}
+          >
+            {canvasSide > 0 && (
+              <GestureDetector gesture={pinchGesture}>
               <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
                 {layerSize > 0 &&
                   visibleMetas.map((g, i) => (
@@ -682,6 +684,7 @@ export default function GeometrixScreen() {
               </Pressable>
             </Animated.View>
           )}
+          </View>
 
           {/* Thumbnails de geometrías activas: fila centrada que se reacomoda
               al agregar/quitar (LinearTransition desplaza para dar espacio). */}
@@ -1175,6 +1178,9 @@ const styles = StyleSheet.create({
   canvasWrap: {
     flex: 1,
     marginBottom: 12,
+  },
+  stage: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1209,10 +1215,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(122,143,168,0.35)",
   },
   thumbsRow: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
+    marginTop: 14,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
