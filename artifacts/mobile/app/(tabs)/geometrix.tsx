@@ -174,6 +174,10 @@ export default function GeometrixScreen() {
   const [sheetHeight, setSheetHeight] = useState(0);
   // Modo inmersión: solo el fondo animado, sin interfaz.
   const [immersive, setImmersive] = useState(false);
+  // Geometría con su menú contextual abierto (tap en miniatura).
+  const [menuGeoId, setMenuGeoId] = useState<GeometryId | null>(null);
+  // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
+  const [soloId, setSoloId] = useState<GeometryId | null>(null);
 
   const playerRef = useRef<AudioPlayer | null>(null);
 
@@ -208,6 +212,8 @@ export default function GeometrixScreen() {
         setMenuOpen(false);
         setSettingsOpen(false);
         setImmersive(false);
+        setMenuGeoId(null);
+        setSoloId(null);
       };
     }, [stopSound]),
   );
@@ -274,7 +280,20 @@ export default function GeometrixScreen() {
   // completa al rotar (no se corta contra los bordes).
   const layerSize = canvasSide * 0.96;
   const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
+  // Lo que se pinta en el lienzo: si hay "Aislar", solo esa geometría.
+  const visibleMetas = soloId
+    ? activeMetas.filter((g) => g.id === soloId)
+    : activeMetas;
+  const menuGeo = menuGeoId
+    ? GEOMETRIES.find((g) => g.id === menuGeoId)
+    : undefined;
   const soundImg = activeSound ? getSoundImage(activeSound) : undefined;
+
+  // Si una geometría se quita, limpiar su aislamiento / menú abierto.
+  useEffect(() => {
+    if (soloId && !active.includes(soloId)) setSoloId(null);
+    if (menuGeoId && !active.includes(menuGeoId)) setMenuGeoId(null);
+  }, [active, soloId, menuGeoId]);
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
@@ -377,7 +396,7 @@ export default function GeometrixScreen() {
           {canvasSide > 0 && (
             <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
               {layerSize > 0 &&
-                activeMetas.map((g, i) => (
+                visibleMetas.map((g, i) => (
                   <GeometryLayer
                     key={g.id}
                     geo={g}
@@ -430,6 +449,8 @@ export default function GeometrixScreen() {
             <View style={styles.thumbsRow}>
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
+                const isSolo = soloId === g.id;
+                const dimmed = soloId !== null && !isSolo;
                 return (
                   <Animated.View
                     key={g.id}
@@ -438,9 +459,20 @@ export default function GeometrixScreen() {
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
                     )}
-                    style={[styles.thumb, { borderColor: s.color + "55" }]}
                   >
-                    <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2} />
+                    <Pressable
+                      onPress={() => setMenuGeoId(g.id)}
+                      style={[
+                        styles.thumb,
+                        { borderColor: isSolo ? s.color : s.color + "55" },
+                        isSolo && { borderWidth: 2 },
+                        dimmed && { opacity: 0.4 },
+                      ]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Opciones de ${g.name}`}
+                    >
+                      <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2} />
+                    </Pressable>
                   </Animated.View>
                 );
               })}
@@ -471,7 +503,7 @@ export default function GeometrixScreen() {
             style={StyleSheet.absoluteFill}
           />
           <View style={StyleSheet.absoluteFill} pointerEvents="none">
-            {activeMetas.map((g, i) => (
+            {visibleMetas.map((g, i) => (
               <GeometryLayer
                 key={g.id}
                 geo={g}
@@ -481,6 +513,77 @@ export default function GeometrixScreen() {
               />
             ))}
           </View>
+        </Pressable>
+      </Modal>
+
+      {/* Menú contextual de una miniatura: Personalizar / Aislar / Quitar. */}
+      <Modal
+        visible={!!menuGeo}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setMenuGeoId(null)}
+      >
+        <Pressable style={styles.menuBackdrop} onPress={() => setMenuGeoId(null)}>
+          {menuGeo && (
+            <Pressable style={styles.menuCard} onPress={() => {}}>
+              <View style={styles.menuHeader}>
+                <View
+                  style={[
+                    styles.menuGlyph,
+                    { borderColor: getSettings(menuGeo.id).color + "55" },
+                  ]}
+                >
+                  <SacredGlyph
+                    id={menuGeo.id}
+                    color={getSettings(menuGeo.id).color}
+                    size={30}
+                    strokeWidth={2}
+                  />
+                </View>
+                <Text style={styles.menuTitle}>{menuGeo.name}</Text>
+              </View>
+
+              <Pressable
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuGeoId(null);
+                  setSettingsOpen(true);
+                }}
+              >
+                <Feather name="sliders" size={18} color={colors.foreground} />
+                <Text style={styles.menuItemText}>Personalizar</Text>
+              </Pressable>
+
+              <Pressable
+                style={styles.menuItem}
+                onPress={() => {
+                  setSoloId((prev) => (prev === menuGeo.id ? null : menuGeo.id));
+                  setMenuGeoId(null);
+                }}
+              >
+                <Feather
+                  name={soloId === menuGeo.id ? "eye" : "eye-off"}
+                  size={18}
+                  color={colors.foreground}
+                />
+                <Text style={styles.menuItemText}>
+                  {soloId === menuGeo.id ? "Mostrar todas" : "Ver solo esta"}
+                </Text>
+              </Pressable>
+
+              <Pressable
+                style={styles.menuItem}
+                onPress={() => {
+                  const id = menuGeo.id;
+                  setMenuGeoId(null);
+                  toggleGeometry(id);
+                }}
+              >
+                <Feather name="trash-2" size={18} color="#D98A8A" />
+                <Text style={[styles.menuItemText, { color: "#D98A8A" }]}>Quitar</Text>
+              </Pressable>
+            </Pressable>
+          )}
         </Pressable>
       </Modal>
 
@@ -826,6 +929,56 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.02)",
+  },
+  menuBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+  },
+  menuCard: {
+    width: "100%",
+    maxWidth: 280,
+    borderRadius: 20,
+    backgroundColor: "#10141C",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(122,143,168,0.25)",
+    paddingVertical: 8,
+  },
+  menuHeader: {
+    alignItems: "center",
+    gap: 8,
+    paddingTop: 14,
+    paddingBottom: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(122,143,168,0.18)",
+  },
+  menuGlyph: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  menuTitle: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: colors.foreground,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+  },
+  menuItemText: {
+    fontSize: 15,
+    fontWeight: "400",
+    color: colors.foreground,
   },
   immersiveRoot: {
     flex: 1,
