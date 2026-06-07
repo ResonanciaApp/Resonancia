@@ -1665,7 +1665,7 @@ const styles = StyleSheet.create({
   menuGlyphName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#7A8FA8",
     textAlign: "center",
   },
   menuItem: {
