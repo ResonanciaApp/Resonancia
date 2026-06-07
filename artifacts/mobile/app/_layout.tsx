@@ -250,7 +250,7 @@ export default function RootLayout() {
                       <IntencionProvider>
                         <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
-                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#090F17" }}>
+                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#0B0F14" }}>
                             <KeyboardProvider>
                               <RootLayoutNav />
                             </KeyboardProvider>
