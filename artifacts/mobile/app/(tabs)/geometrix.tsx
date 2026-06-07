@@ -348,6 +348,16 @@ export default function GeometrixScreen() {
   const [selectedId, setSelectedId] = useState<GeometryId | null>(null);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
+  // Opacidad de la píldora de acciones: fade puro (sin movimiento) al plegar.
+  // Se mantiene SIEMPRE montada (pointerEvents none al cerrar) para que el
+  // layout no se reacomode y solo cambie la opacidad.
+  const pillOpacity = useSharedValue(0);
+  const pillStyle = useAnimatedStyle(() => ({ opacity: pillOpacity.value }));
+  useEffect(() => {
+    pillOpacity.value = withTiming(pillOpen ? 1 : 0, {
+      duration: pillOpen ? 240 : 160,
+    });
+  }, [pillOpen, pillOpacity]);
   // Zoom en vivo del pellizco (UI thread); se confirma a settings al soltar.
   const livePinch = useSharedValue(1);
   const pinchStart = useSharedValue(1);
@@ -768,29 +778,26 @@ export default function GeometrixScreen() {
               exiting={FadeOut.duration(220)}
               style={styles.actionTop}
             >
-              {pillOpen && (
-                <Animated.View
-                  entering={FadeIn.duration(240)}
-                  exiting={FadeOut.duration(160)}
-                  style={styles.pillRow}
-                >
-                  {pillActions.map((a) => (
-                    <Pressable
-                      key={a.key}
-                      onPress={() => {
-                        a.onPress();
-                        setPillOpen(false);
-                      }}
-                      style={styles.pillBtn}
-                      accessibilityRole="button"
-                      accessibilityLabel={a.label}
-                      hitSlop={6}
-                    >
-                      <Feather name={a.icon} size={20} color={colors.mutedForeground} />
-                    </Pressable>
-                  ))}
-                </Animated.View>
-              )}
+              <Animated.View
+                pointerEvents={pillOpen ? "auto" : "none"}
+                style={[styles.pillRow, pillStyle]}
+              >
+                {pillActions.map((a) => (
+                  <Pressable
+                    key={a.key}
+                    onPress={() => {
+                      a.onPress();
+                      setPillOpen(false);
+                    }}
+                    style={styles.pillBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel={a.label}
+                    hitSlop={6}
+                  >
+                    <Feather name={a.icon} size={20} color={colors.mutedForeground} />
+                  </Pressable>
+                ))}
+              </Animated.View>
 
               <Pressable
                 onPress={() => setPillOpen((o) => !o)}
@@ -1448,16 +1455,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    paddingVertical: 5,
-    paddingHorizontal: 8,
+    paddingVertical: 0,
+    paddingHorizontal: 6,
     borderRadius: 999,
     borderWidth: 1,
     borderColor: CARD_BORDER,
     backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillBtn: {
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 999,
