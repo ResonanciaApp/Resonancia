@@ -618,6 +618,12 @@ uri = "file://artifacts/resonancia-identidad/public/vibration-waves.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "3Ffp9o6HhM3DwRkZRa12Z"
+uri = "file://artifacts/mockup-sandbox/public/images/ancestrales-hero.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
