@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -14,6 +15,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
+
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 const FAQS = [
   {
@@ -57,9 +60,15 @@ export default function AyudaScreen() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
@@ -127,7 +136,7 @@ export default function AyudaScreen() {
           </Pressable>
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
