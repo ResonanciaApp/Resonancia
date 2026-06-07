@@ -159,7 +159,16 @@ export default function ExploreScreen() {
       >
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle]}>Biblioteca</Text>
+          <View style={styles.headerRow}>
+            <Text style={[styles.pageTitle]}>Biblioteca</Text>
+            <Pressable
+              onPress={() => router.push("/historial" as never)}
+              hitSlop={12}
+              style={styles.headerClockBtn}
+            >
+              <Feather name="clock" size={22} color="#FFFFFF" />
+            </Pressable>
+          </View>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>Tu universo vibracional</Text>
         </View>
 
@@ -500,6 +509,8 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   header: { paddingHorizontal: H_PAD, marginBottom: 18 },
+  headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  headerClockBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, marginTop: 0 },
 
