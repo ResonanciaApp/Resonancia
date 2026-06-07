@@ -140,11 +140,11 @@ export default function SonidosAncestalesScreen() {
             </Text>
           )}
           <View style={styles.searchBar}>
-            <Feather name="search" size={17} color={colors.mutedForeground} style={{ opacity: 0.1 }} />
+            <Feather name="search" size={17} color={colors.mutedForeground} style={{ opacity: 0.15 }} />
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
               placeholder="Buscar en Ancestrales…"
-              placeholderTextColor={colors.mutedForeground + "1A"}
+              placeholderTextColor={colors.mutedForeground + "26"}
               value={query}
               onChangeText={setQuery}
               returnKeyType="search"
