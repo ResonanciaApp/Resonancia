@@ -40,33 +40,54 @@ export interface GeometryMeta {
   color: string;
 }
 
-export const GEOMETRIES: GeometryMeta[] = [
-  { id: "flor-vida",    name: "Flor de la Vida",   color: "#D6A85B" },
-  { id: "semilla-vida", name: "Semilla de la Vida", color: "#C9A24A" },
-  { id: "vesica",       name: "Vesica Piscis",     color: "#8E9BD8" },
-  { id: "metatron",     name: "Cubo de Metatrón",  color: "#BE9650" },
-  { id: "merkaba",      name: "Merkaba",           color: "#9BA8E6" },
-  { id: "sri-yantra",   name: "Sri Yantra",        color: "#D89BB5" },
-  { id: "toroide",      name: "Toroide",           color: "#79C7C0" },
-  { id: "mandala",      name: "Mandala",           color: "#E0B36A" },
-  { id: "espiral",      name: "Espiral Áurea",     color: "#B6C2F0" },
-  { id: "pentagrama",   name: "Pentagrama",        color: "#D6A85B" },
-  { id: "hexagrama",    name: "Hexagrama",         color: "#8FD0C9" },
-  { id: "triquetra",    name: "Triquetra",         color: "#C6A6E0" },
-  { id: "arbol-vida",   name: "Árbol de la Vida",  color: "#B6C2F0" },
-  { id: "fruto-vida",   name: "Fruto de la Vida",  color: "#E0B36A" },
-  { id: "huevo-vida",   name: "Huevo de la Vida",  color: "#8FD0C9" },
-  { id: "cubo-vida",    name: "Cubo de la Vida",   color: "#9BA8E6" },
-  { id: "octagrama",    name: "Octagrama",         color: "#D6A85B" },
-  { id: "eneagrama",    name: "Eneagrama",         color: "#C6A6E0" },
-  { id: "nudo-celta",   name: "Nudo Celta",        color: "#79C7C0" },
-  { id: "yin-yang",     name: "Yin-Yang",          color: "#EDE1D3" },
-  { id: "circulos",     name: "Círculos Concéntricos", color: "#8E9BD8" },
-  { id: "loto",         name: "Loto",              color: "#D89BB5" },
-  { id: "cuadrado",     name: "Cuadrado",          color: "#BE9650" },
-  { id: "circulo",      name: "Círculo",           color: "#C9A24A" },
-  { id: "triangulo",    name: "Triángulo",         color: "#D6A85B" },
+/**
+ * Paleta compartida de colores. Es la MISMA (y en el MISMO orden) que la de
+ * los ajustes personalizados por capa. El color por defecto de cada geometría
+ * se asigna recorriendo esta paleta de forma cíclica (intercalado), por lo que
+ * los tabs del grid van rotando los colores con la lógica de la paleta.
+ */
+export const PALETTE = [
+  "#BE9650",
+  "#EDE1D3",
+  "#7FD1C0",
+  "#7AA8E0",
+  "#B69BE0",
+  "#E0989B",
+  "#9BD6A8",
+] as const;
+
+const GEOMETRY_DEFS: { id: GeometryId; name: string }[] = [
+  { id: "flor-vida",    name: "Flor de la Vida" },
+  { id: "semilla-vida", name: "Semilla de la Vida" },
+  { id: "vesica",       name: "Vesica Piscis" },
+  { id: "metatron",     name: "Cubo de Metatrón" },
+  { id: "merkaba",      name: "Merkaba" },
+  { id: "sri-yantra",   name: "Sri Yantra" },
+  { id: "toroide",      name: "Toroide" },
+  { id: "mandala",      name: "Mandala" },
+  { id: "espiral",      name: "Espiral Áurea" },
+  { id: "pentagrama",   name: "Pentagrama" },
+  { id: "hexagrama",    name: "Hexagrama" },
+  { id: "triquetra",    name: "Triquetra" },
+  { id: "arbol-vida",   name: "Árbol de la Vida" },
+  { id: "fruto-vida",   name: "Fruto de la Vida" },
+  { id: "huevo-vida",   name: "Huevo de la Vida" },
+  { id: "cubo-vida",    name: "Cubo de la Vida" },
+  { id: "octagrama",    name: "Octagrama" },
+  { id: "eneagrama",    name: "Eneagrama" },
+  { id: "nudo-celta",   name: "Nudo Celta" },
+  { id: "yin-yang",     name: "Yin-Yang" },
+  { id: "circulos",     name: "Círculos Concéntricos" },
+  { id: "loto",         name: "Loto" },
+  { id: "cuadrado",     name: "Cuadrado" },
+  { id: "circulo",      name: "Círculo" },
+  { id: "triangulo",    name: "Triángulo" },
 ];
+
+export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
+  ...g,
+  color: PALETTE[i % PALETTE.length],
+}));
 
 export function getGeometry(id: GeometryId): GeometryMeta | undefined {
   return GEOMETRIES.find((g) => g.id === id);

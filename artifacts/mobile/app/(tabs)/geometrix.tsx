@@ -42,7 +42,7 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
-import { GEOMETRIES, type GeometryId, type GeometryMeta } from "@/data/geometries";
+import { GEOMETRIES, PALETTE, type GeometryId, type GeometryMeta } from "@/data/geometries";
 
 const colors = colorsConst.light;
 const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
@@ -120,17 +120,6 @@ const MUSIC_MODULES: MusicModule[] = [
     ],
   },
 ];
-
-/** Paleta de colores para personalizar cada geometría. */
-const PALETTE = [
-  "#BE9650",
-  "#EDE1D3",
-  "#7FD1C0",
-  "#7AA8E0",
-  "#B69BE0",
-  "#E0989B",
-  "#9BD6A8",
-] as const;
 
 /** Ajustes editables por geometría. Los sliders guardan 0–1. */
 type GeoSettings = {
