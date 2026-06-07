@@ -38,6 +38,14 @@ const FG       = "#EDE1D3";
 const MUTED    = "#7A8FA8";
 const TAB_PILL = "#1E2733";
 
+const SUB_TAB_ICON_COLORS: Partial<Record<SoundCategoryId, string>> = {
+  animales: "#F0A875",
+  bosque:   "#7DC87A",
+  mar:      "#7DC5E8",
+  fuego:    "#C4695A",
+  desierto: "#C4A882",
+};
+
 const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
   animales:          "paw",
   bosque:            "tree",
@@ -412,7 +420,7 @@ export default function MiMusicaScreen() {
                         <MaterialCommunityIcons
                           name={SUB_TAB_ICONS[catId] as any}
                           size={26}
-                          color={sel ? "#7379C5" : MUTED}
+                          color={sel ? (SUB_TAB_ICON_COLORS[catId] ?? "#7379C5") : MUTED}
                           style={{ marginBottom: 5 }}
                         />
                       )}
