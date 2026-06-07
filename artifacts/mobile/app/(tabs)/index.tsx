@@ -156,7 +156,16 @@ export default function HomeScreen() {
             <Pressable onPress={() => openDrawer()} hitSlop={12} style={styles.iconBtnBare}>
               <Feather name="menu" size={22} color="white" />
             </Pressable>
-            <NotificationBell />
+            <View style={styles.headerRightGroup}>
+              <Pressable
+                onPress={() => router.push("/historial" as never)}
+                hitSlop={12}
+                style={styles.iconBtnBare}
+              >
+                <Feather name="clock" size={22} color={colors.primary} />
+              </Pressable>
+              <NotificationBell />
+            </View>
           </View>
 
           <Pressable
@@ -508,6 +517,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 14,
+  },
+  headerRightGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   iconBtnBare: {
     width: 38,

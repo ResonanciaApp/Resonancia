@@ -375,7 +375,6 @@ export default function ExploreScreen() {
                   { label: "Carpetas",  icon: "folder"    as const, route: "/carpetas"  },
                   { label: "Playlists", icon: "list"      as const, route: "/playlists" },
                   { label: "Favoritos", icon: "heart"     as const, route: "/favorites" },
-                  { label: "Historial", icon: "clock"     as const, route: "/historial" },
                 ].map((item) => (
                   <Pressable
                     key={item.label}
