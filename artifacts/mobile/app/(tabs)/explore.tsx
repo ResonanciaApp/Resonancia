@@ -381,7 +381,7 @@ export default function ExploreScreen() {
               </ScrollView>
             </View>
 
-            {/* ── Tu Biblioteca (2×2 grid) ── */}
+            {/* ── Tu Biblioteca (3 en una fila) ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
                 <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Tu biblioteca</Text>
@@ -395,7 +395,7 @@ export default function ExploreScreen() {
                   <Pressable
                     key={item.label}
                     style={({ pressed }) => [
-                      styles.libraryCardWide,
+                      styles.libraryCardThird,
                       { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.7 : 1 },
                     ]}
                     onPress={() => router.push(item.route as never)}
