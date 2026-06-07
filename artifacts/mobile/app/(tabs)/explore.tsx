@@ -160,7 +160,7 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <Text style={[styles.pageTitle]}>Biblioteca</Text>
+            <Text style={[styles.pageTitle]}>Explora</Text>
             <Pressable
               onPress={() => router.push("/historial" as never)}
               hitSlop={12}
@@ -169,7 +169,7 @@ export default function ExploreScreen() {
               <Feather name="clock" size={22} color="#FFFFFF" />
             </Pressable>
           </View>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>Tu universo vibracional</Text>
+          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>Tu biblioteca expansiva</Text>
         </View>
 
         {/* ── Search bar ── */}
