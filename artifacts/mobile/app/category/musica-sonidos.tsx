@@ -103,7 +103,6 @@ export default function MusicaSonidosScreen() {
       end={{ x: 0, y: 1 }}
     >
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#090D20", "#090D20"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}
