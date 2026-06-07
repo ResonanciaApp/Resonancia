@@ -38,9 +38,10 @@ type TabDef = {
 };
 
 const TABS: TabDef[] = [
-  { label: "Observación",      value: "Observación",      icon: "eye-outline",     tags: ["No Duales"] },
-  { label: "Visualizaciones",  value: "Visualizaciones",  icon: "creation",        tags: ["Visualizaciones"] },
-  { label: "Escaneo Corporal", value: "Escaneo Corporal", icon: "human",           tags: ["Escaneo Corporal"] },
+  { label: "Observo",    value: "Observo",    icon: "eye-outline",          tags: ["No Duales"] },
+  { label: "Entiendo",   value: "Entiendo",   icon: "lightbulb-on-outline", tags: ["3 Minutos de Sabiduría"] },
+  { label: "Visualizo",  value: "Visualizo",  icon: "creation",             tags: ["Visualizaciones"] },
+  { label: "Escaneo",    value: "Escaneo",    icon: "human",                tags: ["Escaneo Corporal"] },
 ];
 
 const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
