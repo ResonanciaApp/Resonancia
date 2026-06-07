@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     width: 36, height: 36, borderRadius: 18, borderWidth: 1,
     alignItems: "center", justifyContent: "center",
   },
-  pageTitle: { fontSize: 20, fontWeight: "700", letterSpacing: -0.4, color: FG },
+  pageTitle: { fontSize: 20, fontWeight: "700", letterSpacing: -0.4, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 2 },
 
   // Tab bar
