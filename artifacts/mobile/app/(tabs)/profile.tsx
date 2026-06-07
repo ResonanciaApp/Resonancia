@@ -489,7 +489,7 @@ export default function ProfileScreen() {
                 },
               ]}
             >
-              <Feather name={icon} size={22} color="#DCCDB8" />
+              <Feather name={icon} size={22} color="#FFFFFF" />
               <Text style={[styles.communityLabel, { color: "#FFFFFF" }]}>
                 {label}
               </Text>
