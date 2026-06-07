@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Notifications from "expo-notifications";
 import * as StoreReview from "expo-store-review";
 import { router } from "expo-router";
@@ -26,6 +27,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
+
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -258,13 +261,27 @@ export default function ConfiguracionesScreen() {
   };
 
   if (!hydrated) {
-    return <View style={[styles.root, { backgroundColor: colors.background }]} />;
+    return (
+      <LinearGradient
+        style={styles.root}
+        colors={BG_GRADIENT}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      />
+    );
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
@@ -534,7 +551,7 @@ export default function ConfiguracionesScreen() {
           <Text style={[styles.logoutText, { color: "#E07060" }]}>Cerrar sesión</Text>
         </Pressable>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
