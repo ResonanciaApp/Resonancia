@@ -244,19 +244,18 @@ export default function MiMusicaScreen() {
   const { lastSavedAt } = useSaveEvent();
 
   // ── Animación del ♥ al guardar mezcla ──────────────────────────────────────
-  // Corazón relleno semitransparente en reposo; fade-in a blanco pleno al guardar.
+  // Corazón blanco puro en reposo; al guardar destella naranjo con glow y vuelve a blanco.
   // useNativeDriver:true → hilo nativo, sin jank.
-  const HEART_DIM  = 0.28;  // opacidad en reposo
-  const heartOpacity = useRef(new Animated.Value(HEART_DIM)).current;
+  const heartGlow = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (!lastSavedAt) return;
-    heartOpacity.stopAnimation(() => {
-      heartOpacity.setValue(HEART_DIM);
+    heartGlow.stopAnimation(() => {
+      heartGlow.setValue(0);
       Animated.sequence([
-        Animated.timing(heartOpacity, { toValue: 1,         duration: 400, useNativeDriver: true }),
+        Animated.timing(heartGlow, { toValue: 1, duration: 350, useNativeDriver: true }),
         Animated.delay(500),
-        Animated.timing(heartOpacity, { toValue: HEART_DIM, duration: 750, useNativeDriver: true }),
+        Animated.timing(heartGlow, { toValue: 0, duration: 750, useNativeDriver: true }),
       ]).start();
     });
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -372,9 +371,10 @@ export default function MiMusicaScreen() {
               accessibilityRole="button"
               accessibilityLabel="Mis mezclas guardadas"
             >
-              {/* Relleno sólido, semitransparente en reposo; se ilumina al guardar */}
-              <Animated.View style={{ opacity: heartOpacity }}>
-                <MaterialCommunityIcons name="heart" size={18} color={FG} />
+              {/* Blanco puro en reposo; destello naranjo con glow al guardar */}
+              <MaterialCommunityIcons name="heart" size={18} color="#FFFFFF" />
+              <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
+                <MaterialCommunityIcons name="heart" size={18} color="#FF7A1A" style={styles.heartGlowIcon} />
               </Animated.View>
             </Pressable>
           </View>
@@ -479,6 +479,15 @@ const styles = StyleSheet.create({
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 20, backgroundColor: "#1A2336", marginLeft: 12,
+  },
+  heartGlow: {
+    position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
+    alignItems: "center", justifyContent: "center",
+  },
+  heartGlowIcon: {
+    textShadowColor: "#FF7A1A",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
 
   // Tab bar
