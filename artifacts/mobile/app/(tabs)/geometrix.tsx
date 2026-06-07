@@ -10,6 +10,7 @@ import { useFocusEffect } from "expo-router";
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  type ImageSourcePropType,
   Modal,
   Pressable,
   ScrollView,
@@ -37,16 +38,72 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
-import { getSoundImage } from "@/config/sound-images";
 import { GEOMETRIES, type GeometryId, type GeometryMeta } from "@/data/geometries";
-import { getSoundById } from "@/data/sounds";
 
 const colors = colorsConst.light;
 const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 const CARD_BORDER = "#161f33";
 
-/** Los 5 sonidos de fondo del menú (todos con archivo + imagen). */
-const SOUND_PICKS = ["lluvia", "bosque", "oceano", "fogata", "grillos"] as const;
+/**
+ * Dos módulos de música, lado a lado. Cada uno abre un desplegable con 3
+ * opciones (solo imágenes) y reproduce su pista en loop, de forma
+ * independiente del otro módulo.
+ *
+ * NOTA: los archivos de audio son provisorios (se reutilizan loops existentes
+ * del mixer). Para las pistas reales, reemplazar el `sound` de cada track por
+ * el require del .mp3 correspondiente en assets/audio/.
+ */
+type MusicTrack = {
+  id: string;
+  image: ImageSourcePropType;
+  sound: ReturnType<typeof require> | undefined;
+};
+type MusicModule = { key: string; label: string; tracks: MusicTrack[] };
+
+const MUSIC_MODULES: MusicModule[] = [
+  {
+    key: "cosmos",
+    label: "Música energética",
+    tracks: [
+      {
+        id: "cosmos-1",
+        image: require("@/assets/images/geometrix/cosmos-1.png"),
+        sound: SOUND_MAP["onda_gamma"],
+      },
+      {
+        id: "cosmos-2",
+        image: require("@/assets/images/geometrix/cosmos-2.png"),
+        sound: SOUND_MAP["onda_beta"],
+      },
+      {
+        id: "cosmos-3",
+        image: require("@/assets/images/geometrix/cosmos-3.png"),
+        sound: SOUND_MAP["solfeggio_528"],
+      },
+    ],
+  },
+  {
+    key: "nature",
+    label: "Música meditativa",
+    tracks: [
+      {
+        id: "nature-1",
+        image: require("@/assets/images/geometrix/nature-1.png"),
+        sound: SOUND_MAP["bosque"],
+      },
+      {
+        id: "nature-2",
+        image: require("@/assets/images/geometrix/nature-2.png"),
+        sound: SOUND_MAP["oceano"],
+      },
+      {
+        id: "nature-3",
+        image: require("@/assets/images/geometrix/nature-3.png"),
+        sound: SOUND_MAP["lluvia"],
+      },
+    ],
+  },
+];
 
 /** Paleta de colores para personalizar cada geometría. */
 const PALETTE = [
@@ -184,8 +241,10 @@ export default function GeometrixScreen() {
   const { width, height } = useWindowDimensions();
 
   const [active, setActive] = useState<GeometryId[]>([]);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSound, setActiveSound] = useState<string | null>(null);
+  // Módulo de música con su desplegable abierto (null = ninguno).
+  const [openModule, setOpenModule] = useState<string | null>(null);
+  // Pista activa por módulo: { [moduleKey]: trackId | null }.
+  const [activeTracks, setActiveTracks] = useState<Record<string, string | null>>({});
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Alto medido de una tarjeta de ajustes para limitar el desplegable.
@@ -204,10 +263,11 @@ export default function GeometrixScreen() {
   const livePinch = useSharedValue(1);
   const pinchStart = useSharedValue(1);
 
-  const playerRef = useRef<AudioPlayer | null>(null);
+  // Un reproductor por módulo (reproducen de forma independiente).
+  const playersRef = useRef<Record<string, AudioPlayer | null>>({});
 
-  const stopSound = useCallback(() => {
-    const p = playerRef.current;
+  const stopModule = useCallback((moduleKey: string) => {
+    const p = playersRef.current[moduleKey];
     if (p) {
       try {
         p.pause();
@@ -220,40 +280,56 @@ export default function GeometrixScreen() {
         /* ignore */
       }
     }
-    playerRef.current = null;
+    playersRef.current[moduleKey] = null;
   }, []);
 
+  const stopAllSound = useCallback(() => {
+    Object.keys(playersRef.current).forEach((k) => stopModule(k));
+  }, [stopModule]);
+
   useEffect(() => {
-    return () => stopSound();
-  }, [stopSound]);
+    return () => stopAllSound();
+  }, [stopAllSound]);
 
   // Las pestañas quedan montadas: detener el sonido al salir de Geometrix
   // (no alcanza con el cleanup de unmount).
   useFocusEffect(
     useCallback(() => {
       return () => {
-        stopSound();
-        setActiveSound(null);
-        setMenuOpen(false);
+        stopAllSound();
+        setActiveTracks({});
+        setOpenModule(null);
         setSettingsOpen(false);
         setImmersive(false);
         setMenuGeoId(null);
         setSoloId(null);
       };
-    }, [stopSound]),
+    }, [stopAllSound]),
   );
 
-  const selectSound = useCallback(
-    async (id: string) => {
-      if (activeSound === id) {
-        stopSound();
-        setActiveSound(null);
+  // Glow pulsante para llamar la atención sobre los thumbnails inactivos.
+  const glow = useSharedValue(0);
+  useEffect(() => {
+    glow.value = withRepeat(
+      withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      true,
+    );
+  }, [glow]);
+  const glowStyle = useAnimatedStyle(() => ({ opacity: 0.2 + glow.value * 0.7 }));
+
+  const selectTrack = useCallback(
+    async (moduleKey: string, track: MusicTrack) => {
+      // Re-tap a la pista activa → apagar ese módulo.
+      if (activeTracks[moduleKey] === track.id) {
+        stopModule(moduleKey);
+        setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
         return;
       }
-      stopSound();
-      const src = SOUND_MAP[id];
+      stopModule(moduleKey);
+      const src = track.sound;
       if (!src) {
-        setActiveSound(null);
+        setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
         return;
       }
       try {
@@ -261,14 +337,19 @@ export default function GeometrixScreen() {
       } catch {
         /* ignore */
       }
-      const p = createAudioPlayer(src, { updateInterval: 500 });
-      p.loop = true;
-      p.volume = 1;
-      p.play();
-      playerRef.current = p;
-      setActiveSound(id);
+      try {
+        const p = createAudioPlayer(src, { updateInterval: 500 });
+        p.loop = true;
+        p.volume = 1;
+        p.play();
+        playersRef.current[moduleKey] = p;
+        setActiveTracks((prev) => ({ ...prev, [moduleKey]: track.id }));
+      } catch {
+        stopModule(moduleKey);
+        setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
+      }
     },
-    [activeSound, stopSound],
+    [activeTracks, stopModule],
   );
 
   const toggleGeometry = useCallback((id: GeometryId) => {
@@ -320,7 +401,6 @@ export default function GeometrixScreen() {
   const menuGeo = menuGeoId
     ? GEOMETRIES.find((g) => g.id === menuGeoId)
     : undefined;
-  const soundImg = activeSound ? getSoundImage(activeSound) : undefined;
 
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
   // reasignar la selección del pellizco a otra activa (o ninguna).
@@ -388,18 +468,38 @@ export default function GeometrixScreen() {
             <Text style={styles.subtitle}>Crea tus geometrías relajantes</Text>
           </View>
 
-          <Pressable
-            onPress={() => setMenuOpen((v) => !v)}
-            style={[styles.soundThumb, activeSound && styles.soundThumbActive]}
-            accessibilityRole="button"
-            accessibilityLabel="Elegir sonido de fondo"
-          >
-            {soundImg ? (
-              <Image source={soundImg} style={styles.soundThumbImg} contentFit="cover" />
-            ) : (
-              <Feather name="music" size={20} color={colors.foreground} />
-            )}
-          </Pressable>
+          <View style={styles.soundModules}>
+            {MUSIC_MODULES.map((mod) => {
+              const activeId = activeTracks[mod.key] ?? null;
+              const activeTrack = mod.tracks.find((t) => t.id === activeId);
+              const cover = activeTrack?.image ?? mod.tracks[0].image;
+              const isActive = !!activeId;
+              return (
+                <Pressable
+                  key={mod.key}
+                  onPress={() =>
+                    setOpenModule((cur) => (cur === mod.key ? null : mod.key))
+                  }
+                  style={[styles.soundThumb, isActive && styles.soundThumbActive]}
+                  accessibilityRole="button"
+                  accessibilityLabel={mod.label}
+                >
+                  <Image source={cover} style={styles.soundThumbImg} contentFit="cover" />
+                  {!isActive && (
+                    <>
+                      {/* Overlay negro sutil mientras está en reposo. */}
+                      <View style={styles.thumbOverlay} pointerEvents="none" />
+                      {/* Glow pulsante para llamar la atención. */}
+                      <Animated.View
+                        pointerEvents="none"
+                        style={[styles.thumbGlow, glowStyle]}
+                      />
+                    </>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
         </View>
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
@@ -876,41 +976,45 @@ export default function GeometrixScreen() {
         </View>
       </Modal>
 
-      {/* Menú de sonidos (drop-left) */}
-      {menuOpen && (
-        <>
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => setMenuOpen(false)} />
-          <View style={[styles.soundMenu, { top: insets.top + 58 }]}>
-            {SOUND_PICKS.map((id) => {
-              const snd = getSoundById(id);
-              const img = getSoundImage(id);
-              const sel = activeSound === id;
-              return (
-                <Pressable
-                  key={id}
-                  onPress={() => selectSound(id)}
-                  style={[styles.soundRow, sel && styles.soundRowActive]}
-                >
-                  {img ? (
-                    <Image source={img} style={styles.soundRowImg} contentFit="cover" />
-                  ) : (
-                    <View style={[styles.soundRowImg, styles.soundRowImgFallback]}>
-                      <Feather name="music" size={14} color={colors.mutedForeground} />
-                    </View>
-                  )}
-                  <Text
-                    numberOfLines={1}
-                    style={[styles.soundRowText, { color: sel ? colors.foreground : colors.mutedForeground }]}
-                  >
-                    {snd?.name ?? id}
-                  </Text>
-                  {sel && <Feather name="volume-2" size={14} color={colors.primary} />}
-                </Pressable>
-              );
-            })}
-          </View>
-        </>
-      )}
+      {/* Desplegable de música del módulo abierto (solo imágenes, drop-left) */}
+      {openModule &&
+        (() => {
+          const mod = MUSIC_MODULES.find((m) => m.key === openModule);
+          if (!mod) return null;
+          return (
+            <>
+              <Pressable
+                style={StyleSheet.absoluteFill}
+                onPress={() => setOpenModule(null)}
+              />
+              <View style={[styles.soundMenu, { top: insets.top + 58 }]}>
+                {mod.tracks.map((t) => {
+                  const sel = activeTracks[mod.key] === t.id;
+                  return (
+                    <Pressable
+                      key={t.id}
+                      onPress={() => selectTrack(mod.key, t)}
+                      style={[styles.soundTile, sel && styles.soundTileActive]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${mod.label} ${t.id}`}
+                    >
+                      <Image
+                        source={t.image}
+                        style={styles.soundTileImg}
+                        contentFit="cover"
+                      />
+                      {sel && (
+                        <View style={styles.soundTileSel} pointerEvents="none">
+                          <Feather name="volume-2" size={16} color="#fff" />
+                        </View>
+                      )}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </>
+          );
+        })()}
     </View>
   );
 }
@@ -929,6 +1033,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 30, fontWeight: "700", color: colors.foreground, letterSpacing: 0.3 },
   subtitle: { fontSize: 14, color: colors.mutedForeground, marginTop: 3 },
 
+  soundModules: { flexDirection: "row", gap: 10 },
   soundThumb: {
     width: 44,
     height: 44,
@@ -942,6 +1047,16 @@ const styles = StyleSheet.create({
   },
   soundThumbActive: { borderColor: colors.primary },
   soundThumbImg: { width: "100%", height: "100%" },
+  thumbOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
+  thumbGlow: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: colors.primary,
+  },
 
   grid: { flexGrow: 0 },
   gridContent: { paddingVertical: 2, paddingRight: 20 },
@@ -1201,28 +1316,28 @@ const styles = StyleSheet.create({
   soundMenu: {
     position: "absolute",
     right: 20,
-    width: 196,
+    flexDirection: "row",
     borderRadius: 16,
     backgroundColor: "#0B0F14",
     borderWidth: 1,
     borderColor: CARD_BORDER,
-    padding: 6,
-    gap: 2,
+    padding: 8,
+    gap: 8,
   },
-  soundRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 7,
-    borderRadius: 11,
+  soundTile: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
   },
-  soundRowActive: { backgroundColor: "rgba(255,255,255,0.05)" },
-  soundRowImg: { width: 30, height: 30, borderRadius: 8 },
-  soundRowImgFallback: {
+  soundTileActive: { borderColor: colors.primary },
+  soundTileImg: { width: "100%", height: "100%" },
+  soundTileSel: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(0,0,0,0.35)",
   },
-  soundRowText: { flex: 1, fontSize: 13, fontWeight: "600" },
 });

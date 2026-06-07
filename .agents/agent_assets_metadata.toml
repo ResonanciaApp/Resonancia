@@ -624,6 +624,42 @@ uri = "file://artifacts/mockup-sandbox/public/images/ancestrales-hero.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "59muBYZWZtuvzWBX_9DtI"
+uri = "file://artifacts/mobile/assets/images/geometrix/cosmos-1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "sVwgvu9aLHV98vSggBr_P"
+uri = "file://artifacts/mobile/assets/images/geometrix/cosmos-2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ifmR70hkk9j79QJHovjBU"
+uri = "file://artifacts/mobile/assets/images/geometrix/cosmos-3.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Ncry067cgFAnTy_FnhvGC"
+uri = "file://artifacts/mobile/assets/images/geometrix/nature-1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "mxNAkGw-3MmBKEBA0Is11"
+uri = "file://artifacts/mobile/assets/images/geometrix/nature-2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "r2A99qFjjm2PRNoHYjvqA"
+uri = "file://artifacts/mobile/assets/images/geometrix/nature-3.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
