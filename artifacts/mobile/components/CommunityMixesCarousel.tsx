@@ -1,9 +1,9 @@
 /**
  * CommunityMixesCarousel — sección "Mezclas de la comunidad"
  * Diseño V2D (minimalista líneas): ranking, nombre, autor, 3-dot menu.
- * Tabs = bloques tipo tarjeta con ícono arriba (mismo diseño que Mis Mezclas).
+ * Tabs = píldoras (mismo diseño que "Mi Música").
  */
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
@@ -14,7 +14,6 @@ import {
   Text,
   View,
 } from "react-native";
-import Svg, { Ellipse, Path } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -39,31 +38,6 @@ const GOLD = "#BE9650";
 const STACK_THUMB = 30;
 const STACK_SHIFT = 19;
 const MAX_VISIBLE = 8;
-
-// ── Íconos de categoría (mismos que Mis Mezclas) ───────────────────
-function MoonIcon({ color, size = 26 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" fill={color} />
-    </Svg>
-  );
-}
-
-function ZenStonesIcon({ color, size = 26 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 30 30">
-      <Ellipse cx="15"   cy="23.5" rx="8"   ry="4.2" fill={color} opacity={0.95} />
-      <Ellipse cx="15.6" cy="16.5" rx="5.8" ry="3.3" fill={color} opacity={0.85} />
-      <Ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity={0.75} />
-    </Svg>
-  );
-}
-
-function CategoryIcon({ id, color, size = 26 }: { id: CategoryFilter; color: string; size?: number }) {
-  if (id === "dormir")    return <MoonIcon color={color} size={size} />;
-  if (id === "motivarme") return <ZenStonesIcon color={color} size={size} />;
-  return <MaterialCommunityIcons name="image-filter-hdr" size={size} color={color} />;
-}
 
 // ── Componente principal ───────────────────────────────────────────
 export function CommunityMixesCarousel() {
@@ -178,8 +152,8 @@ export function CommunityMixesCarousel() {
       </View>
 
       <View style={styles.panel}>
-      {/* ── Tabs — subrayados ── */}
-      <View style={styles.tabRow}>
+      {/* ── Tabs — píldoras (mismo diseño que "Mi Música") ── */}
+      <View style={styles.tabRow} accessibilityRole="tablist">
         {TABS.map(({ id, label }) => {
           const sel = id === activeTab;
           return (
@@ -191,6 +165,7 @@ export function CommunityMixesCarousel() {
               accessibilityState={{ selected: sel }}
             >
               <Text
+                numberOfLines={1}
                 style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}
               >
                 {label}
@@ -484,7 +459,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
-  // Tabs (píldoras)
+  // Tabs (píldoras) — mismo diseño que "Mi Música"
   tabRow: {
     flexDirection: "row",
     gap: 8,
@@ -492,19 +467,25 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   tabBlock: {
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: "#847eb5",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    flex: 1,
+    flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "transparent",
-  },
-  tabBlockSel: {
+    gap: 5,
+    paddingTop: 15,
+    paddingBottom: 13,
+    paddingHorizontal: 2,
+    borderRadius: 14,
+    minWidth: 62,
+    borderWidth: 1,
     borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabLabel: { fontSize: 15, letterSpacing: 0.1 },
+  tabBlockSel: {
+    backgroundColor: "rgba(100,142,195,0.14)",
+    borderColor: "#1b263f",
+    borderWidth: 1,
+  },
+  tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
 
   // Empty
   emptyState: {
