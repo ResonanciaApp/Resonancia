@@ -179,7 +179,7 @@ export default function SonidosScreen() {
         </View>
 
         {/* Sticky tab bar — bloques con ícono */}
-        <View style={[styles.tabBarWrap, { backgroundColor: colors.background }]}>
+        <View style={styles.tabBarWrap}>
           <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
             {TABS.map(({ label, value, icon }) => {
               const sel = activeTab === value;
