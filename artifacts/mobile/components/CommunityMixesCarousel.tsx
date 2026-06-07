@@ -178,7 +178,7 @@ export function CommunityMixesCarousel() {
       </View>
 
       <View style={styles.panel}>
-      {/* ── Tabs — 3 bloques con ícono arriba ── */}
+      {/* ── Tabs — subrayados ── */}
       <View style={styles.tabRow}>
         {TABS.map(({ id, label }) => {
           const sel = id === activeTab;
@@ -186,29 +186,26 @@ export function CommunityMixesCarousel() {
             <Pressable
               key={id}
               onPress={() => setActiveTab(id)}
-              style={[styles.tabBlock, sel && styles.tabBlockActive]}
+              style={styles.tabBlock}
               accessibilityRole="tab"
               accessibilityState={{ selected: sel }}
             >
-              <CategoryIcon id={id} color={sel ? "#FFFFFF" : colors.mutedForeground} size={26} />
               <Text
                 style={[
                   styles.tabLabel,
                   {
                     color: sel ? "#FFFFFF" : colors.mutedForeground,
-                    fontWeight: sel ? "700" : "400",
+                    fontWeight: sel ? "700" : "500",
                   },
                 ]}
               >
                 {label}
               </Text>
+              {sel && <View style={styles.tabUnderline} />}
             </Pressable>
           );
         })}
       </View>
-
-      {/* Divisor tabs → lista */}
-      <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.07)", marginBottom: 4 }} />
 
       {/* Empty state */}
       {visible.length === 0 && (
@@ -494,20 +491,30 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
-  // Tabs (bloques con ícono)
-  tabRow: { flexDirection: "row", gap: 10, marginBottom: 16 },
+  // Tabs (subrayados)
+  tabRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.08)",
+    marginBottom: 16,
+  },
   tabBlock: {
     flex: 1,
-    flexDirection: "column",
     alignItems: "center",
-    gap: 8,
-    paddingTop: 14,
-    paddingBottom: 12,
-    borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    paddingTop: 10,
+    paddingBottom: 10,
+    position: "relative",
   },
-  tabBlockActive: { backgroundColor: "rgba(255,255,255,0.08)" },
-  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
+  tabUnderline: {
+    position: "absolute",
+    bottom: -1,
+    left: "15%",
+    right: "15%",
+    height: 2.5,
+    backgroundColor: "#5F598C",
+    borderRadius: 2,
+  },
+  tabLabel: { fontSize: 15, letterSpacing: 0.1 },
 
   // Empty
   emptyState: {
