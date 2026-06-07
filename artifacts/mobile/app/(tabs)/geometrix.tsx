@@ -709,9 +709,18 @@ export default function GeometrixScreen() {
               return (
                 <Pressable
                   key={mod.key}
-                  onPress={() =>
-                    setOpenModule((cur) => (cur === mod.key ? null : mod.key))
-                  }
+                  onPress={() => {
+                    // Si ya hay una pista sonando, este tap la APAGA (y quita el
+                    // icono). El siguiente tap reabre el desplegable para elegir
+                    // otra desde cero.
+                    if (isActive) {
+                      stopModule(mod.key);
+                      setActiveTracks((prev) => ({ ...prev, [mod.key]: null }));
+                      setOpenModule(null);
+                      return;
+                    }
+                    setOpenModule((cur) => (cur === mod.key ? null : mod.key));
+                  }}
                   style={styles.soundThumb}
                   accessibilityRole="button"
                   accessibilityLabel={mod.label}
