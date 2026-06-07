@@ -73,17 +73,20 @@ const MUSIC_MODULES: MusicModule[] = [
       {
         id: "cosmos-1",
         image: require("@/assets/images/geometrix/cosmos-1.png"),
-        sound: SOUND_MAP["onda_gamma"],
+        // Ovnimoon — Process of Life (WAV original comprimido a AAC 160k).
+        sound: require("@/assets/audio/geometrix/track-1.m4a"),
       },
       {
         id: "cosmos-2",
         image: require("@/assets/images/geometrix/cosmos-2.png"),
-        sound: SOUND_MAP["onda_beta"],
+        // Toxeed — Connect to Light (AAC original, carátula removida).
+        sound: require("@/assets/audio/geometrix/track-2.m4a"),
       },
       {
         id: "cosmos-3",
         image: require("@/assets/images/geometrix/cosmos-3.png"),
-        sound: SOUND_MAP["solfeggio_528"],
+        // Toxeed — SARASWATI (AAC original, carátula removida).
+        sound: require("@/assets/audio/geometrix/track-3.m4a"),
       },
       // ── Naturaleza ────────────────────────────────────────────
       {
