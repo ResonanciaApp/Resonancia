@@ -297,19 +297,7 @@ export default function ProfileScreen() {
   }, [statEvents]);
 
   return (
-    <LinearGradient
-
-      style={styles.root}
-
-      colors={BG_GRADIENT}
-
-      locations={[0, 0.5, 1]}
-
-      start={{ x: 0, y: 0 }}
-
-      end={{ x: 0, y: 1 }}
-
-    >
+    <View style={[styles.root, { backgroundColor: "#06070F" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -708,7 +696,7 @@ export default function ProfileScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
-    </LinearGradient>
+    </View>
   );
 }
 
