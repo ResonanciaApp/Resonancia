@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
 
   // Scroll
   scroll:        { flex: 1 },
-  scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
+  scrollContent: { paddingHorizontal: 16, paddingTop: 14 },
 
   // Sub-tabs sobre la línea divisora
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
@@ -534,10 +534,10 @@ const styles = StyleSheet.create({
   subTabText: { fontSize: 11, fontWeight: "600", textAlign: "center" },
 
   // Grilla de sonidos — 3 columnas uniformes
-  grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
+  grid: { flexDirection: "row", flexWrap: "wrap", rowGap: 22, justifyContent: "space-between" },
   soundCard: { width: "31%" },
   cardImageWrap: {
-    width: "77%",
+    width: "100%",
     aspectRatio: 1,
     alignSelf: "center",
     overflow: "hidden",
