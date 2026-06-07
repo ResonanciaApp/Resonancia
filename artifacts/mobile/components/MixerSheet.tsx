@@ -533,9 +533,16 @@ export function MixerSheet() {
         <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
           <Pressable
-            style={[styles.modalCard, { backgroundColor: colors.background, borderColor: "rgba(182,149,95,0.25)" }]}
+            style={[styles.modalCard, { backgroundColor: HOME_GRADIENT[2] }]}
             onPress={(e) => e.stopPropagation()}
           >
+                <LinearGradient
+                  colors={HOME_GRADIENT}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                  pointerEvents="none"
+                />
                 <Text style={[styles.modalTitle, { color: colors.foreground }]}>
                   {saveMode === "update" ? "Actualizar mezcla" : "Guardar mezcla"}
                 </Text>
@@ -553,49 +560,33 @@ export function MixerSheet() {
                     placeholderTextColor={colors.mutedForeground}
                     style={[
                       styles.modalInput,
-                      { color: colors.foreground, borderColor: "rgba(182,149,95,0.2)", backgroundColor: colors.card },
+                      { color: colors.foreground, backgroundColor: colors.card },
                     ]}
                     maxLength={40}
                   />
 
                   <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Categoría</Text>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.catChips}
-                  >
+                  <View style={styles.catTabRow} accessibilityRole="tablist">
                     {MIX_CATEGORIES.map((cat) => {
                       const selected = mixCategory === cat.id;
                       return (
                         <Pressable
                           key={cat.id}
                           onPress={() => setMixCategory(cat.id)}
-                          style={[
-                            styles.catChip,
-                            {
-                              backgroundColor: "#151A23",
-                              borderColor: selected
-                                ? "rgba(100,185,220,0.45)"
-                                : "transparent",
-                            },
-                          ]}
+                          style={[styles.catTabBlock, selected && styles.catTabBlockSel]}
+                          accessibilityRole="tab"
+                          accessibilityState={{ selected }}
                         >
                           <Text
-                            style={[
-                              styles.catChipText,
-                              {
-                                color: selected
-                                  ? "#FFFFFF"
-                                  : colors.mutedForeground,
-                              },
-                            ]}
+                            numberOfLines={1}
+                            style={[styles.catTabLabel, { color: "#FFFFFF", fontWeight: selected ? "700" : "400" }]}
                           >
                             {cat.label}
                           </Text>
                         </Pressable>
                       );
                     })}
-                  </ScrollView>
+                  </View>
 
                 </ScrollView>
 
@@ -780,28 +771,32 @@ const styles = StyleSheet.create({
   modalCard: {
     width: "100%",
     borderRadius: 18,
-    borderWidth: 1,
     padding: 20,
+    overflow: "hidden",
   },
   modalTitle: { fontSize: 17, fontWeight: "700", marginBottom: 14 },
   modalScroll: { maxHeight: 420 },
   modalLabel: { fontSize: 12, fontWeight: "600", marginBottom: 6, marginTop: 12 },
   modalInput: {
-    borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 15,
   },
   modalInputArea: { minHeight: 64, textAlignVertical: "top" },
-  catChips: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingRight: 32 },
-  catChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
+  catTabRow: { flexDirection: "row", gap: 8, marginTop: 6 },
+  catTabBlock: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 13,
+    paddingHorizontal: 2,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
-  catChipText: { fontSize: 12.5, fontWeight: "600" },
+  catTabBlockSel: {
+    backgroundColor: "rgba(100,142,195,0.14)",
+  },
+  catTabLabel: { fontSize: 15, textAlign: "center" },
   imgGallery: { gap: 8, paddingVertical: 2 },
   imgThumbWrap: { borderRadius: 12, overflow: "hidden" },
   imgThumb: { width: 64, height: 64, justifyContent: "center", alignItems: "center" },
