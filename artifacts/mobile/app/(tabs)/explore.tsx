@@ -46,15 +46,14 @@ const PRIMARY_W = (width - H_PAD * 2 - GAP) / 2;
 const TAG_W = (width - H_PAD * 2 - GAP) / 2;
 const TAG_H = 130;
 const TEMA_W = (width - H_PAD * 2 - GAP * 2) / 3;
+const CONTINUE_CARD_W = width - H_PAD * 2 - 48;
 
-
-
-function fmtTime(totalSeconds: number): string {
-  const s = Math.max(0, Math.floor(totalSeconds));
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${m}:${sec.toString().padStart(2, "0")}`;
-}
+const MAIN_CAT_IDS = [
+  "sonidos-ancestrales",
+  "meditaciones-guiadas",
+  "musica-sonidos",
+  "podcast",
+] as const;
 
 const TIME_BUCKETS = [
   { label: "5 min",  min: 0,   max: 5   },
@@ -69,7 +68,7 @@ export default function ExploreScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
-  const { history, playSession, getSessionProgress, sessionProgress } = usePlayer();
+  const { history, getSessionProgress } = usePlayer();
   const { isPremium } = usePremium();
 
   const { data: popular } = useGetPopularSessions(
@@ -115,24 +114,25 @@ export default function ExploreScreen() {
   const primaryCats = getPrimaryCategories();
   const secondaryCats = getSecondaryCategories();
 
-  // Pick the most recent session that still has saved progress (unfinished).
-  // Fall back to the most recent history entry if none qualifies.
-  const lastSession =
-    historySessions.find((e) => {
-      const p = sessionProgress[e.session.id] ?? 0;
-      return p > 0 && p < 0.97;
-    })?.session ??
-    historySessions[0]?.session ??
-    null;
-  const lastSessionProgress = lastSession ? getSessionProgress(lastSession.id) : 0;
-  const lastAuthor = lastSession
-    ? lastSession.guideId
-      ? getGuide(lastSession.guideId).name
-      : getArtist(lastSession.artistId).name
-    : "";
-  const lastDurationSec = lastSession ? lastSession.duration * 60 : 0;
-  const lastElapsedSec = Math.round(lastDurationSec * Math.min(1, lastSessionProgress));
-  const lastSessionLocked = !!lastSession?.isPremium && !isPremium;
+  // "Sigue escuchando" por categoría: la última sesión escuchada de cada
+  // categoría principal. Si no hay historial, la card muestra la portada de la
+  // categoría con un placeholder y al tocar abre la categoría.
+  const continueByCategory = MAIN_CAT_IDS.flatMap((catId) => {
+    const cat = CATEGORIES.find((c) => c.id === catId);
+    if (!cat) return [];
+    // Buscar en TODO el historial (no en el slice de 20) la última sesión de la categoría.
+    let session: (typeof SESSIONS)[number] | null = null;
+    for (const entry of history) {
+      const s = SESSIONS.find((x) => x.id === entry.sessionId);
+      if (s && s.categoryId === catId) {
+        session = s;
+        break;
+      }
+    }
+    const coverSession = SESSIONS.find((s) => s.categoryId === catId);
+    const coverImage = (session?.image ?? coverSession?.image) as number | undefined;
+    return [{ cat, session, coverImage }];
+  });
 
   return (
     <LinearGradient
@@ -273,96 +273,112 @@ export default function ExploreScreen() {
               </ScrollView>
             </View>
 
-            {/* ── Continúa escuchando (sin título; el reproductor basta) ── */}
+            {/* ── Sigue escuchando (carrusel por categoría) ── */}
             <View style={styles.section}>
-              {lastSession ? (
-                <Pressable
-                  onPress={() =>
-                    router.push(
-                      (lastSessionLocked
-                        ? "/membresia"
-                        : `/session/${lastSession.id}`) as never,
-                    )
-                  }
-                  style={({ pressed }) => [
-                    styles.continueCard,
-                    { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.85 : 1 },
-                  ]}
-                >
-                  <Image
-                    source={lastSession.image as number}
-                    style={styles.continueImg}
-                    contentFit="cover"
-                    placeholder={BLUR_PLACEHOLDER}
-                    transition={IMAGE_TRANSITION}
-                  />
-                  <View style={styles.continueMeta}>
-                    <View style={styles.continueKickerRow}>
-                      <Text style={[styles.continueKicker, { color: colors.primary }]}>
-                        Sigue escuchando
-                      </Text>
-                      {lastSessionProgress > 0 && (
-                        <Text style={[styles.continuePercent, { color: colors.primary }]}>
-                          {Math.round(Math.min(100, lastSessionProgress * 100))}%
-                        </Text>
-                      )}
-                    </View>
-                    <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
-                      {lastSession.title}
-                    </Text>
-                    {!!lastAuthor && (
-                      <Text style={[styles.continueAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {lastAuthor}
-                      </Text>
-                    )}
-                    {lastSessionProgress > 0 && (
-                      <View style={styles.continueProgressRow}>
-                        <Text style={[styles.continueTimeText, { color: colors.mutedForeground }]}>
-                          {fmtTime(lastElapsedSec)}
-                        </Text>
-                        <View style={[styles.continueProgressTrack, { backgroundColor: "rgba(93,173,226,0.18)" }]}>
+              <Text style={[styles.sectionTitle, { marginBottom: 12 }]}>Sigue escuchando</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginHorizontal: -H_PAD }}
+                contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12 }}
+              >
+                {continueByCategory.map(({ cat, session, coverImage }) => {
+                  const progress = session ? getSessionProgress(session.id) : 0;
+                  const locked = !!session?.isPremium && !isPremium;
+                  const author = session
+                    ? session.guideId
+                      ? getGuide(session.guideId).name
+                      : getArtist(session.artistId).name
+                    : "";
+                  const handlePress = () => {
+                    if (session) {
+                      router.push((locked ? "/membresia" : `/session/${session.id}`) as never);
+                    } else {
+                      router.push(`/category/${cat.id}` as never);
+                    }
+                  };
+                  return (
+                    <Pressable
+                      key={cat.id}
+                      onPress={handlePress}
+                      style={({ pressed }) => [
+                        styles.continueCatCard,
+                        { width: CONTINUE_CARD_W, opacity: pressed ? 0.85 : 1 },
+                      ]}
+                    >
+                      <View style={styles.continueCatImageWrap}>
+                        {coverImage ? (
+                          <Image
+                            source={coverImage}
+                            style={styles.continueCatImage}
+                            contentFit="cover"
+                            placeholder={BLUR_PLACEHOLDER}
+                            transition={IMAGE_TRANSITION}
+                          />
+                        ) : (
+                          <View style={[styles.continueCatImage, { backgroundColor: cat.gradient[0] }]} />
+                        )}
+                        <View style={styles.continueCatBadge}>
+                          <Text style={styles.continueCatBadgeText}>{cat.title}</Text>
+                        </View>
+                        {session && (
+                          <View style={[styles.continueCatPlay, { backgroundColor: "rgba(214,168,91,0.92)" }]}>
+                            <Feather
+                              name={locked ? "lock" : "play"}
+                              size={15}
+                              color="#090F17"
+                              style={locked ? undefined : { marginLeft: 2 }}
+                            />
+                          </View>
+                        )}
+                        {session && progress > 0 && (
                           <View
                             style={[
-                              styles.continueProgressFill,
-                              {
-                                width: `${Math.min(100, lastSessionProgress * 100)}%`,
-                                backgroundColor: "#5DADE2",
-                              },
+                              styles.continueCatTrack,
+                              { backgroundColor: "rgba(93,173,226,0.18)" },
                             ]}
-                          />
-                        </View>
-                        <Text style={[styles.continueTimeText, { color: colors.mutedForeground }]}>
-                          {fmtTime(lastDurationSec)}
-                        </Text>
+                          >
+                            <View
+                              style={[
+                                styles.continueCatFill,
+                                {
+                                  width: `${Math.min(100, progress * 100)}%`,
+                                  backgroundColor: "#5DADE2",
+                                },
+                              ]}
+                            />
+                          </View>
+                        )}
                       </View>
-                    )}
-                  </View>
-                  <View style={[styles.continuePlay, { backgroundColor: "#1A2A3A" }]}>
-                    <Feather
-                      name={lastSessionLocked ? "lock" : "play"}
-                      size={16}
-                      color="#FFFFFF"
-                      style={lastSessionLocked ? undefined : { marginLeft: 2 }}
-                    />
-                  </View>
-                </Pressable>
-              ) : (
-                <View
-                  style={[
-                    styles.continuePlaceholder,
-                    { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" },
-                  ]}
-                >
-                  <View
-                    style={[styles.continuePlaceholderIcon, { backgroundColor: "rgba(182,149,95,0.12)" }]}
-                  >
-                    <Feather name="headphones" size={20} color={colors.primary} />
-                  </View>
-                  <Text style={[styles.continuePlaceholderText, { color: colors.mutedForeground }]}>
-                    Acá se mostrará la sesión que estabas escuchando
-                  </Text>
-                </View>
-              )}
+                      {session ? (
+                        <>
+                          <Text
+                            style={[styles.continueCatTitle, { color: colors.foreground }]}
+                            numberOfLines={2}
+                          >
+                            {session.title}
+                          </Text>
+                          {!!author && (
+                            <Text
+                              style={[styles.continueCatAuthor, { color: colors.mutedForeground }]}
+                              numberOfLines={1}
+                            >
+                              {author}
+                            </Text>
+                          )}
+                        </>
+                      ) : (
+                        <Text
+                          style={[styles.continueCatPlaceholder, { color: colors.mutedForeground }]}
+                          numberOfLines={2}
+                        >
+                          Acá aparecerá la última sesión de {cat.title}
+                        </Text>
+                      )}
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
             </View>
 
             {/* ── Tu Biblioteca (2×2 grid) ── */}
@@ -717,96 +733,62 @@ const styles = StyleSheet.create({
   },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
 
-  // Continúa escuchando
-  continueCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 18,
-    padding: 16,
-    gap: 14,
-    marginTop: 4,
-  },
-  continueImg: {
-    width: 88,
-    height: 88,
+  // Sigue escuchando (carrusel por categoría)
+  continueCatCard: {},
+  continueCatImageWrap: {
+    width: "100%",
+    aspectRatio: 16 / 9,
     borderRadius: 14,
+    overflow: "hidden",
+    justifyContent: "flex-end",
   },
-  continuePlaceholder: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 16,
-    padding: 14,
-    gap: 12,
-    marginTop: 8,
-    borderWidth: 1,
-    borderStyle: "dashed",
+  continueCatImage: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
+  continueCatBadge: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    backgroundColor: "rgba(6,10,15,0.72)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
-  continuePlaceholderIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  continueCatBadgeText: { fontSize: 11, fontWeight: "700", color: "#FFFFFF" },
+  continueCatPlay: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: "center",
     justifyContent: "center",
   },
-  continuePlaceholderText: {
-    flex: 1,
-    fontSize: 13.5,
-    lineHeight: 19,
-  },
-  continueMeta: { flex: 1 },
-  continueKickerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 4,
-  },
-  continueKicker: {
-    fontSize: 10,
-    fontWeight: "400",
-    letterSpacing: 1.2,
-  },
-  continuePercent: {
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 0.5,
-  },
-  continueTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    lineHeight: 22,
-    marginBottom: 4,
-  },
-  continueSub: { fontSize: 12, lineHeight: 16 },
-  continueAuthor: { fontSize: 12, lineHeight: 16, marginBottom: 2 },
-  continueProgressRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 8,
-  },
-  continueTimeText: {
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 0.3,
-    minWidth: 30,
-  },
-  continueProgressTrack: {
-    flex: 1,
-    height: 3,
-    borderRadius: 2,
+  continueCatTrack: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 4,
     overflow: "hidden",
   },
-  continueProgressFill: {
-    height: 3,
-    borderRadius: 2,
+  continueCatFill: { height: 4 },
+  continueCatTitle: {
+    fontSize: 13,
+    fontWeight: "600",
+    lineHeight: 18,
+    marginTop: 8,
+    paddingHorizontal: 2,
   },
-  continuePlay: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
+  continueCatAuthor: {
+    fontSize: 11,
+    marginTop: 4,
+    paddingHorizontal: 2,
+  },
+  continueCatPlaceholder: {
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 8,
+    paddingHorizontal: 2,
   },
 
   // Programas
