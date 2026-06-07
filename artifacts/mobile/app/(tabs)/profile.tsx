@@ -469,7 +469,7 @@ export default function ProfileScreen() {
         <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
           {/* Header: flame + title */}
           <View style={styles.rachaTop}>
-            <View style={[styles.rachaBubble, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
+            <View style={[styles.rachaBubble, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <Text style={styles.rachaFlame}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -514,7 +514,7 @@ export default function ProfileScreen() {
 
           {/* Max streak row */}
           <View style={[styles.rachaMaxRow, { borderTopColor: colors.border ?? "#1E2A38" }]}>
-            <View style={[styles.rachaMaxIcon, { backgroundColor: "rgba(190,150,80,0.10)" }]}>
+            <View style={[styles.rachaMaxIcon, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <Text style={{ fontSize: 16 }}>🛡️</Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -549,7 +549,7 @@ export default function ProfileScreen() {
               style={({ pressed }) => [
                 styles.communityCard,
                 {
-                  backgroundColor: pressed ? "rgba(190,150,80,0.12)" : "rgba(255,255,255,0.03)",
+                  backgroundColor: pressed ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
                   transform: [{ scale: pressed ? 0.96 : 1 }],
                 },
               ]}
