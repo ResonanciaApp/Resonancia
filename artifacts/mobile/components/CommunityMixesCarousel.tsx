@@ -175,6 +175,9 @@ export function CommunityMixesCarousel() {
         })}
       </View>
 
+      {/* Línea divisora entre los tabs y las sesiones */}
+      <View style={styles.tabsDivider} />
+
       {/* Empty state */}
       {visible.length === 0 && (
         <View style={[styles.emptyState, { backgroundColor: colors.card }]}>
@@ -464,7 +467,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     paddingHorizontal: 16,
-    marginBottom: 16,
+    marginBottom: 12,
+  },
+  tabsDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    marginHorizontal: 16,
+    marginBottom: 12,
   },
   tabBlock: {
     flex: 1,
