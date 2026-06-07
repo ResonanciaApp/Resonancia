@@ -22,6 +22,7 @@ import {
   View,
 } from "react-native";
 import Animated, {
+  cancelAnimation,
   Easing,
   FadeIn,
   FadeInDown,
@@ -162,6 +163,16 @@ function defaultSettings(id: GeometryId): GeoSettings {
   };
 }
 
+/** Ajustes generales (panel maestro) que afectan a todas las capas a la vez. */
+type GlobalSettings = {
+  /** Opacidad maestra 0–1: multiplica la opacidad propia de cada capa. */
+  opacity: number;
+  /** Movimiento global on/off: congela giro + respiración de todas las capas. */
+  motion: boolean;
+  /** Glow maestro 0–1: halo aditivo en los trazos de todas las capas. */
+  glow: number;
+};
+
 // ── Interruptor sutil (on/off) ────────────────────────────────────
 function Toggle({
   value,
@@ -191,6 +202,9 @@ function GeometryLayer({
   size,
   settings,
   liveZoom,
+  masterOpacity = 1,
+  motion = true,
+  glow = 0,
 }: {
   geo: GeometryMeta;
   index: number;
@@ -199,12 +213,28 @@ function GeometryLayer({
   /** Shared value de zoom en vivo (pellizco). Si se pasa, manda sobre
       settings.zoom (lo usa solo la geometría seleccionada en el lienzo). */
   liveZoom?: SharedValue<number>;
+  /** Opacidad maestra (panel general): multiplica la de esta capa. */
+  masterOpacity?: number;
+  /** Movimiento global (panel general): si es false, congela giro + respiración. */
+  motion?: boolean;
+  /** Glow maestro (panel general) 0–1: halo aditivo en el trazo. */
+  glow?: number;
 }) {
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
   const { color, rotate, opacity, breathe, thickness, scale, zoom } = settings;
 
+  // El movimiento general (panel maestro) detiene las animaciones de TODAS las
+  // capas a la vez. Al apagarlo se cancela y se vuelve al reposo (0deg / sin
+  // pulso); al encenderlo arranca desde cero, así no hay salto al reanudar.
   useEffect(() => {
+    if (!motion) {
+      cancelAnimation(rot);
+      cancelAnimation(pulse);
+      rot.value = 0;
+      pulse.value = 0;
+      return;
+    }
     rot.value = withRepeat(
       withTiming(1, { duration: 38000 + index * 6000, easing: Easing.linear }),
       -1,
@@ -215,7 +245,7 @@ function GeometryLayer({
       -1,
       true,
     );
-  }, [index, pulse, rot]);
+  }, [index, pulse, rot, motion]);
 
   const dir = index % 2 === 0 ? 1 : -1;
   // Defensa ante estado corrupto/parcial: nunca dejar pasar NaN al worklet/SVG.
@@ -232,22 +262,50 @@ function GeometryLayer({
     if (!liveZoom) localZoom.value = safeZoom;
   }, [safeZoom, liveZoom, localZoom]);
   const zoomSV = liveZoom ?? localZoom;
+  // Movimiento general (panel maestro): congela giro + respiración de TODAS las
+  // capas a la vez sin borrar el ajuste propio de cada una.
+  const spin = rotate && motion;
+  const breath = breathe && motion;
+  const safeMaster = Number.isFinite(masterOpacity) ? masterOpacity : 1;
   const aStyle = useAnimatedStyle(() => ({
     transform: [
-      { rotate: rotate ? `${rot.value * 360 * dir}deg` : "0deg" },
+      { rotate: spin ? `${rot.value * 360 * dir}deg` : "0deg" },
       // Respiración (0.9–1.0) × tamaño elegido × zoom de pellizco.
-      { scale: (breathe ? 0.9 + pulse.value * 0.1 : 1) * userScale * zoomSV.value },
+      { scale: (breath ? 0.9 + pulse.value * 0.1 : 1) * userScale * zoomSV.value },
     ],
-    opacity,
+    // Opacidad propia × opacidad general (maestra).
+    opacity: opacity * safeMaster,
   }));
 
   // Trazo base de 1px real: el viewBox es 0–100, así que 1px = 100 / size.
   // El grosor escala de 1px (thickness 0) a ~6px (thickness 1).
   const base1px = size > 0 ? 100 / size : 1;
   const sw = base1px * (1 + safeThickness * 5);
+  // Glow general: halo aditivo detrás del trazo (copias más anchas y tenues).
+  const safeGlow = Number.isFinite(glow) ? Math.max(0, Math.min(1, glow)) : 0;
 
   return (
     <Animated.View style={[styles.layer, aStyle]} pointerEvents="none">
+      {safeGlow > 0 && (
+        <>
+          <View style={[styles.layer, { opacity: 0.16 * safeGlow }]}>
+            <SacredGlyph
+              id={geo.id}
+              color={color}
+              size={size}
+              strokeWidth={sw * (3 + safeGlow * 3)}
+            />
+          </View>
+          <View style={[styles.layer, { opacity: 0.26 * safeGlow }]}>
+            <SacredGlyph
+              id={geo.id}
+              color={color}
+              size={size}
+              strokeWidth={sw * (1.8 + safeGlow * 1.6)}
+            />
+          </View>
+        </>
+      )}
       <SacredGlyph id={geo.id} color={color} size={size} strokeWidth={sw} />
     </Animated.View>
   );
@@ -268,6 +326,14 @@ export default function GeometrixScreen() {
   const [activeTracks, setActiveTracks] = useState<Record<string, string | null>>({});
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Ajustes generales (panel maestro): se aplican sobre TODAS las capas.
+  const [master, setMaster] = useState<GlobalSettings>({
+    opacity: 1,
+    motion: true,
+    glow: 0,
+  });
+  const [generalOpen, setGeneralOpen] = useState(false);
+  const [generalSheetHeight, setGeneralSheetHeight] = useState(0);
   // Alto medido de una tarjeta de ajustes para limitar el desplegable.
   const [cardHeight, setCardHeight] = useState<number | null>(null);
   // Alto real del sheet de ajustes, para anclar la vista previa justo encima.
@@ -357,6 +423,7 @@ export default function GeometrixScreen() {
         setActiveTracks({});
         setOpenModule(null);
         setSettingsOpen(false);
+        setGeneralOpen(false);
         setImmersive(false);
         setMenuGeoId(null);
         setSoloId(null);
@@ -453,7 +520,7 @@ export default function GeometrixScreen() {
   const hasActive = activeMetas.length > 0;
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }[] = [
-    { key: "settings", icon: "sliders", label: "Personalizar", onPress: () => setSettingsOpen(true) },
+    { key: "settings", icon: "sliders", label: "Ajustes generales", onPress: () => setGeneralOpen(true) },
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
   ];
@@ -514,6 +581,11 @@ export default function GeometrixScreen() {
   const previewFree = height - sheetHeight - insets.top - 12 - 36;
   const previewSize = sheetHeight
     ? Math.max(120, Math.min(width - 32, previewFree))
+    : 0;
+  // Vista previa del panel general (mismo cálculo, anclada a su propio sheet).
+  const generalPreviewFree = height - generalSheetHeight - insets.top - 12 - 36;
+  const generalPreviewSize = generalSheetHeight
+    ? Math.max(120, Math.min(width - 32, generalPreviewFree))
     : 0;
   // En inmersión la geometría llena la pantalla, centrada.
   const immersiveSize = Math.min(width, height) * 0.96;
@@ -656,6 +728,9 @@ export default function GeometrixScreen() {
                       size={layerSize}
                       settings={getSettings(g.id)}
                       liveZoom={g.id === pinchTargetId ? livePinch : undefined}
+                      masterOpacity={master.opacity}
+                      motion={master.motion}
+                      glow={master.glow}
                     />
                   ))}
 
@@ -812,6 +887,9 @@ export default function GeometrixScreen() {
                 index={i}
                 size={immersiveSize}
                 settings={getSettings(g.id)}
+                masterOpacity={master.opacity}
+                motion={master.motion}
+                glow={master.glow}
               />
             ))}
           </View>
@@ -889,6 +967,127 @@ export default function GeometrixScreen() {
         </Pressable>
       </Modal>
 
+      {/* Panel de ajustes GENERALES (maestro): afecta a todas las capas. */}
+      <Modal
+        visible={generalOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setGeneralOpen(false)}
+      >
+        <Pressable style={styles.sheetBackdrop} onPress={() => setGeneralOpen(false)} />
+
+        {/* Vista previa en vivo de toda la composición con los ajustes generales. */}
+        {activeMetas.length > 0 && generalPreviewSize > 0 && (
+          <View
+            pointerEvents="none"
+            style={[styles.previewWrap, { bottom: generalSheetHeight + 12 }]}
+          >
+            <Text style={styles.previewLabel}>Vista previa</Text>
+            <View
+              style={[
+                styles.previewBox,
+                { width: generalPreviewSize, height: generalPreviewSize },
+              ]}
+            >
+              {activeMetas.map((g, i) => (
+                <GeometryLayer
+                  key={g.id}
+                  geo={g}
+                  index={i}
+                  size={generalPreviewSize * 0.96}
+                  settings={getSettings(g.id)}
+                  masterOpacity={master.opacity}
+                  motion={master.motion}
+                  glow={master.glow}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
+        <View
+          onLayout={(e) => {
+            const h = e.nativeEvent.layout.height;
+            setGeneralSheetHeight((prev) => (prev === h ? prev : h));
+          }}
+          style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}
+        >
+          <LinearGradient
+            colors={HOME_GRADIENT}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={styles.sheetHandle} />
+          <View style={styles.sheetHeader}>
+            <Text style={styles.sheetTitle}>Ajustes generales</Text>
+            <Pressable
+              onPress={() => setGeneralOpen(false)}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar ajustes generales"
+            >
+              <Feather name="x" size={20} color={colors.mutedForeground} />
+            </Pressable>
+          </View>
+
+          {activeMetas.length === 0 ? (
+            <View style={styles.sheetEmpty}>
+              <Feather name="hexagon" size={26} color="rgba(190,150,80,0.4)" />
+              <Text style={styles.sheetEmptyText}>
+                Activa una geometría para ajustar la animación
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.geoCard}>
+              {/* Opacidad general */}
+              <View style={styles.fieldRow}>
+                <Text style={styles.fieldLabel}>Opacidad general</Text>
+                <Text style={styles.fieldValue}>{Math.round(master.opacity * 100)}%</Text>
+              </View>
+              <VolumeSlider
+                value={master.opacity}
+                onChange={(v) =>
+                  setMaster((m) => ({
+                    ...m,
+                    opacity: Number.isFinite(v) ? Math.min(1, Math.max(0.1, v)) : m.opacity,
+                  }))
+                }
+                color={colors.accent}
+                trackColor="rgba(255,255,255,0.12)"
+              />
+
+              {/* Movimiento general */}
+              <View style={[styles.fieldRow, { marginTop: 18 }]}>
+                <Text style={styles.fieldLabel}>Movimiento</Text>
+                <Toggle
+                  value={master.motion}
+                  onChange={(v) => setMaster((m) => ({ ...m, motion: v }))}
+                  color={colors.accent}
+                />
+              </View>
+
+              {/* Glow general */}
+              <View style={[styles.fieldRow, { marginTop: 18 }]}>
+                <Text style={styles.fieldLabel}>Glow</Text>
+                <Text style={styles.fieldValue}>{Math.round(master.glow * 100)}%</Text>
+              </View>
+              <VolumeSlider
+                value={master.glow}
+                onChange={(v) =>
+                  setMaster((m) => ({
+                    ...m,
+                    glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
+                  }))
+                }
+                color={colors.accent}
+                trackColor="rgba(255,255,255,0.12)"
+              />
+            </View>
+          )}
+        </View>
+      </Modal>
+
       {/* Panel de ajustes por geometría */}
       <Modal
         visible={settingsOpen}
@@ -919,6 +1118,9 @@ export default function GeometrixScreen() {
                   index={i}
                   size={previewSize * 0.96}
                   settings={getSettings(g.id)}
+                  masterOpacity={master.opacity}
+                  motion={master.motion}
+                  glow={master.glow}
                 />
               ))}
             </View>
