@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
   },
   tabItemActive: {
     backgroundColor: "rgba(100,142,195,0.14)",
-    borderColor: "#E08A3C",
+    borderColor: "#1b263f",
     borderWidth: 1,
   },
   tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
