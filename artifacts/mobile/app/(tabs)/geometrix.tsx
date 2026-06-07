@@ -319,6 +319,17 @@ export default function GeometrixScreen() {
     });
   }, [openModule, dim]);
 
+  // Transición suave entre "prendida" (con sonido) y oscura (en reposo).
+  const soundActive = Object.values(activeTracks).some(Boolean);
+  const off = useSharedValue(1);
+  const offStyle = useAnimatedStyle(() => ({ opacity: off.value }));
+  useEffect(() => {
+    off.value = withTiming(soundActive ? 0 : 1, {
+      duration: 450,
+      easing: Easing.inOut(Easing.ease),
+    });
+  }, [soundActive, off]);
+
   // Al salir de Geometrix (las pestañas quedan montadas): detener el sonido y
   // resetear la UI. Al entrar: disparar el glow de bienvenida una sola vez.
   useFocusEffect(
@@ -520,21 +531,22 @@ export default function GeometrixScreen() {
                     cachePolicy="memory-disk"
                     recyclingKey="geometrix-sound-thumb"
                   />
+                  {/* Oscurecido (en reposo / al apagar el sonido), con fade suave. */}
+                  <Animated.View
+                    pointerEvents="none"
+                    style={[styles.thumbOverlay, offStyle]}
+                  />
                   {/* Oscurecido sutil mientras el desplegable está abierto. */}
                   <Animated.View
                     pointerEvents="none"
                     style={[styles.thumbDim, dimStyle]}
                   />
                   {!isActive && (
-                    <>
-                      {/* Overlay negro sutil mientras está en reposo. */}
-                      <View style={styles.thumbOverlay} pointerEvents="none" />
-                      {/* Glow pulsante para llamar la atención. */}
-                      <Animated.View
-                        pointerEvents="none"
-                        style={[styles.thumbGlow, glowStyle]}
-                      />
-                    </>
+                    /* Glow pulsante para llamar la atención. */
+                    <Animated.View
+                      pointerEvents="none"
+                      style={[styles.thumbGlow, glowStyle]}
+                    />
                   )}
                 </Pressable>
               );
