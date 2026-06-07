@@ -20,6 +20,8 @@ import {
 } from "react-native";
 import Animated, {
   Easing,
+  FadeIn,
+  FadeOut,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -389,16 +391,19 @@ export default function GeometrixScreen() {
             </View>
           )}
 
-          {/* Acceso sutil a los ajustes por geometría */}
-          <Pressable
-            onPress={() => setSettingsOpen(true)}
-            style={styles.settingsBtn}
-            accessibilityRole="button"
-            accessibilityLabel="Ajustes de geometrías"
-          >
-            <Feather name="settings" size={18} color={colors.mutedForeground} />
-            <Text style={styles.settingsBtnText}>Ajustes</Text>
-          </Pressable>
+          {/* Aparece en fade al activar la primera geometría */}
+          {activeMetas.length > 0 && (
+            <Animated.View entering={FadeIn.duration(360)} exiting={FadeOut.duration(220)}>
+              <Pressable
+                onPress={() => setSettingsOpen(true)}
+                style={styles.settingsBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Personaliza las geometrías"
+              >
+                <Text style={styles.settingsBtnText}>Personaliza</Text>
+              </Pressable>
+            </Animated.View>
+          )}
         </View>
       </View>
 
@@ -709,8 +714,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   settingsBtnText: {
-    fontSize: 11,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "300",
     color: colors.mutedForeground,
     letterSpacing: 0.3,
   },
