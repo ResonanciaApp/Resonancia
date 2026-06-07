@@ -768,20 +768,6 @@ export default function GeometrixScreen() {
               exiting={FadeOut.duration(220)}
               style={styles.actionTop}
             >
-              <Pressable
-                onPress={() => setPillOpen((o) => !o)}
-                style={styles.chevronBtn}
-                accessibilityRole="button"
-                accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
-                hitSlop={8}
-              >
-                <Feather
-                  name={pillOpen ? "chevron-up" : "chevron-down"}
-                  size={20}
-                  color={colors.mutedForeground}
-                />
-              </Pressable>
-
               {pillOpen && (
                 <Animated.View
                   entering={FadeIn.duration(240)}
@@ -805,6 +791,20 @@ export default function GeometrixScreen() {
                   ))}
                 </Animated.View>
               )}
+
+              <Pressable
+                onPress={() => setPillOpen((o) => !o)}
+                style={styles.chevronBtn}
+                accessibilityRole="button"
+                accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
+                hitSlop={8}
+              >
+                <Feather
+                  name={pillOpen ? "chevron-right" : "chevron-left"}
+                  size={20}
+                  color={colors.mutedForeground}
+                />
+              </Pressable>
             </Animated.View>
           )}
 
@@ -1430,7 +1430,9 @@ const styles = StyleSheet.create({
     top: 10,
     right: 0,
     zIndex: 6,
-    alignItems: "flex-end",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   chevronBtn: {
     width: 40,
@@ -1443,20 +1445,20 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(11,15,20,0.55)",
   },
   pillRow: {
-    marginTop: 8,
+    marginRight: 8,
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    gap: 4,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
     borderRadius: 999,
     borderWidth: 1,
     borderColor: CARD_BORDER,
     backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillBtn: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 999,
