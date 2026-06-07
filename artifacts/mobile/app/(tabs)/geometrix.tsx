@@ -43,7 +43,7 @@ const CARD_BORDER = "#161f33";
 const SOUND_PICKS = ["lluvia", "bosque", "oceano", "fogata", "grillos"] as const;
 
 /** Tamaño del recuadro de vista previa en el panel de Ajustes. */
-const PREVIEW_BOX = 120;
+const PREVIEW_BOX = 150;
 const PREVIEW_LAYER = PREVIEW_BOX * 0.96;
 
 /** Paleta de colores para personalizar cada geometría. */
@@ -162,7 +162,7 @@ function GeometryLayer({
 
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   const [active, setActive] = useState<GeometryId[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -407,7 +407,14 @@ export default function GeometrixScreen() {
         {/* Vista previa en vivo: flota arriba para no tapar los controles del
             sheet. Vive dentro del Modal, así se cierra junto con los ajustes. */}
         {activeMetas.length > 0 && (
-          <View pointerEvents="none" style={[styles.previewWrap, { top: insets.top + 8 }]}>
+          <View
+            pointerEvents="none"
+            style={[
+              styles.previewWrap,
+              // Anclar justo encima del sheet (68% del alto), no pegado al tope.
+              { top: Math.max(insets.top + 8, height * 0.32 - PREVIEW_BOX - 32) },
+            ]}
+          >
             <View style={styles.previewBox}>
               {activeMetas.map((g, i) => (
                 <GeometryLayer
