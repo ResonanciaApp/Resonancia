@@ -121,9 +121,6 @@ export default function SonidosAncestalesScreen() {
             <MaterialCommunityIcons name="bowl-mix" size={34} color={ACCENT} />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Ancestrales</Text>
-          <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-            Cuencos, gongs y frecuencias sagradas
-          </Text>
           <View style={styles.searchBar}>
             <Feather name="search" size={17} color={colors.mutedForeground} />
             <TextInput
