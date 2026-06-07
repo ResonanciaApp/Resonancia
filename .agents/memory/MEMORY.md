@@ -35,3 +35,4 @@
 - [Tab bar overlay padding](tab-bar-overlay-padding.md) — la tab bar de (tabs) es overlay absoluto; pantallas con contenido al fondo deben reservar tabBarHeight (recalcular fórmula de _layout.tsx)
 - [Session sort/filter](session-sort-filter.md) — filtro de orden dinámico en pantallas de categoría; "más escuchadas"=GET /catalog/popular (no historial local deduplicado), "mejores puntuadas"=ratings locales (no promedio global)
 - [Tab-screen audio focus cleanup](tab-screen-audio-focus-cleanup.md) — audio propio de una tab debe pararse con useFocusEffect (las tabs quedan montadas; el cleanup de unmount no corre al cambiar de tab)
+- [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo

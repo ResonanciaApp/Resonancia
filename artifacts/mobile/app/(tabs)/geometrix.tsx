@@ -313,14 +313,11 @@ function GeometryLayer({
   const safeZoom = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
   // Tamaño base ("fit"): 0 → 0.4×, 1 → 1.0× (no corta contra los bordes).
   const userScale = 0.4 + safeScale * 0.6;
-  // Zoom de pellizco: si hay shared value en vivo (geometría seleccionada en
-  // el lienzo) manda ese; si no, el valor confirmado en settings. Espejo local
-  // para reflejar cambios de settings cuando no hay pellizco activo.
-  const localZoom = useSharedValue(safeZoom);
-  useEffect(() => {
-    if (!liveZoom) localZoom.value = safeZoom;
-  }, [safeZoom, liveZoom, localZoom]);
-  const zoomSV = liveZoom ?? localZoom;
+  // Magnificación CONFIRMADA (tamaño + zoom de pellizco ya soltado). Se pliega
+  // al tamaño REAL del SVG (no a un transform), para que la geometría se
+  // REDIBUJE nítida y el grosor del trazo no engorde al ampliar. El transform
+  // solo lleva el delta del pellizco EN VIVO (suave a 60fps) y la respiración.
+  const committedMag = userScale * safeZoom;
   // Movimiento general (panel maestro): congela giro + respiración de TODAS las
   // capas a la vez sin borrar el ajuste propio de cada una.
   const spin = rotate && motion;
@@ -330,24 +327,34 @@ function GeometryLayer({
   const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
   const breatheDepth = 0.04 + safeAmount * 0.2;
   const safeMaster = Number.isFinite(masterOpacity) ? masterOpacity : 1;
-  const aStyle = useAnimatedStyle(() => ({
-    transform: [
-      { rotate: spin ? `${rot.value * 360 * dir}deg` : "0deg" },
-      // Respiración (1 - profundidad … 1) × tamaño elegido × zoom de pellizco.
-      {
-        scale:
-          (breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1) *
-          userScale *
-          zoomSV.value,
-      },
-    ],
-    // Opacidad propia × general (maestra) × fundido cíclico.
-    opacity: opacity * safeMaster * fade.value,
-  }));
+  const safeCommittedZoom = safeZoom > 0 ? safeZoom : 1;
+  const aStyle = useAnimatedStyle(() => {
+    // Delta del pellizco EN VIVO respecto del zoom ya confirmado (=1 en reposo
+    // y al soltar, así la capa queda en su tamaño redibujado nítido).
+    const liveDelta = liveZoom ? liveZoom.value / safeCommittedZoom : 1;
+    return {
+      transform: [
+        { rotate: spin ? `${rot.value * 360 * dir}deg` : "0deg" },
+        // Respiración (1 - profundidad … 1) × delta de pellizco en vivo.
+        {
+          scale:
+            (breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1) *
+            liveDelta,
+        },
+      ],
+      // Opacidad propia × general (maestra) × fundido cíclico.
+      opacity: opacity * safeMaster * fade.value,
+    };
+  });
 
+  // Tamaño REAL al que se redibuja el SVG = tamaño base × magnificación
+  // confirmada. Al crecer el size, el SVG (vector) queda nítido a cualquier
+  // escala (sin pixelado por estiramiento de un transform).
+  const effectiveSize = size * committedMag;
   // Trazo base de 1px real: el viewBox es 0–100, así que 1px = 100 / size.
-  // El grosor escala de 1px (thickness 0) a ~6px (thickness 1).
-  const base1px = size > 0 ? 100 / size : 1;
+  // Se calcula sobre effectiveSize → el grosor VISUAL se mantiene constante
+  // aunque se amplíe (el trazo no engorda al hacer zoom).
+  const base1px = effectiveSize > 0 ? 100 / effectiveSize : 1;
   const sw = base1px * (1 + safeThickness * 5);
   // Glow efectivo: el propio de la capa se suma al general (panel maestro),
   // acotado a 0–1. Halo aditivo detrás del trazo (copias más anchas y tenues).
@@ -363,7 +370,7 @@ function GeometryLayer({
             <SacredGlyph
               id={geo.id}
               color={color}
-              size={size}
+              size={effectiveSize}
               strokeWidth={sw * (3 + safeGlow * 3)}
             />
           </View>
@@ -371,13 +378,13 @@ function GeometryLayer({
             <SacredGlyph
               id={geo.id}
               color={color}
-              size={size}
+              size={effectiveSize}
               strokeWidth={sw * (1.8 + safeGlow * 1.6)}
             />
           </View>
         </>
       )}
-      <SacredGlyph id={geo.id} color={color} size={size} strokeWidth={sw} />
+      <SacredGlyph id={geo.id} color={color} size={effectiveSize} strokeWidth={sw} />
     </Animated.View>
   );
 }
