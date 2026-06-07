@@ -337,10 +337,6 @@ export default function GeometrixScreen() {
         >
           {canvasSide > 0 && (
             <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
-              <LinearGradient
-                colors={["rgba(86,97,168,0.10)", "rgba(6,7,15,0.0)"]}
-                style={StyleSheet.absoluteFill}
-              />
               {layerSize > 0 &&
                 activeMetas.map((g, i) => (
                   <GeometryLayer
@@ -352,22 +348,12 @@ export default function GeometrixScreen() {
                   />
                 ))}
 
-              {active.length === 0 ? (
+              {active.length === 0 && (
                 <View style={styles.empty} pointerEvents="none">
                   <Feather name="hexagon" size={30} color="rgba(190,150,80,0.4)" />
                   <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
                   <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
                 </View>
-              ) : (
-                <Pressable
-                  onPress={() => setActive([])}
-                  style={styles.clearBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Limpiar composición"
-                >
-                  <Feather name="x" size={13} color={colors.mutedForeground} />
-                  <Text style={styles.clearText}>Limpiar ({active.length})</Text>
-                </Pressable>
               )}
             </View>
           )}
@@ -594,11 +580,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   canvas: {
-    borderRadius: 20,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: CARD_BORDER,
-    backgroundColor: "rgba(8,10,24,0.5)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -697,22 +678,6 @@ const styles = StyleSheet.create({
   empty: { alignItems: "center", gap: 6 },
   emptyText: { fontSize: 14, fontWeight: "600", color: colors.foreground, marginTop: 4 },
   emptySub: { fontSize: 12, color: colors.mutedForeground },
-
-  clearBtn: {
-    position: "absolute",
-    top: 12,
-    right: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-    backgroundColor: "rgba(8,10,24,0.7)",
-    borderWidth: 1,
-    borderColor: CARD_BORDER,
-  },
-  clearText: { fontSize: 12, fontWeight: "600", color: colors.mutedForeground },
 
   soundMenu: {
     position: "absolute",
