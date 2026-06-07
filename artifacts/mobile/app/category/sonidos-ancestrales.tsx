@@ -117,7 +117,7 @@ export default function SonidosAncestalesScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={styles.catIconCircle}>
-            <MaterialCommunityIcons name="bowl-mix" size={38} color={ACCENT} />
+            <MaterialCommunityIcons name="bowl-mix" size={43} color={ACCENT} />
           </View>
           <Pressable
             onPress={() => setSubtitleOpen((v) => !v)}

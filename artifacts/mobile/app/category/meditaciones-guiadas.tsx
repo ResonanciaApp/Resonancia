@@ -112,7 +112,7 @@ export default function MeditacionesGuiadasScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={styles.catIconCircle}>
-            <ZenStonesIcon color={ICON_COLOR} size={46} />
+            <ZenStonesIcon color={ICON_COLOR} size={51} />
           </View>
           <Pressable
             onPress={() => setSubtitleOpen((v) => !v)}

@@ -119,7 +119,7 @@ export default function MusicaSonidosScreen() {
           <View style={styles.catIconCircle}>
             <ExpoImage
               source={require("../../assets/images/cat-musica.png")}
-              style={{ width: 38, height: 38 }}
+              style={{ width: 43, height: 43 }}
               contentFit="contain"
             />
           </View>
