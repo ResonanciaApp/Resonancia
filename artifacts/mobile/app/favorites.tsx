@@ -201,7 +201,7 @@ export default function FavoritesScreen() {
     <View>
       {favSessions.length > 0 && searchBar}
       {favSessions.length === 0 ? (
-        <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
           <Feather name="heart" size={20} color={colors.border} />
           <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
             Aún no guardaste sesiones favoritas
@@ -230,7 +230,7 @@ export default function FavoritesScreen() {
     <View>
       {favMixes.length > 0 && searchBar}
       {favMixes.length === 0 ? (
-        <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
           <Feather name="heart" size={20} color={colors.border} />
           <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
             Aún no guardaste mezclas favoritas
@@ -265,7 +265,7 @@ export default function FavoritesScreen() {
   );
 
   const renderMusica = () => (
-    <View style={[styles.emptySmall, { backgroundColor: colors.card }]}>
+    <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
       <Feather name="music" size={20} color={colors.border} />
       <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
         Próximamente

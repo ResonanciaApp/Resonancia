@@ -21,7 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useGrupos } from "@/hooks/useGrupos";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#0B0F14", "#0B0F14", "#0B0F14"] as const;
 
 // ─── Image library ────────────────────────────────────────────────────────────
 const GALLERY = [
@@ -75,9 +75,9 @@ function GroupPreview({
       {imageIdx !== null ? (
         <Image source={GALLERY[imageIdx]} style={preview.image} />
       ) : (
-        <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={preview.image}>
+        <View style={[preview.image, { backgroundColor: "#1C2333" }]}>
           <Text style={preview.initial}>{initial}</Text>
-        </LinearGradient>
+        </View>
       )}
       <Text style={preview.name}>{nombre || "Nombre del grupo"}</Text>
       <Text style={preview.meta}>
@@ -106,7 +106,7 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#090D20" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#0B0F14" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
   name: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },
@@ -406,9 +406,9 @@ export default function CrearGrupoScreen() {
           {step === 5 && (
             <>
               <View style={styles.successIcon}>
-                <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.successGrad}>
+                <View style={[styles.successGrad, { backgroundColor: "#BE9650" }]}>
                   <Feather name="check" size={28} color="#070E09" />
-                </LinearGradient>
+                </View>
               </View>
               <Text style={[styles.sheetTitle, { color: colors.foreground, textAlign: "center", marginBottom: 8 }]}>
                 ¡Tu grupo está listo!

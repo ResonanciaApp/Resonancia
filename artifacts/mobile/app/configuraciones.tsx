@@ -280,7 +280,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Notificaciones ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>NOTIFICACIONES</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
           <View style={styles.row}>
             <RowIcon icon="bell" colors={colors} />
             <View style={{ flex: 1 }}>
@@ -348,7 +348,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Reproductor ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>REPRODUCTOR</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
           <View style={styles.subBlock}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <RowIcon icon="moon" colors={colors} />
@@ -394,7 +394,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Cuenta ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CUENTA</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
           <ActionRow
             icon="user"
             label="Editar perfil"
@@ -415,7 +415,7 @@ export default function ConfiguracionesScreen() {
         {(isCreator || isAdmin) && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CREADORES</Text>
-            <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+            <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
               {isCreator && (
                 <ActionRow
                   icon="upload-cloud"
@@ -460,7 +460,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── App ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APP</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
           <ActionRow icon="info" label="Acerca de RESONANCIA" onPress={handleAbout} colors={colors} />
           <ActionRow icon="star" label="Calificar la app" onPress={handleRate} colors={colors} border />
           <ActionRow icon="file-text" label="Términos y privacidad" onPress={handleTerms} colors={colors} border />
@@ -476,7 +476,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Soporte ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>SOPORTE</Text>
-        <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
           <ActionRow
             icon="mail"
             label="Contactar al equipo"
@@ -496,7 +496,7 @@ export default function ConfiguracionesScreen() {
         {__DEV__ && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>DESARROLLO</Text>
-            <View style={[styles.group, { backgroundColor: colors.card, borderColor: "transparent" }]}>
+            <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
               <View style={styles.row}>
                 <RowIcon icon="star" colors={colors} />
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Modo Premium (testing)</Text>

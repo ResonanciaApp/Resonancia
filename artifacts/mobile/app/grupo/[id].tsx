@@ -495,7 +495,7 @@ export default function GrupoDetailScreen() {
                     style={[
                       styles.postCard,
                       {
-                        backgroundColor: post.pinned ? colors.primary + "10" : colors.card,
+                        backgroundColor: post.pinned ? colors.primary + "10" : "rgba(255,255,255,0.03)",
                         borderColor: post.pinned ? colors.primary + "44" : colors.border,
                       },
                     ]}
@@ -595,7 +595,7 @@ export default function GrupoDetailScreen() {
 
             {/* Compose bar */}
             <View style={[styles.composeBar, { paddingBottom: bottomPad + 8, backgroundColor: colors.background, borderTopColor: colors.border }]}>
-              <View style={[styles.composeInput, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={[styles.composeInput, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
                 <TextInput
                   value={compose}
                   onChangeText={setCompose}
@@ -627,7 +627,7 @@ export default function GrupoDetailScreen() {
               {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
             </Text>
             {grupo.memberList.map((m) => (
-              <View key={m.name} style={[styles.memberRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View key={m.name} style={[styles.memberRow, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
                 <View style={{ position: "relative" }}>
                   <View style={[styles.memberAvatar, { backgroundColor: m.color + "30" }]}>
                     <Text style={[styles.memberInitials, { color: m.color }]}>{m.initials}</Text>
@@ -665,7 +665,7 @@ export default function GrupoDetailScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* About */}
-            <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
               <View style={styles.infoCardHeader}>
                 <Feather name="info" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Sobre el grupo</Text>
@@ -684,7 +684,7 @@ export default function GrupoDetailScreen() {
             </View>
 
             {/* Moderator */}
-            <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
               <View style={styles.infoCardHeader}>
                 <Feather name="shield" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>
@@ -701,7 +701,7 @@ export default function GrupoDetailScreen() {
 
             {/* Invite link (local groups) */}
             {grupo.isLocalGroup && grupo.inviteCode && (
-              <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
                 <View style={styles.infoCardHeader}>
                   <Feather name="link" size={16} color={colors.primary} />
                   <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Enlace de invitación</Text>
@@ -715,7 +715,7 @@ export default function GrupoDetailScreen() {
             )}
 
             {/* Rules */}
-            <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
               <View style={styles.infoCardHeader}>
                 <Feather name="book-open" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Reglas del espacio</Text>
