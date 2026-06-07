@@ -161,10 +161,12 @@ function defaultSettings(id: GeometryId): GeoSettings {
   const meta = GEOMETRIES.find((g) => g.id === id);
   return {
     color: meta?.color ?? colors.primary,
-    rotate: true,
+    // Estática por defecto: el usuario activa el movimiento (giro/respirar/
+    // fade) en los ajustes por capa cuando quiera.
+    rotate: false,
     rotateSpeed: 0.5,
     opacity: 1,
-    breathe: true,
+    breathe: false,
     breatheAmount: 0.5,
     fadeLoop: false,
     glow: 0,
