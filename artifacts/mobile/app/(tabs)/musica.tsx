@@ -472,10 +472,10 @@ const styles = StyleSheet.create({
   inner: { flex: 1 },
 
   // Header
-  header:    { paddingHorizontal: 20, paddingBottom: 18 },
+  header:    { paddingHorizontal: 20, marginBottom: 18 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF" },
-  pageSub:   { fontSize: 13, color: MUTED, marginTop: 3 },
+  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
+  pageSub:   { fontSize: 13, color: MUTED, marginTop: 0 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 20, backgroundColor: "#1A2336", marginLeft: 12,
