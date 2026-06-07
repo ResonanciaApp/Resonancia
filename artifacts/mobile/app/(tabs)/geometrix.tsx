@@ -971,7 +971,7 @@ export default function GeometrixScreen() {
                   id={menuGeo.id}
                   color={getSettings(menuGeo.id).color}
                   size={85}
-                  strokeWidth={2}
+                  strokeWidth={1.4}
                 />
               </View>
             </Pressable>
