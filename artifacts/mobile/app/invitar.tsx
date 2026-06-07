@@ -16,6 +16,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
 const SHARE_OPTIONS = [
   { icon: "message-circle" as const, label: "WhatsApp", color: "#25D366" },
   { icon: "mail" as const, label: "Email", color: "#BE9650" },
@@ -30,9 +32,15 @@ export default function InvitarScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40, paddingHorizontal: 24 }}
@@ -98,7 +106,7 @@ export default function InvitarScreen() {
           ))}
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
