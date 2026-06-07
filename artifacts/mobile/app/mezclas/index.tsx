@@ -191,14 +191,13 @@ export default function MezclasIndexScreen() {
               <Pressable
                 key={cat.id}
                 onPress={() => setActiveTab(cat.id)}
-                style={styles.tabBlock}
+                style={[styles.tabBlock, sel && styles.tabBlockSel]}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
-                <Text style={[styles.tabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
+                <Text style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}>
                   {cat.label}
                 </Text>
-                {sel && <View style={styles.tabUnderline} />}
               </Pressable>
             );
           })}
@@ -257,27 +256,24 @@ const styles = StyleSheet.create({
   // Tab bar
   tabRow: {
     flexDirection: "row",
+    gap: 8,
     paddingHorizontal: 16,
-    paddingBottom: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: BORDER,
     marginBottom: 16,
   },
   tabBlock: {
-    flex: 1,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: "#847eb5",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     alignItems: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    gap: 4,
+    backgroundColor: "transparent",
+  },
+  tabBlockSel: {
+    borderColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabLabel: { fontSize: 15, letterSpacing: 0.1 },
-  tabUnderline: {
-    height: 2,
-    width: "60%",
-    backgroundColor: "#5F598C",
-    borderRadius: 1,
-    marginTop: 2,
-  },
 
   // Scroll
   scroll:        { flex: 1 },

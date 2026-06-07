@@ -30,9 +30,9 @@ import { useColors } from "@/hooks/useColors";
 type CategoryFilter = MixCategory;
 
 const TABS: { id: CategoryFilter; label: string }[] = [
-  { id: "dormir",        label: "Para descansar" },
-  { id: "motivarme",     label: "Para meditar"   },
-  { id: "concentracion", label: "Para enfocarse" },
+  { id: "dormir",        label: "Descanso"   },
+  { id: "motivarme",     label: "Meditación" },
+  { id: "concentracion", label: "Enfoque"    },
 ];
 
 const GOLD = "#BE9650";
@@ -186,22 +186,15 @@ export function CommunityMixesCarousel() {
             <Pressable
               key={id}
               onPress={() => setActiveTab(id)}
-              style={styles.tabBlock}
+              style={[styles.tabBlock, sel && styles.tabBlockSel]}
               accessibilityRole="tab"
               accessibilityState={{ selected: sel }}
             >
               <Text
-                style={[
-                  styles.tabLabel,
-                  {
-                    color: sel ? "#FFFFFF" : colors.mutedForeground,
-                    fontWeight: sel ? "700" : "500",
-                  },
-                ]}
+                style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}
               >
                 {label}
               </Text>
-              {sel && <View style={styles.tabUnderline} />}
             </Pressable>
           );
         })}
@@ -491,28 +484,25 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
-  // Tabs (subrayados)
+  // Tabs (píldoras)
   tabRow: {
     flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    gap: 8,
+    paddingHorizontal: 16,
     marginBottom: 16,
   },
   tabBlock: {
-    flex: 1,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: "#847eb5",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     alignItems: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    position: "relative",
+    backgroundColor: "transparent",
   },
-  tabUnderline: {
-    position: "absolute",
-    bottom: -1,
-    left: "15%",
-    right: "15%",
-    height: 2.5,
-    backgroundColor: "#5F598C",
-    borderRadius: 2,
+  tabBlockSel: {
+    borderColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabLabel: { fontSize: 15, letterSpacing: 0.1 },
 
