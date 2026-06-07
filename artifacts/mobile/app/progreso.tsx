@@ -320,7 +320,7 @@ export default function ProgresoScreen() {
             hitSlop={10}
             style={[
               styles.backBtn,
-              { backgroundColor: colors.card, borderColor: colors.border },
+              { backgroundColor: "rgba(255,255,255,0.03)" },
             ]}
           >
             <Feather name="arrow-left" size={18} color={colors.foreground} />
@@ -370,7 +370,7 @@ export default function ProgresoScreen() {
           <View style={styles.tabContent}>
 
             {/* Racha card */}
-            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.card, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <View style={styles.streakTop}>
                 <View style={[styles.flameBubble, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
                   <Text style={styles.flameEmoji}>
@@ -480,7 +480,7 @@ export default function ProgresoScreen() {
                   key={s.line1}
                   style={[
                     styles.statCard,
-                    { backgroundColor: colors.card, borderColor: colors.border },
+                    { backgroundColor: "rgba(255,255,255,0.03)" },
                   ]}
                 >
                   <Text style={styles.statIcon}>{s.icon}</Text>
@@ -508,12 +508,7 @@ export default function ProgresoScreen() {
                   key={c.id}
                   style={[
                     styles.challengeCard,
-                    {
-                      backgroundColor: colors.card,
-                      borderColor: completed
-                        ? "rgba(190,150,80,0.35)"
-                        : colors.border,
-                    },
+                    { backgroundColor: "rgba(255,255,255,0.03)" },
                   ]}
                 >
                   <View style={styles.challengeTop}>
@@ -600,7 +595,7 @@ export default function ProgresoScreen() {
             <View
               style={[
                 styles.card,
-                { backgroundColor: colors.card, borderColor: colors.border },
+                { backgroundColor: "rgba(255,255,255,0.03)" },
               ]}
             >
               <Text style={[styles.cardTitle, { color: colors.foreground }]}>
@@ -705,7 +700,7 @@ export default function ProgresoScreen() {
                   key={s.line1}
                   style={[
                     styles.statCard,
-                    { backgroundColor: colors.card, borderColor: colors.border, flex: 1 },
+                    { backgroundColor: "rgba(255,255,255,0.03)", flex: 1 },
                   ]}
                 >
                   <Text style={styles.statIcon}>{s.icon}</Text>
@@ -730,7 +725,7 @@ export default function ProgresoScreen() {
               <View
                 style={[
                   styles.emptyState,
-                  { backgroundColor: colors.card, borderColor: colors.border },
+                  { backgroundColor: "rgba(255,255,255,0.03)" },
                 ]}
               >
                 <Feather
@@ -821,7 +816,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 18,
     padding: 18,
-    borderWidth: 1,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   cardTitle: { fontSize: 14, fontWeight: "700", marginBottom: 2 },
   cardSub: { fontSize: 11, marginBottom: 14 },
@@ -881,7 +876,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 14,
     alignItems: "center",
-    borderWidth: 1,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   statIcon: { fontSize: 22, marginBottom: 6 },
   statValue: { fontSize: 17, fontWeight: "700" },
@@ -897,7 +892,7 @@ const styles = StyleSheet.create({
   challengeCard: {
     borderRadius: 14,
     padding: 14,
-    borderWidth: 1,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   challengeTop: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 8 },
   challengeIconBubble: {
@@ -941,12 +936,12 @@ const styles = StyleSheet.create({
     padding: 32,
     alignItems: "center",
     gap: 12,
-    borderWidth: 1,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   emptyStateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   // Coming soon
-  comingSoonCard: { borderRadius: 14, padding: 16, borderWidth: 1 },
+  comingSoonCard: { borderRadius: 14, padding: 16, backgroundColor: "rgba(255,255,255,0.03)" },
   comingSoonLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 0.8, marginBottom: 6 },
   comingSoonText: { fontSize: 13, lineHeight: 19 },
 });
