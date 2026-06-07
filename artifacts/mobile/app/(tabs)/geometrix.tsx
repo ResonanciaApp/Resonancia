@@ -815,7 +815,12 @@ export default function GeometrixScreen() {
           {/* Thumbnails de geometrías activas: fila centrada anclada 15px sobre
               la tab bar; se reacomoda al agregar/quitar (LinearTransition). */}
           {activeMetas.length > 0 && (
-            <View style={[styles.thumbsRow, { bottom: tabBarHeight + 15 }]}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={[styles.thumbsScroll, { bottom: tabBarHeight + 15 }]}
+              contentContainerStyle={styles.thumbsRow}
+            >
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
                 const isSolo = soloId === g.id;
@@ -860,7 +865,7 @@ export default function GeometrixScreen() {
                   </Animated.View>
                 );
               })}
-            </View>
+            </ScrollView>
           )}
         </View>
       </View>
@@ -1461,15 +1466,19 @@ const styles = StyleSheet.create({
     height: 18,
     backgroundColor: CARD_BORDER,
   },
-  thumbsRow: {
+  thumbsScroll: {
     position: "absolute",
     left: 0,
     right: 0,
+    maxHeight: 56,
+  },
+  thumbsRow: {
+    flexGrow: 1,
     flexDirection: "row",
-    flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
+    paddingHorizontal: 16,
   },
   thumb: {
     width: 44,

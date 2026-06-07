@@ -10,6 +10,41 @@ import type { GeometryId } from "@/data/geometries";
 
 const C = 50;
 
+/**
+ * Extensión visual (radio máximo, en unidades del viewBox 0–100) que ocupa
+ * cada geometría. Se usa para normalizar el tamaño aparente: cada glyph se
+ * escala para que su contenido llene el mismo radio (TARGET_EXTENT), de modo
+ * que todas se vean del mismo tamaño en miniaturas, tabs y capas.
+ */
+const TARGET_EXTENT = 39;
+const EXTENT: Record<GeometryId, number> = {
+  "flor-vida": 36,
+  "semilla-vida": 39,
+  vesica: 36,
+  metatron: 40,
+  merkaba: 40,
+  "sri-yantra": 47,
+  toroide: 43,
+  mandala: 46,
+  espiral: 47,
+  pentagrama: 46,
+  hexagrama: 45,
+  triquetra: 40,
+  "arbol-vida": 47,
+  "fruto-vida": 39,
+  "huevo-vida": 41,
+  "cubo-vida": 36,
+  octagrama: 46,
+  eneagrama: 47,
+  "nudo-celta": 40,
+  "yin-yang": 46,
+  circulos: 46,
+  loto: 46,
+  cuadrado: 40,
+  circulo: 42,
+  triangulo: 44,
+};
+
 function pt(r: number, angleDeg: number, cx = C, cy = C): [number, number] {
   const a = (angleDeg * Math.PI) / 180;
   return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
@@ -362,16 +397,22 @@ export interface SacredGlyphProps {
 }
 
 export function SacredGlyph({ id, color, size, strokeWidth = 1.2, opacity = 1 }: SacredGlyphProps) {
+  // Escala uniforme para que todas las geometrías llenen el mismo radio.
+  const k = TARGET_EXTENT / (EXTENT[id] ?? 44);
+  // Compensar el grosor para que el trazo se vea igual tras el escalado.
+  const sw = strokeWidth / k;
+  const t = C - C * k;
   return (
     <Svg width={size} height={size} viewBox="0 0 100 100" opacity={opacity}>
       <G
+        transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
         stroke={color}
         fill="none"
-        strokeWidth={strokeWidth}
+        strokeWidth={sw}
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        {elements(id, strokeWidth)}
+        {elements(id, sw)}
       </G>
     </Svg>
   );
