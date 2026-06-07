@@ -194,6 +194,160 @@ function elements(id: GeometryId, sw: number): React.ReactNode {
       arr.push(<Circle key="o" cx={C} cy={C} r={40} />);
       return arr;
     }
+    case "arbol-vida": {
+      // 10 sefirot del Árbol de la Vida cabalístico + senderos.
+      const nodes: [number, number][] = [
+        [50, 9],   // 0 Keter
+        [73, 23],  // 1 Chokmah
+        [27, 23],  // 2 Binah
+        [73, 45],  // 3 Chesed
+        [27, 45],  // 4 Geburah
+        [50, 56],  // 5 Tiferet
+        [73, 67],  // 6 Netzach
+        [27, 67],  // 7 Hod
+        [50, 78],  // 8 Yesod
+        [50, 92],  // 9 Malkuth
+      ];
+      const paths: [number, number][] = [
+        [0, 1], [0, 2], [1, 2], [1, 3], [2, 4], [1, 5], [2, 5],
+        [3, 4], [3, 5], [4, 5], [3, 6], [4, 7], [5, 6], [5, 7],
+        [5, 8], [6, 7], [6, 8], [7, 8], [6, 9], [7, 9], [8, 9], [0, 5],
+      ];
+      const lines = paths.map(([a, b], i) => (
+        <Line
+          key={`l${i}`}
+          x1={nodes[a][0]}
+          y1={nodes[a][1]}
+          x2={nodes[b][0]}
+          y2={nodes[b][1]}
+          strokeWidth={sw * 0.55}
+          strokeOpacity={0.55}
+        />
+      ));
+      const circles = nodes.map(([x, y], i) => (
+        <Circle key={`n${i}`} cx={x} cy={y} r={5.5} />
+      ));
+      return [...lines, ...circles];
+    }
+    case "fruto-vida": {
+      // 13 círculos separados del Fruto de la Vida.
+      const D = 15.5;
+      const centers: [number, number][] = [[C, C]];
+      [0, 60, 120, 180, 240, 300].forEach((a) => centers.push(pt(D, a)));
+      [0, 60, 120, 180, 240, 300].forEach((a) => centers.push(pt(2 * D, a)));
+      return centers.map(([x, y], i) => (
+        <Circle key={`c${i}`} cx={x} cy={y} r={D / 2} />
+      ));
+    }
+    case "huevo-vida": {
+      // Huevo de la Vida: 6 círculos tangentes alrededor de un centro vacío.
+      const D = 13;
+      const cs = [0, 60, 120, 180, 240, 300].map((a) => pt(D, a));
+      return [
+        ...cs.map(([x, y], i) => <Circle key={`c${i}`} cx={x} cy={y} r={D} />),
+        <Circle key="ring" cx={C} cy={C} r={41} />,
+      ];
+    }
+    case "cubo-vida": {
+      // Cubo isométrico (wireframe) — dos caras unidas.
+      const front: [number, number][] = [[28, 42], [64, 42], [64, 78], [28, 78]];
+      const off: [number, number] = [13, -13];
+      const back: [number, number][] = front.map(([x, y]) => [x + off[0], y + off[1]]);
+      const sq = (pts: [number, number][]) =>
+        pts.map((p) => `${p[0]},${p[1]}`).join(" ");
+      const connectors = front.map(([x, y], i) => (
+        <Line key={`k${i}`} x1={x} y1={y} x2={back[i][0]} y2={back[i][1]} />
+      ));
+      return [
+        <Polygon key="front" points={sq(front)} />,
+        <Polygon key="back" points={sq(back)} />,
+        ...connectors,
+      ];
+    }
+    case "octagrama": {
+      // Estrella de 8 puntas: dos cuadrados girados 45°.
+      return [
+        <Circle key="ring" cx={C} cy={C} r={46} />,
+        <Polygon key="a" points={poly(42, 4, -90)} />,
+        <Polygon key="b" points={poly(42, 4, -45)} />,
+      ];
+    }
+    case "eneagrama": {
+      // 9 puntas: círculo + triángulo (9-3-6) + héxada (1-4-2-8-5-7).
+      const p = [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => pt(44, -90 + i * 40));
+      const line = (idx: number[], key: string) => (
+        <Polygon
+          key={key}
+          points={idx.map((i) => `${p[i][0].toFixed(2)},${p[i][1].toFixed(2)}`).join(" ")}
+        />
+      );
+      return [
+        <Circle key="o" cx={C} cy={C} r={47} />,
+        line([0, 3, 6], "tri"),
+        line([1, 4, 2, 8, 5, 7], "hex"),
+        ...p.map(([x, y], i) => <Circle key={`d${i}`} cx={x} cy={y} r={1.8} />),
+      ];
+    }
+    case "nudo-celta": {
+      // Nudo trébol (trefoil) paramétrico — clásico celta.
+      const s = 13;
+      const pts: string[] = [];
+      for (let deg = 0; deg <= 360; deg += 4) {
+        const t = (deg * Math.PI) / 180;
+        const x = C + s * (Math.sin(t) + 2 * Math.sin(2 * t));
+        const y = C + s * (Math.cos(t) - 2 * Math.cos(2 * t));
+        pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+      }
+      let d = "";
+      pts.forEach((q, i) => {
+        d += i === 0 ? `M${q}` : ` L${q}`;
+      });
+      d += " Z";
+      return [<Path key="knot" d={d} />];
+    }
+    case "yin-yang": {
+      return [
+        <Circle key="o" cx={C} cy={C} r={46} />,
+        <Path key="s" d="M50,4 A23,23 0 0 1 50,50 A23,23 0 0 0 50,96" />,
+        <Circle key="d1" cx={C} cy={27} r={4} fill={undefined} />,
+        <Circle key="d2" cx={C} cy={73} r={4} />,
+      ];
+    }
+    case "circulos": {
+      return [10, 20, 30, 40, 46].map((r, i) => (
+        <Circle key={`r${i}`} cx={C} cy={C} r={r} />
+      )).concat(<Circle key="dot" cx={C} cy={C} r={2.5} />);
+    }
+    case "loto": {
+      const arr: React.ReactNode[] = [<Circle key="o" cx={C} cy={C} r={46} />];
+      // Pétalos exteriores largos.
+      for (let i = 0; i < 12; i++) {
+        const ang = i * 30;
+        const [px, py] = pt(30, ang);
+        arr.push(
+          <Ellipse key={`o${i}`} cx={px} cy={py} rx={5} ry={16} transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      // Pétalos interiores, alternados.
+      for (let i = 0; i < 12; i++) {
+        const ang = i * 30 + 15;
+        const [px, py] = pt(16, ang);
+        arr.push(
+          <Ellipse key={`i${i}`} cx={px} cy={py} rx={3.5} ry={9} transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      arr.push(<Circle key="c" cx={C} cy={C} r={5} />);
+      return arr;
+    }
+    case "cuadrado": {
+      return [<Polygon key="sq" points={poly(40, 4, -45)} />];
+    }
+    case "circulo": {
+      return [<Circle key="c" cx={C} cy={C} r={42} />];
+    }
+    case "triangulo": {
+      return [<Polygon key="tri" points={poly(44, 3, -90)} />];
+    }
     default:
       return null;
   }
