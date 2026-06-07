@@ -359,7 +359,7 @@ export default function MiMusicaScreen() {
     >
       <StatusBar barStyle="light-content" />
 
-      <View style={[styles.inner, { paddingTop: topPad + 22 }]}>
+      <View style={[styles.inner, { paddingTop: topPad + 12 }]}>
 
         {/* ── Header ── */}
         <View style={styles.header}>
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
   inner: { flex: 1 },
 
   // Header
-  header:    { paddingHorizontal: 20, paddingBottom: 16, flexDirection: "row", alignItems: "center" },
+  header:    { paddingHorizontal: 20, paddingBottom: 18, flexDirection: "row", alignItems: "center" },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 3 },
   heartBtn: {
