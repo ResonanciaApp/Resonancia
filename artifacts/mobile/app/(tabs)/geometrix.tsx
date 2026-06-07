@@ -166,9 +166,11 @@ export default function GeometrixScreen() {
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 12 * 3) / 3.3;
-  // La capa se ajusta al lado MENOR del lienzo para que la geometría entre
+  // Lienzo cuadrado y centrado: lado = lado menor del espacio disponible.
+  const canvasSide = canvas.w > 0 ? Math.min(canvas.w, canvas.h) : 0;
+  // La capa se ajusta al lado del lienzo para que la geometría entre
   // completa al rotar (no se corta contra los bordes).
-  const layerSize = canvas.w > 0 ? Math.min(canvas.w, canvas.h) * 0.96 : 0;
+  const layerSize = canvasSide * 0.96;
   const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
   const soundImg = activeSound ? getSoundImage(activeSound) : undefined;
 
@@ -251,39 +253,43 @@ export default function GeometrixScreen() {
         {/* Línea divisora */}
         <View style={styles.divider} />
 
-        {/* Fondo interactivo */}
+        {/* Fondo interactivo (cuadrado, centrado) */}
         <View
-          style={styles.canvas}
+          style={styles.canvasWrap}
           onLayout={(e) => {
             const { width: w, height: h } = e.nativeEvent.layout;
             setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
           }}
         >
-          <LinearGradient
-            colors={["rgba(86,97,168,0.10)", "rgba(6,7,15,0.0)"]}
-            style={StyleSheet.absoluteFill}
-          />
-          {layerSize > 0 &&
-            activeMetas.map((g, i) => (
-              <GeometryLayer key={g.id} geo={g} index={i} size={layerSize} />
-            ))}
+          {canvasSide > 0 && (
+            <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
+              <LinearGradient
+                colors={["rgba(86,97,168,0.10)", "rgba(6,7,15,0.0)"]}
+                style={StyleSheet.absoluteFill}
+              />
+              {layerSize > 0 &&
+                activeMetas.map((g, i) => (
+                  <GeometryLayer key={g.id} geo={g} index={i} size={layerSize} />
+                ))}
 
-          {active.length === 0 ? (
-            <View style={styles.empty} pointerEvents="none">
-              <Feather name="hexagon" size={30} color="rgba(190,150,80,0.4)" />
-              <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
-              <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
+              {active.length === 0 ? (
+                <View style={styles.empty} pointerEvents="none">
+                  <Feather name="hexagon" size={30} color="rgba(190,150,80,0.4)" />
+                  <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
+                  <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
+                </View>
+              ) : (
+                <Pressable
+                  onPress={() => setActive([])}
+                  style={styles.clearBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Limpiar composición"
+                >
+                  <Feather name="x" size={13} color={colors.mutedForeground} />
+                  <Text style={styles.clearText}>Limpiar ({active.length})</Text>
+                </Pressable>
+              )}
             </View>
-          ) : (
-            <Pressable
-              onPress={() => setActive([])}
-              style={styles.clearBtn}
-              accessibilityRole="button"
-              accessibilityLabel="Limpiar composición"
-            >
-              <Feather name="x" size={13} color={colors.mutedForeground} />
-              <Text style={styles.clearText}>Limpiar ({active.length})</Text>
-            </Pressable>
           )}
         </View>
       </View>
@@ -386,14 +392,18 @@ const styles = StyleSheet.create({
     marginVertical: 14,
   },
 
-  canvas: {
+  canvasWrap: {
     flex: 1,
+    marginBottom: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  canvas: {
     borderRadius: 20,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: CARD_BORDER,
     backgroundColor: "rgba(8,10,24,0.5)",
-    marginBottom: 12,
     alignItems: "center",
     justifyContent: "center",
   },
