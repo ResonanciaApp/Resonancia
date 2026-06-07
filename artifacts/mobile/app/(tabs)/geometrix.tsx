@@ -1058,8 +1058,8 @@ const styles = StyleSheet.create({
   thumbGlow: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 14,
-    borderWidth: 2,
-    borderColor: colors.primary,
+    borderWidth: 1,
+    borderColor: "#181c37",
   },
 
   grid: { flexGrow: 0 },
