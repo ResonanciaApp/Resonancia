@@ -676,8 +676,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -2 },
-  thumb: { width: 44, height: 44, borderRadius: 10, overflow: "hidden" },
-  thumbRadius: { borderRadius: 10 },
+  thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "#FFFFFF" },
+  thumbRadius: { borderRadius: 11 },
   trackInfo: { flex: 1 },
   trackName: { fontSize: 15, fontWeight: "300", marginBottom: 4 },
   _reorderPill_unused: {
