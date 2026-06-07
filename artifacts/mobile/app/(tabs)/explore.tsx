@@ -402,9 +402,6 @@ export default function ExploreScreen() {
                 <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 0 }]}>
                   Otras Temáticas
                 </Text>
-                <Pressable onPress={() => router.push("/todas-las-tematicas" as never)} hitSlop={8}>
-                  <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todas</Text>
-                </Pressable>
               </View>
               <View style={styles.tagGrid}>
                 {TAG_CARDS.slice(0, TAGS_PREVIEW_COUNT).map((tag) => (
@@ -413,27 +410,21 @@ export default function ExploreScreen() {
                     onPress={() => router.push(`/tag/${tag.id}` as never)}
                     style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.85 : 1 }]}
                   >
-                    <Image
-                      source={tag.image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      cachePolicy="memory-disk"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(4,0,7,0.50)" }]} />
+                    <View style={styles.tagImgWrap}>
+                      <Image
+                        source={tag.image}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                        cachePolicy="memory-disk"
+                        placeholder={BLUR_PLACEHOLDER}
+                        transition={IMAGE_TRANSITION}
+                      />
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(4,0,7,0.35)" }]} />
+                    </View>
                     <Text style={styles.tagLabel}>{tag.label}</Text>
                   </Pressable>
                 ))}
               </View>
-
-              {/* ── VER TODAS (bloque completo) ── */}
-              <Pressable
-                onPress={() => router.push("/todas-las-tematicas" as never)}
-                style={({ pressed }) => [styles.verTodasBlock, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Text style={styles.verTodasBlockText}>Ver todas  ›</Text>
-              </Pressable>
             </View>
 
             {/* ── Mezclas de la comunidad ── */}
@@ -648,12 +639,14 @@ const styles = StyleSheet.create({
   },
   tagCard: {
     width: TAG_W,
+    alignItems: "center",
+    gap: 8,
+  },
+  tagImgWrap: {
+    width: "100%" as unknown as number,
     height: TAG_H,
     borderRadius: 16,
     overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 12,
   },
   verTodasBlock: {
     width: "100%",
@@ -673,12 +666,9 @@ const styles = StyleSheet.create({
   tagLabel: {
     color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: "700",
+    fontWeight: "600",
     textAlign: "center",
     lineHeight: 20,
-    textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
   },
 
   // Historial
