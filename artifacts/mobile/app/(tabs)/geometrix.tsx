@@ -834,9 +834,8 @@ export default function GeometrixScreen() {
                         styles.thumb,
                         {
                           borderColor:
-                            isSolo || isSelected ? s.color : s.color + "55",
+                            isSolo || isSelected ? s.color + "66" : s.color + "55",
                         },
-                        (isSolo || isSelected) && { borderWidth: 2 },
                         isSelected && styles.thumbSelected,
                       ]}
                       accessibilityRole="button"
@@ -856,8 +855,8 @@ export default function GeometrixScreen() {
                       accessibilityLabel={`Opciones de ${g.name}`}
                     >
                       <Feather
-                        name="chevron-down"
-                        size={18}
+                        name="sliders"
+                        size={16}
                         color={colors.mutedForeground}
                       />
                     </Pressable>
@@ -1493,7 +1492,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   thumbCaret: {
-    marginLeft: 2,
+    marginLeft: 5,
     alignItems: "center",
     justifyContent: "center",
   },
