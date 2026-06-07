@@ -171,7 +171,7 @@ export default function SonidosAncestalesScreen() {
         </View>
 
         {/* Tabs — bloques con ícono, fila 2 */}
-        <View style={[styles.tabRow, { paddingHorizontal: H_PAD, marginTop: 10 }]}>
+        <View style={[styles.tabRow, { paddingHorizontal: H_PAD, marginTop: 8 }]}>
           {TABS_EXTRA.map(({ label, value, icon }) => {
             const sel = activeTab === value;
             return (
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
-  tabRow: { flexDirection: "row", gap: 10 },
+  tabRow: { flexDirection: "row", gap: 8 },
   tabBlock: {
     flex: 1,
     flexDirection: "column",
