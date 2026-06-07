@@ -323,7 +323,7 @@ export default function ProfileScreen() {
               { backgroundColor: "#1A2336", opacity: pressed ? 0.75 : 1 },
             ]}
           >
-            <Feather name="settings" size={18} color={colors.foreground} />
+            <Feather name="settings" size={18} color="#FFFFFF" />
           </Pressable>
         </View>
 
