@@ -19,7 +19,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 
 const ACTIVE_COLOR = "#FFFFFF";
-const INACTIVE_COLOR = "#C8C6DE";
+const INACTIVE_COLOR = "#8094B5";
 const PILL_BG = "rgba(107,154,181,0.18)";
 const BAR_BORDER = "rgba(182,149,95,0.18)";
 
@@ -35,8 +35,8 @@ const TAB_CONFIG: Record<
   }
 > = {
   index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
-  explore: { label: "Biblioteca", sfIcon: "books.vertical", sfIconFill: "books.vertical.fill", featherIcon: "book-open" },
-  musica:  { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
+  explore: { label: "Explora",    sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass",    featherIcon: "search" },
+  musica:  { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
   geometrix: { label: "Geometrix", sfIcon: "hexagon", sfIconFill: "hexagon.fill", featherIcon: "hexagon", image: require("@/assets/images/geometrix/cubo-1.png") },
   profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
 };
