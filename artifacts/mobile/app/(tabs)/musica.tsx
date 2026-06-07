@@ -49,11 +49,13 @@ const SUB_TAB_LABELS: Partial<Record<SoundCategoryId, string>> = {
 };
 
 const SUB_TAB_ICON_COLORS: Partial<Record<SoundCategoryId, string>> = {
-  animales: "#F0A875",
-  bosque:   "#7DC87A",
-  mar:      "#7DC5E8",
-  fuego:    "#C4695A",
-  desierto: "#C4A882",
+  animales:   "#F0A875",
+  bosque:     "#7DC87A",
+  mar:        "#7DC5E8",
+  fuego:      "#C4695A",
+  desierto:   "#C4A882",
+  solfeggio:  "#9A9CCD",
+  frecuencias: "#9A9CCD",
 };
 
 const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
