@@ -363,22 +363,22 @@ export default function MiMusicaScreen() {
 
         {/* ── Header ── */}
         <View style={styles.header}>
-          <View style={{ flex: 1 }}>
+          <View style={styles.headerRow}>
             <Text style={styles.pageTitle}>Mi Música</Text>
-            <Text style={styles.pageSub}>Mezclador de sonidos</Text>
+            <Pressable
+              onPress={() => router.push("/mezclas" as never)}
+              style={styles.heartBtn}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Mis mezclas guardadas"
+            >
+              {/* Relleno sólido, semitransparente en reposo; se ilumina al guardar */}
+              <Animated.View style={{ opacity: heartOpacity }}>
+                <MaterialCommunityIcons name="heart" size={24} color={FG} />
+              </Animated.View>
+            </Pressable>
           </View>
-          <Pressable
-            onPress={() => router.push("/mezclas" as never)}
-            style={styles.heartBtn}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Mis mezclas guardadas"
-          >
-            {/* Relleno sólido, semitransparente en reposo; se ilumina al guardar */}
-            <Animated.View style={{ opacity: heartOpacity }}>
-              <MaterialCommunityIcons name="heart" size={24} color={FG} />
-            </Animated.View>
-          </Pressable>
+          <Text style={styles.pageSub}>Mezclador de sonidos</Text>
         </View>
 
         {/* ── Tab bar — individual pills ── */}
@@ -472,7 +472,8 @@ const styles = StyleSheet.create({
   inner: { flex: 1 },
 
   // Header
-  header:    { paddingHorizontal: 20, paddingBottom: 18, flexDirection: "row", alignItems: "center" },
+  header:    { paddingHorizontal: 20, paddingBottom: 18 },
+  headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 3 },
   heartBtn: {
