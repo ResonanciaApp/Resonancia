@@ -430,7 +430,7 @@ export default function MiMusicaScreen() {
                         <MaterialCommunityIcons
                           name={SUB_TAB_ICONS[catId] as any}
                           size={26}
-                          color={sel ? (SUB_TAB_ICON_COLORS[catId] ?? "#7379C5") : MUTED}
+                          color={sel ? (SUB_TAB_ICON_COLORS[catId] ?? "#D8B56A") : MUTED}
                           style={{ marginBottom: 5 }}
                         />
                       )}
