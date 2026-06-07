@@ -70,14 +70,18 @@ function GeometryLayer({
   const aStyle = useAnimatedStyle(() => ({
     transform: [
       { rotate: `${rot.value * 360 * dir}deg` },
-      { scale: 0.94 + pulse.value * 0.08 },
+      // Tope de escala en 1.0 para que no se corte contra los bordes.
+      { scale: 0.9 + pulse.value * 0.1 },
     ],
     opacity: 0.5 + pulse.value * 0.4,
   }));
 
+  // Trazo de 1px real: el viewBox es 0–100, así que sw = 100 / size.
+  const sw = size > 0 ? 100 / size : 1;
+
   return (
     <Animated.View style={[styles.layer, aStyle]} pointerEvents="none">
-      <SacredGlyph id={geo.id} color={geo.color} size={size} strokeWidth={1.1} />
+      <SacredGlyph id={geo.id} color={geo.color} size={size} strokeWidth={sw} />
     </Animated.View>
   );
 }
@@ -159,8 +163,11 @@ export default function GeometrixScreen() {
     );
   }, []);
 
+  const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   const tileW = (width - 20 * 2 - 12 * 2) / 3;
-  const layerSize = Math.min(width * 0.92, 460);
+  // La capa se ajusta al lado MENOR del lienzo para que la geometría entre
+  // completa al rotar (no se corta contra los bordes).
+  const layerSize = canvas.w > 0 ? Math.min(canvas.w, canvas.h) * 0.96 : 0;
   const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
   const soundImg = activeSound ? getSoundImage(activeSound) : undefined;
 
@@ -243,14 +250,21 @@ export default function GeometrixScreen() {
         <View style={styles.divider} />
 
         {/* Fondo interactivo */}
-        <View style={styles.canvas}>
+        <View
+          style={styles.canvas}
+          onLayout={(e) => {
+            const { width: w, height: h } = e.nativeEvent.layout;
+            setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+          }}
+        >
           <LinearGradient
             colors={["rgba(86,97,168,0.10)", "rgba(6,7,15,0.0)"]}
             style={StyleSheet.absoluteFill}
           />
-          {activeMetas.map((g, i) => (
-            <GeometryLayer key={g.id} geo={g} index={i} size={layerSize} />
-          ))}
+          {layerSize > 0 &&
+            activeMetas.map((g, i) => (
+              <GeometryLayer key={g.id} geo={g} index={i} size={layerSize} />
+            ))}
 
           {active.length === 0 ? (
             <View style={styles.empty} pointerEvents="none">
