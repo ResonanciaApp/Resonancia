@@ -194,7 +194,7 @@ export default function SonidosScreen() {
                   <Feather
                     name={icon as any}
                     size={24}
-                    color={sel ? "#D6933A" : colors.mutedForeground}
+                    color={sel ? SONIDOS_ACCENT : colors.mutedForeground}
                   />
                   <Text
                     style={[
@@ -461,15 +461,18 @@ const styles = StyleSheet.create({
   tabBarWrap: {
     paddingBottom: 0,
   },
-  tabRow: { flexDirection: "row", gap: 10 },
+  tabRow: { flexDirection: "row", gap: 8 },
   tabBlock: {
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
     gap: 8,
-    paddingTop: 14,
-    paddingBottom: 12,
-    borderRadius: 16,
+    paddingTop: 16,
+    paddingBottom: 14,
+    paddingHorizontal: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabBlockActive: { backgroundColor: "rgba(100,142,195,0.14)" },
