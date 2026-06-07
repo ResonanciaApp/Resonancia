@@ -42,6 +42,10 @@ const CARD_BORDER = "#161f33";
 /** Los 5 sonidos de fondo del menú (todos con archivo + imagen). */
 const SOUND_PICKS = ["lluvia", "bosque", "oceano", "fogata", "grillos"] as const;
 
+/** Tamaño del recuadro de vista previa en el panel de Ajustes. */
+const PREVIEW_BOX = 120;
+const PREVIEW_LAYER = PREVIEW_BOX * 0.96;
+
 /** Paleta de colores para personalizar cada geometría. */
 const PALETTE = [
   "#BE9650",
@@ -399,7 +403,34 @@ export default function GeometrixScreen() {
         onRequestClose={() => setSettingsOpen(false)}
       >
         <Pressable style={styles.sheetBackdrop} onPress={() => setSettingsOpen(false)} />
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
+
+        {/* Vista previa en vivo: flota arriba para no tapar los controles del
+            sheet. Vive dentro del Modal, así se cierra junto con los ajustes. */}
+        {activeMetas.length > 0 && (
+          <View pointerEvents="none" style={[styles.previewWrap, { top: insets.top + 8 }]}>
+            <View style={styles.previewBox}>
+              {activeMetas.map((g, i) => (
+                <GeometryLayer
+                  key={g.id}
+                  geo={g}
+                  index={i}
+                  size={PREVIEW_LAYER}
+                  settings={getSettings(g.id)}
+                />
+              ))}
+            </View>
+            <Text style={styles.previewLabel}>Vista previa</Text>
+          </View>
+        )}
+
+        <View
+          style={[
+            styles.sheet,
+            { paddingBottom: insets.bottom + 16 },
+            // Reservar aire arriba para el preview y que nunca tape el header.
+            activeMetas.length > 0 && { maxHeight: "68%" },
+          ]}
+        >
           <View style={styles.sheetHandle} />
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>Ajustes</Text>
@@ -661,6 +692,34 @@ const styles = StyleSheet.create({
 
   // Bottom sheet de ajustes
   sheetBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
+  previewWrap: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    gap: 6,
+  },
+  previewBox: {
+    width: PREVIEW_BOX,
+    height: PREVIEW_BOX,
+    borderRadius: 18,
+    overflow: "hidden",
+    backgroundColor: "rgba(8,10,24,0.88)",
+    borderWidth: 1,
+    borderColor: CARD_BORDER,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  previewLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.mutedForeground,
+    backgroundColor: "rgba(8,10,24,0.7)",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
   sheet: {
     backgroundColor: "#0B0F14",
     borderTopLeftRadius: 24,
