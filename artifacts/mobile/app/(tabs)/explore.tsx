@@ -410,7 +410,7 @@ export default function ExploreScreen() {
                     onPress={() => router.push(item.route as never)}
                   >
                     <View style={styles.libraryIconWrap}>
-                      <Feather name={item.icon} size={28} color={colors.mutedForeground} />
+                      <Feather name={item.icon} size={26} color={colors.mutedForeground} />
                     </View>
                     <Text style={[styles.libraryLabel, { color: "#FFFFFF" }]}>
                       {item.label}
@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   libraryLabel: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.2,
   },
