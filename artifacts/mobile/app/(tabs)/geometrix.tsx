@@ -906,66 +906,65 @@ export default function GeometrixScreen() {
         animationType="fade"
         onRequestClose={() => setMenuGeoId(null)}
       >
-        <Pressable style={styles.menuBackdrop} onPress={() => setMenuGeoId(null)}>
+        <Pressable
+          style={[styles.menuBackdrop, { paddingBottom: tabBarHeight + 94 }]}
+          onPress={() => setMenuGeoId(null)}
+        >
           {menuGeo && (
             <Pressable style={styles.menuCard} onPress={() => {}}>
-              <View style={styles.menuHeader}>
-                <View
-                  style={[
-                    styles.menuGlyph,
-                    { borderColor: getSettings(menuGeo.id).color + "55" },
-                  ]}
+              <View style={styles.menuList}>
+                <Pressable
+                  style={styles.menuItem}
+                  onPress={() => {
+                    setSettingsGeoId(menuGeoId);
+                    setMenuGeoId(null);
+                    setSettingsOpen(true);
+                  }}
                 >
-                  <SacredGlyph
-                    id={menuGeo.id}
-                    color={getSettings(menuGeo.id).color}
-                    size={30}
-                    strokeWidth={2}
+                  <Feather name="sliders" size={18} color={colors.foreground} />
+                  <Text style={styles.menuItemText}>Personalizar</Text>
+                </Pressable>
+
+                <Pressable
+                  style={styles.menuItem}
+                  onPress={() => {
+                    setSoloId((prev) => (prev === menuGeo.id ? null : menuGeo.id));
+                    setMenuGeoId(null);
+                  }}
+                >
+                  <Feather
+                    name={soloId === menuGeo.id ? "eye" : "eye-off"}
+                    size={18}
+                    color={colors.foreground}
                   />
-                </View>
-                <Text style={styles.menuTitle}>{menuGeo.name}</Text>
+                  <Text style={styles.menuItemText}>
+                    {soloId === menuGeo.id ? "Mostrar todas" : "Ver solo esta"}
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={styles.menuItem}
+                  onPress={() => {
+                    const id = menuGeo.id;
+                    setMenuGeoId(null);
+                    toggleGeometry(id);
+                  }}
+                >
+                  <Feather name="trash-2" size={18} color="#D98A8A" />
+                  <Text style={[styles.menuItemText, { color: "#D98A8A" }]}>Quitar</Text>
+                </Pressable>
               </View>
 
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  setSettingsGeoId(menuGeoId);
-                  setMenuGeoId(null);
-                  setSettingsOpen(true);
-                }}
-              >
-                <Feather name="sliders" size={18} color={colors.foreground} />
-                <Text style={styles.menuItemText}>Personalizar</Text>
-              </Pressable>
+              <View style={styles.menuDivider} />
 
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  setSoloId((prev) => (prev === menuGeo.id ? null : menuGeo.id));
-                  setMenuGeoId(null);
-                }}
-              >
-                <Feather
-                  name={soloId === menuGeo.id ? "eye" : "eye-off"}
-                  size={18}
-                  color={colors.foreground}
+              <View style={styles.menuGlyphWrap}>
+                <SacredGlyph
+                  id={menuGeo.id}
+                  color={getSettings(menuGeo.id).color}
+                  size={77}
+                  strokeWidth={2}
                 />
-                <Text style={styles.menuItemText}>
-                  {soloId === menuGeo.id ? "Mostrar todas" : "Ver solo esta"}
-                </Text>
-              </Pressable>
-
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  const id = menuGeo.id;
-                  setMenuGeoId(null);
-                  toggleGeometry(id);
-                }}
-              >
-                <Feather name="trash-2" size={18} color="#D98A8A" />
-                <Text style={[styles.menuItemText, { color: "#D98A8A" }]}>Quitar</Text>
-              </Pressable>
+              </View>
             </Pressable>
           )}
         </Pressable>
@@ -1492,46 +1491,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
     alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
+    justifyContent: "flex-end",
+    paddingHorizontal: 24,
   },
   menuCard: {
     width: "100%",
-    maxWidth: 280,
-    borderRadius: 20,
-    backgroundColor: "#10141C",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(122,143,168,0.25)",
-    paddingVertical: 8,
-  },
-  menuHeader: {
-    alignItems: "center",
-    gap: 8,
-    paddingTop: 14,
-    paddingBottom: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(122,143,168,0.18)",
-  },
-  menuGlyph: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    maxWidth: 320,
+    flexDirection: "row",
+    alignItems: "stretch",
+    overflow: "hidden",
+    borderRadius: 18,
+    backgroundColor: "#090D20",
     borderWidth: 1,
-    alignItems: "center",
+    borderColor: "#2c304f",
+  },
+  menuList: {
+    flex: 1,
+    paddingVertical: 8,
     justifyContent: "center",
   },
-  menuTitle: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: colors.foreground,
+  menuDivider: {
+    width: 1,
+    backgroundColor: "#2c304f",
+    marginVertical: 16,
+  },
+  menuGlyphWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 22,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
   },
   menuItemText: {
     fontSize: 15,
