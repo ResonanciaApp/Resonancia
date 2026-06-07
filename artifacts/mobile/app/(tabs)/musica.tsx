@@ -535,9 +535,9 @@ const styles = StyleSheet.create({
 
   // Grilla de sonidos — 3 columnas uniformes
   grid: { flexDirection: "row", flexWrap: "wrap", rowGap: 22, justifyContent: "space-between" },
-  soundCard: { width: "31%" },
+  soundCard: { width: "24%" },
   cardImageWrap: {
-    width: "77%",
+    width: "100%",
     aspectRatio: 1,
     alignSelf: "center",
     overflow: "hidden",
