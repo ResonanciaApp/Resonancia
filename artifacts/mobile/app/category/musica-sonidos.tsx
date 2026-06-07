@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
-  tabBlockActive: { backgroundColor: "rgba(100,142,195,0.14)" },
+  tabBlockActive: { backgroundColor: "rgba(114,191,120,0.14)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1 },
   divider: {
     height: StyleSheet.hairlineWidth,
