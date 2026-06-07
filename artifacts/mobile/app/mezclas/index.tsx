@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import {
@@ -25,7 +26,7 @@ import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
-const BG      = "#0B0F14";
+const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 const FG      = "#EDE1D3";
 const MUTED   = "#7A8FA8";
 const GOLD    = "#BE9650";
@@ -166,7 +167,7 @@ export default function MezclasIndexScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: BG }]}>
+    <LinearGradient colors={BG_GRADIENT} style={styles.root} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -240,7 +241,7 @@ export default function MezclasIndexScreen() {
       <View style={[styles.miniPlayerFloat, { bottom: 16 + bottomPad }]}>
         <MiniPlayer />
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
