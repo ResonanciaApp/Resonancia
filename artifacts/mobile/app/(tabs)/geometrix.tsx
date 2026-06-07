@@ -473,26 +473,17 @@ export default function GeometrixScreen() {
   const glow = useSharedValue(0);
   const glowStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
 
-  // Al desplegar el menú, oscurecer sutilmente el thumbnail (efecto zen).
-  const dim = useSharedValue(0);
-  const dimStyle = useAnimatedStyle(() => ({ opacity: dim.value }));
+  // El thumbnail principal queda "con opacidad" (atenuado) mientras el
+  // desplegable está COLAPSADO, y se ILUMINA al abrirlo para elegir pista.
+  // Una sola capa de oscurecido animada cubre ambos estados (reposo + activo).
+  const rest = useSharedValue(1);
+  const restStyle = useAnimatedStyle(() => ({ opacity: rest.value }));
   useEffect(() => {
-    dim.value = withTiming(openModule ? 1 : 0, {
+    rest.value = withTiming(openModule ? 0 : 1, {
       duration: 450,
       easing: Easing.inOut(Easing.ease),
     });
-  }, [openModule, dim]);
-
-  // Transición suave entre "prendida" (con sonido) y oscura (en reposo).
-  const soundActive = Object.values(activeTracks).some(Boolean);
-  const off = useSharedValue(1);
-  const offStyle = useAnimatedStyle(() => ({ opacity: off.value }));
-  useEffect(() => {
-    off.value = withTiming(soundActive ? 0 : 1, {
-      duration: 450,
-      easing: Easing.inOut(Easing.ease),
-    });
-  }, [soundActive, off]);
+  }, [openModule, rest]);
 
   // Al salir de Geometrix (las pestañas quedan montadas): detener el sonido y
   // resetear la UI. Al entrar: disparar el glow de bienvenida una sola vez.
@@ -733,18 +724,18 @@ export default function GeometrixScreen() {
                     cachePolicy="memory-disk"
                     recyclingKey="geometrix-sound-thumb"
                   />
-                  {/* Oscurecido (en reposo / al apagar el sonido), con fade suave. */}
+                  {/* "Con opacidad" al estar colapsado; se ilumina al abrir. */}
                   <Animated.View
                     pointerEvents="none"
-                    style={[styles.thumbOverlay, offStyle]}
+                    style={[styles.thumbOverlay, restStyle]}
                   />
-                  {/* Oscurecido sutil mientras el desplegable está abierto. */}
-                  <Animated.View
-                    pointerEvents="none"
-                    style={[styles.thumbDim, dimStyle]}
-                  />
-                  {!isActive && (
-                    /* Glow pulsante para llamar la atención. */
+                  {isActive ? (
+                    /* Icono de audio: hay una pista sonando (sobre la imagen). */
+                    <View style={styles.thumbAudioBadge} pointerEvents="none">
+                      <Feather name="volume-2" size={16} color="#fff" />
+                    </View>
+                  ) : (
+                    /* Glow pulsante para llamar la atención (sin pista). */
                     <Animated.View
                       pointerEvents="none"
                       style={[styles.thumbGlow, glowStyle]}
@@ -1465,10 +1456,9 @@ export default function GeometrixScreen() {
                         style={styles.soundTileImg}
                         contentFit="cover"
                       />
-                      {sel && (
-                        <View style={styles.soundTileSel} pointerEvents="none">
-                          <Feather name="volume-2" size={16} color="#fff" />
-                        </View>
+                      {/* No seleccionada → overlay oscuro; la elegida se ilumina. */}
+                      {!sel && (
+                        <View style={styles.soundTileDim} pointerEvents="none" />
                       )}
                     </Pressable>
                   );
@@ -1512,10 +1502,10 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.45)",
   },
-  thumbDim: {
+  thumbAudioBadge: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   thumbGlow: {
     ...StyleSheet.absoluteFillObject,
@@ -1848,10 +1838,8 @@ const styles = StyleSheet.create({
   },
   soundTileActive: { borderColor: "#2c304f" },
   soundTileImg: { width: "100%", height: "100%" },
-  soundTileSel: {
+  soundTileDim: {
     ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
 });
