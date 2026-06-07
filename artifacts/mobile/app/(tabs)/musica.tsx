@@ -371,10 +371,10 @@ export default function MiMusicaScreen() {
               accessibilityRole="button"
               accessibilityLabel="Mis mezclas guardadas"
             >
-              {/* Blanco puro en reposo; destello naranjo con glow al guardar */}
+              {/* Blanco puro en reposo; destello dorado del tema al guardar */}
               <MaterialCommunityIcons name="heart" size={18} color="#FFFFFF" />
               <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
-                <MaterialCommunityIcons name="heart" size={18} color="#FF7A1A" style={styles.heartGlowIcon} />
+                <MaterialCommunityIcons name="heart" size={18} color="#BE9650" />
               </Animated.View>
             </Pressable>
           </View>
@@ -483,11 +483,6 @@ const styles = StyleSheet.create({
   heartGlow: {
     position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
     alignItems: "center", justifyContent: "center",
-  },
-  heartGlowIcon: {
-    textShadowColor: "#FF7A1A",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
   },
 
   // Tab bar
