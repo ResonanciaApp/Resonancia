@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -2 },
-  thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "#FFFFFF" },
+  thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.5)" },
   thumbRadius: { borderRadius: 11 },
   trackInfo: { flex: 1, justifyContent: "center" },
   trackName: { fontSize: 15, fontWeight: "700", marginBottom: -3 },
