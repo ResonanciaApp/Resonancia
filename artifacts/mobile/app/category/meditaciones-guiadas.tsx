@@ -54,6 +54,7 @@ export default function MeditacionesGuiadasScreen() {
   const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const [subtitleOpen, setSubtitleOpen] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
@@ -115,16 +116,30 @@ export default function MeditacionesGuiadasScreen() {
           <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
             <ZenStonesIcon color={ICON_COLOR} size={42} />
           </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
-          <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-            Déjate llevar por la voz y el sonido
-          </Text>
+          <Pressable
+            onPress={() => setSubtitleOpen((v) => !v)}
+            style={styles.titleRow}
+            hitSlop={8}
+          >
+            <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
+            <Feather
+              name={subtitleOpen ? "chevron-up" : "chevron-down"}
+              size={20}
+              color={colors.mutedForeground}
+              style={styles.titleChevron}
+            />
+          </Pressable>
+          {subtitleOpen && (
+            <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+              Déjate llevar por la voz y el sonido
+            </Text>
+          )}
           <View style={styles.searchBar}>
-            <Feather name="search" size={17} color={colors.mutedForeground} />
+            <Feather name="search" size={17} color={colors.mutedForeground} style={{ opacity: 0.05 }} />
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
               placeholder="Buscar en Meditaciones…"
-              placeholderTextColor={colors.mutedForeground}
+              placeholderTextColor={colors.mutedForeground + "0D"}
               value={query}
               onChangeText={setQuery}
               returnKeyType="search"
@@ -272,6 +287,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "center" },
+  titleChevron: { marginLeft: 6, marginBottom: 4 },
   pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,

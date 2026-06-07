@@ -52,6 +52,7 @@ export default function MusicaSonidosScreen() {
   const [query, setQuery] = useState("");
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const [subtitleOpen, setSubtitleOpen] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
@@ -122,16 +123,30 @@ export default function MusicaSonidosScreen() {
               contentFit="contain"
             />
           </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Música</Text>
-          <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-            Temas exclusivos para ti
-          </Text>
+          <Pressable
+            onPress={() => setSubtitleOpen((v) => !v)}
+            style={styles.titleRow}
+            hitSlop={8}
+          >
+            <Text style={[styles.pageTitle, { color: colors.foreground }]}>Música</Text>
+            <Feather
+              name={subtitleOpen ? "chevron-up" : "chevron-down"}
+              size={20}
+              color={colors.mutedForeground}
+              style={styles.titleChevron}
+            />
+          </Pressable>
+          {subtitleOpen && (
+            <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
+              Temas exclusivos para ti
+            </Text>
+          )}
           <View style={styles.searchBar}>
-            <Feather name="search" size={17} color={colors.mutedForeground} />
+            <Feather name="search" size={17} color={colors.mutedForeground} style={{ opacity: 0.05 }} />
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
               placeholder="Buscar en Música…"
-              placeholderTextColor={colors.mutedForeground}
+              placeholderTextColor={colors.mutedForeground + "0D"}
               value={query}
               onChangeText={setQuery}
               returnKeyType="search"
@@ -248,7 +263,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     marginBottom: 12,
   },
-  titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
+  titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "center" },
+  titleChevron: { marginLeft: 6, marginBottom: 4 },
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
   pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
   searchBar: {
