@@ -18,7 +18,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 
 const ACTIVE_COLOR = "#FFFFFF";
-const INACTIVE_COLOR = "#F5F4FF";
+const INACTIVE_COLOR = "#C8C6DE";
 const PILL_BG = "rgba(107,154,181,0.18)";
 const BAR_BORDER = "rgba(182,149,95,0.18)";
 
@@ -75,10 +75,10 @@ function TabItem({
           <SymbolView
             name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
             tintColor={iconColor}
-            size={25}
+            size={23}
           />
         ) : (
-          <Feather name={conf.featherIcon as never} size={25} color={iconColor} />
+          <Feather name={conf.featherIcon as never} size={23} color={iconColor} />
         )}
       </View>
       <Text style={[styles.label, { color: iconColor }]}>{conf.label}</Text>
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     backgroundColor: PILL_BG,
   },
   label: {
-    fontSize: 13,
+    fontSize: 11,
     letterSpacing: 0.3,
     fontWeight: "500",
   },
