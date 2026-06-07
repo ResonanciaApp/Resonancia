@@ -23,14 +23,12 @@ import {
 } from "react-native";
 import Animated, {
   Easing,
-  Extrapolation,
   FadeIn,
+  FadeInDown,
   FadeOut,
-  interpolate,
   LinearTransition,
   runOnJS,
   type SharedValue,
-  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -50,33 +48,6 @@ import { GEOMETRIES, type GeometryId, type GeometryMeta } from "@/data/geometrie
 const colors = colorsConst.light;
 const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 const CARD_BORDER = "#161f33";
-// Ancho de cada "página" del carrusel de acciones (flecha bajo la divisora).
-const PILL_ITEM_W = 168;
-
-/**
- * Una página del carrusel de acciones. Se desvanece y encoge a medida que se
- * desliza fuera del centro (crossfade "zen") según la posición del scroll.
- */
-function CarouselItem({
-  index,
-  scrollX,
-  children,
-}: {
-  index: number;
-  scrollX: SharedValue<number>;
-  children: React.ReactNode;
-}) {
-  const animStyle = useAnimatedStyle(() => {
-    const input = [(index - 1) * PILL_ITEM_W, index * PILL_ITEM_W, (index + 1) * PILL_ITEM_W];
-    return {
-      opacity: interpolate(scrollX.value, input, [0.18, 1, 0.18], Extrapolation.CLAMP),
-      transform: [
-        { scale: interpolate(scrollX.value, input, [0.86, 1, 0.86], Extrapolation.CLAMP) },
-      ],
-    };
-  });
-  return <Animated.View style={[styles.pillSlide, animStyle]}>{children}</Animated.View>;
-}
 
 /**
  * Dos módulos de música, lado a lado. Cada uno abre un desplegable con 3
@@ -311,13 +282,6 @@ export default function GeometrixScreen() {
   const [selectedId, setSelectedId] = useState<GeometryId | null>(null);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
-  // Página activa del carrusel de acciones (para los puntitos indicadores).
-  const [pillPage, setPillPage] = useState(0);
-  // Scroll del carrusel (UI thread) para el crossfade de cada página.
-  const pillScrollX = useSharedValue(0);
-  const pillScrollHandler = useAnimatedScrollHandler((e) => {
-    pillScrollX.value = e.contentOffset.x;
-  });
   // Zoom en vivo del pellizco (UI thread); se confirma a settings al soltar.
   const livePinch = useSharedValue(1);
   const pinchStart = useSharedValue(1);
@@ -487,7 +451,7 @@ export default function GeometrixScreen() {
   const layerSize = canvasSide * 0.96;
   const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
   const hasActive = activeMetas.length > 0;
-  // Acciones del carrusel desplegable (flecha bajo la divisora).
+  // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }[] = [
     { key: "settings", icon: "sliders", label: "Personalizar", onPress: () => setSettingsOpen(true) },
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
@@ -495,19 +459,8 @@ export default function GeometrixScreen() {
   ];
   // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
   useEffect(() => {
-    if (!hasActive) {
-      setPillOpen(false);
-      setPillPage(0);
-    }
+    if (!hasActive) setPillOpen(false);
   }, [hasActive]);
-  // Al cerrar, el carrusel se desmonta y reabre en la página 0: dejamos el
-  // indicador y el crossfade sincronizados con ese reinicio.
-  useEffect(() => {
-    if (!pillOpen) {
-      setPillPage(0);
-      pillScrollX.value = 0;
-    }
-  }, [pillOpen, pillScrollX]);
   // Lo que se pinta en el lienzo: si hay "Aislar", solo esa geometría.
   const visibleMetas = soloId
     ? activeMetas.filter((g) => g.id === soloId)
@@ -745,49 +698,25 @@ export default function GeometrixScreen() {
 
               {pillOpen && (
                 <Animated.View
-                  entering={FadeIn.duration(420).easing(Easing.out(Easing.quad))}
-                  exiting={FadeOut.duration(260)}
-                  style={styles.pillDropdown}
+                  entering={FadeInDown.duration(240).easing(Easing.out(Easing.quad))}
+                  exiting={FadeOut.duration(160)}
+                  style={styles.pillRow}
                 >
-                  <Animated.ScrollView
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    snapToInterval={PILL_ITEM_W}
-                    decelerationRate="fast"
-                    onScroll={pillScrollHandler}
-                    scrollEventThrottle={16}
-                    onMomentumScrollEnd={(e) =>
-                      setPillPage(Math.round(e.nativeEvent.contentOffset.x / PILL_ITEM_W))
-                    }
-                    style={{ width: PILL_ITEM_W }}
-                  >
-                    {pillActions.map((a, i) => (
-                      <CarouselItem key={a.key} index={i} scrollX={pillScrollX}>
-                        <Pressable
-                          onPress={() => {
-                            a.onPress();
-                            setPillOpen(false);
-                          }}
-                          style={styles.pillSlideBtn}
-                          accessibilityRole="button"
-                          accessibilityLabel={a.label}
-                        >
-                          <Feather name={a.icon} size={22} color={colors.accent} />
-                          <Text style={styles.pillSlideLabel}>{a.label}</Text>
-                        </Pressable>
-                      </CarouselItem>
-                    ))}
-                  </Animated.ScrollView>
-
-                  <View style={styles.pillDots}>
-                    {pillActions.map((a, i) => (
-                      <View
-                        key={a.key}
-                        style={[styles.pillDot, i === pillPage && styles.pillDotActive]}
-                      />
-                    ))}
-                  </View>
+                  {pillActions.map((a) => (
+                    <Pressable
+                      key={a.key}
+                      onPress={() => {
+                        a.onPress();
+                        setPillOpen(false);
+                      }}
+                      style={styles.pillBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel={a.label}
+                      hitSlop={6}
+                    >
+                      <Feather name={a.icon} size={20} color={colors.accent} />
+                    </Pressable>
+                  ))}
                 </Animated.View>
               )}
             </Animated.View>
@@ -1316,47 +1245,24 @@ const styles = StyleSheet.create({
     borderColor: "rgba(122,143,168,0.35)",
     backgroundColor: "rgba(11,15,20,0.55)",
   },
-  pillDropdown: {
+  pillRow: {
     marginTop: 8,
-    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 999,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(122,143,168,0.30)",
     backgroundColor: "rgba(11,15,20,0.88)",
-    overflow: "hidden",
-    paddingTop: 4,
   },
-  pillSlide: {
-    width: PILL_ITEM_W,
+  pillBtn: {
+    width: 40,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
-  },
-  pillSlideBtn: {
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 18,
-    paddingHorizontal: 12,
-  },
-  pillSlideLabel: {
-    color: colors.mutedForeground,
-    fontSize: 12,
-    letterSpacing: 0.3,
-  },
-  pillDots: {
-    flexDirection: "row",
-    alignSelf: "center",
-    gap: 6,
-    paddingBottom: 12,
-    paddingTop: 2,
-  },
-  pillDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "rgba(122,143,168,0.30)",
-  },
-  pillDotActive: {
-    backgroundColor: colors.accent,
+    borderRadius: 999,
   },
   thumbsRow: {
     position: "absolute",
