@@ -900,41 +900,32 @@ export default function GeometrixScreen() {
                     )}
                     style={[styles.thumbItem, dimmed && { opacity: 0.4 }]}
                   >
-                    <View style={styles.thumbGlyphRow}>
-                      {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
-                      <Pressable
-                        onPress={() => setSelectedId(g.id)}
-                        style={[styles.thumb, { opacity: isSelected ? 1 : 0.4 }]}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
-                      >
-                        <SacredGlyph id={g.id} color={s.color} size={30} strokeWidth={1.4} />
-                      </Pressable>
-                      {/* Flechita: abre el menú de opciones. */}
-                      <Pressable
-                        onPress={() => {
-                          setSelectedId(g.id);
-                          setMenuGeoId(g.id);
-                        }}
-                        style={styles.thumbCaret}
-                        hitSlop={8}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Opciones de ${g.name}`}
-                      >
-                        <Feather
-                          name="chevron-down"
-                          size={16}
-                          color={colors.mutedForeground}
-                        />
-                      </Pressable>
-                    </View>
-                    {/* Título de la geometría debajo de la imagen. */}
-                    <Text
-                      numberOfLines={1}
-                      style={[styles.thumbLabel, { opacity: isSelected ? 1 : 0.5 }]}
+                    {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
+                    <Pressable
+                      onPress={() => setSelectedId(g.id)}
+                      style={[styles.thumb, { opacity: isSelected ? 1 : 0.4 }]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
                     >
-                      {g.name}
-                    </Text>
+                      <SacredGlyph id={g.id} color={s.color} size={30} strokeWidth={1.4} />
+                    </Pressable>
+                    {/* Flechita: abre el menú de opciones. */}
+                    <Pressable
+                      onPress={() => {
+                        setSelectedId(g.id);
+                        setMenuGeoId(g.id);
+                      }}
+                      style={styles.thumbCaret}
+                      hitSlop={8}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Opciones de ${g.name}`}
+                    >
+                      <Feather
+                        name="chevron-down"
+                        size={16}
+                        color={colors.mutedForeground}
+                      />
+                    </Pressable>
                   </Animated.View>
                 );
               })}
@@ -1046,6 +1037,9 @@ export default function GeometrixScreen() {
                   size={85}
                   strokeWidth={1.4}
                 />
+                <Text style={styles.menuGlyphName} numberOfLines={1}>
+                  {menuGeo.name}
+                </Text>
               </View>
             </Pressable>
           )}
@@ -1586,7 +1580,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    maxHeight: 74,
+    maxHeight: 56,
   },
   thumbsRow: {
     flexGrow: 1,
@@ -1603,20 +1597,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   thumbItem: {
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 2,
-  },
-  thumbGlyphRow: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  thumbLabel: {
-    fontSize: 10,
-    fontWeight: "600",
-    color: colors.foreground,
-    textAlign: "center",
-    maxWidth: 68,
   },
   thumbCaret: {
     marginLeft: 2,
@@ -1655,6 +1637,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 22,
+    gap: 10,
+  },
+  menuGlyphName: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    textAlign: "center",
   },
   menuItem: {
     flexDirection: "row",
