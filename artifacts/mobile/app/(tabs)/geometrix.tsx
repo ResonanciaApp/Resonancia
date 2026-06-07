@@ -326,6 +326,9 @@ export default function GeometrixScreen() {
   const [activeTracks, setActiveTracks] = useState<Record<string, string | null>>({});
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Geometría que se está personalizando (la de la flechita pulsada). El panel
+  // por capa muestra SOLO esta, no todas las activas.
+  const [settingsGeoId, setSettingsGeoId] = useState<GeometryId | null>(null);
   // Ajustes generales (panel maestro): se aplican sobre TODAS las capas.
   const [master, setMaster] = useState<GlobalSettings>({
     opacity: 1,
@@ -334,8 +337,6 @@ export default function GeometrixScreen() {
   });
   const [generalOpen, setGeneralOpen] = useState(false);
   const [generalSheetHeight, setGeneralSheetHeight] = useState(0);
-  // Alto medido de una tarjeta de ajustes para limitar el desplegable.
-  const [cardHeight, setCardHeight] = useState<number | null>(null);
   // Alto real del sheet de ajustes, para anclar la vista previa justo encima.
   const [sheetHeight, setSheetHeight] = useState(0);
   // Modo inmersión: solo el fondo animado, sin interfaz.
@@ -423,6 +424,7 @@ export default function GeometrixScreen() {
         setActiveTracks({});
         setOpenModule(null);
         setSettingsOpen(false);
+        setSettingsGeoId(null);
         setGeneralOpen(false);
         setImmersive(false);
         setMenuGeoId(null);
@@ -535,16 +537,26 @@ export default function GeometrixScreen() {
   const menuGeo = menuGeoId
     ? GEOMETRIES.find((g) => g.id === menuGeoId)
     : undefined;
+  // Geometría que muestra el panel por capa (solo si sigue activa).
+  const settingsGeo =
+    settingsGeoId && active.includes(settingsGeoId)
+      ? GEOMETRIES.find((g) => g.id === settingsGeoId)
+      : undefined;
 
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
   // reasignar la selección del pellizco a otra activa (o ninguna).
   useEffect(() => {
     if (soloId && !active.includes(soloId)) setSoloId(null);
     if (menuGeoId && !active.includes(menuGeoId)) setMenuGeoId(null);
+    // Si se quita la geometría en edición, cerrar su panel por capa.
+    if (settingsGeoId && !active.includes(settingsGeoId)) {
+      setSettingsOpen(false);
+      setSettingsGeoId(null);
+    }
     if (selectedId && !active.includes(selectedId)) {
       setSelectedId(active.length ? active[active.length - 1] : null);
     }
-  }, [active, soloId, menuGeoId, selectedId]);
+  }, [active, soloId, menuGeoId, settingsGeoId, selectedId]);
 
   // Geometría que responde al pellizco. Si hay "Aislar", solo esa es visible,
   // así que el pellizco debe apuntar a ella; si no, la seleccionada (o la
@@ -926,6 +938,7 @@ export default function GeometrixScreen() {
               <Pressable
                 style={styles.menuItem}
                 onPress={() => {
+                  setSettingsGeoId(menuGeoId);
                   setMenuGeoId(null);
                   setSettingsOpen(true);
                 }}
@@ -1093,13 +1106,22 @@ export default function GeometrixScreen() {
         visible={settingsOpen}
         transparent
         animationType="slide"
-        onRequestClose={() => setSettingsOpen(false)}
+        onRequestClose={() => {
+          setSettingsOpen(false);
+          setSettingsGeoId(null);
+        }}
       >
-        <Pressable style={styles.sheetBackdrop} onPress={() => setSettingsOpen(false)} />
+        <Pressable
+          style={styles.sheetBackdrop}
+          onPress={() => {
+            setSettingsOpen(false);
+            setSettingsGeoId(null);
+          }}
+        />
 
         {/* Vista previa en vivo: flota arriba para no tapar los controles del
             sheet. Vive dentro del Modal, así se cierra junto con los ajustes. */}
-        {activeMetas.length > 0 && previewSize > 0 && (
+        {settingsGeo && previewSize > 0 && (
           <View
             pointerEvents="none"
             style={[
@@ -1111,18 +1133,15 @@ export default function GeometrixScreen() {
           >
             <Text style={styles.previewLabel}>Vista previa</Text>
             <View style={[styles.previewBox, { width: previewSize, height: previewSize }]}>
-              {activeMetas.map((g, i) => (
-                <GeometryLayer
-                  key={g.id}
-                  geo={g}
-                  index={i}
-                  size={previewSize * 0.96}
-                  settings={getSettings(g.id)}
-                  masterOpacity={master.opacity}
-                  motion={master.motion}
-                  glow={master.glow}
-                />
-              ))}
+              <GeometryLayer
+                geo={settingsGeo}
+                index={0}
+                size={previewSize * 0.96}
+                settings={getSettings(settingsGeo.id)}
+                masterOpacity={master.opacity}
+                motion={master.motion}
+                glow={master.glow}
+              />
             </View>
           </View>
         )}
@@ -1150,7 +1169,10 @@ export default function GeometrixScreen() {
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>Ajustes</Text>
             <Pressable
-              onPress={() => setSettingsOpen(false)}
+              onPress={() => {
+                setSettingsOpen(false);
+                setSettingsGeoId(null);
+              }}
               hitSlop={10}
               accessibilityRole="button"
               accessibilityLabel="Cerrar ajustes"
@@ -1159,7 +1181,7 @@ export default function GeometrixScreen() {
             </Pressable>
           </View>
 
-          {activeMetas.length === 0 ? (
+          {!settingsGeo ? (
             <View style={styles.sheetEmpty}>
               <Feather name="hexagon" size={26} color="rgba(190,150,80,0.4)" />
               <Text style={styles.sheetEmptyText}>
@@ -1167,122 +1189,104 @@ export default function GeometrixScreen() {
               </Text>
             </View>
           ) : (
-            <ScrollView
-              style={[
-                styles.sheetScroll,
-                // Con 2+ geometrías, mostrar la primera tarjeta + un asomo de la
-                // siguiente para que el desplegable no sea tan alto.
-                activeMetas.length >= 2 && cardHeight
-                  ? { maxHeight: cardHeight + 14 + 52 }
-                  : null,
-              ]}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ gap: 14 }}
-            >
-              {activeMetas.map((g, i) => {
-                const s = getSettings(g.id);
-                return (
-                  <View
-                    key={g.id}
-                    style={styles.geoCard}
-                    onLayout={
-                      i === 0
-                        ? (e) => {
-                            const h = e.nativeEvent.layout.height;
-                            setCardHeight((prev) => (prev === h ? prev : h));
-                          }
-                        : undefined
-                    }
-                  >
-                    <View style={styles.geoCardHead}>
-                      <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2.4} />
-                      <Text style={styles.geoCardName}>{g.name}</Text>
-                    </View>
-
-                    {/* Color */}
-                    <Text style={styles.fieldLabel}>Color</Text>
-                    <View style={styles.swatchRow}>
-                      {PALETTE.map((c) => {
-                        const on = s.color.toLowerCase() === c.toLowerCase();
-                        return (
-                          <Pressable
-                            key={c}
-                            onPress={() => updateSetting(g.id, "color", c)}
-                            style={[
-                              styles.swatch,
-                              { backgroundColor: c },
-                              on && styles.swatchOn,
-                            ]}
-                            accessibilityRole="button"
-                            accessibilityLabel={`Color ${c}`}
-                          />
-                        );
-                      })}
-                    </View>
-
-                    {/* Girar + Respiración (dos columnas) */}
-                    <View style={styles.twoCol}>
-                      <View style={[styles.col, styles.fieldRow]}>
-                        <Text style={styles.fieldLabel}>Girar</Text>
-                        <Toggle
-                          value={s.rotate}
-                          onChange={(v) => updateSetting(g.id, "rotate", v)}
-                          color={s.color}
-                        />
-                      </View>
-                      <View style={[styles.col, styles.fieldRow]}>
-                        <Text style={styles.fieldLabel}>Respiración</Text>
-                        <Toggle
-                          value={s.breathe}
-                          onChange={(v) => updateSetting(g.id, "breathe", v)}
-                          color={s.color}
-                        />
-                      </View>
-                    </View>
-
-                    {/* Opacidad + Grosor (dos columnas) */}
-                    <View style={styles.twoCol}>
-                      <View style={styles.col}>
-                        <View style={styles.fieldRow}>
-                          <Text style={styles.fieldLabel}>Opacidad</Text>
-                          <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
-                        </View>
-                        <VolumeSlider
-                          value={s.opacity}
-                          onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
-                          color={s.color}
-                          trackColor="rgba(255,255,255,0.12)"
-                        />
-                      </View>
-                      <View style={styles.col}>
-                        <View style={styles.fieldRow}>
-                          <Text style={styles.fieldLabel}>Grosor</Text>
-                          <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}%</Text>
-                        </View>
-                        <VolumeSlider
-                          value={s.thickness}
-                          onChange={(v) => updateSetting(g.id, "thickness", v)}
-                          color={s.color}
-                          trackColor="rgba(255,255,255,0.12)"
-                        />
-                      </View>
-                    </View>
-
-                    {/* Tamaño (ancho completo) */}
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Tamaño</Text>
-                      <Text style={styles.fieldValue}>{Math.round(s.scale * 100)}%</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.scale}
-                      onChange={(v) => updateSetting(g.id, "scale", v)}
-                      color={s.color}
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
+            (() => {
+              const g = settingsGeo;
+              const s = getSettings(g.id);
+              return (
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: 8 }}
+                >
+                <View style={styles.geoCard}>
+                  <View style={styles.geoCardHead}>
+                    <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2.4} />
+                    <Text style={styles.geoCardName}>{g.name}</Text>
                   </View>
-                );
-              })}
-            </ScrollView>
+
+                  {/* Color */}
+                  <Text style={styles.fieldLabel}>Color</Text>
+                  <View style={styles.swatchRow}>
+                    {PALETTE.map((c) => {
+                      const on = s.color.toLowerCase() === c.toLowerCase();
+                      return (
+                        <Pressable
+                          key={c}
+                          onPress={() => updateSetting(g.id, "color", c)}
+                          style={[
+                            styles.swatch,
+                            { backgroundColor: c },
+                            on && styles.swatchOn,
+                          ]}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Color ${c}`}
+                        />
+                      );
+                    })}
+                  </View>
+
+                  {/* Girar + Respiración (dos columnas) */}
+                  <View style={styles.twoCol}>
+                    <View style={[styles.col, styles.fieldRow]}>
+                      <Text style={styles.fieldLabel}>Girar</Text>
+                      <Toggle
+                        value={s.rotate}
+                        onChange={(v) => updateSetting(g.id, "rotate", v)}
+                        color={s.color}
+                      />
+                    </View>
+                    <View style={[styles.col, styles.fieldRow]}>
+                      <Text style={styles.fieldLabel}>Respiración</Text>
+                      <Toggle
+                        value={s.breathe}
+                        onChange={(v) => updateSetting(g.id, "breathe", v)}
+                        color={s.color}
+                      />
+                    </View>
+                  </View>
+
+                  {/* Opacidad + Grosor (dos columnas) */}
+                  <View style={styles.twoCol}>
+                    <View style={styles.col}>
+                      <View style={styles.fieldRow}>
+                        <Text style={styles.fieldLabel}>Opacidad</Text>
+                        <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
+                      </View>
+                      <VolumeSlider
+                        value={s.opacity}
+                        onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
+                        color={s.color}
+                        trackColor="rgba(255,255,255,0.12)"
+                      />
+                    </View>
+                    <View style={styles.col}>
+                      <View style={styles.fieldRow}>
+                        <Text style={styles.fieldLabel}>Grosor</Text>
+                        <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}%</Text>
+                      </View>
+                      <VolumeSlider
+                        value={s.thickness}
+                        onChange={(v) => updateSetting(g.id, "thickness", v)}
+                        color={s.color}
+                        trackColor="rgba(255,255,255,0.12)"
+                      />
+                    </View>
+                  </View>
+
+                  {/* Tamaño (ancho completo) */}
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Tamaño</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.scale * 100)}%</Text>
+                  </View>
+                  <VolumeSlider
+                    value={s.scale}
+                    onChange={(v) => updateSetting(g.id, "scale", v)}
+                    color={s.color}
+                    trackColor="rgba(255,255,255,0.12)"
+                  />
+                </View>
+                </ScrollView>
+              );
+            })()
           )}
         </View>
       </Modal>
@@ -1621,7 +1625,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sheetTitle: { fontSize: 20, fontWeight: "700", color: colors.foreground },
-  sheetScroll: { flexGrow: 0 },
   sheetEmpty: { alignItems: "center", gap: 10, paddingVertical: 40 },
   sheetEmptyText: { fontSize: 14, color: colors.mutedForeground, textAlign: "center" },
 
