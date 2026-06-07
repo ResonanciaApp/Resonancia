@@ -900,32 +900,41 @@ export default function GeometrixScreen() {
                     )}
                     style={[styles.thumbItem, dimmed && { opacity: 0.4 }]}
                   >
-                    {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
-                    <Pressable
-                      onPress={() => setSelectedId(g.id)}
-                      style={[styles.thumb, { opacity: isSelected ? 1 : 0.4 }]}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
+                    <View style={styles.thumbGlyphRow}>
+                      {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
+                      <Pressable
+                        onPress={() => setSelectedId(g.id)}
+                        style={[styles.thumb, { opacity: isSelected ? 1 : 0.4 }]}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
+                      >
+                        <SacredGlyph id={g.id} color={s.color} size={30} strokeWidth={1.4} />
+                      </Pressable>
+                      {/* Flechita: abre el menú de opciones. */}
+                      <Pressable
+                        onPress={() => {
+                          setSelectedId(g.id);
+                          setMenuGeoId(g.id);
+                        }}
+                        style={styles.thumbCaret}
+                        hitSlop={8}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Opciones de ${g.name}`}
+                      >
+                        <Feather
+                          name="chevron-down"
+                          size={16}
+                          color={colors.mutedForeground}
+                        />
+                      </Pressable>
+                    </View>
+                    {/* Título de la geometría debajo de la imagen. */}
+                    <Text
+                      numberOfLines={1}
+                      style={[styles.thumbLabel, { opacity: isSelected ? 1 : 0.5 }]}
                     >
-                      <SacredGlyph id={g.id} color={s.color} size={30} strokeWidth={2} />
-                    </Pressable>
-                    {/* Flechita: abre el menú de opciones. */}
-                    <Pressable
-                      onPress={() => {
-                        setSelectedId(g.id);
-                        setMenuGeoId(g.id);
-                      }}
-                      style={styles.thumbCaret}
-                      hitSlop={8}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Opciones de ${g.name}`}
-                    >
-                      <Feather
-                        name="chevron-down"
-                        size={16}
-                        color={colors.mutedForeground}
-                      />
-                    </Pressable>
+                      {g.name}
+                    </Text>
                   </Animated.View>
                 );
               })}
@@ -994,8 +1003,8 @@ export default function GeometrixScreen() {
                     setSettingsOpen(true);
                   }}
                 >
-                  <Feather name="sliders" size={18} color={colors.foreground} />
-                  <Text style={styles.menuItemText}>Personalizar</Text>
+                  <Feather name="sliders" size={18} color="#FFFFFF" />
+                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>Personalizar</Text>
                 </Pressable>
 
                 <Pressable
@@ -1008,9 +1017,9 @@ export default function GeometrixScreen() {
                   <Feather
                     name={soloId === menuGeo.id ? "eye" : "eye-off"}
                     size={18}
-                    color={colors.foreground}
+                    color="#FFFFFF"
                   />
-                  <Text style={styles.menuItemText}>
+                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>
                     {soloId === menuGeo.id ? "Mostrar todas" : "Ver solo esta"}
                   </Text>
                 </Pressable>
@@ -1577,7 +1586,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    maxHeight: 56,
+    maxHeight: 74,
   },
   thumbsRow: {
     flexGrow: 1,
@@ -1594,8 +1603,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   thumbItem: {
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 2,
+  },
+  thumbGlyphRow: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  thumbLabel: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: colors.foreground,
+    textAlign: "center",
+    maxWidth: 68,
   },
   thumbCaret: {
     marginLeft: 2,
