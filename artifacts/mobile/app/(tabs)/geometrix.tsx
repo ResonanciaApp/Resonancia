@@ -10,6 +10,7 @@ import { useFocusEffect } from "expo-router";
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -27,6 +28,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { VolumeSlider } from "@/components/VolumeSlider";
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
 import { getSoundImage } from "@/config/sound-images";
@@ -40,18 +42,68 @@ const CARD_BORDER = "#161f33";
 /** Los 5 sonidos de fondo del menú (todos con archivo + imagen). */
 const SOUND_PICKS = ["lluvia", "bosque", "oceano", "fogata", "grillos"] as const;
 
+/** Paleta de colores para personalizar cada geometría. */
+const PALETTE = [
+  "#BE9650",
+  "#D6A85B",
+  "#EDE1D3",
+  "#7FD1C0",
+  "#7AA8E0",
+  "#B69BE0",
+  "#E0989B",
+  "#9BD6A8",
+] as const;
+
+/** Ajustes editables por geometría. */
+type GeoSettings = {
+  color: string;
+  rotate: boolean;
+  opacity: number;
+  breathe: boolean;
+};
+
+function defaultSettings(id: GeometryId): GeoSettings {
+  const meta = GEOMETRIES.find((g) => g.id === id);
+  return { color: meta?.color ?? colors.primary, rotate: true, opacity: 1, breathe: true };
+}
+
+// ── Interruptor sutil (on/off) ────────────────────────────────────
+function Toggle({
+  value,
+  onChange,
+  color,
+}: {
+  value: boolean;
+  onChange: (v: boolean) => void;
+  color: string;
+}) {
+  return (
+    <Pressable
+      onPress={() => onChange(!value)}
+      style={[styles.toggle, { backgroundColor: value ? color : "rgba(255,255,255,0.10)" }]}
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value }}
+    >
+      <View style={[styles.toggleKnob, value && styles.toggleKnobOn]} />
+    </Pressable>
+  );
+}
+
 // ── Capa animada del fondo ────────────────────────────────────────
 function GeometryLayer({
   geo,
   index,
   size,
+  settings,
 }: {
   geo: GeometryMeta;
   index: number;
   size: number;
+  settings: GeoSettings;
 }) {
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
+  const { color, rotate, opacity, breathe } = settings;
 
   useEffect(() => {
     rot.value = withRepeat(
@@ -69,11 +121,11 @@ function GeometryLayer({
   const dir = index % 2 === 0 ? 1 : -1;
   const aStyle = useAnimatedStyle(() => ({
     transform: [
-      { rotate: `${rot.value * 360 * dir}deg` },
-      // Tope de escala en 1.0 para que no se corte contra los bordes.
-      { scale: 0.9 + pulse.value * 0.1 },
+      { rotate: rotate ? `${rot.value * 360 * dir}deg` : "0deg" },
+      // Respiración: escala 0.9–1.0 (tope en 1.0 para no cortar contra los bordes).
+      { scale: breathe ? 0.9 + pulse.value * 0.1 : 1 },
     ],
-    opacity: 0.5 + pulse.value * 0.4,
+    opacity,
   }));
 
   // Trazo de 1px real: el viewBox es 0–100, así que sw = 100 / size.
@@ -81,7 +133,7 @@ function GeometryLayer({
 
   return (
     <Animated.View style={[styles.layer, aStyle]} pointerEvents="none">
-      <SacredGlyph id={geo.id} color={geo.color} size={size} strokeWidth={sw} />
+      <SacredGlyph id={geo.id} color={color} size={size} strokeWidth={sw} />
     </Animated.View>
   );
 }
@@ -93,6 +145,8 @@ export default function GeometrixScreen() {
   const [active, setActive] = useState<GeometryId[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSound, setActiveSound] = useState<string | null>(null);
+  const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const playerRef = useRef<AudioPlayer | null>(null);
 
@@ -125,6 +179,7 @@ export default function GeometrixScreen() {
         stopSound();
         setActiveSound(null);
         setMenuOpen(false);
+        setSettingsOpen(false);
       };
     }, [stopSound]),
   );
@@ -161,7 +216,24 @@ export default function GeometrixScreen() {
     setActive((prev) =>
       prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
     );
+    // Sembrar ajustes por defecto la primera vez que se activa (conservar si re-activa).
+    setSettings((prev) => (prev[id] ? prev : { ...prev, [id]: defaultSettings(id) }));
   }, []);
+
+  const updateSetting = useCallback(
+    <K extends keyof GeoSettings>(id: GeometryId, key: K, value: GeoSettings[K]) => {
+      setSettings((prev) => ({
+        ...prev,
+        [id]: { ...(prev[id] ?? defaultSettings(id)), [key]: value },
+      }));
+    },
+    [],
+  );
+
+  const getSettings = useCallback(
+    (id: GeometryId): GeoSettings => settings[id] ?? defaultSettings(id),
+    [settings],
+  );
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
@@ -215,20 +287,22 @@ export default function GeometrixScreen() {
           <View style={styles.gridRow}>
             {GEOMETRIES.map((g) => {
               const sel = active.includes(g.id);
+              // Reflejar el color personalizado en el tile cuando está activo.
+              const tileColor = sel ? getSettings(g.id).color : "#7A8FA8";
               return (
                 <Pressable
                   key={g.id}
                   onPress={() => toggleGeometry(g.id)}
                   style={[
                     styles.tile,
-                    { width: tileW, borderColor: sel ? g.color : CARD_BORDER },
+                    { width: tileW, borderColor: sel ? tileColor : CARD_BORDER },
                     sel && { backgroundColor: "rgba(255,255,255,0.04)" },
                   ]}
                 >
                   <View style={styles.tileGlyph}>
                     <SacredGlyph
                       id={g.id}
-                      color={sel ? g.color : "#7A8FA8"}
+                      color={tileColor}
                       size={tileW * 0.66}
                       strokeWidth={1.4}
                     />
@@ -240,7 +314,7 @@ export default function GeometrixScreen() {
                     {g.name}
                   </Text>
                   {sel && (
-                    <View style={[styles.tileCheck, { backgroundColor: g.color }]}>
+                    <View style={[styles.tileCheck, { backgroundColor: tileColor }]}>
                       <Feather name="check" size={11} color="#0B0F14" />
                     </View>
                   )}
@@ -269,7 +343,13 @@ export default function GeometrixScreen() {
               />
               {layerSize > 0 &&
                 activeMetas.map((g, i) => (
-                  <GeometryLayer key={g.id} geo={g} index={i} size={layerSize} />
+                  <GeometryLayer
+                    key={g.id}
+                    geo={g}
+                    index={i}
+                    size={layerSize}
+                    settings={getSettings(g.id)}
+                  />
                 ))}
 
               {active.length === 0 ? (
@@ -291,8 +371,123 @@ export default function GeometrixScreen() {
               )}
             </View>
           )}
+
+          {/* Acceso sutil a los ajustes por geometría */}
+          <Pressable
+            onPress={() => setSettingsOpen(true)}
+            style={styles.settingsBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Ajustes de geometrías"
+          >
+            <Feather name="settings" size={18} color={colors.mutedForeground} />
+            <Text style={styles.settingsBtnText}>Ajustes</Text>
+          </Pressable>
         </View>
       </View>
+
+      {/* Panel de ajustes por geometría */}
+      <Modal
+        visible={settingsOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setSettingsOpen(false)}
+      >
+        <Pressable style={styles.sheetBackdrop} onPress={() => setSettingsOpen(false)} />
+        <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
+          <View style={styles.sheetHandle} />
+          <View style={styles.sheetHeader}>
+            <Text style={styles.sheetTitle}>Ajustes</Text>
+            <Pressable
+              onPress={() => setSettingsOpen(false)}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar ajustes"
+            >
+              <Feather name="x" size={20} color={colors.mutedForeground} />
+            </Pressable>
+          </View>
+
+          {activeMetas.length === 0 ? (
+            <View style={styles.sheetEmpty}>
+              <Feather name="hexagon" size={26} color="rgba(190,150,80,0.4)" />
+              <Text style={styles.sheetEmptyText}>
+                Activa una geometría para personalizarla
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              style={styles.sheetScroll}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ gap: 14 }}
+            >
+              {activeMetas.map((g) => {
+                const s = getSettings(g.id);
+                return (
+                  <View key={g.id} style={styles.geoCard}>
+                    <View style={styles.geoCardHead}>
+                      <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2.4} />
+                      <Text style={styles.geoCardName}>{g.name}</Text>
+                    </View>
+
+                    {/* Color */}
+                    <Text style={styles.fieldLabel}>Color</Text>
+                    <View style={styles.swatchRow}>
+                      {PALETTE.map((c) => {
+                        const on = s.color.toLowerCase() === c.toLowerCase();
+                        return (
+                          <Pressable
+                            key={c}
+                            onPress={() => updateSetting(g.id, "color", c)}
+                            style={[
+                              styles.swatch,
+                              { backgroundColor: c },
+                              on && styles.swatchOn,
+                            ]}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Color ${c}`}
+                          />
+                        );
+                      })}
+                    </View>
+
+                    {/* Girar */}
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Girar</Text>
+                      <Toggle
+                        value={s.rotate}
+                        onChange={(v) => updateSetting(g.id, "rotate", v)}
+                        color={s.color}
+                      />
+                    </View>
+
+                    {/* Respiración */}
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Respiración</Text>
+                      <Toggle
+                        value={s.breathe}
+                        onChange={(v) => updateSetting(g.id, "breathe", v)}
+                        color={s.color}
+                      />
+                    </View>
+
+                    {/* Opacidad */}
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Opacidad</Text>
+                      <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.opacity}
+                      onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
+                      color={s.color}
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </View>
+                );
+              })}
+            </ScrollView>
+          )}
+        </View>
+      </Modal>
 
       {/* Menú de sonidos (drop-left) */}
       {menuOpen && (
@@ -408,6 +603,96 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   layer: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
+
+  settingsBtn: {
+    marginTop: 16,
+    alignItems: "center",
+    gap: 3,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+  },
+  settingsBtnText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.mutedForeground,
+    letterSpacing: 0.3,
+  },
+
+  // Interruptor
+  toggle: {
+    width: 42,
+    height: 24,
+    borderRadius: 12,
+    padding: 3,
+    justifyContent: "center",
+  },
+  toggleKnob: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#EDE1D3",
+  },
+  toggleKnobOn: { transform: [{ translateX: 18 }] },
+
+  // Bottom sheet de ajustes
+  sheetBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
+  sheet: {
+    backgroundColor: "#0B0F14",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderTopWidth: 1,
+    borderColor: CARD_BORDER,
+    paddingHorizontal: 18,
+    paddingTop: 10,
+    maxHeight: "78%",
+  },
+  sheetHandle: {
+    alignSelf: "center",
+    width: 38,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    marginBottom: 10,
+  },
+  sheetHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  sheetTitle: { fontSize: 20, fontWeight: "700", color: colors.foreground },
+  sheetScroll: { flexGrow: 0 },
+  sheetEmpty: { alignItems: "center", gap: 10, paddingVertical: 40 },
+  sheetEmptyText: { fontSize: 14, color: colors.mutedForeground, textAlign: "center" },
+
+  geoCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: CARD_BORDER,
+    backgroundColor: "rgba(255,255,255,0.02)",
+    padding: 14,
+    gap: 10,
+  },
+  geoCardHead: { flexDirection: "row", alignItems: "center", gap: 10 },
+  geoCardName: { fontSize: 15, fontWeight: "700", color: colors.foreground },
+
+  fieldLabel: { fontSize: 13, fontWeight: "600", color: colors.mutedForeground },
+  fieldRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  fieldValue: { fontSize: 13, fontWeight: "600", color: colors.foreground },
+
+  swatchRow: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  swatch: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  swatchOn: { borderColor: "#EDE1D3" },
 
   empty: { alignItems: "center", gap: 6 },
   emptyText: { fontSize: 14, fontWeight: "600", color: colors.foreground, marginTop: 4 },
