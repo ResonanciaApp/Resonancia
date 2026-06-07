@@ -344,7 +344,7 @@ export default function ExploreScreen() {
                           <View
                             style={[
                               styles.continueCatTrack,
-                              { backgroundColor: "rgba(93,173,226,0.18)" },
+                              { backgroundColor: "rgba(214,168,91,0.20)" },
                             ]}
                           >
                             <View
@@ -352,7 +352,7 @@ export default function ExploreScreen() {
                                 styles.continueCatFill,
                                 {
                                   width: `${Math.min(100, progress * 100)}%`,
-                                  backgroundColor: "#5DADE2",
+                                  backgroundColor: colors.accent,
                                 },
                               ]}
                             />
