@@ -169,6 +169,8 @@ export default function GeometrixScreen() {
   const [activeSound, setActiveSound] = useState<string | null>(null);
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Alto medido de una tarjeta de ajustes para limitar el desplegable.
+  const [cardHeight, setCardHeight] = useState<number | null>(null);
 
   const playerRef = useRef<AudioPlayer | null>(null);
 
@@ -460,14 +462,32 @@ export default function GeometrixScreen() {
             </View>
           ) : (
             <ScrollView
-              style={styles.sheetScroll}
+              style={[
+                styles.sheetScroll,
+                // Con 2+ geometrías, mostrar la primera tarjeta + un asomo de la
+                // siguiente para que el desplegable no sea tan alto.
+                activeMetas.length >= 2 && cardHeight
+                  ? { maxHeight: cardHeight + 14 + 52 }
+                  : null,
+              ]}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ gap: 14 }}
             >
-              {activeMetas.map((g) => {
+              {activeMetas.map((g, i) => {
                 const s = getSettings(g.id);
                 return (
-                  <View key={g.id} style={styles.geoCard}>
+                  <View
+                    key={g.id}
+                    style={styles.geoCard}
+                    onLayout={
+                      i === 0
+                        ? (e) => {
+                            const h = e.nativeEvent.layout.height;
+                            setCardHeight((prev) => (prev === h ? prev : h));
+                          }
+                        : undefined
+                    }
+                  >
                     <View style={styles.geoCardHead}>
                       <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2.4} />
                       <Text style={styles.geoCardName}>{g.name}</Text>
