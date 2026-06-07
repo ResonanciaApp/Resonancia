@@ -1320,7 +1320,8 @@ const styles = StyleSheet.create({
   soundMenu: {
     position: "absolute",
     right: 20,
-    flexDirection: "row",
+    flexDirection: "column",
+    alignItems: "flex-end",
     gap: 5,
   },
   soundTile: {
@@ -1328,8 +1329,8 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 14,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#181c37",
   },
   soundTileActive: { borderColor: colors.primary },
   soundTileImg: { width: "100%", height: "100%" },
