@@ -28,7 +28,9 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withRepeat,
+  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -291,10 +293,23 @@ export default function GeometrixScreen() {
     return () => stopAllSound();
   }, [stopAllSound]);
 
-  // Las pestañas quedan montadas: detener el sonido al salir de Geometrix
-  // (no alcanza con el cleanup de unmount).
+  // Glow de bienvenida: aparece y desaparece una sola vez al entrar (sutil).
+  const glow = useSharedValue(0);
+  const glowStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
+
+  // Al salir de Geometrix (las pestañas quedan montadas): detener el sonido y
+  // resetear la UI. Al entrar: disparar el glow de bienvenida una sola vez.
   useFocusEffect(
     useCallback(() => {
+      // Un único fade in/out al entrar a la pantalla (no se repite).
+      glow.value = 0;
+      glow.value = withDelay(
+        150,
+        withSequence(
+          withTiming(0.85, { duration: 700, easing: Easing.out(Easing.ease) }),
+          withTiming(0, { duration: 1100, easing: Easing.in(Easing.ease) }),
+        ),
+      );
       return () => {
         stopAllSound();
         setActiveTracks({});
@@ -304,19 +319,8 @@ export default function GeometrixScreen() {
         setMenuGeoId(null);
         setSoloId(null);
       };
-    }, [stopAllSound]),
+    }, [stopAllSound, glow]),
   );
-
-  // Glow pulsante para llamar la atención sobre los thumbnails inactivos.
-  const glow = useSharedValue(0);
-  useEffect(() => {
-    glow.value = withRepeat(
-      withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      true,
-    );
-  }, [glow]);
-  const glowStyle = useAnimatedStyle(() => ({ opacity: 0.2 + glow.value * 0.7 }));
 
   const selectTrack = useCallback(
     async (moduleKey: string, track: MusicTrack) => {
@@ -1317,17 +1321,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
     flexDirection: "row",
-    borderRadius: 16,
-    backgroundColor: "#0B0F14",
-    borderWidth: 1,
-    borderColor: CARD_BORDER,
-    padding: 8,
-    gap: 8,
+    gap: 5,
   },
   soundTile: {
-    width: 60,
-    height: 60,
-    borderRadius: 12,
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
