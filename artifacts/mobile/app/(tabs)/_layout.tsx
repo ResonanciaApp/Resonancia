@@ -168,10 +168,10 @@ export default function TabLayout() {
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"     options={{ title: "Inicio" }} />
-        <Tabs.Screen name="musica"    options={{ title: "Mezclador" }} />
+        <Tabs.Screen name="musica"    options={{ title: "Mi Música" }} />
+        <Tabs.Screen name="explore"   options={{ title: "Explora" }} />
         <Tabs.Screen name="geometrix" options={{ title: "Geometrix" }} />
         <Tabs.Screen name="descanzo"  options={{ title: "Descanso", href: null }} />
-        <Tabs.Screen name="explore"  options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
       </Tabs>
 
