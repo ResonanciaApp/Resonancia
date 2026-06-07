@@ -957,8 +957,8 @@ export default function GeometrixScreen() {
                     toggleGeometry(id);
                   }}
                 >
-                  <Feather name="trash-2" size={18} color="#D98A8A" />
-                  <Text style={[styles.menuItemText, { color: "#D98A8A" }]}>Quitar</Text>
+                  <Feather name="trash-2" size={18} color="#FFFFFF" />
+                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>Quitar</Text>
                 </Pressable>
               </View>
 
@@ -968,7 +968,7 @@ export default function GeometrixScreen() {
                 <SacredGlyph
                   id={menuGeo.id}
                   color={getSettings(menuGeo.id).color}
-                  size={77}
+                  size={85}
                   strokeWidth={2}
                 />
               </View>
@@ -1508,9 +1508,9 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     overflow: "hidden",
     borderRadius: 18,
-    backgroundColor: "#090D20",
+    backgroundColor: "#080A18",
     borderWidth: 1,
-    borderColor: "#2c304f",
+    borderColor: "#24294d",
   },
   menuList: {
     flex: 1,
@@ -1519,7 +1519,7 @@ const styles = StyleSheet.create({
   },
   menuDivider: {
     width: 1,
-    backgroundColor: "#2c304f",
+    backgroundColor: "#24294d",
     marginVertical: 16,
   },
   menuGlyphWrap: {
