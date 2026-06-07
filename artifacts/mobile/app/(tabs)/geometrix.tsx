@@ -852,7 +852,7 @@ export default function GeometrixScreen() {
                       accessibilityLabel={`Opciones de ${g.name}`}
                     >
                       <Feather
-                        name="sliders"
+                        name="chevron-down"
                         size={16}
                         color={colors.mutedForeground}
                       />
@@ -1482,7 +1482,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   thumbCaret: {
-    marginLeft: 5,
+    marginLeft: 2,
     alignItems: "center",
     justifyContent: "center",
   },
