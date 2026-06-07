@@ -166,7 +166,7 @@ export default function ExploreScreen() {
               hitSlop={12}
               style={styles.headerClockBtn}
             >
-              <Feather name="clock" size={22} color="#FFFFFF" />
+              <Feather name="clock" size={18} color="#FFFFFF" />
             </Pressable>
           </View>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>Tu biblioteca expansiva</Text>
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
 
   header: { paddingHorizontal: H_PAD, marginBottom: 18 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  headerClockBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  headerClockBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: "#1A2336", alignItems: "center", justifyContent: "center" },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, marginTop: 0 },
 

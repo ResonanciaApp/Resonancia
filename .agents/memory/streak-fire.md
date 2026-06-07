@@ -19,7 +19,9 @@ El ícono del Inicio (`components/NotificationBell.tsx`) es el indicador de rach
 - Animación: fuego se enciende (0.2→1 + pulso de escala) y el número del día aparece
   directo (sin progresión 1→N); fade-in y fade-out sincronizados (fuego+número en el
   mismo Animated.parallel), se mantiene ~2s y luego ambos quedan atenuados (0.2).
-- Trazo de píldora blanco rodea fuego+número; comparte fireOpacity (se atenúa igual).
+- Chip circular navy de fondo (#1A2336, igual al engranaje de Perfil): círculo 40x40 en
+  reposo, se expande a píldora (minWidth 40) cuando aparece el número. Sin borde blanco
+  (se removió el trazo de píldora; el fuego/número usan fireOpacity/numOpacity para atenuar).
 - La animación se dispara **una sola vez por día**, la primera vez que se abre el Inicio
   ya cumplida la meta del día. Gating: AsyncStorage `@resonance_streak_anim_date`
   (día) + un ref de sesión.

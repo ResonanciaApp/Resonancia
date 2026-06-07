@@ -237,7 +237,6 @@ export function NotificationBell() {
       hitSlop={12}
       style={styles.btn}
     >
-      <Animated.View pointerEvents="none" style={[styles.pill, { opacity: fireOpacity }]} />
       {displayNumber != null && (
         <Animated.Text style={[styles.num, { opacity: numOpacity }]}>
           {displayNumber}
@@ -261,22 +260,15 @@ export function NotificationBell() {
 
 const styles = StyleSheet.create({
   btn: {
-    height: 34,
+    minWidth: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#1A2336",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
     paddingHorizontal: 10,
-  },
-  pill: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderWidth: 1,
-    borderColor: "#FFFFFF",
-    borderRadius: 17,
   },
   num: {
     color: "#FFFFFF",
@@ -284,8 +276,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   fire: {
-    width: 21,
-    height: 21,
+    width: 18,
+    height: 18,
   },
   fireImg: {
     width: "100%",

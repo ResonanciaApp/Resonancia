@@ -374,7 +374,7 @@ export default function MiMusicaScreen() {
             >
               {/* Relleno sólido, semitransparente en reposo; se ilumina al guardar */}
               <Animated.View style={{ opacity: heartOpacity }}>
-                <MaterialCommunityIcons name="heart" size={24} color={FG} />
+                <MaterialCommunityIcons name="heart" size={18} color={FG} />
               </Animated.View>
             </Pressable>
           </View>
@@ -477,8 +477,8 @@ const styles = StyleSheet.create({
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 3 },
   heartBtn: {
-    width: 42, height: 42, alignItems: "center", justifyContent: "center",
-    borderRadius: 21, marginLeft: 12,
+    width: 40, height: 40, alignItems: "center", justifyContent: "center",
+    borderRadius: 20, backgroundColor: "#1A2336", marginLeft: 12,
   },
 
   // Tab bar
