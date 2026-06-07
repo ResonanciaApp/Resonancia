@@ -37,19 +37,19 @@ const LOGGED_OUT_ITEMS: MenuItem[] = [
   { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
   { label: "Premium",       icon: "star",      route: "/membresia" },
   { label: "Favoritos",     icon: "heart",     route: "/favorites" },
-  { label: "Diario",        icon: "feather", route: "/diario" },
+  { label: "Carpetas",      icon: "folder",    route: "/carpetas" },
+  { label: "Playlists",     icon: "list",      route: "/playlists" },
   { label: "Amigos",        icon: "users",     route: "/amigos" },
   { label: "Grupos",        icon: "globe",     route: "/grupos" },
-  { label: "Resonadores",   icon: "award",     route: "/resonadores" },
 ];
 
 const LOGGED_IN_ITEMS: MenuItem[] = [
   { label: "Premium",       icon: "star",      route: "/membresia" },
   { label: "Favoritos",     icon: "heart",     route: "/favorites" },
-  { label: "Diario",        icon: "feather", route: "/diario" },
+  { label: "Carpetas",      icon: "folder",    route: "/carpetas" },
+  { label: "Playlists",     icon: "list",      route: "/playlists" },
   { label: "Amigos",        icon: "users",     route: "/amigos" },
   { label: "Grupos",        icon: "globe",     route: "/grupos" },
-  { label: "Resonadores",   icon: "award",     route: "/resonadores" },
 ];
 
 const SECONDARY_ITEMS: MenuItem[] = [
@@ -203,7 +203,7 @@ export function DrawerMenu() {
                   )}
                   {item.label === "Premium" ? (
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-                      <Text style={[styles.itemLabel, { color: "#F5EAC8" }]}>Premium</Text>
+                      <Text style={[styles.itemLabel, { color: "#BE9650" }]}>Premium</Text>
                       {isPremium && (
                         <View style={styles.premiumCheck}>
                           <Feather name="check" size={11} color="#5FB98C" />
