@@ -286,16 +286,16 @@ function MixRow({
             )}
           </View>
           <Text
+            style={[styles.mixCount, { color: GOLD }]}
+            numberOfLines={1}
+          >
+            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+          </Text>
+          <Text
             style={[styles.mixAuthor, { color: colors.mutedForeground }]}
             numberOfLines={1}
           >
             {mix.author.displayName}
-          </Text>
-          <Text
-            style={[styles.mixCount, { color: colors.foreground }]}
-            numberOfLines={1}
-          >
-            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
           </Text>
         </View>
 
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
   mixAuthor: { fontSize: 10, marginTop: 2 },
-  mixCount: { fontSize: 10, fontWeight: "500", marginTop: 2 },
+  mixCount: { fontSize: 12, fontWeight: "500", marginTop: 2 },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
   likeCount: { fontSize: 10, fontWeight: "600", color: GOLD },
   dotsBtn: {
