@@ -10,6 +10,7 @@ import { useFocusEffect } from "expo-router";
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Alert,
   type ImageSourcePropType,
   Modal,
   Pressable,
@@ -424,6 +425,14 @@ export default function GeometrixScreen() {
     [updateSetting],
   );
 
+  // Guardar la composición actual (placeholder hasta tener persistencia real).
+  const saveComposition = useCallback(() => {
+    Alert.alert(
+      "Composición guardada",
+      "Tu composición de geometrías se guardó en este dispositivo.",
+    );
+  }, []);
+
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 12 * 3) / 3.3;
@@ -661,6 +670,15 @@ export default function GeometrixScreen() {
                 accessibilityLabel="Pantalla completa"
               >
                 <Feather name="maximize" size={18} color={colors.mutedForeground} />
+              </Pressable>
+              <View style={styles.pillDivider} />
+              <Pressable
+                onPress={saveComposition}
+                style={styles.pillBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Guardar composición"
+              >
+                <Feather name="save" size={18} color={colors.mutedForeground} />
               </Pressable>
             </Animated.View>
           )}
@@ -1150,14 +1168,15 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
-    marginVertical: 14,
+    marginTop: 14,
+    marginBottom: 0,
   },
 
   canvasWrap: {
     flex: 1,
     marginBottom: 12,
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
   },
   canvas: {
     alignItems: "center",
@@ -1166,12 +1185,16 @@ const styles = StyleSheet.create({
   layer: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
 
   actionPill: {
-    marginTop: 16,
+    position: "absolute",
+    top: 10,
+    right: 0,
+    zIndex: 5,
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 999,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(122,143,168,0.35)",
+    backgroundColor: "rgba(11,15,20,0.55)",
   },
   pillBtn: {
     alignItems: "center",
@@ -1186,7 +1209,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(122,143,168,0.35)",
   },
   thumbsRow: {
-    marginTop: 14,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
