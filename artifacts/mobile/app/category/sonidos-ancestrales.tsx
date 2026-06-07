@@ -116,8 +116,8 @@ export default function SonidosAncestalesScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: ACCENT + "1A" }]}>
-            <MaterialCommunityIcons name="bowl-mix" size={34} color={ACCENT} />
+          <View style={styles.catIconCircle}>
+            <MaterialCommunityIcons name="bowl-mix" size={38} color={ACCENT} />
           </View>
           <Pressable
             onPress={() => setSubtitleOpen((v) => !v)}

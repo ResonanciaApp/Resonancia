@@ -116,10 +116,10 @@ export default function MusicaSonidosScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: MUSICA_ACCENT + "1A" }]}>
+          <View style={styles.catIconCircle}>
             <ExpoImage
               source={require("../../assets/images/cat-musica.png")}
-              style={{ width: 34, height: 34 }}
+              style={{ width: 38, height: 38 }}
               contentFit="contain"
             />
           </View>

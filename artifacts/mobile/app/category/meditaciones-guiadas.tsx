@@ -111,8 +111,8 @@ export default function MeditacionesGuiadasScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
-            <ZenStonesIcon color={ICON_COLOR} size={42} />
+          <View style={styles.catIconCircle}>
+            <ZenStonesIcon color={ICON_COLOR} size={46} />
           </View>
           <Pressable
             onPress={() => setSubtitleOpen((v) => !v)}

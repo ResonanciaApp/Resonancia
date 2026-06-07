@@ -155,10 +155,10 @@ export default function SonidosScreen() {
           <Pressable onPress={() => router.back()} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={[styles.iconCircle, { backgroundColor: SONIDOS_ACCENT + "1A" }]}>
+          <View style={styles.iconCircle}>
             <ExpoImage
               source={require("../../assets/images/cat-sonidos.png")}
-              style={{ width: 34, height: 34 }}
+              style={{ width: 38, height: 38 }}
               contentFit="contain"
             />
           </View>
