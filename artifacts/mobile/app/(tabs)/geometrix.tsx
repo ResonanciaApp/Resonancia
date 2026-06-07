@@ -171,6 +171,8 @@ export default function GeometrixScreen() {
   const [cardHeight, setCardHeight] = useState<number | null>(null);
   // Alto real del sheet de ajustes, para anclar la vista previa justo encima.
   const [sheetHeight, setSheetHeight] = useState(0);
+  // Modo inmersión: solo el fondo animado, sin interfaz.
+  const [immersive, setImmersive] = useState(false);
 
   const playerRef = useRef<AudioPlayer | null>(null);
 
@@ -204,6 +206,7 @@ export default function GeometrixScreen() {
         setActiveSound(null);
         setMenuOpen(false);
         setSettingsOpen(false);
+        setImmersive(false);
       };
     }, [stopSound]),
   );
@@ -278,6 +281,8 @@ export default function GeometrixScreen() {
   const previewSize = sheetHeight
     ? Math.max(120, Math.min(width - 32, previewFree))
     : 0;
+  // En inmersión la geometría llena la pantalla, centrada.
+  const immersiveSize = Math.min(width, height) * 0.96;
 
   return (
     <View style={styles.root}>
@@ -393,7 +398,11 @@ export default function GeometrixScreen() {
 
           {/* Aparece en fade al activar la primera geometría */}
           {activeMetas.length > 0 && (
-            <Animated.View entering={FadeIn.duration(360)} exiting={FadeOut.duration(220)}>
+            <Animated.View
+              entering={FadeIn.duration(360)}
+              exiting={FadeOut.duration(220)}
+              style={styles.actionRow}
+            >
               <Pressable
                 onPress={() => setSettingsOpen(true)}
                 style={styles.settingsBtn}
@@ -402,10 +411,53 @@ export default function GeometrixScreen() {
               >
                 <Text style={styles.settingsBtnText}>Personaliza</Text>
               </Pressable>
+              <Pressable
+                onPress={() => setImmersive(true)}
+                style={styles.fullscreenBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Pantalla completa"
+              >
+                <Feather name="maximize" size={18} color={colors.mutedForeground} />
+              </Pressable>
             </Animated.View>
           )}
         </View>
       </View>
+
+      {/* Modo inmersión: pantalla completa, solo fondo animado. Tap para salir.
+          El fade del Modal da la transición zen sutil; la música sigue sonando. */}
+      <Modal
+        visible={immersive}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setImmersive(false)}
+      >
+        <Pressable
+          style={styles.immersiveRoot}
+          onPress={() => setImmersive(false)}
+          accessibilityRole="button"
+          accessibilityLabel="Salir de pantalla completa"
+        >
+          <LinearGradient
+            colors={HOME_GRADIENT}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={StyleSheet.absoluteFill} pointerEvents="none">
+            {activeMetas.map((g, i) => (
+              <GeometryLayer
+                key={g.id}
+                geo={g}
+                index={i}
+                size={immersiveSize}
+                settings={getSettings(g.id)}
+              />
+            ))}
+          </View>
+        </Pressable>
+      </Modal>
 
       {/* Panel de ajustes por geometría */}
       <Modal
@@ -713,12 +765,28 @@ const styles = StyleSheet.create({
   },
   layer: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
 
-  settingsBtn: {
+  actionRow: {
     marginTop: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  settingsBtn: {
     alignItems: "center",
     gap: 3,
     paddingVertical: 4,
     paddingHorizontal: 12,
+  },
+  fullscreenBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  immersiveRoot: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   settingsBtnText: {
     fontSize: 13,
