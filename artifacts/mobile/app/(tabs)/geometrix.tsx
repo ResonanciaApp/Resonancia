@@ -498,7 +498,7 @@ export default function GeometrixScreen() {
                   onPress={() =>
                     setOpenModule((cur) => (cur === mod.key ? null : mod.key))
                   }
-                  style={[styles.soundThumb, isActive && styles.soundThumbActive]}
+                  style={styles.soundThumb}
                   accessibilityRole="button"
                   accessibilityLabel={mod.label}
                 >
@@ -1071,7 +1071,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     overflow: "hidden",
   },
-  soundThumbActive: { borderColor: colors.primary },
   soundThumbImg: { width: "100%", height: "100%" },
   thumbOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -1354,7 +1353,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#181c37",
   },
-  soundTileActive: { borderColor: colors.primary },
+  soundTileActive: { borderColor: "#2c304f" },
   soundTileImg: { width: "100%", height: "100%" },
   soundTileSel: {
     ...StyleSheet.absoluteFillObject,
