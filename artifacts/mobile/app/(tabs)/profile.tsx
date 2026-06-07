@@ -498,7 +498,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Tu Progreso (racha card) ── */}
-        <View style={styles.rachaCard}>
+        <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
           {/* Header: flame + title */}
           <View style={styles.rachaTop}>
             <View style={[styles.rachaBubble, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
@@ -764,7 +764,7 @@ const styles = StyleSheet.create({
   planMejorarText: { fontSize: 14, fontWeight: "700" },
 
   // Tu Progreso — racha card
-  rachaCard: { borderRadius: 18, paddingVertical: 4, marginBottom: 12 },
+  rachaCard: { borderRadius: 18, padding: 18, marginBottom: 12 },
   rachaTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
   rachaBubble: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
   rachaFlame: { fontSize: 24 },
