@@ -354,6 +354,30 @@ export default function ProfileScreen() {
             <Text style={[styles.bioText, { color: colors.mutedForeground }]}>{description}</Text>
           ) : null}
 
+          <View style={styles.libraryGrid}>
+            {[
+              { label: "Carpetas",  icon: "folder" as const, route: "/carpetas"  },
+              { label: "Playlists", icon: "list"   as const, route: "/playlists" },
+              { label: "Favoritos", icon: "heart"  as const, route: "/favorites" },
+            ].map((item) => (
+              <Pressable
+                key={item.label}
+                style={({ pressed }) => [
+                  styles.libraryCardThird,
+                  { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={() => router.push(item.route as never)}
+              >
+                <View style={styles.libraryIconWrap}>
+                  <Feather name={item.icon} size={26} color={colors.mutedForeground} />
+                </View>
+                <Text style={[styles.libraryLabel, { color: "#FFFFFF" }]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
           {memberSince ? (
             <View style={styles.locationRow}>
               <Feather name="calendar" size={12} color={colors.mutedForeground} />
@@ -792,6 +816,34 @@ const styles = StyleSheet.create({
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   locationText: { fontSize: 12 },
   bioText: { fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
+  libraryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignSelf: "stretch",
+    gap: 8,
+    marginTop: 14,
+  },
+  libraryCardThird: {
+    width: "31.5%",
+    flexGrow: 1,
+    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 6,
+    alignItems: "center",
+    gap: 7,
+  },
+  libraryIconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  libraryLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
   editBtn: {
     flexDirection: "row",
     alignItems: "center",

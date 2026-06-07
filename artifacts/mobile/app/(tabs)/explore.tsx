@@ -282,36 +282,6 @@ export default function ExploreScreen() {
               </ScrollView>
             </View>
 
-            {/* ── Tu Biblioteca (3 en una fila) ── */}
-            <View style={styles.section}>
-              <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Tu biblioteca</Text>
-              </View>
-              <View style={styles.libraryGrid}>
-                {[
-                  { label: "Carpetas",  icon: "folder"    as const, route: "/carpetas"  },
-                  { label: "Playlists", icon: "list"      as const, route: "/playlists" },
-                  { label: "Favoritos", icon: "heart"     as const, route: "/favorites" },
-                ].map((item) => (
-                  <Pressable
-                    key={item.label}
-                    style={({ pressed }) => [
-                      styles.libraryCardThird,
-                      { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.7 : 1 },
-                    ]}
-                    onPress={() => router.push(item.route as never)}
-                  >
-                    <View style={styles.libraryIconWrap}>
-                      <Feather name={item.icon} size={26} color={colors.mutedForeground} />
-                    </View>
-                    <Text style={[styles.libraryLabel, { color: "#FFFFFF" }]}>
-                      {item.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-
             {/* ── Sigue escuchando (carrusel por categoría) ── */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { marginBottom: 12 }]}>Sigue escuchando</Text>
@@ -530,41 +500,6 @@ const styles = StyleSheet.create({
   section: { paddingHorizontal: H_PAD, marginBottom: 43 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#FFFFFF" },
   sectionSub: { fontSize: 12, marginBottom: 16 },
-
-  // Mi Biblioteca grid
-  libraryGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  libraryCardThird: {
-    width: "31.5%",
-    borderRadius: 10,
-    paddingVertical: 14,
-    paddingHorizontal: 6,
-    alignItems: "center",
-    gap: 7,
-  },
-  libraryCardWide: {
-    width: "48.5%",
-    borderRadius: 10,
-    paddingVertical: 24,
-    paddingHorizontal: 11,
-    alignItems: "center",
-    gap: 9,
-  },
-  libraryIconWrap: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  libraryLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-    letterSpacing: 0.2,
-  },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
   emptyState: { alignItems: "center", paddingVertical: 48, gap: 10 },
