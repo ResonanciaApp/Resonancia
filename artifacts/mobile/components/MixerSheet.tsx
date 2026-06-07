@@ -420,7 +420,7 @@ export function MixerSheet() {
             {activeMix.map(({ active, sound }, index) => (
               <View
                 key={sound.id}
-                style={[styles.trackRow, { backgroundColor: WARM.trackBg }]}
+                style={styles.trackRow}
               >
                 <TrackThumb sound={sound} />
 
