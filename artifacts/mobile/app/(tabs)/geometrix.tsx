@@ -693,10 +693,10 @@ export default function GeometrixScreen() {
           )}
           </View>
 
-          {/* Thumbnails de geometrías activas: fila centrada anclada 10px sobre
+          {/* Thumbnails de geometrías activas: fila centrada anclada 15px sobre
               la tab bar; se reacomoda al agregar/quitar (LinearTransition). */}
           {activeMetas.length > 0 && (
-            <View style={[styles.thumbsRow, { bottom: tabBarHeight + 10 }]}>
+            <View style={[styles.thumbsRow, { bottom: tabBarHeight + 15 }]}>
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
                 const isSolo = soloId === g.id;
@@ -1191,6 +1191,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateY: -15 }],
   },
   canvas: {
     alignItems: "center",
