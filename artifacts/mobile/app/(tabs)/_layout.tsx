@@ -75,10 +75,10 @@ function TabItem({
           <SymbolView
             name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
             tintColor={iconColor}
-            size={22}
+            size={25}
           />
         ) : (
-          <Feather name={conf.featherIcon as never} size={22} color={iconColor} />
+          <Feather name={conf.featherIcon as never} size={25} color={iconColor} />
         )}
       </View>
       <Text style={[styles.label, { color: iconColor }]}>{conf.label}</Text>
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     backgroundColor: PILL_BG,
   },
   label: {
-    fontSize: 10,
+    fontSize: 13,
     letterSpacing: 0.3,
     fontWeight: "500",
   },
