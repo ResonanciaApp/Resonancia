@@ -397,8 +397,11 @@ export default function GeometrixScreen() {
   const [active, setActive] = useState<GeometryId[]>([]);
   // Módulo de música con su desplegable abierto (null = ninguno).
   const [openModule, setOpenModule] = useState<string | null>(null);
-  // Pista activa por módulo: { [moduleKey]: trackId | null }.
+  // Pista activa por módulo: { [moduleKey]: trackId | null }. Solo "está sonando".
   const [activeTracks, setActiveTracks] = useState<Record<string, string | null>>({});
+  // Última pista ELEGIDA por módulo (persiste aunque se apague): mantiene la
+  // imagen del thumbnail tras detener la música (no vuelve a la 1ª por defecto).
+  const [lastTrack, setLastTrack] = useState<Record<string, string | null>>({});
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Geometría que se está personalizando (la de la flechita pulsada). El panel
@@ -541,6 +544,8 @@ export default function GeometrixScreen() {
         playersRef.current[moduleKey] = p;
         // Reemplazar el estado por completo: el otro módulo queda apagado.
         setActiveTracks({ [moduleKey]: track.id });
+        // Recordar la elección: la imagen del thumbnail persiste tras apagar.
+        setLastTrack((prev) => ({ ...prev, [moduleKey]: track.id }));
       } catch {
         stopAllSound();
         setActiveTracks({});
@@ -716,8 +721,12 @@ export default function GeometrixScreen() {
           <View style={styles.soundModules}>
             {MUSIC_MODULES.map((mod) => {
               const activeId = activeTracks[mod.key] ?? null;
-              const activeTrack = mod.tracks.find((t) => t.id === activeId);
-              const cover = activeTrack?.image ?? mod.tracks[0].image;
+              // Imagen del thumbnail = última pista ELEGIDA (persiste tras
+              // apagar); si nunca se eligió, la 1ª por defecto. NO depende de
+              // si está sonando.
+              const coverId = lastTrack[mod.key] ?? activeId;
+              const coverTrack = mod.tracks.find((t) => t.id === coverId);
+              const cover = coverTrack?.image ?? mod.tracks[0].image;
               const isActive = !!activeId;
               return (
                 <Pressable
