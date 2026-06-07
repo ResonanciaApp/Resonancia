@@ -502,7 +502,14 @@ export default function GeometrixScreen() {
                   accessibilityRole="button"
                   accessibilityLabel={mod.label}
                 >
-                  <Image source={cover} style={styles.soundThumbImg} contentFit="cover" />
+                  <Image
+                    source={cover}
+                    style={styles.soundThumbImg}
+                    contentFit="cover"
+                    transition={0}
+                    cachePolicy="memory-disk"
+                    recyclingKey="geometrix-sound-thumb"
+                  />
                   {!isActive && (
                     <>
                       {/* Overlay negro sutil mientras está en reposo. */}
