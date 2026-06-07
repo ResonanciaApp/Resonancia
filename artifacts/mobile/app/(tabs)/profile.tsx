@@ -471,8 +471,34 @@ export default function ProfileScreen() {
           </Pressable>
         )}
 
+        {/* ── Comunidad ── */}
+        <View style={styles.communityRow}>
+          {[
+            { label: "Amigos",  icon: "users"     as const, route: "/amigos"  },
+            { label: "Diario",  icon: "book-open" as const, route: "/diario"  },
+            { label: "Grupos",  icon: "globe"     as const, route: "/grupos"  },
+          ].map(({ label, icon, route }) => (
+            <Pressable
+              key={label}
+              onPress={() => router.push(route as never)}
+              style={({ pressed }) => [
+                styles.communityCard,
+                {
+                  backgroundColor: pressed ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
+                  transform: [{ scale: pressed ? 0.96 : 1 }],
+                },
+              ]}
+            >
+              <Feather name={icon} size={22} color="#DCCDB8" />
+              <Text style={[styles.communityLabel, { color: "#FFFFFF" }]}>
+                {label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
         {/* ── Tu Progreso (racha card) ── */}
-        <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+        <View style={styles.rachaCard}>
           {/* Header: flame + title */}
           <View style={styles.rachaTop}>
             <View style={[styles.rachaBubble, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
@@ -540,32 +566,6 @@ export default function ProfileScreen() {
             <Text style={[styles.rachaVerMasText, { color: colors.primary }]}>Ver progreso completo</Text>
             <Feather name="chevron-right" size={14} color={colors.primary} />
           </Pressable>
-        </View>
-
-        {/* ── Comunidad ── */}
-        <View style={styles.communityRow}>
-          {[
-            { label: "Amigos",  icon: "users"     as const, route: "/amigos"  },
-            { label: "Diario",  icon: "book-open" as const, route: "/diario"  },
-            { label: "Grupos",  icon: "globe"     as const, route: "/grupos"  },
-          ].map(({ label, icon, route }) => (
-            <Pressable
-              key={label}
-              onPress={() => router.push(route as never)}
-              style={({ pressed }) => [
-                styles.communityCard,
-                {
-                  backgroundColor: pressed ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
-                  transform: [{ scale: pressed ? 0.96 : 1 }],
-                },
-              ]}
-            >
-              <Feather name={icon} size={22} color="#DCCDB8" />
-              <Text style={[styles.communityLabel, { color: "#FFFFFF" }]}>
-                {label}
-              </Text>
-            </Pressable>
-          ))}
         </View>
 
         <Text style={[styles.footer, { color: colors.border }]}>
@@ -764,7 +764,7 @@ const styles = StyleSheet.create({
   planMejorarText: { fontSize: 14, fontWeight: "700" },
 
   // Tu Progreso — racha card
-  rachaCard: { borderRadius: 18, padding: 18, marginBottom: 12 },
+  rachaCard: { borderRadius: 18, paddingVertical: 4, marginBottom: 12 },
   rachaTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
   rachaBubble: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
   rachaFlame: { fontSize: 24 },
