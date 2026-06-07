@@ -466,13 +466,11 @@ const styles = StyleSheet.create({
   tabRow: {
     flexDirection: "row",
     gap: 8,
-    paddingHorizontal: 16,
     marginBottom: 12,
   },
   tabsDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
-    marginHorizontal: 16,
     marginBottom: 12,
   },
   tabBlock: {
