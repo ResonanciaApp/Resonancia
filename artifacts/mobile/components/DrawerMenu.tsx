@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -146,7 +147,10 @@ export function DrawerMenu() {
       </Animated.View>
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
-        <View style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#040A3A" }]}>
+        <LinearGradient
+          colors={["#090C1E", "#080A18", "#060710"]}
+          style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
+        >
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
           {loggedIn ? (
             <View style={styles.profileSection}>
@@ -232,7 +236,7 @@ export function DrawerMenu() {
               ))}
             </View>
           </ScrollView>
-        </View>
+        </LinearGradient>
       </Animated.View>
     </View>
   );
