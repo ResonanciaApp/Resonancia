@@ -530,12 +530,11 @@ export default function GeometrixScreen() {
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
                     )}
+                    style={[styles.thumbItem, dimmed && { opacity: 0.4 }]}
                   >
+                    {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
                     <Pressable
-                      onPress={() => {
-                        setSelectedId(g.id);
-                        setMenuGeoId(g.id);
-                      }}
+                      onPress={() => setSelectedId(g.id)}
                       style={[
                         styles.thumb,
                         {
@@ -544,12 +543,28 @@ export default function GeometrixScreen() {
                         },
                         (isSolo || isSelected) && { borderWidth: 2 },
                         isSelected && styles.thumbSelected,
-                        dimmed && { opacity: 0.4 },
                       ]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
+                    >
+                      <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2} />
+                    </Pressable>
+                    {/* Flechita: abre el menú de opciones. */}
+                    <Pressable
+                      onPress={() => {
+                        setSelectedId(g.id);
+                        setMenuGeoId(g.id);
+                      }}
+                      style={styles.thumbCaret}
+                      hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel={`Opciones de ${g.name}`}
                     >
-                      <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2} />
+                      <Feather
+                        name="chevron-down"
+                        size={16}
+                        color={colors.mutedForeground}
+                      />
                     </Pressable>
                   </Animated.View>
                 );
@@ -1007,6 +1022,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.02)",
+  },
+  thumbItem: {
+    alignItems: "center",
+  },
+  thumbCaret: {
+    marginTop: 2,
+    alignItems: "center",
+    justifyContent: "center",
   },
   thumbSelected: {
     backgroundColor: "rgba(255,255,255,0.08)",
