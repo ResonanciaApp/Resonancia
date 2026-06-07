@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
     alignSelf: "stretch",
-    backgroundColor: "#151A23",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: Platform.OS === "ios" ? 12 : 8,
@@ -338,7 +338,6 @@ const styles = StyleSheet.create({
   },
   tabBlockActive: {
     backgroundColor: "rgba(100,142,195,0.14)",
-    borderColor: "rgba(200,170,255,0.30)",
   },
   tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
   divider: {
