@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 12,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   canvas: {
     borderRadius: 20,
