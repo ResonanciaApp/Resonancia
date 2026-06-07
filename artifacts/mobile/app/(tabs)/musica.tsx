@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 0 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
-    borderRadius: 20, backgroundColor: "#1A2336", marginLeft: 12,
+    borderRadius: 20, backgroundColor: "rgba(255,255,255,0.03)", marginLeft: 12,
   },
   heartGlow: {
     position: "absolute", left: 0, right: 0, top: 0, bottom: 0,

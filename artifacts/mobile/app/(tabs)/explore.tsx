@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
 
   header: { paddingHorizontal: H_PAD, marginBottom: 18 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  headerClockBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: "#1A2336", alignItems: "center", justifyContent: "center" },
+  headerClockBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.03)", alignItems: "center", justifyContent: "center" },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, marginTop: 0 },
 

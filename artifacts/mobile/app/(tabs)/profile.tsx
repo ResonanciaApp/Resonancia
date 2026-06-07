@@ -320,7 +320,7 @@ export default function ProfileScreen() {
             hitSlop={10}
             style={({ pressed }) => [
               styles.settingsBtn,
-              { backgroundColor: "#1A2336", opacity: pressed ? 0.75 : 1 },
+              { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.75 : 1 },
             ]}
           >
             <Feather name="settings" size={18} color="#FFFFFF" />
