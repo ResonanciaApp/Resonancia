@@ -774,7 +774,7 @@ const styles = StyleSheet.create({
     padding: 20,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#192338",
+    borderColor: "#161f33",
   },
   modalTitle: { fontSize: 17, fontWeight: "700", marginBottom: 14 },
   modalScroll: { maxHeight: 420 },
