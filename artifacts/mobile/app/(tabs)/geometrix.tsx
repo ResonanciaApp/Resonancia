@@ -1517,7 +1517,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: "#080A18",
     borderWidth: 1,
-    borderColor: "#24294d",
+    borderColor: "#1b1f41",
   },
   menuList: {
     flex: 1,
@@ -1526,7 +1526,7 @@ const styles = StyleSheet.create({
   },
   menuDivider: {
     width: 1,
-    backgroundColor: "#24294d",
+    backgroundColor: "#1b1f41",
     marginVertical: 16,
   },
   menuGlyphWrap: {
