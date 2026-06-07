@@ -13,6 +13,7 @@ import {
   Alert,
   type ImageSourcePropType,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -254,6 +255,10 @@ function GeometryLayer({
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
+  // Alto de la tab bar inferior (réplica del cálculo en (tabs)/_layout.tsx),
+  // para que el lienzo no quede tapado por el menú de la app.
+  const bottomPb = Platform.OS === "web" ? 8 : insets.bottom;
+  const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
 
   const [active, setActive] = useState<GeometryId[]>([]);
   // Módulo de música con su desplegable abierto (null = ninguno).
@@ -613,17 +618,21 @@ export default function GeometrixScreen() {
         {/* Línea divisora */}
         <View style={styles.divider} />
 
-        {/* Fondo interactivo (cuadrado, centrado) */}
-        <View
-          style={styles.canvasWrap}
-          onLayout={(e) => {
-            const { width: w, height: h } = e.nativeEvent.layout;
-            setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
-          }}
-        >
-          {canvasSide > 0 && (
-            <GestureDetector gesture={pinchGesture}>
-              <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
+        {/* Fondo interactivo: animación centrada en el espacio entre la
+            divisora y la tab bar; thumbnails anclados 10px sobre la tab bar.
+            paddingBottom despeja la tab bar para que el lienzo no se recorte. */}
+        <View style={[styles.canvasWrap, { paddingBottom: tabBarHeight }]}>
+          {/* Escenario: centra la animación en el espacio sobre los thumbnails. */}
+          <View
+            style={styles.stage}
+            onLayout={(e) => {
+              const { width: w, height: h } = e.nativeEvent.layout;
+              setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+            }}
+          >
+            {canvasSide > 0 && (
+              <GestureDetector gesture={pinchGesture}>
+                <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
                 {layerSize > 0 &&
                   visibleMetas.map((g, i) => (
                     <GeometryLayer
@@ -682,11 +691,12 @@ export default function GeometrixScreen() {
               </Pressable>
             </Animated.View>
           )}
+          </View>
 
-          {/* Thumbnails de geometrías activas: fila centrada que se reacomoda
-              al agregar/quitar (LinearTransition desplaza para dar espacio). */}
+          {/* Thumbnails de geometrías activas: fila centrada anclada 10px sobre
+              la tab bar; se reacomoda al agregar/quitar (LinearTransition). */}
           {activeMetas.length > 0 && (
-            <View style={styles.thumbsRow}>
+            <View style={[styles.thumbsRow, { bottom: tabBarHeight + 10 }]}>
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
                 const isSolo = soloId === g.id;
@@ -1174,7 +1184,11 @@ const styles = StyleSheet.create({
 
   canvasWrap: {
     flex: 1,
-    marginBottom: 12,
+    alignItems: "center",
+  },
+  stage: {
+    flex: 1,
+    alignSelf: "stretch",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1209,7 +1223,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(122,143,168,0.35)",
   },
   thumbsRow: {
-    marginTop: 14,
+    position: "absolute",
+    left: 0,
+    right: 0,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
