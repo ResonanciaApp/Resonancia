@@ -1343,7 +1343,7 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: "column",
     alignItems: "flex-end",
-    gap: 5,
+    gap: 12,
   },
   soundTile: {
     width: 44,
