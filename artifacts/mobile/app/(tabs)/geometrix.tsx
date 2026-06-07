@@ -782,20 +782,22 @@ export default function GeometrixScreen() {
                 pointerEvents={pillOpen ? "auto" : "none"}
                 style={[styles.pillRow, pillStyle]}
               >
-                {pillActions.map((a) => (
-                  <Pressable
-                    key={a.key}
-                    onPress={() => {
-                      a.onPress();
-                      setPillOpen(false);
-                    }}
-                    style={styles.pillBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel={a.label}
-                    hitSlop={6}
-                  >
-                    <Feather name={a.icon} size={20} color={colors.mutedForeground} />
-                  </Pressable>
+                {pillActions.map((a, i) => (
+                  <React.Fragment key={a.key}>
+                    {i > 0 && <View style={styles.pillDivider} />}
+                    <Pressable
+                      onPress={() => {
+                        a.onPress();
+                        setPillOpen(false);
+                      }}
+                      style={styles.pillBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel={a.label}
+                      hitSlop={6}
+                    >
+                      <Feather name={a.icon} size={18} color={colors.mutedForeground} />
+                    </Pressable>
+                  </React.Fragment>
                 ))}
               </Animated.View>
 
@@ -1468,6 +1470,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 999,
+  },
+  pillDivider: {
+    width: 1,
+    height: 18,
+    backgroundColor: CARD_BORDER,
   },
   thumbsRow: {
     position: "absolute",
