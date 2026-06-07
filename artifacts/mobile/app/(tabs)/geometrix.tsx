@@ -191,19 +191,29 @@ function Toggle({
   value,
   onChange,
   color,
+  compact = false,
 }: {
   value: boolean;
   onChange: (v: boolean) => void;
   color: string;
+  compact?: boolean;
 }) {
   return (
     <Pressable
       onPress={() => onChange(!value)}
-      style={[styles.toggle, { backgroundColor: value ? color : "rgba(255,255,255,0.10)" }]}
+      style={[
+        compact ? styles.toggleCompact : styles.toggle,
+        { backgroundColor: value ? color : "rgba(255,255,255,0.10)" },
+      ]}
       accessibilityRole="switch"
       accessibilityState={{ checked: value }}
     >
-      <View style={[styles.toggleKnob, value && styles.toggleKnobOn]} />
+      <View
+        style={[
+          compact ? styles.toggleKnobCompact : styles.toggleKnob,
+          value && (compact ? styles.toggleKnobCompactOn : styles.toggleKnobOn),
+        ]}
+      />
     </Pressable>
   );
 }
@@ -1264,40 +1274,49 @@ export default function GeometrixScreen() {
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
-                  {/* Cabecera: ícono + título (blanco puro) + toggles giro/respiración */}
+                  {/* Cabecera: ícono + título (blanco puro) */}
                   <View style={styles.geoCardHead}>
                     <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2.4} />
                     <Text style={styles.geoCardName} numberOfLines={1}>
                       {g.name}
                     </Text>
-                    <View style={styles.headToggles}>
-                      <View style={styles.headToggle}>
-                        <Feather name="rotate-cw" size={15} color={colors.mutedForeground} />
-                        <Toggle
-                          value={s.rotate}
-                          onChange={(v) => updateSetting(g.id, "rotate", v)}
-                          color={s.color}
-                        />
-                      </View>
-                      <View style={styles.headToggle}>
-                        <Feather name="wind" size={15} color={colors.mutedForeground} />
-                        <Toggle
-                          value={s.breathe}
-                          onChange={(v) => updateSetting(g.id, "breathe", v)}
-                          color={s.color}
-                        />
-                      </View>
-                    </View>
                   </View>
 
-                  {/* Fade in/out: la geometría aparece y desaparece en bucle */}
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Fade in/out</Text>
-                    <Toggle
-                      value={s.fadeLoop}
-                      onChange={(v) => updateSetting(g.id, "fadeLoop", v)}
-                      color={s.color}
-                    />
+                  {/* Tres toggles (on/off) en una fila, debajo del título */}
+                  <View style={styles.toggleTriRow}>
+                    <View style={styles.toggleTriItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
+                        Fade in/out
+                      </Text>
+                      <Toggle
+                        value={s.fadeLoop}
+                        onChange={(v) => updateSetting(g.id, "fadeLoop", v)}
+                        color={s.color}
+                        compact
+                      />
+                    </View>
+                    <View style={styles.toggleTriItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
+                        Respirar
+                      </Text>
+                      <Toggle
+                        value={s.breathe}
+                        onChange={(v) => updateSetting(g.id, "breathe", v)}
+                        color={s.color}
+                        compact
+                      />
+                    </View>
+                    <View style={styles.toggleTriItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
+                        Girar
+                      </Text>
+                      <Toggle
+                        value={s.rotate}
+                        onChange={(v) => updateSetting(g.id, "rotate", v)}
+                        color={s.color}
+                        compact
+                      />
+                    </View>
                   </View>
 
                   {/* Color */}
@@ -1678,6 +1697,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#EDE1D3",
   },
   toggleKnobOn: { transform: [{ translateX: 18 }] },
+  toggleCompact: {
+    width: 32,
+    height: 16,
+    borderRadius: 8,
+    padding: 2,
+    justifyContent: "center",
+  },
+  toggleKnobCompact: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#EDE1D3",
+  },
+  toggleKnobCompactOn: { transform: [{ translateX: 16 }] },
 
   // Bottom sheet de ajustes
   sheetBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
@@ -1744,8 +1777,16 @@ const styles = StyleSheet.create({
   },
   geoCardHead: { flexDirection: "row", alignItems: "center", gap: 10 },
   geoCardName: { flex: 1, minWidth: 0, fontSize: 15, fontWeight: "700", color: "#FFFFFF" },
-  headToggles: { flexDirection: "row", alignItems: "center", gap: 14 },
-  headToggle: { flexDirection: "row", alignItems: "center", gap: 6 },
+  toggleTriRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+    marginTop: 4,
+    marginBottom: 6,
+  },
+  toggleTriItem: { flexDirection: "row", alignItems: "center", gap: 7 },
+  toggleTriLabel: { fontSize: 12, fontWeight: "600", color: colors.foreground, flexShrink: 1 },
 
   fieldLabel: { fontSize: 13, fontWeight: "600", color: colors.mutedForeground },
   fieldRow: {
