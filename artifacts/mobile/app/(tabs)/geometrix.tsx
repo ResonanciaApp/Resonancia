@@ -330,10 +330,11 @@ export default function GeometrixScreen() {
         setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
         return;
       }
-      stopModule(moduleKey);
+      // Solo un módulo puede sonar a la vez: apagar cualquier otro antes.
+      stopAllSound();
       const src = track.sound;
       if (!src) {
-        setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
+        setActiveTracks({});
         return;
       }
       try {
@@ -347,13 +348,14 @@ export default function GeometrixScreen() {
         p.volume = 1;
         p.play();
         playersRef.current[moduleKey] = p;
-        setActiveTracks((prev) => ({ ...prev, [moduleKey]: track.id }));
+        // Reemplazar el estado por completo: el otro módulo queda apagado.
+        setActiveTracks({ [moduleKey]: track.id });
       } catch {
-        stopModule(moduleKey);
-        setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
+        stopAllSound();
+        setActiveTracks({});
       }
     },
-    [activeTracks, stopModule],
+    [activeTracks, stopModule, stopAllSound],
   );
 
   const toggleGeometry = useCallback((id: GeometryId) => {
