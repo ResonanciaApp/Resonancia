@@ -272,6 +272,12 @@ function MixRow({
 
         {/* Info */}
         <View style={styles.info}>
+          <Text
+            style={[styles.mixCount, { color: GOLD }]}
+            numberOfLines={1}
+          >
+            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+          </Text>
           <View style={styles.nameRow}>
             <Text
               style={[styles.mixName, { color: colors.foreground }]}
@@ -285,12 +291,6 @@ function MixRow({
               </View>
             )}
           </View>
-          <Text
-            style={[styles.mixCount, { color: GOLD }]}
-            numberOfLines={1}
-          >
-            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-          </Text>
           <Text
             style={[styles.mixAuthor, { color: colors.mutedForeground }]}
             numberOfLines={1}
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   info: { flex: 1, minWidth: 0 },
-  nameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
   mixName: { fontSize: 13, fontWeight: "600", flexShrink: 1 },
   trendBadge: {
     backgroundColor: "rgba(190,150,80,0.12)",
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
   mixAuthor: { fontSize: 10, marginTop: 2 },
-  mixCount: { fontSize: 12, fontWeight: "500", marginTop: 2 },
+  mixCount: { fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
   likeCount: { fontSize: 10, fontWeight: "600", color: GOLD },
   dotsBtn: {
