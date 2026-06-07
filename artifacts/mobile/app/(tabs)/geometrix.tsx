@@ -711,11 +711,6 @@ export default function GeometrixScreen() {
                   >
                     {g.name}
                   </Text>
-                  {sel && (
-                    <View style={[styles.tileCheck, { backgroundColor: tileColor }]}>
-                      <Feather name="check" size={11} color="#0B0F14" />
-                    </View>
-                  )}
                 </Pressable>
               );
             })}
@@ -1398,16 +1393,6 @@ const styles = StyleSheet.create({
   },
   tileGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
   tileLabel: { fontSize: 11, fontWeight: "600", textAlign: "center", paddingHorizontal: 4 },
-  tileCheck: {
-    position: "absolute",
-    top: 7,
-    right: 7,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
   divider: {
     height: StyleSheet.hairlineWidth,
