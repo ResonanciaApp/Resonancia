@@ -1309,7 +1309,7 @@ export default function GeometrixScreen() {
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
-                  {/* Cabecera: ícono + título en píldora (sin relleno, borde sutil) */}
+                  {/* Cabecera: ícono + título (texto simple, sin píldora) */}
                   <View style={styles.geoCardHead}>
                     <SacredGlyph id={g.id} color={s.color} size={24} strokeWidth={2.4} />
                     <View style={styles.geoNamePill}>
@@ -1814,11 +1814,6 @@ const styles = StyleSheet.create({
   geoCardHead: { flexDirection: "row", alignItems: "center", gap: 8 },
   geoNamePill: {
     flexShrink: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.16)",
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
   },
   geoCardName: { minWidth: 0, fontSize: 13, fontWeight: "700", color: "#FFFFFF" },
   toggleTriRow: {
