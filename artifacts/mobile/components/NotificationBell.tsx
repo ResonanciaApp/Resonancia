@@ -10,7 +10,7 @@ import { usePlayer } from "@/context/PlayerContext";
 const GOAL_MINUTES = 5;
 
 /** Opacidad de reposo del fuego y del número (estado atenuado). */
-const REST_OPACITY = 0.2;
+const REST_OPACITY = 0.25;
 
 const STREAK_ANIM_KEY = "@resonance_streak_anim_date";
 /** Flag DEV: fuerza la animación la próxima vez que se abre el Inicio. */
