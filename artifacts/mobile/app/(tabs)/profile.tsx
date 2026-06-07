@@ -554,8 +554,8 @@ export default function ProfileScreen() {
                 },
               ]}
             >
-              <Feather name={icon} size={22} color={colors.primary} />
-              <Text style={[styles.communityLabel, { color: colors.mutedForeground }]}>
+              <Feather name={icon} size={22} color="#DCCDB8" />
+              <Text style={[styles.communityLabel, { color: "#FFFFFF" }]}>
                 {label}
               </Text>
             </Pressable>
