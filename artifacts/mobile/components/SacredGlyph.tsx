@@ -396,7 +396,7 @@ export interface SacredGlyphProps {
   opacity?: number;
 }
 
-export function SacredGlyph({ id, color, size, strokeWidth = 1.2, opacity = 1 }: SacredGlyphProps) {
+function SacredGlyphImpl({ id, color, size, strokeWidth = 1.2, opacity = 1 }: SacredGlyphProps) {
   // Escala uniforme para que todas las geometrías llenen el mismo radio.
   const k = TARGET_EXTENT / (EXTENT[id] ?? 44);
   // Compensar el grosor para que el trazo se vea igual tras el escalado.
@@ -417,3 +417,8 @@ export function SacredGlyph({ id, color, size, strokeWidth = 1.2, opacity = 1 }:
     </Svg>
   );
 }
+
+// Memoizado: durante el pellizco en vivo el objetivo redibuja su SVG en cada
+// frame (zoom = tamaño real, no transform); las demás capas conservan props
+// idénticas y se saltan el re-render (no reconstruyen su árbol de elementos).
+export const SacredGlyph = React.memo(SacredGlyphImpl);

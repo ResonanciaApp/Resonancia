@@ -28,7 +28,6 @@ import Animated, {
   FadeOut,
   LinearTransition,
   runOnJS,
-  type SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -233,9 +232,10 @@ function GeometryLayer({
   index: number;
   size: number;
   settings: GeoSettings;
-  /** Shared value de zoom en vivo (pellizco). Si se pasa, manda sobre
-      settings.zoom (lo usa solo la geometría seleccionada en el lienzo). */
-  liveZoom?: SharedValue<number>;
+  /** Zoom en vivo (pellizco) como número: si se pasa, manda sobre settings.zoom
+      y REDIBUJA el SVG a ese tamaño en tiempo real (lo usa solo la geometría
+      seleccionada en el lienzo). No se aplica por transform → trazo nítido. */
+  liveZoom?: number;
   /** Opacidad maestra (panel general): multiplica la de esta capa. */
   masterOpacity?: number;
   /** Movimiento global (panel general): si es false, congela giro + respiración. */
@@ -313,11 +313,13 @@ function GeometryLayer({
   const safeZoom = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
   // Tamaño base ("fit"): 0 → 0.4×, 1 → 1.0× (no corta contra los bordes).
   const userScale = 0.4 + safeScale * 0.6;
-  // Magnificación CONFIRMADA (tamaño + zoom de pellizco ya soltado). Se pliega
-  // al tamaño REAL del SVG (no a un transform), para que la geometría se
-  // REDIBUJE nítida y el grosor del trazo no engorde al ampliar. El transform
-  // solo lleva el delta del pellizco EN VIVO (suave a 60fps) y la respiración.
-  const committedMag = userScale * safeZoom;
+  // Zoom efectivo: durante el pellizco EN VIVO manda el valor en curso (número
+  // que llega por prop); en reposo, el confirmado en settings. El zoom NO se
+  // aplica por transform sino plegándolo al tamaño REAL del SVG (effectiveSize),
+  // para que la geometría se REDIBUJE nítida en tiempo real, el grosor del trazo
+  // no engorde y no haya parpadeo en el traspaso transform→tamaño al soltar.
+  const effZoom = liveZoom != null && liveZoom > 0 ? liveZoom : safeZoom;
+  const committedMag = userScale * effZoom;
   // Movimiento general (panel maestro): congela giro + respiración de TODAS las
   // capas a la vez sin borrar el ajuste propio de cada una.
   const spin = rotate && motion;
@@ -327,19 +329,14 @@ function GeometryLayer({
   const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
   const breatheDepth = 0.04 + safeAmount * 0.2;
   const safeMaster = Number.isFinite(masterOpacity) ? masterOpacity : 1;
-  const safeCommittedZoom = safeZoom > 0 ? safeZoom : 1;
   const aStyle = useAnimatedStyle(() => {
-    // Delta del pellizco EN VIVO respecto del zoom ya confirmado (=1 en reposo
-    // y al soltar, así la capa queda en su tamaño redibujado nítido).
-    const liveDelta = liveZoom ? liveZoom.value / safeCommittedZoom : 1;
     return {
       transform: [
         { rotate: spin ? `${rot.value * 360 * dir}deg` : "0deg" },
-        // Respiración (1 - profundidad … 1) × delta de pellizco en vivo.
+        // Respiración (1 - profundidad … 1). El zoom NO viaja en el transform:
+        // se aplica redibujando el SVG (effectiveSize) para que quede nítido.
         {
-          scale:
-            (breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1) *
-            liveDelta,
+          scale: breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1,
         },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico.
@@ -440,6 +437,10 @@ export default function GeometrixScreen() {
   // Zoom en vivo del pellizco (UI thread); se confirma a settings al soltar.
   const livePinch = useSharedValue(1);
   const pinchStart = useSharedValue(1);
+  // Zoom en vivo del objetivo como NÚMERO (no transform): redibuja el SVG en
+  // cada frame para que el trazo quede nítido durante el pellizco y no haya
+  // parpadeo al soltar. null = no se está pellizcando (usa el confirmado).
+  const [livePinchNum, setLivePinchNum] = useState<number | null>(null);
 
   // Un reproductor por módulo (reproducen de forma independiente).
   const playersRef = useRef<Record<string, AudioPlayer | null>>({});
@@ -575,7 +576,10 @@ export default function GeometrixScreen() {
     [settings],
   );
 
-  // Confirmar el zoom del pellizco a settings al soltar (corre en JS thread).
+  // Confirmar el zoom del pellizco a settings (corre en JS thread). El "en vivo"
+  // se limpia aparte en onFinalize (que SIEMPRE corre, también al cancelarse el
+  // gesto) y siempre DESPUÉS de este commit, así el objetivo pasa del tamaño en
+  // vivo al confirmado (idéntico valor) sin un frame intermedio.
   const commitZoom = useCallback(
     (id: GeometryId, z: number) => updateSetting(id, "zoom", z),
     [updateSetting],
@@ -661,10 +665,19 @@ export default function GeometrixScreen() {
       pinchStart.value = livePinch.value;
     })
     .onUpdate((e) => {
-      livePinch.value = Math.min(6, Math.max(0.3, pinchStart.value * e.scale));
+      const z = Math.min(6, Math.max(0.3, pinchStart.value * e.scale));
+      livePinch.value = z;
+      // Redibuja el SVG del objetivo en tiempo real (zoom = tamaño, no transform).
+      runOnJS(setLivePinchNum)(z);
     })
     .onEnd(() => {
       if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
+    })
+    // SIEMPRE corre (éxito o cancelación), después de onEnd. Limpia el zoom en
+    // vivo → el objetivo vuelve al confirmado; si el gesto se canceló sin
+    // confirmar, revierte al último zoom guardado (no queda pegado al en vivo).
+    .onFinalize(() => {
+      runOnJS(setLivePinchNum)(null);
     });
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
@@ -824,7 +837,11 @@ export default function GeometrixScreen() {
                       index={i}
                       size={layerSize}
                       settings={getSettings(g.id)}
-                      liveZoom={g.id === pinchTargetId ? livePinch : undefined}
+                      liveZoom={
+                        g.id === pinchTargetId && livePinchNum != null
+                          ? livePinchNum
+                          : undefined
+                      }
                       masterOpacity={master.opacity}
                       motion={master.motion}
                       glow={master.glow}
