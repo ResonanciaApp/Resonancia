@@ -5,6 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
+  Image,
   Platform,
   Pressable,
   StyleSheet,
@@ -29,12 +30,14 @@ const TAB_CONFIG: Record<
     sfIcon: string;
     sfIconFill: string;
     featherIcon: string;
+    /** Si está presente, se usa esta imagen (tintada) en vez del ícono. */
+    image?: number;
   }
 > = {
   index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
   explore: { label: "Biblioteca", sfIcon: "books.vertical", sfIconFill: "books.vertical.fill", featherIcon: "book-open" },
   musica:  { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
-  geometrix: { label: "Geometrix", sfIcon: "hexagon", sfIconFill: "hexagon.fill", featherIcon: "hexagon" },
+  geometrix: { label: "Geometrix", sfIcon: "hexagon", sfIconFill: "hexagon.fill", featherIcon: "hexagon", image: require("@/assets/images/geometrix/cubo-1.png") },
   profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
 };
 
@@ -72,7 +75,14 @@ function TabItem({
     >
       <View style={styles.iconWrap}>
         <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
-        {isIOS ? (
+        {conf.image ? (
+          <Image
+            source={conf.image}
+            style={{ width: 23, height: 23 }}
+            tintColor={iconColor}
+            resizeMode="contain"
+          />
+        ) : isIOS ? (
           <SymbolView
             name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
             tintColor={iconColor}

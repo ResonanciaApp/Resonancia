@@ -849,7 +849,13 @@ export default function GeometrixScreen() {
 
                 {active.length === 0 && (
                   <View style={styles.empty} pointerEvents="none">
-                    <Feather name="hexagon" size={30} color="rgba(190,150,80,0.4)" />
+                    <Animated.View entering={FadeIn.duration(900)}>
+                      <Image
+                        source={require("@/assets/images/geometrix/cubo-2.png")}
+                        style={styles.emptyLogo}
+                        contentFit="contain"
+                      />
+                    </Animated.View>
                     <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
                     <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
                   </View>
@@ -1838,6 +1844,7 @@ const styles = StyleSheet.create({
   swatchOn: { borderColor: "#EDE1D3" },
 
   empty: { alignItems: "center", gap: 6 },
+  emptyLogo: { width: 60, height: 60, opacity: 0.9 },
   emptyText: { fontSize: 14, fontWeight: "600", color: colors.foreground, marginTop: 4 },
   emptySub: { fontSize: 12, color: colors.mutedForeground },
 
