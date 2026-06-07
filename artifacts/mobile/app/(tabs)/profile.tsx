@@ -297,9 +297,15 @@ export default function ProfileScreen() {
   }, [statEvents]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#06070F" }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       <ScrollView
         style={styles.scroll}
@@ -586,67 +592,6 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        {/* ── Mi viaje ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi viaje</Text>
-          {activity.hasData ? (
-            <View style={[styles.journeyCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
-              <View style={styles.journeyRow}>
-                <Feather name="clock" size={16} color={colors.primary} />
-                <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Minutos esta semana</Text>
-                <Text style={[styles.journeyValue, { color: colors.foreground }]}>{activity.weeklyMinutes}</Text>
-              </View>
-              <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
-              <View style={styles.journeyRow}>
-                <Feather name="heart" size={16} color={colors.primary} />
-                <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Sesión favorita</Text>
-                <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
-                  {activity.topSession?.title ?? "—"}
-                </Text>
-              </View>
-              <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
-              <View style={styles.journeyRow}>
-                <Feather name="bar-chart-2" size={16} color={colors.primary} />
-                <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Categoría más escuchada</Text>
-                <Text style={[styles.journeyValue, { color: colors.foreground }]} numberOfLines={1}>
-                  {activity.topCategory ?? "—"}
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <View style={[styles.emptyFav, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
-              <Feather name="compass" size={22} color={"rgba(198,155,79,0.3)"} />
-              <Text style={[styles.emptyFavText, { color: colors.mutedForeground }]}>
-                Tu viaje empieza con la primera sesión.{"\n"}Aquí verás tus minutos, sesión favorita y más.
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* ── Mis herramientas ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mis herramientas</Text>
-          <View style={[styles.journeyCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
-            <Pressable
-              onPress={() => router.push("/(tabs)/musica" as never)}
-              style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <Feather name="sliders" size={16} color={colors.primary} />
-              <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Crea tu música</Text>
-              <Feather name="chevron-right" size={16} color={colors.border} />
-            </Pressable>
-            <View style={[styles.journeyDivider, { backgroundColor: colors.border }]} />
-            <Pressable
-              onPress={() => router.push("/respiracion" as never)}
-              style={({ pressed }) => [styles.journeyRow, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <Feather name="wind" size={16} color={colors.primary} />
-              <Text style={[styles.journeyLabel, { color: colors.foreground }]}>Ejercicios de respiración</Text>
-              <Feather name="chevron-right" size={16} color={colors.border} />
-            </Pressable>
-          </View>
-        </View>
-
         <Text style={[styles.footer, { color: colors.border }]}>
           RESONANCE · Sonidos que te regresan a ti mismo.
         </Text>
@@ -720,7 +665,7 @@ export default function ProfileScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -889,13 +834,6 @@ const styles = StyleSheet.create({
   rachaVerMas: { flexDirection: "row", alignItems: "center", justifyContent: "flex-end", gap: 4, marginTop: 14 },
   rachaVerMasText: { fontSize: 13, fontWeight: "600" },
 
-  // Mi viaje
-  journeyCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 4 },
-  journeyRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 14 },
-  journeyLabel: { flex: 1, fontSize: 13 },
-  journeyValue: { fontSize: 11, fontWeight: "600", maxWidth: "45%", textAlign: "right" },
-  journeyDivider: { height: StyleSheet.hairlineWidth, opacity: 0.5 },
-
   // Membresía
   membershipRow: {
     borderRadius: 18,
@@ -940,15 +878,6 @@ const styles = StyleSheet.create({
   premiumBadge: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
 
   // Favoritos
-  section: { marginBottom: 43 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7 },
-  emptyFav: {
-    borderRadius: 16,
-    padding: 24,
-    alignItems: "center",
-    gap: 10,
-  },
-  emptyFavText: { fontSize: 13, lineHeight: 20, textAlign: "center" },
   favRow: {
     flexDirection: "row",
     alignItems: "center",
