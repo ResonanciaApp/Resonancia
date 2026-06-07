@@ -420,6 +420,11 @@ export default function ExploreScreen() {
               </View>
             </View>
 
+            {/* ── Mezclas de la comunidad ── */}
+            <View style={{ marginBottom: 43 }}>
+              <CommunityMixesCarousel />
+            </View>
+
             {/* ── Otras Temáticas ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
@@ -449,11 +454,6 @@ export default function ExploreScreen() {
                   </Pressable>
                 ))}
               </View>
-            </View>
-
-            {/* ── Mezclas de la comunidad ── */}
-            <View style={{ marginBottom: 43 }}>
-              <CommunityMixesCarousel />
             </View>
 
             {/* ── Programas (oculto temporalmente) ── */}
