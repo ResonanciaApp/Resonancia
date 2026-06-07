@@ -679,7 +679,7 @@ const styles = StyleSheet.create({
   thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "#FFFFFF" },
   thumbRadius: { borderRadius: 11 },
   trackInfo: { flex: 1, justifyContent: "center" },
-  trackName: { fontSize: 15, fontWeight: "700", marginBottom: 4 },
+  trackName: { fontSize: 15, fontWeight: "700", marginBottom: 0 },
   _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",
