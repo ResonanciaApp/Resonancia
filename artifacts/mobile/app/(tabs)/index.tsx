@@ -251,7 +251,7 @@ export default function HomeScreen() {
         {/* ── 3. VIDEOS DESTACADOS ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            <Text style={[styles.sectionTitle]}>
               Videos destacados
             </Text>
             {VIDEOS.length > 0 && (
@@ -290,7 +290,7 @@ export default function HomeScreen() {
         {/* ── 4. ESCUCHADOS RECIENTEMENTE ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP - 10 }]}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            <Text style={[styles.sectionTitle]}>
               Escuchados recientemente
             </Text>
             <Pressable onPress={() => router.push("/explore" as never)} hitSlop={8}>
@@ -353,7 +353,7 @@ export default function HomeScreen() {
         {/* ── 6. SESIÓN DESTACADA ── */}
         {featuredSession && (
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>
               Sesión destacada
             </Text>
             <Pressable
@@ -408,7 +408,7 @@ export default function HomeScreen() {
         {popularSessions.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionRow}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+              <Text style={[styles.sectionTitle]}>
                 Más escuchados
               </Text>
             </View>
@@ -464,7 +464,7 @@ export default function HomeScreen() {
         {/* ── 8. DESCUBRÍ ALGO NUEVO ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            <Text style={[styles.sectionTitle]}>
               Las más recientes
             </Text>
             <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 11,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#FFFFFF" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,

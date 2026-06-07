@@ -159,7 +159,7 @@ export default function ExploreScreen() {
       >
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Biblioteca</Text>
+          <Text style={[styles.pageTitle]}>Biblioteca</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>Tu universo vibracional</Text>
         </View>
 
@@ -243,7 +243,7 @@ export default function ExploreScreen() {
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>¿Cuánto tiempo tienes?</Text>
+              <Text style={[styles.sectionTitle]}>¿Cuánto tiempo tienes?</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -368,7 +368,7 @@ export default function ExploreScreen() {
             {/* ── Tu Biblioteca (2×2 grid) ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 0 }]}>Tu biblioteca</Text>
+                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Tu biblioteca</Text>
               </View>
               <View style={styles.libraryGrid}>
                 {[
@@ -399,7 +399,7 @@ export default function ExploreScreen() {
             {/* ── Otras Temáticas ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 0 }]}>
+                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
                   Otras Temáticas
                 </Text>
               </View>
@@ -435,7 +435,7 @@ export default function ExploreScreen() {
             {/* ── Programas (oculto temporalmente) ── */}
             {SHOW_PROGRAMAS && (
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Programas</Text>
+              <Text style={[styles.sectionTitle]}>Programas</Text>
               <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
                 Caminos guiados de varios días para crear hábito
               </Text>
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   header: { paddingHorizontal: H_PAD, marginBottom: 18 },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
+  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, marginTop: 0 },
 
   searchBar: {
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14 },
 
   section: { paddingHorizontal: H_PAD, marginBottom: 43 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#FFFFFF" },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
   // Mi Biblioteca grid
