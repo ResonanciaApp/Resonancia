@@ -38,6 +38,16 @@ const FG       = "#EDE1D3";
 const MUTED    = "#7A8FA8";
 const TAB_PILL = "#1E2733";
 
+const SUB_TAB_LABELS: Partial<Record<SoundCategoryId, string>> = {
+  cuencos_tibetanos: "Tibetanos",
+  cuencos_cuarzo:    "Cuarzo",
+  gongs:             "Gongs",
+  campanas_viento:   "Campanas",
+  vientos:           "Vientos",
+  cantos:            "Cantos",
+  percusion:         "Percusión",
+};
+
 const SUB_TAB_ICON_COLORS: Partial<Record<SoundCategoryId, string>> = {
   animales: "#F0A875",
   bosque:   "#7DC87A",
@@ -425,7 +435,7 @@ export default function MiMusicaScreen() {
                         />
                       )}
                       <Text style={[styles.subTabText, { color: "#FFFFFF" }]}>
-                        {cat.label}
+                        {SUB_TAB_LABELS[catId] ?? cat.label}
                       </Text>
                     </Pressable>
                   );
