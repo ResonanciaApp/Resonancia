@@ -372,31 +372,27 @@ export default function ExploreScreen() {
               </View>
               <View style={styles.libraryGrid}>
                 {[
-                  { label: "Carpetas",   icon: "folder"  as const, route: "/carpetas"   },
-                  { label: "Creaciones", icon: "sliders" as const, route: "/mezclas" },
-                  { label: "Playlists",  icon: "list"    as const, route: "/playlists"  },
-                  { label: "Favoritos",  icon: "heart"   as const, route: "/favorites"  },
-                  { label: "Historial",  icon: "clock"   as const, route: "/historial"  },
-                ].map((item, idx) => {
-                  const isTop = idx < 3;
-                  return (
-                    <Pressable
-                      key={item.label}
-                      style={({ pressed }) => [
-                        isTop ? styles.libraryCardThird : styles.libraryCardWide,
-                        { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.7 : 1 },
-                      ]}
-                      onPress={() => router.push(item.route as never)}
-                    >
-                      <View style={styles.libraryIconWrap}>
-                        <Feather name={item.icon} size={isTop ? 22 : 26} color={colors.mutedForeground} />
-                      </View>
-                      <Text style={[styles.libraryLabel, { color: "#FFFFFF" }]}>
-                        {item.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
+                  { label: "Carpetas",  icon: "folder"    as const, route: "/carpetas"  },
+                  { label: "Playlists", icon: "list"      as const, route: "/playlists" },
+                  { label: "Favoritos", icon: "heart"     as const, route: "/favorites" },
+                  { label: "Historial", icon: "clock"     as const, route: "/historial" },
+                ].map((item) => (
+                  <Pressable
+                    key={item.label}
+                    style={({ pressed }) => [
+                      styles.libraryCardWide,
+                      { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.7 : 1 },
+                    ]}
+                    onPress={() => router.push(item.route as never)}
+                  >
+                    <View style={styles.libraryIconWrap}>
+                      <Feather name={item.icon} size={28} color={colors.mutedForeground} />
+                    </View>
+                    <Text style={[styles.libraryLabel, { color: "#FFFFFF" }]}>
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                ))}
               </View>
             </View>
 
@@ -548,7 +544,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   libraryLabel: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: "600",
     letterSpacing: 0.2,
   },
