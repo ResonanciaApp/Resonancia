@@ -987,13 +987,21 @@ export default function GeometrixScreen() {
         (() => {
           const mod = MUSIC_MODULES.find((m) => m.key === openModule);
           if (!mod) return null;
+          // Anclar el desplegable bajo el thumbnail de su propio módulo.
+          // Los thumbnails (44px, gap 10) están alineados a la derecha; el
+          // último queda a right:20 y cada anterior se corre 54px más.
+          const modIndex = MUSIC_MODULES.findIndex((m) => m.key === mod.key);
+          const rightOffset =
+            20 + (MUSIC_MODULES.length - 1 - modIndex) * (44 + 10);
           return (
             <>
               <Pressable
                 style={StyleSheet.absoluteFill}
                 onPress={() => setOpenModule(null)}
               />
-              <View style={[styles.soundMenu, { top: insets.top + 58 }]}>
+              <View
+                style={[styles.soundMenu, { top: insets.top + 58, right: rightOffset }]}
+              >
                 {mod.tracks.map((t) => {
                   const sel = activeTracks[mod.key] === t.id;
                   return (
