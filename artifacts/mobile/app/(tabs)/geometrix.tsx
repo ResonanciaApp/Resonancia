@@ -42,10 +42,6 @@ const CARD_BORDER = "#161f33";
 /** Los 5 sonidos de fondo del menú (todos con archivo + imagen). */
 const SOUND_PICKS = ["lluvia", "bosque", "oceano", "fogata", "grillos"] as const;
 
-/** Tamaño del recuadro de vista previa en el panel de Ajustes. */
-const PREVIEW_BOX = 150;
-const PREVIEW_LAYER = PREVIEW_BOX * 0.96;
-
 /** Paleta de colores para personalizar cada geometría. */
 const PALETTE = [
   "#BE9650",
@@ -171,6 +167,8 @@ export default function GeometrixScreen() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Alto medido de una tarjeta de ajustes para limitar el desplegable.
   const [cardHeight, setCardHeight] = useState<number | null>(null);
+  // Alto real del sheet de ajustes, para anclar la vista previa justo encima.
+  const [sheetHeight, setSheetHeight] = useState(0);
 
   const playerRef = useRef<AudioPlayer | null>(null);
 
@@ -271,6 +269,13 @@ export default function GeometrixScreen() {
   const layerSize = canvasSide * 0.96;
   const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
   const soundImg = activeSound ? getSoundImage(activeSound) : undefined;
+
+  // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
+  // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
+  const previewFree = height - sheetHeight - insets.top - 12 - 36;
+  const previewSize = sheetHeight
+    ? Math.max(120, Math.min(width - 32, previewFree))
+    : 0;
 
   return (
     <View style={styles.root}>
@@ -408,31 +413,36 @@ export default function GeometrixScreen() {
 
         {/* Vista previa en vivo: flota arriba para no tapar los controles del
             sheet. Vive dentro del Modal, así se cierra junto con los ajustes. */}
-        {activeMetas.length > 0 && (
+        {activeMetas.length > 0 && previewSize > 0 && (
           <View
             pointerEvents="none"
             style={[
               styles.previewWrap,
-              // Anclar justo encima del sheet (68% del alto), no pegado al tope.
-              { top: Math.max(insets.top + 8, height * 0.32 - PREVIEW_BOX - 32) },
+              // Anclado justo encima del sheet real (medido), llenando el aire
+              // libre lo más posible.
+              { bottom: sheetHeight + 12 },
             ]}
           >
-            <View style={styles.previewBox}>
+            <Text style={styles.previewLabel}>Vista previa</Text>
+            <View style={[styles.previewBox, { width: previewSize, height: previewSize }]}>
               {activeMetas.map((g, i) => (
                 <GeometryLayer
                   key={g.id}
                   geo={g}
                   index={i}
-                  size={PREVIEW_LAYER}
+                  size={previewSize * 0.96}
                   settings={getSettings(g.id)}
                 />
               ))}
             </View>
-            <Text style={styles.previewLabel}>Vista previa</Text>
           </View>
         )}
 
         <View
+          onLayout={(e) => {
+            const h = e.nativeEvent.layout.height;
+            setSheetHeight((prev) => (prev === h ? prev : h));
+          }}
           style={[
             styles.sheet,
             { paddingBottom: insets.bottom + 16 },
@@ -731,8 +741,6 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   previewBox: {
-    width: PREVIEW_BOX,
-    height: PREVIEW_BOX,
     borderRadius: 18,
     overflow: "hidden",
     backgroundColor: "rgba(8,10,24,0.88)",
