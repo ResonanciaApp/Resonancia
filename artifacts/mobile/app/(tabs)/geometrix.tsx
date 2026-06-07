@@ -137,9 +137,19 @@ const PALETTE = [
 /** Ajustes editables por geometría. Los sliders guardan 0–1. */
 type GeoSettings = {
   color: string;
+  /** Giro on/off (toggle de cabecera). */
   rotate: boolean;
+  /** Velocidad de giro 0–1: 0 = muy lento, 1 = rápido. */
+  rotateSpeed: number;
   opacity: number;
+  /** Respiración on/off (toggle de cabecera). */
   breathe: boolean;
+  /** Intensidad de la respiración 0–1: 0 = sutil, 1 = profunda. */
+  breatheAmount: number;
+  /** Fundido cíclico: la geometría aparece y desaparece suavemente en bucle. */
+  fadeLoop: boolean;
+  /** Glow propio 0–1: halo aditivo del trazo (se suma al glow general). */
+  glow: number;
   /** Grosor de línea: 0 = 1px, 1 = ~6px. */
   thickness: number;
   /** Tamaño: 0 = más chica, 1 = tamaño completo. */
@@ -154,8 +164,12 @@ function defaultSettings(id: GeometryId): GeoSettings {
   return {
     color: meta?.color ?? colors.primary,
     rotate: true,
+    rotateSpeed: 0.5,
     opacity: 1,
     breathe: true,
+    breatheAmount: 0.5,
+    fadeLoop: false,
+    glow: 0,
     thickness: 0,
     scale: 1,
     zoom: 1,
@@ -221,11 +235,32 @@ function GeometryLayer({
 }) {
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
-  const { color, rotate, opacity, breathe, thickness, scale, zoom } = settings;
+  const fade = useSharedValue(1);
+  const {
+    color,
+    rotate,
+    rotateSpeed,
+    opacity,
+    breathe,
+    breatheAmount,
+    fadeLoop,
+    glow: geoGlow,
+    thickness,
+    scale,
+    zoom,
+  } = settings;
+
+  // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
+  // 0 → ~2× más lento, 0.5 → base, 1 → ~5× más rápido. Nunca se detiene aquí
+  // (el on/off lo maneja el toggle `rotate`).
+  const safeSpeed = Number.isFinite(rotateSpeed) ? Math.max(0, Math.min(1, rotateSpeed)) : 0.5;
+  const spinDuration = (38000 + index * 6000) / (0.5 + safeSpeed * 2.5);
 
   // El movimiento general (panel maestro) detiene las animaciones de TODAS las
   // capas a la vez. Al apagarlo se cancela y se vuelve al reposo (0deg / sin
   // pulso); al encenderlo arranca desde cero, así no hay salto al reanudar.
+  // El giro vuelve a sembrarse al cambiar la velocidad: como no se resetea
+  // rot.value, continúa desde su ángulo actual sin salto de posición.
   useEffect(() => {
     if (!motion) {
       cancelAnimation(rot);
@@ -235,7 +270,7 @@ function GeometryLayer({
       return;
     }
     rot.value = withRepeat(
-      withTiming(1, { duration: 38000 + index * 6000, easing: Easing.linear }),
+      withTiming(1, { duration: spinDuration, easing: Easing.linear }),
       -1,
       false,
     );
@@ -244,7 +279,22 @@ function GeometryLayer({
       -1,
       true,
     );
-  }, [index, pulse, rot, motion]);
+  }, [index, pulse, rot, motion, spinDuration]);
+
+  // Fundido cíclico: la capa baja a un mínimo tenue y vuelve, en bucle suave.
+  // Se congela junto con el movimiento general; al apagarlo vuelve a opacidad 1.
+  useEffect(() => {
+    if (fadeLoop && motion) {
+      fade.value = withRepeat(
+        withTiming(0.15, { duration: 4200 + index * 600, easing: Easing.inOut(Easing.ease) }),
+        -1,
+        true,
+      );
+    } else {
+      cancelAnimation(fade);
+      fade.value = withTiming(1, { duration: 400 });
+    }
+  }, [fadeLoop, motion, fade, index]);
 
   const dir = index % 2 === 0 ? 1 : -1;
   // Defensa ante estado corrupto/parcial: nunca dejar pasar NaN al worklet/SVG.
@@ -265,23 +315,35 @@ function GeometryLayer({
   // capas a la vez sin borrar el ajuste propio de cada una.
   const spin = rotate && motion;
   const breath = breathe && motion;
+  // Profundidad de la respiración: 0.04 (sutil) → 0.24 (profunda). Define cuánto
+  // se encoge en el valle del pulso (el pico siempre es 1.0).
+  const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
+  const breatheDepth = 0.04 + safeAmount * 0.2;
   const safeMaster = Number.isFinite(masterOpacity) ? masterOpacity : 1;
   const aStyle = useAnimatedStyle(() => ({
     transform: [
       { rotate: spin ? `${rot.value * 360 * dir}deg` : "0deg" },
-      // Respiración (0.9–1.0) × tamaño elegido × zoom de pellizco.
-      { scale: (breath ? 0.9 + pulse.value * 0.1 : 1) * userScale * zoomSV.value },
+      // Respiración (1 - profundidad … 1) × tamaño elegido × zoom de pellizco.
+      {
+        scale:
+          (breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1) *
+          userScale *
+          zoomSV.value,
+      },
     ],
-    // Opacidad propia × opacidad general (maestra).
-    opacity: opacity * safeMaster,
+    // Opacidad propia × general (maestra) × fundido cíclico.
+    opacity: opacity * safeMaster * fade.value,
   }));
 
   // Trazo base de 1px real: el viewBox es 0–100, así que 1px = 100 / size.
   // El grosor escala de 1px (thickness 0) a ~6px (thickness 1).
   const base1px = size > 0 ? 100 / size : 1;
   const sw = base1px * (1 + safeThickness * 5);
-  // Glow general: halo aditivo detrás del trazo (copias más anchas y tenues).
-  const safeGlow = Number.isFinite(glow) ? Math.max(0, Math.min(1, glow)) : 0;
+  // Glow efectivo: el propio de la capa se suma al general (panel maestro),
+  // acotado a 0–1. Halo aditivo detrás del trazo (copias más anchas y tenues).
+  const safeGeoGlow = Number.isFinite(geoGlow) ? Math.max(0, Math.min(1, geoGlow)) : 0;
+  const safeMasterGlow = Number.isFinite(glow) ? Math.max(0, Math.min(1, glow)) : 0;
+  const safeGlow = Math.min(1, safeGeoGlow + safeMasterGlow);
 
   return (
     <Animated.View style={[styles.layer, aStyle]} pointerEvents="none">
@@ -600,8 +662,10 @@ export default function GeometrixScreen() {
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
   const previewFree = height - sheetHeight - insets.top - 12 - 36;
+  // El panel por capa ahora tiene más controles (más alto), así que la vista
+  // previa se achica proporcionalmente para que no domine la pantalla.
   const previewSize = sheetHeight
-    ? Math.max(120, Math.min(width - 32, previewFree))
+    ? Math.max(96, Math.min((width - 32) * 0.62, previewFree * 0.78))
     : 0;
   // Vista previa del panel general (mismo cálculo, anclada a su propio sheet).
   const generalPreviewFree = height - generalSheetHeight - insets.top - 12 - 36;
@@ -1197,9 +1261,40 @@ export default function GeometrixScreen() {
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
+                  {/* Cabecera: ícono + título (blanco puro) + toggles giro/respiración */}
                   <View style={styles.geoCardHead}>
                     <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2.4} />
-                    <Text style={styles.geoCardName}>{g.name}</Text>
+                    <Text style={styles.geoCardName} numberOfLines={1}>
+                      {g.name}
+                    </Text>
+                    <View style={styles.headToggles}>
+                      <View style={styles.headToggle}>
+                        <Feather name="rotate-cw" size={15} color={colors.mutedForeground} />
+                        <Toggle
+                          value={s.rotate}
+                          onChange={(v) => updateSetting(g.id, "rotate", v)}
+                          color={s.color}
+                        />
+                      </View>
+                      <View style={styles.headToggle}>
+                        <Feather name="wind" size={15} color={colors.mutedForeground} />
+                        <Toggle
+                          value={s.breathe}
+                          onChange={(v) => updateSetting(g.id, "breathe", v)}
+                          color={s.color}
+                        />
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Fade in/out: la geometría aparece y desaparece en bucle */}
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Fade in/out</Text>
+                    <Toggle
+                      value={s.fadeLoop}
+                      onChange={(v) => updateSetting(g.id, "fadeLoop", v)}
+                      color={s.color}
+                    />
                   </View>
 
                   {/* Color */}
@@ -1223,55 +1318,55 @@ export default function GeometrixScreen() {
                     })}
                   </View>
 
-                  {/* Girar + Respiración (dos columnas) */}
-                  <View style={styles.twoCol}>
-                    <View style={[styles.col, styles.fieldRow]}>
-                      <Text style={styles.fieldLabel}>Girar</Text>
-                      <Toggle
-                        value={s.rotate}
-                        onChange={(v) => updateSetting(g.id, "rotate", v)}
-                        color={s.color}
-                      />
-                    </View>
-                    <View style={[styles.col, styles.fieldRow]}>
-                      <Text style={styles.fieldLabel}>Respiración</Text>
-                      <Toggle
-                        value={s.breathe}
-                        onChange={(v) => updateSetting(g.id, "breathe", v)}
-                        color={s.color}
-                      />
-                    </View>
+                  {/* Girar (velocidad) */}
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Girar</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.rotateSpeed * 100)}%</Text>
                   </View>
+                  <VolumeSlider
+                    value={s.rotateSpeed}
+                    onChange={(v) => updateSetting(g.id, "rotateSpeed", v)}
+                    color={s.color}
+                    trackColor="rgba(255,255,255,0.12)"
+                  />
 
-                  {/* Opacidad + Grosor (dos columnas) */}
-                  <View style={styles.twoCol}>
-                    <View style={styles.col}>
-                      <View style={styles.fieldRow}>
-                        <Text style={styles.fieldLabel}>Opacidad</Text>
-                        <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
-                      </View>
-                      <VolumeSlider
-                        value={s.opacity}
-                        onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
-                        color={s.color}
-                        trackColor="rgba(255,255,255,0.12)"
-                      />
-                    </View>
-                    <View style={styles.col}>
-                      <View style={styles.fieldRow}>
-                        <Text style={styles.fieldLabel}>Grosor</Text>
-                        <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}%</Text>
-                      </View>
-                      <VolumeSlider
-                        value={s.thickness}
-                        onChange={(v) => updateSetting(g.id, "thickness", v)}
-                        color={s.color}
-                        trackColor="rgba(255,255,255,0.12)"
-                      />
-                    </View>
+                  {/* Respiración (intensidad) */}
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Respiración</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.breatheAmount * 100)}%</Text>
                   </View>
+                  <VolumeSlider
+                    value={s.breatheAmount}
+                    onChange={(v) => updateSetting(g.id, "breatheAmount", v)}
+                    color={s.color}
+                    trackColor="rgba(255,255,255,0.12)"
+                  />
 
-                  {/* Tamaño (ancho completo) */}
+                  {/* Opacidad */}
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Opacidad</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
+                  </View>
+                  <VolumeSlider
+                    value={s.opacity}
+                    onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
+                    color={s.color}
+                    trackColor="rgba(255,255,255,0.12)"
+                  />
+
+                  {/* Grosor */}
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Grosor</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}%</Text>
+                  </View>
+                  <VolumeSlider
+                    value={s.thickness}
+                    onChange={(v) => updateSetting(g.id, "thickness", v)}
+                    color={s.color}
+                    trackColor="rgba(255,255,255,0.12)"
+                  />
+
+                  {/* Tamaño */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Tamaño</Text>
                     <Text style={styles.fieldValue}>{Math.round(s.scale * 100)}%</Text>
@@ -1279,6 +1374,18 @@ export default function GeometrixScreen() {
                   <VolumeSlider
                     value={s.scale}
                     onChange={(v) => updateSetting(g.id, "scale", v)}
+                    color={s.color}
+                    trackColor="rgba(255,255,255,0.12)"
+                  />
+
+                  {/* Glow propio */}
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Glow</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.glow * 100)}%</Text>
+                  </View>
+                  <VolumeSlider
+                    value={s.glow}
+                    onChange={(v) => updateSetting(g.id, "glow", v)}
                     color={s.color}
                     trackColor="rgba(255,255,255,0.12)"
                   />
@@ -1626,7 +1733,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   geoCardHead: { flexDirection: "row", alignItems: "center", gap: 10 },
-  geoCardName: { fontSize: 15, fontWeight: "700", color: colors.foreground },
+  geoCardName: { flex: 1, minWidth: 0, fontSize: 15, fontWeight: "700", color: "#FFFFFF" },
+  headToggles: { flexDirection: "row", alignItems: "center", gap: 14 },
+  headToggle: { flexDirection: "row", alignItems: "center", gap: 6 },
 
   fieldLabel: { fontSize: 13, fontWeight: "600", color: colors.mutedForeground },
   fieldRow: {
