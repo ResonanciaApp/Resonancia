@@ -830,18 +830,11 @@ export default function GeometrixScreen() {
                     {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
                     <Pressable
                       onPress={() => setSelectedId(g.id)}
-                      style={[
-                        styles.thumb,
-                        {
-                          borderColor:
-                            isSolo || isSelected ? s.color + "66" : s.color + "55",
-                        },
-                        isSelected && styles.thumbSelected,
-                      ]}
+                      style={[styles.thumb, { opacity: isSelected ? 1 : 0.4 }]}
                       accessibilityRole="button"
                       accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
                     >
-                      <SacredGlyph id={g.id} color={s.color} size={26} strokeWidth={2} />
+                      <SacredGlyph id={g.id} color={s.color} size={30} strokeWidth={2} />
                     </Pressable>
                     {/* Flechita: abre el menú de opciones. */}
                     <Pressable
@@ -1481,11 +1474,8 @@ const styles = StyleSheet.create({
   thumb: {
     width: 44,
     height: 44,
-    borderRadius: 22,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.02)",
   },
   thumbItem: {
     flexDirection: "row",
@@ -1495,9 +1485,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     alignItems: "center",
     justifyContent: "center",
-  },
-  thumbSelected: {
-    backgroundColor: "rgba(255,255,255,0.08)",
   },
   menuBackdrop: {
     flex: 1,
