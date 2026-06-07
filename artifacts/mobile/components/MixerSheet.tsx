@@ -412,6 +412,8 @@ export function MixerSheet() {
             </Pressable>
           </View>
 
+          <View style={[styles.headerDivider, { backgroundColor: WARM.separator }]} />
+
           <ScrollView
             style={styles.trackScroll}
             showsVerticalScrollIndicator={false}
@@ -676,6 +678,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -2 },
+  headerDivider: { height: 1, marginTop: 4, marginBottom: 14, marginHorizontal: -2 },
   thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.5)" },
   thumbRadius: { borderRadius: 11 },
   trackInfo: { flex: 1, justifyContent: "center" },
