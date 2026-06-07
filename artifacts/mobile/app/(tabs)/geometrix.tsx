@@ -852,7 +852,10 @@ export default function GeometrixScreen() {
 
                 {active.length === 0 && (
                   <View style={styles.empty} pointerEvents="none">
-                    <Animated.View entering={FadeIn.duration(900)}>
+                    <Animated.View
+                      entering={FadeIn.duration(2000)}
+                      style={styles.emptyLogoWrap}
+                    >
                       <Image
                         source={require("@/assets/images/geometrix/cubo-2.png")}
                         style={styles.emptyLogo}
@@ -1847,7 +1850,8 @@ const styles = StyleSheet.create({
   swatchOn: { borderColor: "#EDE1D3" },
 
   empty: { alignItems: "center", gap: 6 },
-  emptyLogo: { width: 60, height: 60, opacity: 0.9 },
+  emptyLogoWrap: { marginBottom: 10 },
+  emptyLogo: { width: 53, height: 53, opacity: 0.9 },
   emptyText: { fontSize: 14, fontWeight: "600", color: colors.foreground, marginTop: 4 },
   emptySub: { fontSize: 12, color: colors.mutedForeground },
 
