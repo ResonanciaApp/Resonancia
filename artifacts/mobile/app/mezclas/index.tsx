@@ -31,7 +31,6 @@ const FG      = "#EDE1D3";
 const MUTED   = "#7A8FA8";
 const GOLD    = "#BE9650";
 const BORDER  = "#1E2733";
-const TAB_ACTIVE_BG = "rgba(100,142,195,0.14)";
 const THUMB   = 44;
 const SHIFT   = 26;
 const MAX_STACK = 2;
@@ -53,12 +52,6 @@ function ZenStonesIcon({ color, size = 26 }: { color: string; size?: number }) {
       <Ellipse cx="14.8" cy="10.8" rx="3.8" ry="2.6" fill={color} opacity={0.75} />
     </Svg>
   );
-}
-
-function CategoryIcon({ id, color, size = 26 }: { id: MixCategory; color: string; size?: number }) {
-  if (id === "dormir")    return <MoonIcon color={color} size={size} />;
-  if (id === "motivarme") return <ZenStonesIcon color={color} size={size} />;
-  return <MaterialCommunityIcons name="image-filter-hdr" size={size} color={color} />;
 }
 
 // ── Stack de imágenes ────────────────────────────────────────────────
@@ -190,7 +183,7 @@ export default function MezclasIndexScreen() {
           </View>
         </View>
 
-        {/* ── Tab bar — 3 bloques iguales, ícono arriba ── */}
+        {/* ── Tab bar — subrayados ── */}
         <View style={styles.tabRow}>
           {MIX_CATEGORIES.map((cat) => {
             const sel = activeTab === cat.id;
@@ -198,21 +191,18 @@ export default function MezclasIndexScreen() {
               <Pressable
                 key={cat.id}
                 onPress={() => setActiveTab(cat.id)}
-                style={[styles.tabBlock, sel && styles.tabBlockActive]}
+                style={styles.tabBlock}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
-                <CategoryIcon id={cat.id} color={sel ? "#FFFFFF" : MUTED} size={26} />
-                <Text style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}>
+                <Text style={[styles.tabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
                   {cat.label}
                 </Text>
+                {sel && <View style={styles.tabUnderline} />}
               </Pressable>
             );
           })}
         </View>
-
-        {/* ── Separador ── */}
-        <View style={styles.separator} />
 
         {/* ── Lista de mezclas ── */}
         <ScrollView
@@ -265,22 +255,29 @@ const styles = StyleSheet.create({
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 2 },
 
   // Tab bar
-  tabRow: { flexDirection: "row", gap: 10, paddingHorizontal: 16, paddingBottom: 14 },
+  tabRow: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    paddingBottom: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: BORDER,
+    marginBottom: 16,
+  },
   tabBlock: {
     flex: 1,
-    flexDirection: "column",
     alignItems: "center",
-    gap: 8,
-    paddingTop: 14,
-    paddingBottom: 12,
-    borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    paddingTop: 10,
+    paddingBottom: 10,
+    gap: 4,
   },
-  tabBlockActive: { backgroundColor: TAB_ACTIVE_BG },
-  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
-
-  // Separador
-  separator: { height: 1, backgroundColor: BORDER, marginHorizontal: 16, marginBottom: 16 },
+  tabLabel: { fontSize: 15, letterSpacing: 0.1 },
+  tabUnderline: {
+    height: 2,
+    width: "60%",
+    backgroundColor: "#5F598C",
+    borderRadius: 1,
+    marginTop: 2,
+  },
 
   // Scroll
   scroll:        { flex: 1 },
