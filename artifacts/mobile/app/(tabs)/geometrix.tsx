@@ -1961,7 +1961,7 @@ export default function GeometrixScreen() {
                   return (
                     <Pressable
                       key={t.id}
-                      onPress={() => selectTrack(mod.key, t)}
+                      onPress={() => { selectTrack(mod.key, t); setOpenModule(null); }}
                       style={[styles.soundTile, sel && styles.soundTileActive]}
                       accessibilityRole="button"
                       accessibilityLabel={`${mod.label} ${t.id}`}
