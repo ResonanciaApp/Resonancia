@@ -354,6 +354,12 @@ function GeometryLayer({
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
   const fade = useSharedValue(1);
+  // Aparición suave: al montar la capa (al seleccionar la geometría) entra con
+  // fade in en lugar de aparecer de golpe.
+  const enter = useSharedValue(0);
+  useEffect(() => {
+    enter.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.ease) });
+  }, [enter]);
   const {
     color,
     gradientId,
@@ -459,8 +465,8 @@ function GeometryLayer({
           scale: breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1,
         },
       ],
-      // Opacidad propia × general (maestra) × fundido cíclico.
-      opacity: opacity * safeMaster * fade.value,
+      // Opacidad propia × general (maestra) × fundido cíclico × aparición.
+      opacity: opacity * safeMaster * fade.value * enter.value,
     };
   });
 
