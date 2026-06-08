@@ -1019,7 +1019,15 @@ export default function GeometrixScreen() {
         style={StyleSheet.absoluteFill}
       />
 
-      <View style={[styles.content, { paddingTop: insets.top + 12 }]}>
+      <View style={styles.content}>
+        {/* ── Zona superior con fondo de Inicio ── */}
+        <LinearGradient
+          colors={["#090D20", "#080A18", "#06070F"]}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={[styles.topPanel, { paddingTop: insets.top + 12 }]}
+        >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerText}>
@@ -1101,6 +1109,8 @@ export default function GeometrixScreen() {
             })}
           </View>
         </ScrollView>
+
+        </LinearGradient>
 
         {/* Línea divisora */}
         <View style={styles.divider} />
@@ -1989,7 +1999,8 @@ export default function GeometrixScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#06070F" },
-  content: { flex: 1, paddingHorizontal: 20 },
+  content:  { flex: 1, paddingHorizontal: 20 },
+  topPanel: { marginHorizontal: -20, paddingHorizontal: 20 },
 
   header: {
     flexDirection: "row",
