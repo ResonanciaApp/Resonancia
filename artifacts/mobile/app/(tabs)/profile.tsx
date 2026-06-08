@@ -33,6 +33,7 @@ import {
   useGetMyFollowCounts,
   getGetMyFollowCountsQueryKey,
 } from "@workspace/api-client-react";
+import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -438,6 +439,7 @@ export default function ProfileScreen() {
   );
 
   // ── Personalize sheet ─────────────────────────────────────────────────────
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const [personalizeVisible, setPersonalizeVisible] = useState(false);
   const [profileBgGradientId, setProfileBgGradientId] = useState<string | null>(null);
   const [profileBgCreationId, setProfileBgCreationId] = useState<string | null>(null);
@@ -798,6 +800,7 @@ export default function ProfileScreen() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
+        scrollEnabled={scrollEnabled}
       >
         {/* ── Header ── */}
         <View style={styles.header}>
@@ -956,38 +959,10 @@ export default function ProfileScreen() {
         )}
 
         {/* ── Accesos rápidos ── */}
-        {(() => {
-          const QUICK_ITEMS = [
-            { label: "Mis mezclas",   icon: "sliders"         as FeatherIconName, route: "/mezclas"              },
-            { label: "Mis Geometrix", icon: "triangle"        as FeatherIconName, route: "/geometrix-creaciones" },
-            { label: "Grupos",        icon: "users"           as FeatherIconName, route: "/grupos"               },
-            { label: "Carpetas",      icon: "folder"          as FeatherIconName, route: "/carpetas"             },
-            { label: "Playlists",     icon: "list"            as FeatherIconName, route: "/playlists"            },
-            { label: "Chats",         icon: "message-circle"  as FeatherIconName, route: "/amigos"               },
-          ];
-          return (
-            <View style={styles.quickGrid}>
-              {QUICK_ITEMS.map(({ label, icon, route }) => (
-                <Pressable
-                  key={label}
-                  onPress={() => router.push(route as never)}
-                  style={({ pressed }) => [
-                    styles.quickBlock,
-                    {
-                      backgroundColor: pressed ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
-                      transform: [{ scale: pressed ? 0.96 : 1 }],
-                    },
-                  ]}
-                >
-                  <Feather name={icon} size={22} color={colors.mutedForeground} />
-                  <Text style={[styles.quickLabel, { color: colors.mutedForeground }]} numberOfLines={1}>
-                    {label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          );
-        })()}
+        <QuickAccessGrid
+          onDragStart={() => setScrollEnabled(false)}
+          onDragEnd={()   => setScrollEnabled(true)}
+        />
 
 
         {/* ── Tu Progreso (racha card) ── */}
@@ -1589,28 +1564,6 @@ const styles = StyleSheet.create({
   fieldInput: { flex: 1, fontSize: 15, backgroundColor: "transparent" },
   saveBtn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 8 },
   saveBtnText: { fontSize: 16, fontWeight: "700" },
-
-  quickGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 20,
-  },
-  quickBlock: {
-    width: "31.5%",
-    height: 90,
-    borderRadius: 18,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  quickLabel: {
-    fontSize: 12,
-    fontWeight: "600",
-    textAlign: "center",
-    letterSpacing: 0.2,
-  },
 
   communityRow: { flexDirection: "row", gap: 8, marginBottom: 43 },
   communityCard: {
