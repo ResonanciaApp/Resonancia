@@ -889,7 +889,7 @@ export default function GeometrixScreen() {
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
   // reasignar la selección del pellizco a otra activa (o ninguna).
   useEffect(() => {
-    if (hiddenIds.length) setHiddenIds((prev) => prev.filter((id) => active.includes(id)));
+    setHiddenIds((prev) => prev.filter((id) => active.includes(id)));
     if (menuGeoId && !active.includes(menuGeoId)) setMenuGeoId(null);
     // Si se quita la geometría en edición, cerrar su panel por capa.
     if (settingsGeoId && !active.includes(settingsGeoId)) {
@@ -899,7 +899,7 @@ export default function GeometrixScreen() {
     if (selectedId && !active.includes(selectedId)) {
       setSelectedId(active.length ? active[active.length - 1] : null);
     }
-  }, [active, hiddenIds, menuGeoId, settingsGeoId, selectedId]);
+  }, [active, menuGeoId, settingsGeoId, selectedId]);
 
   // Geometría que responde al pellizco: la seleccionada, o la última activa.
   const pinchTargetId =
