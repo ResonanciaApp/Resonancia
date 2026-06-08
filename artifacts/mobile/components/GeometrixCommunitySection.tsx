@@ -1,12 +1,12 @@
 /**
  * Sección de Comunidad Geometrix para la pantalla de Inicio.
- * Muestra las últimas 4 composiciones compartidas (2 columnas × 2 filas),
- * con previews estáticas de color y glifos, y un enlace a la pantalla completa.
+ * Muestra las últimas 10 composiciones compartidas (2 columnas),
+ * con previews animables (play/pause por card) y enlace a la pantalla completa.
  */
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -16,6 +16,14 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
 import {
   getGetSharedGlyphsQueryKey,
@@ -40,13 +48,101 @@ const GRID_PAD = 20;
 const GRID_GAP = 12;
 const MAX_PREVIEW = 10;
 
-// ── Preview estática (sin animación, más liviana para el home) ────────────────
-function StaticGlyphPreview({
+// ── ¿Tiene movimiento animable? ──────────────────────────────────────────────
+function glyphHasMotion(glyph: SharedGlyph): boolean {
+  if (!glyph.recipe.master.motion) return false;
+  return glyph.recipe.active.some((id) => {
+    const s = glyph.recipe.settings[id] as GeoSettings | undefined;
+    return !!s && (s.rotate || s.rotateLeft || s.breathe || s.fadeLoop);
+  });
+}
+
+// ── Capa animable (mismo patrón que geometrix-comunidad) ─────────────────────
+function GlyphLayer({
+  id,
+  settings,
+  masterOpacity,
+  motion,
+  index,
+  glyphSize,
+  playing,
+}: {
+  id: GeometryId;
+  settings: GeoSettings;
+  masterOpacity: number;
+  motion: boolean;
+  index: number;
+  glyphSize: number;
+  playing: boolean;
+}) {
+  const rot = useSharedValue(0);
+  const pulse = useSharedValue(0);
+  const fade = useSharedValue(1);
+
+  const { rotate, rotateLeft, rotateSpeed, breathe, breatheAmount, fadeLoop } = settings;
+  const active = playing && motion;
+  const spin = (rotate || rotateLeft) && active;
+  const breath = breathe && active;
+  const dir = rotateLeft ? -1 : 1;
+
+  const safeSpeed = Number.isFinite(rotateSpeed) ? Math.max(0, Math.min(1, rotateSpeed)) : 0.5;
+  const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
+  const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
+  const breatheDepth = 0.04 + safeAmount * 0.2;
+  const restAngle = Number.isFinite(settings.manualAngle) ? settings.manualAngle : 0;
+
+  useEffect(() => {
+    if (!spin) { cancelAnimation(rot); rot.value = 0; return; }
+    rot.value = withRepeat(withTiming(1, { duration: spinDuration, easing: Easing.linear }), -1, false);
+    return () => cancelAnimation(rot);
+  }, [spin, spinDuration, rot]);
+
+  useEffect(() => {
+    if (!breath) { cancelAnimation(pulse); pulse.value = 0; return; }
+    pulse.value = withRepeat(withTiming(1, { duration: 6000 + index * 800, easing: Easing.inOut(Easing.ease) }), -1, true);
+    return () => cancelAnimation(pulse);
+  }, [breath, index, pulse]);
+
+  useEffect(() => {
+    if (fadeLoop && active) {
+      fade.value = withRepeat(withTiming(0.15, { duration: 4200 + index * 600, easing: Easing.inOut(Easing.ease) }), -1, true);
+      return () => cancelAnimation(fade);
+    }
+    cancelAnimation(fade);
+    fade.value = withTiming(1, { duration: 400 });
+  }, [fadeLoop, active, index, fade]);
+
+  const baseOpacity = Math.max(0.15, settings.opacity * masterOpacity);
+  const aStyle = useAnimatedStyle(() => ({
+    transform: [
+      { rotate: spin ? `${rot.value * 360 * dir}deg` : `${restAngle}deg` },
+      { scale: breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1 },
+    ],
+    opacity: baseOpacity * fade.value,
+  }));
+
+  return (
+    <Animated.View style={[StyleSheet.absoluteFill, styles.layerCenter, aStyle]} pointerEvents="none">
+      <SacredGlyph
+        id={id}
+        color={settings.color ?? "#BE9650"}
+        gradient={gradientColors(settings.gradientId ?? null)}
+        size={glyphSize}
+        strokeWidth={1 + (settings.thickness ?? 0.5) * 2}
+      />
+    </Animated.View>
+  );
+}
+
+// ── Preview (estática cuando no está en play, animada cuando sí) ─────────────
+function GlyphPreview({
   glyph,
   previewH,
+  playing,
 }: {
   glyph: SharedGlyph;
   previewH: number;
+  playing: boolean;
 }) {
   const { recipe } = glyph;
   const bgFactor = brightnessFactor(recipe.master.bgBrightness);
@@ -66,33 +162,22 @@ function StaticGlyphPreview({
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
-      {recipe.active.map((id) => {
+      {recipe.active.map((id, i) => {
         const geoId = id as GeometryId;
         const s = recipe.settings[id] as GeoSettings | undefined;
         if (!s) return null;
         if (!GEOMETRIES.find((g) => g.id === geoId)) return null;
-        const angle = Number.isFinite(s.manualAngle) ? s.manualAngle : 0;
         return (
-          <View
+          <GlyphLayer
             key={id}
-            style={[StyleSheet.absoluteFill, styles.layerCenter]}
-            pointerEvents="none"
-          >
-            <View
-              style={{
-                opacity: Math.max(0.15, s.opacity * recipe.master.opacity),
-                transform: [{ rotate: `${angle}deg` }],
-              }}
-            >
-              <SacredGlyph
-                id={geoId}
-                color={s.color ?? "#BE9650"}
-                gradient={gradientColors(s.gradientId ?? null)}
-                size={glyphSize}
-                strokeWidth={1 + (s.thickness ?? 0.5) * 2}
-              />
-            </View>
-          </View>
+            id={geoId}
+            settings={s}
+            masterOpacity={recipe.master.opacity}
+            motion={recipe.master.motion}
+            index={i}
+            glyphSize={glyphSize}
+            playing={playing}
+          />
         );
       })}
     </>
@@ -100,9 +185,20 @@ function StaticGlyphPreview({
 }
 
 // ── Card individual ───────────────────────────────────────────────────────────
-function GlyphCard({ glyph, cardW }: { glyph: SharedGlyph; cardW: number }) {
+function GlyphCard({
+  glyph,
+  cardW,
+  playing,
+  onTogglePlay,
+}: {
+  glyph: SharedGlyph;
+  cardW: number;
+  playing: boolean;
+  onTogglePlay: () => void;
+}) {
   const colors = useColors();
   const previewH = cardW * 0.9;
+  const canPlay = glyphHasMotion(glyph);
 
   return (
     <Pressable
@@ -111,7 +207,23 @@ function GlyphCard({ glyph, cardW }: { glyph: SharedGlyph; cardW: number }) {
     >
       {/* Preview */}
       <View style={[styles.preview, { height: previewH }]}>
-        <StaticGlyphPreview glyph={glyph} previewH={previewH} />
+        <GlyphPreview glyph={glyph} previewH={previewH} playing={playing} />
+
+        {/* Botón play/pause — solo si tiene movimiento */}
+        {canPlay && (
+          <Pressable
+            onPress={(e) => { e.stopPropagation(); onTogglePlay(); }}
+            hitSlop={8}
+            style={styles.playBtn}
+          >
+            <Feather
+              name={playing ? "pause" : "play"}
+              size={13}
+              color="#EDE1D3"
+              style={playing ? undefined : { marginLeft: 1 }}
+            />
+          </Pressable>
+        )}
       </View>
 
       {/* Info */}
@@ -140,6 +252,7 @@ export function GeometrixCommunitySection() {
   const colors = useColors();
   const { width } = useWindowDimensions();
   const cardW = (width - GRID_PAD * 2 - GRID_GAP) / 2;
+  const [playingId, setPlayingId] = useState<number | null>(null);
 
   const { data, isLoading } = useGetSharedGlyphs(
     { page: 1 },
@@ -170,7 +283,13 @@ export function GeometrixCommunitySection() {
       {!isLoading && glyphs.length > 0 && (
         <View style={[styles.grid, { gap: GRID_GAP }]}>
           {glyphs.map((g) => (
-            <GlyphCard key={g.id} glyph={g} cardW={cardW} />
+            <GlyphCard
+              key={g.id}
+              glyph={g}
+              cardW={cardW}
+              playing={playingId === g.id}
+              onTogglePlay={() => setPlayingId((prev) => (prev === g.id ? null : g.id))}
+            />
           ))}
         </View>
       )}
@@ -225,6 +344,20 @@ const styles = StyleSheet.create({
   },
   preview: { width: "100%", overflow: "hidden" },
   layerCenter: { alignItems: "center", justifyContent: "center" },
+
+  playBtn: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
   info: {
     flexDirection: "row",
