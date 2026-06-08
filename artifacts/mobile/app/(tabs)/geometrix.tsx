@@ -1183,7 +1183,7 @@ export default function GeometrixScreen() {
                 accessibilityLabel="Borrar lienzo"
                 hitSlop={8}
               >
-                <Text style={styles.clearText}>Borrar lienzo</Text>
+                <Feather name="trash-2" size={18} color={colors.mutedForeground} />
               </Pressable>
             </Animated.View>
           )}
@@ -1982,16 +1982,10 @@ const styles = StyleSheet.create({
     zIndex: 6,
   },
   clearBtn: {
+    width: 40,
     height: 32,
+    alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 4,
-  },
-  clearText: {
-    color: colors.mutedForeground,
-    fontSize: 13,
-    fontWeight: "500",
-    letterSpacing: 0.3,
-    opacity: 0.75,
   },
   chevronBtn: {
     width: 40,
