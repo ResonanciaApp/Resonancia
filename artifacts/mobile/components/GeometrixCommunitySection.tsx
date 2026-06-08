@@ -232,9 +232,17 @@ function GlyphCard({
           <Text style={[styles.cardName, { color: colors.foreground }]} numberOfLines={1}>
             {glyph.name}
           </Text>
-          <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {glyph.author.displayName ?? glyph.author.username}
-          </Text>
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              router.push({ pathname: "/usuario/[id]", params: { id: glyph.author.id } } as never);
+            }}
+            hitSlop={6}
+          >
+            <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+              {glyph.author.displayName ?? glyph.author.username}
+            </Text>
+          </Pressable>
         </View>
         {glyph.likes > 0 && (
           <View style={styles.likes}>
