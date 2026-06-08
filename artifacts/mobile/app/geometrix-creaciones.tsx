@@ -8,8 +8,10 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Modal,
   Platform,
   Pressable,
@@ -49,6 +51,10 @@ import {
 } from "@/data/geometrix-creations";
 
 const DANGER = "#ef4444";
+
+// Tamaño en árbol del render oculto que se captura como póster. La captura se
+// reescala a 1080×1080 (los SVG escalan nítidos).
+const EXPORT_SIZE = 540;
 
 // Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
 // Oscurecido un 90% (se conserva el 10% del brillo) sobre el degradado original
@@ -209,6 +215,15 @@ export default function GeometrixCreacionesScreen() {
   const [openingFor, setOpeningFor] = useState<GeometrixCreation | null>(null);
   // Card cuya preview está reproduciendo el movimiento en vivo (solo una a la vez).
   const [playingId, setPlayingId] = useState<string | null>(null);
+  // Exportar como imagen (póster): elección de formato + render oculto a capturar.
+  const [exportChooser, setExportChooser] = useState<GeometrixCreation | null>(null);
+  const [exportReq, setExportReq] = useState<{
+    creation: GeometrixCreation;
+    transparent: boolean;
+  } | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const exportRef = useRef<View>(null);
+  const capturingRef = useRef(false);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -237,9 +252,128 @@ export default function GeometrixCreacionesScreen() {
     setActionsFor(c);
   }
 
+  // Guarda el archivo capturado en la galería; si no hay permiso o módulo,
+  // cae al menú de compartir (incluye "Guardar imagen").
+  async function saveImage(uri: string) {
+    try {
+      const MediaLibrary = await import("expo-media-library");
+      const perm = await MediaLibrary.requestPermissionsAsync();
+      if (perm.granted) {
+        await MediaLibrary.saveToLibraryAsync(uri);
+        Alert.alert("Listo", "La imagen se guardó en tu galería.");
+        return;
+      }
+    } catch {
+      // sin módulo nativo / permiso: continuar con compartir
+    }
+    try {
+      const Sharing = await import("expo-sharing");
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+        return;
+      }
+    } catch {
+      // ignore
+    }
+    Alert.alert(
+      "No se pudo descargar",
+      "Activá el permiso de fotos para guardar la imagen en tu galería.",
+    );
+  }
+
+  // Captura del render oculto. Se dispara desde el onLayout del lienzo (cuando
+  // ya está montado y medido), no con un timeout fijo (race en dispositivos
+  // lentos). Un cerrojo evita capturas solapadas (onLayout puede repetirse).
+  async function runCapture() {
+    if (capturingRef.current || !exportReq) return;
+    const node = exportRef.current;
+    if (!node) return;
+    capturingRef.current = true;
+    try {
+      // Dos frames para que SVG/Animated terminen de pintar antes de capturar.
+      await new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      );
+      const { captureRef } = await import("react-native-view-shot");
+      const uri = await captureRef(node, {
+        format: exportReq.transparent ? "png" : "jpg",
+        quality: 1,
+        width: 1080,
+        height: 1080,
+      });
+      await saveImage(uri);
+    } catch {
+      Alert.alert(
+        "No se pudo generar la imagen",
+        "Volvé a intentar en un momento. Si el problema sigue, actualizá la app a la última versión.",
+      );
+    } finally {
+      capturingRef.current = false;
+      setExportReq(null);
+      setExporting(false);
+    }
+  }
+
+  function startExport(c: GeometrixCreation, transparent: boolean) {
+    setExportChooser(null);
+    setExporting(true);
+    setExportReq({ creation: c, transparent });
+  }
+
   return (
     <View style={[styles.root, { backgroundColor: "#010102" }]}>
       <StatusBar barStyle="light-content" />
+
+      {/* Render oculto que se captura como póster. Queda detrás del degradado
+          opaco de fondo (no visible) pero montado y medible para captureRef.
+          PNG → fondo transparente (sin gradiente); JPG → con fondo. */}
+      {exportReq && (
+        <View pointerEvents="none" style={styles.exportHidden}>
+          <View
+            ref={exportRef}
+            collapsable={false}
+            style={styles.exportCanvas}
+            onLayout={runCapture}
+          >
+            {!exportReq.transparent &&
+              (() => {
+                const c = exportReq.creation;
+                const bgFactor = brightnessFactor(c.master.bgBrightness);
+                const bgGrad = bgGradientColors(c.master.bgGradientId);
+                const bgColors = c.master.bgColor
+                  ? ([
+                      scaleHex(c.master.bgColor, bgFactor),
+                      scaleHex(c.master.bgColor, bgFactor),
+                    ] as const)
+                  : scaleColors(bgGrad ?? HOME_GRADIENT, bgFactor);
+                return (
+                  <LinearGradient
+                    colors={bgColors as readonly [string, string, ...string[]]}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                );
+              })()}
+            {exportReq.creation.active.map((id, i) => {
+              const s = exportReq.creation.settings[id];
+              if (!s) return null;
+              return (
+                <PreviewGlyph
+                  key={id}
+                  id={id}
+                  index={i}
+                  settings={s}
+                  masterOpacity={exportReq.creation.master.opacity}
+                  motion={false}
+                  size={EXPORT_SIZE * 0.78}
+                  playing={false}
+                />
+              );
+            })}
+          </View>
+        </View>
+      )}
       <LinearGradient
         colors={CREACIONES_BG}
         start={{ x: 0.1, y: 0 }}
@@ -474,6 +608,20 @@ export default function GeometrixCreacionesScreen() {
               onPress={() => {
                 const c = actionsFor;
                 setActionsFor(null);
+                if (c) setExportChooser(c);
+              }}
+              accessibilityRole="button"
+            >
+              <View style={styles.sheetRowIcon}>
+                <Feather name="download" size={17} color={colors.primary} />
+              </View>
+              <Text style={styles.sheetRowText}>Descargar</Text>
+            </Pressable>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => {
+                const c = actionsFor;
+                setActionsFor(null);
                 if (c) setDeletingFor(c);
               }}
               accessibilityRole="button"
@@ -493,6 +641,73 @@ export default function GeometrixCreacionesScreen() {
           </Pressable>
         </Pressable>
       </Modal>
+
+      {/* Elección de formato para descargar la composición como imagen. */}
+      <Modal
+        visible={!!exportChooser}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setExportChooser(null)}
+      >
+        <Pressable style={styles.sheetBackdrop} onPress={() => setExportChooser(null)}>
+          <Pressable style={styles.sheetCard} onPress={() => {}}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            <Text style={styles.sheetTitle} numberOfLines={1}>
+              Descargar imagen
+            </Text>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => exportChooser && startExport(exportChooser, false)}
+              accessibilityRole="button"
+            >
+              <View style={styles.sheetRowIcon}>
+                <Feather name="image" size={17} color={colors.primary} />
+              </View>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={styles.sheetRowText}>JPG</Text>
+                <Text style={styles.sheetRowSub}>Imagen con fondo</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => exportChooser && startExport(exportChooser, true)}
+              accessibilityRole="button"
+            >
+              <View style={styles.sheetRowIcon}>
+                <Feather name="layers" size={17} color={colors.primary} />
+              </View>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={styles.sheetRowText}>PNG</Text>
+                <Text style={styles.sheetRowSub}>Fondo transparente</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              style={styles.sheetCancel}
+              onPress={() => setExportChooser(null)}
+              accessibilityRole="button"
+            >
+              <Text style={styles.sheetCancelText}>Cancelar</Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Overlay mientras se genera el póster. */}
+      {exporting && (
+        <View style={styles.exportOverlay} pointerEvents="auto">
+          <View style={styles.exportToast}>
+            <ActivityIndicator color={colors.primary} />
+            <Text style={styles.exportToastText}>Generando imagen…</Text>
+          </View>
+        </View>
+      )}
 
       {/* Menú al tocar la imagen de la creación (Editar/Play) — estilo temático. */}
       <Modal
@@ -747,6 +962,40 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
   },
   sheetRowText: { fontSize: 15, fontWeight: "600", color: "#EDE1D3" },
+  sheetRowSub: { fontSize: 12, color: "#7A8FA8", marginTop: 1 },
+  exportHidden: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    width: EXPORT_SIZE,
+    height: EXPORT_SIZE,
+  },
+  exportCanvas: {
+    width: EXPORT_SIZE,
+    height: EXPORT_SIZE,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    backgroundColor: "transparent",
+  },
+  exportOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  exportToast: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 22,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#151c3a",
+    backgroundColor: "#06070F",
+  },
+  exportToastText: { fontSize: 14, fontWeight: "600", color: "#EDE1D3" },
   sheetCancel: {
     marginTop: 6,
     paddingVertical: 12,

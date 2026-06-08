@@ -71,10 +71,13 @@
     "expo-dev-client": "~6.0.21",
     "expo-document-picker": "~14.0.8",
     "expo-file-system": "^19.0.23",
+    "expo-media-library": "~18.2.1",
     "expo-notifications": "^0.32.17",
+    "expo-sharing": "~14.0.8",
     "expo-store-review": "^9.0.9",
     "expo-updates": "~29.0.18",
     "expo-video": "~3.0.16",
-    "react-native-purchases": "^10.2.0"
+    "react-native-purchases": "^10.2.0",
+    "react-native-view-shot": "4.0.3"
   }
 }
