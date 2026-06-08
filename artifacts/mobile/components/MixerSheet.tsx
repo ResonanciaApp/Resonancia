@@ -474,7 +474,7 @@ export function MixerSheet() {
               accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
             >
               <View style={styles.footerHeartCircle}>
-                <Feather name="clock" size={23} color="#FFFFFF" strokeWidth={1.5} />
+                <Feather name="clock" size={28} color="#FFFFFF" strokeWidth={1.5} />
               </View>
               <Text style={styles.footerLabel}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
@@ -490,7 +490,7 @@ export function MixerSheet() {
               <View style={styles.footerPlayCircle}>
                 <MaterialCommunityIcons
                   name={isPlaying ? "pause" : "play"}
-                  size={65}
+                  size={70}
                   color="#FFFFFF"
                 />
               </View>
@@ -500,7 +500,7 @@ export function MixerSheet() {
             <View style={styles.footerSide}>
               <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal("new")}>
                 <View style={styles.footerHeartCircle}>
-                  <MaterialCommunityIcons name="heart" size={23} color="#FFFFFF" />
+                  <MaterialCommunityIcons name="heart" size={28} color="#FFFFFF" />
                 </View>
                 <Text style={styles.footerLabel}>Guardar</Text>
               </Pressable>
@@ -699,9 +699,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   footerPlayCircle: {
-    width: 85,
-    height: 85,
-    borderRadius: 43,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     backgroundColor: "rgba(255,255,255,0.12)",
     alignItems: "center",
     justifyContent: "center",
@@ -718,9 +718,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   footerHeartCircle: {
-    width: 43,
-    height: 43,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: "rgba(255,255,255,0.12)",
     alignItems: "center",
     justifyContent: "center",
