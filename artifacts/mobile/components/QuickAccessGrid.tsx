@@ -193,7 +193,7 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
               {[0,1,2,3,4,5].map((i) => (
                 <View
                   key={i}
-                  style={[styles.dot, { backgroundColor: colors.mutedForeground + "66" }]}
+                  style={[styles.dot, { backgroundColor: colors.mutedForeground + "29" }]}
                 />
               ))}
             </View>
