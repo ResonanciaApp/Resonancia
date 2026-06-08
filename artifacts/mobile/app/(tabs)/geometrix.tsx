@@ -1357,7 +1357,23 @@ export default function GeometrixScreen() {
           />
           <View style={styles.sheetHandle} />
           <View style={styles.sheetHeader}>
-            <Text style={styles.sheetTitle}>Ajustes</Text>
+            <View style={styles.sheetHeaderLeft}>
+              <Text style={styles.sheetTitle}>Ajustes</Text>
+              {settingsGeo && (
+                <>
+                  <View style={styles.sheetHeaderVDivider} />
+                  <SacredGlyph
+                    id={settingsGeo.id}
+                    color={getSettings(settingsGeo.id).color}
+                    size={22}
+                    strokeWidth={2.4}
+                  />
+                  <Text style={styles.geoCardName} numberOfLines={1}>
+                    {settingsGeo.name}
+                  </Text>
+                </>
+              )}
+            </View>
             <Pressable
               onPress={() => {
                 setSettingsOpen(false);
@@ -1390,16 +1406,6 @@ export default function GeometrixScreen() {
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
-                  {/* Cabecera: ícono + título (texto simple, sin píldora) */}
-                  <View style={styles.geoCardHead}>
-                    <SacredGlyph id={g.id} color={s.color} size={24} strokeWidth={2.4} />
-                    <View style={styles.geoNamePill}>
-                      <Text style={styles.geoCardName} numberOfLines={1}>
-                        {g.name}
-                      </Text>
-                    </View>
-                  </View>
-
                   {/* Toggles (on/off) en una sola fila: etiqueta arriba, switch abajo */}
                   <View style={styles.toggleRow}>
                     <View style={styles.toggleRowItem}>
@@ -1905,6 +1911,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10,
   },
+  sheetHeaderLeft: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 9,
+  },
+  sheetHeaderVDivider: {
+    width: 1,
+    height: 18,
+    backgroundColor: "rgba(255,255,255,0.18)",
+  },
   sheetHeaderDivider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.08)",
@@ -1917,11 +1934,13 @@ const styles = StyleSheet.create({
   geoCard: {
     gap: 8,
   },
-  geoCardHead: { flexDirection: "row", alignItems: "center", gap: 8 },
-  geoNamePill: {
+  geoCardName: {
     flexShrink: 1,
+    minWidth: 0,
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
-  geoCardName: { minWidth: 0, fontSize: 13, fontWeight: "700", color: "#FFFFFF" },
   toggleRow: {
     flexDirection: "row",
     alignItems: "flex-start",
