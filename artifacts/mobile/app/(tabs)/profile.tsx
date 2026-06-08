@@ -342,10 +342,18 @@ export default function ProfileScreen() {
   const selectGradient = async (id: string | null) => {
     setProfileBgGradientId(id);
     await AsyncStorage.setItem("@profile_bg_gradient", id ?? "null");
+    if (id !== null) {
+      setProfileBgCreationId(null);
+      await AsyncStorage.setItem("@profile_bg_creation", "null");
+    }
   };
   const selectCreation = async (id: string | null) => {
     setProfileBgCreationId(id);
     await AsyncStorage.setItem("@profile_bg_creation", id ?? "null");
+    if (id !== null) {
+      setProfileBgGradientId(null);
+      await AsyncStorage.setItem("@profile_bg_gradient", "null");
+    }
   };
   const saveReminder = async (enabled: boolean, hour: number, minute: number) => {
     setReminderEnabled(enabled);
