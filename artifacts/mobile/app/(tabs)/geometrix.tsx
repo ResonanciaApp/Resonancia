@@ -242,6 +242,9 @@ type GeoSettings = {
   /** Zoom de pellizco (pinch): multiplicador libre, 1 = sin zoom. Permite
       pasar los márgenes (efecto wallpaper). */
   zoom: number;
+  /** Ángulo manual en grados (gesto de rotación con dos dedos). Solo se aplica
+      cuando el giro automático está apagado (ni derecha ni izquierda). */
+  manualAngle: number;
 };
 
 function defaultSettings(id: GeometryId): GeoSettings {
@@ -262,6 +265,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     thickness: 0,
     scale: 1,
     zoom: 1,
+    manualAngle: 0,
   };
 }
 
@@ -323,6 +327,7 @@ function GeometryLayer({
   size,
   settings,
   liveZoom,
+  liveAngle,
   masterOpacity = 1,
   motion = true,
   glow = 0,
@@ -335,6 +340,10 @@ function GeometryLayer({
       y REDIBUJA el SVG a ese tamaño en tiempo real (lo usa solo la geometría
       seleccionada en el lienzo). No se aplica por transform → trazo nítido. */
   liveZoom?: number;
+  /** Ángulo en vivo (gesto de rotación) en grados: si se pasa, manda sobre
+      settings.manualAngle. Solo lo usa la geometría seleccionada en el lienzo y
+      solo tiene efecto cuando el giro automático está apagado. */
+  liveAngle?: number;
   /** Opacidad maestra (panel general): multiplica la de esta capa. */
   masterOpacity?: number;
   /** Movimiento global (panel general): si es false, congela giro + respiración. */
@@ -359,6 +368,7 @@ function GeometryLayer({
     thickness,
     scale,
     zoom,
+    manualAngle,
   } = settings;
   const grad = gradientColors(gradientId);
 
@@ -435,10 +445,14 @@ function GeometryLayer({
   const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
   const breatheDepth = 0.04 + safeAmount * 0.2;
   const safeMaster = Number.isFinite(masterOpacity) ? masterOpacity : 1;
+  // Ángulo manual (gesto de dos dedos): solo aplica cuando el giro automático
+  // está apagado. En vivo manda `liveAngle`; en reposo el confirmado en settings.
+  const committedAngle = Number.isFinite(manualAngle) ? manualAngle : 0;
+  const effAngle = liveAngle != null && Number.isFinite(liveAngle) ? liveAngle : committedAngle;
   const aStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { rotate: spin ? `${rot.value * 360 * dir}deg` : "0deg" },
+        { rotate: spin ? `${rot.value * 360 * dir}deg` : `${effAngle}deg` },
         // Respiración (1 - profundidad … 1). El zoom NO viaja en el transform:
         // se aplica redibujando el SVG (effectiveSize) para que quede nítido.
         {
@@ -555,6 +569,13 @@ export default function GeometrixScreen() {
   // cada frame para que el trazo quede nítido durante el pellizco y no haya
   // parpadeo al soltar. null = no se está pellizcando (usa el confirmado).
   const [livePinchNum, setLivePinchNum] = useState<number | null>(null);
+  // Rotación manual en vivo (gesto de dos dedos). El ángulo en curso se lleva en
+  // grados; se confirma a settings al soltar. null = no se está rotando.
+  const liveRot = useSharedValue(0);
+  const rotStart = useSharedValue(0);
+  // true cuando el gesto terminó con éxito (onEnd); permite revertir en cancelación.
+  const rotSucceeded = useSharedValue(false);
+  const [liveRotNum, setLiveRotNum] = useState<number | null>(null);
 
   // Un reproductor por módulo (reproducen de forma independiente).
   const playersRef = useRef<Record<string, AudioPlayer | null>>({});
@@ -701,6 +722,14 @@ export default function GeometrixScreen() {
     [updateSetting],
   );
 
+  // Confirmar el ángulo manual del gesto de rotación a settings (JS thread).
+  // Saneado final: nunca guardar NaN en settings.
+  const commitAngle = useCallback(
+    (id: GeometryId, deg: number) =>
+      updateSetting(id, "manualAngle", Number.isFinite(deg) ? deg : 0),
+    [updateSetting],
+  );
+
   // Guardar la composición actual (placeholder hasta tener persistencia real).
   const saveComposition = useCallback(() => {
     Alert.alert(
@@ -795,6 +824,52 @@ export default function GeometrixScreen() {
     .onFinalize(() => {
       runOnJS(setLivePinchNum)(null);
     });
+
+  // Solo se permite rotar con los dedos cuando el objetivo NO tiene giro
+  // automático activado (ni derecha ni izquierda). Con giro activo, el gesto
+  // queda deshabilitado.
+  const rotTargetSettings = pinchTargetId ? getSettings(pinchTargetId) : null;
+  const canManualRotate =
+    !!rotTargetSettings && !rotTargetSettings.rotate && !rotTargetSettings.rotateLeft;
+
+  // Mantener el ángulo en vivo sincronizado con el confirmado del objetivo
+  // (al cambiar de geometría o tras confirmar una rotación).
+  useEffect(() => {
+    liveRot.value = pinchTargetId ? getSettings(pinchTargetId).manualAngle : 0;
+  }, [pinchTargetId, getSettings, liveRot]);
+
+  // Gesto de rotación con dos dedos: gira el objetivo en tiempo real. Se confirma
+  // a settings al soltar. Deshabilitado cuando hay giro automático.
+  const rotationGesture = Gesture.Rotation()
+    .enabled(canManualRotate)
+    .onStart(() => {
+      rotStart.value = liveRot.value;
+      rotSucceeded.value = false;
+    })
+    .onUpdate((e) => {
+      // e.rotation viene en radianes; el ángulo manual se guarda en grados.
+      const deg = rotStart.value + (e.rotation * 180) / Math.PI;
+      // Defensa ante valores corruptos: nunca propagar NaN al transform/settings.
+      if (!Number.isFinite(deg)) return;
+      liveRot.value = deg;
+      runOnJS(setLiveRotNum)(deg);
+    })
+    .onEnd(() => {
+      rotSucceeded.value = true;
+      if (pinchTargetId && Number.isFinite(liveRot.value)) {
+        runOnJS(commitAngle)(pinchTargetId, liveRot.value);
+      }
+    })
+    // SIEMPRE corre (éxito o cancelación). Si el gesto se canceló sin confirmar,
+    // revierte al ángulo de partida para no acumular un valor sin guardar en el
+    // próximo gesto. Limpia el ángulo en vivo en ambos casos.
+    .onFinalize(() => {
+      if (!rotSucceeded.value) liveRot.value = rotStart.value;
+      runOnJS(setLiveRotNum)(null);
+    });
+
+  // Pellizco (zoom) y rotación corren a la vez sobre el objetivo seleccionado.
+  const canvasGesture = Gesture.Simultaneous(pinchGesture, rotationGesture);
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
@@ -968,7 +1043,7 @@ export default function GeometrixScreen() {
             }}
           >
             {canvasSide > 0 && (
-              <GestureDetector gesture={pinchGesture}>
+              <GestureDetector gesture={canvasGesture}>
                 <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
                 {layerSize > 0 &&
                   visibleMetas.map((g, i) => (
@@ -981,6 +1056,11 @@ export default function GeometrixScreen() {
                       liveZoom={
                         g.id === pinchTargetId && livePinchNum != null
                           ? livePinchNum
+                          : undefined
+                      }
+                      liveAngle={
+                        g.id === pinchTargetId && liveRotNum != null
+                          ? liveRotNum
                           : undefined
                       }
                       masterOpacity={master.opacity}
