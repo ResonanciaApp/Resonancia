@@ -393,7 +393,7 @@ export default function MiMusicaScreen() {
               >
                 <Text
                   numberOfLines={1}
-                  style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}
+                  style={[styles.tabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "400" }]}
                 >
                   {tab.label}
                 </Text>
@@ -436,7 +436,7 @@ export default function MiMusicaScreen() {
                           style={{ marginBottom: 5 }}
                         />
                       )}
-                      <Text style={[styles.subTabText, { color: "#FFFFFF" }]}>
+                      <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED }]}>
                         {SUB_TAB_LABELS[catId] ?? cat.label}
                       </Text>
                     </Pressable>
