@@ -686,17 +686,17 @@ const styles = StyleSheet.create({
   footerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 12,
     marginTop: 18,
     marginBottom: 6,
   },
   footerSide: {
+    flex: 1,
     alignItems: "center",
     gap: 8,
-    width: 88,
   },
   footerCenter: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
