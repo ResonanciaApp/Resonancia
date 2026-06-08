@@ -84,6 +84,19 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
   const [hoverIdx,    setHoverIdx]    = useState<number | null>(null);
 
+  /** Calcula la posición (x, y) de la línea de inserción dentro del grid. */
+  const insertLine = React.useMemo(() => {
+    if (draggingIdx === null || hoverIdx === null || draggingIdx === hoverIdx) return null;
+    const col = hoverIdx % COLS;
+    const row = Math.floor(hoverIdx / COLS);
+    const insertBefore = draggingIdx > hoverIdx;
+    const x = insertBefore
+      ? col * (blockW + GAP) - GAP / 2 - 1
+      : col * (blockW + GAP) + blockW + GAP / 2 - 1;
+    const y = row * (BLOCK_H + GAP);
+    return { x, y };
+  }, [draggingIdx, hoverIdx, blockW]);
+
   // Ghost animation: offset from original cell position
   const dragAnim    = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
   const ghostInitX  = useRef(0);
@@ -183,9 +196,6 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
               styles.block,
               { width: blockW },
               isDragging && styles.blockDragging,
-              isHover    && { backgroundColor: "rgba(190,150,80,0.15)",
-                              borderWidth: 1.5,
-                              borderColor:  "rgba(190,150,80,0.45)" },
             ]}
           >
             {/* Handle de arrastre: 6 puntos 2×3 */}
@@ -204,6 +214,17 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
           </Pressable>
         );
       })}
+
+      {/* Línea de inserción */}
+      {insertLine && (
+        <View
+          pointerEvents="none"
+          style={[
+            styles.insertLine,
+            { left: insertLine.x, top: insertLine.y },
+          ]}
+        />
+      )}
 
       {/* Ghost — sigue el dedo durante el drag */}
       {draggingItem && (
@@ -236,6 +257,14 @@ const styles = StyleSheet.create({
     flexWrap:      "wrap",
     gap:           GAP,
     marginBottom:  20,
+    position:      "relative",
+  },
+  insertLine: {
+    position:        "absolute",
+    width:           2.5,
+    height:          BLOCK_H,
+    borderRadius:    2,
+    backgroundColor: "#BE9650",
   },
   block: {
     height:          BLOCK_H,
