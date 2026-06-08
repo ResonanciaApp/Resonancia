@@ -113,38 +113,6 @@ const MUSIC_MODULES: MusicModule[] = [
         // Toxeed — SARASWATI (AAC original, carátula removida).
         sound: require("@/assets/audio/geometrix/track-3.m4a"),
       },
-      // ── Naturaleza ────────────────────────────────────────────
-      {
-        id: "nature-1",
-        image: require("@/assets/images/geometrix/nature-1.png"),
-        sound: SOUND_MAP["bosque"],
-      },
-      {
-        id: "nature-2",
-        image: require("@/assets/images/geometrix/nature-2.png"),
-        sound: SOUND_MAP["oceano"],
-      },
-      {
-        id: "nature-3",
-        image: require("@/assets/images/geometrix/nature-3.png"),
-        sound: SOUND_MAP["lluvia"],
-      },
-      // ── Frecuencias ───────────────────────────────────────────
-      {
-        id: "freq-1",
-        image: require("@/assets/images/geometrix/freq-1.png"),
-        sound: SOUND_MAP["onda_alpha"],
-      },
-      {
-        id: "freq-2",
-        image: require("@/assets/images/geometrix/freq-2.png"),
-        sound: SOUND_MAP["onda_theta"],
-      },
-      {
-        id: "freq-3",
-        image: require("@/assets/images/geometrix/freq-3.png"),
-        sound: SOUND_MAP["onda_delta"],
-      },
     ],
   },
 ];
@@ -1986,7 +1954,7 @@ export default function GeometrixScreen() {
                 onPress={() => setOpenModule(null)}
               />
               <View
-                style={[styles.soundMenu, { top: insets.top + 65, right: rightOffset }]}
+                style={[styles.soundMenu, { top: insets.top + 12, right: rightOffset + 41 + 8 }]}
               >
                 {mod.tracks.map((t) => {
                   const sel = activeTracks[mod.key] === t.id;
@@ -2502,10 +2470,9 @@ const styles = StyleSheet.create({
 
   soundMenu: {
     position: "absolute",
-    right: 20,
-    flexDirection: "column",
-    alignItems: "flex-end",
-    gap: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   soundTile: {
     width: 44,
