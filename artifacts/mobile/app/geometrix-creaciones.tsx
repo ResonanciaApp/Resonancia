@@ -312,6 +312,13 @@ export default function GeometrixCreacionesScreen() {
       >
         <Pressable style={styles.sheetBackdrop} onPress={() => setActionsFor(null)}>
           <Pressable style={styles.sheetCard} onPress={() => {}}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
             <Text style={styles.sheetTitle} numberOfLines={1}>
               {actionsFor?.name}
             </Text>
@@ -364,6 +371,13 @@ export default function GeometrixCreacionesScreen() {
       >
         <Pressable style={styles.sheetBackdrop} onPress={() => setDeletingFor(null)}>
           <Pressable style={styles.confirmCard} onPress={() => {}}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
             <View style={styles.confirmIcon}>
               <Feather name="trash-2" size={24} color={DANGER} />
             </View>
@@ -491,8 +505,9 @@ const styles = StyleSheet.create({
     maxWidth: 360,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.35)",
-    backgroundColor: "#0E1420",
+    borderColor: "#151c3a",
+    backgroundColor: "#06070F",
+    overflow: "hidden",
     paddingHorizontal: 14,
     paddingTop: 16,
     paddingBottom: 12,
@@ -544,8 +559,9 @@ const styles = StyleSheet.create({
     maxWidth: 360,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.35)",
-    backgroundColor: "#0E1420",
+    borderColor: "#151c3a",
+    backgroundColor: "#06070F",
+    overflow: "hidden",
     paddingHorizontal: 22,
     paddingTop: 22,
     paddingBottom: 18,
