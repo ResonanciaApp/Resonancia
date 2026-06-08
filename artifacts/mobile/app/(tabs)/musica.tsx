@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     minWidth: 62,
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: "#161f33",
     backgroundColor: "rgba(255,255,255,0.02)",
   },
   tabItemActive: {
