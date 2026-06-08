@@ -707,6 +707,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.12)",
     alignItems: "center",
     justifyContent: "center",
+    paddingLeft: 4,
   },
   footerLabel: {
     fontSize: 10,
