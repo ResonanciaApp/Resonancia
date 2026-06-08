@@ -61,6 +61,7 @@ function GeometrixPatternBgImpl({ geoId, opacity, tileSize, spacing = 1, color =
           width={repeat}
           height={repeat}
           patternUnits="userSpaceOnUse"
+          overflow="visible"
         >
           <G
             transform={`scale(${scale.toFixed(5)})`}
