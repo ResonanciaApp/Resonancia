@@ -12,6 +12,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   type ImageSourcePropType,
+  type StyleProp,
+  type ViewStyle,
   Modal,
   Platform,
   Pressable,
@@ -429,6 +431,61 @@ function GeometryLayer({
       )}
       <SacredGlyph id={geo.id} color={color} gradient={grad} size={effectiveSize} strokeWidth={sw} />
     </Animated.View>
+  );
+}
+
+/** Botón de thumbnail de módulo de sonido con badge de volumen que hace fade
+ *  controlado (withTiming explícito) para evitar parpadeos al montar/desmontar. */
+function SoundThumbButton({
+  mod,
+  isActive,
+  cover,
+  glowStyle,
+  restStyle,
+  onPress,
+}: {
+  mod: { key: string; label: string };
+  isActive: boolean;
+  cover: ImageSourcePropType;
+  glowStyle: StyleProp<ViewStyle>;
+  restStyle: StyleProp<ViewStyle>;
+  onPress: () => void;
+}) {
+  const badgeOp = useSharedValue(0);
+  const badgeStyle = useAnimatedStyle(() => ({ opacity: badgeOp.value }));
+
+  useEffect(() => {
+    badgeOp.value = withTiming(isActive ? 0.15 : 0, {
+      duration: isActive ? 350 : 250,
+    });
+  }, [isActive, badgeOp]);
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={styles.soundThumb}
+      accessibilityRole="button"
+      accessibilityLabel={mod.label}
+    >
+      <Image
+        source={cover}
+        style={styles.soundThumbImg}
+        contentFit="cover"
+        transition={0}
+        cachePolicy="memory-disk"
+        recyclingKey="geometrix-sound-thumb"
+      />
+      {/* Overlay de atenuación al estar colapsado */}
+      <Animated.View pointerEvents="none" style={[styles.thumbOverlay, restStyle]} />
+      {/* Badge de volumen: siempre en árbol, opacidad animada con withTiming */}
+      <Animated.View pointerEvents="none" style={[styles.thumbAudioBadge, badgeStyle]}>
+        <Feather name="volume-2" size={16} color="#fff" />
+      </Animated.View>
+      {/* Glow pulsante (solo sin pista activa) */}
+      {!isActive && (
+        <Animated.View pointerEvents="none" style={[styles.thumbGlow, glowStyle]} />
+      )}
+    </Pressable>
   );
 }
 
@@ -1010,12 +1067,14 @@ export default function GeometrixScreen() {
               const cover = coverTrack?.image ?? mod.tracks[0].image;
               const isActive = !!activeId;
               return (
-                <Pressable
+                <SoundThumbButton
                   key={mod.key}
+                  mod={mod}
+                  isActive={isActive}
+                  cover={cover}
+                  glowStyle={glowStyle}
+                  restStyle={restStyle}
                   onPress={() => {
-                    // Si ya hay una pista sonando, este tap la APAGA (y quita el
-                    // icono). El siguiente tap reabre el desplegable para elegir
-                    // otra desde cero.
                     if (isActive) {
                       stopModule(mod.key);
                       setActiveTracks((prev) => ({ ...prev, [mod.key]: null }));
@@ -1024,42 +1083,7 @@ export default function GeometrixScreen() {
                     }
                     setOpenModule((cur) => (cur === mod.key ? null : mod.key));
                   }}
-                  style={styles.soundThumb}
-                  accessibilityRole="button"
-                  accessibilityLabel={mod.label}
-                >
-                  <Image
-                    source={cover}
-                    style={styles.soundThumbImg}
-                    contentFit="cover"
-                    transition={0}
-                    cachePolicy="memory-disk"
-                    recyclingKey="geometrix-sound-thumb"
-                  />
-                  {/* "Con opacidad" al estar colapsado; se ilumina al abrir. */}
-                  <Animated.View
-                    pointerEvents="none"
-                    style={[styles.thumbOverlay, restStyle]}
-                  />
-                  {isActive ? (
-                    /* Icono de audio: hay una pista sonando (sobre la imagen).
-                       Aparece con fade a 15% de opacidad al cerrarse el desplegable. */
-                    <Animated.View
-                      pointerEvents="none"
-                      entering={FadeIn.duration(350)}
-                      exiting={FadeOut.duration(200)}
-                      style={[styles.thumbAudioBadge, { opacity: 0.15 }]}
-                    >
-                      <Feather name="volume-2" size={16} color="#fff" />
-                    </Animated.View>
-                  ) : (
-                    /* Glow pulsante para llamar la atención (sin pista). */
-                    <Animated.View
-                      pointerEvents="none"
-                      style={[styles.thumbGlow, glowStyle]}
-                    />
-                  )}
-                </Pressable>
+                />
               );
             })}
           </View>
