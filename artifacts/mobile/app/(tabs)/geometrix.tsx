@@ -1468,14 +1468,14 @@ export default function GeometrixScreen() {
                             updateSetting(g.id, "color", c);
                             updateSetting(g.id, "gradientId", null);
                           }}
-                          style={[
-                            styles.swatch,
-                            { backgroundColor: c },
-                            on && styles.swatchOn,
-                          ]}
+                          style={[styles.swatch, on && styles.swatchOn]}
                           accessibilityRole="button"
                           accessibilityLabel={`Color ${c}`}
-                        />
+                        >
+                          <View
+                            style={[styles.swatchFill, { backgroundColor: c }]}
+                          />
+                        </Pressable>
                       );
                     })}
                   </View>
@@ -1956,7 +1956,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 2,
     borderColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
   },
+  swatchFill: { width: 20, height: 20, borderRadius: 10 },
   swatchOn: { borderColor: "#EDE1D3" },
 
   empty: { alignItems: "center", gap: 6 },
