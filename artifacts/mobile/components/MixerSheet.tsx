@@ -488,7 +488,7 @@ export function MixerSheet() {
                 <Feather
                   name={isPlaying ? "pause" : "play"}
                   size={64}
-                  color={WARM.playText}
+                  color="#FFFFFF"
                   strokeWidth={1}
                   style={isPlaying ? undefined : { marginLeft: 8 }}
                 />
