@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
 
   header: {
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 9,
     paddingTop: 4,
   },
   backBtn: {
