@@ -38,7 +38,7 @@ import { useColors } from "@/hooks/useColors";
 
 const GRID_PAD = 20;
 const GRID_GAP = 12;
-const MAX_PREVIEW = 4;
+const MAX_PREVIEW = 10;
 
 // ── Preview estática (sin animación, más liviana para el home) ────────────────
 function StaticGlyphPreview({
@@ -153,17 +153,12 @@ export function GeometrixCommunitySection() {
   return (
     <View style={styles.section}>
       {/* Header */}
-      <View style={styles.headerRow}>
-        <View style={styles.headerLeft}>
-          <Image
-            source={require("@/assets/images/geometrix/cubo-3.png")}
-            style={styles.cuboIcon}
-          />
-          <Text style={styles.sectionTitle}>Geometrixs de la comunidad</Text>
-        </View>
-        <Pressable onPress={() => router.push("/geometrix-comunidad" as never)} hitSlop={8}>
-          <Text style={[styles.verTodo, { color: colors.primary }]}>Ver todo</Text>
-        </Pressable>
+      <View style={styles.headerLeft}>
+        <Image
+          source={require("@/assets/images/geometrix/cubo-3.png")}
+          style={styles.cuboIcon}
+        />
+        <Text style={styles.sectionTitle}>Geometrixs de la comunidad</Text>
       </View>
 
       {/* Cargando */}
@@ -171,13 +166,23 @@ export function GeometrixCommunitySection() {
         <ActivityIndicator color={colors.primary} style={{ marginTop: 8 }} />
       )}
 
-      {/* Grilla 2 × 2 */}
+      {/* Grilla 2 × N */}
       {!isLoading && glyphs.length > 0 && (
         <View style={[styles.grid, { gap: GRID_GAP }]}>
           {glyphs.map((g) => (
             <GlyphCard key={g.id} glyph={g} cardW={cardW} />
           ))}
         </View>
+      )}
+
+      {/* Ver todas — solo si hay más de 10 */}
+      {!isLoading && (data?.total ?? 0) > MAX_PREVIEW && (
+        <Pressable
+          onPress={() => router.push("/geometrix-comunidad" as never)}
+          style={({ pressed }) => [styles.verTodasBtn, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Text style={[styles.verTodasText, { color: colors.primary }]}>Ver todas</Text>
+        </Pressable>
       )}
     </View>
   );
@@ -188,17 +193,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
     marginBottom: 0,
   },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 14,
-  },
   cuboIcon: { width: 18, height: 18, resizeMode: "contain", opacity: 0.9 },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
+    marginBottom: 14,
   },
   sectionTitle: {
     fontSize: 20,
@@ -206,7 +206,15 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     color: "#FFFFFF",
   },
-  verTodo: { fontSize: 13, fontWeight: "400" },
+  verTodasBtn: {
+    alignItems: "center",
+    marginTop: 14,
+    paddingVertical: 11,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.28)",
+  },
+  verTodasText: { fontSize: 14, fontWeight: "600" },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
 
