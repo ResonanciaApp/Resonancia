@@ -1042,7 +1042,6 @@ export default function ProfileScreen() {
 
               {/* ── Geometrix ── */}
               <Text style={pStyles.sectionTitle}>Fondo de Geometrix</Text>
-              <Text style={pStyles.sectionSub}>Elige una de tus creaciones como fondo de perfil</Text>
 
               <ScrollView
                 horizontal
@@ -1128,7 +1127,6 @@ export default function ProfileScreen() {
 
               {/* ── Paleta de degradado ── */}
               <Text style={pStyles.sectionTitle}>Color de fondo</Text>
-              <Text style={pStyles.sectionSub}>Degradado oscuro para el fondo de tu perfil</Text>
 
               <View style={[pStyles.swatchRow, { marginBottom: 28 }]}>
                 {/* Por defecto */}
