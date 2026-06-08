@@ -1291,6 +1291,7 @@ export default function GeometrixScreen() {
               la tab bar; se reacomoda al agregar/quitar (LinearTransition). */}
           {activeMetas.length > 0 && (
             <ScrollView
+              ref={thumbsScrollRef}
               horizontal
               showsHorizontalScrollIndicator={false}
               style={[styles.thumbsScroll, { bottom: tabBarHeight + 5 }]}
@@ -1301,9 +1302,16 @@ export default function GeometrixScreen() {
               onLayout={(e) => {
                 thumbsViewW.current = e.nativeEvent.layout.width;
               }}
-              onContentSizeChange={(w) =>
-                setThumbsOverflow(w > thumbsViewW.current + 1)
-              }
+              onContentSizeChange={(w) => {
+                const overflow = w > thumbsViewW.current + 1;
+                setThumbsOverflow(overflow);
+                if (overflow) {
+                  setTimeout(
+                    () => thumbsScrollRef.current?.scrollToEnd({ animated: true }),
+                    60,
+                  );
+                }
+              }}
             >
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
