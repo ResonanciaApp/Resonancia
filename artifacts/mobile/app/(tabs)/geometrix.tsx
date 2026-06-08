@@ -500,6 +500,7 @@ export default function GeometrixScreen() {
   const [immersive, setImmersive] = useState(false);
   // Nombre de la composición recién guardada → muestra el popup temático.
   const [savedName, setSavedName] = useState<string | null>(null);
+  const [updatedName, setUpdatedName] = useState<string | null>(null);
   // Geometría con su menú contextual abierto (tap en miniatura).
   const [menuGeoId, setMenuGeoId] = useState<GeometryId | null>(null);
   // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
@@ -798,7 +799,7 @@ export default function GeometrixScreen() {
     try {
       const { id, name } = editingCreation;
       await updateCreation(id, buildSnapshot());
-      setSavedName(name);
+      setUpdatedName(name);
       setIsDirty(false); // vuelve a "limpio" hasta el próximo cambio
     } catch {
       Alert.alert("Error", "No se pudo actualizar la composición.");
@@ -1487,6 +1488,53 @@ export default function GeometrixScreen() {
                 style={styles.savedBtnPrimary}
                 onPress={() => {
                   setSavedName(null);
+                  router.push("/geometrix-creaciones");
+                }}
+                accessibilityRole="button"
+              >
+                <Text style={styles.savedBtnPrimaryText}>Ver mis creaciones</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Popup "¡Actualizada!" — aparece al hacer patch de una creación existente. */}
+      <Modal
+        visible={!!updatedName}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setUpdatedName(null)}
+      >
+        <Pressable style={styles.savedBackdrop} onPress={() => setUpdatedName(null)}>
+          <Pressable style={styles.savedCard} onPress={() => {}}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            <View style={styles.savedIcon}>
+              <Feather name="refresh-cw" size={24} color={colors.primary} />
+            </View>
+            <Text style={styles.savedTitle}>¡Actualizada!</Text>
+            <Text style={styles.savedSubtitle}>
+              <Text style={styles.savedName}>"{updatedName}"</Text> se actualizó correctamente en tus creaciones.
+            </Text>
+            <View style={styles.savedActions}>
+              <Pressable
+                style={styles.savedBtnGhost}
+                onPress={() => setUpdatedName(null)}
+                accessibilityRole="button"
+              >
+                <Text style={styles.savedBtnGhostText}>Seguir editando</Text>
+              </Pressable>
+              <Pressable
+                style={styles.savedBtnPrimary}
+                onPress={() => {
+                  setUpdatedName(null);
                   router.push("/geometrix-creaciones");
                 }}
                 accessibilityRole="button"
