@@ -344,7 +344,7 @@ export default function HomeScreen() {
 
         {/* ── 6. SESIÓN DESTACADA ── */}
         {featuredSession && (
-          <View style={styles.section}>
+          <View style={[styles.section, { marginBottom: SECTION_GAP + 30 }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>
               Sesión destacada
             </Text>
