@@ -8,7 +8,7 @@ const KEY = "@geometrix_creations";
 /** Campos que aporta el editor al guardar (el resto los completa el hook). */
 export type NewCreation = Pick<
   GeometrixCreation,
-  "name" | "active" | "master" | "settings" | "soloId" | "audio"
+  "name" | "active" | "master" | "settings" | "audio"
 >;
 
 /**

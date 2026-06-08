@@ -503,7 +503,7 @@ export default function GeometrixScreen() {
   // Geometría con su menú contextual abierto (tap en miniatura).
   const [menuGeoId, setMenuGeoId] = useState<GeometryId | null>(null);
   // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
-  const [soloId, setSoloId] = useState<GeometryId | null>(null);
+  const [hiddenIds, setHiddenIds] = useState<GeometryId[]>([]);
   // Geometría seleccionada para el pellizco (pinch) que ajusta su zoom.
   const [selectedId, setSelectedId] = useState<GeometryId | null>(null);
   // Cuando los thumbnails desbordan el ancho visible, alineamos a la izquierda
@@ -633,7 +633,7 @@ export default function GeometrixScreen() {
         setImmersive(false);
         setSavedName(null);
         setMenuGeoId(null);
-        setSoloId(null);
+        setHiddenIds([]);
         setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5 });
       };
     }, [stopAllSound, glow, playIntro, stopIntro]),
@@ -696,7 +696,7 @@ export default function GeometrixScreen() {
     // El intro suena una sola vez por lanzamiento de app: al vaciar el lienzo NO
     // se vuelve a disparar.
     setActive([]);
-    setSoloId(null);
+    setHiddenIds([]);
     setSelectedId(null);
     setMaster({
       opacity: 1,
@@ -763,12 +763,12 @@ export default function GeometrixScreen() {
     }
     const name = `Composición ${creations.length + 1}`;
     try {
-      await saveCreation({ name, active, master, settings: activeSettings, soloId, audio });
+      await saveCreation({ name, active, master, settings: activeSettings, audio });
       setSavedName(name);
     } catch {
       Alert.alert("Error", "No se pudo guardar la composición.");
     }
-  }, [active, getSettings, activeTracks, creations.length, saveCreation, master, soloId]);
+  }, [active, getSettings, activeTracks, creations.length, saveCreation, master]);
 
   // Abrir una creación guardada: restaurar capas, ajustes, fondo y sonido.
   // `enterImmersive` → abrir directo en pantalla completa ("Play").
@@ -784,7 +784,7 @@ export default function GeometrixScreen() {
       setSettings(c.settings);
       setMaster(c.master);
       setActive(c.active);
-      setSoloId(c.soloId);
+      setHiddenIds(c.hiddenIds ?? []);
       setSelectedId(c.active.length ? c.active[c.active.length - 1] : null);
       // Restaurar el sonido elegido (reproducir sin el toggle de selectTrack,
       // que apagaría la pista si coincidiera con el estado previo).
@@ -835,7 +835,7 @@ export default function GeometrixScreen() {
       setOpenModule(null);
       setActive([]);
       setSettings({});
-      setSoloId(null);
+      setHiddenIds([]);
       setSelectedId(null);
       setImmersive(false);
       setSavedName(null);
@@ -873,9 +873,9 @@ export default function GeometrixScreen() {
   useEffect(() => {
     if (!hasActive) setPillOpen(false);
   }, [hasActive]);
-  // Lo que se pinta en el lienzo: si hay "Aislar", solo esa geometría.
-  const visibleMetas = soloId
-    ? activeMetas.filter((g) => g.id === soloId)
+  // Lo que se pinta en el lienzo: todas las activas menos las ocultas.
+  const visibleMetas = hiddenIds.length
+    ? activeMetas.filter((g) => !hiddenIds.includes(g.id))
     : activeMetas;
   const menuGeo = menuGeoId
     ? GEOMETRIES.find((g) => g.id === menuGeoId)
@@ -889,7 +889,7 @@ export default function GeometrixScreen() {
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
   // reasignar la selección del pellizco a otra activa (o ninguna).
   useEffect(() => {
-    if (soloId && !active.includes(soloId)) setSoloId(null);
+    if (hiddenIds.length) setHiddenIds((prev) => prev.filter((id) => active.includes(id)));
     if (menuGeoId && !active.includes(menuGeoId)) setMenuGeoId(null);
     // Si se quita la geometría en edición, cerrar su panel por capa.
     if (settingsGeoId && !active.includes(settingsGeoId)) {
@@ -899,14 +899,11 @@ export default function GeometrixScreen() {
     if (selectedId && !active.includes(selectedId)) {
       setSelectedId(active.length ? active[active.length - 1] : null);
     }
-  }, [active, soloId, menuGeoId, settingsGeoId, selectedId]);
+  }, [active, hiddenIds, menuGeoId, settingsGeoId, selectedId]);
 
-  // Geometría que responde al pellizco. Si hay "Aislar", solo esa es visible,
-  // así que el pellizco debe apuntar a ella; si no, la seleccionada (o la
-  // última activa).
-  const pinchTargetId = soloId
-    ? soloId
-    : selectedId && active.includes(selectedId)
+  // Geometría que responde al pellizco: la seleccionada, o la última activa.
+  const pinchTargetId =
+    selectedId && active.includes(selectedId)
       ? selectedId
       : active.length
         ? active[active.length - 1]
@@ -1294,9 +1291,8 @@ export default function GeometrixScreen() {
             >
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
-                const isSolo = soloId === g.id;
+                const isHidden = hiddenIds.includes(g.id);
                 const isSelected = pinchTargetId === g.id;
-                const dimmed = soloId !== null && !isSolo;
                 return (
                   <Animated.View
                     key={g.id}
@@ -1305,7 +1301,7 @@ export default function GeometrixScreen() {
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
                     )}
-                    style={[styles.thumbItem, dimmed && { opacity: 0.4 }]}
+                    style={[styles.thumbItem, isHidden && { opacity: 0.35 }]}
                   >
                     {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
                     <Pressable
@@ -1461,17 +1457,21 @@ export default function GeometrixScreen() {
                 <Pressable
                   style={styles.menuItem}
                   onPress={() => {
-                    setSoloId((prev) => (prev === menuGeo.id ? null : menuGeo.id));
+                    setHiddenIds((prev) =>
+                      prev.includes(menuGeo.id)
+                        ? prev.filter((id) => id !== menuGeo.id)
+                        : [...prev, menuGeo.id],
+                    );
                     setMenuGeoId(null);
                   }}
                 >
                   <Feather
-                    name={soloId === menuGeo.id ? "eye" : "eye-off"}
+                    name={hiddenIds.includes(menuGeo.id) ? "eye" : "eye-off"}
                     size={18}
                     color="#FFFFFF"
                   />
                   <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>
-                    {soloId === menuGeo.id ? "Mostrar todas" : "Ver solo esta"}
+                    {hiddenIds.includes(menuGeo.id) ? "Mostrar" : "Ocultar"}
                   </Text>
                 </Pressable>
 

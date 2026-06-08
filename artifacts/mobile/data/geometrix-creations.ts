@@ -146,8 +146,8 @@ export type GeometrixCreation = {
   master: GlobalSettings;
   /** Ajustes por capa (solo de las capas activas). */
   settings: Record<string, GeoSettings>;
-  /** Geometría aislada ("solo"), si la había. */
-  soloId: GeometryId | null;
+  /** IDs de capas ocultas (no se renderizan en el lienzo). Opcional para compatibilidad con creaciones antiguas. */
+  hiddenIds?: GeometryId[];
   /** Pista de audio elegida. */
   audio: GeometrixAudio;
 };
