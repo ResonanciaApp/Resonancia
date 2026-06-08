@@ -396,8 +396,8 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 7. MÁS ESCUCHADOS ── */}
-        {popularSessions.length > 0 && (
+        {/* ── 7. MÁS ESCUCHADOS ── (oculto temporalmente) */}
+        {false && popularSessions.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionRow}>
               <Text style={[styles.sectionTitle]}>

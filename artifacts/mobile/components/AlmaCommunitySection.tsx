@@ -128,15 +128,13 @@ export function AlmaCommunitySection() {
         </View>
       )}
 
-      {/* Ver todo */}
-      {preview.length > 0 && (
+      {/* Cargar más — solo si hay más de 10 mensajes */}
+      {preview.length > 0 && total > PREVIEW_COUNT && (
         <Pressable
           onPress={() => router.push("/mensajes-del-alma" as never)}
-          style={({ pressed }) => [styles.verTodo, { opacity: pressed ? 0.7 : 1 }]}
+          style={({ pressed }) => [styles.cargarMasBtn, { opacity: pressed ? 0.7 : 1 }]}
         >
-          <Text style={[styles.verTodoText, { color: colors.accent }]}>
-            Ver todos los mensajes de hoy →
-          </Text>
+          <Text style={[styles.cargarMasText, { color: colors.primary }]}>Cargar más</Text>
         </Pressable>
       )}
     </View>
@@ -207,6 +205,13 @@ const styles = StyleSheet.create({
   expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },
   expiringText: { fontSize: 9, color: "#C0705A" },
 
-  verTodo: { alignItems: "center", marginTop: 12 },
-  verTodoText: { fontSize: 13, fontWeight: "600" },
+  cargarMasBtn: {
+    alignItems: "center",
+    marginTop: 14,
+    paddingVertical: 11,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.28)",
+  },
+  cargarMasText: { fontSize: 14, fontWeight: "600" },
 });
