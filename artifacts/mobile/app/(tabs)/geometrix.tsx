@@ -542,6 +542,7 @@ export default function GeometrixScreen() {
   // (en vez de centrar) para que se pueda deslizar y se asome el último.
   const [thumbsOverflow, setThumbsOverflow] = useState(false);
   const thumbsViewW = useRef(0);
+  const thumbsScrollRef = useRef<ScrollView>(null);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
   // Opacidad de la píldora de acciones: fade puro (sin movimiento) al plegar.
