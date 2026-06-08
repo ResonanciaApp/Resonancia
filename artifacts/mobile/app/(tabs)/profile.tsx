@@ -193,7 +193,7 @@ const pStyles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: "#1a2046",
   },
   swatchOn: {
     borderColor: "#BE9650",
