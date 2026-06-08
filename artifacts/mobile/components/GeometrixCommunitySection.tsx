@@ -281,6 +281,7 @@ export function GeometrixCommunitySection() {
         />
         <Text style={styles.sectionTitle}>Geometrix comunidad</Text>
       </View>
+      <Text style={styles.sectionSubtitle}>Ustedes crean, nosotros compartimos</Text>
 
       {/* Cargando */}
       {isLoading && (
@@ -332,6 +333,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FFFFFF",
+  },
+  sectionSubtitle: {
+    fontSize: 13,
+    color: "#7A8FA8",
+    marginTop: -8,
+    marginBottom: 14,
   },
   verTodasBtn: {
     alignItems: "center",
