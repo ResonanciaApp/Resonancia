@@ -1110,10 +1110,10 @@ export default function GeometrixScreen() {
           </View>
         </ScrollView>
 
-        </LinearGradient>
-
         {/* Línea divisora */}
         <View style={styles.divider} />
+
+        </LinearGradient>
 
         {/* Fondo interactivo: animación centrada en el espacio entre la
             divisora y la tab bar; thumbnails anclados 10px sobre la tab bar.
