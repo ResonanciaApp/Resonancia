@@ -76,6 +76,53 @@ export const EXTENT: Record<GeometryId, number> = {
   estrella:               46,
 };
 
+/**
+ * Extensión real del contenido dibujado en cada geometría (en unidades del
+ * viewBox 0–100, desde el centro 50,50).
+ * - rx : semiancho horizontal (de centro a borde derecho del contenido)
+ * - ry : semialtura vertical  (de centro a borde superior/inferior del contenido)
+ *
+ * Solo se listan las geometrías donde rx ≠ ry (tiles asimétricos) o donde el
+ * contenido dibujado no llena el radio EXTENT (p.ej. polígonos rotados).
+ * El resto se trata como circular: rx = ry = EXTENT[id].
+ *
+ * Valores calculados directamente de las coordenadas dibujadas en glyphElements.
+ */
+export const GLYPH_EXTENTS: Partial<Record<GeometryId, { rx: number; ry: number }>> = {
+  // Vesica Piscis: dos círculos r=24 con centros a ±12 del centro → ancho > alto
+  vesica:               { rx: 36,    ry: 24    },
+  // Árbol de la Vida: muy alto (y 9..92 + r=5.5) y angosto (x 27..73 + r=5.5)
+  "arbol-vida":         { rx: 28.5,  ry: 47.5  },
+  // Merkaba: dos triángulos equiláteros, sin círculo exterior
+  merkaba:              { rx: 34.64, ry: 40    },
+  // Fruto de la Vida: lattice hexagonal (más ancho que alto)
+  "fruto-vida":         { rx: 38.75, ry: 34.59 },
+  // Cubo de la Vida: wireframe isométrico, bounding box ~cuadrado
+  "cubo-vida":          { rx: 24.5,  ry: 24.5  },
+  // Triángulo equilátero con vértice arriba: rx = ry × cos(30°)
+  triangulo:            { rx: 38.1,  ry: 44    },
+  // Tetraedro: triángulo + medianas, rx = ry × cos(30°)
+  tetraedro:            { rx: 36.37, ry: 42    },
+  // Hexaedro (cubo isométrico): hexágono con vértices a ±30° → rx < ry
+  hexaedro:             { rx: 32.04, ry: 37    },
+  // Cuadrado: rombo (rotado 45°), bounding box cuadrado
+  cuadrado:             { rx: 28.28, ry: 28.28 },
+  // Octaedro: rombo con vértices a 0/90/180/270° → cuadrado, rx = ry
+  octaedro:             { rx: 40,    ry: 40    },
+  // Icosaedro: top/bot en r=42, anillo exterior rx=34×cos(18°)
+  icosaedro:            { rx: 32.33, ry: 42    },
+  // Dodecaedro: pentágono exterior con vértice arriba
+  dodecaedro:           { rx: 39.93, ry: 42    },
+  // Cuboctaedro: hexágono con vértices a 0°,60°,… → rx > ry
+  cuboctaedro:          { rx: 38,    ry: 32.91 },
+  // Stella Octangula: dos triángulos (=merkaba) + pequeños interiores
+  "estrella-tetraedrica": { rx: 34.64, ry: 40  },
+  // Metatrón: lattice hexagonal de círculos (más ancho que alto)
+  metatron:             { rx: 40,    ry: 35.7  },
+  // IVM: lattice hexagonal de líneas (más ancho que alto)
+  ivm:                  { rx: 36,    ry: 31.18 },
+};
+
 function pt(r: number, angleDeg: number, cx = C, cy = C): [number, number] {
   const a = (angleDeg * Math.PI) / 180;
   return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
