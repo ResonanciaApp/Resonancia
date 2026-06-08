@@ -367,7 +367,7 @@ export function MixerSheet() {
       <Animated.View style={{ flex: 1, opacity: sheetOpacity }}>
       <Pressable style={styles.backdrop} onPress={closeSheet}>
         <Animated.View
-          style={{ transform: [{ translateY: sheetEnterY }] }}
+          style={{ flex: 1, transform: [{ translateY: sheetEnterY }] }}
         >
         <Pressable
           style={[
