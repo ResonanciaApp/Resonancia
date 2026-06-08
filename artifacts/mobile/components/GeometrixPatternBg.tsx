@@ -23,11 +23,16 @@ type Props = {
   opacity: number;
   /** Tamaño de cada tesela en px del lienzo. */
   tileSize: number;
+  /**
+   * Espaciado: multiplica el intervalo de repetición del patrón.
+   * 1.0 = espaciadas, 0.82 = pegadas, 0.67 = superpuestas.
+   */
+  spacing?: number;
   /** Color del trazo (hex). Por defecto dorado de la paleta. */
   color?: string;
 };
 
-function GeometrixPatternBgImpl({ geoId, opacity, tileSize, color = "#BE9650" }: Props) {
+function GeometrixPatternBgImpl({ geoId, opacity, tileSize, spacing = 1, color = "#BE9650" }: Props) {
   const id = React.useId().replace(/:/g, "");
   const patId = `gpat-${id}`;
 
@@ -37,6 +42,9 @@ function GeometrixPatternBgImpl({ geoId, opacity, tileSize, color = "#BE9650" }:
   const scale = tileSize / 100;
   // strokeWidth constante en espacio viewBox (línea fina y proporcional).
   const sw = 100 / tileSize;
+  // El intervalo de repetición del patrón se escala por spacing:
+  // valores < 1 acercan las repeticiones (tiles pegadas / superpuestas).
+  const repeat = tileSize * Math.max(0.1, spacing);
 
   return (
     <Svg
@@ -50,8 +58,8 @@ function GeometrixPatternBgImpl({ geoId, opacity, tileSize, color = "#BE9650" }:
           id={patId}
           x="0"
           y="0"
-          width={tileSize}
-          height={tileSize}
+          width={repeat}
+          height={repeat}
           patternUnits="userSpaceOnUse"
         >
           <G

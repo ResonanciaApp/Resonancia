@@ -56,6 +56,11 @@ export type BgPattern = {
   opacity: number;
   /** Tamaño de cada tesela en px del lienzo (20 = pequeño, 40 = mediano, 70 = grande). */
   tileSize: number;
+  /**
+   * Espaciado entre tiles: multiplica el intervalo de repetición del patrón.
+   * 1.0 = espaciadas (default), 0.82 = pegadas, 0.67 = superpuestas.
+   */
+  spacing: number;
 };
 
 /** Ajustes generales (panel maestro) que afectan a todas las capas a la vez. */

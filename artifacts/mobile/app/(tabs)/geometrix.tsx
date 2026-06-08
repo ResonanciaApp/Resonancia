@@ -1341,6 +1341,7 @@ export default function GeometrixScreen() {
                 geoId={master.bgPattern.geoId}
                 opacity={master.bgPattern.opacity}
                 tileSize={master.bgPattern.tileSize}
+                spacing={master.bgPattern.spacing}
                 color={colors.primary}
               />
             )}
@@ -1667,6 +1668,7 @@ export default function GeometrixScreen() {
               geoId={master.bgPattern.geoId}
               opacity={master.bgPattern.opacity}
               tileSize={master.bgPattern.tileSize}
+              spacing={master.bgPattern.spacing}
               color={colors.primary}
             />
           )}
@@ -1897,6 +1899,7 @@ export default function GeometrixScreen() {
                   geoId={master.bgPattern.geoId}
                   opacity={master.bgPattern.opacity}
                   tileSize={master.bgPattern.tileSize * (generalPreviewSize / (canvasSide || generalPreviewSize))}
+                  spacing={master.bgPattern.spacing}
                   color={colors.primary}
                 />
               )}
@@ -1999,7 +2002,7 @@ export default function GeometrixScreen() {
                     setMaster((m) => ({
                       ...m,
                       bgPattern: v
-                        ? { geoId: "flor-vida", opacity: 0.08, tileSize: 40 }
+                        ? { geoId: "flor-vida", opacity: 0.08, tileSize: 40, spacing: 1 }
                         : null,
                     }));
                   }}
@@ -2059,6 +2062,35 @@ export default function GeometrixScreen() {
                             setMaster((m) => ({
                               ...m,
                               bgPattern: m.bgPattern ? { ...m.bgPattern, tileSize: size } : null,
+                            }))
+                          }
+                          style={{
+                            flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
+                            backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                            borderWidth: 1,
+                            borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                          }}
+                        >
+                          <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                            {label}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+
+                  {/* Espaciado entre tiles */}
+                  <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Espaciado</Text>
+                  <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
+                    {([["Separadas", 1], ["Pegadas", 0.82], ["Superpuestas", 0.67]] as [string, number][]).map(([label, sp]) => {
+                      const on = master.bgPattern?.spacing === sp;
+                      return (
+                        <Pressable
+                          key={sp}
+                          onPress={() =>
+                            setMaster((m) => ({
+                              ...m,
+                              bgPattern: m.bgPattern ? { ...m.bgPattern, spacing: sp } : null,
                             }))
                           }
                           style={{
@@ -2395,6 +2427,7 @@ export default function GeometrixScreen() {
                   geoId={master.bgPattern.geoId}
                   opacity={master.bgPattern.opacity}
                   tileSize={master.bgPattern.tileSize * (previewSize / (canvasSide || previewSize))}
+                  spacing={master.bgPattern.spacing}
                   color={colors.primary}
                 />
               )}
