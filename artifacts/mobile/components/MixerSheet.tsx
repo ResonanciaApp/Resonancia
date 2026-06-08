@@ -462,63 +462,49 @@ export function MixerSheet() {
           {/* Separador warm */}
           <View style={[styles.warmSeparator, { backgroundColor: WARM.separator }]} />
 
-          {/* Controles — Flotante Zen */}
-          <View style={styles.controlsRow}>
+          {/* Footer: Timer | Play | Guardar + Actualizar */}
+          <View style={styles.footerRow}>
+
+            {/* Izquierda: Timer */}
             <Pressable
-              onPress={togglePlay}
-              style={styles.zenCtrlBtn}
+              onPress={handleTimerPress}
+              style={styles.footerSide}
               accessibilityRole="button"
+              accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
             >
-              <Feather name={isPlaying ? "pause" : "play"} size={36} color={WARM.playText} strokeWidth={1} />
-              <Text style={styles.zenCtrlLabel}>
-                {isPlaying ? "PAUSAR" : "REPRODUCIR"}
+              <Feather name="clock" size={36} color={WARM.playText} strokeWidth={1} />
+              <Text style={styles.footerLabel}>
+                {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
               </Text>
             </Pressable>
-          </View>
 
-          {/* Guardar / Actualizar — Flotante Zen */}
-          <View style={styles.saveRow}>
-            {true ? (
-              <>
-                <Pressable
-                  onPress={() => canUpdate ? handleUpdateDirect() : (mixHasChanged && openSaveModal("new"))}
-                  style={[styles.zenSaveBtn, { opacity: mixHasChanged ? 1 : 0.35 }]}
-                >
-                  <Feather name="check" size={14} color={WARM.saveText} />
-                  <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>ACTUALIZAR</Text>
-                </Pressable>
-                <Pressable
-                  onPress={handleTimerPress}
-                  style={styles.zenTimerBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel={
-                    sleepTimerRemaining != null
-                      ? "Temporizador de sueño activo"
-                      : "Configurar temporizador de sueño"
-                  }
-                >
-                  <Feather name="clock" size={16} color={WARM.playText} strokeWidth={1} />
-                  <Text style={styles.zenTimerText}>
-                    {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "TIMER"}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => openSaveModal("new")}
-                  style={styles.zenSaveBtn}
-                >
-                  <MaterialCommunityIcons name="heart-outline" size={14} color={WARM.saveText} />
-                  <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>GUARDAR</Text>
-                </Pressable>
-              </>
-            ) : (
-              <Pressable
-                onPress={() => openSaveModal("new")}
-                style={styles.zenSaveBtn}
-              >
-                <Feather name="save" size={14} color={WARM.saveText} />
-                <Text style={[styles.zenSaveBtnText, { color: WARM.saveText }]}>GUARDAR MEZCLA</Text>
+            {/* Centro: Play/Pause sin label */}
+            <Pressable
+              onPress={togglePlay}
+              style={styles.footerCenter}
+              accessibilityRole="button"
+            >
+              <Feather name={isPlaying ? "pause" : "play"} size={44} color={WARM.playText} strokeWidth={1} />
+            </Pressable>
+
+            {/* Derecha: Guardar (arriba) + Actualizar (abajo) */}
+            <View style={styles.footerSide}>
+              <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal("new")}>
+                <View style={styles.footerHeartCircle}>
+                  <MaterialCommunityIcons name="heart" size={18} color="#FFFFFF" />
+                </View>
+                <Text style={styles.footerLabel}>Guardar</Text>
               </Pressable>
-            )}
+
+              <Pressable
+                style={[styles.footerUpdateBtn, { opacity: mixHasChanged ? 1 : 0.35 }]}
+                onPress={() => canUpdate ? handleUpdateDirect() : (mixHasChanged && openSaveModal("new"))}
+              >
+                <Feather name="check" size={15} color={WARM.saveText} />
+                <Text style={styles.footerUpdateText}>Actualizar</Text>
+              </Pressable>
+            </View>
+
           </View>
 
         </Pressable>
@@ -695,71 +681,56 @@ const styles = StyleSheet.create({
   },
   addBtnText: { fontSize: 10, fontWeight: "400", letterSpacing: 2, textTransform: "uppercase" },
 
-  controlsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 56,
-    marginTop: 20,
-    marginBottom: 4,
-  },
-  zenCtrlBtn: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    paddingVertical: 8,
-  },
-  zenCtrlLabel: {
-    fontSize: 10,
-    fontWeight: "400",
-    letterSpacing: 2,
-    color: "rgba(255,255,255,0.45)",
-  },
-  // kept for TS compat — no longer rendered
-  playBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 50, borderRadius: 14 },
-  playBtnText: { fontSize: 15, fontWeight: "700" },
-  iconBtn: { height: 50, minWidth: 50, paddingHorizontal: 12, borderRadius: 14, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
-  timerText: { fontSize: 12, fontWeight: "700" },
-
-  saveRow: {
+  footerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 8,
-    marginTop: 14,
-    marginBottom: 2,
-  },
-  zenSaveBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingVertical: 10,
     paddingHorizontal: 12,
+    marginTop: 18,
+    marginBottom: 6,
   },
-  zenSaveBtnText: {
+  footerSide: {
+    alignItems: "center",
+    gap: 8,
+    width: 88,
+  },
+  footerCenter: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 60,
+  },
+  footerLabel: {
     fontSize: 10,
     fontWeight: "400",
-    letterSpacing: 2,
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+    color: "rgba(255,255,255,0.45)",
   },
-  zenTimerBtn: {
+  footerSaveBtn: {
+    alignItems: "center",
+    gap: 6,
+  },
+  footerHeartCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  footerUpdateBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    paddingTop: 2,
   },
-  zenTimerText: {
-    fontSize: 11,
+  footerUpdateText: {
+    fontSize: 10,
     fontWeight: "400",
     letterSpacing: 1.5,
-    fontVariant: ["tabular-nums"],
-    color: "rgba(255,255,255,0.55)",
+    textTransform: "uppercase",
+    color: "rgba(190,150,80,0.80)",
   },
-  // kept for TS compat — no longer rendered
-  saveBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 46, borderRadius: 14 },
-  saveBtnFull: { flex: 1 },
-  saveBtnText: { fontSize: 14, fontWeight: "600" },
 
   // Modal guardar
   modalOverlay: {
