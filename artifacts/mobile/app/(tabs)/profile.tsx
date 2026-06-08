@@ -6,7 +6,7 @@ import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -725,18 +725,19 @@ export default function ProfileScreen() {
     return () => cancelAnimationFrame(raf);
   }, [activeBgColors, crossFadeAnim]);
 
-  // Animar entrada del glifo cuando la creación carga por primera vez (o cambia).
+  // Reset SÍNCRONO antes del paint (evita el flash al montar el bloque condicional).
+  // useLayoutEffect se ejecuta tras el commit pero antes de que el nativo pinte.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => { glyphMountAnim.setValue(0); }, [activeBgCreation?.id]);
+
+  // Animación de entrada del glifo (después del paint, sin flash).
   useEffect(() => {
-    if (activeBgCreation) {
-      glyphMountAnim.setValue(0);
-      Animated.timing(glyphMountAnim, {
-        toValue: 1,
-        duration: 700,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      glyphMountAnim.setValue(0);
-    }
+    if (!activeBgCreation) return;
+    Animated.timing(glyphMountAnim, {
+      toValue: 1,
+      duration: 700,
+      useNativeDriver: true,
+    }).start();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeBgCreation?.id]);
 
