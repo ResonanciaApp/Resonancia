@@ -156,9 +156,6 @@ export default function SonidosAncestalesScreen() {
           )}
         </View>
 
-        {/* Divisor */}
-        <View style={styles.topDivider} />
-
         {/* Tabs — una sola fila horizontal, deslizable. Mismo tamaño, border
             radius y lógica que los tiles de Geometrix (cuadrados, 3.3 visibles).
             Colores conservados (icono activo dorado, fondo activo azulado). */}
@@ -315,11 +312,6 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
-  topDivider: {
-    height: 1,
-    backgroundColor: "#0d1432",
-    marginBottom: 8,
-  },
   tabScroll: { flexGrow: 0 },
   tabRow: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   tabBlock: {
