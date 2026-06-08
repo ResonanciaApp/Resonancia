@@ -20,6 +20,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TurboModuleRegistry,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -288,6 +289,21 @@ export default function GeometrixCreacionesScreen() {
     if (capturingRef.current || !exportReq) return;
     const node = exportRef.current;
     if (!node) return;
+
+    // Verificar disponibilidad del módulo nativo ANTES de importar la librería.
+    // TurboModuleRegistry.get() devuelve null en lugar de tirar (a diferencia de
+    // getEnforcing que lanza un error fatal que el runtime intercepta antes del
+    // try/catch). Esto ocurre en Expo Go, que no incluye react-native-view-shot.
+    if (!TurboModuleRegistry.get("RNViewShot")) {
+      setExportReq(null);
+      setExporting(false);
+      Alert.alert(
+        "Función no disponible en Expo Go",
+        "La descarga de imágenes requiere la versión instalada de la app (build nativo). Está disponible una vez publicada en las tiendas.",
+      );
+      return;
+    }
+
     capturingRef.current = true;
     try {
       // Dos frames para que SVG/Animated terminen de pintar antes de capturar.
