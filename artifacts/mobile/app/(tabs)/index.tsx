@@ -663,6 +663,8 @@ const styles = StyleSheet.create({
     height: HERO_HEIGHT,
     borderRadius: 18,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#0e132f",
   },
   heroImage: { width: "100%", height: "100%" },
   glowCenter: {
