@@ -582,14 +582,20 @@ export default function ProfileScreen() {
     const next = activeBgColors;
     if (prev[0] === next[0] && prev[1] === next[1]) return;
     prevBgRef.current = next;
+    // 1. Actualizar state: bgFrom = color actual, bgTo = color nuevo
     setBgFrom(prev);
     setBgTo(next);
-    crossFadeAnim.setValue(0);
-    Animated.timing(crossFadeAnim, {
-      toValue: 1,
-      duration: 600,
-      useNativeDriver: true,
-    }).start();
+    // 2. Diferir el reset del Animated.Value hasta que React haya comiteado
+    //    el nuevo bgFrom en la capa nativa (evita el flash de un frame).
+    const raf = requestAnimationFrame(() => {
+      crossFadeAnim.setValue(0);
+      Animated.timing(crossFadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }).start();
+    });
+    return () => cancelAnimationFrame(raf);
   }, [activeBgColors, crossFadeAnim]);
 
   return (
