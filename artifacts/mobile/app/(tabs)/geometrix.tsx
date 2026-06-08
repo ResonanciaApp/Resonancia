@@ -132,16 +132,28 @@ const MUSIC_MODULES: MusicModule[] = [
 ];
 
 /**
- * 7 degradados de trazo construidos con la misma paleta (PALETTE) y con buen
+ * Degradados de TRAZO (lumínicos) — para los Ajustes personalizados de cada
+ * geometría. 7 degradados construidos con la misma paleta (PALETTE) y con buen
  * contraste entre sí (recorren la rueda: cálidos → fríos → vuelta). Cada
  * `colors` es una referencia estable a nivel de módulo para no romper el
- * React.memo de SacredGlyph.
+ * React.memo de SacredGlyph. NO confundir con los degradados de fondo.
  */
-// Degradados de fondo para el lienzo. Diseñados oscuros desde el origen — al
-// nivel del fondo indigo de la pantalla de inicio (HOME_GRADIENT) — pero en
-// distintos tonos, para que las animaciones (trazos claros) siempre contrasten.
-// Todos terminan en el mismo tono profundo de Inicio (#06070F) para cohesión.
-const GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
+const STROKE_GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
+  { id: "dorado-rosa", colors: [PALETTE[0], PALETTE[5]] },
+  { id: "rosa-lavanda", colors: [PALETTE[5], PALETTE[4]] },
+  { id: "lavanda-azul", colors: [PALETTE[4], PALETTE[3]] },
+  { id: "azul-verdeagua", colors: [PALETTE[3], PALETTE[2]] },
+  { id: "verdeagua-verde", colors: [PALETTE[2], PALETTE[6]] },
+  { id: "verde-dorado", colors: [PALETTE[6], PALETTE[0]] },
+  { id: "crema-dorado", colors: [PALETTE[1], PALETTE[0]] },
+];
+
+// Degradados de FONDO para el lienzo (Ajustes generales). Diseñados oscuros
+// desde el origen — al nivel del fondo indigo de la pantalla de inicio
+// (HOME_GRADIENT) — pero en distintos tonos, para que las animaciones (trazos
+// claros) siempre contrasten. Todos terminan en el mismo tono profundo de
+// Inicio (#06070F) para cohesión. Son DISTINTOS de los degradados de trazo.
+const BG_GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
   { id: "indigo-noche", colors: ["#0C1430", "#06070F"] },
   { id: "verdeagua-noche", colors: ["#072623", "#06070F"] },
   { id: "violeta-noche", colors: ["#1A1030", "#06070F"] },
@@ -150,9 +162,16 @@ const GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
   { id: "ambar-noche", colors: ["#2A1A05", "#06070F"] },
 ];
 
+// Resolver del degradado de TRAZO (Ajustes personalizados).
 function gradientColors(id: string | null): readonly [string, string] | undefined {
   if (!id) return undefined;
-  return GRADIENTS.find((gr) => gr.id === id)?.colors;
+  return STROKE_GRADIENTS.find((gr) => gr.id === id)?.colors;
+}
+
+// Resolver del degradado de FONDO (Ajustes generales).
+function bgGradientColors(id: string | null): readonly [string, string] | undefined {
+  if (!id) return undefined;
+  return BG_GRADIENTS.find((gr) => gr.id === id)?.colors;
 }
 
 // Escala el RGB de un hex por un factor (clamp 0–255). Sirve para aclarar
@@ -218,7 +237,7 @@ function GradientSwatch({
 /** Ajustes editables por geometría. Los sliders guardan 0–1. */
 type GeoSettings = {
   color: string;
-  /** Degradado del trazo (id de GRADIENTS) o null = color sólido. */
+  /** Degradado del trazo (id de STROKE_GRADIENTS) o null = color sólido. */
   gradientId: string | null;
   /** Giro a la derecha on/off (sentido horario). */
   rotate: boolean;
@@ -279,7 +298,7 @@ type GlobalSettings = {
   glow: number;
   /** Color sólido de fondo del lienzo; null = usar fondo por defecto o degradado. */
   bgColor: string | null;
-  /** Degradado de fondo del lienzo (id de GRADIENTS); null = sólido o por defecto. */
+  /** Degradado de fondo del lienzo (id de BG_GRADIENTS); null = sólido o por defecto. */
   bgGradientId: string | null;
   /** Brillo del fondo (valor del slider 0–1; 0.5 = brillo original). */
   bgBrightness: number;
@@ -911,7 +930,7 @@ export default function GeometrixScreen() {
   // degradado seleccionado o, por defecto, el de Inicio; ambos modulados por
   // el slider de brillo de Ajustes generales.
   const bgFactor = brightnessFactor(master.bgBrightness);
-  const selectedBg = gradientColors(master.bgGradientId);
+  const selectedBg = bgGradientColors(master.bgGradientId);
   const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
 
   return (
@@ -1475,7 +1494,7 @@ export default function GeometrixScreen() {
                   size={20}
                 />
               </Pressable>
-              {GRADIENTS.map((gr) => {
+              {BG_GRADIENTS.map((gr) => {
                 const on = master.bgGradientId === gr.id;
                 return (
                   <Pressable
@@ -1751,7 +1770,7 @@ export default function GeometrixScreen() {
                     Color degradado
                   </Text>
                   <View style={styles.swatchRow}>
-                    {GRADIENTS.map((gr) => {
+                    {STROKE_GRADIENTS.map((gr) => {
                       const on = s.gradientId === gr.id;
                       return (
                         <Pressable
