@@ -1913,7 +1913,7 @@ export default function GeometrixScreen() {
           {/* Línea divisora sutil */}
           <View style={styles.sheetHeaderDivider} />
 
-          <View style={styles.geoCard}>
+          <View style={[styles.geoCard, { marginTop: -10 }]}>
             {/* Color de fondo del lienzo: indigo por defecto + degradados
                 (oscurecidos). Sin colores sólidos. */}
             <Text style={styles.fieldLabel}>Color de fondo</Text>
