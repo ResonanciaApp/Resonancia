@@ -1618,7 +1618,7 @@ export default function GeometrixScreen() {
                   opacity: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.opacity,
                 }))
               }
-              color="#585f7e"
+              color="#FFFFFF"
               trackColor="rgba(255,255,255,0.12)"
             />
 
@@ -1634,7 +1634,7 @@ export default function GeometrixScreen() {
                   bgBrightness: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.bgBrightness,
                 }))
               }
-              color="#585f7e"
+              color="#FFFFFF"
               trackColor="rgba(255,255,255,0.12)"
             />
 
@@ -1650,7 +1650,7 @@ export default function GeometrixScreen() {
                   glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
                 }))
               }
-              color="#585f7e"
+              color="#FFFFFF"
               trackColor="rgba(255,255,255,0.12)"
             />
           </View>
@@ -1893,7 +1893,7 @@ export default function GeometrixScreen() {
                   <VolumeSlider
                     value={s.opacity}
                     onChange={(v) => updateSetting(g.id, "opacity", Math.max(0, v))}
-                    color="#585f7e"
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
 
@@ -1904,7 +1904,7 @@ export default function GeometrixScreen() {
                   <VolumeSlider
                     value={s.thickness}
                     onChange={(v) => updateSetting(g.id, "thickness", v)}
-                    color="#585f7e"
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
 
@@ -1915,7 +1915,7 @@ export default function GeometrixScreen() {
                   <VolumeSlider
                     value={s.scale}
                     onChange={(v) => updateSetting(g.id, "scale", v)}
-                    color="#585f7e"
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
 
@@ -1926,7 +1926,7 @@ export default function GeometrixScreen() {
                   <VolumeSlider
                     value={s.glow}
                     onChange={(v) => updateSetting(g.id, "glow", v)}
-                    color="#585f7e"
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
                 </View>
