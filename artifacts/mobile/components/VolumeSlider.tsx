@@ -12,6 +12,9 @@ function clamp01(n: number): number {
   return n;
 }
 
+/** Padding horizontal del área de toque para que el thumb no se corte en los bordes. */
+const TRACK_PAD = 8;
+
 type Props = {
   value: number;
   onChange: (value: number) => void;
@@ -33,8 +36,12 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   const handleGrant = useCallback(
     (e: GestureResponderEvent) => {
       trackRef.current?.measure((_x, _y, _w, _h, px) => {
-        pageXRef.current = px;
-        onChange(clamp01((e.nativeEvent.pageX - px) / (widthRef.current || 1)));
+        pageXRef.current = px + TRACK_PAD;
+        onChange(
+          clamp01(
+            (e.nativeEvent.pageX - pageXRef.current) / (widthRef.current || 1),
+          ),
+        );
       });
     },
     [onChange],
@@ -52,7 +59,7 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
       ref={trackRef}
       style={styles.hitArea}
       onLayout={(e: LayoutChangeEvent) => {
-        widthRef.current = e.nativeEvent.layout.width;
+        widthRef.current = Math.max(1, e.nativeEvent.layout.width - TRACK_PAD * 2);
       }}
       onStartShouldSetResponder={() => true}
       onMoveShouldSetResponder={() => true}
@@ -76,6 +83,7 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
 const styles = StyleSheet.create({
   hitArea: {
     paddingVertical: 14,
+    paddingHorizontal: TRACK_PAD,
     justifyContent: "center",
   },
   track: {
@@ -92,11 +100,11 @@ const styles = StyleSheet.create({
   },
   thumb: {
     position: "absolute",
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginLeft: -4,
-    top: -3,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginLeft: -5,
+    top: -4,
     shadowColor: "#ffffff",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,

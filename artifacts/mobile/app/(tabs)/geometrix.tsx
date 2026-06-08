@@ -1246,7 +1246,7 @@ export default function GeometrixScreen() {
               {/* Opacidad general */}
               <View style={styles.fieldRow}>
                 <Text style={styles.fieldLabel}>Opacidad general</Text>
-                <Text style={styles.fieldValue}>{Math.round(master.opacity * 100)}%</Text>
+                <Text style={styles.fieldValue}>{Math.round(master.opacity * 100)}</Text>
               </View>
               <VolumeSlider
                 value={master.opacity}
@@ -1273,7 +1273,7 @@ export default function GeometrixScreen() {
               {/* Glow general */}
               <View style={[styles.fieldRow, { marginTop: 18 }]}>
                 <Text style={styles.fieldLabel}>Glow</Text>
-                <Text style={styles.fieldValue}>{Math.round(master.glow * 100)}%</Text>
+                <Text style={styles.fieldValue}>{Math.round(master.glow * 100)}</Text>
               </View>
               <VolumeSlider
                 value={master.glow}
@@ -1510,7 +1510,7 @@ export default function GeometrixScreen() {
                   {/* Opacidad */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Opacidad</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}%</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.opacity}
@@ -1522,7 +1522,7 @@ export default function GeometrixScreen() {
                   {/* Grosor */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Grosor</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}%</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.thickness}
@@ -1534,7 +1534,7 @@ export default function GeometrixScreen() {
                   {/* Tamaño */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Tamaño</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.scale * 100)}%</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.scale * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.scale}
@@ -1546,7 +1546,7 @@ export default function GeometrixScreen() {
                   {/* Glow propio */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Glow</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.glow * 100)}%</Text>
+                    <Text style={styles.fieldValue}>{Math.round(s.glow * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.glow}
