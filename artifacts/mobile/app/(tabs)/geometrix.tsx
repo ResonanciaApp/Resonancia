@@ -2179,7 +2179,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: "#080A18",
     borderWidth: 1,
-    borderColor: "#1b1f41",
+    borderColor: "#0e132f",
   },
   menuList: {
     flex: 1,
