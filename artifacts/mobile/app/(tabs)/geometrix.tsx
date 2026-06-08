@@ -2050,6 +2050,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
     marginTop: 14,
     marginBottom: 0,
+    marginHorizontal: -20,
   },
 
   canvasWrap: {
