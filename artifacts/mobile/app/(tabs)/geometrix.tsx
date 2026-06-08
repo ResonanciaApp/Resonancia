@@ -1466,7 +1466,7 @@ export default function GeometrixScreen() {
                   </View>
 
                   {/* Color */}
-                  <Text style={styles.fieldLabel}>Color</Text>
+                  <Text style={styles.fieldLabel}>Color sólido</Text>
                   <View style={styles.swatchRow}>
                     {PALETTE.map((c) => {
                       const on =
@@ -1493,7 +1493,7 @@ export default function GeometrixScreen() {
 
                   {/* Degradado: 7 opciones de la misma paleta */}
                   <Text style={[styles.fieldLabel, styles.gradientLabel]}>
-                    Degradado
+                    Color degradado
                   </Text>
                   <View style={styles.swatchRow}>
                     {GRADIENTS.map((gr) => {
