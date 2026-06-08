@@ -29,7 +29,7 @@ const C = 50;
  * que todas se vean del mismo tamaño en miniaturas, tabs y capas.
  */
 const TARGET_EXTENT = 39;
-const EXTENT: Record<GeometryId, number> = {
+export const EXTENT: Record<GeometryId, number> = {
   caleidoscopio: 44,
   "flor-vida": 36,
   "semilla-vida": 39,
