@@ -1365,7 +1365,7 @@ export default function GeometrixScreen() {
               onChange={(v) =>
                 setMaster((m) => ({
                   ...m,
-                  opacity: Number.isFinite(v) ? Math.min(1, Math.max(0.1, v)) : m.opacity,
+                  opacity: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.opacity,
                 }))
               }
               color="#FFFFFF"
@@ -1637,7 +1637,7 @@ export default function GeometrixScreen() {
                   </View>
                   <VolumeSlider
                     value={s.opacity}
-                    onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
+                    onChange={(v) => updateSetting(g.id, "opacity", Math.max(0, v))}
                     color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
