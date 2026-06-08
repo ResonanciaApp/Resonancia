@@ -1824,8 +1824,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 999,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(122,143,168,0.35)",
-    backgroundColor: "rgba(11,15,20,0.55)",
+    borderColor: "rgba(122,143,168,0.45)",
+    // Casi opaco: el fondo elegido del lienzo no debe traslucir y apagar el
+    // ícono de la flecha.
+    backgroundColor: "rgba(11,15,20,0.9)",
   },
   pillRow: {
     marginRight: 8,
@@ -1837,7 +1839,8 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     borderColor: CARD_BORDER,
-    backgroundColor: "rgba(255,255,255,0.02)",
+    // Casi opaco por la misma razón que chevronBtn.
+    backgroundColor: "rgba(11,15,20,0.9)",
   },
   pillBtn: {
     width: 30,
