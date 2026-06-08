@@ -1158,7 +1158,7 @@ export default function ProfileScreen() {
               {/* ── Paleta de degradado ── */}
               <Text style={pStyles.sectionTitle}>Color de fondo</Text>
 
-              <View style={[pStyles.swatchRow, { marginTop: 20, marginBottom: 28 }]}>
+              <View style={[pStyles.swatchRow, { marginTop: 13, marginBottom: 28 }]}>
                 {/* Por defecto */}
                 <Pressable
                   onPress={() => selectGradient(null)}
