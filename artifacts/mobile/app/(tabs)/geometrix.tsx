@@ -530,13 +530,53 @@ export default function GeometrixScreen() {
     Object.keys(playersRef.current).forEach((k) => stopModule(k));
   }, [stopModule]);
 
-  // Audio de intro: suena una sola vez sincronizado con el "logo reveal"
-  // (FadeIn de cubo-3.png) cuando el lienzo está vacío.
+  // Audio de intro: precargado al montar el componente para que el primer
+  // play sea instantáneo (sin delay de decode). El player vive durante toda
+  // la vida del componente; stopIntro solo pausa (no destruye).
   const introPlayerRef = useRef<AudioPlayer | null>(null);
-  // Token de petición: cada stop/play lo incrementa; un `playIntro` async que
-  // resuelva su await tras un stop/play posterior se aborta (evita fugas al
-  // cambiar de foco o iniciar otro audio durante el await).
+  // Token anti-race: el seekTo es async; si mientras esperamos se pide otro
+  // stop/play, abortamos antes de llamar play().
   const introReqRef = useRef(0);
+
+  // Precarga: se ejecuta UNA SOLA VEZ al montar → el decode ocurre en
+  // background mientras el usuario está en otra pestaña.
+  useEffect(() => {
+    (async () => {
+      try {
+        await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
+      } catch {
+        /* ignore */
+      }
+      try {
+        const p = createAudioPlayer(
+          require("@/assets/audio/geometrix/intro-reveal.mp3"),
+          { updateInterval: 500 },
+        );
+        p.volume = 1;
+        introPlayerRef.current = p;
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      // Liberar el player solo al desmontar (no en cada stop/play).
+      const p = introPlayerRef.current;
+      if (p) {
+        try {
+          p.pause();
+        } catch {
+          /* ignore */
+        }
+        try {
+          p.remove();
+        } catch {
+          /* ignore */
+        }
+      }
+      introPlayerRef.current = null;
+    };
+  }, []);
+
   const stopIntro = useCallback(() => {
     introReqRef.current++;
     const p = introPlayerRef.current;
@@ -546,43 +586,32 @@ export default function GeometrixScreen() {
       } catch {
         /* ignore */
       }
-      try {
-        p.remove();
-      } catch {
-        /* ignore */
-      }
     }
-    introPlayerRef.current = null;
   }, []);
+
   const playIntro = useCallback(async () => {
-    stopIntro();
+    introReqRef.current++;
     const req = introReqRef.current;
+    const p = introPlayerRef.current;
+    if (!p) return;
     try {
-      await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
+      // seekTo toma segundos; el player ya está cargado → seek casi instantáneo.
+      await p.seekTo(0);
     } catch {
       /* ignore */
     }
-    // Si mientras esperábamos se pidió otro stop/play, no crear el reproductor.
+    // Abortar si hubo otro stop/play mientras esperábamos el seek.
     if (introReqRef.current !== req) return;
     try {
-      const p = createAudioPlayer(
-        require("@/assets/audio/geometrix/intro-reveal.mp3"),
-        { updateInterval: 500 },
-      );
-      p.volume = 1;
       p.play();
-      introPlayerRef.current = p;
     } catch {
       /* ignore */
     }
-  }, [stopIntro]);
+  }, []);
 
   useEffect(() => {
-    return () => {
-      stopAllSound();
-      stopIntro();
-    };
-  }, [stopAllSound, stopIntro]);
+    return () => stopAllSound();
+  }, [stopAllSound]);
 
   // Espejo de `active` para leerlo dentro de callbacks de foco sin re-suscribir.
   const activeRef = useRef(active);
