@@ -1425,17 +1425,6 @@ export default function GeometrixScreen() {
                     </View>
                     <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={2}>
-                        Respirar
-                      </Text>
-                      <Toggle
-                        value={s.breathe}
-                        onChange={(v) => updateSetting(g.id, "breathe", v)}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
-                    </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
                         Girar izquierda
                       </Text>
                       <Toggle
@@ -1444,6 +1433,17 @@ export default function GeometrixScreen() {
                           updateSetting(g.id, "rotateLeft", v);
                           if (v) updateSetting(g.id, "rotate", false);
                         }}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                    <View style={styles.toggleGridItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
+                        Respirar
+                      </Text>
+                      <Toggle
+                        value={s.breathe}
+                        onChange={(v) => updateSetting(g.id, "breathe", v)}
                         color={TOGGLE_ON_COLOR}
                         compact
                       />
