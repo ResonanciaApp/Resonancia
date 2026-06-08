@@ -2151,6 +2151,12 @@ const styles = StyleSheet.create({
   thumbItem: {
     flexDirection: "row",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#101532",
+    borderRadius: 16,
+    backgroundColor: "transparent",
+    paddingVertical: 2,
+    paddingHorizontal: 6,
   },
   thumbCaret: {
     marginLeft: -8,
