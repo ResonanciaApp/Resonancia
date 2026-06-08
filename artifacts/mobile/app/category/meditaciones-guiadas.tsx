@@ -167,7 +167,7 @@ export default function MeditacionesGuiadasScreen() {
             </Pressable>
           </View>
           <View style={styles.catIconCircle}>
-            <ZenStonesIcon color={ICON_COLOR} size={51} />
+            <ZenStonesIcon color={ICON_COLOR} size={71} />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>

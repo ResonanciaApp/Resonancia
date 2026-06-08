@@ -172,7 +172,7 @@ export default function SonidosAncestalesScreen() {
             </Pressable>
           </View>
           <View style={styles.catIconCircle}>
-            <MaterialCommunityIcons name="bowl-mix" size={43} color={ACCENT} />
+            <MaterialCommunityIcons name="bowl-mix" size={63} color={ACCENT} />
           </View>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>Ancestrales</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>

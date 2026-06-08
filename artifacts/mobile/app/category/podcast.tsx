@@ -212,7 +212,7 @@ export default function SonidosScreen() {
           <View style={styles.iconCircle}>
             <ExpoImage
               source={require("../../assets/images/cat-sonidos.png")}
-              style={{ width: 43, height: 43 }}
+              style={{ width: 63, height: 63 }}
               contentFit="contain"
             />
           </View>
