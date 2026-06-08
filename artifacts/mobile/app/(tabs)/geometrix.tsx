@@ -53,19 +53,6 @@ import { GEOMETRIES, PALETTE, type GeometryId, type GeometryMeta } from "@/data/
 
 const colors = colorsConst.light;
 const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
-
-// Convierte un color hex (#RGB o #RRGGBB) a rgba con el alpha dado. Para
-// hacer un fade que no tiña de negro, el extremo "transparente" debe usar el
-// mismo color con alpha 0 (no la palabra "transparent").
-function withAlpha(hex: string, alpha: number): string {
-  let h = hex.replace("#", "");
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  if ([r, g, b].some((n) => Number.isNaN(n))) return hex;
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
 const CARD_BORDER = "#161f33";
 
 /**
@@ -792,11 +779,6 @@ export default function GeometrixScreen() {
   const immersiveSize = Math.min(width, height) * 0.96;
 
   const masterBgGradient = gradientColors(master.bgGradientId);
-  // Color del borde superior del fondo del lienzo (el que aparece en la
-  // divisora): tope del degradado o el sólido elegido. Sirve para el fade.
-  const canvasBgTopColor = masterBgGradient
-    ? masterBgGradient[0]
-    : master.bgColor ?? HOME_GRADIENT[0];
 
   return (
     <View style={styles.root}>
@@ -925,33 +907,24 @@ export default function GeometrixScreen() {
             paddingBottom despeja la tab bar para que el lienzo no se recorte. */}
         <View style={[styles.canvasWrap, { paddingBottom: tabBarHeight }]}>
           {/* Fondo del lienzo (solo de la divisora hacia abajo). Se extiende
-              edge-to-edge (left/right -20 rompe el padding del content) y con
-              un fade sutil ~80px por encima de la divisora que mezcla el fondo
-              elegido con el fondo por defecto de la app. */}
+              edge-to-edge (left/right -20 rompe el padding del content); el
+              color elegido llega justo a la divisora, sin degradado. */}
           {(masterBgGradient || master.bgColor) && (
             <View pointerEvents="none" style={styles.canvasBgLayer}>
-              {/* Relleno principal: de la divisora (top: FADE) hacia abajo. */}
+              {/* Color de fondo a pleno desde la divisora hacia abajo (sin
+                  degradado de transición). */}
               {masterBgGradient ? (
                 <LinearGradient
                   colors={masterBgGradient}
                   start={{ x: 0.5, y: 0 }}
                   end={{ x: 0.5, y: 1 }}
-                  style={styles.canvasBgFill}
+                  style={StyleSheet.absoluteFill}
                 />
               ) : (
                 <View
-                  style={[styles.canvasBgFill, { backgroundColor: master.bgColor! }]}
+                  style={[StyleSheet.absoluteFill, { backgroundColor: master.bgColor! }]}
                 />
               )}
-              {/* Fade hacia arriba: transparente (arriba) → color elegido
-                  (en la divisora). Usa rgba con alpha 0 del mismo color para
-                  no teñir de negro. */}
-              <LinearGradient
-                colors={[withAlpha(canvasBgTopColor, 0), canvasBgTopColor]}
-                start={{ x: 0.5, y: 0 }}
-                end={{ x: 0.5, y: 1 }}
-                style={styles.canvasBgFade}
-              />
             </View>
           )}
           {/* Escenario: centra la animación en el espacio sobre los thumbnails. */}
@@ -1813,31 +1786,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   // Capa de fondo del lienzo: edge-to-edge (left/right -20 rompe el padding
-  // del content). Empieza en la divisora (top: 0), sin extenderse por encima,
-  // para que la línea justo muestre el indigo del tema.
+  // del content). Empieza en la divisora (top: 0); el color llega justo a la
+  // línea, sin degradado.
   canvasBgLayer: {
     position: "absolute",
     left: -20,
     right: -20,
     top: 0,
     bottom: 0,
-  },
-  // Relleno sólido/degradado a pleno color: por debajo de la zona de fade.
-  canvasBgFill: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 48,
-    bottom: 0,
-  },
-  // Fade pequeño: solo la franja donde se unen el indigo del tema y el color
-  // elegido (~8px por debajo de la divisora, 40px de alto). Pleno color a 48px.
-  canvasBgFade: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 8,
-    height: 40,
   },
   stage: {
     flex: 1,
