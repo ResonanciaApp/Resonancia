@@ -370,19 +370,21 @@ export default function HomeScreen() {
                     </View>
                     {/* Fila inferior: título+autor a la izq, botón a la der */}
                     <View style={styles.heroBottom}>
-                      <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
-                        {featuredSession.title}
-                      </Text>
-                      <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
-                        {heroAuthor}
-                      </Text>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
+                          {featuredSession.title}
+                        </Text>
+                        <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
+                          {heroAuthor}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
+                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
+                      >
+                        <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
+                      </Pressable>
                     </View>
-                    <Pressable
-                      onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
-                      style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
-                    >
-                      <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
-                    </Pressable>
                   </View>
                 );
               })()}
@@ -692,10 +694,12 @@ const styles = StyleSheet.create({
   heroTitle: { fontSize: 20, fontWeight: "700", lineHeight: 26, marginBottom: 4 },
   heroAuthor: { fontSize: 12, marginTop: 2 },
   heroBottom: {
-    marginBottom: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
   heroBtn: {
-    alignSelf: "center",
+    flexShrink: 0,
     width: 46,
     height: 46,
     borderRadius: 23,
