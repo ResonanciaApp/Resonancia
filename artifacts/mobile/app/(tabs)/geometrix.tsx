@@ -1650,7 +1650,7 @@ export default function GeometrixScreen() {
 
             {/* Glow general */}
             <View style={[styles.fieldRow, { marginTop: 18 }]}>
-              <Text style={styles.fieldLabel}>Glow</Text>
+              <Text style={styles.fieldLabel}>Glow general</Text>
             </View>
             <VolumeSlider
               value={master.glow}
