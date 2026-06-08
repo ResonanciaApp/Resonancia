@@ -1623,13 +1623,12 @@ const styles = StyleSheet.create({
   },
   quickBlock: {
     width: "31.5%",
-    aspectRatio: 1,
+    height: 90,
     borderRadius: 18,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
-    paddingHorizontal: 8,
+    gap: 8,
   },
   quickLabel: {
     fontSize: 12,
