@@ -187,7 +187,7 @@ const pStyles = StyleSheet.create({
   swatch: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: 22,
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
