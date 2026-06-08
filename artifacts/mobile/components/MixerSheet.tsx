@@ -616,12 +616,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "flex-end",
+    paddingTop: "7%",
   },
   sheet: {
+    flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
-    height: "93%",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
