@@ -1,0 +1,38 @@
+@keyframes geo-spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes geo-spin-slow-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes geo-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes geo-pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px currentColor); }
+  50% { filter: drop-shadow(0 0 10px currentColor); }
+}
+
+.animate-geo-spin {
+  animation: geo-spin-slow 60s linear infinite;
+  transform-origin: center;
+}
+
+.animate-geo-spin-reverse {
+  animation: geo-spin-slow-reverse 80s linear infinite;
+  transform-origin: center;
+}
+
+.animate-geo-breathe {
+  animation: geo-breathe 8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-geo-pulse {
+  animation: geo-pulse-glow 4s ease-in-out infinite;
+}
