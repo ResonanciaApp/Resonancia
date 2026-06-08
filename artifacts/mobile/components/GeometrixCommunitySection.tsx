@@ -321,12 +321,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
     marginBottom: 0,
   },
-  cuboIcon: { width: 18, height: 18, resizeMode: "contain", opacity: 0.9 },
+  cuboIcon: { width: 23, height: 23, resizeMode: "contain", opacity: 0.9 },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
-    marginBottom: 14,
+    marginBottom: 4,
   },
   sectionTitle: {
     fontSize: 20,
@@ -337,7 +337,8 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     fontSize: 13,
     color: "#7A8FA8",
-    marginTop: -8,
+    marginLeft: 30,
+    marginTop: 2,
     marginBottom: 14,
   },
   verTodasBtn: {
