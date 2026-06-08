@@ -2100,7 +2100,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(122,143,168,0.45)",
-    backgroundColor: "rgba(3,6,29,0.90)",
+    backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillRow: {
     marginRight: 8,
@@ -2112,7 +2112,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     borderColor: CARD_BORDER,
-    backgroundColor: "rgba(3,6,29,0.90)",
+    backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillBtn: {
     width: 30,
