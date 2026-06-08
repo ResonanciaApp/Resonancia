@@ -1,20 +1,22 @@
 /**
  * GeometrixPatternBg — fondo teselado de geometría sagrada para el lienzo
- * de Geometrix. Usa react-native-svg <Pattern> para una sola pasada de render
- * (eficiente, sin grid de SVGs). Feature premium.
+ * de Geometrix. Usa react-native-svg <Pattern> para una sola pasada de render.
+ * Feature premium.
+ *
+ * El SVG usa absoluteFill y un Rect 9999×9999 para cubrir cualquier contenedor
+ * sin depender de sus dimensiones exactas.
  *
  * Coordenadas del glyph: viewBox 0–100. El tile escala el glyph de 100→tileSize
  * con `scale(tileSize/100)` para que el trazo quede proporcional.
  */
 import React from "react";
+import { StyleSheet } from "react-native";
 import Svg, { Defs, G, Pattern, Rect } from "react-native-svg";
 
 import type { GeometryId } from "@/data/geometries";
 import { glyphElements } from "@/components/SacredGlyph";
 
 type Props = {
-  /** Lado del lienzo en px. */
-  size: number;
   /** Geometría a teselar. */
   geoId: GeometryId;
   /** Opacidad global del patrón 0–1. */
@@ -25,22 +27,22 @@ type Props = {
   color?: string;
 };
 
-function GeometrixPatternBgImpl({ size, geoId, opacity, tileSize, color = "#BE9650" }: Props) {
+function GeometrixPatternBgImpl({ geoId, opacity, tileSize, color = "#BE9650" }: Props) {
   const id = React.useId().replace(/:/g, "");
   const patId = `gpat-${id}`;
 
-  if (size <= 0 || tileSize <= 0) return null;
+  if (tileSize <= 0) return null;
 
   // El glyph dibuja en un espacio 0–100; escalamos al tamaño del tile.
   const scale = tileSize / 100;
-  // strokeWidth constante en espacio viewBox (1px visual en el tile).
+  // strokeWidth constante en espacio viewBox (línea fina y proporcional).
   const sw = 100 / tileSize;
 
   return (
     <Svg
-      width={size}
-      height={size}
-      style={{ position: "absolute", top: 0, left: 0 }}
+      width="100%"
+      height="100%"
+      style={StyleSheet.absoluteFill}
       pointerEvents="none"
     >
       <Defs>
@@ -64,11 +66,12 @@ function GeometrixPatternBgImpl({ size, geoId, opacity, tileSize, color = "#BE96
           </G>
         </Pattern>
       </Defs>
+      {/* Rect grande: el patrón tilea infinitamente, tapar todo el SVG */}
       <Rect
         x={0}
         y={0}
-        width={size}
-        height={size}
+        width={9999}
+        height={9999}
         fill={`url(#${patId})`}
         opacity={opacity}
       />

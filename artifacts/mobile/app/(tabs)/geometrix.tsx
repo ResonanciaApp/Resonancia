@@ -1336,9 +1336,8 @@ export default function GeometrixScreen() {
               end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
             />
-            {master.bgPattern && canvasSide > 0 && (
+            {master.bgPattern && (
               <GeometrixPatternBg
-                size={canvasSide}
                 geoId={master.bgPattern.geoId}
                 opacity={master.bgPattern.opacity}
                 tileSize={master.bgPattern.tileSize}
@@ -1665,7 +1664,6 @@ export default function GeometrixScreen() {
           />
           {master.bgPattern && (
             <GeometrixPatternBg
-              size={immersiveSize}
               geoId={master.bgPattern.geoId}
               opacity={master.bgPattern.opacity}
               tileSize={master.bgPattern.tileSize}
@@ -1896,10 +1894,9 @@ export default function GeometrixScreen() {
               />
               {master.bgPattern && (
                 <GeometrixPatternBg
-                  size={generalPreviewSize}
                   geoId={master.bgPattern.geoId}
                   opacity={master.bgPattern.opacity}
-                  tileSize={master.bgPattern.tileSize * (generalPreviewSize / canvasSide || 1)}
+                  tileSize={master.bgPattern.tileSize * (generalPreviewSize / (canvasSide || generalPreviewSize))}
                   color={colors.primary}
                 />
               )}
@@ -2395,10 +2392,9 @@ export default function GeometrixScreen() {
             <View style={[styles.previewBox, { width: previewSize, height: previewSize }]}>
               {master.bgPattern && (
                 <GeometrixPatternBg
-                  size={previewSize}
                   geoId={master.bgPattern.geoId}
                   opacity={master.bgPattern.opacity}
-                  tileSize={master.bgPattern.tileSize * (previewSize / canvasSide || 1)}
+                  tileSize={master.bgPattern.tileSize * (previewSize / (canvasSide || previewSize))}
                   color={colors.primary}
                 />
               )}
