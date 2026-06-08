@@ -1051,6 +1051,7 @@ export default function ProfileScreen() {
 
               {/* ── Geometrix ── */}
               <Text style={pStyles.sectionTitle}>Fondo de Geometrix</Text>
+              <Text style={pStyles.sectionSub}>Elige una de tus creaciones como fondo de perfil</Text>
 
               <ScrollView
                 horizontal
