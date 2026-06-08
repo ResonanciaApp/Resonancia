@@ -2472,7 +2472,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
   soundTile: {
     width: 44,
