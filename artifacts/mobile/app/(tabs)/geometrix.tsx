@@ -1400,11 +1400,11 @@ export default function GeometrixScreen() {
                     </View>
                   </View>
 
-                  {/* Toggles (on/off) en cuadrícula de 2 columnas, debajo del título */}
-                  <View style={styles.toggleGrid}>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
-                        Fade in/out
+                  {/* Toggles (on/off) en una sola fila: etiqueta arriba, switch abajo */}
+                  <View style={styles.toggleRow}>
+                    <View style={styles.toggleRowItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
+                        Fade
                       </Text>
                       <Toggle
                         value={s.fadeLoop}
@@ -1413,8 +1413,8 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
+                    <View style={styles.toggleRowItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
                         Respirar
                       </Text>
                       <Toggle
@@ -1424,29 +1424,29 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
-                        Girar a la derecha
-                      </Text>
-                      <Toggle
-                        value={s.rotate}
-                        onChange={(v) => {
-                          updateSetting(g.id, "rotate", v);
-                          if (v) updateSetting(g.id, "rotateLeft", false);
-                        }}
-                        color={s.color}
-                        compact
-                      />
-                    </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
-                        Girar a izquierda
+                    <View style={styles.toggleRowItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
+                        Girar izquierda
                       </Text>
                       <Toggle
                         value={s.rotateLeft}
                         onChange={(v) => {
                           updateSetting(g.id, "rotateLeft", v);
                           if (v) updateSetting(g.id, "rotate", false);
+                        }}
+                        color={s.color}
+                        compact
+                      />
+                    </View>
+                    <View style={styles.toggleRowItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
+                        Girar derecha
+                      </Text>
+                      <Toggle
+                        value={s.rotate}
+                        onChange={(v) => {
+                          updateSetting(g.id, "rotate", v);
+                          if (v) updateSetting(g.id, "rotateLeft", false);
                         }}
                         color={s.color}
                         compact
@@ -1922,22 +1922,21 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   geoCardName: { minWidth: 0, fontSize: 13, fontWeight: "700", color: "#FFFFFF" },
-  toggleGrid: {
+  toggleRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    rowGap: 12,
-    columnGap: 10,
-    marginTop: 4,
-    marginBottom: 6,
-  },
-  toggleGridItem: {
-    width: "47%",
-    flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
-    gap: 7,
+    gap: 6,
+    marginTop: 6,
+    marginBottom: 8,
   },
-  toggleTriLabel: { fontSize: 12, fontWeight: "600", color: "#FFFFFF", flexShrink: 1 },
+  toggleRowItem: { flex: 1, alignItems: "center", gap: 7 },
+  toggleTriLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    textAlign: "center",
+  },
 
   gradientLabel: { marginTop: 10 },
   fieldLabel: { fontSize: 12, fontWeight: "600", color: colors.mutedForeground },
