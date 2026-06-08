@@ -87,11 +87,11 @@ const NATURE_ICONS: Partial<Record<SoundCategoryId, number>> = {
 
 type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores";
 
-const MAIN_TABS: { id: MainTabId; label: string; categories: SoundCategoryId[] | null }[] = [
-  { id: "popular",        label: "Todos",     categories: null },
-  { id: "naturaleza",     label: "Naturales", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
-  { id: "ancestrales",    label: "Sagrados",  categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
-  { id: "sintetizadores", label: "Digital",   categories: ["solfeggio", "frecuencias"] },
+const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: SoundCategoryId[] | null }[] = [
+  { id: "popular",        label: "Todos",     icon: "music-note-eighth",  categories: null },
+  { id: "naturaleza",     label: "Naturales", icon: "leaf",               categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
+  { id: "ancestrales",    label: "Sagrados",  icon: "bell",               categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
+  { id: "sintetizadores", label: "Digital",   icon: "sine-wave",          categories: ["solfeggio", "frecuencias"] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
@@ -391,6 +391,11 @@ export default function MiMusicaScreen() {
                 onPress={() => handleMainTab(tab.id)}
                 style={[styles.tabItem, sel && styles.tabItemActive]}
               >
+                <MaterialCommunityIcons
+                  name={tab.icon as any}
+                  size={20}
+                  color={sel ? "#FFFFFF" : MUTED}
+                />
                 <Text
                   numberOfLines={1}
                   style={[styles.tabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "400" }]}
@@ -492,14 +497,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     gap: 5,
-    paddingTop: 15,
-    paddingBottom: 13,
-    paddingHorizontal: 2,
-    borderRadius: 14,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingHorizontal: 4,
+    borderRadius: 16,
     minWidth: 62,
     borderWidth: 1,
     borderColor: "transparent",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(255,255,255,0.02)",
   },
   tabItemActive: {
     backgroundColor: "rgba(100,142,195,0.14)",
