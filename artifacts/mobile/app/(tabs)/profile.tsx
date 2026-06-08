@@ -979,8 +979,8 @@ export default function ProfileScreen() {
                     },
                   ]}
                 >
-                  <Feather name={icon} size={22} color="#FFFFFF" />
-                  <Text style={[styles.quickLabel, { color: "#FFFFFF" }]} numberOfLines={1}>
+                  <Feather name={icon} size={22} color={colors.mutedForeground} />
+                  <Text style={[styles.quickLabel, { color: colors.mutedForeground }]} numberOfLines={1}>
                     {label}
                   </Text>
                 </Pressable>
