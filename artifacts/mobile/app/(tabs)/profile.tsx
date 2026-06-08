@@ -1042,22 +1042,24 @@ export default function ProfileScreen() {
                 style={{ marginBottom: 28 }}
                 contentContainerStyle={{ paddingRight: 4 }}
               >
-                {/* Ninguno */}
-                <Pressable
-                  onPress={() => selectCreation(null)}
-                  style={pStyles.creationThumb}
-                >
-                  <View
-                    style={[
-                      pStyles.thumbBg,
-                      { backgroundColor: "#0B0F14", alignItems: "center", justifyContent: "center" },
-                      profileBgCreationId === null && pStyles.thumbBgOn,
-                    ]}
+                {/* Ninguno — solo si no hay creaciones guardadas */}
+                {geoCreations.length === 0 && (
+                  <Pressable
+                    onPress={() => selectCreation(null)}
+                    style={pStyles.creationThumb}
                   >
-                    <Feather name="x" size={22} color="#4A5568" />
-                  </View>
-                  <Text style={pStyles.thumbLabel}>Ninguno</Text>
-                </Pressable>
+                    <View
+                      style={[
+                        pStyles.thumbBg,
+                        { backgroundColor: "#0B0F14", alignItems: "center", justifyContent: "center" },
+                        profileBgCreationId === null && pStyles.thumbBgOn,
+                      ]}
+                    >
+                      <Feather name="x" size={22} color="#4A5568" />
+                    </View>
+                    <Text style={pStyles.thumbLabel}>Ninguno</Text>
+                  </Pressable>
+                )}
 
                 {geoCreations.length === 0 ? (
                   <View style={{ justifyContent: "center", paddingHorizontal: 16 }}>
@@ -1110,7 +1112,6 @@ export default function ProfileScreen() {
                             );
                           })}
                         </View>
-                        <Text style={pStyles.thumbLabel} numberOfLines={1}>{c.name}</Text>
                       </Pressable>
                     );
                   })
