@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 3,
+    marginTop: -3,
   },
   iconWrap: {
     width: 52,
