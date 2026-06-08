@@ -955,6 +955,87 @@ export default function ProfileScreen() {
           </Pressable>
         )}
 
+        {/* ── Accesos rápidos ── */}
+        {(() => {
+          const QUICK_ITEMS = [
+            {
+              label: "Mis mezclas",
+              icon: "sliders" as FeatherIconName,
+              route: "/mezclas",
+              grad: ["#7A5520", "#3E2208"] as [string, string],
+              iconColor: "#f4c993",
+              iconBg: "rgba(122,85,32,0.35)",
+            },
+            {
+              label: "Mis Geometrix",
+              icon: "triangle" as FeatherIconName,
+              route: "/geometrix-creaciones",
+              grad: ["#3A5438", "#1E2E1C"] as [string, string],
+              iconColor: "#A8C4A8",
+              iconBg: "rgba(58,84,56,0.40)",
+            },
+            {
+              label: "Grupos",
+              icon: "users" as FeatherIconName,
+              route: "/grupos",
+              grad: ["#4A3260", "#251633"] as [string, string],
+              iconColor: "#C8B4E0",
+              iconBg: "rgba(74,50,96,0.40)",
+            },
+            {
+              label: "Carpetas",
+              icon: "folder" as FeatherIconName,
+              route: "/carpetas",
+              grad: ["#243350", "#101A28"] as [string, string],
+              iconColor: "#8AAAD4",
+              iconBg: "rgba(36,51,80,0.40)",
+            },
+            {
+              label: "Playlists",
+              icon: "list" as FeatherIconName,
+              route: "/playlists",
+              grad: ["#1A4A42", "#0C2420"] as [string, string],
+              iconColor: "#4DB8A0",
+              iconBg: "rgba(26,74,66,0.40)",
+            },
+            {
+              label: "Chats",
+              icon: "message-circle" as FeatherIconName,
+              route: "/amigos",
+              grad: ["#5C4A10", "#2E2408"] as [string, string],
+              iconColor: "#f4c993",
+              iconBg: "rgba(92,74,16,0.40)",
+            },
+          ];
+          return (
+            <View style={styles.quickGrid}>
+              {QUICK_ITEMS.map(({ label, icon, route, grad, iconColor, iconBg }) => (
+                <Pressable
+                  key={label}
+                  onPress={() => router.push(route as never)}
+                  style={({ pressed }) => [
+                    styles.quickBlock,
+                    { opacity: pressed ? 0.80 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] },
+                  ]}
+                >
+                  <LinearGradient
+                    colors={grad}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
+                  />
+                  <View style={[styles.quickIconBg, { backgroundColor: iconBg }]}>
+                    <Feather name={icon} size={20} color={iconColor} />
+                  </View>
+                  <Text style={[styles.quickLabel, { color: "#EDE1D3" }]} numberOfLines={1}>
+                    {label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          );
+        })()}
+
         {/* ── Comunidad ── */}
         <View style={styles.communityRow}>
           {[
@@ -1580,6 +1661,36 @@ const styles = StyleSheet.create({
   fieldInput: { flex: 1, fontSize: 15, backgroundColor: "transparent" },
   saveBtn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 8 },
   saveBtnText: { fontSize: 16, fontWeight: "700" },
+
+  quickGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 20,
+  },
+  quickBlock: {
+    width: "31.5%",
+    aspectRatio: 1,
+    borderRadius: 18,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingHorizontal: 8,
+  },
+  quickIconBg: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  quickLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    textAlign: "center",
+    letterSpacing: 0.2,
+  },
 
   communityRow: { flexDirection: "row", gap: 8, marginBottom: 43 },
   communityCard: {
