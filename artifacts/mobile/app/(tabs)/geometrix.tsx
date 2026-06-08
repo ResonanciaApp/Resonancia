@@ -1318,15 +1318,17 @@ export default function GeometrixScreen() {
                 <Feather name="trash-2" size={18} color={colors.mutedForeground} />
               </Pressable>
               {editingCreation && isDirty && (
-                <Pressable
-                  onPress={updateComposition}
-                  style={styles.updateBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Actualizar composición"
-                  hitSlop={8}
-                >
-                  <Text style={styles.updateBtnText}>Actualizar</Text>
-                </Pressable>
+                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)}>
+                  <Pressable
+                    onPress={updateComposition}
+                    style={styles.clearBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel="Actualizar composición"
+                    hitSlop={8}
+                  >
+                    <Feather name="save" size={18} color={colors.mutedForeground} />
+                  </Pressable>
+                </Animated.View>
               )}
             </Animated.View>
           )}
@@ -2181,30 +2183,14 @@ const styles = StyleSheet.create({
     top: 10,
     left: 0,
     zIndex: 6,
+    flexDirection: "row",
+    alignItems: "center",
   },
   clearBtn: {
     width: 40,
     height: 32,
     alignItems: "center",
     justifyContent: "center",
-  },
-  updateBtn: {
-    marginTop: 4,
-    marginLeft: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 999,
-    backgroundColor: "rgba(190,150,80,0.15)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.5)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  updateBtnText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: colors.primary,
-    letterSpacing: 0.3,
   },
   chevronBtn: {
     width: 40,
