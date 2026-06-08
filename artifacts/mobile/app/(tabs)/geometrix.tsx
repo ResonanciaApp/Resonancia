@@ -1483,8 +1483,8 @@ export default function GeometrixScreen() {
                     toggleGeometry(id);
                   }}
                 >
-                  <Feather name="trash-2" size={18} color="#FFFFFF" />
-                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>Quitar</Text>
+                  <Feather name="trash-2" size={18} color="#8a4646" />
+                  <Text style={[styles.menuItemText, { color: "#8a4646" }]}>Quitar</Text>
                 </Pressable>
               </View>
 
