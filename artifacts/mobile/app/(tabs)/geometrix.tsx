@@ -1976,7 +1976,7 @@ export default function GeometrixScreen() {
                 onPress={() => setOpenModule(null)}
               />
               <View
-                style={[styles.soundMenu, { top: insets.top + 68, right: rightOffset }]}
+                style={[styles.soundMenu, { top: insets.top + 65, right: rightOffset }]}
               >
                 {mod.tracks.map((t) => {
                   const sel = activeTracks[mod.key] === t.id;
