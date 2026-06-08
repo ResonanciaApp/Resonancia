@@ -65,7 +65,6 @@ const EXTENT: Record<GeometryId, number> = {
   "espiral-fibonacci":    47,
   decagrama:              46,
   "cruz-solar":           42,
-  "roseta-seis":          42,
   "roseta-ocho":          46,
   "vector-equilibrium":   40,
   "metatron-expandido":   45,
@@ -642,16 +641,6 @@ function elements(id: GeometryId, sw: number): React.ReactNode {
         <Circle key="inner" cx={C} cy={C} r={r * 0.33} />,
         <Line key="v" x1={C} y1={C - r} x2={C} y2={C + r} />,
         <Line key="h" x1={C - r} y1={C} x2={C + r} y2={C} />,
-      ];
-    }
-    case "roseta-seis": {
-      // 6 círculos en anillo + círculo central + anillo exterior
-      const r = 14;
-      const centers = [0, 1, 2, 3, 4, 5].map((i) => pt(r, i * 60));
-      return [
-        ...centers.map(([x, y], i) => <Circle key={`c${i}`} cx={x} cy={y} r={r} />),
-        <Circle key="center" cx={C} cy={C} r={r} />,
-        <Circle key="outer" cx={C} cy={C} r={r * 2.9} />,
       ];
     }
     case "roseta-ocho": {

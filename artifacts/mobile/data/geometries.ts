@@ -43,7 +43,6 @@ export type GeometryId =
   | "espiral-fibonacci"
   | "decagrama"
   | "cruz-solar"
-  | "roseta-seis"
   | "roseta-ocho"
   | "vector-equilibrium"
   | "metatron-expandido"
@@ -112,7 +111,6 @@ const GEOMETRY_DEFS: { id: GeometryId; name: string }[] = [
   { id: "espiral-fibonacci",    name: "Espiral de Fibonacci"         },
   { id: "decagrama",            name: "Decagrama"                    },
   { id: "cruz-solar",           name: "Cruz Solar"                   },
-  { id: "roseta-seis",          name: "Roseta de Seis Pétalos"       },
   { id: "roseta-ocho",          name: "Roseta de Ocho Pétalos"       },
   { id: "vector-equilibrium",   name: "Vector Equilibrium"           },
   { id: "metatron-expandido",   name: "Cubo de Metatrón Expandido"   },
