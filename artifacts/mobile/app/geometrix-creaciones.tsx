@@ -188,7 +188,7 @@ export default function GeometrixCreacionesScreen() {
                 onLongPress={() => showActions(c)}
                 style={({ pressed }) => [
                   styles.card,
-                  { width: cardW, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
+                  { width: cardW, borderColor: "#151c3a", opacity: pressed ? 0.85 : 1 },
                 ]}
               >
                 {/* Preview en vivo */}
