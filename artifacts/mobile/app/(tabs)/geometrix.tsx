@@ -6,7 +6,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -50,9 +50,21 @@ import { VolumeSlider } from "@/components/VolumeSlider";
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
 import { GEOMETRIES, PALETTE, type GeometryId, type GeometryMeta } from "@/data/geometries";
+import {
+  BG_GRADIENTS,
+  bgGradientColors,
+  brightnessFactor,
+  gradientColors,
+  HOME_GRADIENT,
+  scaleColors,
+  STROKE_GRADIENTS,
+  type GeoSettings,
+  type GeometrixAudio,
+  type GlobalSettings,
+} from "@/data/geometrix-creations";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const colors = colorsConst.light;
-const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 const CARD_BORDER = "#161f33";
 
 /**
@@ -131,76 +143,6 @@ const MUSIC_MODULES: MusicModule[] = [
   },
 ];
 
-/**
- * Degradados de TRAZO (lumínicos) — para los Ajustes personalizados de cada
- * geometría. 7 degradados construidos con la misma paleta (PALETTE) y con buen
- * contraste entre sí (recorren la rueda: cálidos → fríos → vuelta). Cada
- * `colors` es una referencia estable a nivel de módulo para no romper el
- * React.memo de SacredGlyph. NO confundir con los degradados de fondo.
- */
-const STROKE_GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
-  { id: "dorado-rosa", colors: [PALETTE[0], PALETTE[5]] },
-  { id: "rosa-lavanda", colors: [PALETTE[5], PALETTE[4]] },
-  { id: "lavanda-azul", colors: [PALETTE[4], PALETTE[3]] },
-  { id: "azul-verdeagua", colors: [PALETTE[3], PALETTE[2]] },
-  { id: "verdeagua-verde", colors: [PALETTE[2], PALETTE[6]] },
-  { id: "verde-dorado", colors: [PALETTE[6], PALETTE[0]] },
-  { id: "crema-dorado", colors: [PALETTE[1], PALETTE[0]] },
-];
-
-// Degradados de FONDO para el lienzo (Ajustes generales). Diseñados oscuros
-// desde el origen — al nivel del fondo indigo de la pantalla de inicio
-// (HOME_GRADIENT) — pero en distintos tonos, para que las animaciones (trazos
-// claros) siempre contrasten. Todos terminan en el mismo tono profundo de
-// Inicio (#06070F) para cohesión. Son DISTINTOS de los degradados de trazo.
-const BG_GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
-  { id: "indigo-noche", colors: ["#0C1430", "#06070F"] },
-  { id: "verdeagua-noche", colors: ["#072623", "#06070F"] },
-  { id: "violeta-noche", colors: ["#1A1030", "#06070F"] },
-  { id: "vino-noche", colors: ["#280B16", "#06070F"] },
-  { id: "bosque-noche", colors: ["#0A2614", "#06070F"] },
-  { id: "ambar-noche", colors: ["#2A1A05", "#06070F"] },
-];
-
-// Resolver del degradado de TRAZO (Ajustes personalizados).
-function gradientColors(id: string | null): readonly [string, string] | undefined {
-  if (!id) return undefined;
-  return STROKE_GRADIENTS.find((gr) => gr.id === id)?.colors;
-}
-
-// Resolver del degradado de FONDO (Ajustes generales).
-function bgGradientColors(id: string | null): readonly [string, string] | undefined {
-  if (!id) return undefined;
-  return BG_GRADIENTS.find((gr) => gr.id === id)?.colors;
-}
-
-// Escala el RGB de un hex por un factor (clamp 0–255). Sirve para aclarar
-// (f > 1) u oscurecer (f < 1) el fondo según el slider de brillo.
-function scaleHex(hex: string, f: number): string {
-  let h = hex.replace("#", "");
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  if ([0, 2, 4].some((i) => Number.isNaN(parseInt(h.slice(i, i + 2), 16)))) return hex;
-  const ch = (i: number) => {
-    const n = Math.round(parseInt(h.slice(i, i + 2), 16) * f);
-    return Math.max(0, Math.min(255, n)).toString(16).padStart(2, "0");
-  };
-  return `#${ch(0)}${ch(2)}${ch(4)}`;
-}
-
-// Mapea el valor del slider de brillo (0–1; 0.5 = original) a un factor
-// multiplicador: 0 → 0.4× (más oscuro), 0.5 → 1×, 1 → 2.2× (más brillante).
-function brightnessFactor(v: number): number {
-  const x = Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 0.5;
-  return x <= 0.5 ? 0.4 + x * 1.2 : 1 + (x - 0.5) * 2.4;
-}
-
-function scaleColors(
-  colors: readonly string[],
-  f: number,
-): readonly [string, string, ...string[]] {
-  return colors.map((c) => scaleHex(c, f)) as unknown as [string, string, ...string[]];
-}
-
 /** Muestra circular de un degradado (para el selector). RN no soporta
     gradientes en `backgroundColor`, así que se dibuja con SVG. */
 function GradientSwatch({
@@ -235,37 +177,6 @@ function GradientSwatch({
 }
 
 /** Ajustes editables por geometría. Los sliders guardan 0–1. */
-type GeoSettings = {
-  color: string;
-  /** Degradado del trazo (id de STROKE_GRADIENTS) o null = color sólido. */
-  gradientId: string | null;
-  /** Giro a la derecha on/off (sentido horario). */
-  rotate: boolean;
-  /** Giro a la izquierda on/off (sentido antihorario). Excluyente con `rotate`. */
-  rotateLeft: boolean;
-  /** Velocidad de giro 0–1: 0 = muy lento, 1 = rápido. */
-  rotateSpeed: number;
-  opacity: number;
-  /** Respiración on/off (toggle de cabecera). */
-  breathe: boolean;
-  /** Intensidad de la respiración 0–1: 0 = sutil, 1 = profunda. */
-  breatheAmount: number;
-  /** Fundido cíclico: la geometría aparece y desaparece suavemente en bucle. */
-  fadeLoop: boolean;
-  /** Glow propio 0–1: halo aditivo del trazo (se suma al glow general). */
-  glow: number;
-  /** Grosor de línea: 0 = 1px, 1 = ~6px. */
-  thickness: number;
-  /** Tamaño: 0 = más chica, 1 = tamaño completo. */
-  scale: number;
-  /** Zoom de pellizco (pinch): multiplicador libre, 1 = sin zoom. Permite
-      pasar los márgenes (efecto wallpaper). */
-  zoom: number;
-  /** Ángulo manual en grados (gesto de rotación con dos dedos). Solo se aplica
-      cuando el giro automático está apagado (ni derecha ni izquierda). */
-  manualAngle: number;
-};
-
 function defaultSettings(id: GeometryId): GeoSettings {
   const meta = GEOMETRIES.find((g) => g.id === id);
   return {
@@ -287,22 +198,6 @@ function defaultSettings(id: GeometryId): GeoSettings {
     manualAngle: 0,
   };
 }
-
-/** Ajustes generales (panel maestro) que afectan a todas las capas a la vez. */
-type GlobalSettings = {
-  /** Opacidad maestra 0–1: multiplica la opacidad propia de cada capa. */
-  opacity: number;
-  /** Movimiento global on/off: congela giro + respiración de todas las capas. */
-  motion: boolean;
-  /** Glow maestro 0–1: halo aditivo en los trazos de todas las capas. */
-  glow: number;
-  /** Color sólido de fondo del lienzo; null = usar fondo por defecto o degradado. */
-  bgColor: string | null;
-  /** Degradado de fondo del lienzo (id de BG_GRADIENTS); null = sólido o por defecto. */
-  bgGradientId: string | null;
-  /** Brillo del fondo (valor del slider 0–1; 0.5 = brillo original). */
-  bgBrightness: number;
-};
 
 // Color fijo del fondo del toggle cuando está activado (estático, no usa el color de la geometría).
 const TOGGLE_ON_COLOR = "#a1adcf";
@@ -541,6 +436,11 @@ export default function GeometrixScreen() {
   const bottomPb = Platform.OS === "web" ? 8 : insets.bottom;
   const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
 
+  // Persistencia local de composiciones ("Mis creaciones").
+  const { creations, saveCreation, getCreation } = useGeometrixCreations();
+  // Param de ruta: id de una creación a abrir (lo manda la pantalla de la lista).
+  const params = useLocalSearchParams<{ load?: string }>();
+
   const [active, setActive] = useState<GeometryId[]>([]);
   // Módulo de música con su desplegable abierto (null = ninguno).
   const [openModule, setOpenModule] = useState<string | null>(null);
@@ -768,13 +668,85 @@ export default function GeometrixScreen() {
     [updateSetting],
   );
 
-  // Guardar la composición actual (placeholder hasta tener persistencia real).
-  const saveComposition = useCallback(() => {
-    Alert.alert(
-      "Composición guardada",
-      "Tu composición de geometrías se guardó en este dispositivo.",
-    );
-  }, []);
+  // Guardar la composición actual como datos (capas + ajustes + fondo + sonido).
+  const saveComposition = useCallback(async () => {
+    if (active.length === 0) {
+      Alert.alert("Lienzo vacío", "Activá al menos una geometría antes de guardar.");
+      return;
+    }
+    // Solo los ajustes de las capas activas, completos (merge con defaults).
+    const activeSettings: Record<string, GeoSettings> = {};
+    active.forEach((id) => {
+      activeSettings[id] = getSettings(id);
+    });
+    // Sonido que está sonando (si lo hay).
+    let audio: GeometrixAudio = null;
+    for (const [moduleKey, trackId] of Object.entries(activeTracks)) {
+      if (trackId) {
+        audio = { moduleKey, trackId };
+        break;
+      }
+    }
+    const name = `Composición ${creations.length + 1}`;
+    try {
+      await saveCreation({ name, active, master, settings: activeSettings, soloId, audio });
+      Alert.alert("Guardada", `"${name}" se guardó en este dispositivo.`, [
+        { text: "Seguir editando", style: "cancel" },
+        { text: "Ver mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
+      ]);
+    } catch {
+      Alert.alert("Error", "No se pudo guardar la composición.");
+    }
+  }, [active, getSettings, activeTracks, creations.length, saveCreation, master, soloId]);
+
+  // Abrir una creación guardada: restaurar capas, ajustes, fondo y sonido.
+  const loadCreation = useCallback(
+    async (id: string) => {
+      const c = await getCreation(id);
+      if (!c) return;
+      // Reset de la sesión actual antes de aplicar la receta.
+      stopAllSound();
+      setActiveTracks({});
+      setOpenModule(null);
+      setSettings(c.settings);
+      setMaster(c.master);
+      setActive(c.active);
+      setSoloId(c.soloId);
+      setSelectedId(c.active.length ? c.active[c.active.length - 1] : null);
+      // Restaurar el sonido elegido (reproducir sin el toggle de selectTrack,
+      // que apagaría la pista si coincidiera con el estado previo).
+      if (c.audio) {
+        const mod = MUSIC_MODULES.find((m) => m.key === c.audio!.moduleKey);
+        const track = mod?.tracks.find((t) => t.id === c.audio!.trackId);
+        setLastTrack((prev) => ({ ...prev, [c.audio!.moduleKey]: c.audio!.trackId }));
+        if (track?.sound) {
+          try {
+            await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
+            const p = createAudioPlayer(track.sound, { updateInterval: 500 });
+            p.loop = true;
+            p.volume = 1;
+            p.play();
+            playersRef.current[c.audio.moduleKey] = p;
+            setActiveTracks({ [c.audio.moduleKey]: c.audio.trackId });
+          } catch {
+            /* ignore */
+          }
+        }
+      }
+    },
+    [getCreation, stopAllSound],
+  );
+
+  // Cuando llega un id por la ruta (desde "Mis creaciones"), abrir esa creación
+  // y limpiar el param para no reaplicarla en cada render.
+  useEffect(() => {
+    if (params.load) {
+      loadCreation(params.load);
+      // Limpiar a "" (no undefined): así reabrir la MISMA creación vuelve a
+      // disparar el efecto (el param cambia de "" → id otra vez).
+      router.setParams({ load: "" });
+    }
+  }, [params.load, loadCreation]);
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
@@ -791,6 +763,7 @@ export default function GeometrixScreen() {
     { key: "settings", icon: "sliders", label: "Ajustes generales", onPress: () => setGeneralOpen(true) },
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
+    { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
   ];
   // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
   useEffect(() => {
