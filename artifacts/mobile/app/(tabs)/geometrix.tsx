@@ -1543,7 +1543,7 @@ export default function GeometrixScreen() {
             colors={HOME_GRADIENT}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, styles.sheetGradient]}
           />
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>Ajustes generales</Text>
@@ -2349,6 +2349,9 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     maxHeight: "78%",
   },
+  // El gradiente de fondo del sheet debe respetar las esquinas redondeadas
+  // superiores; sin esto el absoluteFill cuadrado tapa el redondeo.
+  sheetGradient: { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
   sheetHandle: {
     alignSelf: "center",
     width: 38,
