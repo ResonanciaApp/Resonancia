@@ -22,9 +22,11 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { VolumeSlider } from "@/components/VolumeSlider";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useBrightness } from "@/context/BrightnessContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
@@ -105,6 +107,7 @@ export default function ConfiguracionesScreen() {
   const { logout, isCreator, isAdmin } = useAuth();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { updateDefaultSleepTimer } = usePlayer();
+  const { brightness, setBrightness } = useBrightness();
 
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
@@ -474,6 +477,25 @@ export default function ConfiguracionesScreen() {
             </View>
           </>
         )}
+
+        {/* ── Apariencia ── */}
+        <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APARIENCIA</Text>
+        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+          <View style={[styles.row, { flexDirection: "column", alignItems: "flex-start", paddingVertical: 14, gap: 10 }]}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <RowIcon icon="sun" colors={colors} />
+              <Text style={[styles.rowLabel, { color: colors.foreground }]}>Brillo general de la app</Text>
+            </View>
+            <View style={{ width: "100%", paddingHorizontal: 4 }}>
+              <VolumeSlider
+                value={brightness}
+                onChange={setBrightness}
+                color={colors.primary}
+                trackColor="rgba(255,255,255,0.12)"
+              />
+            </View>
+          </View>
+        </View>
 
         {/* ── App ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APP</Text>

@@ -16,6 +16,7 @@ import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -24,6 +25,7 @@ import { DrawerMenu } from "@/components/DrawerMenu";
 import { MixerSheet } from "@/components/MixerSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
+import { BrightnessProvider, useBrightness } from "@/context/BrightnessContext";
 import { CatalogProvider } from "@/context/CatalogContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -85,6 +87,29 @@ function AuthGate() {
 function PushBridge() {
   usePushNotifications();
   return null;
+}
+
+/** Capa translúcida que aplica el brillo general de la app. */
+function BrightnessOverlay() {
+  const { brightness } = useBrightness();
+  if (brightness === 0.5) return null;
+  const isLight = brightness > 0.5;
+  const opacity = isLight
+    ? (brightness - 0.5) * 2 * 0.35
+    : (0.5 - brightness) * 2 * 0.5;
+  return (
+    <View
+      pointerEvents="none"
+      style={[
+        StyleSheet.absoluteFill,
+        {
+          backgroundColor: isLight ? "#FFFFFF" : "#000000",
+          opacity,
+          zIndex: 9999,
+        },
+      ]}
+    />
+  );
 }
 
 function RootLayoutNav() {
@@ -244,6 +269,7 @@ export default function RootLayout() {
       <ClerkLoaded>
         <SafeAreaProvider>
           <ErrorBoundary>
+            <BrightnessProvider>
             <QueryClientProvider client={queryClient}>
               <SoundsProvider>
               <CatalogProvider>
@@ -262,6 +288,7 @@ export default function RootLayout() {
                             <KeyboardProvider>
                               <RootLayoutNav />
                             </KeyboardProvider>
+                            <BrightnessOverlay />
                           </GestureHandlerRootView>
                         </DiarioFavoritesProvider>
                         </FoldersPlaylistsProvider>
@@ -276,6 +303,7 @@ export default function RootLayout() {
               </CatalogProvider>
               </SoundsProvider>
             </QueryClientProvider>
+            </BrightnessProvider>
           </ErrorBoundary>
         </SafeAreaProvider>
       </ClerkLoaded>
