@@ -466,7 +466,7 @@ export default function GeometrixScreen() {
   const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
 
   // Persistencia local de composiciones ("Mis creaciones").
-  const { creations, saveCreation, getCreation } = useGeometrixCreations();
+  const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
   // Param de ruta: id de una creación a abrir (lo manda la pantalla de la lista).
   const params = useLocalSearchParams<{ load?: string; play?: string; new?: string }>();
 
@@ -540,6 +540,9 @@ export default function GeometrixScreen() {
 
   // Un reproductor por módulo (reproducen de forma independiente).
   const playersRef = useRef<Record<string, AudioPlayer | null>>({});
+  // ID y nombre de la creación cargada desde "Mis creaciones" (null = lienzo nuevo).
+  // Permite que "Guardar" haga updateCreation (patch in-place) en vez de saveCreation (nuevo).
+  const editingCreationRef = useRef<{ id: string; name: string } | null>(null);
 
   const stopModule = useCallback((moduleKey: string) => {
     const p = playersRef.current[moduleKey];
@@ -761,14 +764,24 @@ export default function GeometrixScreen() {
         break;
       }
     }
-    const name = `Composición ${creations.length + 1}`;
     try {
-      await saveCreation({ name, active, master, settings: activeSettings, audio });
-      setSavedName(name);
+      if (editingCreationRef.current) {
+        // Editando una creación existente → patch in-place (preserva ID y nombre).
+        const { id, name } = editingCreationRef.current;
+        await updateCreation(id, { active, master, settings: activeSettings, audio });
+        setSavedName(name);
+      } else {
+        // Lienzo nuevo → crear composición.
+        const name = `Composición ${creations.length + 1}`;
+        const saved = await saveCreation({ name, active, master, settings: activeSettings, audio });
+        // A partir de ahora este lienzo edita esa creación.
+        editingCreationRef.current = { id: saved.id, name: saved.name };
+        setSavedName(name);
+      }
     } catch {
       Alert.alert("Error", "No se pudo guardar la composición.");
     }
-  }, [active, getSettings, activeTracks, creations.length, saveCreation, master]);
+  }, [active, getSettings, activeTracks, creations.length, saveCreation, updateCreation, master]);
 
   // Abrir una creación guardada: restaurar capas, ajustes, fondo y sonido.
   // `enterImmersive` → abrir directo en pantalla completa ("Play").
@@ -776,6 +789,8 @@ export default function GeometrixScreen() {
     async (id: string, enterImmersive = false) => {
       const c = await getCreation(id);
       if (!c) return;
+      // Guardar referencia para que "Guardar" haga patch in-place en vez de crear uno nuevo.
+      editingCreationRef.current = { id: c.id, name: c.name };
       // Reset de la sesión actual antes de aplicar la receta.
       stopIntro();
       stopAllSound();
@@ -829,6 +844,7 @@ export default function GeometrixScreen() {
   // ajustes por defecto, parando el sonido. Así se empieza una receta en limpio.
   useEffect(() => {
     if (params.new === "1") {
+      editingCreationRef.current = null; // lienzo en blanco → próximo guardado crea uno nuevo
       stopIntro();
       stopAllSound();
       setActiveTracks({});
