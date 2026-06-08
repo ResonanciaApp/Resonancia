@@ -453,7 +453,8 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 8. DESCUBRÍ ALGO NUEVO ── */}
+        {/* ── 8. LAS MÁS RECIENTES ── (oculto temporalmente) */}
+        {false && (
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle]}>
@@ -473,6 +474,7 @@ export default function HomeScreen() {
             ))}
           </View>
         </View>
+        )}
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
