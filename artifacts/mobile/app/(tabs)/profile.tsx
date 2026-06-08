@@ -195,11 +195,11 @@ const pStyles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "#1a2046",
+    borderWidth: 1,
+    borderColor: "#12122f",
   },
   swatchOn: {
-    borderColor: "#BE9650",
+    borderColor: "#1a2046",
   },
   swatchGrad: {
     flex: 1,
