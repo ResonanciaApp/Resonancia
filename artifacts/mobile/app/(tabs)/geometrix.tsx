@@ -455,7 +455,7 @@ function SoundThumbButton({
   const badgeStyle = useAnimatedStyle(() => ({ opacity: badgeOp.value }));
 
   useEffect(() => {
-    badgeOp.value = withTiming(isActive ? 0.06 : 0, {
+    badgeOp.value = withTiming(isActive ? 0.9 : 0, {
       duration: isActive ? 350 : 250,
     });
   }, [isActive, badgeOp]);
