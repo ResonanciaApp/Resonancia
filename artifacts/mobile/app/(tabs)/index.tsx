@@ -706,6 +706,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#111634",
+    borderWidth: 1,
+    borderColor: "#191f45",
+    marginBottom: 20,
   },
 
   // Horizontal scroll
