@@ -960,6 +960,7 @@ export default function GeometrixScreen() {
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
+    { key: "caleidoscopio", icon: "aperture", label: "Caleidoscopio", onPress: () => router.push("/caleidoscopio") },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
   ];
   // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
