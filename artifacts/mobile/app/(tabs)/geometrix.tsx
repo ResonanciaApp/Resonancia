@@ -778,7 +778,7 @@ export default function GeometrixScreen() {
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
-  const tileW = (width - 20 * 2 - 12 * 3) / 3.3;
+  const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   // Lienzo cuadrado y centrado: lado = lado menor del espacio disponible.
   const canvasSide = canvas.w > 0 ? Math.min(canvas.w, canvas.h) : 0;
   // La capa se ajusta al lado del lienzo para que la geometría entre
@@ -1938,7 +1938,7 @@ const styles = StyleSheet.create({
 
   grid: { flexGrow: 0 },
   gridContent: { paddingVertical: 2, paddingRight: 20 },
-  gridRow: { flexDirection: "row", gap: 12 },
+  gridRow: { flexDirection: "row", gap: 8 },
   tile: {
     aspectRatio: 1,
     borderRadius: 16,
