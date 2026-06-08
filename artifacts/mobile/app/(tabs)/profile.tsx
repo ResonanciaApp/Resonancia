@@ -13,6 +13,7 @@ import {
   Easing,
   KeyboardAvoidingView,
   Modal,
+  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -696,6 +697,16 @@ export default function ProfileScreen() {
   // Fade-in del glifo al montar (carga async desde AsyncStorage → aparición suave).
   const glyphMountAnim = useRef(new Animated.Value(0)).current;
 
+  // Gesto de deslizar hacia abajo en el handle para cerrar el sheet.
+  const dismissPan = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, { dy, dx }) => dy > 8 && Math.abs(dy) > Math.abs(dx),
+      onPanResponderRelease: (_, { dy }) => {
+        if (dy > 50) setPersonalizeVisible(false);
+      },
+    }),
+  ).current;
+
   useEffect(() => {
     if (!bgMountedRef.current) {
       bgMountedRef.current = true;
@@ -1064,8 +1075,8 @@ export default function ProfileScreen() {
             end={{ x: 0, y: 1 }}
             style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}
           >
-            {/* Handle + botón cerrar */}
-            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 22 }}>
+            {/* Handle + botón cerrar — panHandlers habilitan swipe-down para cerrar */}
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 22 }} {...dismissPan.panHandlers}>
               <View style={{ flex: 1 }} />
               <View style={[pStyles.handle, { marginBottom: 0 }]} />
               <View style={{ flex: 1, alignItems: "flex-end" }}>
