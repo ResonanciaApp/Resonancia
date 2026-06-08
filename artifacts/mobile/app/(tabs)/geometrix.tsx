@@ -152,10 +152,11 @@ function gradientColors(id: string | null): readonly [string, string] | undefine
   return GRADIENTS.find((gr) => gr.id === id)?.colors;
 }
 
-// Oscurece un hex multiplicando su RGB por un factor (0–1). Se usa para que
-// los fondos degradados elegibles queden tan oscuros como el fondo indigo de
-// la app y así contrasten con las animaciones (trazos claros).
-const BG_DARKEN = 0.3;
+// Oscurece un hex multiplicando su RGB por un factor (0–1). Solo se aplica al
+// fondo del lienzo y a su vista previa (NO a los círculos del selector, que se
+// opacarían) para que las animaciones (trazos claros) contrasten. 0.8 = 20%
+// más oscuro.
+const BG_DARKEN = 0.8;
 function darkenHex(hex: string, f: number): string {
   let h = hex.replace("#", "");
   if (h.length === 3) h = h.split("").map((c) => c + c).join("");
@@ -1367,7 +1368,7 @@ export default function GeometrixScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={`Fondo degradado ${gr.id}`}
                   >
-                    <GradientSwatch colors={darkGradient(gr.colors)} size={20} />
+                    <GradientSwatch colors={gr.colors} size={20} />
                   </Pressable>
                 );
               })}
