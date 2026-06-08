@@ -308,15 +308,23 @@ function BgGlyph({
   const pulse = useRef(new Animated.Value(0)).current;
   const fade  = useRef(new Animated.Value(1)).current;
 
-  const spinning  = settings.rotate || settings.rotateLeft;
-  const dir       = settings.rotateLeft ? -1 : 1;
-  const safeSpeed = Number.isFinite(settings.rotateSpeed)
+  const spinning     = settings.rotate || settings.rotateLeft;
+  const dir          = settings.rotateLeft ? -1 : 1;
+  const safeSpeed    = Number.isFinite(settings.rotateSpeed)
     ? Math.max(0, Math.min(1, settings.rotateSpeed)) : 0.5;
-  const spinDuration  = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
-  const safeAmount    = Number.isFinite(settings.breatheAmount)
+  const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
+  const safeAmount   = Number.isFinite(settings.breatheAmount)
     ? Math.max(0, Math.min(1, settings.breatheAmount)) : 0.5;
-  const breatheDepth  = 0.04 + safeAmount * 0.2;
-  const glyphSize     = size * (0.4 + settings.scale * 0.6) * settings.zoom;
+  const breatheDepth = 0.04 + safeAmount * 0.2;
+  const safeScale    = Number.isFinite(settings.scale) ? settings.scale : 1;
+  const safeZoom     = Number.isFinite(settings.zoom) && settings.zoom > 0 ? settings.zoom : 1;
+  const safeThick    = Number.isFinite(settings.thickness) ? settings.thickness : 0;
+  // Fórmula idéntica al editor: base × magnitud confirmada → SVG nítido a cualquier zoom.
+  const userScale    = 0.4 + safeScale * 0.6;
+  const glyphSize    = size * userScale * safeZoom;
+  // Trazo constante en píxeles de pantalla (no engorda con zoom): igual que editor.
+  const base1px = glyphSize > 0 ? 100 / glyphSize : 1;
+  const sw      = base1px * (1 + safeThick * 5);
 
   useEffect(() => {
     if (spinning) {
@@ -382,7 +390,7 @@ function BgGlyph({
         color={settings.color}
         gradient={gradientColors(settings.gradientId)}
         size={glyphSize}
-        strokeWidth={1 + settings.thickness * 2}
+        strokeWidth={sw}
       />
     </Animated.View>
   );
@@ -675,7 +683,8 @@ export default function ProfileScreen() {
     () => (profileBgCreationId ? (geoCreations.find((c) => c.id === profileBgCreationId) ?? null) : null),
     [profileBgCreationId, geoCreations]
   );
-  const glyphSize = Math.min(width, 600) * 0.82;
+  // Misma base que el editor: canvasSide * 0.96 (portrait → canvasSide = width).
+  const glyphSize = width * 0.96;
 
   // ── Crossfade de fondo ────────────────────────────────────────────────────
   const defaultBg = [BG_GRADIENT[0], BG_GRADIENT[2]] as const;
