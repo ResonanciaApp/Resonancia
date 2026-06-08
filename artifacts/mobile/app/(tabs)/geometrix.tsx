@@ -2002,9 +2002,9 @@ const styles = StyleSheet.create({
 
   soundModules: { flexDirection: "row", gap: 10 },
   soundThumb: {
-    width: 41,
-    height: 41,
-    borderRadius: 13,
+    width: 39,
+    height: 39,
+    borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.04)",
     borderWidth: 1,
     borderColor: CARD_BORDER,
@@ -2475,9 +2475,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   soundTile: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 42,
+    height: 42,
+    borderRadius: 999,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#181c37",
