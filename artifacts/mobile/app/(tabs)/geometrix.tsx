@@ -634,6 +634,7 @@ export default function GeometrixScreen() {
         setSavedName(null);
         setMenuGeoId(null);
         setSoloId(null);
+        setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5 });
       };
     }, [stopAllSound, glow, playIntro, stopIntro]),
   );
