@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
+  Easing,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -20,6 +21,7 @@ import {
   Switch,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -46,8 +48,10 @@ import {
   HOME_GRADIENT,
   scaleColors,
   scaleHex,
+  type GeoSettings,
 } from "@/data/geometrix-creations";
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { type GeometryId } from "@/data/geometries";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -286,6 +290,104 @@ const pStyles = StyleSheet.create({
   },
 });
 
+// ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
+function BgGlyph({
+  id,
+  settings,
+  masterOpacity,
+  size,
+  index,
+}: {
+  id: GeometryId;
+  settings: GeoSettings;
+  masterOpacity: number;
+  size: number;
+  index: number;
+}) {
+  const rot   = useRef(new Animated.Value(0)).current;
+  const pulse = useRef(new Animated.Value(0)).current;
+  const fade  = useRef(new Animated.Value(1)).current;
+
+  const spinning  = settings.rotate || settings.rotateLeft;
+  const dir       = settings.rotateLeft ? -1 : 1;
+  const safeSpeed = Number.isFinite(settings.rotateSpeed)
+    ? Math.max(0, Math.min(1, settings.rotateSpeed)) : 0.5;
+  const spinDuration  = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
+  const safeAmount    = Number.isFinite(settings.breatheAmount)
+    ? Math.max(0, Math.min(1, settings.breatheAmount)) : 0.5;
+  const breatheDepth  = 0.04 + safeAmount * 0.2;
+  const glyphSize     = size * (0.4 + settings.scale * 0.6) * settings.zoom;
+
+  useEffect(() => {
+    if (spinning) {
+      const a = Animated.loop(
+        Animated.timing(rot, { toValue: 1, duration: spinDuration, easing: Easing.linear, useNativeDriver: true })
+      );
+      a.start();
+      return () => a.stop();
+    }
+    rot.setValue(0);
+  }, [spinning, spinDuration, rot]);
+
+  useEffect(() => {
+    if (settings.breathe) {
+      const a = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulse, { toValue: 1, duration: 6000 + index * 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+          Animated.timing(pulse, { toValue: 0, duration: 6000 + index * 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        ])
+      );
+      a.start();
+      return () => a.stop();
+    }
+    pulse.setValue(0);
+  }, [settings.breathe, index, pulse]);
+
+  useEffect(() => {
+    if (settings.fadeLoop) {
+      const a = Animated.loop(
+        Animated.sequence([
+          Animated.timing(fade, { toValue: 0, duration: 4000 + index * 1200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+          Animated.timing(fade, { toValue: 1, duration: 4000 + index * 1200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        ])
+      );
+      a.start();
+      return () => a.stop();
+    }
+    fade.setValue(1);
+  }, [settings.fadeLoop, index, fade]);
+
+  const layerOpacity = Math.max(0.1, settings.opacity * masterOpacity);
+  const rotDeg   = rot.interpolate({ inputRange: [0, 1], outputRange: [`${settings.manualAngle}deg`, `${settings.manualAngle + 360 * dir}deg`] });
+  const scalePulse = pulse.interpolate({ inputRange: [0, 1], outputRange: [1 - breatheDepth, 1] });
+
+  return (
+    <Animated.View
+      style={[
+        StyleSheet.absoluteFill,
+        {
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: settings.fadeLoop ? Animated.multiply(fade, layerOpacity) : layerOpacity,
+          transform: [
+            { rotate: spinning ? rotDeg : `${settings.manualAngle}deg` },
+            { scale: settings.breathe ? scalePulse : 1 },
+          ],
+        },
+      ]}
+      pointerEvents="none"
+    >
+      <SacredGlyph
+        id={id}
+        color={settings.color}
+        gradient={gradientColors(settings.gradientId)}
+        size={glyphSize}
+        strokeWidth={1 + settings.thickness * 2}
+      />
+    </Animated.View>
+  );
+}
+
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -312,6 +414,8 @@ export default function ProfileScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const { width } = useWindowDimensions();
 
   // ── Geometrix creations (for profile background picker) ───────────────────
   const { creations: geoCreations } = useGeometrixCreations();
@@ -558,6 +662,13 @@ export default function ProfileScreen() {
     return [BG_GRADIENT[0], BG_GRADIENT[2]];
   }, [profileBgCreationId, profileBgGradientId, geoCreations]);
 
+  // Creación activa (para renderizar glyphs en el fondo)
+  const activeBgCreation = useMemo(
+    () => (profileBgCreationId ? (geoCreations.find((c) => c.id === profileBgCreationId) ?? null) : null),
+    [profileBgCreationId, geoCreations]
+  );
+  const glyphSize = Math.min(width, 600) * 0.82;
+
   // ── Crossfade de fondo ────────────────────────────────────────────────────
   const defaultBg = [BG_GRADIENT[0], BG_GRADIENT[2]] as const;
   const [bgFrom, setBgFrom] = useState<readonly [string, string]>(defaultBg);
@@ -611,6 +722,27 @@ export default function ProfileScreen() {
       >
         <LinearGradient colors={[...bgTo]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
       </Animated.View>
+      {/* Geometrías de la creación seleccionada — se desvanecen con el crossfade */}
+      {activeBgCreation && (
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim }]} pointerEvents="none">
+          {activeBgCreation.active
+            .filter((gId) => !activeBgCreation.hiddenIds?.includes(gId))
+            .map((gId, i) => {
+              const s = activeBgCreation.settings[gId];
+              if (!s) return null;
+              return (
+                <BgGlyph
+                  key={gId}
+                  id={gId as GeometryId}
+                  settings={s}
+                  masterOpacity={activeBgCreation.master.opacity}
+                  size={glyphSize}
+                  index={i}
+                />
+              );
+            })}
+        </Animated.View>
+      )}
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
