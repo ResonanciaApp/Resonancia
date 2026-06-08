@@ -486,12 +486,11 @@ export function MixerSheet() {
               accessibilityRole="button"
             >
               <View style={styles.footerPlayCircle}>
-                <Feather
+                <MaterialCommunityIcons
                   name={isPlaying ? "pause" : "play"}
-                  size={64}
+                  size={52}
                   color="#FFFFFF"
-                  strokeWidth={1}
-                  style={isPlaying ? undefined : { marginLeft: 8 }}
+                  style={isPlaying ? undefined : { marginLeft: 5 }}
                 />
               </View>
             </Pressable>
