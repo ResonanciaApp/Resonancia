@@ -1064,8 +1064,22 @@ export default function ProfileScreen() {
             end={{ x: 0, y: 1 }}
             style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}
           >
-            {/* Handle */}
-            <View style={pStyles.handle} />
+            {/* Handle + botón cerrar */}
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 22 }}>
+              <View style={{ flex: 1 }} />
+              <View style={[pStyles.handle, { marginBottom: 0 }]} />
+              <View style={{ flex: 1, alignItems: "flex-end" }}>
+                <Pressable
+                  onPress={() => setPersonalizeVisible(false)}
+                  hitSlop={10}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cerrar"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
+                >
+                  <Feather name="x" size={20} color="#FFFFFF" />
+                </Pressable>
+              </View>
+            </View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 0 }}>
 
