@@ -522,11 +522,26 @@ export default function ProfileScreen() {
     };
   }, [statEvents]);
 
+  // ── Fondo activo (degradado de perfil) ────────────────────────────────────
+  const activeBgColors = useMemo((): readonly [string, string] => {
+    if (profileBgCreationId) {
+      const creation = geoCreations.find((c) => c.id === profileBgCreationId);
+      if (creation) {
+        const bg = bgGradientColors(creation.master.bgGradientId);
+        if (bg) return bg;
+      }
+    }
+    if (profileBgGradientId) {
+      const bg = bgGradientColors(profileBgGradientId);
+      if (bg) return bg;
+    }
+    return [BG_GRADIENT[0], BG_GRADIENT[2]];
+  }, [profileBgCreationId, profileBgGradientId, geoCreations]);
+
   return (
     <LinearGradient
       style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
+      colors={[...activeBgColors]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
