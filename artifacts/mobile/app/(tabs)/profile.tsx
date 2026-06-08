@@ -795,7 +795,7 @@ export default function ProfileScreen() {
             hitSlop={12}
             style={({ pressed }) => [styles.settingsBtn, { opacity: pressed ? 0.6 : 1 }]}
           >
-            <Feather name="sliders" size={20} color="#BE9650" />
+            <Feather name="sliders" size={20} color="#FFFFFF" />
           </Pressable>
         </View>
 
