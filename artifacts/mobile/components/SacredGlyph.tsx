@@ -4,7 +4,17 @@
  * fondo interactivo (Geometrix). Todo se dibuja en un viewBox 0–100.
  */
 import React from "react";
-import Svg, { Circle, Ellipse, G, Line, Path, Polygon } from "react-native-svg";
+import Svg, {
+  Circle,
+  Defs,
+  Ellipse,
+  G,
+  Line,
+  LinearGradient,
+  Path,
+  Polygon,
+  Stop,
+} from "react-native-svg";
 
 import type { GeometryId } from "@/data/geometries";
 
@@ -394,19 +404,40 @@ export interface SacredGlyphProps {
   size: number;
   strokeWidth?: number;
   opacity?: number;
+  /** Degradado del trazo [desde, hasta]. Si se pasa, manda sobre `color`.
+      Debe ser una referencia estable (memo) para no romper React.memo. */
+  gradient?: readonly [string, string];
 }
 
-function SacredGlyphImpl({ id, color, size, strokeWidth = 1.2, opacity = 1 }: SacredGlyphProps) {
+function SacredGlyphImpl({
+  id,
+  color,
+  size,
+  strokeWidth = 1.2,
+  opacity = 1,
+  gradient,
+}: SacredGlyphProps) {
   // Escala uniforme para que todas las geometrías llenen el mismo radio.
   const k = TARGET_EXTENT / (EXTENT[id] ?? 44);
   // Compensar el grosor para que el trazo se vea igual tras el escalado.
   const sw = strokeWidth / k;
   const t = C - C * k;
+  // Id único y seguro para SVG (useId trae ":" que algunos renderers no aceptan).
+  const gradId = `geo-grad-${React.useId().replace(/:/g, "")}`;
+  const stroke = gradient ? `url(#${gradId})` : color;
   return (
     <Svg width={size} height={size} viewBox="0 0 100 100" opacity={opacity}>
+      {gradient && (
+        <Defs>
+          <LinearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <Stop offset="0%" stopColor={gradient[0]} />
+            <Stop offset="100%" stopColor={gradient[1]} />
+          </LinearGradient>
+        </Defs>
+      )}
       <G
         transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
-        stroke={color}
+        stroke={stroke}
         fill="none"
         strokeWidth={sw}
         strokeLinecap="round"

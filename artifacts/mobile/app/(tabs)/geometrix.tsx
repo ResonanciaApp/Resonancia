@@ -38,6 +38,13 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import Svg, {
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Rect,
+  Stop,
+} from "react-native-svg";
+
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import colorsConst from "@/constants/colors";
@@ -124,11 +131,67 @@ const MUSIC_MODULES: MusicModule[] = [
   },
 ];
 
+/**
+ * 7 degradados de trazo construidos con la misma paleta (PALETTE) y con buen
+ * contraste entre sí (recorren la rueda: cálidos → fríos → vuelta). Cada
+ * `colors` es una referencia estable a nivel de módulo para no romper el
+ * React.memo de SacredGlyph.
+ */
+const GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
+  { id: "dorado-rosa", colors: [PALETTE[0], PALETTE[5]] },
+  { id: "rosa-lavanda", colors: [PALETTE[5], PALETTE[4]] },
+  { id: "lavanda-azul", colors: [PALETTE[4], PALETTE[3]] },
+  { id: "azul-verdeagua", colors: [PALETTE[3], PALETTE[2]] },
+  { id: "verdeagua-verde", colors: [PALETTE[2], PALETTE[6]] },
+  { id: "verde-dorado", colors: [PALETTE[6], PALETTE[0]] },
+  { id: "crema-dorado", colors: [PALETTE[1], PALETTE[0]] },
+];
+
+function gradientColors(id: string | null): readonly [string, string] | undefined {
+  if (!id) return undefined;
+  return GRADIENTS.find((gr) => gr.id === id)?.colors;
+}
+
+/** Muestra circular de un degradado (para el selector). RN no soporta
+    gradientes en `backgroundColor`, así que se dibuja con SVG. */
+function GradientSwatch({
+  colors: [from, to],
+  size,
+}: {
+  colors: readonly [string, string];
+  size: number;
+}) {
+  const id = `sw-grad-${React.useId().replace(/:/g, "")}`;
+  return (
+    <Svg width={size} height={size}>
+      <Defs>
+        <SvgLinearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+          <Stop offset="0%" stopColor={from} />
+          <Stop offset="100%" stopColor={to} />
+        </SvgLinearGradient>
+      </Defs>
+      <Rect
+        x={0}
+        y={0}
+        width={size}
+        height={size}
+        rx={size / 2}
+        ry={size / 2}
+        fill={`url(#${id})`}
+      />
+    </Svg>
+  );
+}
+
 /** Ajustes editables por geometría. Los sliders guardan 0–1. */
 type GeoSettings = {
   color: string;
-  /** Giro on/off (toggle de cabecera). */
+  /** Degradado del trazo (id de GRADIENTS) o null = color sólido. */
+  gradientId: string | null;
+  /** Giro a la derecha on/off (sentido horario). */
   rotate: boolean;
+  /** Giro a la izquierda on/off (sentido antihorario). Excluyente con `rotate`. */
+  rotateLeft: boolean;
   /** Velocidad de giro 0–1: 0 = muy lento, 1 = rápido. */
   rotateSpeed: number;
   opacity: number;
@@ -153,9 +216,11 @@ function defaultSettings(id: GeometryId): GeoSettings {
   const meta = GEOMETRIES.find((g) => g.id === id);
   return {
     color: meta?.color ?? colors.primary,
+    gradientId: null,
     // Estática por defecto: el usuario activa el movimiento (giro/respirar/
     // fade) en los ajustes por capa cuando quiera.
     rotate: false,
+    rotateLeft: false,
     rotateSpeed: 0.5,
     opacity: 1,
     breathe: false,
@@ -241,7 +306,9 @@ function GeometryLayer({
   const fade = useSharedValue(1);
   const {
     color,
+    gradientId,
     rotate,
+    rotateLeft,
     rotateSpeed,
     opacity,
     breathe,
@@ -252,6 +319,7 @@ function GeometryLayer({
     scale,
     zoom,
   } = settings;
+  const grad = gradientColors(gradientId);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
   // 0 → ~2× más lento, 0.5 → base, 1 → ~5× más rápido. Nunca se detiene aquí
@@ -299,7 +367,9 @@ function GeometryLayer({
     }
   }, [fadeLoop, motion, fade, index]);
 
-  const dir = index % 2 === 0 ? 1 : -1;
+  // Sentido del giro: derecha (horario, +1) o izquierda (antihorario, -1).
+  // Los toggles son excluyentes; si ambos quedaran apagados no hay giro.
+  const dir = rotateLeft ? -1 : 1;
   // Defensa ante estado corrupto/parcial: nunca dejar pasar NaN al worklet/SVG.
   const safeScale = Number.isFinite(scale) ? scale : 1;
   const safeThickness = Number.isFinite(thickness) ? thickness : 0;
@@ -315,7 +385,7 @@ function GeometryLayer({
   const committedMag = userScale * effZoom;
   // Movimiento general (panel maestro): congela giro + respiración de TODAS las
   // capas a la vez sin borrar el ajuste propio de cada una.
-  const spin = rotate && motion;
+  const spin = (rotate || rotateLeft) && motion;
   const breath = breathe && motion;
   // Profundidad de la respiración: 0.04 (sutil) → 0.24 (profunda). Define cuánto
   // se encoge en el valle del pulso (el pico siempre es 1.0).
@@ -360,6 +430,7 @@ function GeometryLayer({
             <SacredGlyph
               id={geo.id}
               color={color}
+              gradient={grad}
               size={effectiveSize}
               strokeWidth={sw * (3 + safeGlow * 3)}
             />
@@ -368,13 +439,14 @@ function GeometryLayer({
             <SacredGlyph
               id={geo.id}
               color={color}
+              gradient={grad}
               size={effectiveSize}
               strokeWidth={sw * (1.8 + safeGlow * 1.6)}
             />
           </View>
         </>
       )}
-      <SacredGlyph id={geo.id} color={color} size={effectiveSize} strokeWidth={sw} />
+      <SacredGlyph id={geo.id} color={color} gradient={grad} size={effectiveSize} strokeWidth={sw} />
     </Animated.View>
   );
 }
@@ -952,7 +1024,13 @@ export default function GeometrixScreen() {
                       accessibilityRole="button"
                       accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
                     >
-                      <SacredGlyph id={g.id} color={s.color} size={30} strokeWidth={1.4} />
+                      <SacredGlyph
+                        id={g.id}
+                        color={s.color}
+                        gradient={gradientColors(s.gradientId)}
+                        size={30}
+                        strokeWidth={1.4}
+                      />
                     </Pressable>
                     {/* Flechita: abre el menú de opciones. */}
                     <Pressable
@@ -1079,6 +1157,7 @@ export default function GeometrixScreen() {
                 <SacredGlyph
                   id={menuGeo.id}
                   color={getSettings(menuGeo.id).color}
+                  gradient={gradientColors(getSettings(menuGeo.id).gradientId)}
                   size={85}
                   strokeWidth={1.4}
                 />
@@ -1321,9 +1400,9 @@ export default function GeometrixScreen() {
                     </View>
                   </View>
 
-                  {/* Tres toggles (on/off) en una fila, debajo del título */}
-                  <View style={styles.toggleTriRow}>
-                    <View style={styles.toggleTriItem}>
+                  {/* Toggles (on/off) en cuadrícula de 2 columnas, debajo del título */}
+                  <View style={styles.toggleGrid}>
+                    <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={1}>
                         Fade in/out
                       </Text>
@@ -1334,7 +1413,7 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    <View style={styles.toggleTriItem}>
+                    <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={1}>
                         Respirar
                       </Text>
@@ -1345,13 +1424,30 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    <View style={styles.toggleTriItem}>
+                    <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={1}>
-                        Girar
+                        Girar a la derecha
                       </Text>
                       <Toggle
                         value={s.rotate}
-                        onChange={(v) => updateSetting(g.id, "rotate", v)}
+                        onChange={(v) => {
+                          updateSetting(g.id, "rotate", v);
+                          if (v) updateSetting(g.id, "rotateLeft", false);
+                        }}
+                        color={s.color}
+                        compact
+                      />
+                    </View>
+                    <View style={styles.toggleGridItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={1}>
+                        Girar a izquierda
+                      </Text>
+                      <Toggle
+                        value={s.rotateLeft}
+                        onChange={(v) => {
+                          updateSetting(g.id, "rotateLeft", v);
+                          if (v) updateSetting(g.id, "rotate", false);
+                        }}
                         color={s.color}
                         compact
                       />
@@ -1362,11 +1458,16 @@ export default function GeometrixScreen() {
                   <Text style={styles.fieldLabel}>Color</Text>
                   <View style={styles.swatchRow}>
                     {PALETTE.map((c) => {
-                      const on = s.color.toLowerCase() === c.toLowerCase();
+                      const on =
+                        !s.gradientId &&
+                        s.color.toLowerCase() === c.toLowerCase();
                       return (
                         <Pressable
                           key={c}
-                          onPress={() => updateSetting(g.id, "color", c)}
+                          onPress={() => {
+                            updateSetting(g.id, "color", c);
+                            updateSetting(g.id, "gradientId", null);
+                          }}
                           style={[
                             styles.swatch,
                             { backgroundColor: c },
@@ -1379,29 +1480,32 @@ export default function GeometrixScreen() {
                     })}
                   </View>
 
-                  {/* Girar (velocidad) */}
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Girar</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.rotateSpeed * 100)}%</Text>
+                  {/* Degradado: 7 opciones de la misma paleta */}
+                  <Text style={[styles.fieldLabel, styles.gradientLabel]}>
+                    Degradado
+                  </Text>
+                  <View style={styles.swatchRow}>
+                    {GRADIENTS.map((gr) => {
+                      const on = s.gradientId === gr.id;
+                      return (
+                        <Pressable
+                          key={gr.id}
+                          onPress={() =>
+                            updateSetting(
+                              g.id,
+                              "gradientId",
+                              on ? null : gr.id,
+                            )
+                          }
+                          style={[styles.swatch, on && styles.swatchOn]}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Degradado ${gr.id}`}
+                        >
+                          <GradientSwatch colors={gr.colors} size={20} />
+                        </Pressable>
+                      );
+                    })}
                   </View>
-                  <VolumeSlider
-                    value={s.rotateSpeed}
-                    onChange={(v) => updateSetting(g.id, "rotateSpeed", v)}
-                    color={s.color}
-                    trackColor="rgba(255,255,255,0.12)"
-                  />
-
-                  {/* Respiración (intensidad) */}
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Respiración</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.breatheAmount * 100)}%</Text>
-                  </View>
-                  <VolumeSlider
-                    value={s.breatheAmount}
-                    onChange={(v) => updateSetting(g.id, "breatheAmount", v)}
-                    color={s.color}
-                    trackColor="rgba(255,255,255,0.12)"
-                  />
 
                   {/* Opacidad */}
                   <View style={styles.fieldRow}>
@@ -1818,17 +1922,24 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   geoCardName: { minWidth: 0, fontSize: 13, fontWeight: "700", color: "#FFFFFF" },
-  toggleTriRow: {
+  toggleGrid: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
+    flexWrap: "wrap",
+    rowGap: 12,
+    columnGap: 10,
     marginTop: 4,
     marginBottom: 6,
   },
-  toggleTriItem: { flexDirection: "row", alignItems: "center", gap: 7 },
-  toggleTriLabel: { fontSize: 12, fontWeight: "600", color: colors.foreground, flexShrink: 1 },
+  toggleGridItem: {
+    width: "47%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 7,
+  },
+  toggleTriLabel: { fontSize: 12, fontWeight: "600", color: "#FFFFFF", flexShrink: 1 },
 
+  gradientLabel: { marginTop: 10 },
   fieldLabel: { fontSize: 12, fontWeight: "600", color: colors.mutedForeground },
   fieldRow: {
     flexDirection: "row",
