@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  header: { alignItems: "center", marginBottom: 24, paddingTop: 4 },
+  header: { alignItems: "center", marginBottom: 9, paddingTop: 4 },
   backBtn: {
     alignSelf: "flex-start",
     width: 40, height: 40,
