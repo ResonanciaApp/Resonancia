@@ -1133,3 +1133,9 @@ id = "NbRSH27jWH8cIzsZxXHqW"
 uri = "file://attached_assets/keyboard-icon.svg"
 type = "image"
 title = "Teclado MIDI — icono SVG (corregido)"
+
+[[outputs]]
+id = "4ltgovu6d8PBa0gbAROBA"
+uri = "file://attached_assets/bird-icon.svg"
+type = "image"
+title = "Pájaro — icono SVG"
