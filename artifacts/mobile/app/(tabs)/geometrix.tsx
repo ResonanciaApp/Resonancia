@@ -1934,11 +1934,11 @@ export default function GeometrixScreen() {
           const mod = MUSIC_MODULES.find((m) => m.key === openModule);
           if (!mod) return null;
           // Anclar el desplegable bajo el thumbnail de su propio módulo.
-          // Los thumbnails (44px, gap 10) están alineados a la derecha; el
-          // último queda a right:20 y cada anterior se corre 54px más.
+          // Los thumbnails (41px, gap 10) están alineados a la derecha; el
+          // último queda a right:20 y cada anterior se corre 51px más.
           const modIndex = MUSIC_MODULES.findIndex((m) => m.key === mod.key);
           const rightOffset =
-            20 + (MUSIC_MODULES.length - 1 - modIndex) * (44 + 10);
+            20 + (MUSIC_MODULES.length - 1 - modIndex) * (41 + 10);
           return (
             <>
               <Pressable
@@ -1994,9 +1994,9 @@ const styles = StyleSheet.create({
 
   soundModules: { flexDirection: "row", gap: 10 },
   soundThumb: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 41,
+    height: 41,
+    borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.04)",
     borderWidth: 1,
     borderColor: CARD_BORDER,
