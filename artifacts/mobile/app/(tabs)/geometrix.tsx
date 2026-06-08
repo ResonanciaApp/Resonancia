@@ -2062,7 +2062,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateY: -15 }],
+    transform: [{ translateY: -25 }],
   },
   canvas: {
     alignItems: "center",
@@ -2155,7 +2155,7 @@ const styles = StyleSheet.create({
     borderColor: "#101532",
     borderRadius: 16,
     backgroundColor: "transparent",
-    paddingVertical: 2,
+    paddingVertical: 1,
     paddingHorizontal: 6,
   },
   thumbCaret: {
