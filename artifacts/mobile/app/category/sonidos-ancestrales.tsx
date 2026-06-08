@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -55,6 +56,10 @@ export default function SonidosAncestalesScreen() {
   const { version } = useCatalog();
   const { sortKey, setSortKey, sortLabel, sortSessions } = useSessionSort();
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  // Mismo cálculo de ancho que los tiles de Geometrix: muestra 3 tabs y un
+  // poco del 4º (divisor 3.3), con el mismo gap (12) y padding lateral.
+  const tabW = (width - H_PAD * 2 - 12 * 3) / 3.3;
 
   const [activeTab, setActiveTab] = useState<string>(TABS[0].value);
   const [query, setQuery] = useState("");
@@ -150,15 +155,22 @@ export default function SonidosAncestalesScreen() {
           </View>
         </View>
 
-        {/* Tabs — bloques con ícono, fila 1 */}
-        <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
-          {TABS.map(({ label, value, icon }) => {
+        {/* Tabs — una sola fila horizontal, deslizable. Mismo tamaño, border
+            radius y lógica que los tiles de Geometrix (cuadrados, 3.3 visibles).
+            Colores conservados (icono activo dorado, fondo activo azulado). */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabScroll}
+          contentContainerStyle={[styles.tabRow, { paddingHorizontal: H_PAD }]}
+        >
+          {[...TABS, ...TABS_EXTRA].map(({ label, value, icon }) => {
             const sel = activeTab === value;
             return (
               <Pressable
                 key={value}
                 onPress={() => setActiveTab(value)}
-                style={[styles.tabBlock, sel && styles.tabBlockActive]}
+                style={[styles.tabBlock, { width: tabW }, sel && styles.tabBlockActive]}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
@@ -175,46 +187,14 @@ export default function SonidosAncestalesScreen() {
                       fontWeight: sel ? "700" : "400",
                     },
                   ]}
+                  numberOfLines={1}
                 >
                   {label}
                 </Text>
               </Pressable>
             );
           })}
-        </View>
-
-        {/* Tabs — bloques con ícono, fila 2 */}
-        <View style={[styles.tabRow, { paddingHorizontal: H_PAD, marginTop: 8 }]}>
-          {TABS_EXTRA.map(({ label, value, icon }) => {
-            const sel = activeTab === value;
-            return (
-              <Pressable
-                key={value}
-                onPress={() => setActiveTab(value)}
-                style={[styles.tabBlock, sel && styles.tabBlockActive]}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: sel }}
-              >
-                <MaterialCommunityIcons
-                  name={icon as never}
-                  size={24}
-                  color={sel ? "#D6933A" : colors.mutedForeground}
-                />
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    {
-                      color: "#FFFFFF",
-                      fontWeight: sel ? "700" : "400",
-                    },
-                  ]}
-                >
-                  {label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        </ScrollView>
 
         {/* Línea divisora */}
         <View style={[styles.divider, { marginHorizontal: H_PAD }]} />
@@ -322,16 +302,16 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
-  tabRow: { flexDirection: "row", gap: 8 },
+  tabScroll: { flexGrow: 0 },
+  tabRow: { flexDirection: "row", gap: 12, paddingVertical: 2 },
   tabBlock: {
-    flex: 1,
+    aspectRatio: 1,
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
-    paddingTop: 16,
-    paddingBottom: 14,
     paddingHorizontal: 4,
-    borderRadius: 10,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
