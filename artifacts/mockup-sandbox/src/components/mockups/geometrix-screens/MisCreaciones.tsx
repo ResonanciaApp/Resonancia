@@ -192,7 +192,7 @@ export function MisCreaciones() {
           </button>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-medium tracking-wide">Mis creaciones</h1>
-            <span className="bg-[rgba(100,142,195,0.14)] border border-[#161f33] text-[#7A8FA8] text-xs px-2 py-0.5 rounded-full font-medium">
+            <span className="bg-[rgba(190,150,80,0.05)] border border-[#161f33] text-[#7A8FA8] text-xs px-2 py-0.5 rounded-full font-medium">
               6
             </span>
           </div>
@@ -209,7 +209,7 @@ export function MisCreaciones() {
           
           {/* Nueva Composición Card */}
           <button className="flex flex-col items-center justify-center h-[220px] rounded-2xl border border-dashed border-[#BE9650]/40 bg-[#BE9650]/5 hover:bg-[#BE9650]/10 transition-colors group">
-            <div className="w-12 h-12 rounded-full bg-[rgba(100,142,195,0.14)] border border-[#BE9650]/30 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <div className="w-12 h-12 rounded-full bg-[rgba(190,150,80,0.05)] border border-[#BE9650]/30 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
               <Plus size={24} className="text-[#BE9650]" />
             </div>
             <span className="text-sm font-medium text-[#BE9650]">Nueva</span>
@@ -220,7 +220,7 @@ export function MisCreaciones() {
           {creaciones.map((creacion) => (
             <div key={creacion.id} className="flex flex-col group cursor-pointer">
               {/* Preview Box */}
-              <div className="relative w-full aspect-square rounded-2xl bg-[rgba(100,142,195,0.14)] border border-[#161f33] overflow-hidden mb-3 flex items-center justify-center p-4">
+              <div className="relative w-full aspect-square rounded-2xl bg-[rgba(190,150,80,0.05)] border border-[#161f33] overflow-hidden mb-3 flex items-center justify-center p-4">
                 {/* Background Glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
                 

@@ -182,7 +182,7 @@ export function MuroComunidad() {
       <div className="pt-[52px] pb-4 px-6 flex flex-col gap-6 shrink-0 z-10 bg-gradient-to-b from-[#090D20] to-transparent">
         <h1 className="text-2xl font-medium tracking-wide text-center" style={{ color: "#D6A85B" }}>Comunidad</h1>
         
-        <div className="flex bg-[rgba(100,142,195,0.14)] p-1 rounded-full border border-[#161f33]">
+        <div className="flex bg-[rgba(190,150,80,0.05)] p-1 rounded-full border border-[#161f33]">
           <button 
             onClick={() => setActiveTab("destacadas")}
             className={`flex-1 py-2 text-sm font-medium rounded-full transition-all duration-300 ${activeTab === "destacadas" ? "bg-[#161f33] text-[#BE9650] shadow-sm" : "text-[#7A8FA8]"}`}
@@ -201,7 +201,7 @@ export function MuroComunidad() {
       {/* Feed */}
       <div className="flex-1 overflow-y-auto pb-[80px] px-4 hide-scrollbar flex flex-col gap-6">
         {FEED_DATA.map((item) => (
-          <div key={item.id} className="flex flex-col bg-[rgba(100,142,195,0.14)] rounded-3xl border border-[#161f33] overflow-hidden relative">
+          <div key={item.id} className="flex flex-col bg-[rgba(190,150,80,0.05)] rounded-3xl border border-[#161f33] overflow-hidden relative">
             
             {/* Preview Box */}
             <div className="h-[280px] relative w-full overflow-hidden bg-[#06070F] flex items-center justify-center border-b border-[#161f33]">

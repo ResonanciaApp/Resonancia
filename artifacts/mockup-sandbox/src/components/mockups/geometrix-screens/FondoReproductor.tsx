@@ -7,7 +7,7 @@ const COLORS = {
   bgBot: "#06070F",
   gold: "#BE9650",
   goldLight: "#D6A85B",
-  card: "rgba(100,142,195,0.14)",
+  card: "rgba(190,150,80,0.05)",
   cardBorder: "#161f33",
   text: "#EDE1D3",
   textMuted: "#7A8FA8",
