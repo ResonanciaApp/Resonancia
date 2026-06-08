@@ -1981,7 +1981,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   thumbCaret: {
-    marginLeft: 2,
+    marginLeft: -8,
     alignItems: "center",
     justifyContent: "center",
   },
