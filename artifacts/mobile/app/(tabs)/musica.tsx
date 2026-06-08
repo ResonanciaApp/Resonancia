@@ -416,8 +416,6 @@ export default function MiMusicaScreen() {
           })}
         </View>
 
-        </LinearGradient>
-
         {/* ── Separador / Sub-tabs sobre la línea ── */}
         {subTabCategories && subTabCategories.length > 1 ? (
           <View style={styles.subTabZone}>
@@ -464,6 +462,8 @@ export default function MiMusicaScreen() {
         ) : (
           <View style={styles.separator} />
         )}
+
+        </LinearGradient>
 
         {/* ── Scroll principal ── */}
         <ScrollView
@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 12, letterSpacing: 0, textAlign: "center" },
 
   // Separador
-  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)" },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginTop: 14 },
 
   // Scroll
   scroll:        { flex: 1 },
