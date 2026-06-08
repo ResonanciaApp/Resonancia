@@ -332,8 +332,9 @@ function GeometryLayer({
   // 0 → ~2× más lento, 0.5 → base, 1 → ~5× más rápido. Nunca se detiene aquí
   // (el on/off lo maneja el toggle `rotate`).
   const safeSpeed = Number.isFinite(rotateSpeed) ? Math.max(0, Math.min(1, rotateSpeed)) : 0.5;
-  // ~12% más lento que la versión previa (mayor duración = giro más lento).
-  const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.12;
+  // Más lento que la versión original (mayor duración = giro más lento):
+  // factor 1.6 ≈ 1.12 previo / 0.7 (otro 30% menos de velocidad).
+  const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
 
   // El movimiento general (panel maestro) detiene las animaciones de TODAS las
   // capas a la vez. Al apagarlo se cancela y se vuelve al reposo (0deg / sin
