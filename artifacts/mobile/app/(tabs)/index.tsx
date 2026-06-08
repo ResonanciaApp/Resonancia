@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
+import { GeometrixCommunitySection } from "@/components/GeometrixCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
@@ -478,7 +479,12 @@ export default function HomeScreen() {
           <AlmaCommunitySection />
         </View>
 
-        {/* ── 9. BANNER PREMIUM ── */}
+        {/* ── 9. COMUNIDAD GEOMETRIX ── */}
+        <View style={{ marginBottom: SECTION_GAP }}>
+          <GeometrixCommunitySection />
+        </View>
+
+        {/* ── 10. BANNER PREMIUM ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
           <PremiumBanner />
         </View>
