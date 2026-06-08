@@ -1813,29 +1813,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   // Capa de fondo del lienzo: edge-to-edge (left/right -20 rompe el padding
-  // del content) y se extiende 80px por encima de la divisora para el fade.
+  // del content). Empieza en la divisora (top: 0), sin extenderse por encima,
+  // para que la línea justo muestre el indigo del tema.
   canvasBgLayer: {
     position: "absolute",
     left: -20,
     right: -20,
-    top: -80,
+    top: 0,
     bottom: 0,
   },
-  // Relleno sólido/degradado: desde la divisora (top: 80) hacia abajo.
+  // Relleno sólido/degradado a pleno color: por debajo de la zona de fade.
   canvasBgFill: {
     position: "absolute",
     left: 0,
     right: 0,
-    top: 80,
+    top: 158,
     bottom: 0,
   },
-  // Fade superior: 80px de transparente → color, justo sobre la divisora.
+  // Fade muy gradual y sutil: arranca ~8px por debajo de la divisora
+  // (transparente → indigo del tema visible) y llega a pleno color a 158px.
   canvasBgFade: {
     position: "absolute",
     left: 0,
     right: 0,
-    top: 0,
-    height: 80,
+    top: 8,
+    height: 150,
   },
   stage: {
     flex: 1,
