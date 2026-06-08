@@ -241,6 +241,10 @@ type GlobalSettings = {
   motion: boolean;
   /** Glow maestro 0–1: halo aditivo en los trazos de todas las capas. */
   glow: number;
+  /** Color sólido de fondo del lienzo; null = usar fondo por defecto o degradado. */
+  bgColor: string | null;
+  /** Degradado de fondo del lienzo (id de GRADIENTS); null = sólido o por defecto. */
+  bgGradientId: string | null;
 };
 
 // Color fijo del fondo del toggle cuando está activado (estático, no usa el color de la geometría).
@@ -481,6 +485,8 @@ export default function GeometrixScreen() {
     opacity: 1,
     motion: true,
     glow: 0,
+    bgColor: null,
+    bgGradientId: null,
   });
   const [generalOpen, setGeneralOpen] = useState(false);
   const [generalSheetHeight, setGeneralSheetHeight] = useState(0);
@@ -764,20 +770,34 @@ export default function GeometrixScreen() {
     : 0;
   // Vista previa del panel general (mismo cálculo, anclada a su propio sheet).
   const generalPreviewFree = height - generalSheetHeight - insets.top - 12 - 36;
+  // Vista previa general reducida un 30% para dejar más aire a los ajustes.
   const generalPreviewSize = generalSheetHeight
-    ? Math.max(120, Math.min(width - 32, generalPreviewFree))
+    ? Math.max(84, Math.min(width - 32, generalPreviewFree) * 0.7)
     : 0;
   // En inmersión la geometría llena la pantalla, centrada.
   const immersiveSize = Math.min(width, height) * 0.96;
 
+  const masterBgGradient = gradientColors(master.bgGradientId);
+
   return (
     <View style={styles.root}>
-      <LinearGradient
-        colors={HOME_GRADIENT}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      {masterBgGradient ? (
+        <LinearGradient
+          colors={masterBgGradient}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      ) : master.bgColor ? (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: master.bgColor }]} />
+      ) : (
+        <LinearGradient
+          colors={HOME_GRADIENT}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
 
       <View style={[styles.content, { paddingTop: insets.top + 12 }]}>
         {/* Header */}
@@ -1194,8 +1214,24 @@ export default function GeometrixScreen() {
               style={[
                 styles.previewBox,
                 { width: generalPreviewSize, height: generalPreviewSize },
+                master.bgColor ? { backgroundColor: master.bgColor } : null,
               ]}
             >
+              {masterBgGradient ? (
+                <LinearGradient
+                  colors={masterBgGradient}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              ) : !master.bgColor ? (
+                <LinearGradient
+                  colors={HOME_GRADIENT}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              ) : null}
               {activeMetas.map((g, i) => (
                 <GeometryLayer
                   key={g.id}
@@ -1225,7 +1261,6 @@ export default function GeometrixScreen() {
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
-          <View style={styles.sheetHandle} />
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>Ajustes generales</Text>
             <Pressable
@@ -1238,58 +1273,110 @@ export default function GeometrixScreen() {
             </Pressable>
           </View>
 
-          {activeMetas.length === 0 ? (
-            <View style={styles.sheetEmpty}>
-              <Feather name="hexagon" size={26} color="rgba(190,150,80,0.4)" />
-              <Text style={styles.sheetEmptyText}>
-                Activa una geometría para ajustar la animación
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.geoCard}>
-              {/* Opacidad general */}
-              <View style={styles.fieldRow}>
-                <Text style={styles.fieldLabel}>Opacidad general</Text>
-              </View>
-              <VolumeSlider
-                value={master.opacity}
-                onChange={(v) =>
-                  setMaster((m) => ({
-                    ...m,
-                    opacity: Number.isFinite(v) ? Math.min(1, Math.max(0.1, v)) : m.opacity,
-                  }))
-                }
-                color="#FFFFFF"
-                trackColor="rgba(255,255,255,0.12)"
-              />
+          {/* Línea divisora sutil */}
+          <View style={styles.sheetHeaderDivider} />
 
-              {/* Movimiento general */}
-              <View style={[styles.fieldRow, { marginTop: 18 }]}>
-                <Text style={styles.fieldLabel}>Movimiento</Text>
-                <Toggle
-                  value={master.motion}
-                  onChange={(v) => setMaster((m) => ({ ...m, motion: v }))}
-                  color={colors.accent}
+          <View style={styles.geoCard}>
+            {/* Movimiento: toggle al lado del título, a 15px */}
+            <View style={styles.fieldRowGap}>
+              <Text style={styles.fieldLabel}>Movimiento</Text>
+              <Toggle
+                value={master.motion}
+                onChange={(v) => setMaster((m) => ({ ...m, motion: v }))}
+                color={colors.accent}
+              />
+            </View>
+
+            {/* Opacidad general */}
+            <View style={[styles.fieldRow, { marginTop: 18 }]}>
+              <Text style={styles.fieldLabel}>Opacidad general</Text>
+            </View>
+            <VolumeSlider
+              value={master.opacity}
+              onChange={(v) =>
+                setMaster((m) => ({
+                  ...m,
+                  opacity: Number.isFinite(v) ? Math.min(1, Math.max(0.1, v)) : m.opacity,
+                }))
+              }
+              color="#FFFFFF"
+              trackColor="rgba(255,255,255,0.12)"
+            />
+
+            {/* Color de fondo del lienzo: sólidos + degradados */}
+            <Text style={[styles.fieldLabel, { marginTop: 18 }]}>Color de fondo</Text>
+            <View style={styles.swatchRow}>
+              {/* Opción por defecto (fondo original) */}
+              <Pressable
+                onPress={() =>
+                  setMaster((m) => ({ ...m, bgColor: null, bgGradientId: null }))
+                }
+                style={[
+                  styles.swatch,
+                  !master.bgColor && !master.bgGradientId && styles.swatchOn,
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel="Fondo por defecto"
+              >
+                <GradientSwatch
+                  colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
+                  size={20}
                 />
-              </View>
-
-              {/* Glow general */}
-              <View style={[styles.fieldRow, { marginTop: 18 }]}>
-                <Text style={styles.fieldLabel}>Glow</Text>
-              </View>
-              <VolumeSlider
-                value={master.glow}
-                onChange={(v) =>
-                  setMaster((m) => ({
-                    ...m,
-                    glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
-                  }))
-                }
-                color="#FFFFFF"
-                trackColor="rgba(255,255,255,0.12)"
-              />
+              </Pressable>
+              {PALETTE.map((c) => {
+                const on =
+                  !master.bgGradientId &&
+                  (master.bgColor ?? "").toLowerCase() === c.toLowerCase();
+                return (
+                  <Pressable
+                    key={`bg-${c}`}
+                    onPress={() =>
+                      setMaster((m) => ({ ...m, bgColor: c, bgGradientId: null }))
+                    }
+                    style={[styles.swatch, on && styles.swatchOn]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Fondo ${c}`}
+                  >
+                    <View style={[styles.swatchFill, { backgroundColor: c }]} />
+                  </Pressable>
+                );
+              })}
             </View>
-          )}
+            <View style={[styles.swatchRow, styles.gradientLabel]}>
+              {GRADIENTS.map((gr) => {
+                const on = master.bgGradientId === gr.id;
+                return (
+                  <Pressable
+                    key={`bg-${gr.id}`}
+                    onPress={() =>
+                      setMaster((m) => ({ ...m, bgColor: null, bgGradientId: gr.id }))
+                    }
+                    style={[styles.swatch, on && styles.swatchOn]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Fondo degradado ${gr.id}`}
+                  >
+                    <GradientSwatch colors={gr.colors} size={20} />
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {/* Glow general */}
+            <View style={[styles.fieldRow, { marginTop: 18 }]}>
+              <Text style={styles.fieldLabel}>Glow</Text>
+            </View>
+            <VolumeSlider
+              value={master.glow}
+              onChange={(v) =>
+                setMaster((m) => ({
+                  ...m,
+                  glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
+                }))
+              }
+              color="#FFFFFF"
+              trackColor="rgba(255,255,255,0.12)"
+            />
+          </View>
         </View>
       </Modal>
 
@@ -1970,6 +2057,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  fieldRowGap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
   },
   twoCol: { flexDirection: "row", gap: 16 },
   col: { flex: 1, minWidth: 0 },
