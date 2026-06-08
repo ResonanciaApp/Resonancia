@@ -160,7 +160,7 @@ const pStyles = StyleSheet.create({
     marginBottom: 6,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#12183b",
+    borderColor: "#12122f",
   },
   thumbBgOn: {
     borderColor: "#1a2046",
