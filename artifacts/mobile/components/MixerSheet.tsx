@@ -16,6 +16,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
+  Dimensions,
   Easing,
   ImageBackground,
   Modal,
@@ -367,7 +368,7 @@ export function MixerSheet() {
       <Animated.View style={{ flex: 1, opacity: sheetOpacity }}>
       <Pressable style={styles.backdrop} onPress={closeSheet}>
         <Animated.View
-          style={{ flex: 1, transform: [{ translateY: sheetEnterY }] }}
+          style={{ transform: [{ translateY: sheetEnterY }] }}
         >
         <Pressable
           style={[
@@ -610,10 +611,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "flex-end",
-    paddingTop: "7%",
   },
   sheet: {
-    flex: 1,
+    height: Math.round(Dimensions.get("window").height * 0.93),
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
