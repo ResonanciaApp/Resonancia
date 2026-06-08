@@ -2378,9 +2378,8 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     maxHeight: "78%",
   },
-  // El gradiente de fondo del sheet debe respetar las esquinas redondeadas
-  // superiores; sin esto el absoluteFill cuadrado tapa el redondeo.
-  sheetGradient: { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
+  // overflow:"hidden" en el sheet ya clipea el gradient — no se necesita borderRadius aquí
+  sheetGradient: {},
   sheetHandle: {
     alignSelf: "center",
     width: 38,
