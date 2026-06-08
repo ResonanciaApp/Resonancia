@@ -243,6 +243,9 @@ type GlobalSettings = {
   glow: number;
 };
 
+// Color fijo del fondo del toggle cuando está activado (estático, no usa el color de la geometría).
+const TOGGLE_ON_COLOR = "#a1adcf";
+
 // ── Interruptor sutil (on/off) ────────────────────────────────────
 function Toggle({
   value,
@@ -1406,31 +1409,31 @@ export default function GeometrixScreen() {
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
-                  {/* Toggles (on/off) en una sola fila: etiqueta arriba, switch abajo */}
-                  <View style={styles.toggleRow}>
-                    <View style={styles.toggleRowItem}>
+                  {/* Toggles (on/off) en cuadrícula 2 cols: etiqueta izq, switch der */}
+                  <View style={styles.toggleGrid}>
+                    <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={2}>
                         Fade
                       </Text>
                       <Toggle
                         value={s.fadeLoop}
                         onChange={(v) => updateSetting(g.id, "fadeLoop", v)}
-                        color={s.color}
+                        color={TOGGLE_ON_COLOR}
                         compact
                       />
                     </View>
-                    <View style={styles.toggleRowItem}>
+                    <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={2}>
                         Respirar
                       </Text>
                       <Toggle
                         value={s.breathe}
                         onChange={(v) => updateSetting(g.id, "breathe", v)}
-                        color={s.color}
+                        color={TOGGLE_ON_COLOR}
                         compact
                       />
                     </View>
-                    <View style={styles.toggleRowItem}>
+                    <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={2}>
                         Girar izquierda
                       </Text>
@@ -1440,11 +1443,11 @@ export default function GeometrixScreen() {
                           updateSetting(g.id, "rotateLeft", v);
                           if (v) updateSetting(g.id, "rotate", false);
                         }}
-                        color={s.color}
+                        color={TOGGLE_ON_COLOR}
                         compact
                       />
                     </View>
-                    <View style={styles.toggleRowItem}>
+                    <View style={styles.toggleGridItem}>
                       <Text style={styles.toggleTriLabel} numberOfLines={2}>
                         Girar derecha
                       </Text>
@@ -1454,7 +1457,7 @@ export default function GeometrixScreen() {
                           updateSetting(g.id, "rotate", v);
                           if (v) updateSetting(g.id, "rotateLeft", false);
                         }}
-                        color={s.color}
+                        color={TOGGLE_ON_COLOR}
                         compact
                       />
                     </View>
@@ -1941,20 +1944,27 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#FFFFFF",
   },
-  toggleRow: {
+  toggleGrid: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    gap: 6,
+    flexWrap: "wrap",
+    rowGap: 14,
+    columnGap: 14,
     marginTop: 6,
     marginBottom: 8,
   },
-  toggleRowItem: { flex: 1, alignItems: "center", gap: 7 },
+  toggleGridItem: {
+    width: "46%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
   toggleTriLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "600",
     color: colors.mutedForeground,
-    textAlign: "center",
+    textAlign: "left",
+    flexShrink: 1,
   },
 
   gradientLabel: { marginTop: 10 },
