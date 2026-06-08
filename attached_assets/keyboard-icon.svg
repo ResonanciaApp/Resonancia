@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 100">
 
-  <!-- Body -->
+  <!-- Body (fondo único) -->
   <rect width="130" height="100" rx="14" fill="#7040AC"/>
 
-  <!-- ── Controls section ─────────────────── -->
+  <!-- ── Controls ─────────────────────────── -->
 
   <!-- Three knob buttons -->
   <circle cx="27" cy="32" r="7.5" fill="white"/>
@@ -14,30 +14,28 @@
   <circle cx="83" cy="27" r="3" fill="white" opacity="0.8"/>
   <circle cx="83" cy="37" r="3" fill="white" opacity="0.8"/>
 
-  <!-- Vertical fader / slider -->
-  <!-- tick marks: top → bottom, middle one is the active position -->
+  <!-- Fader / slider -->
+  <rect x="101" y="21" width="2"  height="23" rx="1"    fill="white" opacity="0.25"/>
   <rect x="96"  y="21" width="12" height="2.5" rx="1.25" fill="white" opacity="0.45"/>
   <rect x="98"  y="26" width="8"  height="2.5" rx="1.25" fill="white" opacity="0.5"/>
   <rect x="94"  y="31" width="16" height="3"   rx="1.5"  fill="white"/>
   <rect x="98"  y="36" width="8"  height="2.5" rx="1.25" fill="white" opacity="0.5"/>
   <rect x="96"  y="41" width="12" height="2.5" rx="1.25" fill="white" opacity="0.45"/>
-  <!-- vertical center track behind ticks -->
-  <rect x="101" y="21" width="2"  height="23"  rx="1"    fill="white" opacity="0.25"/>
 
-  <!-- ── Keyboard section ────────────────── -->
+  <!-- ── Keyboard ──────────────────────────── -->
+  <!-- Las teclas blancas se dibujan sobre el body.
+       Los huecos entre ellas y las teclas negras muestran
+       el violeta del cuerpo — sin strip extra. -->
 
-  <!-- Background strip (shows between white keys + under black keys) -->
-  <rect x="5" y="54" width="120" height="42" rx="0" fill="#4B2480"/>
+  <!-- White keys (4 keys, 3 px gap between each) -->
+  <rect x="6"  y="55" width="25" height="39" rx="3" fill="white"/>
+  <rect x="34" y="55" width="25" height="39" rx="3" fill="white"/>
+  <rect x="62" y="55" width="25" height="39" rx="3" fill="white"/>
+  <rect x="90" y="55" width="34" height="39" rx="3" fill="white"/>
 
-  <!-- White keys (4 keys, small gap between each) -->
-  <rect x="7"  y="54" width="25" height="40" rx="3" fill="white"/>
-  <rect x="35" y="54" width="25" height="40" rx="3" fill="white"/>
-  <rect x="63" y="54" width="25" height="40" rx="3" fill="white"/>
-  <rect x="91" y="54" width="32" height="40" rx="3" fill="white"/>
-
-  <!-- Black keys (same purple as body, shorter) -->
-  <rect x="25" y="54" width="17" height="25" rx="2.5" fill="#7040AC"/>
-  <rect x="53" y="54" width="17" height="25" rx="2.5" fill="#7040AC"/>
-  <rect x="81" y="54" width="17" height="25" rx="2.5" fill="#7040AC"/>
+  <!-- Black keys (mismo violeta que el body → se funden naturalmente) -->
+  <rect x="24" y="55" width="17" height="25" rx="2.5" fill="#7040AC"/>
+  <rect x="52" y="55" width="17" height="25" rx="2.5" fill="#7040AC"/>
+  <rect x="80" y="55" width="17" height="25" rx="2.5" fill="#7040AC"/>
 
 </svg>
