@@ -42,6 +42,10 @@ export type GeoSettings = {
   offsetX: number;
   /** Desplazamiento vertical (arrastrar con un dedo), en px del lienzo. */
   offsetY: number;
+  /** Modo caleidoscopio: replica la geometría en simetría radial de N segmentos. */
+  kaleidoscope: boolean;
+  /** Número de segmentos del caleidoscopio (4, 6, 8, 12). Solo activo si kaleidoscope=true. */
+  kaleidSegments: number;
 };
 
 /** Ajustes generales (panel maestro) que afectan a todas las capas a la vez. */

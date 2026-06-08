@@ -6,6 +6,7 @@
 import React from "react";
 import Svg, {
   Circle,
+  ClipPath,
   Defs,
   Ellipse,
   G,
@@ -14,6 +15,7 @@ import Svg, {
   Path,
   Polygon,
   Stop,
+  Use,
 } from "react-native-svg";
 
 import type { GeometryId } from "@/data/geometries";
@@ -28,6 +30,7 @@ const C = 50;
  */
 const TARGET_EXTENT = 39;
 const EXTENT: Record<GeometryId, number> = {
+  caleidoscopio: 44,
   "flor-vida": 36,
   "semilla-vida": 39,
   vesica: 36,
@@ -85,6 +88,36 @@ function lattice(R: number, rings: number): [number, number][] {
 
 function elements(id: GeometryId, sw: number): React.ReactNode {
   switch (id) {
+    // El caleidoscopio se dibuja como geometría base (una cuña con espiral y
+    // arcos internos), pero la simetría radial real se aplica en SacredGlyphImpl
+    // con clipPath + <Use rotate> — ver la rama `kaleidoscope` allí.
+    // Este case define el motivo base de la cuña (se usa también sin modo kaléido).
+    case "caleidoscopio": {
+      const r = 44;
+      const pts = [
+        `M ${C} ${C}`,
+        `L ${(C + r * Math.cos(-Math.PI / 6)).toFixed(2)} ${(C + r * Math.sin(-Math.PI / 6)).toFixed(2)}`,
+        `A ${r} ${r} 0 0 1 ${(C + r * Math.cos(Math.PI / 6)).toFixed(2)} ${(C + r * Math.sin(Math.PI / 6)).toFixed(2)}`,
+        `Z`,
+      ].join(" ");
+      const inner = [8, 16, 24, 32, 40].map((ri) => (
+        <Circle key={`ci${ri}`} cx={C} cy={C} r={ri} opacity={0.4} />
+      ));
+      const spokes = Array.from({ length: 12 }, (_, i) => {
+        const a = (i * Math.PI) / 6;
+        const x2 = (C + r * Math.cos(a)).toFixed(2);
+        const y2 = (C + r * Math.sin(a)).toFixed(2);
+        return <Line key={`sp${i}`} x1={C} y1={C} x2={x2} y2={y2} opacity={0.3} />;
+      });
+      return [
+        ...inner,
+        ...spokes,
+        <Circle key="outer" cx={C} cy={C} r={r} />,
+        <Circle key="mid" cx={C} cy={C} r={r * 0.55} />,
+        <Circle key="inner" cx={C} cy={C} r={r * 0.25} />,
+        <Path key="wedge" d={pts} opacity={0} />,
+      ];
+    }
     case "flor-vida": {
       const cs = lattice(11, 2);
       return [
@@ -414,6 +447,10 @@ export interface SacredGlyphProps {
   /** Degradado del trazo [desde, hasta]. Si se pasa, manda sobre `color`.
       Debe ser una referencia estable (memo) para no romper React.memo. */
   gradient?: readonly [string, string];
+  /** Modo caleidoscopio: replica el motivo con simetría radial de N segmentos. */
+  kaleidoscope?: boolean;
+  /** Número de segmentos radiales (4, 6, 8, 12). Solo activo con kaleidoscope=true. */
+  kaleidSegments?: number;
 }
 
 function SacredGlyphImpl({
@@ -423,6 +460,8 @@ function SacredGlyphImpl({
   strokeWidth = 1.2,
   opacity = 1,
   gradient,
+  kaleidoscope = false,
+  kaleidSegments = 6,
 }: SacredGlyphProps) {
   // Escala uniforme para que todas las geometrías llenen el mismo radio.
   const k = TARGET_EXTENT / (EXTENT[id] ?? 44);
@@ -430,28 +469,92 @@ function SacredGlyphImpl({
   const sw = strokeWidth / k;
   const t = C - C * k;
   // Id único y seguro para SVG (useId trae ":" que algunos renderers no aceptan).
-  const gradId = `geo-grad-${React.useId().replace(/:/g, "")}`;
+  const uid = React.useId().replace(/:/g, "");
+  const gradId = `geo-grad-${uid}`;
+  const clipId = `geo-clip-${uid}`;
+  const motifId = `geo-motif-${uid}`;
   const stroke = gradient ? `url(#${gradId})` : color;
+
+  // ── Sin caleidoscopio: renderizado normal ──────────────────────────────────
+  if (!kaleidoscope) {
+    return (
+      <Svg width={size} height={size} viewBox="0 0 100 100" opacity={opacity}>
+        {gradient && (
+          <Defs>
+            <LinearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+              <Stop offset="0%" stopColor={gradient[0]} />
+              <Stop offset="100%" stopColor={gradient[1]} />
+            </LinearGradient>
+          </Defs>
+        )}
+        <G
+          transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
+          stroke={stroke}
+          fill="none"
+          strokeWidth={sw}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          {elements(id, sw)}
+        </G>
+      </Svg>
+    );
+  }
+
+  // ── Modo caleidoscopio: simetría radial de N segmentos ────────────────────
+  // La cuña tiene un ángulo de (360/N)°. Recortamos el motivo completo dentro
+  // de esa cuña (clipPath triangular desde el centro) y la replicamos N veces
+  // rotando alrededor del centro (50,50) del viewBox.
+  const N = Math.max(2, Math.min(24, kaleidSegments));
+  const wedgeAngle = 360 / N; // grados por segmento
+  const halfW = wedgeAngle / 2;
+  const r = 72; // radio del clipPath, mayor que el extent para no cortar
+
+  // Dos rayos que forman la cuña simétrica respecto al eje horizontal derecho.
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const x1 = (C + r * Math.cos(toRad(-halfW))).toFixed(3);
+  const y1 = (C + r * Math.sin(toRad(-halfW))).toFixed(3);
+  const x2 = (C + r * Math.cos(toRad(halfW))).toFixed(3);
+  const y2 = (C + r * Math.sin(toRad(halfW))).toFixed(3);
+  // Arco grande solo si la cuña supera 180°.
+  const largeArc = wedgeAngle > 180 ? 1 : 0;
+  const wedgePath = `M ${C} ${C} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+
   return (
     <Svg width={size} height={size} viewBox="0 0 100 100" opacity={opacity}>
-      {gradient && (
-        <Defs>
+      <Defs>
+        {gradient && (
           <LinearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
             <Stop offset="0%" stopColor={gradient[0]} />
             <Stop offset="100%" stopColor={gradient[1]} />
           </LinearGradient>
-        </Defs>
-      )}
-      <G
-        transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
-        stroke={stroke}
-        fill="none"
-        strokeWidth={sw}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {elements(id, sw)}
-      </G>
+        )}
+        {/* Cuña que recorta una fracción del motivo. */}
+        <ClipPath id={clipId}>
+          <Path d={wedgePath} />
+        </ClipPath>
+        {/* Motif: el glyph completo recortado a la cuña, referenciable con <Use>. */}
+        <G id={motifId} clipPath={`url(#${clipId})`}>
+          <G
+            transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
+            stroke={stroke}
+            fill="none"
+            strokeWidth={sw}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {elements(id, sw)}
+          </G>
+        </G>
+      </Defs>
+      {/* Replicar la cuña N veces rotando alrededor del centro. */}
+      {Array.from({ length: N }, (_, i) => (
+        <Use
+          key={i}
+          href={`#${motifId}`}
+          transform={`rotate(${(i * wedgeAngle).toFixed(3)} ${C} ${C})`}
+        />
+      ))}
     </Svg>
   );
 }

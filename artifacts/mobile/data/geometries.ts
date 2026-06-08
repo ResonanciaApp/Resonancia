@@ -8,6 +8,7 @@
  */
 
 export type GeometryId =
+  | "caleidoscopio"
   | "flor-vida"
   | "semilla-vida"
   | "vesica"
@@ -57,6 +58,7 @@ export const PALETTE = [
 ] as const;
 
 const GEOMETRY_DEFS: { id: GeometryId; name: string }[] = [
+  { id: "caleidoscopio", name: "Caleidoscopio" },
   { id: "flor-vida",    name: "Flor de la Vida" },
   { id: "semilla-vida", name: "Semilla de la Vida" },
   { id: "vesica",       name: "Vesica Piscis" },
