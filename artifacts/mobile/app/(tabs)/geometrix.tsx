@@ -1115,7 +1115,7 @@ export default function GeometrixScreen() {
           accessibilityLabel="Salir de pantalla completa"
         >
           <LinearGradient
-            colors={HOME_GRADIENT}
+            colors={masterBgGradient ?? HOME_GRADIENT}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
