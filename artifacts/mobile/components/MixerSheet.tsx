@@ -56,8 +56,8 @@ const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#151A23", "#0B0F14"] as const;
 
-/** Degradé del sheet del mezclador (navy azul #212543). */
-const SHEET_GRADIENT = ["#252958", "#212543", "#1B1F42"] as const;
+/** Mismo degradé que el fondo de la pantalla de Inicio. */
+const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 /** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
@@ -372,12 +372,12 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: SHEET_GRADIENT[2], paddingBottom: insets.bottom + 16 },
+            { backgroundColor: HOME_GRADIENT[2], paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
           <LinearGradient
-            colors={SHEET_GRADIENT}
+            colors={HOME_GRADIENT}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.sheetGradient}
@@ -533,11 +533,11 @@ export function MixerSheet() {
         <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
           <Pressable
-            style={[styles.modalCard, { backgroundColor: SHEET_GRADIENT[2] }]}
+            style={[styles.modalCard, { backgroundColor: HOME_GRADIENT[2] }]}
             onPress={(e) => e.stopPropagation()}
           >
                 <LinearGradient
-                  colors={SHEET_GRADIENT}
+                  colors={HOME_GRADIENT}
                   start={{ x: 0.5, y: 0 }}
                   end={{ x: 0.5, y: 1 }}
                   style={StyleSheet.absoluteFill}
