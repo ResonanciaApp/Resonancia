@@ -353,10 +353,6 @@ export default function HomeScreen() {
               onPress={() => router.push(`/session/${featuredSession.id}` as never)}
             >
               <Image source={featuredSession.image as number} style={styles.heroImage} resizeMode="cover" />
-              <View style={styles.glowCenter}>
-                <GlowRing size={110} color="rgba(182,149,95,0.18)" delay={0} duration={3500} />
-                <GlowRing size={170} color="rgba(182,149,95,0.1)" delay={600} duration={3500} />
-              </View>
               {/* Frosted glass panel */}
               {(() => {
                 const voiceLabel = getVoiceLabel(featuredSession);
