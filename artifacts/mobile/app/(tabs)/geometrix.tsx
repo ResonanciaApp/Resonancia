@@ -1827,17 +1827,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    top: 158,
+    top: 48,
     bottom: 0,
   },
-  // Fade muy gradual y sutil: arranca ~8px por debajo de la divisora
-  // (transparente → indigo del tema visible) y llega a pleno color a 158px.
+  // Fade pequeño: solo la franja donde se unen el indigo del tema y el color
+  // elegido (~8px por debajo de la divisora, 40px de alto). Pleno color a 48px.
   canvasBgFade: {
     position: "absolute",
     left: 0,
     right: 0,
     top: 8,
-    height: 150,
+    height: 40,
   },
   stage: {
     flex: 1,
