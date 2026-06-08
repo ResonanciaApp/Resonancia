@@ -5,8 +5,8 @@ import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -156,7 +156,7 @@ const pStyles = StyleSheet.create({
   },
   creationThumb: {
     width: 88,
-    marginRight: 10,
+    marginRight: -5,
     alignItems: "center",
   },
   thumbBg: {
@@ -418,7 +418,15 @@ export default function ProfileScreen() {
   const { width } = useWindowDimensions();
 
   // ── Geometrix creations (for profile background picker) ───────────────────
-  const { creations: geoCreations } = useGeometrixCreations();
+  const { creations: geoCreations, reload: reloadCreations } = useGeometrixCreations();
+
+  // Recarga creaciones cada vez que el tab vuelve al foco (para que una
+  // creación guardada en Geometrix aparezca inmediatamente al volver).
+  useFocusEffect(
+    useCallback(() => {
+      reloadCreations();
+    }, [reloadCreations])
+  );
 
   // ── Personalize sheet ─────────────────────────────────────────────────────
   const [personalizeVisible, setPersonalizeVisible] = useState(false);
