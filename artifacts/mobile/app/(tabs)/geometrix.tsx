@@ -1078,7 +1078,7 @@ export default function GeometrixScreen() {
                   onPress={() => toggleGeometry(g.id)}
                   style={[
                     styles.tile,
-                    { width: tileW, borderColor: sel ? "#21295a" : CARD_BORDER },
+                    { width: tileW, borderColor: sel ? "#1c234c" : CARD_BORDER },
                     sel && { backgroundColor: "rgba(255,255,255,0.04)" },
                   ]}
                 >
