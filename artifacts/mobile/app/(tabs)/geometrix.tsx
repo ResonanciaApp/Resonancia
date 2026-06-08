@@ -1514,8 +1514,11 @@ export default function GeometrixScreen() {
         animationType="slide"
         onRequestClose={() => setGeneralOpen(false)}
       >
-        <View style={{ flex: 1, backgroundColor: "transparent" }}>
-        <Pressable style={styles.sheetBackdrop} onPress={() => setGeneralOpen(false)} />
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <Pressable
+          style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
+          onPress={() => setGeneralOpen(false)}
+        />
 
         {/* Vista previa en vivo de toda la composición con los ajustes generales. */}
         {activeMetas.length > 0 && generalPreviewSize > 0 && (
@@ -1679,9 +1682,9 @@ export default function GeometrixScreen() {
           setSettingsGeoId(null);
         }}
       >
-        <View style={{ flex: 1, backgroundColor: "transparent" }}>
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
         <Pressable
-          style={styles.sheetBackdrop}
+          style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
           onPress={() => {
             setSettingsOpen(false);
             setSettingsGeoId(null);
