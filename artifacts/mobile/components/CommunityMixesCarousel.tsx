@@ -141,9 +141,12 @@ export function CommunityMixesCarousel() {
     <View style={styles.section}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-          Mezclas de la comunidad
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
+          <Feather name="sliders" size={18} color="#FFFFFF" />
+          <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
+            Mezclas de la comunidad
+          </Text>
+        </View>
         {filtered.length > MAX_VISIBLE && (
           <Pressable onPress={() => router.push("/mezclas-comunidad" as never)} hitSlop={8}>
             <Text style={[styles.verTodas, { color: colors.primary }]}>Ver todos</Text>
