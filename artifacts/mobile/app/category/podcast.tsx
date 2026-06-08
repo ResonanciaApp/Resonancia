@@ -70,7 +70,6 @@ export default function SonidosScreen() {
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
   const [query, setQuery] = useState("");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
-  const [subtitleOpen, setSubtitleOpen] = useState(false);
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
 
@@ -162,24 +161,10 @@ export default function SonidosScreen() {
               contentFit="contain"
             />
           </View>
-          <Pressable
-            onPress={() => setSubtitleOpen((v) => !v)}
-            style={styles.titleRow}
-            hitSlop={8}
-          >
-            <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
-            <Feather
-              name={subtitleOpen ? "chevron-up" : "chevron-down"}
-              size={20}
-              color={colors.mutedForeground}
-              style={styles.titleChevron}
-            />
-          </Pressable>
-          {subtitleOpen && (
-            <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-              Ponte audífonos y a dormir
-            </Text>
-          )}
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Sonidos</Text>
+          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
+            Ponte audífonos y a dormir
+          </Text>
           <View style={styles.searchBar}>
             <Feather name="search" size={17} color={colors.mutedForeground} />
             <TextInput
@@ -441,8 +426,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 12,
   },
-  titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "center" },
-  titleChevron: { marginLeft: 6, marginBottom: 4 },
   pageTitle: {
     fontSize: 26,
     fontWeight: "700",
