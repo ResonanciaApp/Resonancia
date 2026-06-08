@@ -104,6 +104,178 @@ function computeStreak(events: { playedAt: string }[]): number {
 
 const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
+// ── Personalize sheet styles (defined before component to avoid TDZ on Hermes)
+const pStyles = StyleSheet.create({
+  sheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#0E1420",
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    maxHeight: "88%",
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#2A3545",
+    alignSelf: "center",
+    marginBottom: 22,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#EDE1D3",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 4,
+  },
+  sectionSub: {
+    fontSize: 12,
+    color: "#7A8FA8",
+    marginBottom: 14,
+    lineHeight: 17,
+  },
+  creationThumb: {
+    width: 88,
+    marginRight: 10,
+    alignItems: "center",
+  },
+  thumbBg: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
+    marginBottom: 6,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  thumbBgOn: {
+    borderColor: "#BE9650",
+  },
+  thumbCheck: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  thumbLabel: {
+    fontSize: 11,
+    color: "#7A8FA8",
+    textAlign: "center",
+  },
+  emptyText: {
+    fontSize: 12,
+    color: "#7A8FA8",
+    fontStyle: "italic",
+    paddingVertical: 20,
+  },
+  swatchRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  swatch: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  swatchOn: {
+    borderColor: "#BE9650",
+  },
+  swatchGrad: {
+    flex: 1,
+  },
+  reminderCard: {
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 24,
+  },
+  reminderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  reminderBell: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(190,150,80,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reminderLabel: {
+    flex: 1,
+    fontSize: 14,
+    color: "#EDE1D3",
+    fontWeight: "500",
+  },
+  timePicker: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#1E2A38",
+    alignItems: "center",
+  },
+  timeLabel: {
+    fontSize: 10,
+    color: "#7A8FA8",
+    letterSpacing: 1.2,
+    textTransform: "uppercase",
+    marginBottom: 14,
+    alignSelf: "flex-start",
+  },
+  timeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 24,
+    marginBottom: 16,
+  },
+  timeBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(190,150,80,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timeValue: {
+    fontSize: 38,
+    fontWeight: "200",
+    color: "#EDE1D3",
+    letterSpacing: 3,
+    minWidth: 120,
+    textAlign: "center",
+  },
+  minuteRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  minuteBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  minuteBtnOn: {
+    backgroundColor: "rgba(190,150,80,0.12)",
+  },
+  minuteText: {
+    fontSize: 13,
+    color: "#7A8FA8",
+    fontWeight: "500",
+  },
+});
+
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -1114,182 +1286,4 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   communityLabel: { fontSize: 12, fontWeight: "500", textAlign: "center", letterSpacing: 0.2 },
-});
-
-// ── Personalize sheet styles ──────────────────────────────────────────────────
-const pStyles = StyleSheet.create({
-  sheet: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#0E1420",
-    borderTopLeftRadius: 26,
-    borderTopRightRadius: 26,
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    maxHeight: "88%",
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "#2A3545",
-    alignSelf: "center",
-    marginBottom: 22,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#EDE1D3",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginBottom: 4,
-  },
-  sectionSub: {
-    fontSize: 12,
-    color: "#7A8FA8",
-    marginBottom: 14,
-    lineHeight: 17,
-  },
-
-  // Geometrix thumbs
-  creationThumb: {
-    width: 88,
-    marginRight: 10,
-    alignItems: "center",
-  },
-  thumbBg: {
-    width: 80,
-    height: 80,
-    borderRadius: 16,
-    marginBottom: 6,
-    overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  thumbBgOn: {
-    borderColor: "#BE9650",
-  },
-  thumbCheck: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.3)",
-  },
-  thumbLabel: {
-    fontSize: 11,
-    color: "#7A8FA8",
-    textAlign: "center",
-  },
-  emptyText: {
-    fontSize: 12,
-    color: "#7A8FA8",
-    fontStyle: "italic",
-    paddingVertical: 20,
-  },
-
-  // Gradient swatches
-  swatchRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  swatch: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  swatchOn: {
-    borderColor: "#BE9650",
-  },
-  swatchGrad: {
-    flex: 1,
-  },
-
-  // Reminder
-  reminderCard: {
-    backgroundColor: "rgba(255,255,255,0.03)",
-    borderRadius: 18,
-    padding: 16,
-    marginBottom: 24,
-  },
-  reminderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  reminderBell: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(190,150,80,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  reminderLabel: {
-    flex: 1,
-    fontSize: 14,
-    color: "#EDE1D3",
-    fontWeight: "500",
-  },
-  timePicker: {
-    marginTop: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#1E2A38",
-    alignItems: "center",
-  },
-  timeLabel: {
-    fontSize: 10,
-    color: "#7A8FA8",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-    marginBottom: 14,
-    alignSelf: "flex-start",
-  },
-  timeRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 24,
-    marginBottom: 16,
-  },
-  timeBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(190,150,80,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  timeValue: {
-    fontSize: 38,
-    fontWeight: "200",
-    color: "#EDE1D3",
-    letterSpacing: 3,
-    minWidth: 120,
-    textAlign: "center",
-  },
-  minuteRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  minuteBtn: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.04)",
-  },
-  minuteBtnOn: {
-    backgroundColor: "rgba(190,150,80,0.12)",
-  },
-  minuteText: {
-    fontSize: 13,
-    color: "#7A8FA8",
-    fontWeight: "500",
-  },
 });
