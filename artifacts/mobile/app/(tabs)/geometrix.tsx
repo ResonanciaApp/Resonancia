@@ -53,6 +53,19 @@ import { GEOMETRIES, PALETTE, type GeometryId, type GeometryMeta } from "@/data/
 
 const colors = colorsConst.light;
 const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+
+// Convierte un color hex (#RGB o #RRGGBB) a rgba con el alpha dado. Para
+// hacer un fade que no tiña de negro, el extremo "transparente" debe usar el
+// mismo color con alpha 0 (no la palabra "transparent").
+function withAlpha(hex: string, alpha: number): string {
+  let h = hex.replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  if ([r, g, b].some((n) => Number.isNaN(n))) return hex;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 const CARD_BORDER = "#161f33";
 
 /**
@@ -779,26 +792,20 @@ export default function GeometrixScreen() {
   const immersiveSize = Math.min(width, height) * 0.96;
 
   const masterBgGradient = gradientColors(master.bgGradientId);
+  // Color del borde superior del fondo del lienzo (el que aparece en la
+  // divisora): tope del degradado o el sólido elegido. Sirve para el fade.
+  const canvasBgTopColor = masterBgGradient
+    ? masterBgGradient[0]
+    : master.bgColor ?? HOME_GRADIENT[0];
 
   return (
     <View style={styles.root}>
-      {masterBgGradient ? (
-        <LinearGradient
-          colors={masterBgGradient}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-      ) : master.bgColor ? (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: master.bgColor }]} />
-      ) : (
-        <LinearGradient
-          colors={HOME_GRADIENT}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
+      <LinearGradient
+        colors={HOME_GRADIENT}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
 
       <View style={[styles.content, { paddingTop: insets.top + 12 }]}>
         {/* Header */}
@@ -917,6 +924,36 @@ export default function GeometrixScreen() {
             divisora y la tab bar; thumbnails anclados 10px sobre la tab bar.
             paddingBottom despeja la tab bar para que el lienzo no se recorte. */}
         <View style={[styles.canvasWrap, { paddingBottom: tabBarHeight }]}>
+          {/* Fondo del lienzo (solo de la divisora hacia abajo). Se extiende
+              edge-to-edge (left/right -20 rompe el padding del content) y con
+              un fade sutil ~80px por encima de la divisora que mezcla el fondo
+              elegido con el fondo por defecto de la app. */}
+          {(masterBgGradient || master.bgColor) && (
+            <View pointerEvents="none" style={styles.canvasBgLayer}>
+              {/* Relleno principal: de la divisora (top: FADE) hacia abajo. */}
+              {masterBgGradient ? (
+                <LinearGradient
+                  colors={masterBgGradient}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={styles.canvasBgFill}
+                />
+              ) : (
+                <View
+                  style={[styles.canvasBgFill, { backgroundColor: master.bgColor! }]}
+                />
+              )}
+              {/* Fade hacia arriba: transparente (arriba) → color elegido
+                  (en la divisora). Usa rgba con alpha 0 del mismo color para
+                  no teñir de negro. */}
+              <LinearGradient
+                colors={[withAlpha(canvasBgTopColor, 0), canvasBgTopColor]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={styles.canvasBgFade}
+              />
+            </View>
+          )}
           {/* Escenario: centra la animación en el espacio sobre los thumbnails. */}
           <View
             style={styles.stage}
@@ -1774,6 +1811,31 @@ const styles = StyleSheet.create({
   canvasWrap: {
     flex: 1,
     alignItems: "center",
+  },
+  // Capa de fondo del lienzo: edge-to-edge (left/right -20 rompe el padding
+  // del content) y se extiende 80px por encima de la divisora para el fade.
+  canvasBgLayer: {
+    position: "absolute",
+    left: -20,
+    right: -20,
+    top: -80,
+    bottom: 0,
+  },
+  // Relleno sólido/degradado: desde la divisora (top: 80) hacia abajo.
+  canvasBgFill: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 80,
+    bottom: 0,
+  },
+  // Fade superior: 80px de transparente → color, justo sobre la divisora.
+  canvasBgFade: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 80,
   },
   stage: {
     flex: 1,
