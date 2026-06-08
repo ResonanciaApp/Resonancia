@@ -188,6 +188,15 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
                               borderColor:  "rgba(190,150,80,0.45)" },
             ]}
           >
+            {/* Handle de arrastre: 6 puntos 2×3 */}
+            <View style={styles.handle} pointerEvents="none">
+              {[0,1,2,3,4,5].map((i) => (
+                <View
+                  key={i}
+                  style={[styles.dot, { backgroundColor: colors.mutedForeground + "66" }]}
+                />
+              ))}
+            </View>
             <Feather name={item.icon} size={22} color={colors.mutedForeground} />
             <Text style={[styles.label, { color: colors.mutedForeground }]} numberOfLines={1}>
               {item.label}
@@ -245,6 +254,20 @@ const styles = StyleSheet.create({
     fontWeight:    "600",
     textAlign:     "center",
     letterSpacing: 0.2,
+  },
+  handle: {
+    position: "absolute",
+    top: 8,
+    right: 9,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: 14,
+    gap: 3,
+  },
+  dot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
   },
   ghost: {
     position:       "absolute",
