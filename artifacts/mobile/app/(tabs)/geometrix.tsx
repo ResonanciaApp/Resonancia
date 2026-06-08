@@ -662,14 +662,23 @@ export default function GeometrixScreen() {
   }, []);
 
   // Vacía por completo el lienzo: quita todas las geometrías activas (los
-  // effects reasignan solo/selección a null). Los ajustes guardados se
-  // conservan y se re-siembran al reactivar.
+  // effects reasignan solo/selección a null) y resetea los ajustes generales
+  // (fondo, brillo, opacidad, glow, movimiento) a sus valores por defecto. Los
+  // ajustes por capa se conservan y se re-siembran al reactivar.
   const clearCanvas = useCallback(() => {
     // El intro suena una sola vez por lanzamiento de app: al vaciar el lienzo NO
     // se vuelve a disparar.
     setActive([]);
     setSoloId(null);
     setSelectedId(null);
+    setMaster({
+      opacity: 1,
+      motion: true,
+      glow: 0,
+      bgColor: null,
+      bgGradientId: null,
+      bgBrightness: 0.5,
+    });
   }, []);
 
   const updateSetting = useCallback(
