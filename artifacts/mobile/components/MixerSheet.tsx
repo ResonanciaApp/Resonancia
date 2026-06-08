@@ -485,7 +485,13 @@ export function MixerSheet() {
               accessibilityRole="button"
             >
               <View style={styles.footerPlayCircle}>
-                <Feather name={isPlaying ? "pause" : "play"} size={64} color={WARM.playText} strokeWidth={1} />
+                <Feather
+                  name={isPlaying ? "pause" : "play"}
+                  size={64}
+                  color={WARM.playText}
+                  strokeWidth={1}
+                  style={isPlaying ? undefined : { marginLeft: 8 }}
+                />
               </View>
             </Pressable>
 
@@ -707,7 +713,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.12)",
     alignItems: "center",
     justifyContent: "center",
-    paddingLeft: 4,
   },
   footerLabel: {
     fontSize: 10,
