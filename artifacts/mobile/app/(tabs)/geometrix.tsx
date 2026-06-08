@@ -1053,26 +1053,35 @@ export default function GeometrixScreen() {
                 <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
                 {layerSize > 0 &&
                   visibleMetas.map((g, i) => (
-                    <GeometryLayer
+                    // Wrapper con salida en fade out: al deseleccionar la
+                    // geometría, la capa se desvanece antes de desmontarse (la
+                    // entrada la maneja el `enter` interno de GeometryLayer).
+                    <Animated.View
                       key={g.id}
-                      geo={g}
-                      index={i}
-                      size={layerSize}
-                      settings={getSettings(g.id)}
-                      liveZoom={
-                        g.id === pinchTargetId && livePinchNum != null
-                          ? livePinchNum
-                          : undefined
-                      }
-                      liveAngle={
-                        g.id === pinchTargetId && liveRotNum != null
-                          ? liveRotNum
-                          : undefined
-                      }
-                      masterOpacity={master.opacity}
-                      motion={master.motion}
-                      glow={master.glow}
-                    />
+                      exiting={FadeOut.duration(600)}
+                      style={styles.layer}
+                      pointerEvents="none"
+                    >
+                      <GeometryLayer
+                        geo={g}
+                        index={i}
+                        size={layerSize}
+                        settings={getSettings(g.id)}
+                        liveZoom={
+                          g.id === pinchTargetId && livePinchNum != null
+                            ? livePinchNum
+                            : undefined
+                        }
+                        liveAngle={
+                          g.id === pinchTargetId && liveRotNum != null
+                            ? liveRotNum
+                            : undefined
+                        }
+                        masterOpacity={master.opacity}
+                        motion={master.motion}
+                        glow={master.glow}
+                      />
+                    </Animated.View>
                   ))}
 
                 {active.length === 0 && (
