@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -551,13 +552,53 @@ export default function ProfileScreen() {
     return [BG_GRADIENT[0], BG_GRADIENT[2]];
   }, [profileBgCreationId, profileBgGradientId, geoCreations]);
 
+  // ── Crossfade de fondo ────────────────────────────────────────────────────
+  const defaultBg = [BG_GRADIENT[0], BG_GRADIENT[2]] as const;
+  const [bgFrom, setBgFrom] = useState<readonly [string, string]>(defaultBg);
+  const [bgTo, setBgTo] = useState<readonly [string, string]>(defaultBg);
+  const crossFadeAnim = useRef(new Animated.Value(1)).current;
+  const prevBgRef = useRef<readonly [string, string]>(defaultBg);
+  const bgMountedRef = useRef(false);
+
+  useEffect(() => {
+    if (!bgMountedRef.current) {
+      bgMountedRef.current = true;
+      setBgFrom(activeBgColors);
+      setBgTo(activeBgColors);
+      crossFadeAnim.setValue(1);
+      prevBgRef.current = activeBgColors;
+      return;
+    }
+    const prev = prevBgRef.current;
+    const next = activeBgColors;
+    if (prev[0] === next[0] && prev[1] === next[1]) return;
+    prevBgRef.current = next;
+    setBgFrom(prev);
+    setBgTo(next);
+    crossFadeAnim.setValue(0);
+    Animated.timing(crossFadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+  }, [activeBgColors, crossFadeAnim]);
+
   return (
-    <LinearGradient
-      style={styles.root}
-      colors={[...activeBgColors]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={styles.root}>
+      {/* Fondo anterior — se desvanece */}
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
+        pointerEvents="none"
+      >
+        <LinearGradient colors={[...bgFrom]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+      </Animated.View>
+      {/* Fondo nuevo — aparece */}
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim }]}
+        pointerEvents="none"
+      >
+        <LinearGradient colors={[...bgTo]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+      </Animated.View>
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
@@ -1089,7 +1130,7 @@ export default function ProfileScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
-    </LinearGradient>
+    </View>
   );
 }
 
