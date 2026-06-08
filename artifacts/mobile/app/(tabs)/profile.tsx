@@ -116,7 +116,7 @@ const pStyles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#0E1420",
+    backgroundColor: "#090D20",
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
     paddingHorizontal: 20,
