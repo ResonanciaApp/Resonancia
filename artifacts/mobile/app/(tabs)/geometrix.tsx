@@ -170,6 +170,8 @@ function defaultSettings(id: GeometryId): GeoSettings {
     scale: 1,
     zoom: 1,
     manualAngle: 0,
+    offsetX: 0,
+    offsetY: 0,
   };
 }
 
@@ -539,6 +541,14 @@ export default function GeometrixScreen() {
   const rotSucceeded = useSharedValue(false);
   const [liveRotNum, setLiveRotNum] = useState<number | null>(null);
 
+  // ── Drag (arrastrar con un dedo) ─────────────────────────────────────────
+  const liveDragX = useSharedValue(0);
+  const liveDragY = useSharedValue(0);
+  const dragStartX = useSharedValue(0);
+  const dragStartY = useSharedValue(0);
+  // null = sin drag en curso; objeto = posición en vivo mientras se arrastra.
+  const [liveDragPos, setLiveDragPos] = useState<{ x: number; y: number } | null>(null);
+
   // Un reproductor por módulo (reproducen de forma independiente).
   const playersRef = useRef<Record<string, AudioPlayer | null>>({});
   // Creación cargada desde "Mis creaciones" (null = lienzo nuevo o no cargado).
@@ -761,6 +771,15 @@ export default function GeometrixScreen() {
     [updateSetting],
   );
 
+  // Confirmar el desplazamiento del drag (un dedo) a settings (JS thread).
+  const commitOffset = useCallback(
+    (id: GeometryId, x: number, y: number) => {
+      updateSetting(id, "offsetX", Number.isFinite(x) ? x : 0);
+      updateSetting(id, "offsetY", Number.isFinite(y) ? y : 0);
+    },
+    [updateSetting],
+  );
+
   // Helpers para construir el snapshot de la composición actual.
   const buildSnapshot = useCallback(() => {
     const activeSettings: Record<string, GeoSettings> = {};
@@ -973,6 +992,15 @@ export default function GeometrixScreen() {
     livePinch.value = pinchTargetId ? getSettings(pinchTargetId).zoom : 1;
   }, [pinchTargetId, getSettings, livePinch]);
 
+  // Sincronizar liveDragX/Y con el offset confirmado del objetivo cuando cambia.
+  // Así el onStart del panGesture (worklet, hilo UI) puede leer liveDragX/Y
+  // directamente sin llamar a getSettings (función JS, no worklet).
+  useEffect(() => {
+    const s = pinchTargetId ? getSettings(pinchTargetId) : null;
+    liveDragX.value = s?.offsetX ?? 0;
+    liveDragY.value = s?.offsetY ?? 0;
+  }, [pinchTargetId, getSettings, liveDragX, liveDragY]);
+
   // Gesto de pellizco: escala libre del objetivo, permitiendo pasar los
   // márgenes (efecto wallpaper). Se confirma a settings al soltar.
   const pinchGesture = Gesture.Pinch()
@@ -1038,8 +1066,38 @@ export default function GeometrixScreen() {
       runOnJS(setLiveRotNum)(null);
     });
 
-  // Pellizco (zoom) y rotación corren a la vez sobre el objetivo seleccionado.
-  const canvasGesture = Gesture.Simultaneous(pinchGesture, rotationGesture);
+  // Gesto de drag (un solo dedo) para desplazar la geometría seleccionada
+  // libremente por el lienzo. Al soltar, el nuevo offset queda confirmado en
+  // settings. `minPointers(1).maxPointers(1)` evita conflictos con el pellizco
+  // (dos dedos) y la rotación (dos dedos).
+  const panGesture = Gesture.Pan()
+    .minPointers(1)
+    .maxPointers(1)
+    .onStart(() => {
+      // liveDragX/Y ya están sincronizados con el offset confirmado del objetivo
+      // via useEffect — leerlos desde el worklet es seguro (son shared values).
+      dragStartX.value = liveDragX.value;
+      dragStartY.value = liveDragY.value;
+    })
+    .onUpdate((e) => {
+      if (!pinchTargetId) return;
+      const x = dragStartX.value + e.translationX;
+      const y = dragStartY.value + e.translationY;
+      liveDragX.value = x;
+      liveDragY.value = y;
+      runOnJS(setLiveDragPos)({ x, y });
+    })
+    .onEnd(() => {
+      if (pinchTargetId) {
+        runOnJS(commitOffset)(pinchTargetId, liveDragX.value, liveDragY.value);
+      }
+    })
+    .onFinalize(() => {
+      runOnJS(setLiveDragPos)(null);
+    });
+
+  // Pellizco, rotación y drag corren a la vez sobre el objetivo seleccionado.
+  const canvasGesture = Gesture.Simultaneous(pinchGesture, rotationGesture, panGesture);
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
@@ -1199,14 +1257,19 @@ export default function GeometrixScreen() {
               <GestureDetector gesture={canvasGesture}>
                 <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
                 {layerSize > 0 &&
-                  visibleMetas.map((g, i) => (
+                  visibleMetas.map((g, i) => {
+                    const s = getSettings(g.id);
+                    const isDragging = g.id === pinchTargetId && liveDragPos != null;
+                    const tx = isDragging ? liveDragPos.x : (s.offsetX ?? 0);
+                    const ty = isDragging ? liveDragPos.y : (s.offsetY ?? 0);
+                    return (
                     // Wrapper con salida en fade out: al deseleccionar la
                     // geometría, la capa se desvanece antes de desmontarse (la
                     // entrada la maneja el `enter` interno de GeometryLayer).
                     <Animated.View
                       key={g.id}
                       exiting={FadeOut.duration(600)}
-                      style={styles.layer}
+                      style={[styles.layer, (tx || ty) ? { transform: [{ translateX: tx }, { translateY: ty }] } : null]}
                       pointerEvents="none"
                     >
                       <GeometryLayer
@@ -1229,7 +1292,8 @@ export default function GeometrixScreen() {
                         glow={master.glow}
                       />
                     </Animated.View>
-                  ))}
+                    );
+                  })}
 
                 {active.length === 0 && (
                   // Logo + título + bajada entran JUNTOS y con un retardo (650ms)

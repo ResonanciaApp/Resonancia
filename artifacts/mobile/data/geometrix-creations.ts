@@ -38,6 +38,10 @@ export type GeoSettings = {
   zoom: number;
   /** Ángulo manual en grados (gesto de rotación con dos dedos). */
   manualAngle: number;
+  /** Desplazamiento horizontal (arrastrar con un dedo), en px del lienzo. */
+  offsetX: number;
+  /** Desplazamiento vertical (arrastrar con un dedo), en px del lienzo. */
+  offsetY: number;
 };
 
 /** Ajustes generales (panel maestro) que afectan a todas las capas a la vez. */
