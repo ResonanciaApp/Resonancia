@@ -494,21 +494,13 @@ export function MixerSheet() {
               </View>
             </Pressable>
 
-            {/* Derecha: Guardar (arriba) + Actualizar (abajo) */}
+            {/* Derecha: Guardar */}
             <View style={styles.footerSide}>
               <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal("new")}>
                 <View style={styles.footerHeartCircle}>
                   <MaterialCommunityIcons name="heart" size={18} color="#FFFFFF" />
                 </View>
                 <Text style={styles.footerLabel}>Guardar</Text>
-              </Pressable>
-
-              <Pressable
-                style={[styles.footerUpdateBtn, { opacity: mixHasChanged ? 1 : 0.35 }]}
-                onPress={() => canUpdate ? handleUpdateDirect() : (mixHasChanged && openSaveModal("new"))}
-              >
-                <Feather name="check" size={15} color={WARM.saveText} />
-                <Text style={styles.footerUpdateText}>Actualizar</Text>
               </Pressable>
             </View>
 
