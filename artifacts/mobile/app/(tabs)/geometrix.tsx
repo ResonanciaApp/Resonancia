@@ -1934,7 +1934,7 @@ const styles = StyleSheet.create({
   toggleTriLabel: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: colors.mutedForeground,
     textAlign: "center",
   },
 
