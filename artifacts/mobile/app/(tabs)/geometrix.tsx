@@ -682,25 +682,35 @@ export default function GeometrixScreen() {
   );
 
   const toggleGeometry = useCallback((id: GeometryId) => {
+    const removing = active.includes(id);
     setActive((prev) =>
-      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
+      removing ? prev.filter((g) => g !== id) : [...prev, id],
     );
-    // Sembrar ajustes por defecto la primera vez que se activa (conservar si re-activa).
-    setSettings((prev) => (prev[id] ? prev : { ...prev, [id]: defaultSettings(id) }));
+    if (removing) {
+      // Al quitar, limpiar los ajustes para que vuelva a los defaults si se re-agrega.
+      setSettings((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+    } else {
+      // Al agregar, sembrar ajustes por defecto.
+      setSettings((prev) => (prev[id] ? prev : { ...prev, [id]: defaultSettings(id) }));
+    }
     // Seleccionarla para el pellizco (si se quita, el effect reasigna).
     setSelectedId(id);
-  }, []);
+  }, [active]);
 
-  // Vacía por completo el lienzo: quita todas las geometrías activas (los
-  // effects reasignan solo/selección a null) y resetea los ajustes generales
-  // (fondo, brillo, opacidad, glow, movimiento) a sus valores por defecto. Los
-  // ajustes por capa se conservan y se re-siembran al reactivar.
+  // Vacía por completo el lienzo: quita todas las geometrías activas, resetea
+  // sus ajustes por capa (quedan en defaults al re-agregar) y resetea los
+  // ajustes generales (fondo, brillo, opacidad, glow, movimiento).
   const clearCanvas = useCallback(() => {
     // El intro suena una sola vez por lanzamiento de app: al vaciar el lienzo NO
     // se vuelve a disparar.
     setActive([]);
     setHiddenIds([]);
     setSelectedId(null);
+    setSettings({});
     setMaster({
       opacity: 1,
       motion: true,
