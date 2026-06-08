@@ -154,9 +154,9 @@ function gradientColors(id: string | null): readonly [string, string] | undefine
 
 // Oscurece un hex multiplicando su RGB por un factor (0–1). Solo se aplica al
 // fondo del lienzo y a su vista previa (NO a los círculos del selector, que se
-// opacarían) para que las animaciones (trazos claros) contrasten. 0.32 ≈ 60%
-// más oscuro que el 0.8 previo (0.8 × 0.4).
-const BG_DARKEN = 0.32;
+// opacarían) para que las animaciones (trazos claros) contrasten. 0.192 ≈ 40%
+// más oscuro que el 0.32 previo (0.32 × 0.6).
+const BG_DARKEN = 0.192;
 function darkenHex(hex: string, f: number): string {
   let h = hex.replace("#", "");
   if (h.length === 3) h = h.split("").map((c) => c + c).join("");
