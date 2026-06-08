@@ -286,7 +286,10 @@ export default function GeometrixCreacionesScreen() {
           {/* Card "Nueva composición" */}
           <Pressable
             onPress={() =>
-              router.canGoBack() ? router.back() : router.replace("/(tabs)/geometrix" as never)
+              router.navigate({
+                pathname: "/(tabs)/geometrix",
+                params: { new: "1" },
+              } as never)
             }
             style={({ pressed }) => [
               styles.newCard,

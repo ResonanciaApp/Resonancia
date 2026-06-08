@@ -443,7 +443,7 @@ export default function GeometrixScreen() {
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, getCreation } = useGeometrixCreations();
   // Param de ruta: id de una creación a abrir (lo manda la pantalla de la lista).
-  const params = useLocalSearchParams<{ load?: string; play?: string }>();
+  const params = useLocalSearchParams<{ load?: string; play?: string; new?: string }>();
 
   const [active, setActive] = useState<GeometryId[]>([]);
   // Módulo de música con su desplegable abierto (null = ninguno).
@@ -788,6 +788,32 @@ export default function GeometrixScreen() {
       router.setParams({ load: "", play: "" });
     }
   }, [params.load, params.play, loadCreation]);
+
+  // "Nueva composición" (desde la lista): vaciar el lienzo y volver a los
+  // ajustes por defecto, parando el sonido. Así se empieza una receta en limpio.
+  useEffect(() => {
+    if (params.new === "1") {
+      stopIntro();
+      stopAllSound();
+      setActiveTracks({});
+      setOpenModule(null);
+      setActive([]);
+      setSettings({});
+      setSoloId(null);
+      setSelectedId(null);
+      setImmersive(false);
+      setSavedName(null);
+      setMaster({
+        opacity: 1,
+        motion: true,
+        glow: 0,
+        bgColor: null,
+        bgGradientId: null,
+        bgBrightness: 0.5,
+      });
+      router.setParams({ new: "" });
+    }
+  }, [params.new, stopAllSound, stopIntro]);
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
