@@ -915,7 +915,7 @@ export default function GeometrixScreen() {
         <View style={styles.header}>
           <View style={styles.headerText}>
             <Text style={styles.title}>Geometrix</Text>
-            <Text style={styles.subtitle}>Crea tus geometrías relajantes</Text>
+            <Text style={styles.subtitle}>Crea, anima, personaliza y comparte.</Text>
           </View>
 
           <View style={styles.soundModules}>
