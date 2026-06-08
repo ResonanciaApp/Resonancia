@@ -47,6 +47,10 @@ import Svg, {
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
+import {
+  playGeometrixIntroOnce,
+  stopGeometrixIntro,
+} from "@/lib/geometrixIntro";
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
 import { GEOMETRIES, PALETTE, type GeometryId, type GeometryMeta } from "@/data/geometries";
@@ -530,83 +534,15 @@ export default function GeometrixScreen() {
     Object.keys(playersRef.current).forEach((k) => stopModule(k));
   }, [stopModule]);
 
-  // Audio de intro: precargado al montar el componente para que el primer
-  // play sea instantáneo (sin delay de decode). El player vive durante toda
-  // la vida del componente; stopIntro solo pausa (no destruye).
-  const introPlayerRef = useRef<AudioPlayer | null>(null);
-  // Token anti-race: el seekTo es async; si mientras esperamos se pide otro
-  // stop/play, abortamos antes de llamar play().
-  const introReqRef = useRef(0);
-
-  // Precarga: se ejecuta UNA SOLA VEZ al montar → el decode ocurre en
-  // background mientras el usuario está en otra pestaña.
-  useEffect(() => {
-    (async () => {
-      try {
-        await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
-      } catch {
-        /* ignore */
-      }
-      try {
-        const p = createAudioPlayer(
-          require("@/assets/audio/geometrix/intro-reveal.mp3"),
-          { updateInterval: 500 },
-        );
-        p.volume = 1;
-        introPlayerRef.current = p;
-      } catch {
-        /* ignore */
-      }
-    })();
-    return () => {
-      // Liberar el player solo al desmontar (no en cada stop/play).
-      const p = introPlayerRef.current;
-      if (p) {
-        try {
-          p.pause();
-        } catch {
-          /* ignore */
-        }
-        try {
-          p.remove();
-        } catch {
-          /* ignore */
-        }
-      }
-      introPlayerRef.current = null;
-    };
-  }, []);
-
+  // Audio de intro ("logo reveal" de cubo-3): gestionado por un singleton de
+  // módulo (lib/geometrixIntro). Se precarga al arrancar la app y suena UNA sola
+  // vez por lanzamiento. Aquí solo disparamos play (one-shot) y pausa.
   const stopIntro = useCallback(() => {
-    introReqRef.current++;
-    const p = introPlayerRef.current;
-    if (p) {
-      try {
-        p.pause();
-      } catch {
-        /* ignore */
-      }
-    }
+    stopGeometrixIntro();
   }, []);
 
-  const playIntro = useCallback(async () => {
-    introReqRef.current++;
-    const req = introReqRef.current;
-    const p = introPlayerRef.current;
-    if (!p) return;
-    try {
-      // seekTo toma segundos; el player ya está cargado → seek casi instantáneo.
-      await p.seekTo(0);
-    } catch {
-      /* ignore */
-    }
-    // Abortar si hubo otro stop/play mientras esperábamos el seek.
-    if (introReqRef.current !== req) return;
-    try {
-      p.play();
-    } catch {
-      /* ignore */
-    }
+  const playIntro = useCallback(() => {
+    playGeometrixIntroOnce();
   }, []);
 
   useEffect(() => {
@@ -726,15 +662,12 @@ export default function GeometrixScreen() {
   // effects reasignan solo/selección a null). Los ajustes guardados se
   // conservan y se re-siembran al reactivar.
   const clearCanvas = useCallback(() => {
-    // Al vaciar reaparece el logo (cubo-3): re-disparar el audio de intro
-    // para que siga sincronizado con su "reveal".
-    if (activeRef.current.length > 0) {
-      playIntro();
-    }
+    // El intro suena una sola vez por lanzamiento de app: al vaciar el lienzo NO
+    // se vuelve a disparar.
     setActive([]);
     setSoloId(null);
     setSelectedId(null);
-  }, [playIntro]);
+  }, []);
 
   const updateSetting = useCallback(
     <K extends keyof GeoSettings>(id: GeometryId, key: K, value: GeoSettings[K]) => {

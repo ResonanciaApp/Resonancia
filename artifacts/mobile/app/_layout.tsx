@@ -27,6 +27,7 @@ import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { CatalogProvider } from "@/context/CatalogContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { DrawerProvider } from "@/context/DrawerContext";
@@ -225,6 +226,13 @@ export default function RootLayout() {
       SplashScreen.hideAsync().catch(() => {});
     }, 800);
     return () => clearTimeout(t);
+  }, []);
+
+  // Precarga el audio del logo reveal de Geometrix al arrancar la app (la
+  // pestaña se monta perezosa, así que precargarlo allí llegaba tarde). Con
+  // segundos de anticipación, el primer play sincroniza con el FadeIn sin delay.
+  useEffect(() => {
+    preloadGeometrixIntro();
   }, []);
 
   return (
