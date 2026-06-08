@@ -1042,10 +1042,16 @@ export default function GeometrixScreen() {
                     style={[styles.thumbOverlay, restStyle]}
                   />
                   {isActive ? (
-                    /* Icono de audio: hay una pista sonando (sobre la imagen). */
-                    <View style={styles.thumbAudioBadge} pointerEvents="none">
+                    /* Icono de audio: hay una pista sonando (sobre la imagen).
+                       Aparece con fade a 15% de opacidad al cerrarse el desplegable. */
+                    <Animated.View
+                      pointerEvents="none"
+                      entering={FadeIn.duration(350)}
+                      exiting={FadeOut.duration(200)}
+                      style={[styles.thumbAudioBadge, { opacity: 0.15 }]}
+                    >
                       <Feather name="volume-2" size={16} color="#fff" />
-                    </View>
+                    </Animated.View>
                   ) : (
                     /* Glow pulsante para llamar la atención (sin pista). */
                     <Animated.View
