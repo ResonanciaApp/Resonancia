@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   },
 
   // Tab bar
-  tabContent:  { flexDirection: "row", gap: 8, paddingHorizontal: 16, paddingBottom: 12 },
+  tabContent:  { flexDirection: "row", gap: 8, paddingHorizontal: 16, paddingBottom: 12, marginTop: 5 },
   tabItem: {
     flex: 1,
     flexDirection: "column",
