@@ -120,8 +120,11 @@ const pStyles = StyleSheet.create({
     backgroundColor: "#090C1F",
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
-    borderTopWidth: 1,
-    borderTopColor: "#1a2046",
+    borderWidth: 1,
+    borderColor: "#1a2046",
+    borderBottomColor: "transparent",
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
     paddingHorizontal: 20,
     paddingTop: 12,
     maxHeight: "88%",
@@ -879,7 +882,10 @@ export default function ProfileScreen() {
         onRequestClose={() => setPersonalizeVisible(false)}
       >
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => setPersonalizeVisible(false)} />
+          <Pressable
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
+            onPress={() => setPersonalizeVisible(false)}
+          />
           <View style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}>
             {/* Handle */}
             <View style={pStyles.handle} />
