@@ -473,6 +473,8 @@ export default function GeometrixScreen() {
   const [sheetHeight, setSheetHeight] = useState(0);
   // Modo inmersión: solo el fondo animado, sin interfaz.
   const [immersive, setImmersive] = useState(false);
+  // Nombre de la composición recién guardada → muestra el popup temático.
+  const [savedName, setSavedName] = useState<string | null>(null);
   // Geometría con su menú contextual abierto (tap en miniatura).
   const [menuGeoId, setMenuGeoId] = useState<GeometryId | null>(null);
   // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
@@ -603,6 +605,7 @@ export default function GeometrixScreen() {
         setSettingsGeoId(null);
         setGeneralOpen(false);
         setImmersive(false);
+        setSavedName(null);
         setMenuGeoId(null);
         setSoloId(null);
       };
@@ -725,10 +728,7 @@ export default function GeometrixScreen() {
     const name = `Composición ${creations.length + 1}`;
     try {
       await saveCreation({ name, active, master, settings: activeSettings, soloId, audio });
-      Alert.alert("Guardada", `"${name}" se guardó en este dispositivo.`, [
-        { text: "Seguir editando", style: "cancel" },
-        { text: "Ver mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
-      ]);
+      setSavedName(name);
     } catch {
       Alert.alert("Error", "No se pudo guardar la composición.");
     }
@@ -1329,6 +1329,46 @@ export default function GeometrixScreen() {
               />
             ))}
           </View>
+        </Pressable>
+      </Modal>
+
+      {/* Popup temático de "Guardada" (reemplaza el Alert nativo). */}
+      <Modal
+        visible={!!savedName}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setSavedName(null)}
+      >
+        <Pressable style={styles.savedBackdrop} onPress={() => setSavedName(null)}>
+          <Pressable style={styles.savedCard} onPress={() => {}}>
+            <View style={styles.savedIcon}>
+              <Feather name="check" size={26} color={colors.primary} />
+            </View>
+            <Text style={styles.savedTitle}>Guardada</Text>
+            <Text style={styles.savedSubtitle}>
+              <Text style={styles.savedName}>“{savedName}”</Text> se guardó en este dispositivo.
+            </Text>
+            <View style={styles.savedActions}>
+              <Pressable
+                style={styles.savedBtnGhost}
+                onPress={() => setSavedName(null)}
+                accessibilityRole="button"
+              >
+                <Text style={styles.savedBtnGhostText}>Seguir editando</Text>
+              </Pressable>
+              <Pressable
+                style={styles.savedBtnPrimary}
+                onPress={() => {
+                  setSavedName(null);
+                  router.push("/geometrix-creaciones");
+                }}
+                accessibilityRole="button"
+              >
+                <Text style={styles.savedBtnPrimaryText}>Ver mis creaciones</Text>
+              </Pressable>
+            </View>
+          </Pressable>
         </Pressable>
       </Modal>
 
@@ -2143,6 +2183,72 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
+  // Popup "Guardada" (estilo navy + dorado, igual al resto de la UI).
+  savedBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 32,
+  },
+  savedCard: {
+    width: "100%",
+    maxWidth: 360,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.35)",
+    backgroundColor: "#0E1420",
+    paddingHorizontal: 22,
+    paddingTop: 22,
+    paddingBottom: 18,
+    alignItems: "center",
+    gap: 10,
+  },
+  savedIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(190,150,80,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.4)",
+    marginBottom: 2,
+  },
+  savedTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
+  savedSubtitle: {
+    fontSize: 13.5,
+    color: colors.mutedForeground,
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  savedName: { color: colors.foreground, fontWeight: "600" },
+  savedActions: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 14,
+    alignSelf: "stretch",
+  },
+  savedBtnGhost: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: CARD_BORDER,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  savedBtnGhostText: { fontSize: 14, fontWeight: "600", color: colors.mutedForeground },
+  savedBtnPrimary: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  savedBtnPrimaryText: { fontSize: 14, fontWeight: "700", color: colors.primaryForeground },
 
   // Interruptor
   toggle: {
