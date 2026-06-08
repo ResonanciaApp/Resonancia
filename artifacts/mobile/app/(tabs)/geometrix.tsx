@@ -543,6 +543,10 @@ export default function GeometrixScreen() {
   // Creación cargada desde "Mis creaciones" (null = lienzo nuevo o no cargado).
   // Reactivo para poder mostrar/ocultar el botón "Actualizar" en la UI.
   const [editingCreation, setEditingCreation] = useState<{ id: string; name: string } | null>(null);
+  // true cuando el usuario modificó algo desde que se cargó la creación.
+  const [isDirty, setIsDirty] = useState(false);
+  // Suprime el primer disparo del efecto dirty (causado por el propio loadCreation).
+  const justLoadedRef = useRef(false);
 
   const stopModule = useCallback((moduleKey: string) => {
     const p = playersRef.current[moduleKey];
@@ -795,6 +799,7 @@ export default function GeometrixScreen() {
       const { id, name } = editingCreation;
       await updateCreation(id, buildSnapshot());
       setSavedName(name);
+      setIsDirty(false); // vuelve a "limpio" hasta el próximo cambio
     } catch {
       Alert.alert("Error", "No se pudo actualizar la composición.");
     }
@@ -806,6 +811,8 @@ export default function GeometrixScreen() {
     async (id: string, enterImmersive = false) => {
       const c = await getCreation(id);
       if (!c) return;
+      // Suprimir el disparo del efecto dirty causado por los setStates que siguen.
+      justLoadedRef.current = true;
       // Registrar la creación cargada para habilitar el botón "Actualizar".
       setEditingCreation({ id: c.id, name: c.name });
       // Reset de la sesión actual antes de aplicar la receta.
@@ -918,6 +925,23 @@ export default function GeometrixScreen() {
     settingsGeoId && active.includes(settingsGeoId)
       ? GEOMETRIES.find((g) => g.id === settingsGeoId)
       : undefined;
+
+  // Efecto 1: al cambiar (o limpiar) la creación cargada → resetear dirty.
+  useEffect(() => {
+    setIsDirty(false);
+  }, [editingCreation]);
+
+  // Efecto 2: vigila el contenido del lienzo. Si hay creación cargada y NO fue
+  // un reset de carga (justLoadedRef), marcar dirty para mostrar "Actualizar".
+  useEffect(() => {
+    if (!editingCreation) return;
+    if (justLoadedRef.current) {
+      justLoadedRef.current = false;
+      return;
+    }
+    setIsDirty(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, settings, master, activeTracks]);
 
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
   // reasignar la selección del pellizco a otra activa (o ninguna).
@@ -1293,7 +1317,7 @@ export default function GeometrixScreen() {
               >
                 <Feather name="trash-2" size={18} color={colors.mutedForeground} />
               </Pressable>
-              {editingCreation && (
+              {editingCreation && isDirty && (
                 <Pressable
                   onPress={updateComposition}
                   style={styles.updateBtn}
