@@ -63,6 +63,7 @@ export default function SonidosAncestalesScreen() {
 
   const [activeTab, setActiveTab] = useState<string>(TABS[0].value);
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
@@ -117,9 +118,21 @@ export default function SonidosAncestalesScreen() {
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn}>
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
+          {/* Fila superior: atrás ← → lupa */}
+          <View style={styles.topRow}>
+            <Pressable onPress={() => router.back()} style={styles.backBtn}>
+              <Feather name="arrow-left" size={22} color={colors.foreground} />
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setSearchOpen((v) => !v);
+                if (searchOpen) setQuery("");
+              }}
+              style={styles.searchBtn}
+            >
+              <Feather name="search" size={19} color={colors.foreground} />
+            </Pressable>
+          </View>
           <View style={styles.catIconCircle}>
             <MaterialCommunityIcons name="bowl-mix" size={43} color={ACCENT} />
           </View>
@@ -127,17 +140,20 @@ export default function SonidosAncestalesScreen() {
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Cuencos, gongs y frecuencias sagradas
           </Text>
-          <View style={styles.searchBar}>
-            <Feather name="search" size={17} color={colors.mutedForeground} />
-            <TextInput
-              style={[styles.searchInput, { color: colors.foreground }]}
-              placeholder="Buscar en Ancestrales…"
-              placeholderTextColor={colors.mutedForeground}
-              value={query}
-              onChangeText={setQuery}
-              returnKeyType="search"
-            />
-          </View>
+          {searchOpen && (
+            <View style={styles.searchBar}>
+              <Feather name="search" size={17} color={colors.mutedForeground} />
+              <TextInput
+                autoFocus
+                style={[styles.searchInput, { color: colors.foreground }]}
+                placeholder="Buscar en Ancestrales…"
+                placeholderTextColor={colors.mutedForeground}
+                value={query}
+                onChangeText={setQuery}
+                returnKeyType="search"
+              />
+            </View>
+          )}
         </View>
 
         {/* Tabs — una sola fila horizontal, deslizable. Mismo tamaño, border
@@ -260,11 +276,22 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   header: { alignItems: "center", marginBottom: 9, paddingTop: 4 },
+  topRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    alignSelf: "stretch",
+    marginBottom: 16,
+  },
   backBtn: {
-    alignSelf: "flex-start",
     width: 40, height: 40,
     alignItems: "center", justifyContent: "center",
-    marginBottom: 16,
+  },
+  searchBtn: {
+    width: 40, height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    alignItems: "center", justifyContent: "center",
   },
   catIconCircle: {
     width: 60, height: 60,
