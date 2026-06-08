@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111634",
     borderWidth: 1,
     borderColor: "#191f45",
-    marginBottom: 20,
+    transform: [{ translateY: -10 }],
   },
 
   // Horizontal scroll
