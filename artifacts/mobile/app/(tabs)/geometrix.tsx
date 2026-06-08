@@ -1360,7 +1360,6 @@ export default function GeometrixScreen() {
               { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
             ]}
           />
-          <View style={styles.sheetHandle} />
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderLeft}>
               <Text style={styles.sheetTitle}>Ajustes</Text>
