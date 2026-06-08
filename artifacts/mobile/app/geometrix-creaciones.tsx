@@ -40,6 +40,8 @@ import {
   type GeometrixCreation,
 } from "@/data/geometrix-creations";
 
+const DANGER = "#ef4444";
+
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
   const diff = Date.now() - then;
@@ -70,6 +72,9 @@ export default function GeometrixCreacionesScreen() {
   // Modal de renombrar (cross-platform; Alert.prompt es solo iOS).
   const [renaming, setRenaming] = useState<GeometrixCreation | null>(null);
   const [draftName, setDraftName] = useState("");
+  // Menú de acciones (3 puntitos) y confirmación de borrado, con estilo temático.
+  const [actionsFor, setActionsFor] = useState<GeometrixCreation | null>(null);
+  const [deletingFor, setDeletingFor] = useState<GeometrixCreation | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -109,23 +114,8 @@ export default function GeometrixCreacionesScreen() {
     setRenaming(null);
   }
 
-  function confirmDelete(c: GeometrixCreation) {
-    Alert.alert(
-      "Eliminar creación",
-      `¿Eliminar "${c.name}"? Esta acción no se puede deshacer.`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => deleteCreation(c.id) },
-      ],
-    );
-  }
-
   function showActions(c: GeometrixCreation) {
-    Alert.alert(c.name, undefined, [
-      { text: "Renombrar", onPress: () => startRename(c) },
-      { text: "Eliminar", style: "destructive", onPress: () => confirmDelete(c) },
-      { text: "Cancelar", style: "cancel" },
-    ]);
+    setActionsFor(c);
   }
 
   return (
@@ -311,6 +301,100 @@ export default function GeometrixCreacionesScreen() {
           </Pressable>
         </Pressable>
       </Modal>
+
+      {/* Menú de acciones (3 puntitos) — estilo temático navy + dorado. */}
+      <Modal
+        visible={!!actionsFor}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setActionsFor(null)}
+      >
+        <Pressable style={styles.sheetBackdrop} onPress={() => setActionsFor(null)}>
+          <Pressable style={styles.sheetCard} onPress={() => {}}>
+            <Text style={styles.sheetTitle} numberOfLines={1}>
+              {actionsFor?.name}
+            </Text>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => {
+                const c = actionsFor;
+                setActionsFor(null);
+                if (c) startRename(c);
+              }}
+              accessibilityRole="button"
+            >
+              <View style={styles.sheetRowIcon}>
+                <Feather name="edit-2" size={17} color={colors.primary} />
+              </View>
+              <Text style={styles.sheetRowText}>Renombrar</Text>
+            </Pressable>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => {
+                const c = actionsFor;
+                setActionsFor(null);
+                if (c) setDeletingFor(c);
+              }}
+              accessibilityRole="button"
+            >
+              <View style={[styles.sheetRowIcon, styles.sheetRowIconDanger]}>
+                <Feather name="trash-2" size={17} color={DANGER} />
+              </View>
+              <Text style={[styles.sheetRowText, { color: DANGER }]}>Eliminar</Text>
+            </Pressable>
+            <Pressable
+              style={styles.sheetCancel}
+              onPress={() => setActionsFor(null)}
+              accessibilityRole="button"
+            >
+              <Text style={styles.sheetCancelText}>Cancelar</Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Confirmación de borrado — mismo estilo temático. */}
+      <Modal
+        visible={!!deletingFor}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setDeletingFor(null)}
+      >
+        <Pressable style={styles.sheetBackdrop} onPress={() => setDeletingFor(null)}>
+          <Pressable style={styles.confirmCard} onPress={() => {}}>
+            <View style={styles.confirmIcon}>
+              <Feather name="trash-2" size={24} color={DANGER} />
+            </View>
+            <Text style={styles.confirmTitle}>Eliminar creación</Text>
+            <Text style={styles.confirmSubtitle}>
+              ¿Eliminar <Text style={styles.confirmName}>“{deletingFor?.name}”</Text>? Esta
+              acción no se puede deshacer.
+            </Text>
+            <View style={styles.confirmActions}>
+              <Pressable
+                style={styles.confirmBtnGhost}
+                onPress={() => setDeletingFor(null)}
+                accessibilityRole="button"
+              >
+                <Text style={styles.confirmBtnGhostText}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={styles.confirmBtnDanger}
+                onPress={() => {
+                  const c = deletingFor;
+                  setDeletingFor(null);
+                  if (c) deleteCreation(c.id);
+                }}
+                accessibilityRole="button"
+              >
+                <Text style={styles.confirmBtnDangerText}>Eliminar</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -393,4 +477,123 @@ const styles = StyleSheet.create({
   modalActions: { flexDirection: "row", justifyContent: "flex-end", gap: 8 },
   modalBtn: { paddingHorizontal: 14, paddingVertical: 8 },
   modalBtnText: { fontSize: 14 },
+
+  // Popups temáticos (navy + dorado) — igual estilo que los de Geometrix.
+  sheetBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 32,
+  },
+  sheetCard: {
+    width: "100%",
+    maxWidth: 360,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.35)",
+    backgroundColor: "#0E1420",
+    paddingHorizontal: 14,
+    paddingTop: 16,
+    paddingBottom: 12,
+    gap: 4,
+  },
+  sheetTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#EDE1D3",
+    paddingHorizontal: 8,
+    paddingBottom: 10,
+  },
+  sheetRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+  },
+  sheetRowIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(190,150,80,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.4)",
+  },
+  sheetRowIconDanger: {
+    backgroundColor: "rgba(239,68,68,0.12)",
+    borderColor: "rgba(239,68,68,0.4)",
+  },
+  sheetRowText: { fontSize: 15, fontWeight: "600", color: "#EDE1D3" },
+  sheetCancel: {
+    marginTop: 6,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#161f33",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "#7A8FA8" },
+
+  confirmCard: {
+    width: "100%",
+    maxWidth: 360,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.35)",
+    backgroundColor: "#0E1420",
+    paddingHorizontal: 22,
+    paddingTop: 22,
+    paddingBottom: 18,
+    alignItems: "center",
+    gap: 10,
+  },
+  confirmIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(239,68,68,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(239,68,68,0.4)",
+    marginBottom: 2,
+  },
+  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#EDE1D3" },
+  confirmSubtitle: {
+    fontSize: 13.5,
+    color: "#7A8FA8",
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  confirmName: { color: "#EDE1D3", fontWeight: "600" },
+  confirmActions: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 14,
+    alignSelf: "stretch",
+  },
+  confirmBtnGhost: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#161f33",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "#7A8FA8" },
+  confirmBtnDanger: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: DANGER,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  confirmBtnDangerText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
 });
