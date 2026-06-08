@@ -299,9 +299,9 @@ export default function GeometrixCreacionesScreen() {
             ]}
           >
             <View style={[styles.newIcon, { backgroundColor: "rgba(21,28,58,0.35)" }]}>
-              <Feather name="plus" size={26} color="#151c3a" />
+              <Feather name="plus" size={26} color="#FFFFFF" />
             </View>
-            <Text style={[styles.newLabel, { color: "#151c3a" }]}>Nueva composición</Text>
+            <Text style={[styles.newLabel, { color: "#FFFFFF" }]}>Nueva composición</Text>
           </Pressable>
 
           {creations.map((c) => {
