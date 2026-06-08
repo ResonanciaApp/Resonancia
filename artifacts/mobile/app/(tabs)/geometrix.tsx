@@ -1354,7 +1354,10 @@ export default function GeometrixScreen() {
             colors={HOME_GRADIENT}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
-            style={StyleSheet.absoluteFill}
+            style={[
+              StyleSheet.absoluteFill,
+              { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
+            ]}
           />
           <View style={styles.sheetHandle} />
           <View style={styles.sheetHeader}>
