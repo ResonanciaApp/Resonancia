@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 12, letterSpacing: 0, textAlign: "center" },
 
   // Separador
-  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginTop: 14 },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginTop: 4 },
 
   // Scroll
   scroll:        { flex: 1 },
