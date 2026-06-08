@@ -1320,22 +1320,6 @@ export default function GeometrixScreen() {
               />
             </View>
 
-            {/* Opacidad general */}
-            <View style={[styles.fieldRow, { marginTop: 18 }]}>
-              <Text style={styles.fieldLabel}>Opacidad general</Text>
-            </View>
-            <VolumeSlider
-              value={master.opacity}
-              onChange={(v) =>
-                setMaster((m) => ({
-                  ...m,
-                  opacity: Number.isFinite(v) ? Math.min(1, Math.max(0.1, v)) : m.opacity,
-                }))
-              }
-              color="#FFFFFF"
-              trackColor="rgba(255,255,255,0.12)"
-            />
-
             {/* Color de fondo del lienzo: indigo por defecto + degradados
                 (oscurecidos). Sin colores sólidos. */}
             <Text style={[styles.fieldLabel, { marginTop: 18 }]}>Color de fondo</Text>
@@ -1371,6 +1355,22 @@ export default function GeometrixScreen() {
                 );
               })}
             </View>
+
+            {/* Opacidad de las animaciones */}
+            <View style={[styles.fieldRow, { marginTop: 18 }]}>
+              <Text style={styles.fieldLabel}>Opacidad animaciones</Text>
+            </View>
+            <VolumeSlider
+              value={master.opacity}
+              onChange={(v) =>
+                setMaster((m) => ({
+                  ...m,
+                  opacity: Number.isFinite(v) ? Math.min(1, Math.max(0.1, v)) : m.opacity,
+                }))
+              }
+              color="#FFFFFF"
+              trackColor="rgba(255,255,255,0.12)"
+            />
 
             {/* Brillo del fondo seleccionado */}
             <View style={[styles.fieldRow, { marginTop: 18 }]}>
