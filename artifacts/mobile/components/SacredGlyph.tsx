@@ -104,7 +104,9 @@ function lattice(R: number, rings: number): [number, number][] {
   return pts;
 }
 
-function elements(id: GeometryId, sw: number): React.ReactNode {
+/** Elementos SVG del glyph en coordenadas viewBox 0–100. Exportado para
+ *  reusar dentro de un `<Pattern>` (p.ej. GeometrixPatternBg). */
+export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
   switch (id) {
     // El caleidoscopio se dibuja como geometría base (una cuña con espiral y
     // arcos internos), pero la simetría radial real se aplica en SacredGlyphImpl
@@ -805,7 +807,7 @@ function SacredGlyphImpl({
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          {elements(id, sw)}
+          {glyphElements(id, sw)}
         </G>
       </Svg>
     );
@@ -853,7 +855,7 @@ function SacredGlyphImpl({
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            {elements(id, sw)}
+            {glyphElements(id, sw)}
           </G>
         </G>
       </Defs>

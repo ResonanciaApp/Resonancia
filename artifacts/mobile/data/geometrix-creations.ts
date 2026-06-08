@@ -48,6 +48,16 @@ export type GeoSettings = {
   kaleidSegments: number;
 };
 
+/** Patrón de fondo: geometría teselada detrás del lienzo. */
+export type BgPattern = {
+  /** ID de la geometría a teselar. */
+  geoId: GeometryId;
+  /** Opacidad 0–1 del patrón (generalmente bajo, 0.04–0.18). */
+  opacity: number;
+  /** Tamaño de cada tesela en px del lienzo (20 = pequeño, 40 = mediano, 70 = grande). */
+  tileSize: number;
+};
+
 /** Ajustes generales (panel maestro) que afectan a todas las capas a la vez. */
 export type GlobalSettings = {
   /** Opacidad maestra 0–1: multiplica la opacidad propia de cada capa. */
@@ -62,6 +72,8 @@ export type GlobalSettings = {
   bgGradientId: string | null;
   /** Brillo del fondo (valor del slider 0–1; 0.5 = brillo original). */
   bgBrightness: number;
+  /** Patrón de fondo (geometría teselada). null = sin patrón. */
+  bgPattern: BgPattern | null;
 };
 
 /** Guía manual del lienzo: línea persistente creada por el usuario. */

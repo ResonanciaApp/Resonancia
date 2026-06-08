@@ -48,6 +48,7 @@ import Svg, {
   Stop,
 } from "react-native-svg";
 
+import { GeometrixPatternBg } from "@/components/GeometrixPatternBg";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import {
@@ -65,11 +66,13 @@ import {
   HOME_GRADIENT,
   scaleColors,
   STROKE_GRADIENTS,
+  type BgPattern,
   type CanvasGuide,
   type GeoSettings,
   type GeometrixAudio,
   type GlobalSettings,
 } from "@/data/geometrix-creations";
+import { usePremium } from "@/context/PremiumContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const colors = colorsConst.light;
@@ -513,7 +516,9 @@ export default function GeometrixScreen() {
     bgColor: null,
     bgGradientId: null,
     bgBrightness: 0.5,
+    bgPattern: null,
   });
+  const { isPremium } = usePremium();
   const [guidesOpen, setGuidesOpen] = useState(false);
   const [guides, setGuides] = useState<CanvasGuide[]>([]);
   const [guideOrientation, setGuideOrientation] = useState<"h" | "v">("h");
@@ -684,7 +689,7 @@ export default function GeometrixScreen() {
         setSavedName(null);
         setMenuGeoId(null);
         setHiddenIds([]);
-        setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5 });
+        setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5, bgPattern: null });
       };
     }, [stopAllSound, glow, playIntro, stopIntro]),
   );
@@ -766,6 +771,7 @@ export default function GeometrixScreen() {
       bgColor: null,
       bgGradientId: null,
       bgBrightness: 0.5,
+      bgPattern: null,
     });
   }, []);
 
@@ -938,6 +944,7 @@ export default function GeometrixScreen() {
         bgColor: null,
         bgGradientId: null,
         bgBrightness: 0.5,
+        bgPattern: null,
       });
       router.setParams({ new: "" });
     }
@@ -1329,6 +1336,15 @@ export default function GeometrixScreen() {
               end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
             />
+            {master.bgPattern && canvasSide > 0 && (
+              <GeometrixPatternBg
+                size={canvasSide}
+                geoId={master.bgPattern.geoId}
+                opacity={master.bgPattern.opacity}
+                tileSize={master.bgPattern.tileSize}
+                color={colors.primary}
+              />
+            )}
           </View>
           {/* Escenario: centra la animación en el espacio sobre los thumbnails. */}
           <View
@@ -1647,6 +1663,15 @@ export default function GeometrixScreen() {
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
+          {master.bgPattern && (
+            <GeometrixPatternBg
+              size={immersiveSize}
+              geoId={master.bgPattern.geoId}
+              opacity={master.bgPattern.opacity}
+              tileSize={master.bgPattern.tileSize}
+              color={colors.primary}
+            />
+          )}
           <View style={StyleSheet.absoluteFill} pointerEvents="none">
             {visibleMetas.map((g, i) => (
               <GeometryLayer
@@ -1869,6 +1894,15 @@ export default function GeometrixScreen() {
                 end={{ x: 0.5, y: 1 }}
                 style={StyleSheet.absoluteFill}
               />
+              {master.bgPattern && (
+                <GeometrixPatternBg
+                  size={generalPreviewSize}
+                  geoId={master.bgPattern.geoId}
+                  opacity={master.bgPattern.opacity}
+                  tileSize={master.bgPattern.tileSize * (generalPreviewSize / canvasSide || 1)}
+                  color={colors.primary}
+                />
+              )}
               {activeMetas.map((g, i) => (
                 <GeometryLayer
                   key={g.id}
@@ -1948,6 +1982,118 @@ export default function GeometrixScreen() {
                   </Pressable>
                 );
               })}
+            </View>
+
+            {/* ── Patrón de fondo (Premium) ──────────────────────── */}
+            <View style={{ marginTop: 20 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Text style={styles.fieldLabel}>Patrón de fondo</Text>
+                  {!isPremium && (
+                    <View style={{ backgroundColor: colors.primary + "22", borderRadius: 6, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: colors.primary + "55" }}>
+                      <Text style={{ color: colors.primary, fontSize: 10, fontWeight: "700" }}>✦ PREMIUM</Text>
+                    </View>
+                  )}
+                </View>
+                <Toggle
+                  value={!!master.bgPattern}
+                  onChange={(v) => {
+                    if (!isPremium) { router.push("/membresia"); return; }
+                    setMaster((m) => ({
+                      ...m,
+                      bgPattern: v
+                        ? { geoId: "flor-vida", opacity: 0.08, tileSize: 40 }
+                        : null,
+                    }));
+                  }}
+                  color={colors.primary}
+                  compact
+                />
+              </View>
+
+              {master.bgPattern && (
+                <>
+                  {/* Selector de geometría */}
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={{ marginBottom: 12 }}
+                    contentContainerStyle={{ gap: 8, paddingHorizontal: 2 }}
+                  >
+                    {GEOMETRIES.map((g) => {
+                      const on = master.bgPattern?.geoId === g.id;
+                      return (
+                        <Pressable
+                          key={g.id}
+                          onPress={() =>
+                            setMaster((m) => ({
+                              ...m,
+                              bgPattern: m.bgPattern
+                                ? { ...m.bgPattern, geoId: g.id }
+                                : null,
+                            }))
+                          }
+                          style={{
+                            width: 44, height: 52,
+                            alignItems: "center", justifyContent: "center",
+                            backgroundColor: on ? colors.primary + "22" : "rgba(255,255,255,0.04)",
+                            borderRadius: 10,
+                            borderWidth: 1,
+                            borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.08)",
+                            gap: 3,
+                          }}
+                        >
+                          <SacredGlyph id={g.id} color={on ? colors.primary : colors.mutedForeground} size={30} strokeWidth={1.4} />
+                          <Text numberOfLines={1} style={{ color: on ? colors.primary : colors.mutedForeground, fontSize: 7, width: 42, textAlign: "center" }}>{g.name}</Text>
+                        </Pressable>
+                      );
+                    })}
+                  </ScrollView>
+
+                  {/* Tamaño del tile */}
+                  <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Tamaño</Text>
+                  <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
+                    {([["Pequeño", 22], ["Mediano", 42], ["Grande", 72]] as [string, number][]).map(([label, size]) => {
+                      const on = master.bgPattern?.tileSize === size;
+                      return (
+                        <Pressable
+                          key={size}
+                          onPress={() =>
+                            setMaster((m) => ({
+                              ...m,
+                              bgPattern: m.bgPattern ? { ...m.bgPattern, tileSize: size } : null,
+                            }))
+                          }
+                          style={{
+                            flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
+                            backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                            borderWidth: 1,
+                            borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                          }}
+                        >
+                          <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                            {label}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+
+                  {/* Opacidad del patrón */}
+                  <Text style={[styles.fieldLabel, { marginBottom: 6 }]}>Intensidad del patrón</Text>
+                  <VolumeSlider
+                    value={master.bgPattern.opacity}
+                    onChange={(v) =>
+                      setMaster((m) => ({
+                        ...m,
+                        bgPattern: m.bgPattern ? { ...m.bgPattern, opacity: Math.min(0.4, Math.max(0, v)) } : null,
+                      }))
+                    }
+                    color={colors.primary}
+                    trackColor="rgba(255,255,255,0.12)"
+                  />
+                </>
+              )}
             </View>
 
             {/* Opacidad de las animaciones */}
@@ -2247,6 +2393,15 @@ export default function GeometrixScreen() {
           >
             <Text style={styles.previewLabel}>Vista previa</Text>
             <View style={[styles.previewBox, { width: previewSize, height: previewSize }]}>
+              {master.bgPattern && (
+                <GeometrixPatternBg
+                  size={previewSize}
+                  geoId={master.bgPattern.geoId}
+                  opacity={master.bgPattern.opacity}
+                  tileSize={master.bgPattern.tileSize * (previewSize / canvasSide || 1)}
+                  color={colors.primary}
+                />
+              )}
               {/* Se muestran TODAS las geometrías seleccionadas (no solo la que se
                   personaliza) para ver la composición completa en vivo. */}
               {visibleMetas.map((g, i) => (
