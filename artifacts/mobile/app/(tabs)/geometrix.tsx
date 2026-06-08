@@ -960,7 +960,6 @@ export default function GeometrixScreen() {
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
-    { key: "caleidoscopio", icon: "aperture", label: "Caleidoscopio", onPress: () => router.push("/caleidoscopio") },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
   ];
   // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
@@ -1998,6 +1997,65 @@ export default function GeometrixScreen() {
               color="#FFFFFF"
               trackColor="rgba(255,255,255,0.12)"
             />
+
+            {/* ── Caleidoscopio global ──────────────────────────────── */}
+            {activeMetas.length > 0 && (() => {
+              const allOn = activeMetas.every((g) => getSettings(g.id).kaleidoscope === true);
+              const anyOn = activeMetas.some((g) => getSettings(g.id).kaleidoscope === true);
+              const segs  = getSettings(activeMetas[0].id).kaleidSegments ?? 6;
+              return (
+                <View style={{ marginTop: 18 }}>
+                  <View style={{
+                    flexDirection: "row", alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingVertical: 8, paddingHorizontal: 10,
+                    backgroundColor: anyOn ? colors.primary + "14" : "rgba(255,255,255,0.03)",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: anyOn ? colors.primary + "55" : "rgba(255,255,255,0.07)",
+                  }}>
+                    <Text style={{ color: anyOn ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                      Caleidoscopio (todas las capas)
+                    </Text>
+                    <Toggle
+                      value={allOn}
+                      onChange={(v) => {
+                        activeMetas.forEach((g) => updateSetting(g.id, "kaleidoscope", v));
+                      }}
+                      color={colors.primary}
+                      compact
+                    />
+                  </View>
+                  {anyOn && (
+                    <View style={{ marginTop: 10 }}>
+                      <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Segmentos</Text>
+                      <View style={{ flexDirection: "row", gap: 8 }}>
+                        {[4, 6, 8, 12, 16].map((n) => {
+                          const on = segs === n;
+                          return (
+                            <Pressable
+                              key={n}
+                              onPress={() => activeMetas.forEach((g) => updateSetting(g.id, "kaleidSegments", n))}
+                              style={{
+                                flex: 1, paddingVertical: 8, borderRadius: 10,
+                                alignItems: "center",
+                                backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                                borderWidth: 1,
+                                borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                              }}
+                            >
+                              <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "700", fontSize: 14 }}>
+                                {n}
+                              </Text>
+                            </Pressable>
+                          );
+                        })}
+                      </View>
+                    </View>
+                  )}
+                </View>
+              );
+            })()}
           </View>
         </View>
         </View>
