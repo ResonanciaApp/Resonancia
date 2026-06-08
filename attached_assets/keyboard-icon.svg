@@ -14,13 +14,15 @@
   <circle cx="83" cy="27" r="3" fill="white" opacity="0.8"/>
   <circle cx="83" cy="37" r="3" fill="white" opacity="0.8"/>
 
-  <!-- Fader / slider -->
-  <rect x="101" y="21" width="2"  height="23" rx="1"    fill="white" opacity="0.25"/>
-  <rect x="96"  y="21" width="12" height="2.5" rx="1.25" fill="white" opacity="0.45"/>
-  <rect x="98"  y="26" width="8"  height="2.5" rx="1.25" fill="white" opacity="0.5"/>
-  <rect x="94"  y="31" width="16" height="3"   rx="1.5"  fill="white"/>
-  <rect x="98"  y="36" width="8"  height="2.5" rx="1.25" fill="white" opacity="0.5"/>
-  <rect x="96"  y="41" width="12" height="2.5" rx="1.25" fill="white" opacity="0.45"/>
+  <!-- Sliders verticales (tipo ecualizador) -->
+
+  <!-- Slider izquierdo: track + manija baja -->
+  <rect x="101" y="21" width="2.5" height="23" rx="1.25" fill="white" opacity="0.35"/>
+  <rect x="95"  y="35" width="14"  height="5"  rx="2.5"  fill="white"/>
+
+  <!-- Slider derecho: track + manija alta -->
+  <rect x="116" y="21" width="2.5" height="23" rx="1.25" fill="white" opacity="0.35"/>
+  <rect x="110" y="24" width="14"  height="5"  rx="2.5"  fill="white"/>
 
   <!-- ── Keyboard ──────────────────────────── -->
   <!-- Las teclas blancas se dibujan sobre el body.
