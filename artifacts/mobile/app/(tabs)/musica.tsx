@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     borderColor: "#1c234c",
     borderWidth: 1,
   },
-  tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
+  tabLabel: { fontSize: 12, letterSpacing: 0, textAlign: "center" },
 
   // Separador
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginHorizontal: 16 },
