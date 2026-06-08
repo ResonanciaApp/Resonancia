@@ -547,7 +547,14 @@ export default function GeometrixScreen() {
   const dragStartX = useSharedValue(0);
   const dragStartY = useSharedValue(0);
   // null = sin drag en curso; objeto = posición en vivo mientras se arrastra.
-  const [liveDragPos, setLiveDragPos] = useState<{ x: number; y: number } | null>(null);
+  // snapX/snapY: offsets donde se detectó alineación (guía vertical/horizontal).
+  const [liveDragPos, setLiveDragPos] = useState<{
+    x: number; y: number;
+    snapX?: number; snapY?: number;
+  } | null>(null);
+  // Offsets de todas las geometrías no-objetivo + el centro del lienzo (0,0);
+  // usados en el worklet del drag para calcular snap sin llamar a getSettings.
+  const snapTargets = useSharedValue<Array<{ offsetX: number; offsetY: number }>>([]);
 
   // Un reproductor por módulo (reproducen de forma independiente).
   const playersRef = useRef<Record<string, AudioPlayer | null>>({});
@@ -1001,6 +1008,21 @@ export default function GeometrixScreen() {
     liveDragY.value = s?.offsetY ?? 0;
   }, [pinchTargetId, getSettings, liveDragX, liveDragY]);
 
+  // Precalcular targets de snap: centros de todas las geometrías no-objetivo
+  // más el centro del lienzo (0,0). Se actualiza cuando cambia la selección o
+  // cualquier offset de settings para que el worklet siempre tenga datos frescos.
+  useEffect(() => {
+    const targets: Array<{ offsetX: number; offsetY: number }> = [
+      { offsetX: 0, offsetY: 0 }, // centro del lienzo
+    ];
+    active.forEach((id) => {
+      if (id === pinchTargetId) return;
+      const s = getSettings(id);
+      targets.push({ offsetX: s.offsetX ?? 0, offsetY: s.offsetY ?? 0 });
+    });
+    snapTargets.value = targets;
+  }, [pinchTargetId, active, settings, getSettings, snapTargets]);
+
   // Gesto de pellizco: escala libre del objetivo, permitiendo pasar los
   // márgenes (efecto wallpaper). Se confirma a settings al soltar.
   const pinchGesture = Gesture.Pinch()
@@ -1081,11 +1103,37 @@ export default function GeometrixScreen() {
     })
     .onUpdate((e) => {
       if (!pinchTargetId) return;
-      const x = dragStartX.value + e.translationX;
-      const y = dragStartY.value + e.translationY;
-      liveDragX.value = x;
-      liveDragY.value = y;
-      runOnJS(setLiveDragPos)({ x, y });
+      let rx = dragStartX.value + e.translationX;
+      let ry = dragStartY.value + e.translationY;
+
+      // ── Snap a centros ─────────────────────────────────────────────────────
+      // Compara el offset candidato contra cada target (otras geometrías y el
+      // centro del lienzo). Si entra en el umbral, engancha y guarda el valor
+      // para dibujar la línea guía.
+      const SNAP = 8;
+      let sx: number | null = null;
+      let sy: number | null = null;
+      const targets = snapTargets.value;
+      for (let i = 0; i < targets.length; i++) {
+        const t = targets[i];
+        if (sx === null && Math.abs(rx - t.offsetX) < SNAP) {
+          rx = t.offsetX;
+          sx = rx;
+        }
+        if (sy === null && Math.abs(ry - t.offsetY) < SNAP) {
+          ry = t.offsetY;
+          sy = ry;
+        }
+        if (sx !== null && sy !== null) break;
+      }
+
+      liveDragX.value = rx;
+      liveDragY.value = ry;
+      runOnJS(setLiveDragPos)({
+        x: rx, y: ry,
+        snapX: sx !== null ? sx : undefined,
+        snapY: sy !== null ? sy : undefined,
+      });
     })
     .onEnd(() => {
       if (pinchTargetId) {
@@ -1294,6 +1342,36 @@ export default function GeometrixScreen() {
                     </Animated.View>
                     );
                   })}
+
+                {/* ── Líneas guía de snap ─────────────────────────────────────
+                    Aparecen mientras se arrastra y hay alineación detectada.
+                    snapY → guía horizontal (misma altura) en rosa.
+                    snapX → guía vertical  (misma posición X) en rosa.
+                    canvasSide/2 + snapOffset convierte offset de capa a px del lienzo. */}
+                {liveDragPos?.snapY !== undefined && (
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: "absolute",
+                      left: 0, right: 0,
+                      top: canvasSide / 2 + liveDragPos.snapY,
+                      height: 1,
+                      backgroundColor: "#FF4B8D",
+                    }}
+                  />
+                )}
+                {liveDragPos?.snapX !== undefined && (
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: "absolute",
+                      top: 0, bottom: 0,
+                      left: canvasSide / 2 + liveDragPos.snapX,
+                      width: 1,
+                      backgroundColor: "#FF4B8D",
+                    }}
+                  />
+                )}
 
                 {active.length === 0 && (
                   // Logo + título + bajada entran JUNTOS y con un retardo (650ms)
