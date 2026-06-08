@@ -117,7 +117,6 @@ const pStyles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#090C1F",
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
     borderWidth: 1,
@@ -892,7 +891,12 @@ export default function ProfileScreen() {
             style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
             onPress={() => setPersonalizeVisible(false)}
           />
-          <View style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}>
+          <LinearGradient
+            colors={["#0D1228", "#090C1F"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}
+          >
             {/* Handle */}
             <View style={pStyles.handle} />
 
@@ -1070,7 +1074,7 @@ export default function ProfileScreen() {
               </View>
 
             </ScrollView>
-          </View>
+          </LinearGradient>
         </View>
       </Modal>
 
