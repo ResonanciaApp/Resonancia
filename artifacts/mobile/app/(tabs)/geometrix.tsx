@@ -1956,7 +1956,7 @@ export default function GeometrixScreen() {
               <View
                 style={[styles.soundMenu, { top: insets.top + 12, right: rightOffset + 41 + 8 }]}
               >
-                {mod.tracks.map((t) => {
+                {mod.tracks.filter((t) => t.id !== (lastTrack[mod.key] ?? mod.tracks[0].id)).map((t) => {
                   const sel = activeTracks[mod.key] === t.id;
                   return (
                     <Pressable
