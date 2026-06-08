@@ -8,7 +8,7 @@ const PALETTE = {
   bg3: "#06070F",
   gold: "#BE9650",
   goldLight: "#D6A85B",
-  cardBg: "#151A23",
+  cardBg: "rgba(100,142,195,0.14)",
   cardBorder: "#161f33",
   textMain: "#EDE1D3",
   textMuted: "#7A8FA8",
@@ -97,7 +97,7 @@ export function FondoInicio() {
         {/* Frase del dia */}
         <div 
           className="rounded-2xl p-5 mb-8 backdrop-blur-md relative overflow-hidden group"
-          style={{ backgroundColor: 'rgba(21, 26, 35, 0.6)', borderColor: PALETTE.cardBorder, borderWidth: '1px' }}
+          style={{ backgroundColor: 'rgba(100,142,195,0.14)', borderColor: PALETTE.cardBorder, borderWidth: '1px' }}
         >
           <div className="absolute top-0 left-0 w-full h-[1px]" style={{ background: `linear-gradient(90deg, transparent, ${PALETTE.gold}, transparent)` }}></div>
           <p className="text-lg italic leading-relaxed mb-3 font-light">"El silencio no está vacío, está lleno de respuestas."</p>
@@ -109,7 +109,7 @@ export function FondoInicio() {
           <h2 className="text-lg font-medium mb-4" style={{ color: PALETTE.textMain }}>Continuar escuchando</h2>
           <div 
             className="flex items-center gap-4 rounded-2xl p-4 backdrop-blur-md"
-            style={{ backgroundColor: 'rgba(21, 26, 35, 0.6)', borderColor: PALETTE.cardBorder, borderWidth: '1px' }}
+            style={{ backgroundColor: 'rgba(100,142,195,0.14)', borderColor: PALETTE.cardBorder, borderWidth: '1px' }}
           >
             <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#1c2333] to-[#0f131f] flex items-center justify-center border border-white/5 relative overflow-hidden">
                <Moon size={24} style={{ color: PALETTE.gold }} className="opacity-80" />
@@ -174,7 +174,7 @@ function CategoryCard({ title, icon, color }: { title: string, icon: React.React
   return (
     <div 
       className="flex flex-col items-start gap-3 p-4 rounded-2xl backdrop-blur-sm relative overflow-hidden"
-      style={{ backgroundColor: 'rgba(21, 26, 35, 0.4)', borderColor: PALETTE.cardBorder, borderWidth: '1px' }}
+      style={{ backgroundColor: 'rgba(100,142,195,0.14)', borderColor: PALETTE.cardBorder, borderWidth: '1px' }}
     >
       <div 
         className="w-10 h-10 rounded-full flex items-center justify-center"

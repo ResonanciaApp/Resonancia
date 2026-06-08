@@ -172,7 +172,7 @@ export function ExportarPoster() {
                   onClick={() => setFormato(f.id as any)}
                   className="flex-1 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-300 border"
                   style={{
-                    backgroundColor: formato === f.id ? 'rgba(190, 150, 80, 0.1)' : 'rgba(21, 26, 35, 0.6)',
+                    backgroundColor: formato === f.id ? 'rgba(190, 150, 80, 0.1)' : 'rgba(100,142,195,0.14)',
                     borderColor: formato === f.id ? '#BE9650' : '#161f33',
                     color: formato === f.id ? '#BE9650' : '#EDE1D3'
                   }}
@@ -186,7 +186,7 @@ export function ExportarPoster() {
           {/* Toggle Marca */}
           <div 
             className="flex items-center justify-between p-4 rounded-xl border cursor-pointer"
-            style={{ backgroundColor: '#151A23', borderColor: '#161f33' }}
+            style={{ backgroundColor: 'rgba(100,142,195,0.14)', borderColor: '#161f33' }}
             onClick={() => setIncluirMarca(!incluirMarca)}
           >
             <div>
