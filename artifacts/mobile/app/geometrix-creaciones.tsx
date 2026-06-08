@@ -25,7 +25,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { useColors } from "@/hooks/useColors";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -40,6 +39,9 @@ import {
 } from "@/data/geometrix-creations";
 
 const DANGER = "#ef4444";
+
+// Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
+const CREACIONES_BG = ["#14102E", "#1C1448", "#2A1A5C", "#1A1340", "#0A0818"] as const;
 
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
@@ -105,9 +107,15 @@ export default function GeometrixCreacionesScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: "#0A0818" }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <LinearGradient
+        colors={CREACIONES_BG}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.9, y: 1 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       <ScrollView
         style={styles.scroll}
@@ -154,15 +162,15 @@ export default function GeometrixCreacionesScreen() {
               {
                 width: cardW,
                 height: previewH + 64,
-                borderColor: colors.primary,
+                borderColor: "#151c3a",
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
           >
-            <View style={[styles.newIcon, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
-              <Feather name="plus" size={26} color={colors.primary} />
+            <View style={[styles.newIcon, { backgroundColor: "rgba(21,28,58,0.35)" }]}>
+              <Feather name="plus" size={26} color="#151c3a" />
             </View>
-            <Text style={[styles.newLabel, { color: colors.primary }]}>Nueva composición</Text>
+            <Text style={[styles.newLabel, { color: "#151c3a" }]}>Nueva composición</Text>
           </Pressable>
 
           {creations.map((c) => {
