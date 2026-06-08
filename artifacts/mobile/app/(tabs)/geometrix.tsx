@@ -137,38 +137,22 @@ const MUSIC_MODULES: MusicModule[] = [
  * `colors` es una referencia estable a nivel de módulo para no romper el
  * React.memo de SacredGlyph.
  */
+// Degradados de fondo para el lienzo. Diseñados oscuros desde el origen — al
+// nivel del fondo indigo de la pantalla de inicio (HOME_GRADIENT) — pero en
+// distintos tonos, para que las animaciones (trazos claros) siempre contrasten.
+// Todos terminan en el mismo tono profundo de Inicio (#06070F) para cohesión.
 const GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
-  { id: "dorado-rosa", colors: [PALETTE[0], PALETTE[5]] },
-  { id: "rosa-lavanda", colors: [PALETTE[5], PALETTE[4]] },
-  { id: "lavanda-azul", colors: [PALETTE[4], PALETTE[3]] },
-  { id: "azul-verdeagua", colors: [PALETTE[3], PALETTE[2]] },
-  { id: "verdeagua-verde", colors: [PALETTE[2], PALETTE[6]] },
-  { id: "verde-dorado", colors: [PALETTE[6], PALETTE[0]] },
-  { id: "crema-dorado", colors: [PALETTE[1], PALETTE[0]] },
+  { id: "indigo-noche", colors: ["#0C1430", "#06070F"] },
+  { id: "verdeagua-noche", colors: ["#072623", "#06070F"] },
+  { id: "violeta-noche", colors: ["#1A1030", "#06070F"] },
+  { id: "vino-noche", colors: ["#280B16", "#06070F"] },
+  { id: "bosque-noche", colors: ["#0A2614", "#06070F"] },
+  { id: "ambar-noche", colors: ["#2A1A05", "#06070F"] },
 ];
 
 function gradientColors(id: string | null): readonly [string, string] | undefined {
   if (!id) return undefined;
   return GRADIENTS.find((gr) => gr.id === id)?.colors;
-}
-
-// Oscurece un hex multiplicando su RGB por un factor (0–1). Solo se aplica al
-// fondo del lienzo y a su vista previa (NO a los círculos del selector, que se
-// opacarían) para que las animaciones (trazos claros) contrasten. 0.192 ≈ 40%
-// más oscuro que el 0.32 previo (0.32 × 0.6).
-const BG_DARKEN = 0.192;
-function darkenHex(hex: string, f: number): string {
-  let h = hex.replace("#", "");
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  const ch = (i: number) => {
-    const n = Math.round(parseInt(h.slice(i, i + 2), 16) * f);
-    return Math.max(0, Math.min(255, n)).toString(16).padStart(2, "0");
-  };
-  if ([0, 2, 4].some((i) => Number.isNaN(parseInt(h.slice(i, i + 2), 16)))) return hex;
-  return `#${ch(0)}${ch(2)}${ch(4)}`;
-}
-function darkGradient(colors: readonly [string, string]): [string, string] {
-  return [darkenHex(colors[0], BG_DARKEN), darkenHex(colors[1], BG_DARKEN)];
 }
 
 /** Muestra circular de un degradado (para el selector). RN no soporta
@@ -799,10 +783,9 @@ export default function GeometrixScreen() {
   // En inmersión la geometría llena la pantalla, centrada.
   const immersiveSize = Math.min(width, height) * 0.96;
 
-  const rawBgGradient = gradientColors(master.bgGradientId);
-  // Fondo del lienzo oscurecido (mismo nivel que el indigo de la app) para
-  // que las animaciones contrasten.
-  const masterBgGradient = rawBgGradient ? darkGradient(rawBgGradient) : undefined;
+  // Los degradados de GRADIENTS ya están diseñados oscuros; se usan tal cual
+  // en el lienzo y la vista previa.
+  const masterBgGradient = gradientColors(master.bgGradientId);
 
   return (
     <View style={styles.root}>
