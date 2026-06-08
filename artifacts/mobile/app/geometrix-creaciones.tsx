@@ -8,7 +8,7 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Modal,
   Platform,
@@ -22,10 +22,19 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
 import { LinearGradient } from "expo-linear-gradient";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { type GeometryId } from "@/data/geometries";
 import { useColors } from "@/hooks/useColors";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import {
@@ -36,6 +45,7 @@ import {
   scaleColors,
   scaleHex,
   type GeometrixCreation,
+  type GeoSettings,
 } from "@/data/geometrix-creations";
 
 const DANGER = "#ef4444";
@@ -56,6 +66,123 @@ function formatRelative(iso: string): string {
   const days = Math.floor(hours / 24);
   if (days < 7) return `hace ${days} d`;
   return new Date(iso).toLocaleDateString("es", { day: "numeric", month: "short" });
+}
+
+/**
+ * ¿La composición tiene movimiento? Solo si el movimiento general (panel
+ * maestro) está activo y al menos una capa activa gira, respira o tiene fundido
+ * cíclico. Si no, la card es estática y no muestra el botón de play.
+ */
+function hasMotion(c: GeometrixCreation): boolean {
+  if (!c.master.motion) return false;
+  return c.active.some((id) => {
+    const s = c.settings[id];
+    return !!s && (s.rotate || s.rotateLeft || s.breathe || s.fadeLoop);
+  });
+}
+
+/**
+ * Capa animada para la preview de la card. Replica el movimiento del editor
+ * (giro + respiración + fundido cíclico) pero a tamaño de miniatura. Cuando
+ * `playing` es false queda en reposo (igual que la preview estática anterior).
+ */
+function PreviewGlyph({
+  id,
+  settings,
+  masterOpacity,
+  motion,
+  index,
+  size,
+  playing,
+}: {
+  id: GeometryId;
+  settings: GeoSettings;
+  masterOpacity: number;
+  motion: boolean;
+  index: number;
+  size: number;
+  playing: boolean;
+}) {
+  const rot = useSharedValue(0);
+  const pulse = useSharedValue(0);
+  const fade = useSharedValue(1);
+
+  const { rotate, rotateLeft, rotateSpeed, breathe, breatheAmount, fadeLoop } = settings;
+  const active = playing && motion;
+  const spin = (rotate || rotateLeft) && active;
+  const breath = breathe && active;
+  const dir = rotateLeft ? -1 : 1;
+
+  const safeSpeed = Number.isFinite(rotateSpeed) ? Math.max(0, Math.min(1, rotateSpeed)) : 0.5;
+  const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
+  const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
+  const breatheDepth = 0.04 + safeAmount * 0.2;
+  const restAngle = Number.isFinite(settings.manualAngle) ? settings.manualAngle : 0;
+
+  useEffect(() => {
+    if (!spin) {
+      cancelAnimation(rot);
+      rot.value = 0;
+      return;
+    }
+    rot.value = withRepeat(
+      withTiming(1, { duration: spinDuration, easing: Easing.linear }),
+      -1,
+      false,
+    );
+    return () => cancelAnimation(rot);
+  }, [spin, spinDuration, rot]);
+
+  useEffect(() => {
+    if (!breath) {
+      cancelAnimation(pulse);
+      pulse.value = 0;
+      return;
+    }
+    pulse.value = withRepeat(
+      withTiming(1, { duration: 6000 + index * 800, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      true,
+    );
+    return () => cancelAnimation(pulse);
+  }, [breath, index, pulse]);
+
+  useEffect(() => {
+    if (fadeLoop && active) {
+      fade.value = withRepeat(
+        withTiming(0.15, { duration: 4200 + index * 600, easing: Easing.inOut(Easing.ease) }),
+        -1,
+        true,
+      );
+      return () => cancelAnimation(fade);
+    }
+    cancelAnimation(fade);
+    fade.value = withTiming(1, { duration: 400 });
+  }, [fadeLoop, active, index, fade]);
+
+  const baseOpacity = Math.max(0.15, settings.opacity * masterOpacity);
+  const aStyle = useAnimatedStyle(() => ({
+    transform: [
+      { rotate: spin ? `${rot.value * 360 * dir}deg` : `${restAngle}deg` },
+      { scale: breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1 },
+    ],
+    opacity: baseOpacity * fade.value,
+  }));
+
+  return (
+    <Animated.View
+      style={[StyleSheet.absoluteFill, styles.previewCenter, aStyle]}
+      pointerEvents="none"
+    >
+      <SacredGlyph
+        id={id}
+        color={settings.color}
+        gradient={gradientColors(settings.gradientId)}
+        size={size}
+        strokeWidth={1 + settings.thickness * 2}
+      />
+    </Animated.View>
+  );
 }
 
 export default function GeometrixCreacionesScreen() {
@@ -80,6 +207,8 @@ export default function GeometrixCreacionesScreen() {
   const [actionsFor, setActionsFor] = useState<GeometrixCreation | null>(null);
   const [deletingFor, setDeletingFor] = useState<GeometrixCreation | null>(null);
   const [openingFor, setOpeningFor] = useState<GeometrixCreation | null>(null);
+  // Card cuya preview está reproduciendo el movimiento en vivo (solo una a la vez).
+  const [playingId, setPlayingId] = useState<string | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -183,6 +312,8 @@ export default function GeometrixCreacionesScreen() {
             const bgColors = c.master.bgColor
               ? ([scaleHex(c.master.bgColor, bgFactor), scaleHex(c.master.bgColor, bgFactor)] as const)
               : scaleColors(bgGrad ?? HOME_GRADIENT, bgFactor);
+            const motion = hasMotion(c);
+            const isPlaying = playingId === c.id;
             return (
               <Pressable
                 key={c.id}
@@ -201,24 +332,41 @@ export default function GeometrixCreacionesScreen() {
                     end={{ x: 0.5, y: 1 }}
                     style={StyleSheet.absoluteFill}
                   />
-                  {c.active.map((id) => {
+                  {c.active.map((id, i) => {
                     const s = c.settings[id];
                     if (!s) return null;
                     return (
-                      <View key={id} style={StyleSheet.absoluteFill}>
-                        <View style={styles.previewCenter}>
-                          <SacredGlyph
-                            id={id}
-                            color={s.color}
-                            gradient={gradientColors(s.gradientId)}
-                            size={previewH * 0.78}
-                            opacity={Math.max(0.15, s.opacity * c.master.opacity)}
-                            strokeWidth={1 + s.thickness * 2}
-                          />
-                        </View>
-                      </View>
+                      <PreviewGlyph
+                        key={id}
+                        id={id}
+                        index={i}
+                        settings={s}
+                        masterOpacity={c.master.opacity}
+                        motion={c.master.motion}
+                        size={previewH * 0.78}
+                        playing={isPlaying}
+                      />
                     );
                   })}
+
+                  {/* Botón de play: solo en composiciones con movimiento. */}
+                  {motion && (
+                    <Pressable
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        setPlayingId((prev) => (prev === c.id ? null : c.id));
+                      }}
+                      hitSlop={8}
+                      style={styles.playBtn}
+                    >
+                      <Feather
+                        name={isPlaying ? "pause" : "play"}
+                        size={14}
+                        color="#EDE1D3"
+                        style={isPlaying ? undefined : { marginLeft: 1 }}
+                      />
+                    </Pressable>
+                  )}
                 </View>
 
                 {/* Info */}
@@ -448,7 +596,10 @@ export default function GeometrixCreacionesScreen() {
                 onPress={() => {
                   const c = deletingFor;
                   setDeletingFor(null);
-                  if (c) deleteCreation(c.id);
+                  if (c) {
+                    if (playingId === c.id) setPlayingId(null);
+                    deleteCreation(c.id);
+                  }
                 }}
                 accessibilityRole="button"
               >
@@ -507,6 +658,19 @@ const styles = StyleSheet.create({
   card: { borderRadius: 16, borderWidth: 1, overflow: "hidden" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
+  playBtn: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
   info: { flexDirection: "row", alignItems: "center", gap: 8, padding: 10 },
   name: { fontSize: 13, fontWeight: "700", marginBottom: 2 },
