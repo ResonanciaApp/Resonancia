@@ -41,7 +41,9 @@ import {
 const DANGER = "#ef4444";
 
 // Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
-const CREACIONES_BG = ["#14102E", "#1C1448", "#2A1A5C", "#1A1340", "#0A0818"] as const;
+// Oscurecido un 90% (se conserva el 10% del brillo) sobre el degradado original
+// ["#14102E","#1C1448","#2A1A5C","#1A1340","#0A0818"].
+const CREACIONES_BG = ["#020205", "#030207", "#040309", "#030206", "#010102"] as const;
 
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
@@ -107,7 +109,7 @@ export default function GeometrixCreacionesScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0A0818" }]}>
+    <View style={[styles.root, { backgroundColor: "#010102" }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={CREACIONES_BG}
