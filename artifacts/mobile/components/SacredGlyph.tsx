@@ -53,9 +53,28 @@ const EXTENT: Record<GeometryId, number> = {
   "yin-yang": 46,
   circulos: 46,
   loto: 46,
-  cuadrado: 40,
-  circulo: 42,
-  triangulo: 44,
+  cuadrado:               40,
+  circulo:                42,
+  triangulo:              44,
+  tetraedro:              44,
+  hexaedro:               40,
+  octaedro:               42,
+  icosaedro:              43,
+  dodecaedro:             44,
+  cuboctaedro:            40,
+  "espiral-fibonacci":    47,
+  decagrama:              46,
+  "cruz-solar":           42,
+  "roseta-seis":          42,
+  "roseta-ocho":          46,
+  "vector-equilibrium":   40,
+  "metatron-expandido":   45,
+  "torus-infinito":       45,
+  ivm:                    40,
+  "estrella-tetraedrica": 44,
+  "hexagono-sagrado":     42,
+  "estrella-12":          46,
+  estrella:               46,
 };
 
 function pt(r: number, angleDeg: number, cx = C, cy = C): [number, number] {
@@ -432,6 +451,308 @@ function elements(id: GeometryId, sw: number): React.ReactNode {
     }
     case "triangulo": {
       return [<Polygon key="tri" points={poly(44, 3, -90)} />];
+    }
+    // ── Sólidos Platónicos ──────────────────────────────────────────────────
+    case "tetraedro": {
+      // Proyección: triángulo exterior + 3 medianas al centro (vértice superior)
+      const verts = [0, 1, 2].map((i) => pt(42, -90 + i * 120));
+      const lines: React.ReactNode[] = [];
+      verts.forEach(([x, y], i) => {
+        const [nx, ny] = verts[(i + 1) % 3];
+        lines.push(<Line key={`s${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+        lines.push(<Line key={`m${i}`} x1={x} y1={y} x2={C} y2={C} strokeOpacity={0.5} />);
+      });
+      lines.push(<Circle key="apex" cx={C} cy={C} r={3} />);
+      return lines;
+    }
+    case "hexaedro": {
+      // Proyección isométrica: hexágono + 3 diagonales principales = cubo wireframe
+      const v = [0, 1, 2, 3, 4, 5].map((i) => pt(37, i * 60 - 30));
+      const lines: React.ReactNode[] = [];
+      v.forEach(([x, y], i) => {
+        const [nx, ny] = v[(i + 1) % 6];
+        lines.push(<Line key={`e${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+      });
+      ([[0, 3], [1, 4], [2, 5]] as [number, number][]).forEach(([a, b], i) =>
+        lines.push(<Line key={`d${i}`} x1={v[a][0]} y1={v[a][1]} x2={v[b][0]} y2={v[b][1]} />),
+      );
+      return lines;
+    }
+    case "octaedro": {
+      // Proyección: rombo (cuadrado rotado 45°) + líneas de aristas internas
+      const r = 40;
+      const pts: [number, number][] = [[C, C - r], [C + r, C], [C, C + r], [C - r, C]];
+      return [
+        ...pts.map(([x, y], i) => {
+          const [nx, ny] = pts[(i + 1) % 4];
+          return <Line key={`s${i}`} x1={x} y1={y} x2={nx} y2={ny} />;
+        }),
+        <Line key="v" x1={C} y1={C - r} x2={C} y2={C + r} strokeOpacity={0.5} />,
+        <Line key="h" x1={C - r} y1={C} x2={C + r} y2={C} strokeOpacity={0.5} />,
+        <Circle key="c" cx={C} cy={C} r={3} />,
+      ];
+    }
+    case "icosaedro": {
+      // 12 vértices: 1 top + 5 upper + 5 lower + 1 bottom, conectados por aristas
+      const top: [number, number] = [C, C - 40];
+      const bot: [number, number] = [C, C + 40];
+      const up = [0, 1, 2, 3, 4].map((i) => pt(20, -90 + i * 72));
+      const lo = [0, 1, 2, 3, 4].map((i) => pt(34, -90 + 36 + i * 72));
+      const lines: React.ReactNode[] = [];
+      up.forEach(([x, y], i) => {
+        lines.push(<Line key={`tu${i}`} x1={top[0]} y1={top[1]} x2={x} y2={y} />);
+        const [nx, ny] = up[(i + 1) % 5];
+        lines.push(<Line key={`ur${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+        lines.push(<Line key={`ul${i}`} x1={x} y1={y} x2={lo[i][0]} y2={lo[i][1]} />);
+        lines.push(<Line key={`ul2${i}`} x1={x} y1={y} x2={lo[(i + 4) % 5][0]} y2={lo[(i + 4) % 5][1]} />);
+      });
+      lo.forEach(([x, y], i) => {
+        lines.push(<Line key={`bl${i}`} x1={bot[0]} y1={bot[1]} x2={x} y2={y} />);
+        const [nx, ny] = lo[(i + 1) % 5];
+        lines.push(<Line key={`lr${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+      });
+      return [
+        ...lines,
+        <Circle key="top" cx={top[0]} cy={top[1]} r={2} />,
+        <Circle key="bot" cx={bot[0]} cy={bot[1]} r={2} />,
+      ];
+    }
+    case "dodecaedro": {
+      // Diagrama de Schlegel simplificado: 3 pentágonos concéntricos con conexiones
+      const p1 = [0, 1, 2, 3, 4].map((i) => pt(15, -90 + i * 72));
+      const p2 = [0, 1, 2, 3, 4].map((i) => pt(28, -90 + 36 + i * 72));
+      const p3 = [0, 1, 2, 3, 4].map((i) => pt(42, -90 + i * 72));
+      const lines: React.ReactNode[] = [];
+      const ring = (pts: [number, number][], key: string) =>
+        pts.forEach(([x, y], i) => {
+          const [nx, ny] = pts[(i + 1) % 5];
+          lines.push(<Line key={`${key}${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+        });
+      ring(p1, "a"); ring(p2, "b"); ring(p3, "c");
+      p1.forEach(([x, y], i) =>
+        lines.push(<Line key={`12${i}`} x1={x} y1={y} x2={p2[i][0]} y2={p2[i][1]} />),
+      );
+      p2.forEach(([x, y], i) => {
+        lines.push(<Line key={`23a${i}`} x1={x} y1={y} x2={p3[i][0]} y2={p3[i][1]} />);
+        lines.push(<Line key={`23b${i}`} x1={x} y1={y} x2={p3[(i + 1) % 5][0]} y2={p3[(i + 1) % 5][1]} />);
+      });
+      return lines;
+    }
+    // ── Cuboctaedro / Vector Equilibrium ────────────────────────────────────
+    case "cuboctaedro": {
+      // Hexágono exterior + rayos al centro + hexágono interior rotado
+      const outer = [0, 1, 2, 3, 4, 5].map((i) => pt(38, i * 60));
+      const inner = [0, 1, 2, 3, 4, 5].map((i) => pt(22, i * 60 + 30));
+      const lines: React.ReactNode[] = [];
+      outer.forEach(([x, y], i) => {
+        const [nx, ny] = outer[(i + 1) % 6];
+        lines.push(<Line key={`o${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+        lines.push(<Line key={`s${i}`} x1={x} y1={y} x2={C} y2={C} strokeOpacity={0.4} />);
+      });
+      inner.forEach(([x, y], i) => {
+        const [nx, ny] = inner[(i + 1) % 6];
+        lines.push(<Line key={`i${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+        lines.push(<Line key={`c${i}`} x1={outer[i][0]} y1={outer[i][1]} x2={x} y2={y} />);
+      });
+      return [...lines, <Circle key="dot" cx={C} cy={C} r={2.5} />];
+    }
+    case "vector-equilibrium": {
+      // Hexágono + todos los rayos + triángulos de equilibrio + círculo exterior
+      const v = [0, 1, 2, 3, 4, 5].map((i) => pt(38, i * 60));
+      const lines: React.ReactNode[] = [];
+      v.forEach(([x, y], i) => {
+        const [nx, ny] = v[(i + 1) % 6];
+        lines.push(<Line key={`e${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+        lines.push(<Line key={`s${i}`} x1={x} y1={y} x2={C} y2={C} />);
+      });
+      // Diagonales saltando un vértice (caras cuadradas del cuboctaedro)
+      for (let i = 0; i < 6; i += 2) {
+        const [ax, ay] = v[i]; const [bx, by] = v[(i + 2) % 6];
+        lines.push(<Line key={`sq${i}`} x1={ax} y1={ay} x2={bx} y2={by} strokeOpacity={0.45} />);
+      }
+      lines.push(<Circle key="ring" cx={C} cy={C} r={38} />);
+      lines.push(<Circle key="c" cx={C} cy={C} r={3} />);
+      return lines;
+    }
+    // ── Espirales ────────────────────────────────────────────────────────────
+    case "espiral-fibonacci": {
+      // Doble espiral áurea (sentidos opuestos) — característica de Fibonacci
+      const spiral = (dir: 1 | -1): string => {
+        const pts: string[] = [];
+        for (let deg = 0; deg <= 1080; deg += 6) {
+          const t = (deg * Math.PI) / 180;
+          const r = 1.9 * Math.exp(0.158 * t);
+          if (r > 46) break;
+          pts.push(
+            `${(C + r * Math.cos(dir * t - Math.PI / 2)).toFixed(2)},${(C + r * Math.sin(dir * t - Math.PI / 2)).toFixed(2)}`,
+          );
+        }
+        let d = "";
+        pts.forEach((p, i) => { d += i === 0 ? `M${p}` : ` L${p}`; });
+        return d;
+      };
+      return [
+        <Path key="s1" d={spiral(1)} />,
+        <Path key="s2" d={spiral(-1)} strokeOpacity={0.45} />,
+        <Circle key="c" cx={C} cy={C} r={2} />,
+      ];
+    }
+    // ── Estrellas ────────────────────────────────────────────────────────────
+    case "decagrama": {
+      // Estrella de 10 puntas: dos pentágonos regulares (offset 36°) + círculo
+      return [
+        <Circle key="ring" cx={C} cy={C} r={46} />,
+        <Polygon key="a" points={poly(40, 5, -90)} />,
+        <Polygon key="b" points={poly(40, 5, -90 + 36)} />,
+      ];
+    }
+    case "estrella-tetraedrica": {
+      // Stella Octangula: dos tetraedros entrelazados — dos triángulos + réplica interna
+      return [
+        <Polygon key="t1" points={poly(40, 3, -90)} />,
+        <Polygon key="t2" points={poly(40, 3, 90)} />,
+        <Polygon key="i1" points={poly(20, 3, 90)} />,
+        <Polygon key="i2" points={poly(20, 3, -90)} />,
+        <Circle key="c" cx={C} cy={C} r={12} />,
+      ];
+    }
+    case "estrella-12": {
+      // Dodecagrama: dos hexágonos regulares (offset 30°) + círculo
+      return [
+        <Circle key="ring" cx={C} cy={C} r={46} />,
+        <Polygon key="a" points={poly(40, 6, -90)} />,
+        <Polygon key="b" points={poly(40, 6, -60)} />,
+        <Circle key="c" cx={C} cy={C} r={3} />,
+      ];
+    }
+    case "estrella": {
+      // Heptagrama (7 puntas, conexión 7/2) + círculo exterior
+      const v7 = [0, 1, 2, 3, 4, 5, 6].map((i) => pt(40, -90 + i * (360 / 7)));
+      const order7 = [0, 2, 4, 6, 1, 3, 5];
+      return [
+        <Circle key="ring" cx={C} cy={C} r={44} />,
+        <Polygon key="star" points={order7.map((i) => `${v7[i][0].toFixed(2)},${v7[i][1].toFixed(2)}`).join(" ")} />,
+      ];
+    }
+    // ── Cruces y Rosetas ─────────────────────────────────────────────────────
+    case "cruz-solar": {
+      const r = 40;
+      return [
+        <Circle key="outer" cx={C} cy={C} r={r} />,
+        <Circle key="inner" cx={C} cy={C} r={r * 0.33} />,
+        <Line key="v" x1={C} y1={C - r} x2={C} y2={C + r} />,
+        <Line key="h" x1={C - r} y1={C} x2={C + r} y2={C} />,
+      ];
+    }
+    case "roseta-seis": {
+      // 6 círculos en anillo + círculo central + anillo exterior
+      const r = 14;
+      const centers = [0, 1, 2, 3, 4, 5].map((i) => pt(r, i * 60));
+      return [
+        ...centers.map(([x, y], i) => <Circle key={`c${i}`} cx={x} cy={y} r={r} />),
+        <Circle key="center" cx={C} cy={C} r={r} />,
+        <Circle key="outer" cx={C} cy={C} r={r * 2.9} />,
+      ];
+    }
+    case "roseta-ocho": {
+      // 8 pétalos elípticos alrededor del centro + círculo exterior
+      const arr: React.ReactNode[] = [
+        <Circle key="outer" cx={C} cy={C} r={44} />,
+        <Circle key="c" cx={C} cy={C} r={5} />,
+      ];
+      for (let i = 0; i < 8; i++) {
+        const ang = i * 45;
+        const [px, py] = pt(22, ang);
+        arr.push(
+          <Ellipse key={`p${i}`} cx={px} cy={py} rx={7} ry={19}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      return arr;
+    }
+    // ── Estructuras complejas ────────────────────────────────────────────────
+    case "hexagono-sagrado": {
+      // Hexágono + todos los diagonales + dos anillos + punto central
+      const v = [0, 1, 2, 3, 4, 5].map((i) => pt(38, i * 60));
+      const lines: React.ReactNode[] = [];
+      v.forEach(([x, y], i) => {
+        const [nx, ny] = v[(i + 1) % 6];
+        lines.push(<Line key={`e${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+      });
+      for (let i = 0; i < 6; i++) {
+        for (let j = i + 2; j < 6; j++) {
+          if (i === 0 && j === 5) continue; // arista, no diagonal
+          lines.push(
+            <Line key={`d${i}-${j}`} x1={v[i][0]} y1={v[i][1]} x2={v[j][0]} y2={v[j][1]} strokeOpacity={0.45} />,
+          );
+        }
+      }
+      lines.push(<Circle key="outer" cx={C} cy={C} r={40} />);
+      lines.push(<Circle key="inner" cx={C} cy={C} r={22} />);
+      lines.push(<Circle key="c" cx={C} cy={C} r={3} />);
+      return lines;
+    }
+    case "metatron-expandido": {
+      // Metatrón estándar (13 círculos) + anillo exterior de 12 círculos
+      const D = 13;
+      const c0: [number, number] = [C, C];
+      const r1 = [0, 60, 120, 180, 240, 300].map((a) => pt(D, a)) as [number, number][];
+      const r2 = [0, 60, 120, 180, 240, 300].map((a) => pt(2 * D, a)) as [number, number][];
+      const all: [number, number][] = [c0, ...r1, ...r2];
+      const lines: React.ReactNode[] = [];
+      for (let i = 0; i < all.length; i++) {
+        for (let j = i + 1; j < all.length; j++) {
+          lines.push(
+            <Line key={`l${i}-${j}`} x1={all[i][0]} y1={all[i][1]} x2={all[j][0]} y2={all[j][1]}
+              strokeOpacity={0.3} strokeWidth={sw * 0.5} />,
+          );
+        }
+      }
+      const r3 = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((a) => pt(3 * D, a)) as [number, number][];
+      r3.forEach(([x, y], i) => {
+        const [nx, ny] = r3[(i + 1) % 12];
+        lines.push(<Line key={`r3${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+      });
+      return [
+        ...lines,
+        ...all.map(([x, y], i) => <Circle key={`c${i}`} cx={x} cy={y} r={D / 2} />),
+        ...r3.map(([x, y], i) => <Circle key={`d${i}`} cx={x} cy={y} r={D / 3} />),
+      ];
+    }
+    case "torus-infinito": {
+      // Doble toro: dos conjuntos de elipses perpendiculares
+      const arr: React.ReactNode[] = [];
+      for (let i = 0; i < 8; i++) {
+        arr.push(
+          <Ellipse key={`a${i}`} cx={C} cy={C} rx={43} ry={12}
+            transform={`rotate(${i * 22.5} ${C} ${C})`} />,
+        );
+        arr.push(
+          <Ellipse key={`b${i}`} cx={C} cy={C} rx={12} ry={43}
+            transform={`rotate(${i * 22.5} ${C} ${C})`} strokeOpacity={0.5} />,
+        );
+      }
+      arr.push(<Circle key="c" cx={C} cy={C} r={43} />);
+      return arr;
+    }
+    case "ivm": {
+      // Lattice isotrópica vectorial: retícula triangular hex conectada
+      const R = 12;
+      const pts = lattice(R, 3);
+      const lines: React.ReactNode[] = [];
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[j][0] - pts[i][0];
+          const dy = pts[j][1] - pts[i][1];
+          if (Math.sqrt(dx * dx + dy * dy) < R * 1.05) {
+            lines.push(
+              <Line key={`${i}-${j}`} x1={pts[i][0].toFixed(2)} y1={pts[i][1].toFixed(2)}
+                x2={pts[j][0].toFixed(2)} y2={pts[j][1].toFixed(2)} />,
+            );
+          }
+        }
+      }
+      return lines;
     }
     default:
       return null;

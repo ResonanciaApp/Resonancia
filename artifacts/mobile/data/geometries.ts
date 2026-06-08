@@ -33,7 +33,26 @@ export type GeometryId =
   | "loto"
   | "cuadrado"
   | "circulo"
-  | "triangulo";
+  | "triangulo"
+  | "tetraedro"
+  | "hexaedro"
+  | "octaedro"
+  | "icosaedro"
+  | "dodecaedro"
+  | "cuboctaedro"
+  | "espiral-fibonacci"
+  | "decagrama"
+  | "cruz-solar"
+  | "roseta-seis"
+  | "roseta-ocho"
+  | "vector-equilibrium"
+  | "metatron-expandido"
+  | "torus-infinito"
+  | "ivm"
+  | "estrella-tetraedrica"
+  | "hexagono-sagrado"
+  | "estrella-12"
+  | "estrella";
 
 export interface GeometryMeta {
   id: GeometryId;
@@ -81,9 +100,28 @@ const GEOMETRY_DEFS: { id: GeometryId; name: string }[] = [
   { id: "yin-yang",     name: "Yin-Yang" },
   { id: "circulos",     name: "Círculos Concéntricos" },
   { id: "loto",         name: "Loto" },
-  { id: "cuadrado",     name: "Cuadrado" },
-  { id: "circulo",      name: "Círculo" },
-  { id: "triangulo",    name: "Triángulo" },
+  { id: "cuadrado",             name: "Cuadrado"                     },
+  { id: "circulo",              name: "Círculo"                      },
+  { id: "triangulo",            name: "Triángulo"                    },
+  { id: "tetraedro",            name: "Tetraedro"                    },
+  { id: "hexaedro",             name: "Cubo (Hexaedro)"              },
+  { id: "octaedro",             name: "Octaedro"                     },
+  { id: "icosaedro",            name: "Icosaedro"                    },
+  { id: "dodecaedro",           name: "Dodecaedro"                   },
+  { id: "cuboctaedro",          name: "Cuboctaedro"                  },
+  { id: "espiral-fibonacci",    name: "Espiral de Fibonacci"         },
+  { id: "decagrama",            name: "Decagrama"                    },
+  { id: "cruz-solar",           name: "Cruz Solar"                   },
+  { id: "roseta-seis",          name: "Roseta de Seis Pétalos"       },
+  { id: "roseta-ocho",          name: "Roseta de Ocho Pétalos"       },
+  { id: "vector-equilibrium",   name: "Vector Equilibrium"           },
+  { id: "metatron-expandido",   name: "Cubo de Metatrón Expandido"   },
+  { id: "torus-infinito",       name: "Torus Infinito"               },
+  { id: "ivm",                  name: "Lattice Isotrópica Vectorial" },
+  { id: "estrella-tetraedrica", name: "Estrella Tetraédrica"         },
+  { id: "hexagono-sagrado",     name: "Hexágono Sagrado"             },
+  { id: "estrella-12",          name: "Estrella de 12 Puntas"        },
+  { id: "estrella",             name: "Estrella"                     },
 ];
 
 export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
