@@ -556,6 +556,10 @@ export default function GeometrixScreen() {
   const [soloId, setSoloId] = useState<GeometryId | null>(null);
   // Geometría seleccionada para el pellizco (pinch) que ajusta su zoom.
   const [selectedId, setSelectedId] = useState<GeometryId | null>(null);
+  // Cuando los thumbnails desbordan el ancho visible, alineamos a la izquierda
+  // (en vez de centrar) para que se pueda deslizar y se asome el último.
+  const [thumbsOverflow, setThumbsOverflow] = useState(false);
+  const thumbsViewW = useRef(0);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
   // Opacidad de la píldora de acciones: fade puro (sin movimiento) al plegar.
@@ -1191,7 +1195,16 @@ export default function GeometrixScreen() {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={[styles.thumbsScroll, { bottom: tabBarHeight + 5 }]}
-              contentContainerStyle={styles.thumbsRow}
+              contentContainerStyle={[
+                styles.thumbsRow,
+                thumbsOverflow && styles.thumbsRowStart,
+              ]}
+              onLayout={(e) => {
+                thumbsViewW.current = e.nativeEvent.layout.width;
+              }}
+              onContentSizeChange={(w) =>
+                setThumbsOverflow(w > thumbsViewW.current + 1)
+              }
             >
               {activeMetas.map((g) => {
                 const s = getSettings(g.id);
@@ -2030,6 +2043,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     paddingHorizontal: 16,
+  },
+  thumbsRowStart: {
+    justifyContent: "flex-start",
   },
   thumb: {
     width: 51,
