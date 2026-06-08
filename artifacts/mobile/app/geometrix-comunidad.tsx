@@ -361,37 +361,39 @@ export default function GeometrixComunidadScreen() {
                       <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
                         {g.name}
                       </Text>
-                      <Text style={[styles.author, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {g.author.displayName ?? g.author.username}
-                      </Text>
-                    </View>
-
-                    {/* Acciones */}
-                    <View style={styles.actions}>
-                      <Pressable onPress={() => handleLike(g)} hitSlop={8} style={styles.likeBtn}>
-                        <Feather
-                          name={g.likedByMe ? "heart" : "heart"}
-                          size={14}
-                          color={g.likedByMe ? "#BE9650" : "#7A8FA8"}
-                        />
-                        {g.likes > 0 && (
-                          <Text
-                            style={[
-                              styles.likeCount,
-                              { color: g.likedByMe ? "#BE9650" : colors.mutedForeground },
-                            ]}
-                          >
-                            {g.likes}
-                          </Text>
-                        )}
+                      <Pressable
+                        onPress={() =>
+                          router.push({
+                            pathname: "/usuario/[id]",
+                            params: { id: g.author.id },
+                          } as never)
+                        }
+                        hitSlop={6}
+                      >
+                        <Text style={[styles.author, styles.authorLink, { color: colors.primary }]} numberOfLines={1}>
+                          {g.author.displayName ?? g.author.username}
+                        </Text>
                       </Pressable>
-
-                      {g.isMine && (
-                        <Pressable onPress={() => setDeletingFor(g)} hitSlop={8} style={styles.deleteBtn}>
-                          <Feather name="trash-2" size={13} color="#7A8FA8" />
-                        </Pressable>
-                      )}
                     </View>
+
+                    {/* Like */}
+                    <Pressable onPress={() => handleLike(g)} hitSlop={8} style={styles.likeBtn}>
+                      <Feather
+                        name="heart"
+                        size={14}
+                        color={g.likedByMe ? "#BE9650" : "#7A8FA8"}
+                      />
+                      {g.likes > 0 && (
+                        <Text
+                          style={[
+                            styles.likeCount,
+                            { color: g.likedByMe ? "#BE9650" : colors.mutedForeground },
+                          ]}
+                        >
+                          {g.likes}
+                        </Text>
+                      )}
+                    </Pressable>
                   </View>
                 </View>
               );
@@ -502,10 +504,9 @@ const styles = StyleSheet.create({
   name: { fontSize: 12, fontWeight: "700", marginBottom: 1 },
   author: { fontSize: 11 },
 
-  actions: { flexDirection: "row", alignItems: "center", gap: 6, flexShrink: 0 },
   likeBtn: { flexDirection: "row", alignItems: "center", gap: 3 },
   likeCount: { fontSize: 11, fontWeight: "600" },
-  deleteBtn: { padding: 2 },
+  authorLink: { textDecorationLine: "underline", opacity: 0.9 },
 
   sheetBackdrop: {
     flex: 1,
