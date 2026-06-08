@@ -62,7 +62,7 @@ export default function GeometrixCreacionesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const { creations, toggleLiked, deleteCreation, renameCreation, reload } =
+  const { creations, deleteCreation, renameCreation, reload } =
     useGeometrixCreations();
 
   // Refrescar al volver a la pantalla (para ver lo recién guardado).
@@ -219,20 +219,6 @@ export default function GeometrixCreacionesScreen() {
                       </View>
                     );
                   })}
-
-                  {/* Like */}
-                  <Pressable
-                    onPress={() => toggleLiked(c.id)}
-                    hitSlop={10}
-                    style={styles.likeBtn}
-                  >
-                    <Feather
-                      name="thumbs-up"
-                      size={16}
-                      color={c.liked ? colors.primary : "rgba(255,255,255,0.7)"}
-                      style={c.liked ? undefined : styles.likeIdle}
-                    />
-                  </Pressable>
                 </View>
 
                 {/* Info */}
@@ -521,18 +507,6 @@ const styles = StyleSheet.create({
   card: { borderRadius: 16, borderWidth: 1, overflow: "hidden" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
-  likeBtn: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  likeIdle: { opacity: 0.9 },
 
   info: { flexDirection: "row", alignItems: "center", gap: 8, padding: 10 },
   name: { fontSize: 13, fontWeight: "700", marginBottom: 2 },
