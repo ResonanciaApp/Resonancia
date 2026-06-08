@@ -308,10 +308,10 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection:  "row",
-    alignItems:     "center",
-    justifyContent: "space-between",
-    marginBottom:   12,
+    flexDirection: "row",
+    alignItems:    "center",
+    gap:           8,
+    marginBottom:  12,
   },
   headerTitle: {
     fontSize:      13,
