@@ -541,8 +541,12 @@ export default function ProfileScreen() {
     if (profileBgCreationId) {
       const creation = geoCreations.find((c) => c.id === profileBgCreationId);
       if (creation) {
-        const bg = bgGradientColors(creation.master.bgGradientId);
-        if (bg) return bg;
+        const bgFactor = brightnessFactor(creation.master.bgBrightness);
+        const bgGrad = bgGradientColors(creation.master.bgGradientId);
+        const bgColors = creation.master.bgColor
+          ? ([scaleHex(creation.master.bgColor, bgFactor), scaleHex(creation.master.bgColor, bgFactor)] as const)
+          : (scaleColors(bgGrad ?? HOME_GRADIENT, bgFactor) as readonly [string, string]);
+        return bgColors;
       }
     }
     if (profileBgGradientId) {
