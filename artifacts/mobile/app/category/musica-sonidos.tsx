@@ -1,8 +1,9 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  Animated,
   Platform,
   Pressable,
   ScrollView,
@@ -10,6 +11,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { Image as ExpoImage } from "expo-image";
@@ -50,11 +52,30 @@ export default function MusicaSonidosScreen() {
   const { playSession } = usePlayer();
   const { sortKey, setSortKey, sortLabel, sortSessions } = useSessionSort();
   const { version } = useCatalog();
+  const { width } = useWindowDimensions();
+
+  const tabW = (width - H_PAD * 2 - 8 * 3) / 3.3;
 
   const [activeTab, setActiveTab] = useState<Tab>("Música Ambient");
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
+
+  const searchAnim = useRef(new Animated.Value(0)).current;
+  const searchInputRef = useRef<TextInput>(null);
+  const inputMaxWidth = width - H_PAD * 2 - 40 - 40 - 16;
+
+  useEffect(() => {
+    Animated.timing(searchAnim, {
+      toValue: searchOpen ? 1 : 0,
+      duration: 220,
+      useNativeDriver: false,
+    }).start(() => {
+      if (searchOpen) searchInputRef.current?.focus();
+    });
+    if (!searchOpen) setQuery("");
+  }, [searchOpen]);
 
   useEffect(() => {
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
@@ -112,9 +133,43 @@ export default function MusicaSonidosScreen() {
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn}>
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
+          {/* Fila superior: atrás ← [input animado →] lupa */}
+          <View style={styles.topRow}>
+            <Pressable onPress={() => router.back()} style={styles.backBtn}>
+              <Feather name="arrow-left" size={22} color="#FFFFFF" />
+            </Pressable>
+            <Animated.View
+              style={{
+                width: searchAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, inputMaxWidth],
+                }),
+                opacity: searchAnim.interpolate({
+                  inputRange: [0, 0.4, 1],
+                  outputRange: [0, 0, 1],
+                }),
+                overflow: "hidden",
+              }}
+            >
+              <View style={styles.searchBar}>
+                <TextInput
+                  ref={searchInputRef}
+                  style={[styles.searchInput, { color: colors.foreground }]}
+                  placeholder="Buscar en Música…"
+                  placeholderTextColor={colors.mutedForeground}
+                  value={query}
+                  onChangeText={setQuery}
+                  returnKeyType="search"
+                />
+              </View>
+            </Animated.View>
+            <Pressable
+              onPress={() => setSearchOpen((v) => !v)}
+              style={styles.searchBtn}
+            >
+              <Feather name="search" size={19} color="#FFFFFF" />
+            </Pressable>
+          </View>
           <View style={styles.catIconCircle}>
             <ExpoImage
               source={require("../../assets/images/cat-musica.png")}
@@ -126,28 +181,22 @@ export default function MusicaSonidosScreen() {
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Temas exclusivos para ti
           </Text>
-          <View style={styles.searchBar}>
-            <Feather name="search" size={17} color={colors.mutedForeground} />
-            <TextInput
-              style={[styles.searchInput, { color: colors.foreground }]}
-              placeholder="Buscar en Música…"
-              placeholderTextColor={colors.mutedForeground}
-              value={query}
-              onChangeText={setQuery}
-              returnKeyType="search"
-            />
-          </View>
         </View>
 
-        {/* Tabs — bloques con ícono */}
-        <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
+        {/* Tabs — deslizables, 3.3 visibles */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabScroll}
+          contentContainerStyle={[styles.tabRow, { paddingHorizontal: H_PAD }]}
+        >
           {TABS.map(({ label, value, icon }) => {
             const sel = activeTab === value;
             return (
               <Pressable
                 key={value}
                 onPress={() => setActiveTab(value)}
-                style={[styles.tabBlock, sel && styles.tabBlockActive]}
+                style={[styles.tabBlock, { width: tabW }, sel && styles.tabBlockActive]}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: sel }}
               >
@@ -170,7 +219,7 @@ export default function MusicaSonidosScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         {/* Línea divisora entre tabs y sesiones */}
         <View style={[styles.divider, { marginHorizontal: H_PAD }]} />
@@ -217,12 +266,23 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  header: { alignItems: "center", marginBottom: 9, paddingTop: 4 },
+  header: { alignItems: "center", marginBottom: 25, paddingTop: 4 },
+  topRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    alignSelf: "stretch",
+    marginBottom: 16,
+  },
   backBtn: {
-    alignSelf: "flex-start",
     width: 40, height: 40,
     alignItems: "center", justifyContent: "center",
-    marginBottom: 16,
+  },
+  searchBtn: {
+    width: 40, height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    alignItems: "center", justifyContent: "center",
   },
   catIconCircle: {
     width: 60, height: 60,
@@ -234,28 +294,30 @@ const styles = StyleSheet.create({
   pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
-    alignSelf: "stretch",
-    backgroundColor: "rgba(255,255,255,0.03)",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 8,
-    marginTop: 18,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === "ios" ? 10 : 7,
+    height: 40,
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
-  tabRow: { flexDirection: "row", gap: 8 },
+  tabScroll: { flexGrow: 0 },
+  tabRow: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   tabBlock: {
-    flex: 1,
+    aspectRatio: 1,
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
-    paddingTop: 16,
-    paddingBottom: 14,
-    borderRadius: 10,
+    paddingHorizontal: 4,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabBlockActive: { backgroundColor: "rgba(114,191,120,0.14)" },
-  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
+  tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
