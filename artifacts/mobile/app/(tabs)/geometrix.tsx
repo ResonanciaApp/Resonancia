@@ -1249,7 +1249,6 @@ export default function GeometrixScreen() {
               {/* Opacidad general */}
               <View style={styles.fieldRow}>
                 <Text style={styles.fieldLabel}>Opacidad general</Text>
-                <Text style={styles.fieldValue}>{Math.round(master.opacity * 100)}</Text>
               </View>
               <VolumeSlider
                 value={master.opacity}
@@ -1259,7 +1258,7 @@ export default function GeometrixScreen() {
                     opacity: Number.isFinite(v) ? Math.min(1, Math.max(0.1, v)) : m.opacity,
                   }))
                 }
-                color={colors.accent}
+                color="#FFFFFF"
                 trackColor="rgba(255,255,255,0.12)"
               />
 
@@ -1276,7 +1275,6 @@ export default function GeometrixScreen() {
               {/* Glow general */}
               <View style={[styles.fieldRow, { marginTop: 18 }]}>
                 <Text style={styles.fieldLabel}>Glow</Text>
-                <Text style={styles.fieldValue}>{Math.round(master.glow * 100)}</Text>
               </View>
               <VolumeSlider
                 value={master.glow}
@@ -1286,7 +1284,7 @@ export default function GeometrixScreen() {
                     glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
                   }))
                 }
-                color={colors.accent}
+                color="#FFFFFF"
                 trackColor="rgba(255,255,255,0.12)"
               />
             </View>
@@ -1519,48 +1517,44 @@ export default function GeometrixScreen() {
                   {/* Opacidad */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Opacidad</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.opacity * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.opacity}
                     onChange={(v) => updateSetting(g.id, "opacity", Math.max(0.1, v))}
-                    color={s.color}
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
 
                   {/* Grosor */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Grosor</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.thickness * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.thickness}
                     onChange={(v) => updateSetting(g.id, "thickness", v)}
-                    color={s.color}
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
 
                   {/* Tamaño */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Tamaño</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.scale * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.scale}
                     onChange={(v) => updateSetting(g.id, "scale", v)}
-                    color={s.color}
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
 
                   {/* Glow propio */}
                   <View style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>Glow</Text>
-                    <Text style={styles.fieldValue}>{Math.round(s.glow * 100)}</Text>
                   </View>
                   <VolumeSlider
                     value={s.glow}
                     onChange={(v) => updateSetting(g.id, "glow", v)}
-                    color={s.color}
+                    color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
                 </View>
@@ -1976,7 +1970,6 @@ const styles = StyleSheet.create({
   },
   twoCol: { flexDirection: "row", gap: 16 },
   col: { flex: 1, minWidth: 0 },
-  fieldValue: { fontSize: 12, fontWeight: "600", color: colors.foreground },
 
   swatchRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   swatch: {
