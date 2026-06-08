@@ -2000,13 +2000,14 @@ export default function GeometrixScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#06070F" },
   content:  { flex: 1, paddingHorizontal: 20 },
-  topPanel: { marginHorizontal: -20, paddingHorizontal: 20 },
+  topPanel: { marginHorizontal: -20 },
 
   header: {
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
     marginBottom: 14,
+    paddingHorizontal: 20,
   },
   headerText: { flex: 1, paddingRight: 12 },
   title: { fontSize: 30, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
@@ -2042,7 +2043,7 @@ const styles = StyleSheet.create({
   },
 
   grid: { flexGrow: 0 },
-  gridContent: { paddingVertical: 2, paddingRight: 20 },
+  gridContent: { paddingVertical: 2, paddingLeft: 20, paddingRight: 20 },
   gridRow: { flexDirection: "row", gap: 8 },
   tile: {
     aspectRatio: 1,
