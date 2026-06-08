@@ -488,9 +488,8 @@ export function MixerSheet() {
               <View style={styles.footerPlayCircle}>
                 <MaterialCommunityIcons
                   name={isPlaying ? "pause" : "play"}
-                  size={52}
+                  size={60}
                   color="#FFFFFF"
-                  style={isPlaying ? undefined : { marginLeft: 5 }}
                 />
               </View>
             </Pressable>
