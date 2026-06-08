@@ -152,6 +152,24 @@ function gradientColors(id: string | null): readonly [string, string] | undefine
   return GRADIENTS.find((gr) => gr.id === id)?.colors;
 }
 
+// Oscurece un hex multiplicando su RGB por un factor (0–1). Se usa para que
+// los fondos degradados elegibles queden tan oscuros como el fondo indigo de
+// la app y así contrasten con las animaciones (trazos claros).
+const BG_DARKEN = 0.3;
+function darkenHex(hex: string, f: number): string {
+  let h = hex.replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const ch = (i: number) => {
+    const n = Math.round(parseInt(h.slice(i, i + 2), 16) * f);
+    return Math.max(0, Math.min(255, n)).toString(16).padStart(2, "0");
+  };
+  if ([0, 2, 4].some((i) => Number.isNaN(parseInt(h.slice(i, i + 2), 16)))) return hex;
+  return `#${ch(0)}${ch(2)}${ch(4)}`;
+}
+function darkGradient(colors: readonly [string, string]): [string, string] {
+  return [darkenHex(colors[0], BG_DARKEN), darkenHex(colors[1], BG_DARKEN)];
+}
+
 /** Muestra circular de un degradado (para el selector). RN no soporta
     gradientes en `backgroundColor`, así que se dibuja con SVG. */
 function GradientSwatch({
@@ -171,13 +189,15 @@ function GradientSwatch({
         </SvgLinearGradient>
       </Defs>
       <Rect
-        x={0}
-        y={0}
-        width={size}
-        height={size}
-        rx={size / 2}
-        ry={size / 2}
+        x={0.5}
+        y={0.5}
+        width={size - 1}
+        height={size - 1}
+        rx={(size - 1) / 2}
+        ry={(size - 1) / 2}
         fill={`url(#${id})`}
+        stroke="#4b4f5c"
+        strokeWidth={1}
       />
     </Svg>
   );
@@ -778,7 +798,10 @@ export default function GeometrixScreen() {
   // En inmersión la geometría llena la pantalla, centrada.
   const immersiveSize = Math.min(width, height) * 0.96;
 
-  const masterBgGradient = gradientColors(master.bgGradientId);
+  const rawBgGradient = gradientColors(master.bgGradientId);
+  // Fondo del lienzo oscurecido (mismo nivel que el indigo de la app) para
+  // que las animaciones contrasten.
+  const masterBgGradient = rawBgGradient ? darkGradient(rawBgGradient) : undefined;
 
   return (
     <View style={styles.root}>
@@ -1314,18 +1337,16 @@ export default function GeometrixScreen() {
               trackColor="rgba(255,255,255,0.12)"
             />
 
-            {/* Color de fondo del lienzo: sólidos + degradados */}
+            {/* Color de fondo del lienzo: indigo por defecto + degradados
+                (oscurecidos). Sin colores sólidos. */}
             <Text style={[styles.fieldLabel, { marginTop: 18 }]}>Color de fondo</Text>
             <View style={styles.swatchRow}>
-              {/* Opción por defecto (fondo original) */}
+              {/* Opción por defecto (fondo indigo original) */}
               <Pressable
                 onPress={() =>
                   setMaster((m) => ({ ...m, bgColor: null, bgGradientId: null }))
                 }
-                style={[
-                  styles.swatch,
-                  !master.bgColor && !master.bgGradientId && styles.swatchOn,
-                ]}
+                style={[styles.swatch, !master.bgGradientId && styles.swatchOn]}
                 accessibilityRole="button"
                 accessibilityLabel="Fondo por defecto"
               >
@@ -1334,26 +1355,6 @@ export default function GeometrixScreen() {
                   size={20}
                 />
               </Pressable>
-              {PALETTE.map((c) => {
-                const on =
-                  !master.bgGradientId &&
-                  (master.bgColor ?? "").toLowerCase() === c.toLowerCase();
-                return (
-                  <Pressable
-                    key={`bg-${c}`}
-                    onPress={() =>
-                      setMaster((m) => ({ ...m, bgColor: c, bgGradientId: null }))
-                    }
-                    style={[styles.swatch, on && styles.swatchOn]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Fondo ${c}`}
-                  >
-                    <View style={[styles.swatchFill, { backgroundColor: c }]} />
-                  </Pressable>
-                );
-              })}
-            </View>
-            <View style={[styles.swatchRow, styles.gradientLabel]}>
               {GRADIENTS.map((gr) => {
                 const on = master.bgGradientId === gr.id;
                 return (
@@ -1366,7 +1367,7 @@ export default function GeometrixScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={`Fondo degradado ${gr.id}`}
                   >
-                    <GradientSwatch colors={gr.colors} size={20} />
+                    <GradientSwatch colors={darkGradient(gr.colors)} size={20} />
                   </Pressable>
                 );
               })}
@@ -2100,7 +2101,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  swatchFill: { width: 20, height: 20, borderRadius: 10 },
+  swatchFill: { width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: "#4b4f5c" },
   swatchOn: { borderColor: "#EDE1D3" },
 
   empty: { alignItems: "center", gap: 6 },
