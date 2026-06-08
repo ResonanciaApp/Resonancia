@@ -1,9 +1,10 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  Animated,
   Platform,
   Pressable,
   ScrollView,
@@ -67,6 +68,21 @@ export default function SonidosAncestalesScreen() {
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
+  const searchAnim = useRef(new Animated.Value(0)).current;
+  const searchInputRef = useRef<TextInput>(null);
+  const inputMaxWidth = width - H_PAD * 2 - 40 - 40 - 16; // backBtn + searchBtn + 2×gap
+
+  useEffect(() => {
+    Animated.timing(searchAnim, {
+      toValue: searchOpen ? 1 : 0,
+      duration: 220,
+      useNativeDriver: false,
+    }).start(() => {
+      if (searchOpen) searchInputRef.current?.focus();
+    });
+    if (!searchOpen) setQuery("");
+  }, [searchOpen]);
+
   useEffect(() => {
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
       if (val) setRatings(JSON.parse(val));
@@ -118,16 +134,38 @@ export default function SonidosAncestalesScreen() {
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-          {/* Fila superior: atrás ← → lupa */}
+          {/* Fila superior: atrás ← [input animado →] lupa */}
           <View style={styles.topRow}>
             <Pressable onPress={() => router.back()} style={styles.backBtn}>
               <Feather name="arrow-left" size={22} color={colors.foreground} />
             </Pressable>
-            <Pressable
-              onPress={() => {
-                setSearchOpen((v) => !v);
-                if (searchOpen) setQuery("");
+            <Animated.View
+              style={{
+                width: searchAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, inputMaxWidth],
+                }),
+                opacity: searchAnim.interpolate({
+                  inputRange: [0, 0.4, 1],
+                  outputRange: [0, 0, 1],
+                }),
+                overflow: "hidden",
               }}
+            >
+              <View style={styles.searchBar}>
+                <TextInput
+                  ref={searchInputRef}
+                  style={[styles.searchInput, { color: colors.foreground }]}
+                  placeholder="Buscar en Ancestrales…"
+                  placeholderTextColor={colors.mutedForeground}
+                  value={query}
+                  onChangeText={setQuery}
+                  returnKeyType="search"
+                />
+              </View>
+            </Animated.View>
+            <Pressable
+              onPress={() => setSearchOpen((v) => !v)}
               style={styles.searchBtn}
             >
               <Feather name="search" size={19} color="#FFFFFF" />
@@ -140,20 +178,6 @@ export default function SonidosAncestalesScreen() {
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Cuencos, gongs y frecuencias sagradas
           </Text>
-          {searchOpen && (
-            <View style={styles.searchBar}>
-              <Feather name="search" size={17} color={colors.mutedForeground} />
-              <TextInput
-                autoFocus
-                style={[styles.searchInput, { color: colors.foreground }]}
-                placeholder="Buscar en Ancestrales…"
-                placeholderTextColor={colors.mutedForeground}
-                value={query}
-                onChangeText={setQuery}
-                returnKeyType="search"
-              />
-            </View>
-          )}
         </View>
 
         {/* Tabs — una sola fila horizontal, deslizable. Mismo tamaño, border
@@ -303,12 +327,11 @@ const styles = StyleSheet.create({
   pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
-    alignSelf: "stretch",
-    backgroundColor: "rgba(255,255,255,0.03)",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 8,
-    marginTop: 18,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === "ios" ? 10 : 7,
+    height: 40,
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
