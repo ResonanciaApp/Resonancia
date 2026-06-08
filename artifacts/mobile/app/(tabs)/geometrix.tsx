@@ -155,6 +155,33 @@ function gradientColors(id: string | null): readonly [string, string] | undefine
   return GRADIENTS.find((gr) => gr.id === id)?.colors;
 }
 
+// Escala el RGB de un hex por un factor (clamp 0–255). Sirve para aclarar
+// (f > 1) u oscurecer (f < 1) el fondo según el slider de brillo.
+function scaleHex(hex: string, f: number): string {
+  let h = hex.replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  if ([0, 2, 4].some((i) => Number.isNaN(parseInt(h.slice(i, i + 2), 16)))) return hex;
+  const ch = (i: number) => {
+    const n = Math.round(parseInt(h.slice(i, i + 2), 16) * f);
+    return Math.max(0, Math.min(255, n)).toString(16).padStart(2, "0");
+  };
+  return `#${ch(0)}${ch(2)}${ch(4)}`;
+}
+
+// Mapea el valor del slider de brillo (0–1; 0.5 = original) a un factor
+// multiplicador: 0 → 0.4× (más oscuro), 0.5 → 1×, 1 → 2.2× (más brillante).
+function brightnessFactor(v: number): number {
+  const x = Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 0.5;
+  return x <= 0.5 ? 0.4 + x * 1.2 : 1 + (x - 0.5) * 2.4;
+}
+
+function scaleColors(
+  colors: readonly string[],
+  f: number,
+): readonly [string, string, ...string[]] {
+  return colors.map((c) => scaleHex(c, f)) as unknown as [string, string, ...string[]];
+}
+
 /** Muestra circular de un degradado (para el selector). RN no soporta
     gradientes en `backgroundColor`, así que se dibuja con SVG. */
 function GradientSwatch({
@@ -250,6 +277,8 @@ type GlobalSettings = {
   bgColor: string | null;
   /** Degradado de fondo del lienzo (id de GRADIENTS); null = sólido o por defecto. */
   bgGradientId: string | null;
+  /** Brillo del fondo (valor del slider 0–1; 0.5 = brillo original). */
+  bgBrightness: number;
 };
 
 // Color fijo del fondo del toggle cuando está activado (estático, no usa el color de la geometría).
@@ -493,6 +522,7 @@ export default function GeometrixScreen() {
     glow: 0,
     bgColor: null,
     bgGradientId: null,
+    bgBrightness: 0.5,
   });
   const [generalOpen, setGeneralOpen] = useState(false);
   const [generalSheetHeight, setGeneralSheetHeight] = useState(0);
@@ -783,9 +813,12 @@ export default function GeometrixScreen() {
   // En inmersión la geometría llena la pantalla, centrada.
   const immersiveSize = Math.min(width, height) * 0.96;
 
-  // Los degradados de GRADIENTS ya están diseñados oscuros; se usan tal cual
-  // en el lienzo y la vista previa.
-  const masterBgGradient = gradientColors(master.bgGradientId);
+  // Color del fondo del lienzo (lienzo, vista previa e inmersión). Es el
+  // degradado seleccionado o, por defecto, el de Inicio; ambos modulados por
+  // el slider de brillo de Ajustes generales.
+  const bgFactor = brightnessFactor(master.bgBrightness);
+  const selectedBg = gradientColors(master.bgGradientId);
+  const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
 
   return (
     <View style={styles.root}>
@@ -916,24 +949,16 @@ export default function GeometrixScreen() {
           {/* Fondo del lienzo (solo de la divisora hacia abajo). Se extiende
               edge-to-edge (left/right -20 rompe el padding del content); el
               color elegido llega justo a la divisora, sin degradado. */}
-          {(masterBgGradient || master.bgColor) && (
-            <View pointerEvents="none" style={styles.canvasBgLayer}>
-              {/* Color de fondo a pleno desde la divisora hacia abajo (sin
-                  degradado de transición). */}
-              {masterBgGradient ? (
-                <LinearGradient
-                  colors={masterBgGradient}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                />
-              ) : (
-                <View
-                  style={[StyleSheet.absoluteFill, { backgroundColor: master.bgColor! }]}
-                />
-              )}
-            </View>
-          )}
+          <View pointerEvents="none" style={styles.canvasBgLayer}>
+            {/* Color de fondo a pleno desde la divisora hacia abajo (sin
+                degradado de transición). */}
+            <LinearGradient
+              colors={canvasBgColors}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+          </View>
           {/* Escenario: centra la animación en el espacio sobre los thumbnails. */}
           <View
             style={styles.stage}
@@ -1115,7 +1140,7 @@ export default function GeometrixScreen() {
           accessibilityLabel="Salir de pantalla completa"
         >
           <LinearGradient
-            colors={masterBgGradient ?? HOME_GRADIENT}
+            colors={canvasBgColors}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
@@ -1232,24 +1257,14 @@ export default function GeometrixScreen() {
               style={[
                 styles.previewBox,
                 { width: generalPreviewSize, height: generalPreviewSize },
-                master.bgColor ? { backgroundColor: master.bgColor } : null,
               ]}
             >
-              {masterBgGradient ? (
-                <LinearGradient
-                  colors={masterBgGradient}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                />
-              ) : !master.bgColor ? (
-                <LinearGradient
-                  colors={HOME_GRADIENT}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                />
-              ) : null}
+              <LinearGradient
+                colors={canvasBgColors}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
               {activeMetas.map((g, i) => (
                 <GeometryLayer
                   key={g.id}
@@ -1356,6 +1371,22 @@ export default function GeometrixScreen() {
                 );
               })}
             </View>
+
+            {/* Brillo del fondo seleccionado */}
+            <View style={[styles.fieldRow, { marginTop: 18 }]}>
+              <Text style={styles.fieldLabel}>Brillo del fondo</Text>
+            </View>
+            <VolumeSlider
+              value={master.bgBrightness}
+              onChange={(v) =>
+                setMaster((m) => ({
+                  ...m,
+                  bgBrightness: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.bgBrightness,
+                }))
+              }
+              color="#FFFFFF"
+              trackColor="rgba(255,255,255,0.12)"
+            />
 
             {/* Glow general */}
             <View style={[styles.fieldRow, { marginTop: 18 }]}>
