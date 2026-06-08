@@ -370,21 +370,19 @@ export default function HomeScreen() {
                     </View>
                     {/* Fila inferior: título+autor a la izq, botón a la der */}
                     <View style={styles.heroBottom}>
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
-                          {featuredSession.title}
-                        </Text>
-                        <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
-                          {heroAuthor}
-                        </Text>
-                      </View>
-                      <Pressable
-                        onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
-                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
-                      >
-                        <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
-                      </Pressable>
+                      <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
+                        {featuredSession.title}
+                      </Text>
+                      <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
+                        {heroAuthor}
+                      </Text>
                     </View>
+                    <Pressable
+                      onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
+                      style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
+                    >
+                      <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
+                    </Pressable>
                   </View>
                 );
               })()}
@@ -694,20 +692,16 @@ const styles = StyleSheet.create({
   heroTitle: { fontSize: 20, fontWeight: "700", lineHeight: 26, marginBottom: 4 },
   heroAuthor: { fontSize: 12, marginTop: 2 },
   heroBottom: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
+    marginBottom: 12,
   },
   heroBtn: {
-    flexShrink: 0,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    alignSelf: "center",
+    width: 46,
+    height: 46,
+    borderRadius: 23,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.30)",
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "#111634",
   },
 
   // Horizontal scroll
