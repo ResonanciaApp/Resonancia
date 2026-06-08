@@ -1561,19 +1561,9 @@ export default function GeometrixScreen() {
           <View style={styles.sheetHeaderDivider} />
 
           <View style={styles.geoCard}>
-            {/* Movimiento: toggle al lado del título, a 15px */}
-            <View style={styles.fieldRowGap}>
-              <Text style={styles.fieldLabel}>Movimiento</Text>
-              <Toggle
-                value={master.motion}
-                onChange={(v) => setMaster((m) => ({ ...m, motion: v }))}
-                color={colors.accent}
-              />
-            </View>
-
             {/* Color de fondo del lienzo: indigo por defecto + degradados
                 (oscurecidos). Sin colores sólidos. */}
-            <Text style={[styles.fieldLabel, { marginTop: 18 }]}>Color de fondo</Text>
+            <Text style={styles.fieldLabel}>Color de fondo</Text>
             <View style={styles.swatchRow}>
               {/* Opción por defecto (fondo indigo original) */}
               <Pressable
