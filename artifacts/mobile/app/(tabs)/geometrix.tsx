@@ -1514,6 +1514,7 @@ export default function GeometrixScreen() {
         animationType="slide"
         onRequestClose={() => setGeneralOpen(false)}
       >
+        <View style={{ flex: 1, backgroundColor: "transparent" }}>
         <Pressable style={styles.sheetBackdrop} onPress={() => setGeneralOpen(false)} />
 
         {/* Vista previa en vivo de toda la composición con los ajustes generales. */}
@@ -1665,6 +1666,7 @@ export default function GeometrixScreen() {
             />
           </View>
         </View>
+        </View>
       </Modal>
 
       {/* Panel de ajustes por geometría */}
@@ -1677,6 +1679,7 @@ export default function GeometrixScreen() {
           setSettingsGeoId(null);
         }}
       >
+        <View style={{ flex: 1, backgroundColor: "transparent" }}>
         <Pressable
           style={styles.sheetBackdrop}
           onPress={() => {
@@ -1944,6 +1947,7 @@ export default function GeometrixScreen() {
               );
             })()
           )}
+        </View>
         </View>
       </Modal>
 
