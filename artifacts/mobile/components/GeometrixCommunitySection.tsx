@@ -279,7 +279,7 @@ export function GeometrixCommunitySection() {
           source={require("@/assets/images/geometrix/cubo-3.png")}
           style={styles.cuboIcon}
         />
-        <Text style={styles.sectionTitle}>Geometrixs de la comunidad</Text>
+        <Text style={styles.sectionTitle}>Geometrix comunidad</Text>
       </View>
 
       {/* Cargando */}
