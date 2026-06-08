@@ -344,21 +344,19 @@ export default function ProfileScreen() {
     })();
   }, []);
 
-  const selectGradient = async (id: string | null) => {
+  const selectGradient = (id: string | null) => {
+    // Ambos setState sincrónicos en el mismo evento → React los batea en un
+    // solo render; no hay riesgo de que un await posterior los pise.
     setProfileBgGradientId(id);
-    await AsyncStorage.setItem("@profile_bg_gradient", id ?? "null");
-    if (id !== null) {
-      setProfileBgCreationId(null);
-      await AsyncStorage.setItem("@profile_bg_creation", "null");
-    }
+    if (id !== null) setProfileBgCreationId(null);
+    void AsyncStorage.setItem("@profile_bg_gradient", id ?? "null");
+    if (id !== null) void AsyncStorage.setItem("@profile_bg_creation", "null");
   };
-  const selectCreation = async (id: string | null) => {
+  const selectCreation = (id: string | null) => {
     setProfileBgCreationId(id);
-    await AsyncStorage.setItem("@profile_bg_creation", id ?? "null");
-    if (id !== null) {
-      setProfileBgGradientId(null);
-      await AsyncStorage.setItem("@profile_bg_gradient", "null");
-    }
+    if (id !== null) setProfileBgGradientId(null);
+    void AsyncStorage.setItem("@profile_bg_creation", id ?? "null");
+    if (id !== null) void AsyncStorage.setItem("@profile_bg_gradient", "null");
   };
   const saveReminder = async (enabled: boolean, hour: number, minute: number) => {
     setReminderEnabled(enabled);
