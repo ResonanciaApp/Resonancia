@@ -57,9 +57,9 @@ export default function SonidosAncestalesScreen() {
   const { sortKey, setSortKey, sortLabel, sortSessions } = useSessionSort();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  // Mismo cálculo de ancho que los tiles de Geometrix: muestra 3 tabs y un
-  // poco del 4º (divisor 3.3), con el mismo gap (12) y padding lateral.
-  const tabW = (width - H_PAD * 2 - 12 * 3) / 3.3;
+  // Cálculo de ancho estilo tiles de Geometrix: muestra 3 tabs y un poco del
+  // 4º (divisor 3.3). Gap 8 para igualar la separación de las tabs de Música.
+  const tabW = (width - H_PAD * 2 - 8 * 3) / 3.3;
 
   const [activeTab, setActiveTab] = useState<string>(TABS[0].value);
   const [query, setQuery] = useState("");
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
   tabScroll: { flexGrow: 0 },
-  tabRow: { flexDirection: "row", gap: 12, paddingVertical: 2 },
+  tabRow: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   tabBlock: {
     aspectRatio: 1,
     flexDirection: "column",
