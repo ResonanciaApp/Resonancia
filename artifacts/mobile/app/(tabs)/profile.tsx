@@ -693,6 +693,8 @@ export default function ProfileScreen() {
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
   const prevBgRef = useRef<readonly [string, string]>(defaultBg);
   const bgMountedRef = useRef(false);
+  // Fade-in del glifo al montar (carga async desde AsyncStorage → aparición suave).
+  const glyphMountAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (!bgMountedRef.current) {
@@ -723,6 +725,21 @@ export default function ProfileScreen() {
     return () => cancelAnimationFrame(raf);
   }, [activeBgColors, crossFadeAnim]);
 
+  // Animar entrada del glifo cuando la creación carga por primera vez (o cambia).
+  useEffect(() => {
+    if (activeBgCreation) {
+      glyphMountAnim.setValue(0);
+      Animated.timing(glyphMountAnim, {
+        toValue: 1,
+        duration: 700,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      glyphMountAnim.setValue(0);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeBgCreation?.id]);
+
   return (
     <View style={styles.root}>
       {/* Fondo anterior — se desvanece */}
@@ -739,25 +756,27 @@ export default function ProfileScreen() {
       >
         <LinearGradient colors={[...bgTo]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
       </Animated.View>
-      {/* Geometrías de la creación seleccionada — se desvanecen con el crossfade */}
+      {/* Geometrías de la creación seleccionada — fade-in al montar + crossfade de colores */}
       {activeBgCreation && (
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim }]} pointerEvents="none">
-          {activeBgCreation.active
-            .filter((gId) => !activeBgCreation.hiddenIds?.includes(gId))
-            .map((gId, i) => {
-              const s = activeBgCreation.settings[gId];
-              if (!s) return null;
-              return (
-                <BgGlyph
-                  key={gId}
-                  id={gId as GeometryId}
-                  settings={s}
-                  masterOpacity={activeBgCreation.master.opacity}
-                  size={glyphSize}
-                  index={i}
-                />
-              );
-            })}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: glyphMountAnim }]} pointerEvents="none">
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim }]} pointerEvents="none">
+            {activeBgCreation.active
+              .filter((gId) => !activeBgCreation.hiddenIds?.includes(gId))
+              .map((gId, i) => {
+                const s = activeBgCreation.settings[gId];
+                if (!s) return null;
+                return (
+                  <BgGlyph
+                    key={gId}
+                    id={gId as GeometryId}
+                    settings={s}
+                    masterOpacity={activeBgCreation.master.opacity}
+                    size={glyphSize}
+                    index={i}
+                  />
+                );
+              })}
+          </Animated.View>
         </Animated.View>
       )}
       <StatusBar barStyle="light-content" />
