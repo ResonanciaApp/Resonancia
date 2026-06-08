@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
+  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -154,8 +155,11 @@ export function GeometrixCommunitySection() {
       {/* Header */}
       <View style={styles.headerRow}>
         <View style={styles.headerLeft}>
-          <Feather name="users" size={15} color={colors.primary} />
-          <Text style={styles.sectionTitle}>Comunidad</Text>
+          <Image
+            source={require("@/assets/images/geometrix/cubo-3.png")}
+            style={styles.cuboIcon}
+          />
+          <Text style={styles.sectionTitle}>Geometrixs de la comunidad</Text>
         </View>
         <Pressable onPress={() => router.push("/geometrix-comunidad" as never)} hitSlop={8}>
           <Text style={[styles.verTodo, { color: colors.primary }]}>Ver todo</Text>
@@ -188,8 +192,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 11,
+    marginBottom: 14,
   },
+  cuboIcon: { width: 18, height: 18, resizeMode: "contain", opacity: 0.9 },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
