@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  header: { alignItems: "center", marginBottom: 9, paddingTop: 4 },
+  header: { alignItems: "center", marginBottom: 29, paddingTop: 4 },
   topRow: {
     flexDirection: "row",
     alignItems: "center",
