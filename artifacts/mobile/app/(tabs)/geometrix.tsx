@@ -702,6 +702,15 @@ export default function GeometrixScreen() {
     setSelectedId(id);
   }, []);
 
+  // Vacía por completo el lienzo: quita todas las geometrías activas (los
+  // effects reasignan solo/selección a null). Los ajustes guardados se
+  // conservan y se re-siembran al reactivar.
+  const clearCanvas = useCallback(() => {
+    setActive([]);
+    setSoloId(null);
+    setSelectedId(null);
+  }, []);
+
   const updateSetting = useCallback(
     <K extends keyof GeoSettings>(id: GeometryId, key: K, value: GeoSettings[K]) => {
       setSettings((prev) => ({
@@ -1151,6 +1160,26 @@ export default function GeometrixScreen() {
                   size={20}
                   color={colors.mutedForeground}
                 />
+              </Pressable>
+            </Animated.View>
+          )}
+
+          {/* "Borrar lienzo": esquina superior izquierda, aparece al activar la
+              primera geometría. Letras suaves; limpia todo el lienzo. */}
+          {hasActive && (
+            <Animated.View
+              entering={FadeIn.duration(360)}
+              exiting={FadeOut.duration(220)}
+              style={styles.clearTop}
+            >
+              <Pressable
+                onPress={clearCanvas}
+                style={styles.clearBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Borrar lienzo"
+                hitSlop={8}
+              >
+                <Text style={styles.clearText}>Borrar lienzo</Text>
               </Pressable>
             </Animated.View>
           )}
@@ -1932,6 +1961,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
+  },
+  clearTop: {
+    position: "absolute",
+    top: 10,
+    left: 0,
+    zIndex: 6,
+  },
+  clearBtn: {
+    height: 32,
+    justifyContent: "center",
+    paddingVertical: 4,
+  },
+  clearText: {
+    color: colors.mutedForeground,
+    fontSize: 13,
+    fontWeight: "500",
+    letterSpacing: 0.3,
+    opacity: 0.75,
   },
   chevronBtn: {
     width: 40,
