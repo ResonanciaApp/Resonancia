@@ -1157,20 +1157,24 @@ export default function GeometrixScreen() {
                   ))}
 
                 {active.length === 0 && (
-                  <View style={styles.empty} pointerEvents="none">
-                    <Animated.View
-                      entering={FadeIn.duration(2000)}
-                      style={styles.emptyLogoWrap}
-                    >
+                  // Logo + título + bajada entran JUNTOS y con un retardo (650ms)
+                  // que espera a que termine el fade out de la geometría (600ms),
+                  // así no se topan ni se ve cortado el desvanecido.
+                  <Animated.View
+                    entering={FadeIn.duration(1100).delay(650)}
+                    style={styles.empty}
+                    pointerEvents="none"
+                  >
+                    <View style={styles.emptyLogoWrap}>
                       <Image
                         source={require("@/assets/images/geometrix/cubo-3.png")}
                         style={styles.emptyLogo}
                         contentFit="contain"
                       />
-                    </Animated.View>
+                    </View>
                     <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
                     <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
-                  </View>
+                  </Animated.View>
                 )}
               </View>
             </GestureDetector>
