@@ -93,11 +93,11 @@ export function MiniPlayer() {
       {isIOS ? (
         <BlurView intensity={80} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 18 }]} />
       ) : Platform.OS === "web" ? (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(33,37,67,0.94)", borderRadius: 18 }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(7,13,50,0.94)", borderRadius: 18 }]} />
       ) : (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card, borderRadius: 18 }]} />
       )}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(33,37,67,0.55)", borderRadius: 18 }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(7,13,50,0.55)", borderRadius: 18 }]} />
       <LinearGradient
         colors={["rgba(190,150,80,0.08)", "rgba(11,15,20,0.4)"]}
         style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
