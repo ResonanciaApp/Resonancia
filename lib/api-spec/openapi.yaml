@@ -32,6 +32,8 @@ tags:
     description: Panel de administración (solo rol admin)
   - name: mixer-sounds
     description: Sonidos del mixer Mi Música
+  - name: glyphs
+    description: Muro de la comunidad — composiciones Geometrix compartidas
 paths:
   /healthz:
     get:
@@ -362,6 +364,95 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /glyphs:
+    get:
+      operationId: getSharedGlyphs
+      tags: [glyphs]
+      summary: List community-shared Geometrix compositions (most liked first, then newest)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: author
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Paginated list of shared glyphs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedGlyphsPage"
+    post:
+      operationId: shareGlyph
+      tags: [glyphs]
+      summary: Share a Geometrix composition (requires account)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SharedGlyphInput"
+      responses:
+        "201":
+          description: Glyph shared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedGlyph"
+        "401":
+          description: Not authenticated
+        "409":
+          description: Limit reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /glyphs/{id}/like:
+    post:
+      operationId: toggleSharedGlyphLike
+      tags: [glyphs]
+      summary: Toggle like on a shared glyph (requires account)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated glyph
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedGlyph"
+        "401":
+          description: Not authenticated
+        "404":
+          description: Not found
+  /glyphs/{id}:
+    delete:
+      operationId: unshareGlyph
+      tags: [glyphs]
+      summary: Delete own shared glyph (author or admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Not authenticated
+        "403":
+          description: Not the author
+        "404":
+          description: Not found
   /me:
     get:
       operationId: getMe
@@ -2240,6 +2331,87 @@ components:
           type: string
           enum: [spam, inapropiado, ofensivo, otro]
       required: [reason]
+    GlyphMaster:
+      type: object
+      properties:
+        opacity:
+          type: number
+        motion:
+          type: boolean
+        glow:
+          type: number
+        bgColor:
+          type: ["string", "null"]
+        bgGradientId:
+          type: ["string", "null"]
+        bgBrightness:
+          type: number
+      required: [opacity, motion, glow, bgColor, bgGradientId, bgBrightness]
+    GlyphRecipe:
+      type: object
+      properties:
+        active:
+          type: array
+          items:
+            type: string
+        master:
+          $ref: "#/components/schemas/GlyphMaster"
+        settings:
+          type: object
+          additionalProperties: true
+        soloId:
+          type: ["string", "null"]
+      required: [active, master, settings]
+    SharedGlyph:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        recipe:
+          $ref: "#/components/schemas/GlyphRecipe"
+        likes:
+          type: integer
+        likedByMe:
+          type: boolean
+        isMine:
+          type: boolean
+        author:
+          $ref: "#/components/schemas/UserProfile"
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, name, recipe, likes, likedByMe, isMine, author, createdAt]
+    SharedGlyphsPage:
+      type: object
+      properties:
+        glyphs:
+          type: array
+          items:
+            $ref: "#/components/schemas/SharedGlyph"
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+      required: [glyphs, total, page, pageSize]
+    SharedGlyphInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 40
+        description:
+          type: string
+          maxLength: 120
+        recipe:
+          $ref: "#/components/schemas/GlyphRecipe"
+      required: [name, recipe]
     OkResponse:
       type: object
       properties:

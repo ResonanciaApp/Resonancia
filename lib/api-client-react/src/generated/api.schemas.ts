@@ -234,6 +234,58 @@ export interface SharedMixReportInput {
   reason: SharedMixReportInputReason;
 }
 
+export interface GlyphMaster {
+  opacity: number;
+  motion: boolean;
+  glow: number;
+  /** @nullable */
+  bgColor: string | null;
+  /** @nullable */
+  bgGradientId: string | null;
+  bgBrightness: number;
+}
+
+export type GlyphRecipeSettings = { [key: string]: unknown };
+
+export interface GlyphRecipe {
+  active: string[];
+  master: GlyphMaster;
+  settings: GlyphRecipeSettings;
+  /** @nullable */
+  soloId?: string | null;
+}
+
+export interface SharedGlyph {
+  id: number;
+  name: string;
+  /** @nullable */
+  description?: string | null;
+  recipe: GlyphRecipe;
+  likes: number;
+  likedByMe: boolean;
+  isMine: boolean;
+  author: UserProfile;
+  createdAt: string;
+}
+
+export interface SharedGlyphsPage {
+  glyphs: SharedGlyph[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface SharedGlyphInput {
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  name: string;
+  /** @maxLength 120 */
+  description?: string;
+  recipe: GlyphRecipe;
+}
+
 export interface OkResponse {
   ok: boolean;
 }
@@ -1126,6 +1178,11 @@ export const GetSharedMixesCategory = {
   motivarme: 'motivarme',
   concentracion: 'concentracion',
 } as const;
+
+export type GetSharedGlyphsParams = {
+page?: number;
+author?: number;
+};
 
 export type SearchUsersParams = {
 /**

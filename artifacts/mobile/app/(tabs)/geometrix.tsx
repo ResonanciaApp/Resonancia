@@ -897,6 +897,7 @@ export default function GeometrixScreen() {
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
+    { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
   ];
   // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
   useEffect(() => {

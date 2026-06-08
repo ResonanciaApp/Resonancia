@@ -246,6 +246,128 @@ export const DeleteMixCommentParams = zod.object({
 
 
 /**
+ * @summary List community-shared Geometrix compositions (most liked first, then newest)
+ */
+export const getSharedGlyphsQueryPageDefault = 1;
+
+export const GetSharedGlyphsQueryParams = zod.object({
+  "page": zod.coerce.number().default(getSharedGlyphsQueryPageDefault),
+  "author": zod.coerce.number().optional()
+})
+
+export const GetSharedGlyphsResponse = zod.object({
+  "glyphs": zod.array(zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "recipe": zod.object({
+  "active": zod.array(zod.string()),
+  "master": zod.object({
+  "opacity": zod.number(),
+  "motion": zod.boolean(),
+  "glow": zod.number(),
+  "bgColor": zod.string().nullable(),
+  "bgGradientId": zod.string().nullable(),
+  "bgBrightness": zod.number()
+}),
+  "settings": zod.record(zod.string(), zod.unknown()),
+  "soloId": zod.string().nullish()
+}),
+  "likes": zod.number(),
+  "likedByMe": zod.boolean(),
+  "isMine": zod.boolean(),
+  "author": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
+}),
+  "createdAt": zod.coerce.date()
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+})
+
+
+/**
+ * @summary Share a Geometrix composition (requires account)
+ */
+export const shareGlyphBodyNameMax = 40;
+
+export const shareGlyphBodyDescriptionMax = 120;
+
+
+
+export const ShareGlyphBody = zod.object({
+  "name": zod.string().min(1).max(shareGlyphBodyNameMax),
+  "description": zod.string().max(shareGlyphBodyDescriptionMax).optional(),
+  "recipe": zod.object({
+  "active": zod.array(zod.string()),
+  "master": zod.object({
+  "opacity": zod.number(),
+  "motion": zod.boolean(),
+  "glow": zod.number(),
+  "bgColor": zod.string().nullable(),
+  "bgGradientId": zod.string().nullable(),
+  "bgBrightness": zod.number()
+}),
+  "settings": zod.record(zod.string(), zod.unknown()),
+  "soloId": zod.string().nullish()
+})
+})
+
+
+/**
+ * @summary Toggle like on a shared glyph (requires account)
+ */
+export const ToggleSharedGlyphLikeParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const ToggleSharedGlyphLikeResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "recipe": zod.object({
+  "active": zod.array(zod.string()),
+  "master": zod.object({
+  "opacity": zod.number(),
+  "motion": zod.boolean(),
+  "glow": zod.number(),
+  "bgColor": zod.string().nullable(),
+  "bgGradientId": zod.string().nullable(),
+  "bgBrightness": zod.number()
+}),
+  "settings": zod.record(zod.string(), zod.unknown()),
+  "soloId": zod.string().nullish()
+}),
+  "likes": zod.number(),
+  "likedByMe": zod.boolean(),
+  "isMine": zod.boolean(),
+  "author": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "createdAt": zod.coerce.date()
+}),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete own shared glyph (author or admin)
+ */
+export const UnshareGlyphParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary Get the current user's profile (auto-creates on first call)
  */
 export const GetMeResponse = zod.object({

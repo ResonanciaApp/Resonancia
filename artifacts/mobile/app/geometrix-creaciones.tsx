@@ -36,6 +36,10 @@ import Animated, {
 
 import { LinearGradient } from "expo-linear-gradient";
 
+import { useAuth } from "@clerk/expo";
+
+import { useShareGlyph } from "@workspace/api-client-react";
+
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { type GeometryId } from "@/data/geometries";
 import { useColors } from "@/hooks/useColors";
@@ -225,6 +229,35 @@ export default function GeometrixCreacionesScreen() {
   const [exporting, setExporting] = useState(false);
   const exportRef = useRef<View>(null);
   const capturingRef = useRef(false);
+
+  const { isSignedIn } = useAuth();
+  const shareGlyphMutation = useShareGlyph();
+  const [sharingFor, setSharingFor] = useState<GeometrixCreation | null>(null);
+  const [shareName, setShareName] = useState("");
+  const [sharePosting, setSharePosting] = useState(false);
+
+  async function doShareGlyph() {
+    if (!sharingFor) return;
+    setSharePosting(true);
+    try {
+      await shareGlyphMutation.mutateAsync({
+        data: {
+          name: shareName.trim() || sharingFor.name,
+          recipe: {
+            active: sharingFor.active,
+            master: sharingFor.master,
+            settings: sharingFor.settings as Record<string, unknown>,
+          },
+        },
+      });
+      setSharingFor(null);
+      Alert.alert("¡Publicado!", "Tu composición ya está en el muro de la comunidad.");
+    } catch {
+      Alert.alert("Error al compartir", "Verificá tu conexión e intentá de nuevo.");
+    } finally {
+      setSharePosting(false);
+    }
+  }
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -422,7 +455,13 @@ export default function GeometrixCreacionesScreen() {
             <Feather name="grid" size={18} color={colors.primary} />
             <Text style={[styles.headerTitle, { color: colors.foreground }]}>Mis creaciones</Text>
           </View>
-          <View style={{ width: 38 }} />
+          <Pressable
+            onPress={() => router.push("/geometrix-comunidad")}
+            hitSlop={10}
+            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <Feather name="users" size={18} color={colors.primary} />
+          </Pressable>
         </View>
 
         {creations.length > 0 && (
@@ -638,6 +677,30 @@ export default function GeometrixCreacionesScreen() {
               onPress={() => {
                 const c = actionsFor;
                 setActionsFor(null);
+                if (!isSignedIn) {
+                  Alert.alert(
+                    "Iniciá sesión",
+                    "Para compartir en el muro de la comunidad necesitás tener una cuenta.",
+                  );
+                  return;
+                }
+                if (c) {
+                  setShareName(c.name);
+                  setSharingFor(c);
+                }
+              }}
+              accessibilityRole="button"
+            >
+              <View style={styles.sheetRowIcon}>
+                <Feather name="users" size={17} color={colors.primary} />
+              </View>
+              <Text style={styles.sheetRowText}>Compartir en comunidad</Text>
+            </Pressable>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => {
+                const c = actionsFor;
+                setActionsFor(null);
                 if (c) setDeletingFor(c);
               }}
               accessibilityRole="button"
@@ -711,6 +774,57 @@ export default function GeometrixCreacionesScreen() {
             >
               <Text style={styles.sheetCancelText}>Cancelar</Text>
             </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Modal de compartir en el muro de la comunidad */}
+      <Modal
+        visible={!!sharingFor}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setSharingFor(null)}
+      >
+        <Pressable style={styles.modalBackdrop} onPress={() => setSharingFor(null)}>
+          <Pressable
+            style={[styles.modalCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={() => {}}
+          >
+            <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+              Compartir en comunidad
+            </Text>
+            <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
+              Tu composición aparecerá en el muro de Geometrix para que otros la vean y puedan darle me gusta.
+            </Text>
+            <TextInput
+              value={shareName}
+              onChangeText={setShareName}
+              autoFocus
+              placeholder="Nombre de la composición"
+              placeholderTextColor={colors.mutedForeground}
+              maxLength={40}
+              style={[
+                styles.modalInput,
+                { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.background },
+              ]}
+              onSubmitEditing={doShareGlyph}
+              returnKeyType="send"
+            />
+            <View style={styles.modalActions}>
+              <Pressable onPress={() => setSharingFor(null)} style={styles.modalBtn}>
+                <Text style={[styles.modalBtnText, { color: colors.mutedForeground }]}>Cancelar</Text>
+              </Pressable>
+              <Pressable onPress={doShareGlyph} style={styles.modalBtn} disabled={sharePosting}>
+                {sharePosting ? (
+                  <ActivityIndicator size="small" color={colors.primary} />
+                ) : (
+                  <Text style={[styles.modalBtnText, { color: colors.primary, fontWeight: "700" }]}>
+                    Publicar
+                  </Text>
+                )}
+              </Pressable>
+            </View>
           </Pressable>
         </Pressable>
       </Modal>

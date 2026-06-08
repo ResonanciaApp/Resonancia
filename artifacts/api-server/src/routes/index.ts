@@ -13,6 +13,7 @@ import catalogRouter from "./catalog";
 import adminRouter from "./admin";
 import followsRouter from "./follows";
 import soundsRouter from "./sounds";
+import glyphsRouter from "./glyphs";
 
 const router: IRouter = Router();
 
@@ -30,5 +31,6 @@ router.use(catalogRouter);
 router.use(adminRouter);
 router.use(followsRouter);
 router.use(soundsRouter);
+router.use(glyphsRouter);
 
 export default router;

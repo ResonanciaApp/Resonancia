@@ -52,6 +52,7 @@ import type {
   GetMyPlaysParams,
   GetPendingSubmissionsParams,
   GetPopularSessionsParams,
+  GetSharedGlyphsParams,
   GetSharedMixesParams,
   HealthStatus,
   MessagesPage,
@@ -73,6 +74,9 @@ import type {
   ReviewRejectBody,
   SearchUsersParams,
   SendDirectMessageBody,
+  SharedGlyph,
+  SharedGlyphInput,
+  SharedGlyphsPage,
   SharedMix,
   SharedMixInput,
   SharedMixReportInput,
@@ -998,6 +1002,301 @@ export const useDeleteMixComment = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeleteMixCommentMutationOptions(options));
+    }
+
+export const getGetSharedGlyphsUrl = (params?: GetSharedGlyphsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/glyphs?${stringifiedParams}` : `/api/glyphs`
+}
+
+/**
+ * @summary List community-shared Geometrix compositions (most liked first, then newest)
+ */
+export const getSharedGlyphs = async (params?: GetSharedGlyphsParams, options?: RequestInit): Promise<SharedGlyphsPage> => {
+
+  return customFetch<SharedGlyphsPage>(getGetSharedGlyphsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSharedGlyphsQueryKey = (params?: GetSharedGlyphsParams,) => {
+    return [
+    `/api/glyphs`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetSharedGlyphsQueryOptions = <TData = Awaited<ReturnType<typeof getSharedGlyphs>>, TError = ErrorType<unknown>>(params?: GetSharedGlyphsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSharedGlyphs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSharedGlyphsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSharedGlyphs>>> = ({ signal }) => getSharedGlyphs(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSharedGlyphs>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSharedGlyphsQueryResult = NonNullable<Awaited<ReturnType<typeof getSharedGlyphs>>>
+export type GetSharedGlyphsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List community-shared Geometrix compositions (most liked first, then newest)
+ */
+
+export function useGetSharedGlyphs<TData = Awaited<ReturnType<typeof getSharedGlyphs>>, TError = ErrorType<unknown>>(
+ params?: GetSharedGlyphsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSharedGlyphs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSharedGlyphsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getShareGlyphUrl = () => {
+
+
+
+
+  return `/api/glyphs`
+}
+
+/**
+ * @summary Share a Geometrix composition (requires account)
+ */
+export const shareGlyph = async (sharedGlyphInput: SharedGlyphInput, options?: RequestInit): Promise<SharedGlyph> => {
+
+  return customFetch<SharedGlyph>(getShareGlyphUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      sharedGlyphInput,)
+  }
+);}
+
+
+
+
+export const getShareGlyphMutationOptions = <TError = ErrorType<void | ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof shareGlyph>>, TError,{data: BodyType<SharedGlyphInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof shareGlyph>>, TError,{data: BodyType<SharedGlyphInput>}, TContext> => {
+
+const mutationKey = ['shareGlyph'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof shareGlyph>>, {data: BodyType<SharedGlyphInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  shareGlyph(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ShareGlyphMutationResult = NonNullable<Awaited<ReturnType<typeof shareGlyph>>>
+    export type ShareGlyphMutationBody = BodyType<SharedGlyphInput>
+    export type ShareGlyphMutationError = ErrorType<void | ErrorResponse>
+
+    /**
+ * @summary Share a Geometrix composition (requires account)
+ */
+export const useShareGlyph = <TError = ErrorType<void | ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof shareGlyph>>, TError,{data: BodyType<SharedGlyphInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof shareGlyph>>,
+        TError,
+        {data: BodyType<SharedGlyphInput>},
+        TContext
+      > => {
+      return useMutation(getShareGlyphMutationOptions(options));
+    }
+
+export const getToggleSharedGlyphLikeUrl = (id: number,) => {
+
+
+
+
+  return `/api/glyphs/${id}/like`
+}
+
+/**
+ * @summary Toggle like on a shared glyph (requires account)
+ */
+export const toggleSharedGlyphLike = async (id: number, options?: RequestInit): Promise<SharedGlyph> => {
+
+  return customFetch<SharedGlyph>(getToggleSharedGlyphLikeUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getToggleSharedGlyphLikeMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toggleSharedGlyphLike>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof toggleSharedGlyphLike>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['toggleSharedGlyphLike'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toggleSharedGlyphLike>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  toggleSharedGlyphLike(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ToggleSharedGlyphLikeMutationResult = NonNullable<Awaited<ReturnType<typeof toggleSharedGlyphLike>>>
+
+    export type ToggleSharedGlyphLikeMutationError = ErrorType<void>
+
+    /**
+ * @summary Toggle like on a shared glyph (requires account)
+ */
+export const useToggleSharedGlyphLike = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toggleSharedGlyphLike>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof toggleSharedGlyphLike>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getToggleSharedGlyphLikeMutationOptions(options));
+    }
+
+export const getUnshareGlyphUrl = (id: number,) => {
+
+
+
+
+  return `/api/glyphs/${id}`
+}
+
+/**
+ * @summary Delete own shared glyph (author or admin)
+ */
+export const unshareGlyph = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getUnshareGlyphUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getUnshareGlyphMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unshareGlyph>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unshareGlyph>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['unshareGlyph'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unshareGlyph>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  unshareGlyph(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnshareGlyphMutationResult = NonNullable<Awaited<ReturnType<typeof unshareGlyph>>>
+
+    export type UnshareGlyphMutationError = ErrorType<void>
+
+    /**
+ * @summary Delete own shared glyph (author or admin)
+ */
+export const useUnshareGlyph = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unshareGlyph>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof unshareGlyph>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getUnshareGlyphMutationOptions(options));
     }
 
 export const getGetMeUrl = () => {

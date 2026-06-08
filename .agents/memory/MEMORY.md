@@ -40,3 +40,4 @@
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
 - [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
+- [Community wall pattern (shared-glyphs)](community-wall-pattern.md) — recipe as jsonb (active/master/settings) in shared_glyphs; same like-toggle+FOR UPDATE pattern as shared_mixes; previews render live from recipe on client
