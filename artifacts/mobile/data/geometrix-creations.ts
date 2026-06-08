@@ -60,6 +60,15 @@ export type GlobalSettings = {
   bgBrightness: number;
 };
 
+/** Guía manual del lienzo: línea persistente creada por el usuario. */
+export type CanvasGuide = {
+  id: string;
+  /** 'h' = horizontal (línea de altura), 'v' = vertical (línea de posición X). */
+  orientation: "h" | "v";
+  /** Posición 0–100 % sobre el eje correspondiente del lienzo. */
+  pct: number;
+};
+
 /** Sonido elegido en la composición: módulo + pista. null = sin sonido. */
 export type GeometrixAudio = { moduleKey: string; trackId: string } | null;
 

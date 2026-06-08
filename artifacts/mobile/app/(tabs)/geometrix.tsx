@@ -20,6 +20,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -64,6 +65,7 @@ import {
   HOME_GRADIENT,
   scaleColors,
   STROKE_GRADIENTS,
+  type CanvasGuide,
   type GeoSettings,
   type GeometrixAudio,
   type GlobalSettings,
@@ -177,6 +179,8 @@ function defaultSettings(id: GeometryId): GeoSettings {
 
 // Color fijo del fondo del toggle cuando está activado (estático, no usa el color de la geometría).
 const TOGGLE_ON_COLOR = "#a1adcf";
+// Color de las guías persistentes del usuario (azul visible sobre fondos oscuros).
+const GUIDE_COLOR = "#4B9EFF";
 
 // ── Interruptor sutil (on/off) ────────────────────────────────────
 function Toggle({
@@ -494,6 +498,10 @@ export default function GeometrixScreen() {
     bgGradientId: null,
     bgBrightness: 0.5,
   });
+  const [guidesOpen, setGuidesOpen] = useState(false);
+  const [guides, setGuides] = useState<CanvasGuide[]>([]);
+  const [guideOrientation, setGuideOrientation] = useState<"h" | "v">("h");
+  const [guidePct, setGuidePct] = useState("50");
   const [generalOpen, setGeneralOpen] = useState(false);
   const [generalSheetHeight, setGeneralSheetHeight] = useState(0);
   // Alto real del sheet de ajustes, para anclar la vista previa justo encima.
@@ -554,7 +562,8 @@ export default function GeometrixScreen() {
   } | null>(null);
   // Offsets de todas las geometrías no-objetivo + el centro del lienzo (0,0);
   // usados en el worklet del drag para calcular snap sin llamar a getSettings.
-  const snapTargets = useSharedValue<Array<{ offsetX: number; offsetY: number }>>([]);
+  // null en un eje = ese eje no snap (para guías de un solo eje).
+  const snapTargets = useSharedValue<Array<{ offsetX: number | null; offsetY: number | null }>>([]);
 
   // Un reproductor por módulo (reproducen de forma independiente).
   const playersRef = useRef<Record<string, AudioPlayer | null>>({});
@@ -934,6 +943,7 @@ export default function GeometrixScreen() {
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
+    { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
   ];
   // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
@@ -1012,7 +1022,7 @@ export default function GeometrixScreen() {
   // más el centro del lienzo (0,0). Se actualiza cuando cambia la selección o
   // cualquier offset de settings para que el worklet siempre tenga datos frescos.
   useEffect(() => {
-    const targets: Array<{ offsetX: number; offsetY: number }> = [
+    const targets: Array<{ offsetX: number | null; offsetY: number | null }> = [
       { offsetX: 0, offsetY: 0 }, // centro del lienzo
     ];
     active.forEach((id) => {
@@ -1020,8 +1030,19 @@ export default function GeometrixScreen() {
       const s = getSettings(id);
       targets.push({ offsetX: s.offsetX ?? 0, offsetY: s.offsetY ?? 0 });
     });
+    // Guías del usuario: solo snap en su eje (null = no snap en el otro).
+    if (canvasSide > 0) {
+      guides.forEach((g) => {
+        const off = canvasSide * (g.pct / 100 - 0.5);
+        if (g.orientation === "h") {
+          targets.push({ offsetX: null, offsetY: off });
+        } else {
+          targets.push({ offsetX: off, offsetY: null });
+        }
+      });
+    }
     snapTargets.value = targets;
-  }, [pinchTargetId, active, settings, getSettings, snapTargets]);
+  }, [pinchTargetId, active, settings, getSettings, snapTargets, guides, canvasSide]);
 
   // Gesto de pellizco: escala libre del objetivo, permitiendo pasar los
   // márgenes (efecto wallpaper). Se confirma a settings al soltar.
@@ -1116,11 +1137,11 @@ export default function GeometrixScreen() {
       const targets = snapTargets.value;
       for (let i = 0; i < targets.length; i++) {
         const t = targets[i];
-        if (sx === null && Math.abs(rx - t.offsetX) < SNAP) {
+        if (sx === null && t.offsetX !== null && Math.abs(rx - t.offsetX) < SNAP) {
           rx = t.offsetX;
           sx = rx;
         }
-        if (sy === null && Math.abs(ry - t.offsetY) < SNAP) {
+        if (sy === null && t.offsetY !== null && Math.abs(ry - t.offsetY) < SNAP) {
           ry = t.offsetY;
           sy = ry;
         }
@@ -1342,6 +1363,39 @@ export default function GeometrixScreen() {
                     </Animated.View>
                     );
                   })}
+
+                {/* ── Guías persistentes del usuario ─────────────────────────
+                    Líneas fijas creadas desde el panel "Guías". Azul, 1px, con
+                    etiqueta de posición (%) cerca del borde. Sirven también
+                    como snap targets para el arrastre de geometrías. */}
+                {guides.map((g) => {
+                  const px = (g.pct / 100) * canvasSide;
+                  const isH = g.orientation === "h";
+                  return (
+                    <View
+                      key={g.id}
+                      pointerEvents="none"
+                      style={isH
+                        ? { position: "absolute", left: 0, right: 0, top: px, height: 1, backgroundColor: GUIDE_COLOR, opacity: 0.65 }
+                        : { position: "absolute", top: 0, bottom: 0, left: px, width: 1, backgroundColor: GUIDE_COLOR, opacity: 0.65 }
+                      }
+                    >
+                      <View style={{
+                        position: "absolute",
+                        left: isH ? 4 : 2,
+                        top: isH ? -10 : 4,
+                        backgroundColor: GUIDE_COLOR + "28",
+                        borderRadius: 3,
+                        paddingHorizontal: 4,
+                        paddingVertical: 1,
+                      }}>
+                        <Text style={{ color: GUIDE_COLOR, fontSize: 8, fontWeight: "600" }}>
+                          {g.pct}%
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })}
 
                 {/* ── Líneas guía de snap ─────────────────────────────────────
                     Aparecen mientras se arrastra y hay alineación detectada.
@@ -1929,6 +1983,159 @@ export default function GeometrixScreen() {
             />
           </View>
         </View>
+        </View>
+      </Modal>
+
+      {/* ── Panel de guías del usuario ──────────────────────────────────── */}
+      <Modal
+        visible={guidesOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setGuidesOpen(false)}
+      >
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <Pressable
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
+            onPress={() => setGuidesOpen(false)}
+          />
+          <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={[StyleSheet.absoluteFill, styles.sheetGradient]}
+            />
+            <View style={styles.sheetHeader}>
+              <Text style={styles.sheetTitle}>Guías</Text>
+              <Pressable onPress={() => setGuidesOpen(false)} hitSlop={10}
+                accessibilityRole="button" accessibilityLabel="Cerrar guías">
+                <Feather name="x" size={20} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+            <View style={styles.sheetHeaderDivider} />
+
+            {/* ── Crear nueva guía ─────────────────────────────────── */}
+            <View style={{ marginTop: 14 }}>
+              <Text style={styles.fieldLabel}>Orientación</Text>
+              <View style={{ flexDirection: "row", gap: 10, marginTop: 8 }}>
+                {(["h", "v"] as const).map((ori) => (
+                  <Pressable
+                    key={ori}
+                    onPress={() => setGuideOrientation(ori)}
+                    style={{
+                      flex: 1, paddingVertical: 10, borderRadius: 10,
+                      alignItems: "center",
+                      backgroundColor: guideOrientation === ori ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                      borderWidth: 1,
+                      borderColor: guideOrientation === ori ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                    }}
+                  >
+                    <Text style={{
+                      color: guideOrientation === ori ? colors.primary : colors.mutedForeground,
+                      fontWeight: "600", fontSize: 14,
+                    }}>
+                      {ori === "h" ? "Horizontal" : "Vertical"}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+
+              <Text style={[styles.fieldLabel, { marginTop: 14 }]}>Posición</Text>
+              <View style={{ flexDirection: "row", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                {[0, 25, 33, 50, 67, 75, 100].map((p) => (
+                  <Pressable
+                    key={p}
+                    onPress={() => setGuidePct(String(p))}
+                    style={{
+                      paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20,
+                      backgroundColor: guidePct === String(p) ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                      borderWidth: 1,
+                      borderColor: guidePct === String(p) ? colors.primary + "88" : "rgba(255,255,255,0.08)",
+                    }}
+                  >
+                    <Text style={{
+                      color: guidePct === String(p) ? colors.primary : colors.mutedForeground,
+                      fontSize: 13,
+                    }}>
+                      {p}%
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+
+              <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10, gap: 8 }}>
+                <TextInput
+                  value={guidePct}
+                  onChangeText={(t: string) => setGuidePct(t.replace(/[^0-9]/g, "").slice(0, 3))}
+                  keyboardType="number-pad"
+                  style={{
+                    flex: 1, backgroundColor: "rgba(255,255,255,0.05)",
+                    borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10,
+                    color: colors.foreground, fontSize: 15,
+                    borderWidth: 1, borderColor: "rgba(255,255,255,0.09)",
+                  }}
+                  placeholder="Personalizado (0–100)"
+                  placeholderTextColor={colors.mutedForeground}
+                />
+                <Text style={{ color: colors.mutedForeground, fontSize: 15 }}>%</Text>
+              </View>
+
+              <Pressable
+                onPress={() => {
+                  const pct = Math.min(100, Math.max(0, parseInt(guidePct, 10) || 0));
+                  const newGuide: CanvasGuide = {
+                    id: String(Date.now()),
+                    orientation: guideOrientation,
+                    pct,
+                  };
+                  setGuides((prev) => [...prev, newGuide]);
+                }}
+                style={{
+                  marginTop: 14,
+                  backgroundColor: colors.primary + "1A",
+                  borderRadius: 12, paddingVertical: 12, alignItems: "center",
+                  borderWidth: 1, borderColor: colors.primary + "44",
+                }}
+              >
+                <Text style={{ color: colors.primary, fontWeight: "600" }}>Agregar guía</Text>
+              </Pressable>
+            </View>
+
+            {/* ── Lista de guías activas ────────────────────────── */}
+            {guides.length > 0 && (
+              <>
+                <View style={[styles.sheetHeaderDivider, { marginTop: 18 }]} />
+                <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Guías activas</Text>
+                {guides.map((g) => (
+                  <View
+                    key={g.id}
+                    style={{ flexDirection: "row", alignItems: "center", marginTop: 10, justifyContent: "space-between" }}
+                  >
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                      <View style={{
+                        width: 30, height: 30, borderRadius: 8,
+                        backgroundColor: GUIDE_COLOR + "22",
+                        alignItems: "center", justifyContent: "center",
+                      }}>
+                        <Text style={{ color: GUIDE_COLOR, fontWeight: "700", fontSize: 11 }}>
+                          {g.orientation.toUpperCase()}
+                        </Text>
+                      </View>
+                      <Text style={{ color: colors.foreground, fontSize: 14 }}>{g.pct}%</Text>
+                    </View>
+                    <Pressable
+                      hitSlop={12}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Borrar guía ${g.orientation === "h" ? "horizontal" : "vertical"} ${g.pct}%`}
+                      onPress={() => setGuides((prev) => prev.filter((x) => x.id !== g.id))}
+                    >
+                      <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+                    </Pressable>
+                  </View>
+                ))}
+              </>
+            )}
+          </View>
         </View>
       </Modal>
 
