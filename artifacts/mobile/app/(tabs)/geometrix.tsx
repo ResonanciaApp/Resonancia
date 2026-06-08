@@ -1525,15 +1525,20 @@ export default function GeometrixScreen() {
           >
             <Text style={styles.previewLabel}>Vista previa</Text>
             <View style={[styles.previewBox, { width: previewSize, height: previewSize }]}>
-              <GeometryLayer
-                geo={settingsGeo}
-                index={0}
-                size={previewSize * 0.96}
-                settings={getSettings(settingsGeo.id)}
-                masterOpacity={master.opacity}
-                motion={master.motion}
-                glow={master.glow}
-              />
+              {/* Se muestran TODAS las geometrías seleccionadas (no solo la que se
+                  personaliza) para ver la composición completa en vivo. */}
+              {visibleMetas.map((g, i) => (
+                <GeometryLayer
+                  key={g.id}
+                  geo={g}
+                  index={i}
+                  size={previewSize * 0.96}
+                  settings={getSettings(g.id)}
+                  masterOpacity={master.opacity}
+                  motion={master.motion}
+                  glow={master.glow}
+                />
+              ))}
             </View>
           </View>
         )}
