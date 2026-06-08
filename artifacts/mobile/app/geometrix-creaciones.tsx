@@ -81,7 +81,22 @@ export default function GeometrixCreacionesScreen() {
   const previewH = cardW * 0.82;
 
   function openCreation(c: GeometrixCreation) {
-    router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } });
+    Alert.alert(c.name, "¿Qué querés hacer con esta creación?", [
+      {
+        text: "Editar",
+        onPress: () =>
+          router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } }),
+      },
+      {
+        text: "Play",
+        onPress: () =>
+          router.navigate({
+            pathname: "/(tabs)/geometrix",
+            params: { load: c.id, play: "1" },
+          }),
+      },
+      { text: "Cancelar", style: "cancel" },
+    ]);
   }
 
   function startRename(c: GeometrixCreation) {

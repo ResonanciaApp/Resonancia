@@ -439,7 +439,7 @@ export default function GeometrixScreen() {
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, getCreation } = useGeometrixCreations();
   // Param de ruta: id de una creación a abrir (lo manda la pantalla de la lista).
-  const params = useLocalSearchParams<{ load?: string }>();
+  const params = useLocalSearchParams<{ load?: string; play?: string }>();
 
   const [active, setActive] = useState<GeometryId[]>([]);
   // Módulo de música con su desplegable abierto (null = ninguno).
@@ -530,9 +530,70 @@ export default function GeometrixScreen() {
     Object.keys(playersRef.current).forEach((k) => stopModule(k));
   }, [stopModule]);
 
+  // Audio de intro: suena una sola vez sincronizado con el "logo reveal"
+  // (FadeIn de cubo-3.png) cuando el lienzo está vacío.
+  const introPlayerRef = useRef<AudioPlayer | null>(null);
+  // Token de petición: cada stop/play lo incrementa; un `playIntro` async que
+  // resuelva su await tras un stop/play posterior se aborta (evita fugas al
+  // cambiar de foco o iniciar otro audio durante el await).
+  const introReqRef = useRef(0);
+  const stopIntro = useCallback(() => {
+    introReqRef.current++;
+    const p = introPlayerRef.current;
+    if (p) {
+      try {
+        p.pause();
+      } catch {
+        /* ignore */
+      }
+      try {
+        p.remove();
+      } catch {
+        /* ignore */
+      }
+    }
+    introPlayerRef.current = null;
+  }, []);
+  const playIntro = useCallback(async () => {
+    stopIntro();
+    const req = introReqRef.current;
+    try {
+      await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
+    } catch {
+      /* ignore */
+    }
+    // Si mientras esperábamos se pidió otro stop/play, no crear el reproductor.
+    if (introReqRef.current !== req) return;
+    try {
+      const p = createAudioPlayer(
+        require("@/assets/audio/geometrix/intro-reveal.mp3"),
+        { updateInterval: 500 },
+      );
+      p.volume = 1;
+      p.play();
+      introPlayerRef.current = p;
+    } catch {
+      /* ignore */
+    }
+  }, [stopIntro]);
+
   useEffect(() => {
-    return () => stopAllSound();
-  }, [stopAllSound]);
+    return () => {
+      stopAllSound();
+      stopIntro();
+    };
+  }, [stopAllSound, stopIntro]);
+
+  // Espejo de `active` para leerlo dentro de callbacks de foco sin re-suscribir.
+  const activeRef = useRef(active);
+  useEffect(() => {
+    activeRef.current = active;
+    // Al salir del estado vacío (aparece la primera geometría) el logo desaparece:
+    // cortar el intro para mantener la sincronía con su "reveal".
+    if (active.length > 0) {
+      stopIntro();
+    }
+  }, [active, stopIntro]);
 
   // Glow de bienvenida: aparece y desaparece una sola vez al entrar (sutil).
   const glow = useSharedValue(0);
@@ -563,7 +624,13 @@ export default function GeometrixScreen() {
           withTiming(0, { duration: 1100, easing: Easing.in(Easing.ease) }),
         ),
       );
+      // Audio de intro sincronizado con el "logo reveal" (cubo-3): solo cuando
+      // el lienzo está vacío, que es cuando aparece el logo.
+      if (activeRef.current.length === 0) {
+        playIntro();
+      }
       return () => {
+        stopIntro();
         stopAllSound();
         setActiveTracks({});
         setOpenModule(null);
@@ -574,7 +641,7 @@ export default function GeometrixScreen() {
         setMenuGeoId(null);
         setSoloId(null);
       };
-    }, [stopAllSound, glow]),
+    }, [stopAllSound, glow, playIntro, stopIntro]),
   );
 
   const selectTrack = useCallback(
@@ -585,7 +652,8 @@ export default function GeometrixScreen() {
         setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
         return;
       }
-      // Solo un módulo puede sonar a la vez: apagar cualquier otro antes.
+      // Solo un módulo puede sonar a la vez: apagar cualquier otro (e intro) antes.
+      stopIntro();
       stopAllSound();
       const src = track.sound;
       if (!src) {
@@ -612,7 +680,7 @@ export default function GeometrixScreen() {
         setActiveTracks({});
       }
     },
-    [activeTracks, stopModule, stopAllSound],
+    [activeTracks, stopModule, stopAllSound, stopIntro],
   );
 
   const toggleGeometry = useCallback((id: GeometryId) => {
@@ -629,10 +697,15 @@ export default function GeometrixScreen() {
   // effects reasignan solo/selección a null). Los ajustes guardados se
   // conservan y se re-siembran al reactivar.
   const clearCanvas = useCallback(() => {
+    // Al vaciar reaparece el logo (cubo-3): re-disparar el audio de intro
+    // para que siga sincronizado con su "reveal".
+    if (activeRef.current.length > 0) {
+      playIntro();
+    }
     setActive([]);
     setSoloId(null);
     setSelectedId(null);
-  }, []);
+  }, [playIntro]);
 
   const updateSetting = useCallback(
     <K extends keyof GeoSettings>(id: GeometryId, key: K, value: GeoSettings[K]) => {
@@ -700,11 +773,13 @@ export default function GeometrixScreen() {
   }, [active, getSettings, activeTracks, creations.length, saveCreation, master, soloId]);
 
   // Abrir una creación guardada: restaurar capas, ajustes, fondo y sonido.
+  // `enterImmersive` → abrir directo en pantalla completa ("Play").
   const loadCreation = useCallback(
-    async (id: string) => {
+    async (id: string, enterImmersive = false) => {
       const c = await getCreation(id);
       if (!c) return;
       // Reset de la sesión actual antes de aplicar la receta.
+      stopIntro();
       stopAllSound();
       setActiveTracks({});
       setOpenModule(null);
@@ -733,20 +808,24 @@ export default function GeometrixScreen() {
           }
         }
       }
+      // "Play": abrir directo en pantalla completa (solo si hay algo que mostrar).
+      if (enterImmersive && c.active.length > 0) {
+        setImmersive(true);
+      }
     },
-    [getCreation, stopAllSound],
+    [getCreation, stopAllSound, stopIntro],
   );
 
   // Cuando llega un id por la ruta (desde "Mis creaciones"), abrir esa creación
   // y limpiar el param para no reaplicarla en cada render.
   useEffect(() => {
     if (params.load) {
-      loadCreation(params.load);
+      loadCreation(params.load, params.play === "1");
       // Limpiar a "" (no undefined): así reabrir la MISMA creación vuelve a
       // disparar el efecto (el param cambia de "" → id otra vez).
-      router.setParams({ load: "" });
+      router.setParams({ load: "", play: "" });
     }
-  }, [params.load, loadCreation]);
+  }, [params.load, params.play, loadCreation]);
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
