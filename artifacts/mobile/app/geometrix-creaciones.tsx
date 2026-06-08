@@ -10,7 +10,6 @@ import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
-  Alert,
   Modal,
   Platform,
   Pressable,
@@ -72,9 +71,11 @@ export default function GeometrixCreacionesScreen() {
   // Modal de renombrar (cross-platform; Alert.prompt es solo iOS).
   const [renaming, setRenaming] = useState<GeometrixCreation | null>(null);
   const [draftName, setDraftName] = useState("");
-  // Menú de acciones (3 puntitos) y confirmación de borrado, con estilo temático.
+  // Menú de acciones (3 puntitos), confirmación de borrado y menú al tocar la
+  // imagen (Editar/Play), todos con estilo temático.
   const [actionsFor, setActionsFor] = useState<GeometrixCreation | null>(null);
   const [deletingFor, setDeletingFor] = useState<GeometrixCreation | null>(null);
+  const [openingFor, setOpeningFor] = useState<GeometrixCreation | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -86,22 +87,7 @@ export default function GeometrixCreacionesScreen() {
   const previewH = cardW * 0.82;
 
   function openCreation(c: GeometrixCreation) {
-    Alert.alert(c.name, "¿Qué querés hacer con esta creación?", [
-      {
-        text: "Editar",
-        onPress: () =>
-          router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } }),
-      },
-      {
-        text: "Play",
-        onPress: () =>
-          router.navigate({
-            pathname: "/(tabs)/geometrix",
-            params: { load: c.id, play: "1" },
-          }),
-      },
-      { text: "Cancelar", style: "cancel" },
-    ]);
+    setOpeningFor(c);
   }
 
   function startRename(c: GeometrixCreation) {
@@ -353,6 +339,73 @@ export default function GeometrixCreacionesScreen() {
             <Pressable
               style={styles.sheetCancel}
               onPress={() => setActionsFor(null)}
+              accessibilityRole="button"
+            >
+              <Text style={styles.sheetCancelText}>Cancelar</Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Menú al tocar la imagen de la creación (Editar/Play) — estilo temático. */}
+      <Modal
+        visible={!!openingFor}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setOpeningFor(null)}
+      >
+        <Pressable style={styles.sheetBackdrop} onPress={() => setOpeningFor(null)}>
+          <Pressable style={styles.sheetCard} onPress={() => {}}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            <Text style={styles.sheetTitle} numberOfLines={1}>
+              {openingFor?.name}
+            </Text>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => {
+                const c = openingFor;
+                setOpeningFor(null);
+                if (c)
+                  router.navigate({
+                    pathname: "/(tabs)/geometrix",
+                    params: { load: c.id },
+                  });
+              }}
+              accessibilityRole="button"
+            >
+              <View style={styles.sheetRowIcon}>
+                <Feather name="edit-3" size={17} color={colors.primary} />
+              </View>
+              <Text style={styles.sheetRowText}>Editar</Text>
+            </Pressable>
+            <Pressable
+              style={styles.sheetRow}
+              onPress={() => {
+                const c = openingFor;
+                setOpeningFor(null);
+                if (c)
+                  router.navigate({
+                    pathname: "/(tabs)/geometrix",
+                    params: { load: c.id, play: "1" },
+                  });
+              }}
+              accessibilityRole="button"
+            >
+              <View style={styles.sheetRowIcon}>
+                <Feather name="play" size={17} color={colors.primary} />
+              </View>
+              <Text style={styles.sheetRowText}>Play</Text>
+            </Pressable>
+            <Pressable
+              style={styles.sheetCancel}
+              onPress={() => setOpeningFor(null)}
               accessibilityRole="button"
             >
               <Text style={styles.sheetCancelText}>Cancelar</Text>
