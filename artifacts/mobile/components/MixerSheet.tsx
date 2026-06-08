@@ -484,7 +484,9 @@ export function MixerSheet() {
               style={styles.footerCenter}
               accessibilityRole="button"
             >
-              <Feather name={isPlaying ? "pause" : "play"} size={44} color={WARM.playText} strokeWidth={1} />
+              <View style={styles.footerPlayCircle}>
+                <Feather name={isPlaying ? "pause" : "play"} size={64} color={WARM.playText} strokeWidth={1} />
+              </View>
             </Pressable>
 
             {/* Derecha: Guardar (arriba) + Actualizar (abajo) */}
@@ -697,7 +699,14 @@ const styles = StyleSheet.create({
   footerCenter: {
     alignItems: "center",
     justifyContent: "center",
-    width: 60,
+  },
+  footerPlayCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   footerLabel: {
     fontSize: 10,
