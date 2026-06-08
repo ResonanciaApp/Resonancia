@@ -2174,14 +2174,15 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   thumb: {
-    width: 51,
-    height: 51,
+    width: 44,
+    height: 48,
     alignItems: "center",
     justifyContent: "center",
   },
   thumbItem: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
     borderColor: "#101532",
     borderRadius: 16,
@@ -2190,7 +2191,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   thumbCaret: {
-    marginLeft: -8,
+    marginLeft: 2,
     alignItems: "center",
     justifyContent: "center",
   },
