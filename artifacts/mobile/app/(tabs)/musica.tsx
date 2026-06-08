@@ -358,7 +358,16 @@ export default function MiMusicaScreen() {
     >
       <StatusBar barStyle="light-content" />
 
-      <View style={[styles.inner, { paddingTop: topPad + 12 }]}>
+      <View style={styles.inner}>
+
+        {/* ── Zona superior con fondo de Inicio ── */}
+        <LinearGradient
+          colors={BG_GRADIENT}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={[styles.topPanel, { paddingTop: topPad + 12 }]}
+        >
 
         {/* ── Header ── */}
         <View style={styles.header}>
@@ -406,6 +415,8 @@ export default function MiMusicaScreen() {
             );
           })}
         </View>
+
+        </LinearGradient>
 
         {/* ── Separador / Sub-tabs sobre la línea ── */}
         {subTabCategories && subTabCategories.length > 1 ? (
@@ -473,8 +484,9 @@ export default function MiMusicaScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:  { flex: 1 },
-  inner: { flex: 1 },
+  root:     { flex: 1 },
+  inner:    { flex: 1 },
+  topPanel: {},
 
   // Header
   header:    { paddingHorizontal: 20, marginBottom: 18 },
