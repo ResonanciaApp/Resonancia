@@ -1318,7 +1318,7 @@ export default function GeometrixScreen() {
                 <Feather name="trash-2" size={18} color={colors.mutedForeground} />
               </Pressable>
               {editingCreation && isDirty && (
-                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)}>
+                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)} style={{ marginLeft: -5 }}>
                   <Pressable
                     onPress={updateComposition}
                     style={styles.clearBtn}
@@ -1326,7 +1326,7 @@ export default function GeometrixScreen() {
                     accessibilityLabel="Actualizar composición"
                     hitSlop={8}
                   >
-                    <Feather name="save" size={18} color={colors.mutedForeground} />
+                    <Feather name="refresh-cw" size={18} color={colors.mutedForeground} />
                   </Pressable>
                 </Animated.View>
               )}
