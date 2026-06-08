@@ -1059,7 +1059,7 @@ export default function ProfileScreen() {
             onPress={() => setPersonalizeVisible(false)}
           />
           <LinearGradient
-            colors={["#0D1228", "#090C1F"]}
+            colors={["#0C1024", "#080B1C"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}
