@@ -225,9 +225,9 @@ export default function GeometrixCreacionesScreen() {
                     style={styles.likeBtn}
                   >
                     <Feather
-                      name="heart"
+                      name="thumbs-up"
                       size={16}
-                      color={c.liked ? "#E0989B" : "rgba(255,255,255,0.7)"}
+                      color={c.liked ? colors.primary : "rgba(255,255,255,0.7)"}
                       style={c.liked ? undefined : styles.likeIdle}
                     />
                   </Pressable>
