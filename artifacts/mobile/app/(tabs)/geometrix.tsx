@@ -1066,7 +1066,7 @@ export default function GeometrixScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={[styles.thumbsScroll, { bottom: tabBarHeight + 15 }]}
+              style={[styles.thumbsScroll, { bottom: tabBarHeight + 5 }]}
               contentContainerStyle={styles.thumbsRow}
             >
               {activeMetas.map((g) => {
@@ -1095,7 +1095,7 @@ export default function GeometrixScreen() {
                         id={g.id}
                         color={s.color}
                         gradient={gradientColors(s.gradientId)}
-                        size={30}
+                        size={37}
                         strokeWidth={1.4}
                       />
                     </Pressable>
@@ -1885,8 +1885,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   thumb: {
-    width: 44,
-    height: 44,
+    width: 51,
+    height: 51,
     alignItems: "center",
     justifyContent: "center",
   },
