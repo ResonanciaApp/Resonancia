@@ -40,8 +40,13 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import {
   BG_GRADIENTS,
   bgGradientColors,
+  brightnessFactor,
+  gradientColors,
   HOME_GRADIENT,
+  scaleColors,
+  scaleHex,
 } from "@/data/geometrix-creations";
+import { SacredGlyph } from "@/components/SacredGlyph";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -859,10 +864,11 @@ export default function ProfileScreen() {
                   </View>
                 ) : (
                   geoCreations.map((c) => {
-                    const bg = bgGradientColors(c.master.bgGradientId);
-                    const bgColors: [string, string] = bg
-                      ? [bg[0], bg[1]]
-                      : [HOME_GRADIENT[0], HOME_GRADIENT[2]];
+                    const bgFactor = brightnessFactor(c.master.bgBrightness);
+                    const bgGrad = bgGradientColors(c.master.bgGradientId);
+                    const bgColors = c.master.bgColor
+                      ? ([scaleHex(c.master.bgColor, bgFactor), scaleHex(c.master.bgColor, bgFactor)] as const)
+                      : scaleColors(bgGrad ?? HOME_GRADIENT, bgFactor);
                     const isSelected = profileBgCreationId === c.id;
                     return (
                       <Pressable
@@ -870,16 +876,45 @@ export default function ProfileScreen() {
                         onPress={() => selectCreation(c.id)}
                         style={pStyles.creationThumb}
                       >
-                        <LinearGradient
-                          colors={bgColors}
-                          style={[pStyles.thumbBg, isSelected && pStyles.thumbBgOn]}
-                        >
+                        <View style={[pStyles.thumbBg, isSelected && pStyles.thumbBgOn]}>
+                          {/* Fondo fiel a la receta */}
+                          <LinearGradient
+                            colors={bgColors as readonly [string, string, ...string[]]}
+                            start={{ x: 0.5, y: 0 }}
+                            end={{ x: 0.5, y: 1 }}
+                            style={StyleSheet.absoluteFill}
+                          />
+                          {/* Capas de geometría (estáticas) */}
+                          {c.active.map((id) => {
+                            const s = c.settings[id];
+                            if (!s) return null;
+                            const opacity = Math.max(0.15, s.opacity * c.master.opacity);
+                            return (
+                              <View
+                                key={id}
+                                style={[
+                                  StyleSheet.absoluteFill,
+                                  { alignItems: "center", justifyContent: "center", opacity },
+                                ]}
+                                pointerEvents="none"
+                              >
+                                <SacredGlyph
+                                  id={id}
+                                  color={s.color}
+                                  gradient={gradientColors(s.gradientId)}
+                                  size={60}
+                                  strokeWidth={1 + s.thickness * 2}
+                                />
+                              </View>
+                            );
+                          })}
+                          {/* Indicador de selección */}
                           {isSelected && (
                             <View style={pStyles.thumbCheck}>
                               <Feather name="check-circle" size={22} color="#BE9650" />
                             </View>
                           )}
-                        </LinearGradient>
+                        </View>
                         <Text style={pStyles.thumbLabel} numberOfLines={1}>{c.name}</Text>
                       </Pressable>
                     );
