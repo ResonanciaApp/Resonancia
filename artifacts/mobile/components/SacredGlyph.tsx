@@ -294,8 +294,15 @@ function elements(id: GeometryId, sw: number): React.ReactNode {
       ];
     }
     case "cubo-vida": {
-      // Cubo isométrico (wireframe) — dos caras unidas.
-      const front: [number, number][] = [[28, 42], [64, 42], [64, 78], [28, 78]];
+      // Cubo isométrico (wireframe) — dos caras unidas. Coordenadas elegidas para
+      // que el bounding box del conjunto (cara frontal + trasera desplazada)
+      // quede centrado en el viewBox (50,50): si no, queda abajo y a la derecha.
+      const front: [number, number][] = [
+        [25.5, 38.5],
+        [61.5, 38.5],
+        [61.5, 74.5],
+        [25.5, 74.5],
+      ];
       const off: [number, number] = [13, -13];
       const back: [number, number][] = front.map(([x, y]) => [x + off[0], y + off[1]]);
       const sq = (pts: [number, number][]) =>
