@@ -465,12 +465,12 @@ export default function ProfileScreen() {
   }, []);
 
   const selectGradient = (id: string | null) => {
-    // Ambos setState sincrónicos en el mismo evento → React los batea en un
-    // solo render; no hay riesgo de que un await posterior los pise.
+    // Seleccionar cualquier swatch (incluso "por defecto") siempre descarta la
+    // creación de Geometrix — son mutuamente excluyentes.
     setProfileBgGradientId(id);
-    if (id !== null) setProfileBgCreationId(null);
+    setProfileBgCreationId(null);
     void AsyncStorage.setItem("@profile_bg_gradient", id ?? "null");
-    if (id !== null) void AsyncStorage.setItem("@profile_bg_creation", "null");
+    void AsyncStorage.setItem("@profile_bg_creation", "null");
   };
   const selectCreation = (id: string | null) => {
     setProfileBgCreationId(id);
@@ -1161,7 +1161,7 @@ export default function ProfileScreen() {
                 {/* Por defecto */}
                 <Pressable
                   onPress={() => selectGradient(null)}
-                  style={[pStyles.swatch, profileBgGradientId === null && pStyles.swatchOn]}
+                  style={[pStyles.swatch, profileBgGradientId === null && profileBgCreationId === null && pStyles.swatchOn]}
                 >
                   <LinearGradient
                     colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
