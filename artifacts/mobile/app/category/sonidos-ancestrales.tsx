@@ -137,7 +137,7 @@ export default function SonidosAncestalesScreen() {
           {/* Fila superior: atrás ← [input animado →] lupa */}
           <View style={styles.topRow}>
             <Pressable onPress={() => router.back()} style={styles.backBtn}>
-              <Feather name="arrow-left" size={22} color={colors.foreground} />
+              <Feather name="arrow-left" size={22} color="#FFFFFF" />
             </Pressable>
             <Animated.View
               style={{
