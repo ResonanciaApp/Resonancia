@@ -186,9 +186,9 @@ const pStyles = StyleSheet.create({
     gap: 10,
   },
   swatch: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
