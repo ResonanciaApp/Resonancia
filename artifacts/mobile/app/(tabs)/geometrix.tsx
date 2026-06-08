@@ -1182,54 +1182,49 @@ export default function GeometrixScreen() {
 
           </View>
 
-          {/* Flecha a 10px de la divisora: aparece al activar la primera
-              geometría. Despliega/colapsa el carrusel de acciones. Vive fuera
-              del "stage" (no la afecta su translateY), como overlay absoluto
-              de canvasWrap, para que la animación no se mueva. */}
-          {hasActive && (
+          {/* Flecha a 10px de la divisora: visible desde el inicio (lienzo
+              vacío), no solo al activar la primera geometría. Despliega/colapsa
+              el carrusel de acciones. Vive fuera del "stage" (no la afecta su
+              translateY), como overlay absoluto de canvasWrap, para que la
+              animación no se mueva. */}
+          <View style={styles.actionTop}>
             <Animated.View
-              entering={FadeIn.duration(360)}
-              exiting={FadeOut.duration(220)}
-              style={styles.actionTop}
+              pointerEvents={pillOpen ? "auto" : "none"}
+              style={[styles.pillRow, pillStyle]}
             >
-              <Animated.View
-                pointerEvents={pillOpen ? "auto" : "none"}
-                style={[styles.pillRow, pillStyle]}
-              >
-                {pillActions.map((a, i) => (
-                  <React.Fragment key={a.key}>
-                    {i > 0 && <View style={styles.pillDivider} />}
-                    <Pressable
-                      onPress={() => {
-                        a.onPress();
-                        setPillOpen(false);
-                      }}
-                      style={styles.pillBtn}
-                      accessibilityRole="button"
-                      accessibilityLabel={a.label}
-                      hitSlop={6}
-                    >
-                      <Feather name={a.icon} size={18} color={colors.mutedForeground} />
-                    </Pressable>
-                  </React.Fragment>
-                ))}
-              </Animated.View>
-
-              <Pressable
-                onPress={() => setPillOpen((o) => !o)}
-                style={styles.chevronBtn}
-                accessibilityRole="button"
-                accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
-                hitSlop={8}
-              >
-                <Feather
-                  name={pillOpen ? "chevron-right" : "chevron-left"}
-                  size={20}
-                  color={colors.mutedForeground}
-                />
-              </Pressable>
+              {pillActions.map((a, i) => (
+                <React.Fragment key={a.key}>
+                  {i > 0 && <View style={styles.pillDivider} />}
+                  <Pressable
+                    onPress={() => {
+                      a.onPress();
+                      setPillOpen(false);
+                    }}
+                    style={styles.pillBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel={a.label}
+                    hitSlop={6}
+                  >
+                    <Feather name={a.icon} size={18} color={colors.mutedForeground} />
+                  </Pressable>
+                </React.Fragment>
+              ))}
             </Animated.View>
-          )}
+
+            <Pressable
+              onPress={() => setPillOpen((o) => !o)}
+              style={styles.chevronBtn}
+              accessibilityRole="button"
+              accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
+              hitSlop={8}
+            >
+              <Feather
+                name={pillOpen ? "chevron-right" : "chevron-left"}
+                size={20}
+                color={colors.mutedForeground}
+              />
+            </Pressable>
+          </View>
 
           {/* "Borrar lienzo": esquina superior izquierda, aparece al activar la
               primera geometría. Letras suaves; limpia todo el lienzo. */}
