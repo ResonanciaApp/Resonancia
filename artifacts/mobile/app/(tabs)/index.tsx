@@ -380,9 +380,9 @@ export default function HomeScreen() {
                       </View>
                       <Pressable
                         onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
-                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.82 : 1 }]}
+                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
                       >
-                        <Text style={[styles.heroBtnText, { color: "#FFFFFF" }]}>Escuchar</Text>
+                        <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
                       </Pressable>
                     </View>
                   </View>
@@ -700,16 +700,15 @@ const styles = StyleSheet.create({
   },
   heroBtn: {
     flexShrink: 0,
-    flexDirection: "row",
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(70,130,220,0.45)",
-    backgroundColor: "rgba(50,100,180,0.15)",
-    borderRadius: 20,
-    paddingHorizontal: 18,
-    paddingVertical: 9,
+    borderColor: "rgba(255,255,255,0.30)",
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
-  heroBtnText: { fontSize: 13, fontWeight: "700", letterSpacing: 0.5 },
 
   // Horizontal scroll
   hScroll: { paddingRight: 20 },
