@@ -112,11 +112,11 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
     AsyncStorage.setItem(HIDDEN_KEY, next ? "1" : "0").catch(() => {});
 
     Animated.parallel([
-      Animated.timing(slashAnim,    { toValue: next ? 0 : 1, duration: 220, useNativeDriver: true  }),
-      Animated.timing(eyeOpacity,   { toValue: next ? 0.5 : 1, duration: 220, useNativeDriver: true }),
-      Animated.timing(titleOpacity, { toValue: next ? 0.5 : 1, duration: 220, useNativeDriver: true }),
+      Animated.timing(slashAnim,    { toValue: next ? 0 : 1,            duration: 220, useNativeDriver: false }),
+      Animated.timing(eyeOpacity,   { toValue: next ? 0.5 : 1,          duration: 220, useNativeDriver: false }),
+      Animated.timing(titleOpacity, { toValue: next ? 0.5 : 1,          duration: 220, useNativeDriver: false }),
       Animated.timing(gridMaxH,     { toValue: next ? 0 : GRID_FULL_H + 16, duration: 260, useNativeDriver: false }),
-      Animated.timing(visAnim,      { toValue: next ? 0 : 1, duration: 220, useNativeDriver: true  }),
+      Animated.timing(visAnim,      { toValue: next ? 0 : 1,            duration: 220, useNativeDriver: false }),
     ]).start();
   }, [hidden, slashAnim, eyeOpacity, titleOpacity, gridMaxH, visAnim]);
 
