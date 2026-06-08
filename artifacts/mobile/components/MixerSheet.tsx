@@ -473,7 +473,9 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
             >
-              <Feather name="clock" size={36} color={WARM.playText} strokeWidth={1} />
+              <View style={styles.footerHeartCircle}>
+                <Feather name="clock" size={18} color="#FFFFFF" strokeWidth={1.5} />
+              </View>
               <Text style={styles.footerLabel}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
               </Text>
