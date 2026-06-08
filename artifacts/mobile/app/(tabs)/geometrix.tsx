@@ -540,9 +540,9 @@ export default function GeometrixScreen() {
 
   // Un reproductor por módulo (reproducen de forma independiente).
   const playersRef = useRef<Record<string, AudioPlayer | null>>({});
-  // ID y nombre de la creación cargada desde "Mis creaciones" (null = lienzo nuevo).
-  // Permite que "Guardar" haga updateCreation (patch in-place) en vez de saveCreation (nuevo).
-  const editingCreationRef = useRef<{ id: string; name: string } | null>(null);
+  // Creación cargada desde "Mis creaciones" (null = lienzo nuevo o no cargado).
+  // Reactivo para poder mostrar/ocultar el botón "Actualizar" en la UI.
+  const [editingCreation, setEditingCreation] = useState<{ id: string; name: string } | null>(null);
 
   const stopModule = useCallback((moduleKey: string) => {
     const p = playersRef.current[moduleKey];
@@ -711,6 +711,7 @@ export default function GeometrixScreen() {
     setHiddenIds([]);
     setSelectedId(null);
     setSettings({});
+    setEditingCreation(null);
     setMaster({
       opacity: 1,
       motion: true,
@@ -755,43 +756,49 @@ export default function GeometrixScreen() {
     [updateSetting],
   );
 
-  // Guardar la composición actual como datos (capas + ajustes + fondo + sonido).
+  // Helpers para construir el snapshot de la composición actual.
+  const buildSnapshot = useCallback(() => {
+    const activeSettings: Record<string, GeoSettings> = {};
+    active.forEach((id) => {
+      activeSettings[id] = getSettings(id);
+    });
+    let audio: GeometrixAudio = null;
+    for (const [moduleKey, trackId] of Object.entries(activeTracks)) {
+      if (trackId) { audio = { moduleKey, trackId }; break; }
+    }
+    return { active, master, settings: activeSettings, audio };
+  }, [active, getSettings, activeTracks, master]);
+
+  // Guardar SIEMPRE como composición nueva.
   const saveComposition = useCallback(async () => {
     if (active.length === 0) {
       Alert.alert("Lienzo vacío", "Activá al menos una geometría antes de guardar.");
       return;
     }
-    // Solo los ajustes de las capas activas, completos (merge con defaults).
-    const activeSettings: Record<string, GeoSettings> = {};
-    active.forEach((id) => {
-      activeSettings[id] = getSettings(id);
-    });
-    // Sonido que está sonando (si lo hay).
-    let audio: GeometrixAudio = null;
-    for (const [moduleKey, trackId] of Object.entries(activeTracks)) {
-      if (trackId) {
-        audio = { moduleKey, trackId };
-        break;
-      }
-    }
     try {
-      if (editingCreationRef.current) {
-        // Editando una creación existente → patch in-place (preserva ID y nombre).
-        const { id, name } = editingCreationRef.current;
-        await updateCreation(id, { active, master, settings: activeSettings, audio });
-        setSavedName(name);
-      } else {
-        // Lienzo nuevo → crear composición.
-        const name = `Composición ${creations.length + 1}`;
-        const saved = await saveCreation({ name, active, master, settings: activeSettings, audio });
-        // A partir de ahora este lienzo edita esa creación.
-        editingCreationRef.current = { id: saved.id, name: saved.name };
-        setSavedName(name);
-      }
+      const name = `Composición ${creations.length + 1}`;
+      await saveCreation({ name, ...buildSnapshot() });
+      setSavedName(name);
     } catch {
       Alert.alert("Error", "No se pudo guardar la composición.");
     }
-  }, [active, getSettings, activeTracks, creations.length, saveCreation, updateCreation, master]);
+  }, [active, creations.length, saveCreation, buildSnapshot]);
+
+  // Actualizar la creación cargada (patch in-place, preserva ID y nombre).
+  const updateComposition = useCallback(async () => {
+    if (!editingCreation) return;
+    if (active.length === 0) {
+      Alert.alert("Lienzo vacío", "Activá al menos una geometría antes de actualizar.");
+      return;
+    }
+    try {
+      const { id, name } = editingCreation;
+      await updateCreation(id, buildSnapshot());
+      setSavedName(name);
+    } catch {
+      Alert.alert("Error", "No se pudo actualizar la composición.");
+    }
+  }, [editingCreation, active, updateCreation, buildSnapshot]);
 
   // Abrir una creación guardada: restaurar capas, ajustes, fondo y sonido.
   // `enterImmersive` → abrir directo en pantalla completa ("Play").
@@ -799,8 +806,8 @@ export default function GeometrixScreen() {
     async (id: string, enterImmersive = false) => {
       const c = await getCreation(id);
       if (!c) return;
-      // Guardar referencia para que "Guardar" haga patch in-place en vez de crear uno nuevo.
-      editingCreationRef.current = { id: c.id, name: c.name };
+      // Registrar la creación cargada para habilitar el botón "Actualizar".
+      setEditingCreation({ id: c.id, name: c.name });
       // Reset de la sesión actual antes de aplicar la receta.
       stopIntro();
       stopAllSound();
@@ -854,7 +861,7 @@ export default function GeometrixScreen() {
   // ajustes por defecto, parando el sonido. Así se empieza una receta en limpio.
   useEffect(() => {
     if (params.new === "1") {
-      editingCreationRef.current = null; // lienzo en blanco → próximo guardado crea uno nuevo
+      setEditingCreation(null); // lienzo en blanco → ocultar botón "Actualizar"
       stopIntro();
       stopAllSound();
       setActiveTracks({});
@@ -1286,6 +1293,17 @@ export default function GeometrixScreen() {
               >
                 <Feather name="trash-2" size={18} color={colors.mutedForeground} />
               </Pressable>
+              {editingCreation && (
+                <Pressable
+                  onPress={updateComposition}
+                  style={styles.updateBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Actualizar composición"
+                  hitSlop={8}
+                >
+                  <Text style={styles.updateBtnText}>Actualizar</Text>
+                </Pressable>
+              )}
             </Animated.View>
           )}
 
@@ -2145,6 +2163,24 @@ const styles = StyleSheet.create({
     height: 32,
     alignItems: "center",
     justifyContent: "center",
+  },
+  updateBtn: {
+    marginTop: 4,
+    marginLeft: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+    backgroundColor: "rgba(190,150,80,0.15)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(190,150,80,0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  updateBtnText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: colors.primary,
+    letterSpacing: 0.3,
   },
   chevronBtn: {
     width: 40,
