@@ -485,6 +485,9 @@ export default function ConfiguracionesScreen() {
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <RowIcon icon="sun" colors={colors} />
               <Text style={[styles.rowLabel, { color: colors.foreground }]}>Brillo general de la app</Text>
+              <Text style={{ marginLeft: "auto", fontSize: 13, color: colors.primary, fontVariant: ["tabular-nums"] }}>
+                {Math.round(brightness * 100)}%
+              </Text>
             </View>
             <View style={{ width: "100%", paddingHorizontal: 4 }}>
               <VolumeSlider
