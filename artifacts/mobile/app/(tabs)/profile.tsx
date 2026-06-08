@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
@@ -15,6 +16,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
@@ -34,6 +36,12 @@ import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { usePremium } from "@/context/PremiumContext";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import {
+  BG_GRADIENTS,
+  bgGradientColors,
+  HOME_GRADIENT,
+} from "@/data/geometrix-creations";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -122,6 +130,52 @@ export default function ProfileScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  // ── Geometrix creations (for profile background picker) ───────────────────
+  const { creations: geoCreations } = useGeometrixCreations();
+
+  // ── Personalize sheet ─────────────────────────────────────────────────────
+  const [personalizeVisible, setPersonalizeVisible] = useState(false);
+  const [profileBgGradientId, setProfileBgGradientId] = useState<string | null>(null);
+  const [profileBgCreationId, setProfileBgCreationId] = useState<string | null>(null);
+  const [reminderEnabled, setReminderEnabled] = useState(false);
+  const [reminderHour, setReminderHour] = useState(8);
+  const [reminderMinute, setReminderMinute] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [gradId, creId, rem] = await Promise.all([
+          AsyncStorage.getItem("@profile_bg_gradient"),
+          AsyncStorage.getItem("@profile_bg_creation"),
+          AsyncStorage.getItem("@profile_reminder"),
+        ]);
+        if (gradId !== null) setProfileBgGradientId(gradId === "null" ? null : gradId);
+        if (creId !== null) setProfileBgCreationId(creId === "null" ? null : creId);
+        if (rem) {
+          const p = JSON.parse(rem) as { enabled: boolean; hour: number; minute: number };
+          setReminderEnabled(p.enabled ?? false);
+          setReminderHour(p.hour ?? 8);
+          setReminderMinute(p.minute ?? 0);
+        }
+      } catch {}
+    })();
+  }, []);
+
+  const selectGradient = async (id: string | null) => {
+    setProfileBgGradientId(id);
+    await AsyncStorage.setItem("@profile_bg_gradient", id ?? "null");
+  };
+  const selectCreation = async (id: string | null) => {
+    setProfileBgCreationId(id);
+    await AsyncStorage.setItem("@profile_bg_creation", id ?? "null");
+  };
+  const saveReminder = async (enabled: boolean, hour: number, minute: number) => {
+    setReminderEnabled(enabled);
+    setReminderHour(hour);
+    setReminderMinute(minute);
+    await AsyncStorage.setItem("@profile_reminder", JSON.stringify({ enabled, hour, minute }));
+  };
 
   // ── Edit modal state ──────────────────────────────────────────────────────
   const [editVisible, setEditVisible] = useState(false);
@@ -316,14 +370,11 @@ export default function ProfileScreen() {
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: "#FFFFFF" }]}>Perfil</Text>
           <Pressable
-            onPress={() => router.push("/configuraciones" as never)}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.settingsBtn,
-              { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.75 : 1 },
-            ]}
+            onPress={() => setPersonalizeVisible(true)}
+            hitSlop={12}
+            style={({ pressed }) => [styles.settingsBtn, { opacity: pressed ? 0.6 : 1 }]}
           >
-            <Feather name="settings" size={18} color="#FFFFFF" />
+            <Feather name="sliders" size={20} color="#BE9650" />
           </Pressable>
         </View>
 
@@ -572,6 +623,173 @@ export default function ProfileScreen() {
           RESONANCE · Sonidos que te regresan a ti mismo.
         </Text>
       </ScrollView>
+
+      {/* ── Personalize Sheet ── */}
+      <Modal
+        visible={personalizeVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setPersonalizeVisible(false)}
+      >
+        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setPersonalizeVisible(false)} />
+          <View style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}>
+            {/* Handle */}
+            <View style={pStyles.handle} />
+
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 0 }}>
+
+              {/* ── Geometrix ── */}
+              <Text style={pStyles.sectionTitle}>Fondo de Geometrix</Text>
+              <Text style={pStyles.sectionSub}>Elige una de tus creaciones como fondo de perfil</Text>
+
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginBottom: 28 }}
+                contentContainerStyle={{ paddingRight: 4 }}
+              >
+                {/* Ninguno */}
+                <Pressable
+                  onPress={() => selectCreation(null)}
+                  style={pStyles.creationThumb}
+                >
+                  <View
+                    style={[
+                      pStyles.thumbBg,
+                      { backgroundColor: "#0B0F14", alignItems: "center", justifyContent: "center" },
+                      profileBgCreationId === null && pStyles.thumbBgOn,
+                    ]}
+                  >
+                    <Feather name="x" size={22} color="#4A5568" />
+                  </View>
+                  <Text style={pStyles.thumbLabel}>Ninguno</Text>
+                </Pressable>
+
+                {geoCreations.length === 0 ? (
+                  <View style={{ justifyContent: "center", paddingHorizontal: 16 }}>
+                    <Text style={pStyles.emptyText}>Aún no tienes creaciones en Geometrix</Text>
+                  </View>
+                ) : (
+                  geoCreations.map((c) => {
+                    const bg = bgGradientColors(c.master.bgGradientId);
+                    const bgColors: [string, string] = bg
+                      ? [bg[0], bg[1]]
+                      : [HOME_GRADIENT[0], HOME_GRADIENT[2]];
+                    const isSelected = profileBgCreationId === c.id;
+                    return (
+                      <Pressable
+                        key={c.id}
+                        onPress={() => selectCreation(c.id)}
+                        style={pStyles.creationThumb}
+                      >
+                        <LinearGradient
+                          colors={bgColors}
+                          style={[pStyles.thumbBg, isSelected && pStyles.thumbBgOn]}
+                        >
+                          {isSelected && (
+                            <View style={pStyles.thumbCheck}>
+                              <Feather name="check-circle" size={22} color="#BE9650" />
+                            </View>
+                          )}
+                        </LinearGradient>
+                        <Text style={pStyles.thumbLabel} numberOfLines={1}>{c.name}</Text>
+                      </Pressable>
+                    );
+                  })
+                )}
+              </ScrollView>
+
+              {/* ── Paleta de degradado ── */}
+              <Text style={pStyles.sectionTitle}>Color de fondo</Text>
+              <Text style={pStyles.sectionSub}>Degradado oscuro para el fondo de tu perfil</Text>
+
+              <View style={[pStyles.swatchRow, { marginBottom: 28 }]}>
+                {/* Por defecto */}
+                <Pressable
+                  onPress={() => selectGradient(null)}
+                  style={[pStyles.swatch, profileBgGradientId === null && pStyles.swatchOn]}
+                >
+                  <LinearGradient
+                    colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
+                    style={pStyles.swatchGrad}
+                  />
+                </Pressable>
+                {BG_GRADIENTS.map((gr) => (
+                  <Pressable
+                    key={gr.id}
+                    onPress={() => selectGradient(gr.id)}
+                    style={[pStyles.swatch, profileBgGradientId === gr.id && pStyles.swatchOn]}
+                  >
+                    <LinearGradient
+                      colors={[...gr.colors] as [string, string]}
+                      style={pStyles.swatchGrad}
+                    />
+                  </Pressable>
+                ))}
+              </View>
+
+              {/* ── Recordatorio ── */}
+              <Text style={pStyles.sectionTitle}>Recordatorio diario</Text>
+              <Text style={pStyles.sectionSub}>Recibe una notificación para meditar cada día</Text>
+
+              <View style={pStyles.reminderCard}>
+                <View style={pStyles.reminderRow}>
+                  <View style={pStyles.reminderBell}>
+                    <Feather name="bell" size={18} color="#BE9650" />
+                  </View>
+                  <Text style={pStyles.reminderLabel}>Activar recordatorio</Text>
+                  <Switch
+                    value={reminderEnabled}
+                    onValueChange={(v) => saveReminder(v, reminderHour, reminderMinute)}
+                    trackColor={{ false: "#1E2A38", true: "#2D4A3A" }}
+                    thumbColor={reminderEnabled ? "#BE9650" : "#7A8FA8"}
+                  />
+                </View>
+
+                {reminderEnabled && (
+                  <View style={pStyles.timePicker}>
+                    <Text style={pStyles.timeLabel}>Hora del recordatorio</Text>
+                    <View style={pStyles.timeRow}>
+                      <Pressable
+                        hitSlop={10}
+                        onPress={() => saveReminder(reminderEnabled, (reminderHour - 1 + 24) % 24, reminderMinute)}
+                        style={pStyles.timeBtn}
+                      >
+                        <Feather name="minus" size={16} color="#BE9650" />
+                      </Pressable>
+                      <Text style={pStyles.timeValue}>
+                        {String(reminderHour).padStart(2, "0")}:{String(reminderMinute).padStart(2, "0")}
+                      </Text>
+                      <Pressable
+                        hitSlop={10}
+                        onPress={() => saveReminder(reminderEnabled, (reminderHour + 1) % 24, reminderMinute)}
+                        style={pStyles.timeBtn}
+                      >
+                        <Feather name="plus" size={16} color="#BE9650" />
+                      </Pressable>
+                    </View>
+                    <View style={pStyles.minuteRow}>
+                      {[0, 15, 30, 45].map((m) => (
+                        <Pressable
+                          key={m}
+                          onPress={() => saveReminder(reminderEnabled, reminderHour, m)}
+                          style={[pStyles.minuteBtn, reminderMinute === m && pStyles.minuteBtnOn]}
+                        >
+                          <Text style={[pStyles.minuteText, reminderMinute === m && { color: "#BE9650" }]}>
+                            :{String(m).padStart(2, "0")}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </View>
+                )}
+              </View>
+
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
 
       {/* ── Edit Details Modal ── */}
       <Modal
@@ -896,4 +1114,182 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   communityLabel: { fontSize: 12, fontWeight: "500", textAlign: "center", letterSpacing: 0.2 },
+});
+
+// ── Personalize sheet styles ──────────────────────────────────────────────────
+const pStyles = StyleSheet.create({
+  sheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#0E1420",
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    maxHeight: "88%",
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#2A3545",
+    alignSelf: "center",
+    marginBottom: 22,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#EDE1D3",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 4,
+  },
+  sectionSub: {
+    fontSize: 12,
+    color: "#7A8FA8",
+    marginBottom: 14,
+    lineHeight: 17,
+  },
+
+  // Geometrix thumbs
+  creationThumb: {
+    width: 88,
+    marginRight: 10,
+    alignItems: "center",
+  },
+  thumbBg: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
+    marginBottom: 6,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  thumbBgOn: {
+    borderColor: "#BE9650",
+  },
+  thumbCheck: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  thumbLabel: {
+    fontSize: 11,
+    color: "#7A8FA8",
+    textAlign: "center",
+  },
+  emptyText: {
+    fontSize: 12,
+    color: "#7A8FA8",
+    fontStyle: "italic",
+    paddingVertical: 20,
+  },
+
+  // Gradient swatches
+  swatchRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  swatch: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  swatchOn: {
+    borderColor: "#BE9650",
+  },
+  swatchGrad: {
+    flex: 1,
+  },
+
+  // Reminder
+  reminderCard: {
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 24,
+  },
+  reminderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  reminderBell: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(190,150,80,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reminderLabel: {
+    flex: 1,
+    fontSize: 14,
+    color: "#EDE1D3",
+    fontWeight: "500",
+  },
+  timePicker: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#1E2A38",
+    alignItems: "center",
+  },
+  timeLabel: {
+    fontSize: 10,
+    color: "#7A8FA8",
+    letterSpacing: 1.2,
+    textTransform: "uppercase",
+    marginBottom: 14,
+    alignSelf: "flex-start",
+  },
+  timeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 24,
+    marginBottom: 16,
+  },
+  timeBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(190,150,80,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timeValue: {
+    fontSize: 38,
+    fontWeight: "200",
+    color: "#EDE1D3",
+    letterSpacing: 3,
+    minWidth: 120,
+    textAlign: "center",
+  },
+  minuteRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  minuteBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  minuteBtnOn: {
+    backgroundColor: "rgba(190,150,80,0.12)",
+  },
+  minuteText: {
+    fontSize: 13,
+    color: "#7A8FA8",
+    fontWeight: "500",
+  },
 });
