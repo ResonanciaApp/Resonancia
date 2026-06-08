@@ -130,7 +130,7 @@ export default function SonidosAncestalesScreen() {
               }}
               style={styles.searchBtn}
             >
-              <Feather name="search" size={19} color={colors.foreground} />
+              <Feather name="search" size={19} color="#FFFFFF" />
             </Pressable>
           </View>
           <View style={styles.catIconCircle}>
