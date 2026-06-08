@@ -1127,3 +1127,9 @@ id = "C21M9y_l6-aiuyhXq3UZj"
 uri = "file://docs/formato-audio-decision.docx"
 type = "word_document"
 title = "Decisión de formato de audio — RESONANCIA"
+
+[[outputs]]
+id = "NbRSH27jWH8cIzsZxXHqW"
+uri = "file://attached_assets/keyboard-icon.svg"
+type = "image"
+title = "Teclado MIDI — icono SVG"
