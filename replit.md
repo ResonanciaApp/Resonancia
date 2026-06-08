@@ -89,7 +89,8 @@ Panel admin-only que reusa la misma DB/API. Auth = **Clerk cookie-based same-ori
 
 - **"RA"** = "Restart App" — reiniciar el workflow `artifacts/mobile: expo`
 - Idioma: español neutro en toda la UI y en las respuestas del agente (no usar modismos argentinos)
-- Colores (navy + dorado): bg `#0B0F14`, primary `#BE9650`, accent `#D6A85B`, card `#151A23`, fg `#EDE1D3`, mutedForeground `#7A8FA8`. (Migrada de café/bronce a navy en app y decks; decks no se vuelven a tocar.)
+- Colores (navy + dorado): bg `#0B0F14`, primary `#BE9650`, accent `#D6A85B`, fg `#EDE1D3`, mutedForeground `#7A8FA8`. (Migrada de café/bronce a navy en app y decks; decks no se vuelven a tocar.)
+- **Fondo de cards y módulos (estándar)**: tinte dorado translúcido `rgba(190,150,80,0.05)` (= `#BE9650` al 5%) sobre el bg oscuro. Es EL color que deben usar todas las cards/módulos. Token central en `artifacts/mobile/constants/colors.ts` (`card` y alias `darkChocolate`). Antes era el navy sólido `#151A23` (ya migrado). Nota: muchas pantallas hardcodean fondos de card (`rgba(255,255,255,0.03)`, `#151A23`) que NO usan el token; migrarlas progresivamente a este tinte cuando se toquen.
 - Pre-existing TS errors (ignorar): VozInterior, MensajesAnon, MiniPlayer, session/[id], SessionCard, PlayerContext, player.tsx
 
 ## Pendientes (backlog)
