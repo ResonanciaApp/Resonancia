@@ -160,10 +160,10 @@ const pStyles = StyleSheet.create({
     marginBottom: 6,
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: "#1a2046",
   },
   thumbBgOn: {
-    borderColor: "#BE9650",
+    borderColor: "#1a2046",
   },
   thumbCheck: {
     flex: 1,
@@ -963,12 +963,6 @@ export default function ProfileScreen() {
                               </View>
                             );
                           })}
-                          {/* Indicador de selección */}
-                          {isSelected && (
-                            <View style={pStyles.thumbCheck}>
-                              <Feather name="check-circle" size={22} color="#BE9650" />
-                            </View>
-                          )}
                         </View>
                         <Text style={pStyles.thumbLabel} numberOfLines={1}>{c.name}</Text>
                       </Pressable>
