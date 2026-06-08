@@ -2362,7 +2362,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     overflow: "hidden",
     paddingHorizontal: 18,
-    paddingTop: 10,
+    paddingTop: 15,
     maxHeight: "78%",
   },
   // El gradiente de fondo del sheet debe respetar las esquinas redondeadas
@@ -2380,7 +2380,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 13,
   },
   sheetHeaderLeft: {
     flex: 1,
