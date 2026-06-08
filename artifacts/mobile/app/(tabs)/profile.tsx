@@ -989,31 +989,6 @@ export default function ProfileScreen() {
           );
         })()}
 
-        {/* ── Comunidad ── */}
-        <View style={styles.communityRow}>
-          {[
-            { label: "Amigos",  icon: "users"     as const, route: "/amigos"  },
-            { label: "Diario",  icon: "book-open" as const, route: "/diario"  },
-            { label: "Grupos",  icon: "globe"     as const, route: "/grupos"  },
-          ].map(({ label, icon, route }) => (
-            <Pressable
-              key={label}
-              onPress={() => router.push(route as never)}
-              style={({ pressed }) => [
-                styles.communityCard,
-                {
-                  backgroundColor: pressed ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)",
-                  transform: [{ scale: pressed ? 0.96 : 1 }],
-                },
-              ]}
-            >
-              <Feather name={icon} size={22} color="#FFFFFF" />
-              <Text style={[styles.communityLabel, { color: "#FFFFFF" }]}>
-                {label}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
 
         {/* ── Tu Progreso (racha card) ── */}
         <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
