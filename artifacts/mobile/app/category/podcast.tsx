@@ -4,8 +4,9 @@ import { Image } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
   Modal,
   Platform,
@@ -16,6 +17,7 @@ import {
   Text,
   TextInput,
   TouchableWithoutFeedback,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -67,11 +69,30 @@ export default function SonidosScreen() {
   const insets = useSafeAreaInsets();
   const { version } = useCatalog();
 
+  const { width } = useWindowDimensions();
+  const tabW = (width - H_PAD * 2 - 8 * 3) / 3.3;
+
   const [activeTab, setActiveTab] = useState<SonidosTab>("Sonidos Binaurales");
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [pendingSession, setPendingSession] = useState<Session | null>(null);
   const { stopAll, toggleSound, setSleepTimer } = useMixer();
+
+  const searchAnim = useRef(new Animated.Value(0)).current;
+  const searchInputRef = useRef<TextInput>(null);
+  const inputMaxWidth = width - H_PAD * 2 - 40 - 40 - 16;
+
+  useEffect(() => {
+    Animated.timing(searchAnim, {
+      toValue: searchOpen ? 1 : 0,
+      duration: 220,
+      useNativeDriver: false,
+    }).start(() => {
+      if (searchOpen) searchInputRef.current?.focus();
+    });
+    if (!searchOpen) setQuery("");
+  }, [searchOpen]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -151,9 +172,43 @@ export default function SonidosScreen() {
       >
         {/* Header */}
         <View style={[styles.header, { paddingHorizontal: H_PAD }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn}>
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
+          {/* Fila superior: atrás ← [input animado →] lupa */}
+          <View style={styles.topRow}>
+            <Pressable onPress={() => router.back()} style={styles.backBtn}>
+              <Feather name="arrow-left" size={22} color="#FFFFFF" />
+            </Pressable>
+            <Animated.View
+              style={{
+                width: searchAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, inputMaxWidth],
+                }),
+                opacity: searchAnim.interpolate({
+                  inputRange: [0, 0.4, 1],
+                  outputRange: [0, 0, 1],
+                }),
+                overflow: "hidden",
+              }}
+            >
+              <View style={styles.searchBar}>
+                <TextInput
+                  ref={searchInputRef}
+                  style={[styles.searchInput, { color: colors.foreground }]}
+                  placeholder="Buscar en Sonidos…"
+                  placeholderTextColor={colors.mutedForeground}
+                  value={query}
+                  onChangeText={setQuery}
+                  returnKeyType="search"
+                />
+              </View>
+            </Animated.View>
+            <Pressable
+              onPress={() => setSearchOpen((v) => !v)}
+              style={styles.searchBtn}
+            >
+              <Feather name="search" size={19} color="#FFFFFF" />
+            </Pressable>
+          </View>
           <View style={styles.iconCircle}>
             <ExpoImage
               source={require("../../assets/images/cat-sonidos.png")}
@@ -165,29 +220,22 @@ export default function SonidosScreen() {
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Ponte audífonos y a dormir
           </Text>
-          <View style={styles.searchBar}>
-            <Feather name="search" size={17} color={colors.mutedForeground} />
-            <TextInput
-              style={[styles.searchInput, { color: colors.foreground }]}
-              placeholder="Buscar en Sonidos…"
-              placeholderTextColor={colors.mutedForeground}
-              value={query}
-              onChangeText={setQuery}
-              returnKeyType="search"
-            />
-          </View>
         </View>
 
-        {/* Sticky tab bar — bloques con ícono */}
+        {/* Sticky tab bar — deslizable, 3.3 visibles */}
         <View style={styles.tabBarWrap}>
-          <View style={[styles.tabRow, { paddingHorizontal: H_PAD }]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.tabRow, { paddingHorizontal: H_PAD }]}
+          >
             {TABS.map(({ label, value, icon }) => {
               const sel = activeTab === value;
               return (
                 <Pressable
                   key={value}
                   onPress={() => setActiveTab(value)}
-                  style={[styles.tabBlock, sel && styles.tabBlockActive]}
+                  style={[styles.tabBlock, { width: tabW }, sel && styles.tabBlockActive]}
                   accessibilityRole="tab"
                   accessibilityState={{ selected: sel }}
                 >
@@ -210,7 +258,7 @@ export default function SonidosScreen() {
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
         </View>
 
         {/* Línea divisora entre tabs y sesiones */}
@@ -407,16 +455,29 @@ const styles = StyleSheet.create({
 
   header: {
     alignItems: "center",
-    marginBottom: 9,
+    marginBottom: 25,
     paddingTop: 4,
   },
+  topRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    alignSelf: "stretch",
+    marginBottom: 16,
+  },
   backBtn: {
-    alignSelf: "flex-start",
     width: 40,
     height: 40,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
+  },
+  searchBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconCircle: {
     width: 60,
@@ -442,12 +503,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    alignSelf: "stretch",
-    backgroundColor: "rgba(255,255,255,0.03)",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 8,
-    marginTop: 18,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === "ios" ? 10 : 7,
+    height: 40,
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
@@ -460,22 +520,21 @@ const styles = StyleSheet.create({
   tabBarWrap: {
     paddingBottom: 0,
   },
-  tabRow: { flexDirection: "row", gap: 8 },
+  tabRow: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   tabBlock: {
-    flex: 1,
+    aspectRatio: 1,
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
-    paddingTop: 16,
-    paddingBottom: 14,
     paddingHorizontal: 4,
-    borderRadius: 10,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: "transparent",
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   tabBlockActive: { backgroundColor: "rgba(100,142,195,0.14)" },
-  tabLabel: { fontSize: 12, letterSpacing: 0.1 },
+  tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
 
   grid: {},
   gridRow: {
