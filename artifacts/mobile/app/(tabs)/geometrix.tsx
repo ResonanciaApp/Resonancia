@@ -33,9 +33,9 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useAnimatedStyle,
+  useDerivedValue,
   useFrameCallback,
   useSharedValue,
-  type LayoutAnimationsValues,
   withDelay,
   withRepeat,
   withSequence,
@@ -537,23 +537,16 @@ type CarouselTileProps = {
   isDragging: boolean;
   itemW: number;
   frontCount: number;
-  indexInFront: number;
   onDragStart: (id: string) => void;
   onDragEnd: (id: string, targetIdx: number) => void;
-  // Estado de arrastre compartido: lo escribe la card que se arrastra y lo leen
-  // las hermanas para abrir el hueco. origin/target son slots del frente (-1 = sin
-  // arrastre). `instantLayoutSV` (shared value 1/0) hace que la transición de layout
-  // sea instantánea durante el arrastre y el frame del commit. Se lee en CADA cambio
-  // de layout (worklet personalizado), NO con el truco `LinearTransition.duration(0)`:
-  // Reanimated 4 congela la config de la animación de layout al montar (la tile monta
-  // con instantLayout=false → duration 1100ms) y NO re-lee duration(0) en renders
-  // posteriores → el reorden del commit se animaba 1100ms igual. `dragSettling` es
-  // true SOLO en el frame del commit (para snapear el hueco al instante, no animarlo).
-  // `settleSV` (UI thread) la escribe el worklet de layout en el MISMO commit que
-  // reordena el DOM → cierra el desfase de 1 frame que dejaba `dragSettling` (prop JS).
-  instantLayoutSV: SharedValue<number>;
-  settleSV: SharedValue<number>;
-  dragSettling: boolean;
+  // Orden VISUAL compartido (FLIP). Cada tile deriva su slot con orderSV.indexOf(id)
+  // en el UI thread (siempre actual, sin desfase de prop JS) y se posiciona por
+  // transform. `instantOrderFlag`=1 hace INSTANTÁNEO el reposicionamiento del commit
+  // del arrastre (sin deslizar); en 0 las selecciones deslizan 1100ms.
+  orderSV: SharedValue<string[]>;
+  instantOrderFlag: SharedValue<number>;
+  // Estado de arrastre compartido (modelo "pin + hueco"): origin/target son slots del
+  // frente (-1 = sin arrastre). Las hermanas los leen para abrir el hueco.
   dragOriginIdx: SharedValue<number>;
   dragTargetIdx: SharedValue<number>;
   // Auto-scroll del carrusel durante el arrastre (ver bloque del padre).
@@ -565,7 +558,8 @@ type CarouselTileProps = {
 
 // Tile del carrusel de geometrías. Maneja su propia animación de selección al
 // estilo "Aurora": pulso de escala + resplandor del color de la geometría. El
-// glide a su posición lo resuelve el padre reordenando + LinearTransition.
+// glide a su posición lo resuelve solo (modelo FLIP): deriva su slot de orderSV
+// y se posiciona con translateX; el deslizamiento al cambiar de slot es slideOffset.
 function CarouselTile({
   id,
   name,
@@ -578,12 +572,10 @@ function CarouselTile({
   isDragging,
   itemW,
   frontCount,
-  indexInFront,
   onDragStart,
   onDragEnd,
-  instantLayoutSV,
-  settleSV,
-  dragSettling,
+  orderSV,
+  instantOrderFlag,
   dragOriginIdx,
   dragTargetIdx,
   screenW,
@@ -648,7 +640,18 @@ function CarouselTile({
   // (round-trip a JS por setActive) que causaba el "fantasma" que saltaba.
   const dragX = useSharedValue(0);
   const lift = useSharedValue(0);
-  const idxSV = useSharedValue(indexInFront);
+  // Slot VISUAL de esta tile, derivado del orden compartido en el UI thread (siempre
+  // actual, sin el desfase de 1 frame de un prop JS). -1 mientras aún no entró al
+  // orden (frame de montaje de un duplicado recién creado).
+  const slotSV = useDerivedValue(() => orderSV.value.indexOf(id));
+  // Desfase de deslizamiento (FLIP). En reposo 0; al cambiar el slot por SELECCIÓN se
+  // pone en (prevSlot-slot)*itemW y se anima a 0 (1100ms) → la tile parece salir de su
+  // lugar viejo y deslizar al nuevo. En el commit del arrastre queda 0 (instantáneo).
+  const slideOffset = useSharedValue(0);
+  // Desfase de "hueco" mientras OTRA card se arrastra: esta hermana se corre ±itemW
+  // para abrir espacio en el destino. Animado con withTiming (o instantáneo en el
+  // commit, cuando instantOrderFlag=1, porque el slot ya absorbió el corrimiento).
+  const gapSV = useSharedValue(0);
   const frontCountSV = useSharedValue(frontCount);
   // Offset de scroll del carrusel al iniciar el arrastre + último translationX
   // del dedo. Sirven para recomputar el destino cuando el dedo está quieto en el
@@ -664,17 +667,11 @@ function CarouselTile({
   // certeza si hubo un arrastre real antes de confirmar el reorder.
   const didActivate = useSharedValue(0);
   useEffect(() => {
-    idxSV.value = indexInFront;
-  }, [indexInFront, idxSV]);
-  useEffect(() => {
     frontCountSV.value = frontCount;
   }, [frontCount, frontCountSV]);
-  // Limpieza del estado de arrastre DESPUÉS del commit (cuando isDragging pasa a
-  // false porque el padre ya hizo draggingId=null). Recién acá apagamos
-  // selfDragging y reseteamos dragX + origin/target: hacerlo antes (en el callback
-  // de withTiming) dejaría un frame en la rama de hueco antes de que el DOM
-  // reordene → micro-salto. En este punto el worklet (siempre adjunto) ya devuelve
-  // translateX 0 en su slot final, así que estos resets no cambian nada visual.
+  // Red de seguridad: deja el estado de arrastre en reposo si una cancelación no pasó
+  // por el commit. El commit del arrastre ya resetea selfDragging/dragX/origin/target
+  // en el worklet de soltado; esto cubre el resto (cuando isDragging pasa a false).
   useEffect(() => {
     if (isDragging) return;
     selfDragging.value = 0;
@@ -726,19 +723,17 @@ function CarouselTile({
         .enabled(draggable)
         .activateAfterLongPress(250)
         .onStart(() => {
-          dragOriginIdx.value = idxSV.value;
-          dragTargetIdx.value = idxSV.value;
+          const slot = slotSV.value;
+          dragOriginIdx.value = slot;
+          dragTargetIdx.value = slot;
           dragX.value = 0;
+          slideOffset.value = 0;
           scrollStartX.value = scrollX.value;
           lastTransX.value = 0;
           edgeIntent.value = 0;
           dragActive.value = 1;
           selfDragging.value = 1;
           didActivate.value = 1;
-          // Layout instantáneo desde el arrastre hasta el commit. Se pone acá (UI
-          // thread, mucho antes del commit) y lo lee el worklet de layout en cada
-          // cambio; el desenmascarado lo baja a 0. Reanimated 4 ignora duration(0).
-          instantLayoutSV.value = 1;
           lift.value = withTiming(1, { duration: 160 });
           runOnJS(onDragStart)(id);
         })
@@ -774,19 +769,34 @@ function CarouselTile({
           const origin = dragOriginIdx.value;
           const target = dragTargetIdx.value;
           lift.value = withTiming(0, { duration: 180 });
-          // Planea la card hasta el slot destino (aún en su slot de origen del DOM)
-          // y SOLO al terminar confirma el reordenamiento. selfDragging se mantiene
-          // en 1 (la card sigue en la rama propia, fija en (target-origin)*itemW)
-          // hasta DESPUÉS del commit: limpiarlo aquí la metería un frame en la rama
-          // de hueco (translateX→0 vía withTiming) antes de que el DOM reordene →
-          // micro-salto. El reset lo hace el efecto de isDragging tras el commit. En
-          // ese commit (un único render con active reordenado + draggingId=null) el
-          // estilo cambia a `tileRest` (translateX 0) en lockstep con el DOM, así
-          // que la posición visual no cambia → sin "fantasma".
+          // Planea la card hasta el slot destino (su slot del orden NO cambió aún) y al
+          // terminar CONFIRMA el reorden en el UI thread, atómicamente: reescribe el
+          // orden compartido (orderSV) y apaga el estado de arrastre en el MISMO
+          // worklet. Como NO hay reflow de Fabric (las tiles están en orden de DOM
+          // estable, posicionadas por transform), el reposicionamiento ocurre en un
+          // único frame sin carrera mapper-vs-layout → sin parpadeo. instantOrderFlag=1
+          // hace que el cambio de slot sea instantáneo (sin deslizar). El dato (`active`)
+          // se sincroniza en JS vía onDragEnd; el efecto espejo reescribe orderSV con
+          // contenido idéntico → no-op.
           dragX.value = withTiming(
             (target - origin) * itemW,
             { duration: 180, easing: Easing.out(Easing.ease) },
-            () => {
+            (finished) => {
+              if (finished) {
+                instantOrderFlag.value = 1;
+                const arr = orderSV.value.slice();
+                if (origin >= 0 && origin < arr.length) {
+                  const moved = arr[origin];
+                  arr.splice(origin, 1);
+                  const dest = Math.max(0, Math.min(target, arr.length));
+                  arr.splice(dest, 0, moved);
+                  orderSV.value = arr;
+                }
+                dragX.value = 0;
+                selfDragging.value = 0;
+                dragOriginIdx.value = -1;
+                dragTargetIdx.value = -1;
+              }
               runOnJS(onDragEnd)(id, target);
             },
           );
@@ -803,8 +813,10 @@ function CarouselTile({
       didActivate,
       dragX,
       edgeIntent,
-      idxSV,
-      instantLayoutSV,
+      slotSV,
+      slideOffset,
+      orderSV,
+      instantOrderFlag,
       itemW,
       lastTransX,
       lift,
@@ -815,136 +827,105 @@ function CarouselTile({
     ],
   );
 
-  // Estilo del wrap. Se mantiene SIEMPRE adjunto (nunca se conmuta a una style
-  // estática): conmutar entre un useAnimatedStyle y una style estática deja la
-  // ÚLTIMA transform del worklet pegada en el nodo nativo (Reanimated no la
-  // resetea y la style estática no la pisa) → cada card enrocada quedaba con su
-  // offset de hueco (±itemW) y se solapaba con la vecina. Al estar siempre
-  // adjunto, translateX refleja exactamente lo que devuelve el worklet.
+  // FLIP de SELECCIÓN: cuando el slot de esta tile cambia por un reorden de datos
+  // (selección/deselección, NO un commit de arrastre), arranca el deslizamiento desde
+  // su posición vieja (slideOffset = (prev-slot)*itemW) y lo anima a 0 → parece salir
+  // de su lugar viejo y deslizar al nuevo. En el commit del arrastre instantOrderFlag=1
+  // → salto instantáneo (sin animar), porque la card arrastrada ya llegó por dragX y
+  // las hermanas ya estaban corridas por gapSV en lockstep.
+  useAnimatedReaction(
+    () => slotSV.value,
+    (slot, prev) => {
+      if (slot < 0 || prev === null || prev < 0 || slot === prev) return;
+      if (selfDragging.value === 1) return; // la arrastrada se posiciona con dragX
+      if (instantOrderFlag.value === 1) {
+        slideOffset.value = 0;
+        return;
+      }
+      slideOffset.value = (prev - slot) * itemW;
+      slideOffset.value = withTiming(0, {
+        duration: CAROUSEL_FLOW_MS,
+        easing: CAROUSEL_EASE,
+      });
+    },
+  );
+
+  // HUECO de arrastre: mientras OTRA card se arrastra, esta hermana se corre ±itemW
+  // para abrir espacio en el destino. Se recomputa cuando cambia el destino (o el slot
+  // propio). En el commit (instantOrderFlag=1) el corrimiento se aplica INSTANTÁNEO a 0
+  // porque el slot ya absorbió el ±itemW → sin salto. Fuera del commit anima suave.
+  useAnimatedReaction(
+    () => ({
+      slot: slotSV.value,
+      origin: dragOriginIdx.value,
+      target: dragTargetIdx.value,
+      self: selfDragging.value,
+    }),
+    (cur) => {
+      if (cur.self === 1) {
+        gapSV.value = 0;
+        return;
+      }
+      let off = 0;
+      if (
+        cur.origin >= 0 &&
+        cur.target >= 0 &&
+        cur.origin !== cur.target &&
+        cur.slot >= 0
+      ) {
+        if (cur.target > cur.origin) {
+          if (cur.slot > cur.origin && cur.slot <= cur.target) off = -itemW;
+        } else if (cur.slot >= cur.target && cur.slot < cur.origin) {
+          off = itemW;
+        }
+      }
+      if (instantOrderFlag.value === 1) {
+        gapSV.value = off;
+      } else {
+        gapSV.value = withTiming(off, {
+          duration: CAROUSEL_FLOW_MS,
+          easing: CAROUSEL_EASE,
+        });
+      }
+    },
+  );
+
+  // Estilo del wrap (modelo FLIP). Las tiles se renderizan en un orden de DOM ESTABLE
+  // (domOrder) y se posicionan SOLO con translateX = slot*itemW (+ deslizamientos). Así
+  // NO hay reflow de Fabric al reordenar → se elimina la carrera mapper-vs-layout que
+  // causaba el parpadeo. La posición se lee DIRECTO de slotSV (UI thread, sin desfase).
   const wrapStyle = useAnimatedStyle(() => {
     const scale = 1 + lift.value * 0.08;
-    // Frame del commit del enroque: el DOM ya colocó a TODAS las tiles —incluida la
-    // arrastrada— en su slot final, así que translateX 0 para TODAS, por
-    // construcción. Se chequea ANTES que `selfDragging` a propósito: si la card
-    // arrastrada usara `dragX` (o una fórmula relativa al slot) en este frame,
-    // quedaría corrida respecto del slot que el DOM ya reordenó y, al desincronizar
-    // origin/selfDragging/dragX durante la limpieza, las dos cards se "re-enrocaban"
-    // de vuelta a su posición original. dragSettling es true en el MISMO render del
-    // commit (baterizado con el reorden), por lo que cubre exactamente esa ventana.
-    // `settleSV` (UI thread) la sube a 1 el worklet de layout en el MISMO commit que
-    // reordena el DOM, así que esta rama corre en lockstep con el reorden (sin esperar
-    // a que la re-evaluación por el prop JS `dragSettling` llegue un frame tarde →
-    // ese desfase era el parpadeo de ±itemW de todas las cards al soltar). `dragSettling`
-    // (prop) cubre los renders siguientes hasta el desenmascarado.
-    if (dragSettling || settleSV.value === 1) {
-      return { transform: [{ translateX: 0 }, { scale }] };
+    const slot = slotSV.value;
+    // Aún no entró al orden compartido (frame de montaje de un duplicado): oculto para
+    // no destellar en el slot 0 antes de que el efecto espejo actualice orderSV.
+    if (slot < 0) {
+      return { opacity: 0, transform: [{ translateX: 0 }, { scale }] };
     }
-    // Card que se arrastra (incluido el glide al soltar): sigue al dedo con dragX
-    // puro. Su slot del DOM NO cambia hasta el commit, así que dragX la coloca bien
-    // sin necesidad de compensar el slot.
+    // Posición base = slot * itemW desplazada por el FLIP de selección (slideOffset).
+    const base = slot * itemW + slideOffset.value;
+    // Card que se arrastra (incluido el glide al soltar): sigue al dedo sumando dragX
+    // sobre su base. Su slot NO cambia hasta el commit, así que base+dragX la coloca
+    // bien; al confirmar, base salta al slot destino y dragX vuelve a 0 → continuo.
     if (selfDragging.value === 1) {
-      return { transform: [{ translateX: dragX.value }, { scale }], zIndex: 20 };
-    }
-    const origin = dragOriginIdx.value;
-    const target = dragTargetIdx.value;
-    // En reposo (sin arrastre): sin transform.
-    if (origin < 0 || target < 0 || origin === target) {
-      return { transform: [{ translateX: 0 }, { scale }] };
-    }
-    // Hermanas: abren el hueco según su slot (indexInFront, en lockstep con el DOM)
-    // y se desliza suave con withTiming mientras dura el arrastre.
-    let off = 0;
-    if (indexInFront >= 0) {
-      if (target > origin) {
-        if (indexInFront > origin && indexInFront <= target) off = -itemW;
-      } else if (indexInFront >= target && indexInFront < origin) {
-        off = itemW;
-      }
-    }
-    return {
-      transform: [
-        { translateX: withTiming(off, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE }) },
-        { scale },
-      ],
-    };
-  }, [
-    selfDragging,
-    dragX,
-    dragOriginIdx,
-    dragTargetIdx,
-    lift,
-    itemW,
-    indexInFront,
-    dragSettling,
-    settleSV,
-  ]);
-
-  // Transición de layout PERSONALIZADA. CLAVE: lee `instantLayoutSV` en CADA
-  // invocación (cada cambio de layout), evitando el bug de Reanimated 4 que congela
-  // la config de LinearTransition al montar (con instantLayout=false → 1100ms) y NO
-  // re-lee `duration(0)` en renders posteriores → el reorden del commit se animaba
-  // 1100ms igual (confirmado: instantLayout=true llegaba a la tile en el frame del
-  // reorden y aun así animaba). Cuando es instantáneo, initialValues = target (cero
-  // movimiento); si no, anima current → target con la curva del carrusel. SIEMPRE
-  // adjunto (nunca undefined) para no congelar el snapshot ni hacer fantasma.
-  const tileLayout = useCallback(
-    (values: LayoutAnimationsValues) => {
-      'worklet';
-      if (instantLayoutSV.value === 1) {
-        // Punto de sincronización CLAVE: este worklet corre en el UI thread DENTRO del
-        // mismo commit que monta el reorden del DOM. Subir `settleSV` acá hace que el
-        // worklet de transform (wrapStyle) se re-evalúe en ese mismo frame y ponga
-        // translateX 0 en lockstep con el reorden → sin parpadeo de ±itemW al soltar.
-        settleSV.value = 1;
-        return {
-          initialValues: {
-            originX: values.targetOriginX,
-            originY: values.targetOriginY,
-            width: values.targetWidth,
-            height: values.targetHeight,
-          },
-          animations: {
-            originX: values.targetOriginX,
-            originY: values.targetOriginY,
-            width: values.targetWidth,
-            height: values.targetHeight,
-          },
-        };
-      }
       return {
-        initialValues: {
-          originX: values.currentOriginX,
-          originY: values.currentOriginY,
-          width: values.currentWidth,
-          height: values.currentHeight,
-        },
-        animations: {
-          originX: withTiming(values.targetOriginX, {
-            duration: CAROUSEL_FLOW_MS,
-            easing: CAROUSEL_EASE,
-          }),
-          originY: withTiming(values.targetOriginY, {
-            duration: CAROUSEL_FLOW_MS,
-            easing: CAROUSEL_EASE,
-          }),
-          width: withTiming(values.targetWidth, {
-            duration: CAROUSEL_FLOW_MS,
-            easing: CAROUSEL_EASE,
-          }),
-          height: withTiming(values.targetHeight, {
-            duration: CAROUSEL_FLOW_MS,
-            easing: CAROUSEL_EASE,
-          }),
-        },
+        opacity: 1,
+        transform: [{ translateX: base + dragX.value }, { scale }],
+        zIndex: 20,
       };
-    },
-    [instantLayoutSV, settleSV],
-  );
+    }
+    // Resto de las tiles: base + el hueco animado (gapSV, 0 salvo cuando se arrastra).
+    return { opacity: 1, transform: [{ translateX: base + gapSV.value }, { scale }] };
+  }, [selfDragging, dragX, lift, itemW, slotSV, slideOffset, gapSV]);
 
   return (
     <Animated.View
-      layout={tileLayout}
-      style={[styles.tileWrap, wrapStyle, isDragging && styles.tileDragging]}
+      style={[
+        styles.tileWrap,
+        { width: tileW },
+        wrapStyle,
+        isDragging && styles.tileDragging,
+      ]}
     >
       <Animated.Text
         pointerEvents="none"
@@ -1044,33 +1025,17 @@ export default function GeometrixScreen() {
   // Card que se está arrastrando (long-press + drag) para reordenar. Mientras
   // hay un drag activo se desactiva el scroll horizontal del carrusel.
   const [draggingId, setDraggingId] = useState<string | null>(null);
-  // True durante el ÚNICO render del commit de un reordenamiento por arrastre: el
-  // worklet de transform devuelve translateX 0 para TODAS las tiles ese frame y el
-  // reorden del DOM no se anima (instantLayoutSV=1 → layout instantáneo). Se limpia
-  // en el siguiente frame para volver a animar las selecciones.
-  const [dragSettling, setDragSettling] = useState(false);
-  // Bandera (1/0) de "layout instantáneo" compartida por TODAS las tiles. La pone en
-  // 1 el gesto de la card arrastrada (onStart) y la baja a 0 el desenmascarado (la
-  // reacción + el timeout de red de seguridad). El worklet de layout de cada tile la
-  // lee en cada cambio → el reorden del commit no se anima, las selecciones sí.
-  const instantLayoutSV = useSharedValue(0);
-  // Espejo en el UI thread de la ventana de "settle". Lo sube a 1 el worklet de layout
-  // (tileLayout) en el mismo commit que reordena el DOM y lo lee wrapStyle para poner
-  // translateX 0 en lockstep con el reorden (cierra el desfase de 1 frame del prop JS
-  // `dragSettling` que causaba el parpadeo). Se baja a 0 junto con instantLayoutSV.
-  const settleSV = useSharedValue(0);
-  // Red de seguridad: la limpieza real y sincronizada del settling la hace la
-  // reacción de UI thread definida más abajo (cuando dragOriginIdx vuelve a -1).
-  // Este timeout solo evita que el settling quede pegado si esa reacción no corre.
-  useEffect(() => {
-    if (!dragSettling) return;
-    const t = setTimeout(() => {
-      setDragSettling(false);
-      instantLayoutSV.value = 0;
-      settleSV.value = 0;
-    }, 120);
-    return () => clearTimeout(t);
-  }, [dragSettling, instantLayoutSV, settleSV]);
+  // Orden VISUAL compartido del carrusel (modelo FLIP). Espeja `carouselOrder` y vive
+  // en el UI thread para que cada tile derive su slot con `orderSV.indexOf(id)` sin el
+  // desfase de 1 frame de un prop JS. Las tiles se posicionan SOLO con translateX según
+  // su slot → NO hay reflow de Fabric al reordenar → sin la carrera que causaba el
+  // parpadeo. Init = orden natural de las geometrías base.
+  const orderSV = useSharedValue<string[]>(GEOMETRIES.map((g) => g.id));
+  // 1 = el próximo cambio de `orderSV` es un commit de arrastre → reposicionar INSTANTE
+  // (sin deslizar), porque la card arrastrada ya llegó por dragX y las hermanas por el
+  // hueco. La pone en 1 el worklet de soltado y la baja a 0 el efecto espejo (en la
+  // sincronización JS posterior, donde las selecciones vuelven a animar).
+  const instantOrderFlag = useSharedValue(0);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
   // su activación a mitad de un arrastre, el orden del carrusel no debe saltar.
   const frozenActivatingRef = useRef<Set<string> | null>(null);
@@ -1116,27 +1081,6 @@ export default function GeometrixScreen() {
   // leen para abrir el hueco. -1 = sin arrastre.
   const dragOriginIdx = useSharedValue(-1);
   const dragTargetIdx = useSharedValue(-1);
-  // Desenmascarar (dragSettling=false) SOLO cuando dragOriginIdx ya volvió a -1 en
-  // el UI thread. Antes se bajaba a ciegas en el siguiente frame (rAF): si el reset
-  // de origin/target del commit todavía no se había propagado al UI thread cuando
-  // dragSettling pasaba a false, la card recién soltada caía en la rama del hueco
-  // con origin/target viejos y se renderizaba un slot a la derecha (se "enrocaba"
-  // con la vecina del frente — el dato quedaba bien, pero se veía corrido). Como
-  // esta reacción corre en el UI thread en el mismo momento en que origin pasa a -1,
-  // garantiza que al desenmascarar el worklet ya lee el estado en reposo.
-  useAnimatedReaction(
-    () => dragOriginIdx.value,
-    (o, prev) => {
-      if (o === -1 && prev !== null && prev >= 0) {
-        // Corre en el UI thread DESPUÉS de que el commit registró su animación de
-        // layout (que leyó instantLayoutSV=1) → bajarla acá no afecta el reorden ya
-        // instantáneo; las próximas selecciones vuelven a animar.
-        instantLayoutSV.value = 0;
-        settleSV.value = 0;
-        runOnJS(setDragSettling)(false);
-      }
-    },
-  );
   const carScrollHandler = useAnimatedScrollHandler((e) => {
     carScrollX.value = e.contentOffset.x;
   });
@@ -1170,45 +1114,16 @@ export default function GeometrixScreen() {
     },
     [],
   );
-  // Commit del reordenamiento al soltar (modelo "pin + hueco"). Las tres
-  // actualizaciones de estado se baten en un único render (React 18): `active`
-  // reordenado + draggingId=null + dragSettling=true (LinearTransition instantáneo
-  // ese frame, y el hueco de las hermanas snapea a 0 sin animar). El worklet
-  // (siempre adjunto) devuelve translateX 0 en lockstep con el slot final vía la
-  // prop indexInFront → la posición visual no cambia en ese render → sin "fantasma".
+  // Commit del reordenamiento al soltar (modelo FLIP). El reposicionamiento VISUAL ya
+  // lo hizo el worklet de soltado en el UI thread (reescribió orderSV + reseteó dragX/
+  // origin/target), así que acá SOLO se sincroniza el dato (`active`) y se limpia el
+  // estado de React. `moveActiveTo` produce un `active` cuyo `carouselOrder` coincide
+  // con el orderSV que ya escribió el worklet → el efecto espejo lo reescribe con el
+  // mismo contenido (no-op visual). Se batea para entrar en un único render.
   const commitReorder = useCallback(
     (id: string, idx: number) => {
-      // Las cuatro transiciones del "soltar" DEBEN entrar en un único commit de
-      // React. Como esto se invoca desde el callback de un withTiming (vía
-      // runOnJS), el auto-batch de React no es confiable en ese contexto: si se
-      // aplican en renders separados queda un frame intermedio sin dragSettling y
-      // con el `active` ya reordenado → se arma una animación de 1100 ms
-      // (LinearTransition / hueco) que separa las dos cards al terminar el enroque.
-      // unstable_batchedUpdates fuerza el render único.
-      // NO adelantar settleSV acá (JS, pre-commit): el write llega al UI thread y
-      // re-evalúa wrapStyle (translateX 0 para TODAS) ANTES de que el render de React
-      // + el commit de Fabric reordenen el DOM → durante esa ventana líder la card
-      // arrastrada (sostenida en el slot destino por dragX) salta de vuelta a su slot
-      // de origen y la hermana del hueco vuelve de ±itemW → al montar el reorden
-      // saltan a su slot final ("swap in / swap out" de las imágenes). El único
-      // disparo en lockstep es el que hace tileLayout DENTRO del commit.
       unstable_batchedUpdates(() => {
-        setDragSettling(true);
         moveActiveTo(id, idx);
-        // NO reseteamos origin/target a -1 acá. En el frame del commit dragSettling
-        // es true, así que el worklet devuelve translateX 0 para TODAS las tiles
-        // (chequea dragSettling PRIMERO) → la rama del hueco no corre, no hace falta
-        // matarla con un reset síncrono. Reservar el reset al efecto de limpieza
-        // por-tile (corre un tick DESPUÉS del commit) es CLAVE: la reacción que
-        // desenmascara (setDragSettling(false) cuando dragOriginIdx → -1) sólo debe
-        // dispararse DESPUÉS de que el frame con dragSettling=true se haya pintado.
-        // Si reseteábamos origin acá (en el mismo batch que setDragSettling(true)),
-        // la reacción disparaba setDragSettling(false) casi en el acto, antes de que
-        // ese frame se pintara → el worklet de transform dejaba de devolver
-        // translateX 0 en el frame del reorden: la card "saltaba" a su slot original
-        // (con el DOM aún sin asentar) y luego se deslizaba al destino. Al diferir el
-        // reset, el commit pinta un frame instantáneo limpio y recién después la
-        // limpieza pone origin=-1 → la reacción desenmascara.
         frozenActivatingRef.current = null;
         setDraggingId(null);
       });
@@ -1220,6 +1135,24 @@ export default function GeometrixScreen() {
     const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
     return [...front, ...tail];
   }, [active, effActivating]);
+  // Espejo del orden VISUAL al UI thread. Cada vez que cambia `carouselOrder` (por una
+  // selección/deselección o por la sincronización post-arrastre), se baja el flag de
+  // "instantáneo" (las selecciones vuelven a deslizar) y se reescribe orderSV. Tras un
+  // commit de arrastre el contenido es idéntico al que ya escribió el worklet → no-op.
+  useEffect(() => {
+    instantOrderFlag.value = 0;
+    orderSV.value = carouselOrder;
+  }, [carouselOrder, instantOrderFlag, orderSV]);
+  // Orden de DOM ESTABLE: todas las geometrías base en orden natural + los duplicados
+  // activos ordenados de forma determinista (por id). Las tiles se renderizan SIEMPRE
+  // en este orden (keyed) para que el árbol NUNCA se reordene → sin reflow de Fabric;
+  // la posición visual la da translateX según el slot en orderSV. Solo cambia al
+  // agregar/quitar un duplicado.
+  const domOrder = useMemo<string[]>(() => {
+    const bases = GEOMETRIES.map((g) => g.id);
+    const dups = active.filter((id) => id.includes("::")).sort();
+    return [...bases, ...dups];
+  }, [active]);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
@@ -2285,8 +2218,13 @@ export default function GeometrixScreen() {
           contentContainerStyle={styles.gridContent}
           showsHorizontalScrollIndicator={false}
         >
-          <View style={styles.gridRow}>
-            {carouselOrder.map((gid: string) => {
+          <View
+            style={[
+              styles.gridRow,
+              { width: domOrder.length * tileItemW, height: tileW },
+            ]}
+          >
+            {domOrder.map((gid: string) => {
               const g = getGeometry(baseOf(gid));
               if (!g) return null;
               const selected = active.includes(gid);
@@ -2305,16 +2243,14 @@ export default function GeometrixScreen() {
                   isDragging={draggingId === gid}
                   itemW={tileItemW}
                   frontCount={frontIds.length}
-                  indexInFront={frontIds.indexOf(gid)}
                   onDragStart={handleDragStart}
                   onDragEnd={commitReorder}
                   screenW={width}
                   scrollX={carScrollX}
                   dragActive={carDragActive}
                   edgeIntent={carEdgeIntent}
-                  instantLayoutSV={instantLayoutSV}
-                  settleSV={settleSV}
-                  dragSettling={dragSettling}
+                  orderSV={orderSV}
+                  instantOrderFlag={instantOrderFlag}
                   dragOriginIdx={dragOriginIdx}
                   dragTargetIdx={dragTargetIdx}
                 />
@@ -3932,11 +3868,11 @@ const styles = StyleSheet.create({
 
   grid: { flexGrow: 0, marginTop: -25 },
   gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 0, paddingRight: 20 },
-  // Sin `gap`: las animaciones de layout (LinearTransition) miden mal el reordenamiento
-  // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
-  gridRow: { flexDirection: "row" },
-  tileWrap: { marginRight: 8 },
-  tileRest: { transform: [{ translateX: 0 }, { scale: 1 }] },
+  // Modelo FLIP: contenedor relativo de altura/ancho fijos (dados inline). Las tiles
+  // se posicionan en absoluto y se ubican SOLO con translateX según su slot (orderSV)
+  // → el árbol nunca se reordena, no hay reflow de Fabric y el espaciado lo da itemW.
+  gridRow: { position: "relative" },
+  tileWrap: { position: "absolute", left: 0, top: 0 },
   tileDragging: { zIndex: 50, elevation: 8 },
   tileTitle: {
     position: "absolute",

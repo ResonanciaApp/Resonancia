@@ -32,15 +32,19 @@ reconciliación global mientras hubiera CUALQUIER activación pendiente
 devuelve la geometría a su orden natural: si deseleccionabas una tile mientras otra
 seguía en su HOLD, la deseleccionada quedaba atascada fuera de lugar.
 
-**Gotcha Reanimated (layout):** NO usar `gap` en el flex row del carrusel. Las
-animaciones de layout (`LinearTransition`) miden mal las posiciones con `gap` y la
-tile no vuelve a su lugar al deseleccionar (queda "pegada" al frente). Usar margen
-por tile (`marginRight`) en el wrapper animado en su lugar.
+**Posicionamiento (modelo FLIP, NO layout animations):** las tiles se renderizan en un
+orden de DOM ESTABLE (`domOrder`) y se ubican SOLO por `translateX = slot*itemW` (slot =
+`orderSV.indexOf(id)` en el UI thread). El deslizamiento al (de)seleccionar es un FLIP
+(`slideOffset = (prevSlot-slot)*itemW` → `withTiming(0)`), NO `LinearTransition` ni reorden
+del DOM. Por eso `gridRow` es `position:"relative"` con `width/height` inline y las tiles
+`position:"absolute"` — NADA de `gap` ni `marginRight` (el espaciado lo da `itemW=tileW+8`
+dentro del translateX). Detalle del por qué (race-free, sin reflow de Fabric) en
+`reanimated-layout-toggle-ghost.md`.
 
-**How to apply:** mantené el orden como `useMemo(active, activatingIds)`. No agregues
-un gate global de "pending" sobre la reconciliación. Para acompañar con scroll, calculá
-el slot de aterrizaje como `front.indexOf(id)` (front = seleccionadas que NO están en
-activatingIds) y hacé `scrollTo({x: max(0, insertAt*(tileW+8) - tileW)})` dentro de un
-`requestAnimationFrame` para esperar al re-render del reorden. Activaciones concurrentes
-= set explícito (no un único id). Timers en un `Map` ref para cancelarlos al
-deseleccionar/limpiar/blur; el orden se reconcilia solo porque es derivado.
+**How to apply:** mantené el orden como `useMemo(active, activatingIds)` (derivado, NO
+mutado) y espejalo a `orderSV` con un `useEffect`. No agregues un gate global de "pending"
+sobre la reconciliación. Para acompañar con scroll, calculá el slot de aterrizaje como
+`front.indexOf(id)` (front = seleccionadas que NO están en activatingIds) y hacé
+`scrollTo({x: max(0, insertAt*(tileW+8) - tileW)})` dentro de un `requestAnimationFrame`.
+Activaciones concurrentes = set explícito (no un único id). Timers en un `Map` ref para
+cancelarlos al deseleccionar/limpiar/blur; el orden se reconcilia solo porque es derivado.
