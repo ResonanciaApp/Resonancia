@@ -2821,7 +2821,7 @@ const styles = StyleSheet.create({
   actionLeft: {
     position: "absolute",
     top: 0,
-    left: -19,
+    left: -21,
     zIndex: 6,
     flexDirection: "column",
     alignItems: "flex-start",
