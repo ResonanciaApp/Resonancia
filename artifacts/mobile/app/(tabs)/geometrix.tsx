@@ -537,13 +537,13 @@ function CarouselTile({
     opacity: settingsOpacity.value,
   }));
 
-  // El icono de ajustes entra (fade in) cuando la card queda seleccionada y
-  // estática (tras el glide del carrusel); desaparece al deseleccionar.
+  // El icono de ajustes entra (fade in) 0,3 s después de seleccionar la card
+  // y de forma rápida (200 ms); desaparece al deseleccionar.
   useEffect(() => {
     if (isSelected && !isActivating) {
       settingsOpacity.value = withDelay(
-        CAROUSEL_FLOW_MS,
-        withTiming(1, { duration: 320, easing: Easing.out(Easing.ease) }),
+        300,
+        withTiming(1, { duration: 200, easing: Easing.out(Easing.ease) }),
       );
     } else {
       settingsOpacity.value = withTiming(0, { duration: 150 });
