@@ -2892,7 +2892,7 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
   grid: { flexGrow: 0, marginTop: 0 },
-  gridContent: { paddingTop: 26, paddingBottom: 2, paddingLeft: 20, paddingRight: 20 },
+  gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 20, paddingRight: 20 },
   // Sin `gap`: las animaciones de layout (LinearTransition) miden mal el reordenamiento
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
   gridRow: { flexDirection: "row" },
@@ -2930,7 +2930,7 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
-    marginTop: 15,
+    marginTop: 5,
     marginBottom: 0,
     marginHorizontal: -20,
   },
