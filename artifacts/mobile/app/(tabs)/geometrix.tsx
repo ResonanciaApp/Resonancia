@@ -937,7 +937,7 @@ export default function GeometrixScreen() {
       pinchStart.value = livePinch.value;
     })
     .onUpdate((e) => {
-      const z = Math.min(6, Math.max(0.3, pinchStart.value * e.scale));
+      const z = Math.min(6, Math.max(0.1, pinchStart.value * e.scale));
       livePinch.value = z;
       // Redibuja el SVG del objetivo en tiempo real (zoom = tamaño, no transform).
       runOnJS(setLivePinchNum)(z);
@@ -1300,8 +1300,8 @@ export default function GeometrixScreen() {
                         contentFit="contain"
                       />
                     </View>
-                    <Text style={styles.emptyText}>Toca una geometría para comenzar</Text>
-                    <Text style={styles.emptySub}>Combina varias y crea tu composición</Text>
+                    <Text style={styles.emptyText}>Las geometrías animadas</Text>
+                    <Text style={styles.emptySub}>Achícalas hasta el tamaño de los thumbnails</Text>
                   </Animated.View>
                 )}
               </View>
