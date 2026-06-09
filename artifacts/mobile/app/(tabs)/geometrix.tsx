@@ -17,6 +17,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  unstable_batchedUpdates,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -783,17 +784,21 @@ function CarouselTile({
     if (selfDragging.value === 1) {
       return { transform: [{ translateX: dragX.value }, { scale }], zIndex: 20 };
     }
-    let off = 0;
     const origin = dragOriginIdx.value;
     const target = dragTargetIdx.value;
-    if (origin >= 0 && target >= 0 && origin !== target) {
-      const slot = idxSV.value;
-      if (slot >= 0) {
-        if (target > origin) {
-          if (slot > origin && slot <= target) off = -itemW;
-        } else if (slot >= target && slot < origin) {
-          off = itemW;
-        }
+    // Sin arrastre activo (origin/target = -1): el hueco vuelve a 0 al INSTANTE,
+    // no con withTiming. Así ningún frame residual del "soltar" puede armar una
+    // animación de 1100 ms que separe las cards después del enroque.
+    if (origin < 0 || target < 0 || origin === target) {
+      return { transform: [{ translateX: 0 }, { scale }] };
+    }
+    let off = 0;
+    const slot = idxSV.value;
+    if (slot >= 0) {
+      if (target > origin) {
+        if (slot > origin && slot <= target) off = -itemW;
+      } else if (slot >= target && slot < origin) {
+        off = itemW;
       }
     }
     return {
@@ -1003,10 +1008,19 @@ export default function GeometrixScreen() {
   // cambia en ese render → sin "fantasma".
   const commitReorder = useCallback(
     (id: string, idx: number) => {
-      moveActiveTo(id, idx);
-      frozenActivatingRef.current = null;
-      setDraggingId(null);
-      setDragSettling(true);
+      // Las cuatro transiciones del "soltar" DEBEN entrar en un único commit de
+      // React. Como esto se invoca desde el callback de un withTiming (vía
+      // runOnJS), el auto-batch de React no es confiable en ese contexto: si se
+      // aplican en renders separados queda un frame intermedio con `anyDragging`
+      // todavía true y el `active` ya reordenado → se arma una animación de
+      // 1100 ms (LinearTransition / hueco) que separa las dos cards al terminar
+      // el enroque. unstable_batchedUpdates fuerza el render único.
+      unstable_batchedUpdates(() => {
+        setDragSettling(true);
+        moveActiveTo(id, idx);
+        frozenActivatingRef.current = null;
+        setDraggingId(null);
+      });
     },
     [moveActiveTo],
   );

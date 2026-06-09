@@ -40,6 +40,27 @@ the sibling-gap style branch, which animates its translateX back toward 0 before
 reorders → micro-jump. Post-commit `isDragging===false` means the tile is already on
 `tileRest`, so the resets are visually inert.
 
+## Release commit MUST be explicitly batched (not React auto-batch)
+
+The release commit runs from a `withTiming` completion callback via `runOnJS`. React 18
+auto-batching is NOT reliable in that context. If `moveActiveTo` + `setDraggingId(null)` +
+`setDragSettling(true)` flush in separate renders, you get an intermediate render where
+`anyDragging` is still true AND `active` is already reordered → an animated (non-instant)
+gap/`LinearTransition` of `CAROUSEL_FLOW_MS` gets armed, and the two swapped tiles DRIFT
+APART over ~1s leaving empty slots after the swap.
+
+**Fix:** wrap all release state transitions in `unstable_batchedUpdates(() => { ... })`
+(from `react-native`) so they land in ONE commit. Order: set `dragSettling(true)` first,
+then `moveActiveTo`, then `setDraggingId(null)`.
+
+**Belt-and-suspenders:** in the sibling-gap worklet, when no drag is active
+(`dragOriginIdx < 0 || dragTargetIdx < 0`) return `translateX: 0` IMMEDIATELY (plain, no
+`withTiming`). A `withTiming(0, CAROUSEL_FLOW_MS)` at rest means any stale release frame can
+still animate a long tail; the instant return kills that class of drift entirely.
+
+**Diagnostic tell:** if the post-release artifact lasts ~`CAROUSEL_FLOW_MS` (vs a 1-frame
+flash), the cause is an armed animation (batching/snapshot), not a slot mismatch.
+
 ## Still-true general rule about `layout={undefined}`
 
 Never set `Animated.View layout={undefined}` to "pause" layout animation — it freezes the
