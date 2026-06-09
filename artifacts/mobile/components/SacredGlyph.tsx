@@ -137,11 +137,17 @@ function poly(r: number, sides: number, rot = -90, cx = C, cy = C): string {
   return out.join(" ");
 }
 
-/** Retícula triangular (hex) para Flor / Semilla de la Vida. */
-function lattice(R: number, rings: number): [number, number][] {
+/**
+ * Genera los centros de una malla hexagonal. angleDeg rota los vectores base
+ * para cambiar la orientación del patrón:
+ *   0°  → "flat-top"  (vecino directo a la derecha, ninguno arriba)
+ *  -30° → "pointy-top" (vecino directo arriba = Flor de la Vida canónica)
+ */
+function lattice(R: number, rings: number, angleDeg = 0): [number, number][] {
   const pts: [number, number][] = [];
-  const ax: [number, number] = [R, 0];
-  const bx: [number, number] = [R * Math.cos(Math.PI / 3), R * Math.sin(Math.PI / 3)];
+  const a = (angleDeg * Math.PI) / 180;
+  const ax: [number, number] = [R * Math.cos(a), R * Math.sin(a)];
+  const bx: [number, number] = [R * Math.cos(Math.PI / 3 + a), R * Math.sin(Math.PI / 3 + a)];
   for (let i = -rings; i <= rings; i++) {
     for (let j = -rings; j <= rings; j++) {
       const dist = (Math.abs(i) + Math.abs(j) + Math.abs(i + j)) / 2;
@@ -186,7 +192,7 @@ export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
       ];
     }
     case "flor-vida": {
-      const cs = lattice(11, 2);
+      const cs = lattice(11, 2, -30);
       return [
         ...cs.map(([x, y], i) => <Circle key={`c${i}`} cx={x} cy={y} r={11} />),
         <Circle key="b1" cx={C} cy={C} r={33} />,
@@ -194,7 +200,7 @@ export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
       ];
     }
     case "semilla-vida": {
-      const cs = lattice(13, 1);
+      const cs = lattice(13, 1, -30);
       return [
         ...cs.map(([x, y], i) => <Circle key={`c${i}`} cx={x} cy={y} r={13} />),
         <Circle key="ring" cx={C} cy={C} r={39} />,
@@ -776,7 +782,7 @@ export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
     case "ivm": {
       // Lattice isotrópica vectorial: retícula triangular hex conectada
       const R = 12;
-      const pts = lattice(R, 3);
+      const pts = lattice(R, 3, -30);
       const lines: React.ReactNode[] = [];
       for (let i = 0; i < pts.length; i++) {
         for (let j = i + 1; j < pts.length; j++) {
