@@ -831,27 +831,18 @@ export default function GeometrixScreen() {
       const t = setTimeout(() => {
         carouselTimers.current.delete(id);
         // Sale del estado "activándose": el orden derivado lo mueve al frente.
+        // El carrusel NO acompaña con scroll: la vista se queda estática en su
+        // lugar (preferencia del usuario); solo la tile se desliza al frente.
         const nextSet = new Set(activatingIdsRef.current);
         nextSet.delete(id);
         activatingIdsRef.current = nextSet;
         setActivatingIds(nextSet);
-        // Si se quitó durante el HOLD, no acompañar con scroll.
-        if (!activeRef.current.includes(id)) return;
-        // Slot de aterrizaje = índice en el frente (seleccionadas ya asentadas).
-        const front = activeRef.current.filter((x) => !nextSet.has(x));
-        const insertAt = front.indexOf(id);
-        if (insertAt < 0) return;
-        const targetX = Math.max(0, insertAt * (tileW + 8) - tileW);
-        // Esperar al re-render del reorden antes de deslizar el carrusel.
-        requestAnimationFrame(() => {
-          carouselScrollRef.current?.scrollTo({ x: targetX, animated: true });
-        });
       }, CAROUSEL_HOLD_MS);
       carouselTimers.current.set(id, t);
     }
     // Seleccionarla para el pellizco (si se quita, el effect reasigna).
     setSelectedId(id);
-  }, [dropActivating, tileW]);
+  }, [dropActivating]);
 
   // Vacía por completo el lienzo: quita todas las geometrías activas, resetea
   // sus ajustes por capa (quedan en defaults al re-agregar) y resetea los

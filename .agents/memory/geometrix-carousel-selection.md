@@ -6,7 +6,13 @@ description: How the Geometrix tile carousel decides order/glow when geometries 
 El carrusel de geometrías (pantalla Geometrix) replica el comportamiento del mockup
 "Aurora Equilibrado": al seleccionar una tile se enciende con su color + resplandor
 EN SU LUGAR durante ~1s (HOLD), y recién después se desliza al frente (en orden de
-selección) mientras el carrusel hace auto-scroll para revelar el slot donde aterriza.
+selección).
+
+**Auto-scroll: DESACTIVADO por preferencia del usuario.** El carrusel NO acompaña a
+la geometría con scroll: la vista se queda estática en su lugar; solo la tile se
+desliza al frente. (Se implementó el auto-scroll y luego el usuario pidió quitarlo.)
+Si se reactiva: calcular slot = `front.indexOf(id)` y `scrollTo({x: max(0,
+insertAt*(tileW+8)-tileW)})` dentro de un `requestAnimationFrame`.
 
 **Regla central:** el orden del carrusel se DERIVA de forma determinista, NO se muta.
 `carouselOrder = [seleccionadas-que-ya-terminaron-su-activación (orden de selección),
