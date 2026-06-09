@@ -551,6 +551,9 @@ export default function GeometrixScreen() {
   const loupeReveal = useSharedValue(0);
   // Flag UI-thread para que longPress no active la lupa durante un pellizco.
   const isPinching = useSharedValue(false);
+  // Flag inmediato (UI-thread, sin animación) que indica que la lupa está activa.
+  // Se usa como guard en panGesture para bloquear el drag desde el primer frame.
+  const isLoupeActive = useSharedValue(false);
   const [loupeVisible, setLoupeVisible] = useState(false);
   const [loupeGeoId, setLoupeGeoId] = useState<GeometryId | null>(null);
   // Rotación manual en vivo (gesto de dos dedos). El ángulo en curso se lleva en
@@ -966,6 +969,7 @@ export default function GeometrixScreen() {
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       isPinching.value = true;
+      isLoupeActive.value = false;
       pinchStart.value = livePinch.value;
       // Ocultar la lupa en cuanto entra el segundo dedo: evita que el estado
       // mixto (lupa + pellizco simultáneo) bloquee el zoom.
@@ -995,12 +999,18 @@ export default function GeometrixScreen() {
     .minDuration(380)
     .onStart((e) => {
       if (isPinching.value) return;
+      isLoupeActive.value = true;
+      // Reiniciar la baseline del drag para que cuando la lupa se cierre
+      // la geometría no salte a una posición acumulada del gesto previo.
+      dragStartX.value = liveDragX.value;
+      dragStartY.value = liveDragY.value;
       loupeX.value = e.x;
       loupeY.value = e.y;
       runOnJS(setLoupeGeoId)(pinchTargetId);
       runOnJS(setLoupeVisible)(true);
     })
     .onFinalize(() => {
+      isLoupeActive.value = false;
       runOnJS(setLoupeVisible)(false);
     });
 
@@ -1055,14 +1065,16 @@ export default function GeometrixScreen() {
     .minPointers(1)
     .maxPointers(1)
     .onStart(() => {
+      // Lupa activa → no capturar nueva baseline; longPress.onStart ya la reseteó.
+      if (isLoupeActive.value) return;
       // liveDragX/Y ya están sincronizados con el offset confirmado del objetivo
       // via useEffect — leerlos desde el worklet es seguro (son shared values).
       dragStartX.value = liveDragX.value;
       dragStartY.value = liveDragY.value;
     })
     .onUpdate((e) => {
-      // Lupa activa → solo seguir al dedo; la geometría se queda bloqueada.
-      if (loupeReveal.value > 0.1) {
+      // Lupa activa → solo seguir al dedo; la geometría queda completamente bloqueada.
+      if (isLoupeActive.value) {
         loupeX.value = e.x;
         loupeY.value = e.y;
         return;
