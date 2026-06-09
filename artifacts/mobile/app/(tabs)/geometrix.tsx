@@ -27,6 +27,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withRepeat,
   withSequence,
   withTiming,
@@ -536,11 +537,37 @@ function CarouselTile({
     shadowOpacity: glow.value,
   }));
 
+  // Título de la geometría sobre la card: aparece con fade-in al unísono de la
+  // selección (activación) y se desvanece 0,15 s después de que la geometría se
+  // estaciona en su posición (fin del HOLD + glide al frente).
+  const titleOpacity = useSharedValue(0);
+  useEffect(() => {
+    if (isActivating) {
+      const FADE_IN = 280;
+      const PARK = CAROUSEL_HOLD_MS + CAROUSEL_FLOW_MS;
+      titleOpacity.value = withSequence(
+        withTiming(1, { duration: FADE_IN, easing: Easing.out(Easing.ease) }),
+        withDelay(
+          PARK - FADE_IN + 150,
+          withTiming(0, { duration: 320, easing: Easing.in(Easing.ease) }),
+        ),
+      );
+    }
+  }, [isActivating, titleOpacity]);
+  const titleStyle = useAnimatedStyle(() => ({ opacity: titleOpacity.value }));
+
   return (
     <Animated.View
       layout={LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
       style={styles.tileWrap}
     >
+      <Animated.Text
+        pointerEvents="none"
+        numberOfLines={1}
+        style={[styles.tileTitle, titleStyle]}
+      >
+        {name}
+      </Animated.Text>
       <Pressable
         onPress={onPress}
         style={[
@@ -2983,6 +3010,17 @@ const styles = StyleSheet.create({
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
   gridRow: { flexDirection: "row" },
   tileWrap: { marginRight: 8 },
+  tileTitle: {
+    position: "absolute",
+    bottom: "100%",
+    left: -8,
+    right: -8,
+    marginBottom: 6,
+    textAlign: "center",
+    fontSize: 11,
+    fontWeight: "700",
+    color: colors.foreground,
+  },
   tile: {
     aspectRatio: 1,
     borderRadius: 16,
