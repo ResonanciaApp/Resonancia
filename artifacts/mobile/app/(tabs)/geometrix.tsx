@@ -5,6 +5,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -15,6 +16,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -68,8 +70,11 @@ import {
   type GlobalSettings,
 } from "@/data/geometrix-creations";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { AUDIO_MAP } from "@/config/audio-map";
+import { SESSIONS, type Session } from "@/data/sessions";
 
 const colors = colorsConst.light;
 const CARD_BORDER = "#161f33";
@@ -936,6 +941,107 @@ export default function GeometrixScreen() {
   // Suprime el primer disparo del efecto dirty (causado por el propio loadCreation).
   const justLoadedRef = useRef(false);
 
+  // ── Tema de fondo: audio PROPIO de Geometrix ───────────────────────────────
+  // El usuario elige una sesión/música de toda la biblioteca para que suene
+  // mientras crea. Es un reproductor SEPARADO del global: no usa el MiniPlayer y
+  // no persiste fuera de Geometrix (se corta al salir de la pestaña y se libera
+  // al desmontar). Para evitar audio doble, al elegir un tema se corta el
+  // reproductor global de la app.
+  const { stop: stopGlobalPlayer } = usePlayer();
+  const themePlayerRef = useRef<AudioPlayer | null>(null);
+  const [themeSession, setThemeSession] = useState<Session | null>(null);
+  const [themeSearchOpen, setThemeSearchOpen] = useState(false);
+  const [themeQuery, setThemeQuery] = useState("");
+
+  // Resultados de búsqueda sobre TODA la biblioteca; solo sesiones reproducibles
+  // (con audio bundleado o remoto), para que toda fila suene al tocarla.
+  const themeResults = useMemo(() => {
+    const q = themeQuery.trim().toLowerCase();
+    if (!q) return [];
+    return SESSIONS.filter((s) => {
+      if (!(AUDIO_MAP[s.id] ?? s.audioUri)) return false;
+      return (
+        s.title.toLowerCase().includes(q) ||
+        s.categoryLabel.toLowerCase().includes(q) ||
+        s.subtitle.toLowerCase().includes(q)
+      );
+    }).slice(0, 50);
+  }, [themeQuery]);
+
+  const stopTheme = useCallback(() => {
+    const p = themePlayerRef.current;
+    if (p) {
+      try {
+        p.pause();
+      } catch {
+        /* ignore */
+      }
+    }
+    setThemeSession(null);
+  }, []);
+
+  const playTheme = useCallback(
+    (session: Session) => {
+      const audioFile =
+        AUDIO_MAP[session.id] ?? (session.audioUri ? { uri: session.audioUri } : undefined);
+      if (!audioFile) return;
+      // Audio exclusivo dentro de Geometrix: cortar el reproductor global y el
+      // intro one-shot para que no suenen dos audios a la vez.
+      try {
+        stopGlobalPlayer();
+      } catch {
+        /* ignore */
+      }
+      try {
+        stopGeometrixIntro();
+      } catch {
+        /* ignore */
+      }
+      let p = themePlayerRef.current;
+      if (!p) {
+        try {
+          p = createAudioPlayer(null, { updateInterval: 1000 });
+          themePlayerRef.current = p;
+        } catch {
+          return;
+        }
+      }
+      try {
+        p.loop = true;
+        p.volume = 1;
+        p.replace(audioFile);
+        p.play();
+        setThemeSession(session);
+      } catch {
+        /* ignore */
+      }
+    },
+    [stopGlobalPlayer],
+  );
+
+  // Cortar el tema al salir de la pestaña Geometrix (las pestañas quedan montadas,
+  // así que el cleanup de desmontaje no corre al cambiar de tab).
+  useFocusEffect(
+    useCallback(() => {
+      return () => stopTheme();
+    }, [stopTheme]),
+  );
+
+  // Liberar el reproductor de tema al desmontar la pantalla.
+  useEffect(() => {
+    return () => {
+      const p = themePlayerRef.current;
+      if (p) {
+        try {
+          p.remove();
+        } catch {
+          /* ignore */
+        }
+        themePlayerRef.current = null;
+      }
+    };
+  }, []);
+
   // Audio de intro ("logo reveal" de cubo-3): gestionado por un singleton de
   // módulo (lib/geometrixIntro). Se precarga al arrancar la app y suena UNA sola
   // vez por lanzamiento. Aquí solo disparamos play (one-shot) y pausa.
@@ -1662,7 +1768,116 @@ export default function GeometrixScreen() {
               />
             </View>
           </View>
+          {/* Tema de fondo: abre el buscador de toda la biblioteca para elegir un
+              audio que suene SOLO dentro de Geometrix. */}
+          <Pressable
+            onPress={() => setThemeSearchOpen(true)}
+            hitSlop={10}
+            style={[styles.themeBtn, themeSession ? styles.themeBtnOn : null]}
+            accessibilityRole="button"
+            accessibilityLabel="Elegir audio de fondo"
+          >
+            <Feather name="volume-2" size={18} color={colors.mutedForeground} />
+          </Pressable>
         </View>
+
+        {/* ── Buscador de tema de fondo (audio propio de Geometrix) ── */}
+        <Modal
+          visible={themeSearchOpen}
+          transparent
+          animationType="fade"
+          statusBarTranslucent
+          onRequestClose={() => setThemeSearchOpen(false)}
+        >
+          <Pressable
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.6)" }]}
+            onPress={() => setThemeSearchOpen(false)}
+          />
+          <View style={[styles.themeSheet, { paddingTop: insets.top + 16 }]}>
+            <View style={styles.themeHeaderRow}>
+              <Text style={styles.themeTitle}>Tu tema de fondo</Text>
+              <Pressable onPress={() => setThemeSearchOpen(false)} hitSlop={10}>
+                <Feather name="x" size={22} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+            <Text style={styles.themeSub}>
+              Elegí una sesión o música para que suene mientras creás. Suena solo aquí, en Geometrix.
+            </Text>
+
+            <View style={styles.themeSearchBar}>
+              <Feather name="search" size={16} color={colors.mutedForeground} />
+              <TextInput
+                value={themeQuery}
+                onChangeText={setThemeQuery}
+                placeholder="Buscar sesiones, músicas, sonidos..."
+                placeholderTextColor={colors.mutedForeground}
+                style={styles.themeSearchInput}
+                autoFocus
+              />
+              {themeQuery.length > 0 ? (
+                <Pressable onPress={() => setThemeQuery("")} hitSlop={8}>
+                  <Feather name="x" size={16} color={colors.mutedForeground} />
+                </Pressable>
+              ) : null}
+            </View>
+
+            {themeSession ? (
+              <Pressable style={styles.themeStopRow} onPress={stopTheme}>
+                <View style={styles.themeRowIcon}>
+                  <Feather name="volume-x" size={16} color={colors.primary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.themeRowTitle} numberOfLines={1}>
+                    Sonando: {themeSession.title}
+                  </Text>
+                  <Text style={styles.themeRowSub}>Tocá para silenciar</Text>
+                </View>
+              </Pressable>
+            ) : null}
+
+            <ScrollView
+              style={styles.themeResults}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              {themeQuery.trim().length === 0 ? (
+                <Text style={styles.themeHint}>Escribí para buscar en toda la biblioteca.</Text>
+              ) : themeResults.length === 0 ? (
+                <Text style={styles.themeHint}>Sin resultados. Probá con otro término.</Text>
+              ) : (
+                themeResults.map((s) => {
+                  const isCurrent = themeSession?.id === s.id;
+                  return (
+                    <Pressable
+                      key={s.id}
+                      style={[styles.themeRow, isCurrent ? styles.themeRowOn : null]}
+                      onPress={() => {
+                        playTheme(s);
+                        setThemeSearchOpen(false);
+                      }}
+                    >
+                      <View style={styles.themeRowIcon}>
+                        <Feather
+                          name={isCurrent ? "volume-2" : "music"}
+                          size={16}
+                          color={isCurrent ? colors.primary : colors.mutedForeground}
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.themeRowTitle} numberOfLines={1}>
+                          {s.title}
+                        </Text>
+                        <Text style={styles.themeRowSub} numberOfLines={1}>
+                          {s.categoryLabel}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  );
+                })
+              )}
+            </ScrollView>
+          </View>
+        </Modal>
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
         <ScrollView
@@ -3237,6 +3452,78 @@ const styles = StyleSheet.create({
   titleLogo: { width: 29, height: 29, marginLeft: 6, opacity: 0.92 },
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
+
+  // ── Botón "tema de fondo" (top-right del header) ──
+  // Círculo sin relleno, borde punteado celeste (= mutedForeground) con ícono de
+  // sonido al centro. Al estar sonando, un tinte celeste sutil lo marca activo.
+  themeBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderStyle: "dotted",
+    borderColor: colors.mutedForeground,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    backgroundColor: "transparent",
+  },
+  themeBtnOn: { backgroundColor: hexAlpha("#7A8FA8", 0.12) },
+
+  // ── Buscador de tema de fondo (modal) ──
+  themeSheet: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#0B0F14",
+    paddingHorizontal: 20,
+  },
+  themeHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  themeTitle: { fontSize: 20, fontWeight: "700", color: colors.foreground },
+  themeSub: { fontSize: 13, color: colors.mutedForeground, marginTop: 4, marginBottom: 14 },
+  themeSearchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 44,
+  },
+  themeSearchInput: { flex: 1, fontSize: 15, color: colors.foreground, paddingVertical: 0 },
+  themeResults: { marginTop: 12, flex: 1 },
+  themeHint: { color: colors.mutedForeground, fontSize: 13, textAlign: "center", marginTop: 24 },
+  themeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 11,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+  },
+  themeRowOn: { backgroundColor: hexAlpha("#BE9650", 0.08) },
+  themeStopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 11,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    backgroundColor: hexAlpha("#BE9650", 0.1),
+    marginTop: 12,
+  },
+  themeRowIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  themeRowTitle: { fontSize: 14, fontWeight: "600", color: colors.foreground },
+  themeRowSub: { fontSize: 12, color: colors.mutedForeground, marginTop: 2 },
 
   grid: { flexGrow: 0, marginTop: 0 },
   gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 0, paddingRight: 20 },
