@@ -42,3 +42,4 @@
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
 - [Community wall pattern (shared-glyphs)](community-wall-pattern.md) — recipe as jsonb (active/master/settings) in shared_glyphs; same like-toggle+FOR UPDATE pattern as shared_mixes; previews render live from recipe on client
 - [Modal bottom sheet rounded corners](modal-bottom-sheet-rounded-corners.md) — backdrop flex:1 NO cubre las esquinas cortadas; usar absoluteFill + container justifyContent:"flex-end"
+- [Mockup-sandbox verify gotchas](mockup-verify-gotchas.md) — external_url screenshots cache stale Vite errors; verify fixes via curl transform grep; DESIGN subagents emit escaped backticks in template literals (babel parse error)
