@@ -2720,11 +2720,6 @@ const styles = StyleSheet.create({
   actionTopRow: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 999,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(122,143,168,0.45)",
-    backgroundColor: "rgba(255,255,255,0.02)",
-    overflow: "hidden",
   },
   actionTopBtn: {
     width: 38,
