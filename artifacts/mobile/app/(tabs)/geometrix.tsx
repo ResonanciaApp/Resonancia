@@ -579,8 +579,8 @@ function CarouselTile({
           </Animated.View>
         </View>
       </Pressable>
-      {/* Icono de ajustes: aparece (fade in) sobre la card al quedar
-          seleccionada y estática; abre los ajustes personalizados. */}
+      {/* Flechita de ajustes: aparece (fade in) en la esquina derecha de la
+          card al quedar seleccionada y estática; abre los ajustes. */}
       <Animated.View
         pointerEvents={isSelected && !isActivating ? "auto" : "none"}
         style={[styles.tileSettings, settingsStyle]}
@@ -592,7 +592,7 @@ function CarouselTile({
           accessibilityRole="button"
           accessibilityLabel={`Ajustes de ${name}`}
         >
-          <Feather name="settings" size={13} color={colors.primary} />
+          <Feather name="chevron-right" size={16} color={colors.primary} />
         </Pressable>
       </Animated.View>
     </Animated.View>
@@ -2899,21 +2899,15 @@ const styles = StyleSheet.create({
   tileWrap: { marginRight: 8 },
   tileSettings: {
     position: "absolute",
-    top: -24,
-    left: 0,
-    right: 0,
-    alignItems: "center",
+    top: 6,
+    right: 6,
     zIndex: 5,
   },
   tileSettingsBtn: {
     width: 22,
     height: 22,
-    borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(190,150,80,0.12)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.35)",
   },
   tile: {
     aspectRatio: 1,
