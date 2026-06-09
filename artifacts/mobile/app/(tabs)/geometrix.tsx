@@ -2314,26 +2314,24 @@ export default function GeometrixScreen() {
           </View>
           {/* Tema de fondo: si NO suena nada, abre el buscador; si YA está
               sonando, el mismo botón detiene y resetea el reproductor. */}
-          <View style={styles.themeBtnWrap}>
-            <Pressable
-              onPress={() => {
-                if (themeSession) stopTheme();
-                else setThemeSearchOpen(true);
-              }}
-              hitSlop={12}
-              style={[styles.themeBtn, themeSession ? styles.themeBtnOn : null]}
-              accessibilityRole="button"
-              accessibilityLabel={themeSession ? "Detener audio de fondo" : "Elegir audio de fondo"}
-            >
-              <Animated.View style={themeGlowStyle}>
-                <Feather
-                  name="volume-2"
-                  size={15}
-                  color={themeSession ? "rgba(255,255,255,0.88)" : colors.mutedForeground}
-                />
-              </Animated.View>
-            </Pressable>
-          </View>
+          <Pressable
+            onPress={() => {
+              if (themeSession) stopTheme();
+              else setThemeSearchOpen(true);
+            }}
+            hitSlop={12}
+            style={[styles.themeBtn, themeSession ? styles.themeBtnOn : null]}
+            accessibilityRole="button"
+            accessibilityLabel={themeSession ? "Detener audio de fondo" : "Elegir audio de fondo"}
+          >
+            <Animated.View style={themeGlowStyle}>
+              <Feather
+                name="volume-2"
+                size={15}
+                color={themeSession ? "rgba(255,255,255,0.88)" : colors.mutedForeground}
+              />
+            </Animated.View>
+          </Pressable>
         </View>
 
         {/* ── Buscador de tema de fondo (audio propio de Geometrix) ── */}
@@ -4024,25 +4022,13 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
   // ── Botón "tema de fondo" (top-right del header) ──
-  // Círculo sin relleno, borde punteado celeste (= mutedForeground) con ícono de
-  // sonido al centro. Al estar sonando, un tinte celeste sutil lo marca activo.
-  // Contenedor del botón + sus efectos (halo de glow y anillo de onda) centrados
-  // detrás del círculo. overflow visible para que onda/halo se derramen afuera.
-  // 48x48 (mayor que el círculo de 37) para que el hitSlop tenga lugar real: el
-  // hitSlop se recorta a los límites del padre directo, así que con el wrap al
-  // mismo tamaño que el botón el área tocable no crecía. Aquí el área efectiva
-  // pasa a ser ~48x48, cómoda para el dedo.
-  themeBtnWrap: {
-    width: 48,
-    height: 48,
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  // Mismo tamaño y fondo que el botón Fuego de Inicio (40×40, borderRadius 20)
+  // para que el círculo quede alineado a la misma distancia del borde de pantalla.
   themeBtn: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.03)",
