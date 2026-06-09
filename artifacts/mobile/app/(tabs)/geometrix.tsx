@@ -27,7 +27,6 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
   withRepeat,
   withSequence,
   withTiming,
@@ -485,9 +484,7 @@ type CarouselTileProps = {
   isSelected: boolean;
   isActivating: boolean;
   color: string;
-  defaultColor: string;
   onPress: () => void;
-  onOpenSettings: () => void;
 };
 
 // Tile del carrusel de geometrías. Maneja su propia animación de selección al
@@ -500,13 +497,10 @@ function CarouselTile({
   isSelected,
   isActivating,
   color,
-  defaultColor,
   onPress,
-  onOpenSettings,
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
   const glow = useSharedValue(isSelected ? 0.66 : 0);
-  const settingsOpacity = useSharedValue(0);
 
   useEffect(() => {
     if (isActivating) {
@@ -533,23 +527,6 @@ function CarouselTile({
     shadowOpacity: glow.value,
   }));
 
-  const settingsStyle = useAnimatedStyle(() => ({
-    opacity: settingsOpacity.value,
-  }));
-
-  // El icono de ajustes entra (fade in) 0,3 s después de seleccionar la card
-  // y de forma rápida (200 ms); desaparece al deseleccionar.
-  useEffect(() => {
-    if (isSelected && !isActivating) {
-      settingsOpacity.value = withDelay(
-        300,
-        withTiming(1, { duration: 200, easing: Easing.out(Easing.ease) }),
-      );
-    } else {
-      settingsOpacity.value = withTiming(0, { duration: 150 });
-    }
-  }, [isSelected, isActivating, settingsOpacity]);
-
   return (
     <Animated.View
       layout={LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
@@ -559,7 +536,7 @@ function CarouselTile({
         onPress={onPress}
         style={[
           styles.tile,
-          { width: tileW, borderColor: isSelected ? "#1c234c" : CARD_BORDER },
+          { width: tileW, borderColor: isSelected ? color : CARD_BORDER },
           isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
         ]}
       >
@@ -583,23 +560,6 @@ function CarouselTile({
           </Animated.View>
         </View>
       </Pressable>
-      {/* Flechita de ajustes: aparece (fade in) abajo de la geometría, centrada
-          y apuntando hacia abajo, al quedar seleccionada y estática; abre los
-          ajustes. Toma el color por defecto de la geometría. */}
-      <Animated.View
-        pointerEvents={isSelected && !isActivating ? "auto" : "none"}
-        style={[styles.tileSettings, settingsStyle]}
-      >
-        <Pressable
-          onPress={onOpenSettings}
-          hitSlop={10}
-          style={styles.tileSettingsBtn}
-          accessibilityRole="button"
-          accessibilityLabel={`Ajustes de ${name}`}
-        >
-          <Feather name="chevron-down" size={16} color={defaultColor} />
-        </Pressable>
-      </Animated.View>
     </Animated.View>
   );
 }
@@ -1482,13 +1442,7 @@ export default function GeometrixScreen() {
                   isSelected={active.includes(g.id)}
                   isActivating={activatingIds.has(g.id)}
                   color={getSettings(g.id).color}
-                  defaultColor={g.color}
                   onPress={() => toggleGeometry(g.id)}
-                  onOpenSettings={() => {
-                    setSelectedId(g.id);
-                    setSettingsGeoId(g.id);
-                    setSettingsOpen(true);
-                  }}
                 />
               );
             })}
@@ -3026,20 +2980,6 @@ const styles = StyleSheet.create({
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
   gridRow: { flexDirection: "row" },
   tileWrap: { marginRight: 8 },
-  tileSettings: {
-    position: "absolute",
-    bottom: 6,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    zIndex: 5,
-  },
-  tileSettingsBtn: {
-    width: 22,
-    height: 22,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   tile: {
     aspectRatio: 1,
     borderRadius: 16,
