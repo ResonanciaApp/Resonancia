@@ -73,6 +73,15 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 const colors = colorsConst.light;
 const CARD_BORDER = "#161f33";
 
+// hex (#rrggbb) → rgba con alpha. Usado para los bordes de las cards del carrusel.
+const hexAlpha = (hex: string, a: number) => {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
 // Carrusel de geometrías — animación de selección estilo "Aurora".
 // HOLD = activación "en el lugar" (color + resplandor) antes de deslizarse al
 // frente; FLOW = duración del glide/reorden; EASE = curva fluida sin rebote.
@@ -536,7 +545,7 @@ function CarouselTile({
         onPress={onPress}
         style={[
           styles.tile,
-          { width: tileW, borderColor: isSelected ? color : CARD_BORDER },
+          { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, 0.8) },
           isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
         ]}
       >
