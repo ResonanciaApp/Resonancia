@@ -230,6 +230,15 @@ function GeometryLayer({
   useEffect(() => {
     enter.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.ease) });
   }, [enter]);
+  // Glow de aparición: mismo efecto que las cards del carrusel al activarse
+  // (resplandor que crece y se asienta). Halo de sombra alrededor del glifo.
+  const appearGlow = useSharedValue(0);
+  useEffect(() => {
+    appearGlow.value = withSequence(
+      withTiming(1, { duration: 500, easing: Easing.out(Easing.ease) }),
+      withTiming(0.66, { duration: 500, easing: Easing.inOut(Easing.ease) }),
+    );
+  }, [appearGlow]);
   const {
     color,
     gradientId,
@@ -341,6 +350,8 @@ function GeometryLayer({
       opacity: opacity * safeMaster * fade.value * enter.value,
     };
   });
+  // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
+  const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
 
   // Tamaño REAL al que se redibuja el SVG = tamaño base × magnificación
   // confirmada. Al crecer el size, el SVG (vector) queda nítido a cualquier
@@ -385,15 +396,28 @@ function GeometryLayer({
           </View>
         </>
       )}
-      <SacredGlyph
-        id={geo.id}
-        color={color}
-        gradient={grad}
-        size={effectiveSize}
-        strokeWidth={sw}
-        kaleidoscope={kaleidoscope}
-        kaleidSegments={kaleidSegments}
-      />
+      <Animated.View
+        style={[
+          styles.layer,
+          {
+            shadowColor: color,
+            shadowOffset: { width: 0, height: 0 },
+            shadowRadius: Math.max(12, Math.min(30, effectiveSize * 0.1)),
+          },
+          glowStyle,
+        ]}
+        pointerEvents="none"
+      >
+        <SacredGlyph
+          id={geo.id}
+          color={color}
+          gradient={grad}
+          size={effectiveSize}
+          strokeWidth={sw}
+          kaleidoscope={kaleidoscope}
+          kaleidSegments={kaleidSegments}
+        />
+      </Animated.View>
     </Animated.View>
   );
 }
