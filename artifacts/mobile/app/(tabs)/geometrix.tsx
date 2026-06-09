@@ -1888,9 +1888,6 @@ export default function GeometrixScreen() {
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            <View style={[styles.savedIcon, { backgroundColor: "rgba(122,143,168,0.12)", borderColor: "rgba(122,143,168,0.35)" }]}>
-              <Feather name="hexagon" size={24} color={colors.mutedForeground} />
-            </View>
             <Text style={styles.savedTitle}>Lienzo vacío</Text>
             <Text style={styles.savedSubtitle}>
               Activá al menos una geometría antes de guardar.
