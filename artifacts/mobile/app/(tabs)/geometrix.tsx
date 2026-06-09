@@ -981,35 +981,17 @@ export default function GeometrixScreen() {
     });
 
   // Mantener el dedo quieto sobre la geometría activa → aparece la lupa circular.
-  // El usuario puede arrastrar suavemente para explorar distintas zonas.
+  // Se compone con pinchGesture en Gesture.Race() para que el pellizco (2 dedos)
+  // cancele automáticamente la lupa sin necesidad de callbacks de bajo nivel
+  // (onTouchesBegan/onTouchesMove no están soportados en LongPress en RNGH 2.x).
   const longPressGesture = Gesture.LongPress()
     .minDuration(380)
-    .maxDistance(99999)
-    // Si hay más de un dedo desde el inicio (= pellizco) → fallar de inmediato
-    // para no competir con pinchGesture.
-    .onTouchesBegan((e, manager) => {
-      if (e.allTouches.length > 1) {
-        manager.fail();
-      }
-    })
+    .maxDistance(40)
     .onStart((e) => {
       loupeX.value = e.x;
       loupeY.value = e.y;
       runOnJS(setLoupeGeoId)(pinchTargetId);
       runOnJS(setLoupeVisible)(true);
-    })
-    .onTouchesMove((e, manager) => {
-      // Si el usuario agrega un segundo dedo mientras la lupa está visible →
-      // ocultarla y ceder el gesto al pellizco.
-      if (e.allTouches.length > 1) {
-        runOnJS(setLoupeVisible)(false);
-        manager.fail();
-        return;
-      }
-      if (e.allTouches.length > 0) {
-        loupeX.value = e.allTouches[0].x;
-        loupeY.value = e.allTouches[0].y;
-      }
     })
     .onFinalize(() => {
       runOnJS(setLoupeVisible)(false);
@@ -1120,7 +1102,14 @@ export default function GeometrixScreen() {
     .numberOfTaps(2)
     .onEnd(() => runOnJS(setImmersive)(true));
 
-  const canvasGesture = Gesture.Simultaneous(doubleTapGesture, longPressGesture, pinchGesture, rotationGesture, panGesture);
+  // Race(longPress, pinch): el pellizco (2 dedos) activa antes de los 380ms →
+  // cancela el longPress automáticamente; 1 dedo quieto → lupa gana la carrera.
+  const canvasGesture = Gesture.Simultaneous(
+    doubleTapGesture,
+    Gesture.Race(longPressGesture, pinchGesture),
+    rotationGesture,
+    panGesture,
+  );
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
