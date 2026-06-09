@@ -796,6 +796,9 @@ function CarouselTile({
                 selfDragging.value = 0;
                 dragOriginIdx.value = -1;
                 dragTargetIdx.value = -1;
+                // Las reacciones de slotSV/gapSV ya corrieron con flag=1 (instantáneo).
+                // Resetear AHORA para que la próxima selección/arrastre vuelva a animar.
+                instantOrderFlag.value = 0;
               }
               runOnJS(onDragEnd)(id, target);
             },
@@ -882,9 +885,12 @@ function CarouselTile({
       if (instantOrderFlag.value === 1) {
         gapSV.value = off;
       } else {
+        // Respuesta rápida al cambio de slot destino: las hermanas abren/cierran el hueco
+        // en 180ms con ease-out (arranca rápido, desacelera suave). CAROUSEL_FLOW_MS (1100ms)
+        // era demasiado lento y causaba que las hermanas siempre se quedaran atrás del dedo.
         gapSV.value = withTiming(off, {
-          duration: CAROUSEL_FLOW_MS,
-          easing: CAROUSEL_EASE,
+          duration: 180,
+          easing: Easing.out(Easing.cubic),
         });
       }
     },
