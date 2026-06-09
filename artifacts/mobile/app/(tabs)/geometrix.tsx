@@ -35,6 +35,7 @@ import Animated, {
   useAnimatedStyle,
   useFrameCallback,
   useSharedValue,
+  type LayoutAnimationsValues,
   withDelay,
   withRepeat,
   withSequence,
@@ -541,10 +542,14 @@ type CarouselTileProps = {
   onDragEnd: (id: string, targetIdx: number) => void;
   // Estado de arrastre compartido: lo escribe la card que se arrastra y lo leen
   // las hermanas para abrir el hueco. origin/target son slots del frente (-1 = sin
-  // arrastre). `instantLayout` desactiva la animación de LinearTransition durante
-  // el arrastre y el frame del commit; `dragSettling` es true SOLO en el frame del
-  // commit (para snapear el hueco al instante, no animarlo 1100 ms).
-  instantLayout: boolean;
+  // arrastre). `instantLayoutSV` (shared value 1/0) hace que la transición de layout
+  // sea instantánea durante el arrastre y el frame del commit. Se lee en CADA cambio
+  // de layout (worklet personalizado), NO con el truco `LinearTransition.duration(0)`:
+  // Reanimated 4 congela la config de la animación de layout al montar (la tile monta
+  // con instantLayout=false → duration 1100ms) y NO re-lee duration(0) en renders
+  // posteriores → el reorden del commit se animaba 1100ms igual. `dragSettling` es
+  // true SOLO en el frame del commit (para snapear el hueco al instante, no animarlo).
+  instantLayoutSV: SharedValue<number>;
   dragSettling: boolean;
   dragOriginIdx: SharedValue<number>;
   dragTargetIdx: SharedValue<number>;
@@ -573,7 +578,7 @@ function CarouselTile({
   indexInFront,
   onDragStart,
   onDragEnd,
-  instantLayout,
+  instantLayoutSV,
   dragSettling,
   dragOriginIdx,
   dragTargetIdx,
@@ -660,16 +665,6 @@ function CarouselTile({
   useEffect(() => {
     frontCountSV.value = frontCount;
   }, [frontCount, frontCountSV]);
-  const dbgIdxRef = useRef(indexInFront);
-  useEffect(() => {
-    if (dbgIdxRef.current !== indexInFront && indexInFront >= 0) {
-      // eslint-disable-next-line no-console
-      console.log(
-        `[DROP-DBG] tile ${id} idx ${dbgIdxRef.current}->${indexInFront} instantLayout=${instantLayout} isDragging=${isDragging}`,
-      );
-    }
-    dbgIdxRef.current = indexInFront;
-  }, [indexInFront, instantLayout, isDragging, id]);
   // Limpieza del estado de arrastre DESPUÉS del commit (cuando isDragging pasa a
   // false porque el padre ya hizo draggingId=null). Recién acá apagamos
   // selfDragging y reseteamos dragX + origin/target: hacerlo antes (en el callback
@@ -736,6 +731,10 @@ function CarouselTile({
           dragActive.value = 1;
           selfDragging.value = 1;
           didActivate.value = 1;
+          // Layout instantáneo desde el arrastre hasta el commit. Se pone acá (UI
+          // thread, mucho antes del commit) y lo lee el worklet de layout en cada
+          // cambio; el desenmascarado lo baja a 0. Reanimated 4 ignora duration(0).
+          instantLayoutSV.value = 1;
           lift.value = withTiming(1, { duration: 160 });
           runOnJS(onDragStart)(id);
         })
@@ -801,6 +800,7 @@ function CarouselTile({
       dragX,
       edgeIntent,
       idxSV,
+      instantLayoutSV,
       itemW,
       lastTransX,
       lift,
@@ -869,9 +869,66 @@ function CarouselTile({
     dragSettling,
   ]);
 
+  // Transición de layout PERSONALIZADA. CLAVE: lee `instantLayoutSV` en CADA
+  // invocación (cada cambio de layout), evitando el bug de Reanimated 4 que congela
+  // la config de LinearTransition al montar (con instantLayout=false → 1100ms) y NO
+  // re-lee `duration(0)` en renders posteriores → el reorden del commit se animaba
+  // 1100ms igual (confirmado: instantLayout=true llegaba a la tile en el frame del
+  // reorden y aun así animaba). Cuando es instantáneo, initialValues = target (cero
+  // movimiento); si no, anima current → target con la curva del carrusel. SIEMPRE
+  // adjunto (nunca undefined) para no congelar el snapshot ni hacer fantasma.
+  const tileLayout = useCallback(
+    (values: LayoutAnimationsValues) => {
+      'worklet';
+      if (instantLayoutSV.value === 1) {
+        return {
+          initialValues: {
+            originX: values.targetOriginX,
+            originY: values.targetOriginY,
+            width: values.targetWidth,
+            height: values.targetHeight,
+          },
+          animations: {
+            originX: values.targetOriginX,
+            originY: values.targetOriginY,
+            width: values.targetWidth,
+            height: values.targetHeight,
+          },
+        };
+      }
+      return {
+        initialValues: {
+          originX: values.currentOriginX,
+          originY: values.currentOriginY,
+          width: values.currentWidth,
+          height: values.currentHeight,
+        },
+        animations: {
+          originX: withTiming(values.targetOriginX, {
+            duration: CAROUSEL_FLOW_MS,
+            easing: CAROUSEL_EASE,
+          }),
+          originY: withTiming(values.targetOriginY, {
+            duration: CAROUSEL_FLOW_MS,
+            easing: CAROUSEL_EASE,
+          }),
+          width: withTiming(values.targetWidth, {
+            duration: CAROUSEL_FLOW_MS,
+            easing: CAROUSEL_EASE,
+          }),
+          height: withTiming(values.targetHeight, {
+            duration: CAROUSEL_FLOW_MS,
+            easing: CAROUSEL_EASE,
+          }),
+        },
+      };
+    },
+    [instantLayoutSV],
+  );
+
   return (
     <Animated.View
-      layout={LinearTransition.duration(instantLayout ? 0 : CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
+      layout={tileLayout}
       style={[styles.tileWrap, wrapStyle, isDragging && styles.tileDragging]}
     >
       <Animated.Text
@@ -972,19 +1029,27 @@ export default function GeometrixScreen() {
   // Card que se está arrastrando (long-press + drag) para reordenar. Mientras
   // hay un drag activo se desactiva el scroll horizontal del carrusel.
   const [draggingId, setDraggingId] = useState<string | null>(null);
-  // True durante el ÚNICO render del commit de un reordenamiento por arrastre:
-  // mantiene LinearTransition instantáneo (duration 0) ese frame para que el
-  // reordenamiento del DOM no se anime (las transforms ya dejaron todo en su
-  // sitio). Se limpia en el siguiente frame para volver a animar las selecciones.
+  // True durante el ÚNICO render del commit de un reordenamiento por arrastre: el
+  // worklet de transform devuelve translateX 0 para TODAS las tiles ese frame y el
+  // reorden del DOM no se anima (instantLayoutSV=1 → layout instantáneo). Se limpia
+  // en el siguiente frame para volver a animar las selecciones.
   const [dragSettling, setDragSettling] = useState(false);
+  // Bandera (1/0) de "layout instantáneo" compartida por TODAS las tiles. La pone en
+  // 1 el gesto de la card arrastrada (onStart) y la baja a 0 el desenmascarado (la
+  // reacción + el timeout de red de seguridad). El worklet de layout de cada tile la
+  // lee en cada cambio → el reorden del commit no se anima, las selecciones sí.
+  const instantLayoutSV = useSharedValue(0);
   // Red de seguridad: la limpieza real y sincronizada del settling la hace la
   // reacción de UI thread definida más abajo (cuando dragOriginIdx vuelve a -1).
   // Este timeout solo evita que el settling quede pegado si esa reacción no corre.
   useEffect(() => {
     if (!dragSettling) return;
-    const t = setTimeout(() => setDragSettling(false), 120);
+    const t = setTimeout(() => {
+      setDragSettling(false);
+      instantLayoutSV.value = 0;
+    }, 120);
     return () => clearTimeout(t);
-  }, [dragSettling]);
+  }, [dragSettling, instantLayoutSV]);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
   // su activación a mitad de un arrastre, el orden del carrusel no debe saltar.
   const frozenActivatingRef = useRef<Set<string> | null>(null);
@@ -1042,6 +1107,10 @@ export default function GeometrixScreen() {
     () => dragOriginIdx.value,
     (o, prev) => {
       if (o === -1 && prev !== null && prev >= 0) {
+        // Corre en el UI thread DESPUÉS de que el commit registró su animación de
+        // layout (que leyó instantLayoutSV=1) → bajarla acá no afecta el reorden ya
+        // instantáneo; las próximas selecciones vuelven a animar.
+        instantLayoutSV.value = 0;
         runOnJS(setDragSettling)(false);
       }
     },
@@ -1106,11 +1175,11 @@ export default function GeometrixScreen() {
         // dispararse DESPUÉS de que el frame con dragSettling=true se haya pintado.
         // Si reseteábamos origin acá (en el mismo batch que setDragSettling(true)),
         // la reacción disparaba setDragSettling(false) casi en el acto, antes de que
-        // ese frame se pintara → instantLayout quedaba false en el frame del reorden
-        // → LinearTransition animaba el reordenamiento: la card "saltaba" a su slot
-        // original (translateX→0 con el DOM aún sin asentar) y luego se deslizaba al
-        // destino. Al diferir el reset, el commit pinta un frame instantáneo limpio y
-        // recién después la limpieza pone origin=-1 → la reacción desenmascara.
+        // ese frame se pintara → el worklet de transform dejaba de devolver
+        // translateX 0 en el frame del reorden: la card "saltaba" a su slot original
+        // (con el DOM aún sin asentar) y luego se deslizaba al destino. Al diferir el
+        // reset, el commit pinta un frame instantáneo limpio y recién después la
+        // limpieza pone origin=-1 → la reacción desenmascara.
         frozenActivatingRef.current = null;
         setDraggingId(null);
       });
@@ -1122,10 +1191,6 @@ export default function GeometrixScreen() {
     const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
     return [...front, ...tail];
   }, [active, effActivating]);
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log(`[DROP-DBG] flags draggingId=${draggingId} dragSettling=${dragSettling}`);
-  }, [draggingId, dragSettling]);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
@@ -2218,7 +2283,7 @@ export default function GeometrixScreen() {
                   scrollX={carScrollX}
                   dragActive={carDragActive}
                   edgeIntent={carEdgeIntent}
-                  instantLayout={draggingId !== null || dragSettling}
+                  instantLayoutSV={instantLayoutSV}
                   dragSettling={dragSettling}
                   dragOriginIdx={dragOriginIdx}
                   dragTargetIdx={dragTargetIdx}
