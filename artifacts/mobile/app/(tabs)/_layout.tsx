@@ -189,7 +189,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           accessibilityRole="button"
           accessibilityLabel="Mostrar menú"
         >
-          <Feather name="chevron-up" size={17} color={INACTIVE_COLOR} />
+          <View style={styles.revealHandleBar} />
         </Pressable>
       </Animated.View>
     </>
@@ -307,5 +307,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 4,
+  },
+  revealHandleBar: {
+    width: 38,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(128,148,181,0.45)",
   },
 });

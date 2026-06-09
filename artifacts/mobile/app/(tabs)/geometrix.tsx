@@ -597,7 +597,7 @@ function CarouselTile({
           accessibilityRole="button"
           accessibilityLabel={`Ajustes de ${name}`}
         >
-          <View style={[styles.tileSettingsLine, { backgroundColor: defaultColor }]} />
+          <Feather name="chevron-down" size={16} color={defaultColor} />
         </Pressable>
       </Animated.View>
     </Animated.View>
@@ -2945,11 +2945,6 @@ const styles = StyleSheet.create({
     height: 22,
     alignItems: "center",
     justifyContent: "center",
-  },
-  tileSettingsLine: {
-    width: 16,
-    height: 2,
-    borderRadius: 1,
   },
   tile: {
     aspectRatio: 1,
