@@ -2795,7 +2795,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 0,
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
   },
   thumbsRowStart: {
     justifyContent: "flex-start",
