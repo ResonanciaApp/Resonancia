@@ -483,6 +483,7 @@ type CarouselTileProps = {
   isActivating: boolean;
   color: string;
   onPress: () => void;
+  onOpenSettings: () => void;
 };
 
 // Tile del carrusel de geometrías. Maneja su propia animación de selección al
@@ -496,6 +497,7 @@ function CarouselTile({
   isActivating,
   color,
   onPress,
+  onOpenSettings,
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
   const glow = useSharedValue(isSelected ? 0.66 : 0);
@@ -557,6 +559,16 @@ function CarouselTile({
             />
           </Animated.View>
         </View>
+      </Pressable>
+      {/* Flechita: abre los ajustes personalizados de esta geometría. */}
+      <Pressable
+        onPress={onOpenSettings}
+        style={styles.tileCaret}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={`Ajustes de ${name}`}
+      >
+        <Feather name="chevron-down" size={16} color={colors.mutedForeground} />
       </Pressable>
     </Animated.View>
   );
@@ -1402,6 +1414,11 @@ export default function GeometrixScreen() {
                   isActivating={activatingIds.has(g.id)}
                   color={getSettings(g.id).color}
                   onPress={() => toggleGeometry(g.id)}
+                  onOpenSettings={() => {
+                    setSelectedId(g.id);
+                    setSettingsGeoId(g.id);
+                    setSettingsOpen(true);
+                  }}
                 />
               );
             })}
@@ -2854,7 +2871,12 @@ const styles = StyleSheet.create({
   // Sin `gap`: las animaciones de layout (LinearTransition) miden mal el reordenamiento
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
   gridRow: { flexDirection: "row" },
-  tileWrap: { marginRight: 8 },
+  tileWrap: { marginRight: 8, alignItems: "center" },
+  tileCaret: {
+    marginTop: 4,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   tile: {
     aspectRatio: 1,
     borderRadius: 16,
