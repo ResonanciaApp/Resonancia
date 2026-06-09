@@ -997,6 +997,7 @@ export default function GeometrixScreen() {
   // lupa está visible). isPinching evita que el pellizco active la lupa.
   const longPressGesture = Gesture.LongPress()
     .minDuration(380)
+    .maxDistance(99999)
     .onStart((e) => {
       if (isPinching.value) return;
       isLoupeActive.value = true;
