@@ -1,44 +1,48 @@
 ---
-name: Reanimated layout-prop toggle ghost flash
-description: Toggling Animated.View layout={undefined} during a drag leaves a stale snapshot that flashes the element at its old slot on re-enable
+name: Reanimated drag-to-reorder without ghost flash
+description: Why live mid-drag DOM reorder always ghosts on release, and the pin-the-dragged-tile model that fixes it
 ---
 
-When an `Animated.View` has `layout={LinearTransition...}` and you toggle that prop to
-`undefined` while dragging (to stop layout animation fighting the finger), Reanimated
-stops taking layout snapshots. The last snapshot is frozen at the slot the element was in
-when `layout` went `undefined`. When the prop flips back to a real transition on release,
-Reanimated interpolates FROM that stale (old) slot TO the current slot → a ghost of the
-card flashes at its pre-drag position for a frame, then settles.
+## Decision: don't reorder the dragged item in the DOM during the drag
 
-**Rule:** never set `layout={undefined}` to "pause" layout animation. Keep it always-on and
-make it instant during the phase you don't want it to animate:
-`layout={LinearTransition.duration(isDragging ? 0 : NORMAL_MS).easing(EASE)}`.
-`duration(0)` keeps snapshots fresh (instant slot moves, no ghost on release); `undefined`
-deactivates snapshotting (stale origin). Fallback `duration(1)` if a platform misbehaves.
+In a Reanimated drag-to-reorder list, the durable fix for one-frame ghost/jump artifacts
+is to PIN the dragged item: it stays in its origin DOM slot and follows the finger via a
+transform; only siblings shift (animated ±itemW gap offset); the real array reorder commits
+ONCE on release.
 
-**Why:** observed in Geometrix carousel drag-to-reorder — selected card flashed at its old
-right-side slot just before settling into the new position.
+**Why:** any model that reorders the dragged item LIVE while a transform follows the finger
+fights an unavoidable 1-frame mismatch — the transform runs on the UI thread but the DOM
+reorder is a JS round-trip (`runOnJS(setActive)`) that commits a frame or two later. Every
+compensation scheme against that gap (predicted slot, or even mirrored rendered-slot SV +
+useAnimatedReaction) only narrows the window; it never closes it, and the leftover shows as
+a right-then-snap-left jump mid-drag and an origin-slot ghost flash on release.
 
-**How to apply:** any drag/reorder where the dragged item disables layout animation while a
-transform follows the finger. Pair with translateX compensation as before.
+**How to apply (the model that worked in Geometrix carousel):**
+- Dragged tile: `dragX = pure effective finger translation` (no slot compensation, its DOM
+  slot never moves mid-drag). It only writes shared `dragOriginIdx`/`dragTargetIdx`.
+- Siblings: read origin/target and open the gap with `translateX: withTiming(±itemW)`.
+- A render-level style switch (`anyDragging ? wrapStyle : styles.tileRest`) — NOT a worklet
+  branch — so the transform→0 reset lands in the SAME render as the DOM reorder.
+- Commit on release batches (React 18 auto-batch): `moveActiveTo` + `setDraggingId(null)` +
+  `setDragSettling(true)`. Net visual position is constant: DOM slot moves +Δ, transform
+  drops -Δ in one render. `dragSettling` keeps `LinearTransition.duration(0)` for that one
+  frame (cleared next rAF) so the reorder itself doesn't animate.
 
-## Mid-drag right/left jump at slot crossings (related, distinct bug)
+## Release-phase race (subtle, cost a review cycle to catch)
 
-Separate from the release ghost: while dragging across a slot boundary the dragged card
-jumps right then snaps left into place. **Cause:** the translateX compensation
-(`dragX = effectiveTx - (slot - originSlot)*itemW`) was computed from the *predicted* slot
-set synchronously on the UI thread, but the real DOM reorder (`runOnJS(setActive)`) commits a
-frame or two later. For that gap the card is over-compensated (predicted slot moved, DOM
-hasn't) → flashes right, then snaps back when the DOM catches up.
+Keep the "this tile is dragging" flag (`selfDragging`) at 1 through the release glide AND
+until AFTER the commit. Clear it (and dragX/origin/target) in a `useEffect` keyed on
+`isDragging` going false — never in the `withTiming` completion callback.
 
-**Rule:** compensate against the **real rendered slot** (a shared value mirrored from the
-rendered `indexInFront` via `useEffect`), NOT the predicted index. Keep the predicted index
-only to dedup the `setActive` call. Add a `useAnimatedReaction` on that real-slot SV (gated to
-the tile being dragged) that re-runs the compensation when it changes, using a stored
-`lastEffectiveTx`. Then the base shift (DOM reorder) and the dragX adjustment land in the same
-tick → net-zero, no jump.
+**Why:** if you clear `selfDragging` in the UI-thread completion callback, there's a gap
+before `runOnJS` commits where `anyDragging` is still true but the tile already fell into
+the sibling-gap style branch, which animates its translateX back toward 0 before the DOM
+reorders → micro-jump. Post-commit `isDragging===false` means the tile is already on
+`tileRest`, so the resets are visually inert.
 
-**Why:** observed in Geometrix carousel after adding edge auto-scroll — most visible swapping
-into the first card. **How to apply:** any worklet that predicts a reorder before an async
-`runOnJS` state update commits it; never compensate a transform against the prediction, only
-against the committed/rendered position.
+## Still-true general rule about `layout={undefined}`
+
+Never set `Animated.View layout={undefined}` to "pause" layout animation — it freezes the
+last snapshot at the old slot and ghosts on re-enable. Keep layout always-on and make it
+instant for the phase you don't want animated: `layout={LinearTransition.duration(instant ?
+0 : NORMAL_MS).easing(EASE)}`.

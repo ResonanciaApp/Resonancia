@@ -537,8 +537,15 @@ type CarouselTileProps = {
   frontCount: number;
   indexInFront: number;
   onDragStart: (id: string) => void;
-  onMoveTo: (id: string, idx: number) => void;
-  onDragEnd: (id: string) => void;
+  onDragEnd: (id: string, targetIdx: number) => void;
+  // Estado de arrastre compartido: lo escribe la card que se arrastra y lo leen
+  // las hermanas para abrir el hueco. origin/target son slots del frente (-1 = sin
+  // arrastre). `anyDragging` activa el modo arrastre; `instantLayout` desactiva la
+  // animación de LinearTransition durante el arrastre y el frame del commit.
+  anyDragging: boolean;
+  instantLayout: boolean;
+  dragOriginIdx: SharedValue<number>;
+  dragTargetIdx: SharedValue<number>;
   // Auto-scroll del carrusel durante el arrastre (ver bloque del padre).
   screenW: number;
   scrollX: SharedValue<number>;
@@ -563,8 +570,11 @@ function CarouselTile({
   frontCount,
   indexInFront,
   onDragStart,
-  onMoveTo,
   onDragEnd,
+  anyDragging,
+  instantLayout,
+  dragOriginIdx,
+  dragTargetIdx,
   screenW,
   scrollX,
   dragActive,
@@ -619,26 +629,23 @@ function CarouselTile({
 
   // ── Reordenamiento por arrastre ───────────────────────────────────────────
   // Long-press (~250 ms) + drag horizontal. Mientras se arrastra, la card sigue
-  // al dedo (translateX) y se eleva; las demás se deslizan a su nuevo lugar
-  // (LinearTransition). El reordenamiento se aplica EN VIVO sobre `active`:
-  // cada vez que la card cruza un slot, el padre la reubica y se compensa el
-  // translateX para que la card quede siempre bajo el dedo (sin saltos).
+  // al dedo (translateX). Modelo "pin + hueco": la card arrastrada NO se reordena
+  // en el DOM durante el gesto — se queda en su slot de origen y sigue al dedo con
+  // dragX; las hermanas abren el hueco con un offset (±itemW). El reordenamiento
+  // real de `active` se confirma UNA sola vez al soltar (onDragEnd). Así se elimina
+  // el desfase de 1 frame entre dragX (UI thread) y el reordenamiento del DOM
+  // (round-trip a JS por setActive) que causaba el "fantasma" que saltaba.
   const dragX = useSharedValue(0);
   const lift = useSharedValue(0);
-  const originIdx = useSharedValue(0);
-  const curIdx = useSharedValue(0);
   const idxSV = useSharedValue(indexInFront);
   const frontCountSV = useSharedValue(frontCount);
   // Offset de scroll del carrusel al iniciar el arrastre + último translationX
-  // del dedo. Sirven para recomputar el índice cuando el dedo está quieto en el
+  // del dedo. Sirven para recomputar el destino cuando el dedo está quieto en el
   // borde y el carrusel se auto-desplaza (la posición efectiva cambia por scroll).
   const scrollStartX = useSharedValue(0);
   const lastTransX = useSharedValue(0);
-  // Último desplazamiento efectivo (dedo + scroll) aplicado: lo usa la reacción a
-  // idxSV para recompensar dragX cuando el DOM termina de reordenar.
-  const lastEffTx = useSharedValue(0);
-  // 1 solo en la card que se está arrastrando AHORA (no en todas las arrastrables):
-  // así la reacción al scroll recomputa el índice únicamente para esta card.
+  // 1 solo en la card que se está arrastrando AHORA: así la reacción al scroll y
+  // el estilo (dragX vs hueco) aplican únicamente a esta card.
   const selfDragging = useSharedValue(0);
   useEffect(() => {
     idxSV.value = indexInFront;
@@ -646,53 +653,47 @@ function CarouselTile({
   useEffect(() => {
     frontCountSV.value = frontCount;
   }, [frontCount, frontCountSV]);
+  // Limpieza del estado de arrastre DESPUÉS del commit (cuando isDragging pasa a
+  // false porque el padre ya hizo draggingId=null). Recién acá apagamos
+  // selfDragging y reseteamos dragX + origin/target: hacerlo antes (en el callback
+  // de withTiming) dejaría un frame en la rama de hueco antes de que el DOM
+  // reordene → micro-salto. En este punto anyDragging ya es false (tileRest), así
+  // que estos resets no producen ningún cambio visual.
+  useEffect(() => {
+    if (isDragging) return;
+    selfDragging.value = 0;
+    dragX.value = 0;
+    dragOriginIdx.value = -1;
+    dragTargetIdx.value = -1;
+  }, [isDragging, selfDragging, dragX, dragOriginIdx, dragTargetIdx]);
 
-  // Reubica la card según el desplazamiento efectivo (dedo + scroll). Se llama
-  // desde onUpdate (movimiento del dedo) y desde la reacción al scroll.
-  const applyReorder = useCallback(
+  // La card arrastrada sigue al dedo (dragX = desplazamiento efectivo puro, sin
+  // compensación de slot porque su slot del DOM no cambia) y propone su slot
+  // destino. NO reordena `active`: solo escribe dragTargetIdx para que las
+  // hermanas abran el hueco. El commit ocurre al soltar.
+  const applyDrag = useCallback(
     (effectiveTx: number) => {
       "worklet";
-      lastEffTx.value = effectiveTx;
+      dragX.value = effectiveTx;
       const maxIdx = Math.max(0, frontCountSV.value - 1);
-      let proposed = Math.round(originIdx.value + effectiveTx / itemW);
+      let proposed = Math.round(dragOriginIdx.value + effectiveTx / itemW);
       if (proposed < 0) proposed = 0;
       if (proposed > maxIdx) proposed = maxIdx;
-      if (proposed !== curIdx.value) {
-        curIdx.value = proposed;
-        runOnJS(onMoveTo)(id, proposed);
-      }
-      // Compensar contra el slot REAL ya renderizado (idxSV), NO el predicho
-      // (curIdx): el reordenamiento del DOM (setActive) es asíncrono, así que si
-      // compensáramos con curIdx la card se sobre-corrige (salto a la derecha) y
-      // vuelve cuando el DOM se actualiza (salto a la izquierda). Con idxSV la
-      // compensación y el movimiento del DOM ocurren en el mismo paso (ver la
-      // reacción a idxSV de abajo).
-      dragX.value = effectiveTx - (idxSV.value - originIdx.value) * itemW;
+      dragTargetIdx.value = proposed;
     },
-    [curIdx, dragX, frontCountSV, id, idxSV, itemW, lastEffTx, onMoveTo, originIdx],
-  );
-
-  // Cuando el DOM termina de reordenar de verdad (idxSV refleja el slot nuevo),
-  // recompensar dragX en el mismo tick: el base de la card se desplazó itemW y
-  // dragX se ajusta itemW en sentido contrario → posición neta sin salto.
-  useAnimatedReaction(
-    () => (selfDragging.value === 1 ? idxSV.value : null),
-    (idx, prev) => {
-      if (idx === null || idx === prev) return;
-      dragX.value = lastEffTx.value - (idx - originIdx.value) * itemW;
-    },
+    [dragX, dragOriginIdx, dragTargetIdx, frontCountSV, itemW],
   );
 
   // Mientras el dedo está parado en el borde, el carrusel sigue desplazándose
-  // (frame loop del padre actualiza scrollX). Esta reacción recomputa el índice
-  // y la compensación con el nuevo scroll para que el reordenamiento no se frene.
+  // (frame loop del padre actualiza scrollX). Esta reacción recomputa la posición
+  // efectiva con el nuevo scroll para que el destino siga avanzando sin frenarse.
   useAnimatedReaction(
     () => (selfDragging.value === 1 ? scrollX.value : null),
     (sx, prev) => {
       if (sx === null || sx === prev) return;
-      applyReorder(lastTransX.value + (sx - scrollStartX.value));
+      applyDrag(lastTransX.value + (sx - scrollStartX.value));
     },
-    [applyReorder],
+    [applyDrag],
   );
 
   const dragGesture = useMemo(
@@ -701,8 +702,9 @@ function CarouselTile({
         .enabled(draggable)
         .activateAfterLongPress(250)
         .onStart(() => {
-          originIdx.value = idxSV.value;
-          curIdx.value = idxSV.value;
+          dragOriginIdx.value = idxSV.value;
+          dragTargetIdx.value = idxSV.value;
+          dragX.value = 0;
           scrollStartX.value = scrollX.value;
           lastTransX.value = 0;
           edgeIntent.value = 0;
@@ -725,30 +727,46 @@ function CarouselTile({
           } else {
             edgeIntent.value = 0;
           }
-          applyReorder(e.translationX + (scrollX.value - scrollStartX.value));
+          applyDrag(e.translationX + (scrollX.value - scrollStartX.value));
         })
         .onFinalize(() => {
           edgeIntent.value = 0;
           dragActive.value = 0;
-          selfDragging.value = 0;
-          dragX.value = withTiming(0, { duration: 180, easing: Easing.out(Easing.ease) });
+          const origin = dragOriginIdx.value;
+          const target = dragTargetIdx.value;
           lift.value = withTiming(0, { duration: 180 });
-          runOnJS(onDragEnd)(id);
+          // Planea la card hasta el slot destino (aún en su slot de origen del DOM)
+          // y SOLO al terminar confirma el reordenamiento. selfDragging se mantiene
+          // en 1 (la card sigue en la rama propia, fija en (target-origin)*itemW)
+          // hasta DESPUÉS del commit: limpiarlo aquí la metería un frame en la rama
+          // de hueco (translateX→0 vía withTiming) antes de que el DOM reordene →
+          // micro-salto. El reset lo hace el efecto de isDragging tras el commit. En
+          // ese commit (un único render con active reordenado + draggingId=null) el
+          // estilo cambia a `tileRest` (translateX 0) en lockstep con el DOM, así
+          // que la posición visual no cambia → sin "fantasma".
+          dragX.value = withTiming(
+            (target - origin) * itemW,
+            { duration: 180, easing: Easing.out(Easing.ease) },
+            () => {
+              runOnJS(onDragEnd)(id, target);
+            },
+          );
         }),
     [
-      applyReorder,
+      applyDrag,
       draggable,
       id,
       onDragStart,
       onDragEnd,
-      curIdx,
+      dragOriginIdx,
+      dragTargetIdx,
       dragActive,
       dragX,
       edgeIntent,
       idxSV,
+      itemW,
       lastTransX,
       lift,
-      originIdx,
       screenW,
       scrollStartX,
       scrollX,
@@ -756,14 +774,44 @@ function CarouselTile({
     ],
   );
 
-  const wrapStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: dragX.value }, { scale: 1 + lift.value * 0.08 }],
-  }));
+  // Estilo del wrap durante un arrastre activo (anyDragging). La card arrastrada
+  // sigue al dedo (dragX); las hermanas abren el hueco con un offset animado según
+  // origin→target. Fuera de un arrastre se usa `styles.tileRest` (translateX 0),
+  // conmutado a nivel de render para que el reset ocurra junto con el commit.
+  const wrapStyle = useAnimatedStyle(() => {
+    const scale = 1 + lift.value * 0.08;
+    if (selfDragging.value === 1) {
+      return { transform: [{ translateX: dragX.value }, { scale }], zIndex: 20 };
+    }
+    let off = 0;
+    const origin = dragOriginIdx.value;
+    const target = dragTargetIdx.value;
+    if (origin >= 0 && target >= 0 && origin !== target) {
+      const slot = idxSV.value;
+      if (slot >= 0) {
+        if (target > origin) {
+          if (slot > origin && slot <= target) off = -itemW;
+        } else if (slot >= target && slot < origin) {
+          off = itemW;
+        }
+      }
+    }
+    return {
+      transform: [
+        { translateX: withTiming(off, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE }) },
+        { scale },
+      ],
+    };
+  });
 
   return (
     <Animated.View
-      layout={LinearTransition.duration(isDragging ? 0 : CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
-      style={[styles.tileWrap, wrapStyle, isDragging && styles.tileDragging]}
+      layout={LinearTransition.duration(instantLayout ? 0 : CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
+      style={[
+        styles.tileWrap,
+        anyDragging ? wrapStyle : styles.tileRest,
+        isDragging && styles.tileDragging,
+      ]}
     >
       <Animated.Text
         pointerEvents="none"
@@ -863,6 +911,16 @@ export default function GeometrixScreen() {
   // Card que se está arrastrando (long-press + drag) para reordenar. Mientras
   // hay un drag activo se desactiva el scroll horizontal del carrusel.
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  // True durante el ÚNICO render del commit de un reordenamiento por arrastre:
+  // mantiene LinearTransition instantáneo (duration 0) ese frame para que el
+  // reordenamiento del DOM no se anime (las transforms ya dejaron todo en su
+  // sitio). Se limpia en el siguiente frame para volver a animar las selecciones.
+  const [dragSettling, setDragSettling] = useState(false);
+  useEffect(() => {
+    if (!dragSettling) return;
+    const r = requestAnimationFrame(() => setDragSettling(false));
+    return () => cancelAnimationFrame(r);
+  }, [dragSettling]);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
   // su activación a mitad de un arrastre, el orden del carrusel no debe saltar.
   const frozenActivatingRef = useRef<Set<string> | null>(null);
@@ -899,6 +957,11 @@ export default function GeometrixScreen() {
   const carMaxScrollX = useSharedValue(0);
   const carDragActive = useSharedValue(0);
   const carEdgeIntent = useSharedValue(0);
+  // Estado de arrastre compartido por TODAS las tiles (modelo "pin + hueco"):
+  // la card arrastrada escribe origin/target (slots del frente); las hermanas los
+  // leen para abrir el hueco. -1 = sin arrastre.
+  const dragOriginIdx = useSharedValue(-1);
+  const dragTargetIdx = useSharedValue(-1);
   const carScrollHandler = useAnimatedScrollHandler((e) => {
     carScrollX.value = e.contentOffset.x;
   });
@@ -932,10 +995,21 @@ export default function GeometrixScreen() {
     },
     [],
   );
-  const handleDragEnd = useCallback(() => {
-    frozenActivatingRef.current = null;
-    setDraggingId(null);
-  }, []);
+  // Commit del reordenamiento al soltar (modelo "pin + hueco"). Las tres
+  // actualizaciones de estado se baten en un único render (React 18): `active`
+  // reordenado + draggingId=null (las tiles vuelven a `tileRest`, translateX 0) +
+  // dragSettling=true (LinearTransition instantáneo ese frame). Como las transforms
+  // del arrastre ya dejaron cada tile en su slot final, la posición visual no
+  // cambia en ese render → sin "fantasma".
+  const commitReorder = useCallback(
+    (id: string, idx: number) => {
+      moveActiveTo(id, idx);
+      frozenActivatingRef.current = null;
+      setDraggingId(null);
+      setDragSettling(true);
+    },
+    [moveActiveTo],
+  );
   const carouselOrder = useMemo<string[]>(() => {
     const front = active.filter((id) => !effActivating.has(id));
     const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
@@ -2028,12 +2102,15 @@ export default function GeometrixScreen() {
                   frontCount={frontIds.length}
                   indexInFront={frontIds.indexOf(gid)}
                   onDragStart={handleDragStart}
-                  onMoveTo={moveActiveTo}
-                  onDragEnd={handleDragEnd}
+                  onDragEnd={commitReorder}
                   screenW={width}
                   scrollX={carScrollX}
                   dragActive={carDragActive}
                   edgeIntent={carEdgeIntent}
+                  anyDragging={draggingId !== null}
+                  instantLayout={draggingId !== null || dragSettling}
+                  dragOriginIdx={dragOriginIdx}
+                  dragTargetIdx={dragTargetIdx}
                 />
               );
             })}
@@ -3653,6 +3730,7 @@ const styles = StyleSheet.create({
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
   gridRow: { flexDirection: "row" },
   tileWrap: { marginRight: 8 },
+  tileRest: { transform: [{ translateX: 0 }, { scale: 1 }] },
   tileDragging: { zIndex: 50, elevation: 8 },
   tileTitle: {
     position: "absolute",
