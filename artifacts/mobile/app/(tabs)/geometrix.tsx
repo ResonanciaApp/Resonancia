@@ -1185,6 +1185,13 @@ export default function GeometrixScreen() {
       // con el `active` ya reordenado → se arma una animación de 1100 ms
       // (LinearTransition / hueco) que separa las dos cards al terminar el enroque.
       // unstable_batchedUpdates fuerza el render único.
+      // Adelanta el flag de settle al UI thread ANTES de aplicar el reorden: así la
+      // re-evaluación de wrapStyle (que lo lee) tiene la máxima ventaja para poner
+      // translateX 0 antes/junto con el montaje del reorden. El worklet de layout
+      // (tileLayout) lo vuelve a poner en 1 EN el commit como respaldo en lockstep.
+      // Dos escrituras (JS pre-commit + UI en el layout) cubren la carrera de orden
+      // de mappers que dejaba un parpadeo intermitente con una sola.
+      settleSV.value = 1;
       unstable_batchedUpdates(() => {
         setDragSettling(true);
         moveActiveTo(id, idx);
