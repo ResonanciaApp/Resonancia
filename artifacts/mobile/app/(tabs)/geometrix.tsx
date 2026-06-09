@@ -230,13 +230,13 @@ function GeometryLayer({
   useEffect(() => {
     enter.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.ease) });
   }, [enter]);
-  // Glow de aparición: mismo efecto que las cards del carrusel al activarse
-  // (resplandor que crece y se asienta). Halo de sombra alrededor del glifo.
+  // Glow de aparición: resplandor que crece al montar y luego se apaga del todo
+  // (sin efecto residual). Halo de sombra alrededor del glifo.
   const appearGlow = useSharedValue(0);
   useEffect(() => {
     appearGlow.value = withSequence(
       withTiming(1, { duration: 500, easing: Easing.out(Easing.ease) }),
-      withTiming(0.66, { duration: 500, easing: Easing.inOut(Easing.ease) }),
+      withTiming(0, { duration: 700, easing: Easing.inOut(Easing.ease) }),
     );
   }, [appearGlow]);
   const {
