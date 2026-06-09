@@ -1058,10 +1058,11 @@ export default function GeometrixScreen() {
       dragStartY.value = liveDragY.value;
     })
     .onUpdate((e) => {
-      // Si la lupa está visible, seguir al dedo para que no quede descolgada.
+      // Lupa activa → solo seguir al dedo; la geometría se queda bloqueada.
       if (loupeReveal.value > 0.1) {
         loupeX.value = e.x;
         loupeY.value = e.y;
+        return;
       }
       if (!pinchTargetId) return;
       let rx = dragStartX.value + e.translationX;
