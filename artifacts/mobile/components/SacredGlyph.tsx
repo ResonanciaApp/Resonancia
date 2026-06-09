@@ -166,9 +166,50 @@ function lattice(R: number, rings: number, angleDeg = 0): [number, number][] {
   return pts;
 }
 
+/** Grupo para trazo "fino" decorativo (0.5×/0.55× del principal). En modo
+ *  pellizco `G` es un AnimatedG con `props50/props55` = animatedProps que
+ *  contra-escalan el strokeWidth; en reposo/miniatura no se pasa y se usa un
+ *  `<G>` estático con el trazo explícito. */
+interface HalfStroke {
+  G: React.ComponentType<any>;
+  props50: Record<string, unknown>;
+  props55: Record<string, unknown>;
+}
+
 /** Elementos SVG del glyph en coordenadas viewBox 0–100. Exportado para
  *  reusar dentro de un `<Pattern>` (p.ej. GeometrixPatternBg). */
-export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
+export function glyphElements(
+  id: GeometryId,
+  sw: number,
+  half?: HalfStroke,
+): React.ReactNode {
+  // Envuelve líneas decorativas de trazo fino en un grupo. Esas líneas NO
+  // heredan el strokeWidth del <G> principal (lo fijan explícito), así que la
+  // contra-escala del pellizco no las alcanzaba y engrosaban (muy visible en
+  // metatron, que es casi todo líneas). Con `half` (pellizco) el grupo es un
+  // AnimatedG cuyo strokeWidth se contra-escala igual que el resto; sin `half`
+  // (miniaturas / patrón estático) es un <G> con el trazo explícito → idéntico.
+  const wrapHalf = (
+    children: React.ReactNode,
+    factor: 0.5 | 0.55,
+    strokeOpacity: number,
+    key: string,
+  ): React.ReactNode => {
+    if (half) {
+      const Wrap = half.G;
+      const wp = factor === 0.55 ? half.props55 : half.props50;
+      return (
+        <Wrap key={key} strokeOpacity={strokeOpacity} {...wp}>
+          {children}
+        </Wrap>
+      );
+    }
+    return (
+      <G key={key} strokeWidth={sw * factor} strokeOpacity={strokeOpacity}>
+        {children}
+      </G>
+    );
+  };
   switch (id) {
     // El caleidoscopio se dibuja como geometría base (una cuña con espiral y
     // arcos internos), pero la simetría radial real se aplica en SacredGlyphImpl
@@ -237,8 +278,6 @@ export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
               y1={centers[i][1]}
               x2={centers[j][0]}
               y2={centers[j][1]}
-              strokeWidth={sw * 0.5}
-              strokeOpacity={0.5}
             />,
           );
         }
@@ -246,22 +285,21 @@ export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
       const circles = centers.map(([x, y], i) => (
         <Circle key={`c${i}`} cx={x} cy={y} r={D / 2} />
       ));
-      return [...lines, ...circles];
+      return [wrapHalf(lines, 0.5, 0.5, "lines"), ...circles];
     }
     case "merkaba": {
       const ups = [-90, 30, 150].map((a, i) => {
         const [x, y] = pt(40, a);
-        return <Line key={`u${i}`} x1={x} y1={y} x2={C} y2={C} strokeWidth={sw * 0.5} strokeOpacity={0.5} />;
+        return <Line key={`u${i}`} x1={x} y1={y} x2={C} y2={C} />;
       });
       const dns = [90, 210, 330].map((a, i) => {
         const [x, y] = pt(40, a);
-        return <Line key={`d${i}`} x1={x} y1={y} x2={C} y2={C} strokeWidth={sw * 0.5} strokeOpacity={0.5} />;
+        return <Line key={`d${i}`} x1={x} y1={y} x2={C} y2={C} />;
       });
       return [
         <Polygon key="up" points={poly(40, 3, -90)} />,
         <Polygon key="dn" points={poly(40, 3, 90)} />,
-        ...ups,
-        ...dns,
+        wrapHalf([...ups, ...dns], 0.5, 0.5, "lines"),
       ];
     }
     case "hexagrama": {
@@ -380,14 +418,12 @@ export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
           y1={nodes[a][1]}
           x2={nodes[b][0]}
           y2={nodes[b][1]}
-          strokeWidth={sw * 0.55}
-          strokeOpacity={0.55}
         />
       ));
       const circles = nodes.map(([x, y], i) => (
         <Circle key={`n${i}`} cx={x} cy={y} r={5.5} />
       ));
-      return [...lines, ...circles];
+      return [wrapHalf(lines, 0.55, 0.55, "lines"), ...circles];
     }
     case "fruto-vida": {
       // 13 círculos separados del Fruto de la Vida.
@@ -752,22 +788,24 @@ export function glyphElements(id: GeometryId, sw: number): React.ReactNode {
       const r1 = [0, 60, 120, 180, 240, 300].map((a) => pt(D, a)) as [number, number][];
       const r2 = [0, 60, 120, 180, 240, 300].map((a) => pt(2 * D, a)) as [number, number][];
       const all: [number, number][] = [c0, ...r1, ...r2];
-      const lines: React.ReactNode[] = [];
+      // Líneas finas internas (trazo 0.5×) → grupo contra-escalable en pellizco.
+      const innerLines: React.ReactNode[] = [];
       for (let i = 0; i < all.length; i++) {
         for (let j = i + 1; j < all.length; j++) {
-          lines.push(
-            <Line key={`l${i}-${j}`} x1={all[i][0]} y1={all[i][1]} x2={all[j][0]} y2={all[j][1]}
-              strokeOpacity={0.3} strokeWidth={sw * 0.5} />,
+          innerLines.push(
+            <Line key={`l${i}-${j}`} x1={all[i][0]} y1={all[i][1]} x2={all[j][0]} y2={all[j][1]} />,
           );
         }
       }
+      // Anillo exterior: trazo completo (hereda del <G> principal, ya compensado).
       const r3 = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((a) => pt(3 * D, a)) as [number, number][];
-      r3.forEach(([x, y], i) => {
+      const ringLines: React.ReactNode[] = r3.map(([x, y], i) => {
         const [nx, ny] = r3[(i + 1) % 12];
-        lines.push(<Line key={`r3${i}`} x1={x} y1={y} x2={nx} y2={ny} />);
+        return <Line key={`r3${i}`} x1={x} y1={y} x2={nx} y2={ny} />;
       });
       return [
-        ...lines,
+        wrapHalf(innerLines, 0.5, 0.3, "lines"),
+        ...ringLines,
         ...all.map(([x, y], i) => <Circle key={`c${i}`} cx={x} cy={y} r={D / 2} />),
         ...r3.map(([x, y], i) => <Circle key={`d${i}`} cx={x} cy={y} r={D / 3} />),
       ];
@@ -865,6 +903,16 @@ function SacredGlyphImpl({
   const gAnimProps = useAnimatedProps(() => {
     return { strokeWidth: sw / (liveScaleSV ? liveScaleSV.value : 1) };
   });
+  // Trazo "fino" decorativo (0.5× y 0.55× del principal). Esas líneas fijan su
+  // strokeWidth explícito → NO heredan la contra-escala del <G> principal, así
+  // que engrosaban en el pellizco (muy visible en metatron). Las agrupamos en un
+  // AnimatedG con estos animatedProps para que se contra-escalen igual.
+  const gHalf50AnimProps = useAnimatedProps(() => {
+    return { strokeWidth: (sw * 0.5) / (liveScaleSV ? liveScaleSV.value : 1) };
+  });
+  const gHalf55AnimProps = useAnimatedProps(() => {
+    return { strokeWidth: (sw * 0.55) / (liveScaleSV ? liveScaleSV.value : 1) };
+  });
   // Solo el objetivo del pellizco usa el camino animado; el resto (capas no
   // seleccionadas, miniaturas) usa el SVG estático para no pagar overhead.
   const SvgComp = liveScaleSV ? AnimatedSvg : Svg;
@@ -875,6 +923,19 @@ function SacredGlyphImpl({
   const gStrokeProps = liveScaleSV
     ? { animatedProps: gAnimProps }
     : { strokeWidth: sw };
+  // Grupo de trazo fino que se pasa a glyphElements: AnimatedG contra-escalado
+  // en modo pellizco; <G> estático (trazo explícito) en reposo/miniatura.
+  const half: HalfStroke = liveScaleSV
+    ? {
+        G: AnimatedG,
+        props50: { animatedProps: gHalf50AnimProps },
+        props55: { animatedProps: gHalf55AnimProps },
+      }
+    : {
+        G: G,
+        props50: { strokeWidth: sw * 0.5 },
+        props55: { strokeWidth: sw * 0.55 },
+      };
 
   // ── Sin caleidoscopio: renderizado normal ──────────────────────────────────
   if (!kaleidoscope) {
@@ -896,7 +957,7 @@ function SacredGlyphImpl({
           strokeLinejoin="round"
           {...gStrokeProps}
         >
-          {glyphElements(id, sw)}
+          {glyphElements(id, sw, half)}
         </GComp>
       </SvgComp>
     );
@@ -944,7 +1005,7 @@ function SacredGlyphImpl({
             strokeLinejoin="round"
             {...gStrokeProps}
           >
-            {glyphElements(id, sw)}
+            {glyphElements(id, sw, half)}
           </GComp>
         </G>
       </Defs>
