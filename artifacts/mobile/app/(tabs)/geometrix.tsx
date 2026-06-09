@@ -1421,6 +1421,14 @@ export default function GeometrixScreen() {
   const [themeSession, setThemeSession] = useState<Session | null>(null);
   const [themeSearchOpen, setThemeSearchOpen] = useState(false);
   const [themeQuery, setThemeQuery] = useState("");
+  // Glow persistente (respira) mientras suena el tema + onda expansiva one-shot
+  // que se dispara al elegir un audio, para señalar que el reproductor arrancó.
+  // Ambos viven en el UI thread (shared values), sin re-render por frame.
+  const themeGlow = useSharedValue(0);
+  // Reposo = 1 → opacity (1 - value) * x = 0 (anillo invisible). Al sonar baja a 0
+  // y vuelve a 1 con la animación (crece y se desvanece). Si arrancara en 0, el
+  // anillo quedaría visible al 50% en reposo.
+  const themeWave = useSharedValue(1);
 
   // Resultados de búsqueda sobre TODA la biblioteca; solo sesiones reproducibles
   // (con audio bundleado o remoto), para que toda fila suene al tocarla.
@@ -1487,6 +1495,28 @@ export default function GeometrixScreen() {
     },
     [stopGlobalPlayer],
   );
+
+  // Glow + onda expansiva del botón de audio según el estado del reproductor:
+  // - Al EMPEZAR a sonar (themeSession pasa a no-null, o cambia de audio): se
+  //   dispara una onda expansiva one-shot y el glow arranca su respiración
+  //   persistente, para que el usuario entienda que el reproductor está sonando.
+  // - Al DETENERSE (themeSession vuelve a null): se cancela la respiración y el
+  //   glow se desvanece → el icono vuelve a su estado original sin efectos.
+  useEffect(() => {
+    if (themeSession) {
+      // Onda expansiva: anillo que crece y se desvanece una sola vez (1→0→1).
+      themeWave.value = 0;
+      themeWave.value = withTiming(1, { duration: 750, easing: Easing.out(Easing.quad) });
+      // Glow persistente que respira suavemente entre 0.4 y 0.75.
+      cancelAnimation(themeGlow);
+      themeGlow.value = 0.4;
+      themeGlow.value = withRepeat(withTiming(0.75, { duration: 1500 }), -1, true);
+    } else {
+      cancelAnimation(themeGlow);
+      themeGlow.value = withTiming(0, { duration: 300 });
+      themeWave.value = 1;
+    }
+  }, [themeSession, themeGlow, themeWave]);
 
   // Cortar el tema al salir de la pestaña Geometrix (las pestañas quedan montadas,
   // así que el cleanup de desmontaje no corre al cambiar de tab).
@@ -2224,6 +2254,17 @@ export default function GeometrixScreen() {
     transform: [{ translateX: canvasSide / 2 + snapXSV.value }],
   }));
 
+  // Glow persistente del botón de audio (halo dorado que respira mientras suena).
+  const themeGlowStyle = useAnimatedStyle(() => ({
+    opacity: themeGlow.value,
+    transform: [{ scale: 1 + themeGlow.value * 0.35 }],
+  }));
+  // Onda expansiva one-shot: anillo que crece y se desvanece al elegir un audio.
+  const themeWaveStyle = useAnimatedStyle(() => ({
+    opacity: (1 - themeWave.value) * 0.5,
+    transform: [{ scale: 0.95 + themeWave.value * 1.6 }],
+  }));
+
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
   const previewFree = height - sheetHeight - insets.top - 12 - 36;
@@ -2283,17 +2324,33 @@ export default function GeometrixScreen() {
               <Text style={styles.title}>Geometrix</Text>
             </View>
           </View>
-          {/* Tema de fondo: abre el buscador de toda la biblioteca para elegir un
-              audio que suene SOLO dentro de Geometrix. */}
-          <Pressable
-            onPress={() => setThemeSearchOpen(true)}
-            hitSlop={10}
-            style={[styles.themeBtn, themeSession ? styles.themeBtnOn : null]}
-            accessibilityRole="button"
-            accessibilityLabel="Elegir audio de fondo"
-          >
-            <Feather name="volume-2" size={18} color={colors.mutedForeground} />
-          </Pressable>
+          {/* Tema de fondo: si NO suena nada, abre el buscador de toda la
+              biblioteca; si YA está sonando, el mismo botón detiene y resetea el
+              reproductor (el glow se apaga y el icono vuelve a su estado original).
+              El halo (glow persistente) y el anillo (onda expansiva one-shot) van
+              detrás del botón y señalan que el reproductor está activo. */}
+          <View style={styles.themeBtnWrap}>
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.themeGlowHalo, themeGlowStyle]}
+            />
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.themeWaveRing, themeWaveStyle]}
+            />
+            <Pressable
+              onPress={() => {
+                if (themeSession) stopTheme();
+                else setThemeSearchOpen(true);
+              }}
+              hitSlop={12}
+              style={[styles.themeBtn, themeSession ? styles.themeBtnOn : null]}
+              accessibilityRole="button"
+              accessibilityLabel={themeSession ? "Detener audio de fondo" : "Elegir audio de fondo"}
+            >
+              <Feather name="volume-2" size={15} color={colors.mutedForeground} />
+            </Pressable>
+          </View>
         </View>
 
         {/* ── Buscador de tema de fondo (audio propio de Geometrix) ── */}
@@ -3969,6 +4026,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
     paddingHorizontal: 20,
+    // El carrusel (styles.grid) sube con marginTop:-25 y solapa la mitad inferior
+    // del header → tapaba el botón de audio (había que tocar por encima del icono
+    // para abrir el buscador). zIndex eleva el header por encima del carrusel para
+    // que TODO el botón sea tocable. El header no tiene relleno, así que no oculta
+    // las tiles (que viven más abajo por el paddingTop del contenido).
+    zIndex: 10,
   },
   headerText: { flex: 1, paddingRight: 12 },
   // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
@@ -3980,19 +4043,56 @@ const styles = StyleSheet.create({
   // ── Botón "tema de fondo" (top-right del header) ──
   // Círculo sin relleno, borde punteado celeste (= mutedForeground) con ícono de
   // sonido al centro. Al estar sonando, un tinte celeste sutil lo marca activo.
+  // Contenedor del botón + sus efectos (halo de glow y anillo de onda) centrados
+  // detrás del círculo. overflow visible para que onda/halo se derramen afuera.
+  // 48x48 (mayor que el círculo de 37) para que el hitSlop tenga lugar real: el
+  // hitSlop se recorta a los límites del padre directo, así que con el wrap al
+  // mismo tamaño que el botón el área tocable no crecía. Aquí el área efectiva
+  // pasa a ser ~48x48, cómoda para el dedo.
+  themeBtnWrap: {
+    width: 48,
+    height: 48,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   themeBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
     borderWidth: 1,
     borderStyle: "dotted",
     borderColor: colors.mutedForeground,
     alignItems: "center",
     justifyContent: "center",
-    alignSelf: "center",
     backgroundColor: "transparent",
   },
   themeBtnOn: { backgroundColor: hexAlpha("#7A8FA8", 0.12) },
+  // Halo de glow persistente mientras suena: anillo dorado (centro transparente,
+  // para NO teñir el icono) + sombra del mismo dorado que se derrama como resplandor
+  // suave. Un disco sólido se veía a través de la cara transparente del botón y
+  // pintaba el centro de dorado; el anillo + shadow lee como glow real.
+  themeGlowHalo: {
+    position: "absolute",
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
+    borderWidth: 2,
+    borderColor: colors.accent,
+    shadowColor: colors.accent,
+    shadowOpacity: 0.9,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  // Onda expansiva one-shot: anillo dorado que crece y se desvanece al elegir audio.
+  themeWaveRing: {
+    position: "absolute",
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
+    borderWidth: 2,
+    borderColor: colors.accent,
+  },
 
   // ── Buscador de tema de fondo (modal) ──
   themeSheet: {
