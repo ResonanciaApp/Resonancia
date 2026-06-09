@@ -1367,15 +1367,17 @@ export default function GeometrixScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerText}>
-            <Text style={styles.title}>Geometrix</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>Geometrix</Text>
+              {/* Logo cubo-3 inline, a la altura del título. */}
+              <Image
+                source={require("@/assets/images/geometrix/cubo-3.png")}
+                style={styles.titleLogo}
+                contentFit="contain"
+              />
+            </View>
             <Text style={styles.subtitle}>Crea, anima, personaliza y comparte.</Text>
           </View>
-
-          <Image
-            source={require("@/assets/images/geometrix/cubo-3.png")}
-            style={styles.headerLogo}
-            contentFit="contain"
-          />
         </View>
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
@@ -2931,12 +2933,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerText: { flex: 1, paddingRight: 12 },
-  headerLogo: {
-    width: 44,
-    height: 44,
-    opacity: 0.92,
-  },
-  title: { fontSize: 30, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
+  // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
+  titleRow: { flexDirection: "row", alignItems: "center" },
+  titleLogo: { width: 14, height: 14, marginLeft: 6, opacity: 0.92 },
+  title: { fontSize: 10, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
   grid: { flexGrow: 0 },
