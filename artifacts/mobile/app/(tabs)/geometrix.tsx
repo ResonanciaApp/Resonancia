@@ -2350,13 +2350,13 @@ export default function GeometrixScreen() {
         <View style={styles.header}>
           <View style={styles.headerText}>
             <View style={styles.titleRow}>
-              {/* Logo cubo-3 inline, a la izquierda del título. */}
+              <Text style={styles.title}>Geometrix</Text>
+              {/* Logo cubo-3 inline, a la derecha del título. */}
               <Image
                 source={require("@/assets/images/geometrix/cubo-3.png")}
                 style={styles.titleLogo}
                 contentFit="contain"
               />
-              <Text style={styles.title}>Geometrix</Text>
             </View>
           </View>
           {/* Tema de fondo: si NO suena nada, abre el buscador; si YA está
@@ -4107,7 +4107,7 @@ const styles = StyleSheet.create({
   headerText: { flex: 1, paddingRight: 12 },
   // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
   titleRow: { flexDirection: "row", alignItems: "center" },
-  titleLogo: { width: 18, height: 18, marginRight: 6, opacity: 0.92 },
+  titleLogo: { width: 18, height: 18, marginLeft: 10, opacity: 0.92 },
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
