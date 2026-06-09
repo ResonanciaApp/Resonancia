@@ -482,6 +482,94 @@ function SoundThumbButton({
   );
 }
 
+// ── GuideHandle ────────────────────────────────────────────────────────────
+// Guía del lienzo arrastrable. La línea se mueve en el hilo UI (useAnimatedStyle);
+// el porcentaje se actualiza via runOnJS para el label.
+type GuideHandleProps = {
+  guide: CanvasGuide;
+  canvasSide: number;
+  onMove: (id: string, pct: number) => void;
+};
+function GuideHandle({ guide, canvasSide, onMove }: GuideHandleProps) {
+  const isH = guide.orientation === "h";
+  const livePct = useSharedValue(guide.pct);
+  const startPct = useSharedValue(guide.pct);
+  const [displayPct, setDisplayPct] = useState(guide.pct);
+
+  useEffect(() => {
+    livePct.value = guide.pct;
+    setDisplayPct(guide.pct);
+  }, [guide.pct, livePct]);
+
+  const pan = Gesture.Pan()
+    .minDistance(2)
+    .onStart(() => {
+      startPct.value = livePct.value;
+    })
+    .onUpdate((e) => {
+      const delta = isH ? e.translationY : e.translationX;
+      const raw = startPct.value + (delta / canvasSide) * 100;
+      const clamped = Math.min(100, Math.max(0, raw));
+      livePct.value = clamped;
+      runOnJS(setDisplayPct)(Math.round(clamped));
+    })
+    .onEnd(() => {
+      runOnJS(onMove)(guide.id, Math.round(livePct.value));
+    });
+
+  const lineStyle = useAnimatedStyle(() => {
+    const px = (livePct.value / 100) * canvasSide;
+    return isH ? { top: px } : { left: px };
+  });
+
+  const handleStyle = useAnimatedStyle(() => {
+    const px = (livePct.value / 100) * canvasSide;
+    return isH
+      ? { top: Math.max(0, px - 32), left: 4 }
+      : { left: Math.min(canvasSide - 38, px + 4), top: 4 };
+  });
+
+  return (
+    <>
+      {/* Línea: solo visual, se mueve en el hilo UI */}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: "absolute",
+            backgroundColor: GUIDE_COLOR,
+            opacity: 0.65,
+            ...(isH
+              ? { left: 0, right: 0, height: 1 }
+              : { top: 0, bottom: 0, width: 1 }),
+          },
+          lineStyle,
+        ]}
+      />
+      {/* Handle interactivo: icono move + etiqueta % */}
+      <GestureDetector gesture={pan}>
+        <Animated.View style={[{ position: "absolute" }, handleStyle]}>
+          <View
+            style={{
+              backgroundColor: GUIDE_COLOR + "38",
+              borderRadius: 4,
+              paddingHorizontal: 5,
+              paddingVertical: 3,
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Feather name="move" size={9} color={GUIDE_COLOR} />
+            <Text style={{ color: GUIDE_COLOR, fontSize: 8, fontWeight: "600" }}>
+              {displayPct}%
+            </Text>
+          </View>
+        </Animated.View>
+      </GestureDetector>
+    </>
+  );
+}
+
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
@@ -521,6 +609,9 @@ export default function GeometrixScreen() {
   const { isPremium } = usePremium();
   const [guidesOpen, setGuidesOpen] = useState(false);
   const [guides, setGuides] = useState<CanvasGuide[]>([]);
+  const onMoveGuide = useCallback((id: string, pct: number) => {
+    setGuides((prev) => prev.map((g) => g.id === id ? { ...g, pct } : g));
+  }, []);
   const [guideOrientation, setGuideOrientation] = useState<"h" | "v">("h");
   const [guidePct, setGuidePct] = useState("50");
   const [generalOpen, setGeneralOpen] = useState(false);
@@ -1402,37 +1493,16 @@ export default function GeometrixScreen() {
                   })}
 
                 {/* ── Guías persistentes del usuario ─────────────────────────
-                    Líneas fijas creadas desde el panel "Guías". Azul, 1px, con
-                    etiqueta de posición (%) cerca del borde. Sirven también
-                    como snap targets para el arrastre de geometrías. */}
-                {guides.map((g) => {
-                  const px = (g.pct / 100) * canvasSide;
-                  const isH = g.orientation === "h";
-                  return (
-                    <View
-                      key={g.id}
-                      pointerEvents="none"
-                      style={isH
-                        ? { position: "absolute", left: 0, right: 0, top: px, height: 1, backgroundColor: GUIDE_COLOR, opacity: 0.65 }
-                        : { position: "absolute", top: 0, bottom: 0, left: px, width: 1, backgroundColor: GUIDE_COLOR, opacity: 0.65 }
-                      }
-                    >
-                      <View style={{
-                        position: "absolute",
-                        left: isH ? 4 : 2,
-                        top: isH ? -10 : 4,
-                        backgroundColor: GUIDE_COLOR + "28",
-                        borderRadius: 3,
-                        paddingHorizontal: 4,
-                        paddingVertical: 1,
-                      }}>
-                        <Text style={{ color: GUIDE_COLOR, fontSize: 8, fontWeight: "600" }}>
-                          {g.pct}%
-                        </Text>
-                      </View>
-                    </View>
-                  );
-                })}
+                    Arrastrables: cada GuideHandle tiene su propio Gesture.Pan()
+                    y mueve la línea en el hilo UI vía useAnimatedStyle. */}
+                {guides.map((g) => (
+                  <GuideHandle
+                    key={g.id}
+                    guide={g}
+                    canvasSide={canvasSide}
+                    onMove={onMoveGuide}
+                  />
+                ))}
 
                 {/* ── Líneas guía de snap ─────────────────────────────────────
                     Aparecen mientras se arrastra y hay alineación detectada.
