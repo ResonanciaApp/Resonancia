@@ -65,6 +65,7 @@ import {
   type GlobalSettings,
 } from "@/data/geometrix-creations";
 import { usePremium } from "@/context/PremiumContext";
+import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const colors = colorsConst.light;
@@ -577,6 +578,11 @@ export default function GeometrixScreen() {
   // para que el lienzo no quede tapado por el menú de la app.
   const bottomPb = Platform.OS === "web" ? 8 : insets.bottom;
   const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
+  // El menú inferior se esconde al entrar a Geometrix (más espacio para el
+  // lienzo); cuando está oculto solo hay que despejar la safe area + la
+  // pestañita de reaparición, no la tab bar completa.
+  const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
+  const bottomReserve = menuHidden ? bottomPb + 28 : tabBarHeight;
 
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
@@ -742,6 +748,15 @@ export default function GeometrixScreen() {
     }
   }, [active, stopIntro]);
 
+
+  // Al entrar a Geometrix: esconder el menú inferior (más espacio para el
+  // lienzo). Al salir: restaurarlo para el resto de la app.
+  useFocusEffect(
+    useCallback(() => {
+      requestHide();
+      return () => showMenu();
+    }, [requestHide, showMenu]),
+  );
 
   // Al salir de Geometrix (las pestañas quedan montadas): resetear la UI.
   // Al entrar: disparar el intro de audio si el lienzo está vacío.
@@ -1376,7 +1391,6 @@ export default function GeometrixScreen() {
                 contentFit="contain"
               />
             </View>
-            <Text style={styles.subtitle}>Crea, anima, personaliza y comparte.</Text>
           </View>
         </View>
 
@@ -1416,7 +1430,7 @@ export default function GeometrixScreen() {
         {/* Fondo interactivo: animación centrada en el espacio entre la
             divisora y la tab bar; thumbnails anclados 10px sobre la tab bar.
             paddingBottom despeja la tab bar para que el lienzo no se recorte. */}
-        <View style={[styles.canvasWrap, { paddingBottom: tabBarHeight }]}>
+        <View style={[styles.canvasWrap, { paddingBottom: bottomReserve }]}>
           {/* Fondo del lienzo (solo de la divisora hacia abajo). Se extiende
               edge-to-edge (left/right -20 rompe el padding del content); el
               color elegido llega justo a la divisora, sin degradado. */}
@@ -1681,7 +1695,7 @@ export default function GeometrixScreen() {
               ref={thumbsScrollRef}
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={[styles.thumbsScroll, { bottom: tabBarHeight + 5 }]}
+              style={[styles.thumbsScroll, { bottom: bottomReserve + 5 }]}
               contentContainerStyle={[
                 styles.thumbsRow,
                 thumbsOverflow && styles.thumbsRowStart,
@@ -1950,7 +1964,7 @@ export default function GeometrixScreen() {
         onRequestClose={() => setMenuGeoId(null)}
       >
         <Pressable
-          style={[styles.menuBackdrop, { paddingBottom: tabBarHeight + 94 }]}
+          style={[styles.menuBackdrop, { paddingBottom: bottomReserve + 94 }]}
           onPress={() => setMenuGeoId(null)}
         >
           {menuGeo && (

@@ -5,6 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
+  Easing,
   Image,
   Platform,
   Pressable,
@@ -17,6 +18,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
+import {
+  TabBarVisibilityProvider,
+  useTabBarVisibility,
+} from "@/context/TabBarVisibilityContext";
 
 const ACTIVE_COLOR = "#FFFFFF";
 const INACTIVE_COLOR = "#8094B5";
@@ -106,60 +111,108 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const pb = isWeb ? 8 : insets.bottom;
   const extra = Math.round(pb / 2);
 
+  // Alto total de la barra: se desliza esa distancia (+ holgura) para esconderse.
+  const barHeight = 56 + extra + pb;
+  const { hidden, showMenu } = useTabBarVisibility();
+  const translateY = useRef(new Animated.Value(0)).current;
+  const handleOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: hidden ? barHeight + 40 : 0,
+        duration: 280,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(handleOpacity, {
+        toValue: hidden ? 1 : 0,
+        duration: hidden ? 220 : 120,
+        delay: hidden ? 140 : 0,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [hidden, barHeight, translateY, handleOpacity]);
+
   return (
-    <View style={[styles.bar, { paddingBottom: pb }]}>
-      {isIOS ? (
-        <>
-          <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.65)" }]} />
-        </>
-      ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.90)" }]} />
-      )}
-      <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
-      <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 56 + extra }]}>
-        {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
-          const { options } = descriptors[route.key];
-          if ((options as { href?: null }).href === null) return null;
+    <>
+      <Animated.View
+        style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
+      >
+        {isIOS ? (
+          <>
+            <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.65)" }]} />
+          </>
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.90)" }]} />
+        )}
+        <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
+        <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 56 + extra }]}>
+          {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
+            const { options } = descriptors[route.key];
+            if ((options as { href?: null }).href === null) return null;
 
-          const isFocused = state.index === index;
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, route.params as never);
-            }
-          };
+            const isFocused = state.index === index;
+            const onPress = () => {
+              const event = navigation.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name, route.params as never);
+              }
+            };
 
-          return (
-            <TabItem
-              key={route.key}
-              route={route}
-              isFocused={isFocused}
-              onPress={onPress}
-            />
-          );
-        })}
-      </View>
-    </View>
+            return (
+              <TabItem
+                key={route.key}
+                route={route}
+                isFocused={isFocused}
+                onPress={onPress}
+              />
+            );
+          })}
+        </View>
+      </Animated.View>
+
+      {/* Pestañita sutil para traer de vuelta el menú cuando está oculto. */}
+      <Animated.View
+        pointerEvents={hidden ? "auto" : "none"}
+        style={[styles.revealHandle, { bottom: pb + 4, opacity: handleOpacity }]}
+      >
+        <Pressable
+          onPress={showMenu}
+          hitSlop={14}
+          style={styles.revealHandleHit}
+          accessibilityRole="button"
+          accessibilityLabel="Mostrar menú"
+        >
+          <View style={styles.revealHandleBar} />
+          <Feather name="chevron-up" size={13} color={INACTIVE_COLOR} />
+        </Pressable>
+      </Animated.View>
+    </>
   );
 }
 
-export default function TabLayout() {
+function TabLayoutInner() {
   const { currentSession } = usePlayer();
   const { activeSounds } = useMixer();
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
   const bottomPb = isWeb ? 8 : insets.bottom;
   const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
+  const { hidden } = useTabBarVisibility();
 
   // La barra flotante (sesión o mezcla) abre el editor en hoja inferior; se
   // muestra en todas las tabs, incluida "Mi Música".
   const mixActive = !currentSession && activeSounds.length > 0;
   const showMiniPlayer = currentSession || mixActive;
+  // Cuando el menú está oculto (Geometrix), el mini player baja para no quedar
+  // flotando sobre el espacio vacío que dejó la tab bar.
+  const miniPlayerBottom = (hidden ? bottomPb + 30 : tabBarHeight) + 6;
 
   return (
     <View style={{ flex: 1 }}>
@@ -176,11 +229,19 @@ export default function TabLayout() {
       </Tabs>
 
       {showMiniPlayer && (
-        <View style={[styles.miniPlayerFloat, { bottom: tabBarHeight + 6 }]}>
+        <View style={[styles.miniPlayerFloat, { bottom: miniPlayerBottom }]}>
           <MiniPlayer />
         </View>
       )}
     </View>
+  );
+}
+
+export default function TabLayout() {
+  return (
+    <TabBarVisibilityProvider>
+      <TabLayoutInner />
+    </TabBarVisibilityProvider>
   );
 }
 
@@ -236,5 +297,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
+  },
+  revealHandle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  revealHandleHit: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+    gap: 1,
+  },
+  revealHandleBar: {
+    width: 38,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(128,148,181,0.45)",
   },
 });
