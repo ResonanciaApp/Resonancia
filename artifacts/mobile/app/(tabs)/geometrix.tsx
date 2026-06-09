@@ -543,10 +543,10 @@ function CarouselTile({
   const titleOpacity = useSharedValue(0);
   useEffect(() => {
     if (isActivating) {
-      const FADE_IN = 280;
+      const FADE_IN = 900;
       const PARK = CAROUSEL_HOLD_MS + CAROUSEL_FLOW_MS;
       titleOpacity.value = withSequence(
-        withTiming(1, { duration: FADE_IN, easing: Easing.out(Easing.ease) }),
+        withTiming(1, { duration: FADE_IN, easing: Easing.inOut(Easing.quad) }),
         withDelay(
           PARK - FADE_IN + 150,
           withTiming(0, { duration: 320, easing: Easing.in(Easing.ease) }),
