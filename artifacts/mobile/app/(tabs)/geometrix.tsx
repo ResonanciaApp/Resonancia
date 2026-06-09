@@ -485,6 +485,7 @@ type CarouselTileProps = {
   isSelected: boolean;
   isActivating: boolean;
   color: string;
+  defaultColor: string;
   onPress: () => void;
   onOpenSettings: () => void;
 };
@@ -499,6 +500,7 @@ function CarouselTile({
   isSelected,
   isActivating,
   color,
+  defaultColor,
   onPress,
   onOpenSettings,
 }: CarouselTileProps) {
@@ -581,8 +583,9 @@ function CarouselTile({
           </Animated.View>
         </View>
       </Pressable>
-      {/* Flechita de ajustes: aparece (fade in) en la esquina derecha de la
-          card al quedar seleccionada y estática; abre los ajustes. */}
+      {/* Flechita de ajustes: aparece (fade in) abajo de la geometría, centrada
+          y apuntando hacia abajo, al quedar seleccionada y estática; abre los
+          ajustes. Toma el color por defecto de la geometría. */}
       <Animated.View
         pointerEvents={isSelected && !isActivating ? "auto" : "none"}
         style={[styles.tileSettings, settingsStyle]}
@@ -594,7 +597,7 @@ function CarouselTile({
           accessibilityRole="button"
           accessibilityLabel={`Ajustes de ${name}`}
         >
-          <Feather name="chevron-right" size={16} color={colors.primary} />
+          <Feather name="chevron-down" size={16} color={defaultColor} />
         </Pressable>
       </Animated.View>
     </Animated.View>
@@ -1474,6 +1477,7 @@ export default function GeometrixScreen() {
                   isSelected={active.includes(g.id)}
                   isActivating={activatingIds.has(g.id)}
                   color={getSettings(g.id).color}
+                  defaultColor={g.color}
                   onPress={() => toggleGeometry(g.id)}
                   onOpenSettings={() => {
                     setSelectedId(g.id);
@@ -2930,8 +2934,10 @@ const styles = StyleSheet.create({
   tileWrap: { marginRight: 8 },
   tileSettings: {
     position: "absolute",
-    top: 6,
-    right: 6,
+    bottom: 6,
+    left: 0,
+    right: 0,
+    alignItems: "center",
     zIndex: 5,
   },
   tileSettingsBtn: {
