@@ -26,6 +26,7 @@ import Animated, {
   Easing,
   FadeIn,
   FadeOut,
+  interpolateColor,
   LinearTransition,
   runOnJS,
   scrollTo,
@@ -1339,6 +1340,10 @@ export default function GeometrixScreen() {
   const thumbsInitialIdsRef = useRef<Set<string> | null>(null);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
+  // Cambia el color de la píldora a azul (#171e5a) cuando la rotación
+  // del objetivo está exactamente en un ángulo cardinal (0/90/180/270/360°).
+  const [pillAtCardinal, setPillAtCardinal] = useState(false);
+  const pillCardinalSV = useSharedValue(0);
   // Opacidad de la píldora de acciones: fade puro (sin movimiento) al plegar.
   // Se mantiene SIEMPRE montada (pointerEvents none al cerrar) para que el
   // layout no se reacomode y solo cambie la opacidad.
@@ -2003,6 +2008,20 @@ export default function GeometrixScreen() {
         ? active[active.length - 1]
         : null;
 
+  // Cuando NO se está rotando, sincronizar el indicador cardinal con el ángulo
+  // confirmado del objetivo (reacciona a commits y cambios de objetivo).
+  useEffect(() => {
+    if (!pinchTargetId) { setPillAtCardinal(false); return; }
+    const committed = getSettings(pinchTargetId).manualAngle ?? 0;
+    const nearest90 = Math.round(committed / 90) * 90;
+    setPillAtCardinal(Math.abs(committed - nearest90) < 0.5);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pinchTargetId, settings, getSettings]);
+  // Animar pillCardinalSV al cambiar el estado cardinal.
+  useEffect(() => {
+    pillCardinalSV.value = withTiming(pillAtCardinal ? 1 : 0, { duration: 350 });
+  }, [pillAtCardinal, pillCardinalSV]);
+
   // Mantener el zoom en vivo sincronizado con el valor confirmado del objetivo
   // (al cambiar de geometría o tras confirmar un pellizco).
   useEffect(() => {
@@ -2238,7 +2257,8 @@ export default function GeometrixScreen() {
   // Pellizco, rotación y drag corren a la vez sobre el objetivo seleccionado.
   const canvasGesture = Gesture.Simultaneous(longPressGesture, pinchGesture, rotationGesture, panGesture);
 
-  // Sincroniza el ángulo en vivo al badge de rotación (estado JS, solo durante giro).
+  // Sincroniza el ángulo en vivo al badge y al indicador de ángulo cardinal
+  // (solo durante el giro; al soltar el useEffect de settings toma el relevo).
   useAnimatedReaction(
     () => ({ active: rotActive.value, angle: liveRot.value }),
     ({ active, angle }) => {
@@ -2246,6 +2266,9 @@ export default function GeometrixScreen() {
       if (active > 0) {
         const normalized = Math.round(((angle % 360) + 360) % 360);
         runOnJS(setRotDisplayAngle)(normalized);
+        // Cardinal si está a menos de 8° de un múltiplo de 90°.
+        const nearest90 = Math.round(angle / 90) * 90;
+        runOnJS(setPillAtCardinal)(Math.abs(angle - nearest90) < 8);
       }
     },
   );
@@ -2265,6 +2288,19 @@ export default function GeometrixScreen() {
   // Badge flotante: ícono + ángulo actual; fade rápido al entrar/salir del giro.
   const rotBadgeStyle = useAnimatedStyle(() => ({
     opacity: withTiming(rotActive.value, { duration: 120 }),
+  }));
+  // Píldora de acciones: fondo azul (#171e5a) al llegar a ángulo cardinal.
+  const pillCardinalStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(255,255,255,0.02)", "#171e5a"],
+    ),
+    borderColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      [CARD_BORDER, "#1e2870"],
+    ),
   }));
 
   // Glow blanco del icono de audio: sombra difusa que respira cuando suena.
@@ -2741,7 +2777,7 @@ export default function GeometrixScreen() {
             {/* Píldora que se despliega hacia abajo */}
             <Animated.View
               pointerEvents={pillOpen ? "auto" : "none"}
-              style={[styles.pillRow, pillStyle]}
+              style={[styles.pillRow, pillStyle, pillCardinalStyle]}
             >
               {pillActions.map((a, i) => (
                 <React.Fragment key={a.key}>
