@@ -967,6 +967,9 @@ export default function GeometrixScreen() {
     .onStart(() => {
       isPinching.value = true;
       pinchStart.value = livePinch.value;
+      // Ocultar la lupa en cuanto entra el segundo dedo: evita que el estado
+      // mixto (lupa + pellizco simultáneo) bloquee el zoom.
+      runOnJS(setLoupeVisible)(false);
     })
     .onUpdate((e) => {
       const z = Math.min(6, Math.max(0.1, pinchStart.value * e.scale));
