@@ -818,10 +818,8 @@ export default function GeometrixScreen() {
   const hasActive = activeMetas.length > 0;
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }[] = [
-    { key: "settings", icon: "sliders", label: "Ajustes generales", onPress: () => setGeneralOpen(true) },
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
-    { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
   ];
@@ -1101,6 +1099,15 @@ export default function GeometrixScreen() {
             <Text style={styles.subtitle}>Crea, anima, personaliza y comparte.</Text>
           </View>
 
+          <Pressable
+            onPress={() => router.push("/geometrix-creaciones")}
+            style={styles.creacionesBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Mis creaciones"
+            hitSlop={6}
+          >
+            <Feather name="grid" size={18} color={colors.foreground} />
+          </Pressable>
         </View>
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
@@ -1294,21 +1301,11 @@ export default function GeometrixScreen() {
 
           </View>
 
-          {/* Fila de controles arriba a la derecha: ajustes + flecha drop-down.
+          {/* Fila de controles arriba a la derecha: flecha drop-down.
               Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
           <View style={styles.actionTop}>
-            {/* Header: una sola píldora con [icono ajustes] | [divisor] | [flecha] */}
+            {/* Header: píldora solo con [flecha] */}
             <View style={styles.actionTopRow}>
-              <Pressable
-                onPress={() => setGeneralOpen(true)}
-                style={styles.actionTopBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Ajustes generales"
-                hitSlop={4}
-              >
-                <Feather name="sliders" size={16} color={colors.mutedForeground} />
-              </Pressable>
-              <View style={styles.actionTopDivider} />
               <Pressable
                 onPress={() => setPillOpen((o) => !o)}
                 style={styles.actionTopBtn}
@@ -2641,6 +2638,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerText: { flex: 1, paddingRight: 12 },
+  creacionesBtn: {
+    width: 39,
+    height: 39,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: { fontSize: 30, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
