@@ -657,11 +657,6 @@ export default function GeometrixScreen() {
   const [hiddenIds, setHiddenIds] = useState<GeometryId[]>([]);
   // Geometría seleccionada para el pellizco (pinch) que ajusta su zoom.
   const [selectedId, setSelectedId] = useState<GeometryId | null>(null);
-  // Cuando los thumbnails desbordan el ancho visible, alineamos a la izquierda
-  // (en vez de centrar) para que se pueda deslizar y se asome el último.
-  const [thumbsOverflow, setThumbsOverflow] = useState(false);
-  const thumbsViewW = useRef(0);
-  const thumbsScrollRef = useRef<ScrollView>(null);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
   // Opacidad de la píldora de acciones: fade puro (sin movimiento) al plegar.
@@ -1428,8 +1423,8 @@ export default function GeometrixScreen() {
         </LinearGradient>
 
         {/* Fondo interactivo: animación centrada en el espacio entre la
-            divisora y la tab bar; thumbnails anclados 10px sobre la tab bar.
-            paddingBottom despeja la tab bar para que el lienzo no se recorte. */}
+            divisora y la tab bar. paddingBottom despeja la tab bar para que el
+            lienzo no se recorte. */}
         <View style={[styles.canvasWrap, { paddingBottom: bottomReserve }]}>
           {/* Fondo del lienzo (solo de la divisora hacia abajo). Se extiende
               edge-to-edge (left/right -20 rompe el padding del content); el
@@ -1453,7 +1448,7 @@ export default function GeometrixScreen() {
               />
             )}
           </View>
-          {/* Escenario: centra la animación en el espacio sobre los thumbnails. */}
+          {/* Escenario: centra la animación en el espacio del lienzo. */}
           <View
             style={styles.stage}
             onLayout={(e) => {
@@ -1688,96 +1683,6 @@ export default function GeometrixScreen() {
           </View>
 
 
-          {/* Thumbnails de geometrías activas: fila centrada anclada 15px sobre
-              la tab bar; se reacomoda al agregar/quitar (LinearTransition). */}
-          {activeMetas.length > 0 && (
-            <ScrollView
-              ref={thumbsScrollRef}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={[styles.thumbsScroll, { bottom: bottomReserve + 5 }]}
-              contentContainerStyle={[
-                styles.thumbsRow,
-                thumbsOverflow && styles.thumbsRowStart,
-              ]}
-              onLayout={(e) => {
-                thumbsViewW.current = e.nativeEvent.layout.width;
-              }}
-              onContentSizeChange={(w) => {
-                const overflow = w > thumbsViewW.current + 1;
-                setThumbsOverflow(overflow);
-                if (overflow) {
-                  setTimeout(
-                    () => thumbsScrollRef.current?.scrollToEnd({ animated: true }),
-                    60,
-                  );
-                }
-              }}
-            >
-              {activeMetas.map((g) => {
-                const s = getSettings(g.id);
-                const isHidden = hiddenIds.includes(g.id);
-                const isSelected = pinchTargetId === g.id;
-                return (
-                  <Animated.View
-                    key={g.id}
-                    entering={FadeIn.duration(320)}
-                    exiting={FadeOut.duration(200)}
-                    layout={LinearTransition.duration(320).easing(
-                      Easing.inOut(Easing.ease),
-                    )}
-                    style={styles.thumbItem}
-                  >
-                    {/* Tap en la imagen: seleccionar. Si está oculta, tap → mostrar. */}
-                    <Pressable
-                      onPress={() => {
-                        if (isHidden) {
-                          setHiddenIds((prev) => prev.filter((id) => id !== g.id));
-                        } else {
-                          setSelectedId(g.id);
-                        }
-                      }}
-                      style={[styles.thumb, { opacity: isHidden ? 1 : isSelected ? 1 : 0.4 }]}
-                      accessibilityRole="button"
-                      accessibilityLabel={isHidden ? `Mostrar ${g.name}` : `Seleccionar ${g.name}`}
-                    >
-                      <SacredGlyph
-                        id={g.id}
-                        color={s.color}
-                        gradient={gradientColors(s.gradientId)}
-                        size={37}
-                        strokeWidth={1.4}
-                      />
-                      {/* Overlay oscuro + ojo-tachado cuando la geometría está oculta */}
-                      {isHidden && (
-                        <View style={styles.thumbHiddenOverlay}>
-                          <Feather name="eye-off" size={14} color="rgba(255,255,255,0.85)" />
-                        </View>
-                      )}
-                    </Pressable>
-                    {/* Flechita: abre ajustes personalizados directamente. */}
-                    <Pressable
-                      onPress={() => {
-                        setSelectedId(g.id);
-                        setSettingsGeoId(g.id);
-                        setSettingsOpen(true);
-                      }}
-                      style={styles.thumbCaret}
-                      hitSlop={8}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Ajustes de ${g.name}`}
-                    >
-                      <Feather
-                        name="chevron-down"
-                        size={16}
-                        color={colors.mutedForeground}
-                      />
-                    </Pressable>
-                  </Animated.View>
-                );
-              })}
-            </ScrollView>
-          )}
         </View>
       </View>
 
@@ -2974,7 +2879,7 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
-    marginTop: 14,
+    marginTop: 34,
     marginBottom: 0,
     marginHorizontal: -20,
   },
