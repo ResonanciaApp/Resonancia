@@ -985,13 +985,27 @@ export default function GeometrixScreen() {
   const longPressGesture = Gesture.LongPress()
     .minDuration(380)
     .maxDistance(99999)
+    // Si hay más de un dedo desde el inicio (= pellizco) → fallar de inmediato
+    // para no competir con pinchGesture.
+    .onTouchesBegan((e, manager) => {
+      if (e.allTouches.length > 1) {
+        manager.fail();
+      }
+    })
     .onStart((e) => {
       loupeX.value = e.x;
       loupeY.value = e.y;
       runOnJS(setLoupeGeoId)(pinchTargetId);
       runOnJS(setLoupeVisible)(true);
     })
-    .onTouchesMove((e) => {
+    .onTouchesMove((e, manager) => {
+      // Si el usuario agrega un segundo dedo mientras la lupa está visible →
+      // ocultarla y ceder el gesto al pellizco.
+      if (e.allTouches.length > 1) {
+        runOnJS(setLoupeVisible)(false);
+        manager.fail();
+        return;
+      }
       if (e.allTouches.length > 0) {
         loupeX.value = e.allTouches[0].x;
         loupeY.value = e.allTouches[0].y;
