@@ -816,6 +816,15 @@ export default function GeometrixScreen() {
   const layerSize = canvasSide * 0.96;
   const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
   const hasActive = activeMetas.length > 0;
+  // Opacidad del grupo trash: siempre montado para evitar glitch de layout.
+  const trashAnim = useSharedValue(0);
+  const trashAnimStyle = useAnimatedStyle(() => ({ opacity: trashAnim.value }));
+  useEffect(() => {
+    trashAnim.value = withTiming(hasActive ? 1 : 0, {
+      duration: hasActive ? 360 : 220,
+      easing: Easing.inOut(Easing.ease),
+    });
+  }, [hasActive, trashAnim]);
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }[] = [
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
@@ -1306,41 +1315,38 @@ export default function GeometrixScreen() {
           <View style={styles.actionTop}>
             {/* Header: [trash?] | [refresh?] | [divisor] | [ajustes] | [divisor] | [flecha] */}
             <View style={styles.actionTopRow}>
-              {hasActive && (
-                <Animated.View
-                  entering={FadeIn.duration(360)}
-                  exiting={FadeOut.duration(220)}
-                  style={{ flexDirection: "row", alignItems: "center" }}
+              <Animated.View
+                pointerEvents={hasActive ? "auto" : "none"}
+                style={[{ flexDirection: "row", alignItems: "center" }, trashAnimStyle]}
+              >
+                <Pressable
+                  onPress={clearCanvas}
+                  style={styles.actionTopBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Borrar lienzo"
+                  hitSlop={4}
                 >
-                  <Pressable
-                    onPress={clearCanvas}
-                    style={styles.actionTopBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel="Borrar lienzo"
-                    hitSlop={4}
+                  <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+                </Pressable>
+                {editingCreation && isDirty && (
+                  <Animated.View
+                    entering={FadeIn.duration(260)}
+                    exiting={FadeOut.duration(180)}
+                    style={{ flexDirection: "row", alignItems: "center" }}
                   >
-                    <Feather name="trash-2" size={16} color={colors.mutedForeground} />
-                  </Pressable>
-                  {editingCreation && isDirty && (
-                    <Animated.View
-                      entering={FadeIn.duration(260)}
-                      exiting={FadeOut.duration(180)}
-                      style={{ flexDirection: "row", alignItems: "center" }}
+                    <Pressable
+                      onPress={updateComposition}
+                      style={styles.actionTopBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel="Actualizar composición"
+                      hitSlop={4}
                     >
-                      <Pressable
-                        onPress={updateComposition}
-                        style={styles.actionTopBtn}
-                        accessibilityRole="button"
-                        accessibilityLabel="Actualizar composición"
-                        hitSlop={4}
-                      >
-                        <Feather name="refresh-cw" size={18} color={colors.mutedForeground} />
-                      </Pressable>
-                    </Animated.View>
-                  )}
-                  <View style={styles.actionTopDivider} />
-                </Animated.View>
-              )}
+                      <Feather name="refresh-cw" size={16} color={colors.mutedForeground} />
+                    </Pressable>
+                  </Animated.View>
+                )}
+                <View style={styles.actionTopDivider} />
+              </Animated.View>
               <Pressable
                 onPress={() => setGeneralOpen(true)}
                 style={styles.actionTopBtn}
