@@ -1709,7 +1709,7 @@ export default function GeometrixScreen() {
               ref={thumbsScrollRef}
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={[styles.thumbsScroll, { bottom: bottomReserve + 5 }]}
+              style={[styles.thumbsScroll, { bottom: bottomReserve - 5 }]}
               contentContainerStyle={[
                 styles.thumbsRow,
                 thumbsOverflow && styles.thumbsRowStart,
