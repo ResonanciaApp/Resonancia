@@ -525,7 +525,10 @@ function CarouselTile({
   }));
 
   return (
-    <Animated.View layout={LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}>
+    <Animated.View
+      layout={LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
+      style={styles.tileWrap}
+    >
       <Pressable
         onPress={onPress}
         style={[
@@ -2938,7 +2941,10 @@ const styles = StyleSheet.create({
 
   grid: { flexGrow: 0 },
   gridContent: { paddingVertical: 2, paddingLeft: 20, paddingRight: 20 },
-  gridRow: { flexDirection: "row", gap: 8 },
+  // Sin `gap`: las animaciones de layout (LinearTransition) miden mal el reordenamiento
+  // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
+  gridRow: { flexDirection: "row" },
+  tileWrap: { marginRight: 8 },
   tile: {
     aspectRatio: 1,
     borderRadius: 16,

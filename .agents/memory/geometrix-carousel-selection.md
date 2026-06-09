@@ -27,6 +27,11 @@ reconciliación global mientras hubiera CUALQUIER activación pendiente
 devuelve la geometría a su orden natural: si deseleccionabas una tile mientras otra
 seguía en su HOLD, la deseleccionada quedaba atascada fuera de lugar.
 
+**Gotcha Reanimated (layout):** NO usar `gap` en el flex row del carrusel. Las
+animaciones de layout (`LinearTransition`) miden mal las posiciones con `gap` y la
+tile no vuelve a su lugar al deseleccionar (queda "pegada" al frente). Usar margen
+por tile (`marginRight`) en el wrapper animado en su lugar.
+
 **How to apply:** mantené el orden como `useMemo(active, activatingIds)`. No agregues
 un gate global de "pending" sobre la reconciliación. Para acompañar con scroll, calculá
 el slot de aterrizaje como `front.indexOf(id)` (front = seleccionadas que NO están en
