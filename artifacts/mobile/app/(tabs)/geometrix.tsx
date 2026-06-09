@@ -4107,7 +4107,7 @@ const styles = StyleSheet.create({
   headerText: { flex: 1, paddingRight: 12 },
   // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
   titleRow: { flexDirection: "row", alignItems: "center" },
-  titleLogo: { width: 18, height: 18, marginLeft: 10, opacity: 0.92 },
+  titleLogo: { width: 18, height: 18, marginLeft: 5, opacity: 0.92 },
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3, lineHeight: 25 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
