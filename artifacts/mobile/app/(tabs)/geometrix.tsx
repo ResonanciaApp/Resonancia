@@ -209,7 +209,7 @@ function GeometryLayer({
   index,
   size,
   settings,
-  liveZoom,
+  liveZoomSV,
   liveAngle,
   masterOpacity = 1,
   motion = true,
@@ -219,10 +219,12 @@ function GeometryLayer({
   index: number;
   size: number;
   settings: GeoSettings;
-  /** Zoom en vivo (pellizco) como número: si se pasa, manda sobre settings.zoom
-      y REDIBUJA el SVG a ese tamaño en tiempo real (lo usa solo la geometría
-      seleccionada en el lienzo). No se aplica por transform → trazo nítido. */
-  liveZoom?: number;
+  /** Zoom en vivo (pellizco) como SharedValue: el UI thread aplica la escala
+      como transform (liveZoomSV.value / safeZoom) → 60 fps sin runOnJS por
+      frame. safeZoom queda capturado en el closure del último render; al
+      confirmar el zoom, el nuevo render actualiza safeZoom → pinchScale → 1
+      sin salto visual. Solo lo usa la geometría seleccionada en el lienzo. */
+  liveZoomSV?: SharedValue<number>;
   /** Ángulo en vivo (gesto de rotación) en grados: si se pasa, manda sobre
       settings.manualAngle. Solo lo usa la geometría seleccionada en el lienzo y
       solo tiene efecto cuando el giro automático está apagado. */
@@ -334,8 +336,7 @@ function GeometryLayer({
   // aplica por transform sino plegándolo al tamaño REAL del SVG (effectiveSize),
   // para que la geometría se REDIBUJE nítida en tiempo real, el grosor del trazo
   // no engorde y no haya parpadeo en el traspaso transform→tamaño al soltar.
-  const effZoom = liveZoom != null && liveZoom > 0 ? liveZoom : safeZoom;
-  const committedMag = userScale * effZoom;
+  const committedMag = userScale * safeZoom;
   // Movimiento general (panel maestro): congela giro + respiración de TODAS las
   // capas a la vez sin borrar el ajuste propio de cada una.
   const spin = (rotate || rotateLeft) && motion;
@@ -350,14 +351,16 @@ function GeometryLayer({
   const committedAngle = Number.isFinite(manualAngle) ? manualAngle : 0;
   const effAngle = liveAngle != null && Number.isFinite(liveAngle) ? liveAngle : committedAngle;
   const aStyle = useAnimatedStyle(() => {
+    // Zoom en vivo (pellizco): ratio entre el zoom actual y el confirmado,
+    // capturado en el closure del último render. Al confirmar, safeZoom se
+    // actualiza → pinchScale → 1 automáticamente, sin salto visual.
+    // En reposo (sin pellizco activo) liveZoomSV es undefined → ratio = 1.
+    const pinchScale = liveZoomSV != null ? liveZoomSV.value / safeZoom : 1;
+    const breatheScale = breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1;
     return {
       transform: [
         { rotate: spin ? `${rot.value * 360 * dir}deg` : `${effAngle}deg` },
-        // Respiración (1 - profundidad … 1). El zoom NO viaja en el transform:
-        // se aplica redibujando el SVG (effectiveSize) para que quede nítido.
-        {
-          scale: breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1,
-        },
+        { scale: breatheScale * pinchScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
       opacity: opacity * safeMaster * fade.value * enter.value,
@@ -1227,10 +1230,6 @@ export default function GeometrixScreen() {
   // Zoom en vivo del pellizco (UI thread); se confirma a settings al soltar.
   const livePinch = useSharedValue(1);
   const pinchStart = useSharedValue(1);
-  // Zoom en vivo del objetivo como NÚMERO (no transform): redibuja el SVG en
-  // cada frame para que el trazo quede nítido durante el pellizco y no haya
-  // parpadeo al soltar. null = no se está pellizcando (usa el confirmado).
-  const [livePinchNum, setLivePinchNum] = useState<number | null>(null);
 
   // ── Lupa de magnificación ─────────────────────────────────────────────────
   // Aparece al mantener el dedo sobre la geometría seleccionada.
@@ -1896,20 +1895,17 @@ export default function GeometrixScreen() {
       runOnJS(setLoupeVisible)(false);
     })
     .onUpdate((e) => {
-      const z = Math.min(6, Math.max(0.1, pinchStart.value * e.scale));
-      livePinch.value = z;
-      // Redibuja el SVG del objetivo en tiempo real (zoom = tamaño, no transform).
-      runOnJS(setLivePinchNum)(z);
+      livePinch.value = Math.min(6, Math.max(0.1, pinchStart.value * e.scale));
     })
     .onEnd(() => {
       if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
     })
-    // SIEMPRE corre (éxito o cancelación), después de onEnd. Limpia el zoom en
-    // vivo → el objetivo vuelve al confirmado; si el gesto se canceló sin
-    // confirmar, revierte al último zoom guardado (no queda pegado al en vivo).
+    // SIEMPRE corre (éxito o cancelación), después de onEnd. Restablece el flag
+    // de pellizco activo; si el gesto se canceló sin confirmar, livePinch quedará
+    // en el valor en curso pero GeometryLayer lo resuelve al valor confirmado
+    // porque liveZoomSV solo aplica mientras pinchTargetId coincide.
     .onFinalize(() => {
       isPinching.value = false;
-      runOnJS(setLivePinchNum)(null);
     });
 
   // Mantener el dedo quieto sobre la geometría activa → aparece la lupa circular.
@@ -2333,11 +2329,7 @@ export default function GeometrixScreen() {
                         index={i}
                         size={layerSize}
                         settings={s}
-                        liveZoom={
-                          iid === pinchTargetId && livePinchNum != null
-                            ? livePinchNum
-                            : undefined
-                        }
+                        liveZoomSV={iid === pinchTargetId ? livePinch : undefined}
                         liveAngle={
                           iid === pinchTargetId && liveRotNum != null
                             ? liveRotNum
