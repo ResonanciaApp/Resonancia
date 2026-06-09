@@ -1711,14 +1711,15 @@ export default function GeometrixScreen() {
             </Animated.View>
           </View>
 
-          {/* Thumbnails de geometrías activas: fila centrada anclada 15px sobre
-              la tab bar; se reacomoda al agregar/quitar (LinearTransition). */}
+          {/* Thumbnails de geometrías activas: fila centrada anclada justo sobre
+              la línea redondeada para subir el menú; se reacomoda al
+              agregar/quitar (LinearTransition). */}
           {activeMetas.length > 0 && (
             <ScrollView
               ref={thumbsScrollRef}
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={[styles.thumbsScroll, { bottom: bottomReserve - 5 }]}
+              style={[styles.thumbsScroll, { bottom: bottomPb }]}
               contentContainerStyle={[
                 styles.thumbsRow,
                 thumbsOverflow && styles.thumbsRowStart,
