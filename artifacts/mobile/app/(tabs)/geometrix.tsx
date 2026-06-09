@@ -634,6 +634,9 @@ function CarouselTile({
   // borde y el carrusel se auto-desplaza (la posición efectiva cambia por scroll).
   const scrollStartX = useSharedValue(0);
   const lastTransX = useSharedValue(0);
+  // Último desplazamiento efectivo (dedo + scroll) aplicado: lo usa la reacción a
+  // idxSV para recompensar dragX cuando el DOM termina de reordenar.
+  const lastEffTx = useSharedValue(0);
   // 1 solo en la card que se está arrastrando AHORA (no en todas las arrastrables):
   // así la reacción al scroll recomputa el índice únicamente para esta card.
   const selfDragging = useSharedValue(0);
@@ -649,6 +652,7 @@ function CarouselTile({
   const applyReorder = useCallback(
     (effectiveTx: number) => {
       "worklet";
+      lastEffTx.value = effectiveTx;
       const maxIdx = Math.max(0, frontCountSV.value - 1);
       let proposed = Math.round(originIdx.value + effectiveTx / itemW);
       if (proposed < 0) proposed = 0;
@@ -657,9 +661,26 @@ function CarouselTile({
         curIdx.value = proposed;
         runOnJS(onMoveTo)(id, proposed);
       }
-      dragX.value = effectiveTx - (curIdx.value - originIdx.value) * itemW;
+      // Compensar contra el slot REAL ya renderizado (idxSV), NO el predicho
+      // (curIdx): el reordenamiento del DOM (setActive) es asíncrono, así que si
+      // compensáramos con curIdx la card se sobre-corrige (salto a la derecha) y
+      // vuelve cuando el DOM se actualiza (salto a la izquierda). Con idxSV la
+      // compensación y el movimiento del DOM ocurren en el mismo paso (ver la
+      // reacción a idxSV de abajo).
+      dragX.value = effectiveTx - (idxSV.value - originIdx.value) * itemW;
     },
-    [curIdx, dragX, frontCountSV, id, itemW, onMoveTo, originIdx],
+    [curIdx, dragX, frontCountSV, id, idxSV, itemW, lastEffTx, onMoveTo, originIdx],
+  );
+
+  // Cuando el DOM termina de reordenar de verdad (idxSV refleja el slot nuevo),
+  // recompensar dragX en el mismo tick: el base de la card se desplazó itemW y
+  // dragX se ajusta itemW en sentido contrario → posición neta sin salto.
+  useAnimatedReaction(
+    () => (selfDragging.value === 1 ? idxSV.value : null),
+    (idx, prev) => {
+      if (idx === null || idx === prev) return;
+      dragX.value = lastEffTx.value - (idx - originIdx.value) * itemW;
+    },
   );
 
   // Mientras el dedo está parado en el borde, el carrusel sigue desplazándose

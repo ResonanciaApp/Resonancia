@@ -8,11 +8,16 @@ El carrusel de geometrías (pantalla Geometrix) replica el comportamiento del mo
 EN SU LUGAR durante ~1s (HOLD), y recién después se desliza al frente (en orden de
 selección).
 
-**Auto-scroll: DESACTIVADO por preferencia del usuario.** El carrusel NO acompaña a
-la geometría con scroll: la vista se queda estática en su lugar; solo la tile se
-desliza al frente. (Se implementó el auto-scroll y luego el usuario pidió quitarlo.)
-Si se reactiva: calcular slot = `front.indexOf(id)` y `scrollTo({x: max(0,
-insertAt*(tileW+8)-tileW)})` dentro de un `requestAnimationFrame`.
+**Auto-scroll AL SELECCIONAR: DESACTIVADO por preferencia del usuario.** Al elegir una
+geometría el carrusel NO acompaña con scroll: la vista se queda estática; solo la tile se
+desliza al frente. (Se implementó y luego el usuario pidió quitarlo.) Si se reactiva:
+slot = `front.indexOf(id)`, `scrollTo({x: max(0, insertAt*(tileW+8)-tileW)})` dentro de un
+`requestAnimationFrame`.
+
+> OJO — esto NO es lo mismo que el **auto-scroll de BORDE al ARRASTRAR** (drag-to-reorder),
+> que SÍ existe: al arrastrar una tile contra el borde izq/der el carrusel se desplaza por
+> frame loop (UI thread) para alcanzar slots fuera de pantalla. Son features distintas; no
+> confundir "no scroll al seleccionar" con "no hay auto-scroll en absoluto".
 
 **Regla central:** el orden del carrusel se DERIVA de forma determinista, NO se muta.
 `carouselOrder = [seleccionadas-que-ya-terminaron-su-activación (orden de selección),
