@@ -41,7 +41,7 @@ import { useAuth } from "@clerk/expo";
 import { useShareGlyph } from "@workspace/api-client-react";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
-import { type GeometryId } from "@/data/geometries";
+import { baseOf, type GeometryId } from "@/data/geometries";
 import { useColors } from "@/hooks/useColors";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import {
@@ -410,7 +410,7 @@ export default function GeometrixCreacionesScreen() {
               return (
                 <PreviewGlyph
                   key={id}
-                  id={id}
+                  id={baseOf(id)}
                   index={i}
                   settings={s}
                   masterOpacity={exportReq.creation.master.opacity}
@@ -530,7 +530,7 @@ export default function GeometrixCreacionesScreen() {
                     return (
                       <PreviewGlyph
                         key={id}
-                        id={id}
+                        id={baseOf(id)}
                         index={i}
                         settings={s}
                         masterOpacity={c.master.opacity}

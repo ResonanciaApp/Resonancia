@@ -130,3 +130,20 @@ export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
 export function getGeometry(id: GeometryId): GeometryMeta | undefined {
   return GEOMETRIES.find((g) => g.id === id);
 }
+
+/**
+ * Separador de id de instancia. Una geometría duplicada usa el id
+ * `${baseId}::${sufijoÚnico}` para poder existir varias veces (cada una con sus
+ * propios ajustes) sin chocar con el original (que conserva el id base pelado).
+ */
+export const INSTANCE_SEP = "::";
+
+/**
+ * Devuelve el id base (tipo de geometría) a partir de un id de instancia.
+ * Para un id base (sin separador) lo devuelve tal cual. Úsese siempre que haya
+ * que mapear un id (de `active`, settings, etc.) a su `GeometryMeta`/glifo.
+ */
+export function baseOf(id: string): GeometryId {
+  const i = id.indexOf(INSTANCE_SEP);
+  return (i === -1 ? id : id.slice(0, i)) as GeometryId;
+}

@@ -53,7 +53,7 @@ import {
   type GeoSettings,
 } from "@/data/geometrix-creations";
 import { SacredGlyph } from "@/components/SacredGlyph";
-import { type GeometryId } from "@/data/geometries";
+import { baseOf, type GeometryId } from "@/data/geometries";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -1148,7 +1148,7 @@ export default function ProfileScreen() {
                                 pointerEvents="none"
                               >
                                 <SacredGlyph
-                                  id={id}
+                                  id={baseOf(id)}
                                   color={s.color}
                                   gradient={gradientColors(s.gradientId)}
                                   size={60}

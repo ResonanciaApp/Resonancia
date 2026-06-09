@@ -174,14 +174,14 @@ export type GeometrixCreation = {
   updatedAt: string;
   /** Marcada como favorita por el usuario. */
   liked: boolean;
-  /** Capas activas, en orden. */
-  active: GeometryId[];
+  /** Capas activas, en orden. Ids de instancia (`baseId` o `baseId::sufijo`). */
+  active: string[];
   /** Ajustes generales (fondo, movimiento, glow, opacidad maestra). */
   master: GlobalSettings;
   /** Ajustes por capa (solo de las capas activas). */
   settings: Record<string, GeoSettings>;
   /** IDs de capas ocultas (no se renderizan en el lienzo). Opcional para compatibilidad con creaciones antiguas. */
-  hiddenIds?: GeometryId[];
+  hiddenIds?: string[];
   /** Pista de audio elegida. */
   audio: GeometrixAudio;
 };

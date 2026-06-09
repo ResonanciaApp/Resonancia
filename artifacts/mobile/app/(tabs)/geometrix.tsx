@@ -53,7 +53,7 @@ import {
 } from "@/lib/geometrixIntro";
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
-import { GEOMETRIES, PALETTE, type GeometryId, type GeometryMeta } from "@/data/geometries";
+import { GEOMETRIES, PALETTE, baseOf, getGeometry, INSTANCE_SEP, type GeometryId, type GeometryMeta } from "@/data/geometries";
 import {
   BG_GRADIENTS,
   bgGradientColors,
@@ -512,7 +512,7 @@ function GuideHandle({ guide, canvasSide, onMove }: GuideHandleProps) {
 }
 
 type CarouselTileProps = {
-  id: GeometryId;
+  id: string;
   name: string;
   tileW: number;
   isSelected: boolean;
@@ -525,9 +525,9 @@ type CarouselTileProps = {
   itemW: number;
   frontCount: number;
   indexInFront: number;
-  onDragStart: (id: GeometryId) => void;
-  onMoveTo: (id: GeometryId, idx: number) => void;
-  onDragEnd: (id: GeometryId) => void;
+  onDragStart: (id: string) => void;
+  onMoveTo: (id: string, idx: number) => void;
+  onDragEnd: (id: string) => void;
 };
 
 // Tile del carrusel de geometrías. Maneja su propia animación de selección al
@@ -696,7 +696,7 @@ function CarouselTile({
               ]}
             >
               <SacredGlyph
-                id={id}
+                id={baseOf(id)}
                 color={isSelected ? color : "#7A8FA8"}
                 size={tileW * 0.66}
                 strokeWidth={isSelected ? 1.5 : 1.4}
@@ -760,17 +760,19 @@ export default function GeometrixScreen() {
   // Param de ruta: id de una creación a abrir (lo manda la pantalla de la lista).
   const params = useLocalSearchParams<{ load?: string; play?: string; new?: string }>();
 
-  const [active, setActive] = useState<GeometryId[]>([]);
+  // `active` guarda IDs de instancia (ver `baseOf`): el original de cada
+  // geometría usa el id base pelado; los duplicados usan `${base}::${sufijo}`.
+  const [active, setActive] = useState<string[]>([]);
   // Card que se está arrastrando (long-press + drag) para reordenar. Mientras
   // hay un drag activo se desactiva el scroll horizontal del carrusel.
-  const [draggingId, setDraggingId] = useState<GeometryId | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
   // su activación a mitad de un arrastre, el orden del carrusel no debe saltar.
-  const frozenActivatingRef = useRef<Set<GeometryId> | null>(null);
+  const frozenActivatingRef = useRef<Set<string> | null>(null);
   // Mueve una card a la posición `idx` dentro del orden de selección (`active`).
   // Como el orden de `active` define el orden de las capas (primera = atrás),
   // reordenar aquí reordena también las capas del lienzo.
-  const moveActiveTo = useCallback((id: GeometryId, idx: number) => {
+  const moveActiveTo = useCallback((id: string, idx: number) => {
     setActive((prev) => {
       if (!prev.includes(id)) return prev;
       const without = prev.filter((x) => x !== id);
@@ -783,17 +785,17 @@ export default function GeometrixScreen() {
   // Mientras una geometría está aquí, NO se mueve al frente: se queda en su slot
   // natural mostrando el resplandor; al terminar el HOLD sale del set y el orden
   // (derivado) la lleva al frente. Es estado para que el orden se recalcule.
-  const [activatingIds, setActivatingIds] = useState<Set<GeometryId>>(
+  const [activatingIds, setActivatingIds] = useState<Set<string>>(
     () => new Set(),
   );
   // Espejo para leer/escribir el set dentro de los timers sin closures obsoletas.
-  const activatingIdsRef = useRef<Set<GeometryId>>(activatingIds);
+  const activatingIdsRef = useRef<Set<string>>(activatingIds);
   useEffect(() => {
     activatingIdsRef.current = activatingIds;
   }, [activatingIds]);
   const carouselScrollRef = useRef<ScrollView>(null);
   // Timers de activación en curso, para poder cancelarlos al deseleccionar/limpiar.
-  const carouselTimers = useRef<Map<GeometryId, ReturnType<typeof setTimeout>>>(
+  const carouselTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(
     new Map(),
   );
   // Orden del carrusel DERIVADO de forma determinista: al frente las seleccionadas
@@ -806,7 +808,7 @@ export default function GeometrixScreen() {
       ? frozenActivatingRef.current
       : activatingIds;
   const handleDragStart = useCallback(
-    (id: GeometryId) => {
+    (id: string) => {
       frozenActivatingRef.current = activatingIdsRef.current;
       setDraggingId(id);
     },
@@ -816,7 +818,7 @@ export default function GeometrixScreen() {
     frozenActivatingRef.current = null;
     setDraggingId(null);
   }, []);
-  const carouselOrder = useMemo<GeometryId[]>(() => {
+  const carouselOrder = useMemo<string[]>(() => {
     const front = active.filter((id) => !effActivating.has(id));
     const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
     return [...front, ...tail];
@@ -827,7 +829,7 @@ export default function GeometrixScreen() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Geometría que se está personalizando (la de la flechita pulsada). El panel
   // por capa muestra SOLO esta, no todas las activas.
-  const [settingsGeoId, setSettingsGeoId] = useState<GeometryId | null>(null);
+  const [settingsGeoId, setSettingsGeoId] = useState<string | null>(null);
   // Ajustes generales (panel maestro): se aplican sobre TODAS las capas.
   const [master, setMaster] = useState<GlobalSettings>({
     opacity: 1,
@@ -857,11 +859,11 @@ export default function GeometrixScreen() {
   const [updatedName, setUpdatedName] = useState<string | null>(null);
   const [showEmptyAlert, setShowEmptyAlert] = useState(false);
   // Geometría con su menú contextual abierto (tap en miniatura).
-  const [menuGeoId, setMenuGeoId] = useState<GeometryId | null>(null);
+  const [menuGeoId, setMenuGeoId] = useState<string | null>(null);
   // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
-  const [hiddenIds, setHiddenIds] = useState<GeometryId[]>([]);
+  const [hiddenIds, setHiddenIds] = useState<string[]>([]);
   // Geometría seleccionada para el pellizco (pinch) que ajusta su zoom.
-  const [selectedId, setSelectedId] = useState<GeometryId | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   // Cuando los thumbnails desbordan el ancho visible, alineamos a la izquierda
   // (en vez de centrar) para que se pueda deslizar y se asome el último.
   const [thumbsOverflow, setThumbsOverflow] = useState(false);
@@ -901,7 +903,7 @@ export default function GeometrixScreen() {
   // Se usa como guard en panGesture para bloquear el drag desde el primer frame.
   const isLoupeActive = useSharedValue(false);
   const [loupeVisible, setLoupeVisible] = useState(false);
-  const [loupeGeoId, setLoupeGeoId] = useState<GeometryId | null>(null);
+  const [loupeGeoId, setLoupeGeoId] = useState<string | null>(null);
   // Rotación manual en vivo (gesto de dos dedos). El ángulo en curso se lleva en
   // grados; se confirma a settings al soltar. null = no se está rotando.
   const liveRot = useSharedValue(0);
@@ -988,7 +990,7 @@ export default function GeometrixScreen() {
         // al frente al limpiarse activatingIds, coherente por si se vuelve a entrar.
         carouselTimers.current.forEach((t) => clearTimeout(t));
         carouselTimers.current.clear();
-        const emptyActivating = new Set<GeometryId>();
+        const emptyActivating = new Set<string>();
         activatingIdsRef.current = emptyActivating;
         setActivatingIds(emptyActivating);
         setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5, bgPattern: null });
@@ -998,7 +1000,7 @@ export default function GeometrixScreen() {
 
 
   // Quita una geometría del set de "activándose" (estado + ref espejo).
-  const dropActivating = useCallback((id: GeometryId) => {
+  const dropActivating = useCallback((id: string) => {
     setActivatingIds((prev) => {
       if (!prev.has(id)) return prev;
       const next = new Set(prev);
@@ -1012,7 +1014,7 @@ export default function GeometrixScreen() {
     }
   }, []);
 
-  const toggleGeometry = useCallback((id: GeometryId) => {
+  const toggleGeometry = useCallback((id: string) => {
     // Derivar add/remove del valor comprometido más reciente (no del closure).
     const removing = activeRef.current.includes(id);
     setActive((prev) =>
@@ -1036,7 +1038,7 @@ export default function GeometrixScreen() {
       dropActivating(id);
     } else {
       // Al agregar, sembrar ajustes por defecto.
-      setSettings((prev) => (prev[id] ? prev : { ...prev, [id]: defaultSettings(id) }));
+      setSettings((prev) => (prev[id] ? prev : { ...prev, [id]: defaultSettings(baseOf(id)) }));
       // Activación "en el lugar" (~1s): la geometría se enciende con su color y un
       // resplandor sin moverse (sigue en su slot natural por estar en activatingIds);
       // pasado el HOLD sale del set y el orden derivado la lleva al frente, y el
@@ -1070,6 +1072,41 @@ export default function GeometrixScreen() {
     setSelectedId(id);
   }, [dropActivating]);
 
+  // Contador monótono para garantizar ids de instancia únicos aun creando varios
+  // duplicados en el mismo milisegundo.
+  const dupSeqRef = useRef(0);
+  // Duplica una capa (instancia): inserta una copia INMEDIATAMENTE a la derecha
+  // del original en `active` (= a la derecha de su card) con ajustes POR DEFECTO
+  // (sin efectos preestablecidos), y la deja seleccionada.
+  const duplicateGeometry = useCallback((iid: string) => {
+    const base = baseOf(iid);
+    const newId = `${base}${INSTANCE_SEP}${Date.now().toString(36)}${(dupSeqRef.current++).toString(36)}`;
+    setSettings((prev) => ({ ...prev, [newId]: defaultSettings(base) }));
+    // Si el original sigue en su ventana de activación (HOLD), el orden derivado
+    // lo saca del frente y el duplicado quedaría separado de él. Forzar que el
+    // original se asiente ya (cancelar su timer y sacarlo de activatingIds) para
+    // que ambos queden en el frente, adyacentes.
+    const t = carouselTimers.current.get(iid);
+    if (t) {
+      clearTimeout(t);
+      carouselTimers.current.delete(iid);
+    }
+    if (activatingIdsRef.current.has(iid)) {
+      const settled = new Set(activatingIdsRef.current);
+      settled.delete(iid);
+      activatingIdsRef.current = settled;
+      setActivatingIds(settled);
+    }
+    setActive((prev) => {
+      const i = prev.indexOf(iid);
+      if (i === -1) return [...prev, newId];
+      const next = [...prev];
+      next.splice(i + 1, 0, newId);
+      return next;
+    });
+    setSelectedId(newId);
+  }, []);
+
   // Vacía por completo el lienzo: quita todas las geometrías activas, resetea
   // sus ajustes por capa (quedan en defaults al re-agregar) y resetea los
   // ajustes generales (fondo, brillo, opacidad, glow, movimiento).
@@ -1081,7 +1118,7 @@ export default function GeometrixScreen() {
     // `active` + activatingIds) vuelve solo al natural al vaciarse `active`.
     carouselTimers.current.forEach((t) => clearTimeout(t));
     carouselTimers.current.clear();
-    const emptyActivating = new Set<GeometryId>();
+    const emptyActivating = new Set<string>();
     activatingIdsRef.current = emptyActivating;
     setActivatingIds(emptyActivating);
     setHiddenIds([]);
@@ -1100,10 +1137,10 @@ export default function GeometrixScreen() {
   }, []);
 
   const updateSetting = useCallback(
-    <K extends keyof GeoSettings>(id: GeometryId, key: K, value: GeoSettings[K]) => {
+    <K extends keyof GeoSettings>(id: string, key: K, value: GeoSettings[K]) => {
       setSettings((prev) => ({
         ...prev,
-        [id]: { ...(prev[id] ?? defaultSettings(id)), [key]: value },
+        [id]: { ...(prev[id] ?? defaultSettings(baseOf(id))), [key]: value },
       }));
     },
     [],
@@ -1112,7 +1149,7 @@ export default function GeometrixScreen() {
   const getSettings = useCallback(
     // Merge contra defaults para tolerar settings parciales (ej. estado
     // creado antes de que existieran `scale`/`thickness`).
-    (id: GeometryId): GeoSettings => ({ ...defaultSettings(id), ...(settings[id] ?? {}) }),
+    (id: string): GeoSettings => ({ ...defaultSettings(baseOf(id)), ...(settings[id] ?? {}) }),
     [settings],
   );
 
@@ -1121,21 +1158,21 @@ export default function GeometrixScreen() {
   // gesto) y siempre DESPUÉS de este commit, así el objetivo pasa del tamaño en
   // vivo al confirmado (idéntico valor) sin un frame intermedio.
   const commitZoom = useCallback(
-    (id: GeometryId, z: number) => updateSetting(id, "zoom", z),
+    (id: string, z: number) => updateSetting(id, "zoom", z),
     [updateSetting],
   );
 
   // Confirmar el ángulo manual del gesto de rotación a settings (JS thread).
   // Saneado final: nunca guardar NaN en settings.
   const commitAngle = useCallback(
-    (id: GeometryId, deg: number) =>
+    (id: string, deg: number) =>
       updateSetting(id, "manualAngle", Number.isFinite(deg) ? deg : 0),
     [updateSetting],
   );
 
   // Confirmar el desplazamiento del drag (un dedo) a settings (JS thread).
   const commitOffset = useCallback(
-    (id: GeometryId, x: number, y: number) => {
+    (id: string, x: number, y: number) => {
       updateSetting(id, "offsetX", Number.isFinite(x) ? x : 0);
       updateSetting(id, "offsetY", Number.isFinite(y) ? y : 0);
     },
@@ -1253,9 +1290,14 @@ export default function GeometrixScreen() {
   // El orden de las capas del lienzo sigue el orden de `active` (= orden de las
   // cards): la PRIMERA card es la capa más atrás (se pinta primero), la última
   // queda al frente. Reordenar las cards (drag) reordena las capas.
-  const activeMetas = active
-    .map((id) => GEOMETRIES.find((g) => g.id === id))
-    .filter((g): g is GeometryMeta => !!g);
+  // Cada capa activa es una INSTANCIA (`iid`): puede haber varias del mismo tipo
+  // (duplicados). `geo` es la metadata base (glifo, nombre) resuelta vía `baseOf`.
+  const activeMetas: { iid: string; geo: GeometryMeta }[] = active
+    .map((iid) => {
+      const geo = getGeometry(baseOf(iid));
+      return geo ? { iid, geo } : null;
+    })
+    .filter((m): m is { iid: string; geo: GeometryMeta } => m !== null);
   const hasActive = activeMetas.length > 0;
   // Al vaciarse el lienzo, reseteamos la "primera tanda" para que la próxima
   // vez que se pueble vuelva a entrar escalonada de izquierda a derecha.
@@ -1264,7 +1306,7 @@ export default function GeometrixScreen() {
   }, [activeMetas.length]);
   // En el primer render con thumbnails, fijamos qué ids forman la tanda inicial.
   if (thumbsInitialIdsRef.current === null && activeMetas.length > 0) {
-    thumbsInitialIdsRef.current = new Set(activeMetas.map((g) => g.id));
+    thumbsInitialIdsRef.current = new Set(activeMetas.map((m) => m.iid));
   }
   // Opacidad del grupo trash: siempre montado para evitar glitch de layout.
   const trashAnim = useSharedValue(0);
@@ -1309,15 +1351,15 @@ export default function GeometrixScreen() {
   }, [hasActive]);
   // Lo que se pinta en el lienzo: todas las activas menos las ocultas.
   const visibleMetas = hiddenIds.length
-    ? activeMetas.filter((g) => !hiddenIds.includes(g.id))
+    ? activeMetas.filter((m) => !hiddenIds.includes(m.iid))
     : activeMetas;
   const menuGeo = menuGeoId
-    ? GEOMETRIES.find((g) => g.id === menuGeoId)
+    ? getGeometry(baseOf(menuGeoId))
     : undefined;
   // Geometría que muestra el panel por capa (solo si sigue activa).
   const settingsGeo =
     settingsGeoId && active.includes(settingsGeoId)
-      ? GEOMETRIES.find((g) => g.id === settingsGeoId)
+      ? getGeometry(baseOf(settingsGeoId))
       : undefined;
 
   // Efecto 1: al cambiar (o limpiar) la creación cargada → resetear dirty.
@@ -1632,26 +1674,26 @@ export default function GeometrixScreen() {
           showsHorizontalScrollIndicator={false}
         >
           <View style={styles.gridRow}>
-            {carouselOrder.map((gid: GeometryId) => {
-              const g = GEOMETRIES.find((x) => x.id === gid);
+            {carouselOrder.map((gid: string) => {
+              const g = getGeometry(baseOf(gid));
               if (!g) return null;
-              const selected = active.includes(g.id);
-              const activating = effActivating.has(g.id);
+              const selected = active.includes(gid);
+              const activating = effActivating.has(gid);
               return (
                 <CarouselTile
-                  key={g.id}
-                  id={g.id}
+                  key={gid}
+                  id={gid}
                   name={g.name}
                   tileW={tileW}
                   isSelected={selected}
                   isActivating={activating}
-                  color={getSettings(g.id).color}
-                  onPress={() => toggleGeometry(g.id)}
+                  color={getSettings(gid).color}
+                  onPress={() => toggleGeometry(gid)}
                   draggable={selected && !activating}
-                  isDragging={draggingId === g.id}
+                  isDragging={draggingId === gid}
                   itemW={tileItemW}
                   frontCount={frontIds.length}
-                  indexInFront={frontIds.indexOf(g.id)}
+                  indexInFront={frontIds.indexOf(gid)}
                   onDragStart={handleDragStart}
                   onMoveTo={moveActiveTo}
                   onDragEnd={handleDragEnd}
@@ -1704,9 +1746,10 @@ export default function GeometrixScreen() {
               <GestureDetector gesture={canvasGesture}>
                 <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
                 {layerSize > 0 &&
-                  visibleMetas.map((g, i) => {
-                    const s = getSettings(g.id);
-                    const isDragging = g.id === pinchTargetId && liveDragPos != null;
+                  visibleMetas.map((m, i) => {
+                    const { iid, geo: g } = m;
+                    const s = getSettings(iid);
+                    const isDragging = iid === pinchTargetId && liveDragPos != null;
                     const tx = isDragging ? liveDragPos.x : (s.offsetX ?? 0);
                     const ty = isDragging ? liveDragPos.y : (s.offsetY ?? 0);
                     return (
@@ -1714,7 +1757,7 @@ export default function GeometrixScreen() {
                     // geometría, la capa se desvanece antes de desmontarse (la
                     // entrada la maneja el `enter` interno de GeometryLayer).
                     <Animated.View
-                      key={g.id}
+                      key={iid}
                       exiting={FadeOut.duration(600)}
                       style={[styles.layer, (tx || ty) ? { transform: [{ translateX: tx }, { translateY: ty }] } : null]}
                       pointerEvents="none"
@@ -1723,14 +1766,14 @@ export default function GeometrixScreen() {
                         geo={g}
                         index={i}
                         size={layerSize}
-                        settings={getSettings(g.id)}
+                        settings={s}
                         liveZoom={
-                          g.id === pinchTargetId && livePinchNum != null
+                          iid === pinchTargetId && livePinchNum != null
                             ? livePinchNum
                             : undefined
                         }
                         liveAngle={
-                          g.id === pinchTargetId && liveRotNum != null
+                          iid === pinchTargetId && liveRotNum != null
                             ? liveRotNum
                             : undefined
                         }
@@ -1799,7 +1842,7 @@ export default function GeometrixScreen() {
                     >
                       {/* Contenido: glifo a máxima magnificación, clipeado por el círculo */}
                       <SacredGlyph
-                        id={loupeGeoId}
+                        id={baseOf(loupeGeoId)}
                         color={s.color}
                         size={Math.min(glyphSize, LOUPE_SIZE * 3)}
                         strokeWidth={0.7}
@@ -1940,17 +1983,18 @@ export default function GeometrixScreen() {
                 }
               }}
             >
-              {activeMetas.map((g, index) => {
-                const s = getSettings(g.id);
-                const isHidden = hiddenIds.includes(g.id);
-                const isSelected = pinchTargetId === g.id;
+              {activeMetas.map((m, index) => {
+                const { iid, geo: g } = m;
+                const s = getSettings(iid);
+                const isHidden = hiddenIds.includes(iid);
+                const isSelected = pinchTargetId === iid;
                 // Tanda inicial → escalonado izquierda→derecha; agregados luego → al instante.
-                const enterDelay = thumbsInitialIdsRef.current?.has(g.id)
+                const enterDelay = thumbsInitialIdsRef.current?.has(iid)
                   ? (activeMetas.length - 1 - index) * 80
                   : 0;
                 return (
                   <Animated.View
-                    key={g.id}
+                    key={iid}
                     entering={FadeIn.duration(320).delay(enterDelay)}
                     exiting={FadeOut.duration(200)}
                     layout={LinearTransition.duration(320).easing(
@@ -1962,9 +2006,9 @@ export default function GeometrixScreen() {
                     <Pressable
                       onPress={() => {
                         if (isHidden) {
-                          setHiddenIds((prev) => prev.filter((id) => id !== g.id));
+                          setHiddenIds((prev) => prev.filter((id) => id !== iid));
                         } else {
-                          setSelectedId(g.id);
+                          setSelectedId(iid);
                         }
                       }}
                       style={[styles.thumb, { opacity: isHidden ? 1 : isSelected ? 1 : 0.4 }]}
@@ -1988,8 +2032,8 @@ export default function GeometrixScreen() {
                     {/* Flechita: abre ajustes personalizados directamente. */}
                     <Pressable
                       onPress={() => {
-                        setSelectedId(g.id);
-                        setSettingsGeoId(g.id);
+                        setSelectedId(iid);
+                        setSettingsGeoId(iid);
                         setSettingsOpen(true);
                       }}
                       style={styles.thumbCaret}
@@ -2042,13 +2086,13 @@ export default function GeometrixScreen() {
             />
           )}
           <View style={StyleSheet.absoluteFill} pointerEvents="none">
-            {visibleMetas.map((g, i) => (
+            {visibleMetas.map((m, i) => (
               <GeometryLayer
-                key={g.id}
-                geo={g}
+                key={m.iid}
+                geo={m.geo}
                 index={i}
                 size={immersiveSize}
-                settings={getSettings(g.id)}
+                settings={getSettings(m.iid)}
                 masterOpacity={master.opacity}
                 motion={master.motion}
                 glow={master.glow}
@@ -2216,27 +2260,27 @@ export default function GeometrixScreen() {
                   style={styles.menuItem}
                   onPress={() => {
                     setHiddenIds((prev) =>
-                      prev.includes(menuGeo.id)
-                        ? prev.filter((id) => id !== menuGeo.id)
-                        : [...prev, menuGeo.id],
+                      prev.includes(menuGeoId!)
+                        ? prev.filter((id) => id !== menuGeoId!)
+                        : [...prev, menuGeoId!],
                     );
                     setMenuGeoId(null);
                   }}
                 >
                   <Feather
-                    name={hiddenIds.includes(menuGeo.id) ? "eye" : "eye-off"}
+                    name={hiddenIds.includes(menuGeoId!) ? "eye" : "eye-off"}
                     size={18}
                     color="#FFFFFF"
                   />
                   <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>
-                    {hiddenIds.includes(menuGeo.id) ? "Mostrar" : "Ocultar"}
+                    {hiddenIds.includes(menuGeoId!) ? "Mostrar" : "Ocultar"}
                   </Text>
                 </Pressable>
 
                 <Pressable
                   style={styles.menuItem}
                   onPress={() => {
-                    const id = menuGeo.id;
+                    const id = menuGeoId!;
                     setMenuGeoId(null);
                     toggleGeometry(id);
                   }}
@@ -2251,8 +2295,8 @@ export default function GeometrixScreen() {
               <View style={styles.menuGlyphWrap}>
                 <SacredGlyph
                   id={menuGeo.id}
-                  color={getSettings(menuGeo.id).color}
-                  gradient={gradientColors(getSettings(menuGeo.id).gradientId)}
+                  color={getSettings(menuGeoId!).color}
+                  gradient={gradientColors(getSettings(menuGeoId!).gradientId)}
                   size={85}
                   strokeWidth={1.4}
                 />
@@ -2306,13 +2350,13 @@ export default function GeometrixScreen() {
                   color={colors.primary}
                 />
               )}
-              {activeMetas.map((g, i) => (
+              {activeMetas.map((m, i) => (
                 <GeometryLayer
-                  key={g.id}
-                  geo={g}
+                  key={m.iid}
+                  geo={m.geo}
                   index={i}
                   size={generalPreviewSize * 0.96}
-                  settings={getSettings(g.id)}
+                  settings={getSettings(m.iid)}
                   masterOpacity={master.opacity}
                   motion={master.motion}
                   glow={master.glow}
@@ -2578,9 +2622,9 @@ export default function GeometrixScreen() {
 
             {/* ── Caleidoscopio global ──────────────────────────────── */}
             {activeMetas.length > 0 && (() => {
-              const allOn = activeMetas.every((g) => getSettings(g.id).kaleidoscope === true);
-              const anyOn = activeMetas.some((g) => getSettings(g.id).kaleidoscope === true);
-              const segs  = getSettings(activeMetas[0].id).kaleidSegments ?? 6;
+              const allOn = activeMetas.every((m) => getSettings(m.iid).kaleidoscope === true);
+              const anyOn = activeMetas.some((m) => getSettings(m.iid).kaleidoscope === true);
+              const segs  = getSettings(activeMetas[0].iid).kaleidSegments ?? 6;
               return (
                 <View style={{ marginTop: 18 }}>
                   <View style={{
@@ -2598,7 +2642,7 @@ export default function GeometrixScreen() {
                     <Toggle
                       value={allOn}
                       onChange={(v) => {
-                        activeMetas.forEach((g) => updateSetting(g.id, "kaleidoscope", v));
+                        activeMetas.forEach((m) => updateSetting(m.iid, "kaleidoscope", v));
                       }}
                       color={colors.primary}
                       compact
@@ -2613,7 +2657,7 @@ export default function GeometrixScreen() {
                           return (
                             <Pressable
                               key={n}
-                              onPress={() => activeMetas.forEach((g) => updateSetting(g.id, "kaleidSegments", n))}
+                              onPress={() => activeMetas.forEach((m) => updateSetting(m.iid, "kaleidSegments", n))}
                               style={{
                                 flex: 1, paddingVertical: 8, borderRadius: 10,
                                 alignItems: "center",
@@ -2820,13 +2864,13 @@ export default function GeometrixScreen() {
               )}
               {/* Se muestran TODAS las geometrías seleccionadas (no solo la que se
                   personaliza) para ver la composición completa en vivo. */}
-              {visibleMetas.map((g, i) => (
+              {visibleMetas.map((m, i) => (
                 <GeometryLayer
-                  key={g.id}
-                  geo={g}
+                  key={m.iid}
+                  geo={m.geo}
                   index={i}
                   size={previewSize * 0.96}
-                  settings={getSettings(g.id)}
+                  settings={getSettings(m.iid)}
                   masterOpacity={master.opacity}
                   motion={master.motion}
                   glow={master.glow}
@@ -2864,7 +2908,7 @@ export default function GeometrixScreen() {
                 <>
                   <SacredGlyph
                     id={settingsGeo.id}
-                    color={getSettings(settingsGeo.id).color}
+                    color={getSettings(settingsGeoId!).color}
                     size={22}
                     strokeWidth={2.4}
                   />
@@ -2882,7 +2926,7 @@ export default function GeometrixScreen() {
                 <>
                   <Pressable
                     onPress={() => {
-                      const id = settingsGeo.id;
+                      const id = settingsGeoId!;
                       setHiddenIds((prev) =>
                         prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
                       );
@@ -2892,19 +2936,30 @@ export default function GeometrixScreen() {
                     hitSlop={10}
                     style={{ paddingHorizontal: 10 }}
                     accessibilityRole="button"
-                    accessibilityLabel={hiddenIds.includes(settingsGeo.id) ? "Mostrar geometría" : "Ocultar geometría"}
+                    accessibilityLabel={hiddenIds.includes(settingsGeoId!) ? "Mostrar geometría" : "Ocultar geometría"}
                   >
                     <Feather
-                      name={hiddenIds.includes(settingsGeo.id) ? "eye" : "eye-off"}
+                      name={hiddenIds.includes(settingsGeoId!) ? "eye" : "eye-off"}
                       size={19}
                       color={colors.mutedForeground}
                     />
                   </Pressable>
                   <View style={styles.sheetHeaderVDivider} />
+                  {/* Duplicar: crea una copia a la derecha con ajustes por defecto */}
+                  <Pressable
+                    onPress={() => duplicateGeometry(settingsGeoId!)}
+                    hitSlop={10}
+                    style={{ paddingHorizontal: 10 }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Duplicar geometría"
+                  >
+                    <Feather name="copy" size={18} color={colors.mutedForeground} />
+                  </Pressable>
+                  <View style={styles.sheetHeaderVDivider} />
                   {/* Borrar */}
                   <Pressable
                     onPress={() => {
-                      const id = settingsGeo.id;
+                      const id = settingsGeoId!;
                       setSettingsOpen(false);
                       setSettingsGeoId(null);
                       toggleGeometry(id);
@@ -2945,8 +3000,8 @@ export default function GeometrixScreen() {
             </View>
           ) : (
             (() => {
-              const g = settingsGeo;
-              const s = getSettings(g.id);
+              const iid = settingsGeoId!;
+              const s = getSettings(iid);
               return (
                 <ScrollView
                   showsVerticalScrollIndicator={false}
@@ -2968,7 +3023,7 @@ export default function GeometrixScreen() {
                     </Text>
                     <Toggle
                       value={s.kaleidoscope ?? false}
-                      onChange={(v) => updateSetting(g.id, "kaleidoscope", v)}
+                      onChange={(v) => updateSetting(iid, "kaleidoscope", v)}
                       color={colors.primary}
                       compact
                     />
@@ -2982,7 +3037,7 @@ export default function GeometrixScreen() {
                           return (
                             <Pressable
                               key={n}
-                              onPress={() => updateSetting(g.id, "kaleidSegments", n)}
+                              onPress={() => updateSetting(iid, "kaleidSegments", n)}
                               style={{
                                 flex: 1, paddingVertical: 8, borderRadius: 10,
                                 alignItems: "center",
@@ -3009,7 +3064,7 @@ export default function GeometrixScreen() {
                       </Text>
                       <Toggle
                         value={s.fadeLoop}
-                        onChange={(v) => updateSetting(g.id, "fadeLoop", v)}
+                        onChange={(v) => updateSetting(iid, "fadeLoop", v)}
                         color={TOGGLE_ON_COLOR}
                         compact
                       />
@@ -3021,8 +3076,8 @@ export default function GeometrixScreen() {
                       <Toggle
                         value={s.rotateLeft}
                         onChange={(v) => {
-                          updateSetting(g.id, "rotateLeft", v);
-                          if (v) updateSetting(g.id, "rotate", false);
+                          updateSetting(iid, "rotateLeft", v);
+                          if (v) updateSetting(iid, "rotate", false);
                         }}
                         color={TOGGLE_ON_COLOR}
                         compact
@@ -3034,7 +3089,7 @@ export default function GeometrixScreen() {
                       </Text>
                       <Toggle
                         value={s.breathe}
-                        onChange={(v) => updateSetting(g.id, "breathe", v)}
+                        onChange={(v) => updateSetting(iid, "breathe", v)}
                         color={TOGGLE_ON_COLOR}
                         compact
                       />
@@ -3046,8 +3101,8 @@ export default function GeometrixScreen() {
                       <Toggle
                         value={s.rotate}
                         onChange={(v) => {
-                          updateSetting(g.id, "rotate", v);
-                          if (v) updateSetting(g.id, "rotateLeft", false);
+                          updateSetting(iid, "rotate", v);
+                          if (v) updateSetting(iid, "rotateLeft", false);
                         }}
                         color={TOGGLE_ON_COLOR}
                         compact
@@ -3066,8 +3121,8 @@ export default function GeometrixScreen() {
                         <Pressable
                           key={c}
                           onPress={() => {
-                            updateSetting(g.id, "color", c);
-                            updateSetting(g.id, "gradientId", null);
+                            updateSetting(iid, "color", c);
+                            updateSetting(iid, "gradientId", null);
                           }}
                           style={[styles.swatch, on && styles.swatchOn]}
                           accessibilityRole="button"
@@ -3093,7 +3148,7 @@ export default function GeometrixScreen() {
                           key={gr.id}
                           onPress={() =>
                             updateSetting(
-                              g.id,
+                              iid,
                               "gradientId",
                               on ? null : gr.id,
                             )
@@ -3114,7 +3169,7 @@ export default function GeometrixScreen() {
                   </View>
                   <VolumeSlider
                     value={s.opacity}
-                    onChange={(v) => updateSetting(g.id, "opacity", Math.max(0, v))}
+                    onChange={(v) => updateSetting(iid, "opacity", Math.max(0, v))}
                     color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
@@ -3125,7 +3180,7 @@ export default function GeometrixScreen() {
                   </View>
                   <VolumeSlider
                     value={s.thickness}
-                    onChange={(v) => updateSetting(g.id, "thickness", v)}
+                    onChange={(v) => updateSetting(iid, "thickness", v)}
                     color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
@@ -3136,7 +3191,7 @@ export default function GeometrixScreen() {
                   </View>
                   <VolumeSlider
                     value={s.scale}
-                    onChange={(v) => updateSetting(g.id, "scale", v)}
+                    onChange={(v) => updateSetting(iid, "scale", v)}
                     color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />
@@ -3147,7 +3202,7 @@ export default function GeometrixScreen() {
                   </View>
                   <VolumeSlider
                     value={s.glow}
-                    onChange={(v) => updateSetting(g.id, "glow", v)}
+                    onChange={(v) => updateSetting(iid, "glow", v)}
                     color="#FFFFFF"
                     trackColor="rgba(255,255,255,0.12)"
                   />

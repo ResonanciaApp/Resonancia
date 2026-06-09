@@ -41,7 +41,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getGetSharedGlyphsQueryKey } from "@workspace/api-client-react";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
-import { GEOMETRIES, type GeometryId } from "@/data/geometries";
+import { baseOf, GEOMETRIES, type GeometryId } from "@/data/geometries";
 import {
   bgGradientColors,
   brightnessFactor,
@@ -172,7 +172,7 @@ function GlyphPreview({
         pointerEvents="none"
       />
       {recipe.active.map((id, i) => {
-        const geoId = id as GeometryId;
+        const geoId = baseOf(id);
         const s = recipe.settings[id] as GeoSettings | undefined;
         if (!s) return null;
         if (!GEOMETRIES.find((g) => g.id === geoId)) return null;
