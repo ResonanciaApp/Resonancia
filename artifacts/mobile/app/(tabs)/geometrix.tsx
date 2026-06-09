@@ -1421,6 +1421,9 @@ export default function GeometrixScreen() {
   const [themeSession, setThemeSession] = useState<Session | null>(null);
   const [themeSearchOpen, setThemeSearchOpen] = useState(false);
   const [themeQuery, setThemeQuery] = useState("");
+  // Glow blanco del botón: 0 = apagado, 1 = plena intensidad. Al sonar arranca
+  // una respiración muy sutil (75–100%) con periodo de 3 s; al parar vuelve a 0.
+  const themeGlow = useSharedValue(0);
 
   // Resultados de búsqueda sobre TODA la biblioteca; solo sesiones reproducibles
   // (con audio bundleado o remoto), para que toda fila suene al tocarla.
@@ -1488,6 +1491,23 @@ export default function GeometrixScreen() {
     [stopGlobalPlayer],
   );
 
+  // Animación del glow del botón: fade-in al arrancar, respiración sutil mientras
+  // suena (75→100%), fade-out al parar. Vive en el UI thread (shared value).
+  useEffect(() => {
+    if (themeSession) {
+      themeGlow.value = withTiming(1, { duration: 700, easing: Easing.out(Easing.ease) }, () => {
+        "worklet";
+        themeGlow.value = withRepeat(
+          withTiming(0.75, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
+          -1,
+          true,
+        );
+      });
+    } else {
+      cancelAnimation(themeGlow);
+      themeGlow.value = withTiming(0, { duration: 400 });
+    }
+  }, [themeSession, themeGlow]);
 
   // Cortar el tema al salir de la pestaña Geometrix (las pestañas quedan montadas,
   // así que el cleanup de desmontaje no corre al cambiar de tab).
@@ -2225,6 +2245,13 @@ export default function GeometrixScreen() {
     transform: [{ translateX: canvasSide / 2 + snapXSV.value }],
   }));
 
+  // Glow blanco del icono de audio: sombra difusa que respira cuando suena.
+  const themeGlowStyle = useAnimatedStyle(() => ({
+    shadowColor: "#FFFFFF",
+    shadowRadius: 10,
+    shadowOpacity: 0.65 * themeGlow.value,
+    shadowOffset: { width: 0, height: 0 },
+  }));
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
@@ -2298,7 +2325,13 @@ export default function GeometrixScreen() {
               accessibilityRole="button"
               accessibilityLabel={themeSession ? "Detener audio de fondo" : "Elegir audio de fondo"}
             >
-              <Feather name="volume-2" size={15} color={colors.mutedForeground} />
+              <Animated.View style={themeGlowStyle}>
+                <Feather
+                  name="volume-2"
+                  size={15}
+                  color={themeSession ? "rgba(255,255,255,0.88)" : colors.mutedForeground}
+                />
+              </Animated.View>
             </Pressable>
           </View>
         </View>
