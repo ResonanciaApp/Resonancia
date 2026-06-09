@@ -541,10 +541,11 @@ type CarouselTileProps = {
   onDragEnd: (id: string, targetIdx: number) => void;
   // Estado de arrastre compartido: lo escribe la card que se arrastra y lo leen
   // las hermanas para abrir el hueco. origin/target son slots del frente (-1 = sin
-  // arrastre). `anyDragging` activa el modo arrastre; `instantLayout` desactiva la
-  // animación de LinearTransition durante el arrastre y el frame del commit.
-  anyDragging: boolean;
+  // arrastre). `instantLayout` desactiva la animación de LinearTransition durante
+  // el arrastre y el frame del commit; `dragSettling` es true SOLO en el frame del
+  // commit (para snapear el hueco al instante, no animarlo 1100 ms).
   instantLayout: boolean;
+  dragSettling: boolean;
   dragOriginIdx: SharedValue<number>;
   dragTargetIdx: SharedValue<number>;
   // Auto-scroll del carrusel durante el arrastre (ver bloque del padre).
@@ -572,8 +573,8 @@ function CarouselTile({
   indexInFront,
   onDragStart,
   onDragEnd,
-  anyDragging,
   instantLayout,
+  dragSettling,
   dragOriginIdx,
   dragTargetIdx,
   screenW,
@@ -658,8 +659,8 @@ function CarouselTile({
   // false porque el padre ya hizo draggingId=null). Recién acá apagamos
   // selfDragging y reseteamos dragX + origin/target: hacerlo antes (en el callback
   // de withTiming) dejaría un frame en la rama de hueco antes de que el DOM
-  // reordene → micro-salto. En este punto anyDragging ya es false (tileRest), así
-  // que estos resets no producen ningún cambio visual.
+  // reordene → micro-salto. En este punto el worklet (siempre adjunto) ya devuelve
+  // translateX 0 en su slot final, así que estos resets no cambian nada visual.
   useEffect(() => {
     if (isDragging) return;
     selfDragging.value = 0;
@@ -775,29 +776,50 @@ function CarouselTile({
     ],
   );
 
-  // Estilo del wrap durante un arrastre activo (anyDragging). La card arrastrada
-  // sigue al dedo (dragX); las hermanas abren el hueco con un offset animado según
-  // origin→target. Fuera de un arrastre se usa `styles.tileRest` (translateX 0),
-  // conmutado a nivel de render para que el reset ocurra junto con el commit.
+  // Estilo del wrap. Se mantiene SIEMPRE adjunto (nunca se conmuta a una style
+  // estática): conmutar entre un useAnimatedStyle y una style estática deja la
+  // ÚLTIMA transform del worklet pegada en el nodo nativo (Reanimated no la
+  // resetea y la style estática no la pisa) → cada card enrocada quedaba con su
+  // offset de hueco (±itemW) y se solapaba con la vecina. Al estar siempre
+  // adjunto, translateX refleja exactamente lo que devuelve el worklet.
   const wrapStyle = useAnimatedStyle(() => {
     const scale = 1 + lift.value * 0.08;
-    if (selfDragging.value === 1) {
-      return { transform: [{ translateX: dragX.value }, { scale }], zIndex: 20 };
-    }
     const origin = dragOriginIdx.value;
+    // Card que se arrastra: sigue al dedo, pero EXPRESADA relativa a su slot del
+    // DOM (indexInFront). Durante el arrastre su slot es el de origen → translateX
+    // = dragX. Al confirmarse el enroque, `indexInFront` pasa al destino EN EL
+    // MISMO render del commit (prop capturada por el closure), así translateX =
+    // dragX(glide = Δ·itemW) − (target−origin)·itemW = 0 exactamente cuando el DOM
+    // la coloca en su slot final → cero desfase, sin "fantasma" ni salto.
+    if (selfDragging.value === 1) {
+      return {
+        transform: [
+          { translateX: dragX.value - (indexInFront - origin) * itemW },
+          { scale },
+        ],
+        zIndex: 20,
+      };
+    }
+    // Frame del commit del enroque: el DOM ya colocó a TODAS las hermanas en su
+    // slot final, así que translateX 0 por construcción. Hay que cortar acá porque
+    // en ese frame origin/target todavía no se resetearon (-1) y `off` se calcula
+    // con el slot YA reordenado (indexInFront): una hermana intermedia seguiría
+    // cayendo en el rango del hueco y quedaría solapada un frame.
+    if (dragSettling) {
+      return { transform: [{ translateX: 0 }, { scale }] };
+    }
     const target = dragTargetIdx.value;
-    // Sin arrastre activo (origin/target = -1): el hueco vuelve a 0 al INSTANTE,
-    // no con withTiming. Así ningún frame residual del "soltar" puede armar una
-    // animación de 1100 ms que separe las cards después del enroque.
+    // En reposo (sin arrastre): sin transform.
     if (origin < 0 || target < 0 || origin === target) {
       return { transform: [{ translateX: 0 }, { scale }] };
     }
+    // Hermanas: abren el hueco según su slot (indexInFront, en lockstep con el DOM)
+    // y se desliza suave con withTiming mientras dura el arrastre.
     let off = 0;
-    const slot = idxSV.value;
-    if (slot >= 0) {
+    if (indexInFront >= 0) {
       if (target > origin) {
-        if (slot > origin && slot <= target) off = -itemW;
-      } else if (slot >= target && slot < origin) {
+        if (indexInFront > origin && indexInFront <= target) off = -itemW;
+      } else if (indexInFront >= target && indexInFront < origin) {
         off = itemW;
       }
     }
@@ -807,16 +829,21 @@ function CarouselTile({
         { scale },
       ],
     };
-  });
+  }, [
+    selfDragging,
+    dragX,
+    dragOriginIdx,
+    dragTargetIdx,
+    lift,
+    itemW,
+    indexInFront,
+    dragSettling,
+  ]);
 
   return (
     <Animated.View
       layout={LinearTransition.duration(instantLayout ? 0 : CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
-      style={[
-        styles.tileWrap,
-        anyDragging ? wrapStyle : styles.tileRest,
-        isDragging && styles.tileDragging,
-      ]}
+      style={[styles.tileWrap, wrapStyle, isDragging && styles.tileDragging]}
     >
       <Animated.Text
         pointerEvents="none"
@@ -1002,19 +1029,19 @@ export default function GeometrixScreen() {
   );
   // Commit del reordenamiento al soltar (modelo "pin + hueco"). Las tres
   // actualizaciones de estado se baten en un único render (React 18): `active`
-  // reordenado + draggingId=null (las tiles vuelven a `tileRest`, translateX 0) +
-  // dragSettling=true (LinearTransition instantáneo ese frame). Como las transforms
-  // del arrastre ya dejaron cada tile en su slot final, la posición visual no
-  // cambia en ese render → sin "fantasma".
+  // reordenado + draggingId=null + dragSettling=true (LinearTransition instantáneo
+  // ese frame, y el hueco de las hermanas snapea a 0 sin animar). El worklet
+  // (siempre adjunto) devuelve translateX 0 en lockstep con el slot final vía la
+  // prop indexInFront → la posición visual no cambia en ese render → sin "fantasma".
   const commitReorder = useCallback(
     (id: string, idx: number) => {
       // Las cuatro transiciones del "soltar" DEBEN entrar en un único commit de
       // React. Como esto se invoca desde el callback de un withTiming (vía
       // runOnJS), el auto-batch de React no es confiable en ese contexto: si se
-      // aplican en renders separados queda un frame intermedio con `anyDragging`
-      // todavía true y el `active` ya reordenado → se arma una animación de
-      // 1100 ms (LinearTransition / hueco) que separa las dos cards al terminar
-      // el enroque. unstable_batchedUpdates fuerza el render único.
+      // aplican en renders separados queda un frame intermedio sin dragSettling y
+      // con el `active` ya reordenado → se arma una animación de 1100 ms
+      // (LinearTransition / hueco) que separa las dos cards al terminar el enroque.
+      // unstable_batchedUpdates fuerza el render único.
       unstable_batchedUpdates(() => {
         setDragSettling(true);
         moveActiveTo(id, idx);
@@ -2121,8 +2148,8 @@ export default function GeometrixScreen() {
                   scrollX={carScrollX}
                   dragActive={carDragActive}
                   edgeIntent={carEdgeIntent}
-                  anyDragging={draggingId !== null}
                   instantLayout={draggingId !== null || dragSettling}
+                  dragSettling={dragSettling}
                   dragOriginIdx={dragOriginIdx}
                   dragTargetIdx={dragTargetIdx}
                 />
