@@ -1851,13 +1851,13 @@ export default function GeometrixScreen() {
         <View style={styles.header}>
           <View style={styles.headerText}>
             <View style={styles.titleRow}>
-              <Text style={styles.title}>Geometrix</Text>
-              {/* Logo cubo-3 inline, a la altura del título. */}
+              {/* Logo cubo-3 inline, a la izquierda del título. */}
               <Image
                 source={require("@/assets/images/geometrix/cubo-3.png")}
                 style={styles.titleLogo}
                 contentFit="contain"
               />
+              <Text style={styles.title}>Geometrix</Text>
             </View>
           </View>
           {/* Tema de fondo: abre el buscador de toda la biblioteca para elegir un
@@ -3550,7 +3550,7 @@ const styles = StyleSheet.create({
   headerText: { flex: 1, paddingRight: 12 },
   // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
   titleRow: { flexDirection: "row", alignItems: "center" },
-  titleLogo: { width: 29, height: 29, marginLeft: 6, opacity: 0.92 },
+  titleLogo: { width: 26, height: 26, marginRight: 6, opacity: 0.92 },
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
@@ -3626,7 +3626,7 @@ const styles = StyleSheet.create({
   themeRowTitle: { fontSize: 14, fontWeight: "600", color: colors.foreground },
   themeRowSub: { fontSize: 12, color: colors.mutedForeground, marginTop: 2 },
 
-  grid: { flexGrow: 0, marginTop: 0 },
+  grid: { flexGrow: 0, marginTop: -25 },
   gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 0, paddingRight: 20 },
   // Sin `gap`: las animaciones de layout (LinearTransition) miden mal el reordenamiento
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
