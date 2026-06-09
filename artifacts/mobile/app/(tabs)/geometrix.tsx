@@ -622,6 +622,7 @@ export default function GeometrixScreen() {
   // Nombre de la composición recién guardada → muestra el popup temático.
   const [savedName, setSavedName] = useState<string | null>(null);
   const [updatedName, setUpdatedName] = useState<string | null>(null);
+  const [showEmptyAlert, setShowEmptyAlert] = useState(false);
   // Geometría con su menú contextual abierto (tap en miniatura).
   const [menuGeoId, setMenuGeoId] = useState<GeometryId | null>(null);
   // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
@@ -924,7 +925,7 @@ export default function GeometrixScreen() {
   // Guardar SIEMPRE como composición nueva.
   const saveComposition = useCallback(async () => {
     if (active.length === 0) {
-      Alert.alert("Lienzo vacío", "Activá al menos una geometría antes de guardar.");
+      setShowEmptyAlert(true);
       return;
     }
     try {
@@ -940,7 +941,7 @@ export default function GeometrixScreen() {
   const updateComposition = useCallback(async () => {
     if (!editingCreation) return;
     if (active.length === 0) {
-      Alert.alert("Lienzo vacío", "Activá al menos una geometría antes de actualizar.");
+      setShowEmptyAlert(true);
       return;
     }
     try {
@@ -1864,6 +1865,43 @@ export default function GeometrixScreen() {
                 accessibilityRole="button"
               >
                 <Text style={styles.savedBtnPrimaryText}>Ver mis creaciones</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Popup "Lienzo vacío" — reemplaza el Alert nativo al guardar sin geometrías. */}
+      <Modal
+        visible={showEmptyAlert}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setShowEmptyAlert(false)}
+      >
+        <Pressable style={styles.savedBackdrop} onPress={() => setShowEmptyAlert(false)}>
+          <Pressable style={styles.savedCard} onPress={() => {}}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            <View style={[styles.savedIcon, { backgroundColor: "rgba(122,143,168,0.12)", borderColor: "rgba(122,143,168,0.35)" }]}>
+              <Feather name="hexagon" size={24} color={colors.mutedForeground} />
+            </View>
+            <Text style={styles.savedTitle}>Lienzo vacío</Text>
+            <Text style={styles.savedSubtitle}>
+              Activá al menos una geometría antes de guardar.
+            </Text>
+            <View style={styles.savedActions}>
+              <Pressable
+                style={styles.savedBtnPrimary}
+                onPress={() => setShowEmptyAlert(false)}
+                accessibilityRole="button"
+              >
+                <Text style={styles.savedBtnPrimaryText}>Entendido</Text>
               </Pressable>
             </View>
           </Pressable>
