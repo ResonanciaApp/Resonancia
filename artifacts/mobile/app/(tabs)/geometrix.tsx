@@ -2903,7 +2903,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateY: -28 }],
+    transform: [{ translateY: -3 }],
   },
   canvas: {
     alignItems: "center",
