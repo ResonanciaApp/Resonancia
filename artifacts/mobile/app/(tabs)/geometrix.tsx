@@ -2491,10 +2491,8 @@ export default function GeometrixScreen() {
           />
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderLeft}>
-              <Text style={styles.sheetTitle}>Ajustes</Text>
-              {settingsGeo && (
+              {settingsGeo ? (
                 <>
-                  <View style={styles.sheetHeaderVDivider} />
                   <SacredGlyph
                     id={settingsGeo.id}
                     color={getSettings(settingsGeo.id).color}
@@ -2505,46 +2503,52 @@ export default function GeometrixScreen() {
                     {settingsGeo.name}
                   </Text>
                 </>
+              ) : (
+                <Text style={styles.sheetTitle}>Ajustes</Text>
               )}
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-              {/* Ocultar / mostrar desde el sheet */}
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {/* Ocultar / mostrar */}
               {settingsGeo && (
-                <Pressable
-                  onPress={() => {
-                    const id = settingsGeo.id;
-                    setHiddenIds((prev) =>
-                      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-                    );
-                    setSettingsOpen(false);
-                    setSettingsGeoId(null);
-                  }}
-                  hitSlop={10}
-                  accessibilityRole="button"
-                  accessibilityLabel={hiddenIds.includes(settingsGeo.id) ? "Mostrar geometría" : "Ocultar geometría"}
-                >
-                  <Feather
-                    name={hiddenIds.includes(settingsGeo.id) ? "eye" : "eye-off"}
-                    size={19}
-                    color={colors.mutedForeground}
-                  />
-                </Pressable>
-              )}
-              {/* Borrar desde el sheet */}
-              {settingsGeo && (
-                <Pressable
-                  onPress={() => {
-                    const id = settingsGeo.id;
-                    setSettingsOpen(false);
-                    setSettingsGeoId(null);
-                    toggleGeometry(id);
-                  }}
-                  hitSlop={10}
-                  accessibilityRole="button"
-                  accessibilityLabel="Borrar geometría"
-                >
-                  <Feather name="trash-2" size={18} color="#8a4646" />
-                </Pressable>
+                <>
+                  <Pressable
+                    onPress={() => {
+                      const id = settingsGeo.id;
+                      setHiddenIds((prev) =>
+                        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+                      );
+                      setSettingsOpen(false);
+                      setSettingsGeoId(null);
+                    }}
+                    hitSlop={10}
+                    style={{ paddingHorizontal: 10 }}
+                    accessibilityRole="button"
+                    accessibilityLabel={hiddenIds.includes(settingsGeo.id) ? "Mostrar geometría" : "Ocultar geometría"}
+                  >
+                    <Feather
+                      name={hiddenIds.includes(settingsGeo.id) ? "eye" : "eye-off"}
+                      size={19}
+                      color={colors.mutedForeground}
+                    />
+                  </Pressable>
+                  <View style={styles.sheetHeaderVDivider} />
+                  {/* Borrar */}
+                  <Pressable
+                    onPress={() => {
+                      const id = settingsGeo.id;
+                      setSettingsOpen(false);
+                      setSettingsGeoId(null);
+                      toggleGeometry(id);
+                    }}
+                    hitSlop={10}
+                    style={{ paddingHorizontal: 10 }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Borrar geometría"
+                  >
+                    <Feather name="trash-2" size={18} color="#8a4646" />
+                  </Pressable>
+                  <View style={styles.sheetHeaderVDivider} />
+                </>
               )}
               <Pressable
                 onPress={() => {
@@ -2552,6 +2556,7 @@ export default function GeometrixScreen() {
                   setSettingsGeoId(null);
                 }}
                 hitSlop={10}
+                style={{ paddingLeft: 10 }}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar ajustes"
               >
