@@ -660,6 +660,16 @@ function CarouselTile({
   useEffect(() => {
     frontCountSV.value = frontCount;
   }, [frontCount, frontCountSV]);
+  const dbgIdxRef = useRef(indexInFront);
+  useEffect(() => {
+    if (dbgIdxRef.current !== indexInFront && indexInFront >= 0) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[DROP-DBG] tile ${id} idx ${dbgIdxRef.current}->${indexInFront} instantLayout=${instantLayout} isDragging=${isDragging}`,
+      );
+    }
+    dbgIdxRef.current = indexInFront;
+  }, [indexInFront, instantLayout, isDragging, id]);
   // Limpieza del estado de arrastre DESPUÉS del commit (cuando isDragging pasa a
   // false porque el padre ya hizo draggingId=null). Recién acá apagamos
   // selfDragging y reseteamos dragX + origin/target: hacerlo antes (en el callback
@@ -1112,6 +1122,10 @@ export default function GeometrixScreen() {
     const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
     return [...front, ...tail];
   }, [active, effActivating]);
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log(`[DROP-DBG] flags draggingId=${draggingId} dragSettling=${dragSettling}`);
+  }, [draggingId, dragSettling]);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
