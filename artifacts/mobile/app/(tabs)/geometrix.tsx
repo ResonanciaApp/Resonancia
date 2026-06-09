@@ -519,6 +519,15 @@ type CarouselTileProps = {
   isActivating: boolean;
   color: string;
   onPress: () => void;
+  // Reordenamiento por arrastre (long-press + drag).
+  draggable: boolean;
+  isDragging: boolean;
+  itemW: number;
+  frontCount: number;
+  indexInFront: number;
+  onDragStart: (id: GeometryId) => void;
+  onMoveTo: (id: GeometryId, idx: number) => void;
+  onDragEnd: (id: GeometryId) => void;
 };
 
 // Tile del carrusel de geometrías. Maneja su propia animación de selección al
@@ -532,6 +541,14 @@ function CarouselTile({
   isActivating,
   color,
   onPress,
+  draggable,
+  isDragging,
+  itemW,
+  frontCount,
+  indexInFront,
+  onDragStart,
+  onMoveTo,
+  onDragEnd,
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
   const glow = useSharedValue(isSelected ? 0.66 : 0);
@@ -580,10 +597,76 @@ function CarouselTile({
   }, [isActivating, titleOpacity]);
   const titleStyle = useAnimatedStyle(() => ({ opacity: titleOpacity.value }));
 
+  // ── Reordenamiento por arrastre ───────────────────────────────────────────
+  // Long-press (~250 ms) + drag horizontal. Mientras se arrastra, la card sigue
+  // al dedo (translateX) y se eleva; las demás se deslizan a su nuevo lugar
+  // (LinearTransition). El reordenamiento se aplica EN VIVO sobre `active`:
+  // cada vez que la card cruza un slot, el padre la reubica y se compensa el
+  // translateX para que la card quede siempre bajo el dedo (sin saltos).
+  const dragX = useSharedValue(0);
+  const lift = useSharedValue(0);
+  const originIdx = useSharedValue(0);
+  const curIdx = useSharedValue(0);
+  const idxSV = useSharedValue(indexInFront);
+  const frontCountSV = useSharedValue(frontCount);
+  useEffect(() => {
+    idxSV.value = indexInFront;
+  }, [indexInFront, idxSV]);
+  useEffect(() => {
+    frontCountSV.value = frontCount;
+  }, [frontCount, frontCountSV]);
+
+  const dragGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .enabled(draggable)
+        .activateAfterLongPress(250)
+        .onStart(() => {
+          originIdx.value = idxSV.value;
+          curIdx.value = idxSV.value;
+          lift.value = withTiming(1, { duration: 160 });
+          runOnJS(onDragStart)(id);
+        })
+        .onUpdate((e) => {
+          const maxIdx = Math.max(0, frontCountSV.value - 1);
+          let proposed = Math.round(originIdx.value + e.translationX / itemW);
+          if (proposed < 0) proposed = 0;
+          if (proposed > maxIdx) proposed = maxIdx;
+          if (proposed !== curIdx.value) {
+            curIdx.value = proposed;
+            runOnJS(onMoveTo)(id, proposed);
+          }
+          dragX.value = e.translationX - (curIdx.value - originIdx.value) * itemW;
+        })
+        .onFinalize(() => {
+          dragX.value = withTiming(0, { duration: 180, easing: Easing.out(Easing.ease) });
+          lift.value = withTiming(0, { duration: 180 });
+          runOnJS(onDragEnd)(id);
+        }),
+    [
+      draggable,
+      id,
+      itemW,
+      onDragStart,
+      onMoveTo,
+      onDragEnd,
+      curIdx,
+      dragX,
+      frontCountSV,
+      idxSV,
+      lift,
+      originIdx,
+    ],
+  );
+
+  const wrapStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: dragX.value }, { scale: 1 + lift.value * 0.08 }],
+  }));
+
   return (
     <Animated.View
-      layout={LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
-      style={styles.tileWrap}
+      layout={isDragging ? undefined : LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
+      style={[styles.tileWrap, wrapStyle, isDragging && styles.tileDragging]}
     >
       <Animated.Text
         pointerEvents="none"
@@ -592,34 +675,36 @@ function CarouselTile({
       >
         {name}
       </Animated.Text>
-      <Pressable
-        onPress={onPress}
-        style={[
-          styles.tile,
-          { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
-          isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
-        ]}
-      >
-        <View style={styles.tileGlyph}>
-          <Animated.View
-            style={[
-              glyphStyle,
-              {
-                shadowColor: color,
-                shadowOffset: { width: 0, height: 0 },
-                shadowRadius: 11,
-              },
-            ]}
-          >
-            <SacredGlyph
-              id={id}
-              color={isSelected ? color : "#7A8FA8"}
-              size={tileW * 0.66}
-              strokeWidth={isSelected ? 1.5 : 1.4}
-            />
-          </Animated.View>
-        </View>
-      </Pressable>
+      <GestureDetector gesture={dragGesture}>
+        <Pressable
+          onPress={onPress}
+          style={[
+            styles.tile,
+            { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
+            isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
+          ]}
+        >
+          <View style={styles.tileGlyph}>
+            <Animated.View
+              style={[
+                glyphStyle,
+                {
+                  shadowColor: color,
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowRadius: 11,
+                },
+              ]}
+            >
+              <SacredGlyph
+                id={id}
+                color={isSelected ? color : "#7A8FA8"}
+                size={tileW * 0.66}
+                strokeWidth={isSelected ? 1.5 : 1.4}
+              />
+            </Animated.View>
+          </View>
+        </Pressable>
+      </GestureDetector>
     </Animated.View>
   );
 }
@@ -676,6 +761,24 @@ export default function GeometrixScreen() {
   const params = useLocalSearchParams<{ load?: string; play?: string; new?: string }>();
 
   const [active, setActive] = useState<GeometryId[]>([]);
+  // Card que se está arrastrando (long-press + drag) para reordenar. Mientras
+  // hay un drag activo se desactiva el scroll horizontal del carrusel.
+  const [draggingId, setDraggingId] = useState<GeometryId | null>(null);
+  // Congela el set de "activándose" mientras dura un drag: si otra card termina
+  // su activación a mitad de un arrastre, el orden del carrusel no debe saltar.
+  const frozenActivatingRef = useRef<Set<GeometryId> | null>(null);
+  // Mueve una card a la posición `idx` dentro del orden de selección (`active`).
+  // Como el orden de `active` define el orden de las capas (primera = atrás),
+  // reordenar aquí reordena también las capas del lienzo.
+  const moveActiveTo = useCallback((id: GeometryId, idx: number) => {
+    setActive((prev) => {
+      if (!prev.includes(id)) return prev;
+      const without = prev.filter((x) => x !== id);
+      const clamped = Math.max(0, Math.min(idx, without.length));
+      without.splice(clamped, 0, id);
+      return without;
+    });
+  }, []);
   // Geometrías en "activación en el lugar" (pulso + resplandor antes del glide).
   // Mientras una geometría está aquí, NO se mueve al frente: se queda en su slot
   // natural mostrando el resplandor; al terminar el HOLD sale del set y el orden
@@ -697,11 +800,27 @@ export default function GeometrixScreen() {
   // que ya terminaron su activación (en orden de selección), y el resto —incluidas
   // las que están activándose— en su orden natural. Así, deseleccionar siempre
   // devuelve la geometría a su lugar natural, aun con otras activaciones en curso.
+  // Set de "activándose" efectivo: el congelado durante un drag, o el real.
+  const effActivating =
+    draggingId !== null && frozenActivatingRef.current
+      ? frozenActivatingRef.current
+      : activatingIds;
+  const handleDragStart = useCallback(
+    (id: GeometryId) => {
+      frozenActivatingRef.current = activatingIdsRef.current;
+      setDraggingId(id);
+    },
+    [],
+  );
+  const handleDragEnd = useCallback(() => {
+    frozenActivatingRef.current = null;
+    setDraggingId(null);
+  }, []);
   const carouselOrder = useMemo<GeometryId[]>(() => {
-    const front = active.filter((id) => !activatingIds.has(id));
+    const front = active.filter((id) => !effActivating.has(id));
     const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
     return [...front, ...tail];
-  }, [active, activatingIds]);
+  }, [active, effActivating]);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
@@ -1131,7 +1250,12 @@ export default function GeometrixScreen() {
   // La capa se ajusta al lado del lienzo para que la geometría entre
   // completa al rotar (no se corta contra los bordes).
   const layerSize = canvasSide * 0.96;
-  const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
+  // El orden de las capas del lienzo sigue el orden de `active` (= orden de las
+  // cards): la PRIMERA card es la capa más atrás (se pinta primero), la última
+  // queda al frente. Reordenar las cards (drag) reordena las capas.
+  const activeMetas = active
+    .map((id) => GEOMETRIES.find((g) => g.id === id))
+    .filter((g): g is GeometryMeta => !!g);
   const hasActive = activeMetas.length > 0;
   // Al vaciarse el lienzo, reseteamos la "primera tanda" para que la próxima
   // vez que se pueble vuelva a entrar escalonada de izquierda a derecha.
@@ -1460,6 +1584,10 @@ export default function GeometrixScreen() {
   const bgFactor = brightnessFactor(master.bgBrightness);
   const selectedBg = bgGradientColors(master.bgGradientId);
   const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
+  // Cards reordenables = las del frente (seleccionadas que ya no están
+  // "activándose"). El orden de esta lista coincide con el de `active`.
+  const frontIds = active.filter((id) => !effActivating.has(id));
+  const tileItemW = tileW + 8; // ancho de slot = tile + marginRight (tileWrap)
 
   return (
     <View style={styles.root}>
@@ -1498,6 +1626,7 @@ export default function GeometrixScreen() {
         <ScrollView
           ref={carouselScrollRef}
           horizontal
+          scrollEnabled={draggingId === null}
           style={styles.grid}
           contentContainerStyle={styles.gridContent}
           showsHorizontalScrollIndicator={false}
@@ -1506,16 +1635,26 @@ export default function GeometrixScreen() {
             {carouselOrder.map((gid: GeometryId) => {
               const g = GEOMETRIES.find((x) => x.id === gid);
               if (!g) return null;
+              const selected = active.includes(g.id);
+              const activating = effActivating.has(g.id);
               return (
                 <CarouselTile
                   key={g.id}
                   id={g.id}
                   name={g.name}
                   tileW={tileW}
-                  isSelected={active.includes(g.id)}
-                  isActivating={activatingIds.has(g.id)}
+                  isSelected={selected}
+                  isActivating={activating}
                   color={getSettings(g.id).color}
                   onPress={() => toggleGeometry(g.id)}
+                  draggable={selected && !activating}
+                  isDragging={draggingId === g.id}
+                  itemW={tileItemW}
+                  frontCount={frontIds.length}
+                  indexInFront={frontIds.indexOf(g.id)}
+                  onDragStart={handleDragStart}
+                  onMoveTo={moveActiveTo}
+                  onDragEnd={handleDragEnd}
                 />
               );
             })}
@@ -3050,6 +3189,7 @@ const styles = StyleSheet.create({
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
   gridRow: { flexDirection: "row" },
   tileWrap: { marginRight: 8 },
+  tileDragging: { zIndex: 50, elevation: 8 },
   tileTitle: {
     position: "absolute",
     bottom: "100%",
