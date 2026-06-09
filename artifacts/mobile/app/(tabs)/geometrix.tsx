@@ -1032,6 +1032,20 @@ export default function GeometrixScreen() {
     livePinch.value = pinchTargetId ? getSettings(pinchTargetId).zoom : 1;
   }, [pinchTargetId, getSettings, livePinch]);
 
+  // ── Zoom global del lienzo ────────────────────────────────────────────────
+  // Cuando NO hay geometría seleccionada, el pellizco escala TODAS las capas
+  // a la vez en lugar de ajustar el zoom de una capa individual.
+  const canvasZoomLive = useSharedValue(1);
+  const canvasZoomStart = useSharedValue(1);
+  // Shared value espejo de pinchTargetId (bool) para leerlo desde worklets.
+  const hasTarget = useSharedValue(!!pinchTargetId);
+  useEffect(() => {
+    hasTarget.value = !!pinchTargetId;
+  }, [pinchTargetId, hasTarget]);
+  const canvasZoomStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: canvasZoomLive.value }],
+  }));
+
   // Sincronizar liveDragX/Y con el offset confirmado del objetivo cuando cambia.
   // Así el onStart del panGesture (worklet, hilo UI) puede leer liveDragX/Y
   // directamente sin llamar a getSettings (función JS, no worklet).
@@ -1067,26 +1081,37 @@ export default function GeometrixScreen() {
     snapTargets.value = targets;
   }, [pinchTargetId, active, settings, getSettings, snapTargets, guides, canvasSide]);
 
-  // Gesto de pellizco: escala libre del objetivo, permitiendo pasar los
-  // márgenes (efecto wallpaper). Se confirma a settings al soltar.
+  // Gesto de pellizco unificado:
+  //   · Con geometría activa (hasTarget = true)  → zoom de la capa objetivo.
+  //   · Sin geometrías activas (hasTarget = false) → zoom global del lienzo.
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
-      pinchStart.value = livePinch.value;
+      if (hasTarget.value) {
+        pinchStart.value = livePinch.value;
+      } else {
+        canvasZoomStart.value = canvasZoomLive.value;
+      }
     })
     .onUpdate((e) => {
-      const z = Math.min(6, Math.max(0.3, pinchStart.value * e.scale));
-      livePinch.value = z;
-      // Redibuja el SVG del objetivo en tiempo real (zoom = tamaño, no transform).
-      runOnJS(setLivePinchNum)(z);
+      if (hasTarget.value) {
+        const z = Math.min(6, Math.max(0.3, pinchStart.value * e.scale));
+        livePinch.value = z;
+        // Redibuja el SVG del objetivo en tiempo real (zoom = tamaño, no transform).
+        runOnJS(setLivePinchNum)(z);
+      } else {
+        canvasZoomLive.value = Math.min(4, Math.max(0.25, canvasZoomStart.value * e.scale));
+      }
     })
     .onEnd(() => {
-      if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
+      if (hasTarget.value) {
+        if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
+      }
     })
     // SIEMPRE corre (éxito o cancelación), después de onEnd. Limpia el zoom en
     // vivo → el objetivo vuelve al confirmado; si el gesto se canceló sin
     // confirmar, revierte al último zoom guardado (no queda pegado al en vivo).
     .onFinalize(() => {
-      runOnJS(setLivePinchNum)(null);
+      if (hasTarget.value) runOnJS(setLivePinchNum)(null);
     });
 
   // Solo se permite rotar con los dedos cuando el objetivo NO tiene giro
@@ -1357,6 +1382,12 @@ export default function GeometrixScreen() {
             {canvasSide > 0 && (
               <GestureDetector gesture={canvasGesture}>
                 <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
+                {/* Wrapper de zoom global: el pellizco sin geometría seleccionada
+                    escala canvasZoomLive y mueve TODAS las capas y guías a la vez. */}
+                <Animated.View
+                  style={[StyleSheet.absoluteFill, canvasZoomStyle]}
+                  pointerEvents="none"
+                >
                 {layerSize > 0 &&
                   visibleMetas.map((g, i) => {
                     const s = getSettings(g.id);
@@ -1458,6 +1489,7 @@ export default function GeometrixScreen() {
                     }}
                   />
                 )}
+                </Animated.View>
 
                 {active.length === 0 && (
                   // Logo + título + bajada entran JUNTOS y con un retardo (650ms)
