@@ -557,15 +557,6 @@ function CarouselTile({
             />
           </Animated.View>
         </View>
-        <Text
-          numberOfLines={1}
-          style={[
-            styles.tileLabel,
-            { color: isSelected ? colors.foreground : colors.mutedForeground },
-          ]}
-        >
-          {name}
-        </Text>
       </Pressable>
     </Animated.View>
   );
