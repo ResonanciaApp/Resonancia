@@ -6,7 +6,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Modal,
@@ -28,6 +28,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
+  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -68,6 +69,13 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const colors = colorsConst.light;
 const CARD_BORDER = "#161f33";
+
+// Carrusel de geometrías — animación de selección estilo "Aurora".
+// HOLD = activación "en el lugar" (color + resplandor) antes de deslizarse al
+// frente; FLOW = duración del glide/reorden; EASE = curva fluida sin rebote.
+const CAROUSEL_HOLD_MS = 1000;
+const CAROUSEL_FLOW_MS = 1100;
+const CAROUSEL_EASE = Easing.bezier(0.25, 0.1, 0.25, 1);
 const LOUPE_SIZE = 130;
 const LOUPE_M = 2.6;
 
@@ -466,6 +474,99 @@ function GuideHandle({ guide, canvasSide, onMove }: GuideHandleProps) {
   );
 }
 
+type CarouselTileProps = {
+  id: GeometryId;
+  name: string;
+  tileW: number;
+  isSelected: boolean;
+  isActivating: boolean;
+  color: string;
+  onPress: () => void;
+};
+
+// Tile del carrusel de geometrías. Maneja su propia animación de selección al
+// estilo "Aurora": pulso de escala + resplandor del color de la geometría. El
+// glide a su posición lo resuelve el padre reordenando + LinearTransition.
+function CarouselTile({
+  id,
+  name,
+  tileW,
+  isSelected,
+  isActivating,
+  color,
+  onPress,
+}: CarouselTileProps) {
+  const scale = useSharedValue(isSelected ? 1.1 : 1);
+  const glow = useSharedValue(isSelected ? 0.66 : 0);
+
+  useEffect(() => {
+    if (isActivating) {
+      // Activación en el lugar: el resplandor crece y se asienta (~1s).
+      scale.value = withSequence(
+        withTiming(1.18, { duration: 500, easing: Easing.out(Easing.ease) }),
+        withTiming(1.1, { duration: 500, easing: Easing.inOut(Easing.ease) }),
+      );
+      glow.value = withSequence(
+        withTiming(1, { duration: 500, easing: Easing.out(Easing.ease) }),
+        withTiming(0.66, { duration: 500, easing: Easing.inOut(Easing.ease) }),
+      );
+    } else if (isSelected) {
+      scale.value = withTiming(1.1, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
+      glow.value = withTiming(0.66, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
+    } else {
+      scale.value = withTiming(1, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
+      glow.value = withTiming(0, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
+    }
+  }, [isActivating, isSelected, scale, glow]);
+
+  const glyphStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    shadowOpacity: glow.value,
+  }));
+
+  return (
+    <Animated.View layout={LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}>
+      <Pressable
+        onPress={onPress}
+        style={[
+          styles.tile,
+          { width: tileW, borderColor: isSelected ? "#1c234c" : CARD_BORDER },
+          isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
+        ]}
+      >
+        <View style={styles.tileGlyph}>
+          <Animated.View
+            style={[
+              glyphStyle,
+              {
+                shadowColor: color,
+                shadowOffset: { width: 0, height: 0 },
+                shadowRadius: 11,
+              },
+            ]}
+          >
+            <SacredGlyph
+              id={id}
+              color={isSelected ? color : "#7A8FA8"}
+              size={tileW * 0.66}
+              strokeWidth={isSelected ? 1.5 : 1.4}
+            />
+          </Animated.View>
+        </View>
+        <Text
+          numberOfLines={1}
+          style={[
+            styles.tileLabel,
+            { color: isSelected ? colors.foreground : colors.mutedForeground },
+          ]}
+        >
+          {name}
+        </Text>
+      </Pressable>
+    </Animated.View>
+  );
+}
+
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
@@ -480,6 +581,34 @@ export default function GeometrixScreen() {
   const params = useLocalSearchParams<{ load?: string; play?: string; new?: string }>();
 
   const [active, setActive] = useState<GeometryId[]>([]);
+  // Geometrías en "activación en el lugar" (pulso + resplandor antes del glide).
+  // Mientras una geometría está aquí, NO se mueve al frente: se queda en su slot
+  // natural mostrando el resplandor; al terminar el HOLD sale del set y el orden
+  // (derivado) la lleva al frente. Es estado para que el orden se recalcule.
+  const [activatingIds, setActivatingIds] = useState<Set<GeometryId>>(
+    () => new Set(),
+  );
+  // Espejo para leer/escribir el set dentro de los timers sin closures obsoletas.
+  const activatingIdsRef = useRef<Set<GeometryId>>(activatingIds);
+  useEffect(() => {
+    activatingIdsRef.current = activatingIds;
+  }, [activatingIds]);
+  const carouselScrollRef = useRef<ScrollView>(null);
+  // Timers de activación en curso, para poder cancelarlos al deseleccionar/limpiar.
+  const carouselTimers = useRef<Map<GeometryId, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
+  // Orden del carrusel DERIVADO de forma determinista: al frente las seleccionadas
+  // que ya terminaron su activación (en orden de selección), y el resto —incluidas
+  // las que están activándose— en su orden natural. Así, deseleccionar siempre
+  // devuelve la geometría a su lugar natural, aun con otras activaciones en curso.
+  const carouselOrder = useMemo<GeometryId[]>(() => {
+    const front = active.filter((id) => !activatingIds.has(id));
+    const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
+    return [...front, ...tail];
+  }, [active, activatingIds]);
+  // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
+  const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Geometría que se está personalizando (la de la flechita pulsada). El panel
@@ -610,6 +739,7 @@ export default function GeometrixScreen() {
     }
   }, [active, stopIntro]);
 
+
   // Al salir de Geometrix (las pestañas quedan montadas): resetear la UI.
   // Al entrar: disparar el intro de audio si el lienzo está vacío.
   useFocusEffect(
@@ -628,16 +758,39 @@ export default function GeometrixScreen() {
         setSavedName(null);
         setMenuGeoId(null);
         setHiddenIds([]);
+        // Cancelar activaciones en curso: el orden derivado deja las seleccionadas
+        // al frente al limpiarse activatingIds, coherente por si se vuelve a entrar.
+        carouselTimers.current.forEach((t) => clearTimeout(t));
+        carouselTimers.current.clear();
+        const emptyActivating = new Set<GeometryId>();
+        activatingIdsRef.current = emptyActivating;
+        setActivatingIds(emptyActivating);
         setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5, bgPattern: null });
       };
     }, [playIntro, stopIntro]),
   );
 
 
+  // Quita una geometría del set de "activándose" (estado + ref espejo).
+  const dropActivating = useCallback((id: GeometryId) => {
+    setActivatingIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+    if (activatingIdsRef.current.has(id)) {
+      const next = new Set(activatingIdsRef.current);
+      next.delete(id);
+      activatingIdsRef.current = next;
+    }
+  }, []);
+
   const toggleGeometry = useCallback((id: GeometryId) => {
-    const removing = active.includes(id);
+    // Derivar add/remove del valor comprometido más reciente (no del closure).
+    const removing = activeRef.current.includes(id);
     setActive((prev) =>
-      removing ? prev.filter((g) => g !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
     );
     if (removing) {
       // Al quitar, limpiar los ajustes para que vuelva a los defaults si se re-agrega.
@@ -646,13 +799,59 @@ export default function GeometrixScreen() {
         delete next[id];
         return next;
       });
+      // Si se deselecciona durante su activación, cancelar el timer pendiente.
+      // El orden (derivado) devuelve la geometría a su lugar natural al cambiar
+      // `active`, aun si hay otras activaciones en curso.
+      const pendingT = carouselTimers.current.get(id);
+      if (pendingT) {
+        clearTimeout(pendingT);
+        carouselTimers.current.delete(id);
+      }
+      dropActivating(id);
     } else {
       // Al agregar, sembrar ajustes por defecto.
       setSettings((prev) => (prev[id] ? prev : { ...prev, [id]: defaultSettings(id) }));
+      // Activación "en el lugar" (~1s): la geometría se enciende con su color y un
+      // resplandor sin moverse (sigue en su slot natural por estar en activatingIds);
+      // pasado el HOLD sale del set y el orden derivado la lleva al frente, y el
+      // carrusel la acompaña con scroll hasta dejar visible el slot donde aterriza.
+      setActivatingIds((prev) => {
+        const next = new Set(prev);
+        next.add(id);
+        return next;
+      });
+      {
+        const next = new Set(activatingIdsRef.current);
+        next.add(id);
+        activatingIdsRef.current = next;
+      }
+      // Reemplazar cualquier timer previo de este id (re-tap rápido).
+      const prevT = carouselTimers.current.get(id);
+      if (prevT) clearTimeout(prevT);
+      const t = setTimeout(() => {
+        carouselTimers.current.delete(id);
+        // Sale del estado "activándose": el orden derivado lo mueve al frente.
+        const nextSet = new Set(activatingIdsRef.current);
+        nextSet.delete(id);
+        activatingIdsRef.current = nextSet;
+        setActivatingIds(nextSet);
+        // Si se quitó durante el HOLD, no acompañar con scroll.
+        if (!activeRef.current.includes(id)) return;
+        // Slot de aterrizaje = índice en el frente (seleccionadas ya asentadas).
+        const front = activeRef.current.filter((x) => !nextSet.has(x));
+        const insertAt = front.indexOf(id);
+        if (insertAt < 0) return;
+        const targetX = Math.max(0, insertAt * (tileW + 8) - tileW);
+        // Esperar al re-render del reorden antes de deslizar el carrusel.
+        requestAnimationFrame(() => {
+          carouselScrollRef.current?.scrollTo({ x: targetX, animated: true });
+        });
+      }, CAROUSEL_HOLD_MS);
+      carouselTimers.current.set(id, t);
     }
     // Seleccionarla para el pellizco (si se quita, el effect reasigna).
     setSelectedId(id);
-  }, [active]);
+  }, [dropActivating, tileW]);
 
   // Vacía por completo el lienzo: quita todas las geometrías activas, resetea
   // sus ajustes por capa (quedan en defaults al re-agregar) y resetea los
@@ -661,6 +860,13 @@ export default function GeometrixScreen() {
     // El intro suena una sola vez por lanzamiento de app: al vaciar el lienzo NO
     // se vuelve a disparar.
     setActive([]);
+    // Resetear el carrusel: cancelar activaciones en curso. El orden (derivado de
+    // `active` + activatingIds) vuelve solo al natural al vaciarse `active`.
+    carouselTimers.current.forEach((t) => clearTimeout(t));
+    carouselTimers.current.clear();
+    const emptyActivating = new Set<GeometryId>();
+    activatingIdsRef.current = emptyActivating;
+    setActivatingIds(emptyActivating);
     setHiddenIds([]);
     setSelectedId(null);
     setSettings({});
@@ -822,8 +1028,6 @@ export default function GeometrixScreen() {
   }, [params.new, stopIntro]);
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
-  // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
-  const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   // Lienzo cuadrado y centrado: lado = lado menor del espacio disponible.
   const canvasSide = canvas.w > 0 ? Math.min(canvas.w, canvas.h) : 0;
   // La capa se ajusta al lado del lienzo para que la geometría entre
@@ -1182,41 +1386,27 @@ export default function GeometrixScreen() {
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
         <ScrollView
+          ref={carouselScrollRef}
           horizontal
           style={styles.grid}
           contentContainerStyle={styles.gridContent}
           showsHorizontalScrollIndicator={false}
         >
           <View style={styles.gridRow}>
-            {GEOMETRIES.map((g) => {
-              const sel = active.includes(g.id);
-              // Reflejar el color personalizado en el tile cuando está activo.
-              const tileColor = sel ? getSettings(g.id).color : "#7A8FA8";
+            {carouselOrder.map((gid: GeometryId) => {
+              const g = GEOMETRIES.find((x) => x.id === gid);
+              if (!g) return null;
               return (
-                <Pressable
+                <CarouselTile
                   key={g.id}
+                  id={g.id}
+                  name={g.name}
+                  tileW={tileW}
+                  isSelected={active.includes(g.id)}
+                  isActivating={activatingIds.has(g.id)}
+                  color={getSettings(g.id).color}
                   onPress={() => toggleGeometry(g.id)}
-                  style={[
-                    styles.tile,
-                    { width: tileW, borderColor: sel ? "#1c234c" : CARD_BORDER },
-                    sel && { backgroundColor: "rgba(255,255,255,0.04)" },
-                  ]}
-                >
-                  <View style={styles.tileGlyph}>
-                    <SacredGlyph
-                      id={g.id}
-                      color={tileColor}
-                      size={tileW * 0.66}
-                      strokeWidth={1.4}
-                    />
-                  </View>
-                  <Text
-                    numberOfLines={1}
-                    style={[styles.tileLabel, { color: sel ? colors.foreground : colors.mutedForeground }]}
-                  >
-                    {g.name}
-                  </Text>
-                </Pressable>
+                />
               );
             })}
           </View>
