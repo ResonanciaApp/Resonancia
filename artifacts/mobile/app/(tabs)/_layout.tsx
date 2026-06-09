@@ -115,24 +115,15 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const barHeight = 56 + extra + pb;
   const { hidden, showMenu } = useTabBarVisibility();
   const translateY = useRef(new Animated.Value(0)).current;
-  const handleOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(translateY, {
-        toValue: hidden ? barHeight + 40 : 0,
-        duration: 280,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(handleOpacity, {
-        toValue: hidden ? 1 : 0,
-        duration: hidden ? 220 : 120,
-        delay: hidden ? 140 : 0,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [hidden, barHeight, translateY, handleOpacity]);
+    Animated.timing(translateY, {
+      toValue: hidden ? barHeight + 40 : 0,
+      duration: 280,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [hidden, barHeight, translateY]);
 
   return (
     <>
@@ -177,21 +168,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </View>
       </Animated.View>
 
-      {/* Pestañita sutil para traer de vuelta el menú cuando está oculto. */}
-      <Animated.View
-        pointerEvents={hidden ? "auto" : "none"}
-        style={[styles.revealHandle, { bottom: pb - 26, opacity: handleOpacity }]}
-      >
-        <Pressable
-          onPress={showMenu}
-          hitSlop={14}
-          style={styles.revealHandleHit}
-          accessibilityRole="button"
-          accessibilityLabel="Mostrar menú"
-        >
-          <View style={styles.revealHandleBar} />
-        </Pressable>
-      </Animated.View>
     </>
   );
 }
@@ -211,7 +187,7 @@ function TabLayoutInner() {
   const showMiniPlayer = currentSession || mixActive;
   // Cuando el menú está oculto (Geometrix), el mini player baja para no quedar
   // flotando sobre el espacio vacío que dejó la tab bar.
-  const miniPlayerBottom = (hidden ? bottomPb + 30 : tabBarHeight) + 6;
+  const miniPlayerBottom = (hidden ? bottomPb : tabBarHeight) + 6;
 
   return (
     <View style={{ flex: 1 }}>
@@ -296,22 +272,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-  },
-  revealHandle: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    alignItems: "center",
-  },
-  revealHandleHit: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 4,
-  },
-  revealHandleBar: {
-    width: 38,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(128,148,181,0.45)",
   },
 });

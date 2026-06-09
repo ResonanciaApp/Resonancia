@@ -1147,7 +1147,7 @@ export default function GeometrixScreen() {
   // lienzo); cuando está oculto solo hay que despejar la safe area + la
   // pestañita de reaparición, no la tab bar completa.
   const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
-  const bottomReserve = menuHidden ? bottomPb + 28 : tabBarHeight;
+  const bottomReserve = menuHidden ? bottomPb : tabBarHeight;
 
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
@@ -1940,11 +1940,14 @@ export default function GeometrixScreen() {
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
     { key: "borrar", icon: "trash-2", label: "Borrar lienzo", onPress: clearCanvas },
+    // X para restaurar el menú inferior cuando está oculto (reemplaza la barrita).
+    ...(menuHidden ? [{ key: "showMenu", icon: "x" as keyof typeof Feather.glyphMap, label: "Mostrar menú", onPress: showMenu }] : []),
   ];
-  // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
+  // Sin geometrías activas se colapsa el desplegable; si el menú está oculto
+  // se mantiene para que el usuario siempre pueda restaurarlo con la X.
   useEffect(() => {
-    if (!hasActive) setPillOpen(false);
-  }, [hasActive]);
+    if (!hasActive && !menuHidden) setPillOpen(false);
+  }, [hasActive, menuHidden]);
   // Lo que se pinta en el lienzo: todas las activas menos las ocultas.
   const visibleMetas = hiddenIds.length
     ? activeMetas.filter((m) => !hiddenIds.includes(m.iid))
