@@ -549,6 +549,8 @@ export default function GeometrixScreen() {
   const loupeX = useSharedValue(0);
   const loupeY = useSharedValue(0);
   const loupeReveal = useSharedValue(0);
+  // Flag UI-thread para que longPress no active la lupa durante un pellizco.
+  const isPinching = useSharedValue(false);
   const [loupeVisible, setLoupeVisible] = useState(false);
   const [loupeGeoId, setLoupeGeoId] = useState<GeometryId | null>(null);
   // Rotación manual en vivo (gesto de dos dedos). El ángulo en curso se lleva en
@@ -962,6 +964,7 @@ export default function GeometrixScreen() {
   // márgenes (efecto wallpaper). Se confirma a settings al soltar.
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
+      isPinching.value = true;
       pinchStart.value = livePinch.value;
     })
     .onUpdate((e) => {
@@ -977,17 +980,17 @@ export default function GeometrixScreen() {
     // vivo → el objetivo vuelve al confirmado; si el gesto se canceló sin
     // confirmar, revierte al último zoom guardado (no queda pegado al en vivo).
     .onFinalize(() => {
+      isPinching.value = false;
       runOnJS(setLivePinchNum)(null);
     });
 
   // Mantener el dedo quieto sobre la geometría activa → aparece la lupa circular.
-  // Se compone con pinchGesture en Gesture.Race() para que el pellizco (2 dedos)
-  // cancele automáticamente la lupa sin necesidad de callbacks de bajo nivel
-  // (onTouchesBegan/onTouchesMove no están soportados en LongPress en RNGH 2.x).
+  // Corre simultáneamente con panGesture (el drag sigue funcionando mientras la
+  // lupa está visible). isPinching evita que el pellizco active la lupa.
   const longPressGesture = Gesture.LongPress()
     .minDuration(380)
-    .maxDistance(40)
     .onStart((e) => {
+      if (isPinching.value) return;
       loupeX.value = e.x;
       loupeY.value = e.y;
       runOnJS(setLoupeGeoId)(pinchTargetId);
@@ -1054,6 +1057,11 @@ export default function GeometrixScreen() {
       dragStartY.value = liveDragY.value;
     })
     .onUpdate((e) => {
+      // Si la lupa está visible, seguir al dedo para que no quede descolgada.
+      if (loupeReveal.value > 0.1) {
+        loupeX.value = e.x;
+        loupeY.value = e.y;
+      }
       if (!pinchTargetId) return;
       let rx = dragStartX.value + e.translationX;
       let ry = dragStartY.value + e.translationY;
@@ -1102,14 +1110,7 @@ export default function GeometrixScreen() {
     .numberOfTaps(2)
     .onEnd(() => runOnJS(setImmersive)(true));
 
-  // Race(longPress, pinch): el pellizco (2 dedos) activa antes de los 380ms →
-  // cancela el longPress automáticamente; 1 dedo quieto → lupa gana la carrera.
-  const canvasGesture = Gesture.Simultaneous(
-    doubleTapGesture,
-    Gesture.Race(longPressGesture, pinchGesture),
-    rotationGesture,
-    panGesture,
-  );
+  const canvasGesture = Gesture.Simultaneous(doubleTapGesture, longPressGesture, pinchGesture, rotationGesture, panGesture);
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
