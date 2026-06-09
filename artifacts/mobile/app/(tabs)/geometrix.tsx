@@ -20,7 +20,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -2379,13 +2378,13 @@ export default function GeometrixScreen() {
               </View>
 
               <Text style={[styles.fieldLabel, { marginTop: 14 }]}>Posición</Text>
-              <View style={{ flexDirection: "row", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
-                {[0, 25, 33, 50, 67, 75, 100].map((p) => (
+              <View style={{ flexDirection: "row", gap: 6, marginTop: 8 }}>
+                {[0, 25, 50, 75, 100].map((p) => (
                   <Pressable
                     key={p}
                     onPress={() => setGuidePct(String(p))}
                     style={{
-                      paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20,
+                      flex: 1, paddingVertical: 8, borderRadius: 20, alignItems: "center",
                       backgroundColor: guidePct === String(p) ? colors.primary + "25" : "rgba(255,255,255,0.04)",
                       borderWidth: 1,
                       borderColor: guidePct === String(p) ? colors.primary + "88" : "rgba(255,255,255,0.08)",
@@ -2399,23 +2398,6 @@ export default function GeometrixScreen() {
                     </Text>
                   </Pressable>
                 ))}
-              </View>
-
-              <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10, gap: 8 }}>
-                <TextInput
-                  value={guidePct}
-                  onChangeText={(t: string) => setGuidePct(t.replace(/[^0-9]/g, "").slice(0, 3))}
-                  keyboardType="number-pad"
-                  style={{
-                    flex: 1, backgroundColor: "rgba(255,255,255,0.05)",
-                    borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10,
-                    color: colors.foreground, fontSize: 15,
-                    borderWidth: 1, borderColor: "rgba(255,255,255,0.09)",
-                  }}
-                  placeholder="Personalizado (0–100)"
-                  placeholderTextColor={colors.mutedForeground}
-                />
-                <Text style={{ color: colors.mutedForeground, fontSize: 15 }}>%</Text>
               </View>
 
               <Pressable
