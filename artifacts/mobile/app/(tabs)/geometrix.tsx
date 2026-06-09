@@ -1,19 +1,14 @@
 /**
  * GEOMETRIX — galería de geometrías sagradas + fondo animado interactivo.
- * El usuario activa geometrías por capas para componer un fondo en vivo,
- * con un sonido de fondo opcional (menú drop-left arriba a la derecha).
+ * El usuario activa geometrías por capas para componer un fondo en vivo.
  */
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
-  type ImageSourcePropType,
-  type StyleProp,
-  type ViewStyle,
   Modal,
   Platform,
   Pressable,
@@ -32,9 +27,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
   withRepeat,
-  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -68,7 +61,6 @@ import {
   type BgPattern,
   type CanvasGuide,
   type GeoSettings,
-  type GeometrixAudio,
   type GlobalSettings,
 } from "@/data/geometrix-creations";
 import { usePremium } from "@/context/PremiumContext";
@@ -77,49 +69,6 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 const colors = colorsConst.light;
 const CARD_BORDER = "#161f33";
 
-/**
- * Dos módulos de música, lado a lado. Cada uno abre un desplegable con 3
- * opciones (solo imágenes) y reproduce su pista en loop, de forma
- * independiente del otro módulo.
- *
- * NOTA: los archivos de audio son provisorios (se reutilizan loops existentes
- * del mixer). Para las pistas reales, reemplazar el `sound` de cada track por
- * el require del .mp3 correspondiente en assets/audio/.
- */
-type MusicTrack = {
-  id: string;
-  image: ImageSourcePropType;
-  sound: ReturnType<typeof require> | undefined;
-};
-type MusicModule = { key: string; label: string; tracks: MusicTrack[] };
-
-const MUSIC_MODULES: MusicModule[] = [
-  {
-    key: "music",
-    label: "Música de fondo",
-    tracks: [
-      // ── Universo ──────────────────────────────────────────────
-      {
-        id: "cosmos-1",
-        image: require("@/assets/images/geometrix/cosmos-1.png"),
-        // Ovnimoon — Process of Life (WAV original comprimido a AAC 160k).
-        sound: require("@/assets/audio/geometrix/track-1.m4a"),
-      },
-      {
-        id: "cosmos-2",
-        image: require("@/assets/images/geometrix/cosmos-2.png"),
-        // Toxeed — Connect to Light (AAC original, carátula removida).
-        sound: require("@/assets/audio/geometrix/track-2.m4a"),
-      },
-      {
-        id: "cosmos-3",
-        image: require("@/assets/images/geometrix/cosmos-3.png"),
-        // Toxeed — SARASWATI (AAC original, carátula removida).
-        sound: require("@/assets/audio/geometrix/track-3.m4a"),
-      },
-    ],
-  },
-];
 
 /** Muestra circular de un degradado (para el selector). RN no soporta
     gradientes en `backgroundColor`, así que se dibuja con SVG. */
@@ -426,60 +375,6 @@ function GeometryLayer({
   );
 }
 
-/** Botón de thumbnail de módulo de sonido con badge de volumen que hace fade
- *  controlado (withTiming explícito) para evitar parpadeos al montar/desmontar. */
-function SoundThumbButton({
-  mod,
-  isActive,
-  cover,
-  glowStyle,
-  restStyle,
-  onPress,
-}: {
-  mod: { key: string; label: string };
-  isActive: boolean;
-  cover: ImageSourcePropType;
-  glowStyle: StyleProp<ViewStyle>;
-  restStyle: StyleProp<ViewStyle>;
-  onPress: () => void;
-}) {
-  const badgeOp = useSharedValue(0);
-  const badgeStyle = useAnimatedStyle(() => ({ opacity: badgeOp.value }));
-
-  useEffect(() => {
-    badgeOp.value = withTiming(isActive ? 0.9 : 0, {
-      duration: isActive ? 350 : 250,
-    });
-  }, [isActive, badgeOp]);
-
-  return (
-    <Pressable
-      onPress={onPress}
-      style={styles.soundThumb}
-      accessibilityRole="button"
-      accessibilityLabel={mod.label}
-    >
-      <Image
-        source={cover}
-        style={styles.soundThumbImg}
-        contentFit="cover"
-        transition={0}
-        cachePolicy="memory-disk"
-        recyclingKey="geometrix-sound-thumb"
-      />
-      {/* Overlay de atenuación al estar colapsado */}
-      <Animated.View pointerEvents="none" style={[styles.thumbOverlay, restStyle]} />
-      {/* Badge de volumen: siempre en árbol, opacidad animada con withTiming */}
-      <Animated.View pointerEvents="none" style={[styles.thumbAudioBadge, badgeStyle]}>
-        <Feather name="volume-2" size={16} color="#fff" />
-      </Animated.View>
-      {/* Glow pulsante (solo sin pista activa) */}
-      {!isActive && (
-        <Animated.View pointerEvents="none" style={[styles.thumbGlow, glowStyle]} />
-      )}
-    </Pressable>
-  );
-}
 
 // ── GuideHandle ────────────────────────────────────────────────────────────
 // Guía del lienzo arrastrable. La línea se mueve en el hilo UI (useAnimatedStyle);
@@ -583,13 +478,6 @@ export default function GeometrixScreen() {
   const params = useLocalSearchParams<{ load?: string; play?: string; new?: string }>();
 
   const [active, setActive] = useState<GeometryId[]>([]);
-  // Módulo de música con su desplegable abierto (null = ninguno).
-  const [openModule, setOpenModule] = useState<string | null>(null);
-  // Pista activa por módulo: { [moduleKey]: trackId | null }. Solo "está sonando".
-  const [activeTracks, setActiveTracks] = useState<Record<string, string | null>>({});
-  // Última pista ELEGIDA por módulo (persiste aunque se apague): mantiene la
-  // imagen del thumbnail tras detener la música (no vuelve a la 1ª por defecto).
-  const [lastTrack, setLastTrack] = useState<Record<string, string | null>>({});
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Geometría que se está personalizando (la de la flechita pulsada). El panel
@@ -677,8 +565,6 @@ export default function GeometrixScreen() {
   // null en un eje = ese eje no snap (para guías de un solo eje).
   const snapTargets = useSharedValue<Array<{ offsetX: number | null; offsetY: number | null }>>([]);
 
-  // Un reproductor por módulo (reproducen de forma independiente).
-  const playersRef = useRef<Record<string, AudioPlayer | null>>({});
   // Creación cargada desde "Mis creaciones" (null = lienzo nuevo o no cargado).
   // Reactivo para poder mostrar/ocultar el botón "Actualizar" en la UI.
   const [editingCreation, setEditingCreation] = useState<{ id: string; name: string } | null>(null);
@@ -686,27 +572,6 @@ export default function GeometrixScreen() {
   const [isDirty, setIsDirty] = useState(false);
   // Suprime el primer disparo del efecto dirty (causado por el propio loadCreation).
   const justLoadedRef = useRef(false);
-
-  const stopModule = useCallback((moduleKey: string) => {
-    const p = playersRef.current[moduleKey];
-    if (p) {
-      try {
-        p.pause();
-      } catch {
-        /* ignore */
-      }
-      try {
-        p.remove();
-      } catch {
-        /* ignore */
-      }
-    }
-    playersRef.current[moduleKey] = null;
-  }, []);
-
-  const stopAllSound = useCallback(() => {
-    Object.keys(playersRef.current).forEach((k) => stopModule(k));
-  }, [stopModule]);
 
   // Audio de intro ("logo reveal" de cubo-3): gestionado por un singleton de
   // módulo (lib/geometrixIntro). Se precarga al arrancar la app y suena UNA sola
@@ -719,10 +584,6 @@ export default function GeometrixScreen() {
     playGeometrixIntroOnce();
   }, []);
 
-  useEffect(() => {
-    return () => stopAllSound();
-  }, [stopAllSound]);
-
   // Espejo de `active` para leerlo dentro de callbacks de foco sin re-suscribir.
   const activeRef = useRef(active);
   useEffect(() => {
@@ -734,35 +595,10 @@ export default function GeometrixScreen() {
     }
   }, [active, stopIntro]);
 
-  // Glow de bienvenida: aparece y desaparece una sola vez al entrar (sutil).
-  const glow = useSharedValue(0);
-  const glowStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
-
-  // El thumbnail principal queda "con opacidad" (atenuado) mientras el
-  // desplegable está COLAPSADO, y se ILUMINA al abrirlo para elegir pista.
-  // Una sola capa de oscurecido animada cubre ambos estados (reposo + activo).
-  const rest = useSharedValue(1);
-  const restStyle = useAnimatedStyle(() => ({ opacity: rest.value }));
-  useEffect(() => {
-    rest.value = withTiming(openModule ? 0 : 1, {
-      duration: 450,
-      easing: Easing.inOut(Easing.ease),
-    });
-  }, [openModule, rest]);
-
-  // Al salir de Geometrix (las pestañas quedan montadas): detener el sonido y
-  // resetear la UI. Al entrar: disparar el glow de bienvenida una sola vez.
+  // Al salir de Geometrix (las pestañas quedan montadas): resetear la UI.
+  // Al entrar: disparar el intro de audio si el lienzo está vacío.
   useFocusEffect(
     useCallback(() => {
-      // Un único fade in/out al entrar a la pantalla (no se repite).
-      glow.value = 0;
-      glow.value = withDelay(
-        150,
-        withSequence(
-          withTiming(0.85, { duration: 700, easing: Easing.out(Easing.ease) }),
-          withTiming(0, { duration: 1100, easing: Easing.in(Easing.ease) }),
-        ),
-      );
       // Audio de intro sincronizado con el "logo reveal" (cubo-3): solo cuando
       // el lienzo está vacío, que es cuando aparece el logo.
       if (activeRef.current.length === 0) {
@@ -770,9 +606,6 @@ export default function GeometrixScreen() {
       }
       return () => {
         stopIntro();
-        stopAllSound();
-        setActiveTracks({});
-        setOpenModule(null);
         setSettingsOpen(false);
         setSettingsGeoId(null);
         setGeneralOpen(false);
@@ -782,47 +615,9 @@ export default function GeometrixScreen() {
         setHiddenIds([]);
         setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5, bgPattern: null });
       };
-    }, [stopAllSound, glow, playIntro, stopIntro]),
+    }, [playIntro, stopIntro]),
   );
 
-  const selectTrack = useCallback(
-    async (moduleKey: string, track: MusicTrack) => {
-      // Re-tap a la pista activa → apagar ese módulo.
-      if (activeTracks[moduleKey] === track.id) {
-        stopModule(moduleKey);
-        setActiveTracks((prev) => ({ ...prev, [moduleKey]: null }));
-        return;
-      }
-      // Solo un módulo puede sonar a la vez: apagar cualquier otro (e intro) antes.
-      stopIntro();
-      stopAllSound();
-      const src = track.sound;
-      if (!src) {
-        setActiveTracks({});
-        return;
-      }
-      try {
-        await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
-      } catch {
-        /* ignore */
-      }
-      try {
-        const p = createAudioPlayer(src, { updateInterval: 500 });
-        p.loop = true;
-        p.volume = 1;
-        p.play();
-        playersRef.current[moduleKey] = p;
-        // Reemplazar el estado por completo: el otro módulo queda apagado.
-        setActiveTracks({ [moduleKey]: track.id });
-        // Recordar la elección: la imagen del thumbnail persiste tras apagar.
-        setLastTrack((prev) => ({ ...prev, [moduleKey]: track.id }));
-      } catch {
-        stopAllSound();
-        setActiveTracks({});
-      }
-    },
-    [activeTracks, stopModule, stopAllSound, stopIntro],
-  );
 
   const toggleGeometry = useCallback((id: GeometryId) => {
     const removing = active.includes(id);
@@ -915,12 +710,8 @@ export default function GeometrixScreen() {
     active.forEach((id) => {
       activeSettings[id] = getSettings(id);
     });
-    let audio: GeometrixAudio = null;
-    for (const [moduleKey, trackId] of Object.entries(activeTracks)) {
-      if (trackId) { audio = { moduleKey, trackId }; break; }
-    }
-    return { active, master, settings: activeSettings, audio };
-  }, [active, getSettings, activeTracks, master]);
+    return { active, master, settings: activeSettings, audio: null };
+  }, [active, getSettings, master]);
 
   // Guardar SIEMPRE como composición nueva.
   const saveComposition = useCallback(async () => {
@@ -966,40 +757,17 @@ export default function GeometrixScreen() {
       setEditingCreation({ id: c.id, name: c.name });
       // Reset de la sesión actual antes de aplicar la receta.
       stopIntro();
-      stopAllSound();
-      setActiveTracks({});
-      setOpenModule(null);
       setSettings(c.settings);
       setMaster(c.master);
       setActive(c.active);
       setHiddenIds(c.hiddenIds ?? []);
       setSelectedId(c.active.length ? c.active[c.active.length - 1] : null);
-      // Restaurar el sonido elegido (reproducir sin el toggle de selectTrack,
-      // que apagaría la pista si coincidiera con el estado previo).
-      if (c.audio) {
-        const mod = MUSIC_MODULES.find((m) => m.key === c.audio!.moduleKey);
-        const track = mod?.tracks.find((t) => t.id === c.audio!.trackId);
-        setLastTrack((prev) => ({ ...prev, [c.audio!.moduleKey]: c.audio!.trackId }));
-        if (track?.sound) {
-          try {
-            await setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true });
-            const p = createAudioPlayer(track.sound, { updateInterval: 500 });
-            p.loop = true;
-            p.volume = 1;
-            p.play();
-            playersRef.current[c.audio.moduleKey] = p;
-            setActiveTracks({ [c.audio.moduleKey]: c.audio.trackId });
-          } catch {
-            /* ignore */
-          }
-        }
-      }
       // "Play": abrir directo en pantalla completa (solo si hay algo que mostrar).
       if (enterImmersive && c.active.length > 0) {
         setImmersive(true);
       }
     },
-    [getCreation, stopAllSound, stopIntro],
+    [getCreation, stopIntro],
   );
 
   // Cuando llega un id por la ruta (desde "Mis creaciones"), abrir esa creación
@@ -1019,9 +787,6 @@ export default function GeometrixScreen() {
     if (params.new === "1") {
       setEditingCreation(null); // lienzo en blanco → ocultar botón "Actualizar"
       stopIntro();
-      stopAllSound();
-      setActiveTracks({});
-      setOpenModule(null);
       setActive([]);
       setSettings({});
       setHiddenIds([]);
@@ -1039,7 +804,7 @@ export default function GeometrixScreen() {
       });
       router.setParams({ new: "" });
     }
-  }, [params.new, stopAllSound, stopIntro]);
+  }, [params.new, stopIntro]);
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
@@ -1092,7 +857,7 @@ export default function GeometrixScreen() {
     }
     setIsDirty(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, settings, master, activeTracks]);
+  }, [active, settings, master]);
 
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
   // reasignar la selección del pellizco a otra activa (o ninguna).
@@ -1336,37 +1101,6 @@ export default function GeometrixScreen() {
             <Text style={styles.subtitle}>Crea, anima, personaliza y comparte.</Text>
           </View>
 
-          <View style={styles.soundModules}>
-            {MUSIC_MODULES.map((mod) => {
-              const activeId = activeTracks[mod.key] ?? null;
-              // Imagen del thumbnail = última pista ELEGIDA (persiste tras
-              // apagar); si nunca se eligió, la 1ª por defecto. NO depende de
-              // si está sonando.
-              const coverId = lastTrack[mod.key] ?? activeId;
-              const coverTrack = mod.tracks.find((t) => t.id === coverId);
-              const cover = coverTrack?.image ?? mod.tracks[0].image;
-              const isActive = !!activeId;
-              return (
-                <SoundThumbButton
-                  key={mod.key}
-                  mod={mod}
-                  isActive={isActive}
-                  cover={cover}
-                  glowStyle={glowStyle}
-                  restStyle={restStyle}
-                  onPress={() => {
-                    if (isActive) {
-                      stopModule(mod.key);
-                      setActiveTracks((prev) => ({ ...prev, [mod.key]: null }));
-                      setOpenModule(null);
-                      return;
-                    }
-                    setOpenModule((cur) => (cur === mod.key ? null : mod.key));
-                  }}
-                />
-              );
-            })}
-          </View>
         </View>
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
@@ -2890,52 +2624,6 @@ export default function GeometrixScreen() {
         </View>
       </Modal>
 
-      {/* Desplegable de música del módulo abierto (solo imágenes, drop-left) */}
-      {openModule &&
-        (() => {
-          const mod = MUSIC_MODULES.find((m) => m.key === openModule);
-          if (!mod) return null;
-          // Anclar el desplegable bajo el thumbnail de su propio módulo.
-          // Los thumbnails (41px, gap 10) están alineados a la derecha; el
-          // último queda a right:20 y cada anterior se corre 51px más.
-          const modIndex = MUSIC_MODULES.findIndex((m) => m.key === mod.key);
-          const rightOffset =
-            20 + (MUSIC_MODULES.length - 1 - modIndex) * (41 + 10);
-          return (
-            <>
-              <Pressable
-                style={StyleSheet.absoluteFill}
-                onPress={() => setOpenModule(null)}
-              />
-              <View
-                style={[styles.soundMenu, { top: insets.top + 12, right: rightOffset + 41 + 8 }]}
-              >
-                {mod.tracks.filter((t) => t.id !== (lastTrack[mod.key] ?? mod.tracks[0].id)).map((t) => {
-                  const sel = activeTracks[mod.key] === t.id;
-                  return (
-                    <Pressable
-                      key={t.id}
-                      onPress={() => { selectTrack(mod.key, t); setOpenModule(null); }}
-                      style={[styles.soundTile, sel && styles.soundTileActive]}
-                      accessibilityRole="button"
-                      accessibilityLabel={`${mod.label} ${t.id}`}
-                    >
-                      <Image
-                        source={t.image}
-                        style={styles.soundTileImg}
-                        contentFit="cover"
-                      />
-                      {/* No seleccionada → overlay oscuro; la elegida se ilumina. */}
-                      {!sel && (
-                        <View style={styles.soundTileDim} pointerEvents="none" />
-                      )}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </>
-          );
-        })()}
     </View>
   );
 }
@@ -2955,35 +2643,6 @@ const styles = StyleSheet.create({
   headerText: { flex: 1, paddingRight: 12 },
   title: { fontSize: 30, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
-
-  soundModules: { flexDirection: "row", gap: 10 },
-  soundThumb: {
-    width: 39,
-    height: 39,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderWidth: 1,
-    borderColor: CARD_BORDER,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  soundThumbImg: { width: "100%", height: "100%" },
-  thumbOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.45)",
-  },
-  thumbAudioBadge: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  thumbGlow: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "#181c37",
-  },
 
   grid: { flexGrow: 0 },
   gridContent: { paddingVertical: 2, paddingLeft: 20, paddingRight: 20 },
@@ -3453,24 +3112,4 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 14, fontWeight: "600", color: "#FFFFFF", marginTop: 4 },
   emptySub: { fontSize: 12, color: colors.mutedForeground },
 
-  soundMenu: {
-    position: "absolute",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  soundTile: {
-    width: 42,
-    height: 42,
-    borderRadius: 999,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#181c37",
-  },
-  soundTileActive: { borderColor: "#2c304f" },
-  soundTileImg: { width: "100%", height: "100%" },
-  soundTileDim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
 });
