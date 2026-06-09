@@ -1185,13 +1185,13 @@ export default function GeometrixScreen() {
       // con el `active` ya reordenado → se arma una animación de 1100 ms
       // (LinearTransition / hueco) que separa las dos cards al terminar el enroque.
       // unstable_batchedUpdates fuerza el render único.
-      // Adelanta el flag de settle al UI thread ANTES de aplicar el reorden: así la
-      // re-evaluación de wrapStyle (que lo lee) tiene la máxima ventaja para poner
-      // translateX 0 antes/junto con el montaje del reorden. El worklet de layout
-      // (tileLayout) lo vuelve a poner en 1 EN el commit como respaldo en lockstep.
-      // Dos escrituras (JS pre-commit + UI en el layout) cubren la carrera de orden
-      // de mappers que dejaba un parpadeo intermitente con una sola.
-      settleSV.value = 1;
+      // NO adelantar settleSV acá (JS, pre-commit): el write llega al UI thread y
+      // re-evalúa wrapStyle (translateX 0 para TODAS) ANTES de que el render de React
+      // + el commit de Fabric reordenen el DOM → durante esa ventana líder la card
+      // arrastrada (sostenida en el slot destino por dragX) salta de vuelta a su slot
+      // de origen y la hermana del hueco vuelve de ±itemW → al montar el reorden
+      // saltan a su slot final ("swap in / swap out" de las imágenes). El único
+      // disparo en lockstep es el que hace tileLayout DENTRO del commit.
       unstable_batchedUpdates(() => {
         setDragSettling(true);
         moveActiveTo(id, idx);
