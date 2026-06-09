@@ -1605,14 +1605,20 @@ export default function GeometrixScreen() {
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
                     )}
-                    style={[styles.thumbItem, isHidden && { opacity: 0.35 }]}
+                    style={styles.thumbItem}
                   >
-                    {/* Tap en la imagen: solo seleccionar para ajustar tamaño. */}
+                    {/* Tap en la imagen: seleccionar. Si está oculta, tap → mostrar. */}
                     <Pressable
-                      onPress={() => setSelectedId(g.id)}
-                      style={[styles.thumb, { opacity: isSelected ? 1 : 0.4 }]}
+                      onPress={() => {
+                        if (isHidden) {
+                          setHiddenIds((prev) => prev.filter((id) => id !== g.id));
+                        } else {
+                          setSelectedId(g.id);
+                        }
+                      }}
+                      style={[styles.thumb, { opacity: isHidden ? 1 : isSelected ? 1 : 0.4 }]}
                       accessibilityRole="button"
-                      accessibilityLabel={`Seleccionar ${g.name} para ajustar el tamaño`}
+                      accessibilityLabel={isHidden ? `Mostrar ${g.name}` : `Seleccionar ${g.name}`}
                     >
                       <SacredGlyph
                         id={g.id}
@@ -1621,17 +1627,24 @@ export default function GeometrixScreen() {
                         size={37}
                         strokeWidth={1.4}
                       />
+                      {/* Overlay oscuro + ojo-tachado cuando la geometría está oculta */}
+                      {isHidden && (
+                        <View style={styles.thumbHiddenOverlay}>
+                          <Feather name="eye-off" size={14} color="rgba(255,255,255,0.85)" />
+                        </View>
+                      )}
                     </Pressable>
-                    {/* Flechita: abre el menú de opciones. */}
+                    {/* Flechita: abre ajustes personalizados directamente. */}
                     <Pressable
                       onPress={() => {
                         setSelectedId(g.id);
-                        setMenuGeoId(g.id);
+                        setSettingsGeoId(g.id);
+                        setSettingsOpen(true);
                       }}
                       style={styles.thumbCaret}
                       hitSlop={8}
                       accessibilityRole="button"
-                      accessibilityLabel={`Opciones de ${g.name}`}
+                      accessibilityLabel={`Ajustes de ${g.name}`}
                     >
                       <Feather
                         name="chevron-down"
@@ -2494,17 +2507,57 @@ export default function GeometrixScreen() {
                 </>
               )}
             </View>
-            <Pressable
-              onPress={() => {
-                setSettingsOpen(false);
-                setSettingsGeoId(null);
-              }}
-              hitSlop={10}
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar ajustes"
-            >
-              <Feather name="x" size={20} color={colors.mutedForeground} />
-            </Pressable>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              {/* Ocultar / mostrar desde el sheet */}
+              {settingsGeo && (
+                <Pressable
+                  onPress={() => {
+                    const id = settingsGeo.id;
+                    setHiddenIds((prev) =>
+                      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+                    );
+                    setSettingsOpen(false);
+                    setSettingsGeoId(null);
+                  }}
+                  hitSlop={10}
+                  accessibilityRole="button"
+                  accessibilityLabel={hiddenIds.includes(settingsGeo.id) ? "Mostrar geometría" : "Ocultar geometría"}
+                >
+                  <Feather
+                    name={hiddenIds.includes(settingsGeo.id) ? "eye" : "eye-off"}
+                    size={19}
+                    color={colors.mutedForeground}
+                  />
+                </Pressable>
+              )}
+              {/* Borrar desde el sheet */}
+              {settingsGeo && (
+                <Pressable
+                  onPress={() => {
+                    const id = settingsGeo.id;
+                    setSettingsOpen(false);
+                    setSettingsGeoId(null);
+                    toggleGeometry(id);
+                  }}
+                  hitSlop={10}
+                  accessibilityRole="button"
+                  accessibilityLabel="Borrar geometría"
+                >
+                  <Feather name="trash-2" size={18} color="#8a4646" />
+                </Pressable>
+              )}
+              <Pressable
+                onPress={() => {
+                  setSettingsOpen(false);
+                  setSettingsGeoId(null);
+                }}
+                hitSlop={10}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar ajustes"
+              >
+                <Feather name="x" size={20} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
           </View>
 
           <View style={styles.sheetHeaderDivider} />
@@ -2955,6 +3008,13 @@ const styles = StyleSheet.create({
   thumb: {
     width: 44,
     height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  thumbHiddenOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
