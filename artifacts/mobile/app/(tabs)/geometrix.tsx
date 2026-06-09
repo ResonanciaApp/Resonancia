@@ -37,6 +37,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Svg, {
   Defs,
+  G,
+  Line,
   LinearGradient as SvgLinearGradient,
   Rect,
   Stop,
@@ -599,6 +601,39 @@ function CarouselTile({
   );
 }
 
+// Icono "sliders" (ajustes generales) pintado con el degradado dorado del
+// logo Cubo 3, en vez de un color plano. react-native-svg permite stroke con
+// gradiente, así que no hace falta masked-view.
+function GoldSlidersIcon({ size = 18 }: { size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Defs>
+        <SvgLinearGradient id="pillGoldGrad" x1="0" y1="0" x2="1" y2="1">
+          <Stop offset="0" stopColor="#EFD8A6" />
+          <Stop offset="0.5" stopColor="#C99E57" />
+          <Stop offset="1" stopColor="#9C7634" />
+        </SvgLinearGradient>
+      </Defs>
+      <G
+        stroke="url(#pillGoldGrad)"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <Line x1="4" y1="21" x2="4" y2="14" />
+        <Line x1="4" y1="10" x2="4" y2="3" />
+        <Line x1="12" y1="21" x2="12" y2="12" />
+        <Line x1="12" y1="8" x2="12" y2="3" />
+        <Line x1="20" y1="21" x2="20" y2="16" />
+        <Line x1="20" y1="12" x2="20" y2="3" />
+        <Line x1="1" y1="14" x2="7" y2="14" />
+        <Line x1="9" y1="8" x2="15" y2="8" />
+        <Line x1="17" y1="16" x2="23" y2="16" />
+      </G>
+    </Svg>
+  );
+}
+
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
@@ -1095,7 +1130,8 @@ export default function GeometrixScreen() {
   }, [loupeVisible, loupeReveal]);
 
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
-  const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }[] = [
+  const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean }[] = [
+    { key: "general", icon: "sliders", label: "Ajustes generales", onPress: () => setGeneralOpen(true), gradient: true },
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
@@ -1663,18 +1699,9 @@ export default function GeometrixScreen() {
           {/* Fila de controles arriba a la derecha: ajustes + flecha drop-down.
               Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
           <View style={styles.actionTop}>
-            {/* Header: [ajustes] | [divisor] | [flecha] */}
+            {/* Header: solo la flecha desplegable. Los ajustes generales viven
+                ahora como primera opción dentro del desplegable. */}
             <View style={styles.actionTopRow}>
-              <Pressable
-                onPress={() => setGeneralOpen(true)}
-                style={styles.actionTopBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Ajustes generales"
-                hitSlop={4}
-              >
-                <Feather name="sliders" size={16} color={colors.mutedForeground} />
-              </Pressable>
-              <View style={styles.actionTopDivider} />
               <Pressable
                 onPress={() => setPillOpen((o) => !o)}
                 style={styles.actionTopBtn}
@@ -1708,7 +1735,11 @@ export default function GeometrixScreen() {
                     accessibilityLabel={a.label}
                     hitSlop={6}
                   >
-                    <Feather name={a.icon} size={18} color={colors.mutedForeground} />
+                    {a.gradient ? (
+                      <GoldSlidersIcon size={18} />
+                    ) : (
+                      <Feather name={a.icon} size={18} color={colors.mutedForeground} />
+                    )}
                   </Pressable>
                 </React.Fragment>
               ))}
