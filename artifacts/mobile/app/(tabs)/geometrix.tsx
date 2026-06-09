@@ -27,6 +27,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withRepeat,
   withSequence,
   withTiming,
@@ -483,6 +484,7 @@ type CarouselTileProps = {
   isActivating: boolean;
   color: string;
   onPress: () => void;
+  onOpenSettings: () => void;
 };
 
 // Tile del carrusel de geometrías. Maneja su propia animación de selección al
@@ -496,9 +498,11 @@ function CarouselTile({
   isActivating,
   color,
   onPress,
+  onOpenSettings,
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
   const glow = useSharedValue(isSelected ? 0.66 : 0);
+  const settingsOpacity = useSharedValue(0);
 
   useEffect(() => {
     if (isActivating) {
@@ -524,6 +528,23 @@ function CarouselTile({
     transform: [{ scale: scale.value }],
     shadowOpacity: glow.value,
   }));
+
+  const settingsStyle = useAnimatedStyle(() => ({
+    opacity: settingsOpacity.value,
+  }));
+
+  // El icono de ajustes entra (fade in) cuando la card queda seleccionada y
+  // estática (tras el glide del carrusel); desaparece al deseleccionar.
+  useEffect(() => {
+    if (isSelected && !isActivating) {
+      settingsOpacity.value = withDelay(
+        CAROUSEL_FLOW_MS,
+        withTiming(1, { duration: 320, easing: Easing.out(Easing.ease) }),
+      );
+    } else {
+      settingsOpacity.value = withTiming(0, { duration: 150 });
+    }
+  }, [isSelected, isActivating, settingsOpacity]);
 
   return (
     <Animated.View
@@ -558,6 +579,22 @@ function CarouselTile({
           </Animated.View>
         </View>
       </Pressable>
+      {/* Icono de ajustes: aparece (fade in) sobre la card al quedar
+          seleccionada y estática; abre los ajustes personalizados. */}
+      <Animated.View
+        pointerEvents={isSelected && !isActivating ? "auto" : "none"}
+        style={[styles.tileSettings, settingsStyle]}
+      >
+        <Pressable
+          onPress={onOpenSettings}
+          hitSlop={10}
+          style={styles.tileSettingsBtn}
+          accessibilityRole="button"
+          accessibilityLabel={`Ajustes de ${name}`}
+        >
+          <Feather name="settings" size={13} color={colors.primary} />
+        </Pressable>
+      </Animated.View>
     </Animated.View>
   );
 }
@@ -1402,6 +1439,11 @@ export default function GeometrixScreen() {
                   isActivating={activatingIds.has(g.id)}
                   color={getSettings(g.id).color}
                   onPress={() => toggleGeometry(g.id)}
+                  onOpenSettings={() => {
+                    setSelectedId(g.id);
+                    setSettingsGeoId(g.id);
+                    setSettingsOpen(true);
+                  }}
                 />
               );
             })}
@@ -2839,7 +2881,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    marginBottom: 14,
+    marginBottom: 0,
     paddingHorizontal: 20,
   },
   headerText: { flex: 1, paddingRight: 12 },
@@ -2849,12 +2891,30 @@ const styles = StyleSheet.create({
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
-  grid: { flexGrow: 0, marginTop: 10 },
-  gridContent: { paddingVertical: 2, paddingLeft: 20, paddingRight: 20 },
+  grid: { flexGrow: 0, marginTop: 0 },
+  gridContent: { paddingTop: 26, paddingBottom: 2, paddingLeft: 20, paddingRight: 20 },
   // Sin `gap`: las animaciones de layout (LinearTransition) miden mal el reordenamiento
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
   gridRow: { flexDirection: "row" },
   tileWrap: { marginRight: 8 },
+  tileSettings: {
+    position: "absolute",
+    top: -24,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    zIndex: 5,
+  },
+  tileSettingsBtn: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(190,150,80,0.12)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(190,150,80,0.35)",
+  },
   tile: {
     aspectRatio: 1,
     borderRadius: 16,
