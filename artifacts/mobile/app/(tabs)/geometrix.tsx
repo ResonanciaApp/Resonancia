@@ -1189,7 +1189,12 @@ export default function GeometrixScreen() {
     });
 
   // Pellizco, rotación y drag corren a la vez sobre el objetivo seleccionado.
-  const canvasGesture = Gesture.Simultaneous(pinchGesture, rotationGesture, panGesture);
+  // Doble toque en el lienzo → entra en modo inmersivo directamente.
+  const doubleTapGesture = Gesture.Tap()
+    .numberOfTaps(2)
+    .onEnd(() => runOnJS(setImmersive)(true));
+
+  const canvasGesture = Gesture.Simultaneous(doubleTapGesture, pinchGesture, rotationGesture, panGesture);
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
