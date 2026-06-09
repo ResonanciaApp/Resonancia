@@ -955,7 +955,10 @@ export default function GeometrixScreen() {
   // Este timeout solo evita que el settling quede pegado si esa reacción no corre.
   useEffect(() => {
     if (!dragSettling) return;
-    const t = setTimeout(() => setDragSettling(false), 120);
+    const t = setTimeout(() => {
+      console.log("[ENROQUE] SAFETY-UNMASK @120ms", Date.now());
+      setDragSettling(false);
+    }, 120);
     return () => clearTimeout(t);
   }, [dragSettling]);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
@@ -970,6 +973,11 @@ export default function GeometrixScreen() {
       const without = prev.filter((x) => x !== id);
       const clamped = Math.max(0, Math.min(idx, without.length));
       without.splice(clamped, 0, id);
+      console.log(
+        "[ENROQUE] moveActiveTo id=", id, "idx=", idx, "clamped=", clamped,
+        "before=", JSON.stringify(prev), "after=", JSON.stringify(without),
+        "@", Date.now(),
+      );
       return without;
     });
   }, []);
@@ -1011,6 +1019,7 @@ export default function GeometrixScreen() {
     () => dragOriginIdx.value,
     (o, prev) => {
       if (o === -1 && prev !== null && prev >= 0) {
+        runOnJS(console.log)("[ENROQUE] REACTION-UNMASK o=-1 prev=", prev);
         runOnJS(setDragSettling)(false);
       }
     },
