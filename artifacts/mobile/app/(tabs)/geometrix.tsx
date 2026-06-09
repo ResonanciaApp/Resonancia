@@ -1807,7 +1807,7 @@ export default function GeometrixScreen() {
                 const isSelected = pinchTargetId === g.id;
                 // Tanda inicial → escalonado izquierda→derecha; agregados luego → al instante.
                 const enterDelay = thumbsInitialIdsRef.current?.has(g.id)
-                  ? index * 80
+                  ? (activeMetas.length - 1 - index) * 80
                   : 0;
                 return (
                   <Animated.View
