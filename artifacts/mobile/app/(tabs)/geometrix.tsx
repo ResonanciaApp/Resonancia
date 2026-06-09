@@ -2815,7 +2815,7 @@ export default function GeometrixScreen() {
                     {a.gradient ? (
                       <GoldSlidersIcon size={18} />
                     ) : (
-                      <Feather name={a.icon} size={18} color={colors.mutedForeground} />
+                      <Feather name={a.icon} size={18} color="#FFFFFF" />
                     )}
                   </Pressable>
                 </React.Fragment>
@@ -4093,7 +4093,7 @@ const styles = StyleSheet.create({
 
   header: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 0,
     paddingHorizontal: 20,
@@ -4107,7 +4107,7 @@ const styles = StyleSheet.create({
   headerText: { flex: 1, paddingRight: 12 },
   // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
   titleRow: { flexDirection: "row", alignItems: "center" },
-  titleLogo: { width: 26, height: 26, marginRight: 6, opacity: 0.92 },
+  titleLogo: { width: 18, height: 18, marginRight: 6, opacity: 0.92 },
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
@@ -4197,7 +4197,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 11,
     fontWeight: "700",
-    color: colors.foreground,
+    color: "#FFFFFF",
   },
   tile: {
     aspectRatio: 1,
@@ -4238,7 +4238,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateY: -3 }],
+    transform: [{ translateY: -18 }],
   },
   canvas: {
     alignItems: "center",
