@@ -3125,6 +3125,7 @@ const styles = StyleSheet.create({
   },
   thumbsRowStart: {
     justifyContent: "flex-start",
+    paddingHorizontal: 16,
   },
   thumb: {
     width: 44,
