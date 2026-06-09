@@ -27,12 +27,18 @@ import Animated, {
   FadeOut,
   LinearTransition,
   runOnJS,
+  scrollTo,
+  useAnimatedReaction,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
+  useFrameCallback,
   useSharedValue,
   withDelay,
   withRepeat,
   withSequence,
   withTiming,
+  type SharedValue,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -533,6 +539,11 @@ type CarouselTileProps = {
   onDragStart: (id: string) => void;
   onMoveTo: (id: string, idx: number) => void;
   onDragEnd: (id: string) => void;
+  // Auto-scroll del carrusel durante el arrastre (ver bloque del padre).
+  screenW: number;
+  scrollX: SharedValue<number>;
+  dragActive: SharedValue<number>;
+  edgeIntent: SharedValue<number>;
 };
 
 // Tile del carrusel de geometrías. Maneja su propia animación de selección al
@@ -554,6 +565,10 @@ function CarouselTile({
   onDragStart,
   onMoveTo,
   onDragEnd,
+  screenW,
+  scrollX,
+  dragActive,
+  edgeIntent,
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
   const glow = useSharedValue(isSelected ? 0.66 : 0);
@@ -614,12 +629,50 @@ function CarouselTile({
   const curIdx = useSharedValue(0);
   const idxSV = useSharedValue(indexInFront);
   const frontCountSV = useSharedValue(frontCount);
+  // Offset de scroll del carrusel al iniciar el arrastre + último translationX
+  // del dedo. Sirven para recomputar el índice cuando el dedo está quieto en el
+  // borde y el carrusel se auto-desplaza (la posición efectiva cambia por scroll).
+  const scrollStartX = useSharedValue(0);
+  const lastTransX = useSharedValue(0);
+  // 1 solo en la card que se está arrastrando AHORA (no en todas las arrastrables):
+  // así la reacción al scroll recomputa el índice únicamente para esta card.
+  const selfDragging = useSharedValue(0);
   useEffect(() => {
     idxSV.value = indexInFront;
   }, [indexInFront, idxSV]);
   useEffect(() => {
     frontCountSV.value = frontCount;
   }, [frontCount, frontCountSV]);
+
+  // Reubica la card según el desplazamiento efectivo (dedo + scroll). Se llama
+  // desde onUpdate (movimiento del dedo) y desde la reacción al scroll.
+  const applyReorder = useCallback(
+    (effectiveTx: number) => {
+      "worklet";
+      const maxIdx = Math.max(0, frontCountSV.value - 1);
+      let proposed = Math.round(originIdx.value + effectiveTx / itemW);
+      if (proposed < 0) proposed = 0;
+      if (proposed > maxIdx) proposed = maxIdx;
+      if (proposed !== curIdx.value) {
+        curIdx.value = proposed;
+        runOnJS(onMoveTo)(id, proposed);
+      }
+      dragX.value = effectiveTx - (curIdx.value - originIdx.value) * itemW;
+    },
+    [curIdx, dragX, frontCountSV, id, itemW, onMoveTo, originIdx],
+  );
+
+  // Mientras el dedo está parado en el borde, el carrusel sigue desplazándose
+  // (frame loop del padre actualiza scrollX). Esta reacción recomputa el índice
+  // y la compensación con el nuevo scroll para que el reordenamiento no se frene.
+  useAnimatedReaction(
+    () => (selfDragging.value === 1 ? scrollX.value : null),
+    (sx, prev) => {
+      if (sx === null || sx === prev) return;
+      applyReorder(lastTransX.value + (sx - scrollStartX.value));
+    },
+    [applyReorder],
+  );
 
   const dragGesture = useMemo(
     () =>
@@ -629,38 +682,56 @@ function CarouselTile({
         .onStart(() => {
           originIdx.value = idxSV.value;
           curIdx.value = idxSV.value;
+          scrollStartX.value = scrollX.value;
+          lastTransX.value = 0;
+          edgeIntent.value = 0;
+          dragActive.value = 1;
+          selfDragging.value = 1;
           lift.value = withTiming(1, { duration: 160 });
           runOnJS(onDragStart)(id);
         })
         .onUpdate((e) => {
-          const maxIdx = Math.max(0, frontCountSV.value - 1);
-          let proposed = Math.round(originIdx.value + e.translationX / itemW);
-          if (proposed < 0) proposed = 0;
-          if (proposed > maxIdx) proposed = maxIdx;
-          if (proposed !== curIdx.value) {
-            curIdx.value = proposed;
-            runOnJS(onMoveTo)(id, proposed);
+          lastTransX.value = e.translationX;
+          // Intención de auto-scroll según qué tan cerca del borde está el dedo.
+          // Zona de 64px; velocidad lineal hasta ~16px/frame. Hacia la izquierda
+          // negativo, hacia la derecha positivo.
+          const EDGE = 64;
+          const MAXV = 16;
+          if (e.absoluteX < EDGE) {
+            edgeIntent.value = -MAXV * ((EDGE - e.absoluteX) / EDGE);
+          } else if (e.absoluteX > screenW - EDGE) {
+            edgeIntent.value = MAXV * ((e.absoluteX - (screenW - EDGE)) / EDGE);
+          } else {
+            edgeIntent.value = 0;
           }
-          dragX.value = e.translationX - (curIdx.value - originIdx.value) * itemW;
+          applyReorder(e.translationX + (scrollX.value - scrollStartX.value));
         })
         .onFinalize(() => {
+          edgeIntent.value = 0;
+          dragActive.value = 0;
+          selfDragging.value = 0;
           dragX.value = withTiming(0, { duration: 180, easing: Easing.out(Easing.ease) });
           lift.value = withTiming(0, { duration: 180 });
           runOnJS(onDragEnd)(id);
         }),
     [
+      applyReorder,
       draggable,
       id,
-      itemW,
       onDragStart,
-      onMoveTo,
       onDragEnd,
       curIdx,
+      dragActive,
       dragX,
-      frontCountSV,
+      edgeIntent,
       idxSV,
+      lastTransX,
       lift,
       originIdx,
+      screenW,
+      scrollStartX,
+      scrollX,
+      selfDragging,
     ],
   );
 
@@ -670,7 +741,7 @@ function CarouselTile({
 
   return (
     <Animated.View
-      layout={isDragging ? undefined : LinearTransition.duration(CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
+      layout={LinearTransition.duration(isDragging ? 0 : CAROUSEL_FLOW_MS).easing(CAROUSEL_EASE)}
       style={[styles.tileWrap, wrapStyle, isDragging && styles.tileDragging]}
     >
       <Animated.Text
@@ -798,7 +869,28 @@ export default function GeometrixScreen() {
   useEffect(() => {
     activatingIdsRef.current = activatingIds;
   }, [activatingIds]);
-  const carouselScrollRef = useRef<ScrollView>(null);
+  const carouselScrollRef = useAnimatedRef<Animated.ScrollView>();
+  // Auto-scroll del carrusel mientras se arrastra una card hacia el borde.
+  // scrollX: offset actual (lo actualiza el scrollHandler); maxScrollX: tope
+  // (contentW - viewport); dragActive: 1 mientras hay drag; edgeIntent: px/frame
+  // a desplazar (firmado) según cercanía al borde. El frame loop avanza el scroll.
+  const carScrollX = useSharedValue(0);
+  const carMaxScrollX = useSharedValue(0);
+  const carDragActive = useSharedValue(0);
+  const carEdgeIntent = useSharedValue(0);
+  const carScrollHandler = useAnimatedScrollHandler((e) => {
+    carScrollX.value = e.contentOffset.x;
+  });
+  useFrameCallback(() => {
+    if (carDragActive.value !== 1) return;
+    const v = carEdgeIntent.value;
+    if (v === 0) return;
+    const next = Math.min(Math.max(carScrollX.value + v, 0), carMaxScrollX.value);
+    if (next !== carScrollX.value) {
+      carScrollX.value = next;
+      scrollTo(carouselScrollRef, next, 0, false);
+    }
+  });
   // Timers de activación en curso, para poder cancelarlos al deseleccionar/limpiar.
   const carouselTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(
     new Map(),
@@ -1880,10 +1972,15 @@ export default function GeometrixScreen() {
         </Modal>
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
-        <ScrollView
+        <Animated.ScrollView
           ref={carouselScrollRef}
           horizontal
           scrollEnabled={draggingId === null}
+          onScroll={carScrollHandler}
+          scrollEventThrottle={16}
+          onContentSizeChange={(w) => {
+            carMaxScrollX.value = Math.max(0, w - width);
+          }}
           style={styles.grid}
           contentContainerStyle={styles.gridContent}
           showsHorizontalScrollIndicator={false}
@@ -1912,11 +2009,15 @@ export default function GeometrixScreen() {
                   onDragStart={handleDragStart}
                   onMoveTo={moveActiveTo}
                   onDragEnd={handleDragEnd}
+                  screenW={width}
+                  scrollX={carScrollX}
+                  dragActive={carDragActive}
+                  edgeIntent={carEdgeIntent}
                 />
               );
             })}
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
 
         {/* Línea divisora */}
         <View style={styles.divider} />

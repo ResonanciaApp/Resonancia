@@ -44,5 +44,6 @@
 - [Community wall pattern (shared-glyphs)](community-wall-pattern.md) — recipe as jsonb (active/master/settings) in shared_glyphs; same like-toggle+FOR UPDATE pattern as shared_mixes; previews render live from recipe on client
 - [Modal bottom sheet rounded corners](modal-bottom-sheet-rounded-corners.md) — backdrop flex:1 NO cubre las esquinas cortadas; usar absoluteFill + container justifyContent:"flex-end"
 - [Mockup-sandbox verify gotchas](mockup-verify-gotchas.md) — external_url screenshots cache stale Vite errors; verify fixes via curl transform grep; DESIGN subagents emit escaped backticks in template literals (babel parse error)
+- [Reanimated layout-toggle ghost](reanimated-layout-toggle-ghost.md) — nunca layout={undefined} para pausar; deja snapshot vieja → ghost al soltar; usar duration(0) mientras se arrastra
 - [Geometrix carousel selection](geometrix-carousel-selection.md) — orden del carrusel DERIVADO de active+activatingIds (no mutar prevOrder con gate global de pending); deselect siempre vuelve al natural; glow solo en seleccionadas; auto-scroll con rAF
 - [Geometrix instance-id model](geometrix-instance-ids.md) — capa = instance id (string); base==GeometryId, duplicado=`base::uniq`; baseOf() para glifo/meta, id completo para settings/estado; Duplicar = defaults frescos a la derecha
