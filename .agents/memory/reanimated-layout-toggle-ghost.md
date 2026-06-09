@@ -122,6 +122,30 @@ means any stale release frame can animate a long tail; the instant return kills 
 **Diagnostic tell:** if the post-release artifact lasts ~`CAROUSEL_FLOW_MS` (vs a 1-frame
 flash), the cause is an armed animation (batching/snapshot), not a slot mismatch.
 
+## Auto-scroll reaction must be OFF during the release glide (long-drag revert)
+
+A long drag that engages edge auto-scroll exposes a separate revert: the dropped card
+lands one slot to the RIGHT (swaps with its right neighbor). Root cause = the
+`useAnimatedReaction` that recomputes the drop target from `scrollX` was gated only on
+`selfDragging===1`, which stays 1 through the 180ms release glide. If `scrollX` shifts while
+the carousel settles, the reaction fires `applyDrag` mid-glide → overwrites the glide's
+`dragX` `withTiming` and recomputes `dragTargetIdx` → the card lands a slot off.
+
+**Fix:** gate the reaction on `selfDragging===1 && dragActive===1`. `dragActive` is set 0 in
+`onFinalize` (before the glide) and 1 only during the active gesture, so the reaction tracks
+auto-scroll during the real drag but goes silent during the glide. Keep `selfDragging` in the
+gate so only the dragged tile's reaction writes the shared target.
+
+**Belt-and-suspenders for the post-commit gap window:** reset `dragOriginIdx`/`dragTargetIdx`
+to -1 SYNCHRONOUSLY inside the `commitReorder` `unstable_batchedUpdates` batch, not only in
+the per-tile cleanup `useEffect` (which runs a tick later). Otherwise the just-dropped card —
+already past `selfDragging` — can fall into the gap branch with stale origin/target and get
+`+itemW`, shoving it onto its right neighbor.
+
+**Why long-drag-specific:** short drags don't trigger auto-scroll, so `scrollX` is static
+during the glide and the reaction never fires — the bug only manifests when dragging across
+the whole carousel.
+
 ## Still-true general rule about `layout={undefined}`
 
 Never set `Animated.View layout={undefined}` to "pause" layout animation — it freezes the

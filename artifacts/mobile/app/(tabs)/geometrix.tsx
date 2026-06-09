@@ -689,8 +689,16 @@ function CarouselTile({
   // Mientras el dedo está parado en el borde, el carrusel sigue desplazándose
   // (frame loop del padre actualiza scrollX). Esta reacción recomputa la posición
   // efectiva con el nuevo scroll para que el destino siga avanzando sin frenarse.
+  // Clave: `selfDragging` Y `dragActive`. `dragActive` se apaga en onFinalize ANTES
+  // de iniciar el glide de soltado; `selfDragging` recién se apaga tras el commit.
+  // Si la reacción siguiera viva durante el glide (180 ms), cualquier cambio de
+  // scrollX (carrusel asentándose tras un auto-scroll de arrastre largo) dispararía
+  // applyDrag → SOBREESCRIBE el dragX del withTiming del glide y RECALCULA
+  // dragTargetIdx → la card aterriza un slot corrida (se "enroca" con la vecina de
+  // la derecha). Acotarla a la fase de arrastre activo evita esa corrupción.
   useAnimatedReaction(
-    () => (selfDragging.value === 1 ? scrollX.value : null),
+    () =>
+      selfDragging.value === 1 && dragActive.value === 1 ? scrollX.value : null,
     (sx, prev) => {
       if (sx === null || sx === prev) return;
       applyDrag(lastTransX.value + (sx - scrollStartX.value));
@@ -1039,11 +1047,20 @@ export default function GeometrixScreen() {
       unstable_batchedUpdates(() => {
         setDragSettling(true);
         moveActiveTo(id, idx);
+        // Reset SÍNCRONO de origin/target (en el MISMO batch que el reorden, antes
+        // de que React renderice el frame del commit). Si se dejara solo al efecto
+        // de limpieza por-tile (corre un tick DESPUÉS del commit), queda una ventana
+        // donde la card recién soltada —ya sin selfDragging— cae en la rama del
+        // hueco con origin/target viejos → off=+itemW → se corre un slot a la
+        // derecha (enroque con la vecina). Ponerlos en -1 acá mata esa rama desde
+        // el frame del commit para TODAS las tiles.
+        dragOriginIdx.value = -1;
+        dragTargetIdx.value = -1;
         frozenActivatingRef.current = null;
         setDraggingId(null);
       });
     },
-    [moveActiveTo],
+    [moveActiveTo, dragOriginIdx, dragTargetIdx],
   );
   const carouselOrder = useMemo<string[]>(() => {
     const front = active.filter((id) => !effActivating.has(id));
