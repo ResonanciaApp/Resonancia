@@ -1304,8 +1304,43 @@ export default function GeometrixScreen() {
           {/* Fila de controles arriba a la derecha: flecha drop-down.
               Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
           <View style={styles.actionTop}>
-            {/* Header: píldora con [icono ajustes] | [divisor] | [flecha] */}
+            {/* Header: [trash?] | [refresh?] | [divisor] | [ajustes] | [divisor] | [flecha] */}
             <View style={styles.actionTopRow}>
+              {hasActive && (
+                <Animated.View
+                  entering={FadeIn.duration(360)}
+                  exiting={FadeOut.duration(220)}
+                  style={{ flexDirection: "row", alignItems: "center" }}
+                >
+                  <Pressable
+                    onPress={clearCanvas}
+                    style={styles.actionTopBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel="Borrar lienzo"
+                    hitSlop={4}
+                  >
+                    <Feather name="trash-2" size={18} color={colors.mutedForeground} />
+                  </Pressable>
+                  {editingCreation && isDirty && (
+                    <Animated.View
+                      entering={FadeIn.duration(260)}
+                      exiting={FadeOut.duration(180)}
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <Pressable
+                        onPress={updateComposition}
+                        style={styles.actionTopBtn}
+                        accessibilityRole="button"
+                        accessibilityLabel="Actualizar composición"
+                        hitSlop={4}
+                      >
+                        <Feather name="refresh-cw" size={18} color={colors.mutedForeground} />
+                      </Pressable>
+                    </Animated.View>
+                  )}
+                  <View style={styles.actionTopDivider} />
+                </Animated.View>
+              )}
               <Pressable
                 onPress={() => setGeneralOpen(true)}
                 style={styles.actionTopBtn}
@@ -1356,38 +1391,6 @@ export default function GeometrixScreen() {
             </Animated.View>
           </View>
 
-          {/* "Borrar lienzo": esquina superior izquierda, aparece al activar la
-              primera geometría. Letras suaves; limpia todo el lienzo. */}
-          {hasActive && (
-            <Animated.View
-              entering={FadeIn.duration(360)}
-              exiting={FadeOut.duration(220)}
-              style={styles.clearTop}
-            >
-              <Pressable
-                onPress={clearCanvas}
-                style={styles.clearBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Borrar lienzo"
-                hitSlop={8}
-              >
-                <Feather name="trash-2" size={18} color={colors.mutedForeground} />
-              </Pressable>
-              {editingCreation && isDirty && (
-                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)} style={{ marginLeft: -5 }}>
-                  <Pressable
-                    onPress={updateComposition}
-                    style={styles.clearBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel="Actualizar composición"
-                    hitSlop={8}
-                  >
-                    <Feather name="refresh-cw" size={18} color={colors.mutedForeground} />
-                  </Pressable>
-                </Animated.View>
-              )}
-            </Animated.View>
-          )}
 
           {/* Thumbnails de geometrías activas: fila centrada anclada 15px sobre
               la tab bar; se reacomoda al agregar/quitar (LinearTransition). */}
