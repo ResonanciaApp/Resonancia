@@ -568,7 +568,7 @@ function CarouselTile({
         accessibilityRole="button"
         accessibilityLabel={`Ajustes de ${name}`}
       >
-        <Feather name="chevron-down" size={16} color={colors.mutedForeground} />
+        <Feather name="chevron-down" size={19} color={colors.mutedForeground} />
       </Pressable>
     </Animated.View>
   );
@@ -2892,7 +2892,7 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.08)",
-    marginTop: 34,
+    marginTop: 11,
     marginBottom: 0,
     marginHorizontal: -20,
   },
