@@ -180,7 +180,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       {/* Pestañita sutil para traer de vuelta el menú cuando está oculto. */}
       <Animated.View
         pointerEvents={hidden ? "auto" : "none"}
-        style={[styles.revealHandle, { bottom: pb + 4, opacity: handleOpacity }]}
+        style={[styles.revealHandle, { bottom: pb - 26, opacity: handleOpacity }]}
       >
         <Pressable
           onPress={showMenu}
@@ -189,8 +189,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           accessibilityRole="button"
           accessibilityLabel="Mostrar menú"
         >
-          <View style={styles.revealHandleBar} />
-          <Feather name="chevron-up" size={13} color={INACTIVE_COLOR} />
+          <Feather name="chevron-up" size={17} color={INACTIVE_COLOR} />
         </Pressable>
       </Animated.View>
     </>
@@ -308,12 +307,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 4,
-    gap: 1,
-  },
-  revealHandleBar: {
-    width: 38,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(128,148,181,0.45)",
   },
 });
