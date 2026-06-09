@@ -859,6 +859,7 @@ export default function GeometrixScreen() {
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }[] = [
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
+    { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
   ];
@@ -1161,15 +1162,11 @@ export default function GeometrixScreen() {
             <Text style={styles.subtitle}>Crea, anima, personaliza y comparte.</Text>
           </View>
 
-          <Pressable
-            onPress={() => router.push("/geometrix-creaciones")}
-            style={styles.creacionesBtn}
-            accessibilityRole="button"
-            accessibilityLabel="Mis creaciones"
-            hitSlop={6}
-          >
-            <Feather name="grid" size={18} color={colors.foreground} />
-          </Pressable>
+          <Image
+            source={require("@/assets/images/geometrix/cubo-3.png")}
+            style={styles.headerLogo}
+            contentFit="contain"
+          />
         </View>
 
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
@@ -2739,13 +2736,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerText: { flex: 1, paddingRight: 12 },
-  creacionesBtn: {
-    width: 39,
-    height: 39,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.03)",
-    alignItems: "center",
-    justifyContent: "center",
+  headerLogo: {
+    width: 44,
+    height: 44,
+    opacity: 0.92,
   },
   title: { fontSize: 30, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
