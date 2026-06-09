@@ -1304,8 +1304,18 @@ export default function GeometrixScreen() {
           {/* Fila de controles arriba a la derecha: flecha drop-down.
               Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
           <View style={styles.actionTop}>
-            {/* Header: píldora solo con [flecha] */}
+            {/* Header: píldora con [icono ajustes] | [divisor] | [flecha] */}
             <View style={styles.actionTopRow}>
+              <Pressable
+                onPress={() => setGeneralOpen(true)}
+                style={styles.actionTopBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Ajustes generales"
+                hitSlop={4}
+              >
+                <Feather name="sliders" size={16} color={colors.mutedForeground} />
+              </Pressable>
+              <View style={styles.actionTopDivider} />
               <Pressable
                 onPress={() => setPillOpen((o) => !o)}
                 style={styles.actionTopBtn}
