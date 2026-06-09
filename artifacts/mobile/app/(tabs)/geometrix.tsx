@@ -1381,10 +1381,6 @@ export default function GeometrixScreen() {
   // momentáneamente desincronizado → sin "pop" al cambiar de objetivo y sin
   // re-render por frame (el ángulo se aplica en el UI thread vía useAnimatedStyle).
   const rotActive = useSharedValue(0);
-  // Snap de rotación a ángulos cardinales: 1 cuando bloqueado, 0 si libre.
-  // rotSnapIsH: 1 = guía horizontal (0°/180°), 0 = guía vertical (90°/270°).
-  const rotSnapActive = useSharedValue(0);
-  const rotSnapIsH = useSharedValue(0);
   // Ángulo actual en grados normalizado (0-359) para el badge visible.
   const [rotDisplayAngle, setRotDisplayAngle] = useState(0);
 
@@ -2141,24 +2137,12 @@ export default function GeometrixScreen() {
       const raw = rotStart.value + (e.rotation * 180) / Math.PI;
       // Defensa ante valores corruptos: nunca propagar NaN al transform/settings.
       if (!Number.isFinite(raw)) return;
-      // Snap magnético: múltiplo de 90° más cercano. Si está a menos de 8°
-      // se bloquea al cardinal y activa la guía rosa correspondiente.
-      const SNAP_DEG = 8;
-      const nearest90 = Math.round(raw / 90) * 90;
-      if (Math.abs(raw - nearest90) < SNAP_DEG) {
-        liveRot.value = nearest90;
-        rotSnapActive.value = 1;
-        // 0°/180°/360° → guía horizontal; 90°/270° → guía vertical.
-        const norm = ((nearest90 % 360) + 360) % 360;
-        rotSnapIsH.value = norm === 0 || norm === 180 ? 1 : 0;
-      } else {
-        liveRot.value = raw;
-        rotSnapActive.value = 0;
-      }
+      // Solo se escribe el shared value: el giro se aplica en el UI thread
+      // (useAnimatedStyle) sin re-render de React por frame (igual que el zoom).
+      liveRot.value = raw;
     })
     .onEnd(() => {
       rotSucceeded.value = true;
-      rotSnapActive.value = 0;
       if (pinchTargetId && Number.isFinite(liveRot.value)) {
         runOnJS(commitAngle)(pinchTargetId, liveRot.value);
       }
@@ -2168,7 +2152,6 @@ export default function GeometrixScreen() {
     // ángulo previo. En cancelación, revierte al ángulo de partida y apaga el
     // gate aquí para no acumular un valor sin guardar.
     .onFinalize(() => {
-      rotSnapActive.value = 0;
       if (!rotSucceeded.value) {
         liveRot.value = rotStart.value;
         rotActive.value = 0;
@@ -2279,14 +2262,6 @@ export default function GeometrixScreen() {
     transform: [{ translateX: canvasSide / 2 + snapXSV.value }],
   }));
 
-  // Guías de snap de rotación: rosa, aparecen al bloquear en ángulo cardinal.
-  // rotSnapHStyle → línea horizontal (0° / 180°); rotSnapVStyle → vertical (90° / 270°).
-  const rotSnapHStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(rotSnapActive.value * rotSnapIsH.value, { duration: 80 }),
-  }));
-  const rotSnapVStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(rotSnapActive.value * (1 - rotSnapIsH.value), { duration: 80 }),
-  }));
   // Badge flotante: ícono + ángulo actual; fade rápido al entrar/salir del giro.
   const rotBadgeStyle = useAnimatedStyle(() => ({
     opacity: withTiming(rotActive.value, { duration: 120 }),
@@ -2648,37 +2623,6 @@ export default function GeometrixScreen() {
                       backgroundColor: "#FF4B8D",
                     },
                     snapXLineStyle,
-                  ]}
-                />
-
-                {/* ── Guías de snap de rotación ────────────────────────────────
-                    Horizontal (0°/180°): línea a través del centro del lienzo.
-                    Vertical  (90°/270°): ídem en vertical.
-                    Ambas en rosa #FF4B8D, coherentes con las guías de posición. */}
-                <Animated.View
-                  pointerEvents="none"
-                  style={[
-                    {
-                      position: "absolute",
-                      left: 0, right: 0,
-                      top: canvasSide / 2,
-                      height: 1,
-                      backgroundColor: "#FF4B8D",
-                    },
-                    rotSnapHStyle,
-                  ]}
-                />
-                <Animated.View
-                  pointerEvents="none"
-                  style={[
-                    {
-                      position: "absolute",
-                      top: 0, bottom: 0,
-                      left: canvasSide / 2,
-                      width: 1,
-                      backgroundColor: "#FF4B8D",
-                    },
-                    rotSnapVStyle,
                   ]}
                 />
 
