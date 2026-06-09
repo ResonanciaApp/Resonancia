@@ -68,6 +68,8 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const colors = colorsConst.light;
 const CARD_BORDER = "#161f33";
+const LOUPE_SIZE = 130;
+const LOUPE_M = 2.6;
 
 
 /** Muestra circular de un degradado (para el selector). RN no soporta
@@ -541,6 +543,14 @@ export default function GeometrixScreen() {
   // cada frame para que el trazo quede nítido durante el pellizco y no haya
   // parpadeo al soltar. null = no se está pellizcando (usa el confirmado).
   const [livePinchNum, setLivePinchNum] = useState<number | null>(null);
+
+  // ── Lupa de magnificación ─────────────────────────────────────────────────
+  // Aparece al mantener el dedo sobre la geometría seleccionada.
+  const loupeX = useSharedValue(0);
+  const loupeY = useSharedValue(0);
+  const loupeReveal = useSharedValue(0);
+  const [loupeVisible, setLoupeVisible] = useState(false);
+  const [loupeGeoId, setLoupeGeoId] = useState<GeometryId | null>(null);
   // Rotación manual en vivo (gesto de dos dedos). El ángulo en curso se lleva en
   // grados; se confirma a settings al soltar. null = no se está rotando.
   const liveRot = useSharedValue(0);
@@ -819,12 +829,30 @@ export default function GeometrixScreen() {
   // Opacidad del grupo trash: siempre montado para evitar glitch de layout.
   const trashAnim = useSharedValue(0);
   const trashAnimStyle = useAnimatedStyle(() => ({ opacity: trashAnim.value }));
+
+  // Posición + aparición de la lupa (todo en el hilo UI para que sea fluido).
+  const loupeWrapStyle = useAnimatedStyle(() => ({
+    opacity: loupeReveal.value,
+    transform: [
+      { translateX: loupeX.value - LOUPE_SIZE / 2 },
+      { translateY: loupeY.value - LOUPE_SIZE - 28 },
+      { scale: 0.55 + loupeReveal.value * 0.45 },
+    ],
+  }));
   useEffect(() => {
     trashAnim.value = withTiming(hasActive ? 1 : 0, {
       duration: hasActive ? 360 : 220,
       easing: Easing.inOut(Easing.ease),
     });
   }, [hasActive, trashAnim]);
+
+  useEffect(() => {
+    loupeReveal.value = withTiming(loupeVisible ? 1 : 0, {
+      duration: loupeVisible ? 200 : 150,
+      easing: Easing.out(Easing.ease),
+    });
+  }, [loupeVisible, loupeReveal]);
+
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }[] = [
     { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
@@ -952,6 +980,27 @@ export default function GeometrixScreen() {
       runOnJS(setLivePinchNum)(null);
     });
 
+  // Mantener el dedo quieto sobre la geometría activa → aparece la lupa circular.
+  // El usuario puede arrastrar suavemente para explorar distintas zonas.
+  const longPressGesture = Gesture.LongPress()
+    .minDuration(380)
+    .maxDistance(99999)
+    .onStart((e) => {
+      loupeX.value = e.x;
+      loupeY.value = e.y;
+      runOnJS(setLoupeGeoId)(pinchTargetId);
+      runOnJS(setLoupeVisible)(true);
+    })
+    .onTouchesMove((e) => {
+      if (e.allTouches.length > 0) {
+        loupeX.value = e.allTouches[0].x;
+        loupeY.value = e.allTouches[0].y;
+      }
+    })
+    .onFinalize(() => {
+      runOnJS(setLoupeVisible)(false);
+    });
+
   // Solo se permite rotar con los dedos cuando el objetivo NO tiene giro
   // automático activado (ni derecha ni izquierda). Con giro activo, el gesto
   // queda deshabilitado.
@@ -1057,7 +1106,7 @@ export default function GeometrixScreen() {
     .numberOfTaps(2)
     .onEnd(() => runOnJS(setImmersive)(true));
 
-  const canvasGesture = Gesture.Simultaneous(doubleTapGesture, pinchGesture, rotationGesture, panGesture);
+  const canvasGesture = Gesture.Simultaneous(doubleTapGesture, longPressGesture, pinchGesture, rotationGesture, panGesture);
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
@@ -1283,6 +1332,32 @@ export default function GeometrixScreen() {
                     }}
                   />
                 )}
+
+                {/* ── Lupa de magnificación ───────────────────────────────────
+                    Aparece al mantener el dedo sobre la geometría activa.
+                    Muestra el glifo a LOUPE_M veces su tamaño actual, recortado
+                    por un círculo dorado. pointerEvents="none" para no bloquear
+                    los demás gestos. */}
+                {loupeGeoId != null && layerSize > 0 && (() => {
+                  const s = getSettings(loupeGeoId);
+                  const glyphSize = layerSize * (s.zoom ?? 1) * LOUPE_M;
+                  return (
+                    <Animated.View
+                      pointerEvents="none"
+                      style={[styles.loupeWrap, loupeWrapStyle]}
+                    >
+                      {/* Contenido: glifo a máxima magnificación, clipeado por el círculo */}
+                      <SacredGlyph
+                        id={loupeGeoId}
+                        color={s.color}
+                        size={Math.min(glyphSize, LOUPE_SIZE * 3)}
+                        strokeWidth={0.7}
+                      />
+                      {/* Reborde dorado interior encima del contenido */}
+                      <View style={styles.loupeRim} pointerEvents="none" />
+                    </Animated.View>
+                  );
+                })()}
 
                 {active.length === 0 && (
                   // Logo + título + bajada entran JUNTOS y con un retardo (650ms)
@@ -3121,6 +3196,29 @@ const styles = StyleSheet.create({
   },
   swatchFill: { width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: "#4b4f5c" },
   swatchOn: { borderColor: "#EDE1D3" },
+
+  loupeWrap: {
+    position: "absolute",
+    width: LOUPE_SIZE,
+    height: LOUPE_SIZE,
+    borderRadius: LOUPE_SIZE / 2,
+    backgroundColor: "rgba(11,15,20,0.88)",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    zIndex: 30,
+    shadowColor: "#BE9650",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.45,
+    shadowRadius: 16,
+    elevation: 16,
+  },
+  loupeRim: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: LOUPE_SIZE / 2,
+    borderWidth: 1.5,
+    borderColor: "rgba(190,150,80,0.55)",
+  },
 
   empty: { alignItems: "center", gap: 6 },
   emptyLogoWrap: { marginBottom: 10 },
