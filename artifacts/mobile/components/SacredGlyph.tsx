@@ -266,8 +266,8 @@ export function glyphElements(
     case "metatron": {
       const D = 16;
       const centers: [number, number][] = [[C, C]];
-      [0, 60, 120, 180, 240, 300].forEach((a) => centers.push(pt(D, a)));
-      [0, 60, 120, 180, 240, 300].forEach((a) => centers.push(pt(2 * D, a)));
+      [-90, -30, 30, 90, 150, 210].forEach((a) => centers.push(pt(D, a)));
+      [-90, -30, 30, 90, 150, 210].forEach((a) => centers.push(pt(2 * D, a)));
       const lines: React.ReactNode[] = [];
       for (let i = 0; i < centers.length; i++) {
         for (let j = i + 1; j < centers.length; j++) {
@@ -429,8 +429,8 @@ export function glyphElements(
       // 13 círculos separados del Fruto de la Vida.
       const D = 15.5;
       const centers: [number, number][] = [[C, C]];
-      [0, 60, 120, 180, 240, 300].forEach((a) => centers.push(pt(D, a)));
-      [0, 60, 120, 180, 240, 300].forEach((a) => centers.push(pt(2 * D, a)));
+      [-90, -30, 30, 90, 150, 210].forEach((a) => centers.push(pt(D, a)));
+      [-90, -30, 30, 90, 150, 210].forEach((a) => centers.push(pt(2 * D, a)));
       return centers.map(([x, y], i) => (
         <Circle key={`c${i}`} cx={x} cy={y} r={D / 2} />
       ));
@@ -785,8 +785,8 @@ export function glyphElements(
       // Metatrón estándar (13 círculos) + anillo exterior de 12 círculos
       const D = 13;
       const c0: [number, number] = [C, C];
-      const r1 = [0, 60, 120, 180, 240, 300].map((a) => pt(D, a)) as [number, number][];
-      const r2 = [0, 60, 120, 180, 240, 300].map((a) => pt(2 * D, a)) as [number, number][];
+      const r1 = [-90, -30, 30, 90, 150, 210].map((a) => pt(D, a)) as [number, number][];
+      const r2 = [-90, -30, 30, 90, 150, 210].map((a) => pt(2 * D, a)) as [number, number][];
       const all: [number, number][] = [c0, ...r1, ...r2];
       // Líneas finas internas (trazo 0.5×) → grupo contra-escalable en pellizco.
       const innerLines: React.ReactNode[] = [];
