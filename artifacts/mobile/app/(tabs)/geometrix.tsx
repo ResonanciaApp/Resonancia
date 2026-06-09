@@ -540,8 +540,8 @@ function GuideHandle({ guide, canvasSide, onMove }: GuideHandleProps) {
             backgroundColor: GUIDE_COLOR,
             opacity: 0.65,
             ...(isH
-              ? { left: 0, right: 0, height: 1 }
-              : { top: 0, bottom: 0, width: 1 }),
+              ? { left: -999, right: -999, height: 1 }
+              : { top: -999, bottom: -999, width: 1 }),
           },
           lineStyle,
         ]}
