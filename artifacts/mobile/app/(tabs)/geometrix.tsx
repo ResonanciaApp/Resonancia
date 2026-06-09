@@ -545,7 +545,7 @@ function CarouselTile({
         onPress={onPress}
         style={[
           styles.tile,
-          { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, 0.8) },
+          { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
           isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
         ]}
       >
