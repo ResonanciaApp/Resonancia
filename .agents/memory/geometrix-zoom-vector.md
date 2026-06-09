@@ -1,25 +1,30 @@
 ---
 name: Geometrix zoom = render size, not transform
-description: How magnification is applied to sacred-geometry layers so vectors stay crisp
+description: How magnification is applied to sacred-geometry layers so vectors stay crisp (committed AND live pinch)
 ---
 
-Para escalar una capa de geometría (SVG vectorial), la magnificación CONFIRMADA se pliega en el tamaño REAL de render del SVG (`effectiveSize`), NO en un `transform: scale()`.
+Para escalar una capa de geometría (SVG vectorial), la magnificación se pliega en el tamaño REAL de render del SVG (`width`/`height`), NO en un `transform: scale()`. Esto vale tanto para el zoom CONFIRMADO como para el pellizco EN VIVO.
 
-**Why:** un `transform: scale()` sobre el Animated.View que envuelve el SVG estira la capa ya rasterizada → el trazo engorda proporcional y se pixela. Redibujar el SVG al tamaño grande lo mantiene nítido y, al recalcular strokeWidth desde el tamaño efectivo, el grosor VISUAL queda constante.
+**Why:** un `transform: scale()` sobre el SVG (o el Animated.View que lo envuelve) estira la capa ya rasterizada → el trazo engorda proporcional y se pixela/parpadea. Redibujar el SVG al tamaño grande lo mantiene nítido; al recalcular/compensar strokeWidth el grosor VISUAL queda constante.
 
-**El pellizco EN VIVO usa `transform: scale` (excepción acotada):**
-Durante el gesto el objetivo aplica `pinchScale = liveZoomSV.value / safeZoom` en el `useAnimatedStyle`, directamente en el UI thread (sin `runOnJS` por frame). Al confirmar (`onEnd`), React re-renderiza con el nuevo `safeZoom = livePinch.value`, por lo que el closure de `useAnimatedStyle` se actualiza y `pinchScale → 1` automáticamente. El `effectiveSize` pasa a `size * safeZoom_nuevo`, que es idéntico al tamaño visual que había durante el pellizco → **sin fantasma y sin runOnJS por frame**.
+**Zoom CONFIRMADO:** `effectiveSize = size * userScale * safeZoom` (estable entre renders); `base1px = 100 / effectiveSize` → trazo visual constante. El SVG se dibuja a `effectiveSize`.
 
-**Why (antes: runOnJS por frame causaba micro-lag):** `runOnJS(setLivePinchNum)` en `onUpdate` → JS thread → setState → re-render → 3 SacredGlyph redraws → lag de 1-2 frames perceptible. Eliminado: `liveZoomSV` (SharedValue) pasa directo a `useAnimatedStyle` en el UI thread.
+**Pellizco EN VIVO (UI thread, sin transform y sin runOnJS por frame):**
+- `SacredGlyph` acepta `liveScaleSV?: SharedValue<number>`. Cuando se pasa, usa `AnimatedSvg`/`AnimatedG` (`Animated.createAnimatedComponent`) con `useAnimatedProps`: el SVG redibuja a `size * liveScaleSV.value` y el `<G>` compensa el trazo a `strokeWidth / liveScaleSV.value` → grosor VISUAL constante, trazo NÍTIDO (no transform), sin re-render de React.
+- En `GeometryLayer`, `pinchScaleSV = useDerivedValue(() => liveZoomSV.value / safeZoom, [safeZoom])` (ratio auto-correctivo). Solo el objetivo del pellizco recibe `liveZoomSV` (= `livePinch` del padre); el resto recibe `undefined` → camino ESTÁTICO (Svg/G normales, sin overhead de animatedProps). Esto es clave para perf: miniaturas y capas no seleccionadas nunca pagan animatedProps.
+- `aStyle` (useAnimatedStyle) ya NO lleva `pinchScale`: solo `rotate` + `breatheScale`. El zoom vive en `liveScaleSV` (tamaño), no en transform.
 
-**Why (la carrera no existe con este patrón):** `livePinch.value` al soltar = zoom confirmado (`commitZoom` en `onEnd`). Cuando React re-renderiza, `safeZoom` capturado en el closure = ese mismo valor. `pinchScale = livePinch / safeZoom = 1` y `effectiveSize = size * safeZoom` → tamaño visual idéntico. No hay "carrera" de dos operaciones en threads distintos porque el committed path y el live path convergen al mismo resultado.
+**Ratio auto-correctivo evita el fantasma al soltar:** al confirmar (`onEnd` → `commitZoom`), React re-renderiza con `safeZoom = livePinch.value`; el closure de `pinchScaleSV` se actualiza → `liveZoomSV/safeZoom → 1` y `effectiveSize` crece al valor confirmado → tamaño visual idéntico, sin salto, sin runOnJS por frame.
 
-**How to apply:**
-- `effectiveSize = size * userScale * safeZoom` (zoom confirmado, estable entre renders).
-- `base1px = 100 / effectiveSize` → trazo visual constante.
-- `aStyle.transform.scale = breatheScale * pinchScale` donde `pinchScale = liveZoomSV ? liveZoomSV.value / safeZoom : 1`.
-- `liveZoomSV` = `livePinch` (SharedValue del padre) solo para la capa seleccionada; `undefined` para el resto.
-- Pinch: `onUpdate` → solo `livePinch.value = z` (UI thread puro). `onEnd` → `runOnJS(commitZoom)`. `onFinalize` → `isPinching.value = false` (sin `setLivePinchNum`).
-- `SacredGlyph` va en `React.memo`: sin re-renders intermedios en las otras capas durante el pellizco.
+**Gate `pinchActive` evita el "pop" gigante al cambiar de selección/objetivo (issue real):**
+`livePinch.value` se sincroniza al zoom del nuevo objetivo en un `useEffect` que corre DESPUÉS del render. En ese hueco `livePinch` trae el valor del objetivo ANTERIOR → `liveZoomSV/safeZoom` da un ratio enorme por un microsegundo → la geometría explota y vuelve. Fix: un SharedValue `pinchActive` (1/0). `pinchScaleSV` devuelve 1 si `pinchActive.value === 0`. Se pone 1 en el `onStart` del pinch y se vuelve 0 en el mismo `useEffect` de sincronización (tras el commit o cambio de objetivo). Así el escalado en vivo solo aplica mientras hay pellizco real en curso; en reposo/selección la capa muestra su `effectiveSize` confirmado.
+
+**Limitación conocida (menor):** la contra-escala del trazo se aplica en el `<G>` y solo cubre hijos que HEREDAN strokeWidth. Algunos glifos (metatron, merkaba, etc.) tienen líneas conectoras decorativas con `strokeWidth={sw * 0.5}` EXPLÍCITO (strokeOpacity 0.3–0.55); esas no heredan, así que engrosan levemente durante un pellizco activo y se corrigen al soltar. Son tenues y poco visibles. Solución completa (si molesta): convertirlas a inherit + nested `<G>` animado, o `vectorEffect="non-scaling-stroke"` (soporte irregular en react-native-svg). No hecho por riesgo/scope.
+
+**How to apply (resumen):**
+- SVG se dibuja a su tamaño real; el zoom NUNCA es `transform: scale`.
+- Live target: `liveScaleSV` → useAnimatedProps en SacredGlyph (size + counter-stroke). No-target: estático.
+- `pinchScaleSV` gateado por `pinchActive` (1 en onStart, 0 en el useEffect de sync) y dep en `[safeZoom]`.
+- Pinch: `onUpdate` → solo `livePinch.value = z` (UI puro). `onEnd` → `runOnJS(commitZoom)`. `SacredGlyph` en `React.memo`.
 
 **Misma regla en el carrusel de cards:** el "lift" al arrastrar NO debe ser `transform: scale` — pixela el SVG rasterizado. Usar `translateY` como afordancia de "levantar".

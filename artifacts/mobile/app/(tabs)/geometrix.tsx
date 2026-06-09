@@ -210,6 +210,7 @@ function GeometryLayer({
   size,
   settings,
   liveZoomSV,
+  pinchActiveSV,
   liveAngle,
   masterOpacity = 1,
   motion = true,
@@ -219,12 +220,17 @@ function GeometryLayer({
   index: number;
   size: number;
   settings: GeoSettings;
-  /** Zoom en vivo (pellizco) como SharedValue: el UI thread aplica la escala
-      como transform (liveZoomSV.value / safeZoom) → 60 fps sin runOnJS por
-      frame. safeZoom queda capturado en el closure del último render; al
-      confirmar el zoom, el nuevo render actualiza safeZoom → pinchScale → 1
-      sin salto visual. Solo lo usa la geometría seleccionada en el lienzo. */
+  /** Zoom en vivo (pellizco) como SharedValue: el UI thread redibuja el SVG a su
+      tamaño en vivo (size × liveZoomSV/safeZoom) → 60 fps sin runOnJS por frame
+      y con trazo nítido (no transform). safeZoom queda capturado en el closure
+      del último render; al confirmar el zoom, el nuevo render actualiza safeZoom
+      → la escala → 1 sin salto. Solo lo usa la geometría seleccionada. */
   liveZoomSV?: SharedValue<number>;
+  /** Bandera 1/0 (UI thread): el escalado en vivo solo se aplica cuando vale 1
+      (pellizco en curso o esperando el commit). En reposo/selección vale 0 → la
+      capa usa su tamaño confirmado aunque `liveZoomSV` esté momentáneamente
+      desincronizado (evita el "pop" gigante al cambiar de objetivo). */
+  pinchActiveSV?: SharedValue<number>;
   /** Ángulo en vivo (gesto de rotación) en grados: si se pasa, manda sobre
       settings.manualAngle. Solo lo usa la geometría seleccionada en el lienzo y
       solo tiene efecto cuando el giro automático está apagado. */
@@ -350,22 +356,42 @@ function GeometryLayer({
   // está apagado. En vivo manda `liveAngle`; en reposo el confirmado en settings.
   const committedAngle = Number.isFinite(manualAngle) ? manualAngle : 0;
   const effAngle = liveAngle != null && Number.isFinite(liveAngle) ? liveAngle : committedAngle;
+  // Escala de pellizco EN VIVO (UI thread): ratio entre el zoom en curso y el
+  // confirmado (capturado en el closure). NO se aplica como transform (engorda
+  // el trazo); se pasa a SacredGlyph para que redibuje el SVG a su tamaño real
+  // (trazo nítido, sin parpadeo). Solo el objetivo del pellizco recibe liveZoomSV.
+  // pinchActiveSV gatea: en reposo/selección vale 0 → escala 1 (sin "pop" aunque
+  // livePinch esté momentáneamente desincronizado). Al confirmar, safeZoom se
+  // actualiza al nuevo valor → ratio → 1 sin salto.
+  // deps: incluir liveZoomSV y pinchActiveSV (no solo safeZoom). Al seleccionar
+  // otra geometría, liveZoomSV pasa de undefined → livePinch; si no está en deps,
+  // el worklet conserva el closure viejo (liveZoomSV undefined → retorna 1) y el
+  // pellizco no escalaría el nuevo objetivo cuando dos geometrías comparten zoom.
+  const pinchScaleSV = useDerivedValue(() => {
+    if (liveZoomSV == null) return 1;
+    if (pinchActiveSV != null && pinchActiveSV.value === 0) return 1;
+    const r = liveZoomSV.value / safeZoom;
+    return Number.isFinite(r) && r > 0 ? r : 1;
+  }, [safeZoom, liveZoomSV, pinchActiveSV]);
   const aStyle = useAnimatedStyle(() => {
-    // Zoom en vivo (pellizco): ratio entre el zoom actual y el confirmado,
-    // capturado en el closure del último render. Al confirmar, safeZoom se
-    // actualiza → pinchScale → 1 automáticamente, sin salto visual.
-    // En reposo (sin pellizco activo) liveZoomSV es undefined → ratio = 1.
-    const pinchScale = liveZoomSV != null ? liveZoomSV.value / safeZoom : 1;
     const breatheScale = breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1;
     return {
       transform: [
         { rotate: spin ? `${rot.value * 360 * dir}deg` : `${effAngle}deg` },
-        { scale: breatheScale * pinchScale },
+        { scale: breatheScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
       opacity: opacity * safeMaster * fade.value * enter.value,
     };
   });
+  // Pasar SIEMPRE pinchScaleSV (ref estable): así el SacredGlyph de cada capa
+  // del lienzo usa SIEMPRE el camino animado (AnimatedSvg) y el TIPO de
+  // componente nunca cambia (Svg↔AnimatedSvg) al seleccionar — un cambio de
+  // tipo remontaría el subárbol SVG y causaría un flash. Las capas no objetivo /
+  // en reposo reciben pinchScaleSV = 1 constante (worklet corre una vez, sin
+  // trabajo por frame) → visualmente idéntico al estático. Las miniaturas de la
+  // galería NO pasan por aquí (llaman a SacredGlyph sin liveScaleSV) → estáticas.
+  const liveScaleForGlyph = pinchScaleSV;
   // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
   const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
 
@@ -397,6 +423,7 @@ function GeometryLayer({
               strokeWidth={sw * (3 + safeGlow * 3)}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
+              liveScaleSV={liveScaleForGlyph}
             />
           </View>
           <View style={[styles.layer, { opacity: 0.26 * safeGlow }]}>
@@ -408,6 +435,7 @@ function GeometryLayer({
               strokeWidth={sw * (1.8 + safeGlow * 1.6)}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
+              liveScaleSV={liveScaleForGlyph}
             />
           </View>
         </>
@@ -432,6 +460,7 @@ function GeometryLayer({
           strokeWidth={sw}
           kaleidoscope={kaleidoscope}
           kaleidSegments={kaleidSegments}
+          liveScaleSV={liveScaleForGlyph}
         />
       </Animated.View>
     </Animated.View>
@@ -1230,6 +1259,11 @@ export default function GeometrixScreen() {
   // Zoom en vivo del pellizco (UI thread); se confirma a settings al soltar.
   const livePinch = useSharedValue(1);
   const pinchStart = useSharedValue(1);
+  // Activa el escalado en vivo SOLO desde el onStart del pellizco hasta que el
+  // valor confirmado se vuelve a sincronizar (useEffect tras el commit). En
+  // reposo/selección vale 0 → la capa muestra su tamaño confirmado aunque
+  // `livePinch` aún no esté sincronizado (evita el "pop" al cambiar de objetivo).
+  const pinchActive = useSharedValue(0);
 
   // ── Lupa de magnificación ─────────────────────────────────────────────────
   // Aparece al mantener el dedo sobre la geometría seleccionada.
@@ -1846,7 +1880,11 @@ export default function GeometrixScreen() {
   // (al cambiar de geometría o tras confirmar un pellizco).
   useEffect(() => {
     livePinch.value = pinchTargetId ? getSettings(pinchTargetId).zoom : 1;
-  }, [pinchTargetId, getSettings, livePinch]);
+    // El valor confirmado ya está sincronizado (tras commit o cambio de
+    // objetivo) → desactivar el escalado en vivo: la capa muestra su tamaño
+    // confirmado vía `size` (effectiveSize), sin depender de `livePinch`.
+    pinchActive.value = 0;
+  }, [pinchTargetId, getSettings, livePinch, pinchActive]);
 
   // Sincronizar liveDragX/Y con el offset confirmado del objetivo cuando cambia.
   // Así el onStart del panGesture (worklet, hilo UI) puede leer liveDragX/Y
@@ -1888,6 +1926,7 @@ export default function GeometrixScreen() {
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       isPinching.value = true;
+      pinchActive.value = 1;
       isLoupeActive.value = false;
       pinchStart.value = livePinch.value;
       // Ocultar la lupa en cuanto entra el segundo dedo: evita que el estado
@@ -1901,11 +1940,16 @@ export default function GeometrixScreen() {
       if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
     })
     // SIEMPRE corre (éxito o cancelación), después de onEnd. Restablece el flag
-    // de pellizco activo; si el gesto se canceló sin confirmar, livePinch quedará
-    // en el valor en curso pero GeometryLayer lo resuelve al valor confirmado
-    // porque liveZoomSV solo aplica mientras pinchTargetId coincide.
-    .onFinalize(() => {
+    // de pellizco. Si el gesto se CANCELÓ (success=false), onEnd no corrió → no
+    // hubo commit → el useEffect de sync no se dispara (settings no cambia), así
+    // que hay que revertir aquí: livePinch al inicio del gesto y cerrar el gate
+    // (pinchActive=0) para que el objetivo vuelva a su tamaño confirmado.
+    .onFinalize((_e, success) => {
       isPinching.value = false;
+      if (!success) {
+        livePinch.value = pinchStart.value;
+        pinchActive.value = 0;
+      }
     });
 
   // Mantener el dedo quieto sobre la geometría activa → aparece la lupa circular.
@@ -2330,6 +2374,7 @@ export default function GeometrixScreen() {
                         size={layerSize}
                         settings={s}
                         liveZoomSV={iid === pinchTargetId ? livePinch : undefined}
+                        pinchActiveSV={pinchActive}
                         liveAngle={
                           iid === pinchTargetId && liveRotNum != null
                             ? liveRotNum

@@ -4,6 +4,10 @@
  * fondo interactivo (Geometrix). Todo se dibuja en un viewBox 0–100.
  */
 import React from "react";
+import Animated, {
+  useAnimatedProps,
+  type SharedValue,
+} from "react-native-reanimated";
 import Svg, {
   Circle,
   ClipPath,
@@ -19,6 +23,11 @@ import Svg, {
 } from "react-native-svg";
 
 import type { GeometryId } from "@/data/geometries";
+
+// Versiones animables del SVG: permiten que el UI thread redibuje el glifo a su
+// tamaño en vivo durante el pellizco (sin transform → trazo nítido, sin re-render).
+const AnimatedSvg = Animated.createAnimatedComponent(Svg);
+const AnimatedG = Animated.createAnimatedComponent(G);
 
 const C = 50;
 
@@ -816,6 +825,11 @@ export interface SacredGlyphProps {
   kaleidoscope?: boolean;
   /** Número de segmentos radiales (4, 6, 8, 12). Solo activo con kaleidoscope=true. */
   kaleidSegments?: number;
+  /** Escala de pellizco EN VIVO (UI thread). Si se pasa, el SVG se redibuja a
+      `size * liveScaleSV` y el trazo se compensa (`strokeWidth / liveScaleSV`)
+      para mantener el grosor VISUAL constante — sin transform (trazo nítido) y
+      sin re-render de React. En reposo vale 1 → render idéntico al estático. */
+  liveScaleSV?: SharedValue<number>;
 }
 
 function SacredGlyphImpl({
@@ -827,6 +841,7 @@ function SacredGlyphImpl({
   gradient,
   kaleidoscope = false,
   kaleidSegments = 6,
+  liveScaleSV,
 }: SacredGlyphProps) {
   // Escala uniforme para que todas las geometrías llenen el mismo radio.
   const k = TARGET_EXTENT / (EXTENT[id] ?? 44);
@@ -840,10 +855,31 @@ function SacredGlyphImpl({
   const motifId = `geo-motif-${uid}`;
   const stroke = gradient ? `url(#${gradId})` : color;
 
+  // Pellizco en vivo (UI thread): el SVG se redibuja a `size * escala` y el
+  // trazo se compensa para que el grosor VISUAL no cambie. En reposo escala = 1
+  // → width/height y strokeWidth quedan idénticos al render estático.
+  const svgAnimProps = useAnimatedProps(() => {
+    const s = size * (liveScaleSV ? liveScaleSV.value : 1);
+    return { width: s, height: s };
+  });
+  const gAnimProps = useAnimatedProps(() => {
+    return { strokeWidth: sw / (liveScaleSV ? liveScaleSV.value : 1) };
+  });
+  // Solo el objetivo del pellizco usa el camino animado; el resto (capas no
+  // seleccionadas, miniaturas) usa el SVG estático para no pagar overhead.
+  const SvgComp = liveScaleSV ? AnimatedSvg : Svg;
+  const GComp = liveScaleSV ? AnimatedG : G;
+  const svgSizeProps = liveScaleSV
+    ? { animatedProps: svgAnimProps }
+    : { width: size, height: size };
+  const gStrokeProps = liveScaleSV
+    ? { animatedProps: gAnimProps }
+    : { strokeWidth: sw };
+
   // ── Sin caleidoscopio: renderizado normal ──────────────────────────────────
   if (!kaleidoscope) {
     return (
-      <Svg width={size} height={size} viewBox="0 0 100 100" opacity={opacity}>
+      <SvgComp viewBox="0 0 100 100" opacity={opacity} {...svgSizeProps}>
         {gradient && (
           <Defs>
             <LinearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -852,17 +888,17 @@ function SacredGlyphImpl({
             </LinearGradient>
           </Defs>
         )}
-        <G
+        <GComp
           transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
           stroke={stroke}
           fill="none"
-          strokeWidth={sw}
           strokeLinecap="round"
           strokeLinejoin="round"
+          {...gStrokeProps}
         >
           {glyphElements(id, sw)}
-        </G>
-      </Svg>
+        </GComp>
+      </SvgComp>
     );
   }
 
@@ -886,7 +922,7 @@ function SacredGlyphImpl({
   const wedgePath = `M ${C} ${C} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
 
   return (
-    <Svg width={size} height={size} viewBox="0 0 100 100" opacity={opacity}>
+    <SvgComp viewBox="0 0 100 100" opacity={opacity} {...svgSizeProps}>
       <Defs>
         {gradient && (
           <LinearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -900,16 +936,16 @@ function SacredGlyphImpl({
         </ClipPath>
         {/* Motif: el glyph completo recortado a la cuña, referenciable con <Use>. */}
         <G id={motifId} clipPath={`url(#${clipId})`}>
-          <G
+          <GComp
             transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
             stroke={stroke}
             fill="none"
-            strokeWidth={sw}
             strokeLinecap="round"
             strokeLinejoin="round"
+            {...gStrokeProps}
           >
             {glyphElements(id, sw)}
-          </G>
+          </GComp>
         </G>
       </Defs>
       {/* Replicar la cuña N veces rotando alrededor del centro. */}
@@ -920,7 +956,7 @@ function SacredGlyphImpl({
           transform={`rotate(${(i * wedgeAngle).toFixed(3)} ${C} ${C})`}
         />
       ))}
-    </Svg>
+    </SvgComp>
   );
 }
 
