@@ -967,6 +967,14 @@ export default function GeometrixScreen() {
       const without = prev.filter((x) => x !== id);
       const clamped = Math.max(0, Math.min(idx, without.length));
       without.splice(clamped, 0, id);
+      console.log(
+        "[ENROQUE] id=", id,
+        "idx(target)=", idx,
+        "fromPos=", prev.indexOf(id),
+        "toPos=", without.indexOf(id),
+        "before=", JSON.stringify(prev),
+        "after=", JSON.stringify(without),
+      );
       return without;
     });
   }, []);
