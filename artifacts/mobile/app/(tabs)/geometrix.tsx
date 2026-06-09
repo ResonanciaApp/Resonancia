@@ -748,6 +748,9 @@ export default function GeometrixScreen() {
   const [thumbsOverflow, setThumbsOverflow] = useState(false);
   const thumbsViewW = useRef(0);
   const thumbsScrollRef = useRef<ScrollView>(null);
+  // Aparición escalonada de thumbnails: solo la primera tanda (al poblarse el
+  // lienzo) entra de izquierda a derecha; las que se agregan luego, al instante.
+  const thumbsInitialIdsRef = useRef<Set<string> | null>(null);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
   // Opacidad de la píldora de acciones: fade puro (sin movimiento) al plegar.
@@ -1130,6 +1133,15 @@ export default function GeometrixScreen() {
   const layerSize = canvasSide * 0.96;
   const activeMetas = GEOMETRIES.filter((g) => active.includes(g.id));
   const hasActive = activeMetas.length > 0;
+  // Al vaciarse el lienzo, reseteamos la "primera tanda" para que la próxima
+  // vez que se pueble vuelva a entrar escalonada de izquierda a derecha.
+  useEffect(() => {
+    if (activeMetas.length === 0) thumbsInitialIdsRef.current = null;
+  }, [activeMetas.length]);
+  // En el primer render con thumbnails, fijamos qué ids forman la tanda inicial.
+  if (thumbsInitialIdsRef.current === null && activeMetas.length > 0) {
+    thumbsInitialIdsRef.current = new Set(activeMetas.map((g) => g.id));
+  }
   // Opacidad del grupo trash: siempre montado para evitar glitch de layout.
   const trashAnim = useSharedValue(0);
   const trashAnimStyle = useAnimatedStyle(() => ({ opacity: trashAnim.value }));
@@ -1789,14 +1801,18 @@ export default function GeometrixScreen() {
                 }
               }}
             >
-              {activeMetas.map((g) => {
+              {activeMetas.map((g, index) => {
                 const s = getSettings(g.id);
                 const isHidden = hiddenIds.includes(g.id);
                 const isSelected = pinchTargetId === g.id;
+                // Tanda inicial → escalonado izquierda→derecha; agregados luego → al instante.
+                const enterDelay = thumbsInitialIdsRef.current?.has(g.id)
+                  ? index * 80
+                  : 0;
                 return (
                   <Animated.View
                     key={g.id}
-                    entering={FadeIn.duration(320)}
+                    entering={FadeIn.duration(320).delay(enterDelay)}
                     exiting={FadeOut.duration(200)}
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
