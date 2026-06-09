@@ -1319,7 +1319,7 @@ export default function GeometrixScreen() {
                     accessibilityLabel="Borrar lienzo"
                     hitSlop={4}
                   >
-                    <Feather name="trash-2" size={18} color={colors.mutedForeground} />
+                    <Feather name="trash-2" size={16} color={colors.mutedForeground} />
                   </Pressable>
                   {editingCreation && isDirty && (
                     <Animated.View
@@ -1360,7 +1360,7 @@ export default function GeometrixScreen() {
               >
                 <Feather
                   name={pillOpen ? "chevron-up" : "chevron-down"}
-                  size={20}
+                  size={16}
                   color={colors.mutedForeground}
                 />
               </Pressable>
