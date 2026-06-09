@@ -1399,43 +1399,46 @@ export default function GeometrixScreen() {
 
           </View>
 
-          {/* Fila de controles arriba a la derecha: flecha drop-down.
+          {/* Basurero + refresh — lado izquierdo, espejo de actionTop */}
+          <Animated.View
+            pointerEvents={hasActive ? "auto" : "none"}
+            style={[styles.actionLeft, trashAnimStyle]}
+          >
+            <View style={styles.actionTopRow}>
+              <Pressable
+                onPress={clearCanvas}
+                style={styles.actionTopBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Borrar lienzo"
+                hitSlop={4}
+              >
+                <Feather name="trash-2" size={16} color={colors.mutedForeground} />
+              </Pressable>
+              {editingCreation && isDirty && (
+                <Animated.View
+                  entering={FadeIn.duration(260)}
+                  exiting={FadeOut.duration(180)}
+                  style={{ flexDirection: "row", alignItems: "center" }}
+                >
+                  <Pressable
+                    onPress={updateComposition}
+                    style={styles.actionTopBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel="Actualizar composición"
+                    hitSlop={4}
+                  >
+                    <Feather name="refresh-cw" size={16} color={colors.mutedForeground} />
+                  </Pressable>
+                </Animated.View>
+              )}
+            </View>
+          </Animated.View>
+
+          {/* Fila de controles arriba a la derecha: ajustes + flecha drop-down.
               Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
           <View style={styles.actionTop}>
-            {/* Header: [trash?] | [refresh?] | [divisor] | [ajustes] | [divisor] | [flecha] */}
+            {/* Header: [ajustes] | [divisor] | [flecha] */}
             <View style={styles.actionTopRow}>
-              <Animated.View
-                pointerEvents={hasActive ? "auto" : "none"}
-                style={[{ flexDirection: "row", alignItems: "center" }, trashAnimStyle]}
-              >
-                <Pressable
-                  onPress={clearCanvas}
-                  style={styles.actionTopBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Borrar lienzo"
-                  hitSlop={4}
-                >
-                  <Feather name="trash-2" size={16} color={colors.mutedForeground} />
-                </Pressable>
-                {editingCreation && isDirty && (
-                  <Animated.View
-                    entering={FadeIn.duration(260)}
-                    exiting={FadeOut.duration(180)}
-                    style={{ flexDirection: "row", alignItems: "center" }}
-                  >
-                    <Pressable
-                      onPress={updateComposition}
-                      style={styles.actionTopBtn}
-                      accessibilityRole="button"
-                      accessibilityLabel="Actualizar composición"
-                      hitSlop={4}
-                    >
-                      <Feather name="refresh-cw" size={16} color={colors.mutedForeground} />
-                    </Pressable>
-                  </Animated.View>
-                )}
-                <View style={styles.actionTopDivider} />
-              </Animated.View>
               <Pressable
                 onPress={() => setGeneralOpen(true)}
                 style={styles.actionTopBtn}
@@ -2814,6 +2817,14 @@ const styles = StyleSheet.create({
     zIndex: 6,
     flexDirection: "column",
     alignItems: "flex-end",
+  },
+  actionLeft: {
+    position: "absolute",
+    top: 0,
+    left: -19,
+    zIndex: 6,
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   actionTopRow: {
     flexDirection: "row",
