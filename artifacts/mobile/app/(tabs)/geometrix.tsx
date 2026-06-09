@@ -211,7 +211,8 @@ function GeometryLayer({
   settings,
   liveZoomSV,
   pinchActiveSV,
-  liveAngle,
+  liveAngleSV,
+  rotActiveSV,
   masterOpacity = 1,
   motion = true,
   glow = 0,
@@ -231,10 +232,16 @@ function GeometryLayer({
       capa usa su tamaño confirmado aunque `liveZoomSV` esté momentáneamente
       desincronizado (evita el "pop" gigante al cambiar de objetivo). */
   pinchActiveSV?: SharedValue<number>;
-  /** Ángulo en vivo (gesto de rotación) en grados: si se pasa, manda sobre
-      settings.manualAngle. Solo lo usa la geometría seleccionada en el lienzo y
-      solo tiene efecto cuando el giro automático está apagado. */
-  liveAngle?: number;
+  /** Ángulo en vivo (gesto de rotación) en grados como SharedValue: el UI thread
+      aplica el giro sin runOnJS por frame (mismo principio que liveZoomSV). Solo
+      lo usa la geometría seleccionada y solo cuando el giro automático está
+      apagado. Manda sobre settings.manualAngle mientras rotActiveSV vale 1. */
+  liveAngleSV?: SharedValue<number>;
+  /** Bandera 1/0 (UI thread): el ángulo en vivo solo se aplica cuando vale 1
+      (rotación en curso o esperando el commit). En reposo vale 0 → la capa usa
+      su manualAngle confirmado aunque liveAngleSV esté desincronizado (evita el
+      "pop" al cambiar de objetivo). */
+  rotActiveSV?: SharedValue<number>;
   /** Opacidad maestra (panel general): multiplica la de esta capa. */
   masterOpacity?: number;
   /** Movimiento global (panel general): si es false, congela giro + respiración. */
@@ -353,9 +360,9 @@ function GeometryLayer({
   const breatheDepth = 0.04 + safeAmount * 0.2;
   const safeMaster = Number.isFinite(masterOpacity) ? masterOpacity : 1;
   // Ángulo manual (gesto de dos dedos): solo aplica cuando el giro automático
-  // está apagado. En vivo manda `liveAngle`; en reposo el confirmado en settings.
+  // está apagado. En vivo manda `liveAngleSV` (UI thread); en reposo el
+  // confirmado en settings.
   const committedAngle = Number.isFinite(manualAngle) ? manualAngle : 0;
-  const effAngle = liveAngle != null && Number.isFinite(liveAngle) ? liveAngle : committedAngle;
   // Escala de pellizco EN VIVO (UI thread): ratio entre el zoom en curso y el
   // confirmado (capturado en el closure). NO se aplica como transform (engorda
   // el trazo); se pasa a SacredGlyph para que redibuje el SVG a su tamaño real
@@ -375,9 +382,19 @@ function GeometryLayer({
   }, [safeZoom, liveZoomSV, pinchActiveSV]);
   const aStyle = useAnimatedStyle(() => {
     const breatheScale = breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1;
+    // Giro: automático (rot) > rotación en vivo (liveAngleSV mientras rotActiveSV
+    // vale 1, UI thread, sin re-render por frame) > ángulo confirmado en settings.
+    let angleDeg: number;
+    if (spin) {
+      angleDeg = rot.value * 360 * dir;
+    } else if (liveAngleSV != null && rotActiveSV != null && rotActiveSV.value === 1) {
+      angleDeg = liveAngleSV.value;
+    } else {
+      angleDeg = committedAngle;
+    }
     return {
       transform: [
-        { rotate: spin ? `${rot.value * 360 * dir}deg` : `${effAngle}deg` },
+        { rotate: `${angleDeg}deg` },
         { scale: breatheScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
@@ -463,6 +480,82 @@ function GeometryLayer({
           liveScaleSV={liveScaleForGlyph}
         />
       </Animated.View>
+    </Animated.View>
+  );
+}
+
+
+// ── CanvasLayer ─────────────────────────────────────────────────────────────
+// Envoltura de posición de cada capa del lienzo. El desplazamiento (drag) se
+// aplica en el HILO UI vía useAnimatedStyle leyendo shared values, NO por estado
+// de React: así arrastrar la geometría no re-renderiza el lienzo por frame (mismo
+// principio que el zoom y la rotación). La capa arrastrada (isTarget && dragActive
+// == 1) sigue a liveDragX/Y; en reposo usa su offset confirmado (committedX/Y).
+// La salida en fade out vive aquí para que la capa se desvanezca al deseleccionar.
+type CanvasLayerProps = {
+  isTarget: boolean;
+  committedX: number;
+  committedY: number;
+  liveDragX: SharedValue<number>;
+  liveDragY: SharedValue<number>;
+  dragActive: SharedValue<number>;
+  geo: GeometryMeta;
+  index: number;
+  size: number;
+  settings: GeoSettings;
+  liveZoomSV?: SharedValue<number>;
+  pinchActiveSV?: SharedValue<number>;
+  liveAngleSV?: SharedValue<number>;
+  rotActiveSV?: SharedValue<number>;
+  masterOpacity?: number;
+  motion?: boolean;
+  glow?: number;
+};
+
+function CanvasLayer({
+  isTarget,
+  committedX,
+  committedY,
+  liveDragX,
+  liveDragY,
+  dragActive,
+  geo,
+  index,
+  size,
+  settings,
+  liveZoomSV,
+  pinchActiveSV,
+  liveAngleSV,
+  rotActiveSV,
+  masterOpacity,
+  motion,
+  glow,
+}: CanvasLayerProps) {
+  const posStyle = useAnimatedStyle(() => {
+    const dragging = isTarget && dragActive.value === 1;
+    const tx = dragging ? liveDragX.value : committedX;
+    const ty = dragging ? liveDragY.value : committedY;
+    return { transform: [{ translateX: tx }, { translateY: ty }] };
+  });
+  return (
+    <Animated.View
+      exiting={FadeOut.duration(600)}
+      style={[styles.layer, posStyle]}
+      pointerEvents="none"
+    >
+      <GeometryLayer
+        geo={geo}
+        index={index}
+        size={size}
+        settings={settings}
+        liveZoomSV={liveZoomSV}
+        pinchActiveSV={pinchActiveSV}
+        liveAngleSV={liveAngleSV}
+        rotActiveSV={rotActiveSV}
+        masterOpacity={masterOpacity}
+        motion={motion}
+        glow={glow}
+      />
     </Animated.View>
   );
 }
@@ -1283,19 +1376,27 @@ export default function GeometrixScreen() {
   const rotStart = useSharedValue(0);
   // true cuando el gesto terminó con éxito (onEnd); permite revertir en cancelación.
   const rotSucceeded = useSharedValue(false);
-  const [liveRotNum, setLiveRotNum] = useState<number | null>(null);
+  // Activa la rotación en vivo SOLO durante el gesto (igual que pinchActive para el
+  // zoom): en reposo la capa usa su manualAngle confirmado aunque liveRot esté
+  // momentáneamente desincronizado → sin "pop" al cambiar de objetivo y sin
+  // re-render por frame (el ángulo se aplica en el UI thread vía useAnimatedStyle).
+  const rotActive = useSharedValue(0);
 
   // ── Drag (arrastrar con un dedo) ─────────────────────────────────────────
   const liveDragX = useSharedValue(0);
   const liveDragY = useSharedValue(0);
   const dragStartX = useSharedValue(0);
   const dragStartY = useSharedValue(0);
-  // null = sin drag en curso; objeto = posición en vivo mientras se arrastra.
-  // snapX/snapY: offsets donde se detectó alineación (guía vertical/horizontal).
-  const [liveDragPos, setLiveDragPos] = useState<{
-    x: number; y: number;
-    snapX?: number; snapY?: number;
-  } | null>(null);
+  // Activa el desplazamiento en vivo SOLO durante el gesto (igual que pinchActive
+  // para el zoom): la capa arrastrada sigue a liveDragX/Y en el UI thread sin
+  // re-render por frame; en reposo usa su offset confirmado. Se apaga tras el
+  // commit (useEffect de sync) para no "popear" a la posición previa.
+  const dragActive = useSharedValue(0);
+  // Líneas guía de snap (UI thread): offset detectado + on/off, sin estado React.
+  const snapXSV = useSharedValue(0);
+  const snapXOn = useSharedValue(0);
+  const snapYSV = useSharedValue(0);
+  const snapYOn = useSharedValue(0);
   // Offsets de todas las geometrías no-objetivo + el centro del lienzo (0,0);
   // usados en el worklet del drag para calcular snap sin llamar a getSettings.
   // null en un eje = ese eje no snap (para guías de un solo eje).
@@ -1893,7 +1994,10 @@ export default function GeometrixScreen() {
     const s = pinchTargetId ? getSettings(pinchTargetId) : null;
     liveDragX.value = s?.offsetX ?? 0;
     liveDragY.value = s?.offsetY ?? 0;
-  }, [pinchTargetId, getSettings, liveDragX, liveDragY]);
+    // Tras el commit del drag (o al cambiar de objetivo) el offset confirmado ya
+    // está sincronizado → apagar el gate: la capa usa committedX/Y (sin "pop").
+    dragActive.value = 0;
+  }, [pinchTargetId, getSettings, liveDragX, liveDragY, dragActive]);
 
   // Precalcular targets de snap: centros de todas las geometrías no-objetivo
   // más el centro del lienzo (0,0). Se actualiza cuando cambia la selección o
@@ -1985,7 +2089,10 @@ export default function GeometrixScreen() {
   // (al cambiar de geometría o tras confirmar una rotación).
   useEffect(() => {
     liveRot.value = pinchTargetId ? getSettings(pinchTargetId).manualAngle : 0;
-  }, [pinchTargetId, getSettings, liveRot]);
+    // Tras el commit del ángulo (o al cambiar de objetivo) el manualAngle ya está
+    // sincronizado → apagar el gate: la capa usa su ángulo confirmado (sin "pop").
+    rotActive.value = 0;
+  }, [pinchTargetId, getSettings, liveRot, rotActive]);
 
   // Gesto de rotación con dos dedos: gira el objetivo en tiempo real. Se confirma
   // a settings al soltar. Deshabilitado cuando hay giro automático.
@@ -1994,14 +2101,19 @@ export default function GeometrixScreen() {
     .onStart(() => {
       rotStart.value = liveRot.value;
       rotSucceeded.value = false;
+      // Activar el ángulo en vivo (UI thread). En éxito sigue 1 hasta que el
+      // useEffect de sync lo apaga tras el commit (sin "pop"); en cancelación se
+      // apaga aquí en onFinalize.
+      rotActive.value = 1;
     })
     .onUpdate((e) => {
       // e.rotation viene en radianes; el ángulo manual se guarda en grados.
       const deg = rotStart.value + (e.rotation * 180) / Math.PI;
       // Defensa ante valores corruptos: nunca propagar NaN al transform/settings.
       if (!Number.isFinite(deg)) return;
+      // Solo se escribe el shared value: el giro se aplica en el UI thread
+      // (useAnimatedStyle) sin re-render de React por frame (igual que el zoom).
       liveRot.value = deg;
-      runOnJS(setLiveRotNum)(deg);
     })
     .onEnd(() => {
       rotSucceeded.value = true;
@@ -2009,12 +2121,15 @@ export default function GeometrixScreen() {
         runOnJS(commitAngle)(pinchTargetId, liveRot.value);
       }
     })
-    // SIEMPRE corre (éxito o cancelación). Si el gesto se canceló sin confirmar,
-    // revierte al ángulo de partida para no acumular un valor sin guardar en el
-    // próximo gesto. Limpia el ángulo en vivo en ambos casos.
+    // SIEMPRE corre (éxito o cancelación). En éxito, rotActive sigue 1 hasta que
+    // el useEffect de sync (tras el commit) lo apaga, así no hay frame con el
+    // ángulo previo. En cancelación, revierte al ángulo de partida y apaga el
+    // gate aquí para no acumular un valor sin guardar.
     .onFinalize(() => {
-      if (!rotSucceeded.value) liveRot.value = rotStart.value;
-      runOnJS(setLiveRotNum)(null);
+      if (!rotSucceeded.value) {
+        liveRot.value = rotStart.value;
+        rotActive.value = 0;
+      }
     });
 
   // Gesto de drag (un solo dedo) para desplazar la geometría seleccionada
@@ -2031,6 +2146,10 @@ export default function GeometrixScreen() {
       // via useEffect — leerlos desde el worklet es seguro (son shared values).
       dragStartX.value = liveDragX.value;
       dragStartY.value = liveDragY.value;
+      // Activar el desplazamiento en vivo (UI thread). En éxito sigue 1 hasta que
+      // el useEffect de sync lo apaga tras el commit (sin "pop"); en cancelación
+      // se apaga aquí en onFinalize.
+      dragActive.value = 1;
     })
     .onUpdate((e) => {
       // Lupa activa → solo seguir al dedo; la geometría queda completamente bloqueada.
@@ -2066,23 +2185,44 @@ export default function GeometrixScreen() {
 
       liveDragX.value = rx;
       liveDragY.value = ry;
-      runOnJS(setLiveDragPos)({
-        x: rx, y: ry,
-        snapX: sx !== null ? sx : undefined,
-        snapY: sy !== null ? sy : undefined,
-      });
+      // Guías de snap por shared value (UI thread), sin estado React: tanto la
+      // posición de la capa como las líneas guía se actualizan sin re-render por
+      // frame (igual que el zoom).
+      if (sx !== null) { snapXSV.value = sx; snapXOn.value = 1; } else { snapXOn.value = 0; }
+      if (sy !== null) { snapYSV.value = sy; snapYOn.value = 1; } else { snapYOn.value = 0; }
     })
     .onEnd(() => {
       if (pinchTargetId) {
         runOnJS(commitOffset)(pinchTargetId, liveDragX.value, liveDragY.value);
       }
     })
-    .onFinalize(() => {
-      runOnJS(setLiveDragPos)(null);
+    // SIEMPRE corre. Oculta las guías de snap. En éxito, dragActive sigue 1 hasta
+    // que el useEffect de sync (tras el commit) lo apaga, así no hay frame con la
+    // posición previa. En cancelación, revierte a la baseline y apaga el gate aquí.
+    .onFinalize((_e, success) => {
+      snapXOn.value = 0;
+      snapYOn.value = 0;
+      if (!success) {
+        liveDragX.value = dragStartX.value;
+        liveDragY.value = dragStartY.value;
+        dragActive.value = 0;
+      }
     });
 
   // Pellizco, rotación y drag corren a la vez sobre el objetivo seleccionado.
   const canvasGesture = Gesture.Simultaneous(longPressGesture, pinchGesture, rotationGesture, panGesture);
+
+  // Líneas guía de snap: posición + visibilidad en el UI thread (shared values),
+  // sin estado React por frame. canvasSide/2 + offset convierte offset de capa a
+  // px del lienzo; opacity = on/off.
+  const snapYLineStyle = useAnimatedStyle(() => ({
+    opacity: snapYOn.value,
+    transform: [{ translateY: canvasSide / 2 + snapYSV.value }],
+  }));
+  const snapXLineStyle = useAnimatedStyle(() => ({
+    opacity: snapXOn.value,
+    transform: [{ translateX: canvasSide / 2 + snapXSV.value }],
+  }));
 
   // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
   // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
@@ -2355,36 +2495,32 @@ export default function GeometrixScreen() {
                   visibleMetas.map((m, i) => {
                     const { iid, geo: g } = m;
                     const s = getSettings(iid);
-                    const isDragging = iid === pinchTargetId && liveDragPos != null;
-                    const tx = isDragging ? liveDragPos.x : (s.offsetX ?? 0);
-                    const ty = isDragging ? liveDragPos.y : (s.offsetY ?? 0);
+                    const isTarget = iid === pinchTargetId;
                     return (
-                    // Wrapper con salida en fade out: al deseleccionar la
-                    // geometría, la capa se desvanece antes de desmontarse (la
-                    // entrada la maneja el `enter` interno de GeometryLayer).
-                    <Animated.View
-                      key={iid}
-                      exiting={FadeOut.duration(600)}
-                      style={[styles.layer, (tx || ty) ? { transform: [{ translateX: tx }, { translateY: ty }] } : null]}
-                      pointerEvents="none"
-                    >
-                      <GeometryLayer
+                      // CanvasLayer aplica el desplazamiento (drag) en el UI thread
+                      // vía useAnimatedStyle (sin re-render por frame). Salida en
+                      // fade out al deseleccionar; la entrada la maneja el `enter`
+                      // interno de GeometryLayer.
+                      <CanvasLayer
+                        key={iid}
+                        isTarget={isTarget}
+                        committedX={s.offsetX ?? 0}
+                        committedY={s.offsetY ?? 0}
+                        liveDragX={liveDragX}
+                        liveDragY={liveDragY}
+                        dragActive={dragActive}
                         geo={g}
                         index={i}
                         size={layerSize}
                         settings={s}
-                        liveZoomSV={iid === pinchTargetId ? livePinch : undefined}
+                        liveZoomSV={isTarget ? livePinch : undefined}
                         pinchActiveSV={pinchActive}
-                        liveAngle={
-                          iid === pinchTargetId && liveRotNum != null
-                            ? liveRotNum
-                            : undefined
-                        }
+                        liveAngleSV={isTarget ? liveRot : undefined}
+                        rotActiveSV={rotActive}
                         masterOpacity={master.opacity}
                         motion={master.motion}
                         glow={master.glow}
                       />
-                    </Animated.View>
                     );
                   })}
 
@@ -2405,30 +2541,30 @@ export default function GeometrixScreen() {
                     snapY → guía horizontal (misma altura) en rosa.
                     snapX → guía vertical  (misma posición X) en rosa.
                     canvasSide/2 + snapOffset convierte offset de capa a px del lienzo. */}
-                {liveDragPos?.snapY !== undefined && (
-                  <View
-                    pointerEvents="none"
-                    style={{
+                <Animated.View
+                  pointerEvents="none"
+                  style={[
+                    {
                       position: "absolute",
-                      left: 0, right: 0,
-                      top: canvasSide / 2 + liveDragPos.snapY,
+                      left: 0, right: 0, top: 0,
                       height: 1,
                       backgroundColor: "#FF4B8D",
-                    }}
-                  />
-                )}
-                {liveDragPos?.snapX !== undefined && (
-                  <View
-                    pointerEvents="none"
-                    style={{
+                    },
+                    snapYLineStyle,
+                  ]}
+                />
+                <Animated.View
+                  pointerEvents="none"
+                  style={[
+                    {
                       position: "absolute",
-                      top: 0, bottom: 0,
-                      left: canvasSide / 2 + liveDragPos.snapX,
+                      top: 0, bottom: 0, left: 0,
                       width: 1,
                       backgroundColor: "#FF4B8D",
-                    }}
-                  />
-                )}
+                    },
+                    snapXLineStyle,
+                  ]}
+                />
 
                 {/* ── Lupa de magnificación ───────────────────────────────────
                     Aparece al mantener el dedo sobre la geometría activa.
