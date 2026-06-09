@@ -950,10 +950,13 @@ export default function GeometrixScreen() {
   // reordenamiento del DOM no se anime (las transforms ya dejaron todo en su
   // sitio). Se limpia en el siguiente frame para volver a animar las selecciones.
   const [dragSettling, setDragSettling] = useState(false);
+  // Red de seguridad: la limpieza real y sincronizada del settling la hace la
+  // reacción de UI thread definida más abajo (cuando dragOriginIdx vuelve a -1).
+  // Este timeout solo evita que el settling quede pegado si esa reacción no corre.
   useEffect(() => {
     if (!dragSettling) return;
-    const r = requestAnimationFrame(() => setDragSettling(false));
-    return () => cancelAnimationFrame(r);
+    const t = setTimeout(() => setDragSettling(false), 120);
+    return () => clearTimeout(t);
   }, [dragSettling]);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
   // su activación a mitad de un arrastre, el orden del carrusel no debe saltar.
@@ -967,14 +970,6 @@ export default function GeometrixScreen() {
       const without = prev.filter((x) => x !== id);
       const clamped = Math.max(0, Math.min(idx, without.length));
       without.splice(clamped, 0, id);
-      console.log(
-        "[ENROQUE] id=", id,
-        "idx(target)=", idx,
-        "fromPos=", prev.indexOf(id),
-        "toPos=", without.indexOf(id),
-        "before=", JSON.stringify(prev),
-        "after=", JSON.stringify(without),
-      );
       return without;
     });
   }, []);
@@ -1004,6 +999,22 @@ export default function GeometrixScreen() {
   // leen para abrir el hueco. -1 = sin arrastre.
   const dragOriginIdx = useSharedValue(-1);
   const dragTargetIdx = useSharedValue(-1);
+  // Desenmascarar (dragSettling=false) SOLO cuando dragOriginIdx ya volvió a -1 en
+  // el UI thread. Antes se bajaba a ciegas en el siguiente frame (rAF): si el reset
+  // de origin/target del commit todavía no se había propagado al UI thread cuando
+  // dragSettling pasaba a false, la card recién soltada caía en la rama del hueco
+  // con origin/target viejos y se renderizaba un slot a la derecha (se "enrocaba"
+  // con la vecina del frente — el dato quedaba bien, pero se veía corrido). Como
+  // esta reacción corre en el UI thread en el mismo momento en que origin pasa a -1,
+  // garantiza que al desenmascarar el worklet ya lee el estado en reposo.
+  useAnimatedReaction(
+    () => dragOriginIdx.value,
+    (o, prev) => {
+      if (o === -1 && prev !== null && prev >= 0) {
+        runOnJS(setDragSettling)(false);
+      }
+    },
+  );
   const carScrollHandler = useAnimatedScrollHandler((e) => {
     carScrollX.value = e.contentOffset.x;
   });
