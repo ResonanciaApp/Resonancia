@@ -796,9 +796,6 @@ function CarouselTile({
                 selfDragging.value = 0;
                 dragOriginIdx.value = -1;
                 dragTargetIdx.value = -1;
-                // Las reacciones de slotSV/gapSV ya corrieron con flag=1 (instantáneo).
-                // Resetear AHORA para que la próxima selección/arrastre vuelva a animar.
-                instantOrderFlag.value = 0;
               }
               runOnJS(onDragEnd)(id, target);
             },
