@@ -1560,12 +1560,37 @@ export default function GeometrixScreen() {
 
           </View>
 
-          {/* Flecha a 10px de la divisora: visible desde el inicio (lienzo
-              vacío), no solo al activar la primera geometría. Despliega/colapsa
-              el carrusel de acciones. Vive fuera del "stage" (no la afecta su
-              translateY), como overlay absoluto de canvasWrap, para que la
-              animación no se mueva. */}
+          {/* Fila de controles arriba a la derecha: ajustes + flecha drop-down.
+              Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
           <View style={styles.actionTop}>
+            {/* Header: [icono ajustes] | [divisor] | [flecha down/up] */}
+            <View style={styles.actionTopRow}>
+              <Pressable
+                onPress={() => setGeneralOpen(true)}
+                style={styles.chevronBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Ajustes generales"
+                hitSlop={8}
+              >
+                <Feather name="sliders" size={16} color={colors.mutedForeground} />
+              </Pressable>
+              <View style={styles.actionTopDivider} />
+              <Pressable
+                onPress={() => setPillOpen((o) => !o)}
+                style={styles.chevronBtn}
+                accessibilityRole="button"
+                accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
+                hitSlop={8}
+              >
+                <Feather
+                  name={pillOpen ? "chevron-up" : "chevron-down"}
+                  size={20}
+                  color={colors.mutedForeground}
+                />
+              </Pressable>
+            </View>
+
+            {/* Píldora que se despliega hacia abajo */}
             <Animated.View
               pointerEvents={pillOpen ? "auto" : "none"}
               style={[styles.pillRow, pillStyle]}
@@ -1588,20 +1613,6 @@ export default function GeometrixScreen() {
                 </React.Fragment>
               ))}
             </Animated.View>
-
-            <Pressable
-              onPress={() => setPillOpen((o) => !o)}
-              style={styles.chevronBtn}
-              accessibilityRole="button"
-              accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
-              hitSlop={8}
-            >
-              <Feather
-                name={pillOpen ? "chevron-right" : "chevron-left"}
-                size={20}
-                color={colors.mutedForeground}
-              />
-            </Pressable>
           </View>
 
           {/* "Borrar lienzo": esquina superior izquierda, aparece al activar la
@@ -3029,9 +3040,17 @@ const styles = StyleSheet.create({
     top: 10,
     right: 0,
     zIndex: 6,
+    flexDirection: "column",
+    alignItems: "flex-end",
+  },
+  actionTopRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
+  },
+  actionTopDivider: {
+    width: StyleSheet.hairlineWidth,
+    height: 16,
+    backgroundColor: "rgba(122,143,168,0.4)",
   },
   clearTop: {
     position: "absolute",
@@ -3058,11 +3077,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillRow: {
+    marginTop: 6,
     marginRight: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    paddingVertical: 0,
+    paddingVertical: 4,
     paddingHorizontal: 6,
     borderRadius: 999,
     borderWidth: 1,
