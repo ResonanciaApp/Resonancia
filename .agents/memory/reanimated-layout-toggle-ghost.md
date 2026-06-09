@@ -136,11 +136,40 @@ the carousel settles, the reaction fires `applyDrag` mid-glide → overwrites th
 auto-scroll during the real drag but goes silent during the glide. Keep `selfDragging` in the
 gate so only the dragged tile's reaction writes the shared target.
 
-**Belt-and-suspenders for the post-commit gap window:** reset `dragOriginIdx`/`dragTargetIdx`
-to -1 SYNCHRONOUSLY inside the `commitReorder` `unstable_batchedUpdates` batch, not only in
-the per-tile cleanup `useEffect` (which runs a tick later). Otherwise the just-dropped card —
-already past `selfDragging` — can fall into the gap branch with stale origin/target and get
-`+itemW`, shoving it onto its right neighbor.
+**Do NOT also reset `dragOriginIdx`/`dragTargetIdx` to -1 synchronously inside `commitReorder`
+when an unmask reaction watches `origin → -1`.** That looks like belt-and-suspenders for the
+gap window but it BACKFIRES: see the next section. The reaction already guarantees the safe
+ordering (it unmasks only after the cleanup `useEffect` sets origin -1, a tick AFTER the
+painted commit frame), so the synchronous reset is redundant — and it collapses the one
+painted `dragSettling=true` frame the instant-layout commit depends on. Leave the reset to the
+per-tile cleanup `useEffect`. The gap branch is already dead on the commit frame because the
+worklet checks `dragSettling` FIRST and returns translateX 0 for ALL tiles.
+
+## Unmask reaction + synchronous origin reset = "snap to origin then animate to target"
+
+The drop commit needs exactly ONE painted frame where `dragSettling===true` so `instantLayout`
+keeps `LinearTransition.duration(0)` while `active` reorders (the reorder snaps; the dragged
+tile's translateX is 0 in its new slot → zero net move). Unmasking (`setDragSettling(false)`)
+is driven by a `useAnimatedReaction(() => dragOriginIdx.value)` that fires when origin goes
+`>=0 → -1`.
+
+If `commitReorder` ALSO sets `dragOriginIdx.value = -1` synchronously in the SAME
+`unstable_batchedUpdates` batch as `setDragSettling(true)`, that write trips the reaction right
+away → `runOnJS(setDragSettling)(false)` is scheduled before the `dragSettling=true` frame is
+reliably painted. Result on the reorder frame: `instantLayout===false` → `LinearTransition`
+ANIMATES the reorder. Visually the dragged card SNAPS to its original slot (translateX→0 while
+the DOM layout hasn't settled) and then SLIDES to the drop target over `CAROUSEL_FLOW_MS`.
+
+**Fix:** remove the synchronous origin/target reset from `commitReorder`; let only the per-tile
+cleanup `useEffect` (post-paint) set them -1. The painted `dragSettling=true` frame survives →
+instant reorder → no snap-back. **Diagnostic tell:** "drops mostly land right but flicker to
+the original index first, then quick-slide to target" = the settle frame was eaten by an
+eager unmask, NOT a stale array render.
+
+**Older note (still true, different bug):** the original "lands one slot to the RIGHT / swaps
+with the right neighbor" symptom was a stale gap branch at unmask; that is fixed by the
+reaction tying unmask to `origin === -1` (so origin is already -1 at unmask), NOT by a
+synchronous reset.
 
 **Why long-drag-specific:** short drags don't trigger auto-scroll, so `scrollX` is static
 during the glide and the reaction never fires — the bug only manifests when dragging across

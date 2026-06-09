@@ -1087,20 +1087,25 @@ export default function GeometrixScreen() {
       unstable_batchedUpdates(() => {
         setDragSettling(true);
         moveActiveTo(id, idx);
-        // Reset SÍNCRONO de origin/target (en el MISMO batch que el reorden, antes
-        // de que React renderice el frame del commit). Si se dejara solo al efecto
-        // de limpieza por-tile (corre un tick DESPUÉS del commit), queda una ventana
-        // donde la card recién soltada —ya sin selfDragging— cae en la rama del
-        // hueco con origin/target viejos → off=+itemW → se corre un slot a la
-        // derecha (enroque con la vecina). Ponerlos en -1 acá mata esa rama desde
-        // el frame del commit para TODAS las tiles.
-        dragOriginIdx.value = -1;
-        dragTargetIdx.value = -1;
+        // NO reseteamos origin/target a -1 acá. En el frame del commit dragSettling
+        // es true, así que el worklet devuelve translateX 0 para TODAS las tiles
+        // (chequea dragSettling PRIMERO) → la rama del hueco no corre, no hace falta
+        // matarla con un reset síncrono. Reservar el reset al efecto de limpieza
+        // por-tile (corre un tick DESPUÉS del commit) es CLAVE: la reacción que
+        // desenmascara (setDragSettling(false) cuando dragOriginIdx → -1) sólo debe
+        // dispararse DESPUÉS de que el frame con dragSettling=true se haya pintado.
+        // Si reseteábamos origin acá (en el mismo batch que setDragSettling(true)),
+        // la reacción disparaba setDragSettling(false) casi en el acto, antes de que
+        // ese frame se pintara → instantLayout quedaba false en el frame del reorden
+        // → LinearTransition animaba el reordenamiento: la card "saltaba" a su slot
+        // original (translateX→0 con el DOM aún sin asentar) y luego se deslizaba al
+        // destino. Al diferir el reset, el commit pinta un frame instantáneo limpio y
+        // recién después la limpieza pone origin=-1 → la reacción desenmascara.
         frozenActivatingRef.current = null;
         setDraggingId(null);
       });
     },
-    [moveActiveTo, dragOriginIdx, dragTargetIdx],
+    [moveActiveTo],
   );
   const carouselOrder = useMemo<string[]>(() => {
     const front = active.filter((id) => !effActivating.has(id));
