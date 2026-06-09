@@ -2409,6 +2409,7 @@ export default function GeometrixScreen() {
                     pct,
                   };
                   setGuides((prev) => [...prev, newGuide]);
+                  setGuidesOpen(false);
                 }}
                 style={{
                   marginTop: 14,
