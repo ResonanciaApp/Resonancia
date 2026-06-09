@@ -2858,7 +2858,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
-  grid: { flexGrow: 0 },
+  grid: { flexGrow: 0, marginTop: 10 },
   gridContent: { paddingVertical: 2, paddingLeft: 20, paddingRight: 20 },
   // Sin `gap`: las animaciones de layout (LinearTransition) miden mal el reordenamiento
   // con `gap` (el tile no vuelve a su lugar al deseleccionar). Se usa margen por tile.
