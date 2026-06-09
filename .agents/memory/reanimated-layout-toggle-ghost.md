@@ -18,9 +18,11 @@ useAnimatedReaction) only narrows the window; it never closes it, and the leftov
 a right-then-snap-left jump mid-drag and an origin-slot ghost flash on release.
 
 **How to apply (the model that worked in Geometrix carousel):**
-- Dragged tile: follows the finger, but the transform is expressed RELATIVE to its DOM slot
-  (see slot-relative section) so it reaches 0 in lockstep with the commit. It only writes
-  shared `dragOriginIdx`/`dragTargetIdx` mid-drag; the array reorders ONCE on release.
+- Dragged tile: follows the finger with PURE `dragX` (no slot-relative math — that caused a
+  revert regression; see the dragSettling-FIRST section). Its DOM slot stays at origin until
+  commit, so pure finger-follow lands correctly; on the commit frame the dragSettling guard
+  zeroes it. It only writes shared `dragOriginIdx`/`dragTargetIdx` mid-drag; array reorders
+  ONCE on release.
 - Siblings: read origin/target and open the gap with `translateX: withTiming(±itemW)`.
 - The animated style (`wrapStyle`) must be ALWAYS attached — never toggled against a static
   style (see detached-animated-style section; that toggle is what caused the persistent
@@ -47,20 +49,31 @@ explicit deps array so it re-runs when the props it reads change.
 past its target, over its neighbor) = detach-stale-transform. A ~CAROUSEL_FLOW_MS drift =
 armed animation (see batching). A 1-frame flash = slot mismatch.
 
-## Lockstep without a JS round-trip: read the slot PROP inside the worklet
+## Commit frame: zero the DRAGGED tile too, via a `dragSettling`-FIRST guard
 
-The dragged tile must hit transform 0 in the EXACT render the DOM reorders it to `target`.
-A shared value mirrored via `useEffect` (or `useAnimatedReaction`) lags one frame. Instead,
-read the per-tile slot PROP (`indexInFront`) directly in the `useAnimatedStyle` worklet: the
-worklet closure is re-created every render capturing the current prop value, so it updates in
-lockstep with the DOM commit — no SV, no lag.
+The dragged tile must hit transform 0 in the render the DOM reorders it to `target`. Do NOT
+make its rest/commit position a slot-relative formula
+(`dragX - (indexInFront - origin) * itemW`). That formula looks correct at the ideal commit
+frame, but it is RACY: `indexInFront` is a prop that flips to `target` in lockstep with the
+DOM, while `origin`/`selfDragging`/`dragX` are shared values reset asynchronously by the
+post-commit cleanup `useEffect`. When they desync (e.g. `indexInFront=target`, `origin` still
+real, `dragX` already 0), the formula evaluates to ≈`-itemW` and SHOVES each swapped card
+back toward its original slot → the two cards visibly "re-swap" back to where they started.
 
-- Dragged tile: `translateX = dragX.value - (indexInFront - dragOriginIdx.value) * itemW`.
-  During drag `indexInFront===origin` → `= dragX` (follows finger). At commit `indexInFront`
-  becomes `target` and `dragX` has glided to `(target-origin)*itemW` → `= 0` exactly.
-- Siblings: compute the gap from `indexInFront` (lockstep), not a lagging mirrored SV.
+**Fix (the model that worked):** in the worklet, check `dragSettling` FIRST — before the
+`selfDragging` branch. On the commit frame the DOM has already placed EVERY tile (the dragged
+one included) in its final slot, so return `translateX: 0` for all. `dragSettling` is set true
+in the SAME batch as the reorder, so it covers exactly that window. Then:
+- Dragged tile (glide included): plain `translateX: dragX.value` — its DOM slot doesn't move
+  until commit, so pure finger-follow is correct; no slot compensation needed.
+- Siblings: compute the gap from the slot PROP `indexInFront` (re-captured each render →
+  lockstep with the DOM), not a lagging mirrored SV.
 - Keep a mirrored SV (`idxSV`) ONLY for UI-thread contexts that can't read props (gesture
   `onStart`, `useAnimatedReaction`).
+
+**Diagnostic tell:** swap looks right for an instant then both cards animate back to their
+original positions = a slot-relative dragged-tile transform racing cleanup. A persistent
+±itemW overlap = the detach bug above. A ~CAROUSEL_FLOW_MS drift apart = armed animation.
 
 ## Release-phase race (subtle, cost a review cycle to catch)
 
@@ -95,10 +108,12 @@ the post-reorder slot. So the gap formula re-evaluated on that frame can still p
 sibling inside the gap range (e.g. origin 0 → target 2: the sibling now at final slot 1 still
 matches `slot>origin && slot<=target`) → one-frame overlap before cleanup zeroes it.
 
-**Fix:** in the worklet, immediately after the dragged-tile branch, add
+**Fix:** in the worklet, BEFORE the dragged-tile (`selfDragging`) branch, add
 `if (dragSettling) return { transform: [{ translateX: 0 }] }`. On the settle frame the DOM
-has already placed every sibling in its final slot, so 0 is correct by construction — don't
-re-derive it from origin/target/slot.
+has already placed EVERY tile (dragged + siblings) in its final slot, so 0 is correct by
+construction — don't re-derive it from origin/target/slot, and don't let the dragged tile fall
+into a dragX/slot-relative branch. (Putting it first is what also prevents the revert; see the
+dragSettling-FIRST section.)
 
 **Belt-and-suspenders:** also return `translateX: 0` IMMEDIATELY (plain, no `withTiming`)
 when no drag is active (`dragOriginIdx < 0 || dragTargetIdx < 0`). A `withTiming(0)` at rest

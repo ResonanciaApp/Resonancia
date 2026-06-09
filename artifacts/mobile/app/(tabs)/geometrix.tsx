@@ -784,30 +784,24 @@ function CarouselTile({
   // adjunto, translateX refleja exactamente lo que devuelve el worklet.
   const wrapStyle = useAnimatedStyle(() => {
     const scale = 1 + lift.value * 0.08;
-    const origin = dragOriginIdx.value;
-    // Card que se arrastra: sigue al dedo, pero EXPRESADA relativa a su slot del
-    // DOM (indexInFront). Durante el arrastre su slot es el de origen → translateX
-    // = dragX. Al confirmarse el enroque, `indexInFront` pasa al destino EN EL
-    // MISMO render del commit (prop capturada por el closure), así translateX =
-    // dragX(glide = Δ·itemW) − (target−origin)·itemW = 0 exactamente cuando el DOM
-    // la coloca en su slot final → cero desfase, sin "fantasma" ni salto.
-    if (selfDragging.value === 1) {
-      return {
-        transform: [
-          { translateX: dragX.value - (indexInFront - origin) * itemW },
-          { scale },
-        ],
-        zIndex: 20,
-      };
-    }
-    // Frame del commit del enroque: el DOM ya colocó a TODAS las hermanas en su
-    // slot final, así que translateX 0 por construcción. Hay que cortar acá porque
-    // en ese frame origin/target todavía no se resetearon (-1) y `off` se calcula
-    // con el slot YA reordenado (indexInFront): una hermana intermedia seguiría
-    // cayendo en el rango del hueco y quedaría solapada un frame.
+    // Frame del commit del enroque: el DOM ya colocó a TODAS las tiles —incluida la
+    // arrastrada— en su slot final, así que translateX 0 para TODAS, por
+    // construcción. Se chequea ANTES que `selfDragging` a propósito: si la card
+    // arrastrada usara `dragX` (o una fórmula relativa al slot) en este frame,
+    // quedaría corrida respecto del slot que el DOM ya reordenó y, al desincronizar
+    // origin/selfDragging/dragX durante la limpieza, las dos cards se "re-enrocaban"
+    // de vuelta a su posición original. dragSettling es true en el MISMO render del
+    // commit (baterizado con el reorden), por lo que cubre exactamente esa ventana.
     if (dragSettling) {
       return { transform: [{ translateX: 0 }, { scale }] };
     }
+    // Card que se arrastra (incluido el glide al soltar): sigue al dedo con dragX
+    // puro. Su slot del DOM NO cambia hasta el commit, así que dragX la coloca bien
+    // sin necesidad de compensar el slot.
+    if (selfDragging.value === 1) {
+      return { transform: [{ translateX: dragX.value }, { scale }], zIndex: 20 };
+    }
+    const origin = dragOriginIdx.value;
     const target = dragTargetIdx.value;
     // En reposo (sin arrastre): sin transform.
     if (origin < 0 || target < 0 || origin === target) {
