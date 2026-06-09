@@ -1105,6 +1105,7 @@ export default function GeometrixScreen() {
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
+    { key: "borrar", icon: "trash-2", label: "Borrar lienzo", onPress: clearCanvas },
   ];
   // Sin geometrías activas se colapsa el desplegable (la flecha desaparece).
   useEffect(() => {
@@ -1624,21 +1625,13 @@ export default function GeometrixScreen() {
 
           </View>
 
-          {/* Basurero + refresh — lado izquierdo, espejo de actionTop */}
+          {/* Refresh (actualizar composición) — lado izquierdo, espejo de
+              actionTop. El borrar lienzo vive ahora en el desplegable. */}
           <Animated.View
             pointerEvents={hasActive ? "auto" : "none"}
             style={[styles.actionLeft, trashAnimStyle]}
           >
             <View style={styles.actionTopRow}>
-              <Pressable
-                onPress={clearCanvas}
-                style={styles.actionTopBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Borrar lienzo"
-                hitSlop={4}
-              >
-                <Feather name="trash-2" size={16} color={colors.mutedForeground} />
-              </Pressable>
               {editingCreation && isDirty && (
                 <Animated.View
                   entering={FadeIn.duration(260)}
