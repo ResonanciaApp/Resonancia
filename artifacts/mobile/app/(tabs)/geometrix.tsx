@@ -4090,7 +4090,7 @@ const styles = StyleSheet.create({
   themeRowTitle: { fontSize: 14, fontWeight: "600", color: colors.foreground },
   themeRowSub: { fontSize: 12, color: colors.mutedForeground, marginTop: 2 },
 
-  grid: { flexGrow: 0, marginTop: -25 },
+  grid: { flexGrow: 0, marginTop: -15 },
   gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 0, paddingRight: 20 },
   // Modelo FLIP: contenedor relativo de altura/ancho fijos (dados inline). Las tiles
   // se posicionan en absoluto y se ubican SOLO con translateX según su slot (orderSV)
