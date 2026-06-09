@@ -570,7 +570,7 @@ function CarouselTile({
       const FADE_IN = 900;
       const PARK = CAROUSEL_HOLD_MS + CAROUSEL_FLOW_MS;
       titleOpacity.value = withSequence(
-        withTiming(1, { duration: FADE_IN, easing: Easing.inOut(Easing.quad) }),
+        withTiming(0.05, { duration: FADE_IN, easing: Easing.inOut(Easing.quad) }),
         withDelay(
           PARK - FADE_IN + 150,
           withTiming(0, { duration: 320, easing: Easing.in(Easing.ease) }),
