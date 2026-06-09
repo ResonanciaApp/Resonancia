@@ -146,6 +146,31 @@ already past `selfDragging` — can fall into the gap branch with stale origin/t
 during the glide and the reaction never fires — the bug only manifests when dragging across
 the whole carousel.
 
+## `onFinalize` fires even when the pan NEVER activated → guard the commit
+
+`Gesture.Pan().activateAfterLongPress(ms)` runs `onFinalize` on EVERY touch release,
+including a short tap that never crossed the long-press threshold (the gesture went
+BEGAN→FAILED). In that case `onStart` never ran, so `dragOriginIdx`/`dragTargetIdx` keep
+whatever value they had. Once `commitReorder` started resetting origin/target to -1 (the
+post-commit gap fix above), a plain tap on a selected card flowed -1 into `moveActiveTo`,
+which clamped it to 0 → the card JUMPED TO THE FRONT on a mere tap.
+
+**Fix:** gate the commit on a dedicated UI-thread "did activate" shared value, set to 1 ONLY
+in `onStart` and checked/cleared in `onFinalize` (`if (didActivate.value !== 1) return`).
+Do NOT reuse `selfDragging` for this — `selfDragging` is also reset by a JS `useEffect` keyed
+on `isDragging`, so gating on it couples the decision to JS render timing (architect flagged
+this; could skip a legit drop if `isDragging` flips around finalize). **Belt-and-suspenders:**
+also no-op `moveActiveTo` on `idx < 0` so an invalid target can never clamp to front.
+
+## NEVER `runOnJS(console.log)` inside a worklet/reaction (native crash on device)
+
+A diagnostic `runOnJS(console.log)("...", val)` inside a `useAnimatedReaction` crashed the app
+(hard close, no JS error) — but ONLY on real drags, because that's the only path where the
+reaction's condition fired. Symptom looked like "drag works then app closes on drop" while
+taps (reaction never fires) merely misbehaved. `runOnJS` wrapping a native/host function like
+`console.log` is the trap. To log from a worklet, call a plain JS callback you defined, or a
+`runOnJS`-wrapped arrow that calls `console.log` internally — never wrap `console.log` directly.
+
 ## Still-true general rule about `layout={undefined}`
 
 Never set `Animated.View layout={undefined}` to "pause" layout animation — it freezes the

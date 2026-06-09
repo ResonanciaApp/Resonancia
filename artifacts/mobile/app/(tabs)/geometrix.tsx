@@ -649,6 +649,11 @@ function CarouselTile({
   // 1 solo en la card que se está arrastrando AHORA: así la reacción al scroll y
   // el estilo (dragX vs hueco) aplican únicamente a esta card.
   const selfDragging = useSharedValue(0);
+  // 1 mientras el pan estuvo ACTIVADO (entre onStart y onFinalize). A diferencia de
+  // selfDragging —que un efecto de JS resetea según isDragging (timing de render)—,
+  // este flag lo controla SOLO el gesto en el UI thread, así onFinalize sabe con
+  // certeza si hubo un arrastre real antes de confirmar el reorder.
+  const didActivate = useSharedValue(0);
   useEffect(() => {
     idxSV.value = indexInFront;
   }, [indexInFront, idxSV]);
@@ -720,6 +725,7 @@ function CarouselTile({
           edgeIntent.value = 0;
           dragActive.value = 1;
           selfDragging.value = 1;
+          didActivate.value = 1;
           lift.value = withTiming(1, { duration: 160 });
           runOnJS(onDragStart)(id);
         })
@@ -742,6 +748,16 @@ function CarouselTile({
         .onFinalize(() => {
           edgeIntent.value = 0;
           dragActive.value = 0;
+          // El pan se "finaliza" aunque NUNCA se haya activado (toque corto sin
+          // long-press de 250ms): en ese caso onStart no corrió, origin/target
+          // quedaron en -1. NO confirmar reorder: dispararía onDragEnd con target=-1
+          // → la card saltaría al frente con solo tocarla. Se usa didActivate (no
+          // selfDragging, que un efecto de JS puede resetear según isDragging) para
+          // que la decisión dependa solo del UI thread del gesto.
+          if (didActivate.value !== 1) {
+            return;
+          }
+          didActivate.value = 0;
           const origin = dragOriginIdx.value;
           const target = dragTargetIdx.value;
           lift.value = withTiming(0, { duration: 180 });
@@ -771,6 +787,7 @@ function CarouselTile({
       dragOriginIdx,
       dragTargetIdx,
       dragActive,
+      didActivate,
       dragX,
       edgeIntent,
       idxSV,
@@ -955,10 +972,7 @@ export default function GeometrixScreen() {
   // Este timeout solo evita que el settling quede pegado si esa reacción no corre.
   useEffect(() => {
     if (!dragSettling) return;
-    const t = setTimeout(() => {
-      console.log("[ENROQUE] SAFETY-UNMASK @120ms", Date.now());
-      setDragSettling(false);
-    }, 120);
+    const t = setTimeout(() => setDragSettling(false), 120);
     return () => clearTimeout(t);
   }, [dragSettling]);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
@@ -968,16 +982,15 @@ export default function GeometrixScreen() {
   // Como el orden de `active` define el orden de las capas (primera = atrás),
   // reordenar aquí reordena también las capas del lienzo.
   const moveActiveTo = useCallback((id: string, idx: number) => {
+    // Destino inválido (p. ej. un toque corto que no activó el long-press: origin/
+    // target quedaron en -1): NO mover. Sin esta guarda, idx<0 se clampa a 0 y la
+    // card salta al frente al solo tocarla.
+    if (idx < 0) return;
     setActive((prev) => {
       if (!prev.includes(id)) return prev;
       const without = prev.filter((x) => x !== id);
       const clamped = Math.max(0, Math.min(idx, without.length));
       without.splice(clamped, 0, id);
-      console.log(
-        "[ENROQUE] moveActiveTo id=", id, "idx=", idx, "clamped=", clamped,
-        "before=", JSON.stringify(prev), "after=", JSON.stringify(without),
-        "@", Date.now(),
-      );
       return without;
     });
   }, []);
@@ -1019,7 +1032,6 @@ export default function GeometrixScreen() {
     () => dragOriginIdx.value,
     (o, prev) => {
       if (o === -1 && prev !== null && prev >= 0) {
-        runOnJS(console.log)("[ENROQUE] REACTION-UNMASK o=-1 prev=", prev);
         runOnJS(setDragSettling)(false);
       }
     },
