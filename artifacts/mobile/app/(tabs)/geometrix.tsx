@@ -895,12 +895,16 @@ function CarouselTile({
   // NO hay reflow de Fabric al reordenar → se elimina la carrera mapper-vs-layout que
   // causaba el parpadeo. La posición se lee DIRECTO de slotSV (UI thread, sin desfase).
   const wrapStyle = useAnimatedStyle(() => {
-    const scale = 1 + lift.value * 0.08;
+    // "Lift" al tomar la card = ELEVARLA (translateY), NO escalarla. Un transform scale
+    // magnifica la rasterización del glifo SVG → se pixela mientras dura el arrastre y
+    // recién al soltar (scale→1) vuelve a verse nítido. translateY da el mismo gesto de
+    // "levantar" sin tocar la nitidez del vector (convención: geometrix-zoom-vector).
+    const liftY = -lift.value * 10;
     const slot = slotSV.value;
     // Aún no entró al orden compartido (frame de montaje de un duplicado): oculto para
     // no destellar en el slot 0 antes de que el efecto espejo actualice orderSV.
     if (slot < 0) {
-      return { opacity: 0, transform: [{ translateX: 0 }, { scale }] };
+      return { opacity: 0, transform: [{ translateX: 0 }, { translateY: liftY }] };
     }
     // Posición base = slot * itemW desplazada por el FLIP de selección (slideOffset).
     const base = slot * itemW + slideOffset.value;
@@ -910,12 +914,15 @@ function CarouselTile({
     if (selfDragging.value === 1) {
       return {
         opacity: 1,
-        transform: [{ translateX: base + dragX.value }, { scale }],
+        transform: [{ translateX: base + dragX.value }, { translateY: liftY }],
         zIndex: 20,
       };
     }
     // Resto de las tiles: base + el hueco animado (gapSV, 0 salvo cuando se arrastra).
-    return { opacity: 1, transform: [{ translateX: base + gapSV.value }, { scale }] };
+    return {
+      opacity: 1,
+      transform: [{ translateX: base + gapSV.value }, { translateY: liftY }],
+    };
   }, [selfDragging, dragX, lift, itemW, slotSV, slideOffset, gapSV]);
 
   return (

@@ -17,3 +17,5 @@ El zoom NUNCA va en transform — ni el confirmado ni el del pellizco EN VIVO. T
 - El `transform: scale` SOLO lleva respiración (+ rotación). NUNCA zoom.
 - Pinch: `onUpdate` → `runOnJS(setLivePinchNum)(z)` (redibuja el objetivo cada frame). `onEnd` → commit a settings (solo éxito). `onFinalize` → `setLivePinchNum(null)` SIEMPRE (también al cancelar) y después del commit → el objetivo pasa del en-vivo al confirmado (mismo valor) sin frame intermedio, y un gesto cancelado no queda pegado al en-vivo.
 - `SacredGlyph` va en `React.memo`: durante el pellizco solo re-renderiza el objetivo (las otras capas conservan props idénticas y no reconstruyen su árbol).
+
+**Misma regla en el carrusel de cards:** el "lift" al tomar/arrastrar una card NO debe ser `transform: scale` — magnifica el glifo SVG rasterizado y se ve pixelado durante todo el arrastre (nítido recién al soltar cuando scale→1). Usar `translateY` (elevar la card) como afordancia de "levantar"; deja el vector intacto. El `elevation`/sombra del drag por sí solo no pixela (rasteriza a resolución nativa); solo pixela si además hay un transform scale magnificando esa textura.
