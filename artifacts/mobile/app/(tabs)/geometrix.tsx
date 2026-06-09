@@ -549,7 +549,10 @@ type CarouselTileProps = {
   // con instantLayout=false → duration 1100ms) y NO re-lee duration(0) en renders
   // posteriores → el reorden del commit se animaba 1100ms igual. `dragSettling` es
   // true SOLO en el frame del commit (para snapear el hueco al instante, no animarlo).
+  // `settleSV` (UI thread) la escribe el worklet de layout en el MISMO commit que
+  // reordena el DOM → cierra el desfase de 1 frame que dejaba `dragSettling` (prop JS).
   instantLayoutSV: SharedValue<number>;
+  settleSV: SharedValue<number>;
   dragSettling: boolean;
   dragOriginIdx: SharedValue<number>;
   dragTargetIdx: SharedValue<number>;
@@ -579,6 +582,7 @@ function CarouselTile({
   onDragStart,
   onDragEnd,
   instantLayoutSV,
+  settleSV,
   dragSettling,
   dragOriginIdx,
   dragTargetIdx,
@@ -827,7 +831,12 @@ function CarouselTile({
     // origin/selfDragging/dragX durante la limpieza, las dos cards se "re-enrocaban"
     // de vuelta a su posición original. dragSettling es true en el MISMO render del
     // commit (baterizado con el reorden), por lo que cubre exactamente esa ventana.
-    if (dragSettling) {
+    // `settleSV` (UI thread) la sube a 1 el worklet de layout en el MISMO commit que
+    // reordena el DOM, así que esta rama corre en lockstep con el reorden (sin esperar
+    // a que la re-evaluación por el prop JS `dragSettling` llegue un frame tarde →
+    // ese desfase era el parpadeo de ±itemW de todas las cards al soltar). `dragSettling`
+    // (prop) cubre los renders siguientes hasta el desenmascarado.
+    if (dragSettling || settleSV.value === 1) {
       return { transform: [{ translateX: 0 }, { scale }] };
     }
     // Card que se arrastra (incluido el glide al soltar): sigue al dedo con dragX
@@ -867,6 +876,7 @@ function CarouselTile({
     itemW,
     indexInFront,
     dragSettling,
+    settleSV,
   ]);
 
   // Transición de layout PERSONALIZADA. CLAVE: lee `instantLayoutSV` en CADA
@@ -881,6 +891,11 @@ function CarouselTile({
     (values: LayoutAnimationsValues) => {
       'worklet';
       if (instantLayoutSV.value === 1) {
+        // Punto de sincronización CLAVE: este worklet corre en el UI thread DENTRO del
+        // mismo commit que monta el reorden del DOM. Subir `settleSV` acá hace que el
+        // worklet de transform (wrapStyle) se re-evalúe en ese mismo frame y ponga
+        // translateX 0 en lockstep con el reorden → sin parpadeo de ±itemW al soltar.
+        settleSV.value = 1;
         return {
           initialValues: {
             originX: values.targetOriginX,
@@ -923,7 +938,7 @@ function CarouselTile({
         },
       };
     },
-    [instantLayoutSV],
+    [instantLayoutSV, settleSV],
   );
 
   return (
@@ -1039,6 +1054,11 @@ export default function GeometrixScreen() {
   // reacción + el timeout de red de seguridad). El worklet de layout de cada tile la
   // lee en cada cambio → el reorden del commit no se anima, las selecciones sí.
   const instantLayoutSV = useSharedValue(0);
+  // Espejo en el UI thread de la ventana de "settle". Lo sube a 1 el worklet de layout
+  // (tileLayout) en el mismo commit que reordena el DOM y lo lee wrapStyle para poner
+  // translateX 0 en lockstep con el reorden (cierra el desfase de 1 frame del prop JS
+  // `dragSettling` que causaba el parpadeo). Se baja a 0 junto con instantLayoutSV.
+  const settleSV = useSharedValue(0);
   // Red de seguridad: la limpieza real y sincronizada del settling la hace la
   // reacción de UI thread definida más abajo (cuando dragOriginIdx vuelve a -1).
   // Este timeout solo evita que el settling quede pegado si esa reacción no corre.
@@ -1047,9 +1067,10 @@ export default function GeometrixScreen() {
     const t = setTimeout(() => {
       setDragSettling(false);
       instantLayoutSV.value = 0;
+      settleSV.value = 0;
     }, 120);
     return () => clearTimeout(t);
-  }, [dragSettling, instantLayoutSV]);
+  }, [dragSettling, instantLayoutSV, settleSV]);
   // Congela el set de "activándose" mientras dura un drag: si otra card termina
   // su activación a mitad de un arrastre, el orden del carrusel no debe saltar.
   const frozenActivatingRef = useRef<Set<string> | null>(null);
@@ -1111,6 +1132,7 @@ export default function GeometrixScreen() {
         // layout (que leyó instantLayoutSV=1) → bajarla acá no afecta el reorden ya
         // instantáneo; las próximas selecciones vuelven a animar.
         instantLayoutSV.value = 0;
+        settleSV.value = 0;
         runOnJS(setDragSettling)(false);
       }
     },
@@ -2284,6 +2306,7 @@ export default function GeometrixScreen() {
                   dragActive={carDragActive}
                   edgeIntent={carEdgeIntent}
                   instantLayoutSV={instantLayoutSV}
+                  settleSV={settleSV}
                   dragSettling={dragSettling}
                   dragOriginIdx={dragOriginIdx}
                   dragTargetIdx={dragTargetIdx}
