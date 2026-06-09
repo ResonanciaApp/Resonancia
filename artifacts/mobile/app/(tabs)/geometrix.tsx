@@ -2791,7 +2791,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    gap: 0,
     paddingHorizontal: 16,
   },
   thumbsRowStart: {
@@ -2817,7 +2817,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "transparent",
     paddingVertical: 1,
-    paddingHorizontal: 6,
+    paddingHorizontal: 1,
   },
   thumbCaret: {
     marginLeft: 2,
