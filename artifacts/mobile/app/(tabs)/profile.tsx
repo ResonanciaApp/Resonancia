@@ -488,6 +488,32 @@ export default function ProfileScreen() {
     await AsyncStorage.setItem("@profile_reminder", JSON.stringify({ enabled, hour, minute }));
   };
 
+  // ── Sections visibility toggle ────────────────────────────────────────────
+  const [sectionsHidden, setSectionsHidden] = useState(false);
+  const sectionsAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    AsyncStorage.getItem("@profile_sections_hidden").then((raw) => {
+      if (raw === "1") {
+        setSectionsHidden(true);
+        sectionsAnim.setValue(0);
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const toggleSections = useCallback(() => {
+    const next = !sectionsHidden;
+    setSectionsHidden(next);
+    AsyncStorage.setItem("@profile_sections_hidden", next ? "1" : "0").catch(() => {});
+    Animated.timing(sectionsAnim, {
+      toValue: next ? 0 : 1,
+      duration: 280,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [sectionsHidden, sectionsAnim]);
+
   // ── Edit modal state ──────────────────────────────────────────────────────
   const [editVisible, setEditVisible] = useState(false);
   const [editNombre, setEditNombre] = useState(username);
@@ -805,13 +831,22 @@ export default function ProfileScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: "#FFFFFF" }]}>Perfil</Text>
-          <Pressable
-            onPress={() => setPersonalizeVisible(true)}
-            hitSlop={12}
-            style={({ pressed }) => [styles.settingsBtn, { opacity: pressed ? 0.6 : 1 }]}
-          >
-            <Feather name="sliders" size={20} color="#FFFFFF" />
-          </Pressable>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+            <Pressable
+              onPress={toggleSections}
+              hitSlop={12}
+              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            >
+              <Feather name={sectionsHidden ? "eye-off" : "eye"} size={20} color="#FFFFFF" />
+            </Pressable>
+            <Pressable
+              onPress={() => setPersonalizeVisible(true)}
+              hitSlop={12}
+              style={({ pressed }) => [styles.settingsBtn, { opacity: pressed ? 0.6 : 1 }]}
+            >
+              <Feather name="sliders" size={20} color="#FFFFFF" />
+            </Pressable>
+          </View>
         </View>
 
         {/* ── Profile Card ── */}
@@ -888,6 +923,9 @@ export default function ProfileScreen() {
             <Text style={[styles.editBtnText, { color: colors.primary }]}>Editar Detalles</Text>
           </Pressable>
         </View>
+
+        {/* ── Secciones colapsables (ocultas con el ojo) ── */}
+        <Animated.View style={{ opacity: sectionsAnim, maxHeight: sectionsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 2400] }), overflow: "hidden" }}>
 
         {/* ── Plan ── */}
         <Pressable
@@ -1039,6 +1077,8 @@ export default function ProfileScreen() {
         <Text style={[styles.footer, { color: colors.border }]}>
           RESONANCE · Sonidos que te regresan a ti mismo.
         </Text>
+
+        </Animated.View>
       </ScrollView>
 
       {/* ── Personalize Sheet ── */}

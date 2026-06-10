@@ -1,6 +1,5 @@
 /**
  * QuickAccessGrid — grilla 3×2 de accesos rápidos con drag-to-reorder.
- * Incluye header "Accesos" con toggle de visibilidad (ojo animado).
  */
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -31,13 +30,11 @@ const ALL_ITEMS: { id: string; label: string; icon: FeatherIconName; route: stri
   { id: "chats",     label: "Chats",         icon: "message-circle", route: "/amigos"               },
 ];
 
-const ORDER_KEY  = "@resonance_quick_order";
-const HIDDEN_KEY = "@resonance_quick_hidden";
-const COLS       = 3;
-const GAP        = 8;
-const H_PAD      = 20;
-const BLOCK_H    = 90;
-const GRID_FULL_H = BLOCK_H * 2 + GAP;
+const ORDER_KEY = "@resonance_quick_order";
+const COLS      = 3;
+const GAP       = 8;
+const H_PAD     = 20;
+const BLOCK_H   = 90;
 
 function reorder<T>(arr: T[], from: number, to: number): T[] {
   const r = [...arr];
@@ -78,47 +75,6 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
   const saveOrder = useCallback((next: typeof ALL_ITEMS) => {
     AsyncStorage.setItem(ORDER_KEY, JSON.stringify(next.map((i) => i.id))).catch(() => {});
   }, []);
-
-  /* ── visibility toggle ───────────────────────────── */
-  const [hidden, setHidden]   = useState(false);
-  // 1 = sección visible, 0 = oculta
-  const visAnim       = useRef(new Animated.Value(1)).current;
-  // 1 = ojo-tachado mostrado (slash visible), 0 = sólo eye
-  const slashAnim     = useRef(new Animated.Value(1)).current;
-  // opacidad del icono ojo completo
-  const eyeOpacity    = useRef(new Animated.Value(1)).current;
-  // opacidad del título
-  const titleOpacity  = useRef(new Animated.Value(1)).current;
-  // maxHeight del contenedor de la grilla
-  const gridMaxH      = useRef(new Animated.Value(GRID_FULL_H + 16)).current;
-
-  useEffect(() => {
-    AsyncStorage.getItem(HIDDEN_KEY).then((raw) => {
-      if (raw === "1") {
-        setHidden(true);
-        visAnim.setValue(0);
-        slashAnim.setValue(0);
-        eyeOpacity.setValue(0.5);
-        titleOpacity.setValue(0.5);
-        gridMaxH.setValue(0);
-      }
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const toggleHidden = useCallback(() => {
-    const next = !hidden;
-    setHidden(next);
-    AsyncStorage.setItem(HIDDEN_KEY, next ? "1" : "0").catch(() => {});
-
-    Animated.parallel([
-      Animated.timing(slashAnim,    { toValue: next ? 0 : 1,            duration: 220, useNativeDriver: false }),
-      Animated.timing(eyeOpacity,   { toValue: next ? 0.5 : 1,          duration: 220, useNativeDriver: false }),
-      Animated.timing(titleOpacity, { toValue: next ? 0.5 : 1,          duration: 220, useNativeDriver: false }),
-      Animated.timing(gridMaxH,     { toValue: next ? 0 : GRID_FULL_H + 16, duration: 260, useNativeDriver: false }),
-      Animated.timing(visAnim,      { toValue: next ? 0 : 1,            duration: 220, useNativeDriver: false }),
-    ]).start();
-  }, [hidden, slashAnim, eyeOpacity, titleOpacity, gridMaxH, visAnim]);
 
   /* ── drag state ──────────────────────────────────── */
   const draggingIdxRef  = useRef<number | null>(null);
@@ -215,114 +171,66 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
   const draggingItem = draggingIdx !== null ? items[draggingIdx] : null;
 
   return (
-    <View>
-      {/* ── Header ─────────────────────────────────── */}
-      <View style={styles.header}>
-        <Animated.Text style={[styles.headerTitle, { color: colors.mutedForeground, opacity: titleOpacity }]}>
-          Accesos
-        </Animated.Text>
+    <View ref={gridRef} style={styles.grid} {...panResponder.panHandlers}>
+      {items.map((item, idx) => {
+        const isDragging = idx === draggingIdx;
+        return (
+          <Pressable
+            key={item.id}
+            onPress={() => {
+              if (draggingIdxRef.current !== null) return;
+              router.push(item.route as never);
+            }}
+            onLongPress={() => startDrag(idx)}
+            delayLongPress={350}
+            style={[
+              styles.block,
+              { width: blockW },
+              isDragging && styles.blockDragging,
+            ]}
+          >
+            <Feather name={item.icon} size={22} color={colors.mutedForeground} />
+            <Text style={[styles.label, { color: colors.mutedForeground }]} numberOfLines={1}>
+              {item.label}
+            </Text>
+          </Pressable>
+        );
+      })}
 
-        <Pressable onPress={toggleHidden} hitSlop={12} style={styles.eyeBtn}>
-          <Animated.View style={{ opacity: eyeOpacity }}>
-            {/* Base: ojo sin slash */}
-            <Feather name="eye" size={17} color={colors.mutedForeground} />
-            {/* Overlay animado: el slash */}
-            <Animated.View style={[StyleSheet.absoluteFill, { opacity: slashAnim }]}>
-              <Feather name="eye-off" size={17} color={colors.mutedForeground} />
-            </Animated.View>
-          </Animated.View>
-        </Pressable>
-      </View>
+      {/* Línea de inserción */}
+      {insertLine && (
+        <View
+          pointerEvents="none"
+          style={[styles.insertLine, { left: insertLine.x, top: insertLine.y }]}
+        />
+      )}
 
-      {/* ── Grid (colapsable) ──────────────────────── */}
-      <Animated.View style={{ maxHeight: gridMaxH, overflow: "hidden", opacity: visAnim }}>
-        <View ref={gridRef} style={styles.grid} {...panResponder.panHandlers}>
-          {items.map((item, idx) => {
-            const isDragging = idx === draggingIdx;
-            return (
-              <Pressable
-                key={item.id}
-                onPress={() => {
-                  if (draggingIdxRef.current !== null) return;
-                  router.push(item.route as never);
-                }}
-                onLongPress={() => startDrag(idx)}
-                delayLongPress={350}
-                style={[
-                  styles.block,
-                  { width: blockW },
-                  isDragging && styles.blockDragging,
-                ]}
-              >
-                {/* Handle de arrastre: 6 puntos 2×3 */}
-                <View style={styles.handle} pointerEvents="none">
-                  {[0,1,2,3,4,5].map((i) => (
-                    <View
-                      key={i}
-                      style={[styles.dot, { backgroundColor: colors.mutedForeground + "29" }]}
-                    />
-                  ))}
-                </View>
-                <Feather name={item.icon} size={22} color={colors.mutedForeground} />
-                <Text style={[styles.label, { color: colors.mutedForeground }]} numberOfLines={1}>
-                  {item.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-
-          {/* Línea de inserción */}
-          {insertLine && (
-            <View
-              pointerEvents="none"
-              style={[styles.insertLine, { left: insertLine.x, top: insertLine.y }]}
-            />
-          )}
-
-          {/* Ghost */}
-          {draggingItem && (
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                styles.ghost,
-                { width: blockW },
-                {
-                  transform: [
-                    { translateX: Animated.add(new Animated.Value(ghostInitX.current), dragAnim.x) },
-                    { translateY: Animated.add(new Animated.Value(ghostInitY.current), dragAnim.y) },
-                  ],
-                },
-              ]}
-            >
-              <Feather name={draggingItem.icon} size={22} color="#EDE1D3" />
-              <Text style={[styles.label, { color: "#EDE1D3" }]} numberOfLines={1}>
-                {draggingItem.label}
-              </Text>
-            </Animated.View>
-          )}
-        </View>
-      </Animated.View>
+      {/* Ghost */}
+      {draggingItem && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.ghost,
+            { width: blockW },
+            {
+              transform: [
+                { translateX: Animated.add(new Animated.Value(ghostInitX.current), dragAnim.x) },
+                { translateY: Animated.add(new Animated.Value(ghostInitY.current), dragAnim.y) },
+              ],
+            },
+          ]}
+        >
+          <Feather name={draggingItem.icon} size={22} color="#EDE1D3" />
+          <Text style={[styles.label, { color: "#EDE1D3" }]} numberOfLines={1}>
+            {draggingItem.label}
+          </Text>
+        </Animated.View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection:  "row",
-    alignItems:     "center",
-    justifyContent: "center",
-    gap:            8,
-    marginBottom:   12,
-  },
-  headerTitle: {
-    fontSize:      13,
-    fontWeight:    "700",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-  },
-  eyeBtn: {
-    padding: 2,
-  },
   grid: {
     flexDirection: "row",
     flexWrap:      "wrap",
@@ -354,20 +262,6 @@ const styles = StyleSheet.create({
     fontWeight:    "600",
     textAlign:     "center",
     letterSpacing: 0.2,
-  },
-  handle: {
-    position:      "absolute",
-    top:           8,
-    right:         9,
-    flexDirection: "row",
-    flexWrap:      "wrap",
-    width:         14,
-    gap:           3,
-  },
-  dot: {
-    width:        3,
-    height:       3,
-    borderRadius: 1.5,
   },
   ghost: {
     position:        "absolute",
