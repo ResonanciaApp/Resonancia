@@ -4637,7 +4637,7 @@ const styles = StyleSheet.create({
   // ── Buscador de tema de fondo (modal) ──
   themeSheet: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#0B0F14",
+    backgroundColor: "#06070F",
     paddingHorizontal: 20,
   },
   themeHeaderRow: {
