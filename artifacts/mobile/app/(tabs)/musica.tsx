@@ -12,10 +12,10 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getSoundImage } from "@/config/sound-images";
@@ -81,94 +81,65 @@ const MAIN_TABS: {
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
 
-// ── CarouselTile con animación Latido ─────────────────────────────────────────
-const CarouselTile = memo(function CarouselTile({
+// ── PillTab con animación Latido adaptada ─────────────────────────────────────
+const PillTab = memo(function PillTab({
   tab,
   sel,
-  tileW,
   onPress,
 }: {
   tab: (typeof MAIN_TABS)[0];
   sel: boolean;
-  tileW: number;
   onPress: () => void;
 }) {
-  const c   = tab.color;
-  const c50 = c + "80";
-  const c10 = c + "1A";
-
-  const rippleAnim = useRef(new Animated.Value(1)).current;
-  const borderAnim = useRef(new Animated.Value(0)).current;
-  const iconAnim   = useRef(new Animated.Value(0)).current;
-  const running    = useRef<Animated.CompositeAnimation | null>(null);
+  const iconAnim  = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const running   = useRef<Animated.CompositeAnimation | null>(null);
 
   const triggerLatido = () => {
     running.current?.stop();
-    rippleAnim.setValue(0);
     running.current = Animated.parallel([
-      Animated.timing(rippleAnim, {
-        toValue: 1, duration: 1700,
-        easing: Easing.out(Easing.ease), useNativeDriver: true,
-      }),
+      // Pulso de escala en la píldora
       Animated.sequence([
-        Animated.timing(iconAnim, { toValue: 1, duration: 180, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-        Animated.timing(iconAnim, { toValue: 0, duration: 370, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1.06, duration: 130, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1,    duration: 280, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+      ]),
+      // Flash del ícono
+      Animated.sequence([
+        Animated.timing(iconAnim, { toValue: 1, duration: 160, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+        Animated.timing(iconAnim, { toValue: 0, duration: 340, easing: Easing.out(Easing.ease), useNativeDriver: true }),
       ]),
     ]);
     running.current.start();
-
-    borderAnim.setValue(0);
-    Animated.sequence([
-      Animated.timing(borderAnim, { toValue: 1, duration: 200, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-      Animated.timing(borderAnim, { toValue: 0, duration: 450, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-    ]).start();
-
     onPress();
   };
 
-  const rippleScale   = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.98, 1.46] });
-  const rippleOpacity = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0] });
-  const borderOverlayOpacity = borderAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
-  const iconScale   = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.14] });
-  const iconOpacity = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [sel ? 1 : 0.5, 1] });
+  const iconScale   = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.18] });
+  const iconOpacity = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [sel ? 1 : 0.55, 1] });
+  const c = tab.color;
 
   return (
-    <Pressable
-      onPress={triggerLatido}
-      style={[
-        styles.carouselTile,
-        { width: tileW, borderColor: sel ? c50 : "rgba(0,0,0,0.10)" },
-        sel && { backgroundColor: c10 },
-      ]}
-    >
-      {/* Onda expansiva */}
-      <Animated.View
-        pointerEvents="none"
+    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+      <Pressable
+        onPress={triggerLatido}
         style={[
-          StyleSheet.absoluteFill, styles.rippleRing,
-          { borderColor: c50, transform: [{ scale: rippleScale }], opacity: rippleOpacity },
+          styles.pillTab,
+          sel
+            ? { backgroundColor: DARK, borderColor: "transparent" }
+            : { backgroundColor: "rgba(0,0,0,0.05)", borderColor: "rgba(0,0,0,0.08)" },
         ]}
-      />
-      {/* Flash del borde */}
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          StyleSheet.absoluteFill, styles.borderFlash,
-          { borderColor: c50, opacity: borderOverlayOpacity },
-        ]}
-      />
-      {/* Ícono con flash */}
-      <Animated.View pointerEvents="none" style={{ transform: [{ scale: iconScale }], opacity: iconOpacity }}>
-        <MaterialCommunityIcons
-          name={tab.icon as any}
-          size={tileW * 0.28 + 3}
-          color={sel ? c : MUTED}
-        />
-      </Animated.View>
-      <Text numberOfLines={1} style={[styles.carouselTileLabel, { color: sel ? c : MUTED, fontWeight: sel ? "700" : "400" }]}>
-        {tab.label}
-      </Text>
-    </Pressable>
+      >
+        <Animated.View style={{ transform: [{ scale: iconScale }], opacity: iconOpacity }}>
+          <MaterialCommunityIcons
+            name={tab.icon as any}
+            size={15}
+            color={sel ? "#FFFFFF" : c}
+          />
+        </Animated.View>
+        <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
+          {tab.label}
+        </Text>
+      </Pressable>
+    </Animated.View>
   );
 });
 
@@ -321,13 +292,8 @@ export default function MiMusicaScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
-  const { width } = useWindowDimensions();
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-
-  const TILE_GAP   = 10;
-  const TILE_H_PAD = 16;
-  const tileW      = (width - TILE_H_PAD * 2 - TILE_GAP * 2) / 3.3;
 
   const handleMainTab = (id: MainTabId) => {
     if (id === mainTab) return;
@@ -394,7 +360,13 @@ export default function MiMusicaScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories]);
 
   return (
-    <View style={styles.root}>
+    <LinearGradient
+      colors={["#FFFFFF", "#EFF2F7", "#E4E8EF"]}
+      locations={[0, 0.55, 1]}
+      start={{ x: 0.1, y: 0 }}
+      end={{ x: 0.9, y: 1 }}
+      style={styles.root}
+    >
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.inner}>
@@ -424,22 +396,18 @@ export default function MiMusicaScreen() {
             </View>
           </View>
 
-          {/* ── Carrusel de tabs con Latido ── */}
+          {/* ── Pills de tabs principales ── */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            decelerationRate="fast"
-            snapToInterval={tileW + TILE_GAP}
-            snapToAlignment="start"
-            style={styles.carouselScroll}
-            contentContainerStyle={[styles.carouselContent, { paddingLeft: 0, paddingRight: TILE_H_PAD, gap: TILE_GAP }]}
+            style={styles.pillRow}
+            contentContainerStyle={styles.pillRowContent}
           >
             {MAIN_TABS.map((tab) => (
-              <CarouselTile
+              <PillTab
                 key={tab.id}
                 tab={tab}
                 sel={mainTab === tab.id}
-                tileW={tileW}
                 onPress={() => handleMainTab(tab.id)}
               />
             ))}
@@ -519,16 +487,16 @@ export default function MiMusicaScreen() {
           </ContentSlide>
         </ScrollView>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  root:     { flex: 1, backgroundColor: "#FFFFFF" },
+  root:     { flex: 1 },
   inner:    { flex: 1 },
   topPanel: {},
 
-  header:    { paddingHorizontal: 20, marginBottom: 16 },
+  header:    { paddingHorizontal: 20, marginBottom: 12 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: -0.4, color: DARK },
@@ -541,22 +509,18 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
 
-  carouselScroll:   { flexGrow: 0, marginTop: 4 },
-  carouselContent:  { paddingBottom: 12, flexDirection: "row" },
-  carouselTile: {
-    aspectRatio: 1,
+  pillRow:        { flexGrow: 0, marginBottom: 4 },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 20, paddingVertical: 10 },
+  pillTab: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
     borderRadius: 999,
     borderWidth: 1,
-    backgroundColor: "rgba(0,0,0,0.03)",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
-    paddingVertical: 6,
-    overflow: "visible",
   },
-  rippleRing:  { borderRadius: 999, borderWidth: 1 },
-  borderFlash: { borderRadius: 999, borderWidth: 1 },
-  carouselTileLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
+  pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: 4 },
 
