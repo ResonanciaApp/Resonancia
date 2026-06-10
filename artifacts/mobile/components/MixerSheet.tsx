@@ -121,15 +121,17 @@ export function MixerSheet() {
     ? (isLightGradient(musicGradient) ? musicGradient : LIGHT_FALLBACK_GRADIENT)
     : musicGradient;
   const palette = {
-    handle:      isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
-    sliderThumb: isLight ? "#BE9650"              : WARM.sliderThumb,
-    sliderTrack: isLight ? "rgba(0,0,0,0.10)"    : WARM.sliderTrack,
-    addText:     isLight ? "rgba(0,0,0,0.32)"    : WARM.addText,
-    separator:   isLight ? "rgba(0,0,0,0.07)"    : WARM.separator,
-    iconColor:   isLight ? "#1A1E2B"             : "#FFFFFF",
-    fg:          isLight ? "#1A1E2B"             : colors.foreground,
-    muted:       isLight ? "#6B7A96"             : colors.mutedForeground,
-    inputBg:     isLight ? "rgba(0,0,0,0.04)"   : "rgba(255,255,255,0.03)",
+    handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
+    sliderThumb:    isLight ? "#BE9650"              : WARM.sliderThumb,
+    sliderTrack:    isLight ? "rgba(0,0,0,0.10)"    : WARM.sliderTrack,
+    addText:        isLight ? "rgba(0,0,0,0.32)"    : WARM.addText,
+    separator:      isLight ? "rgba(0,0,0,0.07)"    : WARM.separator,
+    iconColor:      isLight ? "#1A1E2B"             : "#FFFFFF",
+    fg:             isLight ? "#1A1E2B"             : colors.foreground,
+    muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
+    inputBg:        isLight ? "rgba(0,0,0,0.04)"   : "rgba(255,255,255,0.03)",
+    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"   : "rgba(255,255,255,0.12)",
+    footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(255,255,255,0.45)",
   };
   const { isPremium } = usePremium();
   const {
@@ -505,8 +507,10 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
             >
-              <MaterialCommunityIcons name="clock" size={48} color={palette.iconColor} />
-              <Text style={styles.footerLabel}>
+              <View style={[styles.footerTimerCircle, { backgroundColor: palette.footerCircleBg }]}>
+                <MaterialCommunityIcons name="clock" size={24} color={palette.iconColor} />
+              </View>
+              <Text style={[styles.footerLabel, { color: palette.footerLabel }]}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
               </Text>
             </Pressable>
@@ -517,10 +521,10 @@ export function MixerSheet() {
               style={styles.footerCenter}
               accessibilityRole="button"
             >
-              <View style={styles.footerPlayCircle}>
+              <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
                 <MaterialCommunityIcons
                   name={isPlaying ? "pause" : "play"}
-                  size={70}
+                  size={56}
                   color={palette.iconColor}
                 />
               </View>
@@ -529,10 +533,10 @@ export function MixerSheet() {
             {/* Derecha: Guardar */}
             <View style={styles.footerSide}>
               <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal("new")}>
-                <View style={styles.footerHeartCircle}>
-                  <MaterialCommunityIcons name="heart" size={28} color={palette.iconColor} />
+                <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
+                  <MaterialCommunityIcons name="heart" size={24} color={palette.iconColor} />
                 </View>
-                <Text style={styles.footerLabel}>Guardar</Text>
+                <Text style={[styles.footerLabel, { color: palette.footerLabel }]}>Guardar</Text>
               </Pressable>
             </View>
 
@@ -729,10 +733,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   footerPlayCircle: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -741,17 +744,22 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     letterSpacing: 1.5,
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.45)",
   },
   footerSaveBtn: {
     alignItems: "center",
     gap: 6,
   },
   footerHeartCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  footerTimerCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
   },
