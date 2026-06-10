@@ -26,6 +26,23 @@ con `CAROUSEL_FLOW_MS` (1100ms) las hermanas se quedaban atrás del dedo, y con 
 se adelantan rápidamente y desaceleran suavemente al destino. No bajar de 180ms: el ojo percibe el
 corrimiento como un "snap" duro.
 
+## Microlag al DESLIZAR solo con tiles seleccionadas = sombra SVG sin shadowPath
+
+Síntoma: scroll fluido sin selección; con ≥1 card seleccionada VISIBLE aparece microlag al
+deslizar. Causa: el glifo de la tile seleccionada (glow>0) lleva `shadowColor/shadowRadius`
++ `shadowOpacity` animada sobre contenido SVG. Sin `shadowPath`, iOS deriva la sombra del
+alpha del contenido → **pase OFFSCREEN por frame** al recomponer durante el scroll → frames
+caídos. Sin seleccionar, glow=0 ⇒ sombra invisible ⇒ sin pase ⇒ fluido.
+
+**Fix:** `shouldRasterizeIOS={isSelected || isActivating}` en el `Animated.View` que lleva la
+sombra → cachea capa+sombra en bitmap y lo compone sin recalcular. Gatearlo (no siempre) para
+no rasterizar las no seleccionadas (no tienen sombra; un scale 1.0 → cero blur) ni gastar
+memoria con ~50 tiles. El 1.1 estático de la seleccionada NO pixela el bitmap (rasterizado a
+contentsScale). Reanimated deja de escribir shadowOpacity al asentar el glow → cache estable.
+**Regla general:** cualquier sombra sobre SVG/contenido complejo que se mueva en un scroll =
+candidata a esta jank; preferir shouldRasterizeIOS o un HaloGlow (gradiente radial) sobre la
+sombra derivada del alpha.
+
 ## No tocar: layout animations, reorder del DOM
 
 Cualquier cambio que reintroduzca `LinearTransition`, reorder del array `active` en el momento del

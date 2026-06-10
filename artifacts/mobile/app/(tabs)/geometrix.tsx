@@ -1384,6 +1384,14 @@ function CarouselTile({
         >
           <View style={styles.tileGlyph}>
             <Animated.View
+              // La sombra del glifo (glow) se deriva del alpha del SVG: sin
+              // shadowPath, iOS hace un pase OFFSCREEN por frame al recomponer
+              // durante el scroll → microlag SOLO con tiles seleccionadas
+              // (glow>0) visibles. shouldRasterizeIOS cachea capa+sombra en un
+              // bitmap y lo compone sin recalcular → scroll fluido. Se activa
+              // solo cuando hay sombra (selección/activación) para no gastar
+              // memoria ni rasterizar las no seleccionadas (que no la necesitan).
+              shouldRasterizeIOS={isSelected || isActivating}
               style={[
                 glyphStyle,
                 {
