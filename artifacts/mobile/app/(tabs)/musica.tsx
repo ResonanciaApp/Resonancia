@@ -153,55 +153,27 @@ const PillTab = memo(function PillTab({
   sel: boolean;
   onPress: () => void;
 }) {
-  const iconAnim  = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const running   = useRef<Animated.CompositeAnimation | null>(null);
-
-  const triggerLatido = () => {
-    running.current?.stop();
-    running.current = Animated.parallel([
-      // Pulso de escala en la píldora
-      Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.06, duration: 130, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-        Animated.timing(scaleAnim, { toValue: 1,    duration: 280, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-      ]),
-      // Flash del ícono
-      Animated.sequence([
-        Animated.timing(iconAnim, { toValue: 1, duration: 160, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-        Animated.timing(iconAnim, { toValue: 0, duration: 340, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-      ]),
-    ]);
-    running.current.start();
-    onPress();
-  };
-
-  const iconScale   = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.18] });
-  const iconOpacity = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [sel ? 1 : 0.55, 1] });
   const c = tab.color;
 
   return (
-    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-      <Pressable
-        onPress={triggerLatido}
-        style={[
-          styles.pillTab,
-          sel
-            ? { backgroundColor: DARK, borderColor: "transparent" }
-            : { backgroundColor: "rgba(0,0,0,0.05)", borderColor: "rgba(0,0,0,0.08)" },
-        ]}
-      >
-        <Animated.View style={{ transform: [{ scale: iconScale }], opacity: iconOpacity }}>
-          <MaterialCommunityIcons
-            name={tab.icon as any}
-            size={15}
-            color={sel ? "#FFFFFF" : c}
-          />
-        </Animated.View>
-        <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
-          {tab.label}
-        </Text>
-      </Pressable>
-    </Animated.View>
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.pillTab,
+        sel
+          ? { backgroundColor: DARK, borderColor: "transparent" }
+          : { backgroundColor: "rgba(0,0,0,0.05)", borderColor: "rgba(0,0,0,0.08)" },
+      ]}
+    >
+      <MaterialCommunityIcons
+        name={tab.icon as any}
+        size={15}
+        color={sel ? "#FFFFFF" : c}
+      />
+      <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
+        {tab.label}
+      </Text>
+    </Pressable>
   );
 });
 
