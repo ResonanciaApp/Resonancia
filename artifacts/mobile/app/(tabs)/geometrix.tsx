@@ -1834,6 +1834,11 @@ export default function GeometrixScreen() {
   // Estado cardinal previo (UI thread) para animar el color del badge SOLO al
   // cruzar el umbral, no en cada frame. -1 = sin evaluar (fuerza el primer set).
   const rotCardGuard = useSharedValue(-1);
+  // El indicador cardinal solo se activa si el usuario realmente rotó en este
+  // objetivo (se pone a 1 en onStart del gesto; se limpia al cambiar selección).
+  // Evita que la píldora vire a morado solo por seleccionar una geometría que
+  // esté a 0° (su ángulo por defecto), sin haberla girado nunca.
+  const rotDidRotate = useSharedValue(0);
 
   // ── Drag (arrastrar con un dedo) ─────────────────────────────────────────
   const liveDragX = useSharedValue(0);
@@ -2667,6 +2672,14 @@ export default function GeometrixScreen() {
     rotActive.value = 0;
   }, [pinchTargetId, targetManualAngle, liveRot, rotActive, rotHasTargetSV]);
 
+  // Limpiar el gate del indicador cardinal al cambiar de objetivo: sin esto la
+  // píldora quedaría morada al seleccionar una geometría nueva cuyo ángulo
+  // coincida con un cardinal (0°) sin que el usuario la haya girado nunca.
+  useEffect(() => {
+    rotDidRotate.value = 0;
+    rotCardGuard.value = -1; // fuerza re-evaluación limpia con el nuevo objetivo
+  }, [pinchTargetId, rotDidRotate, rotCardGuard]);
+
   // Gesto de rotación con dos dedos: gira el objetivo en tiempo real. Se confirma
   // a settings al soltar. Deshabilitado cuando hay giro automático.
   const rotationGesture = Gesture.Rotation()
@@ -2680,6 +2693,10 @@ export default function GeometrixScreen() {
       // useEffect de sync lo apaga tras el commit (sin "pop"); en cancelación se
       // apaga aquí en onFinalize.
       rotActive.value = 1;
+      // Marcar que el usuario realmente giró en este objetivo: habilita el
+      // indicador cardinal (sin esto la píldora no vira a morado solo por
+      // seleccionar una geometría que esté a 0°).
+      rotDidRotate.value = 1;
     })
     .onUpdate((e) => {
       // e.rotation viene en radianes; el ángulo manual se guarda en grados.
@@ -2798,12 +2815,14 @@ export default function GeometrixScreen() {
     ({ active, angle, has }) => {
       "worklet";
       let isCard = 0;
-      if (has > 0) {
+      // Solo activar el cardinal si el usuario REALMENTE rotó en este objetivo
+      // (rotDidRotate se pone a 1 en onStart del gesto). Sin este gate, la
+      // píldora viraraba a morado al seleccionar cualquier geometría a 0°
+      // (ángulo por defecto) sin haberla girado nunca.
+      if (has > 0 && rotDidRotate.value > 0) {
         const nearest90 = Math.round(angle / 90) * 90;
         // Umbral fijo 0.5°: la píldora solo vira a azul cuando el ángulo está
-        // prácticamente en el cardinal exacto (0/90/180/270°), no en la zona de
-        // aproximación. El snap animado trae el ángulo al cardinal en el soltado,
-        // momento en que la reacción pone isCard=1 con precisión.
+        // prácticamente en el cardinal exacto (0/90/180/270°).
         const thresh = 0.5;
         isCard = Math.abs(angle - nearest90) < thresh ? 1 : 0;
       }
