@@ -939,7 +939,7 @@ const styles = StyleSheet.create({
   cardShadowWrap: {
     width: "100%",
     aspectRatio: 1,
-    borderRadius: 999,
+    borderRadius: 12,
     borderWidth: 2.5,
     borderColor: "transparent",
     shadowColor: "#000000",
@@ -958,14 +958,14 @@ const styles = StyleSheet.create({
 
   // Anillo de expansión (color se pasa dinámicamente via inline style)
   goldRipple: {
-    borderRadius: 999,
+    borderRadius: 12,
     borderWidth: 2,
   },
 
-  // Capa interior: recorte circular de la imagen (overflow: hidden aquí)
+  // Capa interior: recorte cuadrado de la imagen (overflow: hidden aquí)
   cardClipInner: {
     flex: 1,
-    borderRadius: 999,
+    borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "rgba(190,150,80,0.08)",
   },
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
   },
   activeIconBadge: {
     width: 34, height: 34,
-    borderRadius: 999,
+    borderRadius: 8,
     backgroundColor: "rgba(0,0,0,0.62)",
     alignItems: "center",
     justifyContent: "center",
