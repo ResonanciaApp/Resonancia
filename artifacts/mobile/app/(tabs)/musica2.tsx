@@ -86,11 +86,11 @@ const NATURE_ICONS: Partial<Record<SoundCategoryId, number>> = {
 
 type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores";
 
-const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: SoundCategoryId[] | null }[] = [
-  { id: "popular",        label: "Todos",     icon: "music-note-eighth",  categories: null },
-  { id: "naturaleza",     label: "Naturales", icon: "leaf",               categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
-  { id: "ancestrales",    label: "Sagrados",  icon: "bell",               categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
-  { id: "sintetizadores", label: "Digital",   icon: "sine-wave",          categories: ["solfeggio", "frecuencias"] },
+const MAIN_TABS: { id: MainTabId; label: string; icon: string; color: string; categories: SoundCategoryId[] | null }[] = [
+  { id: "popular",        label: "Todos",     icon: "music-note-eighth", color: "#E8E4DF", categories: null },
+  { id: "naturaleza",     label: "Naturales", icon: "leaf",              color: "#6DBF8A", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
+  { id: "ancestrales",    label: "Sagrados",  icon: "bell",              color: "#D4B44A", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
+  { id: "sintetizadores", label: "Digital",   icon: "sine-wave",         color: "#6BBCDA", categories: ["solfeggio", "frecuencias"] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
@@ -106,6 +106,9 @@ const CarouselTile = memo(function CarouselTile({
   tileW: number;
   onPress: () => void;
 }) {
+  const c = tab.color;          // color base del tab
+  const c50 = c + "80";         // 50% opacidad — para borde y onda
+  const c08 = c + "14";         // ~8% opacidad  — para fondo seleccionado
   // Ring — start at 1 (done = invisible)
   const rippleAnim = useRef(new Animated.Value(1)).current;
   // Border flash — useNativeDriver:false (color property)
@@ -154,25 +157,29 @@ const CarouselTile = memo(function CarouselTile({
   return (
     <Pressable
       onPress={triggerLatido}
-      style={[styles.carouselTile, { width: tileW }, sel && styles.carouselTileSelected]}
+      style={[
+        styles.carouselTile,
+        { width: tileW, borderColor: sel ? c50 : "#1C2740" },
+        sel && { backgroundColor: c08 },
+      ]}
     >
-      {/* Onda expansiva */}
+      {/* Onda expansiva — color del tab al 50% */}
       <Animated.View
         pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
           styles.rippleRing,
-          { transform: [{ scale: rippleScale }], opacity: rippleOpacity },
+          { borderColor: c50, transform: [{ scale: rippleScale }], opacity: rippleOpacity },
         ]}
       />
 
-      {/* Flash del borde — overlay circular semitransparente */}
+      {/* Flash del borde — overlay circular al 50% */}
       <Animated.View
         pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
           styles.borderFlash,
-          { opacity: borderOverlayOpacity },
+          { borderColor: c50, opacity: borderOverlayOpacity },
         ]}
       />
 
@@ -184,14 +191,14 @@ const CarouselTile = memo(function CarouselTile({
         <MaterialCommunityIcons
           name={tab.icon as any}
           size={tileW * 0.38}
-          color={sel ? GOLD : MUTED}
+          color={sel ? c : MUTED}
         />
       </Animated.View>
 
       {/* Label */}
       <Text
         numberOfLines={1}
-        style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
+        style={[styles.carouselTileLabel, { color: sel ? c : MUTED, fontWeight: sel ? "700" : "400" }]}
       >
         {tab.label}
       </Text>
