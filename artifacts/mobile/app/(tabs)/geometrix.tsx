@@ -25,7 +25,9 @@ import Animated, {
   cancelAnimation,
   Easing,
   FadeIn,
+  FadeInDown,
   FadeOut,
+  FadeOutUp,
   interpolateColor,
   LinearTransition,
   runOnJS,
@@ -1548,16 +1550,20 @@ function SettingsSection({
       {/* Línea separadora */}
       <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginBottom: open && hasContent ? 10 : 0 }} />
       {open && hasContent && (
-        <View style={{
-          backgroundColor: "rgba(255,255,255,0.03)",
-          borderRadius: 12,
-          paddingHorizontal: 10,
-          paddingTop: 8,
-          paddingBottom: 10,
-          marginBottom: 4,
-        }}>
+        <Animated.View
+          entering={FadeInDown.duration(220).easing(Easing.out(Easing.quad))}
+          exiting={FadeOutUp.duration(160).easing(Easing.in(Easing.quad))}
+          style={{
+            backgroundColor: "rgba(255,255,255,0.03)",
+            borderRadius: 12,
+            paddingHorizontal: 10,
+            paddingTop: 8,
+            paddingBottom: 10,
+            marginBottom: 4,
+          }}
+        >
           {children}
-        </View>
+        </Animated.View>
       )}
     </View>
   );
