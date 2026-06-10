@@ -61,6 +61,7 @@ import Svg, {
   RadialGradient,
   Rect,
   Stop,
+  Text as SvgText,
 } from "react-native-svg";
 
 import { GeometrixPatternBg } from "@/components/GeometrixPatternBg";
@@ -1378,6 +1379,44 @@ function CarouselTile({
 // Icono "sliders" (ajustes generales) pintado con el degradado dorado del
 // logo Cubo 3, en vez de un color plano. react-native-svg permite stroke con
 // gradiente, así que no hace falta masked-view.
+// Texto con relleno en degradado (sin masked-view): SVG <Text> con LinearGradient.
+function GradientText({
+  text,
+  width,
+  height = 18,
+  fontSize = 13,
+  gradId,
+  stops,
+}: {
+  text: string;
+  width: number;
+  height?: number;
+  fontSize?: number;
+  gradId: string;
+  stops: { offset: number; color: string }[];
+}) {
+  return (
+    <Svg width={width} height={height}>
+      <Defs>
+        <SvgLinearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
+          {stops.map((s, i) => (
+            <Stop key={i} offset={s.offset} stopColor={s.color} />
+          ))}
+        </SvgLinearGradient>
+      </Defs>
+      <SvgText
+        x={0}
+        y={fontSize + 1}
+        fontSize={fontSize}
+        fontWeight="700"
+        fill={`url(#${gradId})`}
+      >
+        {text}
+      </SvgText>
+    </Svg>
+  );
+}
+
 function GoldSlidersIcon({ size = 18 }: { size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -2311,16 +2350,18 @@ export default function GeometrixScreen() {
   }, [loupeVisible, loupeReveal]);
 
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
-  const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean }[] = [
-    { key: "general", icon: "sliders", label: "Ajustes generales", onPress: () => setGeneralOpen(true), gradient: true },
-    { key: "immersive", icon: "maximize", label: "Pantalla completa", onPress: () => setImmersive(true) },
-    { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
+  // `divider: true` dibuja una línea sutil ANTES del ítem (separadores de grupo).
+  const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean; color?: string; divider?: boolean }[] = [
+    { key: "general", icon: "sliders", label: "Ajustes", onPress: () => setGeneralOpen(true), gradient: true },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
-    { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
-    { key: "borrar", icon: "trash-2", label: "Borrar lienzo", onPress: clearCanvas },
+    { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
+    { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
+    { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
+    { key: "cerrar", icon: "log-out", label: "Cerrar lienzo", onPress: () => router.push("/"), divider: true },
+    { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#7d3536" },
     // X para restaurar el menú inferior cuando está oculto (reemplaza la barrita).
-    ...(menuHidden ? [{ key: "showMenu", icon: "x" as keyof typeof Feather.glyphMap, label: "Mostrar menú", onPress: showMenu }] : []),
+    ...(menuHidden ? [{ key: "showMenu", icon: "x" as keyof typeof Feather.glyphMap, label: "Mostrar menú", onPress: showMenu, divider: true }] : []),
   ];
   // Sin geometrías activas se colapsa el desplegable; si el menú está oculto
   // se mantiene para que el usuario siempre pueda restaurarlo con la X.
@@ -3184,9 +3225,9 @@ export default function GeometrixScreen() {
               pointerEvents={pillOpen ? "auto" : "none"}
               style={[styles.pillRow, pillStyle, pillCardinalStyle]}
             >
-              {pillActions.map((a, i) => (
+              {pillActions.map((a) => (
                 <React.Fragment key={a.key}>
-                  {i > 0 && <View style={styles.pillDivider} />}
+                  {a.divider && <View style={styles.pillDivider} />}
                   <Pressable
                     onPress={() => {
                       a.onPress();
@@ -3200,7 +3241,7 @@ export default function GeometrixScreen() {
                     {a.gradient ? (
                       <GoldSlidersIcon size={18} />
                     ) : (
-                      <Feather name={a.icon} size={18} color="#FFFFFF" />
+                      <Feather name={a.icon} size={18} color={a.color ?? "#FFFFFF"} />
                     )}
                   </Pressable>
                 </React.Fragment>
@@ -3299,25 +3340,6 @@ export default function GeometrixScreen() {
                         color={colors.mutedForeground}
                       />
                     </Pressable>
-                    {/* Restablecer: aparece (fade in) cuando la geometría tiene
-                        ajustes personalizados distintos de los defaults; al
-                        tocarlo restaura los defaults y desaparece (fade out). */}
-                    {isGeoModified(iid) && (
-                      <Animated.View
-                        entering={FadeIn.duration(220)}
-                        exiting={FadeOut.duration(220)}
-                      >
-                        <Pressable
-                          onPress={() => resetGeometry(iid)}
-                          style={styles.thumbResetBtn}
-                          hitSlop={6}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Restablecer ${g.name}`}
-                        >
-                          <Text style={styles.thumbResetText}>Restablecer</Text>
-                        </Pressable>
-                      </Animated.View>
-                    )}
                   </Animated.View>
                 );
               })}
@@ -4197,6 +4219,34 @@ export default function GeometrixScreen() {
               )}
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {/* Restablecer: TÍTULO con degradado (sin píldora) que aparece
+                  cuando la geometría tiene ajustes del panel distintos de los
+                  defaults; al tocarlo restaura defaults (preserva transformación). */}
+              {settingsGeo && isGeoModified(settingsGeoId!) && (
+                <Animated.View
+                  entering={FadeIn.duration(220)}
+                  exiting={FadeOut.duration(220)}
+                  style={{ marginRight: 10 }}
+                >
+                  <Pressable
+                    onPress={() => resetGeometry(settingsGeoId!)}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Restablecer ajustes"
+                  >
+                    <GradientText
+                      text="Restablecer"
+                      width={94}
+                      gradId="restablecerGrad"
+                      stops={[
+                        { offset: 0, color: "#5ed1e1" },
+                        { offset: 0.5, color: "#bfc2fe" },
+                        { offset: 1, color: "#e8bddb" },
+                      ]}
+                    />
+                  </Pressable>
+                </Animated.View>
+              )}
               {/* Ocultar / mostrar */}
               {settingsGeo && (
                 <>
@@ -4828,20 +4878,6 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     alignItems: "center",
     justifyContent: "center",
-  },
-  thumbResetBtn: {
-    marginLeft: 6,
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    borderRadius: 999,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(214,168,91,0.55)",
-    backgroundColor: "rgba(190,150,80,0.14)",
-  },
-  thumbResetText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: colors.accent,
   },
   menuBackdrop: {
     flex: 1,
