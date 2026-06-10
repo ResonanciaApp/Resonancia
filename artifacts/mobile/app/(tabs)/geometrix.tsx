@@ -2868,7 +2868,9 @@ export default function GeometrixScreen() {
   // degradado seleccionado o, por defecto, el de Inicio; ambos modulados por
   // el slider de brillo de Ajustes generales.
   const bgFactor = brightnessFactor(master.bgBrightness);
-  const selectedBg = bgGradientColors(master.bgGradientId);
+  const selectedBg = master.bgColor
+    ? ([master.bgColor, master.bgColor] as string[])
+    : bgGradientColors(master.bgGradientId);
   const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
@@ -3821,21 +3823,40 @@ export default function GeometrixScreen() {
             {/* ── Fondo ────────────────────────────────────────────────── */}
             <SettingsSection
               title="Fondo"
+              isModified={
+                master.bgColor != null ||
+                master.bgGradientId != null ||
+                master.bgBrightness !== 0.5 ||
+                master.bgPattern != null
+              }
+              onReset={() =>
+                setMaster((m) => ({
+                  ...m,
+                  bgColor: null,
+                  bgGradientId: null,
+                  bgBrightness: 0.5,
+                  bgPattern: null,
+                }))
+              }
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               <Text style={styles.fieldLabel}>Color de fondo</Text>
-              <View style={styles.swatchRow}>
+              {/* Degradados */}
+              <View style={[styles.swatchRow, { marginTop: 10 }]}>
                 <Pressable
                   onPress={() =>
                     setMaster((m) => ({ ...m, bgColor: null, bgGradientId: null }))
                   }
-                  style={[styles.swatch, !master.bgGradientId && styles.swatchOn]}
+                  style={[
+                    styles.swatch,
+                    !master.bgGradientId && !master.bgColor && styles.swatchOn,
+                  ]}
                   accessibilityRole="button"
                   accessibilityLabel="Fondo por defecto"
                 >
                   <GradientSwatch
                     colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
-                    size={20}
+                    size={24}
                   />
                 </Pressable>
                 {BG_GRADIENTS.map((gr) => {
@@ -3850,7 +3871,27 @@ export default function GeometrixScreen() {
                       accessibilityRole="button"
                       accessibilityLabel={`Fondo degradado ${gr.id}`}
                     >
-                      <GradientSwatch colors={gr.colors} size={20} />
+                      <GradientSwatch colors={gr.colors} size={24} />
+                    </Pressable>
+                  );
+                })}
+              </View>
+              {/* Sólidos */}
+              <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Color sólido</Text>
+              <View style={[styles.swatchRow, { marginTop: 8 }]}>
+                {PALETTE.map((c) => {
+                  const on = master.bgColor === c;
+                  return (
+                    <Pressable
+                      key={`bgsolid-${c}`}
+                      onPress={() =>
+                        setMaster((m) => ({ ...m, bgColor: c, bgGradientId: null }))
+                      }
+                      style={[styles.swatch, on && styles.swatchOn]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Fondo sólido ${c}`}
+                    >
+                      <View style={[styles.swatchFill, { backgroundColor: c }]} />
                     </Pressable>
                   );
                 })}
@@ -3886,7 +3927,7 @@ export default function GeometrixScreen() {
                       setMaster((m) => ({
                         ...m,
                         bgPattern: v
-                          ? { geoId: "flor-vida", opacity: 0.08, tileSize: 40, spacing: 1 }
+                          ? { geoId: "flor-vida", opacity: 0.08, tileSize: 22, spacing: 1 }
                           : null,
                       }));
                     }}
