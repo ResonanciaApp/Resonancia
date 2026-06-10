@@ -208,19 +208,23 @@ const ContentSlide = memo(function ContentSlide({
 }) {
   const slideX  = useRef(new Animated.Value(dir === "right" ? 38 : -38)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+  const [childReady, setChildReady] = useState(false);
 
   useLayoutEffect(() => {
+    // Arrancar animación en native thread antes de montar hijos pesados
     const anim = Animated.parallel([
       Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true }),
       Animated.timing(slideX,  { toValue: 0, duration: 220, useNativeDriver: true }),
     ]);
     anim.start();
-    return () => anim.stop();
+    // Diferir el montaje del grid hasta después del primer frame
+    const id = setTimeout(() => setChildReady(true), 0);
+    return () => { anim.stop(); clearTimeout(id); };
   }, []);
 
   return (
     <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>
-      {children}
+      {childReady ? children : null}
     </Animated.View>
   );
 });
