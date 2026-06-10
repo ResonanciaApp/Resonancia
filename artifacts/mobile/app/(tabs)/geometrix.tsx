@@ -3045,7 +3045,7 @@ export default function GeometrixScreen() {
         <View style={styles.header}>
           <View style={styles.headerText}>
             <View style={styles.titleRow}>
-              <Text style={styles.title}>Geometrix</Text>
+              <Text style={[styles.title, { color: isLight ? "#1A2040" : "#FFFFFF" }]}>Geometrix</Text>
               {/* Logo cubo-3 inline, a la derecha del título. */}
               <Image
                 source={require("@/assets/images/geometrix/cubo-3.png")}
