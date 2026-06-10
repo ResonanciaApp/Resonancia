@@ -59,6 +59,7 @@ import Svg, {
   G,
   Line,
   LinearGradient as SvgLinearGradient,
+  Path,
   RadialGradient,
   Rect,
   Stop,
@@ -374,6 +375,11 @@ function GeometryLayer({
   pinchActiveSV,
   liveAngleSV,
   rotActiveSV,
+  holdModeSV,
+  holdScaleSV,
+  holdScaleActive,
+  holdRotDeltaDeg,
+  holdRotActive,
   masterOpacity = 1,
   motion = true,
   glow = 0,
@@ -403,6 +409,16 @@ function GeometryLayer({
       su manualAngle confirmado aunque liveAngleSV esté desincronizado (evita el
       "pop" al cambiar de objetivo). */
   rotActiveSV?: SharedValue<number>;
+  /** Modo Hold: 1 cuando todas las capas se transforman a la vez. */
+  holdModeSV?: SharedValue<number>;
+  /** Factor de escala del pellizco Hold (1=sin cambio). */
+  holdScaleSV?: SharedValue<number>;
+  /** Gate del pellizco Hold: 1 durante el gesto. */
+  holdScaleActive?: SharedValue<number>;
+  /** Delta de rotación Hold en grados. */
+  holdRotDeltaDeg?: SharedValue<number>;
+  /** Gate de rotación Hold: 1 durante el gesto. */
+  holdRotActive?: SharedValue<number>;
   /** Opacidad maestra (panel general): multiplica la de esta capa. */
   masterOpacity?: number;
   /** Movimiento global (panel general): si es false, congela giro + respiración. */
@@ -589,17 +605,25 @@ function GeometryLayer({
   // el worklet conserva el closure viejo (liveZoomSV undefined → retorna 1) y el
   // pellizco no escalaría el nuevo objetivo cuando dos geometrías comparten zoom.
   const pinchScaleSV = useDerivedValue(() => {
+    // Hold mode: todas las capas aplican el mismo factor de escala incremental.
+    if (holdModeSV != null && holdModeSV.value === 1 && holdScaleActive != null && holdScaleActive.value === 1 && holdScaleSV != null) {
+      return holdScaleSV.value;
+    }
+    // Modo normal: solo la capa objetivo (liveZoomSV pasado solo al target).
     if (liveZoomSV == null) return 1;
     if (pinchActiveSV != null && pinchActiveSV.value === 0) return 1;
     const r = liveZoomSV.value / safeZoom;
     return Number.isFinite(r) && r > 0 ? r : 1;
-  }, [safeZoom, liveZoomSV, pinchActiveSV]);
+  }, [safeZoom, liveZoomSV, pinchActiveSV, holdModeSV, holdScaleSV, holdScaleActive]);
   const aStyle = useAnimatedStyle(() => {
     const breatheScale = breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1;
     // Giro: automático (rot) > rotación en vivo (liveAngleSV mientras rotActiveSV
     // vale 1, UI thread, sin re-render por frame) > ángulo confirmado en settings.
     let angleDeg: number;
-    if (spin) {
+    if (holdModeSV != null && holdModeSV.value === 1 && holdRotActive != null && holdRotActive.value === 1 && holdRotDeltaDeg != null) {
+      // Hold mode: ángulo propio de cada capa + delta compartido del gesto.
+      angleDeg = committedAngle + holdRotDeltaDeg.value;
+    } else if (spin) {
       angleDeg = rot.value * 360 * dir;
     } else if (liveAngleSV != null && rotActiveSV != null && rotActiveSV.value === 1) {
       angleDeg = liveAngleSV.value;
@@ -781,6 +805,14 @@ type CanvasLayerProps = {
   pinchActiveSV?: SharedValue<number>;
   liveAngleSV?: SharedValue<number>;
   rotActiveSV?: SharedValue<number>;
+  holdModeSV?: SharedValue<number>;
+  holdScaleSV?: SharedValue<number>;
+  holdScaleActive?: SharedValue<number>;
+  holdDragDeltaX?: SharedValue<number>;
+  holdDragDeltaY?: SharedValue<number>;
+  holdDragActive?: SharedValue<number>;
+  holdRotDeltaDeg?: SharedValue<number>;
+  holdRotActive?: SharedValue<number>;
   masterOpacity?: number;
   motion?: boolean;
   glow?: number;
@@ -801,11 +833,28 @@ function CanvasLayer({
   pinchActiveSV,
   liveAngleSV,
   rotActiveSV,
+  holdModeSV,
+  holdScaleSV,
+  holdScaleActive,
+  holdDragDeltaX,
+  holdDragDeltaY,
+  holdDragActive,
+  holdRotDeltaDeg,
+  holdRotActive,
   masterOpacity,
   motion,
   glow,
 }: CanvasLayerProps) {
   const posStyle = useAnimatedStyle(() => {
+    // Hold mode: todas las capas se desplazan en grupo con el mismo delta.
+    if (holdModeSV != null && holdModeSV.value === 1 && holdDragActive != null && holdDragActive.value === 1 && holdDragDeltaX != null && holdDragDeltaY != null) {
+      return {
+        transform: [
+          { translateX: committedX + holdDragDeltaX.value },
+          { translateY: committedY + holdDragDeltaY.value },
+        ],
+      };
+    }
     const dragging = isTarget && dragActive.value === 1;
     const tx = dragging ? liveDragX.value : committedX;
     const ty = dragging ? liveDragY.value : committedY;
@@ -826,6 +875,11 @@ function CanvasLayer({
         pinchActiveSV={pinchActiveSV}
         liveAngleSV={liveAngleSV}
         rotActiveSV={rotActiveSV}
+        holdModeSV={holdModeSV}
+        holdScaleSV={holdScaleSV}
+        holdScaleActive={holdScaleActive}
+        holdRotDeltaDeg={holdRotDeltaDeg}
+        holdRotActive={holdRotActive}
         masterOpacity={masterOpacity}
         motion={motion}
         glow={glow}
@@ -1445,6 +1499,20 @@ function GradientText({
   );
 }
 
+function HandIcon({ size = 18, color = "#7a879d" }: { size?: number; color?: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8l-1.5-1.5a2 2 0 0 0-2.83 2.83L4 17a6 6 0 0 0 4.24 1.75L10 19a6 6 0 0 0 6-6v-2a2 2 0 0 0-4 0Z"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
 function GoldSlidersIcon({ size = 18 }: { size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -1850,6 +1918,24 @@ export default function GeometrixScreen() {
   // re-render por frame; en reposo usa su offset confirmado. Se apaga tras el
   // commit (useEffect de sync) para no "popear" a la posición previa.
   const dragActive = useSharedValue(0);
+  // ── Hold mode (transformación grupal) ────────────────────────────────────
+  // Estado React + mirror SharedValue (para worklets sin re-render por frame).
+  const [holdMode, setHoldMode] = useState(false);
+  const holdModeSV = useSharedValue(0);
+  useEffect(() => { holdModeSV.value = holdMode ? 1 : 0; }, [holdMode, holdModeSV]);
+  // Auto-desactivar si queda menos de 2 capas activas.
+  useEffect(() => { if (active.length < 2 && holdMode) setHoldMode(false); }, [active.length, holdMode]);
+  // Pellizco Hold: factor de escala incremental (no ratio, sino el e.scale del gesto).
+  const holdScaleSV = useSharedValue(1);
+  const holdScaleActive = useSharedValue(0);
+  // Rotación Hold: delta en grados desde el inicio del gesto.
+  const holdRotDeltaDeg = useSharedValue(0);
+  const holdRotActive = useSharedValue(0);
+  // Drag Hold: desplazamiento incremental desde el inicio del gesto.
+  const holdDragDeltaX = useSharedValue(0);
+  const holdDragDeltaY = useSharedValue(0);
+  const holdDragActive = useSharedValue(0);
+
   // Líneas guía de snap (UI thread): offset detectado + on/off, sin estado React.
   const snapXSV = useSharedValue(0);
   const snapXOn = useSharedValue(0);
@@ -2292,6 +2378,62 @@ export default function GeometrixScreen() {
     [updateSetting],
   );
 
+  // ── Commits del modo Hold ────────────────────────────────────────────────
+  // Aplican la transformación incremental a TODAS las capas activas a la vez.
+
+  const commitHoldZoom = useCallback(
+    (scale: number) => {
+      if (!Number.isFinite(scale) || scale <= 0) return;
+      setSettings((prev) => {
+        const next = { ...prev };
+        active.forEach((id) => {
+          const base = baseOf(id);
+          const cur = prev[id] ?? defaultSettings(base);
+          const prevZoom = Number.isFinite(cur.zoom) && (cur.zoom ?? 0) > 0 ? (cur.zoom ?? 1) : 1;
+          const newZoom = Math.min(6, Math.max(0.1, prevZoom * scale));
+          next[id] = { ...cur, zoom: newZoom };
+        });
+        return next;
+      });
+    },
+    [active, setSettings],
+  );
+
+  const commitHoldAngle = useCallback(
+    (deltaDeg: number) => {
+      if (!Number.isFinite(deltaDeg)) return;
+      setSettings((prev) => {
+        const next = { ...prev };
+        active.forEach((id) => {
+          const base = baseOf(id);
+          const cur = prev[id] ?? defaultSettings(base);
+          const prevAngle = Number.isFinite(cur.manualAngle) ? (cur.manualAngle ?? 0) : 0;
+          next[id] = { ...cur, manualAngle: prevAngle + deltaDeg };
+        });
+        return next;
+      });
+    },
+    [active, setSettings],
+  );
+
+  const commitHoldOffset = useCallback(
+    (dx: number, dy: number) => {
+      if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
+      setSettings((prev) => {
+        const next = { ...prev };
+        active.forEach((id) => {
+          const base = baseOf(id);
+          const cur = prev[id] ?? defaultSettings(base);
+          const px = Number.isFinite(cur.offsetX) ? (cur.offsetX ?? 0) : 0;
+          const py = Number.isFinite(cur.offsetY) ? (cur.offsetY ?? 0) : 0;
+          next[id] = { ...cur, offsetX: px + dx, offsetY: py + dy };
+        });
+        return next;
+      });
+    },
+    [active, setSettings],
+  );
+
   // Helpers para construir el snapshot de la composición actual.
   const buildSnapshot = useCallback(() => {
     const activeSettings: Record<string, GeoSettings> = {};
@@ -2596,32 +2738,41 @@ export default function GeometrixScreen() {
     snapTargets.value = targets;
   }, [pinchTargetId, active, settings, getSettings, snapTargets, guides, canvasSide]);
 
-  // Gesto de pellizco: escala libre del objetivo, permitiendo pasar los
-  // márgenes (efecto wallpaper). Se confirma a settings al soltar.
+  // Gesto de pellizco: escala libre del objetivo (o todas en Hold mode).
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       isPinching.value = true;
-      pinchActive.value = 1;
       isLoupeActive.value = false;
-      pinchStart.value = livePinch.value;
-      // Ocultar la lupa en cuanto entra el segundo dedo: evita que el estado
-      // mixto (lupa + pellizco simultáneo) bloquee el zoom.
       runOnJS(setLoupeVisible)(false);
+      if (holdModeSV.value === 1) {
+        holdScaleSV.value = 1;
+        holdScaleActive.value = 1;
+      } else {
+        pinchActive.value = 1;
+        pinchStart.value = livePinch.value;
+      }
     })
     .onUpdate((e) => {
-      livePinch.value = Math.min(6, Math.max(0.1, pinchStart.value * e.scale));
+      if (holdModeSV.value === 1) {
+        const s = e.scale;
+        holdScaleSV.value = Number.isFinite(s) && s > 0 ? s : 1;
+      } else {
+        livePinch.value = Math.min(6, Math.max(0.1, pinchStart.value * e.scale));
+      }
     })
     .onEnd(() => {
-      if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
+      if (holdModeSV.value === 1) {
+        runOnJS(commitHoldZoom)(holdScaleSV.value);
+      } else {
+        if (pinchTargetId) runOnJS(commitZoom)(pinchTargetId, livePinch.value);
+      }
     })
-    // SIEMPRE corre (éxito o cancelación), después de onEnd. Restablece el flag
-    // de pellizco. Si el gesto se CANCELÓ (success=false), onEnd no corrió → no
-    // hubo commit → el useEffect de sync no se dispara (settings no cambia), así
-    // que hay que revertir aquí: livePinch al inicio del gesto y cerrar el gate
-    // (pinchActive=0) para que el objetivo vuelva a su tamaño confirmado.
     .onFinalize((_e, success) => {
       isPinching.value = false;
-      if (!success) {
+      if (holdModeSV.value === 1) {
+        holdScaleSV.value = 1;
+        holdScaleActive.value = 0;
+      } else if (!success) {
         livePinch.value = pinchStart.value;
         pinchActive.value = 0;
       }
@@ -2680,45 +2831,47 @@ export default function GeometrixScreen() {
     rotCardGuard.value = -1; // fuerza re-evaluación limpia con el nuevo objetivo
   }, [pinchTargetId, rotDidRotate, rotCardGuard]);
 
-  // Gesto de rotación con dos dedos: gira el objetivo en tiempo real. Se confirma
-  // a settings al soltar. Deshabilitado cuando hay giro automático.
+  // Gesto de rotación con dos dedos: gira el objetivo (o todas en Hold mode).
   const rotationGesture = Gesture.Rotation()
-    .enabled(canManualRotate)
+    .enabled(holdMode || canManualRotate)
     .onStart(() => {
-      rotStart.value = liveRot.value;
-      rotSucceeded.value = false;
-      // Re-evaluar el estado cardinal desde cero en cada nuevo gesto.
       rotCardGuard.value = -1;
-      // Activar el ángulo en vivo (UI thread). En éxito sigue 1 hasta que el
-      // useEffect de sync lo apaga tras el commit (sin "pop"); en cancelación se
-      // apaga aquí en onFinalize.
-      rotActive.value = 1;
-      // Marcar que el usuario realmente giró en este objetivo: habilita el
-      // indicador cardinal (sin esto la píldora no vira a morado solo por
-      // seleccionar una geometría que esté a 0°).
-      rotDidRotate.value = 1;
+      rotSucceeded.value = false;
+      if (holdModeSV.value === 1) {
+        holdRotDeltaDeg.value = 0;
+        holdRotActive.value = 1;
+      } else {
+        rotStart.value = liveRot.value;
+        rotActive.value = 1;
+        rotDidRotate.value = 1;
+      }
     })
     .onUpdate((e) => {
-      // e.rotation viene en radianes; el ángulo manual se guarda en grados.
-      const raw = rotStart.value + (e.rotation * 180) / Math.PI;
-      // Defensa ante valores corruptos: nunca propagar NaN al transform/settings.
-      if (!Number.isFinite(raw)) return;
-      // Solo se escribe el shared value: el giro se aplica en el UI thread
-      // (useAnimatedStyle) sin re-render de React por frame (igual que el zoom).
-      liveRot.value = raw;
+      const deltaDeg = (e.rotation * 180) / Math.PI;
+      if (!Number.isFinite(deltaDeg)) return;
+      if (holdModeSV.value === 1) {
+        holdRotDeltaDeg.value = deltaDeg;
+      } else {
+        const raw = rotStart.value + deltaDeg;
+        if (!Number.isFinite(raw)) return;
+        liveRot.value = raw;
+      }
     })
     .onEnd(() => {
       rotSucceeded.value = true;
-      if (pinchTargetId && Number.isFinite(liveRot.value)) {
-        runOnJS(commitAngle)(pinchTargetId, liveRot.value);
+      if (holdModeSV.value === 1) {
+        runOnJS(commitHoldAngle)(holdRotDeltaDeg.value);
+      } else {
+        if (pinchTargetId && Number.isFinite(liveRot.value)) {
+          runOnJS(commitAngle)(pinchTargetId, liveRot.value);
+        }
       }
     })
-    // SIEMPRE corre (éxito o cancelación). En éxito, rotActive sigue 1 hasta que
-    // el useEffect de sync (tras el commit) lo apaga, así no hay frame con el
-    // ángulo previo. En cancelación, revierte al ángulo de partida y apaga el
-    // gate aquí para no acumular un valor sin guardar.
     .onFinalize(() => {
-      if (!rotSucceeded.value) {
+      if (holdModeSV.value === 1) {
+        holdRotDeltaDeg.value = 0;
+        holdRotActive.value = 0;
+      } else if (!rotSucceeded.value) {
         liveRot.value = rotStart.value;
         rotActive.value = 0;
       }
@@ -2732,22 +2885,26 @@ export default function GeometrixScreen() {
     .minPointers(1)
     .maxPointers(1)
     .onStart(() => {
-      // Lupa activa → no capturar nueva baseline; longPress.onStart ya la reseteó.
       if (isLoupeActive.value) return;
-      // liveDragX/Y ya están sincronizados con el offset confirmado del objetivo
-      // via useEffect — leerlos desde el worklet es seguro (son shared values).
-      dragStartX.value = liveDragX.value;
-      dragStartY.value = liveDragY.value;
-      // Activar el desplazamiento en vivo (UI thread). En éxito sigue 1 hasta que
-      // el useEffect de sync lo apaga tras el commit (sin "pop"); en cancelación
-      // se apaga aquí en onFinalize.
-      dragActive.value = 1;
+      if (holdModeSV.value === 1) {
+        holdDragDeltaX.value = 0;
+        holdDragDeltaY.value = 0;
+        holdDragActive.value = 1;
+      } else {
+        dragStartX.value = liveDragX.value;
+        dragStartY.value = liveDragY.value;
+        dragActive.value = 1;
+      }
     })
     .onUpdate((e) => {
-      // Lupa activa → solo seguir al dedo; la geometría queda completamente bloqueada.
       if (isLoupeActive.value) {
         loupeX.value = e.x;
         loupeY.value = e.y;
+        return;
+      }
+      if (holdModeSV.value === 1) {
+        holdDragDeltaX.value = e.translationX;
+        holdDragDeltaY.value = e.translationY;
         return;
       }
       if (!pinchTargetId) return;
@@ -2755,9 +2912,6 @@ export default function GeometrixScreen() {
       let ry = dragStartY.value + e.translationY;
 
       // ── Snap a centros ─────────────────────────────────────────────────────
-      // Compara el offset candidato contra cada target (otras geometrías y el
-      // centro del lienzo). Si entra en el umbral, engancha y guarda el valor
-      // para dibujar la línea guía.
       const SNAP = 8;
       let sx: number | null = null;
       let sy: number | null = null;
@@ -2777,24 +2931,24 @@ export default function GeometrixScreen() {
 
       liveDragX.value = rx;
       liveDragY.value = ry;
-      // Guías de snap por shared value (UI thread), sin estado React: tanto la
-      // posición de la capa como las líneas guía se actualizan sin re-render por
-      // frame (igual que el zoom).
       if (sx !== null) { snapXSV.value = sx; snapXOn.value = 1; } else { snapXOn.value = 0; }
       if (sy !== null) { snapYSV.value = sy; snapYOn.value = 1; } else { snapYOn.value = 0; }
     })
     .onEnd(() => {
-      if (pinchTargetId) {
+      if (holdModeSV.value === 1) {
+        runOnJS(commitHoldOffset)(holdDragDeltaX.value, holdDragDeltaY.value);
+      } else if (pinchTargetId) {
         runOnJS(commitOffset)(pinchTargetId, liveDragX.value, liveDragY.value);
       }
     })
-    // SIEMPRE corre. Oculta las guías de snap. En éxito, dragActive sigue 1 hasta
-    // que el useEffect de sync (tras el commit) lo apaga, así no hay frame con la
-    // posición previa. En cancelación, revierte a la baseline y apaga el gate aquí.
     .onFinalize((_e, success) => {
       snapXOn.value = 0;
       snapYOn.value = 0;
-      if (!success) {
+      if (holdModeSV.value === 1) {
+        holdDragDeltaX.value = 0;
+        holdDragDeltaY.value = 0;
+        holdDragActive.value = 0;
+      } else if (!success) {
         liveDragX.value = dragStartX.value;
         liveDragY.value = dragStartY.value;
         dragActive.value = 0;
@@ -3205,6 +3359,14 @@ export default function GeometrixScreen() {
                         pinchActiveSV={pinchActive}
                         liveAngleSV={isTarget ? liveRot : undefined}
                         rotActiveSV={rotActive}
+                        holdModeSV={holdModeSV}
+                        holdScaleSV={holdScaleSV}
+                        holdScaleActive={holdScaleActive}
+                        holdDragDeltaX={holdDragDeltaX}
+                        holdDragDeltaY={holdDragDeltaY}
+                        holdDragActive={holdDragActive}
+                        holdRotDeltaDeg={holdRotDeltaDeg}
+                        holdRotActive={holdRotActive}
                         masterOpacity={master.opacity}
                         motion={master.motion}
                         glow={master.glow}
@@ -3325,13 +3487,35 @@ export default function GeometrixScreen() {
 
           </View>
 
-          {/* Refresh (actualizar composición) — lado izquierdo, espejo de
-              actionTop. El borrar lienzo vive ahora en el desplegable. */}
+          {/* Controles lado izquierdo: Hold mode + actualizar composición. */}
           <Animated.View
             pointerEvents={hasActive ? "auto" : "none"}
             style={[styles.actionLeft, trashAnimStyle]}
           >
             <View style={styles.actionTopRow}>
+              {/* Toggle Hold: visible con ≥2 capas activas. */}
+              {active.length >= 2 && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Pressable
+                    onPress={() => setHoldMode((v) => !v)}
+                    style={[
+                      styles.actionTopBtn,
+                      holdMode && {
+                        backgroundColor: "rgba(190,150,80,0.18)",
+                        borderRadius: 8,
+                      },
+                    ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={holdMode ? "Desactivar modo Hold" : "Activar modo Hold (transforma todas las capas)"}
+                    hitSlop={4}
+                  >
+                    <HandIcon
+                      size={17}
+                      color={holdMode ? colors.primary : colors.mutedForeground}
+                    />
+                  </Pressable>
+                </Animated.View>
+              )}
               {editingCreation && isDirty && (
                 <Animated.View
                   entering={FadeIn.duration(260)}
