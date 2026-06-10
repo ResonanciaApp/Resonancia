@@ -235,25 +235,29 @@ const SoundCard = memo(function SoundCard({
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
+      {/* Capa exterior: sombra + borde + transform (sin overflow para que la sombra sea visible) */}
       <Animated.View
         style={[
-          styles.cardImageWrap,
-          decorated && styles.cardImageWrapActive,
+          styles.cardShadowWrap,
+          decorated && styles.cardShadowWrapActive,
           { transform: [{ rotate }, { scale }], borderColor: borderCol },
         ]}
       >
-        {image ? (
-          <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
-        )}
-        {!decorated && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)", borderRadius: 999 }]} />
-        )}
+        {/* Capa interior: recorte circular de la imagen */}
+        <View style={styles.cardClipInner}>
+          {image ? (
+            <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
+          )}
+          {!decorated && (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
+          )}
+        </View>
         {locked && (
           <Image
             source={require("../../assets/images/estrella-premium.png")}
-            style={[styles.lockBadge, { width: 20, height: 20 }]}
+            style={styles.lockBadge}
             contentFit="contain"
           />
         )}
@@ -545,23 +549,33 @@ const styles = StyleSheet.create({
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
   soundCard: { width: "31%" },
-  cardImageWrap: {
-    width: "77%",
+
+  // Capa exterior: sombra dorada (sin overflow: hidden para que la sombra sea visible)
+  cardShadowWrap: {
+    width: "82%",
     aspectRatio: 1,
     alignSelf: "center",
-    overflow: "hidden",
     borderRadius: 999,
-    borderWidth: 3,
+    borderWidth: 2.5,
     borderColor: "transparent",
   },
-  cardImageWrapActive: {
+  cardShadowWrapActive: {
     shadowColor: GOLD,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.55,
+    shadowRadius: 14,
+    elevation: 10,
   },
+
+  // Capa interior: recorte circular de la imagen (overflow: hidden aquí)
+  cardClipInner: {
+    flex: 1,
+    borderRadius: 999,
+    overflow: "hidden",
+    backgroundColor: "rgba(190,150,80,0.08)",
+  },
+
   cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
   soundName:  { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.1, textAlign: "center", color: DARK },
-  lockBadge:  { position: "absolute", top: 4, right: 4 },
+  lockBadge:  { position: "absolute", top: 4, right: 4, width: 20, height: 20 },
 });
