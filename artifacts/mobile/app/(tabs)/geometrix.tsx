@@ -2,6 +2,7 @@
  * GEOMETRIX — galería de geometrías sagradas + fondo animado interactivo.
  * El usuario activa geometrías por capas para componer un fondo en vivo.
  */
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -1591,11 +1592,24 @@ export default function GeometrixScreen() {
   // El menú inferior se esconde al entrar a Geometrix (más espacio para el
   // lienzo); cuando está oculto solo hay que despejar la safe area + la
   // pestañita de reaparición, no la tab bar completa.
-  const { requestHide, showMenu, hidden: menuHidden, musicTheme } = useTabBarVisibility();
+  const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
   const bottomReserve = menuHidden ? bottomPb : tabBarHeight;
 
-  // ── Tema claro / oscuro (compartido con Mi Música) ─────────────────────────
-  const isLight = musicTheme === "claro";
+  // ── Tema claro / oscuro PROPIO de Geometrix (independiente de Mi Música) ───
+  const [geoTheme, setGeoThemeState] = useState<"claro" | "azul">("azul");
+  // Carga la preferencia guardada al montar.
+  useEffect(() => {
+    AsyncStorage.getItem("@resonance_geo_theme").then((v) => {
+      if (v === "claro" || v === "azul") setGeoThemeState(v);
+    });
+  }, []);
+  const toggleGeoTheme = useCallback(() => {
+    const next = geoTheme === "azul" ? "claro" : "azul";
+    setGeoThemeState(next);
+    AsyncStorage.setItem("@resonance_geo_theme", next);
+  }, [geoTheme]);
+
+  const isLight = geoTheme === "claro";
   // SharedValue para que los estilos animados (UI thread) puedan leer el tema.
   const isLightSV = useSharedValue(isLight ? 1 : 0);
   useEffect(() => { isLightSV.value = isLight ? 1 : 0; }, [isLight, isLightSV]);
@@ -1650,6 +1664,8 @@ export default function GeometrixScreen() {
     pillDivider:      isLight ? "rgba(0,0,0,0.12)"     : "#9298d0",
     btnUnsel:         isLight ? "rgba(0,0,0,0.04)"     : "rgba(255,255,255,0.04)",
     btnBorder:        isLight ? "rgba(0,0,0,0.10)"     : "rgba(255,255,255,0.09)",
+    rootBg:           isLight ? "#F2F4FA"              : "#06070F",
+    canvasLight:      ["#F4F6FA", "#EAECF2", "#DDE0E8"] as readonly [string, string, string],
   }), [isLight]);
 
   // Persistencia local de composiciones ("Mis creaciones").
@@ -2996,14 +3012,16 @@ export default function GeometrixScreen() {
   const selectedBg = master.bgColor
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
-  const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
+  const canvasBgColors = isLight
+    ? geo.canvasLight
+    : scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
   const frontIds = active.filter((id) => !effActivating.has(id));
   const tileItemW = tileW + 8; // ancho de slot = tile + marginRight (tileWrap)
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: geo.rootBg }]}>
       <LinearGradient
         colors={geo.homeGradient}
         start={{ x: 0.5, y: 0 }}
@@ -3033,6 +3051,20 @@ export default function GeometrixScreen() {
               />
             </View>
           </View>
+          {/* Toggle claro/oscuro PROPIO de Geometrix */}
+          <Pressable
+            onPress={toggleGeoTheme}
+            hitSlop={12}
+            style={[styles.themeBtn, { backgroundColor: geo.searchBarBg, marginRight: 6 }]}
+            accessibilityRole="button"
+            accessibilityLabel={isLight ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}
+          >
+            <Feather
+              name={isLight ? "moon" : "sun"}
+              size={15}
+              color={colors.mutedForeground}
+            />
+          </Pressable>
           {/* Tema de fondo: si NO suena nada, abre el buscador; si YA está
               sonando, el mismo botón detiene y resetea el reproductor. */}
           <Pressable
