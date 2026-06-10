@@ -1753,6 +1753,10 @@ export default function GeometrixScreen() {
   // vacío) pero NO crece al desplegar una sección — el contenido scrollea y la
   // vista previa (anclada a este alto) mantiene tamaño y posición.
   const [frozenSheetH, setFrozenSheetH] = useState<number | null>(null);
+  // Mismo congelado de alto para el panel de ajustes generales.
+  const [frozenGeneralSheetH, setFrozenGeneralSheetH] = useState<number | null>(
+    null,
+  );
   // Modo inmersión: solo el fondo animado, sin interfaz.
   const [immersive, setImmersive] = useState(false);
   // Nombre de la composición recién guardada → muestra el popup temático.
@@ -2507,6 +2511,11 @@ export default function GeometrixScreen() {
     if (settingsGeoId == null) setFrozenSheetH(null);
   }, [settingsGeoId]);
 
+  // Mismo descongelado al cerrar el panel de ajustes generales.
+  useEffect(() => {
+    if (!generalOpen) setFrozenGeneralSheetH(null);
+  }, [generalOpen]);
+
   // Geometría que responde al pellizco: la seleccionada, o la última activa.
   const pinchTargetId =
     selectedId && active.includes(selectedId)
@@ -2846,11 +2855,11 @@ export default function GeometrixScreen() {
   const previewSize = sheetHeight
     ? Math.max(96, Math.min((width - 32) * 0.744, previewFree * 0.936))
     : 0;
-  // Vista previa del panel general (mismo cálculo, anclada a su propio sheet).
+  // Vista previa del panel general: mismo tamaño que la de ajustes
+  // personalizados (idéntica fórmula), anclada a su propio sheet.
   const generalPreviewFree = height - generalSheetHeight - insets.top - 12 - 36;
-  // Vista previa general reducida un 30% para dejar más aire a los ajustes.
   const generalPreviewSize = generalSheetHeight
-    ? Math.max(84, Math.min(width - 32, generalPreviewFree) * 0.7)
+    ? Math.max(96, Math.min((width - 32) * 0.744, generalPreviewFree * 0.936))
     : 0;
   // En inmersión la geometría llena la pantalla, centrada.
   const immersiveSize = Math.min(width, height) * 0.96;
@@ -3766,8 +3775,18 @@ export default function GeometrixScreen() {
           onLayout={(e) => {
             const h = e.nativeEvent.layout.height;
             setGeneralSheetHeight((prev) => (prev === h ? prev : h));
+            // Congelar el alto en la primera medición (secciones colapsadas).
+            if (generalOpen)
+              setFrozenGeneralSheetH((prev) => (prev == null ? h : prev));
           }}
-          style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}
+          style={[
+            styles.sheet,
+            { paddingBottom: insets.bottom + 16 },
+            // Una vez congelado, alto FIJO: al desplegar una sección el contenido
+            // scrollea dentro del sheet (arrastra hacia abajo) en vez de crecer
+            // hacia arriba, y la vista previa mantiene tamaño y posición.
+            frozenGeneralSheetH != null && { height: frozenGeneralSheetH },
+          ]}
         >
           <LinearGradient
             colors={HOME_GRADIENT}
@@ -3790,7 +3809,13 @@ export default function GeometrixScreen() {
           {/* Línea divisora sutil */}
           <View style={styles.sheetHeaderDivider} />
 
-          <ScrollView ref={generalScrollRef} contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            ref={generalScrollRef}
+            // Tras congelar el alto: flex:1 para llenar el sheet fijo y scrollear.
+            style={frozenGeneralSheetH != null ? { flex: 1 } : undefined}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            showsVerticalScrollIndicator={false}
+          >
           <View style={[styles.geoCard, { marginTop: -10 }]}>
 
             {/* ── Fondo ────────────────────────────────────────────────── */}
