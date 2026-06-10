@@ -538,17 +538,17 @@ export default function MiMusicaScreen() {
       end={{ x: 0.9, y: 1 }}
       style={styles.root}
     >
-      {/* Overlay de oscurecimiento */}
+      {/* Overlay de oscurecimiento — zIndex 0 para quedarse detrás del contenido */}
       {bgDim > 0.01 && (
         <View
           pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
+          style={[StyleSheet.absoluteFill, { zIndex: 0, backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
         />
       )}
 
       <StatusBar barStyle="dark-content" />
 
-      <View style={styles.inner}>
+      <View style={[styles.inner, { zIndex: 1 }]}>
 
         {/* ── Zona superior ── */}
         <View style={[styles.topPanel, { paddingTop: topPad + 12 }]}>
