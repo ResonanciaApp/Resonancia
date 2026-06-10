@@ -1451,9 +1451,9 @@ function GoldSlidersIcon({ size = 18 }: { size?: number }) {
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <Defs>
         <SvgLinearGradient id="pillGoldGrad" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#EFD8A6" />
-          <Stop offset="0.5" stopColor="#C99E57" />
-          <Stop offset="1" stopColor="#9C7634" />
+          <Stop offset="0" stopColor="#5ed1e1" />
+          <Stop offset="0.5" stopColor="#bfc2fe" />
+          <Stop offset="1" stopColor="#e8bddb" />
         </SvgLinearGradient>
       </Defs>
       <G
@@ -3345,7 +3345,7 @@ export default function GeometrixScreen() {
                     {a.gradient ? (
                       <GoldSlidersIcon size={18} />
                     ) : (
-                      <Feather name={a.icon} size={18} color={a.color ?? "#575ea0"} />
+                      <Feather name={a.icon} size={18} color={a.color ?? "#ffffff"} />
                     )}
                   </Pressable>
                 </React.Fragment>
