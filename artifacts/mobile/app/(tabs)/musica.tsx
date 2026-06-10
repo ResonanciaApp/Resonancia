@@ -7,6 +7,8 @@ import {
   Alert,
   Animated,
   Easing,
+  Modal,
+  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -81,7 +83,64 @@ const MAIN_TABS: {
   { id: "sintetizadores", label: "Digital",   icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio", "frecuencias"] },
 ];
 
-const COUNTS_KEY = "@resonance_sound_play_counts";
+const COUNTS_KEY      = "@resonance_sound_play_counts";
+const APPEARANCE_KEY  = "@resonance_musica_appearance";
+
+// ── Presets de fondo ──────────────────────────────────────────────────────────
+const BG_PRESETS = [
+  { id: "niebla", label: "Niebla",  colors: ["#F4F6FA", "#EAECF2", "#DDE0E8"] as const },
+  { id: "marmo",  label: "Mármol",  colors: ["#FFFFFF", "#EFF2F7", "#E4E8EF"] as const },
+  { id: "perla",  label: "Perla",   colors: ["#FDFCFA", "#F2EDEA", "#E8E2DD"] as const },
+  { id: "bruma",  label: "Bruma",   colors: ["#EEF4FF", "#E0EBFF", "#CDD9F5"] as const },
+  { id: "bosque", label: "Bosque",  colors: ["#F0F5F0", "#E4EDE4", "#D5E8D5"] as const },
+];
+
+// ── Slider de brillo ──────────────────────────────────────────────────────────
+function BrightnessSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const trackW = useRef(200);
+  const cbRef  = useRef(onChange);
+  useEffect(() => { cbRef.current = onChange; });
+
+  const pan = useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder:  () => true,
+    onPanResponderGrant: (e) => {
+      cbRef.current(Math.max(0, Math.min(1, e.nativeEvent.locationX / trackW.current)));
+    },
+    onPanResponderMove: (e) => {
+      cbRef.current(Math.max(0, Math.min(1, e.nativeEvent.locationX / trackW.current)));
+    },
+  })).current;
+
+  return (
+    <View
+      style={slStyles.sliderWrap}
+      onLayout={e => { trackW.current = e.nativeEvent.layout.width; }}
+      {...pan.panHandlers}
+    >
+      <View style={slStyles.sliderTrack}>
+        <View style={[slStyles.sliderFill, { flex: value }]} />
+        <View style={{ flex: 1 - value }} />
+      </View>
+      <View pointerEvents="none" style={[slStyles.sliderThumb, { left: `${value * 100}%` as any }]} />
+    </View>
+  );
+}
+
+const slStyles = StyleSheet.create({
+  sliderWrap:  { height: 36, justifyContent: "center", paddingHorizontal: 2 },
+  sliderTrack: { height: 5, flexDirection: "row", borderRadius: 999, backgroundColor: "rgba(0,0,0,0.08)", overflow: "hidden" },
+  sliderFill:  { backgroundColor: GOLD, borderRadius: 999 },
+  sliderThumb: {
+    position: "absolute",
+    width: 22, height: 22,
+    borderRadius: 999,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 2, borderColor: GOLD,
+    top: "50%", marginTop: -11, marginLeft: -11,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.18, shadowRadius: 4, elevation: 3,
+  },
+});
 
 // ── PillTab con animación Latido adaptada ─────────────────────────────────────
 const PillTab = memo(function PillTab({
@@ -338,6 +397,56 @@ export default function MiMusicaScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
+  // ── Apariencia ──────────────────────────────────────────────────────────────
+  const [bgPreset,      setBgPreset]      = useState("niebla");
+  const [bgDim,         setBgDim]         = useState(0);      // 0-1
+  const [settingsOpen,  setSettingsOpen]  = useState(false);
+  const sheetAnim    = useRef(new Animated.Value(0)).current;
+  const bgPresetRef  = useRef(bgPreset);
+  const bgDimRef     = useRef(bgDim);
+  bgPresetRef.current = bgPreset;
+  bgDimRef.current    = bgDim;
+
+  // Cargar preferencias guardadas
+  useEffect(() => {
+    AsyncStorage.getItem(APPEARANCE_KEY).then(raw => {
+      if (!raw) return;
+      try {
+        const { preset, dim } = JSON.parse(raw);
+        if (preset) setBgPreset(preset);
+        if (typeof dim === "number") setBgDim(dim);
+      } catch {}
+    }).catch(() => {});
+  }, []);
+
+  const saveAppearance = useCallback((preset: string, dim: number) => {
+    AsyncStorage.setItem(APPEARANCE_KEY, JSON.stringify({ preset, dim })).catch(() => {});
+  }, []);
+
+  const handleDimChange = useCallback((v: number) => {
+    setBgDim(v);
+    saveAppearance(bgPresetRef.current, v);
+  }, [saveAppearance]);
+
+  const handlePresetChange = useCallback((id: string) => {
+    setBgPreset(id);
+    saveAppearance(id, bgDimRef.current);
+  }, [saveAppearance]);
+
+  const openSettings = useCallback(() => {
+    setSettingsOpen(true);
+    Animated.timing(sheetAnim, { toValue: 1, duration: 300, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+  }, [sheetAnim]);
+
+  const closeSettings = useCallback(() => {
+    Animated.timing(sheetAnim, { toValue: 0, duration: 240, easing: Easing.in(Easing.cubic), useNativeDriver: true })
+      .start(() => setSettingsOpen(false));
+  }, [sheetAnim]);
+
+  const sheetTranslateY = sheetAnim.interpolate({ inputRange: [0, 1], outputRange: [420, 0] });
+  const backdropOpacity = sheetAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
+  const currentPreset   = BG_PRESETS.find(p => p.id === bgPreset) ?? BG_PRESETS[0];
+
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -407,12 +516,20 @@ export default function MiMusicaScreen() {
 
   return (
     <LinearGradient
-      colors={["#F4F6FA", "#EAECF2", "#DDE0E8"]}
+      colors={currentPreset.colors}
       locations={[0, 0.4, 1]}
       start={{ x: 0.1, y: 0 }}
       end={{ x: 0.9, y: 1 }}
       style={styles.root}
     >
+      {/* Overlay de oscurecimiento */}
+      {bgDim > 0.01 && (
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
+        />
+      )}
+
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.inner}>
@@ -427,18 +544,32 @@ export default function MiMusicaScreen() {
                 <Text style={styles.pageSuper}>MI MÚSICA</Text>
                 <Text style={styles.pageTitle}>Mezclador</Text>
               </View>
-              <Pressable
-                onPress={() => router.push("/mezclas" as never)}
-                style={styles.heartBtn}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel="Mis mezclas guardadas"
-              >
-                <MaterialCommunityIcons name="heart" size={18} color={DARK} />
-                <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
-                  <MaterialCommunityIcons name="heart" size={18} color={GOLD} />
-                </Animated.View>
-              </Pressable>
+              <View style={styles.headerBtns}>
+                {/* Botón de ajustes de apariencia */}
+                <Pressable
+                  onPress={openSettings}
+                  style={styles.headerIconBtn}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Ajustes de apariencia"
+                >
+                  <MaterialCommunityIcons name="tune-vertical" size={18} color={DARK} />
+                </Pressable>
+
+                {/* Botón corazón / Mis mezclas */}
+                <Pressable
+                  onPress={() => router.push("/mezclas" as never)}
+                  style={styles.heartBtn}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Mis mezclas guardadas"
+                >
+                  <MaterialCommunityIcons name="heart" size={18} color={DARK} />
+                  <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
+                    <MaterialCommunityIcons name="heart" size={18} color={GOLD} />
+                  </Animated.View>
+                </Pressable>
+              </View>
             </View>
             {/* Línea divisora dorada debajo del título */}
             <View style={styles.titleDivider} />
@@ -532,6 +663,54 @@ export default function MiMusicaScreen() {
           </ContentSlide>
         </ScrollView>
       </View>
+
+      {/* ── Panel de ajustes de apariencia ── */}
+      <Modal visible={settingsOpen} transparent animationType="none" onRequestClose={closeSettings}>
+        {/* Backdrop */}
+        <Animated.View style={[StyleSheet.absoluteFill, styles.sheetBackdrop, { opacity: backdropOpacity }]} />
+        <Pressable style={StyleSheet.absoluteFill} onPress={closeSettings} />
+
+        {/* Sheet */}
+        <Animated.View style={[styles.settingsSheet, { paddingBottom: bottomPad + 24, transform: [{ translateY: sheetTranslateY }] }]}>
+          <Pressable onPress={() => {}}>
+            {/* Handle */}
+            <View style={styles.sheetHandle} />
+            <Text style={styles.sheetTitle}>Apariencia</Text>
+
+            {/* Sección brillo */}
+            <Text style={styles.sheetSection}>BRILLO DEL FONDO</Text>
+            <View style={styles.sheetBrightnessRow}>
+              <MaterialCommunityIcons name="brightness-4" size={18} color={MUTED} />
+              <View style={{ flex: 1 }}>
+                <BrightnessSlider value={bgDim} onChange={handleDimChange} />
+              </View>
+              <MaterialCommunityIcons name="brightness-7" size={18} color={DARK} />
+            </View>
+
+            {/* Sección color de fondo */}
+            <Text style={styles.sheetSection}>COLOR DE FONDO</Text>
+            <View style={styles.presetRow}>
+              {BG_PRESETS.map(p => {
+                const sel = bgPreset === p.id;
+                return (
+                  <Pressable key={p.id} onPress={() => handlePresetChange(p.id)} style={styles.presetItem}>
+                    <View style={[styles.presetRing, sel && styles.presetRingActive]}>
+                      <LinearGradient
+                        colors={p.colors}
+                        style={styles.presetBall}
+                        start={{ x: 0.2, y: 0 }}
+                        end={{ x: 0.8, y: 1 }}
+                      />
+                    </View>
+                    <Text style={[styles.presetLabel, sel && { color: GOLD, fontWeight: "700" }]}>{p.label}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </Pressable>
+        </Animated.View>
+      </Modal>
+
     </LinearGradient>
   );
 }
@@ -545,6 +724,12 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: -0.4, color: DARK },
+
+  headerBtns: { flexDirection: "row", alignItems: "center", gap: 8 },
+  headerIconBtn: {
+    width: 40, height: 40, alignItems: "center", justifyContent: "center",
+    borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
+  },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
@@ -553,6 +738,32 @@ const styles = StyleSheet.create({
     position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
     alignItems: "center", justifyContent: "center",
   },
+
+  // ── Settings sheet ──────────────────────────────────────────────────────────
+  sheetBackdrop: { backgroundColor: "rgba(0,0,0,0.35)" },
+  settingsSheet: {
+    position: "absolute", left: 0, right: 0, bottom: 0,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 26, borderTopRightRadius: 26,
+    paddingHorizontal: 24, paddingTop: 12,
+    shadowColor: "#000", shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.12, shadowRadius: 16, elevation: 20,
+  },
+  sheetHandle: {
+    width: 40, height: 4, borderRadius: 999,
+    backgroundColor: "rgba(0,0,0,0.12)",
+    alignSelf: "center", marginBottom: 20,
+  },
+  sheetTitle: { fontSize: 18, fontWeight: "700", color: DARK, marginBottom: 24, letterSpacing: -0.3 },
+  sheetSection: { fontSize: 10, letterSpacing: 1.5, color: MUTED, fontWeight: "700", marginBottom: 12 },
+  sheetBrightnessRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 28 },
+
+  // Pelotas de color de fondo
+  presetRow:       { flexDirection: "row", gap: 12, marginBottom: 4, flexWrap: "wrap" },
+  presetItem:      { alignItems: "center", gap: 6 },
+  presetRing:      { width: 52, height: 52, borderRadius: 999, padding: 3, borderWidth: 2, borderColor: "transparent" },
+  presetRingActive:{ borderColor: GOLD },
+  presetBall:      { flex: 1, borderRadius: 999 },
+  presetLabel:     { fontSize: 10, letterSpacing: 0.3, color: MUTED, fontWeight: "600" },
 
   titleDivider: {
     height: 1,
