@@ -4862,7 +4862,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     flexDirection: "column",
     alignItems: "center",
-    gap: 4,
+    gap: 0,
     paddingVertical: 6,
     paddingHorizontal: 4,
     borderRadius: 20,
@@ -4876,12 +4876,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 999,
+    marginVertical: 3,
   },
   pillDivider: {
     width: 18,
     height: StyleSheet.hairlineWidth,
     backgroundColor: "#9298d0",
-    marginVertical: -2,
   },
   thumbsScroll: {
     position: "absolute",
