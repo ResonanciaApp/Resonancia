@@ -926,7 +926,7 @@ const styles = StyleSheet.create({
   subTabText: { fontSize: 12, fontWeight: "600" },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
-  soundCard: { width: "31%" },
+  soundCard: { width: "28%" },
 
   // Wrapper sin transform — contiene la card que rota + ícono fijo + badge
   cardCircleWrapper: {
