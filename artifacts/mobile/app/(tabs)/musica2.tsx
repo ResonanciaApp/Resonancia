@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
@@ -94,6 +94,65 @@ const MAIN_TABS: { id: MainTabId; label: string; icon: string; categories: Sound
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts";
+
+const CarouselTile = memo(function CarouselTile({
+  tab,
+  sel,
+  tileW,
+  onPress,
+}: {
+  tab: (typeof MAIN_TABS)[0];
+  sel: boolean;
+  tileW: number;
+  onPress: () => void;
+}) {
+  // Initialized at 1 (= animation done) so the ring starts invisible (opacity→0)
+  const rippleAnim = useRef(new Animated.Value(1)).current;
+  const rippleRunning = useRef<Animated.CompositeAnimation | null>(null);
+
+  const triggerRipple = useCallback(() => {
+    rippleRunning.current?.stop();
+    rippleAnim.setValue(0);
+    rippleRunning.current = Animated.timing(rippleAnim, {
+      toValue: 1,
+      duration: 700,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    });
+    rippleRunning.current.start();
+    onPress();
+  }, [rippleAnim, onPress]);
+
+  const rippleScale   = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.8, 2.4] });
+  const rippleOpacity = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.75, 0] });
+
+  return (
+    <Pressable
+      onPress={triggerRipple}
+      style={[styles.carouselTile, { width: tileW }, sel && styles.carouselTileSelected]}
+    >
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          styles.rippleRing,
+          { transform: [{ scale: rippleScale }], opacity: rippleOpacity },
+        ]}
+      />
+      <MaterialCommunityIcons
+        name={tab.icon as any}
+        size={tileW * 0.38}
+        color={sel ? GOLD : MUTED}
+      />
+      <Text
+        numberOfLines={1}
+        style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
+      >
+        {tab.label}
+      </Text>
+    </Pressable>
+  );
+});
 
 const ContentSlide = memo(function ContentSlide({
   dir,
@@ -394,32 +453,15 @@ export default function MiMusicaTestScreen() {
             { paddingHorizontal: TILE_H_PAD, gap: TILE_GAP },
           ]}
         >
-          {MAIN_TABS.map((tab) => {
-            const sel = mainTab === tab.id;
-            return (
-              <Pressable
-                key={tab.id}
-                onPress={() => handleMainTab(tab.id)}
-                style={[
-                  styles.carouselTile,
-                  { width: tileW },
-                  sel && styles.carouselTileSelected,
-                ]}
-              >
-                <MaterialCommunityIcons
-                  name={tab.icon as any}
-                  size={tileW * 0.38}
-                  color={sel ? GOLD : MUTED}
-                />
-                <Text
-                  numberOfLines={1}
-                  style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
-                >
-                  {tab.label}
-                </Text>
-              </Pressable>
-            );
-          })}
+          {MAIN_TABS.map((tab) => (
+            <CarouselTile
+              key={tab.id}
+              tab={tab}
+              sel={mainTab === tab.id}
+              tileW={tileW}
+              onPress={() => handleMainTab(tab.id)}
+            />
+          ))}
         </ScrollView>
 
         {/* ── Sub-tabs ── */}
@@ -518,6 +560,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
     paddingVertical: 8,
+    overflow: "visible",
+  },
+  rippleRing: {
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: GOLD,
   },
   carouselTileSelected: {
     backgroundColor: "rgba(190,150,80,0.08)",
