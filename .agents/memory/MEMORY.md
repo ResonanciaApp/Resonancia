@@ -55,3 +55,4 @@
 - [Controlled slider bounce](controlled-slider-bounce.md) — slider Reanimated controlado + source-of-truth por gesto: guard del useEffect con flag (runOnJS/FIFO) + epsilon, o rebota al soltar
 - [Geometrix carousel microlag](geometrix-carousel-microlag.md) — parámetros fijos del carrusel (HOLD/FLIP/gap) y modelo FLIP: DOM estable + translateX por slot; gap 180ms para evitar lag de arrastre; NO tocar layout animations
 - [Geometrix Hold mode](geometrix-hold-mode.md) — toggle manito aplica gestos a TODAS las capas; bifurca en holdModeSV dentro del worklet; commitHold* usa setSettings funcional sobre active[]; rotationGesture.enabled usa estado React (holdMode) no SV
+- [Geometrix undo (Atrás)](geometrix-undo-history.md) — pila de snapshots {active,settings,master,hiddenIds}; restaurar por setState revierte gestos (props ganan en reposo); debounce agrupa ráfagas; hiddenIds cleanup debe mantener ref estable; reset en load/new NO en clearCanvas

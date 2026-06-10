@@ -99,6 +99,18 @@ import { SESSIONS, type Session } from "@/data/sessions";
 const colors = colorsConst.light;
 const CARD_BORDER = "#161f33";
 
+// Snapshot inmutable de una composición, para el historial de "Atrás".
+type CompSnapshot = {
+  active: string[];
+  settings: Record<string, GeoSettings>;
+  master: GlobalSettings;
+  hiddenIds: string[];
+};
+// Máximo de pasos guardados en la pila de deshacer.
+const HISTORY_LIMIT = 50;
+// Ventana de agrupado (ms): cambios dentro de este lapso = un solo paso.
+const HISTORY_DEBOUNCE_MS = 350;
+
 // hex (#rrggbb) → rgba con alpha. Usado para los bordes de las cards del carrusel.
 const hexAlpha = (hex: string, a: number) => {
   const h = hex.replace("#", "");
@@ -1837,6 +1849,34 @@ export default function GeometrixScreen() {
   const [hiddenIds, setHiddenIds] = useState<string[]>([]);
   // Geometría seleccionada para el pellizco (pinch) que ajusta su zoom.
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // ── Historial "Atrás" (deshacer) ─────────────────────────────────────────
+  // Una composición = { active, settings, master, hiddenIds }. Guardamos
+  // snapshots inmutables (las setStates siempre reemplazan, nunca mutan) en una
+  // pila. Cada "cambio" (agregar/quitar/transformar/limpiar/ajustes) empuja el
+  // estado PREVIO; "Atrás" lo restaura. La captura es con debounce para que un
+  // arrastre de slider (muchos sets seguidos) cuente como UN solo paso.
+  const undoStackRef = useRef<CompSnapshot[]>([]);
+  // Último estado confirmado (baseline). En reposo refleja el lienzo actual.
+  const prevCompRef = useRef<CompSnapshot | null>(null);
+  // Estado anterior al inicio de la ráfaga actual (se empuja al asentarse).
+  const burstBaseRef = useRef<CompSnapshot | null>(null);
+  const historyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Marca que el próximo cambio proviene de un "Atrás" (no re-grabar historial).
+  const isUndoingRef = useRef(false);
+  const [canUndo, setCanUndo] = useState(false);
+  // Limpia el historial al cargar otra creación o empezar en blanco. Definido
+  // acá (antes de loadCreation) para que esté disponible sin TDZ.
+  const resetHistory = useCallback(() => {
+    if (historyTimerRef.current) {
+      clearTimeout(historyTimerRef.current);
+      historyTimerRef.current = null;
+    }
+    undoStackRef.current = [];
+    burstBaseRef.current = null;
+    prevCompRef.current = null; // próximo efecto fija baseline sin grabar
+    setCanUndo(false);
+  }, []);
   // Cuando los thumbnails desbordan el ancho visible, alineamos a la izquierda
   // (en vez de centrar) para que se pueda deslizar y se asome el último.
   const [thumbsOverflow, setThumbsOverflow] = useState(false);
@@ -2483,6 +2523,8 @@ export default function GeometrixScreen() {
       if (!c) return;
       // Suprimir el disparo del efecto dirty causado por los setStates que siguen.
       justLoadedRef.current = true;
+      // Empezar el historial de "Atrás" desde cero para esta creación.
+      resetHistory();
       // Registrar la creación cargada para habilitar el botón "Actualizar".
       setEditingCreation({ id: c.id, name: c.name });
       // Reset de la sesión actual antes de aplicar la receta.
@@ -2497,7 +2539,7 @@ export default function GeometrixScreen() {
         setImmersive(true);
       }
     },
-    [getCreation, stopIntro],
+    [getCreation, stopIntro, resetHistory],
   );
 
   // Cuando llega un id por la ruta (desde "Mis creaciones"), abrir esa creación
@@ -2516,6 +2558,7 @@ export default function GeometrixScreen() {
   useEffect(() => {
     if (params.new === "1") {
       setEditingCreation(null); // lienzo en blanco → ocultar botón "Actualizar"
+      resetHistory();
       stopIntro();
       setActive([]);
       setSettings({});
@@ -2534,7 +2577,7 @@ export default function GeometrixScreen() {
       });
       router.setParams({ new: "" });
     }
-  }, [params.new, stopIntro]);
+  }, [params.new, stopIntro, resetHistory]);
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Lienzo cuadrado y centrado: lado = lado menor del espacio disponible.
@@ -2563,10 +2606,6 @@ export default function GeometrixScreen() {
   if (thumbsInitialIdsRef.current === null && activeMetas.length > 0) {
     thumbsInitialIdsRef.current = new Set(activeMetas.map((m) => m.iid));
   }
-  // Opacidad del grupo trash: siempre montado para evitar glitch de layout.
-  const trashAnim = useSharedValue(0);
-  const trashAnimStyle = useAnimatedStyle(() => ({ opacity: trashAnim.value }));
-
   // Posición + aparición de la lupa (todo en el hilo UI para que sea fluido).
   const loupeWrapStyle = useAnimatedStyle(() => ({
     opacity: loupeReveal.value,
@@ -2576,13 +2615,6 @@ export default function GeometrixScreen() {
       { scale: 0.55 + loupeReveal.value * 0.45 },
     ],
   }));
-  useEffect(() => {
-    trashAnim.value = withTiming(hasActive ? 1 : 0, {
-      duration: hasActive ? 360 : 220,
-      easing: Easing.inOut(Easing.ease),
-    });
-  }, [hasActive, trashAnim]);
-
   useEffect(() => {
     loupeReveal.value = withTiming(loupeVisible ? 1 : 0, {
       duration: loupeVisible ? 200 : 150,
@@ -2637,10 +2669,76 @@ export default function GeometrixScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, settings, master]);
 
+  // Efecto 3: historial de "Atrás". Cada cambio del lienzo empuja (con debounce)
+  // el estado PREVIO a la pila. Una ráfaga (p. ej. arrastrar un slider) cuenta
+  // como un solo paso: se recuerda la base al iniciar la ráfaga y se confirma al
+  // asentarse. Un cambio causado por el propio "Atrás" no se vuelve a grabar.
+  useEffect(() => {
+    const current: CompSnapshot = { active, settings, master, hiddenIds };
+    if (isUndoingRef.current) {
+      isUndoingRef.current = false;
+      prevCompRef.current = current;
+      return;
+    }
+    // Primer render (o justo tras cargar/nueva): fijar baseline sin grabar.
+    if (prevCompRef.current === null) {
+      prevCompRef.current = current;
+      return;
+    }
+    // Inicio de una ráfaga: recordar el estado anterior al primer cambio.
+    if (burstBaseRef.current === null) burstBaseRef.current = prevCompRef.current;
+    prevCompRef.current = current;
+    if (historyTimerRef.current) clearTimeout(historyTimerRef.current);
+    historyTimerRef.current = setTimeout(() => {
+      historyTimerRef.current = null;
+      if (burstBaseRef.current === null) return;
+      undoStackRef.current.push(burstBaseRef.current);
+      if (undoStackRef.current.length > HISTORY_LIMIT) undoStackRef.current.shift();
+      burstBaseRef.current = null;
+      setCanUndo(true);
+    }, HISTORY_DEBOUNCE_MS);
+    return () => {
+      if (historyTimerRef.current) clearTimeout(historyTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, settings, master, hiddenIds]);
+
+  // Restaura el último estado guardado. Antes confirma cualquier ráfaga pendiente
+  // (para deshacer un cambio en curso) y luego saca el tope de la pila.
+  const undo = useCallback(() => {
+    // Confirmar una ráfaga aún sin asentar (su timer todavía no disparó).
+    if (historyTimerRef.current) {
+      clearTimeout(historyTimerRef.current);
+      historyTimerRef.current = null;
+    }
+    if (burstBaseRef.current !== null) {
+      undoStackRef.current.push(burstBaseRef.current);
+      if (undoStackRef.current.length > HISTORY_LIMIT) undoStackRef.current.shift();
+      burstBaseRef.current = null;
+    }
+    const snap = undoStackRef.current.pop();
+    if (!snap) {
+      setCanUndo(false);
+      return;
+    }
+    isUndoingRef.current = true;
+    setActive(snap.active);
+    setSettings(snap.settings);
+    setMaster(snap.master);
+    setHiddenIds(snap.hiddenIds);
+    setSelectedId(snap.active.length ? snap.active[snap.active.length - 1] : null);
+    setCanUndo(undoStackRef.current.length > 0);
+  }, []);
+
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
   // reasignar la selección del pellizco a otra activa (o ninguna).
   useEffect(() => {
-    setHiddenIds((prev) => prev.filter((id) => active.includes(id)));
+    // Mantener la MISMA referencia si nada cambió: así no dispara un paso de
+    // historial extra (la pila de "Atrás" vigila hiddenIds).
+    setHiddenIds((prev) => {
+      const next = prev.filter((id) => active.includes(id));
+      return next.length === prev.length ? prev : next;
+    });
     if (menuGeoId && !active.includes(menuGeoId)) setMenuGeoId(null);
     // Si se quita la geometría en edición, cerrar su panel por capa.
     if (settingsGeoId && !active.includes(settingsGeoId)) {
@@ -3487,12 +3585,25 @@ export default function GeometrixScreen() {
 
           </View>
 
-          {/* Controles lado izquierdo: Hold mode + actualizar composición. */}
-          <Animated.View
-            pointerEvents={hasActive ? "auto" : "none"}
-            style={[styles.actionLeft, trashAnimStyle]}
-          >
+          {/* Controles lado izquierdo: Atrás (deshacer) + Hold mode + actualizar.
+              Contenedor siempre montado (box-none) para que "Atrás" se vea aun
+              con el lienzo vacío (p. ej. tras limpiar). */}
+          <View pointerEvents="box-none" style={styles.actionLeft}>
             <View style={styles.actionTopRow}>
+              {/* Atrás: deshace el último cambio. Visible si hay historial. */}
+              {canUndo && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Pressable
+                    onPress={undo}
+                    style={styles.actionTopBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel="Atrás (deshacer el último cambio)"
+                    hitSlop={4}
+                  >
+                    <Feather name="corner-up-left" size={16} color={colors.mutedForeground} />
+                  </Pressable>
+                </Animated.View>
+              )}
               {/* Toggle Hold: visible con ≥2 capas activas. */}
               {active.length >= 2 && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
@@ -3534,7 +3645,7 @@ export default function GeometrixScreen() {
                 </Animated.View>
               )}
             </View>
-          </Animated.View>
+          </View>
 
           {/* Fila de controles arriba a la derecha: ajustes + flecha drop-down.
               Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
