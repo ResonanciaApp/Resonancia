@@ -118,9 +118,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   // Alto total de la barra: se desliza esa distancia (+ holgura) para esconderse.
   const barHeight = 56 + extra + pb;
-  const { hidden, showMenu, musicTheme } = useTabBarVisibility();
-  const translateY     = useRef(new Animated.Value(0)).current;
-  const handleTranslateY = useRef(new Animated.Value(80)).current;
+  const { hidden } = useTabBarVisibility();
+  const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(translateY, {
@@ -129,13 +128,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
-    Animated.timing(handleTranslateY, {
-      toValue: hidden ? 0 : 80,
-      duration: 280,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [hidden, barHeight, translateY, handleTranslateY]);
+  }, [hidden, barHeight, translateY]);
 
   return (
     <>
@@ -180,30 +173,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </View>
       </Animated.View>
 
-      {/* Pestañita — aparece cuando el menú está oculto */}
-      <Animated.View
-        pointerEvents={hidden ? "auto" : "none"}
-        style={[
-          styles.menuHandle,
-          { bottom: pb + 12, transform: [{ translateY: handleTranslateY }] },
-        ]}
-      >
-        <Pressable
-          onPress={showMenu}
-          style={[
-            styles.menuHandleBtn,
-            musicTheme === "azul" && { backgroundColor: "rgba(255,255,255,0.93)", borderColor: "rgba(190,150,80,0.25)" },
-          ]}
-          hitSlop={10}
-        >
-          <MaterialCommunityIcons
-            name="chevron-up"
-            size={18}
-            color={musicTheme === "azul" ? "#0D1520" : "#FFFFFF"}
-          />
-          <Text style={[styles.menuHandleLabel, musicTheme === "azul" && { color: "#0D1520" }]}>Menú</Text>
-        </Pressable>
-      </Animated.View>
     </>
   );
 }
@@ -310,29 +279,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-  },
-  menuHandle: {
-    position: "absolute",
-    alignSelf: "center",
-    left: 0,
-    right: 0,
-    alignItems: "center",
-  },
-  menuHandleBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 20,
-    paddingVertical: 9,
-    borderRadius: 999,
-    backgroundColor: "rgba(15,35,80,0.90)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.35)",
-  },
-  menuHandleLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-    letterSpacing: 0.3,
-    color: "#FFFFFF",
   },
 });
