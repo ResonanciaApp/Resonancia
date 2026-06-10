@@ -697,8 +697,8 @@ export default function MiMusicaScreen() {
             </View>
           ) : null}
 
-          {/* Línea divisora dorada debajo de los tabs */}
-          <View style={styles.titleDivider} />
+          {/* Línea divisora sutil, acorde al tema */}
+          <View style={[styles.titleDivider, { backgroundColor: isDark ? hexToRgba(themeAccent, 0.10) : "rgba(190,150,80,0.08)" }]} />
 
         </View>
 
@@ -894,7 +894,7 @@ const styles = StyleSheet.create({
     height: 1,
     marginTop: 8,
     marginHorizontal: 0,
-    backgroundColor: GOLD + "30",
+    backgroundColor: "rgba(190,150,80,0.08)",
   },
 
   pillRow:        { flexGrow: 0, marginBottom: 4 },
