@@ -343,9 +343,16 @@ const SoundCard = memo(function SoundCard({
           ) : (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
           )}
+          {/* Overlay oscuro cuando está inactiva */}
           {!decorated && (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)" }]} />
           )}
+          {/* Ícono de sonido cuando está activa */}
+          <Animated.View pointerEvents="none" style={[styles.activeIconWrap, { opacity: anim }]}>
+            <View style={styles.activeIconBadge}>
+              <MaterialCommunityIcons name="volume-high" size={18} color="#FFFFFF" />
+            </View>
+          </Animated.View>
         </View>
         {locked && (
           <Image
@@ -840,6 +847,19 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(190,150,80,0.08)",
+  },
+
+  activeIconWrap: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  activeIconBadge: {
+    width: 34, height: 34,
+    borderRadius: 999,
+    backgroundColor: "rgba(0,0,0,0.62)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
