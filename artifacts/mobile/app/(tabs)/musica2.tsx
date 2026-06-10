@@ -495,7 +495,7 @@ export default function MiMusicaTestScreen() {
           style={styles.carouselScroll}
           contentContainerStyle={[
             styles.carouselContent,
-            { paddingHorizontal: TILE_H_PAD, gap: TILE_GAP },
+            { paddingLeft: 0, paddingRight: TILE_H_PAD, gap: TILE_GAP },
           ]}
         >
           {MAIN_TABS.map((tab) => (
