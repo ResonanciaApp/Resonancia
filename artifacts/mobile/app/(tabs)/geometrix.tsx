@@ -2811,13 +2811,17 @@ export default function GeometrixScreen() {
   // confirmado) exige el cardinal exacto (0.5°). El guard evita reiniciar el
   // withTiming en cada frame: solo anima al CRUZAR el umbral.
   useAnimatedReaction(
-    () => ({ active: rotActive.value, angle: liveRot.value, has: rotHasTargetSV.value }),
+    // guard se incluye en el selector para que, cuando Effect 2 lo ponga a -1
+    // al cambiar de objetivo, la reacción se dispare aunque angle/has/active
+    // no hayan cambiado (ej: dos geometrías distintas ambas a 0°). Así la
+    // píldora siempre se reconcilia con el nuevo objetivo.
+    () => ({ active: rotActive.value, angle: liveRot.value, has: rotHasTargetSV.value, guard: rotCardGuard.value }),
     ({ active, angle, has }) => {
       "worklet";
       let isCard = 0;
       // Solo activar el cardinal si el usuario REALMENTE rotó en este objetivo
       // (rotDidRotate se pone a 1 en onStart del gesto). Sin este gate, la
-      // píldora viraraba a morado al seleccionar cualquier geometría a 0°
+      // píldora viraría a morado al seleccionar cualquier geometría a 0°
       // (ángulo por defecto) sin haberla girado nunca.
       if (has > 0 && rotDidRotate.value > 0) {
         const nearest90 = Math.round(angle / 90) * 90;
