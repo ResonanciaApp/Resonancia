@@ -189,9 +189,10 @@ export default function HomeScreen() {
           <View style={styles.catGrid}>
             {CATEGORIES.filter((c) => c.id !== "mananas" && c.id !== "noches").map((cat) => {
               const catImages: Record<string, ReturnType<typeof require>> = {
-                "musica-sonidos": require("../../assets/images/cat-musica.png"),
-                "mananas":        require("../../assets/images/cat-mananas.png"),
-                "podcast":        require("../../assets/images/cat-sonidos.png"),
+                "musica-sonidos":     require("../../assets/images/icon-musica.png"),
+                "meditaciones-guiadas": require("../../assets/images/icon-meditaciones.png"),
+                "podcast":            require("../../assets/images/icon-sonidos.png"),
+                "mananas":            require("../../assets/images/cat-mananas.png"),
               };
               const iconColors: Record<string, string> = {
                 "sonidos-ancestrales": "#D6933A",
@@ -208,7 +209,7 @@ export default function HomeScreen() {
                   {catImg ? (
                     <Image
                       source={catImg}
-                      style={[styles.catCardImage, cat.id === "musica-sonidos" && { width: 27, height: 27 }]}
+                      style={styles.catCardImage}
                       resizeMode="contain"
                     />
                   ) : cat.id === "noches" ? (
@@ -585,8 +586,8 @@ const styles = StyleSheet.create({
     paddingVertical: 26,
   },
   catCardImage: {
-    width: 29,
-    height: 29,
+    width: 44,
+    height: 44,
   },
   catCardLabel: {
     fontSize: 14,
