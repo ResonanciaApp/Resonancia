@@ -1479,10 +1479,14 @@ function SettingsSection({
   title,
   children,
   defaultOpen = false,
+  isModified,
+  onReset,
 }: {
   title: string;
   children?: React.ReactNode;
   defaultOpen?: boolean;
+  isModified?: boolean;
+  onReset?: () => void;
 }) {
   const hasContent = React.Children.count(children) > 0;
   const [open, setOpen] = useState(defaultOpen && hasContent);
@@ -1505,16 +1509,28 @@ function SettingsSection({
         onPress={toggle}
         style={{
           flexDirection: "row", alignItems: "center",
-          justifyContent: "space-between",
           paddingVertical: 11, paddingHorizontal: 2,
           opacity: hasContent ? 1 : 0.32,
         }}
         accessibilityRole="button"
         accessibilityLabel={`${title} — ${open ? "colapsar" : "expandir"}`}
       >
-        <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.mutedForeground }}>
+        <Text style={{ flex: 1, fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.mutedForeground }}>
           {title}
         </Text>
+        {isModified && onReset && (
+          <Pressable
+            onPress={onReset}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel={`Restablecer ${title}`}
+            style={{ marginRight: 8 }}
+          >
+            <Text style={{ fontSize: 10, fontWeight: "700", color: "#bfc2fe", letterSpacing: 0.2 }}>
+              Restablecer
+            </Text>
+          </Pressable>
+        )}
         <Animated.View style={chevronStyle}>
           <Feather name="chevron-down" size={15} color={colors.mutedForeground} />
         </Animated.View>
@@ -2191,6 +2207,28 @@ export default function GeometrixScreen() {
           offsetY: cur.offsetY,
         },
       };
+    });
+  }, []);
+
+  const isSectionModified = useCallback(
+    (id: string, keys: (keyof GeoSettings)[]): boolean => {
+      if (!settings[id]) return false;
+      const def = defaultSettings(baseOf(id));
+      const cur = { ...def, ...settings[id] };
+      return keys.some((k) => cur[k] !== def[k]);
+    },
+    [settings],
+  );
+
+  const resetSection = useCallback((id: string, keys: (keyof GeoSettings)[]) => {
+    setSettings((prev) => {
+      const def = defaultSettings(baseOf(id));
+      const cur = prev[id] ?? def;
+      const patch: Partial<GeoSettings> = {};
+      for (const k of keys) {
+        (patch as any)[k] = def[k];
+      }
+      return { ...prev, [id]: { ...cur, ...patch } };
     });
   }, []);
 
@@ -4374,7 +4412,11 @@ export default function GeometrixScreen() {
                 <View style={styles.geoCard}>
 
                   {/* ── Color ─────────────────────────────────────────────── */}
-                  <SettingsSection title="Color">
+                  <SettingsSection
+                    title="Color"
+                    isModified={isSectionModified(iid, ["color", "gradientId", "saturation"])}
+                    onReset={() => resetSection(iid, ["color", "gradientId", "saturation"])}
+                  >
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={styles.swatchRow}>
                       {PALETTE.map((c) => {
@@ -4422,7 +4464,11 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                   {/* ── Luminosidad ───────────────────────────────────────── */}
-                  <SettingsSection title="Luminosidad">
+                  <SettingsSection
+                    title="Luminosidad"
+                    isModified={isSectionModified(iid, ["opacity", "glow", "bloom", "halo"])}
+                    onReset={() => resetSection(iid, ["opacity", "glow", "bloom", "halo"])}
+                  >
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Opacidad</Text>
                     </View>
@@ -4462,7 +4508,11 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                   {/* ── Transformación ────────────────────────────────────── */}
-                  <SettingsSection title="Transformación">
+                  <SettingsSection
+                    title="Transformación"
+                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate"])}
+                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate"])}
+                  >
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Grosor</Text>
                     </View>
@@ -4501,7 +4551,11 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                   {/* ── Distorsión ────────────────────────────────────────── */}
-                  <SettingsSection title="Distorsión">
+                  <SettingsSection
+                    title="Distorsión"
+                    isModified={isSectionModified(iid, ["onda", "ripple", "warp"])}
+                    onReset={() => resetSection(iid, ["onda", "ripple", "warp"])}
+                  >
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Onda</Text>
                     </View>
@@ -4535,7 +4589,11 @@ export default function GeometrixScreen() {
                   <SettingsSection title="Profundidad" />
 
                   {/* ── Calidoscopio ──────────────────────────────────────── */}
-                  <SettingsSection title="Calidoscopio">
+                  <SettingsSection
+                    title="Calidoscopio"
+                    isModified={isSectionModified(iid, ["kaleidoscope", "kaleidSegments"])}
+                    onReset={() => resetSection(iid, ["kaleidoscope", "kaleidSegments"])}
+                  >
                     <View style={{
                       flexDirection: "row", alignItems: "center",
                       justifyContent: "space-between", marginBottom: 10,
@@ -4585,7 +4643,11 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                   {/* ── Energía ───────────────────────────────────────────── */}
-                  <SettingsSection title="Energía">
+                  <SettingsSection
+                    title="Energía"
+                    isModified={isSectionModified(iid, ["fadeLoop", "breathe", "expansion"])}
+                    onReset={() => resetSection(iid, ["fadeLoop", "breathe", "expansion"])}
+                  >
                     <View style={styles.toggleGrid}>
                       <View style={styles.toggleGridItem}>
                         <Text style={styles.toggleTriLabel} numberOfLines={2}>Fade</Text>
