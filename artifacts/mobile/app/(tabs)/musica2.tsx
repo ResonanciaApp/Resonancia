@@ -530,6 +530,9 @@ export default function MiMusicaTestScreen() {
                   const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
                   if (!cat) return null;
                   const sel = subTab === catId;
+                  const tabColor = MAIN_TABS.find((t) => t.id === mainTab)?.color ?? GOLD;
+                  const c50 = tabColor + "80";
+                  const c08 = tabColor + "14";
                   return (
                     <Pressable
                       key={catId}
@@ -537,20 +540,20 @@ export default function MiMusicaTestScreen() {
                       style={[
                         styles.subTabPill,
                         {
-                          backgroundColor: sel ? "rgba(190,150,80,0.08)" : "rgba(255,255,255,0.02)",
-                          borderColor: sel ? "rgba(190,150,80,0.33)" : "#1C2740",
+                          backgroundColor: sel ? c08 : "rgba(255,255,255,0.02)",
+                          borderColor: sel ? c50 : "#1C2740",
                         },
                       ]}
                     >
                       {SUB_TAB_ICONS[catId] && (
                         <MaterialCommunityIcons
                           name={SUB_TAB_ICONS[catId] as any}
-                          size={26}
-                          color={sel ? (SUB_TAB_ICON_COLORS[catId] ?? "#D8B56A") : MUTED}
-                          style={{ marginBottom: 5 }}
+                          size={16}
+                          color={sel ? tabColor : MUTED}
+                          style={{ marginRight: 6 }}
                         />
                       )}
-                      <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED }]}>
+                      <Text style={[styles.subTabText, { color: sel ? tabColor : MUTED }]}>
                         {SUB_TAB_LABELS[catId] ?? cat.label}
                       </Text>
                     </Pressable>
@@ -644,15 +647,14 @@ const styles = StyleSheet.create({
   },
   subTabRow: { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
   subTabPill: {
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    width: 80,
-    height: 80,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 999,
     borderWidth: 1,
   },
-  subTabText: { fontSize: 11, fontWeight: "600", textAlign: "center" },
+  subTabText: { fontSize: 12, fontWeight: "600" },
 
   grid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
   soundCard: { width: "31%" },
