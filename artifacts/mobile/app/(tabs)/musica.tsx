@@ -96,9 +96,9 @@ const BG_PRESETS = [
 
 // ── Presets oscuros ────────────────────────────────────────────────────────────
 const DARK_PRESETS = [
-  { id: "noche",      label: "Noche",      colors: ["#080C12", "#0D1520", "#080C12"] as const },
-  { id: "indigo",     label: "Índigo",     colors: ["#090B1C", "#0F1438", "#090B1C"] as const },
-  { id: "crepusculo", label: "Crepúsculo", colors: ["#0E0B16", "#1A1030", "#0E0B16"] as const },
+  { id: "noche",      label: "Noche",      colors: ["#080C12", "#0D1520", "#080C12"] as const, selTabBg: "#152535" },
+  { id: "indigo",     label: "Índigo",     colors: ["#090B1C", "#0F1438", "#090B1C"] as const, selTabBg: "#1A2560" },
+  { id: "crepusculo", label: "Crepúsculo", colors: ["#0E0B16", "#1A1030", "#0E0B16"] as const, selTabBg: "#281A50" },
 ];
 
 // ── Slider de brillo ──────────────────────────────────────────────────────────
@@ -154,21 +154,24 @@ const PillTab = memo(function PillTab({
   sel,
   onPress,
   isDark,
+  selBg,
 }: {
   tab: (typeof MAIN_TABS)[0];
   sel: boolean;
   onPress: () => void;
   isDark?: boolean;
+  selBg?: string;
 }) {
   const unselBg     = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)";
   const unselBorder = isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)";
   const unselText   = isDark ? "#8A9AB8" : MUTED;
+  const activeBg    = selBg ?? DARK;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.pillTab,
         {
-          backgroundColor: sel ? DARK : unselBg,
+          backgroundColor: sel ? activeBg : unselBg,
           borderColor:     sel ? "transparent" : unselBorder,
         },
       ]}>
@@ -183,17 +186,18 @@ const PillTab = memo(function PillTab({
 
 // ── SubTabPill con fade ───────────────────────────────────────────────────────
 const SubTabPill = memo(function SubTabPill({
-  label, sel, onPress, isDark,
-}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean }) {
+  label, sel, onPress, isDark, selBg,
+}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string }) {
   const unselBg     = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.03)";
   const unselBorder = isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.09)";
   const unselText   = isDark ? "#8A9AB8" : MUTED;
+  const activeBg    = selBg ?? DARK;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
         {
-          backgroundColor: sel ? DARK : unselBg,
+          backgroundColor: sel ? activeBg : unselBg,
           borderColor:     sel ? "transparent" : unselBorder,
         },
       ]}>
@@ -486,9 +490,10 @@ export default function MiMusicaScreen() {
   const currentPreset   = BG_PRESETS.find(p => p.id === bgPreset) ?? BG_PRESETS[0];
 
   // Variables derivadas del tema
-  const isDark          = bgTheme === "azul";
+  const isDark            = bgTheme === "azul";
   const currentDarkPreset = DARK_PRESETS.find(p => p.id === darkPreset) ?? DARK_PRESETS[0];
-  const themeGradient = isDark ? currentDarkPreset.colors : currentPreset.colors;
+  const themeGradient     = isDark ? currentDarkPreset.colors : currentPreset.colors;
+  const themeSelBg        = isDark ? currentDarkPreset.selTabBg : DARK;
   const themeText    = isDark ? "#EDE1D3" : DARK;
   const themeMuted   = isDark ? "#8A9AB8" : MUTED;
   const themeIconBtn = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)";
@@ -635,6 +640,7 @@ export default function MiMusicaScreen() {
                 sel={mainTab === tab.id}
                 onPress={() => handleMainTab(tab.id)}
                 isDark={isDark}
+                selBg={themeSelBg}
               />
             ))}
           </ScrollView>
@@ -659,6 +665,7 @@ export default function MiMusicaScreen() {
                         sel={sel}
                         onPress={() => setSubTab(sel ? null : catId)}
                         isDark={isDark}
+                        selBg={themeSelBg}
                       />
                     );
                   })}
