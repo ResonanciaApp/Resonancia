@@ -1665,7 +1665,6 @@ export default function GeometrixScreen() {
     btnUnsel:         isLight ? "rgba(0,0,0,0.04)"     : "rgba(255,255,255,0.04)",
     btnBorder:        isLight ? "rgba(0,0,0,0.10)"     : "rgba(255,255,255,0.09)",
     rootBg:           isLight ? "#F2F4FA"              : "#06070F",
-    canvasLight:      ["#F4F6FA", "#EAECF2", "#DDE0E8"] as readonly [string, string, string],
   }), [isLight]);
 
   // Persistencia local de composiciones ("Mis creaciones").
@@ -3013,7 +3012,7 @@ export default function GeometrixScreen() {
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
   const canvasBgColors = isLight
-    ? geo.canvasLight
+    ? geo.topGradient
     : scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
