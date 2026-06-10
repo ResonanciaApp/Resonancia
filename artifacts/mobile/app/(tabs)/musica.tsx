@@ -365,8 +365,8 @@ export default function MiMusicaScreen() {
 
   return (
     <LinearGradient
-      colors={["#FFFFFF", "#EFF2F7", "#E4E8EF"]}
-      locations={[0, 0.55, 1]}
+      colors={["#FDFCFA", "#F2EDEA", "#E8E2DD"]}
+      locations={[0, 0.5, 1]}
       start={{ x: 0.1, y: 0 }}
       end={{ x: 0.9, y: 1 }}
       style={styles.root}
@@ -398,6 +398,8 @@ export default function MiMusicaScreen() {
                 </Animated.View>
               </Pressable>
             </View>
+            {/* Línea divisora dorada debajo del título */}
+            <View style={styles.titleDivider} />
           </View>
 
           {/* ── Pills de tabs principales ── */}
@@ -420,7 +422,6 @@ export default function MiMusicaScreen() {
           {/* ── Sub-tabs (píldoras horizontales) ── */}
           {subTabCategories && subTabCategories.length > 1 ? (
             <View style={styles.subTabZone}>
-              <View style={styles.subTabLine} pointerEvents="none" />
               <SubTabSlide key={subTabAnimKey}>
                 <ScrollView
                   horizontal
@@ -461,9 +462,7 @@ export default function MiMusicaScreen() {
                 </ScrollView>
               </SubTabSlide>
             </View>
-          ) : (
-            <View style={styles.separator} />
-          )}
+          ) : null}
 
         </View>
 
@@ -500,7 +499,7 @@ const styles = StyleSheet.create({
   inner:    { flex: 1 },
   topPanel: {},
 
-  header:    { paddingHorizontal: 20, marginBottom: 12 },
+  header:    { paddingHorizontal: 20, marginBottom: 0 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: -0.4, color: DARK },
@@ -511,6 +510,13 @@ const styles = StyleSheet.create({
   heartGlow: {
     position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
     alignItems: "center", justifyContent: "center",
+  },
+
+  titleDivider: {
+    height: 1,
+    marginTop: 14,
+    marginHorizontal: 0,
+    backgroundColor: GOLD + "30",
   },
 
   pillRow:        { flexGrow: 0, marginBottom: 4 },
@@ -526,16 +532,10 @@ const styles = StyleSheet.create({
   },
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
-  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: 4 },
-
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
-  subTabLine: {
-    position: "absolute", left: 16, right: 16, bottom: 0,
-    height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
-  },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
   subTabPill: {
     flexDirection: "row",
