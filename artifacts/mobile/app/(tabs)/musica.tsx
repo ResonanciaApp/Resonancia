@@ -96,10 +96,18 @@ const BG_PRESETS = [
 
 // ── Presets oscuros ────────────────────────────────────────────────────────────
 const DARK_PRESETS = [
-  { id: "noche",      label: "Noche",      colors: ["#080C12", "#0D1520", "#080C12"] as const, selTabBg: "#152535" },
-  { id: "indigo",     label: "Índigo",     colors: ["#090B1C", "#0F1438", "#090B1C"] as const, selTabBg: "#1A2560" },
-  { id: "crepusculo", label: "Crepúsculo", colors: ["#0E0B16", "#1A1030", "#0E0B16"] as const, selTabBg: "#281A50" },
+  { id: "noche",      label: "Noche",      colors: ["#080C12", "#0D1520", "#080C12"] as const, selTabBg: "#152535", accentColor: "#1B4080" },
+  { id: "indigo",     label: "Índigo",     colors: ["#090B1C", "#0F1438", "#090B1C"] as const, selTabBg: "#1A2560", accentColor: "#2545C0" },
+  { id: "crepusculo", label: "Crepúsculo", colors: ["#0E0B16", "#1A1030", "#0E0B16"] as const, selTabBg: "#281A50", accentColor: "#5025B0" },
 ];
+
+/** Convierte un color hex (#RRGGBB) a rgba(r,g,b,alpha) para interpolaciones Animated. */
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 
 // ── Slider de brillo ──────────────────────────────────────────────────────────
 function BrightnessSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -270,6 +278,7 @@ type SoundCardProps = {
   image: ReturnType<typeof getSoundImage>;
   onPress: () => void;
   textColor?: string;
+  accentColor?: string;
 };
 
 const SoundCard = memo(function SoundCard({
@@ -281,6 +290,7 @@ const SoundCard = memo(function SoundCard({
   image,
   onPress,
   textColor,
+  accentColor = SEL_BLUE,
 }: SoundCardProps) {
   const anim       = useRef(new Animated.Value(active ? 1 : 0)).current;
   const rippleAnim = useRef(new Animated.Value(0)).current;
@@ -300,7 +310,7 @@ const SoundCard = memo(function SoundCard({
     return () => a.stop();
   }, [active, anim]);
 
-  // Onda de expansión dorada — solo al activar (false → true)
+  // Onda de expansión — solo al activar (false → true)
   useEffect(() => {
     const wasActive = prevActive.current;
     prevActive.current = active;
@@ -319,8 +329,8 @@ const SoundCard = memo(function SoundCard({
   const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
   const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
   const borderCol = anim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(26,59,122,0)", "rgba(26,59,122,1)"],
+    inputRange:  [0, 1],
+    outputRange: [hexToRgba(accentColor, 0), hexToRgba(accentColor, 1)],
   });
 
   const rippleScale    = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.65] });
@@ -336,6 +346,7 @@ const SoundCard = memo(function SoundCard({
           style={[
             styles.cardShadowWrap,
             decorated && styles.cardShadowWrapActive,
+            decorated && { shadowColor: accentColor },
             { transform: [{ rotate }, { scale }], borderColor: borderCol },
           ]}
         >
@@ -345,7 +356,7 @@ const SoundCard = memo(function SoundCard({
             style={[
               StyleSheet.absoluteFill,
               styles.goldRipple,
-              { transform: [{ scale: rippleScale }], opacity: rippleOpacity },
+              { borderColor: accentColor, transform: [{ scale: rippleScale }], opacity: rippleOpacity },
             ]}
           />
           {/* Capa interior: recorte circular de la imagen */}
@@ -494,6 +505,7 @@ export default function MiMusicaScreen() {
   const currentDarkPreset = DARK_PRESETS.find(p => p.id === darkPreset) ?? DARK_PRESETS[0];
   const themeGradient     = isDark ? currentDarkPreset.colors : currentPreset.colors;
   const themeSelBg        = isDark ? currentDarkPreset.selTabBg : DARK;
+  const themeAccent       = isDark ? currentDarkPreset.accentColor : SEL_BLUE;
   const themeText    = isDark ? "#EDE1D3" : DARK;
   const themeMuted   = isDark ? "#8A9AB8" : MUTED;
   const themeIconBtn = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)";
@@ -697,6 +709,7 @@ export default function MiMusicaScreen() {
                   image={getSoundImage(s.id)}
                   onPress={() => handleSoundPress(s)}
                   textColor={themeText}
+                  accentColor={themeAccent}
                 />
               ))}
             </View>
@@ -925,18 +938,16 @@ const styles = StyleSheet.create({
   },
   cardShadowWrapActive: {
     borderWidth: 3.5,
-    shadowColor: SEL_BLUE,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.55,
     shadowRadius: 14,
     elevation: 10,
   },
 
-  // Anillo de expansión dorado (no tiene overflow:hidden → se expande fuera del círculo)
+  // Anillo de expansión (color se pasa dinámicamente via inline style)
   goldRipple: {
     borderRadius: 999,
     borderWidth: 2,
-    borderColor: SEL_BLUE,
   },
 
   // Capa interior: recorte circular de la imagen (overflow: hidden aquí)
