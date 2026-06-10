@@ -151,30 +151,20 @@ const PillTab = memo(function PillTab({
   sel: boolean;
   onPress: () => void;
 }) {
-  const anim = useRef(new Animated.Value(sel ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(anim, {
-      toValue: sel ? 1 : 0,
-      duration: 220,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: false,
-    }).start();
-  }, [sel, anim]);
-
-  const bgColor     = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.05)", DARK] });
-  const borderColor = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.08)", "rgba(0,0,0,0)"] });
-  const textColor   = anim.interpolate({ inputRange: [0, 1], outputRange: [MUTED, "#FFFFFF"] });
-  const c = tab.color;
-
   return (
     <Pressable onPress={onPress}>
-      <Animated.View style={[styles.pillTab, { backgroundColor: bgColor, borderColor }]}>
-        <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#FFFFFF" : c} />
-        <Animated.Text style={[styles.pillTabLabel, { color: textColor, fontWeight: sel ? "700" : "500" }]}>
+      <View style={[
+        styles.pillTab,
+        {
+          backgroundColor: sel ? DARK : "rgba(0,0,0,0.05)",
+          borderColor:     sel ? "transparent" : "rgba(0,0,0,0.08)",
+        },
+      ]}>
+        <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#FFFFFF" : tab.color} />
+        <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
           {tab.label}
-        </Animated.Text>
-      </Animated.View>
+        </Text>
+      </View>
     </Pressable>
   );
 });
@@ -183,28 +173,19 @@ const PillTab = memo(function PillTab({
 const SubTabPill = memo(function SubTabPill({
   label, sel, onPress,
 }: { label: string; sel: boolean; onPress: () => void }) {
-  const anim = useRef(new Animated.Value(sel ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(anim, {
-      toValue: sel ? 1 : 0,
-      duration: 200,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: false,
-    }).start();
-  }, [sel, anim]);
-
-  const bgColor     = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.03)", DARK] });
-  const borderColor = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.09)", "rgba(0,0,0,0)"] });
-  const textColor   = anim.interpolate({ inputRange: [0, 1], outputRange: [MUTED, "#FFFFFF"] });
-
   return (
     <Pressable onPress={onPress}>
-      <Animated.View style={[styles.subTabPill, { backgroundColor: bgColor, borderColor }]}>
-        <Animated.Text style={[styles.subTabText, { color: textColor, fontWeight: sel ? "700" : "600" }]}>
+      <View style={[
+        styles.subTabPill,
+        {
+          backgroundColor: sel ? DARK : "rgba(0,0,0,0.03)",
+          borderColor:     sel ? "transparent" : "rgba(0,0,0,0.09)",
+        },
+      ]}>
+        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "600" }]}>
           {label}
-        </Animated.Text>
-      </Animated.View>
+        </Text>
+      </View>
     </Pressable>
   );
 });
