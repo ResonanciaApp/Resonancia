@@ -409,13 +409,8 @@ export default function MiMusicaScreen() {
   const { lastSavedAt } = useSaveEvent();
   const { requestHide, showMenu, setMusicTheme, setMusicGradient } = useTabBarVisibility();
 
-  // Esconde el menú al entrar y lo restaura al salir
-  useFocusEffect(
-    useCallback(() => {
-      requestHide();
-      return () => showMenu();
-    }, [requestHide, showMenu]),
-  );
+  // Nota: el menú inferior permanece visible en Mi Música para que la
+  // navegación entre pestañas sea consistente.
 
   const heartGlow = useRef(new Animated.Value(0)).current;
   useEffect(() => {

@@ -2013,14 +2013,8 @@ export default function GeometrixScreen() {
   }, [active, stopIntro]);
 
 
-  // Al entrar a Geometrix: esconder el menú inferior (más espacio para el
-  // lienzo). Al salir: restaurarlo para el resto de la app.
-  useFocusEffect(
-    useCallback(() => {
-      requestHide();
-      return () => showMenu();
-    }, [requestHide, showMenu]),
-  );
+  // Nota: el menú inferior ya no se esconde en Geometrix — la barra de tabs
+  // permanece visible para que la navegación entre pestañas sea consistente.
 
   // Al salir de Geometrix (las pestañas quedan montadas): resetear la UI.
   // Al entrar: disparar el intro de audio si el lienzo está vacío.
