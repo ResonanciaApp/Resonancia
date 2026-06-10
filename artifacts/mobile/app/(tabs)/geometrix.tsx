@@ -3333,10 +3333,10 @@ export default function GeometrixScreen() {
                     style={[
                       styles.pillBtn,
                       a.key === "creaciones" && { marginTop: -4.5 },
-                      a.key === "comunidad"  && { marginTop: -9.5 },
-                      a.key === "save"       && { marginTop: -9.5 },
-                      a.key === "guias"      && { marginTop: -9.5 },
-                      a.key === "borrar"     && { marginTop: -9.5 },
+                      a.key === "comunidad"  && { marginTop: -5.5 },
+                      a.key === "save"       && { marginTop: -4.5 },
+                      a.key === "guias"      && { marginTop: -4.5 },
+                      a.key === "borrar"     && { marginTop: -4.5 },
                     ]}
                     accessibilityRole="button"
                     accessibilityLabel={a.label}
