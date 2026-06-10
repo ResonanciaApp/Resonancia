@@ -1618,21 +1618,9 @@ export default function GeometrixScreen() {
   const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
   const bottomReserve = menuHidden ? bottomPb : tabBarHeight;
 
-  // ── Tema claro / oscuro PROPIO de Geometrix (independiente de Mi Música) ───
-  const [geoTheme, setGeoThemeState] = useState<"claro" | "azul">("azul");
-  // Carga la preferencia guardada al montar.
-  useEffect(() => {
-    AsyncStorage.getItem("@resonance_geo_theme").then((v) => {
-      if (v === "claro" || v === "azul") setGeoThemeState(v);
-    });
-  }, []);
-  const toggleGeoTheme = useCallback(() => {
-    const next = geoTheme === "azul" ? "claro" : "azul";
-    setGeoThemeState(next);
-    AsyncStorage.setItem("@resonance_geo_theme", next);
-  }, [geoTheme]);
-
-  const isLight = geoTheme === "claro";
+  // ── Tema oscuro fijo de Geometrix (toggle de tema claro desactivado) ───
+  const geoTheme: "azul" = "azul";
+  const isLight = false;
   // En modo claro, ocultar los colores claros (blanco/beige) que se pierden
   // sobre el fondo gris. El set es de minúsculas para comparar sin ambigüedad.
   const LIGHT_HIDDEN = new Set(["#ede1d3", "#7fd1c0", "#9bd6a8"]);
@@ -3079,20 +3067,6 @@ export default function GeometrixScreen() {
               />
             </View>
           </View>
-          {/* Toggle claro/oscuro PROPIO de Geometrix */}
-          <Pressable
-            onPress={toggleGeoTheme}
-            hitSlop={12}
-            style={[styles.themeBtn, { backgroundColor: geo.searchBarBg, marginRight: 6 }]}
-            accessibilityRole="button"
-            accessibilityLabel={isLight ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}
-          >
-            <Feather
-              name={isLight ? "moon" : "sun"}
-              size={15}
-              color={colors.mutedForeground}
-            />
-          </Pressable>
           {/* Tema de fondo: si NO suena nada, abre el buscador; si YA está
               sonando, el mismo botón detiene y resetea el reproductor. */}
           <Pressable
