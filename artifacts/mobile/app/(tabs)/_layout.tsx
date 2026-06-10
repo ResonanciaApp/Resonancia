@@ -28,6 +28,9 @@ const INACTIVE_COLOR = "#8094B5";
 const PILL_BG = "rgba(107,154,181,0.18)";
 const BAR_BORDER = "#0e132f";
 
+// Rutas que nunca aparecen en el menú inferior
+const HIDDEN_ROUTES = new Set(["musica2", "musica3", "descanzo"]);
+
 const TAB_CONFIG: Record<
   string,
   {
@@ -151,8 +154,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 56 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
-            const { options } = descriptors[route.key];
-            if ((options as { href?: null }).href === null) return null;
+            if (HIDDEN_ROUTES.has(route.name)) return null;
 
             const isFocused = state.index === index;
             const onPress = () => {
