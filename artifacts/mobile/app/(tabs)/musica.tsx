@@ -628,14 +628,6 @@ export default function MiMusicaScreen() {
                           },
                         ]}
                       >
-                        {SUB_TAB_ICONS[catId] && (
-                          <MaterialCommunityIcons
-                            name={SUB_TAB_ICONS[catId] as any}
-                            size={15}
-                            color={sel ? "#FFFFFF" : MUTED}
-                            style={{ marginRight: 5 }}
-                          />
-                        )}
                         <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED }]}>
                           {SUB_TAB_LABELS[catId] ?? cat.label}
                         </Text>
