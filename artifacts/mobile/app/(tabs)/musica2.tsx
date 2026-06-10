@@ -106,31 +106,65 @@ const CarouselTile = memo(function CarouselTile({
   tileW: number;
   onPress: () => void;
 }) {
-  // Initialized at 1 (= animation done) so the ring starts invisible (opacity→0)
+  // Ring — start at 1 (done = invisible)
   const rippleAnim = useRef(new Animated.Value(1)).current;
-  const rippleRunning = useRef<Animated.CompositeAnimation | null>(null);
+  // Border flash — useNativeDriver:false (color property)
+  const borderAnim = useRef(new Animated.Value(0)).current;
+  // Icon flash
+  const iconAnim   = useRef(new Animated.Value(0)).current;
+  const running    = useRef<Animated.CompositeAnimation | null>(null);
 
-  const triggerRipple = useCallback(() => {
-    rippleRunning.current?.stop();
+  const triggerLatido = useCallback(() => {
+    running.current?.stop();
+
+    // 1. Ring: scale 0.98→1.46, opacity 0.22→0, 1700ms
     rippleAnim.setValue(0);
-    rippleRunning.current = Animated.timing(rippleAnim, {
-      toValue: 1,
-      duration: 700,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: true,
-    });
-    rippleRunning.current.start();
-    onPress();
-  }, [rippleAnim, onPress]);
+    running.current = Animated.parallel([
+      Animated.timing(rippleAnim, {
+        toValue: 1, duration: 1700,
+        easing: Easing.out(Easing.ease), useNativeDriver: true,
+      }),
+      // 3. Icon scale+opacity flash, 550ms
+      Animated.sequence([
+        Animated.timing(iconAnim, { toValue: 1, duration: 180, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+        Animated.timing(iconAnim, { toValue: 0, duration: 370, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+      ]),
+    ]);
+    running.current.start();
 
-  const rippleScale   = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.8, 2.4] });
-  const rippleOpacity = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.75, 0] });
+    // 2. Border flash — separate (different useNativeDriver)
+    borderAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(borderAnim, { toValue: 1, duration: 200, easing: Easing.out(Easing.ease), useNativeDriver: false }),
+      Animated.timing(borderAnim, { toValue: 0, duration: 450, easing: Easing.out(Easing.ease), useNativeDriver: false }),
+    ]).start();
+
+    onPress();
+  }, [rippleAnim, borderAnim, iconAnim, onPress]);
+
+  const rippleScale   = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.98, 1.46] });
+  const rippleOpacity = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.22, 0] });
+
+  const animBorderColor = borderAnim.interpolate({
+    inputRange:  [0, 1],
+    outputRange: [sel ? "rgba(190,150,80,0.33)" : "#1C2740", "rgba(190,150,80,0.67)"],
+  });
+
+  const iconScale   = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.14] });
+  const iconOpacity = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [sel ? 1 : 0.4, 1] });
 
   return (
-    <Pressable
-      onPress={triggerRipple}
-      style={[styles.carouselTile, { width: tileW }, sel && styles.carouselTileSelected]}
+    <Animated.View
+      style={[
+        styles.carouselTile,
+        { width: tileW, borderColor: animBorderColor },
+        sel && styles.carouselTileSelected,
+      ]}
     >
+      {/* Tap target — absoluteFill, sin impacto en layout */}
+      <Pressable onPress={triggerLatido} style={StyleSheet.absoluteFill} />
+
+      {/* Onda expansiva */}
       <Animated.View
         pointerEvents="none"
         style={[
@@ -139,18 +173,29 @@ const CarouselTile = memo(function CarouselTile({
           { transform: [{ scale: rippleScale }], opacity: rippleOpacity },
         ]}
       />
-      <MaterialCommunityIcons
-        name={tab.icon as any}
-        size={tileW * 0.38}
-        color={sel ? GOLD : MUTED}
-      />
-      <Text
-        numberOfLines={1}
-        style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
+
+      {/* Ícono con flash */}
+      <Animated.View
+        pointerEvents="none"
+        style={{ transform: [{ scale: iconScale }], opacity: iconOpacity }}
       >
-        {tab.label}
-      </Text>
-    </Pressable>
+        <MaterialCommunityIcons
+          name={tab.icon as any}
+          size={tileW * 0.38}
+          color={sel ? GOLD : MUTED}
+        />
+      </Animated.View>
+
+      {/* Label */}
+      <View pointerEvents="none">
+        <Text
+          numberOfLines={1}
+          style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
+        >
+          {tab.label}
+        </Text>
+      </View>
+    </Animated.View>
   );
 });
 
@@ -552,9 +597,8 @@ const styles = StyleSheet.create({
   carouselContent: { paddingBottom: 12, flexDirection: "row" },
   carouselTile: {
     aspectRatio: 1,
-    borderRadius: 16,
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#161f33",
     backgroundColor: "rgba(255,255,255,0.02)",
     alignItems: "center",
     justifyContent: "center",
@@ -563,13 +607,12 @@ const styles = StyleSheet.create({
     overflow: "visible",
   },
   rippleRing: {
-    borderRadius: 16,
-    borderWidth: 1.5,
+    borderRadius: 999,
+    borderWidth: 1,
     borderColor: GOLD,
   },
   carouselTileSelected: {
     backgroundColor: "rgba(190,150,80,0.08)",
-    borderColor: "rgba(190,150,80,0.35)",
   },
   carouselTileLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
 
