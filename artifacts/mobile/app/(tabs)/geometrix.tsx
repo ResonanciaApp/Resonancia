@@ -268,6 +268,16 @@ function saturateGrad(
   return [adjustSaturation(grad[0], amount), adjustSaturation(grad[1], amount)] as const;
 }
 
+// Colores de trazo que se pierden sobre el fondo claro de Geometrix.
+// En modo claro se sustituyen por un color visible equivalente.
+const LIGHT_GEO_COLOR_SUBS: Record<string, string> = {
+  "#ede1d3": "#7090A8", // beige/blanco → azul-pizarra medio
+};
+function lightGeoColor(c: string, light: boolean): string {
+  if (!light) return c;
+  return LIGHT_GEO_COLOR_SUBS[c.toLowerCase()] ?? c;
+}
+
 // ── Halo: aura radial suave detrás del glifo ─────────────────────────────────
 function HaloGlow({ size, color, amount }: { size: number; color: string; amount: number }) {
   const a = clamp01(amount);
@@ -464,9 +474,11 @@ function GeometryLayer({
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
   // Modo claro: +25 % de saturación (colores más vivos sobre el fondo gris).
+  // Modo claro: sustituir colores claros (beige/blanco) por uno visible equivalente.
+  const effectiveColor = lightGeoColor(color, isLight);
   const baseSat = Number.isFinite(saturation) ? clamp01(saturation) : 0.5;
   const safeSat = isLight ? clamp01(baseSat + 0.25) : baseSat;
-  const dispColor = adjustSaturation(color, safeSat);
+  const dispColor = adjustSaturation(effectiveColor, safeSat);
   const dispGrad = saturateGrad(grad, safeSat);
   // Efectos nuevos saneados (0 = off; saturación 0.5 = neutro).
   const safeBloom = Number.isFinite(bloom) ? clamp01(bloom) : 0;
@@ -3599,7 +3611,7 @@ export default function GeometrixScreen() {
                     >
                       <SacredGlyph
                         id={g.id}
-                        color={s.color}
+                        color={lightGeoColor(s.color, isLight)}
                         gradient={gradientColors(s.gradientId)}
                         size={37}
                         strokeWidth={1.4}
@@ -3878,7 +3890,7 @@ export default function GeometrixScreen() {
               <View style={styles.menuGlyphWrap}>
                 <SacredGlyph
                   id={menuGeo.id}
-                  color={getSettings(menuGeoId!).color}
+                  color={lightGeoColor(getSettings(menuGeoId!).color, isLight)}
                   gradient={gradientColors(getSettings(menuGeoId!).gradientId)}
                   size={85}
                   strokeWidth={1.4}
@@ -4794,7 +4806,7 @@ export default function GeometrixScreen() {
                 <>
                   <SacredGlyph
                     id={settingsGeo.id}
-                    color={getSettings(settingsGeoId!).color}
+                    color={lightGeoColor(getSettings(settingsGeoId!).color, isLight)}
                     size={22}
                     strokeWidth={2.4}
                   />
