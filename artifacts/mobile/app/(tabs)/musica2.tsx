@@ -530,8 +530,8 @@ export default function MiMusicaTestScreen() {
                       style={[
                         styles.subTabPill,
                         {
-                          backgroundColor: sel ? "rgba(100,142,195,0.14)" : "rgba(255,255,255,0.03)",
-                          borderColor: "transparent",
+                          backgroundColor: sel ? "rgba(190,150,80,0.08)" : "rgba(255,255,255,0.02)",
+                          borderColor: sel ? "rgba(190,150,80,0.33)" : "#1C2740",
                         },
                       ]}
                     >
@@ -642,7 +642,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 80,
     height: 80,
-    borderRadius: 14,
+    borderRadius: 999,
     borderWidth: 1,
   },
   subTabText: { fontSize: 11, fontWeight: "600", textAlign: "center" },
