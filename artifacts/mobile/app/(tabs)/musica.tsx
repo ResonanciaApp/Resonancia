@@ -313,8 +313,9 @@ const SoundCard = memo(function SoundCard({
     outputRange: ["rgba(26,59,122,0)", "rgba(26,59,122,1)"],
   });
 
-  const rippleScale   = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.65] });
-  const rippleOpacity = rippleAnim.interpolate({ inputRange: [0, 0.25, 1], outputRange: [0.85, 0.5, 0] });
+  const rippleScale    = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.65] });
+  const rippleOpacity  = rippleAnim.interpolate({ inputRange: [0, 0.25, 1], outputRange: [0.85, 0.5, 0] });
+  const overlayOpacity = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
@@ -343,10 +344,11 @@ const SoundCard = memo(function SoundCard({
           ) : (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
           )}
-          {/* Overlay oscuro cuando está inactiva */}
-          {!decorated && (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)" }]} />
-          )}
+          {/* Overlay oscuro — fade out al activar, fade in al desactivar */}
+          <Animated.View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)", opacity: overlayOpacity }]}
+          />
           {/* Ícono de sonido cuando está activa */}
           <Animated.View pointerEvents="none" style={[styles.activeIconWrap, { opacity: anim }]}>
             <View style={styles.activeIconBadge}>
