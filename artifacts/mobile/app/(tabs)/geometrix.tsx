@@ -2451,7 +2451,7 @@ export default function GeometrixScreen() {
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "cerrar", icon: "log-out", label: "Cerrar lienzo", onPress: () => router.push("/"), divider: true },
-    { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#7d3536" },
+    { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#b93c47" },
   ];
   // Sin geometrías activas se colapsa el desplegable; si el menú está oculto
   // se mantiene para que el usuario siempre pueda restaurarlo con la X.
@@ -3346,7 +3346,7 @@ export default function GeometrixScreen() {
                     {a.gradient ? (
                       <GoldSlidersIcon size={18} />
                     ) : (
-                      <Feather name={a.icon} size={18} color={a.color ?? "#ffffff"} />
+                      <Feather name={a.icon} size={18} color={a.color ?? "#7a879d"} />
                     )}
                   </Pressable>
                 </React.Fragment>
