@@ -2424,8 +2424,6 @@ export default function GeometrixScreen() {
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "cerrar", icon: "log-out", label: "Cerrar lienzo", onPress: () => router.push("/"), divider: true },
-    // X para restaurar el menú inferior cuando está oculto (reemplaza la barrita).
-    ...(menuHidden ? [{ key: "showMenu", icon: "x" as keyof typeof Feather.glyphMap, label: "Mostrar menú", onPress: showMenu }] : []),
     { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#7d3536" },
   ];
   // Sin geometrías activas se colapsa el desplegable; si el menú está oculto
@@ -4938,7 +4936,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 999,
-    marginVertical: 3,
+    marginVertical: 1.5,
   },
   pillDivider: {
     width: 18,
