@@ -378,6 +378,7 @@ function GeometryLayer({
   masterOpacity = 1,
   motion = true,
   glow = 0,
+  isLight = false,
 }: {
   geo: GeometryMeta;
   index: number;
@@ -410,6 +411,8 @@ function GeometryLayer({
   motion?: boolean;
   /** Glow maestro (panel general) 0–1: halo aditivo en el trazo. */
   glow?: number;
+  /** Modo claro: fuerza opacidad completa y satura +25 % el color de cada capa. */
+  isLight?: boolean;
 }) {
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
@@ -460,7 +463,9 @@ function GeometryLayer({
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
-  const safeSat = Number.isFinite(saturation) ? clamp01(saturation) : 0.5;
+  // Modo claro: +25 % de saturación (colores más vivos sobre el fondo gris).
+  const baseSat = Number.isFinite(saturation) ? clamp01(saturation) : 0.5;
+  const safeSat = isLight ? clamp01(baseSat + 0.25) : baseSat;
   const dispColor = adjustSaturation(color, safeSat);
   const dispGrad = saturateGrad(grad, safeSat);
   // Efectos nuevos saneados (0 = off; saturación 0.5 = neutro).
@@ -623,7 +628,8 @@ function GeometryLayer({
         { scale: breatheScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
-      opacity: opacity * safeMaster * fade.value * enter.value,
+      // Modo claro: opacidad individual forzada a 1 (geometrías sin transparencia).
+      opacity: (isLight ? 1 : opacity) * safeMaster * fade.value * enter.value,
     };
   });
   // Pasar SIEMPRE pinchScaleSV (ref estable): así el SacredGlyph de cada capa
@@ -785,6 +791,7 @@ type CanvasLayerProps = {
   masterOpacity?: number;
   motion?: boolean;
   glow?: number;
+  isLight?: boolean;
 };
 
 function CanvasLayer({
@@ -805,6 +812,7 @@ function CanvasLayer({
   masterOpacity,
   motion,
   glow,
+  isLight,
 }: CanvasLayerProps) {
   const posStyle = useAnimatedStyle(() => {
     const dragging = isTarget && dragActive.value === 1;
@@ -830,6 +838,7 @@ function CanvasLayer({
         masterOpacity={masterOpacity}
         motion={motion}
         glow={glow}
+        isLight={isLight}
       />
     </Animated.View>
   );
@@ -3321,6 +3330,7 @@ export default function GeometrixScreen() {
                         masterOpacity={master.opacity}
                         motion={master.motion}
                         glow={master.glow}
+                        isLight={isLight}
                       />
                     );
                   })}
@@ -3662,6 +3672,7 @@ export default function GeometrixScreen() {
                 masterOpacity={master.opacity}
                 motion={master.motion}
                 glow={master.glow}
+                isLight={isLight}
               />
             ))}
           </View>
@@ -3926,6 +3937,7 @@ export default function GeometrixScreen() {
                   masterOpacity={master.opacity}
                   motion={master.motion}
                   glow={master.glow}
+                  isLight={isLight}
                 />
               ))}
             </View>
@@ -4736,6 +4748,7 @@ export default function GeometrixScreen() {
                   masterOpacity={master.opacity}
                   motion={master.motion}
                   glow={master.glow}
+                  isLight={isLight}
                 />
               ))}
             </View>
