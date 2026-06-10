@@ -347,7 +347,7 @@ const SoundCard = memo(function SoundCard({
             {/* Overlay oscuro — fade out al activar, fade in al desactivar */}
             <Animated.View
               pointerEvents="none"
-              style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)", opacity: overlayOpacity }]}
+              style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)", opacity: overlayOpacity }]}
             />
           </View>
         </Animated.View>
