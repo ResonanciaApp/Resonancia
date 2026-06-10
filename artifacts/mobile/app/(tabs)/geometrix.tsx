@@ -3012,7 +3012,7 @@ export default function GeometrixScreen() {
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
   const canvasBgColors = isLight
-    ? (["#C1C4CE", "#B5B9C5", "#A8ADB9"] as readonly [string, string, string])
+    ? (["#E3E7F2", "#D5DAE8", "#C6CCDA"] as readonly [string, string, string])
     : scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
