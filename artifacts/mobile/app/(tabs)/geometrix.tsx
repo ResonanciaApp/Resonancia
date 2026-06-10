@@ -2435,8 +2435,13 @@ export default function GeometrixScreen() {
         });
         return next;
       });
+      // Resetear SVs en el MISMO tick JS que setSettings (mismo batch de Reanimated
+      // → mismo frame en el hilo UI). Así el estilo animado recibe el nuevo zoom
+      // confirmado Y holdScaleSV=1 en el mismo frame, sin flash de retroceso.
+      holdScaleSV.value = 1;
+      holdScaleActive.value = 0;
     },
-    [active, setSettings],
+    [active, setSettings, holdScaleSV, holdScaleActive],
   );
 
   const commitHoldAngle = useCallback(
@@ -2452,8 +2457,10 @@ export default function GeometrixScreen() {
         });
         return next;
       });
+      holdRotDeltaDeg.value = 0;
+      holdRotActive.value = 0;
     },
-    [active, setSettings],
+    [active, setSettings, holdRotDeltaDeg, holdRotActive],
   );
 
   const commitHoldOffset = useCallback(
@@ -2470,8 +2477,11 @@ export default function GeometrixScreen() {
         });
         return next;
       });
+      holdDragDeltaX.value = 0;
+      holdDragDeltaY.value = 0;
+      holdDragActive.value = 0;
     },
-    [active, setSettings],
+    [active, setSettings, holdDragDeltaX, holdDragDeltaY, holdDragActive],
   );
 
   // Helpers para construir el snapshot de la composición actual.
@@ -2868,8 +2878,8 @@ export default function GeometrixScreen() {
     .onFinalize((_e, success) => {
       isPinching.value = false;
       if (holdModeSV.value === 1) {
-        holdScaleSV.value = 1;
-        holdScaleActive.value = 0;
+        // Los resets de holdScaleSV/holdScaleActive se hacen en commitHoldZoom
+        // (hilo JS, mismo tick que setSettings) para evitar el flash de retroceso.
       } else if (!success) {
         livePinch.value = pinchStart.value;
         pinchActive.value = 0;
@@ -2967,8 +2977,8 @@ export default function GeometrixScreen() {
     })
     .onFinalize(() => {
       if (holdModeSV.value === 1) {
-        holdRotDeltaDeg.value = 0;
-        holdRotActive.value = 0;
+        // Los resets de holdRotDeltaDeg/holdRotActive se hacen en commitHoldAngle
+        // (hilo JS, mismo tick que setSettings) para evitar el flash de retroceso.
       } else if (!rotSucceeded.value) {
         liveRot.value = rotStart.value;
         rotActive.value = 0;
@@ -3043,9 +3053,8 @@ export default function GeometrixScreen() {
       snapXOn.value = 0;
       snapYOn.value = 0;
       if (holdModeSV.value === 1) {
-        holdDragDeltaX.value = 0;
-        holdDragDeltaY.value = 0;
-        holdDragActive.value = 0;
+        // Los resets de holdDragDeltaX/Y/holdDragActive se hacen en commitHoldOffset
+        // (hilo JS, mismo tick que setSettings) para evitar el flash de retroceso.
       } else if (!success) {
         liveDragX.value = dragStartX.value;
         liveDragY.value = dragStartY.value;
