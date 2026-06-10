@@ -44,12 +44,14 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
       runOnJS(onChange)(fraction.value);
     });
 
+  // Píxeles absolutos + translateX en lugar de porcentajes → sin pase de
+  // layout por frame → cero flicker en el thumb circular.
   const fillStyle = useAnimatedStyle(() => ({
-    width: `${fraction.value * 100}%` as `${number}%`,
+    width: fraction.value * trackWidth.value,
   }));
 
   const thumbStyle = useAnimatedStyle(() => ({
-    left: `${fraction.value * 100}%` as `${number}%`,
+    transform: [{ translateX: fraction.value * trackWidth.value - THUMB_SIZE / 2 }],
   }));
 
   return (
@@ -98,7 +100,6 @@ const styles = StyleSheet.create({
     width: THUMB_SIZE,
     height: THUMB_SIZE,
     borderRadius: THUMB_SIZE / 2,
-    marginLeft: -(THUMB_SIZE / 2),
     top: -(THUMB_SIZE / 2 - 1),
     shadowColor: "#ffffff",
     shadowOffset: { width: 0, height: 0 },
