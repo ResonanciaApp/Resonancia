@@ -3330,7 +3330,14 @@ export default function GeometrixScreen() {
                       a.onPress();
                       setPillOpen(false);
                     }}
-                    style={[styles.pillBtn, a.key === "creaciones" && { marginTop: -3.5 }]}
+                    style={[
+                      styles.pillBtn,
+                      a.key === "creaciones" && { marginTop: -4.5 },
+                      a.key === "comunidad"  && { marginTop: -9.5 },
+                      a.key === "save"       && { marginTop: -9.5 },
+                      a.key === "guias"      && { marginTop: -9.5 },
+                      a.key === "borrar"     && { marginTop: -9.5 },
+                    ]}
                     accessibilityRole="button"
                     accessibilityLabel={a.label}
                     hitSlop={6}
