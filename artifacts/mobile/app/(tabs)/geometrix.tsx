@@ -182,6 +182,17 @@ function defaultSettings(id: GeometryId): GeoSettings {
   };
 }
 
+// Claves de transformación por gesto (posición/zoom/ángulo/tamaño): NO son
+// "ajustes personalizados", así que no cuentan para detectar cambios ni se
+// restablecen (Restablecer no debe mover la geometría del lienzo).
+const TRANSFORM_KEYS: (keyof GeoSettings)[] = [
+  "scale",
+  "zoom",
+  "manualAngle",
+  "offsetX",
+  "offsetY",
+];
+
 // Color fijo del fondo del toggle cuando está activado (estático, no usa el color de la geometría).
 const TOGGLE_ON_COLOR = "#a1adcf";
 // Color de las guías persistentes del usuario (azul visible sobre fondos oscuros).
@@ -2075,6 +2086,43 @@ export default function GeometrixScreen() {
     [settings],
   );
 
+  // ¿La geometría tiene algún parámetro del panel distinto de sus defaults?
+  // (Ignora las transformaciones por gesto — ver TRANSFORM_KEYS.)
+  const isGeoModified = useCallback(
+    (id: string): boolean => {
+      if (!settings[id]) return false;
+      const def = defaultSettings(baseOf(id));
+      // Fusionar contra defaults para tolerar settings parciales (creaciones
+      // guardadas antes de que existieran ciertas claves): una clave ausente
+      // debe contar como su default, no como "modificada".
+      const cur = { ...def, ...settings[id] };
+      return (Object.keys(def) as (keyof GeoSettings)[]).some(
+        (k) => !TRANSFORM_KEYS.includes(k) && cur[k] !== def[k],
+      );
+    },
+    [settings],
+  );
+
+  // Restablecer los ajustes personalizados de una geometría a sus defaults,
+  // preservando su transformación por gesto (posición/zoom/ángulo/tamaño).
+  const resetGeometry = useCallback((id: string) => {
+    setSettings((prev) => {
+      const cur = prev[id] ?? defaultSettings(baseOf(id));
+      const def = defaultSettings(baseOf(id));
+      return {
+        ...prev,
+        [id]: {
+          ...def,
+          scale: cur.scale,
+          zoom: cur.zoom,
+          manualAngle: cur.manualAngle,
+          offsetX: cur.offsetX,
+          offsetY: cur.offsetY,
+        },
+      };
+    });
+  }, []);
+
   // Confirmar el zoom del pellizco a settings (corre en JS thread). El "en vivo"
   // se limpia aparte en onFinalize (que SIEMPRE corre, también al cancelarse el
   // gesto) y siempre DESPUÉS de este commit, así el objetivo pasa del tamaño en
@@ -3240,6 +3288,25 @@ export default function GeometrixScreen() {
                         color={colors.mutedForeground}
                       />
                     </Pressable>
+                    {/* Restablecer: aparece (fade in) cuando la geometría tiene
+                        ajustes personalizados distintos de los defaults; al
+                        tocarlo restaura los defaults y desaparece (fade out). */}
+                    {isGeoModified(iid) && (
+                      <Animated.View
+                        entering={FadeIn.duration(220)}
+                        exiting={FadeOut.duration(220)}
+                      >
+                        <Pressable
+                          onPress={() => resetGeometry(iid)}
+                          style={styles.thumbResetBtn}
+                          hitSlop={6}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Restablecer ${g.name}`}
+                        >
+                          <Text style={styles.thumbResetText}>Restablecer</Text>
+                        </Pressable>
+                      </Animated.View>
+                    )}
                   </Animated.View>
                 );
               })}
@@ -4081,8 +4148,11 @@ export default function GeometrixScreen() {
           style={[
             styles.sheet,
             { paddingBottom: insets.bottom + 16 },
-            // Reservar aire arriba para el preview y que nunca tape el header.
-            activeMetas.length > 0 && { maxHeight: "68%" },
+            // Altura FIJA mientras se edita una geometría: así la vista previa
+            // (anclada al alto del sheet) nunca cambia de tamaño/posición y, al
+            // desplegar una sección, el contenido empuja hacia abajo dentro del
+            // scroll en vez de crecer hacia arriba.
+            settingsGeo && { height: "68%" },
           ]}
         >
           {/* Mismo fondo que la pantalla de inicio, recortado al radius. */}
@@ -4197,13 +4267,14 @@ export default function GeometrixScreen() {
               const s = getSettings(iid);
               return (
                 <ScrollView
+                  style={{ flex: 1 }}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
 
                   {/* ── Color ─────────────────────────────────────────────── */}
-                  <SettingsSection title="Color" defaultOpen>
+                  <SettingsSection title="Color">
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={styles.swatchRow}>
                       {PALETTE.map((c) => {
@@ -4251,7 +4322,7 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                   {/* ── Luminosidad ───────────────────────────────────────── */}
-                  <SettingsSection title="Luminosidad" defaultOpen>
+                  <SettingsSection title="Luminosidad">
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Opacidad</Text>
                     </View>
@@ -4742,6 +4813,20 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     alignItems: "center",
     justifyContent: "center",
+  },
+  thumbResetBtn: {
+    marginLeft: 6,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(214,168,91,0.55)",
+    backgroundColor: "rgba(190,150,80,0.14)",
+  },
+  thumbResetText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.accent,
   },
   menuBackdrop: {
     flex: 1,
