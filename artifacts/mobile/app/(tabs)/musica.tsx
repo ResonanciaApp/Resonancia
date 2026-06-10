@@ -96,6 +96,7 @@ const BG_PRESETS = [
 
 // ── Presets oscuros ────────────────────────────────────────────────────────────
 const DARK_PRESETS = [
+  { id: "cosmos",     label: "Cosmos",     colors: ["#090D20", "#080A18", "#06070F"] as const, selTabBg: "#0D1525", accentColor: "#1A3B7A" },
   { id: "noche",      label: "Noche",      colors: ["#080C12", "#0D1520", "#080C12"] as const, selTabBg: "#152535", accentColor: "#1B4080" },
   { id: "indigo",     label: "Índigo",     colors: ["#090B1C", "#0F1438", "#090B1C"] as const, selTabBg: "#1A2560", accentColor: "#2545C0" },
   { id: "crepusculo", label: "Crepúsculo", colors: ["#0E0B16", "#1A1030", "#0E0B16"] as const, selTabBg: "#281A50", accentColor: "#5025B0" },
