@@ -1619,6 +1619,12 @@ export default function GeometrixScreen() {
   }, [geoTheme]);
 
   const isLight = geoTheme === "claro";
+  // En modo claro, ocultar los colores claros (blanco/beige) que se pierden
+  // sobre el fondo gris. El set es de minúsculas para comparar sin ambigüedad.
+  const LIGHT_HIDDEN = new Set(["#ede1d3"]);
+  const displayPalette = isLight
+    ? PALETTE.filter((c) => !LIGHT_HIDDEN.has(c.toLowerCase()))
+    : PALETTE;
   // SharedValue para que los estilos animados (UI thread) puedan leer el tema.
   const isLightSV = useSharedValue(isLight ? 1 : 0);
   useEffect(() => { isLightSV.value = isLight ? 1 : 0; }, [isLight, isLightSV]);
@@ -4054,7 +4060,7 @@ export default function GeometrixScreen() {
               {/* Sólidos */}
               <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Color sólido</Text>
               <View style={[styles.swatchRow, { marginTop: 8 }]}>
-                {PALETTE.map((c) => {
+                {displayPalette.map((c) => {
                   const on = master.bgColor === c;
                   return (
                     <Pressable
@@ -4231,7 +4237,7 @@ export default function GeometrixScreen() {
                   <>
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={styles.swatchRow}>
-                      {PALETTE.map((c) => {
+                      {displayPalette.map((c) => {
                         const on = !g0?.gradientId && g0?.color?.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
@@ -4903,7 +4909,7 @@ export default function GeometrixScreen() {
                   >
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={styles.swatchRow}>
-                      {PALETTE.map((c) => {
+                      {displayPalette.map((c) => {
                         const on = !s.gradientId && s.color.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
