@@ -35,9 +35,10 @@ import {
 } from "@/data/sounds";
 
 // ── Paleta Mármol Blanco ──────────────────────────────────────────────────────
-const GOLD  = "#BE9650";
-const DARK  = "#1A1E2B";
-const MUTED = "#6B7A96";
+const GOLD     = "#BE9650";
+const DARK     = "#1A1E2B";
+const MUTED    = "#6B7A96";
+const SEL_BLUE = "#1A3B7A";   // azul profundo — borde y halo de cards seleccionadas
 
 const SUB_TAB_LABELS: Partial<Record<SoundCategoryId, string>> = {
   cuencos_tibetanos: "Tibetanos",
@@ -309,7 +310,7 @@ const SoundCard = memo(function SoundCard({
   const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
   const borderCol = anim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(190,150,80,0)", "rgba(190,150,80,1)"],
+    outputRange: ["rgba(26,59,122,0)", "rgba(26,59,122,1)"],
   });
 
   const rippleScale   = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.65] });
@@ -818,7 +819,8 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   cardShadowWrapActive: {
-    shadowColor: GOLD,
+    borderWidth: 3.5,
+    shadowColor: SEL_BLUE,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.55,
     shadowRadius: 14,
@@ -829,7 +831,7 @@ const styles = StyleSheet.create({
   goldRipple: {
     borderRadius: 999,
     borderWidth: 2,
-    borderColor: GOLD,
+    borderColor: SEL_BLUE,
   },
 
   // Capa interior: recorte circular de la imagen (overflow: hidden aquí)
