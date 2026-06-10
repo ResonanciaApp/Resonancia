@@ -27,7 +27,6 @@ import Animated, {
   FadeIn,
   FadeInDown,
   FadeOut,
-  FadeOutUp,
   interpolateColor,
   LinearTransition,
   runOnJS,
@@ -1552,7 +1551,6 @@ function SettingsSection({
       {open && hasContent && (
         <Animated.View
           entering={FadeInDown.duration(220).easing(Easing.out(Easing.quad))}
-          exiting={FadeOutUp.duration(160).easing(Easing.in(Easing.quad))}
           style={{
             backgroundColor: "rgba(255,255,255,0.03)",
             borderRadius: 12,
