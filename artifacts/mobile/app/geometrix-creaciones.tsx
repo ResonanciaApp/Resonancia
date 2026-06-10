@@ -88,7 +88,7 @@ function hasMotion(c: GeometrixCreation): boolean {
   if (!c.master.motion) return false;
   return c.active.some((id) => {
     const s = c.settings[id];
-    return !!s && (s.rotate || s.rotateLeft || s.breathe || s.fadeLoop);
+    return !!s && (s.rotate || s.rotateLeft || (s.breatheAmount ?? 0) > 0 || (s.fadeLoopAmount ?? 0) > 0);
   });
 }
 
@@ -118,15 +118,15 @@ function PreviewGlyph({
   const pulse = useSharedValue(0);
   const fade = useSharedValue(1);
 
-  const { rotate, rotateLeft, rotateSpeed, breathe, breatheAmount, fadeLoop } = settings;
+  const { rotate, rotateLeft, rotateSpeed, breatheAmount, fadeLoopAmount } = settings;
   const active = playing && motion;
   const spin = (rotate || rotateLeft) && active;
-  const breath = breathe && active;
+  const breath = (breatheAmount ?? 0) > 0 && active;
   const dir = rotateLeft ? -1 : 1;
 
   const safeSpeed = Number.isFinite(rotateSpeed) ? Math.max(0, Math.min(1, rotateSpeed)) : 0.5;
   const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
-  const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
+  const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0;
   const breatheDepth = 0.04 + safeAmount * 0.2;
   const restAngle = Number.isFinite(settings.manualAngle) ? settings.manualAngle : 0;
 
@@ -159,9 +159,11 @@ function PreviewGlyph({
   }, [breath, index, pulse]);
 
   useEffect(() => {
-    if (fadeLoop && active) {
+    const safeFade = Number.isFinite(fadeLoopAmount) ? Math.max(0, Math.min(1, fadeLoopAmount ?? 0)) : 0;
+    if (safeFade > 0 && active) {
+      const minOpacity = 1 - safeFade * 0.85;
       fade.value = withRepeat(
-        withTiming(0.15, { duration: 4200 + index * 600, easing: Easing.inOut(Easing.ease) }),
+        withTiming(minOpacity, { duration: 4200 + index * 600, easing: Easing.inOut(Easing.ease) }),
         -1,
         true,
       );
@@ -169,7 +171,7 @@ function PreviewGlyph({
     }
     cancelAnimation(fade);
     fade.value = withTiming(1, { duration: 400 });
-  }, [fadeLoop, active, index, fade]);
+  }, [fadeLoopAmount, active, index, fade]);
 
   const baseOpacity = Math.max(0.15, settings.opacity * masterOpacity);
   const aStyle = useAnimatedStyle(() => ({

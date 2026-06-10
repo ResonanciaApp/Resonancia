@@ -22,12 +22,10 @@ export type GeoSettings = {
   /** Velocidad de giro 0–1: 0 = muy lento, 1 = rápido. */
   rotateSpeed: number;
   opacity: number;
-  /** Respiración on/off (toggle de cabecera). */
-  breathe: boolean;
-  /** Intensidad de la respiración 0–1: 0 = sutil, 1 = profunda. */
+  /** Respiración 0–1: la geometría pulsa suavemente. 0 = off, >0 = profundidad. */
   breatheAmount: number;
-  /** Fundido cíclico: la geometría aparece y desaparece suavemente en bucle. */
-  fadeLoop: boolean;
+  /** Fundido cíclico 0–1: la geometría aparece y desaparece en bucle. 0 = off. */
+  fadeLoopAmount: number;
   /** Glow propio 0–1: halo aditivo del trazo (se suma al glow general). */
   glow: number;
   /** Grosor de línea: 0 = 1px, 1 = ~6px. */
@@ -58,8 +56,8 @@ export type GeoSettings = {
   ripple: number;
   /** Warp 0–1: squash & stretch (deforma ancho/alto en contrafase). 0 = off. */
   warp: number;
-  /** Expansión on/off: eco del glifo que crece y se desvanece en bucle. */
-  expansion: boolean;
+  /** Expansión 0–1: eco del glifo que crece y se desvanece en bucle. 0 = off. */
+  expansionAmount: number;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */

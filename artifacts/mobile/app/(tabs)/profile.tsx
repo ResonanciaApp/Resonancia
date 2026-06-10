@@ -316,7 +316,7 @@ function BgGlyph({
     ? Math.max(0, Math.min(1, settings.rotateSpeed)) : 0.5;
   const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
   const safeAmount   = Number.isFinite(settings.breatheAmount)
-    ? Math.max(0, Math.min(1, settings.breatheAmount)) : 0.5;
+    ? Math.max(0, Math.min(1, settings.breatheAmount)) : 0;
   const breatheDepth = 0.04 + safeAmount * 0.2;
   const safeScale    = Number.isFinite(settings.scale) ? settings.scale : 1;
   const safeZoom     = Number.isFinite(settings.zoom) && settings.zoom > 0 ? settings.zoom : 1;
@@ -340,7 +340,7 @@ function BgGlyph({
   }, [spinning, spinDuration, rot]);
 
   useEffect(() => {
-    if (settings.breathe) {
+    if ((settings.breatheAmount ?? 0) > 0) {
       const a = Animated.loop(
         Animated.sequence([
           Animated.timing(pulse, { toValue: 1, duration: 6000 + index * 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
@@ -351,13 +351,16 @@ function BgGlyph({
       return () => a.stop();
     }
     pulse.setValue(0);
-  }, [settings.breathe, index, pulse]);
+  }, [(settings.breatheAmount ?? 0) > 0, index, pulse]);
 
   useEffect(() => {
-    if (settings.fadeLoop) {
+    const fadeOn = (settings.fadeLoopAmount ?? 0) > 0;
+    if (fadeOn) {
+      const safeFadeAmt = Math.max(0, Math.min(1, settings.fadeLoopAmount ?? 0));
+      const minOpacity = 1 - safeFadeAmt * 0.85;
       const a = Animated.loop(
         Animated.sequence([
-          Animated.timing(fade, { toValue: 0, duration: 4000 + index * 1200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+          Animated.timing(fade, { toValue: minOpacity, duration: 4000 + index * 1200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
           Animated.timing(fade, { toValue: 1, duration: 4000 + index * 1200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
         ])
       );
@@ -365,7 +368,7 @@ function BgGlyph({
       return () => a.stop();
     }
     fade.setValue(1);
-  }, [settings.fadeLoop, index, fade]);
+  }, [(settings.fadeLoopAmount ?? 0) > 0, index, fade]);
 
   const layerOpacity = Math.max(0.1, settings.opacity * masterOpacity);
   const rotDeg   = rot.interpolate({ inputRange: [0, 1], outputRange: [`${settings.manualAngle}deg`, `${settings.manualAngle + 360 * dir}deg`] });
@@ -378,10 +381,10 @@ function BgGlyph({
         {
           alignItems: "center",
           justifyContent: "center",
-          opacity: settings.fadeLoop ? Animated.multiply(fade, layerOpacity) : layerOpacity,
+          opacity: (settings.fadeLoopAmount ?? 0) > 0 ? Animated.multiply(fade, layerOpacity) : layerOpacity,
           transform: [
             { rotate: spinning ? rotDeg : `${settings.manualAngle}deg` },
-            { scale: settings.breathe ? scalePulse : 1 },
+            { scale: (settings.breatheAmount ?? 0) > 0 ? scalePulse : 1 },
           ],
         },
       ]}

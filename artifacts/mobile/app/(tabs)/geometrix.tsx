@@ -175,9 +175,8 @@ function defaultSettings(id: GeometryId): GeoSettings {
     rotateLeft: false,
     rotateSpeed: 0.5,
     opacity: 1,
-    breathe: false,
-    breatheAmount: 0.5,
-    fadeLoop: false,
+    breatheAmount: 0,
+    fadeLoopAmount: 0,
     glow: 0,
     thickness: 0,
     scale: 1,
@@ -193,7 +192,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     onda: 0,
     ripple: 0,
     warp: 0,
-    expansion: false,
+    expansionAmount: 0,
   };
 }
 
@@ -342,6 +341,7 @@ function ExpansionEcho({
   kaleidoscope,
   kaleidSegments,
   liveScaleSV,
+  amount,
 }: {
   geoId: GeometryId;
   color: string;
@@ -351,15 +351,18 @@ function ExpansionEcho({
   kaleidoscope: boolean;
   kaleidSegments: number;
   liveScaleSV?: SharedValue<number>;
+  amount: number;
 }) {
   const t = useSharedValue(0);
   useEffect(() => {
     t.value = withRepeat(withTiming(1, { duration: 3200, easing: Easing.out(Easing.ease) }), -1, false);
     return () => cancelAnimation(t);
   }, [t]);
+  const safeAmount = Math.max(0, Math.min(1, amount));
+  const maxOpacity = 0.15 + safeAmount * 0.45;
   const st = useAnimatedStyle(() => ({
     transform: [{ scale: 1 + t.value * 0.6 }],
-    opacity: (1 - t.value) * 0.5,
+    opacity: (1 - t.value) * maxOpacity,
   }));
   return (
     <Animated.View style={[styles.layer, st]} pointerEvents="none">
@@ -467,9 +470,8 @@ function GeometryLayer({
     rotateLeft,
     rotateSpeed,
     opacity,
-    breathe,
     breatheAmount,
-    fadeLoop,
+    fadeLoopAmount,
     glow: geoGlow,
     thickness,
     scale,
@@ -483,7 +485,7 @@ function GeometryLayer({
     onda,
     ripple,
     warp,
-    expansion,
+    expansionAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -534,9 +536,11 @@ function GeometryLayer({
   // Fundido cíclico: la capa baja a un mínimo tenue y vuelve, en bucle suave.
   // Se congela junto con el movimiento general; al apagarlo vuelve a opacidad 1.
   useEffect(() => {
-    if (fadeLoop && motion) {
+    const safeFade = Number.isFinite(fadeLoopAmount) ? Math.max(0, Math.min(1, fadeLoopAmount)) : 0;
+    if (safeFade > 0 && motion) {
+      const minOpacity = 1 - safeFade * 0.85;
       fade.value = withRepeat(
-        withTiming(0.15, { duration: 4200 + index * 600, easing: Easing.inOut(Easing.ease) }),
+        withTiming(minOpacity, { duration: 4200 + index * 600, easing: Easing.inOut(Easing.ease) }),
         -1,
         true,
       );
@@ -544,7 +548,7 @@ function GeometryLayer({
       cancelAnimation(fade);
       fade.value = withTiming(1, { duration: 400 });
     }
-  }, [fadeLoop, motion, fade, index]);
+  }, [fadeLoopAmount, motion, fade, index]);
 
   // Onda (cizalla) y Warp (squash & stretch): osciladores que el aStyle mapea a
   // la deformación. La AMPLITUD vive en el worklet (safeOnda/safeWarp), así que
@@ -595,10 +599,10 @@ function GeometryLayer({
   // Movimiento general (panel maestro): congela giro + respiración de TODAS las
   // capas a la vez sin borrar el ajuste propio de cada una.
   const spin = (rotate || rotateLeft) && motion;
-  const breath = breathe && motion;
+  const breath = breatheAmount > 0 && motion;
   // Profundidad de la respiración: 0.04 (sutil) → 0.24 (profunda). Define cuánto
   // se encoge en el valle del pulso (el pico siempre es 1.0).
-  const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0.5;
+  const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0;
   const breatheDepth = 0.04 + safeAmount * 0.2;
   const safeMaster = Number.isFinite(masterOpacity) ? masterOpacity : 1;
   // Ángulo manual (gesto de dos dedos): solo aplica cuando el giro automático
@@ -755,7 +759,7 @@ function GeometryLayer({
         </>
       )}
       {/* Expansión: eco del glifo que crece y se desvanece en bucle. */}
-      {expansion && motion && (
+      {(expansionAmount ?? 0) > 0 && motion && (
         <ExpansionEcho
           geoId={geo.id}
           color={dispColor}
@@ -765,6 +769,7 @@ function GeometryLayer({
           kaleidoscope={kaleidoscope}
           kaleidSegments={kaleidSegments}
           liveScaleSV={liveScaleForGlyph}
+          amount={expansionAmount ?? 0}
         />
       )}
       <Animated.View
@@ -4688,42 +4693,42 @@ export default function GeometrixScreen() {
             {/* ── Energía ───────────────────────────────────────────────── */}
             <SettingsSection
               title="Energía"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoop", "breathe", "expansion"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoop", "breathe", "expansion"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
                 const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
                 return (
-                  <View style={styles.toggleGrid}>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>Fade</Text>
-                      <Toggle
-                        value={g0?.fadeLoop ?? false}
-                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "fadeLoop", v))}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
+                  <>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Fade</Text>
                     </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>Respirar</Text>
-                      <Toggle
-                        value={g0?.breathe ?? false}
-                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "breathe", v))}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
+                    <VolumeSlider
+                      value={g0?.fadeLoopAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "fadeLoopAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Respirar</Text>
                     </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>Expansión</Text>
-                      <Toggle
-                        value={g0?.expansion ?? false}
-                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "expansion", v))}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
+                    <VolumeSlider
+                      value={g0?.breatheAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "breatheAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Expansión</Text>
                     </View>
-                  </View>
+                    <VolumeSlider
+                      value={g0?.expansionAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "expansionAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </>
                 );
               })()}
             </SettingsSection>
@@ -5308,39 +5313,37 @@ export default function GeometrixScreen() {
                   {/* ── Energía ───────────────────────────────────────────── */}
                   <SettingsSection
                     title="Energía"
-                    isModified={isSectionModified(iid, ["fadeLoop", "breathe", "expansion"])}
-                    onReset={() => resetSection(iid, ["fadeLoop", "breathe", "expansion"])}
+                    isModified={isSectionModified(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"])}
+                    onReset={() => resetSection(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
-                    <View style={styles.toggleGrid}>
-                      <View style={styles.toggleGridItem}>
-                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Fade</Text>
-                        <Toggle
-                          value={s.fadeLoop}
-                          onChange={(v) => updateSetting(iid, "fadeLoop", v)}
-                          color={TOGGLE_ON_COLOR}
-                          compact
-                        />
-                      </View>
-                      <View style={styles.toggleGridItem}>
-                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Respirar</Text>
-                        <Toggle
-                          value={s.breathe}
-                          onChange={(v) => updateSetting(iid, "breathe", v)}
-                          color={TOGGLE_ON_COLOR}
-                          compact
-                        />
-                      </View>
-                      <View style={styles.toggleGridItem}>
-                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Expansión</Text>
-                        <Toggle
-                          value={s.expansion ?? false}
-                          onChange={(v) => updateSetting(iid, "expansion", v)}
-                          color={TOGGLE_ON_COLOR}
-                          compact
-                        />
-                      </View>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Fade</Text>
                     </View>
+                    <VolumeSlider
+                      value={s.fadeLoopAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "fadeLoopAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Respirar</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.breatheAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "breatheAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Expansión</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.expansionAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "expansionAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
                   </SettingsSection>
 
                 </View>
