@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 9,
     borderRadius: 999,
-    backgroundColor: "rgba(11,15,20,0.82)",
+    backgroundColor: "rgba(15,35,80,0.90)",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(190,150,80,0.35)",
   },
