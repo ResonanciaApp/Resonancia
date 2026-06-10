@@ -2529,27 +2529,41 @@ export default function GeometrixScreen() {
   // objetivo o tras un commit, el useEffect de sync actualiza liveRot y la
   // reacción reconcilia el color con el ángulo confirmado (umbral exacto 0.5°).
 
+  // Settings confirmados del objetivo activo (una sola lectura). De aquí salen
+  // los ESCALARES que usan los effects de sync como deps. CLAVE: los effects
+  // dependen del valor concreto (zoom/offset/manualAngle), NO de `getSettings`.
+  // `getSettings` es useCallback([settings]) → su referencia cambia con CUALQUIER
+  // mutación de settings; y como pinch/rotación/drag comparten Gesture.Simultaneous,
+  // al soltar dos dedos el onEnd del pinch siempre commitea zoom → setSettings →
+  // si el effect dependiera de getSettings se dispararía y pisaría el gesto en
+  // vuelo leyendo un valor VIEJO (el commit del otro gesto puede no estar aplicado
+  // en ese render) → "gira/cambia y vuelve". Ver geometrix-rotation-sync-effect.
+  const pinchTargetSettings = pinchTargetId ? getSettings(pinchTargetId) : null;
+  const targetZoom = pinchTargetSettings?.zoom ?? 1;
+  const targetOffsetX = pinchTargetSettings?.offsetX ?? 0;
+  const targetOffsetY = pinchTargetSettings?.offsetY ?? 0;
+  const targetManualAngle = pinchTargetSettings?.manualAngle ?? 0;
+
   // Mantener el zoom en vivo sincronizado con el valor confirmado del objetivo
   // (al cambiar de geometría o tras confirmar un pellizco).
   useEffect(() => {
-    livePinch.value = pinchTargetId ? getSettings(pinchTargetId).zoom : 1;
+    livePinch.value = targetZoom;
     // El valor confirmado ya está sincronizado (tras commit o cambio de
     // objetivo) → desactivar el escalado en vivo: la capa muestra su tamaño
     // confirmado vía `size` (effectiveSize), sin depender de `livePinch`.
     pinchActive.value = 0;
-  }, [pinchTargetId, getSettings, livePinch, pinchActive]);
+  }, [pinchTargetId, targetZoom, livePinch, pinchActive]);
 
   // Sincronizar liveDragX/Y con el offset confirmado del objetivo cuando cambia.
   // Así el onStart del panGesture (worklet, hilo UI) puede leer liveDragX/Y
   // directamente sin llamar a getSettings (función JS, no worklet).
   useEffect(() => {
-    const s = pinchTargetId ? getSettings(pinchTargetId) : null;
-    liveDragX.value = s?.offsetX ?? 0;
-    liveDragY.value = s?.offsetY ?? 0;
+    liveDragX.value = targetOffsetX;
+    liveDragY.value = targetOffsetY;
     // Tras el commit del drag (o al cambiar de objetivo) el offset confirmado ya
     // está sincronizado → apagar el gate: la capa usa committedX/Y (sin "pop").
     dragActive.value = 0;
-  }, [pinchTargetId, getSettings, liveDragX, liveDragY, dragActive]);
+  }, [pinchTargetId, targetOffsetX, targetOffsetY, liveDragX, liveDragY, dragActive]);
 
   // Precalcular targets de snap: centros de todas las geometrías no-objetivo
   // más el centro del lienzo (0,0). Se actualiza cuando cambia la selección o
@@ -2633,20 +2647,25 @@ export default function GeometrixScreen() {
   // Solo se permite rotar con los dedos cuando el objetivo NO tiene giro
   // automático activado (ni derecha ni izquierda). Con giro activo, el gesto
   // queda deshabilitado.
-  const rotTargetSettings = pinchTargetId ? getSettings(pinchTargetId) : null;
   const canManualRotate =
-    !!rotTargetSettings && !rotTargetSettings.rotate && !rotTargetSettings.rotateLeft;
+    !!pinchTargetSettings && !pinchTargetSettings.rotate && !pinchTargetSettings.rotateLeft;
 
   // Mantener el ángulo en vivo sincronizado con el confirmado del objetivo
   // (al cambiar de geometría o tras confirmar una rotación).
+  //
+  // CLAVE: la dep es `targetManualAngle` (escalar), NO `getSettings` (ver el
+  // bloque de escalares más arriba). Así el effect SOLO corre cuando cambia el
+  // ángulo confirmado de ESTE objetivo (swap atómico tras commitAngle) o cambia
+  // la selección — los commits de zoom u otras geometrías ya no lo tocan, por lo
+  // que el pinch simultáneo deja de pisar la rotación en vuelo.
   useEffect(() => {
-    liveRot.value = pinchTargetId ? getSettings(pinchTargetId).manualAngle : 0;
+    liveRot.value = targetManualAngle;
     // Avisar a la reacción cardinal si hay objetivo (apaga el color sin objetivo).
     rotHasTargetSV.value = pinchTargetId ? 1 : 0;
     // Tras el commit del ángulo (o al cambiar de objetivo) el manualAngle ya está
     // sincronizado → apagar el gate: la capa usa su ángulo confirmado (sin "pop").
     rotActive.value = 0;
-  }, [pinchTargetId, getSettings, liveRot, rotActive, rotHasTargetSV]);
+  }, [pinchTargetId, targetManualAngle, liveRot, rotActive, rotHasTargetSV]);
 
   // Gesto de rotación con dos dedos: gira el objetivo en tiempo real. Se confirma
   // a settings al soltar. Deshabilitado cuando hay giro automático.
