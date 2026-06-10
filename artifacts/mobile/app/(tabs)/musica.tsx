@@ -153,26 +153,60 @@ const PillTab = memo(function PillTab({
   sel: boolean;
   onPress: () => void;
 }) {
+  const anim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(anim, {
+      toValue: sel ? 1 : 0,
+      duration: 220,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: false,
+    }).start();
+  }, [sel, anim]);
+
+  const bgColor     = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.05)", DARK] });
+  const borderColor = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.08)", "rgba(0,0,0,0)"] });
+  const textColor   = anim.interpolate({ inputRange: [0, 1], outputRange: [MUTED, "#FFFFFF"] });
   const c = tab.color;
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={[
-        styles.pillTab,
-        sel
-          ? { backgroundColor: DARK, borderColor: "transparent" }
-          : { backgroundColor: "rgba(0,0,0,0.05)", borderColor: "rgba(0,0,0,0.08)" },
-      ]}
-    >
-      <MaterialCommunityIcons
-        name={tab.icon as any}
-        size={15}
-        color={sel ? "#FFFFFF" : c}
-      />
-      <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
-        {tab.label}
-      </Text>
+    <Pressable onPress={onPress}>
+      <Animated.View style={[styles.pillTab, { backgroundColor: bgColor, borderColor }]}>
+        <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#FFFFFF" : c} />
+        <Animated.Text style={[styles.pillTabLabel, { color: textColor, fontWeight: sel ? "700" : "500" }]}>
+          {tab.label}
+        </Animated.Text>
+      </Animated.View>
+    </Pressable>
+  );
+});
+
+// ── SubTabPill con fade ───────────────────────────────────────────────────────
+const SubTabPill = memo(function SubTabPill({
+  label, sel, onPress,
+}: { label: string; sel: boolean; onPress: () => void }) {
+  const anim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(anim, {
+      toValue: sel ? 1 : 0,
+      duration: 200,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: false,
+    }).start();
+  }, [sel, anim]);
+
+  const bgColor     = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.03)", DARK] });
+  const borderColor = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(0,0,0,0.09)", "rgba(0,0,0,0)"] });
+  const textColor   = anim.interpolate({ inputRange: [0, 1], outputRange: [MUTED, "#FFFFFF"] });
+
+  return (
+    <Pressable onPress={onPress}>
+      <Animated.View style={[styles.subTabPill, { backgroundColor: bgColor, borderColor }]}>
+        <Animated.Text style={[styles.subTabText, { color: textColor, fontWeight: sel ? "700" : "600" }]}>
+          {label}
+        </Animated.Text>
+      </Animated.View>
     </Pressable>
   );
 });
@@ -587,23 +621,13 @@ export default function MiMusicaScreen() {
                     const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
                     if (!cat) return null;
                     const sel = subTab === catId;
-                    const tabColor = MAIN_TABS.find((t) => t.id === mainTab)?.color ?? GOLD;
                     return (
-                      <Pressable
+                      <SubTabPill
                         key={catId}
+                        label={SUB_TAB_LABELS[catId] ?? cat.label}
+                        sel={sel}
                         onPress={() => setSubTab(sel ? null : catId)}
-                        style={[
-                          styles.subTabPill,
-                          {
-                            backgroundColor: sel ? DARK : "rgba(0,0,0,0.03)",
-                            borderColor: sel ? "transparent" : "rgba(0,0,0,0.09)",
-                          },
-                        ]}
-                      >
-                        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED }]}>
-                          {SUB_TAB_LABELS[catId] ?? cat.label}
-                        </Text>
-                      </Pressable>
+                      />
                     );
                   })}
                 </ScrollView>
