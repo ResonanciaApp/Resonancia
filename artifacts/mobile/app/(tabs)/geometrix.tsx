@@ -3567,7 +3567,7 @@ export default function GeometrixScreen() {
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
                     )}
-                    style={[styles.thumbItem, isLight && { backgroundColor: "#0B0F14" }]}
+                    style={[styles.thumbItem, isLight && { backgroundColor: "rgba(11,15,20,0.5)" }]}
                   >
                     {/* Tap en la imagen: seleccionar. Si está oculta, tap → mostrar. */}
                     <Pressable
