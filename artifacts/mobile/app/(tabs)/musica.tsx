@@ -440,8 +440,8 @@ export default function MiMusicaScreen() {
   }, []);
 
   const handleDimChange = useCallback((v: number) => {
-    setBgDim(v);
-    saveAppearance(bgPresetRef.current, v);
+    setBgDim(1 - v);
+    saveAppearance(bgPresetRef.current, 1 - v);
   }, [saveAppearance]);
 
   const handlePresetChange = useCallback((id: string) => {
@@ -680,7 +680,7 @@ export default function MiMusicaScreen() {
             <View style={styles.sheetBrightnessRow}>
               <MaterialCommunityIcons name="brightness-4" size={18} color={MUTED} />
               <View style={{ flex: 1 }}>
-                <BrightnessSlider value={bgDim} onChange={handleDimChange} />
+                <BrightnessSlider value={1 - bgDim} onChange={handleDimChange} />
               </View>
               <MaterialCommunityIcons name="brightness-7" size={18} color={DARK} />
             </View>
