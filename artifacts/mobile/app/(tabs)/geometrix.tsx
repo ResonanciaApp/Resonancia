@@ -193,6 +193,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     ripple: 0,
     warp: 0,
     expansionAmount: 0,
+    threeDAmount: 0,
   };
 }
 
@@ -444,6 +445,9 @@ function GeometryLayer({
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
   const fade = useSharedValue(1);
+  // Perspectiva 3D: dos osciladores con períodos primos → Lissajous natural.
+  const tiltXSV = useSharedValue(0);
+  const tiltYSV = useSharedValue(0);
   // Osciladores de distorsión (fase 0↔1; punto neutro 0.5). Onda → cizalla,
   // Warp → squash & stretch. El aStyle los mapea a la deformación final.
   const waveSV = useSharedValue(0.5);
@@ -486,6 +490,7 @@ function GeometryLayer({
     ripple,
     warp,
     expansionAmount,
+    threeDAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -498,6 +503,7 @@ function GeometryLayer({
   const safeOnda = Number.isFinite(onda) ? clamp01(onda) : 0;
   const safeRipple = Number.isFinite(ripple) ? clamp01(ripple) : 0;
   const safeWarp = Number.isFinite(warp) ? clamp01(warp) : 0;
+  const safe3D = Number.isFinite(threeDAmount) ? clamp01(threeDAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -558,6 +564,7 @@ function GeometryLayer({
   // cancela y vuelve a 0.5 (sin deformación). Se congelan con el movimiento.
   const ondaOn = safeOnda > 0;
   const warpOn = safeWarp > 0;
+  const threeDOn = safe3D > 0;
   useEffect(() => {
     if (ondaOn && motion) {
       waveSV.value = withSequence(
@@ -580,6 +587,36 @@ function GeometryLayer({
       warpSV.value = withTiming(0.5, { duration: 300 });
     }
   }, [warpOn, motion, warpSV]);
+
+  // Perspectiva 3D: tiltX y tiltY oscilan con períodos primos distintos para
+  // crear un movimiento Lissajous (el plano se inclina en todas las direcciones
+  // progresivamente). La amplitud maxTilt se escala por safe3D en el worklet,
+  // así mover el slider no reinicia el bucle. Se congela con el movimiento.
+  useEffect(() => {
+    if (threeDOn && motion) {
+      tiltXSV.value = withRepeat(
+        withSequence(
+          withTiming(1, { duration: 3200, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-1, { duration: 3200, easing: Easing.inOut(Easing.ease) }),
+        ),
+        -1,
+        false,
+      );
+      tiltYSV.value = withRepeat(
+        withSequence(
+          withTiming(1, { duration: 4700, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-1, { duration: 4700, easing: Easing.inOut(Easing.ease) }),
+        ),
+        -1,
+        false,
+      );
+    } else {
+      cancelAnimation(tiltXSV);
+      cancelAnimation(tiltYSV);
+      tiltXSV.value = withTiming(0, { duration: 500 });
+      tiltYSV.value = withTiming(0, { duration: 500 });
+    }
+  }, [threeDOn, motion, tiltXSV, tiltYSV]);
 
   // Sentido del giro: derecha (horario, +1) o izquierda (antihorario, -1).
   // Los toggles son excluyentes; si ambos quedaran apagados no hay giro.
@@ -653,8 +690,14 @@ function GeometryLayer({
     const skewDeg = wavePhase * safeOnda * 14;
     const warpX = 1 + warpPhase * safeWarp * 0.32;
     const warpY = 1 - warpPhase * safeWarp * 0.32;
+    // 3D: perspectiva fija + inclinación Lissajous en X/Y. Cuando safe3D=0 los
+    // ángulos son 0deg → plano exacto, igual que sin perspectiva.
+    const maxTilt = safe3D * 28; // 0° a 28°
     return {
       transform: [
+        { perspective: 600 },
+        { rotateX: `${tiltXSV.value * maxTilt}deg` },
+        { rotateY: `${tiltYSV.value * maxTilt}deg` },
         { rotate: `${angleDeg}deg` },
         { skewX: `${skewDeg}deg` },
         { scaleX: warpX },
@@ -4528,8 +4571,8 @@ export default function GeometrixScreen() {
             {/* ── Transformación ────────────────────────────────────────── */}
             <SettingsSection
               title="Transformación"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
@@ -4542,6 +4585,15 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.thickness ?? 0.5}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "thickness", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>3D</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.threeDAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "threeDAmount", v))}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -5175,8 +5227,8 @@ export default function GeometrixScreen() {
                   {/* ── Transformación ────────────────────────────────────── */}
                   <SettingsSection
                     title="Transformación"
-                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate"])}
-                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate"])}
+                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
+                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
@@ -5185,6 +5237,15 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.thickness}
                       onChange={(v) => updateSetting(iid, "thickness", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>3D</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.threeDAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "threeDAmount", v)}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />

@@ -58,6 +58,8 @@ export type GeoSettings = {
   warp: number;
   /** Expansión 0–1: eco del glifo que crece y se desvanece en bucle. 0 = off. */
   expansionAmount: number;
+  /** Perspectiva 3D 0–1: inclina la capa en 3D (rotateX/Y oscilantes). 0 = plano. */
+  threeDAmount: number;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */
