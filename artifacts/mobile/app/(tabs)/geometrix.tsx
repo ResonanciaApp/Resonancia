@@ -1643,6 +1643,11 @@ export default function GeometrixScreen() {
   const [generalSheetHeight, setGeneralSheetHeight] = useState(0);
   // Alto real del sheet de ajustes, para anclar la vista previa justo encima.
   const [sheetHeight, setSheetHeight] = useState(0);
+  // Alto CONGELADO del sheet: se mide una vez al abrir (con las secciones
+  // colapsadas) y se fija, así el sheet ajusta su tamaño al contenido (sin
+  // vacío) pero NO crece al desplegar una sección — el contenido scrollea y la
+  // vista previa (anclada a este alto) mantiene tamaño y posición.
+  const [frozenSheetH, setFrozenSheetH] = useState<number | null>(null);
   // Modo inmersión: solo el fondo animado, sin interfaz.
   const [immersive, setImmersive] = useState(false);
   // Nombre de la composición recién guardada → muestra el popup temático.
@@ -2366,6 +2371,12 @@ export default function GeometrixScreen() {
       setSelectedId(active.length ? active[active.length - 1] : null);
     }
   }, [active, menuGeoId, settingsGeoId, selectedId]);
+
+  // Al cerrar el panel de ajustes, descongelar el alto para que vuelva a
+  // medirse (colapsado) la próxima vez que se abra.
+  useEffect(() => {
+    if (settingsGeoId == null) setFrozenSheetH(null);
+  }, [settingsGeoId]);
 
   // Geometría que responde al pellizco: la seleccionada, o la última activa.
   const pinchTargetId =
@@ -4144,15 +4155,17 @@ export default function GeometrixScreen() {
           onLayout={(e) => {
             const h = e.nativeEvent.layout.height;
             setSheetHeight((prev) => (prev === h ? prev : h));
+            // Congelar el alto en la primera medición (secciones colapsadas).
+            if (settingsGeo) setFrozenSheetH((prev) => (prev == null ? h : prev));
           }}
           style={[
             styles.sheet,
             { paddingBottom: insets.bottom + 16 },
-            // Altura FIJA mientras se edita una geometría: así la vista previa
-            // (anclada al alto del sheet) nunca cambia de tamaño/posición y, al
-            // desplegar una sección, el contenido empuja hacia abajo dentro del
-            // scroll en vez de crecer hacia arriba.
-            settingsGeo && { height: "68%" },
+            // Una vez congelado, alto FIJO: la vista previa (anclada a este alto)
+            // no cambia de tamaño/posición y, al desplegar una sección, el
+            // contenido scrollea dentro del sheet en vez de crecer hacia arriba.
+            // Antes de congelar, el sheet se ajusta al contenido (sin vacío).
+            settingsGeo && frozenSheetH != null && { height: frozenSheetH },
           ]}
         >
           {/* Mismo fondo que la pantalla de inicio, recortado al radius. */}
@@ -4267,7 +4280,9 @@ export default function GeometrixScreen() {
               const s = getSettings(iid);
               return (
                 <ScrollView
-                  style={{ flex: 1 }}
+                  // Antes de congelar el alto: contenido natural (para medirlo).
+                  // Después: flex:1 para llenar el sheet fijo y scrollear.
+                  style={frozenSheetH != null ? { flex: 1 } : undefined}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
