@@ -90,10 +90,8 @@ const APPEARANCE_KEY  = "@resonance_musica_appearance";
 // ── Presets de fondo ──────────────────────────────────────────────────────────
 const BG_PRESETS = [
   { id: "niebla", label: "Niebla",  colors: ["#F4F6FA", "#EAECF2", "#DDE0E8"] as const },
-  { id: "marmo",  label: "Mármol",  colors: ["#FFFFFF", "#EFF2F7", "#E4E8EF"] as const },
   { id: "perla",  label: "Perla",   colors: ["#FDFCFA", "#F2EDEA", "#E8E2DD"] as const },
   { id: "bruma",  label: "Bruma",   colors: ["#EEF4FF", "#E0EBFF", "#CDD9F5"] as const },
-  { id: "bosque", label: "Bosque",  colors: ["#F0F5F0", "#E4EDE4", "#D5E8D5"] as const },
 ];
 
 // ── Slider de brillo ──────────────────────────────────────────────────────────
