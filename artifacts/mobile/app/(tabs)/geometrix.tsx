@@ -1379,6 +1379,33 @@ function CarouselTile({
 // Icono "sliders" (ajustes generales) pintado con el degradado dorado del
 // logo Cubo 3, en vez de un color plano. react-native-svg permite stroke con
 // gradiente, así que no hace falta masked-view.
+// Ícono de bocina con animación de "vibraciones" para el reproductor de tema de fondo.
+function AnimatedSpeaker({ size = 16, color }: { size?: number; color: string }) {
+  const scale = useSharedValue(1);
+  useEffect(() => {
+    scale.value = withRepeat(
+      withSequence(
+        withTiming(1.28, { duration: 190, easing: Easing.out(Easing.quad) }),
+        withTiming(0.82, { duration: 160, easing: Easing.in(Easing.quad) }),
+        withTiming(1.18, { duration: 160, easing: Easing.out(Easing.quad) }),
+        withTiming(0.94, { duration: 130 }),
+        withTiming(1,    { duration: 240, easing: Easing.out(Easing.ease) }),
+      ),
+      -1,
+      false,
+    );
+    return () => { cancelAnimation(scale); };
+  }, []);
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+  return (
+    <Animated.View style={animStyle}>
+      <Feather name="volume-2" size={size} color={color} />
+    </Animated.View>
+  );
+}
+
 // Texto con relleno en degradado (sin masked-view): SVG <Text> con LinearGradient.
 function GradientText({
   text,
@@ -2901,17 +2928,14 @@ export default function GeometrixScreen() {
                     <Pressable
                       key={s.id}
                       style={[styles.themeRow, isCurrent ? styles.themeRowOn : null]}
-                      onPress={() => {
-                        playTheme(s);
-                        setThemeSearchOpen(false);
-                      }}
+                      onPress={() => playTheme(s)}
                     >
                       <View style={styles.themeRowIcon}>
-                        <Feather
-                          name={isCurrent ? "volume-2" : "music"}
-                          size={16}
-                          color={isCurrent ? colors.primary : colors.mutedForeground}
-                        />
+                        {isCurrent ? (
+                          <AnimatedSpeaker size={16} color={colors.primary} />
+                        ) : (
+                          <Feather name="music" size={16} color={colors.mutedForeground} />
+                        )}
                       </View>
                       <View style={{ flex: 1 }}>
                         <Text style={styles.themeRowTitle} numberOfLines={1}>
@@ -2921,6 +2945,17 @@ export default function GeometrixScreen() {
                           {s.categoryLabel}
                         </Text>
                       </View>
+                      {isCurrent && (
+                        <Pressable
+                          style={styles.themeSelectBtn}
+                          onPress={() => setThemeSearchOpen(false)}
+                          hitSlop={6}
+                          accessibilityRole="button"
+                          accessibilityLabel="Seleccionar este tema de fondo"
+                        >
+                          <Text style={styles.themeSelectBtnText}>Seleccionar</Text>
+                        </Pressable>
+                      )}
                     </Pressable>
                   );
                 })
@@ -4688,6 +4723,19 @@ const styles = StyleSheet.create({
   },
   themeRowTitle: { fontSize: 14, fontWeight: "600", color: colors.foreground },
   themeRowSub: { fontSize: 12, color: colors.mutedForeground, marginTop: 2 },
+  themeSelectBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: hexAlpha(colors.primary, 0.18),
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: hexAlpha(colors.primary, 0.5),
+  },
+  themeSelectBtnText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: colors.primary,
+  },
 
   grid: { flexGrow: 0, marginTop: -15 },
   gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 0, paddingRight: 20 },
