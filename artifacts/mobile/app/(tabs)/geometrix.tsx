@@ -1773,6 +1773,7 @@ export default function GeometrixScreen() {
   const thumbsViewW = useRef(0);
   const thumbsScrollRef = useRef<ScrollView>(null);
   const settingsScrollRef = useRef<ScrollView>(null);
+  const generalScrollRef  = useRef<ScrollView>(null);
   // Aparición escalonada de thumbnails: solo la primera tanda (al poblarse el
   // lienzo) entra de izquierda a derecha; las que se agregan luego, al instante.
   const thumbsInitialIdsRef = useRef<Set<string> | null>(null);
@@ -3791,291 +3792,527 @@ export default function GeometrixScreen() {
           {/* Línea divisora sutil */}
           <View style={styles.sheetHeaderDivider} />
 
+          <ScrollView ref={generalScrollRef} contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
           <View style={[styles.geoCard, { marginTop: -10 }]}>
-            {/* Color de fondo del lienzo: indigo por defecto + degradados
-                (oscurecidos). Sin colores sólidos. */}
-            <Text style={styles.fieldLabel}>Color de fondo</Text>
-            <View style={styles.swatchRow}>
-              {/* Opción por defecto (fondo indigo original) */}
-              <Pressable
-                onPress={() =>
-                  setMaster((m) => ({ ...m, bgColor: null, bgGradientId: null }))
-                }
-                style={[styles.swatch, !master.bgGradientId && styles.swatchOn]}
-                accessibilityRole="button"
-                accessibilityLabel="Fondo por defecto"
-              >
-                <GradientSwatch
-                  colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
-                  size={20}
-                />
-              </Pressable>
-              {BG_GRADIENTS.map((gr) => {
-                const on = master.bgGradientId === gr.id;
-                return (
-                  <Pressable
-                    key={`bg-${gr.id}`}
-                    onPress={() =>
-                      setMaster((m) => ({ ...m, bgColor: null, bgGradientId: gr.id }))
-                    }
-                    style={[styles.swatch, on && styles.swatchOn]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Fondo degradado ${gr.id}`}
-                  >
-                    <GradientSwatch colors={gr.colors} size={20} />
-                  </Pressable>
-                );
-              })}
-            </View>
 
-            {/* ── Patrón de fondo (Premium) ──────────────────────── */}
-            <View style={{ marginTop: 20 }}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <Text style={styles.fieldLabel}>Patrón de fondo</Text>
-                  {!isPremium && (
-                    <View style={{ backgroundColor: colors.primary + "22", borderRadius: 6, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: colors.primary + "55" }}>
-                      <Text style={{ color: colors.primary, fontSize: 10, fontWeight: "700" }}>✦ PREMIUM</Text>
-                    </View>
-                  )}
-                </View>
-                <Toggle
-                  value={!!master.bgPattern}
-                  onChange={(v) => {
-                    if (!isPremium) { router.push("/membresia"); return; }
-                    setMaster((m) => ({
-                      ...m,
-                      bgPattern: v
-                        ? { geoId: "flor-vida", opacity: 0.08, tileSize: 40, spacing: 1 }
-                        : null,
-                    }));
-                  }}
-                  color={colors.primary}
-                  compact
-                />
+            {/* ── Fondo ────────────────────────────────────────────────── */}
+            <SettingsSection
+              title="Fondo"
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              <Text style={styles.fieldLabel}>Color de fondo</Text>
+              <View style={styles.swatchRow}>
+                <Pressable
+                  onPress={() =>
+                    setMaster((m) => ({ ...m, bgColor: null, bgGradientId: null }))
+                  }
+                  style={[styles.swatch, !master.bgGradientId && styles.swatchOn]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Fondo por defecto"
+                >
+                  <GradientSwatch
+                    colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
+                    size={20}
+                  />
+                </Pressable>
+                {BG_GRADIENTS.map((gr) => {
+                  const on = master.bgGradientId === gr.id;
+                  return (
+                    <Pressable
+                      key={`bg-${gr.id}`}
+                      onPress={() =>
+                        setMaster((m) => ({ ...m, bgColor: null, bgGradientId: gr.id }))
+                      }
+                      style={[styles.swatch, on && styles.swatchOn]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Fondo degradado ${gr.id}`}
+                    >
+                      <GradientSwatch colors={gr.colors} size={20} />
+                    </Pressable>
+                  );
+                })}
               </View>
-
-              {master.bgPattern && (
-                <>
-                  {/* Selector de geometría */}
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={{ marginBottom: 12 }}
-                    contentContainerStyle={{ gap: 8, paddingHorizontal: 2 }}
-                  >
-                    {GEOMETRIES.map((g) => {
-                      const on = master.bgPattern?.geoId === g.id;
-                      return (
-                        <Pressable
-                          key={g.id}
-                          onPress={() =>
-                            setMaster((m) => ({
-                              ...m,
-                              bgPattern: m.bgPattern
-                                ? { ...m.bgPattern, geoId: g.id }
-                                : null,
-                            }))
-                          }
-                          style={{
-                            width: 44, height: 52,
-                            alignItems: "center", justifyContent: "center",
-                            backgroundColor: on ? colors.primary + "22" : "rgba(255,255,255,0.04)",
-                            borderRadius: 10,
-                            borderWidth: 1,
-                            borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.08)",
-                            gap: 3,
-                          }}
-                        >
-                          <SacredGlyph id={g.id} color={on ? colors.primary : colors.mutedForeground} size={30} strokeWidth={1.4} />
-                          <Text numberOfLines={1} style={{ color: on ? colors.primary : colors.mutedForeground, fontSize: 7, width: 42, textAlign: "center" }}>{g.name}</Text>
-                        </Pressable>
-                      );
-                    })}
-                  </ScrollView>
-
-                  {/* Tamaño del tile */}
-                  <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Tamaño</Text>
-                  <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
-                    {([["Pequeño", 22], ["Mediano", 42], ["Grande", 72]] as [string, number][]).map(([label, size]) => {
-                      const on = master.bgPattern?.tileSize === size;
-                      return (
-                        <Pressable
-                          key={size}
-                          onPress={() =>
-                            setMaster((m) => ({
-                              ...m,
-                              bgPattern: m.bgPattern ? { ...m.bgPattern, tileSize: size } : null,
-                            }))
-                          }
-                          style={{
-                            flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
-                            backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
-                            borderWidth: 1,
-                            borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
-                          }}
-                        >
-                          <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
-                            {label}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
+              <View style={[styles.fieldRow, { marginTop: 12 }]}>
+                <Text style={styles.fieldLabel}>Brillo del fondo</Text>
+              </View>
+              <VolumeSlider
+                value={master.bgBrightness}
+                onChange={(v) =>
+                  setMaster((m) => ({
+                    ...m,
+                    bgBrightness: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.bgBrightness,
+                  }))
+                }
+                color="#FFFFFF"
+                trackColor="rgba(255,255,255,0.12)"
+              />
+              <View style={{ marginTop: 12 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                    <Text style={styles.fieldLabel}>Patrón de fondo</Text>
+                    {!isPremium && (
+                      <View style={{ backgroundColor: colors.primary + "22", borderRadius: 6, paddingHorizontal: 5, paddingVertical: 2, borderWidth: 1, borderColor: colors.primary + "55" }}>
+                        <Text style={{ color: colors.primary, fontSize: 10, fontWeight: "700" }}>✦ PREMIUM</Text>
+                      </View>
+                    )}
                   </View>
-
-                  {/* Espaciado entre tiles */}
-                  <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Espaciado</Text>
-                  <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
-                    {([["Separadas", 1], ["Pegadas", 0.82], ["Superpuestas", 0.67]] as [string, number][]).map(([label, sp]) => {
-                      const on = master.bgPattern?.spacing === sp;
-                      return (
-                        <Pressable
-                          key={sp}
-                          onPress={() =>
-                            setMaster((m) => ({
-                              ...m,
-                              bgPattern: m.bgPattern ? { ...m.bgPattern, spacing: sp } : null,
-                            }))
-                          }
-                          style={{
-                            flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
-                            backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
-                            borderWidth: 1,
-                            borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
-                          }}
-                        >
-                          <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
-                            {label}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-
-                  {/* Opacidad del patrón */}
-                  <Text style={[styles.fieldLabel, { marginBottom: 6 }]}>Intensidad del patrón</Text>
-                  <VolumeSlider
-                    value={master.bgPattern.opacity}
-                    onChange={(v) =>
+                  <Toggle
+                    value={!!master.bgPattern}
+                    onChange={(v) => {
+                      if (!isPremium) { router.push("/membresia"); return; }
                       setMaster((m) => ({
                         ...m,
-                        bgPattern: m.bgPattern ? { ...m.bgPattern, opacity: Math.min(0.4, Math.max(0, v)) } : null,
-                      }))
-                    }
+                        bgPattern: v
+                          ? { geoId: "flor-vida", opacity: 0.08, tileSize: 40, spacing: 1 }
+                          : null,
+                      }));
+                    }}
                     color={colors.primary}
-                    trackColor="rgba(255,255,255,0.12)"
+                    compact
                   />
-                </>
-              )}
-            </View>
-
-            {/* Opacidad de las animaciones */}
-            <View style={[styles.fieldRow, { marginTop: 18 }]}>
-              <Text style={styles.fieldLabel}>Opacidad animaciones</Text>
-            </View>
-            <VolumeSlider
-              value={master.opacity}
-              onChange={(v) =>
-                setMaster((m) => ({
-                  ...m,
-                  opacity: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.opacity,
-                }))
-              }
-              color="#FFFFFF"
-              trackColor="rgba(255,255,255,0.12)"
-            />
-
-            {/* Brillo del fondo seleccionado */}
-            <View style={[styles.fieldRow, { marginTop: 18 }]}>
-              <Text style={styles.fieldLabel}>Brillo del fondo</Text>
-            </View>
-            <VolumeSlider
-              value={master.bgBrightness}
-              onChange={(v) =>
-                setMaster((m) => ({
-                  ...m,
-                  bgBrightness: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.bgBrightness,
-                }))
-              }
-              color="#FFFFFF"
-              trackColor="rgba(255,255,255,0.12)"
-            />
-
-            {/* Glow general */}
-            <View style={[styles.fieldRow, { marginTop: 18 }]}>
-              <Text style={styles.fieldLabel}>Glow general</Text>
-            </View>
-            <VolumeSlider
-              value={master.glow}
-              onChange={(v) =>
-                setMaster((m) => ({
-                  ...m,
-                  glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
-                }))
-              }
-              color="#FFFFFF"
-              trackColor="rgba(255,255,255,0.12)"
-            />
-
-            {/* ── Caleidoscopio global ──────────────────────────────── */}
-            {activeMetas.length > 0 && (() => {
-              const allOn = activeMetas.every((m) => getSettings(m.iid).kaleidoscope === true);
-              const anyOn = activeMetas.some((m) => getSettings(m.iid).kaleidoscope === true);
-              const segs  = getSettings(activeMetas[0].iid).kaleidSegments ?? 6;
-              return (
-                <View style={{ marginTop: 18 }}>
-                  <View style={{
-                    flexDirection: "row", alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingVertical: 8, paddingHorizontal: 10,
-                    backgroundColor: anyOn ? colors.primary + "14" : "rgba(255,255,255,0.03)",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: anyOn ? colors.primary + "55" : "rgba(255,255,255,0.07)",
-                  }}>
-                    <Text style={{ color: anyOn ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
-                      Caleidoscopio (todas las capas)
-                    </Text>
-                    <Toggle
-                      value={allOn}
-                      onChange={(v) => {
-                        activeMetas.forEach((m) => updateSetting(m.iid, "kaleidoscope", v));
-                      }}
+                </View>
+                {master.bgPattern && (
+                  <>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={{ marginBottom: 12 }}
+                      contentContainerStyle={{ gap: 8, paddingHorizontal: 2 }}
+                    >
+                      {GEOMETRIES.map((g) => {
+                        const on = master.bgPattern?.geoId === g.id;
+                        return (
+                          <Pressable
+                            key={g.id}
+                            onPress={() =>
+                              setMaster((m) => ({
+                                ...m,
+                                bgPattern: m.bgPattern
+                                  ? { ...m.bgPattern, geoId: g.id }
+                                  : null,
+                              }))
+                            }
+                            style={{
+                              width: 44, height: 52,
+                              alignItems: "center", justifyContent: "center",
+                              backgroundColor: on ? colors.primary + "22" : "rgba(255,255,255,0.04)",
+                              borderRadius: 10,
+                              borderWidth: 1,
+                              borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.08)",
+                              gap: 3,
+                            }}
+                          >
+                            <SacredGlyph id={g.id} color={on ? colors.primary : colors.mutedForeground} size={30} strokeWidth={1.4} />
+                            <Text numberOfLines={1} style={{ color: on ? colors.primary : colors.mutedForeground, fontSize: 7, width: 42, textAlign: "center" }}>{g.name}</Text>
+                          </Pressable>
+                        );
+                      })}
+                    </ScrollView>
+                    <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Tamaño</Text>
+                    <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
+                      {([["Pequeño", 22], ["Mediano", 42], ["Grande", 72]] as [string, number][]).map(([label, size]) => {
+                        const on = master.bgPattern?.tileSize === size;
+                        return (
+                          <Pressable
+                            key={size}
+                            onPress={() =>
+                              setMaster((m) => ({
+                                ...m,
+                                bgPattern: m.bgPattern ? { ...m.bgPattern, tileSize: size } : null,
+                              }))
+                            }
+                            style={{
+                              flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
+                              backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                              borderWidth: 1,
+                              borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                            }}
+                          >
+                            <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                              {label}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                    <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Espaciado</Text>
+                    <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
+                      {([["Separadas", 1], ["Pegadas", 0.82], ["Superpuestas", 0.67]] as [string, number][]).map(([label, sp]) => {
+                        const on = master.bgPattern?.spacing === sp;
+                        return (
+                          <Pressable
+                            key={sp}
+                            onPress={() =>
+                              setMaster((m) => ({
+                                ...m,
+                                bgPattern: m.bgPattern ? { ...m.bgPattern, spacing: sp } : null,
+                              }))
+                            }
+                            style={{
+                              flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
+                              backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                              borderWidth: 1,
+                              borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                            }}
+                          >
+                            <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                              {label}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                    <Text style={[styles.fieldLabel, { marginBottom: 6 }]}>Intensidad del patrón</Text>
+                    <VolumeSlider
+                      value={master.bgPattern.opacity}
+                      onChange={(v) =>
+                        setMaster((m) => ({
+                          ...m,
+                          bgPattern: m.bgPattern ? { ...m.bgPattern, opacity: Math.min(0.4, Math.max(0, v)) } : null,
+                        }))
+                      }
                       color={colors.primary}
-                      compact
+                      trackColor="rgba(255,255,255,0.12)"
                     />
-                  </View>
-                  {anyOn && (
-                    <View style={{ marginTop: 10 }}>
-                      <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Segmentos</Text>
-                      <View style={{ flexDirection: "row", gap: 8 }}>
-                        {[4, 6, 8, 12, 16].map((n) => {
-                          const on = segs === n;
-                          return (
-                            <Pressable
-                              key={n}
-                              onPress={() => activeMetas.forEach((m) => updateSetting(m.iid, "kaleidSegments", n))}
-                              style={{
-                                flex: 1, paddingVertical: 8, borderRadius: 10,
-                                alignItems: "center",
-                                backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
-                                borderWidth: 1,
-                                borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
-                              }}
-                            >
-                              <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "700", fontSize: 14 }}>
-                                {n}
-                              </Text>
-                            </Pressable>
-                          );
-                        })}
+                  </>
+                )}
+              </View>
+            </SettingsSection>
+
+            {/* ── Color ────────────────────────────────────────────────── */}
+            <SettingsSection
+              title="Color"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["color", "gradientId", "saturation"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["color", "gradientId", "saturation"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <>
+                    <Text style={styles.fieldLabel}>Color sólido</Text>
+                    <View style={styles.swatchRow}>
+                      {PALETTE.map((c) => {
+                        const on = !g0?.gradientId && g0?.color?.toLowerCase() === c.toLowerCase();
+                        return (
+                          <Pressable
+                            key={c}
+                            onPress={() => {
+                              activeMetas.forEach((m) => {
+                                updateSetting(m.iid, "color", c);
+                                updateSetting(m.iid, "gradientId", null);
+                              });
+                            }}
+                            style={[styles.swatch, on && styles.swatchOn]}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Color ${c}`}
+                          >
+                            <View style={[styles.swatchFill, { backgroundColor: c }]} />
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                    <Text style={[styles.fieldLabel, styles.gradientLabel]}>Color degradado</Text>
+                    <View style={styles.swatchRow}>
+                      {STROKE_GRADIENTS.map((gr) => {
+                        const on = g0?.gradientId === gr.id;
+                        return (
+                          <Pressable
+                            key={gr.id}
+                            onPress={() => activeMetas.forEach((m) => updateSetting(m.iid, "gradientId", on ? null : gr.id))}
+                            style={[styles.swatch, on && styles.swatchOn]}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Degradado ${gr.id}`}
+                          >
+                            <GradientSwatch colors={gr.colors} size={20} />
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                    <Text style={[styles.fieldLabel, styles.gradientLabel]}>Saturación</Text>
+                    <VolumeSlider
+                      value={g0?.saturation ?? 0.5}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "saturation", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </>
+                );
+              })()}
+            </SettingsSection>
+
+            {/* ── Luminosidad ───────────────────────────────────────────── */}
+            <SettingsSection
+              title="Luminosidad"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["opacity", "glow", "bloom", "halo"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["opacity", "glow", "bloom", "halo"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Opacidad animaciones</Text>
+                    </View>
+                    <VolumeSlider
+                      value={master.opacity}
+                      onChange={(v) =>
+                        setMaster((m) => ({
+                          ...m,
+                          opacity: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.opacity,
+                        }))
+                      }
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Glow general</Text>
+                    </View>
+                    <VolumeSlider
+                      value={master.glow}
+                      onChange={(v) =>
+                        setMaster((m) => ({
+                          ...m,
+                          glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
+                        }))
+                      }
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Bloom</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.bloom ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "bloom", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Halo</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.halo ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "halo", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </>
+                );
+              })()}
+            </SettingsSection>
+
+            {/* ── Transformación ────────────────────────────────────────── */}
+            <SettingsSection
+              title="Transformación"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Grosor</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.thickness ?? 0.5}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "thickness", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={[styles.toggleGrid, { marginTop: 8 }]}>
+                      <View style={styles.toggleGridItem}>
+                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar izquierda</Text>
+                        <Toggle
+                          value={g0?.rotateLeft ?? false}
+                          onChange={(v) => {
+                            activeMetas.forEach((m) => {
+                              updateSetting(m.iid, "rotateLeft", v);
+                              if (v) updateSetting(m.iid, "rotate", false);
+                            });
+                          }}
+                          color={TOGGLE_ON_COLOR}
+                          compact
+                        />
+                      </View>
+                      <View style={styles.toggleGridItem}>
+                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar derecha</Text>
+                        <Toggle
+                          value={g0?.rotate ?? false}
+                          onChange={(v) => {
+                            activeMetas.forEach((m) => {
+                              updateSetting(m.iid, "rotate", v);
+                              if (v) updateSetting(m.iid, "rotateLeft", false);
+                            });
+                          }}
+                          color={TOGGLE_ON_COLOR}
+                          compact
+                        />
                       </View>
                     </View>
-                  )}
-                </View>
-              );
-            })()}
+                  </>
+                );
+              })()}
+            </SettingsSection>
+
+            {/* ── Distorsión ────────────────────────────────────────────── */}
+            <SettingsSection
+              title="Distorsión"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["onda", "ripple", "warp"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["onda", "ripple", "warp"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Onda</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.onda ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "onda", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Ripple</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.ripple ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "ripple", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Warp</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.warp ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "warp", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </>
+                );
+              })()}
+            </SettingsSection>
+
+            {/* ── Profundidad ───────────────────────────────────────────── */}
+            <SettingsSection title="Profundidad" />
+
+            {/* ── Calidoscopio ──────────────────────────────────────────── */}
+            <SettingsSection
+              title="Calidoscopio"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["kaleidoscope", "kaleidSegments"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["kaleidoscope", "kaleidSegments"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {activeMetas.length > 0 && (() => {
+                const allOn = activeMetas.every((m) => getSettings(m.iid).kaleidoscope === true);
+                const anyOn = activeMetas.some((m) => getSettings(m.iid).kaleidoscope === true);
+                const segs  = getSettings(activeMetas[0].iid).kaleidSegments ?? 6;
+                return (
+                  <>
+                    <View style={{
+                      flexDirection: "row", alignItems: "center",
+                      justifyContent: "space-between", marginBottom: 10,
+                      paddingVertical: 8, paddingHorizontal: 10,
+                      backgroundColor: anyOn ? colors.primary + "14" : "rgba(255,255,255,0.03)",
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: anyOn ? colors.primary + "55" : "rgba(255,255,255,0.07)",
+                    }}>
+                      <Text style={{ color: anyOn ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                        Activar caleidoscopio (todas)
+                      </Text>
+                      <Toggle
+                        value={allOn}
+                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "kaleidoscope", v))}
+                        color={colors.primary}
+                        compact
+                      />
+                    </View>
+                    {anyOn && (
+                      <View style={{ marginBottom: 4 }}>
+                        <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Segmentos</Text>
+                        <View style={{ flexDirection: "row", gap: 8 }}>
+                          {[4, 6, 8, 12, 16].map((n) => {
+                            const on = segs === n;
+                            return (
+                              <Pressable
+                                key={n}
+                                onPress={() => activeMetas.forEach((m) => updateSetting(m.iid, "kaleidSegments", n))}
+                                style={{
+                                  flex: 1, paddingVertical: 8, borderRadius: 10,
+                                  alignItems: "center",
+                                  backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                                  borderWidth: 1,
+                                  borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                                }}
+                              >
+                                <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "700", fontSize: 14 }}>
+                                  {n}
+                                </Text>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
+                  </>
+                );
+              })()}
+            </SettingsSection>
+
+            {/* ── Energía ───────────────────────────────────────────────── */}
+            <SettingsSection
+              title="Energía"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoop", "breathe", "expansion"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoop", "breathe", "expansion"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <View style={styles.toggleGrid}>
+                    <View style={styles.toggleGridItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>Fade</Text>
+                      <Toggle
+                        value={g0?.fadeLoop ?? false}
+                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "fadeLoop", v))}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                    <View style={styles.toggleGridItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>Respirar</Text>
+                      <Toggle
+                        value={g0?.breathe ?? false}
+                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "breathe", v))}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                    <View style={styles.toggleGridItem}>
+                      <Text style={styles.toggleTriLabel} numberOfLines={2}>Expansión</Text>
+                      <Toggle
+                        value={g0?.expansion ?? false}
+                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "expansion", v))}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                  </View>
+                );
+              })()}
+            </SettingsSection>
+
           </View>
+          </ScrollView>
         </View>
         </View>
       </Modal>
