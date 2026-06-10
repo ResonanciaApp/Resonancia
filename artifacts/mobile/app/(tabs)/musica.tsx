@@ -304,43 +304,48 @@ const SoundCard = memo(function SoundCard({
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      {/* Capa exterior: sombra + borde + transform (sin overflow para que la sombra sea visible) */}
-      <Animated.View
-        style={[
-          styles.cardShadowWrap,
-          decorated && styles.cardShadowWrapActive,
-          { transform: [{ rotate }, { scale }], borderColor: borderCol },
-        ]}
-      >
-        {/* Anillo de expansión dorado — se dispara al activar */}
+      {/* Wrapper sin transform — referencia para overlay y badge */}
+      <View style={styles.cardCircleWrapper}>
+        {/* Capa exterior: sombra + borde + transform (sin overflow para que la sombra sea visible) */}
         <Animated.View
-          pointerEvents="none"
           style={[
-            StyleSheet.absoluteFill,
-            styles.goldRipple,
-            { transform: [{ scale: rippleScale }], opacity: rippleOpacity },
+            styles.cardShadowWrap,
+            decorated && styles.cardShadowWrapActive,
+            { transform: [{ rotate }, { scale }], borderColor: borderCol },
           ]}
-        />
-
-        {/* Capa interior: recorte circular de la imagen */}
-        <View style={styles.cardClipInner}>
-          {image ? (
-            <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
-          ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
-          )}
-          {/* Overlay oscuro — fade out al activar, fade in al desactivar */}
+        >
+          {/* Anillo de expansión — se dispara al activar */}
           <Animated.View
             pointerEvents="none"
-            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)", opacity: overlayOpacity }]}
+            style={[
+              StyleSheet.absoluteFill,
+              styles.goldRipple,
+              { transform: [{ scale: rippleScale }], opacity: rippleOpacity },
+            ]}
           />
-          {/* Ícono de sonido cuando está activa */}
-          <Animated.View pointerEvents="none" style={[styles.activeIconWrap, { opacity: anim }]}>
-            <View style={styles.activeIconBadge}>
-              <MaterialCommunityIcons name="volume-high" size={18} color="#FFFFFF" />
-            </View>
-          </Animated.View>
-        </View>
+          {/* Capa interior: recorte circular de la imagen */}
+          <View style={styles.cardClipInner}>
+            {image ? (
+              <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+            ) : (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
+            )}
+            {/* Overlay oscuro — fade out al activar, fade in al desactivar */}
+            <Animated.View
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)", opacity: overlayOpacity }]}
+            />
+          </View>
+        </Animated.View>
+
+        {/* Ícono de volumen — fuera del transform, no rota con la imagen */}
+        <Animated.View pointerEvents="none" style={[styles.activeIconWrap, { opacity: anim }]}>
+          <View style={styles.activeIconBadge}>
+            <MaterialCommunityIcons name="volume-high" size={18} color="#FFFFFF" />
+          </View>
+        </Animated.View>
+
+        {/* Badge premium — también fuera del transform */}
         {locked && (
           <Image
             source={require("../../assets/images/estrella-premium.png")}
@@ -348,7 +353,7 @@ const SoundCard = memo(function SoundCard({
             contentFit="contain"
           />
         )}
-      </Animated.View>
+      </View>
       <View style={styles.cardFooter}>
         <Text style={styles.soundName} numberOfLines={1}>{sound.name}</Text>
       </View>
@@ -780,11 +785,17 @@ const styles = StyleSheet.create({
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
   soundCard: { width: "31%" },
 
-  // Capa exterior: sombra dorada (sin overflow: hidden para que la sombra sea visible)
-  cardShadowWrap: {
+  // Wrapper sin transform — contiene la card que rota + ícono fijo + badge
+  cardCircleWrapper: {
     width: "82%",
     aspectRatio: 1,
     alignSelf: "center",
+  },
+
+  // Capa exterior: sombra dorada (sin overflow: hidden para que la sombra sea visible)
+  cardShadowWrap: {
+    width: "100%",
+    aspectRatio: 1,
     borderRadius: 999,
     borderWidth: 2.5,
     borderColor: "transparent",
