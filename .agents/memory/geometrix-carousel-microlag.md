@@ -26,22 +26,21 @@ con `CAROUSEL_FLOW_MS` (1100ms) las hermanas se quedaban atrás del dedo, y con 
 se adelantan rápidamente y desaceleran suavemente al destino. No bajar de 180ms: el ojo percibe el
 corrimiento como un "snap" duro.
 
-## Microlag al DESLIZAR solo con tiles seleccionadas = sombra SVG sin shadowPath
+## El sistema de tema claro/oscuro metió microlag GENERAL en Geometrix → revertido entero
 
-Síntoma: scroll fluido sin selección; con ≥1 card seleccionada VISIBLE aparece microlag al
-deslizar. Causa: el glifo de la tile seleccionada (glow>0) lleva `shadowColor/shadowRadius`
-+ `shadowOpacity` animada sobre contenido SVG. Sin `shadowPath`, iOS deriva la sombra del
-alpha del contenido → **pase OFFSCREEN por frame** al recomponer durante el scroll → frames
-caídos. Sin seleccionar, glow=0 ⇒ sombra invisible ⇒ sin pase ⇒ fluido.
+Se construyó un tema claro/oscuro para Geometrix (isLight/isLightSV leído en worklets de
+render por frame, sustitución de color por glifo con `lightGeoColor`, `displayPalette`
+filtrado, boost de saturación +0.25, opacidad forzada, gradientes de fondo). Aun con el toggle
+desactivado (isLight=false hardcodeado) el microlag persistía EN GENERAL (no solo al deslizar
+con cards seleccionadas). Intento previo de paliarlo con `shouldRasterizeIOS` en la sombra del
+glifo NO alcanzó. **El usuario pidió borrar TODO el tema**: se revirtieron `geometrix.tsx`,
+`data/geometries.ts` y `data/geometrix-creations.ts` al baseline pre-tema (commit "Improve
+carousel performance by fixing lag") y se borró el stray `geometrix.backup.tsx`. El fix de
+shouldRasterizeIOS se fue con ese revert (no quedó en el baseline limpio).
 
-**Fix:** `shouldRasterizeIOS={isSelected || isActivating}` en el `Animated.View` que lleva la
-sombra → cachea capa+sombra en bitmap y lo compone sin recalcular. Gatearlo (no siempre) para
-no rasterizar las no seleccionadas (no tienen sombra; un scale 1.0 → cero blur) ni gastar
-memoria con ~50 tiles. El 1.1 estático de la seleccionada NO pixela el bitmap (rasterizado a
-contentsScale). Reanimated deja de escribir shadowOpacity al asentar el glow → cache estable.
-**Regla general:** cualquier sombra sobre SVG/contenido complejo que se mueva en un scroll =
-candidata a esta jank; preferir shouldRasterizeIOS o un HaloGlow (gradiente radial) sobre la
-sombra derivada del alpha.
+**Lección:** NO reintroducir lectura de tema (isLightSV) ni sustitución de color en los
+worklets/render del lienzo de Geometrix — costo por frame = microlag general. Si se necesita
+tema, hacerlo fuera del hot path de animación.
 
 ## No tocar: layout animations, reorder del DOM
 

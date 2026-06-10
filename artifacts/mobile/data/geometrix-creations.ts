@@ -127,12 +127,6 @@ export const STROKE_GRADIENTS: { id: string; colors: readonly [string, string] }
   { id: "verdeagua-verde", colors: [PALETTE[2], PALETTE[6]] },
   { id: "verde-dorado", colors: [PALETTE[6], PALETTE[0]] },
   { id: "crema-dorado", colors: [PALETTE[1], PALETTE[0]] },
-  { id: "pizarra-negro", colors: [PALETTE[7], PALETTE[9]] },
-  { id: "terracota-negro", colors: [PALETTE[8], PALETTE[9]] },
-  { id: "azul-terracota", colors: [PALETTE[7], PALETTE[8]] },
-  { id: "terracota-rosa", colors: [PALETTE[8], PALETTE[5]] },
-  { id: "azul-lavanda", colors: [PALETTE[7], PALETTE[4]] },
-  { id: "negro-dorado", colors: [PALETTE[9], PALETTE[0]] },
 ];
 
 /** Degradados de FONDO del lienzo (Ajustes generales). Todos terminan en el

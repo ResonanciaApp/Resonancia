@@ -2,7 +2,6 @@
  * GEOMETRIX — galería de geometrías sagradas + fondo animado interactivo.
  * El usuario activa geometrías por capas para componer un fondo en vivo.
  */
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -268,18 +267,6 @@ function saturateGrad(
   return [adjustSaturation(grad[0], amount), adjustSaturation(grad[1], amount)] as const;
 }
 
-// Colores de trazo que se pierden sobre el fondo claro de Geometrix.
-// En modo claro se sustituyen por un color visible equivalente.
-const LIGHT_GEO_COLOR_SUBS: Record<string, string> = {
-  "#ede1d3": "#7090A8", // beige/blanco → azul-pizarra medio
-  "#7fd1c0": "#C96B5A", // verde agua → terracota
-  "#9bd6a8": "#1A1A2E", // verde → negro oscuro
-};
-function lightGeoColor(c: string, light: boolean): string {
-  if (!light) return c;
-  return LIGHT_GEO_COLOR_SUBS[c.toLowerCase()] ?? c;
-}
-
 // ── Halo: aura radial suave detrás del glifo ─────────────────────────────────
 function HaloGlow({ size, color, amount }: { size: number; color: string; amount: number }) {
   const a = clamp01(amount);
@@ -390,7 +377,6 @@ function GeometryLayer({
   masterOpacity = 1,
   motion = true,
   glow = 0,
-  isLight = false,
 }: {
   geo: GeometryMeta;
   index: number;
@@ -423,8 +409,6 @@ function GeometryLayer({
   motion?: boolean;
   /** Glow maestro (panel general) 0–1: halo aditivo en el trazo. */
   glow?: number;
-  /** Modo claro: fuerza opacidad completa y satura +25 % el color de cada capa. */
-  isLight?: boolean;
 }) {
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
@@ -475,12 +459,8 @@ function GeometryLayer({
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
-  // Modo claro: +25 % de saturación (colores más vivos sobre el fondo gris).
-  // Modo claro: sustituir colores claros (beige/blanco) por uno visible equivalente.
-  const effectiveColor = lightGeoColor(color, isLight);
-  const baseSat = Number.isFinite(saturation) ? clamp01(saturation) : 0.5;
-  const safeSat = isLight ? clamp01(baseSat + 0.25) : baseSat;
-  const dispColor = adjustSaturation(effectiveColor, safeSat);
+  const safeSat = Number.isFinite(saturation) ? clamp01(saturation) : 0.5;
+  const dispColor = adjustSaturation(color, safeSat);
   const dispGrad = saturateGrad(grad, safeSat);
   // Efectos nuevos saneados (0 = off; saturación 0.5 = neutro).
   const safeBloom = Number.isFinite(bloom) ? clamp01(bloom) : 0;
@@ -642,8 +622,7 @@ function GeometryLayer({
         { scale: breatheScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
-      // Modo claro: opacidad individual forzada a 1 (geometrías sin transparencia).
-      opacity: (isLight ? 1 : opacity) * safeMaster * fade.value * enter.value,
+      opacity: opacity * safeMaster * fade.value * enter.value,
     };
   });
   // Pasar SIEMPRE pinchScaleSV (ref estable): así el SacredGlyph de cada capa
@@ -805,7 +784,6 @@ type CanvasLayerProps = {
   masterOpacity?: number;
   motion?: boolean;
   glow?: number;
-  isLight?: boolean;
 };
 
 function CanvasLayer({
@@ -826,7 +804,6 @@ function CanvasLayer({
   masterOpacity,
   motion,
   glow,
-  isLight,
 }: CanvasLayerProps) {
   const posStyle = useAnimatedStyle(() => {
     const dragging = isTarget && dragActive.value === 1;
@@ -852,7 +829,6 @@ function CanvasLayer({
         masterOpacity={masterOpacity}
         motion={motion}
         glow={glow}
-        isLight={isLight}
       />
     </Animated.View>
   );
@@ -955,9 +931,6 @@ type CarouselTileProps = {
   isActivating: boolean;
   color: string;
   onPress: () => void;
-  tileTitleColor?: string;
-  cardBorderUnsel?: string;
-  glyphUnselColor?: string;
   // Reordenamiento por arrastre (long-press + drag).
   draggable: boolean;
   isDragging: boolean;
@@ -1008,9 +981,6 @@ function CarouselTile({
   scrollX,
   dragActive,
   edgeIntent,
-  tileTitleColor = "#FFFFFF",
-  cardBorderUnsel = CARD_BORDER,
-  glyphUnselColor = "#7A8FA8",
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
   const glow = useSharedValue(isSelected ? 0.66 : 0);
@@ -1369,7 +1339,7 @@ function CarouselTile({
       <Animated.Text
         pointerEvents="none"
         numberOfLines={1}
-        style={[styles.tileTitle, { color: tileTitleColor }, titleStyle]}
+        style={[styles.tileTitle, titleStyle]}
       >
         {name}
       </Animated.Text>
@@ -1378,20 +1348,12 @@ function CarouselTile({
           onPress={onPress}
           style={[
             styles.tile,
-            { width: tileW, borderColor: hexAlpha(isSelected ? color : cardBorderUnsel, isSelected ? 0.2 : 0.8) },
-            isSelected && { backgroundColor: "rgba(190,150,80,0.06)" },
+            { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
+            isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
           ]}
         >
           <View style={styles.tileGlyph}>
             <Animated.View
-              // La sombra del glifo (glow) se deriva del alpha del SVG: sin
-              // shadowPath, iOS hace un pase OFFSCREEN por frame al recomponer
-              // durante el scroll → microlag SOLO con tiles seleccionadas
-              // (glow>0) visibles. shouldRasterizeIOS cachea capa+sombra en un
-              // bitmap y lo compone sin recalcular → scroll fluido. Se activa
-              // solo cuando hay sombra (selección/activación) para no gastar
-              // memoria ni rasterizar las no seleccionadas (que no la necesitan).
-              shouldRasterizeIOS={isSelected || isActivating}
               style={[
                 glyphStyle,
                 {
@@ -1403,7 +1365,7 @@ function CarouselTile({
             >
               <SacredGlyph
                 id={baseOf(id)}
-                color={isSelected ? color : glyphUnselColor}
+                color={isSelected ? color : "#7A8FA8"}
                 size={tileW * 0.66}
                 strokeWidth={isSelected ? 1.5 : 1.4}
               />
@@ -1513,13 +1475,6 @@ function GoldSlidersIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-// ── Contexto de tema para SettingsSection (provisto por GeometrixScreen) ────
-const GeoThemeCtx = React.createContext({
-  divider: "rgba(255,255,255,0.06)",
-  sectionBg: "rgba(255,255,255,0.03)",
-  btnUnsel: "rgba(255,255,255,0.04)",
-});
-
 // ── Sección colapsable de ajustes personalizados ────────────────────────────
 function SettingsSection({
   title,
@@ -1536,7 +1491,6 @@ function SettingsSection({
   onReset?: () => void;
   onOpen?: (y: number) => void;
 }) {
-  const geoTheme = React.useContext(GeoThemeCtx);
   const hasContent = React.Children.count(children) > 0;
   const [open, setOpen] = useState(defaultOpen && hasContent);
   const chevronRot = useSharedValue(defaultOpen && hasContent ? 1 : 0);
@@ -1593,12 +1547,12 @@ function SettingsSection({
         </Animated.View>
       </Pressable>
       {/* Línea separadora */}
-      <View style={{ height: 1, backgroundColor: geoTheme.divider, marginBottom: open && hasContent ? 10 : 0 }} />
+      <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginBottom: open && hasContent ? 10 : 0 }} />
       {open && hasContent && (
         <Animated.View
           entering={FadeInDown.duration(220).easing(Easing.out(Easing.quad))}
           style={{
-            backgroundColor: geoTheme.sectionBg,
+            backgroundColor: "rgba(255,255,255,0.03)",
             borderRadius: 12,
             paddingHorizontal: 10,
             paddingTop: 8,
@@ -1625,72 +1579,6 @@ export default function GeometrixScreen() {
   // pestañita de reaparición, no la tab bar completa.
   const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
   const bottomReserve = menuHidden ? bottomPb : tabBarHeight;
-
-  // ── Tema oscuro fijo de Geometrix (toggle de tema claro desactivado) ───
-  const geoTheme: "azul" = "azul";
-  const isLight = false;
-  // En modo claro, ocultar los colores claros (blanco/beige) que se pierden
-  // sobre el fondo gris. El set es de minúsculas para comparar sin ambigüedad.
-  const LIGHT_HIDDEN = new Set(["#ede1d3", "#7fd1c0", "#9bd6a8"]);
-  const displayPalette = isLight
-    ? PALETTE.filter((c) => !LIGHT_HIDDEN.has(c.toLowerCase()))
-    : PALETTE;
-  // SharedValue para que los estilos animados (UI thread) puedan leer el tema.
-  const isLightSV = useSharedValue(isLight ? 1 : 0);
-  useEffect(() => { isLightSV.value = isLight ? 1 : 0; }, [isLight, isLightSV]);
-
-  // Paleta de colores dependiente del tema.
-  const geo = useMemo(() => ({
-    topGradient: isLight
-      ? (["#F4F6FA", "#EAECF2", "#DDE0E8"] as const)
-      : (["#090D20", "#080A18", "#06070F"] as const),
-    homeGradient: isLight
-      ? (["#F4F6FA", "#EAECF2", "#DDE0E8"] as const)
-      : HOME_GRADIENT,
-    sheetBg:          isLight ? "#F2F4FA"              : "#06070F",
-    sheetHandle:      isLight ? "rgba(0,0,0,0.12)"     : "rgba(255,255,255,0.18)",
-    sheetDivider:     isLight ? "rgba(0,0,0,0.07)"     : "rgba(255,255,255,0.08)",
-    sheetVDivider:    isLight ? "rgba(0,0,0,0.10)"     : "rgba(255,255,255,0.18)",
-    cardBorder:       isLight ? "#D0D5E0"              : "#161f33",
-    tileBg:           isLight ? "rgba(0,0,0,0.03)"     : "rgba(255,255,255,0.02)",
-    tileBorder:       isLight ? "#D0D5E0"              : "#1A1F2F",
-    tileTitle:        isLight ? "#2A3250"              : "#FFFFFF",
-    geoCardName:      isLight ? "#1A2040"              : "#FFFFFF",
-    dividerColor:     isLight ? "rgba(0,0,0,0.07)"     : "rgba(255,255,255,0.08)",
-    sectionDivider:   isLight ? "rgba(0,0,0,0.07)"     : "rgba(255,255,255,0.06)",
-    sectionBg:        isLight ? "rgba(0,0,0,0.02)"     : "rgba(255,255,255,0.03)",
-    overlayBg:        isLight ? "rgba(0,0,0,0.30)"     : "rgba(0,0,0,0.55)",
-    trackColor:       isLight ? "rgba(0,0,0,0.10)"     : "rgba(255,255,255,0.12)",
-    sliderColor:      isLight ? "#3A4870"              : "#FFFFFF",
-    menuCardBg:       isLight ? "#EEF1F8"              : "#080A18",
-    menuCardBorder:   isLight ? "#C4CCE0"              : "#1b1f41",
-    menuDivider:      isLight ? "#C4CCE0"              : "#1b1f41",
-    menuText:         isLight ? "#1A2040"              : "#FFFFFF",
-    menuSubText:      isLight ? "#5A6A7A"              : "#7A8FA8",
-    rotBadgeBg:       isLight ? "rgba(240,242,248,0.90)" : "rgba(0,0,0,0.58)",
-    rotBadgeBorder:   isLight ? "rgba(0,0,0,0.12)"    : "rgba(255,255,255,0.12)",
-    rotBadgeText:     isLight ? "#1A2040"              : "rgba(255,255,255,0.92)",
-    searchBarBg:      isLight ? "rgba(0,0,0,0.04)"     : "rgba(255,255,255,0.03)",
-    themeRowIconBg:   isLight ? "rgba(0,0,0,0.05)"     : "rgba(255,255,255,0.04)",
-    savedCardBg:      isLight ? "#F2F4FA"              : "#06070F",
-    savedCardBorder:  isLight ? "#CDD2DF"              : "#151c3a",
-    pillBg:           isLight ? "rgba(0,0,0,0.02)"     : "rgba(255,255,255,0.02)",
-    pillBorder:       isLight ? "#D0D5E0"              : CARD_BORDER,
-    chevronBg:        isLight ? "rgba(0,0,0,0.02)"     : "rgba(255,255,255,0.02)",
-    chevronBorder:    isLight ? "rgba(0,0,0,0.15)"     : "rgba(122,143,168,0.45)",
-    glyphUnsel:       isLight ? "#3A4870"              : "#7A8FA8",
-    previewBoxBg:     isLight ? "rgba(240,242,248,0.92)" : "rgba(8,10,24,0.88)",
-    previewLabelBg:   isLight ? "rgba(240,242,248,0.85)" : "rgba(8,10,24,0.7)",
-    thumbHiddenOverlay: isLight ? "rgba(200,210,220,0.70)" : "rgba(0,0,0,0.55)",
-    pillIconColor:    isLight ? "#4A5578"              : "#7a879d",
-    swatchFillBorder: isLight ? "#9aa0b0"              : "#4b4f5c",
-    swatchOn:         isLight ? "#1A2040"              : "#EDE1D3",
-    toggleKnob:       isLight ? "#1A2040"              : "#EDE1D3",
-    pillDivider:      isLight ? "rgba(0,0,0,0.12)"     : "#9298d0",
-    btnUnsel:         isLight ? "rgba(0,0,0,0.04)"     : "rgba(255,255,255,0.04)",
-    btnBorder:        isLight ? "rgba(0,0,0,0.10)"     : "rgba(255,255,255,0.09)",
-    rootBg:           isLight ? "#F2F4FA"              : "#06070F",
-  }), [isLight]);
 
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
@@ -2970,39 +2858,32 @@ export default function GeometrixScreen() {
   // Badge flotante: ícono + ángulo actual; fade rápido al entrar/salir del giro.
   // El fondo y el borde viran a azul/dorado al llegar a un ángulo cardinal
   // (misma regla que la píldora, pero visible durante el giro). UI thread.
-  // Los colores base (no-cardinal) respetan el tema claro/oscuro via isLightSV.
-  const rotBadgeStyle = useAnimatedStyle(() => {
-    const light = isLightSV.value > 0.5;
-    return {
-      opacity: withTiming(rotActive.value, { duration: 120 }),
-      backgroundColor: interpolateColor(
-        pillCardinalSV.value,
-        [0, 1],
-        [light ? "rgba(240,242,248,0.90)" : "rgba(0,0,0,0.58)", "#171e5a"],
-      ),
-      borderColor: interpolateColor(
-        pillCardinalSV.value,
-        [0, 1],
-        [light ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.12)", "#D6A85B"],
-      ),
-    };
-  });
+  const rotBadgeStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(rotActive.value, { duration: 120 }),
+    backgroundColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(0,0,0,0.58)", "#171e5a"],
+    ),
+    borderColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(255,255,255,0.12)", "#D6A85B"],
+    ),
+  }));
   // Píldora de acciones: fondo azul (#171e5a) al llegar a ángulo cardinal.
-  const pillCardinalStyle = useAnimatedStyle(() => {
-    const light = isLightSV.value > 0.5;
-    return {
-      backgroundColor: interpolateColor(
-        pillCardinalSV.value,
-        [0, 1],
-        [light ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)", "#171e5a"],
-      ),
-      borderColor: interpolateColor(
-        pillCardinalSV.value,
-        [0, 1],
-        [light ? "#D0D5E0" : CARD_BORDER, "#1e2870"],
-      ),
-    };
-  });
+  const pillCardinalStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(255,255,255,0.02)", "#171e5a"],
+    ),
+    borderColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      [CARD_BORDER, "#1e2870"],
+    ),
+  }));
 
   // Glow blanco del icono de audio: sombra difusa que respira cuando suena.
   const themeGlowStyle = useAnimatedStyle(() => ({
@@ -3036,18 +2917,16 @@ export default function GeometrixScreen() {
   const selectedBg = master.bgColor
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
-  const canvasBgColors = isLight
-    ? (["#E3E7F2", "#D5DAE8", "#C6CCDA"] as readonly [string, string, string])
-    : scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
+  const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
   const frontIds = active.filter((id) => !effActivating.has(id));
   const tileItemW = tileW + 8; // ancho de slot = tile + marginRight (tileWrap)
 
   return (
-    <View style={[styles.root, { backgroundColor: geo.rootBg }]}>
+    <View style={styles.root}>
       <LinearGradient
-        colors={geo.homeGradient}
+        colors={HOME_GRADIENT}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -3056,7 +2935,7 @@ export default function GeometrixScreen() {
       <View style={styles.content}>
         {/* ── Zona superior con fondo de Inicio ── */}
         <LinearGradient
-          colors={geo.topGradient}
+          colors={["#090D20", "#080A18", "#06070F"]}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -3066,7 +2945,7 @@ export default function GeometrixScreen() {
         <View style={styles.header}>
           <View style={styles.headerText}>
             <View style={styles.titleRow}>
-              <Text style={[styles.title, { color: isLight ? "#1A2040" : "#FFFFFF" }]}>Geometrix</Text>
+              <Text style={styles.title}>Geometrix</Text>
               {/* Logo cubo-3 inline, a la derecha del título. */}
               <Image
                 source={require("@/assets/images/geometrix/cubo-3.png")}
@@ -3083,7 +2962,7 @@ export default function GeometrixScreen() {
               else setThemeSearchOpen(true);
             }}
             hitSlop={12}
-            style={[styles.themeBtn, { backgroundColor: themeSession ? hexAlpha("#7A8FA8", 0.10) : geo.searchBarBg }, themeSession ? styles.themeBtnOn : null]}
+            style={[styles.themeBtn, themeSession ? styles.themeBtnOn : null]}
             accessibilityRole="button"
             accessibilityLabel={themeSession ? "Detener audio de fondo" : "Elegir audio de fondo"}
           >
@@ -3106,10 +2985,10 @@ export default function GeometrixScreen() {
           onRequestClose={() => setThemeSearchOpen(false)}
         >
           <Pressable
-            style={[StyleSheet.absoluteFill, { backgroundColor: geo.overlayBg }]}
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.6)" }]}
             onPress={() => setThemeSearchOpen(false)}
           />
-          <View style={[styles.themeSheet, { paddingTop: insets.top + 16, backgroundColor: isLight ? "#F2F4FA" : "#06070F" }]}>
+          <View style={[styles.themeSheet, { paddingTop: insets.top + 16 }]}>
             <View style={styles.themeHeaderRow}>
               <Text style={styles.themeTitle}>Tu tema de fondo</Text>
               <Pressable onPress={() => setThemeSearchOpen(false)} hitSlop={10}>
@@ -3120,7 +2999,7 @@ export default function GeometrixScreen() {
               Elegí una sesión o música para que suene mientras creás. Suena solo aquí, en Geometrix.
             </Text>
 
-            <View style={[styles.themeSearchBar, { backgroundColor: geo.searchBarBg }]}>
+            <View style={styles.themeSearchBar}>
               <Feather name="search" size={16} color={colors.mutedForeground} />
               <TextInput
                 value={themeQuery}
@@ -3139,7 +3018,7 @@ export default function GeometrixScreen() {
 
             {themeSession ? (
               <Pressable style={styles.themeStopRow} onPress={stopTheme}>
-                <View style={[styles.themeRowIcon, { backgroundColor: geo.themeRowIconBg }]}>
+                <View style={styles.themeRowIcon}>
                   <Feather name="volume-x" size={16} color={colors.primary} />
                 </View>
                 <View style={{ flex: 1 }}>
@@ -3169,7 +3048,7 @@ export default function GeometrixScreen() {
                       style={[styles.themeRow, isCurrent ? styles.themeRowOn : null]}
                       onPress={() => playTheme(s)}
                     >
-                      <View style={[styles.themeRowIcon, { backgroundColor: geo.themeRowIconBg }]}>
+                      <View style={styles.themeRowIcon}>
                         {isCurrent ? (
                           <AnimatedSpeaker size={16} color={colors.primary} />
                         ) : (
@@ -3236,7 +3115,7 @@ export default function GeometrixScreen() {
                   tileW={tileW}
                   isSelected={selected}
                   isActivating={activating}
-                  color={lightGeoColor(getSettings(gid).color, isLight)}
+                  color={getSettings(gid).color}
                   onPress={() => toggleGeometry(gid)}
                   draggable={selected && !activating}
                   isDragging={draggingId === gid}
@@ -3252,9 +3131,6 @@ export default function GeometrixScreen() {
                   instantOrderFlag={instantOrderFlag}
                   dragOriginIdx={dragOriginIdx}
                   dragTargetIdx={dragTargetIdx}
-                  tileTitleColor={geo.tileTitle}
-                  cardBorderUnsel={geo.cardBorder}
-                  glyphUnselColor={geo.glyphUnsel}
                 />
               );
             })}
@@ -3262,7 +3138,7 @@ export default function GeometrixScreen() {
         </Animated.ScrollView>
 
         {/* Línea divisora */}
-        <View style={[styles.divider, { backgroundColor: geo.dividerColor }]} />
+        <View style={styles.divider} />
 
         </LinearGradient>
 
@@ -3332,7 +3208,6 @@ export default function GeometrixScreen() {
                         masterOpacity={master.opacity}
                         motion={master.motion}
                         glow={master.glow}
-                        isLight={isLight}
                       />
                     );
                   })}
@@ -3505,7 +3380,7 @@ export default function GeometrixScreen() {
             >
               {pillActions.map((a) => (
                 <React.Fragment key={a.key}>
-                  {a.divider && <View style={[styles.pillDivider, { backgroundColor: geo.pillDivider }]} />}
+                  {a.divider && <View style={styles.pillDivider} />}
                   <Pressable
                     onPress={() => {
                       a.onPress();
@@ -3526,7 +3401,7 @@ export default function GeometrixScreen() {
                     {a.gradient ? (
                       <GoldSlidersIcon size={18} />
                     ) : (
-                      <Feather name={a.icon} size={18} color={a.color ?? geo.pillIconColor} />
+                      <Feather name={a.icon} size={18} color={a.color ?? "#7a879d"} />
                     )}
                   </Pressable>
                 </React.Fragment>
@@ -3578,7 +3453,7 @@ export default function GeometrixScreen() {
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
                     )}
-                    style={[styles.thumbItem, isLight && { backgroundColor: "rgba(11,15,20,0.7)" }]}
+                    style={styles.thumbItem}
                   >
                     {/* Tap en la imagen: seleccionar. Si está oculta, tap → mostrar. */}
                     <Pressable
@@ -3595,7 +3470,7 @@ export default function GeometrixScreen() {
                     >
                       <SacredGlyph
                         id={g.id}
-                        color={lightGeoColor(s.color, isLight)}
+                        color={s.color}
                         gradient={gradientColors(s.gradientId)}
                         size={37}
                         strokeWidth={1.4}
@@ -3674,7 +3549,6 @@ export default function GeometrixScreen() {
                 masterOpacity={master.opacity}
                 motion={master.motion}
                 glow={master.glow}
-                isLight={isLight}
               />
             ))}
           </View>
@@ -3690,9 +3564,9 @@ export default function GeometrixScreen() {
         onRequestClose={() => setSavedName(null)}
       >
         <Pressable style={styles.savedBackdrop} onPress={() => setSavedName(null)}>
-          <Pressable style={[styles.savedCard, { backgroundColor: geo.savedCardBg, borderColor: geo.savedCardBorder }]} onPress={() => {}}>
+          <Pressable style={styles.savedCard} onPress={() => {}}>
             <LinearGradient
-              colors={geo.homeGradient}
+              colors={HOME_GRADIENT}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
@@ -3737,9 +3611,9 @@ export default function GeometrixScreen() {
         onRequestClose={() => setUpdatedName(null)}
       >
         <Pressable style={styles.savedBackdrop} onPress={() => setUpdatedName(null)}>
-          <Pressable style={[styles.savedCard, { backgroundColor: geo.savedCardBg, borderColor: geo.savedCardBorder }]} onPress={() => {}}>
+          <Pressable style={styles.savedCard} onPress={() => {}}>
             <LinearGradient
-              colors={geo.homeGradient}
+              colors={HOME_GRADIENT}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
@@ -3784,9 +3658,9 @@ export default function GeometrixScreen() {
         onRequestClose={() => setShowEmptyAlert(false)}
       >
         <Pressable style={styles.savedBackdrop} onPress={() => setShowEmptyAlert(false)}>
-          <Pressable style={[styles.savedCard, { backgroundColor: geo.savedCardBg, borderColor: geo.savedCardBorder }]} onPress={() => {}}>
+          <Pressable style={styles.savedCard} onPress={() => {}}>
             <LinearGradient
-              colors={geo.homeGradient}
+              colors={HOME_GRADIENT}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
@@ -3821,7 +3695,7 @@ export default function GeometrixScreen() {
           onPress={() => setMenuGeoId(null)}
         >
           {menuGeo && (
-            <Pressable style={[styles.menuCard, { backgroundColor: geo.menuCardBg, borderColor: geo.menuCardBorder }]} onPress={() => {}}>
+            <Pressable style={styles.menuCard} onPress={() => {}}>
               <View style={styles.menuList}>
                 <Pressable
                   style={styles.menuItem}
@@ -3831,8 +3705,8 @@ export default function GeometrixScreen() {
                     setSettingsOpen(true);
                   }}
                 >
-                  <Feather name="sliders" size={18} color={geo.menuText} />
-                  <Text style={[styles.menuItemText, { color: geo.menuText }]}>Personalizar</Text>
+                  <Feather name="sliders" size={18} color="#FFFFFF" />
+                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>Personalizar</Text>
                 </Pressable>
 
                 <Pressable
@@ -3849,9 +3723,9 @@ export default function GeometrixScreen() {
                   <Feather
                     name={hiddenIds.includes(menuGeoId!) ? "eye" : "eye-off"}
                     size={18}
-                    color={geo.menuText}
+                    color="#FFFFFF"
                   />
-                  <Text style={[styles.menuItemText, { color: geo.menuText }]}>
+                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>
                     {hiddenIds.includes(menuGeoId!) ? "Mostrar" : "Ocultar"}
                   </Text>
                 </Pressable>
@@ -3869,17 +3743,17 @@ export default function GeometrixScreen() {
                 </Pressable>
               </View>
 
-              <View style={[styles.menuDivider, { backgroundColor: geo.menuDivider }]} />
+              <View style={styles.menuDivider} />
 
               <View style={styles.menuGlyphWrap}>
                 <SacredGlyph
                   id={menuGeo.id}
-                  color={lightGeoColor(getSettings(menuGeoId!).color, isLight)}
+                  color={getSettings(menuGeoId!).color}
                   gradient={gradientColors(getSettings(menuGeoId!).gradientId)}
                   size={85}
                   strokeWidth={1.4}
                 />
-                <Text style={[styles.menuGlyphName, { color: geo.menuSubText }]} numberOfLines={1}>
+                <Text style={styles.menuGlyphName} numberOfLines={1}>
                   {menuGeo.name}
                 </Text>
               </View>
@@ -3897,7 +3771,7 @@ export default function GeometrixScreen() {
       >
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
         <Pressable
-          style={[StyleSheet.absoluteFill, { backgroundColor: geo.overlayBg }]}
+          style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
           onPress={() => setGeneralOpen(false)}
         />
 
@@ -3907,11 +3781,11 @@ export default function GeometrixScreen() {
             pointerEvents="none"
             style={[styles.previewWrap, { bottom: generalSheetHeight + 12 }]}
           >
-            <Text style={[styles.previewLabel, { backgroundColor: geo.previewLabelBg }]}>Vista previa</Text>
+            <Text style={styles.previewLabel}>Vista previa</Text>
             <View
               style={[
                 styles.previewBox,
-                { width: generalPreviewSize, height: generalPreviewSize, backgroundColor: geo.previewBoxBg },
+                { width: generalPreviewSize, height: generalPreviewSize },
               ]}
             >
               <LinearGradient
@@ -3939,7 +3813,6 @@ export default function GeometrixScreen() {
                   masterOpacity={master.opacity}
                   motion={master.motion}
                   glow={master.glow}
-                  isLight={isLight}
                 />
               ))}
             </View>
@@ -3964,7 +3837,7 @@ export default function GeometrixScreen() {
           ]}
         >
           <LinearGradient
-            colors={geo.homeGradient}
+            colors={HOME_GRADIENT}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={[StyleSheet.absoluteFill, styles.sheetGradient]}
@@ -3972,7 +3845,7 @@ export default function GeometrixScreen() {
           <View style={styles.sheetHeader}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Text style={styles.sheetTitle}>Ajustes generales</Text>
-              <Feather name="sliders" size={20} color={geo.menuText} />
+              <Feather name="sliders" size={20} color="#fff" />
             </View>
             <Pressable
               onPress={() => setGeneralOpen(false)}
@@ -3985,7 +3858,7 @@ export default function GeometrixScreen() {
           </View>
 
           {/* Línea divisora sutil */}
-          <View style={[styles.sheetHeaderDivider, { backgroundColor: geo.sheetDivider }]} />
+          <View style={styles.sheetHeaderDivider} />
 
           <ScrollView
             ref={generalScrollRef}
@@ -3994,7 +3867,6 @@ export default function GeometrixScreen() {
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
           >
-          <GeoThemeCtx.Provider value={{ divider: geo.sectionDivider, sectionBg: geo.sectionBg, btnUnsel: geo.btnUnsel }}>
           <View style={[styles.geoCard, { marginTop: -10 }]}>
 
             {/* ── Fondo ────────────────────────────────────────────────── */}
@@ -4056,7 +3928,7 @@ export default function GeometrixScreen() {
               {/* Sólidos */}
               <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Color sólido</Text>
               <View style={[styles.swatchRow, { marginTop: 8 }]}>
-                {displayPalette.map((c) => {
+                {PALETTE.map((c) => {
                   const on = master.bgColor === c;
                   return (
                     <Pressable
@@ -4084,8 +3956,8 @@ export default function GeometrixScreen() {
                     bgBrightness: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.bgBrightness,
                   }))
                 }
-                color={geo.sliderColor}
-                trackColor={geo.trackColor}
+                color="#FFFFFF"
+                trackColor="rgba(255,255,255,0.12)"
               />
               <View style={{ marginTop: 12 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
@@ -4136,10 +4008,10 @@ export default function GeometrixScreen() {
                             style={{
                               width: 44, height: 52,
                               alignItems: "center", justifyContent: "center",
-                              backgroundColor: on ? colors.primary + "22" : geo.btnUnsel,
+                              backgroundColor: on ? colors.primary + "22" : "rgba(255,255,255,0.04)",
                               borderRadius: 10,
                               borderWidth: 1,
-                              borderColor: on ? colors.primary + "88" : geo.btnBorder,
+                              borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.08)",
                               gap: 3,
                             }}
                           >
@@ -4164,9 +4036,9 @@ export default function GeometrixScreen() {
                             }
                             style={{
                               flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
-                              backgroundColor: on ? colors.primary + "25" : geo.btnUnsel,
+                              backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
                               borderWidth: 1,
-                              borderColor: on ? colors.primary + "88" : geo.btnBorder,
+                              borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
                             }}
                           >
                             <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
@@ -4191,9 +4063,9 @@ export default function GeometrixScreen() {
                             }
                             style={{
                               flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: "center",
-                              backgroundColor: on ? colors.primary + "25" : geo.btnUnsel,
+                              backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
                               borderWidth: 1,
-                              borderColor: on ? colors.primary + "88" : geo.btnBorder,
+                              borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
                             }}
                           >
                             <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
@@ -4213,7 +4085,7 @@ export default function GeometrixScreen() {
                         }))
                       }
                       color={colors.primary}
-                      trackColor={geo.trackColor}
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                   </>
                 )}
@@ -4233,7 +4105,7 @@ export default function GeometrixScreen() {
                   <>
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={styles.swatchRow}>
-                      {displayPalette.map((c) => {
+                      {PALETTE.map((c) => {
                         const on = !g0?.gradientId && g0?.color?.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
@@ -4274,8 +4146,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.saturation ?? 0.5}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "saturation", v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                   </>
                 );
@@ -4304,8 +4176,8 @@ export default function GeometrixScreen() {
                           opacity: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.opacity,
                         }))
                       }
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Glow general</Text>
@@ -4318,8 +4190,8 @@ export default function GeometrixScreen() {
                           glow: Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : m.glow,
                         }))
                       }
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Bloom</Text>
@@ -4327,8 +4199,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.bloom ?? 0}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "bloom", v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Halo</Text>
@@ -4336,8 +4208,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.halo ?? 0}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "halo", v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                   </>
                 );
@@ -4361,8 +4233,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.thickness ?? 0.5}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "thickness", v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={[styles.toggleGrid, { marginTop: 8 }]}>
                       <View style={styles.toggleGridItem}>
@@ -4416,8 +4288,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.onda ?? 0}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "onda", v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Ripple</Text>
@@ -4425,8 +4297,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.ripple ?? 0}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "ripple", v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Warp</Text>
@@ -4434,8 +4306,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.warp ?? 0}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "warp", v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                   </>
                 );
@@ -4462,10 +4334,10 @@ export default function GeometrixScreen() {
                       flexDirection: "row", alignItems: "center",
                       justifyContent: "space-between", marginBottom: 10,
                       paddingVertical: 8, paddingHorizontal: 10,
-                      backgroundColor: anyOn ? colors.primary + "14" : geo.sectionBg,
+                      backgroundColor: anyOn ? colors.primary + "14" : "rgba(255,255,255,0.03)",
                       borderRadius: 10,
                       borderWidth: 1,
-                      borderColor: anyOn ? colors.primary + "55" : geo.btnBorder,
+                      borderColor: anyOn ? colors.primary + "55" : "rgba(255,255,255,0.07)",
                     }}>
                       <Text style={{ color: anyOn ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
                         Activar caleidoscopio (todas)
@@ -4490,9 +4362,9 @@ export default function GeometrixScreen() {
                                 style={{
                                   flex: 1, paddingVertical: 8, borderRadius: 10,
                                   alignItems: "center",
-                                  backgroundColor: on ? colors.primary + "25" : geo.btnUnsel,
+                                  backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
                                   borderWidth: 1,
-                                  borderColor: on ? colors.primary + "88" : geo.btnBorder,
+                                  borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
                                 }}
                               >
                                 <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "700", fontSize: 14 }}>
@@ -4553,7 +4425,6 @@ export default function GeometrixScreen() {
             </SettingsSection>
 
           </View>
-          </GeoThemeCtx.Provider>
           </ScrollView>
         </View>
         </View>
@@ -4568,12 +4439,12 @@ export default function GeometrixScreen() {
       >
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
           <Pressable
-            style={[StyleSheet.absoluteFill, { backgroundColor: geo.overlayBg }]}
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
             onPress={() => setGuidesOpen(false)}
           />
           <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
             <LinearGradient
-              colors={geo.homeGradient}
+              colors={HOME_GRADIENT}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={[StyleSheet.absoluteFill, styles.sheetGradient]}
@@ -4585,7 +4456,7 @@ export default function GeometrixScreen() {
                 <Feather name="x" size={20} color={colors.mutedForeground} />
               </Pressable>
             </View>
-            <View style={[styles.sheetHeaderDivider, { backgroundColor: geo.sheetDivider }]} />
+            <View style={styles.sheetHeaderDivider} />
 
             {/* ── Crear nueva guía ─────────────────────────────────── */}
             <View style={{ marginTop: 14 }}>
@@ -4598,9 +4469,9 @@ export default function GeometrixScreen() {
                     style={{
                       flex: 1, paddingVertical: 10, borderRadius: 10,
                       alignItems: "center",
-                      backgroundColor: guideOrientation === ori ? colors.primary + "25" : geo.btnUnsel,
+                      backgroundColor: guideOrientation === ori ? colors.primary + "25" : "rgba(255,255,255,0.04)",
                       borderWidth: 1,
-                      borderColor: guideOrientation === ori ? colors.primary + "88" : geo.btnBorder,
+                      borderColor: guideOrientation === ori ? colors.primary + "88" : "rgba(255,255,255,0.09)",
                     }}
                   >
                     <Text style={{
@@ -4621,9 +4492,9 @@ export default function GeometrixScreen() {
                     onPress={() => setGuidePct(String(p))}
                     style={{
                       flex: 1, paddingVertical: 8, borderRadius: 20, alignItems: "center",
-                      backgroundColor: guidePct === String(p) ? colors.primary + "25" : geo.btnUnsel,
+                      backgroundColor: guidePct === String(p) ? colors.primary + "25" : "rgba(255,255,255,0.04)",
                       borderWidth: 1,
-                      borderColor: guidePct === String(p) ? colors.primary + "88" : geo.btnBorder,
+                      borderColor: guidePct === String(p) ? colors.primary + "88" : "rgba(255,255,255,0.08)",
                     }}
                   >
                     <Text style={{
@@ -4708,7 +4579,7 @@ export default function GeometrixScreen() {
       >
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
         <Pressable
-          style={[StyleSheet.absoluteFill, { backgroundColor: geo.overlayBg }]}
+          style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
           onPress={() => {
             setSettingsOpen(false);
             setSettingsGeoId(null);
@@ -4727,8 +4598,8 @@ export default function GeometrixScreen() {
               { bottom: sheetHeight + 12 },
             ]}
           >
-            <Text style={[styles.previewLabel, { backgroundColor: geo.previewLabelBg }]}>Vista previa</Text>
-            <View style={[styles.previewBox, { width: previewSize, height: previewSize, backgroundColor: geo.previewBoxBg }]}>
+            <Text style={styles.previewLabel}>Vista previa</Text>
+            <View style={[styles.previewBox, { width: previewSize, height: previewSize }]}>
               {master.bgPattern && (
                 <GeometrixPatternBg
                   geoId={master.bgPattern.geoId}
@@ -4750,7 +4621,6 @@ export default function GeometrixScreen() {
                   masterOpacity={master.opacity}
                   motion={master.motion}
                   glow={master.glow}
-                  isLight={isLight}
                 />
               ))}
             </View>
@@ -4776,7 +4646,7 @@ export default function GeometrixScreen() {
         >
           {/* Mismo fondo que la pantalla de inicio, recortado al radius. */}
           <LinearGradient
-            colors={geo.homeGradient}
+            colors={HOME_GRADIENT}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={[
@@ -4790,7 +4660,7 @@ export default function GeometrixScreen() {
                 <>
                   <SacredGlyph
                     id={settingsGeo.id}
-                    color={lightGeoColor(getSettings(settingsGeoId!).color, isLight)}
+                    color={getSettings(settingsGeoId!).color}
                     size={22}
                     strokeWidth={2.4}
                   />
@@ -4826,7 +4696,7 @@ export default function GeometrixScreen() {
                       color={colors.mutedForeground}
                     />
                   </Pressable>
-                  <View style={[styles.sheetHeaderVDivider, { backgroundColor: geo.sheetVDivider }]} />
+                  <View style={styles.sheetHeaderVDivider} />
                   {/* Duplicar: crea una copia a la derecha con ajustes por defecto */}
                   <Pressable
                     onPress={() => duplicateGeometry(settingsGeoId!)}
@@ -4837,7 +4707,7 @@ export default function GeometrixScreen() {
                   >
                     <Feather name="copy" size={18} color={colors.mutedForeground} />
                   </Pressable>
-                  <View style={[styles.sheetHeaderVDivider, { backgroundColor: geo.sheetVDivider }]} />
+                  <View style={styles.sheetHeaderVDivider} />
                   {/* Borrar */}
                   <Pressable
                     onPress={() => {
@@ -4853,7 +4723,7 @@ export default function GeometrixScreen() {
                   >
                     <Feather name="trash-2" size={18} color="#8a4646" />
                   </Pressable>
-                  <View style={[styles.sheetHeaderVDivider, { backgroundColor: geo.sheetVDivider }]} />
+                  <View style={styles.sheetHeaderVDivider} />
                 </>
               )}
               <Pressable
@@ -4871,7 +4741,7 @@ export default function GeometrixScreen() {
             </View>
           </View>
 
-          <View style={[styles.sheetHeaderDivider, { backgroundColor: geo.sheetDivider }]} />
+          <View style={styles.sheetHeaderDivider} />
 
           {!settingsGeo ? (
             <View style={styles.sheetEmpty}>
@@ -4893,7 +4763,6 @@ export default function GeometrixScreen() {
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
-                <GeoThemeCtx.Provider value={{ divider: geo.sectionDivider, sectionBg: geo.sectionBg, btnUnsel: geo.btnUnsel }}>
                 <View style={styles.geoCard}>
 
                   {/* ── Color ─────────────────────────────────────────────── */}
@@ -4905,7 +4774,7 @@ export default function GeometrixScreen() {
                   >
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={styles.swatchRow}>
-                      {displayPalette.map((c) => {
+                      {PALETTE.map((c) => {
                         const on = !s.gradientId && s.color.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
@@ -4944,8 +4813,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.saturation ?? 0.5}
                       onChange={(v) => updateSetting(iid, "saturation", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                   </SettingsSection>
 
@@ -4962,8 +4831,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.opacity}
                       onChange={(v) => updateSetting(iid, "opacity", Math.max(0, v))}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Glow</Text>
@@ -4971,8 +4840,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.glow}
                       onChange={(v) => updateSetting(iid, "glow", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Bloom</Text>
@@ -4980,8 +4849,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.bloom ?? 0}
                       onChange={(v) => updateSetting(iid, "bloom", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Halo</Text>
@@ -4989,8 +4858,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.halo ?? 0}
                       onChange={(v) => updateSetting(iid, "halo", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                   </SettingsSection>
 
@@ -5007,8 +4876,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.thickness}
                       onChange={(v) => updateSetting(iid, "thickness", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={[styles.toggleGrid, { marginTop: 8 }]}>
                       <View style={styles.toggleGridItem}>
@@ -5051,8 +4920,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.onda ?? 0}
                       onChange={(v) => updateSetting(iid, "onda", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Ripple</Text>
@@ -5060,8 +4929,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.ripple ?? 0}
                       onChange={(v) => updateSetting(iid, "ripple", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Warp</Text>
@@ -5069,8 +4938,8 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.warp ?? 0}
                       onChange={(v) => updateSetting(iid, "warp", v)}
-                      color={geo.sliderColor}
-                      trackColor={geo.trackColor}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
                   </SettingsSection>
 
@@ -5088,10 +4957,10 @@ export default function GeometrixScreen() {
                       flexDirection: "row", alignItems: "center",
                       justifyContent: "space-between", marginBottom: 10,
                       paddingVertical: 8, paddingHorizontal: 10,
-                      backgroundColor: s.kaleidoscope ? colors.primary + "14" : geo.sectionBg,
+                      backgroundColor: s.kaleidoscope ? colors.primary + "14" : "rgba(255,255,255,0.03)",
                       borderRadius: 10,
                       borderWidth: 1,
-                      borderColor: s.kaleidoscope ? colors.primary + "55" : geo.btnBorder,
+                      borderColor: s.kaleidoscope ? colors.primary + "55" : "rgba(255,255,255,0.07)",
                     }}>
                       <Text style={{ color: s.kaleidoscope ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
                         Activar caleidoscopio
@@ -5116,9 +4985,9 @@ export default function GeometrixScreen() {
                                 style={{
                                   flex: 1, paddingVertical: 8, borderRadius: 10,
                                   alignItems: "center",
-                                  backgroundColor: on ? colors.primary + "25" : geo.btnUnsel,
+                                  backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
                                   borderWidth: 1,
-                                  borderColor: on ? colors.primary + "88" : geo.btnBorder,
+                                  borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
                                 }}
                               >
                                 <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "700", fontSize: 14 }}>
@@ -5171,7 +5040,6 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                 </View>
-                </GeoThemeCtx.Provider>
                 </ScrollView>
               );
             })()
