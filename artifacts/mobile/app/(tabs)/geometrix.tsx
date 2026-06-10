@@ -2359,9 +2359,9 @@ export default function GeometrixScreen() {
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "cerrar", icon: "log-out", label: "Cerrar lienzo", onPress: () => router.push("/"), divider: true },
-    { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#7d3536" },
     // X para restaurar el menú inferior cuando está oculto (reemplaza la barrita).
-    ...(menuHidden ? [{ key: "showMenu", icon: "x" as keyof typeof Feather.glyphMap, label: "Mostrar menú", onPress: showMenu, divider: true }] : []),
+    ...(menuHidden ? [{ key: "showMenu", icon: "x" as keyof typeof Feather.glyphMap, label: "Mostrar menú", onPress: showMenu }] : []),
+    { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#7d3536" },
   ];
   // Sin geometrías activas se colapsa el desplegable; si el menú está oculto
   // se mantiene para que el usuario siempre pueda restaurarlo con la X.
@@ -3241,7 +3241,7 @@ export default function GeometrixScreen() {
                     {a.gradient ? (
                       <GoldSlidersIcon size={18} />
                     ) : (
-                      <Feather name={a.icon} size={18} color={a.color ?? "#FFFFFF"} />
+                      <Feather name={a.icon} size={18} color={a.color ?? "#575ea0"} />
                     )}
                   </Pressable>
                 </React.Fragment>
@@ -4832,7 +4832,7 @@ const styles = StyleSheet.create({
   pillDivider: {
     width: 18,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: CARD_BORDER,
+    backgroundColor: "#9298d0",
   },
   thumbsScroll: {
     position: "absolute",
