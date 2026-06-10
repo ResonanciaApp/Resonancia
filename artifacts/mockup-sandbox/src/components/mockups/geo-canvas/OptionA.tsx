@@ -13,7 +13,7 @@ export function OptionA() {
           }}
         />
         <div className="absolute inset-0 flex items-center justify-center">
-          <GeometrySVG color="#5BA4A4" />
+          <GeometrySVG color="#7090A8" />
         </div>
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
           <Thumb color="#5BA4A4" />

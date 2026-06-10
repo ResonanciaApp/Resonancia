@@ -3252,7 +3252,7 @@ export default function GeometrixScreen() {
                   tileW={tileW}
                   isSelected={selected}
                   isActivating={activating}
-                  color={getSettings(gid).color}
+                  color={lightGeoColor(getSettings(gid).color, isLight)}
                   onPress={() => toggleGeometry(gid)}
                   draggable={selected && !activating}
                   isDragging={draggingId === gid}
