@@ -381,7 +381,7 @@ export default function MiMusicaScreen() {
   const { isPremium }   = usePremium();
   const { isActive, toggleSound } = useMixer();
   const { lastSavedAt } = useSaveEvent();
-  const { requestHide, showMenu, setMusicTheme } = useTabBarVisibility();
+  const { requestHide, showMenu, setMusicTheme, setMusicGradient } = useTabBarVisibility();
 
   // Esconde el menú al entrar y lo restaura al salir
   useFocusEffect(
@@ -465,6 +465,11 @@ export default function MiMusicaScreen() {
     setMusicTheme(t);
     saveAppearance(bgPresetRef.current, darkPresetRef.current, bgDimRef.current, t);
   }, [saveAppearance, setMusicTheme]);
+
+  // Sincroniza gradiente activo con el contexto global (para MixerSheet)
+  useEffect(() => {
+    setMusicGradient(themeGradient);
+  }, [bgTheme, bgPreset, darkPreset]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openSettings = useCallback(() => {
     setSettingsOpen(true);

@@ -31,6 +31,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSaveEvent } from "@/context/SaveEventContext";
+import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
@@ -99,6 +100,19 @@ function TrackThumb({ sound }: { sound: MixSound }) {
 export function MixerSheet() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { musicTheme, musicGradient } = useTabBarVisibility();
+  const isLight = musicTheme === "claro";
+  const palette = {
+    handle:      isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
+    sliderThumb: isLight ? "#BE9650"              : WARM.sliderThumb,
+    sliderTrack: isLight ? "rgba(0,0,0,0.10)"    : WARM.sliderTrack,
+    addText:     isLight ? "rgba(0,0,0,0.32)"    : WARM.addText,
+    separator:   isLight ? "rgba(0,0,0,0.07)"    : WARM.separator,
+    iconColor:   isLight ? "#1A1E2B"             : "#FFFFFF",
+    fg:          isLight ? "#1A1E2B"             : colors.foreground,
+    muted:       isLight ? "#6B7A96"             : colors.mutedForeground,
+    inputBg:     isLight ? "rgba(0,0,0,0.04)"   : "rgba(255,255,255,0.03)",
+  };
   const { isPremium } = usePremium();
   const {
     activeSounds,
@@ -373,12 +387,12 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: HOME_GRADIENT[2], paddingBottom: insets.bottom + 16 },
+            { backgroundColor: musicGradient[2], paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
           <LinearGradient
-            colors={HOME_GRADIENT}
+            colors={musicGradient}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.sheetGradient}
@@ -386,7 +400,7 @@ export function MixerSheet() {
           />
           {/* Handle con PanResponder para arrastrar y cerrar */}
           <View style={styles.handleZone} {...panResponder.panHandlers}>
-            <View style={[styles.handle, { backgroundColor: WARM.handle }]} />
+            <View style={[styles.handle, { backgroundColor: palette.handle }]} />
           </View>
 
           <View style={styles.headerRow}>
@@ -397,9 +411,9 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel="Cerrar editor de mezcla"
             >
-              <Feather name="chevron-down" size={24} color={colors.foreground} />
+              <Feather name="chevron-down" size={24} color={palette.fg} />
             </Pressable>
-            <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={1}>
+            <Text style={[styles.title, { color: palette.fg, flex: 1 }]} numberOfLines={1}>
               {originPreset?.name ?? "Tu mezcla"}
             </Text>
             <Pressable
@@ -413,7 +427,7 @@ export function MixerSheet() {
             </Pressable>
           </View>
 
-          <View style={[styles.headerDivider, { backgroundColor: WARM.separator }]} />
+          <View style={[styles.headerDivider, { backgroundColor: palette.separator }]} />
 
           <ScrollView
             style={styles.trackScroll}
@@ -428,14 +442,14 @@ export function MixerSheet() {
                 <TrackThumb sound={sound} />
 
                 <View style={styles.trackInfo}>
-                  <Text style={[styles.trackName, { color: colors.foreground }]} numberOfLines={1}>
+                  <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
                     {sound.name}
                   </Text>
                   <VolumeSlider
                     value={active.volume}
                     onChange={(v) => setVolume(sound.id, v)}
-                    color={WARM.sliderThumb}
-                    trackColor={WARM.sliderTrack}
+                    color={palette.sliderThumb}
+                    trackColor={palette.sliderTrack}
                   />
                 </View>
 
@@ -446,7 +460,7 @@ export function MixerSheet() {
                   accessibilityRole="button"
                   accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
                 >
-                  <Feather name="x" size={16} color={colors.mutedForeground} />
+                  <Feather name="x" size={16} color={palette.muted} />
                 </Pressable>
               </View>
             ))}
@@ -455,13 +469,13 @@ export function MixerSheet() {
               onPress={handleAddSounds}
               style={styles.addBtn}
             >
-              <Feather name="plus" size={18} color={WARM.addText} />
-              <Text style={[styles.addBtnText, { color: WARM.addText }]}>Agregar sonidos</Text>
+              <Feather name="plus" size={18} color={palette.addText} />
+              <Text style={[styles.addBtnText, { color: palette.addText }]}>Agregar sonidos</Text>
             </Pressable>
           </ScrollView>
 
-          {/* Separador warm */}
-          <View style={[styles.warmSeparator, { backgroundColor: WARM.separator }]} />
+          {/* Separador */}
+          <View style={[styles.warmSeparator, { backgroundColor: palette.separator }]} />
 
           {/* Footer: Timer | Play | Guardar + Actualizar */}
           <View style={styles.footerRow}>
@@ -473,7 +487,7 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
             >
-              <MaterialCommunityIcons name="clock" size={48} color="#FFFFFF" />
+              <MaterialCommunityIcons name="clock" size={48} color={palette.iconColor} />
               <Text style={styles.footerLabel}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
               </Text>
@@ -489,7 +503,7 @@ export function MixerSheet() {
                 <MaterialCommunityIcons
                   name={isPlaying ? "pause" : "play"}
                   size={70}
-                  color="#FFFFFF"
+                  color={palette.iconColor}
                 />
               </View>
             </Pressable>
@@ -498,7 +512,7 @@ export function MixerSheet() {
             <View style={styles.footerSide}>
               <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal("new")}>
                 <View style={styles.footerHeartCircle}>
-                  <MaterialCommunityIcons name="heart" size={28} color="#FFFFFF" />
+                  <MaterialCommunityIcons name="heart" size={28} color={palette.iconColor} />
                 </View>
                 <Text style={styles.footerLabel}>Guardar</Text>
               </Pressable>
@@ -518,17 +532,17 @@ export function MixerSheet() {
         <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
           <Pressable
-            style={[styles.modalCard, { backgroundColor: HOME_GRADIENT[2] }]}
+            style={[styles.modalCard, { backgroundColor: musicGradient[2] }]}
             onPress={(e) => e.stopPropagation()}
           >
                 <LinearGradient
-                  colors={HOME_GRADIENT}
+                  colors={musicGradient}
                   start={{ x: 0.5, y: 0 }}
                   end={{ x: 0.5, y: 1 }}
                   style={StyleSheet.absoluteFill}
                   pointerEvents="none"
                 />
-                <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+                <Text style={[styles.modalTitle, { color: palette.fg }]}>
                   {saveMode === "update" ? "Actualizar mezcla" : "Guardar mezcla"}
                 </Text>
 
@@ -537,20 +551,20 @@ export function MixerSheet() {
                   showsVerticalScrollIndicator={false}
                   keyboardShouldPersistTaps="handled"
                 >
-                  <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Título</Text>
+                  <Text style={[styles.modalLabel, { color: palette.muted }]}>Título</Text>
                   <TextInput
                     value={presetName}
                     onChangeText={setPresetName}
                     placeholder="Ej: Lluvia para dormir"
-                    placeholderTextColor={colors.mutedForeground}
+                    placeholderTextColor={palette.muted}
                     style={[
                       styles.modalInput,
-                      { color: colors.foreground, backgroundColor: "rgba(255,255,255,0.03)" },
+                      { color: palette.fg, backgroundColor: palette.inputBg },
                     ]}
                     maxLength={40}
                   />
 
-                  <Text style={[styles.modalLabel, { color: colors.mutedForeground }]}>Categoría</Text>
+                  <Text style={[styles.modalLabel, { color: palette.muted }]}>Categoría</Text>
                   <View style={styles.catTabRow} accessibilityRole="tablist">
                     {MIX_CATEGORIES.map((cat) => {
                       const selected = mixCategory === cat.id;
@@ -577,7 +591,7 @@ export function MixerSheet() {
 
                 <View style={styles.modalActions}>
                   <Pressable onPress={cancelSave} style={styles.modalBtn}>
-                    <Text style={[styles.modalBtnText, { color: colors.mutedForeground }]}>Cancelar</Text>
+                    <Text style={[styles.modalBtnText, { color: palette.muted }]}>Cancelar</Text>
                   </Pressable>
                   <Pressable
                     onPress={confirmSave}
