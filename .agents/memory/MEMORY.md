@@ -50,3 +50,4 @@
 - [Geometrix settings sheet](geometrix-settings-sheet.md) — preview deriva del alto MEDIDO del sheet (fijar alto = preview fijo); "modificado/restablecer" excluye transformaciones por gesto (TRANSFORM_KEYS) y compara settings fusionados
 - [Reanimated slider oscillator](reanimated-slider-oscillator.md) — loop start/stop deps deben ser boolean on/off (no la amplitud analógica) o cada tick del slider colapsa el barrido; amplitud vive en el worklet
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre directo (wrap > botón); sibling con margin negativo roba taps (zIndex); onda one-shot reposa en 1; glow = ring+shadow no disco
+- [Controlled slider bounce](controlled-slider-bounce.md) — slider Reanimated controlado + source-of-truth por gesto: guard del useEffect con flag (runOnJS/FIFO) + epsilon, o rebota al soltar

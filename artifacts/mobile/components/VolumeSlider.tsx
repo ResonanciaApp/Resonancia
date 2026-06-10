@@ -24,15 +24,33 @@ type Props = {
 export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   const fraction = useSharedValue(value);
   const trackWidth = useSharedValue(1);
+  // Flag en hilo JS: indica si el usuario está arrastrando. Se setea/limpia vía
+  // runOnJS (no en el hilo UI) para quedar FIFO-ordenado respecto a los ecos de
+  // onChange: al soltar, endDrag corre DESPUÉS de todos los ecos en cola, así
+  // ningún eco stale se cuela tras limpiar el flag (race post-release).
+  const draggingRef = React.useRef(false);
+  const startDrag = React.useCallback(() => {
+    draggingRef.current = true;
+  }, []);
+  const endDrag = React.useCallback(() => {
+    draggingRef.current = false;
+  }, []);
 
-  // Sincroniza el prop externo cuando el padre resetea el valor
+  // Sincroniza el prop externo SOLO cuando el cambio viene de fuera (p. ej. el
+  // botón "restablecer"). Mientras se arrastra no se toca (draggingRef) para no
+  // pelear con el gesto, y al soltar se ignoran los ecos de nuestro propio
+  // onChange (el prop ya coincide con la posición del thumb) → sin rebote.
   useEffect(() => {
-    fraction.value = value;
+    if (draggingRef.current) return;
+    if (Math.abs(value - fraction.value) > 0.001) {
+      fraction.value = value;
+    }
   }, [value, fraction]);
 
   const gesture = Gesture.Pan()
     .minDistance(0)
     .onBegin((e) => {
+      runOnJS(startDrag)();
       // e.x es local al GestureDetector; la pista empieza en TRACK_PAD
       const raw = (e.x - TRACK_PAD) / trackWidth.value;
       fraction.value = Math.min(1, Math.max(0, raw));
@@ -42,6 +60,9 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
       const raw = (e.x - TRACK_PAD) / trackWidth.value;
       fraction.value = Math.min(1, Math.max(0, raw));
       runOnJS(onChange)(fraction.value);
+    })
+    .onFinalize(() => {
+      runOnJS(endDrag)();
     });
 
   // Píxeles absolutos + translateX en lugar de porcentajes → sin pase de
