@@ -146,22 +146,27 @@ const PillTab = memo(function PillTab({
   tab,
   sel,
   onPress,
+  isDark,
 }: {
   tab: (typeof MAIN_TABS)[0];
   sel: boolean;
   onPress: () => void;
+  isDark?: boolean;
 }) {
+  const unselBg     = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)";
+  const unselBorder = isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)";
+  const unselText   = isDark ? "#8A9AB8" : MUTED;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.pillTab,
         {
-          backgroundColor: sel ? DARK : "rgba(0,0,0,0.05)",
-          borderColor:     sel ? "transparent" : "rgba(0,0,0,0.08)",
+          backgroundColor: sel ? DARK : unselBg,
+          borderColor:     sel ? "transparent" : unselBorder,
         },
       ]}>
-        <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#FFFFFF" : tab.color} />
-        <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "500" }]}>
+        <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#FFFFFF" : (isDark ? "#8A9AB8" : tab.color)} />
+        <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : unselText, fontWeight: sel ? "700" : "500" }]}>
           {tab.label}
         </Text>
       </View>
@@ -171,18 +176,21 @@ const PillTab = memo(function PillTab({
 
 // ── SubTabPill con fade ───────────────────────────────────────────────────────
 const SubTabPill = memo(function SubTabPill({
-  label, sel, onPress,
-}: { label: string; sel: boolean; onPress: () => void }) {
+  label, sel, onPress, isDark,
+}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean }) {
+  const unselBg     = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.03)";
+  const unselBorder = isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.09)";
+  const unselText   = isDark ? "#8A9AB8" : MUTED;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
         {
-          backgroundColor: sel ? DARK : "rgba(0,0,0,0.03)",
-          borderColor:     sel ? "transparent" : "rgba(0,0,0,0.09)",
+          backgroundColor: sel ? DARK : unselBg,
+          borderColor:     sel ? "transparent" : unselBorder,
         },
       ]}>
-        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "600" }]}>
+        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : unselText, fontWeight: sel ? "700" : "600" }]}>
           {label}
         </Text>
       </View>
@@ -246,6 +254,7 @@ type SoundCardProps = {
   available: boolean;
   image: ReturnType<typeof getSoundImage>;
   onPress: () => void;
+  textColor?: string;
 };
 
 const SoundCard = memo(function SoundCard({
@@ -256,6 +265,7 @@ const SoundCard = memo(function SoundCard({
   available,
   image,
   onPress,
+  textColor,
 }: SoundCardProps) {
   const anim       = useRef(new Animated.Value(active ? 1 : 0)).current;
   const rippleAnim = useRef(new Animated.Value(0)).current;
@@ -355,7 +365,7 @@ const SoundCard = memo(function SoundCard({
         )}
       </View>
       <View style={styles.cardFooter}>
-        <Text style={styles.soundName} numberOfLines={1}>{sound.name}</Text>
+        <Text style={[styles.soundName, textColor ? { color: textColor } : null]} numberOfLines={1}>{sound.name}</Text>
       </View>
     </Pressable>
   );
@@ -400,37 +410,46 @@ export default function MiMusicaScreen() {
   // ── Apariencia ──────────────────────────────────────────────────────────────
   const [bgPreset,      setBgPreset]      = useState("niebla");
   const [bgDim,         setBgDim]         = useState(0);      // 0-1
+  const [bgTheme,       setBgTheme]       = useState<"claro" | "azul">("claro");
   const [settingsOpen,  setSettingsOpen]  = useState(false);
   const sheetAnim    = useRef(new Animated.Value(0)).current;
   const bgPresetRef  = useRef(bgPreset);
   const bgDimRef     = useRef(bgDim);
+  const bgThemeRef   = useRef(bgTheme);
   bgPresetRef.current = bgPreset;
   bgDimRef.current    = bgDim;
+  bgThemeRef.current  = bgTheme;
 
   // Cargar preferencias guardadas
   useEffect(() => {
     AsyncStorage.getItem(APPEARANCE_KEY).then(raw => {
       if (!raw) return;
       try {
-        const { preset, dim } = JSON.parse(raw);
+        const { preset, dim, theme } = JSON.parse(raw);
         if (preset) setBgPreset(preset);
         if (typeof dim === "number") setBgDim(dim);
+        if (theme === "claro" || theme === "azul") setBgTheme(theme);
       } catch {}
     }).catch(() => {});
   }, []);
 
-  const saveAppearance = useCallback((preset: string, dim: number) => {
-    AsyncStorage.setItem(APPEARANCE_KEY, JSON.stringify({ preset, dim })).catch(() => {});
+  const saveAppearance = useCallback((preset: string, dim: number, theme: string) => {
+    AsyncStorage.setItem(APPEARANCE_KEY, JSON.stringify({ preset, dim, theme })).catch(() => {});
   }, []);
 
   const handleDimChange = useCallback((v: number) => {
     setBgDim(1 - v);
-    saveAppearance(bgPresetRef.current, 1 - v);
+    saveAppearance(bgPresetRef.current, 1 - v, bgThemeRef.current);
   }, [saveAppearance]);
 
   const handlePresetChange = useCallback((id: string) => {
     setBgPreset(id);
-    saveAppearance(id, bgDimRef.current);
+    saveAppearance(id, bgDimRef.current, bgThemeRef.current);
+  }, [saveAppearance]);
+
+  const handleThemeChange = useCallback((t: "claro" | "azul") => {
+    setBgTheme(t);
+    saveAppearance(bgPresetRef.current, bgDimRef.current, t);
   }, [saveAppearance]);
 
   const openSettings = useCallback(() => {
@@ -446,6 +465,15 @@ export default function MiMusicaScreen() {
   const sheetTranslateY = sheetAnim.interpolate({ inputRange: [0, 1], outputRange: [420, 0] });
   const backdropOpacity = sheetAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
   const currentPreset   = BG_PRESETS.find(p => p.id === bgPreset) ?? BG_PRESETS[0];
+
+  // Variables derivadas del tema
+  const isDark       = bgTheme === "azul";
+  const themeGradient = isDark
+    ? (["#0B0F14", "#0E1825", "#0B0F14"] as const)
+    : currentPreset.colors;
+  const themeText    = isDark ? "#EDE1D3" : DARK;
+  const themeMuted   = isDark ? "#8A9AB8" : MUTED;
+  const themeIconBtn = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)";
 
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -516,7 +544,7 @@ export default function MiMusicaScreen() {
 
   return (
     <LinearGradient
-      colors={currentPreset.colors}
+      colors={themeGradient}
       locations={[0, 0.4, 1]}
       start={{ x: 0.1, y: 0 }}
       end={{ x: 0.9, y: 1 }}
@@ -530,7 +558,7 @@ export default function MiMusicaScreen() {
         />
       )}
 
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
 
       <View style={[styles.inner, { zIndex: 1 }]}>
 
@@ -542,29 +570,29 @@ export default function MiMusicaScreen() {
             <View style={styles.headerRow}>
               <View>
                 <Text style={styles.pageSuper}>MI MÚSICA</Text>
-                <Text style={styles.pageTitle}>Mezclador</Text>
+                <Text style={[styles.pageTitle, { color: themeText }]}>Mezclador</Text>
               </View>
               <View style={styles.headerBtns}>
                 {/* Botón de ajustes de apariencia */}
                 <Pressable
                   onPress={openSettings}
-                  style={styles.headerIconBtn}
+                  style={[styles.headerIconBtn, { backgroundColor: themeIconBtn }]}
                   hitSlop={8}
                   accessibilityRole="button"
                   accessibilityLabel="Ajustes de apariencia"
                 >
-                  <MaterialCommunityIcons name="tune-vertical" size={18} color={DARK} />
+                  <MaterialCommunityIcons name="tune-vertical" size={18} color={themeText} />
                 </Pressable>
 
                 {/* Botón corazón / Mis mezclas */}
                 <Pressable
                   onPress={() => router.push("/mezclas" as never)}
-                  style={styles.heartBtn}
+                  style={[styles.heartBtn, { backgroundColor: themeIconBtn }]}
                   hitSlop={8}
                   accessibilityRole="button"
                   accessibilityLabel="Mis mezclas guardadas"
                 >
-                  <MaterialCommunityIcons name="heart" size={18} color={DARK} />
+                  <MaterialCommunityIcons name="heart" size={18} color={themeText} />
                   <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
                     <MaterialCommunityIcons name="heart" size={18} color={GOLD} />
                   </Animated.View>
@@ -588,6 +616,7 @@ export default function MiMusicaScreen() {
                 tab={tab}
                 sel={mainTab === tab.id}
                 onPress={() => handleMainTab(tab.id)}
+                isDark={isDark}
               />
             ))}
           </ScrollView>
@@ -611,6 +640,7 @@ export default function MiMusicaScreen() {
                         label={SUB_TAB_LABELS[catId] ?? cat.label}
                         sel={sel}
                         onPress={() => setSubTab(sel ? null : catId)}
+                        isDark={isDark}
                       />
                     );
                   })}
@@ -639,6 +669,7 @@ export default function MiMusicaScreen() {
                   available={hasSoundFile(s.id)}
                   image={getSoundImage(s.id)}
                   onPress={() => handleSoundPress(s)}
+                  textColor={themeText}
                 />
               ))}
             </View>
@@ -659,36 +690,60 @@ export default function MiMusicaScreen() {
             <View style={styles.sheetHandle} />
             <Text style={styles.sheetTitle}>Apariencia</Text>
 
-            {/* Sección brillo */}
-            <Text style={styles.sheetSection}>BRILLO DEL FONDO</Text>
-            <View style={styles.sheetBrightnessRow}>
-              <MaterialCommunityIcons name="brightness-4" size={18} color={MUTED} />
-              <View style={{ flex: 1 }}>
-                <BrightnessSlider value={1 - bgDim} onChange={handleDimChange} />
-              </View>
-              <MaterialCommunityIcons name="brightness-7" size={18} color={DARK} />
-            </View>
-
-            {/* Sección color de fondo */}
-            <Text style={styles.sheetSection}>COLOR DE FONDO</Text>
-            <View style={styles.presetRow}>
-              {BG_PRESETS.map(p => {
-                const sel = bgPreset === p.id;
+            {/* Sección tema */}
+            <Text style={styles.sheetSection}>TEMA</Text>
+            <View style={styles.themeRow}>
+              {(["claro", "azul"] as const).map(t => {
+                const sel = bgTheme === t;
                 return (
-                  <Pressable key={p.id} onPress={() => handlePresetChange(p.id)} style={styles.presetItem}>
-                    <View style={[styles.presetRing, sel && styles.presetRingActive]}>
-                      <LinearGradient
-                        colors={p.colors}
-                        style={styles.presetBall}
-                        start={{ x: 0.2, y: 0 }}
-                        end={{ x: 0.8, y: 1 }}
-                      />
-                    </View>
-                    <Text style={[styles.presetLabel, sel && { color: GOLD, fontWeight: "700" }]}>{p.label}</Text>
+                  <Pressable
+                    key={t}
+                    onPress={() => handleThemeChange(t)}
+                    style={[styles.themeBtn, sel && styles.themeBtnActive]}
+                  >
+                    <View style={[styles.themeSwatch, { backgroundColor: t === "claro" ? "#EAECF2" : "#0B0F14" }]} />
+                    <Text style={[styles.themeBtnText, sel && { color: GOLD, fontWeight: "700" }]}>
+                      {t === "claro" ? "Claro" : "Azul"}
+                    </Text>
                   </Pressable>
                 );
               })}
             </View>
+
+            {/* Sección brillo — solo en tema claro */}
+            {bgTheme === "claro" && (
+              <>
+                <Text style={styles.sheetSection}>BRILLO DEL FONDO</Text>
+                <View style={styles.sheetBrightnessRow}>
+                  <MaterialCommunityIcons name="brightness-4" size={18} color={MUTED} />
+                  <View style={{ flex: 1 }}>
+                    <BrightnessSlider value={1 - bgDim} onChange={handleDimChange} />
+                  </View>
+                  <MaterialCommunityIcons name="brightness-7" size={18} color={DARK} />
+                </View>
+
+                {/* Sección color de fondo */}
+                <Text style={styles.sheetSection}>COLOR DE FONDO</Text>
+                <View style={styles.presetRow}>
+                  {BG_PRESETS.map(p => {
+                    const sel = bgPreset === p.id;
+                    return (
+                      <Pressable key={p.id} onPress={() => handlePresetChange(p.id)} style={styles.presetItem}>
+                        <View style={[styles.presetRing, sel && styles.presetRingActive]}>
+                          <LinearGradient
+                            colors={p.colors}
+                            style={styles.presetBall}
+                            start={{ x: 0.2, y: 0 }}
+                            end={{ x: 0.8, y: 1 }}
+                          />
+                        </View>
+                        <Text style={[styles.presetLabel, sel && { color: GOLD, fontWeight: "700" }]}>{p.label}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </>
+            )}
           </Pressable>
         </Animated.View>
       </Modal>
@@ -740,6 +795,17 @@ const styles = StyleSheet.create({
   sheetBrightnessRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 28 },
 
   // Pelotas de color de fondo
+  themeRow:    { flexDirection: "row", gap: 12, marginBottom: 24 },
+  themeBtn: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    paddingHorizontal: 16, paddingVertical: 11,
+    borderRadius: 14, borderWidth: 1.5, borderColor: "rgba(0,0,0,0.08)",
+    flex: 1,
+  },
+  themeBtnActive: { borderColor: GOLD },
+  themeSwatch: { width: 22, height: 22, borderRadius: 6, borderWidth: 1, borderColor: "rgba(0,0,0,0.12)" },
+  themeBtnText: { fontSize: 13.5, fontWeight: "500", color: MUTED },
+
   presetRow:       { flexDirection: "row", gap: 12, marginBottom: 4, flexWrap: "wrap" },
   presetItem:      { alignItems: "center", gap: 6 },
   presetRing:      { width: 52, height: 52, borderRadius: 999, padding: 3, borderWidth: 2, borderColor: "transparent" },
