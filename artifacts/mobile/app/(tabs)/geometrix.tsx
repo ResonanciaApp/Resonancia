@@ -1548,7 +1548,16 @@ function SettingsSection({
       {/* Línea separadora */}
       <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginBottom: open && hasContent ? 10 : 0 }} />
       {open && hasContent && (
-        <View style={{ paddingBottom: 4 }}>{children}</View>
+        <View style={{
+          backgroundColor: "rgba(255,255,255,0.03)",
+          borderRadius: 12,
+          paddingHorizontal: 10,
+          paddingTop: 8,
+          paddingBottom: 10,
+          marginBottom: 4,
+        }}>
+          {children}
+        </View>
       )}
     </View>
   );
