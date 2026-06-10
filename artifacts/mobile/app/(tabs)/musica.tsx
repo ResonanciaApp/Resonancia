@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
+import { useFocusEffect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
@@ -20,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
+import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { useSaveEvent } from "@/context/SaveEventContext";
 import {
@@ -275,6 +277,15 @@ export default function MiMusicaScreen() {
   const { isPremium }   = usePremium();
   const { isActive, toggleSound } = useMixer();
   const { lastSavedAt } = useSaveEvent();
+  const { requestHide, showMenu } = useTabBarVisibility();
+
+  // Esconde el menú al entrar y lo restaura al salir
+  useFocusEffect(
+    useCallback(() => {
+      requestHide();
+      return () => showMenu();
+    }, [requestHide, showMenu]),
+  );
 
   const heartGlow = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -365,8 +376,8 @@ export default function MiMusicaScreen() {
 
   return (
     <LinearGradient
-      colors={["#FDFCFA", "#F2EDEA", "#E8E2DD"]}
-      locations={[0, 0.5, 1]}
+      colors={["#F4F6FA", "#EAECF2", "#DDE0E8"]}
+      locations={[0, 0.4, 1]}
       start={{ x: 0.1, y: 0 }}
       end={{ x: 0.9, y: 1 }}
       style={styles.root}
