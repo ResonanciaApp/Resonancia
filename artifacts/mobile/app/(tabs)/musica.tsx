@@ -220,31 +220,34 @@ const SubTabPill = memo(function SubTabPill({
 
 // ── ContentSlide / SubTabSlide ────────────────────────────────────────────────
 const ContentSlide = memo(function ContentSlide({
+  animKey,
   dir,
   children,
 }: {
+  animKey: number;
   dir: "right" | "left";
   children: React.ReactNode;
 }) {
   const slideX  = useRef(new Animated.Value(dir === "right" ? 38 : -38)).current;
   const opacity = useRef(new Animated.Value(0)).current;
-  const [childReady, setChildReady] = useState(false);
 
+  // Reanima al cambiar de tab (animKey) SIN remontar los hijos: la grilla reconcilia
+  // por key={s.id}, así los sonidos compartidos entre tabs conservan su imagen montada
+  // (las imágenes no se vuelven a decodificar → sin carga escalonada).
   useLayoutEffect(() => {
-    // Arrancar animación en native thread antes de montar hijos pesados
+    slideX.setValue(dir === "right" ? 38 : -38);
+    opacity.setValue(0);
     const anim = Animated.parallel([
       Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true }),
       Animated.timing(slideX,  { toValue: 0, duration: 220, useNativeDriver: true }),
     ]);
     anim.start();
-    // Diferir el montaje del grid hasta después del primer frame
-    const id = setTimeout(() => setChildReady(true), 0);
-    return () => { anim.stop(); clearTimeout(id); };
-  }, []);
+    return () => anim.stop();
+  }, [animKey, dir, opacity, slideX]);
 
   return (
     <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>
-      {childReady ? children : null}
+      {children}
     </Animated.View>
   );
 });
@@ -363,7 +366,14 @@ const SoundCard = memo(function SoundCard({
           {/* Capa interior: recorte circular de la imagen */}
           <View style={styles.cardClipInner}>
             {image ? (
-              <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+              <Image
+                source={image}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+                cachePolicy="memory-disk"
+                transition={0}
+                recyclingKey={sound.id}
+              />
             ) : (
               <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
             )}
@@ -698,7 +708,7 @@ export default function MiMusicaScreen() {
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
         >
-          <ContentSlide key={contentAnimKey} dir={contentDir}>
+          <ContentSlide animKey={contentAnimKey} dir={contentDir}>
             <View style={[styles.grid, { marginTop: 14 }]}>
               {displayedSounds.map((s, i) => (
                 <SoundCard
