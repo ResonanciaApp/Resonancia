@@ -190,7 +190,7 @@ const CarouselTile = memo(function CarouselTile({
       >
         <MaterialCommunityIcons
           name={tab.icon as any}
-          size={tileW * 0.38}
+          size={tileW * 0.28}
           color={sel ? c : MUTED}
         />
       </Animated.View>
@@ -612,8 +612,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.02)",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
-    paddingVertical: 8,
+    gap: 5,
+    paddingVertical: 6,
     overflow: "visible",
   },
   rippleRing: {
