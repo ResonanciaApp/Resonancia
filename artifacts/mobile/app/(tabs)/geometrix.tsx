@@ -1137,6 +1137,60 @@ function GoldSlidersIcon({ size = 18 }: { size?: number }) {
   );
 }
 
+// ── Sección colapsable de ajustes personalizados ────────────────────────────
+function SettingsSection({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  children?: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const hasContent = React.Children.count(children) > 0;
+  const [open, setOpen] = useState(defaultOpen && hasContent);
+  const chevronRot = useSharedValue(defaultOpen && hasContent ? 1 : 0);
+
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${chevronRot.value * 180}deg` }],
+  }));
+
+  const toggle = useCallback(() => {
+    if (!hasContent) return;
+    const next = !open;
+    setOpen(next);
+    chevronRot.value = withTiming(next ? 1 : 0, { duration: 200 });
+  }, [open, hasContent, chevronRot]);
+
+  return (
+    <View style={{ marginBottom: 2 }}>
+      <Pressable
+        onPress={toggle}
+        style={{
+          flexDirection: "row", alignItems: "center",
+          justifyContent: "space-between",
+          paddingVertical: 11, paddingHorizontal: 2,
+          opacity: hasContent ? 1 : 0.32,
+        }}
+        accessibilityRole="button"
+        accessibilityLabel={`${title} — ${open ? "colapsar" : "expandir"}`}
+      >
+        <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.mutedForeground }}>
+          {title}
+        </Text>
+        <Animated.View style={chevronStyle}>
+          <Feather name="chevron-down" size={15} color={colors.mutedForeground} />
+        </Animated.View>
+      </Pressable>
+      {/* Línea separadora */}
+      <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginBottom: open && hasContent ? 10 : 0 }} />
+      {open && hasContent && (
+        <View style={{ paddingBottom: 4 }}>{children}</View>
+      )}
+    </View>
+  );
+}
+
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
@@ -3855,204 +3909,198 @@ export default function GeometrixScreen() {
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
                 <View style={styles.geoCard}>
-                  {/* ── Caleidoscopio ─────────────────────────────────────── */}
-                  <View style={{
-                    flexDirection: "row", alignItems: "center",
-                    justifyContent: "space-between", marginBottom: 10,
-                    paddingVertical: 8, paddingHorizontal: 10,
-                    backgroundColor: s.kaleidoscope ? colors.primary + "14" : "rgba(255,255,255,0.03)",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: s.kaleidoscope ? colors.primary + "55" : "rgba(255,255,255,0.07)",
-                  }}>
-                    <Text style={{ color: s.kaleidoscope ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
-                      Caleidoscopio
-                    </Text>
-                    <Toggle
-                      value={s.kaleidoscope ?? false}
-                      onChange={(v) => updateSetting(iid, "kaleidoscope", v)}
-                      color={colors.primary}
-                      compact
+
+                  {/* ── Color ─────────────────────────────────────────────── */}
+                  <SettingsSection title="Color" defaultOpen>
+                    <Text style={styles.fieldLabel}>Color sólido</Text>
+                    <View style={styles.swatchRow}>
+                      {PALETTE.map((c) => {
+                        const on = !s.gradientId && s.color.toLowerCase() === c.toLowerCase();
+                        return (
+                          <Pressable
+                            key={c}
+                            onPress={() => {
+                              updateSetting(iid, "color", c);
+                              updateSetting(iid, "gradientId", null);
+                            }}
+                            style={[styles.swatch, on && styles.swatchOn]}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Color ${c}`}
+                          >
+                            <View style={[styles.swatchFill, { backgroundColor: c }]} />
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                    <Text style={[styles.fieldLabel, styles.gradientLabel]}>Color degradado</Text>
+                    <View style={styles.swatchRow}>
+                      {STROKE_GRADIENTS.map((gr) => {
+                        const on = s.gradientId === gr.id;
+                        return (
+                          <Pressable
+                            key={gr.id}
+                            onPress={() => updateSetting(iid, "gradientId", on ? null : gr.id)}
+                            style={[styles.swatch, on && styles.swatchOn]}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Degradado ${gr.id}`}
+                          >
+                            <GradientSwatch colors={gr.colors} size={20} />
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  </SettingsSection>
+
+                  {/* ── Luminosidad ───────────────────────────────────────── */}
+                  <SettingsSection title="Luminosidad" defaultOpen>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Opacidad</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.opacity}
+                      onChange={(v) => updateSetting(iid, "opacity", Math.max(0, v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
                     />
-                  </View>
-                  {s.kaleidoscope && (
-                    <View style={{ marginBottom: 12 }}>
-                      <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Segmentos</Text>
-                      <View style={{ flexDirection: "row", gap: 8 }}>
-                        {[4, 6, 8, 12, 16].map((n) => {
-                          const on = (s.kaleidSegments ?? 6) === n;
-                          return (
-                            <Pressable
-                              key={n}
-                              onPress={() => updateSetting(iid, "kaleidSegments", n)}
-                              style={{
-                                flex: 1, paddingVertical: 8, borderRadius: 10,
-                                alignItems: "center",
-                                backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
-                                borderWidth: 1,
-                                borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
-                              }}
-                            >
-                              <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "700", fontSize: 14 }}>
-                                {n}
-                              </Text>
-                            </Pressable>
-                          );
-                        })}
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Glow</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.glow}
+                      onChange={(v) => updateSetting(iid, "glow", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </SettingsSection>
+
+                  {/* ── Transformación ────────────────────────────────────── */}
+                  <SettingsSection title="Transformación">
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Tamaño</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.scale}
+                      onChange={(v) => updateSetting(iid, "scale", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Grosor</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.thickness}
+                      onChange={(v) => updateSetting(iid, "thickness", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={[styles.toggleGrid, { marginTop: 8 }]}>
+                      <View style={styles.toggleGridItem}>
+                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar izquierda</Text>
+                        <Toggle
+                          value={s.rotateLeft}
+                          onChange={(v) => {
+                            updateSetting(iid, "rotateLeft", v);
+                            if (v) updateSetting(iid, "rotate", false);
+                          }}
+                          color={TOGGLE_ON_COLOR}
+                          compact
+                        />
+                      </View>
+                      <View style={styles.toggleGridItem}>
+                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar derecha</Text>
+                        <Toggle
+                          value={s.rotate}
+                          onChange={(v) => {
+                            updateSetting(iid, "rotate", v);
+                            if (v) updateSetting(iid, "rotateLeft", false);
+                          }}
+                          color={TOGGLE_ON_COLOR}
+                          compact
+                        />
                       </View>
                     </View>
-                  )}
+                  </SettingsSection>
 
-                  {/* Toggles (on/off) en cuadrícula 2 cols: etiqueta izq, switch der */}
-                  <View style={styles.toggleGrid}>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
-                        Fade
+                  {/* ── Distorsión ────────────────────────────────────────── */}
+                  <SettingsSection title="Distorsión" />
+
+                  {/* ── Profundidad ───────────────────────────────────────── */}
+                  <SettingsSection title="Profundidad" />
+
+                  {/* ── Calidoscopio ──────────────────────────────────────── */}
+                  <SettingsSection title="Calidoscopio">
+                    <View style={{
+                      flexDirection: "row", alignItems: "center",
+                      justifyContent: "space-between", marginBottom: 10,
+                      paddingVertical: 8, paddingHorizontal: 10,
+                      backgroundColor: s.kaleidoscope ? colors.primary + "14" : "rgba(255,255,255,0.03)",
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: s.kaleidoscope ? colors.primary + "55" : "rgba(255,255,255,0.07)",
+                    }}>
+                      <Text style={{ color: s.kaleidoscope ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                        Activar caleidoscopio
                       </Text>
                       <Toggle
-                        value={s.fadeLoop}
-                        onChange={(v) => updateSetting(iid, "fadeLoop", v)}
-                        color={TOGGLE_ON_COLOR}
+                        value={s.kaleidoscope ?? false}
+                        onChange={(v) => updateSetting(iid, "kaleidoscope", v)}
+                        color={colors.primary}
                         compact
                       />
                     </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
-                        Girar izquierda
-                      </Text>
-                      <Toggle
-                        value={s.rotateLeft}
-                        onChange={(v) => {
-                          updateSetting(iid, "rotateLeft", v);
-                          if (v) updateSetting(iid, "rotate", false);
-                        }}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
+                    {s.kaleidoscope && (
+                      <View style={{ marginBottom: 4 }}>
+                        <Text style={[styles.fieldLabel, { marginBottom: 8 }]}>Segmentos</Text>
+                        <View style={{ flexDirection: "row", gap: 8 }}>
+                          {[4, 6, 8, 12, 16].map((n) => {
+                            const on = (s.kaleidSegments ?? 6) === n;
+                            return (
+                              <Pressable
+                                key={n}
+                                onPress={() => updateSetting(iid, "kaleidSegments", n)}
+                                style={{
+                                  flex: 1, paddingVertical: 8, borderRadius: 10,
+                                  alignItems: "center",
+                                  backgroundColor: on ? colors.primary + "25" : "rgba(255,255,255,0.04)",
+                                  borderWidth: 1,
+                                  borderColor: on ? colors.primary + "88" : "rgba(255,255,255,0.09)",
+                                }}
+                              >
+                                <Text style={{ color: on ? colors.primary : colors.mutedForeground, fontWeight: "700", fontSize: 14 }}>
+                                  {n}
+                                </Text>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
+                  </SettingsSection>
+
+                  {/* ── Energía ───────────────────────────────────────────── */}
+                  <SettingsSection title="Energía">
+                    <View style={styles.toggleGrid}>
+                      <View style={styles.toggleGridItem}>
+                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Fade</Text>
+                        <Toggle
+                          value={s.fadeLoop}
+                          onChange={(v) => updateSetting(iid, "fadeLoop", v)}
+                          color={TOGGLE_ON_COLOR}
+                          compact
+                        />
+                      </View>
+                      <View style={styles.toggleGridItem}>
+                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Respirar</Text>
+                        <Toggle
+                          value={s.breathe}
+                          onChange={(v) => updateSetting(iid, "breathe", v)}
+                          color={TOGGLE_ON_COLOR}
+                          compact
+                        />
+                      </View>
                     </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
-                        Respirar
-                      </Text>
-                      <Toggle
-                        value={s.breathe}
-                        onChange={(v) => updateSetting(iid, "breathe", v)}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
-                    </View>
-                    <View style={styles.toggleGridItem}>
-                      <Text style={styles.toggleTriLabel} numberOfLines={2}>
-                        Girar derecha
-                      </Text>
-                      <Toggle
-                        value={s.rotate}
-                        onChange={(v) => {
-                          updateSetting(iid, "rotate", v);
-                          if (v) updateSetting(iid, "rotateLeft", false);
-                        }}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
-                    </View>
-                  </View>
+                  </SettingsSection>
 
-                  {/* Color */}
-                  <Text style={styles.fieldLabel}>Color sólido</Text>
-                  <View style={styles.swatchRow}>
-                    {PALETTE.map((c) => {
-                      const on =
-                        !s.gradientId &&
-                        s.color.toLowerCase() === c.toLowerCase();
-                      return (
-                        <Pressable
-                          key={c}
-                          onPress={() => {
-                            updateSetting(iid, "color", c);
-                            updateSetting(iid, "gradientId", null);
-                          }}
-                          style={[styles.swatch, on && styles.swatchOn]}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Color ${c}`}
-                        >
-                          <View
-                            style={[styles.swatchFill, { backgroundColor: c }]}
-                          />
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-
-                  {/* Degradado: 7 opciones de la misma paleta */}
-                  <Text style={[styles.fieldLabel, styles.gradientLabel]}>
-                    Color degradado
-                  </Text>
-                  <View style={styles.swatchRow}>
-                    {STROKE_GRADIENTS.map((gr) => {
-                      const on = s.gradientId === gr.id;
-                      return (
-                        <Pressable
-                          key={gr.id}
-                          onPress={() =>
-                            updateSetting(
-                              iid,
-                              "gradientId",
-                              on ? null : gr.id,
-                            )
-                          }
-                          style={[styles.swatch, on && styles.swatchOn]}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Degradado ${gr.id}`}
-                        >
-                          <GradientSwatch colors={gr.colors} size={20} />
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-
-                  {/* Opacidad */}
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Opacidad</Text>
-                  </View>
-                  <VolumeSlider
-                    value={s.opacity}
-                    onChange={(v) => updateSetting(iid, "opacity", Math.max(0, v))}
-                    color="#FFFFFF"
-                    trackColor="rgba(255,255,255,0.12)"
-                  />
-
-                  {/* Grosor */}
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Grosor</Text>
-                  </View>
-                  <VolumeSlider
-                    value={s.thickness}
-                    onChange={(v) => updateSetting(iid, "thickness", v)}
-                    color="#FFFFFF"
-                    trackColor="rgba(255,255,255,0.12)"
-                  />
-
-                  {/* Tamaño */}
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Tamaño</Text>
-                  </View>
-                  <VolumeSlider
-                    value={s.scale}
-                    onChange={(v) => updateSetting(iid, "scale", v)}
-                    color="#FFFFFF"
-                    trackColor="rgba(255,255,255,0.12)"
-                  />
-
-                  {/* Glow propio */}
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Glow</Text>
-                  </View>
-                  <VolumeSlider
-                    value={s.glow}
-                    onChange={(v) => updateSetting(iid, "glow", v)}
-                    color="#FFFFFF"
-                    trackColor="rgba(255,255,255,0.12)"
-                  />
                 </View>
                 </ScrollView>
               );
