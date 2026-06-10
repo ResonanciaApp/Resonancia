@@ -190,7 +190,7 @@ const CarouselTile = memo(function CarouselTile({
       >
         <MaterialCommunityIcons
           name={tab.icon as any}
-          size={tileW * 0.28}
+          size={tileW * 0.28 + 3}
           color={sel ? c : MUTED}
         />
       </Animated.View>
