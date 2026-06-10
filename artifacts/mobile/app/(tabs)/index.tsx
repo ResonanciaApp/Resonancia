@@ -1,6 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { ZenStonesIcon } from "@/components/ZenStonesIcon";
-import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
+import { Feather } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -189,16 +187,11 @@ export default function HomeScreen() {
           <View style={styles.catGrid}>
             {CATEGORIES.filter((c) => c.id !== "mananas" && c.id !== "noches").map((cat) => {
               const catImages: Record<string, ReturnType<typeof require>> = {
-                "musica-sonidos":     require("../../assets/images/icon-musica.png"),
-                "meditaciones-guiadas": require("../../assets/images/icon-meditaciones.png"),
-                "podcast":            require("../../assets/images/icon-sonidos.png"),
-                "mananas":            require("../../assets/images/cat-mananas.png"),
+                "sonidos-ancestrales":  require("../../assets/images/categories-home/icon-ancestrales.png"),
+                "podcast":             require("../../assets/images/categories-home/icon-sonidos.png"),
+                "musica-sonidos":      require("../../assets/images/categories-home/icon-musica.png"),
+                "meditaciones-guiadas": require("../../assets/images/categories-home/icon-meditaciones.png"),
               };
-              const iconColors: Record<string, string> = {
-                "sonidos-ancestrales": "#D6933A",
-                "meditaciones-guiadas": "#A87ED4",
-              };
-              const iconColor = iconColors[cat.id] ?? colors.foreground;
               const catImg = catImages[cat.id];
               return (
                 <Pressable
@@ -206,35 +199,18 @@ export default function HomeScreen() {
                   onPress={() => router.push(`/category/${cat.id}` as never)}
                   style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.75 : 1 }]}
                 >
-                  {catImg ? (
-                    <Image
-                      source={catImg}
-                      style={styles.catCardImage}
-                      resizeMode="contain"
-                    />
-                  ) : cat.id === "noches" ? (
-                    <MoonCrescentIcon color="#FFA58E" size={25} />
-                  ) : cat.id === "meditaciones-guiadas" ? (
-                    <View style={{ marginTop: -4 }}>
-                      <ZenStonesIcon color={iconColor} size={35} />
-                    </View>
-                  ) : cat.iconFamily === "MaterialCommunityIcons" ? (
-                    <MaterialCommunityIcons
-                      name={cat.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      size={29}
-                      color={iconColor}
-                      style={cat.id === "sonidos-ancestrales" ? { marginTop: -4 } : undefined}
-                    />
-                  ) : (
-                    <Feather
-                      name={cat.icon as React.ComponentProps<typeof Feather>["name"]}
-                      size={26}
-                      color={iconColor}
-                    />
-                  )}
-                  <Text style={styles.catCardLabel} numberOfLines={2}>
-                    {cat.title}
-                  </Text>
+                  <View style={styles.catCardRow}>
+                    {catImg ? (
+                      <Image
+                        source={catImg}
+                        style={styles.catCardIcon}
+                        resizeMode="contain"
+                      />
+                    ) : null}
+                    <Text style={styles.catCardLabel} numberOfLines={1}>
+                      {cat.title}
+                    </Text>
+                  </View>
                 </Pressable>
               );
             })}
@@ -576,24 +552,27 @@ const styles = StyleSheet.create({
     flexBasis: "40%",
     flexGrow: 1,
     minWidth: 140,
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
+    justifyContent: "flex-start",
     backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 14,
     paddingHorizontal: 16,
-    paddingVertical: 26,
+    paddingVertical: 14,
   },
-  catCardImage: {
-    width: 44,
-    height: 44,
+  catCardRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  catCardIcon: {
+    width: 32,
+    height: 32,
   },
   catCardLabel: {
     fontSize: 14,
     fontWeight: "600",
     color: "#FFFFFF",
-    textAlign: "center",
     lineHeight: 18,
   },
 
