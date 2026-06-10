@@ -1481,16 +1481,19 @@ function SettingsSection({
   defaultOpen = false,
   isModified,
   onReset,
+  onOpen,
 }: {
   title: string;
   children?: React.ReactNode;
   defaultOpen?: boolean;
   isModified?: boolean;
   onReset?: () => void;
+  onOpen?: (y: number) => void;
 }) {
   const hasContent = React.Children.count(children) > 0;
   const [open, setOpen] = useState(defaultOpen && hasContent);
   const chevronRot = useSharedValue(defaultOpen && hasContent ? 1 : 0);
+  const sectionY = useRef(0);
 
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${chevronRot.value * 180}deg` }],
@@ -1501,10 +1504,17 @@ function SettingsSection({
     const next = !open;
     setOpen(next);
     chevronRot.value = withTiming(next ? 1 : 0, { duration: 200 });
-  }, [open, hasContent, chevronRot]);
+    if (next && onOpen) {
+      const y = sectionY.current;
+      setTimeout(() => onOpen(y), 90);
+    }
+  }, [open, hasContent, chevronRot, onOpen]);
 
   return (
-    <View style={{ marginBottom: 2 }}>
+    <View
+      style={{ marginBottom: 2 }}
+      onLayout={(e) => { sectionY.current = e.nativeEvent.layout.y; }}
+    >
       <Pressable
         onPress={toggle}
         style={{
@@ -1747,6 +1757,7 @@ export default function GeometrixScreen() {
   const [thumbsOverflow, setThumbsOverflow] = useState(false);
   const thumbsViewW = useRef(0);
   const thumbsScrollRef = useRef<ScrollView>(null);
+  const settingsScrollRef = useRef<ScrollView>(null);
   // Aparición escalonada de thumbnails: solo la primera tanda (al poblarse el
   // lienzo) entra de izquierda a derecha; las que se agregan luego, al instante.
   const thumbsInitialIdsRef = useRef<Set<string> | null>(null);
@@ -4401,6 +4412,7 @@ export default function GeometrixScreen() {
               const s = getSettings(iid);
               return (
                 <ScrollView
+                  ref={settingsScrollRef}
                   // Antes de congelar el alto: contenido natural (para medirlo).
                   // Después: flex:1 para llenar el sheet fijo y scrollear.
                   style={frozenSheetH != null ? { flex: 1 } : undefined}
@@ -4414,6 +4426,7 @@ export default function GeometrixScreen() {
                     title="Color"
                     isModified={isSectionModified(iid, ["color", "gradientId", "saturation"])}
                     onReset={() => resetSection(iid, ["color", "gradientId", "saturation"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={styles.swatchRow}>
@@ -4466,6 +4479,7 @@ export default function GeometrixScreen() {
                     title="Luminosidad"
                     isModified={isSectionModified(iid, ["opacity", "glow", "bloom", "halo"])}
                     onReset={() => resetSection(iid, ["opacity", "glow", "bloom", "halo"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Opacidad</Text>
@@ -4510,6 +4524,7 @@ export default function GeometrixScreen() {
                     title="Transformación"
                     isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate"])}
                     onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Grosor</Text>
@@ -4553,6 +4568,7 @@ export default function GeometrixScreen() {
                     title="Distorsión"
                     isModified={isSectionModified(iid, ["onda", "ripple", "warp"])}
                     onReset={() => resetSection(iid, ["onda", "ripple", "warp"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Onda</Text>
@@ -4591,6 +4607,7 @@ export default function GeometrixScreen() {
                     title="Calidoscopio"
                     isModified={isSectionModified(iid, ["kaleidoscope", "kaleidSegments"])}
                     onReset={() => resetSection(iid, ["kaleidoscope", "kaleidSegments"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={{
                       flexDirection: "row", alignItems: "center",
@@ -4645,6 +4662,7 @@ export default function GeometrixScreen() {
                     title="Energía"
                     isModified={isSectionModified(iid, ["fadeLoop", "breathe", "expansion"])}
                     onReset={() => resetSection(iid, ["fadeLoop", "breathe", "expansion"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.toggleGrid}>
                       <View style={styles.toggleGridItem}>
