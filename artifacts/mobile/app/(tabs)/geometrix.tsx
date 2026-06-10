@@ -935,7 +935,6 @@ type CarouselTileProps = {
   tileTitleColor?: string;
   cardBorderUnsel?: string;
   glyphUnselColor?: string;
-  forceBlackBg?: boolean;
   // Reordenamiento por arrastre (long-press + drag).
   draggable: boolean;
   isDragging: boolean;
@@ -989,7 +988,6 @@ function CarouselTile({
   tileTitleColor = "#FFFFFF",
   cardBorderUnsel = CARD_BORDER,
   glyphUnselColor = "#7A8FA8",
-  forceBlackBg = false,
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
   const glow = useSharedValue(isSelected ? 0.66 : 0);
@@ -1359,7 +1357,6 @@ function CarouselTile({
             styles.tile,
             { width: tileW, borderColor: hexAlpha(isSelected ? color : cardBorderUnsel, isSelected ? 0.2 : 0.8) },
             isSelected && { backgroundColor: "rgba(190,150,80,0.06)" },
-            forceBlackBg && { backgroundColor: "#0B0F14", borderWidth: 0 },
           ]}
         >
           <View style={styles.tileGlyph}>
@@ -3248,7 +3245,6 @@ export default function GeometrixScreen() {
                   tileTitleColor={geo.tileTitle}
                   cardBorderUnsel={geo.cardBorder}
                   glyphUnselColor={geo.glyphUnsel}
-                  forceBlackBg={isLight}
                 />
               );
             })}
@@ -3571,7 +3567,7 @@ export default function GeometrixScreen() {
                     layout={LinearTransition.duration(320).easing(
                       Easing.inOut(Easing.ease),
                     )}
-                    style={styles.thumbItem}
+                    style={[styles.thumbItem, isLight && { backgroundColor: "#0B0F14" }]}
                   >
                     {/* Tap en la imagen: seleccionar. Si está oculta, tap → mostrar. */}
                     <Pressable
