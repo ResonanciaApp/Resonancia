@@ -1536,7 +1536,7 @@ function SettingsSection({
             hitSlop={10}
             accessibilityRole="button"
             accessibilityLabel={`Restablecer ${title}`}
-            style={{ marginRight: 8 }}
+            style={{ marginRight: 28 }}
           >
             <Text style={{ fontSize: 10, fontWeight: "700", color: "#bfc2fe", letterSpacing: 0.2 }}>
               Restablecer
@@ -4323,34 +4323,6 @@ export default function GeometrixScreen() {
               )}
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {/* Restablecer: TÍTULO con degradado (sin píldora) que aparece
-                  cuando la geometría tiene ajustes del panel distintos de los
-                  defaults; al tocarlo restaura defaults (preserva transformación). */}
-              {settingsGeo && isGeoModified(settingsGeoId!) && (
-                <Animated.View
-                  entering={FadeIn.duration(220)}
-                  exiting={FadeOut.duration(220)}
-                  style={{ marginRight: 10 }}
-                >
-                  <Pressable
-                    onPress={() => resetGeometry(settingsGeoId!)}
-                    hitSlop={8}
-                    accessibilityRole="button"
-                    accessibilityLabel="Restablecer ajustes"
-                  >
-                    <GradientText
-                      text="Restablecer"
-                      width={94}
-                      gradId="restablecerGrad"
-                      stops={[
-                        { offset: 0, color: "#5ed1e1" },
-                        { offset: 0.5, color: "#bfc2fe" },
-                        { offset: 1, color: "#e8bddb" },
-                      ]}
-                    />
-                  </Pressable>
-                </Animated.View>
-              )}
               {/* Ocultar / mostrar */}
               {settingsGeo && (
                 <>
