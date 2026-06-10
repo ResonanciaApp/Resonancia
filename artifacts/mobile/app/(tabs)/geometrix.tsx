@@ -2352,7 +2352,7 @@ export default function GeometrixScreen() {
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   // `divider: true` dibuja una línea sutil ANTES del ítem (separadores de grupo).
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean; color?: string; divider?: boolean }[] = [
-    { key: "general", icon: "sliders", label: "Ajustes", onPress: () => setGeneralOpen(true), gradient: true },
+    { key: "general", icon: "sliders", label: "Ajustes", onPress: () => setGeneralOpen(true) },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
@@ -4814,7 +4814,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     flexDirection: "column",
     alignItems: "center",
-    gap: 2,
+    gap: 4,
     paddingVertical: 6,
     paddingHorizontal: 4,
     borderRadius: 20,
@@ -4833,6 +4833,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: StyleSheet.hairlineWidth,
     backgroundColor: "#9298d0",
+    marginVertical: -2,
   },
   thumbsScroll: {
     position: "absolute",
