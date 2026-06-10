@@ -113,7 +113,6 @@ const hexAlpha = (hex: string, a: number) => {
 const CAROUSEL_HOLD_MS = 1000;
 const CAROUSEL_FLOW_MS = 1100;
 const CAROUSEL_EASE = Easing.bezier(0.25, 0.1, 0.25, 1);
-const ROT_SNAP_THRESH = 15;
 const LOUPE_SIZE = 130;
 const LOUPE_M = 2.6;
 
@@ -1835,10 +1834,6 @@ export default function GeometrixScreen() {
   // Estado cardinal previo (UI thread) para animar el color del badge SOLO al
   // cruzar el umbral, no en cada frame. -1 = sin evaluar (fuerza el primer set).
   const rotCardGuard = useSharedValue(-1);
-  // Flag UI-thread: 1 mientras el gesto de rotación está activo (incluido el
-  // snap animado). Se usa en panGesture para bloquear traslaciones accidentales
-  // cuando el usuario levanta un dedo durante una rotación de dos dedos.
-  const rotatingFlag = useSharedValue(0);
 
   // ── Drag (arrastrar con un dedo) ─────────────────────────────────────────
   const liveDragX = useSharedValue(0);
@@ -2666,8 +2661,6 @@ export default function GeometrixScreen() {
       // useEffect de sync lo apaga tras el commit (sin "pop"); en cancelación se
       // apaga aquí en onFinalize.
       rotActive.value = 1;
-      // Bloquear pan accidental mientras haya dos dedos en el lienzo.
-      rotatingFlag.value = 1;
     })
     .onUpdate((e) => {
       // e.rotation viene en radianes; el ángulo manual se guarda en grados.
@@ -2680,35 +2673,16 @@ export default function GeometrixScreen() {
     })
     .onEnd(() => {
       rotSucceeded.value = true;
-      const raw = liveRot.value;
-      if (!pinchTargetId || !Number.isFinite(raw)) return;
-      // Snap magnético: si el ángulo está dentro de ROT_SNAP_THRESH grados de
-      // un cardinal (0/90/180/270°), ajustar al cardinal exacto más cercano.
-      const nearest = Math.round(raw / 90) * 90;
-      const shouldSnap = Math.abs(raw - nearest) < ROT_SNAP_THRESH;
-      const final = shouldSnap ? nearest : raw;
-      if (shouldSnap) {
-        // Animar al cardinal y commitear DESPUÉS de la animación: rotActive sigue
-        // 1 durante el withTiming → la capa muestra la animación sin frame pop.
-        liveRot.value = withTiming(
-          final,
-          { duration: 220, easing: Easing.out(Easing.quad) },
-          (done) => {
-            "worklet";
-            if (done) runOnJS(commitAngle)(pinchTargetId, final);
-          },
-        );
-      } else {
-        runOnJS(commitAngle)(pinchTargetId, final);
+      if (pinchTargetId && Number.isFinite(liveRot.value)) {
+        runOnJS(commitAngle)(pinchTargetId, liveRot.value);
       }
     })
     // SIEMPRE corre (éxito o cancelación). En éxito, rotActive sigue 1 hasta que
     // el useEffect de sync (tras el commit) lo apaga, así no hay frame con el
     // ángulo previo. En cancelación, revierte al ángulo de partida y apaga el
     // gate aquí para no acumular un valor sin guardar.
-    .onFinalize((_e, success) => {
-      rotatingFlag.value = 0;
-      if (!success) {
+    .onFinalize(() => {
+      if (!rotSucceeded.value) {
         liveRot.value = rotStart.value;
         rotActive.value = 0;
       }
@@ -2740,9 +2714,6 @@ export default function GeometrixScreen() {
         loupeY.value = e.y;
         return;
       }
-      // Bloquear traslaciones accidentales mientras el gesto de rotación (2 dedos)
-      // está activo: el usuario podría levantar un dedo y activar el pan sin querer.
-      if (rotatingFlag.value > 0) return;
       if (!pinchTargetId) return;
       let rx = dragStartX.value + e.translationX;
       let ry = dragStartY.value + e.translationY;
