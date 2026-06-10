@@ -94,6 +94,13 @@ const BG_PRESETS = [
   { id: "bruma",  label: "Bruma",   colors: ["#EEF4FF", "#E0EBFF", "#CDD9F5"] as const },
 ];
 
+// ── Presets oscuros ────────────────────────────────────────────────────────────
+const DARK_PRESETS = [
+  { id: "noche",      label: "Noche",      colors: ["#080C12", "#0D1520", "#080C12"] as const },
+  { id: "indigo",     label: "Índigo",     colors: ["#090B1C", "#0F1438", "#090B1C"] as const },
+  { id: "crepusculo", label: "Crepúsculo", colors: ["#0E0B16", "#1A1030", "#0E0B16"] as const },
+];
+
 // ── Slider de brillo ──────────────────────────────────────────────────────────
 function BrightnessSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const trackW = useRef(200);
@@ -406,47 +413,56 @@ export default function MiMusicaScreen() {
 
   // ── Apariencia ──────────────────────────────────────────────────────────────
   const [bgPreset,      setBgPreset]      = useState("niebla");
+  const [darkPreset,    setDarkPreset]    = useState("noche");
   const [bgDim,         setBgDim]         = useState(0);      // 0-1
   const [bgTheme,       setBgTheme]       = useState<"claro" | "azul">("claro");
   const [settingsOpen,  setSettingsOpen]  = useState(false);
-  const sheetAnim    = useRef(new Animated.Value(0)).current;
-  const bgPresetRef  = useRef(bgPreset);
-  const bgDimRef     = useRef(bgDim);
-  const bgThemeRef   = useRef(bgTheme);
-  bgPresetRef.current = bgPreset;
-  bgDimRef.current    = bgDim;
-  bgThemeRef.current  = bgTheme;
+  const sheetAnim      = useRef(new Animated.Value(0)).current;
+  const bgPresetRef    = useRef(bgPreset);
+  const darkPresetRef  = useRef(darkPreset);
+  const bgDimRef       = useRef(bgDim);
+  const bgThemeRef     = useRef(bgTheme);
+  bgPresetRef.current   = bgPreset;
+  darkPresetRef.current = darkPreset;
+  bgDimRef.current      = bgDim;
+  bgThemeRef.current    = bgTheme;
 
   // Cargar preferencias guardadas
   useEffect(() => {
     AsyncStorage.getItem(APPEARANCE_KEY).then(raw => {
       if (!raw) return;
       try {
-        const { preset, dim, theme } = JSON.parse(raw);
+        const { preset, darkPreset: dp, dim, theme } = JSON.parse(raw);
         if (preset) setBgPreset(preset);
+        if (dp) setDarkPreset(dp);
         if (typeof dim === "number") setBgDim(dim);
         if (theme === "claro" || theme === "azul") setBgTheme(theme);
       } catch {}
     }).catch(() => {});
   }, []);
 
-  const saveAppearance = useCallback((preset: string, dim: number, theme: string) => {
-    AsyncStorage.setItem(APPEARANCE_KEY, JSON.stringify({ preset, dim, theme })).catch(() => {});
+  const saveAppearance = useCallback((preset: string, dp: string, dim: number, theme: string) => {
+    AsyncStorage.setItem(APPEARANCE_KEY, JSON.stringify({ preset, darkPreset: dp, dim, theme })).catch(() => {});
   }, []);
 
   const handleDimChange = useCallback((v: number) => {
     setBgDim(1 - v);
-    saveAppearance(bgPresetRef.current, 1 - v, bgThemeRef.current);
+    saveAppearance(bgPresetRef.current, darkPresetRef.current, 1 - v, bgThemeRef.current);
   }, [saveAppearance]);
 
   const handlePresetChange = useCallback((id: string) => {
     setBgPreset(id);
-    saveAppearance(id, bgDimRef.current, bgThemeRef.current);
+    saveAppearance(id, darkPresetRef.current, bgDimRef.current, bgThemeRef.current);
+  }, [saveAppearance]);
+
+  const handleDarkPresetChange = useCallback((id: string) => {
+    setDarkPreset(id);
+    saveAppearance(bgPresetRef.current, id, bgDimRef.current, bgThemeRef.current);
   }, [saveAppearance]);
 
   const handleThemeChange = useCallback((t: "claro" | "azul") => {
     setBgTheme(t);
-    saveAppearance(bgPresetRef.current, bgDimRef.current, t);
+    saveAppearance(bgPresetRef.current, darkPresetRef.current, bgDimRef.current, t);
   }, [saveAppearance]);
 
   const openSettings = useCallback(() => {
@@ -464,10 +480,9 @@ export default function MiMusicaScreen() {
   const currentPreset   = BG_PRESETS.find(p => p.id === bgPreset) ?? BG_PRESETS[0];
 
   // Variables derivadas del tema
-  const isDark       = bgTheme === "azul";
-  const themeGradient = isDark
-    ? (["#0B0F14", "#0E1825", "#0B0F14"] as const)
-    : currentPreset.colors;
+  const isDark          = bgTheme === "azul";
+  const currentDarkPreset = DARK_PRESETS.find(p => p.id === darkPreset) ?? DARK_PRESETS[0];
+  const themeGradient = isDark ? currentDarkPreset.colors : currentPreset.colors;
   const themeText    = isDark ? "#EDE1D3" : DARK;
   const themeMuted   = isDark ? "#8A9AB8" : MUTED;
   const themeIconBtn = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)";
@@ -706,6 +721,31 @@ export default function MiMusicaScreen() {
                 );
               })}
             </View>
+
+            {/* Sección color de fondo — tema oscuro */}
+            {bgTheme === "azul" && (
+              <>
+                <Text style={styles.sheetSection}>COLOR DE FONDO</Text>
+                <View style={styles.presetRow}>
+                  {DARK_PRESETS.map(p => {
+                    const sel = darkPreset === p.id;
+                    return (
+                      <Pressable key={p.id} onPress={() => handleDarkPresetChange(p.id)} style={styles.presetItem}>
+                        <View style={[styles.presetRing, sel && styles.presetRingActive]}>
+                          <LinearGradient
+                            colors={p.colors}
+                            style={styles.presetBall}
+                            start={{ x: 0.2, y: 0 }}
+                            end={{ x: 0.8, y: 1 }}
+                          />
+                        </View>
+                        <Text style={[styles.presetLabel, sel && { color: GOLD, fontWeight: "700" }]}>{p.label}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </>
+            )}
 
             {/* Sección brillo — solo en tema claro */}
             {bgTheme === "claro" && (
