@@ -352,13 +352,6 @@ const SoundCard = memo(function SoundCard({
           </View>
         </Animated.View>
 
-        {/* Ícono de volumen — fuera del transform, no rota con la imagen */}
-        <Animated.View pointerEvents="none" style={[styles.activeIconWrap, { opacity: anim }]}>
-          <View style={styles.activeIconBadge}>
-            <MaterialCommunityIcons name="volume-high" size={18} color="#FFFFFF" />
-          </View>
-        </Animated.View>
-
         {/* Badge premium — también fuera del transform */}
         {locked && (
           <Image
