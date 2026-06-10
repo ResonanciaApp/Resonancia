@@ -43,6 +43,7 @@ const TAB_CONFIG: Record<
   explore: { label: "Explora",    sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass",    featherIcon: "search" },
   musica:  { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
   musica2: { label: "Música 2",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
+  musica3: { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
   geometrix: { label: "Geometrix", sfIcon: "hexagon", sfIconFill: "hexagon.fill", featherIcon: "hexagon", image: require("@/assets/images/geometrix/cubo-1.png") },
   profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
 };
@@ -200,7 +201,8 @@ function TabLayoutInner() {
         <Tabs.Screen name="musica"    options={{ title: "Mi Música" }} />
         <Tabs.Screen name="explore"   options={{ title: "Explora" }} />
         <Tabs.Screen name="geometrix" options={{ title: "Geometrix" }} />
-        <Tabs.Screen name="musica2"   options={{ title: "Música 2" }} />
+        <Tabs.Screen name="musica2"   options={{ title: "Música 2", href: null }} />
+        <Tabs.Screen name="musica3"   options={{ title: "Mi Música" }} />
         <Tabs.Screen name="descanzo"  options={{ title: "Descanso", href: null }} />
         <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
       </Tabs>
