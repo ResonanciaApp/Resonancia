@@ -47,10 +47,12 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Svg, {
+  Circle,
   Defs,
   G,
   Line,
   LinearGradient as SvgLinearGradient,
+  RadialGradient,
   Rect,
   Stop,
 } from "react-native-svg";
@@ -164,6 +166,13 @@ function defaultSettings(id: GeometryId): GeoSettings {
     offsetY: 0,
     kaleidoscope: false,
     kaleidSegments: 6,
+    saturation: 0.5,
+    bloom: 0,
+    halo: 0,
+    onda: 0,
+    ripple: 0,
+    warp: 0,
+    expansion: false,
   };
 }
 
@@ -201,6 +210,138 @@ function Toggle({
         ]}
       />
     </Pressable>
+  );
+}
+
+// ── Helpers de color (saturación / mezcla) ───────────────────────────────────
+function clamp01(n: number) {
+  return Math.max(0, Math.min(1, n));
+}
+function parseHex(hex: string): [number, number, number] {
+  let h = (hex || "").replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const n = parseInt(h || "000000", 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function toHex(r: number, g: number, b: number): string {
+  const h = (v: number) => Math.round(clamp01(v / 255) * 255).toString(16).padStart(2, "0");
+  return `#${h(r)}${h(g)}${h(b)}`;
+}
+function mixHex(a: string, b: string, t: number): string {
+  const [ar, ag, ab] = parseHex(a);
+  const [br, bg, bb] = parseHex(b);
+  return toHex(ar + (br - ar) * t, ag + (bg - ag) * t, ab + (bb - ab) * t);
+}
+/** Ajusta la saturación. amount 0–1: 0.5 = original, 0 = gris, 1 = sobresaturado. */
+function adjustSaturation(hex: string, amount: number): string {
+  if (!hex || hex[0] !== "#") return hex;
+  const [r, g, b] = parseHex(hex);
+  const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+  const m = clamp01(amount) * 2;
+  return toHex(gray + (r - gray) * m, gray + (g - gray) * m, gray + (b - gray) * m);
+}
+function saturateGrad(
+  grad: readonly [string, string] | undefined,
+  amount: number,
+): readonly [string, string] | undefined {
+  if (!grad || amount === 0.5) return grad;
+  return [adjustSaturation(grad[0], amount), adjustSaturation(grad[1], amount)] as const;
+}
+
+// ── Halo: aura radial suave detrás del glifo ─────────────────────────────────
+function HaloGlow({ size, color, amount }: { size: number; color: string; amount: number }) {
+  const a = clamp01(amount);
+  // Id único por instancia: dos capas con halo + colores distintos no deben
+  // compartir el id del gradiente (choque → color equivocado). Saneado sin ":".
+  const gid = `geo-halo-${React.useId().replace(/:/g, "")}`;
+  return (
+    <Svg width={size} height={size} viewBox="0 0 100 100" pointerEvents="none">
+      <Defs>
+        <RadialGradient id={gid} cx="50%" cy="50%" r="50%">
+          <Stop offset="0" stopColor={color} stopOpacity={0.5 * a} />
+          <Stop offset="0.5" stopColor={color} stopOpacity={0.2 * a} />
+          <Stop offset="1" stopColor={color} stopOpacity={0} />
+        </RadialGradient>
+      </Defs>
+      <Circle cx="50" cy="50" r="50" fill={`url(#${gid})`} />
+    </Svg>
+  );
+}
+
+// ── Ripple: anillos concéntricos que emanan en bucle ─────────────────────────
+function RippleRings({ size, color, amount }: { size: number; color: string; amount: number }) {
+  const t = useSharedValue(0);
+  useEffect(() => {
+    t.value = withRepeat(withTiming(1, { duration: 2600, easing: Easing.out(Easing.ease) }), -1, false);
+    return () => cancelAnimation(t);
+  }, [t]);
+  const a = clamp01(amount);
+  const ring1 = useAnimatedStyle(() => {
+    const p = t.value;
+    return { transform: [{ scale: 0.4 + p * 0.9 }], opacity: (1 - p) * 0.6 * a };
+  });
+  const ring2 = useAnimatedStyle(() => {
+    const p = (t.value + 0.5) % 1;
+    return { transform: [{ scale: 0.4 + p * 0.9 }], opacity: (1 - p) * 0.6 * a };
+  });
+  return (
+    <>
+      <Animated.View style={[styles.layer, ring1]} pointerEvents="none">
+        <Svg width={size} height={size} viewBox="0 0 100 100">
+          <Circle cx="50" cy="50" r="46" stroke={color} strokeWidth={1.6} fill="none" />
+        </Svg>
+      </Animated.View>
+      <Animated.View style={[styles.layer, ring2]} pointerEvents="none">
+        <Svg width={size} height={size} viewBox="0 0 100 100">
+          <Circle cx="50" cy="50" r="46" stroke={color} strokeWidth={1.6} fill="none" />
+        </Svg>
+      </Animated.View>
+    </>
+  );
+}
+
+// ── Expansión: eco del glifo que crece y se desvanece en bucle ───────────────
+function ExpansionEcho({
+  geoId,
+  color,
+  grad,
+  size,
+  strokeWidth,
+  kaleidoscope,
+  kaleidSegments,
+  liveScaleSV,
+}: {
+  geoId: GeometryId;
+  color: string;
+  grad: readonly [string, string] | undefined;
+  size: number;
+  strokeWidth: number;
+  kaleidoscope: boolean;
+  kaleidSegments: number;
+  liveScaleSV?: SharedValue<number>;
+}) {
+  const t = useSharedValue(0);
+  useEffect(() => {
+    t.value = withRepeat(withTiming(1, { duration: 3200, easing: Easing.out(Easing.ease) }), -1, false);
+    return () => cancelAnimation(t);
+  }, [t]);
+  const st = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 + t.value * 0.6 }],
+    opacity: (1 - t.value) * 0.5,
+  }));
+  return (
+    <Animated.View style={[styles.layer, st]} pointerEvents="none">
+      <SacredGlyph
+        id={geoId}
+        color={color}
+        gradient={grad}
+        size={size}
+        strokeWidth={strokeWidth}
+        kaleidoscope={kaleidoscope}
+        kaleidSegments={kaleidSegments}
+        liveScaleSV={liveScaleSV}
+      />
+    </Animated.View>
   );
 }
 
@@ -253,6 +394,10 @@ function GeometryLayer({
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
   const fade = useSharedValue(1);
+  // Osciladores de distorsión (fase 0↔1; punto neutro 0.5). Onda → cizalla,
+  // Warp → squash & stretch. El aStyle los mapea a la deformación final.
+  const waveSV = useSharedValue(0.5);
+  const warpSV = useSharedValue(0.5);
   // Aparición suave: al montar la capa (al seleccionar la geometría) entra con
   // fade in en lugar de aparecer de golpe.
   const enter = useSharedValue(0);
@@ -285,8 +430,26 @@ function GeometryLayer({
     manualAngle,
     kaleidoscope,
     kaleidSegments,
+    saturation,
+    bloom,
+    halo,
+    onda,
+    ripple,
+    warp,
+    expansion,
   } = settings;
   const grad = gradientColors(gradientId);
+  // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
+  const safeSat = Number.isFinite(saturation) ? clamp01(saturation) : 0.5;
+  const dispColor = adjustSaturation(color, safeSat);
+  const dispGrad = saturateGrad(grad, safeSat);
+  // Efectos nuevos saneados (0 = off; saturación 0.5 = neutro).
+  const safeBloom = Number.isFinite(bloom) ? clamp01(bloom) : 0;
+  const safeHalo = Number.isFinite(halo) ? clamp01(halo) : 0;
+  const safeOnda = Number.isFinite(onda) ? clamp01(onda) : 0;
+  const safeRipple = Number.isFinite(ripple) ? clamp01(ripple) : 0;
+  const safeWarp = Number.isFinite(warp) ? clamp01(warp) : 0;
+  const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
   // 0 → ~2× más lento, 0.5 → base, 1 → ~5× más rápido. Nunca se detiene aquí
@@ -335,6 +498,37 @@ function GeometryLayer({
       fade.value = withTiming(1, { duration: 400 });
     }
   }, [fadeLoop, motion, fade, index]);
+
+  // Onda (cizalla) y Warp (squash & stretch): osciladores que el aStyle mapea a
+  // la deformación. La AMPLITUD vive en el worklet (safeOnda/safeWarp), así que
+  // el bucle solo se (re)arranca al ENCENDER/APAGAR (deps booleanas) — mover el
+  // slider no lo reinicia. Recorren 0↔1 completo (fase −1..+1, contrafase real):
+  // se parte del neutro 0.5 hacia 0 y luego se repite en reversa. Al apagar se
+  // cancela y vuelve a 0.5 (sin deformación). Se congelan con el movimiento.
+  const ondaOn = safeOnda > 0;
+  const warpOn = safeWarp > 0;
+  useEffect(() => {
+    if (ondaOn && motion) {
+      waveSV.value = withSequence(
+        withTiming(0, { duration: 750, easing: Easing.inOut(Easing.ease) }),
+        withRepeat(withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) }), -1, true),
+      );
+    } else {
+      cancelAnimation(waveSV);
+      waveSV.value = withTiming(0.5, { duration: 300 });
+    }
+  }, [ondaOn, motion, waveSV]);
+  useEffect(() => {
+    if (warpOn && motion) {
+      warpSV.value = withSequence(
+        withTiming(0, { duration: 900, easing: Easing.inOut(Easing.ease) }),
+        withRepeat(withTiming(1, { duration: 1800, easing: Easing.inOut(Easing.ease) }), -1, true),
+      );
+    } else {
+      cancelAnimation(warpSV);
+      warpSV.value = withTiming(0.5, { duration: 300 });
+    }
+  }, [warpOn, motion, warpSV]);
 
   // Sentido del giro: derecha (horario, +1) o izquierda (antihorario, -1).
   // Los toggles son excluyentes; si ambos quedaran apagados no hay giro.
@@ -393,9 +587,19 @@ function GeometryLayer({
     } else {
       angleDeg = committedAngle;
     }
+    // Onda: cizalla (skewX) oscilante. Warp: squash & stretch (ancho/alto en
+    // contrafase, volumen ~constante). Neutro cuando el efecto está en 0.
+    const wavePhase = waveSV.value * 2 - 1; // -1..1
+    const warpPhase = warpSV.value * 2 - 1; // -1..1
+    const skewDeg = wavePhase * safeOnda * 14;
+    const warpX = 1 + warpPhase * safeWarp * 0.32;
+    const warpY = 1 - warpPhase * safeWarp * 0.32;
     return {
       transform: [
         { rotate: `${angleDeg}deg` },
+        { skewX: `${skewDeg}deg` },
+        { scaleX: warpX },
+        { scaleY: warpY },
         { scale: breatheScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
@@ -430,13 +634,50 @@ function GeometryLayer({
 
   return (
     <Animated.View style={[styles.layer, aStyle]} pointerEvents="none">
+      {/* Halo: aura radial suave detrás de todo. */}
+      {safeHalo > 0 && (
+        <View style={styles.layer} pointerEvents="none">
+          <HaloGlow size={effectiveSize * 1.25} color={dispColor} amount={safeHalo} />
+        </View>
+      )}
+      {/* Ripple: anillos concéntricos que emanan (se congelan con el movimiento). */}
+      {safeRipple > 0 && motion && (
+        <RippleRings size={effectiveSize} color={dispColor} amount={safeRipple} />
+      )}
+      {/* Bloom: resplandor intenso y blanquecino (copias anchas sobreexpuestas). */}
+      {safeBloom > 0 && (
+        <>
+          <View style={[styles.layer, { opacity: 0.14 * safeBloom }]} pointerEvents="none">
+            <SacredGlyph
+              id={geo.id}
+              color={bloomColor}
+              size={effectiveSize}
+              strokeWidth={sw * (5 + safeBloom * 5)}
+              kaleidoscope={kaleidoscope}
+              kaleidSegments={kaleidSegments}
+              liveScaleSV={liveScaleForGlyph}
+            />
+          </View>
+          <View style={[styles.layer, { opacity: 0.22 * safeBloom }]} pointerEvents="none">
+            <SacredGlyph
+              id={geo.id}
+              color={bloomColor}
+              size={effectiveSize}
+              strokeWidth={sw * (2.4 + safeBloom * 2.6)}
+              kaleidoscope={kaleidoscope}
+              kaleidSegments={kaleidSegments}
+              liveScaleSV={liveScaleForGlyph}
+            />
+          </View>
+        </>
+      )}
       {safeGlow > 0 && (
         <>
           <View style={[styles.layer, { opacity: 0.16 * safeGlow }]}>
             <SacredGlyph
               id={geo.id}
-              color={color}
-              gradient={grad}
+              color={dispColor}
+              gradient={dispGrad}
               size={effectiveSize}
               strokeWidth={sw * (3 + safeGlow * 3)}
               kaleidoscope={kaleidoscope}
@@ -447,8 +688,8 @@ function GeometryLayer({
           <View style={[styles.layer, { opacity: 0.26 * safeGlow }]}>
             <SacredGlyph
               id={geo.id}
-              color={color}
-              gradient={grad}
+              color={dispColor}
+              gradient={dispGrad}
               size={effectiveSize}
               strokeWidth={sw * (1.8 + safeGlow * 1.6)}
               kaleidoscope={kaleidoscope}
@@ -458,11 +699,24 @@ function GeometryLayer({
           </View>
         </>
       )}
+      {/* Expansión: eco del glifo que crece y se desvanece en bucle. */}
+      {expansion && motion && (
+        <ExpansionEcho
+          geoId={geo.id}
+          color={dispColor}
+          grad={dispGrad}
+          size={effectiveSize}
+          strokeWidth={sw}
+          kaleidoscope={kaleidoscope}
+          kaleidSegments={kaleidSegments}
+          liveScaleSV={liveScaleForGlyph}
+        />
+      )}
       <Animated.View
         style={[
           styles.layer,
           {
-            shadowColor: color,
+            shadowColor: dispColor,
             shadowOffset: { width: 0, height: 0 },
             shadowRadius: Math.max(12, Math.min(30, effectiveSize * 0.1)),
           },
@@ -472,8 +726,8 @@ function GeometryLayer({
       >
         <SacredGlyph
           id={geo.id}
-          color={color}
-          gradient={grad}
+          color={dispColor}
+          gradient={dispGrad}
           size={effectiveSize}
           strokeWidth={sw}
           kaleidoscope={kaleidoscope}
@@ -3949,6 +4203,13 @@ export default function GeometrixScreen() {
                         );
                       })}
                     </View>
+                    <Text style={[styles.fieldLabel, styles.gradientLabel]}>Saturación</Text>
+                    <VolumeSlider
+                      value={s.saturation ?? 0.5}
+                      onChange={(v) => updateSetting(iid, "saturation", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
                   </SettingsSection>
 
                   {/* ── Luminosidad ───────────────────────────────────────── */}
@@ -3971,19 +4232,28 @@ export default function GeometrixScreen() {
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Bloom</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.bloom ?? 0}
+                      onChange={(v) => updateSetting(iid, "bloom", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Halo</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.halo ?? 0}
+                      onChange={(v) => updateSetting(iid, "halo", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
                   </SettingsSection>
 
                   {/* ── Transformación ────────────────────────────────────── */}
                   <SettingsSection title="Transformación">
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Tamaño</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.scale}
-                      onChange={(v) => updateSetting(iid, "scale", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Grosor</Text>
                     </View>
@@ -4022,7 +4292,35 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                   {/* ── Distorsión ────────────────────────────────────────── */}
-                  <SettingsSection title="Distorsión" />
+                  <SettingsSection title="Distorsión">
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Onda</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.onda ?? 0}
+                      onChange={(v) => updateSetting(iid, "onda", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Ripple</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.ripple ?? 0}
+                      onChange={(v) => updateSetting(iid, "ripple", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Warp</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.warp ?? 0}
+                      onChange={(v) => updateSetting(iid, "warp", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </SettingsSection>
 
                   {/* ── Profundidad ───────────────────────────────────────── */}
                   <SettingsSection title="Profundidad" />
@@ -4094,6 +4392,15 @@ export default function GeometrixScreen() {
                         <Toggle
                           value={s.breathe}
                           onChange={(v) => updateSetting(iid, "breathe", v)}
+                          color={TOGGLE_ON_COLOR}
+                          compact
+                        />
+                      </View>
+                      <View style={styles.toggleGridItem}>
+                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Expansión</Text>
+                        <Toggle
+                          value={s.expansion ?? false}
+                          onChange={(v) => updateSetting(iid, "expansion", v)}
                           color={TOGGLE_ON_COLOR}
                           compact
                         />

@@ -46,6 +46,20 @@ export type GeoSettings = {
   kaleidoscope: boolean;
   /** Número de segmentos del caleidoscopio (4, 6, 8, 12). Solo activo si kaleidoscope=true. */
   kaleidSegments: number;
+  /** Saturación del color 0–1: 0.5 = original, 0 = gris, 1 = sobresaturado. */
+  saturation: number;
+  /** Bloom 0–1: resplandor intenso y blanquecino (sobreexposición). 0 = off. */
+  bloom: number;
+  /** Halo 0–1: aura radial suave detrás del glifo. 0 = off. */
+  halo: number;
+  /** Onda 0–1: cizalla (skew) oscilante que ondula la figura. 0 = off. */
+  onda: number;
+  /** Ripple 0–1: anillos concéntricos que emanan del centro en bucle. 0 = off. */
+  ripple: number;
+  /** Warp 0–1: squash & stretch (deforma ancho/alto en contrafase). 0 = off. */
+  warp: number;
+  /** Expansión on/off: eco del glifo que crece y se desvanece en bucle. */
+  expansion: boolean;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */
