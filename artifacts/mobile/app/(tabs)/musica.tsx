@@ -381,7 +381,7 @@ export default function MiMusicaScreen() {
   const { isPremium }   = usePremium();
   const { isActive, toggleSound } = useMixer();
   const { lastSavedAt } = useSaveEvent();
-  const { requestHide, showMenu } = useTabBarVisibility();
+  const { requestHide, showMenu, setMusicTheme } = useTabBarVisibility();
 
   // Esconde el menú al entrar y lo restaura al salir
   useFocusEffect(
@@ -436,7 +436,7 @@ export default function MiMusicaScreen() {
         if (preset) setBgPreset(preset);
         if (dp) setDarkPreset(dp);
         if (typeof dim === "number") setBgDim(dim);
-        if (theme === "claro" || theme === "azul") setBgTheme(theme);
+        if (theme === "claro" || theme === "azul") { setBgTheme(theme); setMusicTheme(theme); }
       } catch {}
     }).catch(() => {});
   }, []);
@@ -462,8 +462,9 @@ export default function MiMusicaScreen() {
 
   const handleThemeChange = useCallback((t: "claro" | "azul") => {
     setBgTheme(t);
+    setMusicTheme(t);
     saveAppearance(bgPresetRef.current, darkPresetRef.current, bgDimRef.current, t);
-  }, [saveAppearance]);
+  }, [saveAppearance, setMusicTheme]);
 
   const openSettings = useCallback(() => {
     setSettingsOpen(true);

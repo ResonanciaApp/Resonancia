@@ -6,21 +6,20 @@ import React, {
   useState,
 } from "react";
 
-/**
- * Controla si la tab bar (menú inferior) está oculta. Lo usa Geometrix para
- * esconder el menú al entrar (más espacio para el lienzo) y la tab bar para
- * deslizarse hacia abajo + mostrar la pestañita de reaparición.
- */
 type TabBarVisibility = {
   hidden: boolean;
   requestHide: () => void;
   showMenu: () => void;
+  musicTheme: "claro" | "azul";
+  setMusicTheme: (t: "claro" | "azul") => void;
 };
 
 const TabBarVisibilityContext = createContext<TabBarVisibility>({
   hidden: false,
   requestHide: () => {},
   showMenu: () => {},
+  musicTheme: "claro",
+  setMusicTheme: () => {},
 });
 
 export function TabBarVisibilityProvider({
@@ -29,11 +28,12 @@ export function TabBarVisibilityProvider({
   children: React.ReactNode;
 }) {
   const [hidden, setHidden] = useState(false);
+  const [musicTheme, setMusicTheme] = useState<"claro" | "azul">("claro");
   const requestHide = useCallback(() => setHidden(true), []);
   const showMenu = useCallback(() => setHidden(false), []);
   const value = useMemo(
-    () => ({ hidden, requestHide, showMenu }),
-    [hidden, requestHide, showMenu],
+    () => ({ hidden, requestHide, showMenu, musicTheme, setMusicTheme }),
+    [hidden, requestHide, showMenu, musicTheme],
   );
   return (
     <TabBarVisibilityContext.Provider value={value}>

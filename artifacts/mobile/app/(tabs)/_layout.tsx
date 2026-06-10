@@ -118,7 +118,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   // Alto total de la barra: se desliza esa distancia (+ holgura) para esconderse.
   const barHeight = 56 + extra + pb;
-  const { hidden, showMenu } = useTabBarVisibility();
+  const { hidden, showMenu, musicTheme } = useTabBarVisibility();
   const translateY     = useRef(new Animated.Value(0)).current;
   const handleTranslateY = useRef(new Animated.Value(80)).current;
 
@@ -188,9 +188,20 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           { bottom: pb + 12, transform: [{ translateY: handleTranslateY }] },
         ]}
       >
-        <Pressable onPress={showMenu} style={styles.menuHandleBtn} hitSlop={10}>
-          <MaterialCommunityIcons name="chevron-up" size={18} color="#FFFFFF" />
-          <Text style={styles.menuHandleLabel}>Menú</Text>
+        <Pressable
+          onPress={showMenu}
+          style={[
+            styles.menuHandleBtn,
+            musicTheme === "azul" && { backgroundColor: "rgba(255,255,255,0.93)", borderColor: "rgba(190,150,80,0.25)" },
+          ]}
+          hitSlop={10}
+        >
+          <MaterialCommunityIcons
+            name="chevron-up"
+            size={18}
+            color={musicTheme === "azul" ? "#0D1520" : "#FFFFFF"}
+          />
+          <Text style={[styles.menuHandleLabel, musicTheme === "azul" && { color: "#0D1520" }]}>Menú</Text>
         </Pressable>
       </Animated.View>
     </>
