@@ -3012,7 +3012,7 @@ export default function GeometrixScreen() {
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
   const canvasBgColors = isLight
-    ? geo.topGradient
+    ? (["#EEF0F7", "#E2E5EF", "#D5D9E6"] as readonly [string, string, string])
     : scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
@@ -3267,7 +3267,6 @@ export default function GeometrixScreen() {
                 degradado de transición). */}
             <LinearGradient
               colors={canvasBgColors}
-              locations={isLight ? [0, 0.25, 0.5] : undefined}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
