@@ -566,24 +566,26 @@ export default function MiMusicaScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories]);
 
   return (
-    <LinearGradient
-      colors={themeGradient}
-      locations={[0, 0.4, 1]}
-      start={{ x: 0.1, y: 0 }}
-      end={{ x: 0.9, y: 1 }}
-      style={styles.root}
-    >
-      {/* Overlay de oscurecimiento — zIndex 0 para quedarse detrás del contenido */}
-      {bgDim > 0.01 && (
-        <View
-          pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { zIndex: 0, backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
+    <View style={styles.root}>
+      {/* ── Capa de fondo (gradiente + dim) — completamente aislada del contenido ── */}
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <LinearGradient
+          colors={themeGradient}
+          locations={[0, 0.4, 1]}
+          start={{ x: 0.1, y: 0 }}
+          end={{ x: 0.9, y: 1 }}
+          style={StyleSheet.absoluteFill}
         />
-      )}
+        {bgDim > 0.01 && (
+          <View
+            style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
+          />
+        )}
+      </View>
 
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
 
-      <View style={[styles.inner, { zIndex: 1 }]}>
+      <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
         <View style={[styles.topPanel, { paddingTop: topPad + 12 }]}>
@@ -798,7 +800,7 @@ export default function MiMusicaScreen() {
         </Animated.View>
       </Modal>
 
-    </LinearGradient>
+    </View>
   );
 }
 
