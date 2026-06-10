@@ -12,6 +12,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -253,8 +254,13 @@ export default function MiMusicaTestScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
+  const { width }  = useWindowDimensions();
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const TILE_GAP   = 10;
+  const TILE_H_PAD = 16;
+  const tileW      = (width - TILE_H_PAD * 2 - TILE_GAP * 2) / 3.3;
 
   const handleMainTab = (id: MainTabId) => {
     if (id === mainTab) return;
@@ -375,31 +381,46 @@ export default function MiMusicaTestScreen() {
           <Text style={styles.pageSub}>Mezclador de sonidos</Text>
         </View>
 
-        {/* ── Tab bar ── */}
-        <View style={styles.tabContent}>
+        {/* ── Carrusel de tabs (estilo Geometrix) ── */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          decelerationRate="fast"
+          snapToInterval={tileW + TILE_GAP}
+          snapToAlignment="start"
+          style={styles.carouselScroll}
+          contentContainerStyle={[
+            styles.carouselContent,
+            { paddingHorizontal: TILE_H_PAD, gap: TILE_GAP },
+          ]}
+        >
           {MAIN_TABS.map((tab) => {
             const sel = mainTab === tab.id;
             return (
               <Pressable
                 key={tab.id}
                 onPress={() => handleMainTab(tab.id)}
-                style={[styles.tabItem, sel && styles.tabItemActive]}
+                style={[
+                  styles.carouselTile,
+                  { width: tileW },
+                  sel && styles.carouselTileSelected,
+                ]}
               >
                 <MaterialCommunityIcons
                   name={tab.icon as any}
-                  size={20}
-                  color={sel ? "#FFFFFF" : MUTED}
+                  size={tileW * 0.38}
+                  color={sel ? GOLD : MUTED}
                 />
                 <Text
                   numberOfLines={1}
-                  style={[styles.tabLabel, { color: sel ? "#FFFFFF" : MUTED, fontWeight: sel ? "700" : "400" }]}
+                  style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
                 >
                   {tab.label}
                 </Text>
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         {/* ── Sub-tabs ── */}
         {subTabCategories && subTabCategories.length > 1 ? (
@@ -485,27 +506,24 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
 
-  tabContent:  { flexDirection: "row", gap: 8, paddingHorizontal: 16, paddingBottom: 12, marginTop: 5 },
-  tabItem: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 5,
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingHorizontal: 4,
+  carouselScroll:  { flexGrow: 0, marginTop: 5 },
+  carouselContent: { paddingBottom: 12, flexDirection: "row" },
+  carouselTile: {
+    aspectRatio: 1,
     borderRadius: 16,
-    minWidth: 62,
     borderWidth: 1,
     borderColor: "#161f33",
     backgroundColor: "rgba(255,255,255,0.02)",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 8,
   },
-  tabItemActive: {
-    backgroundColor: "rgba(100,142,195,0.14)",
-    borderColor: "#1c234c",
-    borderWidth: 1,
+  carouselTileSelected: {
+    backgroundColor: "rgba(190,150,80,0.08)",
+    borderColor: "rgba(190,150,80,0.35)",
   },
-  tabLabel: { fontSize: 12, letterSpacing: 0, textAlign: "center" },
+  carouselTileLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginTop: 4 },
 
