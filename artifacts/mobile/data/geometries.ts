@@ -73,6 +73,9 @@ export const PALETTE = [
   "#B69BE0",
   "#E0989B",
   "#9BD6A8",
+  "#7090A8", // azul pizarra
+  "#C96B5A", // terracota
+  "#1A1A2E", // negro oscuro
 ] as const;
 
 const GEOMETRY_DEFS: { id: GeometryId; name: string }[] = [

@@ -272,6 +272,8 @@ function saturateGrad(
 // En modo claro se sustituyen por un color visible equivalente.
 const LIGHT_GEO_COLOR_SUBS: Record<string, string> = {
   "#ede1d3": "#7090A8", // beige/blanco → azul-pizarra medio
+  "#7fd1c0": "#C96B5A", // verde agua → terracota
+  "#9bd6a8": "#1A1A2E", // verde → negro oscuro
 };
 function lightGeoColor(c: string, light: boolean): string {
   if (!light) return c;
