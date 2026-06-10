@@ -614,8 +614,8 @@ export default function MiMusicaScreen() {
                         style={[
                           styles.subTabPill,
                           {
-                            backgroundColor: sel ? tabColor + "12" : "rgba(0,0,0,0.03)",
-                            borderColor: sel ? tabColor + "60" : "rgba(0,0,0,0.09)",
+                            backgroundColor: sel ? DARK : "rgba(0,0,0,0.03)",
+                            borderColor: sel ? "transparent" : "rgba(0,0,0,0.09)",
                           },
                         ]}
                       >
@@ -623,11 +623,11 @@ export default function MiMusicaScreen() {
                           <MaterialCommunityIcons
                             name={SUB_TAB_ICONS[catId] as any}
                             size={15}
-                            color={sel ? tabColor : MUTED}
+                            color={sel ? "#FFFFFF" : MUTED}
                             style={{ marginRight: 5 }}
                           />
                         )}
-                        <Text style={[styles.subTabText, { color: sel ? tabColor : MUTED }]}>
+                        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : MUTED }]}>
                           {SUB_TAB_LABELS[catId] ?? cat.label}
                         </Text>
                       </Pressable>
