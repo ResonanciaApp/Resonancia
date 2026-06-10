@@ -132,11 +132,11 @@ const CarouselTile = memo(function CarouselTile({
     ]);
     running.current.start();
 
-    // 2. Border flash — separate (different useNativeDriver)
+    // 2. Border overlay flash (opacity only → useNativeDriver: true)
     borderAnim.setValue(0);
     Animated.sequence([
-      Animated.timing(borderAnim, { toValue: 1, duration: 200, easing: Easing.out(Easing.ease), useNativeDriver: false }),
-      Animated.timing(borderAnim, { toValue: 0, duration: 450, easing: Easing.out(Easing.ease), useNativeDriver: false }),
+      Animated.timing(borderAnim, { toValue: 1, duration: 200, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+      Animated.timing(borderAnim, { toValue: 0, duration: 450, easing: Easing.out(Easing.ease), useNativeDriver: true }),
     ]).start();
 
     onPress();
@@ -145,25 +145,17 @@ const CarouselTile = memo(function CarouselTile({
   const rippleScale   = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.98, 1.46] });
   const rippleOpacity = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.22, 0] });
 
-  const animBorderColor = borderAnim.interpolate({
-    inputRange:  [0, 1],
-    outputRange: [sel ? "rgba(190,150,80,0.33)" : "#1C2740", "rgba(190,150,80,0.67)"],
-  });
+  // Border flash overlay: opacity 0→1→0 sobre el borde de la card
+  const borderOverlayOpacity = borderAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
 
   const iconScale   = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.14] });
   const iconOpacity = iconAnim.interpolate({ inputRange: [0, 1], outputRange: [sel ? 1 : 0.4, 1] });
 
   return (
-    <Animated.View
-      style={[
-        styles.carouselTile,
-        { width: tileW, borderColor: animBorderColor },
-        sel && styles.carouselTileSelected,
-      ]}
+    <Pressable
+      onPress={triggerLatido}
+      style={[styles.carouselTile, { width: tileW }, sel && styles.carouselTileSelected]}
     >
-      {/* Tap target — absoluteFill, sin impacto en layout */}
-      <Pressable onPress={triggerLatido} style={StyleSheet.absoluteFill} />
-
       {/* Onda expansiva */}
       <Animated.View
         pointerEvents="none"
@@ -171,6 +163,16 @@ const CarouselTile = memo(function CarouselTile({
           StyleSheet.absoluteFill,
           styles.rippleRing,
           { transform: [{ scale: rippleScale }], opacity: rippleOpacity },
+        ]}
+      />
+
+      {/* Flash del borde — overlay circular semitransparente */}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          styles.borderFlash,
+          { opacity: borderOverlayOpacity },
         ]}
       />
 
@@ -187,15 +189,13 @@ const CarouselTile = memo(function CarouselTile({
       </Animated.View>
 
       {/* Label */}
-      <View pointerEvents="none">
-        <Text
-          numberOfLines={1}
-          style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
-        >
-          {tab.label}
-        </Text>
-      </View>
-    </Animated.View>
+      <Text
+        numberOfLines={1}
+        style={[styles.carouselTileLabel, { color: sel ? FG : MUTED, fontWeight: sel ? "700" : "400" }]}
+      >
+        {tab.label}
+      </Text>
+    </Pressable>
   );
 });
 
@@ -610,6 +610,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     borderColor: GOLD,
+  },
+  borderFlash: {
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.67)",
   },
   carouselTileSelected: {
     backgroundColor: "rgba(190,150,80,0.08)",
