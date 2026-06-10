@@ -12,36 +12,41 @@ function clamp01(n: number): number {
   return n;
 }
 
-/** Padding horizontal del área de toque para que el thumb no se corte en los bordes. */
 const TRACK_PAD = 8;
+const THUMB_SIZE = 14;
 
 type Props = {
   value: number;
   onChange: (value: number) => void;
-  /** Color de relleno y thumb */
   color: string;
-  /** Color del track de fondo */
   trackColor: string;
 };
 
-/**
- * Slider horizontal de volumen (0–1) basado en el responder system,
- * replicando el patrón usado en app/player.tsx (sin dependencias externas).
- */
 export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   const trackRef = useRef<View>(null);
   const widthRef = useRef(0);
   const pageXRef = useRef(0);
 
+  // Cachear pageX en cada layout para que esté listo cuando el usuario toca
+  // (evita el measure() asíncrono en onResponderGrant que causaba microlag).
+  const handleLayout = useCallback((e: LayoutChangeEvent) => {
+    widthRef.current = Math.max(1, e.nativeEvent.layout.width - TRACK_PAD * 2);
+    trackRef.current?.measure((_x, _y, _w, _h, px) => {
+      pageXRef.current = px + TRACK_PAD;
+    });
+  }, []);
+
   const handleGrant = useCallback(
     (e: GestureResponderEvent) => {
+      // pageXRef ya está precalculado; actualizar asíncronamente por si el
+      // layout cambió (scroll, rotación), pero usar el valor cacheado de inmediato.
+      onChange(
+        clamp01(
+          (e.nativeEvent.pageX - pageXRef.current) / (widthRef.current || 1),
+        ),
+      );
       trackRef.current?.measure((_x, _y, _w, _h, px) => {
         pageXRef.current = px + TRACK_PAD;
-        onChange(
-          clamp01(
-            (e.nativeEvent.pageX - pageXRef.current) / (widthRef.current || 1),
-          ),
-        );
       });
     },
     [onChange],
@@ -58,9 +63,7 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
     <View
       ref={trackRef}
       style={styles.hitArea}
-      onLayout={(e: LayoutChangeEvent) => {
-        widthRef.current = Math.max(1, e.nativeEvent.layout.width - TRACK_PAD * 2);
-      }}
+      onLayout={handleLayout}
       onStartShouldSetResponder={() => true}
       onMoveShouldSetResponder={() => true}
       onResponderGrant={handleGrant}
@@ -82,7 +85,7 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
 
 const styles = StyleSheet.create({
   hitArea: {
-    paddingVertical: 14,
+    paddingVertical: 18,
     paddingHorizontal: TRACK_PAD,
     justifyContent: "center",
   },
@@ -100,11 +103,11 @@ const styles = StyleSheet.create({
   },
   thumb: {
     position: "absolute",
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginLeft: -5,
-    top: -4,
+    width: THUMB_SIZE,
+    height: THUMB_SIZE,
+    borderRadius: THUMB_SIZE / 2,
+    marginLeft: -(THUMB_SIZE / 2),
+    top: -(THUMB_SIZE / 2 - 1),
     shadowColor: "#ffffff",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
