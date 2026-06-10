@@ -46,5 +46,6 @@
 - [Reanimated drag-reorder sin ghost](reanimated-layout-toggle-ghost.md) — modelo FLIP: DOM estable + translateX por orderSV/slotSV; reorder atómico en worklet de soltado (sin layout commit → sin flicker); NO reintroducir el reorder-on-release con dragSettling
 - [Geometrix carousel selection](geometrix-carousel-selection.md) — orden del carrusel DERIVADO de active+activatingIds (no mutar prevOrder con gate global de pending); deselect siempre vuelve al natural; glow solo en seleccionadas; auto-scroll con rAF
 - [Geometrix instance-id model](geometrix-instance-ids.md) — capa = instance id (string); base==GeometryId, duplicado=`base::uniq`; baseOf() para glifo/meta, id completo para settings/estado; Duplicar = defaults frescos a la derecha
+- [Geometrix rotation cardinal/microlag](geometrix-rotation-cardinal.md) — gesto alta frecuencia: cero runOnJS/estado React por frame; ReText + 1 reacción UI-thread única escritora del SV cardinal
 - [Reanimated slider oscillator](reanimated-slider-oscillator.md) — loop start/stop deps deben ser boolean on/off (no la amplitud analógica) o cada tick del slider colapsa el barrido; amplitud vive en el worklet
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre directo (wrap > botón); sibling con margin negativo roba taps (zIndex); onda one-shot reposa en 1; glow = ring+shadow no disco

@@ -30,6 +30,7 @@ import Animated, {
   LinearTransition,
   runOnJS,
   scrollTo,
+  useAnimatedProps,
   useAnimatedReaction,
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -43,6 +44,11 @@ import Animated, {
   withTiming,
   type SharedValue,
 } from "react-native-reanimated";
+
+// TextInput animable: el badge de ángulo actualiza su texto en el UI thread
+// (vía animatedProps) sin re-render de React por frame — evita el microlag al
+// rotar con los dedos. Patrón "ReText".
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -1648,10 +1654,14 @@ export default function GeometrixScreen() {
   const thumbsInitialIdsRef = useRef<Set<string> | null>(null);
   // Desplegable de acciones (flecha bajo la divisora): colapsado por defecto.
   const [pillOpen, setPillOpen] = useState(false);
-  // Cambia el color de la píldora a azul (#171e5a) cuando la rotación
-  // del objetivo está exactamente en un ángulo cardinal (0/90/180/270/360°).
-  const [pillAtCardinal, setPillAtCardinal] = useState(false);
+  // Vira el badge de rotación y la píldora a azul (#171e5a) cuando el ángulo del
+  // objetivo entra en zona cardinal (0/90/180/270/360°). Lo maneja 100% el UI
+  // thread (useAnimatedReaction sobre liveRot), sin estado React → sin re-render
+  // por frame al rotar.
   const pillCardinalSV = useSharedValue(0);
+  // 1 cuando hay objetivo de pellizco/rotación; deja que la reacción apague el
+  // color cardinal cuando no hay ninguna geometría seleccionada.
+  const rotHasTargetSV = useSharedValue(0);
   // Opacidad de la píldora de acciones: fade puro (sin movimiento) al plegar.
   // Se mantiene SIEMPRE montada (pointerEvents none al cerrar) para que el
   // layout no se reacomode y solo cambie la opacidad.
@@ -1694,8 +1704,9 @@ export default function GeometrixScreen() {
   // momentáneamente desincronizado → sin "pop" al cambiar de objetivo y sin
   // re-render por frame (el ángulo se aplica en el UI thread vía useAnimatedStyle).
   const rotActive = useSharedValue(0);
-  // Ángulo actual en grados normalizado (0-359) para el badge visible.
-  const [rotDisplayAngle, setRotDisplayAngle] = useState(0);
+  // Estado cardinal previo (UI thread) para animar el color del badge SOLO al
+  // cruzar el umbral, no en cada frame. -1 = sin evaluar (fuerza el primer set).
+  const rotCardGuard = useSharedValue(-1);
 
   // ── Drag (arrastrar con un dedo) ─────────────────────────────────────────
   const liveDragX = useSharedValue(0);
@@ -2316,19 +2327,10 @@ export default function GeometrixScreen() {
         ? active[active.length - 1]
         : null;
 
-  // Cuando NO se está rotando, sincronizar el indicador cardinal con el ángulo
-  // confirmado del objetivo (reacciona a commits y cambios de objetivo).
-  useEffect(() => {
-    if (!pinchTargetId) { setPillAtCardinal(false); return; }
-    const committed = getSettings(pinchTargetId).manualAngle ?? 0;
-    const nearest90 = Math.round(committed / 90) * 90;
-    setPillAtCardinal(Math.abs(committed - nearest90) < 0.5);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pinchTargetId, settings, getSettings]);
-  // Animar pillCardinalSV al cambiar el estado cardinal.
-  useEffect(() => {
-    pillCardinalSV.value = withTiming(pillAtCardinal ? 1 : 0, { duration: 350 });
-  }, [pillAtCardinal, pillCardinalSV]);
+  // El color cardinal (pillCardinalSV) lo escribe ÚNICAMENTE la reacción del UI
+  // thread (ver más abajo), que lee liveRot y rotHasTargetSV. Al cambiar de
+  // objetivo o tras un commit, el useEffect de sync actualiza liveRot y la
+  // reacción reconcilia el color con el ángulo confirmado (umbral exacto 0.5°).
 
   // Mantener el zoom en vivo sincronizado con el valor confirmado del objetivo
   // (al cambiar de geometría o tras confirmar un pellizco).
@@ -2442,10 +2444,12 @@ export default function GeometrixScreen() {
   // (al cambiar de geometría o tras confirmar una rotación).
   useEffect(() => {
     liveRot.value = pinchTargetId ? getSettings(pinchTargetId).manualAngle : 0;
+    // Avisar a la reacción cardinal si hay objetivo (apaga el color sin objetivo).
+    rotHasTargetSV.value = pinchTargetId ? 1 : 0;
     // Tras el commit del ángulo (o al cambiar de objetivo) el manualAngle ya está
     // sincronizado → apagar el gate: la capa usa su ángulo confirmado (sin "pop").
     rotActive.value = 0;
-  }, [pinchTargetId, getSettings, liveRot, rotActive]);
+  }, [pinchTargetId, getSettings, liveRot, rotActive, rotHasTargetSV]);
 
   // Gesto de rotación con dos dedos: gira el objetivo en tiempo real. Se confirma
   // a settings al soltar. Deshabilitado cuando hay giro automático.
@@ -2454,6 +2458,8 @@ export default function GeometrixScreen() {
     .onStart(() => {
       rotStart.value = liveRot.value;
       rotSucceeded.value = false;
+      // Re-evaluar el estado cardinal desde cero en cada nuevo gesto.
+      rotCardGuard.value = -1;
       // Activar el ángulo en vivo (UI thread). En éxito sigue 1 hasta que el
       // useEffect de sync lo apaga tras el commit (sin "pop"); en cancelación se
       // apaga aquí en onFinalize.
@@ -2565,20 +2571,33 @@ export default function GeometrixScreen() {
   // Pellizco, rotación y drag corren a la vez sobre el objetivo seleccionado.
   const canvasGesture = Gesture.Simultaneous(longPressGesture, pinchGesture, rotationGesture, panGesture);
 
-  // Sincroniza el ángulo en vivo al badge y al indicador de ángulo cardinal
-  // (solo durante el giro; al soltar el useEffect de settings toma el relevo).
+  // Indicador de ángulo cardinal, 100% en el UI thread (sin runOnJS ni estado
+  // React por frame → sin microlag). ÚNICO escritor de pillCardinalSV: durante
+  // el giro usa una zona amplia (8°) como "pista"; en reposo (tras commit,
+  // cancelación o cambio de objetivo, cuando liveRot ya refleja el ángulo
+  // confirmado) exige el cardinal exacto (0.5°). El guard evita reiniciar el
+  // withTiming en cada frame: solo anima al CRUZAR el umbral.
   useAnimatedReaction(
-    () => ({ active: rotActive.value, angle: liveRot.value }),
-    ({ active, angle }) => {
+    () => ({ active: rotActive.value, angle: liveRot.value, has: rotHasTargetSV.value }),
+    ({ active, angle, has }) => {
       "worklet";
-      if (active > 0) {
-        const normalized = Math.round(((angle % 360) + 360) % 360);
-        runOnJS(setRotDisplayAngle)(normalized);
-        // Cardinal si está a menos de 8° de un múltiplo de 90°.
+      let isCard = 0;
+      if (has > 0) {
         const nearest90 = Math.round(angle / 90) * 90;
-        runOnJS(setPillAtCardinal)(Math.abs(angle - nearest90) < 8);
+        const thresh = active > 0 ? 8 : 0.5;
+        isCard = Math.abs(angle - nearest90) < thresh ? 1 : 0;
+      }
+      if (isCard !== rotCardGuard.value) {
+        rotCardGuard.value = isCard;
+        pillCardinalSV.value = withTiming(isCard, { duration: active > 0 ? 160 : 350 });
       }
     },
+  );
+
+  // Texto del badge (ángulo en vivo) sin re-render: animatedProps escribe el
+  // texto del TextInput directamente en el UI thread leyendo liveRot.
+  const rotBadgeAngleProps = useAnimatedProps(
+    () => ({ text: `${Math.round(((liveRot.value % 360) + 360) % 360)}°` }) as any,
   );
 
   // Líneas guía de snap: posición + visibilidad en el UI thread (shared values),
@@ -2594,8 +2613,20 @@ export default function GeometrixScreen() {
   }));
 
   // Badge flotante: ícono + ángulo actual; fade rápido al entrar/salir del giro.
+  // El fondo y el borde viran a azul/dorado al llegar a un ángulo cardinal
+  // (misma regla que la píldora, pero visible durante el giro). UI thread.
   const rotBadgeStyle = useAnimatedStyle(() => ({
     opacity: withTiming(rotActive.value, { duration: 120 }),
+    backgroundColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(0,0,0,0.58)", "#171e5a"],
+    ),
+    borderColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(255,255,255,0.12)", "#D6A85B"],
+    ),
   }));
   // Píldora de acciones: fondo azul (#171e5a) al llegar a ángulo cardinal.
   const pillCardinalStyle = useAnimatedStyle(() => ({
@@ -2979,7 +3010,14 @@ export default function GeometrixScreen() {
                   style={[styles.rotBadge, rotBadgeStyle]}
                 >
                   <Feather name="rotate-cw" size={12} color="rgba(255,255,255,0.9)" />
-                  <Text style={styles.rotBadgeText}>{rotDisplayAngle}°</Text>
+                  <AnimatedTextInput
+                    editable={false}
+                    caretHidden
+                    pointerEvents="none"
+                    underlineColorAndroid="transparent"
+                    style={styles.rotBadgeText}
+                    animatedProps={rotBadgeAngleProps}
+                  />
                 </Animated.View>
 
                 {/* ── Lupa de magnificación ───────────────────────────────────
@@ -5003,6 +5041,8 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "rgba(0,0,0,0.58)",
     borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
     paddingHorizontal: 9,
     paddingVertical: 5,
     zIndex: 20,
@@ -5012,6 +5052,10 @@ const styles = StyleSheet.create({
     fontWeight: "600" as const,
     color: "rgba(255,255,255,0.92)",
     letterSpacing: 0.3,
+    padding: 0,
+    width: 38,
+    textAlign: "left",
+    includeFontPadding: false,
   },
   loupeWrap: {
     position: "absolute",
