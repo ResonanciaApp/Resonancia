@@ -636,8 +636,6 @@ export default function MiMusicaScreen() {
                 </Pressable>
               </View>
             </View>
-            {/* Línea divisora dorada debajo del título */}
-            <View style={styles.titleDivider} />
           </View>
 
           {/* ── Pills de tabs principales ── */}
@@ -687,6 +685,9 @@ export default function MiMusicaScreen() {
               </SubTabSlide>
             </View>
           ) : null}
+
+          {/* Línea divisora dorada debajo de los tabs */}
+          <View style={styles.titleDivider} />
 
         </View>
 
@@ -880,7 +881,7 @@ const styles = StyleSheet.create({
 
   titleDivider: {
     height: 1,
-    marginTop: 14,
+    marginTop: 8,
     marginHorizontal: 0,
     backgroundColor: GOLD + "30",
   },
