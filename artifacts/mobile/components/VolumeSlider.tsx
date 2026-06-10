@@ -1,16 +1,11 @@
-import React, { useCallback, useRef } from "react";
-import {
-  type GestureResponderEvent,
-  type LayoutChangeEvent,
-  StyleSheet,
-  View,
-} from "react-native";
-
-function clamp01(n: number): number {
-  if (n < 0) return 0;
-  if (n > 1) return 1;
-  return n;
-}
+import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 const TRACK_PAD = 8;
 const THUMB_SIZE = 14;
@@ -22,64 +17,61 @@ type Props = {
   trackColor: string;
 };
 
+/**
+ * Slider horizontal (0–1) que corre íntegramente en el UI thread mediante
+ * Gesture.Pan() + useSharedValue. No hay lag ni microlag de JS thread.
+ */
 export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
-  const trackRef = useRef<View>(null);
-  const widthRef = useRef(0);
-  const pageXRef = useRef(0);
+  const fraction = useSharedValue(value);
+  const trackWidth = useSharedValue(1);
 
-  // Cachear pageX en cada layout para que esté listo cuando el usuario toca
-  // (evita el measure() asíncrono en onResponderGrant que causaba microlag).
-  const handleLayout = useCallback((e: LayoutChangeEvent) => {
-    widthRef.current = Math.max(1, e.nativeEvent.layout.width - TRACK_PAD * 2);
-    trackRef.current?.measure((_x, _y, _w, _h, px) => {
-      pageXRef.current = px + TRACK_PAD;
+  // Sincroniza el prop externo cuando el padre resetea el valor
+  useEffect(() => {
+    fraction.value = value;
+  }, [value, fraction]);
+
+  const gesture = Gesture.Pan()
+    .minDistance(0)
+    .onBegin((e) => {
+      // e.x es local al GestureDetector; la pista empieza en TRACK_PAD
+      const raw = (e.x - TRACK_PAD) / trackWidth.value;
+      fraction.value = Math.min(1, Math.max(0, raw));
+      runOnJS(onChange)(fraction.value);
+    })
+    .onUpdate((e) => {
+      const raw = (e.x - TRACK_PAD) / trackWidth.value;
+      fraction.value = Math.min(1, Math.max(0, raw));
+      runOnJS(onChange)(fraction.value);
     });
-  }, []);
 
-  const handleGrant = useCallback(
-    (e: GestureResponderEvent) => {
-      // pageXRef ya está precalculado; actualizar asíncronamente por si el
-      // layout cambió (scroll, rotación), pero usar el valor cacheado de inmediato.
-      onChange(
-        clamp01(
-          (e.nativeEvent.pageX - pageXRef.current) / (widthRef.current || 1),
-        ),
-      );
-      trackRef.current?.measure((_x, _y, _w, _h, px) => {
-        pageXRef.current = px + TRACK_PAD;
-      });
-    },
-    [onChange],
-  );
+  const fillStyle = useAnimatedStyle(() => ({
+    width: `${fraction.value * 100}%` as `${number}%`,
+  }));
 
-  const handleMove = useCallback(
-    (e: GestureResponderEvent) => {
-      onChange(clamp01((e.nativeEvent.pageX - pageXRef.current) / (widthRef.current || 1)));
-    },
-    [onChange],
-  );
+  const thumbStyle = useAnimatedStyle(() => ({
+    left: `${fraction.value * 100}%` as `${number}%`,
+  }));
 
   return (
-    <View
-      ref={trackRef}
-      style={styles.hitArea}
-      onLayout={handleLayout}
-      onStartShouldSetResponder={() => true}
-      onMoveShouldSetResponder={() => true}
-      onResponderGrant={handleGrant}
-      onResponderMove={handleMove}
-    >
-      <View style={[styles.track, { backgroundColor: trackColor }]}>
-        <View
-          pointerEvents="none"
-          style={[styles.fill, { width: `${value * 100}%`, backgroundColor: color }]}
-        />
-        <View
-          pointerEvents="none"
-          style={[styles.thumb, { left: `${value * 100}%`, backgroundColor: color }]}
-        />
+    <GestureDetector gesture={gesture}>
+      <View
+        style={styles.hitArea}
+        onLayout={(e) => {
+          trackWidth.value = Math.max(1, e.nativeEvent.layout.width - TRACK_PAD * 2);
+        }}
+      >
+        <View style={[styles.track, { backgroundColor: trackColor }]}>
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.fill, { backgroundColor: color }, fillStyle]}
+          />
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.thumb, { backgroundColor: color }, thumbStyle]}
+          />
+        </View>
       </View>
-    </View>
+    </GestureDetector>
   );
 }
 
