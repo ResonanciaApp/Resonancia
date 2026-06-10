@@ -1635,7 +1635,7 @@ export default function GeometrixScreen() {
   const isLight = geoTheme === "claro";
   // En modo claro, ocultar los colores claros (blanco/beige) que se pierden
   // sobre el fondo gris. El set es de minúsculas para comparar sin ambigüedad.
-  const LIGHT_HIDDEN = new Set(["#ede1d3"]);
+  const LIGHT_HIDDEN = new Set(["#ede1d3", "#7fd1c0", "#9bd6a8"]);
   const displayPalette = isLight
     ? PALETTE.filter((c) => !LIGHT_HIDDEN.has(c.toLowerCase()))
     : PALETTE;
