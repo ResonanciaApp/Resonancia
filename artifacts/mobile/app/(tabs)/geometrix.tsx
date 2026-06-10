@@ -3315,7 +3315,7 @@ export default function GeometrixScreen() {
                       a.onPress();
                       setPillOpen(false);
                     }}
-                    style={styles.pillBtn}
+                    style={[styles.pillBtn, a.key === "creaciones" && { marginTop: -3.5 }]}
                     accessibilityRole="button"
                     accessibilityLabel={a.label}
                     hitSlop={6}
