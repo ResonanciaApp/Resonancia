@@ -3830,7 +3830,10 @@ export default function GeometrixScreen() {
             style={[StyleSheet.absoluteFill, styles.sheetGradient]}
           />
           <View style={styles.sheetHeader}>
-            <Text style={styles.sheetTitle}>Ajustes generales</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Text style={styles.sheetTitle}>Ajustes generales</Text>
+              <Feather name="sliders" size={20} color="#fff" />
+            </View>
             <Pressable
               onPress={() => setGeneralOpen(false)}
               hitSlop={10}
