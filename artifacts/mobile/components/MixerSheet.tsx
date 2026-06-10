@@ -61,6 +61,19 @@ const DARK_GRADIENT = ["#151A23", "#0B0F14"] as const;
 /** Mismo degradé que el fondo de la pantalla de Inicio. */
 const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
+/** Gradiente claro de fallback (Niebla) — usado cuando musicGradient aún no se sincronizó. */
+const LIGHT_FALLBACK_GRADIENT = ["#F4F6FA", "#EAECF2", "#DDE0E8"] as const;
+
+/** Devuelve true si el primer color del gradiente es claro (luminancia media > 100). */
+function isLightGradient(g: readonly [string, string, string]): boolean {
+  const hex = g[0].replace("#", "");
+  if (hex.length !== 6) return false;
+  const r = parseInt(hex.slice(0, 2), 16);
+  const gr = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return (r + gr + b) / 3 > 100;
+}
+
 /** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
   bg: "#0B0F14",
@@ -102,6 +115,11 @@ export function MixerSheet() {
   const insets = useSafeAreaInsets();
   const { musicTheme, musicGradient } = useTabBarVisibility();
   const isLight = musicTheme === "claro";
+  // Cuando isLight pero musicGradient aún no se sincronizó (sigue siendo el dark default),
+  // usamos el fallback claro para evitar texto oscuro sobre fondo oscuro.
+  const sheetGradient: readonly [string, string, string] = isLight
+    ? (isLightGradient(musicGradient) ? musicGradient : LIGHT_FALLBACK_GRADIENT)
+    : musicGradient;
   const palette = {
     handle:      isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
     sliderThumb: isLight ? "#BE9650"              : WARM.sliderThumb,
@@ -387,12 +405,12 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: musicGradient[2], paddingBottom: insets.bottom + 16 },
+            { backgroundColor: sheetGradient[2], paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
           <LinearGradient
-            colors={musicGradient}
+            colors={sheetGradient}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.sheetGradient}
@@ -532,11 +550,11 @@ export function MixerSheet() {
         <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
           <Pressable
-            style={[styles.modalCard, { backgroundColor: musicGradient[2] }]}
+            style={[styles.modalCard, { backgroundColor: sheetGradient[2] }]}
             onPress={(e) => e.stopPropagation()}
           >
                 <LinearGradient
-                  colors={musicGradient}
+                  colors={sheetGradient}
                   start={{ x: 0.5, y: 0 }}
                   end={{ x: 0.5, y: 1 }}
                   style={StyleSheet.absoluteFill}

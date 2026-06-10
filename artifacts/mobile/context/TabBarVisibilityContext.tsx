@@ -6,7 +6,8 @@ import React, {
   useState,
 } from "react";
 
-const DEFAULT_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+// Niebla (preset claro por defecto) — coincide con el valor inicial de musicTheme="claro"
+const DEFAULT_GRADIENT = ["#F4F6FA", "#EAECF2", "#DDE0E8"] as const;
 
 type TabBarVisibility = {
   hidden: boolean;
