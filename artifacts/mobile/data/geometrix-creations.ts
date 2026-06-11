@@ -60,6 +60,9 @@ export type GeoSettings = {
   expansionAmount: number;
   /** Perspectiva 3D 0–1: inclina la capa en 3D (rotateX/Y oscilantes). 0 = plano. */
   threeDAmount: number;
+  /** Fantasma 0–1: duplicados del glifo desplazados y semitransparentes que pulsan
+   *  en contrafase. 0 = off, 1 = fantasmas muy visibles. */
+  ghostAmount: number;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */

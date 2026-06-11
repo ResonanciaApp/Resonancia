@@ -194,6 +194,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     warp: 0,
     expansionAmount: 0,
     threeDAmount: 0,
+    ghostAmount: 0,
   };
 }
 
@@ -448,6 +449,8 @@ function GeometryLayer({
   // Perspectiva 3D: dos osciladores con períodos primos → Lissajous natural.
   const tiltXSV = useSharedValue(0);
   const tiltYSV = useSharedValue(0);
+  // Fantasma: fase 0→1 (bounce) para pulsar opacidad/offset de los duplicados.
+  const ghostPhaseSV = useSharedValue(0);
   // Osciladores de distorsión (fase 0↔1; punto neutro 0.5). Onda → cizalla,
   // Warp → squash & stretch. El aStyle los mapea a la deformación final.
   const waveSV = useSharedValue(0.5);
@@ -491,6 +494,7 @@ function GeometryLayer({
     warp,
     expansionAmount,
     threeDAmount,
+    ghostAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -504,6 +508,7 @@ function GeometryLayer({
   const safeRipple = Number.isFinite(ripple) ? clamp01(ripple) : 0;
   const safeWarp = Number.isFinite(warp) ? clamp01(warp) : 0;
   const safe3D = Number.isFinite(threeDAmount) ? clamp01(threeDAmount ?? 0) : 0;
+  const safeGhost = Number.isFinite(ghostAmount) ? clamp01(ghostAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -565,6 +570,7 @@ function GeometryLayer({
   const ondaOn = safeOnda > 0;
   const warpOn = safeWarp > 0;
   const threeDOn = safe3D > 0;
+  const ghostOn = safeGhost > 0;
   useEffect(() => {
     if (ondaOn && motion) {
       waveSV.value = withSequence(
@@ -615,6 +621,22 @@ function GeometryLayer({
       tiltYSV.value = withTiming(0.5, { duration: 500, easing: Easing.inOut(Easing.ease) });
     }
   }, [threeDOn, motion, tiltXSV, tiltYSV]);
+
+  // Fantasma: fase 0→1 (bounce, inOut(sin)) → opacidad y offset oscilan.
+  // La duración varía con index → capas distintas están desfasadas entre sí.
+  // Se congela junto con el movimiento general.
+  useEffect(() => {
+    if (ghostOn && motion) {
+      ghostPhaseSV.value = withRepeat(
+        withTiming(1, { duration: 2600 + index * 400, easing: Easing.inOut(Easing.sin) }),
+        -1,
+        true,
+      );
+    } else {
+      cancelAnimation(ghostPhaseSV);
+      ghostPhaseSV.value = withTiming(0, { duration: 400 });
+    }
+  }, [ghostOn, motion, ghostPhaseSV, index]);
 
   // Sentido del giro: derecha (horario, +1) o izquierda (antihorario, -1).
   // Los toggles son excluyentes; si ambos quedaran apagados no hay giro.
@@ -717,6 +739,25 @@ function GeometryLayer({
   const liveScaleForGlyph = pinchScaleSV;
   // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
   const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
+  // Fantasma 1: desplazado +X −Y, pulsando en fase con ghostPhaseSV.
+  // El offset es proporcional al tamaño efectivo del glifo.
+  const ghostAStyle1 = useAnimatedStyle(() => {
+    const ph = ghostPhaseSV.value; // 0..1
+    const off = effectiveSize * 0.065 * safeGhost;
+    return {
+      opacity: (0.07 + ph * 0.38) * safeGhost,
+      transform: [{ translateX: off }, { translateY: -off * 0.55 }],
+    };
+  });
+  // Fantasma 2: desplazado −X +Y, pulsando en contrafase (1 − ph).
+  const ghostAStyle2 = useAnimatedStyle(() => {
+    const ph = 1 - ghostPhaseSV.value; // contrafase
+    const off = effectiveSize * 0.065 * safeGhost;
+    return {
+      opacity: (0.05 + ph * 0.28) * safeGhost,
+      transform: [{ translateX: -off }, { translateY: off * 0.55 }],
+    };
+  });
 
   // Tamaño REAL al que se redibuja el SVG = tamaño base × magnificación
   // confirmada. Al crecer el size, el SVG (vector) queda nítido a cualquier
@@ -798,6 +839,35 @@ function GeometryLayer({
               liveScaleSV={liveScaleForGlyph}
             />
           </View>
+        </>
+      )}
+      {/* Fantasma: duplicados desplazados en contrafase que simulan eco visual. */}
+      {safeGhost > 0 && (
+        <>
+          <Animated.View style={[styles.layer, ghostAStyle1]} pointerEvents="none">
+            <SacredGlyph
+              id={geo.id}
+              color={dispColor}
+              gradient={dispGrad}
+              size={effectiveSize}
+              strokeWidth={sw}
+              kaleidoscope={kaleidoscope}
+              kaleidSegments={kaleidSegments}
+              liveScaleSV={liveScaleForGlyph}
+            />
+          </Animated.View>
+          <Animated.View style={[styles.layer, ghostAStyle2]} pointerEvents="none">
+            <SacredGlyph
+              id={geo.id}
+              color={dispColor}
+              gradient={dispGrad}
+              size={effectiveSize}
+              strokeWidth={sw}
+              kaleidoscope={kaleidoscope}
+              kaleidSegments={kaleidSegments}
+              liveScaleSV={liveScaleForGlyph}
+            />
+          </Animated.View>
         </>
       )}
       {/* Expansión: eco del glifo que crece y se desvanece en bucle. */}
@@ -4674,6 +4744,31 @@ export default function GeometrixScreen() {
               })()}
             </SettingsSection>
 
+            {/* ── Resonancias ───────────────────────────────────────────── */}
+            <SettingsSection
+              title="Resonancias"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["ghostAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["ghostAmount"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Fantasma</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.ghostAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "ghostAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </>
+                );
+              })()}
+            </SettingsSection>
+
             {/* ── Profundidad ───────────────────────────────────────────── */}
             <SettingsSection title="Profundidad" />
 
@@ -5307,6 +5402,24 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.warp ?? 0}
                       onChange={(v) => updateSetting(iid, "warp", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </SettingsSection>
+
+                  {/* ── Resonancias ───────────────────────────────────────── */}
+                  <SettingsSection
+                    title="Resonancias"
+                    isModified={isSectionModified(iid, ["ghostAmount"])}
+                    onReset={() => resetSection(iid, ["ghostAmount"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+                  >
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Fantasma</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.ghostAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "ghostAmount", v)}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
