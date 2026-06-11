@@ -115,6 +115,8 @@ export function DrawerMenu() {
       )}
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
+        {/* Relleno de 50 px a la derecha para tapar el hueco entre drawer y contenido desplazado */}
+        <View style={styles.rightBleed} />
         <LinearGradient
           colors={["#090D20", "#080A18", "#06070F"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
@@ -222,6 +224,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 12,
     elevation: 20,
+  },
+  rightBleed: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: DRAWER_W,
+    width: 50,
+    backgroundColor: "#06070F",
   },
   drawerInner: {
     flex: 1,
