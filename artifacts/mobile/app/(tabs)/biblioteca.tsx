@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
 
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
-    backgroundColor: "#090D20",
+    backgroundColor: "#080B1A",
     zIndex: 10,
     paddingHorizontal: H_PAD,
   },
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 6,
     elevation: 8,
-    backgroundColor: "#090D20",
+    backgroundColor: "#080B1A",
   },
 
   // ── Scroll content ──────────────────────────────────────────────────────────
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
   searchOverlay: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#090D20",
+    backgroundColor: "#080B1A",
     paddingTop: Platform.OS === "ios" ? 56 : 36,
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
   searchEmpty: {
     flex: 1,
-    backgroundColor: "#090D20",
+    backgroundColor: "#080B1A",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
