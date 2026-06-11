@@ -206,32 +206,6 @@ const CarouselTile = memo(function CarouselTile({
   );
 });
 
-const ContentSlide = memo(function ContentSlide({
-  dir,
-  children,
-}: {
-  dir: "right" | "left";
-  children: React.ReactNode;
-}) {
-  const slideX  = useRef(new Animated.Value(dir === "right" ? 38 : -38)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-
-  useLayoutEffect(() => {
-    const anim = Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true }),
-      Animated.timing(slideX,  { toValue: 0, duration: 220, useNativeDriver: true }),
-    ]);
-    anim.start();
-    return () => anim.stop();
-  }, []);
-
-  return (
-    <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>
-      {children}
-    </Animated.View>
-  );
-});
-
 const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.ReactNode }) {
   const slideX  = useRef(new Animated.Value(-20)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -361,8 +335,6 @@ export default function MiMusicaTestScreen() {
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
-  const [contentAnimKey, setContentAnimKey] = useState(0);
-  const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
   const { width }  = useWindowDimensions();
@@ -375,11 +347,8 @@ export default function MiMusicaTestScreen() {
 
   const handleMainTab = (id: MainTabId) => {
     if (id === mainTab) return;
-    const ids = MAIN_TABS.map((t) => t.id);
-    setContentDir(ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
     setMainTab(id);
     setSubTab(null);
-    setContentAnimKey((k) => k + 1);
     setSubTabAnimKey((k) => k + 1);
   };
 
@@ -574,11 +543,9 @@ export default function MiMusicaTestScreen() {
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
         >
-          <ContentSlide key={contentAnimKey} dir={contentDir}>
-            <View style={[styles.grid, { marginTop: 14 }]}>
-              {displayedSounds.map((s, i) => renderSoundCard(s, i))}
-            </View>
-          </ContentSlide>
+          <View style={[styles.grid, { marginTop: 14 }]}>
+            {displayedSounds.map((s, i) => renderSoundCard(s, i))}
+          </View>
         </ScrollView>
       </View>
     </LinearGradient>
