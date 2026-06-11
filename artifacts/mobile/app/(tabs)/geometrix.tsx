@@ -1380,24 +1380,6 @@ function CarouselTileInner({
   dragActive,
   edgeIntent,
 }: CarouselTileProps) {
-  const scale = useSharedValue(isSelected ? 1.1 : 1);
-
-  useEffect(() => {
-    if (isActivating) {
-      scale.value = withSequence(
-        withTiming(1.18, { duration: 500, easing: Easing.out(Easing.ease) }),
-        withTiming(1.1, { duration: 500, easing: Easing.inOut(Easing.ease) }),
-      );
-    } else if (isSelected) {
-      scale.value = withTiming(1.1, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
-    } else {
-      scale.value = withTiming(1, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
-    }
-  }, [isActivating, isSelected, scale]);
-
-  const glyphStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
 
   // Título de la geometría sobre la card: aparece con fade-in al unísono de la
   // selección (activación) y se desvanece 0,15 s después de que la geometría se
@@ -1743,14 +1725,12 @@ function CarouselTileInner({
           ]}
         >
           <View style={styles.tileGlyph}>
-            <Animated.View style={glyphStyle}>
-              <SacredGlyph
-                id={baseOf(id)}
-                color={isSelected ? color : "#7A8FA8"}
-                size={tileW * 0.66}
-                strokeWidth={isSelected ? 1.5 : 1.4}
-              />
-            </Animated.View>
+            <SacredGlyph
+              id={baseOf(id)}
+              color={isSelected ? color : "#7A8FA8"}
+              size={tileW * 0.66}
+              strokeWidth={isSelected ? 1.5 : 1.4}
+            />
           </View>
         </Pressable>
       </GestureDetector>
