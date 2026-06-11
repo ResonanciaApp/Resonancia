@@ -1708,16 +1708,10 @@ function CarouselTileInner({
         isDragging && styles.tileDragging,
       ]}
     >
-      <Animated.Text
-        pointerEvents="none"
-        numberOfLines={1}
-        style={[styles.tileTitle, titleStyle]}
-      >
-        {name}
-      </Animated.Text>
       <GestureDetector gesture={dragGesture}>
         <Pressable
           onPress={() => onToggle(id)}
+          hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
           renderToHardwareTextureAndroid
           style={[
             styles.tile,
@@ -1735,6 +1729,13 @@ function CarouselTileInner({
           </View>
         </Pressable>
       </GestureDetector>
+      <Animated.Text
+        pointerEvents="none"
+        numberOfLines={1}
+        style={[styles.tileTitle, titleStyle]}
+      >
+        {name}
+      </Animated.Text>
     </Animated.View>
   );
 }
@@ -2182,7 +2183,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
         <View
           style={[
             styles.gridRow,
-            { width: carouselOrder.length * tileItemW, height: tileW },
+            { width: carouselOrder.length * tileItemW, height: tileW + 22 },
           ]}
         >
           {tilesToRender.map((gid: string) => {
@@ -6149,11 +6150,12 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 20,
     marginTop: 2,
+    marginBottom: 5,
   },
   catChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+    borderRadius: 16,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: "rgba(190,150,80,0.18)",
@@ -6170,8 +6172,8 @@ const styles = StyleSheet.create({
   catChipTextOn: {
     color: colors.foreground,
   },
-  grid: { flexGrow: 0, marginTop: -15 },
-  gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 0, paddingRight: 20 },
+  grid: { flexGrow: 0 },
+  gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 0, paddingRight: 20 },
   // Modelo FLIP: contenedor relativo de altura/ancho fijos (dados inline). Las tiles
   // se posicionan en absoluto y se ubican SOLO con translateX según su slot (orderSV)
   // → el árbol nunca se reordena, no hay reflow de Fabric y el espaciado lo da itemW.
@@ -6179,11 +6181,7 @@ const styles = StyleSheet.create({
   tileWrap: { position: "absolute", left: 0, top: 0 },
   tileDragging: { zIndex: 50, elevation: 8 },
   tileTitle: {
-    position: "absolute",
-    bottom: "100%",
-    left: -8,
-    right: -8,
-    marginBottom: 6,
+    marginTop: 5,
     textAlign: "center",
     fontSize: 11,
     fontWeight: "700",
