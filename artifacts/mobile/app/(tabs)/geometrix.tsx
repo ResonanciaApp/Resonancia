@@ -1760,6 +1760,8 @@ function CarouselTileInner({
           <View style={styles.tileGlyph}>
             <Animated.View
               pointerEvents="none"
+              shouldRasterizeIOS
+              renderToHardwareTextureAndroid
               style={[StyleSheet.absoluteFill, styles.tileHaloWrap, haloStyle]}
             >
               <Svg width={tileW * 0.9} height={tileW * 0.9}>
@@ -1778,7 +1780,11 @@ function CarouselTileInner({
                 />
               </Svg>
             </Animated.View>
-            <Animated.View style={glyphStyle}>
+            <Animated.View
+              shouldRasterizeIOS
+              renderToHardwareTextureAndroid
+              style={glyphStyle}
+            >
               <SacredGlyph
                 id={baseOf(id)}
                 color={isSelected ? color : "#7A8FA8"}
