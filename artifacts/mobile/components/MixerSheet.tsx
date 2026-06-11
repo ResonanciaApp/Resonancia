@@ -31,7 +31,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSaveEvent } from "@/context/SaveEventContext";
-import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
@@ -61,8 +60,6 @@ const DARK_GRADIENT = ["#151A23", "#0B0F14"] as const;
 /** Mismo degradé que el fondo de la pantalla de Inicio. */
 const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
-/** Gradiente claro de fallback (Niebla) — usado cuando musicGradient aún no se sincronizó. */
-const LIGHT_FALLBACK_GRADIENT = ["#F4F6FA", "#EAECF2", "#DDE0E8"] as const;
 
 /** Devuelve true si el primer color del gradiente es claro (luminancia media > 100). */
 function isLightGradient(g: readonly [string, string, string]): boolean {
@@ -113,13 +110,8 @@ function TrackThumb({ sound }: { sound: MixSound }) {
 export function MixerSheet() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { musicTheme, musicGradient } = useTabBarVisibility();
-  const isLight = musicTheme === "claro";
-  // Cuando isLight pero musicGradient aún no se sincronizó (sigue siendo el dark default),
-  // usamos el fallback claro para evitar texto oscuro sobre fondo oscuro.
-  const sheetGradient: readonly [string, string, string] = isLight
-    ? (isLightGradient(musicGradient) ? musicGradient : LIGHT_FALLBACK_GRADIENT)
-    : musicGradient;
+  const sheetGradient: readonly [string, string, string] = HOME_GRADIENT;
+  const isLight = false;
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
     sliderThumb:    isLight ? "#BE9650"              : WARM.sliderThumb,
