@@ -33,5 +33,3 @@ re-grabarlo; el efecto lo limpia en su primera corrida tras restaurar.
 - `resetHistory()` se llama al cargar otra creación y al empezar "nueva", pero
   **NO** en `clearCanvas` — limpiar el lienzo debe poder deshacerse.
 - El efecto de captura tiene cleanup que limpia el timer (higiene de desmontaje).
-</content>
-</invoke>

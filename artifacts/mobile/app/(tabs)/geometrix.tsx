@@ -786,6 +786,38 @@ function GeometryLayer({
   // está apagado. En vivo manda `liveAngleSV` (UI thread); en reposo el
   // confirmado en settings.
   const committedAngle = Number.isFinite(manualAngle) ? manualAngle : 0;
+  // ── Hold mode: bases CONGELADAS al iniciar cada gesto grupal ──────────────
+  // Drag/rotación usan base+delta y zoom usa un ratio auto-corrector contra
+  // holdBaseMag. Las bases se recapturan SOLO en la transición 0→1 del gate del
+  // gesto (los flags *Frozen evitan re-congelar cuando el committed salta a B
+  // mid-transición). Esto enmascara el cambio committed A→B → sin parpadeo al
+  // soltar (mismo patrón que posStyle de CanvasLayer para el drag).
+  const holdBaseMag = useSharedValue(committedMag);
+  const holdScaleFrozen = useSharedValue(0);
+  const holdBaseAngle = useSharedValue(committedAngle);
+  const holdRotFrozen = useSharedValue(0);
+  useAnimatedReaction(
+    () => (holdModeSV != null && holdModeSV.value === 1 ? (holdScaleActive?.value ?? 0) : 0),
+    (act) => {
+      if (act === 1 && holdScaleFrozen.value === 0) {
+        holdBaseMag.value = committedMag;
+        holdScaleFrozen.value = 1;
+      } else if (act === 0 && holdScaleFrozen.value === 1) {
+        holdScaleFrozen.value = 0;
+      }
+    },
+  );
+  useAnimatedReaction(
+    () => (holdModeSV != null && holdModeSV.value === 1 ? (holdRotActive?.value ?? 0) : 0),
+    (act) => {
+      if (act === 1 && holdRotFrozen.value === 0) {
+        holdBaseAngle.value = committedAngle;
+        holdRotFrozen.value = 1;
+      } else if (act === 0 && holdRotFrozen.value === 1) {
+        holdRotFrozen.value = 0;
+      }
+    },
+  );
   // Escala de pellizco EN VIVO (UI thread): ratio entre el zoom en curso y el
   // confirmado (capturado en el closure). NO se aplica como transform (engorda
   // el trazo); se pasa a SacredGlyph para que redibuje el SVG a su tamaño real
@@ -798,24 +830,33 @@ function GeometryLayer({
   // el worklet conserva el closure viejo (liveZoomSV undefined → retorna 1) y el
   // pellizco no escalaría el nuevo objetivo cuando dos geometrías comparten zoom.
   const pinchScaleSV = useDerivedValue(() => {
-    // Hold mode: todas las capas aplican el mismo factor de escala incremental.
+    // Hold mode: ratio auto-corrector. El tamaño absoluto objetivo =
+    // holdBaseMag (magnif. congelada al iniciar el gesto) × factor de pellizco.
+    // Se divide por el committedMag ACTUAL: durante el gesto committedMag == base
+    // → ratio == factor; cuando setSettings confirma el nuevo zoom y committedMag
+    // alcanza al objetivo, el ratio cae a 1 solo (effectiveSize × ratio queda
+    // invariante) → sin flash de retroceso al soltar, sin importar el orden
+    // exacto entre el re-render y el reset del gate.
     if (holdModeSV != null && holdModeSV.value === 1 && holdScaleActive != null && holdScaleActive.value === 1 && holdScaleSV != null) {
-      return holdScaleSV.value;
+      const target = holdBaseMag.value * holdScaleSV.value;
+      return committedMag > 0 && Number.isFinite(target) ? target / committedMag : holdScaleSV.value;
     }
     // Modo normal: solo la capa objetivo (liveZoomSV pasado solo al target).
     if (liveZoomSV == null) return 1;
     if (pinchActiveSV != null && pinchActiveSV.value === 0) return 1;
     const r = liveZoomSV.value / safeZoom;
     return Number.isFinite(r) && r > 0 ? r : 1;
-  }, [safeZoom, liveZoomSV, pinchActiveSV, holdModeSV, holdScaleSV, holdScaleActive]);
+  }, [safeZoom, committedMag, liveZoomSV, pinchActiveSV, holdModeSV, holdScaleSV, holdScaleActive, holdBaseMag]);
   const aStyle = useAnimatedStyle(() => {
     const breatheScale = breath ? 1 - breatheDepth + pulse.value * breatheDepth : 1;
     // Giro: automático (rot) > rotación en vivo (liveAngleSV mientras rotActiveSV
     // vale 1, UI thread, sin re-render por frame) > ángulo confirmado en settings.
     let angleDeg: number;
     if (holdModeSV != null && holdModeSV.value === 1 && holdRotActive != null && holdRotActive.value === 1 && holdRotDeltaDeg != null) {
-      // Hold mode: ángulo propio de cada capa + delta compartido del gesto.
-      angleDeg = committedAngle + holdRotDeltaDeg.value;
+      // Hold mode: ángulo CONGELADO al iniciar el gesto + delta compartido (NO el
+      // committedAngle actual): cuando setSettings confirma el nuevo ángulo, el
+      // worklet sigue mostrando base+delta = ángulo final → sin parpadeo al soltar.
+      angleDeg = holdBaseAngle.value + holdRotDeltaDeg.value;
     } else if (spin) {
       angleDeg = rot.value * 360 * dir;
     } else if (liveAngleSV != null && rotActiveSV != null && rotActiveSV.value === 1) {
@@ -1118,13 +1159,34 @@ function CanvasLayer({
   motion,
   glow,
 }: CanvasLayerProps) {
+  // Base CONGELADA del offset al iniciar un drag Hold. Durante el gesto y hasta
+  // que setSettings confirme el nuevo offset, la capa se dibuja en base+delta (NO
+  // committedX+delta): así el cambio committedX A→B queda enmascarado y al soltar
+  // no hay parpadeo a la posición inicial. Se recaptura SOLO en la transición
+  // 0→1 de holdDragActive (holdDragFrozen evita re-congelar cuando committedX
+  // pasa a B mid-transición).
+  const holdBaseOffsetX = useSharedValue(committedX);
+  const holdBaseOffsetY = useSharedValue(committedY);
+  const holdDragFrozen = useSharedValue(0);
+  useAnimatedReaction(
+    () => (holdModeSV != null && holdModeSV.value === 1 ? (holdDragActive?.value ?? 0) : 0),
+    (act) => {
+      if (act === 1 && holdDragFrozen.value === 0) {
+        holdBaseOffsetX.value = committedX;
+        holdBaseOffsetY.value = committedY;
+        holdDragFrozen.value = 1;
+      } else if (act === 0 && holdDragFrozen.value === 1) {
+        holdDragFrozen.value = 0;
+      }
+    },
+  );
   const posStyle = useAnimatedStyle(() => {
     // Hold mode: todas las capas se desplazan en grupo con el mismo delta.
     if (holdModeSV != null && holdModeSV.value === 1 && holdDragActive != null && holdDragActive.value === 1 && holdDragDeltaX != null && holdDragDeltaY != null) {
       return {
         transform: [
-          { translateX: committedX + holdDragDeltaX.value },
-          { translateY: committedY + holdDragDeltaY.value },
+          { translateX: holdBaseOffsetX.value + holdDragDeltaX.value },
+          { translateY: holdBaseOffsetY.value + holdDragDeltaY.value },
         ],
       };
     }
@@ -2236,6 +2298,12 @@ export default function GeometrixScreen() {
   const holdDragDeltaX = useSharedValue(0);
   const holdDragDeltaY = useSharedValue(0);
   const holdDragActive = useSharedValue(0);
+  // Contadores de commit Hold: cada commit los incrementa para disparar el
+  // effect que apaga el gate del gesto DESPUÉS del re-render con el valor
+  // confirmado (evita el parpadeo A→B del reset síncrono). Ver commitHold*.
+  const [holdDragCommitN, setHoldDragCommitN] = useState(0);
+  const [holdZoomCommitN, setHoldZoomCommitN] = useState(0);
+  const [holdAngleCommitN, setHoldAngleCommitN] = useState(0);
 
   // Líneas guía de snap (UI thread): offset detectado + on/off, sin estado React.
   const snapXSV = useSharedValue(0);
@@ -2696,13 +2764,13 @@ export default function GeometrixScreen() {
         });
         return next;
       });
-      // Resetear SVs en el MISMO tick JS que setSettings (mismo batch de Reanimated
-      // → mismo frame en el hilo UI). Así el estilo animado recibe el nuevo zoom
-      // confirmado Y holdScaleSV=1 en el mismo frame, sin flash de retroceso.
-      holdScaleSV.value = 1;
-      holdScaleActive.value = 0;
+      // NO resetear holdScaleSV/holdScaleActive aquí: el reset síncrono llega al
+      // hilo UI ANTES del re-render con el nuevo zoom → flash de retroceso. El
+      // ratio auto-corrector de pinchScaleSV mantiene el tamaño invariante; el
+      // gate se apaga en el effect [holdZoomCommitN] (tras el re-render).
+      setHoldZoomCommitN((n) => n + 1);
     },
-    [active, setSettings, holdScaleSV, holdScaleActive],
+    [active, setSettings],
   );
 
   const commitHoldAngle = useCallback(
@@ -2718,10 +2786,12 @@ export default function GeometrixScreen() {
         });
         return next;
       });
-      holdRotDeltaDeg.value = 0;
-      holdRotActive.value = 0;
+      // Reset diferido al effect [holdAngleCommitN] (ver commitHoldZoom): el
+      // worklet usa holdBaseAngle congelado, así que mantiene base+delta = ángulo
+      // final hasta que el gate se apaga tras el re-render → sin parpadeo.
+      setHoldAngleCommitN((n) => n + 1);
     },
-    [active, setSettings, holdRotDeltaDeg, holdRotActive],
+    [active, setSettings],
   );
 
   const commitHoldOffset = useCallback(
@@ -2738,12 +2808,35 @@ export default function GeometrixScreen() {
         });
         return next;
       });
-      holdDragDeltaX.value = 0;
-      holdDragDeltaY.value = 0;
-      holdDragActive.value = 0;
+      // Reset diferido al effect [holdDragCommitN] (ver commitHoldZoom): cada
+      // CanvasLayer usa holdBaseOffsetX/Y congelado → muestra base+delta = pos
+      // final hasta que el gate se apaga tras el re-render → sin parpadeo.
+      setHoldDragCommitN((n) => n + 1);
     },
-    [active, setSettings, holdDragDeltaX, holdDragDeltaY, holdDragActive],
+    [active, setSettings],
   );
+
+  // Reset diferido de los gates de gesto Hold. Corren DESPUÉS del re-render con
+  // el valor confirmado (committedX/zoom/ángulo ya = B). Hasta entonces el
+  // worklet muestra base+delta (drag/rot) o el ratio auto-corrector (zoom), que
+  // ya valen B → apagar el gate ahora es invisible (sin parpadeo A→B). El guard
+  // `=== 0` evita correr en el montaje inicial.
+  useEffect(() => {
+    if (holdDragCommitN === 0) return;
+    holdDragDeltaX.value = 0;
+    holdDragDeltaY.value = 0;
+    holdDragActive.value = 0;
+  }, [holdDragCommitN, holdDragDeltaX, holdDragDeltaY, holdDragActive]);
+  useEffect(() => {
+    if (holdZoomCommitN === 0) return;
+    holdScaleSV.value = 1;
+    holdScaleActive.value = 0;
+  }, [holdZoomCommitN, holdScaleSV, holdScaleActive]);
+  useEffect(() => {
+    if (holdAngleCommitN === 0) return;
+    holdRotDeltaDeg.value = 0;
+    holdRotActive.value = 0;
+  }, [holdAngleCommitN, holdRotDeltaDeg, holdRotActive]);
 
   // Helpers para construir el snapshot de la composición actual.
   const buildSnapshot = useCallback(() => {
