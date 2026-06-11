@@ -275,7 +275,7 @@ export default function BibliotecaScreen() {
               </View>
             )}
           </Pressable>
-          <Text style={styles.headerTitle}>Tu Biblioteca</Text>
+          <Text style={styles.headerTitle}>Biblioteca</Text>
           <View style={styles.headerIcons}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
               <Feather name="search" size={21} color={TEXT} />
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(190,150,80,0.25)",
   },
-  headerTitle: { flex: 1, fontSize: 22, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
+  headerTitle: { flex: 1, fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
 
