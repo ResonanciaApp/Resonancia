@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useCallback, useMemo, useEffect } from "react";
@@ -20,17 +20,21 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { SacredGlyph } from "@/components/SacredGlyph";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer, type MixPreset } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { useLoadMix } from "@/hooks/useLoadMix";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { PLAYLISTS, type Playlist } from "@/data/playlists";
 import { ARTISTS, type Artist } from "@/data/artists";
 import { GUIDES, type Guide } from "@/data/guides";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as UserFolder } from "@/context/FoldersPlaylistsContext";
+import { baseOf } from "@/data/geometries";
+import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -406,6 +410,68 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   );
 }
 
+// ── Fila de creación Geometrix ────────────────────────────────────────────────
+function formatRelGeo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return "recién";
+  if (min < 60) return `hace ${min} min`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `hace ${h} h`;
+  const d = Math.floor(h / 24);
+  if (d < 7) return `hace ${d} d`;
+  return new Date(iso).toLocaleDateString("es", { day: "numeric", month: "short" });
+}
+
+function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPress: () => void }) {
+  const firstLayers = creation.active.slice(0, 3);
+  return (
+    <Pressable
+      style={({ pressed }) => [styles.geoRow, { opacity: pressed ? 0.75 : 1 }]}
+      onPress={onPress}
+    >
+      {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
+      <View style={styles.geoThumb}>
+        <LinearGradient
+          colors={["#08091A", "#0E0F2E"]}
+          style={StyleSheet.absoluteFill}
+        />
+        {firstLayers.map((instId, idx) => {
+          const geoId = baseOf(instId);
+          const settings = creation.settings[instId];
+          if (!settings) return null;
+          const layerSize = 36 + idx * 4;
+          return (
+            <View
+              key={instId}
+              style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]}
+              pointerEvents="none"
+            >
+              <SacredGlyph
+                id={geoId}
+                color={settings.color}
+                gradient={gradientColors(settings.gradientId)}
+                size={layerSize}
+                strokeWidth={1 + settings.thickness * 1.5}
+              />
+            </View>
+          );
+        })}
+      </View>
+
+      {/* Info */}
+      <View style={styles.geoInfo}>
+        <Text style={styles.geoName} numberOfLines={1}>{creation.name}</Text>
+        <Text style={styles.geoSub} numberOfLines={1}>
+          {creation.active.length} {creation.active.length === 1 ? "capa" : "capas"} · {formatRelGeo(creation.updatedAt)}
+        </Text>
+      </View>
+
+      <Feather name="chevron-right" size={18} color={MUTED} />
+    </Pressable>
+  );
+}
+
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function BibliotecaScreen() {
   const insets = useSafeAreaInsets();
@@ -423,6 +489,9 @@ export default function BibliotecaScreen() {
   const [nombreVisible, setNombreVisible] = useState(false);
   const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
   const { playlists: userPlaylists, folders: userFolders } = useFoldersPlaylists();
+
+  const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
+  useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
 
   const toggleSort = () => setSort((s) => (s === "recientes" ? "agregado" : "recientes"));
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
@@ -507,15 +576,33 @@ export default function BibliotecaScreen() {
     }
 
     if (activeTab === "geometrix") {
+      if (geometrixCreations.length === 0) {
+        return (
+          <View style={styles.emptyState}>
+            <Feather name="hexagon" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.emptyTitle}>Tus Geometrix aparecerán aquí</Text>
+            <Text style={styles.emptySub}>Crea y guarda una geometría sagrada para verla aquí.</Text>
+            <Pressable style={styles.emptyBtn} onPress={() => router.navigate("/(tabs)/geometrix" as never)}>
+              <Text style={styles.emptyBtnText}>Ir a Geometrix</Text>
+            </Pressable>
+          </View>
+        );
+      }
       return (
-        <View style={styles.emptyState}>
-          <Feather name="hexagon" size={48} color={GOLD} style={{ marginBottom: 16 }} />
-          <Text style={styles.emptyTitle}>Tus Geometrix aparecerán aquí</Text>
-          <Text style={styles.emptySub}>Crea y guarda una geometría sagrada para verla aquí.</Text>
-          <Pressable style={styles.emptyBtn} onPress={() => router.push("/geometrix" as never)}>
-            <Text style={styles.emptyBtnText}>Ir a Geometrix</Text>
-          </Pressable>
-        </View>
+        <>
+          {geometrixCreations.map((c) => (
+            <GeometrixRow
+              key={c.id}
+              creation={c}
+              onPress={() =>
+                router.navigate({
+                  pathname: "/(tabs)/geometrix",
+                  params: { load: c.id },
+                } as never)
+              }
+            />
+          ))}
+        </>
       );
     }
 
@@ -750,6 +837,28 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   emptyBtnText: { color: "#000", fontWeight: "700", fontSize: 14 },
+
+  // Geometrix rows
+  geoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: H_PAD,
+    paddingVertical: 10,
+    gap: 14,
+  },
+  geoThumb: {
+    width: 54,
+    height: 54,
+    borderRadius: 10,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.15)",
+  },
+  geoInfo: { flex: 1 },
+  geoName: { color: TEXT, fontSize: 14, fontWeight: "600" },
+  geoSub:  { color: MUTED, fontSize: 12, marginTop: 3 },
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
