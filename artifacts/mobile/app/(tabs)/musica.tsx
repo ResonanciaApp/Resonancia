@@ -647,7 +647,7 @@ export default function MiMusicaScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ContentSlide animKey={contentAnimKey} dir={contentDir}>
-            <View style={[styles.grid, { marginTop: 14 }]}>
+            <View style={[styles.grid, { marginTop: 8 }]}>
               {displayedSounds.map((s, i) => (
                 <SoundCard
                   key={s.id}
@@ -851,7 +851,7 @@ const styles = StyleSheet.create({
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
   scroll:        { flex: 1 },
-  scrollContent: { paddingHorizontal: 9, paddingTop: 14 },
+  scrollContent: { paddingHorizontal: 9, paddingTop: 0 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 11 },
