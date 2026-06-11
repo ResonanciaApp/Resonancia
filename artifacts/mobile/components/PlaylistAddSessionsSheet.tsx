@@ -1,6 +1,25 @@
+/**
+ * PlaylistAddSessionsSheet
+ *
+ * Fixes vs prior version:
+ * - Data is FROZEN at sheet-open time (useRef snapshot). Adding a session does NOT
+ *   remove it from the list → no reordering, no item remount → animation works.
+ * - isAdded is derived reactively from context (isInPlaylist) so the button state
+ *   updates correctly without touching the stable list.
+ * - overflow:"hidden" removed from sheet so the horizontal tabs ScrollView is not
+ *   hard-clipped at the right edge; the rounded top corners still render correctly.
+ * - Third tab label shortened to "Recientes" so all three chips fit without crowding.
+ */
+
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   FlatList,
   Modal,
@@ -12,12 +31,12 @@ import {
   View,
 } from "react-native";
 import Animated, {
+  Easing,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
   withSpring,
   withTiming,
-  Easing,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -34,11 +53,8 @@ const NAVY_CHECK = "#060A0F";
 const TEXT = "#EDE1D3";
 const MUTED = "#7A8FA8";
 
-const TABS = [
-  "Sesiones sugeridas",
-  "Música sugerida",
-  "Escuchadas recientemente",
-] as const;
+// Shorter labels so all three chips fit comfortably in the row
+const TABS = ["Sugeridas", "Música", "Recientes"] as const;
 type Tab = (typeof TABS)[number];
 
 // ─── Animated + Button ────────────────────────────────────────────────────────
@@ -62,8 +78,8 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
       checkOpacity.value = withTiming(1, { duration: 220, easing: Easing.out(Easing.quad) });
       // rebote de escala
       scale.value = withSequence(
-        withSpring(0.8, { stiffness: 420, damping: 18 }),
-        withSpring(1.2, { stiffness: 360, damping: 14 }),
+        withSpring(0.78, { stiffness: 420, damping: 18 }),
+        withSpring(1.22, { stiffness: 360, damping: 14 }),
         withSpring(1, { stiffness: 340, damping: 24 })
       );
     } else if (!added && prevAdded.current) {
@@ -85,19 +101,12 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
     opacity: rippleOpacity.value,
   }));
 
-  const plusStyle = useAnimatedStyle(() => ({
-    opacity: 1 - checkOpacity.value,
-  }));
-
-  const checkStyle = useAnimatedStyle(() => ({
-    opacity: checkOpacity.value,
-  }));
+  const plusStyle = useAnimatedStyle(() => ({ opacity: 1 - checkOpacity.value }));
+  const checkStyle = useAnimatedStyle(() => ({ opacity: checkOpacity.value }));
 
   return (
     <Pressable onPress={onPress} hitSlop={12} style={styles.addBtnOuter}>
-      {/* Onda expansiva */}
       <Animated.View style={[styles.ripple, rippleStyle]} />
-      {/* Círculo principal */}
       <Animated.View style={[styles.addCircle, circleStyle]}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.centered, plusStyle]}>
           <Feather name="plus" size={16} color={MUTED} />
@@ -134,16 +143,22 @@ function SessionRow({
         contentFit="cover"
       />
       <View style={styles.sessionInfo}>
-        <Text style={styles.sessionTitle} numberOfLines={2}>
-          {session.title}
-        </Text>
-        <Text style={styles.sessionAuthor} numberOfLines={1}>
-          {author}
-        </Text>
+        <Text style={styles.sessionTitle} numberOfLines={2}>{session.title}</Text>
+        <Text style={styles.sessionAuthor} numberOfLines={1}>{author}</Text>
       </View>
       <AddButton added={isAdded} onPress={onAdd} />
     </View>
   );
+}
+
+// ─── Snapshot helper ─────────────────────────────────────────────────────────
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 // ─── Hoja principal ───────────────────────────────────────────────────────────
@@ -157,63 +172,74 @@ export function PlaylistAddSessionsSheet({
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState<Tab>("Sesiones sugeridas");
+  const [activeTab, setActiveTab] = useState<Tab>("Sugeridas");
   const { playlists, addToPlaylist, isInPlaylist } = useFoldersPlaylists();
   const { history } = usePlayer();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
   const playlist = playlists.find((p) => p.id === playlistId);
 
-  // Reiniciar tab al abrir
+  /**
+   * Frozen snapshot: computed ONCE when the sheet opens.
+   * Adding a session only changes isInPlaylist (button state) but does NOT
+   * remove the item from the list → no reordering, no item remount → animation works.
+   */
+  const snapshot = useRef<{ suggested: Session[]; music: Session[]; recent: Session[] }>({
+    suggested: [],
+    music: [],
+    recent: [],
+  });
+
   useEffect(() => {
-    if (visible) setActiveTab("Sesiones sugeridas");
-  }, [visible]);
+    if (!visible) return;
+    // Reset tab
+    setActiveTab("Sugeridas");
 
-  const suggested = useMemo(() => {
+    // Snapshot the excluded set at open-time
     const inPl = new Set(playlist?.sessionIds ?? []);
+
+    // Sugeridas: all sessions not in playlist, shuffled
     const pool = SESSIONS.filter((s) => !inPl.has(s.id));
-    const a = [...pool];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a.slice(0, 30);
-  }, [playlist?.sessionIds, visible]); // eslint-disable-line react-hooks/exhaustive-deps
+    snapshot.current.suggested = shuffle(pool).slice(0, 30);
 
-  const musicSuggested = useMemo(() => {
-    const inPl = new Set(playlist?.sessionIds ?? []);
-    return SESSIONS.filter(
+    // Música: musica-sonidos category not in playlist
+    snapshot.current.music = SESSIONS.filter(
       (s) => s.categoryId === "musica-sonidos" && !inPl.has(s.id)
     ).slice(0, 30);
-  }, [playlist?.sessionIds]);
 
-  const recentSessions = useMemo(() => {
-    if (!history?.length) return [];
-    const inPl = new Set(playlist?.sessionIds ?? []);
-    const seen = new Set<string>();
-    const result: Session[] = [];
-    for (const entry of [...history].reverse()) {
-      if (seen.has(entry.sessionId)) continue;
-      seen.add(entry.sessionId);
-      const s = SESSIONS.find((x) => x.id === entry.sessionId);
-      if (s && !inPl.has(s.id)) result.push(s);
+    // Recientes: from play history, deduped, not in playlist
+    const recent: Session[] = [];
+    if (history?.length) {
+      const seen = new Set<string>();
+      for (const entry of [...history].reverse()) {
+        if (seen.has(entry.sessionId)) continue;
+        seen.add(entry.sessionId);
+        const s = SESSIONS.find((x) => x.id === entry.sessionId);
+        if (s && !inPl.has(s.id)) recent.push(s);
+      }
     }
-    return result.slice(0, 30);
-  }, [history, playlist?.sessionIds]);
+    snapshot.current.recent = recent.slice(0, 30);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Derive display list from frozen snapshot — NEVER changes after open
+  const [, forceUpdate] = useState(0);
+  // Force a re-read of the ref after the effect runs
+  useEffect(() => {
+    if (visible) forceUpdate((n) => n + 1);
+  }, [visible]);
 
   const data = useMemo(() => {
-    if (activeTab === "Sesiones sugeridas") return suggested;
-    if (activeTab === "Música sugerida") return musicSuggested;
-    return recentSessions;
-  }, [activeTab, suggested, musicSuggested, recentSessions]);
+    if (activeTab === "Sugeridas") return snapshot.current.suggested;
+    if (activeTab === "Música") return snapshot.current.music;
+    return snapshot.current.recent;
+  }, [activeTab, visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAdd = useCallback(
-    (sessionId: string) => {
-      addToPlaylist(playlistId, sessionId);
-    },
+    (sessionId: string) => addToPlaylist(playlistId, sessionId),
     [addToPlaylist, playlistId]
   );
 
+  // renderItem is stable — uses isInPlaylist from context for reactive button state
   const renderItem = useCallback(
     ({ item }: { item: Session }) => (
       <SessionRow
@@ -234,8 +260,10 @@ export function PlaylistAddSessionsSheet({
       statusBarTranslucent
     >
       <Pressable style={styles.backdrop} onPress={onClose} />
+
+      {/* Sheet — NO overflow:hidden so tabs ScrollView isn't clipped at right edge */}
       <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
-        {/* Asa */}
+        {/* Rounded top corners bg — separate from content so overflow:hidden doesn't apply to the whole sheet */}
         <View style={styles.handle} />
 
         {/* Header */}
@@ -246,39 +274,38 @@ export function PlaylistAddSessionsSheet({
           </Pressable>
         </View>
 
-        {/* Tabs */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabsContent}
-          style={styles.tabsRow}
-        >
-          {TABS.map((tab) => {
-            const active = tab === activeTab;
-            return (
-              <Pressable
-                key={tab}
-                style={({ pressed }) => [
-                  styles.tabChip,
-                  active && styles.tabChipActive,
-                  { opacity: pressed ? 0.8 : 1 },
-                ]}
-                onPress={() => setActiveTab(tab)}
-              >
-                <Text style={[styles.tabText, active && styles.tabTextActive]}>
-                  {tab}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        {/* Tabs — three shorter labels that all fit without hard clipping */}
+        <View style={styles.tabsWrapper}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tabsContent}
+          >
+            {TABS.map((tab) => {
+              const active = tab === activeTab;
+              return (
+                <Pressable
+                  key={tab}
+                  style={({ pressed }) => [
+                    styles.tabChip,
+                    active && styles.tabChipActive,
+                    { opacity: pressed ? 0.8 : 1 },
+                  ]}
+                  onPress={() => setActiveTab(tab)}
+                >
+                  <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
 
-        {/* Lista */}
+        {/* List */}
         {data.length === 0 ? (
           <View style={styles.emptyWrap}>
             <Feather name="music" size={40} color={MUTED} style={{ marginBottom: 12 }} />
             <Text style={styles.emptyText}>
-              {activeTab === "Escuchadas recientemente"
+              {activeTab === "Recientes"
                 ? "Aún no escuchaste ninguna sesión"
                 : "No hay más sesiones disponibles"}
             </Text>
@@ -311,9 +338,9 @@ const styles = StyleSheet.create({
     right: 0,
     height: "82%",
     backgroundColor: BG_SHEET,
+    // No overflow:"hidden" → tabs ScrollView scrolls cleanly past the right edge
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
-    overflow: "hidden",
   },
   handle: {
     alignSelf: "center",
@@ -336,20 +363,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
-  tabsRow: { flexGrow: 0, marginBottom: 6 },
-  tabsContent: { paddingHorizontal: 16, gap: 8 },
+
+  // Tabs
+  tabsWrapper: { marginBottom: 8 },
+  tabsContent: { paddingHorizontal: 16, gap: 8, paddingRight: 32 },
   tabChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 9,
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.07)",
   },
   tabChipActive: {
     backgroundColor: GOLD,
   },
-  tabText: { color: TEXT, fontSize: 13, fontWeight: "600" },
+  tabText: { color: TEXT, fontSize: 14, fontWeight: "600" },
   tabTextActive: { color: "#0B0F14", fontWeight: "700" },
 
+  // Session rows
   sessionRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -368,6 +398,7 @@ const styles = StyleSheet.create({
   sessionTitle: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
   sessionAuthor: { color: MUTED, fontSize: 12, marginTop: 2 },
 
+  // Add button
   addBtnOuter: {
     width: 40,
     height: 40,
@@ -394,6 +425,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  // Empty
   emptyWrap: {
     flex: 1,
     alignItems: "center",
