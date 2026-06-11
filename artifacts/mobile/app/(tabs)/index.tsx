@@ -53,7 +53,7 @@ const NAV_TABS = [
   { id: "musica-sonidos",       label: "Música"       },
 ] as const;
 const GRID_GAP = 12;
-const GRID_PAD = 25;
+const GRID_PAD = 15;
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;

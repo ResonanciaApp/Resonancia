@@ -829,7 +829,7 @@ const styles = StyleSheet.create({
   inner:    { flex: 1 },
   topPanel: {},
 
-  header:    { paddingHorizontal: 25, marginBottom: 0 },
+  header:    { paddingHorizontal: 15, marginBottom: 0 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: -0.4, color: DARK },
@@ -893,7 +893,7 @@ const styles = StyleSheet.create({
   },
 
   pillRow:        { flexGrow: 0, marginBottom: 4 },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 25, paddingVertical: 10 },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 10 },
   pillTab: {
     flexDirection: "row",
     alignItems: "center",
@@ -906,10 +906,10 @@ const styles = StyleSheet.create({
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
   scroll:        { flex: 1 },
-  scrollContent: { paddingHorizontal: 19, paddingTop: 14 },
+  scrollContent: { paddingHorizontal: 9, paddingTop: 14 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
-  subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 21 },
+  subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 11 },
   subTabPill: {
     flexDirection: "row",
     alignItems: "center",
