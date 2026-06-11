@@ -591,6 +591,7 @@ function GeometryLayerInner({
     ghostAmount,
     particleAmount,
     vibracionAmount,
+    shadowAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -607,6 +608,7 @@ function GeometryLayerInner({
   const safeGhost = Number.isFinite(ghostAmount) ? clamp01(ghostAmount ?? 0) : 0;
   const safeParticles = Number.isFinite(particleAmount) ? clamp01(particleAmount ?? 0) : 0;
   const safeVib = Number.isFinite(vibracionAmount) ? clamp01(vibracionAmount ?? 0) : 0;
+  const safeShadow = Number.isFinite(shadowAmount) ? clamp01(shadowAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -1055,6 +1057,32 @@ function GeometryLayerInner({
             />
           </Animated.View>
         </>
+      )}
+      {/* Sombra proyectada: copia oscurecida desplazada abajo-derecha. */}
+      {safeShadow > 0 && (
+        <View
+          style={[
+            styles.layer,
+            {
+              opacity: 0.55 * safeShadow,
+              transform: [
+                { translateX: effectiveSize * 0.09 * safeShadow },
+                { translateY: effectiveSize * 0.09 * safeShadow },
+              ],
+            },
+          ]}
+          pointerEvents="none"
+        >
+          <SacredGlyph
+            id={geo.id}
+            color={mixHex(dispColor, "#000000", 0.7)}
+            size={effectiveSize}
+            strokeWidth={sw * (1.2 + safeShadow * 0.8)}
+            kaleidoscope={kaleidoscope}
+            kaleidSegments={kaleidSegments}
+            liveScaleSV={liveScaleForGlyph}
+          />
+        </View>
       )}
       {/* Expansión: eco del glifo que crece y se desvanece en bucle. */}
       {(expansionAmount ?? 0) > 0 && motion && (
