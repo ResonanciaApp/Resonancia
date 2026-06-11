@@ -1716,7 +1716,7 @@ function CarouselTileInner({
           renderToHardwareTextureAndroid
           style={[
             styles.tile,
-            { width: tileW, height: tileW + 26, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
+            { width: tileW, height: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
             isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
           ]}
         >
@@ -2182,7 +2182,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
         <View
           style={[
             styles.gridRow,
-            { width: carouselOrder.length * tileItemW, height: tileW + 26 },
+            { width: carouselOrder.length * tileItemW, height: tileW },
           ]}
         >
           {tilesToRender.map((gid: string) => {
@@ -6061,7 +6061,7 @@ const styles = StyleSheet.create({
   tileTitle: {
     marginTop: 3,
     paddingHorizontal: 4,
-    paddingBottom: 6,
+    paddingBottom: 1,
     textAlign: "center",
     fontSize: 10,
     fontWeight: "600",
