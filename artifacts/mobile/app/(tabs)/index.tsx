@@ -493,9 +493,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTabText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#EDE1D3",
+    fontSize: 13,
+    fontWeight: "400",
+    color: "#FFFFFF",
     letterSpacing: 0.1,
   },
   intentionCard: {
