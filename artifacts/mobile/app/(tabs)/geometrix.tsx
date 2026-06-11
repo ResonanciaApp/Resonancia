@@ -2119,19 +2119,34 @@ export default function GeometrixScreen() {
     const dups = active.filter((id) => id.includes("::")).sort();
     return [...bases, ...dups];
   }, [active]);
-  // Diferir el montaje de las tiles del carrusel hasta después de que la transición
-  // de navegación termine. Cada CarouselTileInner registra ~16 objetos Reanimated
-  // (SharedValues, animated styles, reactions, gestures). Con 45 geometrías son
-  // ~720 registraciones sincrónicas que bloquean el hilo JS y evitan que useFocusEffect
-  // dispare requestHide() a tiempo, haciendo que la animación de fold del menú
-  // no se vea. InteractionManager espera a que todas las animaciones activas (incluida
-  // la transición de tabs) completen antes de montar las tiles.
-  const [carouselMounted, setCarouselMounted] = useState(false);
+  // Montaje progresivo de las tiles del carrusel. Cada CarouselTileInner registra
+  // ~16 objetos Reanimated (SharedValues, animated styles, reactions, gestures).
+  // Con 45 geometrías son ~720 registraciones sincrónicas que bloquean el hilo JS.
+  // Estrategia: tras la transición de navegación (InteractionManager) montar de
+  // a CAROUSEL_BATCH tiles por frame. El primer frame sube las primeras visibles →
+  // JS queda libre → useFocusEffect dispara requestHide() → fold del menú + título
+  // arrancan animados. Los frames siguientes completan el resto sin lag perceptible.
+  const CAROUSEL_BATCH = 6;
+  const [carouselCount, setCarouselCount] = useState(0);
   useEffect(() => {
+    let raf = 0;
     const task = InteractionManager.runAfterInteractions(() => {
-      setCarouselMounted(true);
+      const addBatch = () => {
+        setCarouselCount((prev) => {
+          const next = prev + CAROUSEL_BATCH;
+          if (next < domOrder.length) {
+            raf = requestAnimationFrame(addBatch);
+          }
+          return next;
+        });
+      };
+      raf = requestAnimationFrame(addBatch);
     });
-    return () => task.cancel();
+    return () => {
+      task.cancel();
+      if (raf) cancelAnimationFrame(raf);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
@@ -3789,7 +3804,7 @@ export default function GeometrixScreen() {
               { width: domOrder.length * tileItemW, height: tileW },
             ]}
           >
-            {carouselMounted && domOrder.map((gid: string) => {
+            {domOrder.slice(0, carouselCount).map((gid: string) => {
               const g = getGeometry(baseOf(gid));
               if (!g) return null;
               const selected = active.includes(gid);
