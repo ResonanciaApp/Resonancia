@@ -3203,8 +3203,13 @@ export default function GeometrixScreen() {
       const s = getSettings(id);
       targets.push({ offsetX: s.offsetX ?? 0, offsetY: s.offsetY ?? 0 });
     });
-    // Guías del usuario: solo snap en su eje (null = no snap en el otro).
+    // Puntos de cuarto (25 % y 75 %) + guías del usuario: un solo eje cada uno.
     if (canvasSide > 0) {
+      const q = canvasSide / 4;
+      targets.push({ offsetX: -q, offsetY: null }); // 25 % horizontal
+      targets.push({ offsetX:  q, offsetY: null }); // 75 % horizontal
+      targets.push({ offsetX: null, offsetY: -q }); // 25 % vertical
+      targets.push({ offsetX: null, offsetY:  q }); // 75 % vertical
       guides.forEach((g) => {
         const off = canvasSide * (g.pct / 100 - 0.5);
         if (g.orientation === "h") {
