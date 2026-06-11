@@ -210,7 +210,7 @@ const SubTabPill = memo(function SubTabPill({
 });
 
 // ── ContentSlide / SubTabSlide ────────────────────────────────────────────────
-const ContentSlide = memo(function ContentSlide({
+const ContentSlide = memo(function ContentFade({
   animKey,
   dir,
   children,
@@ -219,45 +219,36 @@ const ContentSlide = memo(function ContentSlide({
   dir: "right" | "left";
   children: React.ReactNode;
 }) {
-  const slideX  = useRef(new Animated.Value(dir === "right" ? 38 : -38)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
   // Reanima al cambiar de tab (animKey) SIN remontar los hijos: la grilla reconcilia
   // por key={s.id}, así los sonidos compartidos entre tabs conservan su imagen montada
   // (las imágenes no se vuelven a decodificar → sin carga escalonada).
   useLayoutEffect(() => {
-    slideX.setValue(dir === "right" ? 38 : -38);
     opacity.setValue(0);
-    const anim = Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true }),
-      Animated.timing(slideX,  { toValue: 0, duration: 220, useNativeDriver: true }),
-    ]);
+    const anim = Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true });
     anim.start();
     return () => anim.stop();
-  }, [animKey, dir, opacity, slideX]);
+  }, [animKey, opacity]);
 
   return (
-    <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>
+    <Animated.View style={{ opacity }}>
       {children}
     </Animated.View>
   );
 });
 
 const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.ReactNode }) {
-  const slideX  = useRef(new Animated.Value(-20)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
   useLayoutEffect(() => {
-    const anim = Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
-      Animated.timing(slideX,  { toValue: 0, duration: 200, useNativeDriver: true }),
-    ]);
+    const anim = Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true });
     anim.start();
     return () => anim.stop();
   }, []);
 
   return (
-    <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>
+    <Animated.View style={{ opacity }}>
       {children}
     </Animated.View>
   );
@@ -288,8 +279,6 @@ const SoundCard = memo(function SoundCard({
   accentColor = SEL_BLUE,
 }: SoundCardProps) {
   const anim       = useRef(new Animated.Value(active ? 1 : 0)).current;
-  const rippleAnim = useRef(new Animated.Value(0)).current;
-  const prevActive = useRef(active);
   const [decorated, setDecorated] = useState(active);
 
   // Animación de estado (borde, escala, inclinación) — useNativeDriver: false por borderColor
@@ -305,21 +294,6 @@ const SoundCard = memo(function SoundCard({
     return () => a.stop();
   }, [active, anim]);
 
-  // Onda de expansión — solo al activar (false → true)
-  useEffect(() => {
-    const wasActive = prevActive.current;
-    prevActive.current = active;
-    if (active && !wasActive) {
-      rippleAnim.setValue(0);
-      Animated.timing(rippleAnim, {
-        toValue: 1,
-        duration: 750,
-        easing: Easing.out(Easing.ease),
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [active, rippleAnim]);
-
   const tiltDir   = idx % 2 === 0 ? "-4deg" : "4deg";
   const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
   const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
@@ -327,9 +301,6 @@ const SoundCard = memo(function SoundCard({
     inputRange:  [0, 1],
     outputRange: [hexToRgba(accentColor, 0), hexToRgba(accentColor, 1)],
   });
-
-  const rippleScale    = rippleAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.65] });
-  const rippleOpacity  = rippleAnim.interpolate({ inputRange: [0, 0.25, 1], outputRange: [0.85, 0.5, 0] });
   const overlayOpacity = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
 
   return (
@@ -345,15 +316,6 @@ const SoundCard = memo(function SoundCard({
             { transform: [{ rotate }, { scale }], borderColor: borderCol },
           ]}
         >
-          {/* Anillo de expansión — se dispara al activar */}
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFill,
-              styles.goldRipple,
-              { borderColor: accentColor, transform: [{ scale: rippleScale }], opacity: rippleOpacity },
-            ]}
-          />
           {/* Capa interior: recorte circular de la imagen */}
           <View style={styles.cardClipInner}>
             {image ? (
