@@ -594,27 +594,25 @@ function GeometryLayer({
   // así mover el slider no reinicia el bucle. Se congela con el movimiento.
   useEffect(() => {
     if (threeDOn && motion) {
-      tiltXSV.value = withRepeat(
-        withSequence(
-          withTiming(1, { duration: 3200, easing: Easing.inOut(Easing.ease) }),
-          withTiming(-1, { duration: 3200, easing: Easing.inOut(Easing.ease) }),
-        ),
-        -1,
-        false,
+      // Entrada suave: desde el neutro (0.5) baja a 0 en 600ms, luego arranca
+      // el bucle 0→1→0→1… (reverse:true, inOut(sin)).
+      // inOut(sin) = medio período de seno → velocidad exactamente 0 en los
+      // extremos → transición continua sin saltos en cada rebote.
+      // En el worklet: (SV − 0.5) × 2 mapea 0..1 → −1..+1.
+      tiltXSV.value = withSequence(
+        withTiming(0, { duration: 600, easing: Easing.out(Easing.ease) }),
+        withRepeat(withTiming(1, { duration: 3200, easing: Easing.inOut(Easing.sin) }), -1, true),
       );
-      tiltYSV.value = withRepeat(
-        withSequence(
-          withTiming(1, { duration: 4700, easing: Easing.inOut(Easing.ease) }),
-          withTiming(-1, { duration: 4700, easing: Easing.inOut(Easing.ease) }),
-        ),
-        -1,
-        false,
+      tiltYSV.value = withSequence(
+        withTiming(0, { duration: 900, easing: Easing.out(Easing.ease) }),
+        withRepeat(withTiming(1, { duration: 4700, easing: Easing.inOut(Easing.sin) }), -1, true),
       );
     } else {
       cancelAnimation(tiltXSV);
       cancelAnimation(tiltYSV);
-      tiltXSV.value = withTiming(0, { duration: 500 });
-      tiltYSV.value = withTiming(0, { duration: 500 });
+      // Volver al neutro (0.5 = tilt 0) suavemente.
+      tiltXSV.value = withTiming(0.5, { duration: 500, easing: Easing.inOut(Easing.ease) });
+      tiltYSV.value = withTiming(0.5, { duration: 500, easing: Easing.inOut(Easing.ease) });
     }
   }, [threeDOn, motion, tiltXSV, tiltYSV]);
 
@@ -690,14 +688,15 @@ function GeometryLayer({
     const skewDeg = wavePhase * safeOnda * 14;
     const warpX = 1 + warpPhase * safeWarp * 0.32;
     const warpY = 1 - warpPhase * safeWarp * 0.32;
-    // 3D: perspectiva fija + inclinación Lissajous en X/Y. Cuando safe3D=0 los
-    // ángulos son 0deg → plano exacto, igual que sin perspectiva.
+    // 3D: perspectiva fija + inclinación Lissajous en X/Y. Los SVs van 0..1;
+    // (SV − 0.5) × 2 los mapea a −1..+1 → rango completo de tilt en ambos ejes.
+    // Cuando safe3D=0 → maxTilt=0 → rotateX/Y = 0deg → plano exacto.
     const maxTilt = safe3D * 28; // 0° a 28°
     return {
       transform: [
         { perspective: 600 },
-        { rotateX: `${tiltXSV.value * maxTilt}deg` },
-        { rotateY: `${tiltYSV.value * maxTilt}deg` },
+        { rotateX: `${(tiltXSV.value - 0.5) * 2 * maxTilt}deg` },
+        { rotateY: `${(tiltYSV.value - 0.5) * 2 * maxTilt}deg` },
         { rotate: `${angleDeg}deg` },
         { skewX: `${skewDeg}deg` },
         { scaleX: warpX },
