@@ -184,22 +184,21 @@ export default function ExploreScreen() {
               <Feather name="clock" size={18} color="#FFFFFF" />
             </Pressable>
           </View>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>Tu biblioteca expansiva</Text>
         </View>
 
         {/* ── Search bar ── */}
-        <View style={[styles.searchBar, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
-          <Feather name="search" size={16} color={colors.mutedForeground} />
+        <View style={[styles.searchBar, { backgroundColor: "#FFFFFF", borderColor: "transparent" }]}>
+          <Feather name="search" size={16} color="#9AA5B8" />
           <TextInput
             value={query}
             onChangeText={setQuery}
             placeholder="Buscar sesiones, músicas, sonidos..."
-            placeholderTextColor={colors.mutedForeground}
-            style={[styles.searchInput, { color: colors.foreground }]}
+            placeholderTextColor="#9AA5B8"
+            style={styles.searchInput}
           />
           {query.length > 0 && (
             <Pressable onPress={() => setQuery("")}>
-              <Feather name="x" size={16} color={colors.mutedForeground} />
+              <Feather name="x" size={16} color="#9AA5B8" />
             </Pressable>
           )}
         </View>
@@ -507,13 +506,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: H_PAD,
     paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderRadius: 16,
+    paddingVertical: 15,
+    borderRadius: 10,
     borderWidth: 1,
     gap: 10,
     marginBottom: 43,
   },
-  searchInput: { flex: 1, fontSize: 14 },
+  searchInput: { flex: 1, fontSize: 14, color: "#111111" },
 
   section: { paddingHorizontal: H_PAD, marginBottom: 57 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14, color: "#FFFFFF" },
