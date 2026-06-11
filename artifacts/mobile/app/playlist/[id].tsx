@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -51,6 +52,7 @@ export default function PlaylistDetailScreen() {
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [renaming, setRenaming] = useState(false);
   const [nameInput, setNameInput] = useState("");
+  const [addSheetVisible, setAddSheetVisible] = useState(false);
 
   const playlist = playlists.find((p) => p.id === id);
 
@@ -190,7 +192,7 @@ export default function PlaylistDetailScreen() {
         {/* + Agregar a esta playlist */}
         <Pressable
           style={({ pressed }) => [styles.addBtn, { opacity: pressed ? 0.8 : 1 }]}
-          onPress={() => router.push("/(tabs)/explore" as never)}
+          onPress={() => setAddSheetVisible(true)}
         >
           <Feather name="plus" size={16} color={TEXT} style={{ marginRight: 8 }} />
           <Text style={styles.addBtnText}>Agregar a esta playlist</Text>
@@ -228,6 +230,11 @@ export default function PlaylistDetailScreen() {
         session={actionsSession}
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
+      />
+      <PlaylistAddSessionsSheet
+        visible={addSheetVisible}
+        playlistId={playlist.id}
+        onClose={() => setAddSheetVisible(false)}
       />
     </LinearGradient>
   );

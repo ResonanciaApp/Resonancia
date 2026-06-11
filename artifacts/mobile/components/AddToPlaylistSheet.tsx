@@ -90,7 +90,6 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
               showsVerticalScrollIndicator={false}
             >
               {playlists.length === 0 ? (
-                /* Empty state */
                 <View style={styles.emptyWrap}>
                   <View style={[styles.emptyIcon, { backgroundColor: "rgba(190,150,80,0.1)" }]}>
                     <Feather name="list" size={36} color={colors.primary} />
@@ -158,7 +157,6 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
         {/* ── Paso: Crear playlist ── */}
         {step === "create" && (
           <View style={{ flex: 1, paddingHorizontal: 20 }}>
-            {/* Header */}
             <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
               <Pressable onPress={() => setStep("list")} style={styles.iconBtn}>
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -212,8 +210,6 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
     </Modal>
   );
 }
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
