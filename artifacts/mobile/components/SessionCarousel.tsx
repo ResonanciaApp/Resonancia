@@ -65,7 +65,6 @@ export function SessionCarousel({ title, sessions, isPremium, onPress }: Session
                 </View>
               </View>
               <Text style={styles.cardTitle} numberOfLines={2}>{s.title}</Text>
-              <Text style={styles.cardCreator} numberOfLines={1}>{creator.name}</Text>
             </Pressable>
           );
         })}
