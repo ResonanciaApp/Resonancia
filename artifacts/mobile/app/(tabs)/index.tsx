@@ -137,6 +137,7 @@ export default function HomeScreen() {
   );
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -206,6 +207,44 @@ export default function HomeScreen() {
     [presets],
   );
 
+  // ── Filtros por categoría ─────────────────────────────────────────────────
+  const filteredPlaylists = React.useMemo(() => {
+    if (!activeFilter) return PLAYLISTS;
+    return PLAYLISTS.filter((pl) =>
+      pl.sessionIds.some((sid) => getSessionById(sid)?.categoryId === activeFilter)
+    );
+  }, [activeFilter]);
+
+  const filteredRecommended = React.useMemo(() => {
+    if (!activeFilter) return recommendedSessions;
+    return recommendedSessions.filter((s) => s.categoryId === activeFilter);
+  }, [recommendedSessions, activeFilter]);
+
+  const filteredRecent = React.useMemo(() => {
+    if (!activeFilter) return recentSessions;
+    return recentSessions.filter((s) => s.categoryId === activeFilter);
+  }, [recentSessions, activeFilter]);
+
+  const filteredListened = React.useMemo(() => {
+    if (!activeFilter) return listenedRecently;
+    return listenedRecently.filter((s) => s.categoryId === activeFilter);
+  }, [listenedRecently, activeFilter]);
+
+  const filteredMoreLike = React.useMemo(() => {
+    if (!activeFilter) return moreLikeSessions;
+    return moreLikeSessions.filter((s) => s.categoryId === activeFilter);
+  }, [moreLikeSessions, activeFilter]);
+
+  const filteredFeatured = React.useMemo(() => {
+    if (!activeFilter) return featuredSession;
+    const pool = SESSIONS.filter((s) => s.categoryId === activeFilter);
+    if (!pool.length) return undefined;
+    const seed = new Date().toDateString() + activeFilter;
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0x7fffffff;
+    return pool[Math.abs(hash) % pool.length];
+  }, [activeFilter, featuredSession]);
+
   const { open: openDrawer } = useDrawer();
   const { photoUri } = useUserProfile();
 
@@ -240,15 +279,24 @@ export default function HomeScreen() {
             )}
           </Pressable>
           <View style={styles.headerTabs}>
-            {NAV_TABS.map((tab) => (
-              <Pressable
-                key={tab.id}
-                onPress={() => router.push(`/category/${tab.id}` as never)}
-                style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.55 : 1 }]}
-              >
-                <Text style={styles.headerTabText}>{tab.label}</Text>
-              </Pressable>
-            ))}
+            {NAV_TABS.map((tab) => {
+              const sel = activeFilter === tab.id;
+              return (
+                <Pressable
+                  key={tab.id}
+                  onPress={() => setActiveFilter(sel ? null : tab.id)}
+                  style={({ pressed }) => [
+                    styles.headerTabChip,
+                    sel && styles.headerTabChipActive,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+                    {tab.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
       </View>
@@ -259,9 +307,10 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* ── 1. COLECCIONES ── */}
+        {filteredPlaylists.length > 0 && (
         <View style={styles.header}>
           <View style={styles.coleccionGrid}>
-              {PLAYLISTS.map((pl) => (
+              {filteredPlaylists.map((pl) => (
                 <Pressable
                   key={pl.id}
                   onPress={() => router.push(`/coleccion/${pl.id}` as never)}
@@ -279,6 +328,7 @@ export default function HomeScreen() {
           </View>
 
         </View>
+        )}
 
         {/* ── 3. VIDEOS DESTACADOS ── */}
         <View style={styles.section}>
@@ -322,41 +372,45 @@ export default function HomeScreen() {
         {/* ── 4-9. CARRUSELES PERSONALIZADOS ── */}
         <SessionCarousel
           title="Sesiones recomendadas"
-          sessions={recommendedSessions}
+          sessions={filteredRecommended}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
         <SessionCarousel
           title="Recientes"
-          sessions={recentSessions}
+          sessions={filteredRecent}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
         <SessionCarousel
           title="Escuchadas recientemente"
-          sessions={listenedRecently}
+          sessions={filteredListened}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
         <SessionCarousel
           title="Más de lo que te gusta"
-          sessions={moreLikeSessions}
+          sessions={filteredMoreLike}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
-        <CoverCarousel
-          title="Tus playlist"
-          items={playlistItems}
-          onPress={(id) => router.push(`/playlist/${id}` as never)}
-        />
-        <CoverCarousel
-          title="Tus mezclas"
-          items={mezclaItems}
-          onPress={(id) => {
-            const preset = presets.find((p) => p.id === id);
-            if (preset) { loadPreset(preset); openSheet(); }
-          }}
-        />
+        {!activeFilter && (
+          <CoverCarousel
+            title="Tus playlist"
+            items={playlistItems}
+            onPress={(id) => router.push(`/playlist/${id}` as never)}
+          />
+        )}
+        {!activeFilter && (
+          <CoverCarousel
+            title="Tus mezclas"
+            items={mezclaItems}
+            onPress={(id) => {
+              const preset = presets.find((p) => p.id === id);
+              if (preset) { loadPreset(preset); openSheet(); }
+            }}
+          />
+        )}
 
         {/* ── 5. FRASE DEL DÍA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
@@ -364,21 +418,21 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 6. SESIÓN DESTACADA ── */}
-        {featuredSession && (
+        {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP + 45 }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>
               Sesión destacada
             </Text>
             <Pressable
               style={styles.heroCard}
-              onPress={() => router.push(`/session/${featuredSession.id}` as never)}
+              onPress={() => router.push(`/session/${filteredFeatured.id}` as never)}
             >
-              <Image source={featuredSession.image as number} style={styles.heroImage} resizeMode="cover" />
+              <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
               {/* Frosted glass panel */}
               {(() => {
-                const voiceLabel = getVoiceLabel(featuredSession);
+                const voiceLabel = getVoiceLabel(filteredFeatured);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const guideId = (featuredSession as any).guideId as string | undefined;
+                const guideId = (filteredFeatured as any).guideId as string | undefined;
                 const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
                 return (
                   <View style={styles.heroFrosted}>
@@ -386,21 +440,21 @@ export default function HomeScreen() {
                     <View style={styles.heroMetaRow}>
                       <Feather name="star" size={11} color={colors.primary} />
                       <Text style={[styles.heroMetaText, { color: colors.primary }]}>
-                        {" "}4.7{voiceLabel ? ` · ${voiceLabel}` : ""} · {featuredSession.durationLabel}
+                        {" "}4.7{voiceLabel ? ` · ${voiceLabel}` : ""} · {filteredFeatured.durationLabel}
                       </Text>
                     </View>
                     {/* Fila inferior: título+autor a la izq, botón a la der */}
                     <View style={styles.heroBottom}>
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
-                          {featuredSession.title}
+                          {filteredFeatured.title}
                         </Text>
                         <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
                           {heroAuthor}
                         </Text>
                       </View>
                       <Pressable
-                        onPress={(e) => { e.stopPropagation(); playSession(featuredSession); }}
+                        onPress={(e) => { e.stopPropagation(); playSession(filteredFeatured); }}
                         style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
                       >
                         <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
@@ -492,11 +546,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  headerTabChipActive: {
+    backgroundColor: "#BE9650",
+  },
   headerTabText: {
     fontSize: 13,
     fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.1,
+  },
+  headerTabTextActive: {
+    color: "#0B0F14",
+    fontWeight: "600",
   },
   intentionCard: {
     paddingVertical: 10,
