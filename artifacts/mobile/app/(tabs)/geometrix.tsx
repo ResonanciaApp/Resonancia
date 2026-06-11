@@ -1989,21 +1989,31 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
     setActiveCategory(id);
   }, [carScrollX, carouselScrollRef]);
 
+  // SharedValue con el índice actual de categoría → legible desde worklets sin
+  // capturar activeCategory en el closure del gesto (evita re-registrar el
+  // handler nativo en cada cambio de estado).
+  const catIdxSV = useSharedValue(0);
+  useEffect(() => {
+    catIdxSV.value = GEOMETRY_CATEGORIES.findIndex((c) => c.id === activeCategory);
+  }, [activeCategory, catIdxSV]);
+
   const catSwipeGesture = useMemo(() =>
     Gesture.Pan()
-      .activeOffsetX([-18, 18])
-      .failOffsetY([-12, 12])
+      .activeOffsetX([-20, 20])
+      .failOffsetY([-20, 20])
       .onEnd((e) => {
-        if (Math.abs(e.translationX) < 35) return;
-        const idx = GEOMETRY_CATEGORIES.findIndex((c) => c.id === activeCategory);
-        if (e.translationX < 0 && idx < GEOMETRY_CATEGORIES.length - 1) {
+        if (Math.abs(e.translationX) < 30) return;
+        const idx = catIdxSV.value;
+        const total = GEOMETRY_CATEGORIES.length;
+        if (e.translationX < 0 && idx < total - 1) {
           runOnJS(goCategory)(GEOMETRY_CATEGORIES[idx + 1].id);
         } else if (e.translationX > 0 && idx > 0) {
           runOnJS(goCategory)(GEOMETRY_CATEGORIES[idx - 1].id);
         }
       }),
+  // El gesto se crea una sola vez; catIdxSV es estable.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  [activeCategory, goCategory]);
+  [catIdxSV, goCategory]);
 
   return (
     <>
