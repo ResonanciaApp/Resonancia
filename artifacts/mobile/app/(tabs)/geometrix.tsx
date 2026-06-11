@@ -1715,7 +1715,7 @@ function CarouselTileInner({
           renderToHardwareTextureAndroid
           style={[
             styles.tile,
-            { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
+            { width: tileW, height: tileW + 26, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
             isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
           ]}
         >
@@ -1727,15 +1727,15 @@ function CarouselTileInner({
               strokeWidth={isSelected ? 1.5 : 1.4}
             />
           </View>
+          <Animated.Text
+            pointerEvents="none"
+            numberOfLines={1}
+            style={[styles.tileTitle, titleStyle]}
+          >
+            {name}
+          </Animated.Text>
         </Pressable>
       </GestureDetector>
-      <Animated.Text
-        pointerEvents="none"
-        numberOfLines={1}
-        style={[styles.tileTitle, titleStyle]}
-      >
-        {name}
-      </Animated.Text>
     </Animated.View>
   );
 }
@@ -2183,7 +2183,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
         <View
           style={[
             styles.gridRow,
-            { width: carouselOrder.length * tileItemW, height: tileW + 22 },
+            { width: carouselOrder.length * tileItemW, height: tileW + 26 },
           ]}
         >
           {tilesToRender.map((gid: string) => {
@@ -6181,20 +6181,21 @@ const styles = StyleSheet.create({
   tileWrap: { position: "absolute", left: 0, top: 0 },
   tileDragging: { zIndex: 50, elevation: 8 },
   tileTitle: {
-    marginTop: 5,
+    marginTop: 3,
+    paddingHorizontal: 4,
+    paddingBottom: 6,
     textAlign: "center",
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#FFFFFF",
+    fontSize: 10,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.75)",
   },
   tile: {
-    aspectRatio: 1,
     borderRadius: 16,
     borderWidth: 1,
     backgroundColor: "rgba(255,255,255,0.02)",
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
+    justifyContent: "flex-start",
+    paddingTop: 6,
   },
   tileGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
   tileHaloWrap: { alignItems: "center", justifyContent: "center" },
