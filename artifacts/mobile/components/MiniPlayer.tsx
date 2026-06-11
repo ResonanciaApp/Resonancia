@@ -146,9 +146,6 @@ export function MiniPlayer() {
                 {count} {count === 1 ? "sonido" : "sonidos"}
               </Text>
             </View>
-            <Text style={[styles.timerText, { color: colors.foreground }]}>
-              {formatElapsed(elapsed)}
-            </Text>
           </>
         ) : (
           <>
