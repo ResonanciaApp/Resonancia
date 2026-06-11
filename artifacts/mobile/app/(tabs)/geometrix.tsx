@@ -2183,11 +2183,15 @@ export default function GeometrixScreen() {
   );
   // Batch-mount: corre cuando hay tiles nuevas en domOrder (primer ingreso O switch de
   // categoría con tiles no pre-cargadas). Las ya montadas se renderizan de inmediato.
+  // • Primer ingreso (mountedIdsRef vacío): usa InteractionManager para no competir con
+  //   la transición de navegación de tabs. Switches posteriores: rAF directo (< 16 ms).
+  // • Si newTilesInDom está vacío (todo pre-cargado), sale sin setState → 0 re-renders.
   useEffect(() => {
+    if (newTilesInDom.length === 0) return; // todas pre-cargadas → switch instantáneo
     setNewMountCount(0);
-    if (newTilesInDom.length === 0) return;
     let raf = 0;
-    const task = InteractionManager.runAfterInteractions(() => {
+    const isFirstMount = mountedIdsRef.current.size === 0;
+    const startBatch = () => {
       const addBatch = () => {
         setNewMountCount((prev) => {
           const next = prev + CAROUSEL_BATCH;
@@ -2198,14 +2202,23 @@ export default function GeometrixScreen() {
         });
       };
       raf = requestAnimationFrame(addBatch);
-    });
+    };
+    if (isFirstMount) {
+      // Solo en el primer ingreso: esperar a que termine la transición de tabs.
+      const task = InteractionManager.runAfterInteractions(startBatch);
+      return () => {
+        task.cancel();
+        if (raf) cancelAnimationFrame(raf);
+      };
+    }
+    startBatch();
     return () => {
-      task.cancel();
       if (raf) cancelAnimationFrame(raf);
     };
   }, [newTilesInDom]);
   // Pre-carga silenciosa: cuando el batch actual terminó, monta en background las
   // tiles de otras categorías (ocultas con slot=-1). Al siguiente switch ya montadas.
+  // Arranca a los 400 ms (no 1.5 s) para que el siguiente switch sea rápido antes.
   useEffect(() => {
     if (newTilesInDom.length > 0) return; // esperar a que termine el ciclo actual
     const allIds = GEOMETRIES.map((g) => g.id);
@@ -2215,9 +2228,9 @@ export default function GeometrixScreen() {
     let idx = 0;
     const timer = setTimeout(() => {
       const addBatch = () => {
-        const batch = notMounted.slice(idx, idx + 2); // 2 tiles/frame, muy liviano
+        const batch = notMounted.slice(idx, idx + 4); // 4 tiles/frame, aún liviano
         if (batch.length === 0) return;
-        idx += 2;
+        idx += 4;
         setBgPreloadedIds((prev) => {
           const next = new Set(prev);
           batch.forEach((id) => next.add(id));
@@ -2228,7 +2241,7 @@ export default function GeometrixScreen() {
         }
       };
       raf = requestAnimationFrame(addBatch);
-    }, 1500); // esperar 1.5 s tras el ingreso para no competir con animaciones
+    }, 400); // 400 ms: suficiente para que terminen las animaciones de entrada
     return () => {
       clearTimeout(timer);
       if (raf) cancelAnimationFrame(raf);
