@@ -10,11 +10,13 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  BackHandler,
   InteractionManager,
   Modal,
   Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -3657,8 +3659,8 @@ export default function GeometrixScreen() {
   const canvasGesture = Gesture.Simultaneous(longPressGesture, pinchGesture, rotationGesture, panGesture);
 
   // Limpia TODO el estado de gestos al salir del fullscreen.
-  // El Modal se desmonta antes de que RNGH dispare onFinalize → los shared values
-  // quedan sucios y bloquean el primer toque en el lienzo normal.
+  // El View overlay se desmonta antes de que RNGH dispare onFinalize → los
+  // shared values quedan sucios y bloquean el primer toque en el lienzo normal.
   const exitFullscreen = useCallback(() => {
     dragActive.value = 0;
     pinchActive.value = 0;
@@ -3672,6 +3674,16 @@ export default function GeometrixScreen() {
     setFullscreenEdit(false);
     setGestureKey((k) => k + 1);
   }, [dragActive, pinchActive, isPinching, isLoupeActive, holdDragActive, rotActive, snapXOn, snapYOn]);
+
+  // Botón Atrás de Android cierra el fullscreen si está abierto.
+  useEffect(() => {
+    if (!fullscreenEdit) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      exitFullscreen();
+      return true;
+    });
+    return () => sub.remove();
+  }, [fullscreenEdit, exitFullscreen]);
 
   // Indicador de ángulo cardinal, 100% en el UI thread (sin runOnJS ni estado
   // React por frame → sin microlag). ÚNICO escritor de pillCardinalSV: durante
@@ -3800,6 +3812,8 @@ export default function GeometrixScreen() {
 
   return (
     <View style={styles.root}>
+      {/* Oculta la barra de estado en pantalla completa (View absoluto, no Modal). */}
+      <StatusBar hidden={fullscreenEdit} translucent />
       <LinearGradient
         colors={HOME_GRADIENT}
         start={{ x: 0.5, y: 0 }}
@@ -4455,17 +4469,13 @@ export default function GeometrixScreen() {
       </Modal>
 
       {/* ── Lienzo expandido editable ────────────────────────────────────────────
-          Pantalla completa con gestos activos. Solo flechita, hold y deshacer.
-          Los mismos shared values que el lienzo principal → los cambios se
-          reflejan al salir. */}
-      <Modal
-        visible={fullscreenEdit}
-        transparent
-        animationType="fade"
-        statusBarTranslucent
-        onRequestClose={exitFullscreen}
-      >
-        <View style={styles.fullscreenEditRoot}>
+          View absolutamente posicionado (NO Modal) para que el GestureDetector
+          viva en el mismo árbol nativo que el canvas principal. Un Modal crea
+          una ventana nativa separada (UIViewController en iOS) → RNGH pierde
+          estado al cerrar y bloquea el lienzo. Con un View absoluto todo queda
+          en el mismo contexto nativo y el GestureDetector funciona. */}
+      {fullscreenEdit && (
+        <Animated.View entering={FadeIn.duration(220)} style={styles.fullscreenEditRoot}>
           {/* Fondo */}
           <LinearGradient
             colors={canvasBgColors}
@@ -4698,8 +4708,8 @@ export default function GeometrixScreen() {
               })}
             </ScrollView>
           )}
-        </View>
-      </Modal>
+        </Animated.View>
+      )}
 
       {/* Popup temático de "Guardada" (reemplaza el Alert nativo). */}
       <Modal
@@ -6518,9 +6528,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // Lienzo expandido editable
+  // Lienzo expandido editable — View absoluto (NO Modal) para no romper RNGH
   fullscreenEditRoot: {
-    flex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 50,
     backgroundColor: "#0B0F14",
   },
   fullscreenEditControls: {
