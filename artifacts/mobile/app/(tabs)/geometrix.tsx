@@ -192,7 +192,6 @@ function defaultSettings(id: GeometryId): GeoSettings {
     halo: 0,
     onda: 0,
     ripple: 0,
-    warp: 0,
     expansionAmount: 0,
     threeDAmount: 0,
     ghostAmount: 0,
@@ -545,9 +544,8 @@ function GeometryLayerInner({
   const vibXSV = useSharedValue(0);
   const vibYSV = useSharedValue(0);
   // Osciladores de distorsión (fase 0↔1; punto neutro 0.5). Onda → cizalla,
-  // Warp → squash & stretch. El aStyle los mapea a la deformación final.
+  // Onda → cizalla oscilante.
   const waveSV = useSharedValue(0.5);
-  const warpSV = useSharedValue(0.5);
   // Aparición suave: al montar la capa (al seleccionar la geometría) entra con
   // fade in en lugar de aparecer de golpe.
   const enter = useSharedValue(0);
@@ -584,7 +582,6 @@ function GeometryLayerInner({
     halo,
     onda,
     ripple,
-    warp,
     expansionAmount,
     threeDAmount,
     ghostAmount,
@@ -601,7 +598,6 @@ function GeometryLayerInner({
   const safeHalo = Number.isFinite(halo) ? clamp01(halo) : 0;
   const safeOnda = Number.isFinite(onda) ? clamp01(onda) : 0;
   const safeRipple = Number.isFinite(ripple) ? clamp01(ripple) : 0;
-  const safeWarp = Number.isFinite(warp) ? clamp01(warp) : 0;
   const safe3D = Number.isFinite(threeDAmount) ? clamp01(threeDAmount ?? 0) : 0;
   const safeGhost = Number.isFinite(ghostAmount) ? clamp01(ghostAmount ?? 0) : 0;
   const safeParticles = Number.isFinite(particleAmount) ? clamp01(particleAmount ?? 0) : 0;
@@ -658,14 +654,10 @@ function GeometryLayerInner({
     }
   }, [fadeLoopAmount, motion, fade, index]);
 
-  // Onda (cizalla) y Warp (squash & stretch): osciladores que el aStyle mapea a
-  // la deformación. La AMPLITUD vive en el worklet (safeOnda/safeWarp), así que
-  // el bucle solo se (re)arranca al ENCENDER/APAGAR (deps booleanas) — mover el
-  // slider no lo reinicia. Recorren 0↔1 completo (fase −1..+1, contrafase real):
-  // se parte del neutro 0.5 hacia 0 y luego se repite en reversa. Al apagar se
-  // cancela y vuelve a 0.5 (sin deformación). Se congelan con el movimiento.
+  // Onda (cizalla): oscilador que el aStyle mapea a la deformación. La AMPLITUD
+  // vive en el worklet (safeOnda), así que el bucle solo se (re)arranca al
+  // ENCENDER/APAGAR (deps booleanas) — mover el slider no lo reinicia.
   const ondaOn = safeOnda > 0;
-  const warpOn = safeWarp > 0;
   const threeDOn = safe3D > 0;
   const ghostOn = safeGhost > 0;
   useEffect(() => {
@@ -679,17 +671,6 @@ function GeometryLayerInner({
       waveSV.value = withTiming(0.5, { duration: 300 });
     }
   }, [ondaOn, motion, waveSV]);
-  useEffect(() => {
-    if (warpOn && motion) {
-      warpSV.value = withSequence(
-        withTiming(0, { duration: 900, easing: Easing.inOut(Easing.ease) }),
-        withRepeat(withTiming(1, { duration: 1800, easing: Easing.inOut(Easing.ease) }), -1, true),
-      );
-    } else {
-      cancelAnimation(warpSV);
-      warpSV.value = withTiming(0.5, { duration: 300 });
-    }
-  }, [warpOn, motion, warpSV]);
 
   // Perspectiva 3D: tiltX y tiltY oscilan con períodos primos distintos para
   // crear un movimiento Lissajous (el plano se inclina en todas las direcciones
@@ -868,10 +849,7 @@ function GeometryLayerInner({
     // Onda: cizalla (skewX) oscilante. Warp: squash & stretch (ancho/alto en
     // contrafase, volumen ~constante). Neutro cuando el efecto está en 0.
     const wavePhase = waveSV.value * 2 - 1; // -1..1
-    const warpPhase = warpSV.value * 2 - 1; // -1..1
     const skewDeg = wavePhase * safeOnda * 14;
-    const warpX = 1 + warpPhase * safeWarp * 0.32;
-    const warpY = 1 - warpPhase * safeWarp * 0.32;
     // 3D: perspectiva fija + inclinación Lissajous en X/Y. Los SVs van 0..1;
     // (SV − 0.5) × 2 los mapea a −1..+1 → rango completo de tilt en ambos ejes.
     // Cuando safe3D=0 → maxTilt=0 → rotateX/Y = 0deg → plano exacto.
@@ -883,8 +861,6 @@ function GeometryLayerInner({
         { rotateY: `${(tiltYSV.value - 0.5) * 2 * maxTilt}deg` },
         { rotate: `${angleDeg}deg` },
         { skewX: `${skewDeg}deg` },
-        { scaleX: warpX },
-        { scaleY: warpY },
         { scale: breatheScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
@@ -3282,7 +3258,6 @@ export default function GeometrixScreen() {
           halo:            maybe(0.30, 0.1, 0.65),
           onda:            maybe(0.25, 0.1, 0.50),
           ripple:          maybe(0.25, 0.1, 0.50),
-          warp:            maybe(0.20, 0.1, 0.40),
           expansionAmount: maybe(0.25, 0.1, 0.55),
           threeDAmount:    maybe(0.20, 0.1, 0.45),
           ghostAmount:     maybe(0.20, 0.1, 0.45),
