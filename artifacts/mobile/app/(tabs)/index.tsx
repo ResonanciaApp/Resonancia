@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 14,
-    gap: 8,
+    gap: 15,
   },
   avatarBtn: {
     width: 32,
@@ -550,12 +550,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     gap: 6,
-    justifyContent: "center",
   },
   headerTabChip: {
     borderRadius: 20,
     paddingHorizontal: 10,
-    paddingVertical: 7,
+    paddingVertical: 10,
     backgroundColor: "rgba(255,255,255,0.06)",
     alignItems: "center",
     justifyContent: "center",
