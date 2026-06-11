@@ -2373,6 +2373,11 @@ export default function GeometrixScreen() {
   // usados en el worklet del drag para calcular snap sin llamar a getSettings.
   // null en un eje = ese eje no snap (para guías de un solo eje).
   const snapTargets = useSharedValue<Array<{ offsetX: number | null; offsetY: number | null }>>([]);
+  // Centroide del grupo en hold mode (promedio de offsets de todas las capas activas).
+  // Permite calcular el snap al centro del lienzo durante un drag de grupo sin
+  // necesitar getSettings en el worklet.
+  const holdCentroidX = useSharedValue(0);
+  const holdCentroidY = useSharedValue(0);
 
   // Creación cargada desde "Mis creaciones" (null = lienzo nuevo o no cargado).
   // Reactivo para poder mostrar/ocultar el botón "Actualizar" en la UI.
@@ -3267,32 +3272,7 @@ export default function GeometrixScreen() {
       const s = getSettings(id);
       targets.push({ offsetX: s.offsetX ?? 0, offsetY: s.offsetY ?? 0 });
     });
-    // Snaps de borde: cuando se arrastra una geometría, ancla su borde al centro
-    // del lienzo y al límite del lienzo (funciona para CUALQUIER tipo y escala).
     if (canvasSide > 0) {
-      if (pinchTargetId) {
-        const s = getSettings(pinchTargetId);
-        const geoId = baseOf(pinchTargetId) as GeometryId;
-        const safeScale = Number.isFinite(s.scale) ? (s.scale as number) : 1;
-        const safeZoom = Number.isFinite(s.zoom) && (s.zoom as number) > 0 ? (s.zoom as number) : 1;
-        const mag = (0.4 + safeScale * 0.6) * safeZoom;
-        const effectiveSize = canvasSide * 0.96 * mag;
-        const extents = GLYPH_EXTENTS[geoId];
-        const baseR = EXTENT[geoId] ?? 40;
-        const hwX = (extents?.rx ?? baseR) * effectiveSize / 100;
-        const hwY = (extents?.ry ?? baseR) * effectiveSize / 100;
-        const half = canvasSide / 2;
-        // Borde al centro del lienzo (tiling sin hueco: 4 en grilla 2×2)
-        targets.push({ offsetX: -hwX, offsetY: null });
-        targets.push({ offsetX:  hwX, offsetY: null });
-        targets.push({ offsetX: null, offsetY: -hwY });
-        targets.push({ offsetX: null, offsetY:  hwY });
-        // Borde al límite del lienzo
-        targets.push({ offsetX: -(half - hwX), offsetY: null });
-        targets.push({ offsetX:   half - hwX,  offsetY: null });
-        targets.push({ offsetX: null, offsetY: -(half - hwY) });
-        targets.push({ offsetX: null, offsetY:   half - hwY  });
-      }
       guides.forEach((g) => {
         const off = canvasSide * (g.pct / 100 - 0.5);
         if (g.orientation === "h") {
@@ -3303,7 +3283,22 @@ export default function GeometrixScreen() {
       });
     }
     snapTargets.value = targets;
-  }, [pinchTargetId, active, settings, getSettings, snapTargets, guides, canvasSide]);
+
+    // Centroide del grupo para snap en hold mode (promedio de todos los offsets).
+    if (active.length > 0) {
+      let sumX = 0, sumY = 0;
+      active.forEach((id) => {
+        const s = getSettings(id);
+        sumX += s.offsetX ?? 0;
+        sumY += s.offsetY ?? 0;
+      });
+      holdCentroidX.value = sumX / active.length;
+      holdCentroidY.value = sumY / active.length;
+    } else {
+      holdCentroidX.value = 0;
+      holdCentroidY.value = 0;
+    }
+  }, [pinchTargetId, active, settings, getSettings, snapTargets, holdCentroidX, holdCentroidY, guides, canvasSide]);
 
   // Gesto de pellizco: escala libre del objetivo (o todas en Hold mode).
   const pinchGesture = Gesture.Pinch()
@@ -3470,8 +3465,28 @@ export default function GeometrixScreen() {
         return;
       }
       if (holdModeSV.value === 1) {
-        holdDragDeltaX.value = e.translationX;
-        holdDragDeltaY.value = e.translationY;
+        // Snap al centro del lienzo (0,0) basado en el centroide del grupo.
+        const SNAP = 8;
+        let dx = e.translationX;
+        let dy = e.translationY;
+        const newCx = holdCentroidX.value + e.translationX;
+        const newCy = holdCentroidY.value + e.translationY;
+        if (Math.abs(newCx) < SNAP) {
+          dx = -holdCentroidX.value;
+          snapXSV.value = 0;
+          snapXOn.value = 1;
+        } else {
+          snapXOn.value = 0;
+        }
+        if (Math.abs(newCy) < SNAP) {
+          dy = -holdCentroidY.value;
+          snapYSV.value = 0;
+          snapYOn.value = 1;
+        } else {
+          snapYOn.value = 0;
+        }
+        holdDragDeltaX.value = dx;
+        holdDragDeltaY.value = dy;
         return;
       }
       if (!pinchTargetId) return;
