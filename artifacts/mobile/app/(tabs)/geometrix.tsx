@@ -2235,6 +2235,10 @@ export default function GeometrixScreen() {
   const [immersive, setImmersive] = useState(false);
   // Modo lienzo expandido: pantalla completa editable (gestos + 3 controles).
   const [fullscreenEdit, setFullscreenEdit] = useState(false);
+  // Contador que fuerza remount del GestureDetector tras salir del fullscreen.
+  // RNGH deja estado nativo sucio cuando el Modal desmonta mid-gesture; un key
+  // nuevo crea reconocedores nativos completamente frescos.
+  const [gestureKey, setGestureKey] = useState(0);
   // Nombre de la composición recién guardada → muestra el popup temático.
   const [savedName, setSavedName] = useState<string | null>(null);
   const [updatedName, setUpdatedName] = useState<string | null>(null);
@@ -3661,11 +3665,13 @@ export default function GeometrixScreen() {
     isPinching.value = false;
     isLoupeActive.value = false;
     holdDragActive.value = 0;
+    rotActive.value = 0;
     snapXOn.value = 0;
     snapYOn.value = 0;
     setLoupeVisible(false);
     setFullscreenEdit(false);
-  }, [dragActive, pinchActive, isPinching, isLoupeActive, holdDragActive, snapXOn, snapYOn]);
+    setGestureKey((k) => k + 1);
+  }, [dragActive, pinchActive, isPinching, isLoupeActive, holdDragActive, rotActive, snapXOn, snapYOn]);
 
   // Indicador de ángulo cardinal, 100% en el UI thread (sin runOnJS ni estado
   // React por frame → sin microlag). ÚNICO escritor de pillCardinalSV: durante
@@ -4010,7 +4016,7 @@ export default function GeometrixScreen() {
               // El Modal fullscreen desmonta sus hijos cuando visible=false → nunca
               // hay dos GestureDetectors con el mismo canvasGesture a la vez.
               // exitFullscreen() limpia todos los shared values antes de cerrar.
-              <GestureDetector gesture={canvasGesture}>
+              <GestureDetector key={gestureKey} gesture={canvasGesture}>
                 <View
                   style={[styles.canvas, { width: canvasSide, height: canvasSide }]}
                 >
