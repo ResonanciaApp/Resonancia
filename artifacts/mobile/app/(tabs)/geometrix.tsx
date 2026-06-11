@@ -1989,35 +1989,6 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
     setActiveCategory(id);
   }, [carScrollX, carouselScrollRef]);
 
-  // Swipe de cambio de categoría vía el propio ScrollView del carrusel.
-  // Al soltar el dedo (onScrollEndDrag) miramos si estamos al borde y la
-  // velocidad apunta afuera: si sí, cambiamos de categoría.
-  // Esto no involucra GestureDetector adicional y no añade lag a los chips.
-  const handleCarouselSwipeCat = useCallback(
-    (e: { nativeEvent: { contentOffset: { x: number }; velocity?: { x: number } } }) => {
-      const { contentOffset, velocity } = e.nativeEvent;
-      const vx = velocity?.x ?? 0;
-      const atStart = contentOffset.x <= 2;
-      const atEnd   = contentOffset.x >= carMaxScrollX.value - 2;
-      const idx = GEOMETRY_CATEGORIES.findIndex((c) => c.id === activeCategory);
-      // Desliza izquierda (vx < 0) en inicio → siguiente cat
-      if (atStart && vx < -0.3 && idx < GEOMETRY_CATEGORIES.length - 1) {
-        goCategory(GEOMETRY_CATEGORIES[idx + 1].id);
-      // Desliza derecha (vx > 0) al final → categoría anterior
-      } else if (atEnd && vx > 0.3 && idx > 0) {
-        goCategory(GEOMETRY_CATEGORIES[idx - 1].id);
-      // Si el carrusel no tiene scroll (pocas tiles), cualquier velocidad vale
-      } else if (carMaxScrollX.value <= 1) {
-        if (vx < -0.3 && idx < GEOMETRY_CATEGORIES.length - 1) {
-          goCategory(GEOMETRY_CATEGORIES[idx + 1].id);
-        } else if (vx > 0.3 && idx > 0) {
-          goCategory(GEOMETRY_CATEGORIES[idx - 1].id);
-        }
-      }
-    },
-    [activeCategory, goCategory, carMaxScrollX],
-  );
-
   return (
     <>
       {/* Filtro por categoría: el carrusel muestra solo la categoría activa */}
@@ -2058,7 +2029,6 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
         onContentSizeChange={(w) => {
           carMaxScrollX.value = Math.max(0, w - width);
         }}
-        onScrollEndDrag={handleCarouselSwipeCat}
         style={styles.grid}
         contentContainerStyle={styles.gridContent}
         showsHorizontalScrollIndicator={false}
@@ -3876,6 +3846,7 @@ export default function GeometrixScreen() {
                 contentFit="contain"
               />
             </View>
+            <Text style={styles.titleDesc}>Generador de geometrías sagradas</Text>
           </View>
           {/* Tema de fondo: si NO suena nada, abre el buscador; si YA está
               sonando, el mismo botón detiene y resetea el reproductor. */}
@@ -6192,6 +6163,7 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: "row", alignItems: "center" },
   titleLogo: { width: 18, height: 18, marginLeft: 5, opacity: 0.92 },
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3, lineHeight: 25 },
+  titleDesc: { fontSize: 12, color: colors.mutedForeground, marginTop: 3, letterSpacing: 0.2 },
   subtitle: { fontSize: 13, color: colors.mutedForeground, marginTop: 3 },
 
   // ── Botón "tema de fondo" (top-right del header) ──

@@ -52,14 +52,7 @@ export type GeometryId =
   | "hexagono-sagrado"
   | "estrella-12"
   | "estrella"
-  // ── 7 Chakras ────────────────────────────────────────────────────────────
-  | "chakra-raiz"
-  | "chakra-sacro"
-  | "chakra-plexo"
-  | "chakra-corazon"
-  | "chakra-garganta"
-  | "chakra-tercer-ojo"
-  | "chakra-corona";
+  ;
 
 /**
  * Categoría a la que pertenece cada geometría. Sirve para el filtro del carrusel
@@ -67,14 +60,13 @@ export type GeometryId =
  * (lo que bloquea el hilo JS al montar tantos objetos Reanimated), el carrusel
  * muestra solo la categoría activa (~9-20 tiles).
  */
-export type GeometryCategory = "sagradas" | "poliedros" | "formas" | "chakras";
+export type GeometryCategory = "sagradas" | "poliedros" | "formas";
 
 /** Metadatos de cada categoría para los chips de filtro (en orden de aparición). */
 export const GEOMETRY_CATEGORIES: { id: GeometryCategory; label: string }[] = [
   { id: "sagradas", label: "Geometría Sagrada" },
   { id: "poliedros", label: "Poliedros 3D" },
   { id: "formas", label: "Formas y Estrellas" },
-  { id: "chakras", label: "7 Chakras" },
 ];
 
 export interface GeometryMeta {
@@ -145,14 +137,6 @@ const GEOMETRY_DEFS: { id: GeometryId; name: string; category: GeometryCategory 
   { id: "hexagono-sagrado",     name: "Hexágono Sagrado",             category: "sagradas"  },
   { id: "estrella-12",          name: "Estrella de 12 Puntas",        category: "formas"    },
   { id: "estrella",             name: "Estrella",                     category: "formas"    },
-  // ── 7 Chakras ────────────────────────────────────────────────────────────
-  { id: "chakra-raiz",          name: "Muladhara — Raíz",             category: "chakras"   },
-  { id: "chakra-sacro",         name: "Svadhisthana — Sacro",         category: "chakras"   },
-  { id: "chakra-plexo",         name: "Manipura — Plexo Solar",       category: "chakras"   },
-  { id: "chakra-corazon",       name: "Anahata — Corazón",            category: "chakras"   },
-  { id: "chakra-garganta",      name: "Vishuddha — Garganta",         category: "chakras"   },
-  { id: "chakra-tercer-ojo",    name: "Ajna — Tercer Ojo",            category: "chakras"   },
-  { id: "chakra-corona",        name: "Sahasrara — Corona",           category: "chakras"   },
 ];
 
 export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
