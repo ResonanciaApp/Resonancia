@@ -21,46 +21,54 @@ type Props = {
 /**
  * Slider horizontal (0–1) sin rebote.
  *
- * Anti-rebote: `lastEmitRef` es un useRef JS-puro (no SharedValue). Se
- * actualiza en `emit` (hilo JS) ANTES de llamar a `onChange`, así que cuando
- * React re-renderiza con el nuevo `value` prop y el useEffect compara, el ref
- * ya vale exactamente lo que acabamos de emitir → diff = 0 → skip.
+ * SOLUCIÓN AL REBOTE:
+ * La causa era que dos runOnJS (uno de onUpdate y uno de onFinalize) podían
+ * correr en el mismo tick de JS antes de cualquier render de React. Cualquier
+ * intento de comparar "lo que emitimos" con "lo que recibimos de vuelta" fallaba
+ * porque el ref ya apuntaba al valor final cuando React renderizaba el valor
+ * intermedio.
  *
- * Un SharedValue leído en useEffect sufre una ventana de inconsistencia
- * cross-thread (el hilo UI puede haber avanzado más que la copia JS), lo que
- * produce el rebote. El useRef no tiene ese problema porque vive sólo en JS.
- *
- * `lastEmitSV` sigue siendo un SharedValue sólo para el throttle de onUpdate
- * (comparación dentro del worklet, en el hilo UI).
+ * Fix: `gestureActive.current` (useRef JS-puro) bloquea el useEffect durante
+ * TODO el gesto. Se activa con `startGesture` (primer runOnJS de onBegin) y se
+ * desactiva con `endGesture` (único runOnJS de onFinalize). FIFO garantizado por
+ * RNGH → startGesture siempre corre antes que cualquier emit, endGesture siempre
+ * corre después de todos los emits. Así:
+ *   - Cualquier render de React con un valor intermedio encuentra
+ *     gestureActive=true → useEffect skip ✓
+ *   - El único render con gestureActive=false es el que usa el valor final →
+ *     fraction.value ya es el valor final → diff=0 → skip ✓
+ *   - Resets externos (p. ej. "restablecer") encuentran gestureActive=false y
+ *     valor≠fracción → sync ✓
  */
 export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   const fraction = useSharedValue(value);
   const trackWidth = useSharedValue(1);
-
-  // UI-thread throttle: evitar runOnJS excesivos durante el arrastre
   const lastEmitSV = useSharedValue(value);
-  // JS-thread echo-guard: previene que useEffect sincronice el thumb con sus
-  // propios ecos. DEBE ser useRef (JS-puro) — un SharedValue aquí introduce
-  // la race cross-thread que causaba el rebote.
-  const lastEmitRef = useRef(value);
 
+  const gestureActive = useRef(false);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
-  const emit = React.useCallback((v: number) => {
-    // Actualizar ANTES de onChange para que cuando React re-renderice con el
-    // nuevo value, el useEffect vea lastEmitRef.current === value → skip.
-    lastEmitRef.current = v;
+  const startGesture = React.useCallback(() => {
+    gestureActive.current = true;
+  }, []);
+
+  const emitLive = React.useCallback((v: number) => {
     onChangeRef.current(v);
   }, []);
 
-  // Sincroniza el thumb sólo cuando el padre cambia el valor externamente
-  // (p. ej. "restablecer"). Durante el arrastre, value === lastEmitRef.current
-  // → diff ≈ 0 → skip. Sin races posibles porque todo corre en el hilo JS.
+  const endGesture = React.useCallback((v: number) => {
+    gestureActive.current = false;
+    onChangeRef.current(v);
+  }, []);
+
+  // Sincroniza el thumb solo en cambios EXTERNOS (reset de ajustes, etc.).
+  // Durante el gesto gestureActive=true bloquea todos los renders intermedios.
+  // Cuando gestureActive=false, fraction.value ya contiene el valor final del
+  // gesto → diff≈0 → skip.
   useEffect(() => {
-    if (Math.abs(value - lastEmitRef.current) > 0.001) {
+    if (!gestureActive.current && Math.abs(value - fraction.value) > 0.002) {
       fraction.value = value;
-      lastEmitRef.current = value;
     }
   }, [value, fraction]);
 
@@ -73,7 +81,10 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
           const f = Math.min(1, Math.max(0, raw));
           fraction.value = f;
           lastEmitSV.value = f;
-          runOnJS(emit)(f);
+          // startGesture DEBE ir primero (FIFO) para que gestureActive=true
+          // esté activo antes de cualquier render provocado por emitLive.
+          runOnJS(startGesture)();
+          runOnJS(emitLive)(f);
         })
         .onUpdate((e) => {
           const raw = (e.x - TRACK_PAD) / trackWidth.value;
@@ -81,19 +92,17 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
           fraction.value = f;
           if (Math.abs(f - lastEmitSV.value) >= EMIT_EPS) {
             lastEmitSV.value = f;
-            runOnJS(emit)(f);
+            runOnJS(emitLive)(f);
           }
         })
         .onFinalize(() => {
           const f = fraction.value;
-          // Siempre emitir el valor final: garantiza que el padre quede en sync
-          // aunque onUpdate no haya llegado a emitir el último valor (por el
-          // throttle EMIT_EPS). El eco de este emit llegará con
-          // lastEmitRef.current === f → useEffect → skip. Sin rebote.
           lastEmitSV.value = f;
-          runOnJS(emit)(f);
+          // endGesture DEBE ser el último runOnJS (FIFO): desactiva gestureActive
+          // y emite el valor final en una sola llamada.
+          runOnJS(endGesture)(f);
         }),
-    [emit, fraction, trackWidth, lastEmitSV],
+    [startGesture, emitLive, endGesture, fraction, trackWidth, lastEmitSV],
   );
 
   const fillStyle = useAnimatedStyle(() => ({

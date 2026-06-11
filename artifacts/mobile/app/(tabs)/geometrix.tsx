@@ -1381,39 +1381,23 @@ function CarouselTileInner({
   edgeIntent,
 }: CarouselTileProps) {
   const scale = useSharedValue(isSelected ? 1.1 : 1);
-  const glow = useSharedValue(isSelected ? 0.66 : 0);
 
   useEffect(() => {
     if (isActivating) {
-      // Activación en el lugar: el resplandor crece y se asienta (~1s).
       scale.value = withSequence(
         withTiming(1.18, { duration: 500, easing: Easing.out(Easing.ease) }),
         withTiming(1.1, { duration: 500, easing: Easing.inOut(Easing.ease) }),
       );
-      glow.value = withSequence(
-        withTiming(1, { duration: 500, easing: Easing.out(Easing.ease) }),
-        withTiming(0.66, { duration: 500, easing: Easing.inOut(Easing.ease) }),
-      );
     } else if (isSelected) {
       scale.value = withTiming(1.1, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
-      glow.value = withTiming(0.66, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
     } else {
       scale.value = withTiming(1, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
-      glow.value = withTiming(0, { duration: CAROUSEL_FLOW_MS, easing: CAROUSEL_EASE });
     }
-  }, [isActivating, isSelected, scale, glow]);
+  }, [isActivating, isSelected, scale]);
 
-  const haloGradId = React.useId().replace(/:/g, "") + "-halo";
   const glyphStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
-  // Halo: opacidad GPU (sin pase offscreen) en lugar de una sombra de capa iOS.
-  // Una shadow* sin shadowPath se recalcula CADA frame que la vista se mueve (el
-  // scroll del carrusel) → microlag SOLO en las tiles con sombra (las
-  // seleccionadas tenían shadowOpacity 0.66; las demás 0 → fluidas). Un degradado
-  // radial ESTÁTICO cuya opacidad anima en el UI thread no tiene ese costo (y se
-  // ve también en Android, donde shadow* no aplica).
-  const haloStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
 
   // Título de la geometría sobre la card: aparece con fade-in al unísono de la
   // selección (activación) y se desvanece 0,15 s después de que la geometría se
@@ -1759,26 +1743,6 @@ function CarouselTileInner({
           ]}
         >
           <View style={styles.tileGlyph}>
-            <Animated.View
-              pointerEvents="none"
-              style={[StyleSheet.absoluteFill, styles.tileHaloWrap, haloStyle]}
-            >
-              <Svg width={tileW * 0.9} height={tileW * 0.9}>
-                <Defs>
-                  <RadialGradient id={haloGradId} cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor={color} stopOpacity={0.5} />
-                    <Stop offset="55%" stopColor={color} stopOpacity={0.18} />
-                    <Stop offset="100%" stopColor={color} stopOpacity={0} />
-                  </RadialGradient>
-                </Defs>
-                <Circle
-                  cx={(tileW * 0.9) / 2}
-                  cy={(tileW * 0.9) / 2}
-                  r={(tileW * 0.9) / 2}
-                  fill={`url(#${haloGradId})`}
-                />
-              </Svg>
-            </Animated.View>
             <Animated.View style={glyphStyle}>
               <SacredGlyph
                 id={baseOf(id)}
