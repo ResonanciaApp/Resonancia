@@ -28,6 +28,7 @@ import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { VideoCard } from "@/components/VideoCard";
+import { EqualizerBars } from "@/components/EqualizerBars";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { getVoiceLabel } from "@/config/audio-map";
@@ -94,7 +95,7 @@ export default function HomeScreen() {
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
-  const { playSession } = usePlayer();
+  const { playSession, currentSession, isPlaying } = usePlayer();
   const { isPremium } = usePremium();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
@@ -203,7 +204,12 @@ export default function HomeScreen() {
                   style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
                 >
                   <Image source={pl.cover as number} style={styles.coleccionThumb} resizeMode="cover" />
-                  <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
+                  <View style={styles.coleccionTitleRow}>
+                    <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
+                    {isPlaying && currentSession && pl.sessionIds.includes(currentSession.id) && (
+                      <EqualizerBars color="#BE9650" size="sm" />
+                    )}
+                  </View>
                 </Pressable>
               ))}
             </View>
@@ -591,12 +597,18 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
   },
+  coleccionTitleRow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    gap: 6,
+  },
   coleccionTitle: {
     flex: 1,
     fontSize: 13,
     fontWeight: "700",
     color: "#EDE1D3",
-    paddingHorizontal: 10,
     lineHeight: 18,
   },
   catGrid: {
