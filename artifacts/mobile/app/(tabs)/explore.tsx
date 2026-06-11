@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     gap: 10,
-    marginBottom: 43,
+    marginBottom: 16,
   },
   searchInput: { flex: 1, fontSize: 14, color: "#111111" },
 
