@@ -113,14 +113,22 @@ function BrightnessOverlay() {
 }
 
 function PushWrapper({ children }: { children: React.ReactNode }) {
-  const { drawerAnim } = useDrawer();
+  const { drawerAnim, isOpen } = useDrawer();
   const translateX = drawerAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, DRAWER_W],
+    outputRange: [0, DRAWER_W + 50],
+  });
+  const overlayOpacity = drawerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.52],
   });
   return (
     <Animated.View style={{ flex: 1, transform: [{ translateX }] }}>
       {children}
+      <Animated.View
+        pointerEvents={isOpen ? "auto" : "none"}
+        style={[StyleSheet.absoluteFill, { backgroundColor: "#000", opacity: overlayOpacity }]}
+      />
     </Animated.View>
   );
 }
