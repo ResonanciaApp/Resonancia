@@ -198,7 +198,6 @@ function defaultSettings(id: GeometryId): GeoSettings {
     ghostAmount: 0,
     particleAmount: 0,
     vibracionAmount: 0,
-    shadowAmount: 0,
   };
 }
 
@@ -591,7 +590,6 @@ function GeometryLayerInner({
     ghostAmount,
     particleAmount,
     vibracionAmount,
-    shadowAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -608,7 +606,6 @@ function GeometryLayerInner({
   const safeGhost = Number.isFinite(ghostAmount) ? clamp01(ghostAmount ?? 0) : 0;
   const safeParticles = Number.isFinite(particleAmount) ? clamp01(particleAmount ?? 0) : 0;
   const safeVib = Number.isFinite(vibracionAmount) ? clamp01(vibracionAmount ?? 0) : 0;
-  const safeShadow = Number.isFinite(shadowAmount) ? clamp01(shadowAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -1057,32 +1054,6 @@ function GeometryLayerInner({
             />
           </Animated.View>
         </>
-      )}
-      {/* Sombra proyectada: copia oscurecida desplazada abajo-derecha. */}
-      {safeShadow > 0 && (
-        <View
-          style={[
-            styles.layer,
-            {
-              opacity: 0.55 * safeShadow,
-              transform: [
-                { translateX: effectiveSize * 0.09 * safeShadow },
-                { translateY: effectiveSize * 0.09 * safeShadow },
-              ],
-            },
-          ]}
-          pointerEvents="none"
-        >
-          <SacredGlyph
-            id={geo.id}
-            color={mixHex(dispColor, "#000000", 0.7)}
-            size={effectiveSize}
-            strokeWidth={sw * (1.2 + safeShadow * 0.8)}
-            kaleidoscope={kaleidoscope}
-            kaleidSegments={kaleidSegments}
-            liveScaleSV={liveScaleForGlyph}
-          />
-        </View>
       )}
       {/* Expansión: eco del glifo que crece y se desvanece en bucle. */}
       {(expansionAmount ?? 0) > 0 && motion && (
@@ -1895,7 +1866,6 @@ const SECTION_ICONS: Record<string, React.ComponentProps<typeof Feather>["name"]
   "Energía":        "zap",
   "Luminosidad":    "sun",
   "Transformación": "refresh-cw",
-  "Profundidad":    "layers",
   "Calidoscopio":   "aperture",
 };
 
@@ -5588,31 +5558,6 @@ export default function GeometrixScreen() {
               })()}
             </SettingsSection>
 
-            {/* ── Profundidad ───────────────────────────────────────────── */}
-            <SettingsSection
-              title="Profundidad"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["shadowAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["shadowAmount"]))}
-              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-            >
-              {(() => {
-                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
-                return (
-                  <>
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Efecto de Sombra</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.shadowAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "shadowAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                  </>
-                );
-              })()}
-            </SettingsSection>
-
             {/* ── Calidoscopio ──────────────────────────────────────────── */}
             <SettingsSection
               title="Calidoscopio"
@@ -6198,24 +6143,6 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.thickness}
                       onChange={(v) => updateSetting(iid, "thickness", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                  </SettingsSection>
-
-                  {/* ── Profundidad ───────────────────────────────────────── */}
-                  <SettingsSection
-                    title="Profundidad"
-                    isModified={isSectionModified(iid, ["shadowAmount"])}
-                    onReset={() => resetSection(iid, ["shadowAmount"])}
-                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-                  >
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Efecto de Sombra</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.shadowAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "shadowAmount", v)}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
