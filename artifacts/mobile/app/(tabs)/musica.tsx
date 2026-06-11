@@ -71,7 +71,7 @@ const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
   ruidos:            "volume-vibrate",
 };
 
-type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores";
+type MainTabId = "naturaleza" | "ancestrales" | "sintetizadores" | "binaurales" | "voces" | "asmr" | "ruidos" | "bpm";
 
 const MAIN_TABS: {
   id: MainTabId;
@@ -80,10 +80,14 @@ const MAIN_TABS: {
   color: string;
   categories: SoundCategoryId[] | null;
 }[] = [
-  { id: "popular",        label: "Todos",     icon: "music-note-eighth", color: "#1A1E2B", categories: null },
-  { id: "naturaleza",     label: "Naturales", icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
-  { id: "ancestrales",    label: "Sagrados",  icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
-  { id: "sintetizadores", label: "Digital",   icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio", "frecuencias"] },
+  { id: "naturaleza",     label: "Naturaleza",  icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
+  { id: "ancestrales",    label: "Ancestrales", icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
+  { id: "sintetizadores", label: "Digitales",   icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
+  { id: "binaurales",     label: "Binaurales",  icon: "activity",          color: "#4A60C0", categories: ["frecuencias"] },
+  { id: "voces",          label: "Voces",       icon: "mic",               color: "#9060A0", categories: ["mantras"] },
+  { id: "asmr",           label: "ASMR",        icon: "headphones",        color: "#408070", categories: ["asmr"] },
+  { id: "ruidos",         label: "Ruidos",      icon: "radio",             color: "#607080", categories: ["ruidos"] },
+  { id: "bpm",            label: "BPM",         icon: "music-note-eighth", color: "#A04040", categories: ["bpm"] },
 ];
 
 const COUNTS_KEY      = "@resonance_sound_play_counts";
@@ -376,7 +380,7 @@ export default function MiMusicaScreen() {
     });
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
+  const [mainTab,        setMainTab]        = useState<MainTabId>("naturaleza");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
   const [contentAnimKey, setContentAnimKey] = useState(0);

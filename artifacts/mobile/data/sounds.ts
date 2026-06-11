@@ -30,7 +30,9 @@ export type SoundCategoryId =
   | "mantras"
   | "solfeggio"
   | "ruidos"
-  | "frecuencias";
+  | "frecuencias"
+  | "asmr"
+  | "bpm";
 
 export interface SoundCategory {
   id: SoundCategoryId;
@@ -54,6 +56,8 @@ export const SOUND_CATEGORIES: SoundCategory[] = [
   { id: "solfeggio", label: "Solfeggio" },
   { id: "ruidos", label: "Ruidos" },
   { id: "frecuencias", label: "Frecuencias" },
+  { id: "asmr", label: "ASMR" },
+  { id: "bpm", label: "BPM" },
 ];
 
 export interface MixSound {
