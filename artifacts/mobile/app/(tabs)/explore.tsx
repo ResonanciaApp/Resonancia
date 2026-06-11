@@ -43,8 +43,6 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
-const TAG_W   = (width - H_PAD * 2 - GAP) / 2;
-const TAG_H   = 130;
 const TEMA_COL_W = (width - H_PAD * 2 - GAP) / 2;
 
 type Session = (typeof SESSIONS)[number];
@@ -247,32 +245,56 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Otras temáticas ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Otras Temáticas</Text>
-              <View style={styles.tagGrid}>
-                {TAG_CARDS.slice(0, TAGS_PREVIEW_COUNT).map((tag) => (
-                  <Pressable
-                    key={tag.id}
-                    onPress={() => router.push(`/tag/${tag.id}` as never)}
-                    style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.85 : 1 }]}
+            {/* ── Otras Temáticas — carrusel por tag ── */}
+            {TAG_CARDS.slice(0, TAGS_PREVIEW_COUNT).map((tag) => {
+              const tagSessions = SESSIONS.filter(
+                (s) => s.themeTag?.includes(tag.label)
+              ).slice(0, 10);
+              if (tagSessions.length === 0) return null;
+              return (
+                <View style={styles.section} key={tag.id}>
+                  <View style={styles.sectionRow}>
+                    <Text style={styles.sectionTitle}>{tag.label}</Text>
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={{ marginHorizontal: -H_PAD }}
+                    contentContainerStyle={styles.carouselContent}
                   >
-                    <View style={styles.tagImgWrap}>
-                      <Image
-                        source={tag.image}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="cover"
-                        cachePolicy="memory-disk"
-                        placeholder={BLUR_PLACEHOLDER}
-                        transition={IMAGE_TRANSITION}
-                      />
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(4,0,7,0.35)" }]} />
-                    </View>
-                    <Text style={styles.tagLabel}>{tag.label}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
+                    {tagSessions.map((s) => (
+                      <Pressable
+                        key={s.id}
+                        onPress={() => handleSessionPress(s)}
+                        style={({ pressed }) => [styles.sqCard, { opacity: pressed ? 0.82 : 1 }]}
+                      >
+                        <View style={styles.sqImageWrap}>
+                          <Image
+                            source={s.image as number}
+                            style={StyleSheet.absoluteFill}
+                            contentFit="cover"
+                            placeholder={BLUR_PLACEHOLDER}
+                            transition={IMAGE_TRANSITION}
+                            cachePolicy="memory-disk"
+                          />
+                          {s.isPremium && (
+                            <View style={styles.premiumBadge}>
+                              <Feather name="star" size={10} color="#BE9650" />
+                            </View>
+                          )}
+                        </View>
+                        <Text style={[styles.sqTitle, { color: colors.foreground }]} numberOfLines={2}>
+                          {s.title}
+                        </Text>
+                        <Text style={[styles.sqAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+                          {getSessionAuthor(s)}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+                </View>
+              );
+            })}
 
           </>
         )}
@@ -386,30 +408,4 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
 
-  // Tag cards — Otras Temáticas
-  tagGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    columnGap: GAP,
-    rowGap: 20,
-    marginTop: 2,
-  },
-  tagCard: {
-    width: TAG_W,
-    alignItems: "center",
-    gap: 8,
-  },
-  tagImgWrap: {
-    width: "100%" as unknown as number,
-    height: TAG_H,
-    borderRadius: 16,
-    overflow: "hidden",
-  },
-  tagLabel: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 20,
-  },
 });
