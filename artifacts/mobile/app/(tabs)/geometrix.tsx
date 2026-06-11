@@ -1989,65 +1989,66 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
     setActiveCategory(id);
   }, [carScrollX, carouselScrollRef]);
 
-  // SharedValue con el índice actual de categoría → legible desde worklets sin
-  // capturar activeCategory en el closure del gesto (evita re-registrar el
-  // handler nativo en cada cambio de estado).
-  const catIdxSV = useSharedValue(0);
-  useEffect(() => {
-    catIdxSV.value = GEOMETRY_CATEGORIES.findIndex((c) => c.id === activeCategory);
-  }, [activeCategory, catIdxSV]);
-
-  const catSwipeGesture = useMemo(() =>
-    Gesture.Pan()
-      .activeOffsetX([-20, 20])
-      .failOffsetY([-20, 20])
-      .onEnd((e) => {
-        if (Math.abs(e.translationX) < 30) return;
-        const idx = catIdxSV.value;
-        const total = GEOMETRY_CATEGORIES.length;
-        if (e.translationX < 0 && idx < total - 1) {
-          runOnJS(goCategory)(GEOMETRY_CATEGORIES[idx + 1].id);
-        } else if (e.translationX > 0 && idx > 0) {
-          runOnJS(goCategory)(GEOMETRY_CATEGORIES[idx - 1].id);
+  // Swipe de cambio de categoría vía el propio ScrollView del carrusel.
+  // Al soltar el dedo (onScrollEndDrag) miramos si estamos al borde y la
+  // velocidad apunta afuera: si sí, cambiamos de categoría.
+  // Esto no involucra GestureDetector adicional y no añade lag a los chips.
+  const handleCarouselSwipeCat = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: number }; velocity?: { x: number } } }) => {
+      const { contentOffset, velocity } = e.nativeEvent;
+      const vx = velocity?.x ?? 0;
+      const atStart = contentOffset.x <= 2;
+      const atEnd   = contentOffset.x >= carMaxScrollX.value - 2;
+      const idx = GEOMETRY_CATEGORIES.findIndex((c) => c.id === activeCategory);
+      // Desliza izquierda (vx < 0) en inicio → siguiente cat
+      if (atStart && vx < -0.3 && idx < GEOMETRY_CATEGORIES.length - 1) {
+        goCategory(GEOMETRY_CATEGORIES[idx + 1].id);
+      // Desliza derecha (vx > 0) al final → categoría anterior
+      } else if (atEnd && vx > 0.3 && idx > 0) {
+        goCategory(GEOMETRY_CATEGORIES[idx - 1].id);
+      // Si el carrusel no tiene scroll (pocas tiles), cualquier velocidad vale
+      } else if (carMaxScrollX.value <= 1) {
+        if (vx < -0.3 && idx < GEOMETRY_CATEGORIES.length - 1) {
+          goCategory(GEOMETRY_CATEGORIES[idx + 1].id);
+        } else if (vx > 0.3 && idx > 0) {
+          goCategory(GEOMETRY_CATEGORIES[idx - 1].id);
         }
-      }),
-  // El gesto se crea una sola vez; catIdxSV es estable.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [catIdxSV, goCategory]);
+      }
+    },
+    [activeCategory, goCategory, carMaxScrollX],
+  );
 
   return (
     <>
-      {/* Filtro por categoría: el carrusel muestra solo la categoría activa.
-          El GestureDetector permite deslizar izq/der para cambiar de tab. */}
-      <GestureDetector gesture={catSwipeGesture}>
-        <View style={styles.catFilterRow}>
-          {GEOMETRY_CATEGORIES.map((c) => {
-            const on = activeCategory === c.id;
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => {
-                  if (activeCategory === c.id) return;
-                  goCategory(c.id);
-                }}
-                style={[styles.catChip, on ? styles.catChipOn : null]}
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+      {/* Filtro por categoría: el carrusel muestra solo la categoría activa */}
+      <View style={styles.catFilterRow}>
+        {GEOMETRY_CATEGORIES.map((c) => {
+          const on = activeCategory === c.id;
+          return (
+            <Pressable
+              key={c.id}
+              onPress={() => {
+                if (activeCategory === c.id) return;
+                goCategory(c.id);
+              }}
+              style={[styles.catChip, on ? styles.catChipOn : null]}
+              accessibilityRole="button"
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+            >
+              <Text
+                style={[styles.catChipText, on ? styles.catChipTextOn : null]}
+                numberOfLines={1}
               >
-                <Text
-                  style={[styles.catChipText, on ? styles.catChipTextOn : null]}
-                  numberOfLines={1}
-                >
-                  {c.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </GestureDetector>
+                {c.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
 
-      {/* Galería de geometrías (una fila horizontal, scrolleable) */}
+      {/* Galería de geometrías (una fila horizontal, scrolleable).
+          onScrollEndDrag detecta swipe de cambio de categoría sin GestureDetector. */}
       <Animated.ScrollView
         ref={carouselScrollRef}
         horizontal
@@ -2057,6 +2058,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
         onContentSizeChange={(w) => {
           carMaxScrollX.value = Math.max(0, w - width);
         }}
+        onScrollEndDrag={handleCarouselSwipeCat}
         style={styles.grid}
         contentContainerStyle={styles.gridContent}
         showsHorizontalScrollIndicator={false}
