@@ -6148,9 +6148,9 @@ const styles = StyleSheet.create({
   catFilterRow: {
     flexDirection: "row",
     gap: 8,
-    paddingHorizontal: 20,
+    paddingRight: 8,
     marginTop: 2,
-    marginBottom: 5,
+    marginBottom: 3,
   },
   catChip: {
     paddingHorizontal: 12,
