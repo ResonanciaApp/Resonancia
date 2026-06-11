@@ -16,7 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
-import { useDrawer, markDrawerReopenOnHome, DRAWER_W } from "@/context/DrawerContext";
+import { useDrawer, markDrawerReopenOnHome, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
 
@@ -89,7 +89,7 @@ export function DrawerMenu() {
 
   const translateX = drawerAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [-DRAWER_W, 0],
+    outputRange: [-DRAWER_PUSH, 0],
   });
 
   const mainItems = loggedIn ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
@@ -109,14 +109,12 @@ export function DrawerMenu() {
       {/* Tap-outside to close — only active when drawer is open */}
       {visible && (
         <Pressable
-          style={[StyleSheet.absoluteFill, { left: DRAWER_W }]}
+          style={[StyleSheet.absoluteFill, { left: DRAWER_PUSH }]}
           onPress={onClose}
         />
       )}
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
-        {/* Relleno de 50 px a la derecha para tapar el hueco entre drawer y contenido desplazado */}
-        <View style={styles.rightBleed} />
         <LinearGradient
           colors={["#090D20", "#080A18", "#06070F"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
@@ -218,20 +216,12 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     left: 0,
-    width: DRAWER_W,
+    width: DRAWER_PUSH,
     shadowColor: "#000",
     shadowOffset: { width: 6, height: 0 },
     shadowOpacity: 0.35,
     shadowRadius: 12,
     elevation: 20,
-  },
-  rightBleed: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: DRAWER_W,
-    width: 50,
-    backgroundColor: "#06070F",
   },
   drawerInner: {
     flex: 1,

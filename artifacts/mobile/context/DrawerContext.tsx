@@ -4,6 +4,7 @@ import { usePathname } from "expo-router";
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 export const DRAWER_W = Math.min(Dimensions.get("window").width * 0.78, 300);
+export const DRAWER_PUSH = DRAWER_W + 50;
 
 type DrawerCtx = {
   isOpen: boolean;
