@@ -53,10 +53,10 @@ import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 const { width } = Dimensions.get("window");
 
 const NAV_TABS = [
-  { id: "sonidos-ancestrales",  label: "Ancestrales"  },
-  { id: "meditaciones-guiadas", label: "Meditaciones" },
-  { id: "musica-sonidos",       label: "Música"       },
-] as const;
+  { id: "todas",    label: "Todas",    cats: [] as string[] },
+  { id: "sesiones", label: "Sesiones", cats: ["sonidos-ancestrales", "meditaciones-guiadas"] },
+  { id: "musica",   label: "Música",   cats: ["musica-sonidos"] },
+];
 const GRID_GAP = 12;
 const GRID_PAD = 15;
 
@@ -137,7 +137,7 @@ export default function HomeScreen() {
   );
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -211,35 +211,35 @@ export default function HomeScreen() {
   const filteredPlaylists = React.useMemo(() => {
     if (!activeFilter) return PLAYLISTS;
     return PLAYLISTS.filter((pl) =>
-      pl.sessionIds.some((sid) => getSessionById(sid)?.categoryId === activeFilter)
+      pl.sessionIds.some((sid) => activeFilter!.includes(getSessionById(sid)?.categoryId ?? ""))
     );
   }, [activeFilter]);
 
   const filteredRecommended = React.useMemo(() => {
     if (!activeFilter) return recommendedSessions;
-    return recommendedSessions.filter((s) => s.categoryId === activeFilter);
+    return recommendedSessions.filter((s) => activeFilter.includes(s.categoryId));
   }, [recommendedSessions, activeFilter]);
 
   const filteredRecent = React.useMemo(() => {
     if (!activeFilter) return recentSessions;
-    return recentSessions.filter((s) => s.categoryId === activeFilter);
+    return recentSessions.filter((s) => activeFilter.includes(s.categoryId));
   }, [recentSessions, activeFilter]);
 
   const filteredListened = React.useMemo(() => {
     if (!activeFilter) return listenedRecently;
-    return listenedRecently.filter((s) => s.categoryId === activeFilter);
+    return listenedRecently.filter((s) => activeFilter.includes(s.categoryId));
   }, [listenedRecently, activeFilter]);
 
   const filteredMoreLike = React.useMemo(() => {
     if (!activeFilter) return moreLikeSessions;
-    return moreLikeSessions.filter((s) => s.categoryId === activeFilter);
+    return moreLikeSessions.filter((s) => activeFilter.includes(s.categoryId));
   }, [moreLikeSessions, activeFilter]);
 
   const filteredFeatured = React.useMemo(() => {
     if (!activeFilter) return featuredSession;
-    const pool = SESSIONS.filter((s) => s.categoryId === activeFilter);
+    const pool = SESSIONS.filter((s) => activeFilter.includes(s.categoryId));
     if (!pool.length) return undefined;
-    const seed = new Date().toDateString() + activeFilter;
+    const seed = new Date().toDateString() + activeFilter.join();
     let hash = 0;
     for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0x7fffffff;
     return pool[Math.abs(hash) % pool.length];
@@ -280,11 +280,15 @@ export default function HomeScreen() {
           </Pressable>
           <View style={styles.headerTabs}>
             {NAV_TABS.map((tab) => {
-              const sel = activeFilter === tab.id;
+              const sel = tab.cats.length === 0
+                ? activeFilter === null
+                : activeFilter?.join() === tab.cats.join();
               return (
                 <Pressable
                   key={tab.id}
-                  onPress={() => setActiveFilter(sel ? null : tab.id)}
+                  onPress={() =>
+                    setActiveFilter(tab.cats.length === 0 ? null : sel ? null : tab.cats)
+                  }
                   style={({ pressed }) => [
                     styles.headerTabChip,
                     sel && styles.headerTabChipActive,
