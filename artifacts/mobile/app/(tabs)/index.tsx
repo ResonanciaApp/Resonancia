@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
-    backgroundColor: "#090D20",
+    backgroundColor: "#080B1A",
     zIndex: 10,
   },
   scroll: { flex: 1 },
