@@ -67,6 +67,8 @@ export type GeoSettings = {
   particleAmount: number;
   /** Vibración 0–1: micro-oscilaciones rápidas de translateX/Y (efecto frecuencia sonora). */
   vibracionAmount: number;
+  /** Sombra 0–1: sombra difusa detrás del glifo que da sensación de profundidad. 0 = off. */
+  shadowAmount: number;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */

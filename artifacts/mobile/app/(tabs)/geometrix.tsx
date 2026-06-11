@@ -198,6 +198,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     ghostAmount: 0,
     particleAmount: 0,
     vibracionAmount: 0,
+    shadowAmount: 0,
   };
 }
 
@@ -1866,8 +1867,6 @@ const SECTION_ICONS: Record<string, React.ComponentProps<typeof Feather>["name"]
   "Energía":        "zap",
   "Luminosidad":    "sun",
   "Transformación": "refresh-cw",
-  "Distorsión":     "wind",
-  "Resonancias":    "activity",
   "Profundidad":    "layers",
   "Calidoscopio":   "aperture",
 };
@@ -5052,8 +5051,8 @@ export default function GeometrixScreen() {
             {/* ── Energía ───────────────────────────────────────────────── */}
             <SettingsSection
               title="Energía"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "ripple"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "ripple"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
@@ -5088,11 +5087,11 @@ export default function GeometrixScreen() {
                       trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Vibración</Text>
+                      <Text style={styles.fieldLabel}>Ripple</Text>
                     </View>
                     <VolumeSlider
-                      value={g0?.vibracionAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "vibracionAmount", v))}
+                      value={g0?.ripple ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "ripple", v))}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -5166,8 +5165,8 @@ export default function GeometrixScreen() {
             {/* ── Transformación ────────────────────────────────────────── */}
             <SettingsSection
               title="Transformación"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
@@ -5211,99 +5210,35 @@ export default function GeometrixScreen() {
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>3D</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.threeDAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "threeDAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                  </>
-                );
-              })()}
-            </SettingsSection>
-
-            {/* ── Distorsión ────────────────────────────────────────────── */}
-            <SettingsSection
-              title="Distorsión"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["onda", "ripple", "warp"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["onda", "ripple", "warp"]))}
-              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-            >
-              {(() => {
-                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
-                return (
-                  <>
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Onda</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.onda ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "onda", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Ripple</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.ripple ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "ripple", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Warp</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.warp ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "warp", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                  </>
-                );
-              })()}
-            </SettingsSection>
-
-            {/* ── Resonancias ───────────────────────────────────────────── */}
-            <SettingsSection
-              title="Resonancias"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["ghostAmount", "particleAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["ghostAmount", "particleAmount"]))}
-              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-            >
-              {(() => {
-                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
-                return (
-                  <>
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Fantasma</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.ghostAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "ghostAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Partículas</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.particleAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "particleAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
                   </>
                 );
               })()}
             </SettingsSection>
 
             {/* ── Profundidad ───────────────────────────────────────────── */}
-            <SettingsSection title="Profundidad" />
+            <SettingsSection
+              title="Profundidad"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["shadowAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["shadowAmount"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Efecto de Sombra</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.shadowAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "shadowAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </>
+                );
+              })()}
+            </SettingsSection>
 
             {/* ── Calidoscopio ──────────────────────────────────────────── */}
             <SettingsSection
@@ -5766,8 +5701,8 @@ export default function GeometrixScreen() {
                   {/* ── Energía ───────────────────────────────────────────── */}
                   <SettingsSection
                     title="Energía"
-                    isModified={isSectionModified(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
-                    onReset={() => resetSection(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
+                    isModified={isSectionModified(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "ripple"])}
+                    onReset={() => resetSection(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "ripple"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
@@ -5798,11 +5733,11 @@ export default function GeometrixScreen() {
                       trackColor="rgba(255,255,255,0.12)"
                     />
                     <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Vibración</Text>
+                      <Text style={styles.fieldLabel}>Ripple</Text>
                     </View>
                     <VolumeSlider
-                      value={s.vibracionAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "vibracionAmount", v)}
+                      value={s.ripple ?? 0}
+                      onChange={(v) => updateSetting(iid, "ripple", v)}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -5856,8 +5791,8 @@ export default function GeometrixScreen() {
                   {/* ── Transformación ────────────────────────────────────── */}
                   <SettingsSection
                     title="Transformación"
-                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
-                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
+                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate"])}
+                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
@@ -5893,82 +5828,25 @@ export default function GeometrixScreen() {
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>3D</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.threeDAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "threeDAmount", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                  </SettingsSection>
-
-                  {/* ── Distorsión ────────────────────────────────────────── */}
-                  <SettingsSection
-                    title="Distorsión"
-                    isModified={isSectionModified(iid, ["onda", "ripple", "warp"])}
-                    onReset={() => resetSection(iid, ["onda", "ripple", "warp"])}
-                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-                  >
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Onda</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.onda ?? 0}
-                      onChange={(v) => updateSetting(iid, "onda", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Ripple</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.ripple ?? 0}
-                      onChange={(v) => updateSetting(iid, "ripple", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Warp</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.warp ?? 0}
-                      onChange={(v) => updateSetting(iid, "warp", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                  </SettingsSection>
-
-                  {/* ── Resonancias ───────────────────────────────────────── */}
-                  <SettingsSection
-                    title="Resonancias"
-                    isModified={isSectionModified(iid, ["ghostAmount", "particleAmount"])}
-                    onReset={() => resetSection(iid, ["ghostAmount", "particleAmount"])}
-                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-                  >
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Fantasma</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.ghostAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "ghostAmount", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Partículas</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.particleAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "particleAmount", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
                   </SettingsSection>
 
                   {/* ── Profundidad ───────────────────────────────────────── */}
-                  <SettingsSection title="Profundidad" />
+                  <SettingsSection
+                    title="Profundidad"
+                    isModified={isSectionModified(iid, ["shadowAmount"])}
+                    onReset={() => resetSection(iid, ["shadowAmount"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+                  >
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Efecto de Sombra</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.shadowAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "shadowAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </SettingsSection>
 
                   {/* ── Calidoscopio ──────────────────────────────────────── */}
                   <SettingsSection
