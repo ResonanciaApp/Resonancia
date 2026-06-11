@@ -68,12 +68,21 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
     onChangeRef.current(v);
   }, []);
 
+  // Limpia el flag en el hilo JS, después de que todos los runOnJS(emit) de
+  // onUpdate hayan corrido (FIFO). Si se limpiara en el worklet (UI thread),
+  // quedaría a 0 ANTES de que las emisiones pendientes lleguen al JS thread;
+  // la reacción las procesaría con isDragging=0 y snapearía fraction.value
+  // a cada valor intermedio → bounce visible en releases rápidos.
+  const clearDragging = React.useCallback(() => {
+    isDragging.value = 0;
+  }, [isDragging]);
+
   const gesture = React.useMemo(
     () =>
       Gesture.Pan()
         .minDistance(0)
         .onBegin((e) => {
-          isDragging.value = 1; // UI thread — bloquea la reacción antes de emit
+          isDragging.value = 1; // worklet (UI thread) — inmediato, antes de cualquier runOnJS
           const raw = (e.x - TRACK_PAD) / trackWidth.value;
           const f = Math.min(1, Math.max(0, raw));
           fraction.value = f;
@@ -92,11 +101,11 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
         .onFinalize(() => {
           if (fraction.value !== lastEmit.value) {
             lastEmit.value = fraction.value;
-            runOnJS(emit)(fraction.value);
+            runOnJS(emit)(fraction.value); // encola ANTES que clearDragging (FIFO)
           }
-          isDragging.value = 0; // UI thread — se limpia tras la última emisión
+          runOnJS(clearDragging)(); // FIFO: corre después de todos los emit pendientes
         }),
-    [emit, isDragging, fraction, trackWidth, lastEmit],
+    [emit, clearDragging, isDragging, fraction, trackWidth, lastEmit],
   );
 
   const fillStyle = useAnimatedStyle(() => ({

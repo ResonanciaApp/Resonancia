@@ -1751,6 +1751,8 @@ function CarouselTileInner({
       <GestureDetector gesture={dragGesture}>
         <Pressable
           onPress={() => onToggle(id)}
+          shouldRasterizeIOS
+          renderToHardwareTextureAndroid
           style={[
             styles.tile,
             { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
