@@ -372,10 +372,7 @@ export default function MiMusicaBlancoScreen() {
                 )}
               </Pressable>
 
-              <View style={{ flex: 1, marginLeft: 10 }}>
-                <Text style={styles.pageSuper}>MI MÚSICA</Text>
-                <Text style={styles.pageTitle}>Mezclador</Text>
-              </View>
+              <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Mi Música</Text>
               <Pressable
                 onPress={() => router.push("/mezclas" as never)}
                 style={styles.heartBtn}
@@ -501,7 +498,7 @@ const styles = StyleSheet.create({
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(190,150,80,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(190,150,80,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
-  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: -0.4, color: DARK },
+  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, color: DARK },
   heartBtn:  {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
