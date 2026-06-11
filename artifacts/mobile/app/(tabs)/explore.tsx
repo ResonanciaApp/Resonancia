@@ -284,7 +284,7 @@ export default function ExploreScreen() {
 
             {/* ── Sigue escuchando (carrusel por categoría) ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { marginBottom: 12 }]}>Sigue escuchando</Text>
+              <Text style={styles.sectionTitle}>Sigue escuchando</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -391,14 +391,14 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Mezclas de la comunidad ── */}
-            <View style={{ marginBottom: 43 }}>
+            <View style={{ marginBottom: 57 }}>
               <CommunityMixesCarousel />
             </View>
 
             {/* ── Otras Temáticas ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                <Text style={styles.sectionTitle}>
                   Otras Temáticas
                 </Text>
               </View>
@@ -497,8 +497,8 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14 },
 
-  section: { paddingHorizontal: H_PAD, marginBottom: 43 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#FFFFFF" },
+  section: { paddingHorizontal: H_PAD, marginBottom: 57 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14, color: "#FFFFFF" },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 11,
+    marginBottom: 0,
   },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
 
