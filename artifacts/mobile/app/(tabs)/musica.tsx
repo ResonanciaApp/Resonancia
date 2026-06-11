@@ -191,14 +191,13 @@ const PillTab = memo(function PillTab({
 const SubTabPill = memo(function SubTabPill({
   label, sel, onPress, selBg,
 }: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string }) {
-  const activeBg = selBg ?? DARK;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        { backgroundColor: sel ? activeBg : "#FFFFFF" },
+        { backgroundColor: sel ? "#BE9650" : "rgba(255,255,255,0.06)" },
       ]}>
-        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : "#1A3A6E", fontWeight: sel ? "700" : "600" }]}>
+        <Text style={[styles.subTabText, { color: sel ? "#0B0F14" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {label}
         </Text>
       </View>
@@ -852,13 +851,13 @@ const styles = StyleSheet.create({
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 11 },
   subTabPill: {
-    flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 13,
-    borderRadius: 999,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+    height: 32,
+    borderRadius: 20,
   },
-  subTabText: { fontSize: 12, fontWeight: "600" },
+  subTabText: { fontSize: 13, letterSpacing: 0.1 },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
