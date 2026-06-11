@@ -192,28 +192,6 @@ export default function HomeScreen() {
             {/* <NotificationBell /> */}
           </View>
 
-          <Pressable
-            onPress={handleIntentionPress}
-            style={({ pressed }) => [styles.intentionCard, { opacity: pressed ? 0.75 : 1 }]}
-          >
-            <Text style={[styles.intentionLabel, { color: colors.mutedForeground }]}>
-              Hoy voy a ...
-            </Text>
-            <View style={styles.intentionRow}>
-              {currentIntencion ? (
-                <Text style={[styles.intentionPlaceholder, { color: colors.primary, fontStyle: "italic" }]} numberOfLines={2}>
-                  {currentIntencion}
-                </Text>
-              ) : (
-                <>
-                  <BlinkingCursor color={colors.primary} />
-                  <Text style={[styles.intentionPlaceholder, { color: "#FFFFFF" }]}>
-                    Establece tu intención aquí
-                  </Text>
-                </>
-              )}
-            </View>
-          </Pressable>
         </View>
 
         {/* ── 3. VIDEOS DESTACADOS ── */}
