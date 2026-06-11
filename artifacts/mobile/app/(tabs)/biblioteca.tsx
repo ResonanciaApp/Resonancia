@@ -371,7 +371,17 @@ export default function BibliotecaScreen() {
           ))}
         </ScrollView>
 
-        {/* Fila 3: ordenar + toggle vista */}
+        {/* Sombra inferior del sticky header */}
+        <View style={styles.headerShadow} />
+      </View>
+
+      {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Ordenar + toggle vista */}
         <View style={styles.controlRow}>
           <Pressable onPress={toggleSort} style={styles.sortBtn} hitSlop={8}>
             <Feather name={sort === "recientes" ? "chevron-down" : "chevron-up"} size={14} color={MUTED} />
@@ -384,17 +394,6 @@ export default function BibliotecaScreen() {
             }
           </Pressable>
         </View>
-
-        {/* Sombra inferior del sticky header */}
-        <View style={styles.headerShadow} />
-      </View>
-
-      {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
-        showsVerticalScrollIndicator={false}
-      >
         {renderContent()}
       </ScrollView>
 
