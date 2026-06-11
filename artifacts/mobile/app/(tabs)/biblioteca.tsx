@@ -2,12 +2,12 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useRef, useState, useCallback, useMemo } from "react";
+import React, { useRef, useState, useCallback, useMemo, useEffect } from "react";
 import {
   Animated,
   Dimensions,
   FlatList,
-  KeyboardAvoidingView,
+  Keyboard,
   Modal,
   Platform,
   Pressable,
@@ -163,12 +163,32 @@ function ResonadorRow({ name, photo, role, onPress }: {
 function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const [q, setQ] = useState("");
   const inputRef = useRef<TextInput>(null);
+  const [kbHeight, setKbHeight] = useState(0);
+  const [kbReady, setKbReady] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!visible) {
+      setKbReady(false);
+      setKbHeight(0);
+      fadeAnim.setValue(0);
+      return;
+    }
+    const show = Keyboard.addListener("keyboardDidShow", (e) => {
+      setKbHeight(e.endCoordinates.height);
+      setKbReady(true);
+      Animated.timing(fadeAnim, { toValue: 1, duration: 180, useNativeDriver: true }).start();
+    });
+    const hide = Keyboard.addListener("keyboardDidHide", () => {
+      setKbReady(false);
+      fadeAnim.setValue(0);
+    });
+    return () => { show.remove(); hide.remove(); };
+  }, [visible, fadeAnim]);
+
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+      <View style={[styles.searchModalRoot, { paddingBottom: kbHeight }]}>
         <View style={styles.searchOverlay}>
           <View style={styles.searchBar}>
             <Feather name="search" size={16} color={MUTED} />
@@ -186,14 +206,14 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
             <Text style={styles.cancelText}>Cancelar</Text>
           </Pressable>
         </View>
-        {q.length === 0 && (
-          <View style={styles.searchEmpty}>
+        {q.length === 0 && kbReady && (
+          <Animated.View style={[styles.searchEmpty, { opacity: fadeAnim }]}>
             <Feather name="headphones" size={48} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.searchEmptyTitle}>Encuentra tus sesiones favoritas</Text>
             <Text style={styles.searchEmptySub}>Busca todo lo que guardaste, seguiste o creaste.</Text>
-          </View>
+          </Animated.View>
         )}
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }
@@ -538,6 +558,10 @@ const styles = StyleSheet.create({
   emptyBtnText: { color: "#000", fontWeight: "700", fontSize: 14 },
 
   // ── Búsqueda overlay ────────────────────────────────────────────────────────
+  searchModalRoot: {
+    flex: 1,
+    backgroundColor: "#080B1A",
+  },
   searchOverlay: {
     flexDirection: "row",
     alignItems: "center",
