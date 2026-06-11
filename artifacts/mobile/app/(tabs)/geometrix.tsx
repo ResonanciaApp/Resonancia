@@ -4131,9 +4131,16 @@ export default function GeometrixScreen() {
               setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
             }}
           >
-            {canvasSide > 0 && !fullscreenEdit && (
+            {canvasSide > 0 && (
+              // GestureDetector SIEMPRE montado — si se desmonta al salir del fullscreen
+              // RNGH queda en estado interno corrupto y acepta solo UN gesto antes de bloquearse.
+              // En cambio, pointerEvents:"none" en el canvas View bloquea los toques sin
+              // re-registrar el gesture handler, evitando la confusión de estado.
               <GestureDetector gesture={canvasGesture}>
-                <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
+                <View
+                  style={[styles.canvas, { width: canvasSide, height: canvasSide }]}
+                  pointerEvents={fullscreenEdit ? "none" : "box-none"}
+                >
                 {layerSize > 0 &&
                   visibleMetas.map((m, i) => {
                     const { iid, geo: g } = m;
