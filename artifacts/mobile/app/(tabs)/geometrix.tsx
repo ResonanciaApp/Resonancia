@@ -195,6 +195,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     expansionAmount: 0,
     threeDAmount: 0,
     ghostAmount: 0,
+    particleAmount: 0,
   };
 }
 
@@ -382,6 +383,94 @@ function ExpansionEcho({
   );
 }
 
+// ── Partículas: puntos que emanan radialmente desde el centro ────────────────
+const PARTICLE_COUNT = 20;
+const PARTICLE_DOT_PX = 4;
+const PARTICLE_DURATION_MS = 1900;
+// Ángulos distribuidos uniformemente con jitter determinista (sin Math.random
+// para que no cambien entre renders/recargas).
+const PARTICLE_ANGLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
+  const base = (i / PARTICLE_COUNT) * Math.PI * 2;
+  const jitter = (((i * 6271 + 3) % 100) / 100 - 0.5) * 0.4;
+  return base + jitter;
+});
+
+function Particle({
+  angle, delay, maxRadius, color, amount,
+}: {
+  angle: number; delay: number; maxRadius: number; color: string; amount: number;
+}) {
+  const phaseSV = useSharedValue(0);
+  const on = amount > 0;
+  useEffect(() => {
+    if (on) {
+      phaseSV.value = withDelay(
+        delay,
+        withRepeat(withTiming(1, { duration: PARTICLE_DURATION_MS, easing: Easing.linear }), -1, false),
+      );
+    } else {
+      cancelAnimation(phaseSV);
+      phaseSV.value = withTiming(0, { duration: 300 });
+    }
+  }, [on, delay, phaseSV]);
+  const aStyle = useAnimatedStyle(() => {
+    const p = phaseSV.value;
+    const r = p * maxRadius;
+    // Desvanecer con curva acelerada: brillante al nacer, rápido al final.
+    const opacity = Math.pow(Math.max(0, 1 - p), 1.3) * 0.85 * amount;
+    // Crece levemente mientras se aleja del centro.
+    const sc = 0.35 + p * 0.55;
+    return {
+      opacity,
+      transform: [
+        { translateX: Math.cos(angle) * r },
+        { translateY: Math.sin(angle) * r },
+        { scale: sc },
+      ],
+    };
+  });
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        {
+          position: "absolute",
+          width: PARTICLE_DOT_PX,
+          height: PARTICLE_DOT_PX,
+          borderRadius: PARTICLE_DOT_PX / 2,
+          // Centrar el punto en el origen (wrapper de tamaño cero).
+          left: -PARTICLE_DOT_PX / 2,
+          top: -PARTICLE_DOT_PX / 2,
+          backgroundColor: color,
+        },
+        aStyle,
+      ]}
+    />
+  );
+}
+
+function ParticleField({ size, color, amount }: { size: number; color: string; amount: number }) {
+  // Mezcla con blanco para dar luminosidad tipo sparkle.
+  const particleColor = mixHex(color, "#FFFFFF", 0.3);
+  const maxRadius = size * 0.52;
+  return (
+    // Wrapper de tamaño cero: el flex del padre lo centra en el lienzo.
+    // Cada Particle es position:absolute con left/top:-2 → origen = centro exacto.
+    <View style={{ width: 0, height: 0 }} pointerEvents="none">
+      {PARTICLE_ANGLES.map((angle, i) => (
+        <Particle
+          key={i}
+          angle={angle}
+          delay={Math.round((i / PARTICLE_COUNT) * PARTICLE_DURATION_MS)}
+          maxRadius={maxRadius}
+          color={particleColor}
+          amount={amount}
+        />
+      ))}
+    </View>
+  );
+}
+
 // ── Capa animada del fondo ────────────────────────────────────────
 function GeometryLayer({
   geo,
@@ -495,6 +584,7 @@ function GeometryLayer({
     expansionAmount,
     threeDAmount,
     ghostAmount,
+    particleAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -509,6 +599,7 @@ function GeometryLayer({
   const safeWarp = Number.isFinite(warp) ? clamp01(warp) : 0;
   const safe3D = Number.isFinite(threeDAmount) ? clamp01(threeDAmount ?? 0) : 0;
   const safeGhost = Number.isFinite(ghostAmount) ? clamp01(ghostAmount ?? 0) : 0;
+  const safeParticles = Number.isFinite(particleAmount) ? clamp01(particleAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -840,6 +931,14 @@ function GeometryLayer({
             />
           </View>
         </>
+      )}
+      {/* Partículas: puntos que emanan radialmente desde el centro. */}
+      {safeParticles > 0 && (
+        <ParticleField
+          size={effectiveSize}
+          color={dispColor}
+          amount={safeParticles}
+        />
       )}
       {/* Fantasma: duplicados desplazados en contrafase que simulan eco visual. */}
       {safeGhost > 0 && (
@@ -4747,8 +4846,8 @@ export default function GeometrixScreen() {
             {/* ── Resonancias ───────────────────────────────────────────── */}
             <SettingsSection
               title="Resonancias"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["ghostAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["ghostAmount"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["ghostAmount", "particleAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["ghostAmount", "particleAmount"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
@@ -4761,6 +4860,15 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.ghostAmount ?? 0}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "ghostAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Partículas</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.particleAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "particleAmount", v))}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -5410,8 +5518,8 @@ export default function GeometrixScreen() {
                   {/* ── Resonancias ───────────────────────────────────────── */}
                   <SettingsSection
                     title="Resonancias"
-                    isModified={isSectionModified(iid, ["ghostAmount"])}
-                    onReset={() => resetSection(iid, ["ghostAmount"])}
+                    isModified={isSectionModified(iid, ["ghostAmount", "particleAmount"])}
+                    onReset={() => resetSection(iid, ["ghostAmount", "particleAmount"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
@@ -5420,6 +5528,15 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.ghostAmount ?? 0}
                       onChange={(v) => updateSetting(iid, "ghostAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Partículas</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.particleAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "particleAmount", v)}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />

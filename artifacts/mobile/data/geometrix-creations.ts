@@ -63,6 +63,8 @@ export type GeoSettings = {
   /** Fantasma 0–1: duplicados del glifo desplazados y semitransparentes que pulsan
    *  en contrafase. 0 = off, 1 = fantasmas muy visibles. */
   ghostAmount: number;
+  /** Partículas 0–1: puntos que emanan radialmente desde el centro del glifo. 0 = off. */
+  particleAmount: number;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */
