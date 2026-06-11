@@ -40,6 +40,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { VIDEOS } from "@/data/videos";
+import { PLAYLISTS } from "@/data/playlists";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
 import PremiumBanner from "@/components/PremiumBanner";
@@ -192,6 +193,23 @@ export default function HomeScreen() {
             {/* <NotificationBell /> */}
           </View>
 
+        </View>
+
+        {/* ── 2. COLECCIONES DE RESONANCIA ── */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { marginBottom: 12 }]}>Colecciones</Text>
+          <View style={styles.coleccionGrid}>
+            {PLAYLISTS.map((pl) => (
+              <Pressable
+                key={pl.id}
+                onPress={() => router.push(`/coleccion/${pl.id}` as never)}
+                style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Image source={pl.cover as number} style={styles.coleccionThumb} resizeMode="cover" />
+                <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
 
         {/* ── 3. VIDEOS DESTACADOS ── */}
@@ -555,6 +573,33 @@ const styles = StyleSheet.create({
   historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   // Categories — 2×2 grid cards
+  coleccionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  coleccionCard: {
+    flexBasis: "47%",
+    flexGrow: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 8,
+    overflow: "hidden",
+    height: 62,
+  },
+  coleccionThumb: {
+    width: 62,
+    height: 62,
+  },
+  coleccionTitle: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#EDE1D3",
+    paddingHorizontal: 10,
+    lineHeight: 18,
+  },
   catGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
