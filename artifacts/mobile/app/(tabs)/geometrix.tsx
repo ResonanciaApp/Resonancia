@@ -1879,6 +1879,18 @@ function GoldSlidersIcon({ size = 18 }: { size?: number }) {
 }
 
 // ── Sección colapsable de ajustes personalizados ────────────────────────────
+const SECTION_ICONS: Record<string, React.ComponentProps<typeof Feather>["name"]> = {
+  "Fondo":          "image",
+  "Color":          "droplet",
+  "Energía":        "zap",
+  "Luminosidad":    "sun",
+  "Transformación": "refresh-cw",
+  "Distorsión":     "wind",
+  "Resonancias":    "activity",
+  "Profundidad":    "layers",
+  "Calidoscopio":   "aperture",
+};
+
 function SettingsSection({
   title,
   children,
@@ -1929,9 +1941,14 @@ function SettingsSection({
         accessibilityRole="button"
         accessibilityLabel={`${title} — ${open ? "colapsar" : "expandir"}`}
       >
-        <Text style={{ flex: 1, fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.mutedForeground }}>
-          {title}
-        </Text>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 7 }}>
+          {SECTION_ICONS[title] != null && (
+            <Feather name={SECTION_ICONS[title]!} size={13} color="#FFFFFF" />
+          )}
+          <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.mutedForeground }}>
+            {title}
+          </Text>
+        </View>
         {isModified && onReset && (
           <Pressable
             onPress={onReset}
@@ -4762,7 +4779,7 @@ export default function GeometrixScreen() {
                 return (
                   <>
                     <Text style={styles.fieldLabel}>Color sólido</Text>
-                    <View style={styles.swatchRow}>
+                    <View style={[styles.swatchRow, { marginTop: 10 }]}>
                       {PALETTE.map((c) => {
                         const on = !g0?.gradientId && g0?.color?.toLowerCase() === c.toLowerCase();
                         return (
@@ -4784,7 +4801,7 @@ export default function GeometrixScreen() {
                       })}
                     </View>
                     <Text style={[styles.fieldLabel, styles.gradientLabel]}>Color degradado</Text>
-                    <View style={styles.swatchRow}>
+                    <View style={[styles.swatchRow, { marginTop: 10 }]}>
                       {STROKE_GRADIENTS.map((gr) => {
                         const on = g0?.gradientId === gr.id;
                         return (
@@ -4804,6 +4821,58 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.saturation ?? 0.5}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "saturation", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </>
+                );
+              })()}
+            </SettingsSection>
+
+            {/* ── Energía ───────────────────────────────────────────────── */}
+            <SettingsSection
+              title="Energía"
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
+              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+            >
+              {(() => {
+                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                return (
+                  <>
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Fade</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.fadeLoopAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "fadeLoopAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Respirar</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.breatheAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "breatheAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Expansión</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.expansionAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "expansionAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Vibración</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.vibracionAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "vibracionAmount", v))}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -4877,8 +4946,8 @@ export default function GeometrixScreen() {
             {/* ── Transformación ────────────────────────────────────────── */}
             <SettingsSection
               title="Transformación"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
@@ -4886,6 +4955,56 @@ export default function GeometrixScreen() {
                 return (
                   <>
                     <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Girar izquierda</Text>
+                      <Toggle
+                        value={g0?.rotateLeft ?? false}
+                        onChange={(v) => {
+                          activeMetas.forEach((m) => {
+                            updateSetting(m.iid, "rotateLeft", v);
+                            if (v) updateSetting(m.iid, "rotate", false);
+                          });
+                        }}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                    {(g0?.rotateLeft ?? false) && (
+                      <>
+                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                        <VolumeSlider
+                          value={g0?.rotateSpeed ?? 0.5}
+                          onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
+                          color="#FFFFFF"
+                          trackColor="rgba(255,255,255,0.12)"
+                        />
+                      </>
+                    )}
+                    <View style={[styles.fieldRow, { marginTop: 8 }]}>
+                      <Text style={styles.fieldLabel}>Girar derecha</Text>
+                      <Toggle
+                        value={g0?.rotate ?? false}
+                        onChange={(v) => {
+                          activeMetas.forEach((m) => {
+                            updateSetting(m.iid, "rotate", v);
+                            if (v) updateSetting(m.iid, "rotateLeft", false);
+                          });
+                        }}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                    {(g0?.rotate ?? false) && (
+                      <>
+                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                        <VolumeSlider
+                          value={g0?.rotateSpeed ?? 0.5}
+                          onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
+                          color="#FFFFFF"
+                          trackColor="rgba(255,255,255,0.12)"
+                        />
+                      </>
+                    )}
+                    <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Grosor</Text>
                     </View>
                     <VolumeSlider
@@ -4903,36 +5022,6 @@ export default function GeometrixScreen() {
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
-                    <View style={[styles.toggleGrid, { marginTop: 8 }]}>
-                      <View style={styles.toggleGridItem}>
-                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar izquierda</Text>
-                        <Toggle
-                          value={g0?.rotateLeft ?? false}
-                          onChange={(v) => {
-                            activeMetas.forEach((m) => {
-                              updateSetting(m.iid, "rotateLeft", v);
-                              if (v) updateSetting(m.iid, "rotate", false);
-                            });
-                          }}
-                          color={TOGGLE_ON_COLOR}
-                          compact
-                        />
-                      </View>
-                      <View style={styles.toggleGridItem}>
-                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar derecha</Text>
-                        <Toggle
-                          value={g0?.rotate ?? false}
-                          onChange={(v) => {
-                            activeMetas.forEach((m) => {
-                              updateSetting(m.iid, "rotate", v);
-                              if (v) updateSetting(m.iid, "rotateLeft", false);
-                            });
-                          }}
-                          color={TOGGLE_ON_COLOR}
-                          compact
-                        />
-                      </View>
-                    </View>
                   </>
                 );
               })()}
@@ -5077,58 +5166,6 @@ export default function GeometrixScreen() {
                         </View>
                       </View>
                     )}
-                  </>
-                );
-              })()}
-            </SettingsSection>
-
-            {/* ── Energía ───────────────────────────────────────────────── */}
-            <SettingsSection
-              title="Energía"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
-              onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-            >
-              {(() => {
-                const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
-                return (
-                  <>
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Fade</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.fadeLoopAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "fadeLoopAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Respirar</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.breatheAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "breatheAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Expansión</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.expansionAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "expansionAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Vibración</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.vibracionAmount ?? 0}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "vibracionAmount", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
                   </>
                 );
               })()}
@@ -5483,7 +5520,7 @@ export default function GeometrixScreen() {
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <Text style={styles.fieldLabel}>Color sólido</Text>
-                    <View style={styles.swatchRow}>
+                    <View style={[styles.swatchRow, { marginTop: 10 }]}>
                       {PALETTE.map((c) => {
                         const on = !s.gradientId && s.color.toLowerCase() === c.toLowerCase();
                         return (
@@ -5503,7 +5540,7 @@ export default function GeometrixScreen() {
                       })}
                     </View>
                     <Text style={[styles.fieldLabel, styles.gradientLabel]}>Color degradado</Text>
-                    <View style={styles.swatchRow}>
+                    <View style={[styles.swatchRow, { marginTop: 10 }]}>
                       {STROKE_GRADIENTS.map((gr) => {
                         const on = s.gradientId === gr.id;
                         return (
@@ -5523,6 +5560,51 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.saturation ?? 0.5}
                       onChange={(v) => updateSetting(iid, "saturation", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                  </SettingsSection>
+
+                  {/* ── Energía ───────────────────────────────────────────── */}
+                  <SettingsSection
+                    title="Energía"
+                    isModified={isSectionModified(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
+                    onReset={() => resetSection(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
+                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+                  >
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Fade</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.fadeLoopAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "fadeLoopAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Respirar</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.breatheAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "breatheAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Expansión</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.expansionAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "expansionAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Vibración</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.vibracionAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "vibracionAmount", v)}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -5576,11 +5658,57 @@ export default function GeometrixScreen() {
                   {/* ── Transformación ────────────────────────────────────── */}
                   <SettingsSection
                     title="Transformación"
-                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
-                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
+                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"])}
+                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Girar izquierda</Text>
+                      <Toggle
+                        value={s.rotateLeft}
+                        onChange={(v) => {
+                          updateSetting(iid, "rotateLeft", v);
+                          if (v) updateSetting(iid, "rotate", false);
+                        }}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                    {s.rotateLeft && (
+                      <>
+                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                        <VolumeSlider
+                          value={s.rotateSpeed ?? 0.5}
+                          onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
+                          color="#FFFFFF"
+                          trackColor="rgba(255,255,255,0.12)"
+                        />
+                      </>
+                    )}
+                    <View style={[styles.fieldRow, { marginTop: 8 }]}>
+                      <Text style={styles.fieldLabel}>Girar derecha</Text>
+                      <Toggle
+                        value={s.rotate}
+                        onChange={(v) => {
+                          updateSetting(iid, "rotate", v);
+                          if (v) updateSetting(iid, "rotateLeft", false);
+                        }}
+                        color={TOGGLE_ON_COLOR}
+                        compact
+                      />
+                    </View>
+                    {s.rotate && (
+                      <>
+                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                        <VolumeSlider
+                          value={s.rotateSpeed ?? 0.5}
+                          onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
+                          color="#FFFFFF"
+                          trackColor="rgba(255,255,255,0.12)"
+                        />
+                      </>
+                    )}
+                    <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Grosor</Text>
                     </View>
                     <VolumeSlider
@@ -5598,32 +5726,6 @@ export default function GeometrixScreen() {
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
-                    <View style={[styles.toggleGrid, { marginTop: 8 }]}>
-                      <View style={styles.toggleGridItem}>
-                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar izquierda</Text>
-                        <Toggle
-                          value={s.rotateLeft}
-                          onChange={(v) => {
-                            updateSetting(iid, "rotateLeft", v);
-                            if (v) updateSetting(iid, "rotate", false);
-                          }}
-                          color={TOGGLE_ON_COLOR}
-                          compact
-                        />
-                      </View>
-                      <View style={styles.toggleGridItem}>
-                        <Text style={styles.toggleTriLabel} numberOfLines={2}>Girar derecha</Text>
-                        <Toggle
-                          value={s.rotate}
-                          onChange={(v) => {
-                            updateSetting(iid, "rotate", v);
-                            if (v) updateSetting(iid, "rotateLeft", false);
-                          }}
-                          color={TOGGLE_ON_COLOR}
-                          compact
-                        />
-                      </View>
-                    </View>
                   </SettingsSection>
 
                   {/* ── Distorsión ────────────────────────────────────────── */}
@@ -5745,51 +5847,6 @@ export default function GeometrixScreen() {
                         </View>
                       </View>
                     )}
-                  </SettingsSection>
-
-                  {/* ── Energía ───────────────────────────────────────────── */}
-                  <SettingsSection
-                    title="Energía"
-                    isModified={isSectionModified(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
-                    onReset={() => resetSection(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
-                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-                  >
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Fade</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.fadeLoopAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "fadeLoopAmount", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Respirar</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.breatheAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "breatheAmount", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Expansión</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.expansionAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "expansionAmount", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Vibración</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.vibracionAmount ?? 0}
-                      onChange={(v) => updateSetting(iid, "vibracionAmount", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
                   </SettingsSection>
 
                 </View>
