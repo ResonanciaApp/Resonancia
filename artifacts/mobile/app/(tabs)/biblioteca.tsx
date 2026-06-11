@@ -371,15 +371,16 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
 }
 
 // ── Hoja de crear ────────────────────────────────────────────────────────────
-function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta }: {
+function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas }: {
   visible: boolean;
   onClose: () => void;
   onCreatePlaylist: () => void;
   onCreateCarpeta: () => void;
+  onGoMezclas: () => void;
 }) {
   const ITEMS = [
     { icon: "list" as const,     title: "Crear una Playlist",     sub: "Crea una playlist con sesiones",        onPress: () => { onClose(); onCreatePlaylist(); } },
-    { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: onClose },
+    { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: () => { onClose(); onGoMezclas(); } },
     { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); router.push("/geometrix" as never); } },
     { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlist",                 onPress: () => { onClose(); onCreateCarpeta(); } },
   ];
@@ -615,6 +616,7 @@ export default function BibliotecaScreen() {
         onClose={() => setCreateVisible(false)}
         onCreatePlaylist={() => setNombreVisible(true)}
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
+        onGoMezclas={() => setActiveTab("mezclas")}
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
