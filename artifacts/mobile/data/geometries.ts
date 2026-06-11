@@ -53,9 +53,25 @@ export type GeometryId =
   | "estrella-12"
   | "estrella";
 
+/**
+ * Categoría a la que pertenece cada geometría. Sirve para el filtro del carrusel
+ * en la pantalla Geometrix: en lugar de mostrar las ~44 tiles de una sola pasada
+ * (lo que bloquea el hilo JS al montar tantos objetos Reanimated), el carrusel
+ * muestra solo la categoría activa (~9-20 tiles).
+ */
+export type GeometryCategory = "sagradas" | "poliedros" | "formas";
+
+/** Metadatos de cada categoría para los chips de filtro (en orden de aparición). */
+export const GEOMETRY_CATEGORIES: { id: GeometryCategory; label: string }[] = [
+  { id: "sagradas", label: "Sagradas" },
+  { id: "poliedros", label: "Poliedros 3D" },
+  { id: "formas", label: "Formas y Estrellas" },
+];
+
 export interface GeometryMeta {
   id: GeometryId;
   name: string;
+  category: GeometryCategory;
   color: string;
 }
 
@@ -75,51 +91,51 @@ export const PALETTE = [
   "#9BD6A8",
 ] as const;
 
-const GEOMETRY_DEFS: { id: GeometryId; name: string }[] = [
-  { id: "caleidoscopio", name: "Caleidoscopio" },
-  { id: "flor-vida",    name: "Flor de la Vida" },
-  { id: "semilla-vida", name: "Semilla de la Vida" },
-  { id: "vesica",       name: "Vesica Piscis" },
-  { id: "metatron",     name: "Cubo de Metatrón" },
-  { id: "merkaba",      name: "Merkaba" },
-  { id: "sri-yantra",   name: "Sri Yantra" },
-  { id: "toroide",      name: "Toroide" },
-  { id: "mandala",      name: "Mandala" },
-  { id: "espiral",      name: "Espiral Áurea" },
-  { id: "pentagrama",   name: "Pentagrama" },
-  { id: "hexagrama",    name: "Hexagrama" },
-  { id: "triquetra",    name: "Triquetra" },
-  { id: "arbol-vida",   name: "Árbol de la Vida" },
-  { id: "fruto-vida",   name: "Fruto de la Vida" },
-  { id: "huevo-vida",   name: "Huevo de la Vida" },
-  { id: "cubo-vida",    name: "Cubo de la Vida" },
-  { id: "octagrama",    name: "Octagrama" },
-  { id: "eneagrama",    name: "Eneagrama" },
-  { id: "nudo-celta",   name: "Nudo Celta" },
-  { id: "yin-yang",     name: "Yin-Yang" },
-  { id: "circulos",     name: "Círculos Concéntricos" },
-  { id: "loto",         name: "Loto" },
-  { id: "cuadrado",             name: "Cuadrado"                     },
-  { id: "circulo",              name: "Círculo"                      },
-  { id: "triangulo",            name: "Triángulo"                    },
-  { id: "tetraedro",            name: "Tetraedro"                    },
-  { id: "hexaedro",             name: "Cubo (Hexaedro)"              },
-  { id: "octaedro",             name: "Octaedro"                     },
-  { id: "icosaedro",            name: "Icosaedro"                    },
-  { id: "dodecaedro",           name: "Dodecaedro"                   },
-  { id: "cuboctaedro",          name: "Cuboctaedro"                  },
-  { id: "espiral-fibonacci",    name: "Espiral de Fibonacci"         },
-  { id: "decagrama",            name: "Decagrama"                    },
-  { id: "cruz-solar",           name: "Cruz Solar"                   },
-  { id: "roseta-ocho",          name: "Roseta de Ocho Pétalos"       },
-  { id: "vector-equilibrium",   name: "Vector Equilibrium"           },
-  { id: "metatron-expandido",   name: "Cubo de Metatrón Expandido"   },
-  { id: "torus-infinito",       name: "Torus Infinito"               },
-  { id: "ivm",                  name: "Lattice Isotrópica Vectorial" },
-  { id: "estrella-tetraedrica", name: "Estrella Tetraédrica"         },
-  { id: "hexagono-sagrado",     name: "Hexágono Sagrado"             },
-  { id: "estrella-12",          name: "Estrella de 12 Puntas"        },
-  { id: "estrella",             name: "Estrella"                     },
+const GEOMETRY_DEFS: { id: GeometryId; name: string; category: GeometryCategory }[] = [
+  { id: "caleidoscopio", name: "Caleidoscopio",         category: "formas"    },
+  { id: "flor-vida",    name: "Flor de la Vida",        category: "sagradas"  },
+  { id: "semilla-vida", name: "Semilla de la Vida",     category: "sagradas"  },
+  { id: "vesica",       name: "Vesica Piscis",          category: "sagradas"  },
+  { id: "metatron",     name: "Cubo de Metatrón",       category: "sagradas"  },
+  { id: "merkaba",      name: "Merkaba",                category: "sagradas"  },
+  { id: "sri-yantra",   name: "Sri Yantra",             category: "sagradas"  },
+  { id: "toroide",      name: "Toroide",                category: "sagradas"  },
+  { id: "mandala",      name: "Mandala",                category: "sagradas"  },
+  { id: "espiral",      name: "Espiral Áurea",          category: "formas"    },
+  { id: "pentagrama",   name: "Pentagrama",             category: "formas"    },
+  { id: "hexagrama",    name: "Hexagrama",              category: "formas"    },
+  { id: "triquetra",    name: "Triquetra",              category: "sagradas"  },
+  { id: "arbol-vida",   name: "Árbol de la Vida",       category: "sagradas"  },
+  { id: "fruto-vida",   name: "Fruto de la Vida",       category: "sagradas"  },
+  { id: "huevo-vida",   name: "Huevo de la Vida",       category: "sagradas"  },
+  { id: "cubo-vida",    name: "Cubo de la Vida",        category: "sagradas"  },
+  { id: "octagrama",    name: "Octagrama",              category: "formas"    },
+  { id: "eneagrama",    name: "Eneagrama",              category: "formas"    },
+  { id: "nudo-celta",   name: "Nudo Celta",             category: "sagradas"  },
+  { id: "yin-yang",     name: "Yin-Yang",               category: "sagradas"  },
+  { id: "circulos",     name: "Círculos Concéntricos",  category: "formas"    },
+  { id: "loto",         name: "Loto",                   category: "sagradas"  },
+  { id: "cuadrado",             name: "Cuadrado",                     category: "formas"    },
+  { id: "circulo",              name: "Círculo",                      category: "formas"    },
+  { id: "triangulo",            name: "Triángulo",                    category: "formas"    },
+  { id: "tetraedro",            name: "Tetraedro",                    category: "poliedros" },
+  { id: "hexaedro",             name: "Cubo (Hexaedro)",              category: "poliedros" },
+  { id: "octaedro",             name: "Octaedro",                     category: "poliedros" },
+  { id: "icosaedro",            name: "Icosaedro",                    category: "poliedros" },
+  { id: "dodecaedro",           name: "Dodecaedro",                   category: "poliedros" },
+  { id: "cuboctaedro",          name: "Cuboctaedro",                  category: "poliedros" },
+  { id: "espiral-fibonacci",    name: "Espiral de Fibonacci",         category: "formas"    },
+  { id: "decagrama",            name: "Decagrama",                    category: "formas"    },
+  { id: "cruz-solar",           name: "Cruz Solar",                   category: "sagradas"  },
+  { id: "roseta-ocho",          name: "Roseta de Ocho Pétalos",       category: "formas"    },
+  { id: "vector-equilibrium",   name: "Vector Equilibrium",           category: "poliedros" },
+  { id: "metatron-expandido",   name: "Cubo de Metatrón Expandido",   category: "sagradas"  },
+  { id: "torus-infinito",       name: "Torus Infinito",               category: "sagradas"  },
+  { id: "ivm",                  name: "Lattice Isotrópica Vectorial", category: "poliedros" },
+  { id: "estrella-tetraedrica", name: "Estrella Tetraédrica",         category: "poliedros" },
+  { id: "hexagono-sagrado",     name: "Hexágono Sagrado",             category: "sagradas"  },
+  { id: "estrella-12",          name: "Estrella de 12 Puntas",        category: "formas"    },
+  { id: "estrella",             name: "Estrella",                     category: "formas"    },
 ];
 
 export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
@@ -129,6 +145,11 @@ export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
 
 export function getGeometry(id: GeometryId): GeometryMeta | undefined {
   return GEOMETRIES.find((g) => g.id === id);
+}
+
+/** Categoría de un id (base o de instancia). Default "formas" si no se encuentra. */
+export function categoryOf(id: string): GeometryCategory {
+  return getGeometry(baseOf(id))?.category ?? "formas";
 }
 
 /**

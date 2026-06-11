@@ -76,7 +76,7 @@ import {
 } from "@/lib/geometrixIntro";
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
-import { GEOMETRIES, PALETTE, baseOf, getGeometry, INSTANCE_SEP, type GeometryId, type GeometryMeta } from "@/data/geometries";
+import { GEOMETRIES, GEOMETRY_CATEGORIES, PALETTE, baseOf, categoryOf, getGeometry, INSTANCE_SEP, type GeometryId, type GeometryMeta, type GeometryCategory } from "@/data/geometries";
 import {
   BG_GRADIENTS,
   bgGradientColors,
@@ -2015,10 +2015,30 @@ export default function GeometrixScreen() {
     if (idx < 0) return;
     setActive((prev) => {
       if (!prev.includes(id)) return prev;
-      const without = prev.filter((x) => x !== id);
-      const clamped = Math.max(0, Math.min(idx, without.length));
-      without.splice(clamped, 0, id);
-      return without;
+      // `idx` es el slot destino RELATIVO al frente de la categoría visible (el
+      // carrusel está filtrado), no al array `active` completo. Para no alterar el
+      // z-order entre categorías, se REORDENA SOLO la categoría del item dentro de
+      // los slots que esa categoría ya ocupa en `active`; los items de otras
+      // categorías quedan exactamente en su índice (su capa no se mueve).
+      const cat = categoryOf(id);
+      const catSlots: number[] = [];
+      const catItems: string[] = [];
+      prev.forEach((x, i) => {
+        if (categoryOf(x) === cat) {
+          catSlots.push(i);
+          catItems.push(x);
+        }
+      });
+      const reordered = catItems.filter((x) => x !== id);
+      const clamped = Math.max(0, Math.min(idx, reordered.length));
+      reordered.splice(clamped, 0, id);
+      const next = prev.slice();
+      let changed = false;
+      catSlots.forEach((slot, k) => {
+        if (next[slot] !== reordered[k]) changed = true;
+        next[slot] = reordered[k];
+      });
+      return changed ? next : prev;
     });
   }, []);
   // Geometrías en "activación en el lugar" (pulso + resplandor antes del glide).
@@ -2096,11 +2116,22 @@ export default function GeometrixScreen() {
     },
     [moveActiveTo],
   );
+  // Categoría activa del filtro del carrusel. El carrusel muestra SOLO las
+  // geometrías de esta categoría (las activas de otras categorías siguen en el
+  // lienzo, solo no se ven en el carrusel). Por defecto la primera ("Sagradas").
+  const [activeCategory, setActiveCategory] = useState<GeometryCategory>(
+    GEOMETRY_CATEGORIES[0].id,
+  );
   const carouselOrder = useMemo<string[]>(() => {
-    const front = active.filter((id) => !effActivating.has(id));
-    const tail = GEOMETRIES.map((g) => g.id).filter((id) => !front.includes(id));
+    const catBases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
+      (g) => g.id,
+    );
+    const front = active.filter(
+      (id) => !effActivating.has(id) && categoryOf(id) === activeCategory,
+    );
+    const tail = catBases.filter((id) => !front.includes(id));
     return [...front, ...tail];
-  }, [active, effActivating]);
+  }, [active, effActivating, activeCategory]);
   // Espejo del orden VISUAL al UI thread. Cada vez que cambia `carouselOrder` (por una
   // selección/deselección o por la sincronización post-arrastre), se baja el flag de
   // "instantáneo" (las selecciones vuelven a deslizar) y se reescribe orderSV. Tras un
@@ -2115,10 +2146,14 @@ export default function GeometrixScreen() {
   // la posición visual la da translateX según el slot en orderSV. Solo cambia al
   // agregar/quitar un duplicado.
   const domOrder = useMemo<string[]>(() => {
-    const bases = GEOMETRIES.map((g) => g.id);
-    const dups = active.filter((id) => id.includes("::")).sort();
+    const bases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
+      (g) => g.id,
+    );
+    const dups = active
+      .filter((id) => id.includes("::") && categoryOf(id) === activeCategory)
+      .sort();
     return [...bases, ...dups];
-  }, [active]);
+  }, [active, activeCategory]);
   // Montaje progresivo de las tiles del carrusel. Cada CarouselTileInner registra
   // ~16 objetos Reanimated (SharedValues, animated styles, reactions, gestures).
   // Con 45 geometrías son ~720 registraciones sincrónicas que bloquean el hilo JS.
@@ -2126,8 +2161,13 @@ export default function GeometrixScreen() {
   // a CAROUSEL_BATCH tiles por frame. El primer frame sube las primeras visibles →
   // JS queda libre → useFocusEffect dispara requestHide() → fold del menú + título
   // arrancan animados. Los frames siguientes completan el resto sin lag perceptible.
+  // Solo aplica al PRIMER ingreso (la categoría por defecto, ~20 tiles). Una vez
+  // montadas todas, `fullyMounted` queda en true y los cambios de categoría
+  // renderizan completo de una (cada categoría es chica, ~9-20, y el usuario ya
+  // está en pantalla → sin transición de tabs compitiendo por el hilo).
   const CAROUSEL_BATCH = 6;
   const [carouselCount, setCarouselCount] = useState(0);
+  const [fullyMounted, setFullyMounted] = useState(false);
   useEffect(() => {
     let raf = 0;
     const task = InteractionManager.runAfterInteractions(() => {
@@ -2136,6 +2176,8 @@ export default function GeometrixScreen() {
           const next = prev + CAROUSEL_BATCH;
           if (next < domOrder.length) {
             raf = requestAnimationFrame(addBatch);
+          } else {
+            setFullyMounted(true);
           }
           return next;
         });
@@ -2148,6 +2190,11 @@ export default function GeometrixScreen() {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Lista efectiva a renderizar: progresiva durante el primer montaje, completa
+  // después (cubre cambios de categoría y duplicados sin recortar).
+  const tilesToRender = fullyMounted
+    ? domOrder
+    : domOrder.slice(0, carouselCount);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
@@ -3622,7 +3669,9 @@ export default function GeometrixScreen() {
   const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
-  const frontIds = active.filter((id) => !effActivating.has(id));
+  const frontIds = active.filter(
+    (id) => !effActivating.has(id) && categoryOf(id) === activeCategory,
+  );
   const tileItemW = tileW + 8; // ancho de slot = tile + marginRight (tileWrap)
 
   return (
@@ -3784,6 +3833,35 @@ export default function GeometrixScreen() {
           </View>
         </Modal>
 
+        {/* Filtro por categoría: el carrusel muestra solo la categoría activa */}
+        <View style={styles.catFilterRow}>
+          {GEOMETRY_CATEGORIES.map((c) => {
+            const on = activeCategory === c.id;
+            return (
+              <Pressable
+                key={c.id}
+                onPress={() => {
+                  if (activeCategory === c.id) return;
+                  carScrollX.value = 0;
+                  carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
+                  setActiveCategory(c.id);
+                }}
+                style={[styles.catChip, on ? styles.catChipOn : null]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+              >
+                <Text
+                  style={[styles.catChipText, on ? styles.catChipTextOn : null]}
+                  numberOfLines={1}
+                >
+                  {c.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
         {/* Galería de geometrías (una fila horizontal, scrolleable) */}
         <Animated.ScrollView
           ref={carouselScrollRef}
@@ -3804,7 +3882,7 @@ export default function GeometrixScreen() {
               { width: domOrder.length * tileItemW, height: tileW },
             ]}
           >
-            {domOrder.slice(0, carouselCount).map((gid: string) => {
+            {tilesToRender.map((gid: string) => {
               const g = getGeometry(baseOf(gid));
               if (!g) return null;
               const selected = active.includes(gid);
@@ -5995,6 +6073,32 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
 
+  catFilterRow: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 20,
+    marginTop: 2,
+  },
+  catChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 999,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.18)",
+  },
+  catChipOn: {
+    backgroundColor: "rgba(190,150,80,0.16)",
+    borderColor: colors.primary,
+  },
+  catChipText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: colors.mutedForeground,
+  },
+  catChipTextOn: {
+    color: colors.foreground,
+  },
   grid: { flexGrow: 0, marginTop: -15 },
   gridContent: { paddingTop: 36, paddingBottom: 2, paddingLeft: 0, paddingRight: 20 },
   // Modelo FLIP: contenedor relativo de altura/ancho fijos (dados inline). Las tiles
