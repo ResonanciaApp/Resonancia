@@ -3,10 +3,9 @@ import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Animated,
-  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -17,13 +16,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
-import { useDrawer, markDrawerReopenOnHome } from "@/context/DrawerContext";
+import { useDrawer, markDrawerReopenOnHome, DRAWER_W } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
-import { useColors } from "@/hooks/useColors";
 
-const { width } = Dimensions.get("window");
-const DRAWER_W = Math.min(width * 0.78, 300);
 const ND = Platform.OS !== "web";
 
 type MenuItem = {
@@ -59,8 +55,7 @@ const SECONDARY_ITEMS: MenuItem[] = [
 ];
 
 export function DrawerMenu() {
-  const { isOpen: visible, instant, close: onClose } = useDrawer();
-  const colors = useColors();
+  const { isOpen: visible, drawerAnim, close: onClose } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -76,54 +71,26 @@ export function DrawerMenu() {
     null;
   const clerkPhoto = clerkUser?.imageUrl || null;
 
-  const translateX = useRef(new Animated.Value(-DRAWER_W)).current;
-  const overlayOpacity = useRef(new Animated.Value(0)).current;
-  const [rendered, setRendered] = useState(visible);
-
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  // Mount/unmount: mount immediately on open, unmount after close animation finishes
+  const [rendered, setRendered] = useState(visible);
   useEffect(() => {
     if (visible) {
       setRendered(true);
-      if (instant) {
-        translateX.setValue(0);
-        overlayOpacity.setValue(1);
-        return;
-      }
-      Animated.parallel([
-        Animated.spring(translateX, {
-          toValue: 0,
-          useNativeDriver: ND,
-          damping: 28,
-          stiffness: 200,
-          overshootClamping: true,
-        }),
-        Animated.timing(overlayOpacity, {
-          toValue: 1,
-          duration: 220,
-          useNativeDriver: ND,
-        }),
-      ]).start();
     } else {
-      Animated.parallel([
-        Animated.timing(translateX, {
-          toValue: -DRAWER_W,
-          duration: 220,
-          useNativeDriver: ND,
-        }),
-        Animated.timing(overlayOpacity, {
-          toValue: 0,
-          duration: 220,
-          useNativeDriver: ND,
-        }),
-      ]).start(({ finished }) => {
-        if (finished) setRendered(false);
-      });
+      const t = setTimeout(() => setRendered(false), 180);
+      return () => clearTimeout(t);
     }
-  }, [visible, translateX, overlayOpacity]);
+  }, [visible]);
 
   if (!rendered) return null;
+
+  const translateX = drawerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-DRAWER_W, 0],
+  });
 
   const mainItems = loggedIn ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
   const localFullName = [username, lastName].filter(Boolean).join(" ");
@@ -139,12 +106,13 @@ export function DrawerMenu() {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      <Animated.View
-        style={[styles.overlay, { opacity: overlayOpacity }]}
-        pointerEvents={visible ? "auto" : "none"}
-      >
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
+      {/* Tap-outside to close — only active when drawer is open */}
+      {visible && (
+        <Pressable
+          style={[StyleSheet.absoluteFill, { left: DRAWER_W }]}
+          onPress={onClose}
+        />
+      )}
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <LinearGradient
@@ -243,10 +211,6 @@ export function DrawerMenu() {
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
   drawer: {
     position: "absolute",
     top: 0,
@@ -254,9 +218,9 @@ const styles = StyleSheet.create({
     left: 0,
     width: DRAWER_W,
     shadowColor: "#000",
-    shadowOffset: { width: 4, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
+    shadowOffset: { width: 6, height: 0 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
     elevation: 20,
   },
   drawerInner: {
@@ -352,17 +316,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
   },
-  premiumIconCircle: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: "#17352A",
-    borderWidth: 1,
-    borderColor: "#A97A34",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  premiumIconText: { fontSize: 11, color: "#F0C36A" },
   itemLabel: {
     color: "#FFFFFF",
     fontSize: 15,

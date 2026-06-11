@@ -16,7 +16,7 @@ import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -32,7 +32,7 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
-import { DrawerProvider } from "@/context/DrawerContext";
+import { DrawerProvider, useDrawer, DRAWER_W } from "@/context/DrawerContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
 import { SoundsProvider } from "@/context/SoundsContext";
@@ -112,12 +112,26 @@ function BrightnessOverlay() {
   );
 }
 
+function PushWrapper({ children }: { children: React.ReactNode }) {
+  const { drawerAnim } = useDrawer();
+  const translateX = drawerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, DRAWER_W],
+  });
+  return (
+    <Animated.View style={{ flex: 1, transform: [{ translateX }] }}>
+      {children}
+    </Animated.View>
+  );
+}
+
 function RootLayoutNav() {
   return (
     <DrawerProvider>
       <ApiAuthBridge />
       <AuthGate />
       <PushBridge />
+      <PushWrapper>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -224,6 +238,7 @@ function RootLayoutNav() {
         <Stack.Screen name="configuraciones" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="membresia" options={{ headerShown: false, animation: "slide_from_right" }} />
       </Stack>
+      </PushWrapper>
       <DrawerMenu />
       <MixerSheet />
     </DrawerProvider>
