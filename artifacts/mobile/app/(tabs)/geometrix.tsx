@@ -6451,11 +6451,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     transform: [{ translateY: -18 }],
+    overflow: "hidden",
   },
   canvas: {
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
   },
   layer: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
 
