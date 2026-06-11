@@ -63,7 +63,7 @@ export type GeometryCategory = "sagradas" | "poliedros" | "formas";
 
 /** Metadatos de cada categoría para los chips de filtro (en orden de aparición). */
 export const GEOMETRY_CATEGORIES: { id: GeometryCategory; label: string }[] = [
-  { id: "sagradas", label: "Sagradas" },
+  { id: "sagradas", label: "Geometría Sagrada" },
   { id: "poliedros", label: "Poliedros 3D" },
   { id: "formas", label: "Formas y Estrellas" },
 ];
