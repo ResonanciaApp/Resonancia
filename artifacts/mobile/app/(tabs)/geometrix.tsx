@@ -3917,6 +3917,16 @@ export default function GeometrixScreen() {
                   if (activeCategory === c.id) return;
                   carScrollX.value = 0;
                   carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
+                  // Actualizar orderSV ANTES del re-render de React: las tiles
+                  // saltan visualmente en el siguiente frame de UI mientras
+                  // React procesa setActiveCategory en segundo plano.
+                  const front = active.filter((id) => !effActivating.has(id));
+                  const frontSet = new Set(front);
+                  const tail = GEOMETRIES.filter(
+                    (g) => g.category === c.id && !frontSet.has(g.id),
+                  ).map((g) => g.id);
+                  instantOrderFlag.value = 1; // sin slide en switch de categoría
+                  orderSV.value = [...front, ...tail];
                   setActiveCategory(c.id);
                 }}
                 style={[styles.catChip, on ? styles.catChipOn : null]}
