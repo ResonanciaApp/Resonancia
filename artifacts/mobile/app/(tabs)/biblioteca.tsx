@@ -438,9 +438,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  chipSel: { backgroundColor: "#FFFFFF" },
+  chipSel: { backgroundColor: "#BE9650" },
   chipText: { fontSize: 13, fontWeight: "500", color: TEXT },
-  chipTextSel: { color: DARK_BLUE, fontWeight: "700" },
+  chipTextSel: { color: "#0B0F14", fontWeight: "700" },
 
   controlRow: {
     flexDirection: "row",
