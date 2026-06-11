@@ -175,7 +175,7 @@ export default function ExploreScreen() {
               )}
             </Pressable>
 
-            <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Explora</Text>
+            <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Buscar</Text>
             <Pressable
               onPress={() => router.push("/historial" as never)}
               hitSlop={12}

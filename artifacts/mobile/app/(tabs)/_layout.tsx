@@ -43,7 +43,7 @@ const TAB_CONFIG: Record<
   }
 > = {
   index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
-  explore: { label: "Explora",    sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass",    featherIcon: "search" },
+  explore: { label: "Buscar",     sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass",    featherIcon: "search" },
   musica:  { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
   musica2: { label: "Música 2",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
   musica3: { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
