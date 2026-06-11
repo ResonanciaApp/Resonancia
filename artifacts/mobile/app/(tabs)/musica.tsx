@@ -173,16 +173,13 @@ const PillTab = memo(function PillTab({
   isDark?: boolean;
   selBg?: string;
 }) {
-  const unselBg   = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)";
-  const unselText = isDark ? "#8A9AB8" : MUTED;
-  const activeBg  = selBg ?? DARK;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.pillTab,
-        { backgroundColor: sel ? activeBg : unselBg },
+        { backgroundColor: sel ? "#BE9650" : "rgba(255,255,255,0.06)" },
       ]}>
-        <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : unselText, fontWeight: sel ? "700" : "500" }]}>
+        <Text style={[styles.pillTabLabel, { color: sel ? "#0B0F14" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {tab.label}
         </Text>
       </View>
@@ -839,14 +836,13 @@ const styles = StyleSheet.create({
   },
 
   pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 20 },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 10 },
+  pillRowContent: { flexDirection: "row", gap: 6, paddingHorizontal: 15, paddingVertical: 6 },
   pillTab: {
-    flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 999,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+    height: 32,
+    borderRadius: 20,
   },
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
