@@ -12,7 +12,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export type Folder = {
   id: string;
   name: string;
-  sessionIds: string[];
+  sessionIds: string[];   // sesiones (flujo AddToFolderSheet)
+  playlistIds: string[];  // playlists agrupadas (flujo carpeta Spotify-style)
   createdAt: string;
 };
 
@@ -28,10 +29,14 @@ interface FoldersPlaylistsCtx {
   playlists: Playlist[];
   // Folders
   createFolder: (name: string, initialSessionId?: string) => Folder;
+  renameFolder: (folderId: string, name: string) => void;
   addToFolder: (folderId: string, sessionId: string) => void;
   removeFromFolder: (folderId: string, sessionId: string) => void;
   deleteFolder: (folderId: string) => void;
   isInFolder: (folderId: string, sessionId: string) => boolean;
+  addPlaylistToFolder: (folderId: string, playlistId: string) => void;
+  removePlaylistFromFolder: (folderId: string, playlistId: string) => void;
+  isPlaylistInFolder: (folderId: string, playlistId: string) => boolean;
   // Playlists
   createPlaylist: (name: string, initialSessionId?: string) => Playlist;
   renamePlaylist: (playlistId: string, name: string) => void;
@@ -94,11 +99,44 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       id: `folder_${Date.now()}`,
       name: name.trim(),
       sessionIds: initialSessionId ? [initialSessionId] : [],
+      playlistIds: [],
       createdAt: new Date().toISOString(),
     };
     updateFolders((prev) => [...prev, folder]);
     return folder;
   }, [updateFolders]);
+
+  const renameFolder = useCallback((folderId: string, name: string) => {
+    updateFolders((prev) =>
+      prev.map((f) => f.id === folderId ? { ...f, name: name.trim() } : f)
+    );
+  }, [updateFolders]);
+
+  const addPlaylistToFolder = useCallback((folderId: string, playlistId: string) => {
+    updateFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId && !(f.playlistIds ?? []).includes(playlistId)
+          ? { ...f, playlistIds: [...(f.playlistIds ?? []), playlistId] }
+          : f
+      )
+    );
+  }, [updateFolders]);
+
+  const removePlaylistFromFolder = useCallback((folderId: string, playlistId: string) => {
+    updateFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId
+          ? { ...f, playlistIds: (f.playlistIds ?? []).filter((id) => id !== playlistId) }
+          : f
+      )
+    );
+  }, [updateFolders]);
+
+  const isPlaylistInFolder = useCallback(
+    (folderId: string, playlistId: string) =>
+      (folders.find((f) => f.id === folderId)?.playlistIds ?? []).includes(playlistId),
+    [folders]
+  );
 
   const addToFolder = useCallback((folderId: string, sessionId: string) => {
     updateFolders((prev) =>
@@ -185,7 +223,11 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         folders,
         playlists,
         createFolder,
+        renameFolder,
         addToFolder,
+        addPlaylistToFolder,
+        removePlaylistFromFolder,
+        isPlaylistInFolder,
         removeFromFolder,
         deleteFolder,
         isInFolder,

@@ -5,234 +5,473 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   Alert,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
-import { usePremium } from "@/context/PremiumContext";
-import { SESSIONS, type Session } from "@/data/sessions";
-import { getGuideById } from "@/data/guides";
-import { getVoiceLabel } from "@/config/audio-map";
-import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG = ["#090D20", "#080A18", "#06070F"] as const;
+const GOLD = "#BE9650";
+const TEXT = "#EDE1D3";
+const MUTED = "#7A8FA8";
+const SHEET_BG = "#0E1326";
 
 export default function CarpetaDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { isPremium } = usePremium();
-  const { folders, deleteFolder, removeFromFolder } = useFoldersPlaylists();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const {
+    folders,
+    playlists: allPlaylists,
+    deleteFolder,
+    renameFolder,
+    addPlaylistToFolder,
+    removePlaylistFromFolder,
+    createPlaylist,
+    createFolder,
+  } = useFoldersPlaylists();
+
+  const [addSheetVisible, setAddSheetVisible] = useState(false);
+  const [renaming, setRenaming] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [nombrePlaylistVisible, setNombrePlaylistVisible] = useState(false);
+  const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
 
   const folder = folders.find((f) => f.id === id);
 
   if (!folder) {
     return (
-      <View style={[styles.root, { backgroundColor: "#090D20", alignItems: "center", justifyContent: "center" }]}>
-        <Feather name="folder" size={48} color="#7A8FA8" style={{ marginBottom: 16 }} />
-        <Text style={{ color: "#7A8FA8", fontSize: 16 }}>Carpeta no encontrada</Text>
-        <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
-          <Text style={{ color: "#BE9650", fontSize: 15 }}>← Volver</Text>
-        </Pressable>
-      </View>
+      <LinearGradient colors={BG} style={styles.root}>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <Feather name="folder" size={48} color={MUTED} style={{ marginBottom: 16 }} />
+          <Text style={{ color: MUTED, fontSize: 16 }}>Carpeta no encontrada</Text>
+          <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
+            <Text style={{ color: GOLD, fontSize: 15 }}>← Volver</Text>
+          </Pressable>
+        </View>
+      </LinearGradient>
     );
   }
 
-  const sessions = folder.sessionIds
-    .map((sid) => SESSIONS.find((s) => s.id === sid))
-    .filter(Boolean) as Session[];
+  const folderPlaylistIds = folder.playlistIds ?? [];
+  const folderPlaylists = folderPlaylistIds
+    .map((pid) => allPlaylists.find((p) => p.id === pid))
+    .filter(Boolean) as typeof allPlaylists;
 
   const handleDelete = () => {
     Alert.alert(
       "Eliminar carpeta",
-      `¿Eliminar "${folder.name}"? Las sesiones no se borran, solo se quitan de esta carpeta.`,
+      `¿Eliminar "${folder.name}"? Las playlists no se borran.`,
       [
         { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: () => {
-            deleteFolder(folder.id);
-            router.back();
-          },
-        },
+        { text: "Eliminar", style: "destructive", onPress: () => { deleteFolder(folder.id); router.back(); } },
       ]
     );
   };
 
-  const handleRemove = (sessionId: string) => {
-    removeFromFolder(folder.id, sessionId);
+  const handleRename = () => {
+    if (!nameInput.trim()) { setRenaming(false); return; }
+    renameFolder(folder.id, nameInput.trim());
+    setRenaming(false);
+  };
+
+  const handleCreatePlaylist = (name: string) => {
+    const pl = createPlaylist(name);
+    addPlaylistToFolder(folder.id, pl.id);
+    setNombrePlaylistVisible(false);
+    router.push(`/playlist/${pl.id}` as never);
+  };
+
+  const handleCreateSubFolder = (name: string) => {
+    const sub = createFolder(name);
+    setNombreCarpetaVisible(false);
+    router.push(`/carpeta/${sub.id}` as never);
   };
 
   return (
-        <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <LinearGradient style={styles.root} colors={BG} locations={[0, 0.5, 1]}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
-          <Feather name="arrow-left" size={22} color={colors.foreground} />
+          <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        <View style={styles.headerCenter}>
-          <Feather name="folder" size={14} color={colors.primary} style={{ marginRight: 6 }} />
-          <Text style={[styles.headerTitle, { color: colors.foreground }]} numberOfLines={1}>
-            {folder.name}
-          </Text>
-        </View>
-        <Pressable onPress={handleDelete} style={styles.iconBtn} hitSlop={8}>
-          <Feather name="trash-2" size={18} color="#7A8FA8" />
+        {renaming ? (
+          <TextInput
+            style={styles.renameInput}
+            value={nameInput}
+            onChangeText={setNameInput}
+            autoFocus
+            returnKeyType="done"
+            onSubmitEditing={handleRename}
+            onBlur={handleRename}
+            selectTextOnFocus
+          />
+        ) : (
+          <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
+        )}
+        <Pressable
+          style={styles.iconBtn}
+          hitSlop={10}
+          onPress={() => {
+            Alert.alert(folder.name, "Opciones", [
+              { text: "Cambiar nombre", onPress: () => { setNameInput(folder.name); setRenaming(true); } },
+              { text: "Eliminar carpeta", style: "destructive", onPress: handleDelete },
+              { text: "Cancelar", style: "cancel" },
+            ]);
+          }}
+        >
+          <Feather name="more-horizontal" size={22} color={TEXT} />
+        </Pressable>
+        <Pressable style={styles.iconBtn} hitSlop={10} onPress={() => setAddSheetVisible(true)}>
+          <Feather name="plus" size={22} color={TEXT} />
         </Pressable>
       </View>
 
-      {/* Contador */}
-      <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>
-        {sessions.length === 0
-          ? "Vacía"
-          : `${sessions.length} sesión${sessions.length !== 1 ? "es" : ""}`}
-      </Text>
-
+      {/* Content */}
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: insets.bottom + 32 }}
+        contentContainerStyle={{ paddingBottom: bottomPad + 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {sessions.length === 0 ? (
+        {folderPlaylists.length === 0 ? (
           <View style={styles.emptyWrap}>
-            <Feather name="inbox" size={40} color={colors.mutedForeground} style={{ marginBottom: 14 }} />
-            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-              Esta carpeta está vacía.{"\n"}Añadí sesiones desde los 3 puntitos.
-            </Text>
+            <Text style={styles.emptyTitle}>Esta carpeta está vacía</Text>
+            <Text style={styles.emptySub}>Agrega playlists desde Tu biblioteca.</Text>
           </View>
         ) : (
-          sessions.map((session) => (
-            <FolderSessionRow
-              key={session.id}
-              session={session}
-              isPremium={isPremium}
-              colors={colors}
-              onActionsPress={() => setActionsSession(session)}
-              onRemove={() => handleRemove(session.id)}
-            />
-          ))
+          <View style={{ paddingTop: 12 }}>
+            {folderPlaylists.map((pl) => (
+              <Pressable
+                key={pl.id}
+                style={({ pressed }) => [styles.playlistRow, { opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push(`/playlist/${pl.id}` as never)}
+              >
+                <View style={styles.plCover}>
+                  <Feather name="music" size={18} color={MUTED} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.plName} numberOfLines={1}>{pl.name}</Text>
+                  <Text style={styles.plMeta}>
+                    Playlist · {pl.sessionIds.length} sesión{pl.sessionIds.length !== 1 ? "es" : ""}
+                  </Text>
+                </View>
+                <Pressable
+                  onPress={() => removePlaylistFromFolder(folder.id, pl.id)}
+                  hitSlop={10}
+                  style={styles.removePlBtn}
+                >
+                  <Feather name="x" size={16} color={MUTED} />
+                </Pressable>
+              </Pressable>
+            ))}
+          </View>
         )}
       </ScrollView>
 
-      <SessionActionsSheet
-        session={actionsSession}
-        visible={actionsSession !== null}
-        onClose={() => setActionsSession(null)}
+      {/* Add sheet */}
+      <AddSheet
+        visible={addSheetVisible}
+        onClose={() => setAddSheetVisible(false)}
+        onPlaylist={() => { setAddSheetVisible(false); setTimeout(() => setNombrePlaylistVisible(true), 250); }}
+        onCarpeta={() => { setAddSheetVisible(false); setTimeout(() => setNombreCarpetaVisible(true), 250); }}
+      />
+
+      {/* Naming modals */}
+      <NamingModal
+        visible={nombrePlaylistVisible}
+        title="Ponle un nombre a tu playlist"
+        defaultName={`Mi playlist n.° ${allPlaylists.length + 1}`}
+        onClose={() => setNombrePlaylistVisible(false)}
+        onCreate={handleCreatePlaylist}
+      />
+      <NamingModal
+        visible={nombreCarpetaVisible}
+        title="Ponle un nombre a la carpeta"
+        defaultName={`Mi carpeta n.° ${folders.length + 1}`}
+        onClose={() => setNombreCarpetaVisible(false)}
+        onCreate={handleCreateSubFolder}
       />
     </LinearGradient>
   );
 }
 
-// ─── Session row ──────────────────────────────────────────────────────────────
+// ─── Add sheet ────────────────────────────────────────────────────────────────
+function AddSheet({
+  visible, onClose, onPlaylist, onCarpeta,
+}: { visible: boolean; onClose: () => void; onPlaylist: () => void; onCarpeta: () => void }) {
+  const insets = useSafeAreaInsets();
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const ITEMS = [
+    { icon: "music" as const,  title: "Playlist",  sub: "Crea una playlist con canciones o episodios", onPress: onPlaylist },
+    { icon: "folder" as const, title: "Carpeta",   sub: "Organiza tus playlists", onPress: onCarpeta },
+  ];
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
+      <Pressable style={styles.backdrop} onPress={onClose} />
+      <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
+        <View style={styles.sheetHandle} />
+        {ITEMS.map((it) => (
+          <Pressable
+            key={it.title}
+            style={({ pressed }) => [styles.sheetRow, { opacity: pressed ? 0.75 : 1 }]}
+            onPress={it.onPress}
+          >
+            <View style={styles.sheetIconWrap}>
+              <Feather name={it.icon} size={22} color={TEXT} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.sheetItemTitle}>{it.title}</Text>
+              <Text style={styles.sheetItemSub}>{it.sub}</Text>
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    </Modal>
+  );
+}
 
-type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
-
-function FolderSessionRow({
-  session,
-  isPremium,
-  colors,
-  onActionsPress,
-  onRemove,
+// ─── Naming modal ─────────────────────────────────────────────────────────────
+function NamingModal({
+  visible, title, defaultName, onClose, onCreate,
 }: {
-  session: Session;
-  isPremium: boolean;
-  colors: Colors;
-  onActionsPress: () => void;
-  onRemove: () => void;
+  visible: boolean; title: string; defaultName: string;
+  onClose: () => void; onCreate: (name: string) => void;
 }) {
-  const locked = !!session.isPremium && !isPremium;
-  const voiceLabel = getVoiceLabel(session);
-  const guide = session.guideId ? getGuideById(session.guideId) : null;
-  const author = guide?.name ?? "Casa del Cuenco";
+  const [name, setName] = useState("");
+  const inputRef = React.useRef<TextInput>(null);
+
+  React.useEffect(() => {
+    if (visible) setName(defaultName);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreate = () => {
+    onCreate(name.trim() || defaultName);
+  };
 
   return (
-    <View style={styles.row}>
-      <Pressable
-        onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
-        style={({ pressed }) => [styles.rowInner, { opacity: pressed ? 0.75 : 1 }]}
-      >
-        <Image
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          source={session.image as any}
-          style={styles.thumb}
-          placeholder={BLUR_PLACEHOLDER}
-          transition={IMAGE_TRANSITION}
-          contentFit="cover"
-        />
-        <View style={{ flex: 1 }}>
-          <Text style={[styles.rowName, { color: colors.foreground }]} numberOfLines={2}>
-            {session.title}
-          </Text>
-          <Text style={[styles.rowMeta, { color: colors.mutedForeground }]}>
-            {author}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
-          </Text>
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      onRequestClose={onClose}
+      onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
+    >
+      <View style={styles.nameOverlay}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <View style={styles.nameCard}>
+          <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={TEXT} />
+          </Pressable>
+          <Text style={styles.nameCardTitle}>{title}</Text>
+          <View style={styles.nameInputWrap}>
+            <TextInput
+              ref={inputRef}
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              selectTextOnFocus
+              returnKeyType="done"
+              onSubmitEditing={handleCreate}
+              placeholderTextColor={MUTED}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleCreate}
+          >
+            <Text style={styles.nameCreateBtnText}>Crear</Text>
+          </Pressable>
         </View>
-      </Pressable>
-      <Pressable onPress={onActionsPress} hitSlop={10} style={styles.moreBtn}>
-        <Feather name="more-vertical" size={18} color={colors.mutedForeground} />
-      </Pressable>
-      <Pressable onPress={onRemove} hitSlop={10} style={styles.removeBtn}>
-        <Feather name="x" size={16} color="#7A8FA8" />
-      </Pressable>
-    </View>
+      </View>
+    </Modal>
   );
 }
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
   root: { flex: 1 },
+
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    paddingHorizontal: 4,
+    paddingBottom: 10,
   },
-  iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  headerCenter: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 17, fontWeight: "700", flexShrink: 1 },
-  countLabel: { fontSize: 13, paddingHorizontal: 20, paddingTop: 10, paddingBottom: 6 },
-  row: {
+  iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
+  headerName: {
+    flex: 1,
+    color: TEXT,
+    fontSize: 20,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  renameInput: {
+    flex: 1,
+    color: TEXT,
+    fontSize: 20,
+    fontWeight: "800",
+    textAlign: "center",
+    borderBottomWidth: 1.5,
+    borderBottomColor: GOLD,
+    paddingVertical: 2,
+    padding: 0,
+  },
+
+  // Empty state
+  emptyWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 180,
+    paddingHorizontal: 40,
+  },
+  emptyTitle: {
+    color: TEXT,
+    fontSize: 20,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  emptySub: {
+    color: MUTED,
+    fontSize: 14,
+    textAlign: "center",
+    lineHeight: 20,
+  },
+
+  // Playlist row
+  playlistRow: {
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 16,
     paddingVertical: 10,
+    gap: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(255,255,255,0.06)",
   },
-  rowInner: {
-    flex: 1,
+  plCover: {
+    width: 52,
+    height: 52,
+    borderRadius: 8,
+    backgroundColor: "rgba(190,150,80,0.08)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(190,150,80,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  plName: { color: TEXT, fontSize: 15, fontWeight: "600", lineHeight: 20 },
+  plMeta: { color: MUTED, fontSize: 12, marginTop: 2 },
+  removePlBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+
+  // Sheet
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
+  sheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: SHEET_BG,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    paddingTop: 6,
+  },
+  sheetHandle: {
+    alignSelf: "center",
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    marginBottom: 8,
+    marginTop: 4,
+  },
+  sheetRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.06)",
   },
-  thumb: { width: 60, height: 60, borderRadius: 10 },
-  rowName: { fontSize: 15, fontWeight: "600", lineHeight: 20 },
-  rowMeta: { fontSize: 12, marginTop: 3 },
-  moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
-  removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
-  emptyWrap: { alignItems: "center", paddingTop: 60 },
-  emptyText: { fontSize: 14, lineHeight: 20, textAlign: "center" },
+  sheetIconWrap: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sheetItemTitle: { color: TEXT, fontSize: 16, fontWeight: "700" },
+  sheetItemSub: { color: MUTED, fontSize: 13, marginTop: 2 },
+
+  // Naming modal
+  nameOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.82)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  nameCard: {
+    width: "100%",
+    backgroundColor: "#14192B",
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 32,
+    alignItems: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(190,150,80,0.15)",
+  },
+  nameCloseBtn: { alignSelf: "flex-end", marginBottom: 8 },
+  nameCardTitle: {
+    color: TEXT,
+    fontSize: 17,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  nameInputWrap: {
+    width: "100%",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: GOLD,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 28,
+  },
+  nameInput: {
+    color: TEXT,
+    fontSize: 22,
+    fontWeight: "700",
+    textAlign: "center",
+    padding: 0,
+  },
+  nameCreateBtn: {
+    backgroundColor: GOLD,
+    borderRadius: 30,
+    paddingHorizontal: 48,
+    paddingVertical: 14,
+  },
+  nameCreateBtnText: {
+    color: "#0B0F14",
+    fontSize: 15,
+    fontWeight: "800",
+    letterSpacing: 0.3,
+  },
 });

@@ -30,7 +30,7 @@ import { PLAYLISTS, type Playlist } from "@/data/playlists";
 import { ARTISTS, type Artist } from "@/data/artists";
 import { GUIDES, type Guide } from "@/data/guides";
 import { SESSIONS, getSessionById } from "@/data/sessions";
-import { useFoldersPlaylists, type Playlist as UserPlaylist } from "@/context/FoldersPlaylistsContext";
+import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as UserFolder } from "@/context/FoldersPlaylistsContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -139,6 +139,25 @@ function PlaylistGrid({ pl, onPress }: { pl: Playlist; onPress: () => void }) {
   );
 }
 
+// ── Fila de carpeta del usuario ───────────────────────────────────────────────
+function FolderRow({ folder, onPress }: { folder: UserFolder; onPress: () => void }) {
+  const count = (folder.playlistIds ?? []).length;
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+      <View style={styles.userPlCover}>
+        <Feather name="folder" size={22} color={GOLD} />
+      </View>
+      <View style={styles.rowInfo}>
+        <Text style={styles.rowTitle} numberOfLines={1}>{folder.name}</Text>
+        <Text style={styles.rowSub} numberOfLines={1}>
+          Carpeta · {count === 0 ? "Vacía" : `${count} playlist${count !== 1 ? "s" : ""}`}
+        </Text>
+      </View>
+      <Feather name="chevron-right" size={18} color={MUTED} />
+    </Pressable>
+  );
+}
+
 // ── Fila de playlist del usuario ─────────────────────────────────────────────
 function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => void }) {
   return (
@@ -235,7 +254,64 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
   );
 }
 
-// ── Modal de Crear (+) ────────────────────────────────────────────────────────
+// ── Modal de nombre de carpeta ────────────────────────────────────────────────
+function NombreCarpetaModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { folders, createFolder } = useFoldersPlaylists();
+  const [name, setName] = useState("");
+  const inputRef = useRef<TextInput>(null);
+
+  const suggestedName = `Mi carpeta n.° ${folders.length + 1}`;
+
+  useEffect(() => {
+    if (visible) setName(suggestedName);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreate = () => {
+    const trimmed = name.trim() || suggestedName;
+    const folder = createFolder(trimmed);
+    onClose();
+    router.push(`/carpeta/${folder.id}` as never);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      onRequestClose={onClose}
+      onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
+    >
+      <View style={styles.nameOverlay}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <View style={styles.nameCard}>
+          <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={TEXT} />
+          </Pressable>
+          <Text style={styles.nameCardTitle}>Ponle un nombre a la carpeta</Text>
+          <View style={styles.nameInputWrap}>
+            <TextInput
+              ref={inputRef}
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              selectTextOnFocus
+              returnKeyType="done"
+              onSubmitEditing={handleCreate}
+              placeholderTextColor={MUTED}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleCreate}
+          >
+            <Text style={styles.nameCreateBtnText}>Crear</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 // ── Modal de nombre de playlist ───────────────────────────────────────────────
 function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { playlists, createPlaylist } = useFoldersPlaylists();
@@ -295,16 +371,17 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
 }
 
 // ── Hoja de crear ────────────────────────────────────────────────────────────
-function CreateSheet({ visible, onClose, onCreatePlaylist }: {
+function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta }: {
   visible: boolean;
   onClose: () => void;
   onCreatePlaylist: () => void;
+  onCreateCarpeta: () => void;
 }) {
   const ITEMS = [
     { icon: "list" as const,     title: "Crear una Playlist",     sub: "Crea una playlist con sesiones",        onPress: () => { onClose(); onCreatePlaylist(); } },
     { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: onClose },
     { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); router.push("/geometrix" as never); } },
-    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlist",                 onPress: onClose },
+    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlist",                 onPress: () => { onClose(); onCreateCarpeta(); } },
   ];
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -343,7 +420,8 @@ export default function BibliotecaScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
   const [nombreVisible, setNombreVisible] = useState(false);
-  const { playlists: userPlaylists } = useFoldersPlaylists();
+  const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
+  const { playlists: userPlaylists, folders: userFolders } = useFoldersPlaylists();
 
   const toggleSort = () => setSort((s) => (s === "recientes" ? "agregado" : "recientes"));
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
@@ -385,8 +463,14 @@ export default function BibliotecaScreen() {
           </View>
         );
       }
+      const sortedFolders = [...userFolders].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
       return (
         <>
+          {sortedFolders.map((folder) => (
+            <FolderRow key={folder.id} folder={folder} onPress={() => router.push(`/carpeta/${folder.id}` as never)} />
+          ))}
           {sortedUserPl.map((pl) => (
             <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
           ))}
@@ -530,8 +614,10 @@ export default function BibliotecaScreen() {
         visible={createVisible}
         onClose={() => setCreateVisible(false)}
         onCreatePlaylist={() => setNombreVisible(true)}
+        onCreateCarpeta={() => setNombreCarpetaVisible(true)}
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
+      <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
     </View>
   );
 }
