@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import { useFocusEffect } from "expo-router";
@@ -26,6 +26,8 @@ import { usePremium } from "@/context/PremiumContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { useSaveEvent } from "@/context/SaveEventContext";
+import { useDrawer } from "@/context/DrawerContext";
+import { useUserProfile } from "@/context/UserProfileContext";
 import {
   type MixSound,
   type SoundCategoryId,
@@ -405,6 +407,8 @@ const SoundCard = memo(function SoundCard({
 export default function MiMusicaScreen() {
   const insets          = useSafeAreaInsets();
   const { isPremium }   = usePremium();
+  const { photoUri } = useUserProfile();
+  const { open: openDrawer } = useDrawer();
   const { isActive, toggleSound } = useMixer();
   const { lastSavedAt } = useSaveEvent();
   const { requestHide, showMenu, setMusicTheme, setMusicGradient } = useTabBarVisibility();
@@ -611,7 +615,18 @@ export default function MiMusicaScreen() {
           {/* ── Header ── */}
           <View style={styles.header}>
             <View style={styles.headerRow}>
-              <View>
+              {/* Avatar — abre el drawer */}
+              <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
+                {photoUri ? (
+                  <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
+                ) : (
+                  <View style={styles.avatarFallback}>
+                    <Feather name="user" size={15} color="#7A8FA8" />
+                  </View>
+                )}
+              </Pressable>
+
+              <View style={{ flex: 1, marginLeft: 10 }}>
                 <Text style={styles.pageSuper}>MI MÚSICA</Text>
                 <Text style={[styles.pageTitle, { color: themeText }]}>Mezclador</Text>
               </View>
@@ -831,6 +846,9 @@ const styles = StyleSheet.create({
 
   header:    { paddingHorizontal: 15, marginBottom: 0 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
+  avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
+  avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(190,150,80,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(190,150,80,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: -0.4, color: DARK },
 

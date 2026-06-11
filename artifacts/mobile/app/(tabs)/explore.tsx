@@ -32,6 +32,8 @@ import { TEMAS } from "@/data/temas";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
+import { useDrawer } from "@/context/DrawerContext";
+import { useUserProfile } from "@/context/UserProfileContext";
 
 const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
@@ -67,6 +69,8 @@ const TIME_BUCKETS = [
 export default function ExploreScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { photoUri } = useUserProfile();
+  const { open: openDrawer } = useDrawer();
   const [query, setQuery] = useState("");
   const { history, getSessionProgress } = usePlayer();
   const { isPremium } = usePremium();
@@ -160,7 +164,18 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <Text style={[styles.pageTitle]}>Explora</Text>
+            {/* Avatar — abre el drawer */}
+            <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
+              ) : (
+                <View style={styles.avatarFallback}>
+                  <Feather name="user" size={15} color="#7A8FA8" />
+                </View>
+              )}
+            </Pressable>
+
+            <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Explora</Text>
             <Pressable
               onPress={() => router.push("/historial" as never)}
               hitSlop={12}
@@ -480,6 +495,9 @@ const styles = StyleSheet.create({
 
   header: { paddingHorizontal: H_PAD, marginBottom: 18 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
+  avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
+  avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(190,150,80,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(190,150,80,0.25)" },
   headerClockBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.03)", alignItems: "center", justifyContent: "center" },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
   pageSub:   { fontSize: 13, marginTop: 0 },
