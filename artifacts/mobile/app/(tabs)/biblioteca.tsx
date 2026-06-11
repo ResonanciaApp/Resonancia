@@ -446,6 +446,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
     paddingBottom: 10,
   },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
