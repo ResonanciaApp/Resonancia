@@ -40,7 +40,7 @@ const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 const SHOW_PROGRAMAS = false;
 
 const { width } = Dimensions.get("window");
-const H_PAD = 20;
+const H_PAD = 25;
 const GAP = 10;
 const PRIMARY_W = (width - H_PAD * 2 - GAP) / 2;
 const TAG_W = (width - H_PAD * 2 - GAP) / 2;
