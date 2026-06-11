@@ -201,7 +201,7 @@ const SubTabPill = memo(function SubTabPill({
         styles.subTabPill,
         { backgroundColor: sel ? activeBg : "#FFFFFF" },
       ]}>
-        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : "#7A8FA8", fontWeight: sel ? "700" : "600" }]}>
+        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : "#1A3A6E", fontWeight: sel ? "700" : "600" }]}>
           {label}
         </Text>
       </View>
@@ -637,8 +637,6 @@ export default function MiMusicaScreen() {
             </View>
           ) : null}
 
-          {/* Línea divisora sutil, acorde al tema */}
-          <View style={[styles.titleDivider, { backgroundColor: isDark ? hexToRgba(themeAccent, 0.10) : "rgba(190,150,80,0.08)" }]} />
 
         </View>
 
@@ -847,7 +845,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     paddingHorizontal: 16,
-    paddingVertical: 9,
+    paddingVertical: 14,
     borderRadius: 999,
   },
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
@@ -861,7 +859,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingVertical: 13,
     borderRadius: 999,
   },
   subTabText: { fontSize: 12, fontWeight: "600" },
