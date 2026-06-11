@@ -6090,6 +6090,7 @@ const styles = StyleSheet.create({
   canvasWrap: {
     flex: 1,
     alignItems: "center",
+    overflow: "hidden",
   },
   // Capa de fondo del lienzo: edge-to-edge (left/right -20 rompe el padding
   // del content). Empieza en la divisora (top: 0); el color llega justo a la
