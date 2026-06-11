@@ -6150,7 +6150,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 0,
-    paddingHorizontal: 20,
+    marginLeft: -20,
+    paddingLeft: 0,
+    paddingRight: 20,
     // El carrusel (styles.grid) sube con marginTop:-25 y solapa la mitad inferior
     // del header → tapaba el botón de audio (había que tocar por encima del icono
     // para abrir el buscador). zIndex eleva el header por encima del carrusel para
