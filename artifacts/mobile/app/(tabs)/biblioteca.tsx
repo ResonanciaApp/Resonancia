@@ -45,7 +45,7 @@ const TEXT = "#EDE1D3";
 const MUTED = "#7A8FA8";
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "resonadores";
-type SortMode = "recientes" | "agregado";
+type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string }[] = [
@@ -472,6 +472,52 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
   );
 }
 
+// ── Hoja de ordenar ──────────────────────────────────────────────────────────
+const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
+  { id: "recientes",   label: "Recientes",               icon: "clock" },
+  { id: "agregado",    label: "Agregado recientemente",  icon: "plus-circle" },
+  { id: "alfabetico",  label: "Alfabéticamente",          icon: "type" },
+];
+
+function SortSheet({
+  visible,
+  current,
+  onSelect,
+  onClose,
+}: {
+  visible: boolean;
+  current: SortMode;
+  onSelect: (s: SortMode) => void;
+  onClose: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
+      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      <View style={[styles.sortSheet, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+        <View style={styles.sortSheetHandle} />
+        <Text style={styles.sortSheetTitle}>Ordenar por</Text>
+        {SORT_OPTIONS.map((opt) => {
+          const active = opt.id === current;
+          return (
+            <Pressable
+              key={opt.id}
+              style={({ pressed }) => [styles.sortSheetRow, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={() => { onSelect(opt.id); onClose(); }}
+            >
+              <Feather name={opt.icon as never} size={17} color={active ? GOLD : MUTED} />
+              <Text style={[styles.sortSheetLabel, active && styles.sortSheetLabelActive]}>
+                {opt.label}
+              </Text>
+              {active && <Feather name="check" size={17} color={GOLD} style={{ marginLeft: "auto" }} />}
+            </Pressable>
+          );
+        })}
+      </View>
+    </Modal>
+  );
+}
+
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function BibliotecaScreen() {
   const insets = useSafeAreaInsets();
@@ -483,6 +529,7 @@ export default function BibliotecaScreen() {
 
   const [activeTab, setActiveTab] = useState<LibTab>("playlists");
   const [sort, setSort] = useState<SortMode>("recientes");
+  const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [searchVisible, setSearchVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
@@ -493,7 +540,6 @@ export default function BibliotecaScreen() {
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
 
-  const toggleSort = () => setSort((s) => (s === "recientes" ? "agregado" : "recientes"));
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
   const { presets, loadedPresetId, isPlaying: mixerPlaying } = useMixer();
@@ -515,14 +561,26 @@ export default function BibliotecaScreen() {
       const sortedUserPl = [...userPlaylists].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
+      // Aplicar ordenamiento según sort mode
+      const applySort = (arr: typeof sortedUserPl) => {
+        if (sort === "agregado") return [...arr].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        if (sort === "alfabetico") return [...arr].sort((a, b) => a.name.localeCompare(b.name, "es"));
+        return arr; // "recientes" ya está ordenado
+      };
+      const displayPl = applySort(sortedUserPl);
+
+      // Ancho de celda: 3 cols con 2 gaps entre ellas
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+
       if (viewMode === "grid") {
         return (
           <View style={styles.gridWrap}>
-            {sortedUserPl.map((pl) => (
-              <Pressable key={pl.id} style={({ pressed }) => [{ width: (width - H_PAD * 2 - 12) / 3, opacity: pressed ? 0.8 : 1 }]}
+            {displayPl.map((pl) => (
+              <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
-                <View style={[styles.gridThumb, { width: (width - H_PAD * 2 - 12) / 3, height: (width - H_PAD * 2 - 12) / 3, backgroundColor: "rgba(190,150,80,0.08)", alignItems: "center", justifyContent: "center" }]}>
-                  <Feather name="music" size={28} color={MUTED} />
+                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(190,150,80,0.08)", alignItems: "center", justifyContent: "center" }]}>
+                  <Feather name="music" size={24} color={MUTED} />
                 </View>
                 <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
               </Pressable>
@@ -682,9 +740,11 @@ export default function BibliotecaScreen() {
       >
         {/* Ordenar + toggle vista */}
         <View style={styles.controlRow}>
-          <Pressable onPress={toggleSort} style={styles.sortBtn} hitSlop={8}>
-            <Feather name={sort === "recientes" ? "chevron-down" : "chevron-up"} size={14} color={MUTED} />
-            <Text style={styles.sortText}>{sort === "recientes" ? "Recientes" : "Agregado recientemente"}</Text>
+          <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
+            <Feather name="chevrons-down" size={14} color={MUTED} />
+            <Text style={styles.sortText}>
+              {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
+            </Text>
           </Pressable>
           <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
             {viewMode === "list"
@@ -707,6 +767,7 @@ export default function BibliotecaScreen() {
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
+      <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
     </View>
   );
 }
@@ -806,12 +867,49 @@ const styles = StyleSheet.create({
   gridWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: 10,
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
   gridThumb: { borderRadius: 6, backgroundColor: "rgba(190,150,80,0.12)" },
   gridTitle: { fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
+
+  // ── SortSheet ────────────────────────────────────────────────────────────────
+  sortSheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#0E1326",
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+  },
+  sortSheetHandle: {
+    alignSelf: "center",
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    marginBottom: 16,
+  },
+  sortSheetTitle: {
+    color: TEXT,
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 12,
+  },
+  sortSheetRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  sortSheetLabel: { color: MUTED, fontSize: 15, flex: 1 },
+  sortSheetLabelActive: { color: TEXT, fontWeight: "600" },
 
   // ── Resonadores ─────────────────────────────────────────────────────────────
   resonadorAvatar: {
