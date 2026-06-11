@@ -3243,6 +3243,65 @@ export default function GeometrixScreen() {
     });
   }, [loupeVisible, loupeReveal]);
 
+  // Aleatoriza los ajustes visuales de todas las capas activas.
+  // Preserva las transformaciones de gesto (zoom, manualAngle, offsetX, offsetY, scale).
+  // El estado anterior se guarda en la pila de deshacer (Atrás).
+  const randomizeSettings = useCallback(() => {
+    if (active.length === 0) return;
+    if (prevCompRef.current) {
+      undoStackRef.current.push(prevCompRef.current);
+      if (undoStackRef.current.length > HISTORY_LIMIT) undoStackRef.current.shift();
+      setCanUndo(true);
+      redoStackRef.current = [];
+      setCanRedo(false);
+    }
+    const rnd  = () => Math.random();
+    const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(rnd() * arr.length)];
+    const maybe = (prob: number, lo: number, hi: number) =>
+      rnd() < prob ? lo + rnd() * (hi - lo) : 0;
+    const gradIds = STROKE_GRADIENTS.map((g) => g.id);
+    setSettings((prev) => {
+      const next = { ...prev };
+      for (const iid of active) {
+        const cur = next[iid] ?? defaultSettings(baseOf(iid));
+        const rotRoll = rnd();
+        next[iid] = {
+          ...cur,
+          color:           pick(PALETTE),
+          gradientId:      rnd() < 0.35 ? pick(gradIds) : null,
+          saturation:      0.35 + rnd() * 0.30,
+          rotate:          rotRoll < 0.40,
+          rotateLeft:      rotRoll >= 0.40 && rotRoll < 0.60,
+          rotateSpeed:     0.15 + rnd() * 0.70,
+          opacity:         0.65 + rnd() * 0.35,
+          glow:            rnd() * 0.55,
+          thickness:       rnd() * 0.60,
+          breatheAmount:   maybe(0.50, 0.1, 0.70),
+          fadeLoopAmount:  maybe(0.25, 0.1, 0.50),
+          bloom:           maybe(0.25, 0.1, 0.55),
+          halo:            maybe(0.30, 0.1, 0.65),
+          onda:            maybe(0.25, 0.1, 0.50),
+          ripple:          maybe(0.25, 0.1, 0.50),
+          warp:            maybe(0.20, 0.1, 0.40),
+          expansionAmount: maybe(0.25, 0.1, 0.55),
+          threeDAmount:    maybe(0.20, 0.1, 0.45),
+          ghostAmount:     maybe(0.20, 0.1, 0.45),
+          particleAmount:  maybe(0.25, 0.1, 0.50),
+          vibracionAmount: maybe(0.20, 0.1, 0.40),
+          kaleidoscope:    rnd() < 0.30,
+          kaleidSegments:  pick([4, 6, 8, 12] as const),
+          // Transformaciones de gesto: intactas
+          scale:       cur.scale,
+          zoom:        cur.zoom,
+          manualAngle: cur.manualAngle,
+          offsetX:     cur.offsetX,
+          offsetY:     cur.offsetY,
+        };
+      }
+      return next;
+    });
+  }, [active]);
+
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   // `divider: true` dibuja una línea sutil ANTES del ítem (separadores de grupo).
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean; color?: string; divider?: boolean }[] = [
@@ -3253,6 +3312,7 @@ export default function GeometrixScreen() {
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
     { key: "fullscreen-edit", icon: "edit-2", label: "Lienzo expandido", onPress: () => setFullscreenEdit(true) },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
+    { key: "randomize", icon: "shuffle", label: "Aleatorizar", onPress: randomizeSettings, divider: true },
     { key: "cerrar", icon: "log-out", label: "Cerrar lienzo", onPress: () => router.push("/"), divider: true },
     { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#b93c47" },
   ];
