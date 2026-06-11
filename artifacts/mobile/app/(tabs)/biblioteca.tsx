@@ -693,6 +693,25 @@ export default function BibliotecaScreen() {
           </View>
         );
       }
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      if (viewMode === "grid") {
+        return (
+          <View style={styles.gridWrap}>
+            {presets.map((mix) => (
+              <Pressable key={mix.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]} onPress={() => loadMix(mix)}>
+                <View style={[styles.gridThumb, { width: cellW, height: cellW, alignItems: "center", justifyContent: "center" }]}>
+                  <MaterialCommunityIcons name="tune-variant" size={28} color={loadedPresetId === mix.id && mixerPlaying ? GOLD : MUTED} />
+                </View>
+                <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
+                <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
+                  {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        );
+      }
       return (
         <>
           {presets.map((mix) => (
@@ -717,6 +736,43 @@ export default function BibliotecaScreen() {
             <Pressable style={styles.emptyBtn} onPress={() => router.navigate("/(tabs)/geometrix" as never)}>
               <Text style={styles.emptyBtnText}>Ir a Geometrix</Text>
             </Pressable>
+          </View>
+        );
+      }
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      if (viewMode === "grid") {
+        return (
+          <View style={styles.gridWrap}>
+            {geometrixCreations.map((c) => {
+              const firstLayers = c.active.slice(0, 3);
+              return (
+                <Pressable
+                  key={c.id}
+                  style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                  onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
+                >
+                  <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
+                    <LinearGradient colors={["#08091A", "#0E0F2E"]} style={StyleSheet.absoluteFill} />
+                    {firstLayers.map((instId, idx) => {
+                      const geoId = baseOf(instId);
+                      const settings = c.settings[instId];
+                      if (!settings) return null;
+                      const layerSize = cellW * 0.45 + idx * 4;
+                      return (
+                        <View key={instId} style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]} pointerEvents="none">
+                          <SacredGlyph id={geoId} color={settings.color} gradient={gradientColors(settings.gradientId)} size={layerSize} strokeWidth={1 + settings.thickness * 1.5} />
+                        </View>
+                      );
+                    })}
+                  </View>
+                  <Text style={styles.gridTitle} numberOfLines={2}>{c.name}</Text>
+                  <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
+                    {c.active.length} {c.active.length === 1 ? "capa" : "capas"}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         );
       }
@@ -745,6 +801,25 @@ export default function BibliotecaScreen() {
             <Feather name="users" size={48} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Sigue a un Resonador</Text>
             <Text style={styles.emptySub}>Los músicos, productores y voces guía que sigas aparecerán aquí.</Text>
+          </View>
+        );
+      }
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      if (viewMode === "grid") {
+        return (
+          <View style={styles.gridWrap}>
+            {resonadores.map((r) => (
+              <Pressable
+                key={r.id}
+                style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+              >
+                <Image source={r.photo} style={[styles.gridThumb, { width: cellW, height: cellW, borderRadius: cellW / 2 }]} resizeMode="cover" />
+                <Text style={styles.gridTitle} numberOfLines={2}>{r.name}</Text>
+                <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{r.role}</Text>
+              </Pressable>
+            ))}
           </View>
         );
       }
