@@ -2386,6 +2386,8 @@ export default function GeometrixScreen() {
   );
   // Modo inmersión: solo el fondo animado, sin interfaz.
   const [immersive, setImmersive] = useState(false);
+  // Modo lienzo expandido: pantalla completa editable (gestos + 3 controles).
+  const [fullscreenEdit, setFullscreenEdit] = useState(false);
   // Nombre de la composición recién guardada → muestra el popup temático.
   const [savedName, setSavedName] = useState<string | null>(null);
   const [updatedName, setUpdatedName] = useState<string | null>(null);
@@ -2721,6 +2723,7 @@ export default function GeometrixScreen() {
         setSettingsGeoId(null);
         setGeneralOpen(false);
         setImmersive(false);
+        setFullscreenEdit(false);
         setSavedName(null);
         setMenuGeoId(null);
         setHiddenIds([]);
@@ -3245,6 +3248,7 @@ export default function GeometrixScreen() {
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
+    { key: "fullscreen-edit", icon: "edit-2", label: "Lienzo expandido", onPress: () => setFullscreenEdit(true) },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "cerrar", icon: "log-out", label: "Cerrar lienzo", onPress: () => router.push("/"), divider: true },
     { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#b93c47" },
@@ -4447,6 +4451,186 @@ export default function GeometrixScreen() {
             ))}
           </View>
         </Pressable>
+      </Modal>
+
+      {/* ── Lienzo expandido editable ────────────────────────────────────────────
+          Pantalla completa con gestos activos. Solo flechita, hold y deshacer.
+          Los mismos shared values que el lienzo principal → los cambios se
+          reflejan al salir. */}
+      <Modal
+        visible={fullscreenEdit}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setFullscreenEdit(false)}
+      >
+        <View style={styles.fullscreenEditRoot}>
+          {/* Fondo */}
+          <LinearGradient
+            colors={canvasBgColors}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          {master.bgPattern && (
+            <GeometrixPatternBg
+              geoId={master.bgPattern.geoId}
+              opacity={master.bgPattern.opacity}
+              tileSize={master.bgPattern.tileSize}
+              spacing={master.bgPattern.spacing}
+              color={colors.primary}
+            />
+          )}
+
+          {/* Canvas interactivo: mismos gestos y SVs que el lienzo principal */}
+          <GestureDetector gesture={canvasGesture}>
+            <View style={StyleSheet.absoluteFill}>
+              {immersiveSize > 0 && visibleMetas.map((m, i) => {
+                const { iid, geo: g } = m;
+                const s = getStableSettings(iid);
+                const isTarget = iid === pinchTargetId;
+                return (
+                  <CanvasLayer
+                    key={iid}
+                    isTarget={isTarget}
+                    committedX={s.offsetX ?? 0}
+                    committedY={s.offsetY ?? 0}
+                    liveDragX={liveDragX}
+                    liveDragY={liveDragY}
+                    dragActive={dragActive}
+                    geo={g}
+                    index={i}
+                    size={immersiveSize}
+                    settings={s}
+                    liveZoomSV={isTarget ? livePinch : undefined}
+                    pinchActiveSV={pinchActive}
+                    liveAngleSV={isTarget ? liveRot : undefined}
+                    rotActiveSV={rotActive}
+                    holdModeSV={holdModeSV}
+                    holdScaleSV={holdScaleSV}
+                    holdScaleActive={holdScaleActive}
+                    holdDragDeltaX={holdDragDeltaX}
+                    holdDragDeltaY={holdDragDeltaY}
+                    holdDragActive={holdDragActive}
+                    holdRotDeltaDeg={holdRotDeltaDeg}
+                    holdRotActive={holdRotActive}
+                    masterOpacity={master.opacity}
+                    motion={master.motion}
+                    glow={master.glow}
+                  />
+                );
+              })}
+
+              {/* Guías de snap (rosa) — mismos estilos animados del lienzo */}
+              <Animated.View
+                pointerEvents="none"
+                style={[{ position: "absolute", left: 0, right: 0, top: "50%", height: 1, backgroundColor: "#FF4B8D" }, snapYLineStyle]}
+              />
+              <Animated.View
+                pointerEvents="none"
+                style={[{ position: "absolute", top: 0, bottom: 0, left: "50%", width: 1, backgroundColor: "#FF4B8D" }, snapXLineStyle]}
+              />
+
+              {/* Badge de ángulo */}
+              <Animated.View pointerEvents="none" style={[styles.rotBadge, rotBadgeStyle]}>
+                <Feather name="rotate-cw" size={12} color="rgba(255,255,255,0.9)" />
+                <AnimatedTextInput
+                  editable={false}
+                  caretHidden
+                  pointerEvents="none"
+                  underlineColorAndroid="transparent"
+                  style={styles.rotBadgeText}
+                  animatedProps={rotBadgeAngleProps}
+                />
+              </Animated.View>
+            </View>
+          </GestureDetector>
+
+          {/* Controles flotantes — solo los 3 permitidos */}
+          <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+            {/* Izquierda: deshacer + hold */}
+            <View pointerEvents="box-none" style={[styles.fullscreenEditControls, { left: 16, top: insets.top + 12 }]}>
+              {canUndo && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Pressable onPress={undo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Deshacer">
+                    <Feather name="corner-up-left" size={16} color={colors.mutedForeground} />
+                  </Pressable>
+                </Animated.View>
+              )}
+              {active.length >= 2 && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Pressable
+                    onPress={() => setHoldMode((v) => !v)}
+                    style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
+                    hitSlop={4}
+                    accessibilityRole="button"
+                    accessibilityLabel={holdMode ? "Desactivar Hold" : "Activar Hold"}
+                  >
+                    <HandIcon size={17} color={holdMode ? colors.primary : colors.mutedForeground} />
+                  </Pressable>
+                </Animated.View>
+              )}
+            </View>
+
+            {/* Derecha: minimizar + flechita */}
+            <View style={[styles.fullscreenEditControls, { right: 16, top: insets.top + 12 }]}>
+              {/* Salir del lienzo expandido */}
+              <Pressable
+                onPress={() => setFullscreenEdit(false)}
+                style={styles.actionTopBtn}
+                hitSlop={4}
+                accessibilityRole="button"
+                accessibilityLabel="Salir del lienzo expandido"
+              >
+                <Feather name="minimize-2" size={16} color={colors.mutedForeground} />
+              </Pressable>
+              {/* Flechita desplegable */}
+              <Pressable
+                onPress={() => setPillOpen((o) => !o)}
+                style={styles.actionTopBtn}
+                hitSlop={4}
+                accessibilityRole="button"
+                accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
+              >
+                <Feather name={pillOpen ? "chevron-up" : "chevron-down"} size={16} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+
+            {/* Píldora desplegable (mismo contenido que el principal) */}
+            <View pointerEvents="box-none" style={{ position: "absolute", top: insets.top + 12, right: 16, zIndex: 6, alignItems: "flex-end" }}>
+              <Animated.View
+                pointerEvents={pillOpen ? "auto" : "none"}
+                style={[styles.pillRow, pillStyle, pillCardinalStyle]}
+              >
+                {pillActions.map((a) => (
+                  <React.Fragment key={a.key}>
+                    {a.divider && <View style={styles.pillDivider} />}
+                    <Pressable
+                      onPress={() => { a.onPress(); setPillOpen(false); }}
+                      style={[
+                        styles.pillBtn,
+                        a.key === "creaciones" && { marginTop: -4.5 },
+                        a.key === "comunidad"  && { marginTop: -5.5 },
+                        a.key === "save"       && { marginTop: -4.5 },
+                        a.key === "guias"      && { marginTop: -4.5 },
+                        a.key === "borrar"     && { marginTop: -4.5 },
+                      ]}
+                      accessibilityRole="button"
+                      accessibilityLabel={a.label}
+                      hitSlop={6}
+                    >
+                      {a.gradient ? (
+                        <GoldSlidersIcon size={18} />
+                      ) : (
+                        <Feather name={a.icon} size={18} color={a.color ?? "#7a879d"} />
+                      )}
+                    </Pressable>
+                  </React.Fragment>
+                ))}
+              </Animated.View>
+            </View>
+          </View>
+        </View>
       </Modal>
 
       {/* Popup temático de "Guardada" (reemplaza el Alert nativo). */}
@@ -6296,6 +6480,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  // Lienzo expandido editable
+  fullscreenEditRoot: {
+    flex: 1,
+    backgroundColor: "#0B0F14",
+  },
+  fullscreenEditControls: {
+    position: "absolute",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
 
   // Popup "Guardada" (estilo navy + dorado, igual al resto de la UI).
