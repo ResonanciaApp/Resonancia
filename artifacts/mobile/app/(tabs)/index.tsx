@@ -224,7 +224,7 @@ export default function HomeScreen() {
       <SacredBackground variant="solid" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 12 }]}>
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
           <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
             {photoUri ? (
@@ -440,8 +440,8 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
-    paddingBottom: 10,
-    backgroundColor: "#0B0F14",
+    paddingBottom: 0,
+    backgroundColor: "#090D20",
     zIndex: 10,
   },
   scroll: { flex: 1 },
