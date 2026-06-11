@@ -188,8 +188,8 @@ export default function HomeScreen() {
               ))}
             </View>
 
-            {/* Fuego / racha */}
-            <NotificationBell />
+            {/* Fuego / racha — oculto temporalmente, re-habilitar quitando el comentario */}
+            {/* <NotificationBell /> */}
           </View>
 
           <Pressable
