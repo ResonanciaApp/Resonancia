@@ -1139,3 +1139,9 @@ id = "4ltgovu6d8PBa0gbAROBA"
 uri = "file://attached_assets/bird-icon.svg"
 type = "image"
 title = "Pájaro — icono SVG"
+
+[[outputs]]
+id = "y9L2wBOwIMTLMVWRbeYfj"
+uri = "file://screenshots/geometrias-ref.jpg"
+type = "image"
+title = "Geometrix — Referencia de geometrías"
