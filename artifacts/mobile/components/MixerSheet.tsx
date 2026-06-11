@@ -110,7 +110,7 @@ function TrackThumb({ sound }: { sound: MixSound }) {
 export function MixerSheet() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const sheetGradient: readonly [string, string, string] = HOME_GRADIENT;
+  const sheetGradient: readonly [string, string, string] = ["#1c2240", "#1c2240", "#1c2240"];
   const isLight = false;
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
