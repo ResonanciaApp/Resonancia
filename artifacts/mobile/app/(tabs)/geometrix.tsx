@@ -2123,13 +2123,14 @@ export default function GeometrixScreen() {
     GEOMETRY_CATEGORIES[0].id,
   );
   const carouselOrder = useMemo<string[]>(() => {
-    const catBases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
-      (g) => g.id,
-    );
-    const front = active.filter(
-      (id) => !effActivating.has(id) && categoryOf(id) === activeCategory,
-    );
-    const tail = catBases.filter((id) => !front.includes(id));
+    // Frente cross-categoría: TODAS las activas (sin importar su categoría). Al cambiar
+    // de tab las geometrías seleccionadas en otras categorías siguen visibles en el frente.
+    const front = active.filter((id) => !effActivating.has(id));
+    const frontSet = new Set(front);
+    // Cuerpo: bases inactivas de la categoría actual únicamente.
+    const tail = GEOMETRIES.filter(
+      (g) => g.category === activeCategory && !frontSet.has(g.id),
+    ).map((g) => g.id);
     return [...front, ...tail];
   }, [active, effActivating, activeCategory]);
   // Espejo del orden VISUAL al UI thread. Cada vez que cambia `carouselOrder` (por una
@@ -2146,38 +2147,52 @@ export default function GeometrixScreen() {
   // la posición visual la da translateX según el slot en orderSV. Solo cambia al
   // agregar/quitar un duplicado.
   const domOrder = useMemo<string[]>(() => {
-    const bases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
+    const activeSet = new Set(active);
+    // Bases de la categoría activa (inactivas + activas de esta cat, orden natural)
+    const catBases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
       (g) => g.id,
     );
-    const dups = active
-      .filter((id) => id.includes("::") && categoryOf(id) === activeCategory)
-      .sort();
-    return [...bases, ...dups];
+    // Bases activas de OTRAS categorías: el frente cross-categoría las necesita en el DOM
+    const otherActiveBases = GEOMETRIES.filter(
+      (g) => g.category !== activeCategory && activeSet.has(g.id),
+    ).map((g) => g.id);
+    // Duplicados activos de CUALQUIER categoría
+    const activeDups = active.filter((id) => id.includes("::")).sort();
+    return [...catBases, ...otherActiveBases, ...activeDups];
   }, [active, activeCategory]);
-  // Montaje progresivo de las tiles del carrusel. Cada CarouselTileInner registra
-  // ~16 objetos Reanimated (SharedValues, animated styles, reactions, gestures).
-  // Con 45 geometrías son ~720 registraciones sincrónicas que bloquean el hilo JS.
-  // Estrategia: tras la transición de navegación (InteractionManager) montar de
-  // a CAROUSEL_BATCH tiles por frame. El primer frame sube las primeras visibles →
-  // JS queda libre → useFocusEffect dispara requestHide() → fold del menú + título
-  // arrancan animados. Los frames siguientes completan el resto sin lag perceptible.
-  // Solo aplica al PRIMER ingreso (la categoría por defecto, ~20 tiles). Una vez
-  // montadas todas, `fullyMounted` queda en true y los cambios de categoría
-  // renderizan completo de una (cada categoría es chica, ~9-20, y el usuario ya
-  // está en pantalla → sin transición de tabs compitiendo por el hilo).
+  // Montaje progresivo cross-categoría. Cada CarouselTileInner registra ~16 objetos
+  // Reanimated (SVs, animated styles, reactions, gestures). Montar las 44 de golpe
+  // bloquea el hilo JS. Estrategia:
+  //   • mountedIdsRef: acumulador que NUNCA decrece — tiles montadas alguna vez.
+  //   • Al cambiar de categoría SOLO se batch-montan las tiles NUEVAS (no en el ref).
+  //     Las ya montadas se renderizan inmediatamente → switch casi sin lag.
+  //   • Tiles pre-cargadas en background (slot=-1 → opacity:0 vía wrapStyle) de las
+  //     otras categorías: al primer switch ya están montadas → switch instantáneo.
   const CAROUSEL_BATCH = 6;
-  const [carouselCount, setCarouselCount] = useState(0);
-  const [fullyMounted, setFullyMounted] = useState(false);
+  const mountedIdsRef = useRef<Set<string>>(new Set<string>());
+  const [newMountCount, setNewMountCount] = useState(0);
+  const [bgPreloadedIds, setBgPreloadedIds] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
+  );
+  // Tiles del domOrder actual que aún no están montadas. Se recalcula SOLO cuando
+  // domOrder cambia (la ref es estable, evita loop de deps).
+  const newTilesInDom = useMemo(
+    () => domOrder.filter((id) => !mountedIdsRef.current.has(id)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [domOrder],
+  );
+  // Batch-mount: corre cuando hay tiles nuevas en domOrder (primer ingreso O switch de
+  // categoría con tiles no pre-cargadas). Las ya montadas se renderizan de inmediato.
   useEffect(() => {
+    setNewMountCount(0);
+    if (newTilesInDom.length === 0) return;
     let raf = 0;
     const task = InteractionManager.runAfterInteractions(() => {
       const addBatch = () => {
-        setCarouselCount((prev) => {
+        setNewMountCount((prev) => {
           const next = prev + CAROUSEL_BATCH;
-          if (next < domOrder.length) {
+          if (next < newTilesInDom.length) {
             raf = requestAnimationFrame(addBatch);
-          } else {
-            setFullyMounted(true);
           }
           return next;
         });
@@ -2188,13 +2203,59 @@ export default function GeometrixScreen() {
       task.cancel();
       if (raf) cancelAnimationFrame(raf);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  // Lista efectiva a renderizar: progresiva durante el primer montaje, completa
-  // después (cubre cambios de categoría y duplicados sin recortar).
-  const tilesToRender = fullyMounted
-    ? domOrder
-    : domOrder.slice(0, carouselCount);
+  }, [newTilesInDom]);
+  // Pre-carga silenciosa: cuando el batch actual terminó, monta en background las
+  // tiles de otras categorías (ocultas con slot=-1). Al siguiente switch ya montadas.
+  useEffect(() => {
+    if (newTilesInDom.length > 0) return; // esperar a que termine el ciclo actual
+    const allIds = GEOMETRIES.map((g) => g.id);
+    const notMounted = allIds.filter((id) => !mountedIdsRef.current.has(id));
+    if (notMounted.length === 0) return;
+    let raf = 0;
+    let idx = 0;
+    const timer = setTimeout(() => {
+      const addBatch = () => {
+        const batch = notMounted.slice(idx, idx + 2); // 2 tiles/frame, muy liviano
+        if (batch.length === 0) return;
+        idx += 2;
+        setBgPreloadedIds((prev) => {
+          const next = new Set(prev);
+          batch.forEach((id) => next.add(id));
+          return next;
+        });
+        if (idx < notMounted.length) {
+          raf = requestAnimationFrame(addBatch);
+        }
+      };
+      raf = requestAnimationFrame(addBatch);
+    }, 1500); // esperar 1.5 s tras el ingreso para no competir con animaciones
+    return () => {
+      clearTimeout(timer);
+      if (raf) cancelAnimationFrame(raf);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newTilesInDom.length]);
+  // tilesToRender: ya montadas (inmediatas) + batch progresivo de nuevas + pre-cargadas
+  // en background (slot=-1 → ocultas; se renderizan para tenerlas "calientes").
+  const tilesToRender = useMemo(() => {
+    const alreadyMounted = domOrder.filter((id) => mountedIdsRef.current.has(id));
+    const alreadySet = new Set(alreadyMounted);
+    const newBatch = newTilesInDom
+      .slice(0, newMountCount)
+      .filter((id) => !alreadySet.has(id));
+    const visible = [...alreadyMounted, ...newBatch];
+    const visibleSet = new Set(visible);
+    // Pre-cargadas fuera del domOrder actual → slot=-1 → opacity:0 (wrapStyle)
+    const preloaded = Array.from(bgPreloadedIds).filter(
+      (id) => !visibleSet.has(id),
+    );
+    return [...visible, ...preloaded];
+  }, [domOrder, newTilesInDom, newMountCount, bgPreloadedIds]);
+  // Registrar tiles renderizadas: la próxima vez que domOrder cambie, newTilesInDom
+  // las excluirá → no se re-batch-mountan → switch casi instantáneo.
+  useEffect(() => {
+    tilesToRender.forEach((id) => mountedIdsRef.current.add(id));
+  }, [tilesToRender]);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
@@ -3669,9 +3730,8 @@ export default function GeometrixScreen() {
   const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
   // Cards reordenables = las del frente (seleccionadas que ya no están
   // "activándose"). El orden de esta lista coincide con el de `active`.
-  const frontIds = active.filter(
-    (id) => !effActivating.has(id) && categoryOf(id) === activeCategory,
-  );
+  // Cross-categoría: TODAS las activas van al frente (sin filtro de categoría).
+  const frontIds = active.filter((id) => !effActivating.has(id));
   const tileItemW = tileW + 8; // ancho de slot = tile + marginRight (tileWrap)
 
   return (
@@ -3879,7 +3939,7 @@ export default function GeometrixScreen() {
           <View
             style={[
               styles.gridRow,
-              { width: domOrder.length * tileItemW, height: tileW },
+              { width: carouselOrder.length * tileItemW, height: tileW },
             ]}
           >
             {tilesToRender.map((gid: string) => {

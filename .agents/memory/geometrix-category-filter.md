@@ -1,27 +1,37 @@
 ---
 name: Geometrix category filter
-description: Why the Geometrix carousel renders one category at a time, and the z-order invariant when reordering within a filtered carousel
+description: Category filter for Geometrix carousel, z-order invariant, cross-category front, and mount strategy
 ---
 
-El carrusel de Geometrix filtra por categoría: muestra SOLO la categoría activa
-(~9-20 tiles) en vez de las 44 a la vez.
+El carrusel de Geometrix filtra por categoría: muestra SOLO los tiles de la categoría
+activa (~9-20) en vez de las 44 a la vez, pero el FRENTE es cross-categoría.
 
-**Why:** montar las 44 geometrías de golpe al entrar a la tab bloquea el JS-thread
-(lag visible al abrir). Filtrar reduce el árbol montado por entrada.
+**Why:** montar 44 geometrías de golpe bloquea el JS-thread. Filtrar reduce el árbol
+montado por entrada. El frente cross-categoría permite ver selecciones de otras
+categorías al cambiar de tab (UX correcto).
 
-**How to apply:**
-- Las categorías y el campo `category` viven en `data/geometries.ts` (`categoryOf(id)`
-  usa `baseOf`, default la última). El estado `activeCategory` filtra `carouselOrder`,
-  `domOrder` y `frontIds`.
-- INVARIANTE de z-order al reordenar dentro de una categoría filtrada: el array
-  `active` ES el z-order global (todas las categorías comparten canvas). Reordenar
-  drag&drop dentro de la categoría visible debe PERMUTAR solo los items de esa
-  categoría dentro de los slots que ya ocupan en `active`; los items de otras
-  categorías quedan en su índice exacto. NO hacer `splice(without.length)` ni insertar
-  al final del array completo: eso mueve la capa por delante/detrás de las demás
-  categorías y rompe el z-order entre categorías (bug encontrado en review).
-- El `idx` del drop es RELATIVO al frente de la categoría visible, no al array `active`.
-- Montaje progresivo (batch) corre SOLO en la primera entrada; una vez `fullyMounted`,
-  los cambios de categoría renderizan el `domOrder` completo de golpe.
-- Al cambiar de categoría resetear el scroll del carrusel (`carScrollX=0` + `scrollTo(0)`);
-  `carMaxScrollX` se refresca con `onContentSizeChange`.
+**Frente cross-categoría (diseño actual):**
+- `frontIds` = ALL active, sin filtro de categoría.
+- `carouselOrder` = all active (any cat) first + inactive de la categoría actual.
+- `domOrder` = catBases (cat actual) + otherActiveBases (activas de otras cats, para el
+  DOM del frente) + activeDups (cualquier cat).
+- Grid width = `carouselOrder.length * tileItemW` (NO `domOrder.length`).
+
+**Montaje progresivo cross-categoría (mountedIdsRef):**
+- `mountedIdsRef` (ref, no state): acumulador que NUNCA decrece; registra tiles tras
+  cada render (useEffect `[tilesToRender]`). Al cambiar de categoría, `newTilesInDom`
+  = domOrder.filter(!in ref) → solo las tiles REALMENTE NUEVAS se batch-mountan.
+- `tilesToRender` = alreadyMounted (inmediatas) + newBatch progresivo + bgPreloaded (ocultas).
+- Tiles pre-cargadas en background (`bgPreloadedIds` state): 1.5 s después de que la
+  categoría actual carga, se montan 2 tiles/frame de otras cats (slot=-1 → opacity:0).
+  Al primer switch las tiles ya están montadas → switch instantáneo.
+- `newTilesInDom` useMemo solo depende de `[domOrder]` (no del ref) para no crear loop.
+
+**INVARIANTE de z-order al reordenar (moveActiveTo):**
+El array `active` ES el z-order global (todas las categorías comparten canvas). Reordenar
+drag&drop dentro de la categoría visible debe PERMUTAR solo los items de esa categoría
+dentro de los slots que ya ocupan en `active`; los de otras categorías quedan exactos.
+NO hacer `splice(without.length)`: mueve la capa por delante/detrás de otras categorías.
+
+**Al cambiar de categoría:** resetear scroll (`carScrollX=0` + `scrollTo(0)`);
+`carMaxScrollX` se refresca con `onContentSizeChange`.
