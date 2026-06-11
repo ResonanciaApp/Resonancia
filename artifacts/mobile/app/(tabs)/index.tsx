@@ -192,6 +192,130 @@ export default function HomeScreen() {
             {/* <NotificationBell /> */}
           </View>
 
+          <Pressable
+            onPress={handleIntentionPress}
+            style={({ pressed }) => [styles.intentionCard, { opacity: pressed ? 0.75 : 1 }]}
+          >
+            <Text style={[styles.intentionLabel, { color: colors.mutedForeground }]}>
+              Hoy voy a ...
+            </Text>
+            <View style={styles.intentionRow}>
+              {currentIntencion ? (
+                <Text style={[styles.intentionPlaceholder, { color: colors.primary, fontStyle: "italic" }]} numberOfLines={2}>
+                  {currentIntencion}
+                </Text>
+              ) : (
+                <>
+                  <BlinkingCursor color={colors.primary} />
+                  <Text style={[styles.intentionPlaceholder, { color: "#FFFFFF" }]}>
+                    Establece tu intención aquí
+                  </Text>
+                </>
+              )}
+            </View>
+          </Pressable>
+        </View>
+
+        {/* ── 3. VIDEOS DESTACADOS ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle]}>
+              Videos destacados
+            </Text>
+            {VIDEOS.length > 0 && (
+              <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
+                <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
+              </Pressable>
+            )}
+          </View>
+
+          {VIDEOS.length === 0 ? (
+            <View style={[styles.videosEmpty, { borderColor: "rgba(100,140,210,0.15)", backgroundColor: "rgba(255,255,255,0.03)" }]}>
+              <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
+              <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
+              <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
+                Pronto vas a encontrar videos aquí.
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -GRID_PAD }}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 12 }}
+            >
+              {VIDEOS.map((v) => (
+                <VideoCard
+                  key={v.id}
+                  video={v}
+                  width={VIDEO_HERO_W}
+                />
+              ))}
+            </ScrollView>
+          )}
+        </View>
+
+        {/* ── 4. ESCUCHADOS RECIENTEMENTE ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 10 }]}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle]}>
+              Escuchados recientemente
+            </Text>
+            <Pressable onPress={() => router.push("/explore" as never)} hitSlop={8}>
+              <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
+            </Pressable>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -GRID_PAD }}
+            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
+          >
+            {recentSessions.map((s) => {
+              const locked = !!s.isPremium && !isPremium;
+              const creator =
+                s.categoryId === "meditaciones-guiadas"
+                  ? getGuide(s.guideId)
+                  : getArtist(s.artistId);
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => {
+                    if (locked) { router.push("/membresia" as never); return; }
+                    playSession(s); router.push("/player" as never);
+                  }}
+                  style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.85 : 1 }]}
+                >
+                  <View style={styles.recentThumbWrap}>
+                    <Image
+                      source={s.image as number}
+                      style={styles.recentThumb}
+                      resizeMode="cover"
+                    />
+                    {locked && (
+                      <Image
+                        source={require("@/assets/images/estrella-premium.png")}
+                        style={styles.recentStar}
+                        resizeMode="contain"
+                      />
+                    )}
+                    <View style={styles.recentDurBadge}>
+                      <Text style={styles.recentDurText}>{s.durationLabel}</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.recentTitle} numberOfLines={2}>{s.title}</Text>
+                  <Text style={styles.recentCreatorName} numberOfLines={1}>
+                    {creator.name}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+
+        {/* ── 5. FRASE DEL DÍA ── */}
+        <View style={{ marginBottom: SECTION_GAP }}>
+          <QuoteOfTheDay />
         </View>
 
         {/* ── 6. SESIÓN DESTACADA ── */}
