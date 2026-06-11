@@ -28,9 +28,13 @@ import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { VideoCard } from "@/components/VideoCard";
 import { EqualizerBars } from "@/components/EqualizerBars";
+import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
+import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { useMixer } from "@/context/MixerContext";
 import { getVoiceLabel } from "@/config/audio-map";
+import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
@@ -94,8 +98,10 @@ export default function HomeScreen() {
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
-  const { playSession, currentSession, isPlaying } = usePlayer();
+  const { playSession, currentSession, isPlaying, history } = usePlayer();
   const { isPremium } = usePremium();
+  const { playlists } = useFoldersPlaylists();
+  const { presets, loadPreset, openSheet } = useMixer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   function handleIntentionPress() {
@@ -112,8 +118,9 @@ export default function HomeScreen() {
   }, []);
 
   const { version: catalogVersion } = useCatalog();
-  const recentSessions = React.useMemo(
-    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 6),
+  // Recientes — últimas sesiones agregadas al catálogo
+  const recentSessions = React.useMemo<Session[]>(
+    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 10),
     [catalogVersion],
   );
 
@@ -131,9 +138,72 @@ export default function HomeScreen() {
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
-  const newestSessions = React.useMemo<Session[]>(
-    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 5),
-    [catalogVersion],
+  // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
+  const recommendedSessions = React.useMemo<Session[]>(() => {
+    const historyIds = new Set(history.map((h) => h.sessionId));
+    const pool = SESSIONS.filter((s) => !historyIds.has(s.id));
+    const seed = new Date().toDateString();
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0x7fffffff;
+    const shuffled = [...pool];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.abs(hash ^ (i * 2654435761)) % (i + 1);
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, 10);
+  }, [history, catalogVersion]);
+
+  // Escuchadas recientemente — historial deduplicado, más recientes primero
+  const listenedRecently = React.useMemo<Session[]>(() => {
+    const seen = new Set<string>();
+    const result: Session[] = [];
+    for (let i = history.length - 1; i >= 0; i--) {
+      const h = history[i];
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s) result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history]);
+
+  // Más de lo que te gusta — categoría más frecuente en historial, sesiones no escuchadas
+  const moreLikeSessions = React.useMemo<Session[]>(() => {
+    if (history.length < 3) return [];
+    const catCount: Record<string, number> = {};
+    for (const h of history) {
+      const s = getSessionById(h.sessionId);
+      if (s) catCount[s.categoryId] = (catCount[s.categoryId] ?? 0) + 1;
+    }
+    const topCat = Object.entries(catCount).sort((a, b) => b[1] - a[1])[0]?.[0];
+    if (!topCat) return [];
+    const historyIds = new Set(history.map((h) => h.sessionId));
+    return SESSIONS.filter((s) => s.categoryId === topCat && !historyIds.has(s.id)).slice(0, 10);
+  }, [history, catalogVersion]);
+
+  // Tus playlist — playlists del usuario, foto de la primera sesión
+  const playlistItems = React.useMemo(() =>
+    playlists.slice(0, 10).map((pl) => ({
+      id: pl.id,
+      title: pl.name,
+      image: pl.sessionIds[0]
+        ? (getSessionById(pl.sessionIds[0])?.image as number | undefined)
+        : undefined,
+    })),
+    [playlists],
+  );
+
+  // Tus mezclas — presets guardados, foto del primer sonido
+  const mezclaItems = React.useMemo(() =>
+    presets.slice(0, 10).map((p) => ({
+      id: p.id,
+      title: p.name,
+      image: p.sounds[0]
+        ? (getSoundImage(p.sounds[0].id) as number | undefined)
+        : undefined,
+    })),
+    [presets],
   );
 
   const { open: openDrawer } = useDrawer();
@@ -255,63 +325,44 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* ── 4. ESCUCHADOS RECIENTEMENTE ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 10 }]}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle]}>
-              Escuchados recientemente
-            </Text>
-            <Pressable onPress={() => router.push("/explore" as never)} hitSlop={8}>
-              <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
-            </Pressable>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: -GRID_PAD }}
-            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
-          >
-            {recentSessions.map((s) => {
-              const locked = !!s.isPremium && !isPremium;
-              const creator =
-                s.categoryId === "meditaciones-guiadas"
-                  ? getGuide(s.guideId)
-                  : getArtist(s.artistId);
-              return (
-                <Pressable
-                  key={s.id}
-                  onPress={() => {
-                    if (locked) { router.push("/membresia" as never); return; }
-                    playSession(s); router.push("/player" as never);
-                  }}
-                  style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.85 : 1 }]}
-                >
-                  <View style={styles.recentThumbWrap}>
-                    <Image
-                      source={s.image as number}
-                      style={styles.recentThumb}
-                      resizeMode="cover"
-                    />
-                    {locked && (
-                      <Image
-                        source={require("@/assets/images/estrella-premium.png")}
-                        style={styles.recentStar}
-                        resizeMode="contain"
-                      />
-                    )}
-                    <View style={styles.recentDurBadge}>
-                      <Text style={styles.recentDurText}>{s.durationLabel}</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.recentTitle} numberOfLines={2}>{s.title}</Text>
-                  <Text style={styles.recentCreatorName} numberOfLines={1}>
-                    {creator.name}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </View>
+        {/* ── 4-9. CARRUSELES PERSONALIZADOS ── */}
+        <SessionCarousel
+          title="Sesiones recomendadas"
+          sessions={recommendedSessions}
+          isPremium={isPremium}
+          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+        />
+        <SessionCarousel
+          title="Recientes"
+          sessions={recentSessions}
+          isPremium={isPremium}
+          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+        />
+        <SessionCarousel
+          title="Escuchadas recientemente"
+          sessions={listenedRecently}
+          isPremium={isPremium}
+          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+        />
+        <SessionCarousel
+          title="Más de lo que te gusta"
+          sessions={moreLikeSessions}
+          isPremium={isPremium}
+          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+        />
+        <CoverCarousel
+          title="Tus playlist"
+          items={playlistItems}
+          onPress={(id) => router.push(`/playlist/${id}` as never)}
+        />
+        <CoverCarousel
+          title="Tus mezclas"
+          items={mezclaItems}
+          onPress={(id) => {
+            const preset = presets.find((p) => p.id === id);
+            if (preset) { loadPreset(preset); openSheet(); }
+          }}
+        />
 
         {/* ── 5. FRASE DEL DÍA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
@@ -368,85 +419,6 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* ── 7. MÁS ESCUCHADOS ── (oculto temporalmente) */}
-        {false && popularSessions.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionRow}>
-              <Text style={[styles.sectionTitle]}>
-                Más escuchados
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -GRID_PAD }}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
-            >
-              {popularSessions.map((session) => {
-                const locked = !!session.isPremium && !isPremium;
-                const creator =
-                  session.categoryId === "meditaciones-guiadas"
-                    ? getGuide(session.guideId)
-                    : getArtist(session.artistId);
-                return (
-                  <Pressable
-                    key={session.id}
-                    onPress={() => {
-                      if (locked) { router.push("/membresia" as never); return; }
-                      playSession(session); router.push("/player" as never);
-                    }}
-                    style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.85 : 1 }]}
-                  >
-                    <View style={styles.recentThumbWrap}>
-                      <Image
-                        source={session.image as number}
-                        style={styles.recentThumb}
-                        resizeMode="cover"
-                      />
-                      {locked && (
-                        <Image
-                          source={require("@/assets/images/estrella-premium.png")}
-                          style={styles.recentStar}
-                          resizeMode="contain"
-                        />
-                      )}
-                      <View style={styles.recentDurBadge}>
-                        <Text style={styles.recentDurText}>{session.durationLabel}</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.recentTitle} numberOfLines={2}>{session.title}</Text>
-                    <Text style={styles.recentCreatorName} numberOfLines={1}>
-                      {creator.name}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* ── 8. LAS MÁS RECIENTES ── (oculto temporalmente) */}
-        {false && (
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle]}>
-              Las más recientes
-            </Text>
-            <Pressable onPress={() => router.push("/nuevas-sesiones" as never)} hitSlop={8}>
-              <Text style={[styles.seeAll, { color: colors.primary }]}>Ver todo</Text>
-            </Pressable>
-          </View>
-          <View style={{ gap: 0, marginTop: -10 }}>
-            {newestSessions.map((s) => (
-              <SessionRow
-                key={s.id}
-                session={s}
-                onActionsPress={() => setActionsSession(s)}
-              />
-            ))}
-          </View>
-        </View>
-        )}
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
