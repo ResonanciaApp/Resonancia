@@ -527,7 +527,7 @@ export default function BibliotecaScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab, setActiveTab] = useState<LibTab>("playlists");
+  const [activeTab, setActiveTab] = useState<LibTab | null>(null);
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -557,6 +557,80 @@ export default function BibliotecaScreen() {
   }, []);
 
   const renderContent = () => {
+    // ── Modo general (sin tab seleccionado) ──────────────────────────────────
+    if (activeTab === null) {
+      const sortedFolders = [...userFolders].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      const sortedUserPl = [...userPlaylists].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      return (
+        <>
+          {/* Carpetas + playlists del usuario + oficiales */}
+          {sortedFolders.map((folder) => (
+            <FolderRow key={folder.id} folder={folder} onPress={() => router.push(`/carpeta/${folder.id}` as never)} />
+          ))}
+          {sortedUserPl.map((pl) => (
+            <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
+          ))}
+          {PLAYLISTS.map((pl) => (
+            <PlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
+          ))}
+
+          {/* Mezclas */}
+          {presets.length > 0 && (
+            <>
+              <Text style={styles.generalSectionLabel}>Mezclas</Text>
+              {presets.map((mix) => (
+                <MixRow
+                  key={mix.id}
+                  mix={mix}
+                  isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
+                  onPress={() => loadMix(mix)}
+                />
+              ))}
+            </>
+          )}
+
+          {/* Geometrix */}
+          {geometrixCreations.length > 0 && (
+            <>
+              <Text style={styles.generalSectionLabel}>Geometrix</Text>
+              {geometrixCreations.map((c) => (
+                <GeometrixRow
+                  key={c.id}
+                  creation={c}
+                  onPress={() =>
+                    router.navigate({
+                      pathname: "/(tabs)/geometrix",
+                      params: { load: c.id },
+                    } as never)
+                  }
+                />
+              ))}
+            </>
+          )}
+
+          {/* Resonadores */}
+          {resonadores.length > 0 && (
+            <>
+              <Text style={styles.generalSectionLabel}>Resonadores</Text>
+              {resonadores.map((r) => (
+                <ResonadorRow
+                  key={r.id}
+                  name={r.name}
+                  photo={r.photo}
+                  role={r.role}
+                  onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+                />
+              ))}
+            </>
+          )}
+        </>
+      );
+    }
+
     if (activeTab === "playlists") {
       const sortedUserPl = [...userPlaylists].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -724,7 +798,7 @@ export default function BibliotecaScreen() {
           contentContainerStyle={styles.chipRowContent}
         >
           {LIB_TABS.map((t) => (
-            <LibChip key={t.id} label={t.label} sel={activeTab === t.id} onPress={() => setActiveTab(t.id)} />
+            <LibChip key={t.id} label={t.label} sel={activeTab === t.id} onPress={() => setActiveTab(activeTab === t.id ? null : t.id)} />
           ))}
         </ScrollView>
 
@@ -738,21 +812,23 @@ export default function BibliotecaScreen() {
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Ordenar + toggle vista */}
-        <View style={styles.controlRow}>
-          <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-            <Feather name="chevrons-down" size={14} color={MUTED} />
-            <Text style={styles.sortText}>
-              {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
-            </Text>
-          </Pressable>
-          <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
-            {viewMode === "list"
-              ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
-              : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
-            }
-          </Pressable>
-        </View>
+        {/* Ordenar + toggle vista — solo cuando hay un tab activo */}
+        {activeTab !== null && (
+          <View style={styles.controlRow}>
+            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
+              <Feather name="chevrons-down" size={14} color={MUTED} />
+              <Text style={styles.sortText}>
+                {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
+              </Text>
+            </Pressable>
+            <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
+              {viewMode === "list"
+                ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
+                : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
+              }
+            </Pressable>
+          </View>
+        )}
         {renderContent()}
       </ScrollView>
 
@@ -921,6 +997,16 @@ const styles = StyleSheet.create({
   verifiedText: { fontSize: 11, color: MUTED },
 
   // ── Estado vacío ────────────────────────────────────────────────────────────
+  generalSectionLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: MUTED,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    paddingHorizontal: H_PAD,
+    marginTop: 20,
+    marginBottom: 4,
+  },
   emptyState: {
     alignItems: "center",
     paddingTop: 80,
