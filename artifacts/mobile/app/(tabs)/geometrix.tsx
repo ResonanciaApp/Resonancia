@@ -2434,14 +2434,17 @@ export default function GeometrixScreen() {
   // estado PREVIO; "Atrás" lo restaura. La captura es con debounce para que un
   // arrastre de slider (muchos sets seguidos) cuente como UN solo paso.
   const undoStackRef = useRef<CompSnapshot[]>([]);
+  const redoStackRef = useRef<CompSnapshot[]>([]);
   // Último estado confirmado (baseline). En reposo refleja el lienzo actual.
   const prevCompRef = useRef<CompSnapshot | null>(null);
   // Estado anterior al inicio de la ráfaga actual (se empuja al asentarse).
   const burstBaseRef = useRef<CompSnapshot | null>(null);
   const historyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Marca que el próximo cambio proviene de un "Atrás" (no re-grabar historial).
+  // Marca que el próximo cambio proviene de un "Atrás" / "Adelante" (no re-grabar historial).
   const isUndoingRef = useRef(false);
+  const isRedoingRef = useRef(false);
   const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
   // Limpia el historial al cargar otra creación o empezar en blanco. Definido
   // acá (antes de loadCreation) para que esté disponible sin TDZ.
   const resetHistory = useCallback(() => {
@@ -2450,9 +2453,11 @@ export default function GeometrixScreen() {
       historyTimerRef.current = null;
     }
     undoStackRef.current = [];
+    redoStackRef.current = [];
     burstBaseRef.current = null;
     prevCompRef.current = null; // próximo efecto fija baseline sin grabar
     setCanUndo(false);
+    setCanRedo(false);
   }, []);
   // Cuando los thumbnails desbordan el ancho visible, alineamos a la izquierda
   // (en vez de centrar) para que se pueda deslizar y se asome el último.
@@ -3327,10 +3332,20 @@ export default function GeometrixScreen() {
       prevCompRef.current = current;
       return;
     }
+    if (isRedoingRef.current) {
+      isRedoingRef.current = false;
+      prevCompRef.current = current;
+      return;
+    }
     // Primer render (o justo tras cargar/nueva): fijar baseline sin grabar.
     if (prevCompRef.current === null) {
       prevCompRef.current = current;
       return;
+    }
+    // Cualquier cambio manual limpia la pila de redo.
+    if (redoStackRef.current.length > 0) {
+      redoStackRef.current = [];
+      setCanRedo(false);
     }
     // Inicio de una ráfaga: recordar el estado anterior al primer cambio.
     if (burstBaseRef.current === null) burstBaseRef.current = prevCompRef.current;
@@ -3368,6 +3383,12 @@ export default function GeometrixScreen() {
       setCanUndo(false);
       return;
     }
+    // Guardar estado actual en redo antes de restaurar.
+    if (prevCompRef.current) {
+      redoStackRef.current.push(prevCompRef.current);
+      if (redoStackRef.current.length > HISTORY_LIMIT) redoStackRef.current.shift();
+      setCanRedo(true);
+    }
     isUndoingRef.current = true;
     setActive(snap.active);
     setSettings(snap.settings);
@@ -3375,6 +3396,27 @@ export default function GeometrixScreen() {
     setHiddenIds(snap.hiddenIds);
     setSelectedId(snap.active.length ? snap.active[snap.active.length - 1] : null);
     setCanUndo(undoStackRef.current.length > 0);
+  }, []);
+
+  const redo = useCallback(() => {
+    const snap = redoStackRef.current.pop();
+    if (!snap) {
+      setCanRedo(false);
+      return;
+    }
+    // Guardar estado actual en undo antes de avanzar.
+    if (prevCompRef.current) {
+      undoStackRef.current.push(prevCompRef.current);
+      if (undoStackRef.current.length > HISTORY_LIMIT) undoStackRef.current.shift();
+      setCanUndo(true);
+    }
+    isRedoingRef.current = true;
+    setActive(snap.active);
+    setSettings(snap.settings);
+    setMaster(snap.master);
+    setHiddenIds(snap.hiddenIds);
+    setSelectedId(snap.active.length ? snap.active[snap.active.length - 1] : null);
+    setCanRedo(redoStackRef.current.length > 0);
   }, []);
 
   // Si una geometría se quita, limpiar su aislamiento / menú abierto y
@@ -4235,6 +4277,20 @@ export default function GeometrixScreen() {
                   </Pressable>
                 </Animated.View>
               )}
+              {/* Adelantar: rehace el último paso deshecho. */}
+              {canRedo && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Pressable
+                    onPress={redo}
+                    style={styles.actionTopBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel="Adelantar (rehacer el último cambio)"
+                    hitSlop={4}
+                  >
+                    <Feather name="corner-up-right" size={16} color={colors.mutedForeground} />
+                  </Pressable>
+                </Animated.View>
+              )}
               {/* Toggle Hold: visible con ≥2 capas activas. */}
               {active.length >= 2 && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
@@ -4576,12 +4632,19 @@ export default function GeometrixScreen() {
 
           {/* Controles flotantes — solo los 3 permitidos */}
           <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-            {/* Izquierda: deshacer + hold */}
+            {/* Izquierda: deshacer + adelantar + hold */}
             <View pointerEvents="box-none" style={[styles.fullscreenEditControls, { left: 16, top: insets.top + 12 }]}>
               {canUndo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                   <Pressable onPress={undo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Deshacer">
                     <Feather name="corner-up-left" size={16} color={colors.mutedForeground} />
+                  </Pressable>
+                </Animated.View>
+              )}
+              {canRedo && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Pressable onPress={redo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Adelantar">
+                    <Feather name="corner-up-right" size={16} color={colors.mutedForeground} />
                   </Pressable>
                 </Animated.View>
               )}
