@@ -28,10 +28,27 @@ posición → salto visible al soltar.
    `Math.abs(value - fraction.value) > 0.001`. Los ecos ya coinciden con la
    posición del thumb (los emitimos desde ahí) → se ignoran; un reset EXTERNO
    ("restablecer") sí difiere → sí mueve el thumb.
+4. **Gesto estable (anti-rebote por re-render):** `onChange` en `onChangeRef`
+   (`onChangeRef.current = onChange` cada render) + dispatcher `emit` estable
+   (`useCallback([])`), y construir `Gesture.Pan()` UNA vez con `useMemo` (deps =
+   callbacks estables + SharedValues). Si el gesto se rearma con un `onChange`
+   inline nuevo en cada render del padre (que re-renderea por frame durante el
+   drag), el `GestureDetector` cambia el handler activo a mitad de gesto →
+   stutter/rebote. NO volver a inline-arrow el `onChange` ni rearmar el gesto.
+5. **Throttle por delta (no por reloj):** en `onUpdate` solo `runOnJS(emit)`
+   cuando `|f - lastEmit| >= 0.01` (`lastEmit` = SharedValue, se reinicia en
+   `onBegin`). El thumb sigue al dedo a 60 fps igual (hilo UI); lo que se acota
+   son los re-renders de React. NADA de `Date.now()`/`performance.now()` en el
+   worklet (no fiables). **Emisión final OBLIGATORIA** en `onFinalize` (si
+   `fraction.value !== lastEmit.value`) ANTES de `runOnJS(endDrag)` → por FIFO el
+   prop `value` iguala al thumb al limpiar el flag → guard de epsilon no-opea →
+   sin rebote. Caveat aceptable: drags rápidos (~0.016/frame) superan el gate y
+   emiten casi por frame, pero con `React.memo` en las capas eso es barato.
 
-**Why:** el padre re-renderea ~5500 líneas (geometrix) por tick, así que el hilo
-JS va por detrás del UI; el orden causal del flag importa.
+**Why:** el padre re-renderea ~6500 líneas (geometrix) por tick, así que el hilo
+JS va por detrás del UI; el orden causal del flag importa, y un gesto re-armado a
+mitad de drag reintroduce el rebote que los puntos 1–3 ya habían matado.
 
 **How to apply:** cualquier slider/control Reanimated controlado (prop de
-vuelta) que sea source-of-truth por gesto necesita estos tres elementos; el flag
+vuelta) que sea source-of-truth por gesto necesita los 5 elementos; el flag
 SIEMPRE por `runOnJS` (no en worklet/hilo UI) para el orden FIFO con los ecos.

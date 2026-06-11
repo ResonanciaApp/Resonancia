@@ -9,6 +9,14 @@ import Animated, {
 
 const TRACK_PAD = 8;
 const THUMB_SIZE = 14;
+// Umbral de emisión: durante el arrastre solo se llama onChange cuando la
+// fracción se movió al menos esto desde la última emisión. El thumb sigue al
+// dedo a 60 fps (hilo UI, SharedValue) pase lo que pase; lo que se acota es el
+// número de re-renders de React (setState → re-render del componente padre).
+// 0.01 = a lo sumo ~100 emisiones a lo largo de toda la pista (imperceptible en
+// el preview) en vez de una por frame. NO se usa reloj en el worklet (Date.now/
+// performance.now no son fiables ahí); el gate es puramente por delta.
+const EMIT_EPS = 0.01;
 
 type Props = {
   value: number;
@@ -24,6 +32,9 @@ type Props = {
 export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   const fraction = useSharedValue(value);
   const trackWidth = useSharedValue(1);
+  // Última fracción EMITIDA a React (gate de throttle). Se reinicia en cada
+  // onBegin, así que su valor entre arrastres no importa.
+  const lastEmit = useSharedValue(value);
   // Flag en hilo JS: indica si el usuario está arrastrando. Se setea/limpia vía
   // runOnJS (no en el hilo UI) para quedar FIFO-ordenado respecto a los ecos de
   // onChange: al soltar, endDrag corre DESPUÉS de todos los ecos en cola, así
@@ -34,6 +45,16 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   }, []);
   const endDrag = React.useCallback(() => {
     draggingRef.current = false;
+  }, []);
+
+  // onChange en un ref + dispatcher estable: el gesto (useMemo abajo) NO se
+  // reconstruye cuando el padre re-renderiza por frame durante el arrastre. Si
+  // el gesto se rearmara con un onChange inline nuevo, el GestureDetector
+  // cambiaría el handler activo a mitad de gesto → stutter/rebote.
+  const onChangeRef = React.useRef(onChange);
+  onChangeRef.current = onChange;
+  const emit = React.useCallback((v: number) => {
+    onChangeRef.current(v);
   }, []);
 
   // Sincroniza el prop externo SOLO cuando el cambio viene de fuera (p. ej. el
@@ -47,23 +68,45 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
     }
   }, [value, fraction]);
 
-  const gesture = Gesture.Pan()
-    .minDistance(0)
-    .onBegin((e) => {
-      runOnJS(startDrag)();
-      // e.x es local al GestureDetector; la pista empieza en TRACK_PAD
-      const raw = (e.x - TRACK_PAD) / trackWidth.value;
-      fraction.value = Math.min(1, Math.max(0, raw));
-      runOnJS(onChange)(fraction.value);
-    })
-    .onUpdate((e) => {
-      const raw = (e.x - TRACK_PAD) / trackWidth.value;
-      fraction.value = Math.min(1, Math.max(0, raw));
-      runOnJS(onChange)(fraction.value);
-    })
-    .onFinalize(() => {
-      runOnJS(endDrag)();
-    });
+  // El gesto se construye UNA sola vez (deps estables: callbacks y SharedValues).
+  const gesture = React.useMemo(
+    () =>
+      Gesture.Pan()
+        .minDistance(0)
+        .onBegin((e) => {
+          runOnJS(startDrag)();
+          // e.x es local al GestureDetector; la pista empieza en TRACK_PAD
+          const raw = (e.x - TRACK_PAD) / trackWidth.value;
+          const f = Math.min(1, Math.max(0, raw));
+          fraction.value = f;
+          lastEmit.value = f;
+          runOnJS(emit)(f);
+        })
+        .onUpdate((e) => {
+          const raw = (e.x - TRACK_PAD) / trackWidth.value;
+          const f = Math.min(1, Math.max(0, raw));
+          fraction.value = f; // hilo UI: el thumb siempre fluido
+          // Throttle por delta: solo cruzamos a JS (setState → re-render) cuando
+          // el valor cambió lo suficiente. Acota los re-renders sin afectar el
+          // movimiento visual del thumb.
+          if (Math.abs(f - lastEmit.value) >= EMIT_EPS) {
+            lastEmit.value = f;
+            runOnJS(emit)(f);
+          }
+        })
+        .onFinalize(() => {
+          // Emisión final garantizada: el valor comprometido coincide con la
+          // posición exacta del thumb (si el último delta no llegó al umbral).
+          // Va ANTES de endDrag para preservar el orden FIFO anti-rebote: cuando
+          // endDrag limpia el flag, el prop `value` ya igualó al thumb.
+          if (fraction.value !== lastEmit.value) {
+            lastEmit.value = fraction.value;
+            runOnJS(emit)(fraction.value);
+          }
+          runOnJS(endDrag)();
+        }),
+    [emit, startDrag, endDrag, fraction, trackWidth, lastEmit],
+  );
 
   // Píxeles absolutos + translateX en lugar de porcentajes → sin pase de
   // layout por frame → cero flicker en el thumb circular.

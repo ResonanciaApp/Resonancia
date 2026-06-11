@@ -473,7 +473,7 @@ function ParticleField({ size, color, amount }: { size: number; color: string; a
 }
 
 // ── Capa animada del fondo ────────────────────────────────────────
-function GeometryLayer({
+function GeometryLayerInner({
   geo,
   index,
   size,
@@ -1132,7 +1132,7 @@ type CanvasLayerProps = {
   glow?: number;
 };
 
-function CanvasLayer({
+function CanvasLayerInner({
   isTarget,
   committedX,
   committedY,
@@ -1222,6 +1222,15 @@ function CanvasLayer({
     </Animated.View>
   );
 }
+
+// Memoizadas: al seleccionar una geometría (setActivatingIds/setActive) o al
+// arrastrar un slider, el componente raíz (~6500 líneas) se re-renderiza, pero
+// estas capas solo re-reconcilian si SUS props cambian. Como `settings` ahora se
+// pasa con identidad estable por id (getStableSettings), las capas no afectadas
+// se saltan → arranca la animación del tile sin retraso (sin microlag) y el
+// drag de un slider solo re-renderiza la capa tocada.
+const GeometryLayer = React.memo(GeometryLayerInner);
+const CanvasLayer = React.memo(CanvasLayerInner);
 
 
 // ── GuideHandle ────────────────────────────────────────────────────────────
@@ -2679,6 +2688,28 @@ export default function GeometrixScreen() {
     [settings],
   );
 
+  // Versión con IDENTIDAD ESTABLE del merge: devuelve el MISMO objeto mientras
+  // `settings[id]` no cambie de referencia. `updateSetting` reemplaza solo la
+  // entrada tocada (spread de `prev`), así que al arrastrar un slider únicamente
+  // ESA capa recibe un objeto nuevo; las demás conservan su referencia. Junto con
+  // React.memo en CanvasLayer, esto evita re-reconciliar todas las capas en cada
+  // tick (drag) y en cada selección del carrusel → sin microlag. NO usar para
+  // leer valores que luego se mutan (es de solo lectura, como getSettings).
+  const stableSettingsCache = useRef<
+    Map<string, { src: GeoSettings | undefined; merged: GeoSettings }>
+  >(new Map());
+  const getStableSettings = useCallback(
+    (id: string): GeoSettings => {
+      const src = settings[id];
+      const cached = stableSettingsCache.current.get(id);
+      if (cached && cached.src === src) return cached.merged;
+      const merged = { ...defaultSettings(baseOf(id)), ...(src ?? {}) };
+      stableSettingsCache.current.set(id, { src, merged });
+      return merged;
+    },
+    [settings],
+  );
+
   // ¿La geometría tiene algún parámetro del panel distinto de sus defaults?
   // (Ignora las transformaciones por gesto — ver TRANSFORM_KEYS.)
   const isGeoModified = useCallback(
@@ -3838,7 +3869,7 @@ export default function GeometrixScreen() {
                 {layerSize > 0 &&
                   visibleMetas.map((m, i) => {
                     const { iid, geo: g } = m;
-                    const s = getSettings(iid);
+                    const s = getStableSettings(iid);
                     const isTarget = iid === pinchTargetId;
                     return (
                       // CanvasLayer aplica el desplazamiento (drag) en el UI thread
@@ -4137,7 +4168,7 @@ export default function GeometrixScreen() {
             >
               {activeMetas.map((m, index) => {
                 const { iid, geo: g } = m;
-                const s = getSettings(iid);
+                const s = getStableSettings(iid);
                 const isHidden = hiddenIds.includes(iid);
                 const isSelected = pinchTargetId === iid;
                 // Tanda inicial → escalonado izquierda→derecha; agregados luego → al instante.
@@ -4970,8 +5001,8 @@ export default function GeometrixScreen() {
             {/* ── Transformación ────────────────────────────────────────── */}
             <SettingsSection
               title="Transformación"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
@@ -4992,15 +5023,6 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    <View style={{ display: (g0?.rotateLeft ?? false) ? "flex" : "none" }}>
-                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                      <VolumeSlider
-                        value={g0?.rotateSpeed ?? 0.5}
-                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
-                        color="#FFFFFF"
-                        trackColor="rgba(255,255,255,0.12)"
-                      />
-                    </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Girar derecha</Text>
                       <Toggle
@@ -5013,15 +5035,6 @@ export default function GeometrixScreen() {
                         }}
                         color={TOGGLE_ON_COLOR}
                         compact
-                      />
-                    </View>
-                    <View style={{ display: (g0?.rotate ?? false) ? "flex" : "none" }}>
-                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                      <VolumeSlider
-                        value={g0?.rotateSpeed ?? 0.5}
-                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
-                        color="#FFFFFF"
-                        trackColor="rgba(255,255,255,0.12)"
                       />
                     </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>
@@ -5678,8 +5691,8 @@ export default function GeometrixScreen() {
                   {/* ── Transformación ────────────────────────────────────── */}
                   <SettingsSection
                     title="Transformación"
-                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"])}
-                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount", "rotateSpeed"])}
+                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
+                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate", "threeDAmount"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
@@ -5694,15 +5707,6 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    <View style={{ display: s.rotateLeft ? "flex" : "none" }}>
-                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                      <VolumeSlider
-                        value={s.rotateSpeed ?? 0.5}
-                        onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
-                        color="#FFFFFF"
-                        trackColor="rgba(255,255,255,0.12)"
-                      />
-                    </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Girar derecha</Text>
                       <Toggle
@@ -5713,15 +5717,6 @@ export default function GeometrixScreen() {
                         }}
                         color={TOGGLE_ON_COLOR}
                         compact
-                      />
-                    </View>
-                    <View style={{ display: s.rotate ? "flex" : "none" }}>
-                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                      <VolumeSlider
-                        value={s.rotateSpeed ?? 0.5}
-                        onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
-                        color="#FFFFFF"
-                        trackColor="rgba(255,255,255,0.12)"
                       />
                     </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>

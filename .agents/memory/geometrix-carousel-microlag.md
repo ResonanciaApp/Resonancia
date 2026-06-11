@@ -42,6 +42,32 @@ shouldRasterizeIOS se fue con ese revert (no quedó en el baseline limpio).
 worklets/render del lienzo de Geometrix — costo por frame = microlag general. Si se necesita
 tema, hacerlo fuera del hot path de animación.
 
+## Microlag al SELECCIONAR (distinto del FLIP) = capas pesadas re-reconciliando
+
+Síntoma: al tocar un tile para activarlo, la animación de pulso/glow del tile
+arranca con un pequeño retraso (microlag). NO es el FLIP ni el gap de arrastre.
+
+Causa: `setActivatingIds`/`setActive` re-renderean el componente raíz; el pulso
+del tile vive en un `useEffect` que arranca DESPUÉS de que ese render commitea.
+Si el render es lento, la animación arranca tarde. Las `CanvasLayer`/`GeometryLayer`
+del lienzo (y la tira de miniaturas) son pesadas (varios SharedValues, worklets,
+efectos), y se re-reconciliaban TODAS en cada selección.
+
+Fix: `React.memo` en `CanvasLayer` y `GeometryLayer` + **identidad estable del
+objeto `settings`** vía `getStableSettings(id)` (cache `useRef<Map>` que devuelve
+el MISMO merge mientras `settings[id]` no cambie de referencia; `updateSetting`
+hace spread de `prev`, así solo la capa tocada recibe objeto nuevo). Sin el
+settings estable, `React.memo` es inútil (el `getSettings()` viejo creaba un
+objeto fresco por render → siempre re-render). Usar `getStableSettings` en el
+render del lienzo y en la tira de miniaturas; el panel modal (~5536) sigue en
+`getSettings` (esa capa SÍ debe re-renderear). Beneficio doble: también el drag
+de un slider de sensibilidad solo re-renderea la capa tocada (no las N capas).
+
+**No reintroducir** `getSettings(iid)` (objeto fresco) en el render del lienzo:
+anula el `React.memo` y vuelve el microlag. Las props de `CanvasLayer` deben
+seguir siendo SharedValues (refs), primitivos o el settings estable — nada
+mutado in-place (rompería el shallow-compare del memo).
+
 ## No tocar: layout animations, reorder del DOM
 
 Cualquier cambio que reintroduzca `LinearTransition`, reorder del array `active` en el momento del
