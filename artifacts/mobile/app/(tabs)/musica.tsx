@@ -574,14 +574,6 @@ export default function MiMusicaScreen() {
               </Pressable>
 
               <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10, color: themeText }]}>Mezclador</Text>
-              <Pressable
-                onPress={openSettings}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel="Ajustes de apariencia"
-              >
-                <MaterialCommunityIcons name="tune-vertical" size={16} color={themeText} />
-              </Pressable>
             </View>
           </View>
 
