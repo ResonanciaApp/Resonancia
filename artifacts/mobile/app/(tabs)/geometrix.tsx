@@ -6327,7 +6327,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     paddingRight: 8,
-    marginTop: 2,
+    marginTop: 17,
     marginBottom: 3,
   },
   catChip: {
