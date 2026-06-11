@@ -3248,7 +3248,6 @@ export default function GeometrixScreen() {
           saturation:      0.35 + rnd() * 0.30,
           rotate:          rotRoll < 0.40,
           rotateLeft:      rotRoll >= 0.40 && rotRoll < 0.60,
-          rotateSpeed:     0.15 + rnd() * 0.70,
           opacity:         0.65 + rnd() * 0.35,
           glow:            rnd() * 0.55,
           thickness:       rnd() * 0.60,
