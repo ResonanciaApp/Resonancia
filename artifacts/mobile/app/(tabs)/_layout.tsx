@@ -29,7 +29,7 @@ const PILL_BG = "rgba(107,154,181,0.18)";
 const BAR_BORDER = "#0e132f";
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["musica2", "musica3", "descanzo", "profile"]);
+const HIDDEN_ROUTES = new Set(["musica2", "musica3", "descanzo", "profile", "geometrix"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -42,13 +42,14 @@ const TAB_CONFIG: Record<
     image?: number;
   }
 > = {
-  index:   { label: "Inicio",     sfIcon: "house",          sfIconFill: "house.fill",          featherIcon: "home" },
-  explore: { label: "Buscar",     sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass",    featherIcon: "search" },
-  musica:  { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
-  musica2: { label: "Música 2",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
-  musica3: { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", featherIcon: "sliders" },
-  geometrix: { label: "Geometrix", sfIcon: "hexagon", sfIconFill: "hexagon.fill", featherIcon: "hexagon", image: require("@/assets/images/geometrix/cubo-1.png") },
-  profile: { label: "Perfil",     sfIcon: "person",         sfIconFill: "person.fill",         featherIcon: "user" },
+  index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",              featherIcon: "home" },
+  explore:    { label: "Buscar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",         featherIcon: "search" },
+  musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",    featherIcon: "sliders" },
+  musica2:    { label: "Música 2",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",    featherIcon: "sliders" },
+  musica3:    { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",    featherIcon: "sliders" },
+  geometrix:  { label: "Geometrix", sfIcon: "hexagon",              sfIconFill: "hexagon.fill",            featherIcon: "hexagon", image: require("@/assets/images/geometrix/cubo-1.png") },
+  biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",    featherIcon: "bookmark" },
+  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",             featherIcon: "user" },
 };
 
 function TabItem({
@@ -201,14 +202,15 @@ function TabLayoutInner() {
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />
-        <Tabs.Screen name="musica"         options={{ title: "Mi Música" }} />
+        <Tabs.Screen name="musica"         options={{ title: "Mezclador" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
-        <Tabs.Screen name="explore"   options={{ title: "Explora" }} />
-        <Tabs.Screen name="geometrix" options={{ title: "Geometrix" }} />
-        <Tabs.Screen name="musica2"   options={{ title: "Música 2", href: null }} />
-        <Tabs.Screen name="musica3"   options={{ title: "Mi Música", href: null }} />
-        <Tabs.Screen name="descanzo"  options={{ title: "Descanso", href: null }} />
-        <Tabs.Screen name="profile"  options={{ title: "Perfil" }} />
+        <Tabs.Screen name="explore"        options={{ title: "Buscar" }} />
+        <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
+        <Tabs.Screen name="geometrix"      options={{ title: "Geometrix" }} />
+        <Tabs.Screen name="musica2"        options={{ title: "Música 2", href: null }} />
+        <Tabs.Screen name="musica3"        options={{ title: "Mi Música", href: null }} />
+        <Tabs.Screen name="descanzo"       options={{ title: "Descanso", href: null }} />
+        <Tabs.Screen name="profile"        options={{ title: "Perfil" }} />
       </Tabs>
 
       {showMiniPlayer && (
