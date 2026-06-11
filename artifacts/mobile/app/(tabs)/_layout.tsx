@@ -117,7 +117,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const extra = Math.round(pb / 2);
 
   // Alto total de la barra: se desliza esa distancia (+ holgura) para esconderse.
-  const barHeight = 56 + extra + pb;
+  const barHeight = 41 + extra + pb;
   const { hidden } = useTabBarVisibility();
   const translateY = useRef(new Animated.Value(0)).current;
 
@@ -145,7 +145,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.90)" }]} />
         )}
         <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
-        <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 56 + extra }]}>
+        <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 13 + extra, height: 41 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
@@ -183,7 +183,7 @@ function TabLayoutInner() {
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
   const bottomPb = isWeb ? 8 : insets.bottom;
-  const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
+  const tabBarHeight = 41 + Math.round(bottomPb / 2) + bottomPb;
   const { hidden } = useTabBarVisibility();
 
   // La barra flotante (sesión o mezcla) abre el editor en hoja inferior; se
@@ -200,8 +200,9 @@ function TabLayoutInner() {
         screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#0B0F14" } }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
-        <Tabs.Screen name="index"     options={{ title: "Inicio" }} />
-        <Tabs.Screen name="musica"    options={{ title: "Mi Música" }} />
+        <Tabs.Screen name="index"          options={{ title: "Inicio" }} />
+        <Tabs.Screen name="musica"         options={{ title: "Mi Música" }} />
+        <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
         <Tabs.Screen name="explore"   options={{ title: "Explora" }} />
         <Tabs.Screen name="geometrix" options={{ title: "Geometrix" }} />
         <Tabs.Screen name="musica2"   options={{ title: "Música 2", href: null }} />
@@ -243,9 +244,9 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    paddingTop: 8,
+    paddingTop: 13,
     paddingHorizontal: 8,
-    height: 56,
+    height: 41,
   },
   rowWeb: {
     maxWidth: 430,
