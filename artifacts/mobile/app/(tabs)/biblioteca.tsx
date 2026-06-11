@@ -333,7 +333,7 @@ export default function BibliotecaScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: NAVY },
+  root: { flex: 1, backgroundColor: "#080B1A" },
 
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
