@@ -4475,7 +4475,7 @@ export default function GeometrixScreen() {
           estado al cerrar y bloquea el lienzo. Con un View absoluto todo queda
           en el mismo contexto nativo y el GestureDetector funciona. */}
       {fullscreenEdit && (
-        <Animated.View entering={FadeIn.duration(220)} style={styles.fullscreenEditRoot}>
+        <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(180)} style={styles.fullscreenEditRoot}>
           {/* Fondo */}
           <LinearGradient
             colors={canvasBgColors}
