@@ -4973,17 +4973,15 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    {(g0?.rotateLeft ?? false) && (
-                      <>
-                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                        <VolumeSlider
-                          value={g0?.rotateSpeed ?? 0.5}
-                          onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
-                          color="#FFFFFF"
-                          trackColor="rgba(255,255,255,0.12)"
-                        />
-                      </>
-                    )}
+                    <View style={{ display: (g0?.rotateLeft ?? false) ? "flex" : "none" }}>
+                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                      <VolumeSlider
+                        value={g0?.rotateSpeed ?? 0.5}
+                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
+                        color="#FFFFFF"
+                        trackColor="rgba(255,255,255,0.12)"
+                      />
+                    </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Girar derecha</Text>
                       <Toggle
@@ -4998,17 +4996,15 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    {(g0?.rotate ?? false) && (
-                      <>
-                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                        <VolumeSlider
-                          value={g0?.rotateSpeed ?? 0.5}
-                          onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
-                          color="#FFFFFF"
-                          trackColor="rgba(255,255,255,0.12)"
-                        />
-                      </>
-                    )}
+                    <View style={{ display: (g0?.rotate ?? false) ? "flex" : "none" }}>
+                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                      <VolumeSlider
+                        value={g0?.rotateSpeed ?? 0.5}
+                        onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "rotateSpeed", v))}
+                        color="#FFFFFF"
+                        trackColor="rgba(255,255,255,0.12)"
+                      />
+                    </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Grosor</Text>
                     </View>
@@ -5679,17 +5675,15 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    {s.rotateLeft && (
-                      <>
-                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                        <VolumeSlider
-                          value={s.rotateSpeed ?? 0.5}
-                          onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
-                          color="#FFFFFF"
-                          trackColor="rgba(255,255,255,0.12)"
-                        />
-                      </>
-                    )}
+                    <View style={{ display: s.rotateLeft ? "flex" : "none" }}>
+                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                      <VolumeSlider
+                        value={s.rotateSpeed ?? 0.5}
+                        onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
+                        color="#FFFFFF"
+                        trackColor="rgba(255,255,255,0.12)"
+                      />
+                    </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Girar derecha</Text>
                       <Toggle
@@ -5702,17 +5696,15 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    {s.rotate && (
-                      <>
-                        <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
-                        <VolumeSlider
-                          value={s.rotateSpeed ?? 0.5}
-                          onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
-                          color="#FFFFFF"
-                          trackColor="rgba(255,255,255,0.12)"
-                        />
-                      </>
-                    )}
+                    <View style={{ display: s.rotate ? "flex" : "none" }}>
+                      <Text style={[styles.fieldLabel, { marginTop: 6 }]}>Velocidad</Text>
+                      <VolumeSlider
+                        value={s.rotateSpeed ?? 0.5}
+                        onChange={(v) => updateSetting(iid, "rotateSpeed", v)}
+                        color="#FFFFFF"
+                        trackColor="rgba(255,255,255,0.12)"
+                      />
+                    </View>
                     <View style={[styles.fieldRow, { marginTop: 8 }]}>
                       <Text style={styles.fieldLabel}>Grosor</Text>
                     </View>
