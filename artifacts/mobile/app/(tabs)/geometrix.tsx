@@ -1983,36 +1983,59 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
 
   const frontIds = active.filter((id) => !effActivating.has(id));
 
+  const goCategory = useCallback((id: GeometryCategory) => {
+    carScrollX.value = 0;
+    carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
+    setActiveCategory(id);
+  }, [carScrollX, carouselScrollRef]);
+
+  const catSwipeGesture = useMemo(() =>
+    Gesture.Pan()
+      .activeOffsetX([-18, 18])
+      .failOffsetY([-12, 12])
+      .onEnd((e) => {
+        if (Math.abs(e.translationX) < 35) return;
+        const idx = GEOMETRY_CATEGORIES.findIndex((c) => c.id === activeCategory);
+        if (e.translationX < 0 && idx < GEOMETRY_CATEGORIES.length - 1) {
+          runOnJS(goCategory)(GEOMETRY_CATEGORIES[idx + 1].id);
+        } else if (e.translationX > 0 && idx > 0) {
+          runOnJS(goCategory)(GEOMETRY_CATEGORIES[idx - 1].id);
+        }
+      }),
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [activeCategory, goCategory]);
+
   return (
     <>
-      {/* Filtro por categoría: el carrusel muestra solo la categoría activa */}
-      <View style={styles.catFilterRow}>
-        {GEOMETRY_CATEGORIES.map((c) => {
-          const on = activeCategory === c.id;
-          return (
-            <Pressable
-              key={c.id}
-              onPress={() => {
-                if (activeCategory === c.id) return;
-                carScrollX.value = 0;
-                carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
-                setActiveCategory(c.id);
-              }}
-              style={[styles.catChip, on ? styles.catChipOn : null]}
-              accessibilityRole="button"
-              accessibilityState={{ selected: on }}
-              accessibilityLabel={`Filtrar geometrías: ${c.label}`}
-            >
-              <Text
-                style={[styles.catChipText, on ? styles.catChipTextOn : null]}
-                numberOfLines={1}
+      {/* Filtro por categoría: el carrusel muestra solo la categoría activa.
+          El GestureDetector permite deslizar izq/der para cambiar de tab. */}
+      <GestureDetector gesture={catSwipeGesture}>
+        <View style={styles.catFilterRow}>
+          {GEOMETRY_CATEGORIES.map((c) => {
+            const on = activeCategory === c.id;
+            return (
+              <Pressable
+                key={c.id}
+                onPress={() => {
+                  if (activeCategory === c.id) return;
+                  goCategory(c.id);
+                }}
+                style={[styles.catChip, on ? styles.catChipOn : null]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`Filtrar geometrías: ${c.label}`}
               >
-                {c.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
+                <Text
+                  style={[styles.catChipText, on ? styles.catChipTextOn : null]}
+                  numberOfLines={1}
+                >
+                  {c.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </GestureDetector>
 
       {/* Galería de geometrías (una fila horizontal, scrolleable) */}
       <Animated.ScrollView
