@@ -3129,7 +3129,7 @@ export default function GeometrixScreen() {
           rotateLeft:      rotRoll >= 0.40 && rotRoll < 0.60,
           opacity:         0.65 + rnd() * 0.35,
           glow:            rnd() * 0.55,
-          thickness:       rnd() * 0.60,
+          thickness:       maybe(0.22, 0.0, 0.10),
           breatheAmount:   maybe(0.50, 0.1, 0.70),
           fadeLoopAmount:  maybe(0.25, 0.1, 0.50),
           bloom:           maybe(0.25, 0.1, 0.55),
@@ -3137,7 +3137,6 @@ export default function GeometrixScreen() {
           onda:            maybe(0.25, 0.1, 0.50),
           ripple:          maybe(0.25, 0.1, 0.50),
           expansionAmount: maybe(0.25, 0.1, 0.55),
-          threeDAmount:    maybe(0.20, 0.1, 0.45),
           kaleidoscope:    rnd() < 0.30,
           kaleidSegments:  pick([4, 6, 8, 12] as const),
           // Transformaciones de gesto: intactas
