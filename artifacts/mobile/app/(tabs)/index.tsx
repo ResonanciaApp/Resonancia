@@ -193,23 +193,22 @@ export default function HomeScreen() {
             {/* <NotificationBell /> */}
           </View>
 
-        </View>
-
-        {/* ── 2. COLECCIONES DE RESONANCIA ── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { marginBottom: 12 }]}>Colecciones</Text>
-          <View style={styles.coleccionGrid}>
-            {PLAYLISTS.map((pl) => (
-              <Pressable
-                key={pl.id}
-                onPress={() => router.push(`/coleccion/${pl.id}` as never)}
-                style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Image source={pl.cover as number} style={styles.coleccionThumb} resizeMode="cover" />
-                <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
-              </Pressable>
-            ))}
+          {/* Colecciones — 10 px debajo de la fila avatar + tabs */}
+          <View style={{ marginTop: 10 }}>
+            <View style={styles.coleccionGrid}>
+              {PLAYLISTS.map((pl) => (
+                <Pressable
+                  key={pl.id}
+                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
+                  style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Image source={pl.cover as number} style={styles.coleccionThumb} resizeMode="cover" />
+                  <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
+                </Pressable>
+              ))}
+            </View>
           </View>
+
         </View>
 
         {/* ── 3. VIDEOS DESTACADOS ── */}
@@ -515,7 +514,7 @@ const styles = StyleSheet.create({
   headerTabChip: {
     borderRadius: 20,
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    height: 32,
     backgroundColor: "rgba(255,255,255,0.06)",
     alignItems: "center",
     justifyContent: "center",
