@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(190,150,80,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(190,150,80,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, color: DARK },
+  pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: DARK },
   heartBtn:  {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
