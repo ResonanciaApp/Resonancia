@@ -763,7 +763,7 @@ export default function BibliotecaScreen() {
         onClose={() => setCreateVisible(false)}
         onCreatePlaylist={() => setNombreVisible(true)}
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
-        onGoMezclas={() => setActiveTab("mezclas")}
+        onGoMezclas={() => router.navigate("/(tabs)/musica" as never)}
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
