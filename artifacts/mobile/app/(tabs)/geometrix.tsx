@@ -3828,6 +3828,15 @@ export default function GeometrixScreen() {
     opacity: snapXOn.value,
     transform: [{ translateX: canvasSide / 2 + snapXSV.value }],
   }));
+  // Versiones fullscreen: parten de top:0/left:0 y usan el centro de pantalla.
+  const snapYLineStyleFS = useAnimatedStyle(() => ({
+    opacity: snapYOn.value,
+    transform: [{ translateY: height / 2 + snapYSV.value }],
+  }));
+  const snapXLineStyleFS = useAnimatedStyle(() => ({
+    opacity: snapXOn.value,
+    transform: [{ translateX: width / 2 + snapXSV.value }],
+  }));
 
   // Badge flotante: ícono + ángulo actual; fade rápido al entrar/salir del giro.
   // El fondo y el borde viran a azul/dorado al llegar a un ángulo cardinal
@@ -4605,14 +4614,14 @@ export default function GeometrixScreen() {
                 );
               })}
 
-              {/* Guías de snap (rosa) — mismos estilos animados del lienzo */}
+              {/* Guías de snap (rosa) — estilos FS con centro de pantalla */}
               <Animated.View
                 pointerEvents="none"
-                style={[{ position: "absolute", left: 0, right: 0, top: "50%", height: 1, backgroundColor: "#FF4B8D" }, snapYLineStyle]}
+                style={[{ position: "absolute", left: 0, right: 0, top: 0, height: 1, backgroundColor: "#FF4B8D" }, snapYLineStyleFS]}
               />
               <Animated.View
                 pointerEvents="none"
-                style={[{ position: "absolute", top: 0, bottom: 0, left: "50%", width: 1, backgroundColor: "#FF4B8D" }, snapXLineStyle]}
+                style={[{ position: "absolute", top: 0, bottom: 0, left: 0, width: 1, backgroundColor: "#FF4B8D" }, snapXLineStyleFS]}
               />
 
               {/* Badge de ángulo */}
