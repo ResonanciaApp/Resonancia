@@ -405,7 +405,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Mezclas de la comunidad ── */}
-            <View style={{ marginBottom: 57 }}>
+            <View style={{ marginBottom: 23 }}>
               <CommunityMixesCarousel />
             </View>
 
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, color: "#111111" },
 
-  section: { paddingHorizontal: H_PAD, marginBottom: 57 },
+  section: { paddingHorizontal: H_PAD, marginBottom: 23 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14, color: "#FFFFFF" },
   sectionSub: { fontSize: 12, marginBottom: 16 },
 
