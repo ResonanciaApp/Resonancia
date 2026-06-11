@@ -7,6 +7,7 @@ import {
   Animated,
   Dimensions,
   FlatList,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
@@ -164,30 +165,35 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
   const inputRef = useRef<TextInput>(null);
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
-      <View style={styles.searchOverlay}>
-        <View style={styles.searchBar}>
-          <Feather name="search" size={16} color={MUTED} />
-          <TextInput
-            ref={inputRef}
-            style={styles.searchInput}
-            placeholder="Buscar en tu biblioteca..."
-            placeholderTextColor={MUTED}
-            value={q}
-            onChangeText={setQ}
-            returnKeyType="search"
-          />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View style={styles.searchOverlay}>
+          <View style={styles.searchBar}>
+            <Feather name="search" size={16} color={MUTED} />
+            <TextInput
+              ref={inputRef}
+              style={styles.searchInput}
+              placeholder="Buscar en tu biblioteca..."
+              placeholderTextColor={MUTED}
+              value={q}
+              onChangeText={setQ}
+              returnKeyType="search"
+            />
+          </View>
+          <Pressable onPress={onClose} style={styles.cancelBtn}>
+            <Text style={styles.cancelText}>Cancelar</Text>
+          </Pressable>
         </View>
-        <Pressable onPress={onClose} style={styles.cancelBtn}>
-          <Text style={styles.cancelText}>Cancelar</Text>
-        </Pressable>
-      </View>
-      {q.length === 0 && (
-        <View style={styles.searchEmpty}>
-          <Feather name="headphones" size={48} color={GOLD} style={{ marginBottom: 16 }} />
-          <Text style={styles.searchEmptyTitle}>Encuentra tus sesiones favoritas</Text>
-          <Text style={styles.searchEmptySub}>Busca todo lo que guardaste, seguiste o creaste.</Text>
-        </View>
-      )}
+        {q.length === 0 && (
+          <View style={styles.searchEmpty}>
+            <Feather name="headphones" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.searchEmptyTitle}>Encuentra tus sesiones favoritas</Text>
+            <Text style={styles.searchEmptySub}>Busca todo lo que guardaste, seguiste o creaste.</Text>
+          </View>
+        )}
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
