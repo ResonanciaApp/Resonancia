@@ -22,7 +22,9 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { useMixer } from "@/context/MixerContext";
+import { useMixer, type MixPreset } from "@/context/MixerContext";
+import { getSoundImage } from "@/config/sound-images";
+import { useLoadMix } from "@/hooks/useLoadMix";
 import { PLAYLISTS, type Playlist } from "@/data/playlists";
 import { ARTISTS, type Artist } from "@/data/artists";
 import { GUIDES, type Guide } from "@/data/guides";
@@ -46,6 +48,60 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "geometrix",   label: "Geometrix" },
   { id: "resonadores", label: "Resonadores" },
 ];
+
+// ── Stack de imágenes de sonidos ─────────────────────────────────────────────
+const THUMB = 40;
+const SHIFT = 24;
+const MAX_STACK = 3;
+function SoundStack({ sounds }: { sounds: { id: string }[] }) {
+  const visible = sounds.slice(0, MAX_STACK);
+  const stackW = THUMB + Math.max(0, visible.length - 1) * SHIFT;
+  return (
+    <View style={{ width: stackW, height: THUMB, position: "relative" }}>
+      {visible.map((s, i) => {
+        const img = getSoundImage(s.id);
+        return (
+          <View
+            key={s.id}
+            style={[
+              styles.stackThumb,
+              { left: i * SHIFT, zIndex: i, backgroundColor: "rgba(190,150,80,0.12)" },
+            ]}
+          >
+            {img ? (
+              <Image source={img as number} style={styles.stackThumbImg} contentFit="cover" />
+            ) : (
+              <Feather name="music" size={14} color={GOLD} />
+            )}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+// ── Fila de mezcla guardada ───────────────────────────────────────────────────
+function MixRow({ mix, isPlayingThis, onPress }: { mix: MixPreset; isPlayingThis: boolean; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+      <SoundStack sounds={mix.sounds} />
+      <View style={styles.rowInfo}>
+        <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
+        {isPlayingThis ? (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Feather name="bar-chart-2" size={12} color={GOLD} />
+            <Text style={[styles.rowSub, { color: GOLD }]}>Reproduciendo</Text>
+          </View>
+        ) : (
+          <Text style={styles.rowSub} numberOfLines={1}>
+            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+          </Text>
+        )}
+      </View>
+      {isPlayingThis && <Feather name="bar-chart-2" size={18} color={GOLD} />}
+    </Pressable>
+  );
+}
 
 // ── Chip de tab ───────────────────────────────────────────────────────────────
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
@@ -184,6 +240,9 @@ export default function BibliotecaScreen() {
   const toggleSort = () => setSort((s) => (s === "recientes" ? "agregado" : "recientes"));
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
+  const { presets, loadedPresetId, isPlaying: mixerPlaying } = useMixer();
+  const loadMix = useLoadMix();
+
   // Resonadores = artistas featured + guías featured
   const resonadores = useMemo(() => {
     const artists = ARTISTS.filter((a) => a.featured !== false && a.id !== "resonancia").map((a) => ({
@@ -212,12 +271,26 @@ export default function BibliotecaScreen() {
     }
 
     if (activeTab === "mezclas") {
+      if (presets.length === 0) {
+        return (
+          <View style={styles.emptyState}>
+            <MaterialCommunityIcons name="tune-variant" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
+            <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
+          </View>
+        );
+      }
       return (
-        <View style={styles.emptyState}>
-          <MaterialCommunityIcons name="tune-variant" size={48} color={GOLD} style={{ marginBottom: 16 }} />
-          <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
-          <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
-        </View>
+        <>
+          {presets.map((mix) => (
+            <MixRow
+              key={mix.id}
+              mix={mix}
+              isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
+              onPress={() => loadMix(mix)}
+            />
+          ))}
+        </>
       );
     }
 
@@ -410,6 +483,17 @@ const styles = StyleSheet.create({
   rowInfo: { flex: 1, gap: 3 },
   rowTitle: { fontSize: 15, fontWeight: "600", color: TEXT },
   rowSub:   { fontSize: 12, color: MUTED },
+  stackThumb: {
+    position: "absolute",
+    width: THUMB, height: THUMB,
+    borderRadius: 8,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#080B1A",
+  },
+  stackThumbImg: { width: "100%", height: "100%" },
 
   // ── Grilla ──────────────────────────────────────────────────────────────────
   gridWrap: {
