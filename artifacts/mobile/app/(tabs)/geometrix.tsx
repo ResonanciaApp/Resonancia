@@ -3778,6 +3778,21 @@ export default function GeometrixScreen() {
   // Pellizco, rotación y drag corren a la vez sobre el objetivo seleccionado.
   const canvasGesture = Gesture.Simultaneous(longPressGesture, pinchGesture, rotationGesture, panGesture);
 
+  // Limpia TODO el estado de gestos al salir del fullscreen.
+  // El Modal se desmonta antes de que RNGH dispare onFinalize → los shared values
+  // quedan sucios y bloquean el primer toque en el lienzo normal.
+  const exitFullscreen = useCallback(() => {
+    dragActive.value = 0;
+    pinchActive.value = 0;
+    isPinching.value = false;
+    isLoupeActive.value = false;
+    holdDragActive.value = 0;
+    snapXOn.value = 0;
+    snapYOn.value = 0;
+    setLoupeVisible(false);
+    setFullscreenEdit(false);
+  }, [dragActive, pinchActive, isPinching, isLoupeActive, holdDragActive, snapXOn, snapYOn]);
+
   // Indicador de ángulo cardinal, 100% en el UI thread (sin runOnJS ni estado
   // React por frame → sin microlag). ÚNICO escritor de pillCardinalSV: durante
   // el giro usa una zona amplia (8°) como "pista"; en reposo (tras commit,
@@ -4555,7 +4570,7 @@ export default function GeometrixScreen() {
         transparent
         animationType="fade"
         statusBarTranslucent
-        onRequestClose={() => setFullscreenEdit(false)}
+        onRequestClose={exitFullscreen}
       >
         <View style={styles.fullscreenEditRoot}>
           {/* Fondo */}
@@ -4676,7 +4691,7 @@ export default function GeometrixScreen() {
             <View style={[styles.fullscreenEditControls, { right: 16, top: insets.top + 12 }]}>
               {/* Salir del lienzo expandido */}
               <Pressable
-                onPress={() => setFullscreenEdit(false)}
+                onPress={exitFullscreen}
                 style={styles.actionTopBtn}
                 hitSlop={4}
                 accessibilityRole="button"
