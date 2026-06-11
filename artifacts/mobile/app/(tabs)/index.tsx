@@ -69,7 +69,7 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = 150;
 
 const SECTION_GAP = 23;
-const BG_GRADIENT = ["#080B1A", "#080B1A", "#080B1A"] as const;
+const BG_GRADIENT = ["#0C0B19", "#0C0B19", "#0C0B19"] as const;
 
 const ND = Platform.OS !== "web";
 
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
-    backgroundColor: "#080B1A",
+    backgroundColor: "#0C0B19",
     zIndex: 10,
   },
   scroll: { flex: 1 },
