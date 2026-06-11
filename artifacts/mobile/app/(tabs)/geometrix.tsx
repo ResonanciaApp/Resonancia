@@ -6252,7 +6252,7 @@ const styles = StyleSheet.create({
   catFilterRow: {
     flexDirection: "row",
     gap: 8,
-    paddingLeft: 20,
+    paddingLeft: 10,
     paddingRight: 8,
     marginTop: 17,
     marginBottom: 3,
@@ -6278,7 +6278,7 @@ const styles = StyleSheet.create({
     color: colors.foreground,
   },
   grid: { flexGrow: 0 },
-  gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 20, paddingRight: 20 },
+  gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 10, paddingRight: 20 },
   // Modelo FLIP: contenedor relativo de altura/ancho fijos (dados inline). Las tiles
   // se posicionan en absoluto y se ubican SOLO con translateX según su slot (orderSV)
   // → el árbol nunca se reordena, no hay reflow de Fabric y el espaciado lo da itemW.
