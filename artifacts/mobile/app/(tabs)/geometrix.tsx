@@ -1967,6 +1967,265 @@ function SettingsSection({
   );
 }
 
+// ── GeometrixCarousel ─────────────────────────────────────────────────────────
+// Sub-componente memo'd que posee `activeCategory` y todo el estado interno del
+// carrusel. Al pulsar una píldora de categoría SOLO se re-renderiza este
+// componente (~300 líneas), NO el GeometrixScreen completo (6700+ líneas).
+type GeometrixCarouselProps = {
+  active: string[];
+  effActivating: Set<string>;
+  orderSV: SharedValue<string[]>;
+  instantOrderFlag: SharedValue<number>;
+  draggingId: string | null;
+  toggleGeometry: (id: string) => void;
+  handleDragStart: (id: string) => void;
+  commitReorder: (id: string, idx: number) => void;
+  getSettings: (id: string) => GeoSettings;
+};
+const GeometrixCarousel = React.memo(function GeometrixCarousel({
+  active,
+  effActivating,
+  orderSV,
+  instantOrderFlag,
+  draggingId,
+  toggleGeometry,
+  handleDragStart,
+  commitReorder,
+  getSettings,
+}: GeometrixCarouselProps) {
+  const { width } = useWindowDimensions();
+  const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
+  const tileItemW = tileW + 8;
+
+  const carouselScrollRef = useAnimatedRef<Animated.ScrollView>();
+  const carScrollX = useSharedValue(0);
+  const carMaxScrollX = useSharedValue(0);
+  const carDragActive = useSharedValue(0);
+  const carEdgeIntent = useSharedValue(0);
+  const dragOriginIdx = useSharedValue(-1);
+  const dragTargetIdx = useSharedValue(-1);
+  const carScrollHandler = useAnimatedScrollHandler((e) => {
+    carScrollX.value = e.contentOffset.x;
+  });
+  useFrameCallback(() => {
+    if (carDragActive.value !== 1) return;
+    const v = carEdgeIntent.value;
+    if (v === 0) return;
+    const next = Math.min(Math.max(carScrollX.value + v, 0), carMaxScrollX.value);
+    if (next !== carScrollX.value) {
+      carScrollX.value = next;
+      scrollTo(carouselScrollRef, next, 0, false);
+    }
+  });
+
+  const [activeCategory, setActiveCategory] = useState<GeometryCategory>(
+    GEOMETRY_CATEGORIES[0].id,
+  );
+  const carouselOrder = useMemo<string[]>(() => {
+    const front = active.filter((id) => !effActivating.has(id));
+    const frontSet = new Set(front);
+    const tail = GEOMETRIES.filter(
+      (g) => g.category === activeCategory && !frontSet.has(g.id),
+    ).map((g) => g.id);
+    return [...front, ...tail];
+  }, [active, effActivating, activeCategory]);
+  useEffect(() => {
+    instantOrderFlag.value = 0;
+    orderSV.value = carouselOrder;
+  }, [carouselOrder, instantOrderFlag, orderSV]);
+
+  const domOrder = useMemo<string[]>(() => {
+    const activeSet = new Set(active);
+    const catBases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
+      (g) => g.id,
+    );
+    const otherActiveBases = GEOMETRIES.filter(
+      (g) => g.category !== activeCategory && activeSet.has(g.id),
+    ).map((g) => g.id);
+    const activeDups = active.filter((id) => id.includes("::")).sort();
+    return [...catBases, ...otherActiveBases, ...activeDups];
+  }, [active, activeCategory]);
+
+  const CAROUSEL_BATCH = 6;
+  const mountedIdsRef = useRef<Set<string>>(new Set<string>());
+  const [newMountCount, setNewMountCount] = useState(0);
+  const [bgPreloadedIds, setBgPreloadedIds] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
+  );
+  const newTilesInDom = useMemo(
+    () => domOrder.filter((id) => !mountedIdsRef.current.has(id)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [domOrder],
+  );
+  useEffect(() => {
+    if (newTilesInDom.length === 0) return;
+    setNewMountCount(0);
+    let raf = 0;
+    const isFirstMount = mountedIdsRef.current.size === 0;
+    const startBatch = () => {
+      const addBatch = () => {
+        setNewMountCount((prev) => {
+          const next = prev + CAROUSEL_BATCH;
+          if (next < newTilesInDom.length) {
+            raf = requestAnimationFrame(addBatch);
+          }
+          return next;
+        });
+      };
+      raf = requestAnimationFrame(addBatch);
+    };
+    if (isFirstMount) {
+      const task = InteractionManager.runAfterInteractions(startBatch);
+      return () => {
+        task.cancel();
+        if (raf) cancelAnimationFrame(raf);
+      };
+    }
+    startBatch();
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [newTilesInDom]);
+  useEffect(() => {
+    if (newTilesInDom.length > 0) return;
+    const allIds = GEOMETRIES.map((g) => g.id);
+    const notMounted = allIds.filter((id) => !mountedIdsRef.current.has(id));
+    if (notMounted.length === 0) return;
+    let raf = 0;
+    let bgIdx = 0;
+    const timer = setTimeout(() => {
+      const addBatch = () => {
+        const batch = notMounted.slice(bgIdx, bgIdx + 4);
+        if (batch.length === 0) return;
+        bgIdx += 4;
+        setBgPreloadedIds((prev) => {
+          const next = new Set(prev);
+          batch.forEach((id) => next.add(id));
+          return next;
+        });
+        if (bgIdx < notMounted.length) {
+          raf = requestAnimationFrame(addBatch);
+        }
+      };
+      raf = requestAnimationFrame(addBatch);
+    }, 400);
+    return () => {
+      clearTimeout(timer);
+      if (raf) cancelAnimationFrame(raf);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newTilesInDom.length]);
+  const tilesToRender = useMemo(() => {
+    const alreadyMounted = domOrder.filter((id) => mountedIdsRef.current.has(id));
+    const alreadySet = new Set(alreadyMounted);
+    const newBatch = newTilesInDom
+      .slice(0, newMountCount)
+      .filter((id) => !alreadySet.has(id));
+    const visible = [...alreadyMounted, ...newBatch];
+    const visibleSet = new Set(visible);
+    const preloaded = Array.from(bgPreloadedIds).filter(
+      (id) => !visibleSet.has(id),
+    );
+    return [...visible, ...preloaded];
+  }, [domOrder, newTilesInDom, newMountCount, bgPreloadedIds]);
+  useEffect(() => {
+    tilesToRender.forEach((id) => mountedIdsRef.current.add(id));
+  }, [tilesToRender]);
+
+  const frontIds = active.filter((id) => !effActivating.has(id));
+
+  return (
+    <>
+      {/* Filtro por categoría: el carrusel muestra solo la categoría activa */}
+      <View style={styles.catFilterRow}>
+        {GEOMETRY_CATEGORIES.map((c) => {
+          const on = activeCategory === c.id;
+          return (
+            <Pressable
+              key={c.id}
+              onPress={() => {
+                if (activeCategory === c.id) return;
+                carScrollX.value = 0;
+                carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
+                setActiveCategory(c.id);
+              }}
+              style={[styles.catChip, on ? styles.catChipOn : null]}
+              accessibilityRole="button"
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+            >
+              <Text
+                style={[styles.catChipText, on ? styles.catChipTextOn : null]}
+                numberOfLines={1}
+              >
+                {c.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Galería de geometrías (una fila horizontal, scrolleable) */}
+      <Animated.ScrollView
+        ref={carouselScrollRef}
+        horizontal
+        scrollEnabled={draggingId === null}
+        onScroll={carScrollHandler}
+        scrollEventThrottle={16}
+        onContentSizeChange={(w) => {
+          carMaxScrollX.value = Math.max(0, w - width);
+        }}
+        style={styles.grid}
+        contentContainerStyle={styles.gridContent}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View
+          style={[
+            styles.gridRow,
+            { width: carouselOrder.length * tileItemW, height: tileW },
+          ]}
+        >
+          {tilesToRender.map((gid: string) => {
+            const g = getGeometry(baseOf(gid));
+            if (!g) return null;
+            const selected = active.includes(gid);
+            const activating = effActivating.has(gid);
+            return (
+              <CarouselTile
+                key={gid}
+                id={gid}
+                name={g.name}
+                tileW={tileW}
+                isSelected={selected}
+                isActivating={activating}
+                color={getSettings(gid).color}
+                onToggle={toggleGeometry}
+                draggable={selected && !activating}
+                isDragging={draggingId === gid}
+                itemW={tileItemW}
+                frontCount={frontIds.length}
+                onDragStart={handleDragStart}
+                onDragEnd={commitReorder}
+                screenW={width}
+                scrollX={carScrollX}
+                dragActive={carDragActive}
+                edgeIntent={carEdgeIntent}
+                orderSV={orderSV}
+                instantOrderFlag={instantOrderFlag}
+                dragOriginIdx={dragOriginIdx}
+                dragTargetIdx={dragTargetIdx}
+              />
+            );
+          })}
+        </View>
+      </Animated.ScrollView>
+
+      {/* Línea divisora */}
+      <View style={styles.divider} />
+    </>
+  );
+});
+
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
@@ -2053,33 +2312,6 @@ export default function GeometrixScreen() {
   useEffect(() => {
     activatingIdsRef.current = activatingIds;
   }, [activatingIds]);
-  const carouselScrollRef = useAnimatedRef<Animated.ScrollView>();
-  // Auto-scroll del carrusel mientras se arrastra una card hacia el borde.
-  // scrollX: offset actual (lo actualiza el scrollHandler); maxScrollX: tope
-  // (contentW - viewport); dragActive: 1 mientras hay drag; edgeIntent: px/frame
-  // a desplazar (firmado) según cercanía al borde. El frame loop avanza el scroll.
-  const carScrollX = useSharedValue(0);
-  const carMaxScrollX = useSharedValue(0);
-  const carDragActive = useSharedValue(0);
-  const carEdgeIntent = useSharedValue(0);
-  // Estado de arrastre compartido por TODAS las tiles (modelo "pin + hueco"):
-  // la card arrastrada escribe origin/target (slots del frente); las hermanas los
-  // leen para abrir el hueco. -1 = sin arrastre.
-  const dragOriginIdx = useSharedValue(-1);
-  const dragTargetIdx = useSharedValue(-1);
-  const carScrollHandler = useAnimatedScrollHandler((e) => {
-    carScrollX.value = e.contentOffset.x;
-  });
-  useFrameCallback(() => {
-    if (carDragActive.value !== 1) return;
-    const v = carEdgeIntent.value;
-    if (v === 0) return;
-    const next = Math.min(Math.max(carScrollX.value + v, 0), carMaxScrollX.value);
-    if (next !== carScrollX.value) {
-      carScrollX.value = next;
-      scrollTo(carouselScrollRef, next, 0, false);
-    }
-  });
   // Timers de activación en curso, para poder cancelarlos al deseleccionar/limpiar.
   const carouselTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(
     new Map(),
@@ -2116,161 +2348,6 @@ export default function GeometrixScreen() {
     },
     [moveActiveTo],
   );
-  // Categoría activa del filtro del carrusel. El carrusel muestra SOLO las
-  // geometrías de esta categoría (las activas de otras categorías siguen en el
-  // lienzo, solo no se ven en el carrusel). Por defecto la primera ("Sagradas").
-  const [activeCategory, setActiveCategory] = useState<GeometryCategory>(
-    GEOMETRY_CATEGORIES[0].id,
-  );
-  const carouselOrder = useMemo<string[]>(() => {
-    // Frente cross-categoría: TODAS las activas (sin importar su categoría). Al cambiar
-    // de tab las geometrías seleccionadas en otras categorías siguen visibles en el frente.
-    const front = active.filter((id) => !effActivating.has(id));
-    const frontSet = new Set(front);
-    // Cuerpo: bases inactivas de la categoría actual únicamente.
-    const tail = GEOMETRIES.filter(
-      (g) => g.category === activeCategory && !frontSet.has(g.id),
-    ).map((g) => g.id);
-    return [...front, ...tail];
-  }, [active, effActivating, activeCategory]);
-  // Espejo del orden VISUAL al UI thread. Cada vez que cambia `carouselOrder` (por una
-  // selección/deselección o por la sincronización post-arrastre), se baja el flag de
-  // "instantáneo" (las selecciones vuelven a deslizar) y se reescribe orderSV. Tras un
-  // commit de arrastre el contenido es idéntico al que ya escribió el worklet → no-op.
-  useEffect(() => {
-    instantOrderFlag.value = 0;
-    orderSV.value = carouselOrder;
-  }, [carouselOrder, instantOrderFlag, orderSV]);
-  // Orden de DOM ESTABLE: todas las geometrías base en orden natural + los duplicados
-  // activos ordenados de forma determinista (por id). Las tiles se renderizan SIEMPRE
-  // en este orden (keyed) para que el árbol NUNCA se reordene → sin reflow de Fabric;
-  // la posición visual la da translateX según el slot en orderSV. Solo cambia al
-  // agregar/quitar un duplicado.
-  const domOrder = useMemo<string[]>(() => {
-    const activeSet = new Set(active);
-    // Bases de la categoría activa (inactivas + activas de esta cat, orden natural)
-    const catBases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
-      (g) => g.id,
-    );
-    // Bases activas de OTRAS categorías: el frente cross-categoría las necesita en el DOM
-    const otherActiveBases = GEOMETRIES.filter(
-      (g) => g.category !== activeCategory && activeSet.has(g.id),
-    ).map((g) => g.id);
-    // Duplicados activos de CUALQUIER categoría
-    const activeDups = active.filter((id) => id.includes("::")).sort();
-    return [...catBases, ...otherActiveBases, ...activeDups];
-  }, [active, activeCategory]);
-  // Montaje progresivo cross-categoría. Cada CarouselTileInner registra ~16 objetos
-  // Reanimated (SVs, animated styles, reactions, gestures). Montar las 44 de golpe
-  // bloquea el hilo JS. Estrategia:
-  //   • mountedIdsRef: acumulador que NUNCA decrece — tiles montadas alguna vez.
-  //   • Al cambiar de categoría SOLO se batch-montan las tiles NUEVAS (no en el ref).
-  //     Las ya montadas se renderizan inmediatamente → switch casi sin lag.
-  //   • Tiles pre-cargadas en background (slot=-1 → opacity:0 vía wrapStyle) de las
-  //     otras categorías: al primer switch ya están montadas → switch instantáneo.
-  const CAROUSEL_BATCH = 6;
-  const mountedIdsRef = useRef<Set<string>>(new Set<string>());
-  const [newMountCount, setNewMountCount] = useState(0);
-  const [bgPreloadedIds, setBgPreloadedIds] = useState<ReadonlySet<string>>(
-    () => new Set<string>(),
-  );
-  // Tiles del domOrder actual que aún no están montadas. Se recalcula SOLO cuando
-  // domOrder cambia (la ref es estable, evita loop de deps).
-  const newTilesInDom = useMemo(
-    () => domOrder.filter((id) => !mountedIdsRef.current.has(id)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [domOrder],
-  );
-  // Batch-mount: corre cuando hay tiles nuevas en domOrder (primer ingreso O switch de
-  // categoría con tiles no pre-cargadas). Las ya montadas se renderizan de inmediato.
-  // • Primer ingreso (mountedIdsRef vacío): usa InteractionManager para no competir con
-  //   la transición de navegación de tabs. Switches posteriores: rAF directo (< 16 ms).
-  // • Si newTilesInDom está vacío (todo pre-cargado), sale sin setState → 0 re-renders.
-  useEffect(() => {
-    if (newTilesInDom.length === 0) return; // todas pre-cargadas → switch instantáneo
-    setNewMountCount(0);
-    let raf = 0;
-    const isFirstMount = mountedIdsRef.current.size === 0;
-    const startBatch = () => {
-      const addBatch = () => {
-        setNewMountCount((prev) => {
-          const next = prev + CAROUSEL_BATCH;
-          if (next < newTilesInDom.length) {
-            raf = requestAnimationFrame(addBatch);
-          }
-          return next;
-        });
-      };
-      raf = requestAnimationFrame(addBatch);
-    };
-    if (isFirstMount) {
-      // Solo en el primer ingreso: esperar a que termine la transición de tabs.
-      const task = InteractionManager.runAfterInteractions(startBatch);
-      return () => {
-        task.cancel();
-        if (raf) cancelAnimationFrame(raf);
-      };
-    }
-    startBatch();
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [newTilesInDom]);
-  // Pre-carga silenciosa: cuando el batch actual terminó, monta en background las
-  // tiles de otras categorías (ocultas con slot=-1). Al siguiente switch ya montadas.
-  // Arranca a los 400 ms (no 1.5 s) para que el siguiente switch sea rápido antes.
-  useEffect(() => {
-    if (newTilesInDom.length > 0) return; // esperar a que termine el ciclo actual
-    const allIds = GEOMETRIES.map((g) => g.id);
-    const notMounted = allIds.filter((id) => !mountedIdsRef.current.has(id));
-    if (notMounted.length === 0) return;
-    let raf = 0;
-    let idx = 0;
-    const timer = setTimeout(() => {
-      const addBatch = () => {
-        const batch = notMounted.slice(idx, idx + 4); // 4 tiles/frame, aún liviano
-        if (batch.length === 0) return;
-        idx += 4;
-        setBgPreloadedIds((prev) => {
-          const next = new Set(prev);
-          batch.forEach((id) => next.add(id));
-          return next;
-        });
-        if (idx < notMounted.length) {
-          raf = requestAnimationFrame(addBatch);
-        }
-      };
-      raf = requestAnimationFrame(addBatch);
-    }, 400); // 400 ms: suficiente para que terminen las animaciones de entrada
-    return () => {
-      clearTimeout(timer);
-      if (raf) cancelAnimationFrame(raf);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newTilesInDom.length]);
-  // tilesToRender: ya montadas (inmediatas) + batch progresivo de nuevas + pre-cargadas
-  // en background (slot=-1 → ocultas; se renderizan para tenerlas "calientes").
-  const tilesToRender = useMemo(() => {
-    const alreadyMounted = domOrder.filter((id) => mountedIdsRef.current.has(id));
-    const alreadySet = new Set(alreadyMounted);
-    const newBatch = newTilesInDom
-      .slice(0, newMountCount)
-      .filter((id) => !alreadySet.has(id));
-    const visible = [...alreadyMounted, ...newBatch];
-    const visibleSet = new Set(visible);
-    // Pre-cargadas fuera del domOrder actual → slot=-1 → opacity:0 (wrapStyle)
-    const preloaded = Array.from(bgPreloadedIds).filter(
-      (id) => !visibleSet.has(id),
-    );
-    return [...visible, ...preloaded];
-  }, [domOrder, newTilesInDom, newMountCount, bgPreloadedIds]);
-  // Registrar tiles renderizadas: la próxima vez que domOrder cambie, newTilesInDom
-  // las excluirá → no se re-batch-mountan → switch casi instantáneo.
-  useEffect(() => {
-    tilesToRender.forEach((id) => mountedIdsRef.current.add(id));
-  }, [tilesToRender]);
-  // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
-  const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Geometría que se está personalizando (la de la flechita pulsada). El panel
@@ -3741,11 +3818,7 @@ export default function GeometrixScreen() {
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
   const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
-  // Cards reordenables = las del frente (seleccionadas que ya no están
-  // "activándose"). El orden de esta lista coincide con el de `active`.
-  // Cross-categoría: TODAS las activas van al frente (sin filtro de categoría).
-  const frontIds = active.filter((id) => !effActivating.has(id));
-  const tileItemW = tileW + 8; // ancho de slot = tile + marginRight (tileWrap)
+
 
   return (
     <View style={styles.root}>
@@ -3906,102 +3979,17 @@ export default function GeometrixScreen() {
           </View>
         </Modal>
 
-        {/* Filtro por categoría: el carrusel muestra solo la categoría activa */}
-        <View style={styles.catFilterRow}>
-          {GEOMETRY_CATEGORIES.map((c) => {
-            const on = activeCategory === c.id;
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => {
-                  if (activeCategory === c.id) return;
-                  carScrollX.value = 0;
-                  carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
-                  // Actualizar orderSV ANTES del re-render de React: las tiles
-                  // saltan visualmente en el siguiente frame de UI mientras
-                  // React procesa setActiveCategory en segundo plano.
-                  const front = active.filter((id) => !effActivating.has(id));
-                  const frontSet = new Set(front);
-                  const tail = GEOMETRIES.filter(
-                    (g) => g.category === c.id && !frontSet.has(g.id),
-                  ).map((g) => g.id);
-                  instantOrderFlag.value = 1; // sin slide en switch de categoría
-                  orderSV.value = [...front, ...tail];
-                  setActiveCategory(c.id);
-                }}
-                style={[styles.catChip, on ? styles.catChipOn : null]}
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={`Filtrar geometrías: ${c.label}`}
-              >
-                <Text
-                  style={[styles.catChipText, on ? styles.catChipTextOn : null]}
-                  numberOfLines={1}
-                >
-                  {c.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        {/* Galería de geometrías (una fila horizontal, scrolleable) */}
-        <Animated.ScrollView
-          ref={carouselScrollRef}
-          horizontal
-          scrollEnabled={draggingId === null}
-          onScroll={carScrollHandler}
-          scrollEventThrottle={16}
-          onContentSizeChange={(w) => {
-            carMaxScrollX.value = Math.max(0, w - width);
-          }}
-          style={styles.grid}
-          contentContainerStyle={styles.gridContent}
-          showsHorizontalScrollIndicator={false}
-        >
-          <View
-            style={[
-              styles.gridRow,
-              { width: carouselOrder.length * tileItemW, height: tileW },
-            ]}
-          >
-            {tilesToRender.map((gid: string) => {
-              const g = getGeometry(baseOf(gid));
-              if (!g) return null;
-              const selected = active.includes(gid);
-              const activating = effActivating.has(gid);
-              return (
-                <CarouselTile
-                  key={gid}
-                  id={gid}
-                  name={g.name}
-                  tileW={tileW}
-                  isSelected={selected}
-                  isActivating={activating}
-                  color={getSettings(gid).color}
-                  onToggle={toggleGeometry}
-                  draggable={selected && !activating}
-                  isDragging={draggingId === gid}
-                  itemW={tileItemW}
-                  frontCount={frontIds.length}
-                  onDragStart={handleDragStart}
-                  onDragEnd={commitReorder}
-                  screenW={width}
-                  scrollX={carScrollX}
-                  dragActive={carDragActive}
-                  edgeIntent={carEdgeIntent}
-                  orderSV={orderSV}
-                  instantOrderFlag={instantOrderFlag}
-                  dragOriginIdx={dragOriginIdx}
-                  dragTargetIdx={dragTargetIdx}
-                />
-              );
-            })}
-          </View>
-        </Animated.ScrollView>
-
-        {/* Línea divisora */}
-        <View style={styles.divider} />
+        <GeometrixCarousel
+          active={active}
+          effActivating={effActivating}
+          orderSV={orderSV}
+          instantOrderFlag={instantOrderFlag}
+          draggingId={draggingId}
+          toggleGeometry={toggleGeometry}
+          handleDragStart={handleDragStart}
+          commitReorder={commitReorder}
+          getSettings={getSettings}
+        />
 
         </LinearGradient>
 
