@@ -83,6 +83,14 @@ export const EXTENT: Record<GeometryId, number> = {
   "hexagono-sagrado":     42,
   "estrella-12":          46,
   estrella:               46,
+  // ── 7 Chakras ────────────────────────────────────────────────────────────
+  "chakra-raiz":          43,
+  "chakra-sacro":         43,
+  "chakra-plexo":         43,
+  "chakra-corazon":       43,
+  "chakra-garganta":      43,
+  "chakra-tercer-ojo":    43,
+  "chakra-corona":        43,
 };
 
 /**
@@ -844,6 +852,136 @@ export function glyphElements(
         }
       }
       return lines;
+    }
+    // ── 7 Chakras ────────────────────────────────────────────────────────────
+    // Cada chakra: anillo exterior r=43, pétalos de loto (Ellipse rotada)
+    // y su símbolo interior canónico. Las formas siguen el viewBox 0-100.
+    case "chakra-raiz": {
+      // Muladhara: 4 pétalos en las diagonales, cuadrado plano, triángulo abajo
+      const arr: React.ReactNode[] = [
+        <Circle key="o"   cx={C} cy={C} r={43} />,
+        <Polygon key="sq" points={poly(26, 4, -45)} />,
+        <Polygon key="tri" points={poly(14, 3, 90)} />,
+        <Circle key="dot" cx={C} cy={C} r={2} />,
+      ];
+      for (let i = 0; i < 4; i++) {
+        const ang = i * 90 + 45;
+        const [px, py] = pt(33, ang);
+        arr.push(
+          <Ellipse key={`p${i}`} cx={px} cy={py} rx={5} ry={12}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      return arr;
+    }
+    case "chakra-sacro": {
+      // Svadhisthana: 6 pétalos, medialuna (dos círculos solapados)
+      const arr: React.ReactNode[] = [
+        <Circle key="o"  cx={C} cy={C} r={43} />,
+        <Circle key="c1" cx={C} cy={C} r={20} />,
+        <Circle key="c2" cx={C} cy={C - 10} r={16} />,
+      ];
+      for (let i = 0; i < 6; i++) {
+        const ang = i * 60;
+        const [px, py] = pt(32, ang);
+        arr.push(
+          <Ellipse key={`p${i}`} cx={px} cy={py} rx={5} ry={11}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      return arr;
+    }
+    case "chakra-plexo": {
+      // Manipura: 10 pétalos, triángulo apuntando abajo, círculo interior
+      const arr: React.ReactNode[] = [
+        <Circle key="o"   cx={C} cy={C} r={43} />,
+        <Polygon key="tri" points={poly(20, 3, 90)} />,
+        <Circle key="ci"  cx={C} cy={C} r={8} />,
+      ];
+      for (let i = 0; i < 10; i++) {
+        const ang = i * 36 - 90;
+        const [px, py] = pt(31, ang);
+        arr.push(
+          <Ellipse key={`p${i}`} cx={px} cy={py} rx={4.5} ry={10}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      return arr;
+    }
+    case "chakra-corazon": {
+      // Anahata: 12 pétalos, estrella de David (dos triángulos opuestos)
+      const arr: React.ReactNode[] = [
+        <Circle key="o"   cx={C} cy={C} r={43} />,
+        <Polygon key="up" points={poly(22, 3, -90)} />,
+        <Polygon key="dn" points={poly(22, 3, 90)} />,
+      ];
+      for (let i = 0; i < 12; i++) {
+        const ang = i * 30;
+        const [px, py] = pt(32, ang);
+        arr.push(
+          <Ellipse key={`p${i}`} cx={px} cy={py} rx={4} ry={10}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      return arr;
+    }
+    case "chakra-garganta": {
+      // Vishuddha: 16 pétalos, círculo interior con triángulo abajo inscrito
+      const arr: React.ReactNode[] = [
+        <Circle key="o"   cx={C} cy={C} r={43} />,
+        <Circle key="ci"  cx={C} cy={C} r={19} />,
+        <Polygon key="tri" points={poly(14, 3, 90)} />,
+      ];
+      for (let i = 0; i < 16; i++) {
+        const ang = i * 22.5;
+        const [px, py] = pt(30, ang);
+        arr.push(
+          <Ellipse key={`p${i}`} cx={px} cy={py} rx={3.5} ry={9}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      return arr;
+    }
+    case "chakra-tercer-ojo": {
+      // Ajna: dos "alas" laterales grandes, círculo central con triángulo arriba
+      const arr: React.ReactNode[] = [
+        <Circle key="o"   cx={C} cy={C} r={43} />,
+        <Circle key="ci"  cx={C} cy={C} r={13} />,
+        <Polygon key="tri" points={poly(8, 3, -90)} />,
+      ];
+      [0, 180].forEach((ang, i) => {
+        const [px, py] = pt(21, ang);
+        arr.push(
+          <Ellipse key={`w${i}`} cx={px} cy={py} rx={6} ry={21}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      });
+      return arr;
+    }
+    case "chakra-corona": {
+      // Sahasrara: anillo exterior (20 pétalos) + anillo interior (12 pétalos)
+      const arr: React.ReactNode[] = [
+        <Circle key="o"  cx={C} cy={C} r={43} />,
+        <Circle key="m"  cx={C} cy={C} r={26} strokeOpacity={0.4} />,
+        <Circle key="ci" cx={C} cy={C} r={9} />,
+      ];
+      for (let i = 0; i < 20; i++) {
+        const ang = i * 18;
+        const [px, py] = pt(34, ang);
+        arr.push(
+          <Ellipse key={`ou${i}`} cx={px} cy={py} rx={3} ry={8}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      for (let i = 0; i < 12; i++) {
+        const ang = i * 30 + 15;
+        const [px, py] = pt(19, ang);
+        arr.push(
+          <Ellipse key={`in${i}`} cx={px} cy={py} rx={2.5} ry={6}
+            transform={`rotate(${ang + 90} ${px} ${py})`} />,
+        );
+      }
+      return arr;
     }
     default:
       return null;
