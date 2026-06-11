@@ -1,5 +1,4 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -11,92 +10,55 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
-import { CATEGORIES, getPrimaryCategories, getSecondaryCategories } from "@/data/categories";
-import { SESSIONS, getSessionById } from "@/data/sessions";
+import { SESSIONS } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { SERIES } from "@/data/series";
 import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
 import { TEMAS } from "@/data/temas";
-import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
-
-// Sección "Programas" oculta temporalmente — se lanzará más adelante.
-// Poner en true para volver a mostrarla.
-const SHOW_PROGRAMAS = false;
-
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GAP = 10;
-const PRIMARY_W = (width - H_PAD * 2 - GAP) / 2;
-const TAG_W = (width - H_PAD * 2 - GAP) / 2;
-const TAG_H = 130;
-const TEMA_W = (width - H_PAD * 2 - GAP * 2) / 3;
-const CONTINUE_CARD_W = width - H_PAD * 2 - 48;
 
-const MAIN_CAT_IDS = [
-  "sonidos-ancestrales",
-  "meditaciones-guiadas",
-  "musica-sonidos",
-  "podcast",
-] as const;
+const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
+const TAG_W   = (width - H_PAD * 2 - GAP) / 2;
+const TAG_H   = 130;
+const TEMA_COL_W = (width - H_PAD * 2 - GAP) / 2;
 
-const TIME_BUCKETS = [
-  { label: "5 min",  min: 0,   max: 5   },
-  { label: "10 min", min: 6,   max: 10  },
-  { label: "15 min", min: 11,  max: 15  },
-  { label: "20 min", min: 16,  max: 20  },
-  { label: "30 min", min: 21,  max: 30  },
-  { label: "30+ min",min: 31,  max: 9999},
-];
+type Session = (typeof SESSIONS)[number];
+
+function getSessionAuthor(s: Session): string {
+  if (s.guideId) return getGuide(s.guideId).name;
+  return getArtist(s.artistId).name;
+}
 
 export default function ExploreScreen() {
-  const colors = useColors();
-  const insets = useSafeAreaInsets();
+  const colors   = useColors();
+  const insets   = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const [query, setQuery] = useState("");
-  const { history, getSessionProgress } = usePlayer();
   const { isPremium } = usePremium();
 
-  const { data: popular } = useGetPopularSessions(
-    { limit: 10 },
-    { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 10 }), staleTime: 5 * 60_000 } },
-  );
-  const popularSessions = (popular?.sessions ?? [])
-    .map((s) => getSessionById(s.id))
-    .filter((s): s is NonNullable<ReturnType<typeof getSessionById>> => s != null);
+  const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
+  const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
+  const meditacionesSessions = SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10);
 
-  const historySessions = history
-    .map((entry) => ({
-      session: SESSIONS.find((s) => s.id === entry.sessionId),
-      playedAt: entry.playedAt,
-    }))
-    .filter((e): e is { session: NonNullable<typeof e.session>; playedAt: string } => !!e.session)
-    .slice(0, 20);
-
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-
-  const { width: winW } = useWindowDimensions();
-  const contentW = Platform.OS === "web" ? Math.min(winW, 480) : winW;
-  const temaW = (contentW - H_PAD * 2 - GAP * 2) / 3;
 
   const filteredSessions = SESSIONS.filter((s) => {
     if (!query) return false;
@@ -108,50 +70,63 @@ export default function ExploreScreen() {
     );
   });
 
-  function handleTimeBucket(bucket: typeof TIME_BUCKETS[number]) {
-    router.push({
-      pathname: "/medita-tiempo",
-      params: { min: String(bucket.min), max: String(bucket.max), label: bucket.label },
-    } as never);
+  function handleSessionPress(s: Session) {
+    const locked = s.isPremium && !isPremium;
+    router.push((locked ? "/membresia" : `/session/${s.id}`) as never);
   }
 
-  const primaryCats = getPrimaryCategories();
-  const secondaryCats = getSecondaryCategories();
-
-  // "Sigue escuchando" por categoría: la última sesión escuchada de cada
-  // categoría principal. Si no hay historial, la card muestra la portada de la
-  // categoría con un placeholder y al tocar abre la categoría.
-  const continueByCategory = MAIN_CAT_IDS.flatMap((catId) => {
-    const cat = CATEGORIES.find((c) => c.id === catId);
-    if (!cat) return [];
-    // Buscar en TODO el historial (no en el slice de 20) la última sesión de la categoría.
-    let session: (typeof SESSIONS)[number] | null = null;
-    for (const entry of history) {
-      const s = SESSIONS.find((x) => x.id === entry.sessionId);
-      if (s && s.categoryId === catId) {
-        session = s;
-        break;
-      }
-    }
-    const coverSession = SESSIONS.find((s) => s.categoryId === catId);
-    const coverImage = (session?.image ?? coverSession?.image) as number | undefined;
-    return [{ cat, session, coverImage }];
-  });
+  function renderCarousel(title: string, sessions: Session[], categoryRoute: string) {
+    return (
+      <View style={styles.section} key={title}>
+        <Pressable
+          onPress={() => router.push(categoryRoute as never)}
+          style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Text style={styles.sectionTitle}>{title}</Text>
+          <Feather name="chevron-right" size={18} color="#7A8FA8" />
+        </Pressable>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: -H_PAD }}
+          contentContainerStyle={styles.carouselContent}
+        >
+          {sessions.map((s) => (
+            <Pressable
+              key={s.id}
+              onPress={() => handleSessionPress(s)}
+              style={({ pressed }) => [styles.sqCard, { opacity: pressed ? 0.82 : 1 }]}
+            >
+              <View style={styles.sqImageWrap}>
+                <Image
+                  source={s.image as number}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                  cachePolicy="memory-disk"
+                />
+                {s.isPremium && (
+                  <View style={styles.premiumBadge}>
+                    <Feather name="star" size={10} color="#BE9650" />
+                  </View>
+                )}
+              </View>
+              <Text style={[styles.sqTitle, { color: colors.foreground }]} numberOfLines={2}>
+                {s.title}
+              </Text>
+              <Text style={[styles.sqAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+                {getSessionAuthor(s)}
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
-    <LinearGradient
-
-      style={styles.root}
-
-      colors={BG_GRADIENT}
-
-      locations={[0, 0.5, 1]}
-
-      start={{ x: 0, y: 0 }}
-
-      end={{ x: 0, y: 1 }}
-
-    >
+    <View style={[styles.root, { backgroundColor: "#080B1A" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
@@ -164,7 +139,6 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            {/* Avatar — abre el drawer */}
             <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
               {photoUri ? (
                 <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
@@ -174,7 +148,6 @@ export default function ExploreScreen() {
                 </View>
               )}
             </Pressable>
-
             <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Buscar</Text>
             <Pressable
               onPress={() => router.push("/historial" as never)}
@@ -203,7 +176,6 @@ export default function ExploreScreen() {
           )}
         </View>
 
-
         {/* ── Search results ── */}
         {query.length > 0 ? (
           <View style={styles.section}>
@@ -211,11 +183,7 @@ export default function ExploreScreen() {
               {filteredSessions.length} sesión{filteredSessions.length !== 1 ? "es" : ""} encontrada{filteredSessions.length !== 1 ? "s" : ""}
             </Text>
             {filteredSessions.map((s) => (
-              <SessionCard
-                key={s.id}
-                session={s}
-                horizontal
-              />
+              <SessionCard key={s.id} session={s} horizontal />
             ))}
             {filteredSessions.length === 0 && (
               <View style={styles.emptyState}>
@@ -229,193 +197,44 @@ export default function ExploreScreen() {
           </View>
         ) : (
           <>
-            {/* ── 12 Temáticas ── */}
-            <View style={[styles.section, { paddingHorizontal: H_PAD }]}>
-              <View style={Platform.OS === "web" ? styles.temaGridWebWrap : undefined}>
-                <View style={styles.temaGrid}>
-                  {TEMAS.map((t) => (
-                    <Pressable
-                      key={t.id}
-                      onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                      style={({ pressed }) => [
-                        styles.temaCard,
-                        { width: temaW, height: temaW, backgroundColor: "rgba(255,255,255,0.03)" },
-                        { opacity: pressed ? 0.75 : 1 },
-                      ]}
-                    >
-                      {t.image != null ? (
-                        <>
-                          <Image
-                            source={t.image}
-                            style={styles.temaIcon}
-                            contentFit="contain"
-                          />
-                          <Text style={[styles.temaLabel, { color: colors.foreground }]}>{t.label}</Text>
-                        </>
-                      ) : (
-                        <>
-                          <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
-                          <Text style={[styles.temaLabel, { color: colors.foreground }]}>{t.label}</Text>
-                        </>
-                      )}
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-            </View>
+            {/* ── Carruseles por categoría ── */}
+            {renderCarousel("Explora nuevos sonidos",        ancestralesSessions,  "/category/sonidos-ancestrales")}
+            {renderCarousel("Explora música ambient",        musicaSessions,       "/category/musica-sonidos")}
+            {renderCarousel("Explora meditaciones guiadas",  meditacionesSessions, "/category/meditaciones-guiadas")}
 
-            {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+            {/* ── Explorar todo (TEMAS 6×2) ── */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle]}>¿Cuánto tiempo tienes?</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.timeRow}
-              >
-                {TIME_BUCKETS.map((bucket) => (
+              <Text style={styles.sectionTitle}>Explorar todo</Text>
+              <View style={styles.temaGrid}>
+                {TEMAS.map((t) => (
                   <Pressable
-                    key={bucket.label}
-                    onPress={() => handleTimeBucket(bucket)}
+                    key={t.id}
+                    onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
                     style={({ pressed }) => [
-                      styles.timeChip,
-                      {
-                        backgroundColor: "rgba(255,255,255,0.03)",
-                        opacity: pressed ? 0.6 : 1,
-                      },
+                      styles.temaCell,
+                      { width: TEMA_COL_W, opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
-                    <Feather
-                      name="clock"
-                      size={16}
-                      color="#F3ECE1"
-                      style={styles.timeIcon}
-                    />
-                    <Text style={[styles.timeLabel, { color: "#F3ECE1" }]}>{bucket.label}</Text>
+                    {t.image != null ? (
+                      <Image
+                        source={t.image}
+                        style={styles.temaCellIcon}
+                        contentFit="contain"
+                      />
+                    ) : (
+                      <MaterialCommunityIcons name={t.icon} size={22} color={t.color} style={styles.temaCellIconMci} />
+                    )}
+                    <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={1}>
+                      {t.label}
+                    </Text>
                   </Pressable>
                 ))}
-              </ScrollView>
-            </View>
-
-            {/* ── Sigue escuchando (carrusel por categoría) ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Sigue escuchando</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{ marginHorizontal: -H_PAD }}
-                contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12 }}
-              >
-                {continueByCategory.map(({ cat, session, coverImage }) => {
-                  const progress = session ? getSessionProgress(session.id) : 0;
-                  const locked = !!session?.isPremium && !isPremium;
-                  const author = session
-                    ? session.guideId
-                      ? getGuide(session.guideId).name
-                      : getArtist(session.artistId).name
-                    : "";
-                  const handlePress = () => {
-                    if (session) {
-                      router.push((locked ? "/membresia" : `/session/${session.id}`) as never);
-                    } else {
-                      router.push(`/category/${cat.id}` as never);
-                    }
-                  };
-                  return (
-                    <Pressable
-                      key={cat.id}
-                      onPress={handlePress}
-                      style={({ pressed }) => [
-                        styles.continueCatCard,
-                        { width: CONTINUE_CARD_W, opacity: pressed ? 0.85 : 1 },
-                      ]}
-                    >
-                      <View style={styles.continueCatImageWrap}>
-                        {coverImage ? (
-                          <Image
-                            source={coverImage}
-                            style={styles.continueCatImage}
-                            contentFit="cover"
-                            placeholder={BLUR_PLACEHOLDER}
-                            transition={IMAGE_TRANSITION}
-                          />
-                        ) : (
-                          <View style={[styles.continueCatImage, { backgroundColor: cat.gradient[0] }]} />
-                        )}
-                        <View style={styles.continueCatBadge}>
-                          <Text style={styles.continueCatBadgeText}>{cat.title}</Text>
-                        </View>
-                        {session && (
-                          <View style={[styles.continueCatPlay, { backgroundColor: "rgba(214,168,91,0.92)" }]}>
-                            <Feather
-                              name={locked ? "lock" : "play"}
-                              size={15}
-                              color="#090F17"
-                              style={locked ? undefined : { marginLeft: 2 }}
-                            />
-                          </View>
-                        )}
-                        {session && progress > 0 && (
-                          <View
-                            style={[
-                              styles.continueCatTrack,
-                              { backgroundColor: "rgba(214,168,91,0.20)" },
-                            ]}
-                          >
-                            <View
-                              style={[
-                                styles.continueCatFill,
-                                {
-                                  width: `${Math.min(100, progress * 100)}%`,
-                                  backgroundColor: colors.accent,
-                                },
-                              ]}
-                            />
-                          </View>
-                        )}
-                      </View>
-                      {session ? (
-                        <>
-                          <Text
-                            style={[styles.continueCatTitle, { color: colors.foreground }]}
-                            numberOfLines={2}
-                          >
-                            {session.title}
-                          </Text>
-                          {!!author && (
-                            <Text
-                              style={[styles.continueCatAuthor, { color: colors.mutedForeground }]}
-                              numberOfLines={1}
-                            >
-                              {author}
-                            </Text>
-                          )}
-                        </>
-                      ) : (
-                        <Text
-                          style={[styles.continueCatPlaceholder, { color: colors.mutedForeground }]}
-                          numberOfLines={2}
-                        >
-                          Acá aparecerá la última sesión de {cat.title}
-                        </Text>
-                      )}
-                    </Pressable>
-                  );
-                })}
-              </ScrollView>
-            </View>
-
-            {/* ── Mezclas de la comunidad ── */}
-            <View style={{ marginBottom: 23 }}>
-              <CommunityMixesCarousel />
-            </View>
-
-            {/* ── Otras Temáticas ── */}
-            <View style={styles.section}>
-              <View style={styles.sectionRow}>
-                <Text style={styles.sectionTitle}>
-                  Otras Temáticas
-                </Text>
               </View>
+            </View>
+
+            {/* ── Otras temáticas ── */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Otras Temáticas</Text>
               <View style={styles.tagGrid}>
                 {TAG_CARDS.slice(0, TAGS_PREVIEW_COUNT).map((tag) => (
                   <Pressable
@@ -440,66 +259,37 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Programas (oculto temporalmente) ── */}
-            {SHOW_PROGRAMAS && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle]}>Programas</Text>
-              <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
-                Caminos guiados de varios días para crear hábito
-              </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.seriesRow}
-              >
-                {SERIES.map((s) => (
-                  <Pressable
-                    key={s.id}
-                    onPress={() => router.push(`/serie/${s.id}` as never)}
-                    style={({ pressed }) => [styles.seriesCard, { opacity: pressed ? 0.85 : 1 }]}
-                  >
-                    <Image
-                      source={s.image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <LinearGradient
-                      colors={["#090D20", "#080A18", "#06070F"]}
-                      style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-                    />
-                    <View style={styles.seriesContent}>
-                      <Text style={[styles.seriesKicker, { color: s.accentColor }]}>
-                        {s.subtitle.toUpperCase()}
-                      </Text>
-                      <Text style={styles.seriesTitle} numberOfLines={2}>{s.title}</Text>
-                    </View>
-                  </Pressable>
-                ))}
-              </ScrollView>
+            {/* ── Mezclas de la comunidad ── */}
+            <View style={{ marginBottom: 23 }}>
+              <CommunityMixesCarousel />
             </View>
-            )}
-
           </>
         )}
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root:   { flex: 1 },
   scroll: { flex: 1 },
 
-  header: { paddingHorizontal: H_PAD, marginBottom: 18 },
-  headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
+  headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
-  avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(190,150,80,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(190,150,80,0.25)" },
-  headerClockBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.03)", alignItems: "center", justifyContent: "center" },
+  avatarFallback: {
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: "rgba(190,150,80,0.12)",
+    alignItems: "center", justifyContent: "center",
+    borderWidth: 1, borderColor: "rgba(190,150,80,0.25)",
+  },
+  headerClockBtn: {
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    alignItems: "center", justifyContent: "center",
+  },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
-  pageSub:   { fontSize: 13, marginTop: 0 },
 
   searchBar: {
     flexDirection: "row",
@@ -514,107 +304,86 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, color: "#111111" },
 
-  section: { paddingHorizontal: H_PAD, marginBottom: 23 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 14, color: "#FFFFFF" },
-  sectionSub: { fontSize: 12, marginBottom: 16 },
+  section:      { paddingHorizontal: H_PAD, marginBottom: 28 },
+  sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF" },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
-  emptyState: { alignItems: "center", paddingVertical: 48, gap: 10 },
-  emptyTitle: { fontSize: 16, fontWeight: "600" },
-  emptySub: { fontSize: 13 },
+  emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
+  emptyTitle:   { fontSize: 16, fontWeight: "600" },
+  emptySub:     { fontSize: 13 },
 
-  // Primary categories
-  primaryRow: {
-    flexDirection: "row",
+  // Carrusel cuadrado
+  carouselContent: {
+    paddingHorizontal: H_PAD,
     gap: GAP,
-    marginBottom: 10,
+    paddingBottom: 4,
   },
-  primaryCard: {
-    height: 148,
-    borderRadius: 18,
+  sqCard: {
+    width: SQCARD_W,
+  },
+  sqImageWrap: {
+    width: SQCARD_W,
+    height: SQCARD_W,
+    borderRadius: 12,
     overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 16,
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
-  primaryBorder: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 18,
+  premiumBadge: {
+    position: "absolute",
+    top: 7,
+    right: 7,
+    backgroundColor: "rgba(6,10,15,0.72)",
+    borderRadius: 10,
+    padding: 4,
   },
-  primaryIcon: { marginBottom: 12 },
-  primaryLabel: {
-    color: "#FFFFFF",
+  sqTitle: {
     fontSize: 13,
-    fontWeight: "700",
-    textAlign: "center",
-    lineHeight: 18,
-  },
-
-  // Secondary categories
-  secondaryRow: {
-    flexDirection: "row",
-    gap: GAP,
-  },
-  secondaryCard: {
-    flex: 1,
-    height: 100,
-    borderRadius: 14,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 6,
-    paddingVertical: 12,
-  },
-  secondaryBorder: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 14,
-  },
-  secondaryIcon: { marginBottom: 8 },
-  secondaryLabel: {
-    color: "#FFFFFF",
-    fontSize: 11,
     fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 15,
+    lineHeight: 18,
+    marginTop: 8,
+  },
+  sqAuthor: {
+    fontSize: 11,
+    marginTop: 3,
   },
 
-  // Temáticas rápidas (9 bloques)
+  // Explorar todo — grid 2 columnas, icono + texto horizontal
   temaGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: GAP,
+    rowGap: 8,
+    marginTop: 2,
   },
-  temaCard: {
-    width: TEMA_W,
-    height: TEMA_W,
-    borderRadius: 14,
+  temaCell: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+    gap: 10,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 13,
   },
-  temaIcon: {
-    width: 26,
-    height: 26,
+  temaCellIcon: {
+    width: 22,
+    height: 22,
   },
-  temaLabel: {
-    fontSize: 11,
+  temaCellIconMci: {},
+  temaCellLabel: {
+    fontSize: 13,
     fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 14,
-  },
-  temaGridWebWrap: {
-    maxWidth: 480,
-    alignSelf: "center" as const,
-    width: "100%" as unknown as number,
+    flex: 1,
+    lineHeight: 18,
   },
 
-  // Tag cards — "Otras Categorías"
+  // Tag cards — Otras Temáticas
   tagGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     columnGap: GAP,
     rowGap: 20,
+    marginTop: 2,
   },
   tagCard: {
     width: TAG_W,
@@ -627,21 +396,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
   },
-  verTodasBlock: {
-    width: "100%",
-    height: 48,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.03)",
-    marginTop: GAP,
-  },
-  verTodasBlockText: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
-  },
   tagLabel: {
     color: "#FFFFFF",
     fontSize: 14,
@@ -649,156 +403,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 20,
   },
-
-  // Historial
-  historyEmpty: {
-    borderRadius: 18,
-    borderWidth: 1,
-    paddingVertical: 36,
-    paddingHorizontal: 24,
-    alignItems: "center",
-    marginTop: 4,
-  },
-  videosEmpty: {
-    borderRadius: 18,
-    borderWidth: 1,
-    paddingVertical: 36,
-    paddingHorizontal: 24,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  historyEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
-  historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
-  historyRow: {},
-  historyDateOverlay: {
-    position: "absolute",
-    top: 10,
-    right: 12,
-    fontSize: 10,
-    fontWeight: "600",
-  },
-  verTodoBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingVertical: 14,
-    marginTop: 4,
-  },
-  verTodoText: { fontSize: 14, fontWeight: "600" },
-  sectionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 0,
-  },
-  verTodasLink: { fontSize: 13, fontWeight: "400" },
-
-  // Sigue escuchando (carrusel por categoría)
-  continueCatCard: {},
-  continueCatImageWrap: {
-    width: "100%",
-    aspectRatio: 16 / 9,
-    borderRadius: 14,
-    overflow: "hidden",
-    justifyContent: "flex-end",
-  },
-  continueCatImage: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
-  continueCatBadge: {
-    position: "absolute",
-    top: 8,
-    left: 8,
-    backgroundColor: "rgba(6,10,15,0.72)",
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  continueCatBadgeText: { fontSize: 11, fontWeight: "700", color: "#FFFFFF" },
-  continueCatPlay: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  continueCatTrack: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 4,
-    overflow: "hidden",
-  },
-  continueCatFill: { height: 4 },
-  continueCatTitle: {
-    fontSize: 13,
-    fontWeight: "600",
-    lineHeight: 18,
-    marginTop: 8,
-    paddingHorizontal: 2,
-  },
-  continueCatAuthor: {
-    fontSize: 11,
-    marginTop: 4,
-    paddingHorizontal: 2,
-  },
-  continueCatPlaceholder: {
-    fontSize: 12,
-    lineHeight: 17,
-    marginTop: 8,
-    paddingHorizontal: 2,
-  },
-
-  // Programas
-  seriesRow: {
-    gap: 12,
-    paddingRight: 4,
-    paddingTop: 12,
-  },
-  seriesCard: {
-    width: 220,
-    height: 140,
-    borderRadius: 16,
-    overflow: "hidden",
-    justifyContent: "flex-end",
-  },
-  seriesContent: {
-    padding: 14,
-  },
-  seriesKicker: {
-    fontSize: 10,
-    fontWeight: "700",
-    letterSpacing: 1.2,
-    marginBottom: 4,
-  },
-  seriesTitle: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-    lineHeight: 21,
-  },
-
-  // Time buckets
-  timeRow: {
-    flexDirection: "row",
-    gap: 8,
-    paddingRight: 4,
-    marginTop: 6,
-  },
-  timeChip: {
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    flexDirection: "row",
-    alignItems: "center",
-    overflow: "hidden",
-    justifyContent: "center",
-  },
-  timeIcon: { marginRight: 6 },
-  timeLabel: { fontSize: 14, fontWeight: "600" },
 });
