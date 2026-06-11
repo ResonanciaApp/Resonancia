@@ -33,6 +33,16 @@ const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GAP = 10;
 
+/** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
+function hexTint(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(255,255,255,0.04)`;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
 const TAG_W   = (width - H_PAD * 2 - GAP) / 2;
 const TAG_H   = 130;
@@ -204,7 +214,9 @@ export default function ExploreScreen() {
 
             {/* ── Explorar todo (TEMAS 6×2) ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Explorar todo</Text>
+              <View style={styles.sectionRow}>
+                <Text style={styles.sectionTitle}>Explorar todo</Text>
+              </View>
               <View style={styles.temaGrid}>
                 {TEMAS.map((t) => (
                   <Pressable
@@ -212,7 +224,11 @@ export default function ExploreScreen() {
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
                     style={({ pressed }) => [
                       styles.temaCell,
-                      { width: TEMA_COL_W, opacity: pressed ? 0.75 : 1 },
+                      {
+                        width: TEMA_COL_W,
+                        opacity: pressed ? 0.75 : 1,
+                        backgroundColor: hexTint(t.color, 0.12),
+                      },
                     ]}
                   >
                     {t.image != null ? (
@@ -222,7 +238,7 @@ export default function ExploreScreen() {
                         contentFit="contain"
                       />
                     ) : (
-                      <MaterialCommunityIcons name={t.icon} size={22} color={t.color} style={styles.temaCellIconMci} />
+                      <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
                     )}
                     <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={1}>
                       {t.label}
@@ -353,28 +369,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: GAP,
-    rowGap: 8,
+    rowGap: 10,
     marginTop: 2,
   },
   temaCell: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 13,
+    gap: 12,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 33,
   },
   temaCellIcon: {
-    width: 22,
-    height: 22,
+    width: 26,
+    height: 26,
   },
-  temaCellIconMci: {},
   temaCellLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
     flex: 1,
-    lineHeight: 18,
+    lineHeight: 19,
   },
 
   // Tag cards — Otras Temáticas
