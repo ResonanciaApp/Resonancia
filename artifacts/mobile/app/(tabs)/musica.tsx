@@ -173,18 +173,14 @@ const PillTab = memo(function PillTab({
   isDark?: boolean;
   selBg?: string;
 }) {
-  const unselBg     = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)";
-  const unselBorder = isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)";
-  const unselText   = isDark ? "#8A9AB8" : MUTED;
-  const activeBg    = selBg ?? DARK;
+  const unselBg   = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)";
+  const unselText = isDark ? "#8A9AB8" : MUTED;
+  const activeBg  = selBg ?? DARK;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.pillTab,
-        {
-          backgroundColor: sel ? activeBg : unselBg,
-          borderColor:     sel ? "transparent" : unselBorder,
-        },
+        { backgroundColor: sel ? activeBg : unselBg },
       ]}>
         <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : unselText, fontWeight: sel ? "700" : "500" }]}>
           {tab.label}
@@ -196,22 +192,16 @@ const PillTab = memo(function PillTab({
 
 // ── SubTabPill con fade ───────────────────────────────────────────────────────
 const SubTabPill = memo(function SubTabPill({
-  label, sel, onPress, isDark, selBg,
+  label, sel, onPress, selBg,
 }: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string }) {
-  const unselBg     = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.03)";
-  const unselBorder = isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.09)";
-  const unselText   = isDark ? "#8A9AB8" : MUTED;
-  const activeBg    = selBg ?? DARK;
+  const activeBg = selBg ?? DARK;
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        {
-          backgroundColor: sel ? activeBg : unselBg,
-          borderColor:     sel ? "transparent" : unselBorder,
-        },
+        { backgroundColor: sel ? activeBg : "#FFFFFF" },
       ]}>
-        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : unselText, fontWeight: sel ? "700" : "600" }]}>
+        <Text style={[styles.subTabText, { color: sel ? "#FFFFFF" : "#7A8FA8", fontWeight: sel ? "700" : "600" }]}>
           {label}
         </Text>
       </View>
@@ -625,7 +615,7 @@ export default function MiMusicaScreen() {
                 )}
               </Pressable>
 
-              <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10, color: themeText }]}>Mi Música</Text>
+              <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10, color: themeText }]}>Mezclador</Text>
               <Pressable
                 onPress={openSettings}
                 hitSlop={8}
@@ -897,7 +887,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: 999,
-    borderWidth: 1,
   },
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
@@ -912,7 +901,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 999,
-    borderWidth: 1,
   },
   subTabText: { fontSize: 12, fontWeight: "600" },
 
