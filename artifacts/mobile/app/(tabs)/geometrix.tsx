@@ -3836,6 +3836,9 @@ export default function GeometrixScreen() {
         >
         {/* Header */}
         <View style={styles.header}>
+          <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backBtn}>
+            <Feather name="arrow-left" size={22} color="#FFFFFF" />
+          </Pressable>
           <View style={styles.headerText}>
             <View style={styles.titleRow}>
               <Text style={styles.title}>Geometrix</Text>
@@ -3846,7 +3849,6 @@ export default function GeometrixScreen() {
                 contentFit="contain"
               />
             </View>
-            <Text style={styles.titleDesc}>Generador de geometrías sagradas</Text>
           </View>
           {/* Tema de fondo: si NO suena nada, abre el buscador; si YA está
               sonando, el mismo botón detiene y resetea el reproductor. */}
@@ -6159,6 +6161,7 @@ const styles = StyleSheet.create({
     // las tiles (que viven más abajo por el paddingTop del contenido).
     zIndex: 10,
   },
+  backBtn: { marginRight: 10, padding: 2 },
   headerText: { flex: 1, paddingRight: 12 },
   // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
   titleRow: { flexDirection: "row", alignItems: "center" },
