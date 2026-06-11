@@ -186,7 +186,6 @@ const PillTab = memo(function PillTab({
           borderColor:     sel ? "transparent" : unselBorder,
         },
       ]}>
-        <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#FFFFFF" : (isDark ? "#8A9AB8" : tab.color)} />
         <Text style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : unselText, fontWeight: sel ? "700" : "500" }]}>
           {tab.label}
         </Text>
@@ -627,32 +626,14 @@ export default function MiMusicaScreen() {
               </Pressable>
 
               <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10, color: themeText }]}>Mi Música</Text>
-              <View style={styles.headerBtns}>
-                {/* Botón de ajustes de apariencia */}
-                <Pressable
-                  onPress={openSettings}
-                  style={[styles.headerIconBtn, { backgroundColor: themeIconBtn }]}
-                  hitSlop={8}
-                  accessibilityRole="button"
-                  accessibilityLabel="Ajustes de apariencia"
-                >
-                  <MaterialCommunityIcons name="tune-vertical" size={18} color={themeText} />
-                </Pressable>
-
-                {/* Botón corazón / Mis mezclas */}
-                <Pressable
-                  onPress={() => router.push("/mezclas" as never)}
-                  style={[styles.heartBtn, { backgroundColor: themeIconBtn }]}
-                  hitSlop={8}
-                  accessibilityRole="button"
-                  accessibilityLabel="Mis mezclas guardadas"
-                >
-                  <MaterialCommunityIcons name="heart" size={18} color={themeText} />
-                  <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
-                    <MaterialCommunityIcons name="heart" size={18} color={GOLD} />
-                  </Animated.View>
-                </Pressable>
-              </View>
+              <Pressable
+                onPress={openSettings}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel="Ajustes de apariencia"
+              >
+                <MaterialCommunityIcons name="tune-vertical" size={16} color={themeText} />
+              </Pressable>
             </View>
           </View>
 
@@ -907,7 +888,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.08)",
   },
 
-  pillRow:        { flexGrow: 0, marginBottom: 4 },
+  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 20 },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 10 },
   pillTab: {
     flexDirection: "row",
