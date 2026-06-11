@@ -1,6 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -23,6 +21,10 @@ const STACK_SIZE = 38;
 const STACK_SHIFT = 15;
 const MAX_STACK = 3;
 
+// Solid dark-indigo — sin transparencias
+const SOLID_BG = "#1c2240";
+const BORDER_R = 12;
+
 function formatElapsed(sec: number): string {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
@@ -30,7 +32,7 @@ function formatElapsed(sec: number): string {
 }
 
 export function MiniPlayer() {
-  const { currentSession, isPlaying, progress, pauseResume, stop } = usePlayer();
+  const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
     activeSounds,
     isPlaying: mixPlaying,
@@ -40,12 +42,10 @@ export function MiniPlayer() {
     loadedPresetId,
     openSheet,
   } = useMixer();
-  // Track if the mix was ever played (to distinguish "never started" from "paused")
   const everPlayedRef = useRef(false);
   if (mixPlaying) everPlayedRef.current = true;
   const colors = useColors();
 
-  const isIOS = Platform.OS === "ios";
   const mixActive = !currentSession && activeSounds.length > 0;
 
   // ── Timer de reproducción (solo mezcla) ──────────────────────
@@ -90,24 +90,12 @@ export function MiniPlayer() {
 
   const shell = (children: React.ReactNode, onPress: () => void) => (
     <Pressable onPress={onPress} style={styles.wrapper}>
-      {isIOS ? (
-        <BlurView intensity={80} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 18 }]} />
-      ) : Platform.OS === "web" ? (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(7,13,50,0.94)", borderRadius: 18 }]} />
-      ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card, borderRadius: 18 }]} />
-      )}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(7,13,50,0.55)", borderRadius: 18 }]} />
-      <LinearGradient
-        colors={["rgba(190,150,80,0.08)", "rgba(11,15,20,0.4)"]}
-        style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
-      />
-      <View style={[styles.border, { borderColor: "rgba(190,150,80,0.2)" }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: SOLID_BG, borderRadius: BORDER_R }]} />
       {children}
     </Pressable>
   );
 
-  // ── Modo mezcla: diseño Insight Timer ─────────────────────────
+  // ── Modo mezcla ───────────────────────────────────────────────
   if (mixActive) {
     const presetName = loadedPresetId
       ? presets.find((p) => p.id === loadedPresetId)?.name
@@ -119,12 +107,10 @@ export function MiniPlayer() {
 
     return shell(
       <View style={styles.row}>
-        {/* Flecha arriba — indica que abre el editor ampliado */}
         <View style={styles.upArrow}>
           <Feather name="chevron-up" size={20} color={colors.mutedForeground} />
         </View>
 
-        {/* Miniaturas apiladas con animación de entrada */}
         <View style={[styles.stackWrap, { width: stackWidth }]}>
           {visible.map((s, i) => {
             const anim = getAnim(s.id);
@@ -139,11 +125,7 @@ export function MiniPlayer() {
                 ]}
               >
                 {image ? (
-                  <Image
-                    source={image}
-                    style={styles.stackThumbInner}
-                    resizeMode="cover"
-                  />
+                  <Image source={image} style={styles.stackThumbInner} resizeMode="cover" />
                 ) : (
                   <View style={[styles.stackThumbInner, styles.stackFallback]}>
                     <Feather name="music" size={14} color={colors.primary} />
@@ -156,7 +138,6 @@ export function MiniPlayer() {
 
         {mixPlaying ? (
           <>
-            {/* Título + conteo */}
             <View style={styles.info}>
               <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
                 {title}
@@ -165,38 +146,27 @@ export function MiniPlayer() {
                 {count} {count === 1 ? "sonido" : "sonidos"}
               </Text>
             </View>
-            {/* Timer de reproducción */}
             <Text style={[styles.timerText, { color: colors.foreground }]}>
               {formatElapsed(elapsed)}
             </Text>
           </>
         ) : (
-          /* TERMINAR — visible solo cuando está pausado */
           <>
             <View style={{ flex: 1 }} />
             <Pressable
               onPress={(e) => { e.stopPropagation(); stopAll(); everPlayedRef.current = false; }}
               style={[styles.terminarBtn, { marginRight: 10 }]}
-              accessibilityRole="button"
-              accessibilityLabel="Terminar mezcla"
             >
               <Text style={styles.terminarText}>TERMINAR</Text>
             </Pressable>
           </>
         )}
 
-        {/* Play / pausa */}
         <Pressable
           onPress={(e) => { e.stopPropagation(); togglePlay(); }}
           style={styles.playPauseBtn}
-          accessibilityRole="button"
-          accessibilityLabel={mixPlaying ? "Pausar mezcla" : "Reproducir mezcla"}
         >
-          <Feather
-            name={mixPlaying ? "pause" : "play"}
-            size={20}
-            color={colors.foreground}
-          />
+          <Feather name={mixPlaying ? "pause" : "play"} size={20} color={colors.foreground} />
         </Pressable>
       </View>,
       () => {
@@ -209,40 +179,32 @@ export function MiniPlayer() {
     );
   }
 
-  // ── Modo sesión (sin cambios) ─────────────────────────────────
+  // ── Modo sesión ───────────────────────────────────────────────
   return shell(
     <>
-      <View style={styles.progressBar}>
-        <View
-          style={[
-            styles.progressFill,
-            { width: `${progress * 100}%`, backgroundColor: colors.primary },
-          ]}
-        />
-      </View>
-
+      {/* Fila principal */}
       <View style={styles.row}>
         <Image source={currentSession!.image} style={styles.art} resizeMode="cover" />
         <View style={styles.info}>
-          <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
+          <Text style={[styles.title, { color: "#FFFFFF" }]} numberOfLines={1}>
             {currentSession!.title}
           </Text>
-          <Text style={[styles.sub, { color: colors.mutedForeground }]} numberOfLines={1}>
+          <Text style={[styles.sub, { color: "rgba(255,255,255,0.55)" }]} numberOfLines={1}>
             {currentSession!.categoryLabel} · {currentSession!.durationLabel}
           </Text>
         </View>
+        {/* Solo botón Play/Pause */}
         <Pressable
           onPress={(e) => { e.stopPropagation(); pauseResume(); }}
-          style={[styles.btn, { backgroundColor: colors.primary }]}
+          style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)" }]}
         >
-          <Feather name={isPlaying ? "pause" : "play"} size={18} color={colors.primaryForeground} />
+          <Feather name={isPlaying ? "pause" : "play"} size={18} color="#FFFFFF" />
         </Pressable>
-        <Pressable
-          onPress={(e) => { e.stopPropagation(); stop(); }}
-          style={styles.closeBtn}
-        >
-          <Feather name="x" size={18} color={colors.mutedForeground} />
-        </Pressable>
+      </View>
+
+      {/* Barra de progreso — ABAJO */}
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
       </View>
     </>,
     () => router.push("/player" as never),
@@ -251,30 +213,26 @@ export function MiniPlayer() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginHorizontal: 16,
-    borderRadius: 18,
+    marginHorizontal: 10,
+    borderRadius: BORDER_R,
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
     alignSelf: "center",
   },
-  border: {
-    ...StyleSheet.absoluteFillObject,
-    borderWidth: 1,
-    borderRadius: 18,
-  },
 
-  // ── Sesión ───────────────────────────────────────────────────
+  // ── Sesión ────────────────────────────────────────────────────
   progressBar: {
     height: 2,
-    backgroundColor: "rgba(190,150,80,0.15)",
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   progressFill: {
     height: 2,
+    backgroundColor: "#BE9650",
     borderRadius: 1,
   },
 
-  // ── Fila compartida ──────────────────────────────────────────
+  // ── Fila compartida ───────────────────────────────────────────
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -285,7 +243,7 @@ const styles = StyleSheet.create({
   art: {
     width: 44,
     height: 44,
-    borderRadius: 10,
+    borderRadius: 8,
   },
   info: { flex: 1 },
   title: {
@@ -301,14 +259,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  closeBtn: {
-    width: 30,
-    height: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
-  // ── Mezcla (Insight Timer layout) ────────────────────────────
+  // ── Mezcla ────────────────────────────────────────────────────
   upArrow: {
     width: 28,
     height: 28,
@@ -354,8 +306,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  // ── TERMINAR (pausado) ────────────────────────────────────────
   terminarBtn: {
     alignItems: "center",
     justifyContent: "center",
