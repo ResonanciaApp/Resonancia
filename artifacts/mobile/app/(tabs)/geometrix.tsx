@@ -4059,7 +4059,7 @@ export default function GeometrixScreen() {
               setCanvas((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
             }}
           >
-            {canvasSide > 0 && (
+            {canvasSide > 0 && !fullscreenEdit && (
               <GestureDetector gesture={canvasGesture}>
                 <View style={[styles.canvas, { width: canvasSide, height: canvasSide }]}>
                 {layerSize > 0 &&
@@ -4658,6 +4658,66 @@ export default function GeometrixScreen() {
               </Animated.View>
             </View>
           </View>
+
+          {/* Thumbnails de geometrías activas en fullscreen */}
+          {activeMetas.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={[styles.thumbsScroll, { bottom: insets.bottom + 16 }]}
+              contentContainerStyle={styles.thumbsRow}
+            >
+              {activeMetas.map((m) => {
+                const { iid, geo: g } = m;
+                const s = getStableSettings(iid);
+                const isHidden = hiddenIds.includes(iid);
+                const isSelected = pinchTargetId === iid;
+                return (
+                  <View key={iid} style={styles.thumbItem}>
+                    <Pressable
+                      onPress={() => {
+                        if (isHidden) {
+                          setHiddenIds((prev) => prev.filter((id) => id !== iid));
+                        } else {
+                          setSelectedId(iid);
+                        }
+                      }}
+                      style={[styles.thumb, { opacity: isHidden ? 1 : isSelected ? 1 : 0.4 }]}
+                      accessibilityRole="button"
+                      accessibilityLabel={isHidden ? `Mostrar ${g.name}` : `Seleccionar ${g.name}`}
+                    >
+                      <SacredGlyph
+                        id={g.id}
+                        color={s.color}
+                        gradient={gradientColors(s.gradientId)}
+                        size={37}
+                        strokeWidth={1.4}
+                      />
+                      {isHidden && (
+                        <View style={styles.thumbHiddenOverlay}>
+                          <Feather name="eye-off" size={14} color="rgba(255,255,255,0.85)" />
+                        </View>
+                      )}
+                    </Pressable>
+                    {/* Flechita: abre ajustes personalizados (el sheet vive en el árbol padre) */}
+                    <Pressable
+                      onPress={() => {
+                        setSelectedId(iid);
+                        setSettingsGeoId(iid);
+                        setSettingsOpen(true);
+                      }}
+                      style={styles.thumbCaret}
+                      hitSlop={8}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Ajustes de ${g.name}`}
+                    >
+                      <Feather name="chevron-down" size={16} color={colors.mutedForeground} />
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          )}
         </View>
       </Modal>
 
