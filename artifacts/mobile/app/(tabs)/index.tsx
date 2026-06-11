@@ -41,10 +41,17 @@ import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { VIDEOS } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
+import { useUserProfile } from "@/context/UserProfileContext";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
 const { width } = Dimensions.get("window");
+
+const NAV_TABS = [
+  { id: "sonidos-ancestrales",  label: "Ancestrales"  },
+  { id: "meditaciones-guiadas", label: "Meditaciones" },
+  { id: "musica-sonidos",       label: "Música"       },
+] as const;
 const GRID_GAP = 12;
 const GRID_PAD = 20;
 
@@ -129,6 +136,7 @@ export default function HomeScreen() {
   );
 
   const { open: openDrawer } = useDrawer();
+  const { photoUri } = useUserProfile();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -152,9 +160,35 @@ export default function HomeScreen() {
         {/* ── 1. INTENCIÓN ── */}
         <View style={styles.header}>
           <View style={styles.headerTopRow}>
-            <Pressable onPress={() => openDrawer()} hitSlop={12} style={styles.iconBtnBare}>
-              <Feather name="menu" size={22} color="white" />
+            {/* Avatar — abre el drawer (reemplaza la hamburguesa) */}
+            <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
+              {photoUri ? (
+                <Image
+                  source={{ uri: photoUri }}
+                  style={styles.avatarSmall}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.avatarFallback}>
+                  <Feather name="user" size={15} color="#7A8FA8" />
+                </View>
+              )}
             </Pressable>
+
+            {/* Tabs de navegación rápida: Ancestrales · Meditaciones · Música */}
+            <View style={styles.headerTabs}>
+              {NAV_TABS.map((tab) => (
+                <Pressable
+                  key={tab.id}
+                  onPress={() => router.push(`/category/${tab.id}` as never)}
+                  style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.55 : 1 }]}
+                >
+                  <Text style={styles.headerTabText}>{tab.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+
+            {/* Fuego / racha */}
             <NotificationBell />
           </View>
 
@@ -489,12 +523,48 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 14,
+    gap: 8,
   },
-  iconBtnBare: {
-    width: 38,
-    height: 38,
+  avatarBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  avatarSmall: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  avatarFallback: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(190,150,80,0.12)",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.25)",
+  },
+  headerTabs: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+  },
+  headerTabChip: {
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerTabText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#EDE1D3",
+    letterSpacing: 0.1,
   },
   intentionCard: {
     paddingVertical: 10,
