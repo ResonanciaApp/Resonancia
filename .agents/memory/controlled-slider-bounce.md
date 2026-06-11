@@ -1,80 +1,74 @@
 ---
 name: Controlled slider bounce (VolumeSlider)
-description: Causa real del rebote al soltar una barra Reanimated controlada por prop, y el fix UI-thread definitivo.
+description: Causa real del rebote al soltar una barra Reanimated controlada por prop, y el fix definitivo.
 ---
 
-## El bug
+## El bug y sus variantes
 
 Un slider Reanimated "controlado" (el padre guarda el valor en estado y lo pasa
-como prop `value`) tiene esta race condition con `draggingRef` (JS thread):
+como prop `value`) sufre rebote en la secuencia rápida onUpdate → onFinalize:
 
-1. Worklet `onBegin`: encola `runOnJS(startDrag)` → cola JS.
-2. Worklet `onBegin`: encola `runOnJS(emit)(f)` → cola JS (FIFO después de #1).
-3. JS: `startDrag()` corre → `draggingRef.current = true`.
-4. JS: `emit(f)` → `setState(f)` → React agenda re-render.
-5. React re-renderiza → prop `value = f` → `useEffect([value])` corre.
+### Race cross-thread (causa real)
 
-En React 18 + RN New Arch (Fabric + JSI), los pasos 3 y 5 compiten. Si la
-ventana de re-render de React llega ANTES de que `startDrag` haya corrido en el
-JS thread, el `useEffect` ve `draggingRef.current = false` y sobrescribe
-`fraction.value` con el prop → rebote visual al soltar o durante el drag.
+1. UI thread `onUpdate`: `lastEmit.value = 0.74`, encola `runOnJS(emit)(0.74)`
+2. UI thread `onUpdate`: `lastEmit.value = 0.75`, encola `runOnJS(emit)(0.75)`
+3. UI thread `onFinalize`: `|0.75-0.75| ≤ 0.001` → sin emit adicional
+4. JS: `emit(0.74)` → state → `value={0.74}` → `useEffect` lee `lastEmit.value`
+   — si `lastEmit` es un **SharedValue**, el hilo UI ya escribió 0.75 pero la
+   copia JS puede devolver 0.75 → `|0.74-0.75|=0.01>0.001` → `fraction.value=0.74` **REBOTE**
+5. JS: `emit(0.75)` → `value={0.75}` → useEffect → snap de vuelta a 0.75
 
-## Fix definitivo: flag en el UI thread (isDragging SharedValue)
+El usuario ve: thumb salta a 0.74 → 0.75. Bounce de 1 frame.
 
-Reemplazar `draggingRef` (JS thread) con `isDragging = useSharedValue(0)` (UI
-thread) y `useEffect` con `useAnimatedReaction`.
+**Por qué pasa:** `useSharedValue` es un canal cross-thread; el hilo UI puede
+haber escrito el valor del onUpdate siguiente ANTES de que JS procese el emit
+del onUpdate anterior. La "copia JS" del SharedValue es inconsistente con el
+estado de la cola de runOnJS.
+
+## Fix definitivo: useRef JS-puro para el echo-guard del useEffect
 
 ```ts
-const isDragging = useSharedValue(0);
-const externalFraction = useSharedValue(value);
+const lastEmitSV = useSharedValue(value);  // throttle en onUpdate (worklet)
+const lastEmitRef = useRef(value);          // echo-guard en useEffect (JS-puro)
 
-// Sincroniza el prop al SV (JS thread, solo actualiza el espejo)
-useEffect(() => { externalFraction.value = value; }, [value, externalFraction]);
+const emit = useCallback((v: number) => {
+  // Actualizar ANTES de onChange → antes del re-render → useEffect ve diff=0
+  lastEmitRef.current = v;
+  onChangeRef.current(v);
+}, []);
 
-// Reacción en UI thread — lee isDragging en el MISMO hilo que el gesto
-useAnimatedReaction(
-  () => externalFraction.value,
-  (next, prev) => {
-    if (isDragging.value === 0 && prev !== null && Math.abs(next - fraction.value) > 0.001) {
-      fraction.value = next;
-    }
-  },
-  [fraction, isDragging],
-);
+useEffect(() => {
+  if (Math.abs(value - lastEmitRef.current) > 0.001) {
+    fraction.value = value;
+    lastEmitRef.current = value;
+  }
+}, [value, fraction]);
 
-// En el gesto (worklet = UI thread):
-.onBegin(() => {
-  isDragging.value = 1; // ← ANTES de runOnJS(emit); mismo hilo que la reacción
-  ...
-})
+// onFinalize: SIEMPRE emitir el valor final (aunque lastEmitSV coincida)
 .onFinalize(() => {
-  ...
-  isDragging.value = 0; // ← en worklet, no en runOnJS(endDrag)
+  const f = fraction.value;
+  lastEmitSV.value = f;
+  runOnJS(emit)(f);
 })
 ```
 
-**Why:** `isDragging.value = 1` se ejecuta síncronamente en el worklet (UI
-thread) antes de que `runOnJS(emit)` llegue al JS thread. La reacción que
-sincroniza el prop también corre en el UI thread y siempre ve el estado actual
-de `isDragging`. Sin race, sin rebote.
+**Why:** `lastEmitRef` es JS-puro. `emit` lo actualiza síncronamente ANTES de
+llamar `onChange`. React re-renderiza con el nuevo `value` que coincide con
+`lastEmitRef.current` → diff = 0 → `useEffect` → skip. Sin ventana cross-thread,
+sin race, sin bounce.
 
-## Carousel scroll microlag (tiles seleccionadas)
+`onFinalize` siempre emite (no condicional) para garantizar que el padre quede
+en sync aunque el último `onUpdate` no llegara a emitir por el throttle EMIT_EPS.
 
-**Causa original (fix 1):** `shadowOpacity: glow.value` en el Animated.View del
-glifo → iOS recalcula la sombra CADA frame de scroll (sin shadowPath = recálculo
-por desplazamiento).
+**How to apply:** cualquier slider Reanimated controlado por prop debe usar
+`useRef` (no `useSharedValue`) para el echo-guard del `useEffect`, y actualizar
+ese ref en el callback JS ANTES de llamar al setter de estado del padre.
 
-**Causa persistente (fix 2):** el Animated.View halo de reemplazo (opacity:
-0.66 constante) también fuerza un pase de composición offscreen per-frame en
-iOS cuando el tile se mueve, porque tiene una subcapa SVG y opacity < 1. El
-glifo SVG (SacredGlyph complejo) tampoco tenía caché de rasterización.
+## Anti-patrón: isDragging + useAnimatedReaction
 
-**Fix:** `shouldRasterizeIOS + renderToHardwareTextureAndroid` en AMBOS
-Animated.View (halo y glifo). Core Animation pre-rasteriza cada capa en un
-bitmap una sola vez y los traduce durante scroll sin composición por frame.
-El bitmap se invalida solo cuando cambia el contenido animado (glow/scale
-durante selección), no en cada frame de scroll.
-
-**How to apply:** cualquier Animated.View con opacity < 1 que contenga SVGs u
-otras subcapas complejas y se mueva en un ScrollView → agregar
-shouldRasterizeIOS + renderToHardwareTextureAndroid para pre-cachear el bitmap.
+El enfoque anterior (isDragging SharedValue + useAnimatedReaction + clearDragging
+via runOnJS) tenía el mismo problema: `isDragging.value = 0` se escribía desde
+onFinalize (UI thread), pero el React render causado por el último emit procesado
+en JS podía correr con `isDragging.value` todavía como 1 en la copia JS. Solo
+funciona con valores 0/1 si la propagación cross-thread llega antes del render,
+lo cual no está garantizado.

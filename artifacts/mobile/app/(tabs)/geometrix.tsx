@@ -1751,7 +1751,6 @@ function CarouselTileInner({
       <GestureDetector gesture={dragGesture}>
         <Pressable
           onPress={() => onToggle(id)}
-          shouldRasterizeIOS
           renderToHardwareTextureAndroid
           style={[
             styles.tile,

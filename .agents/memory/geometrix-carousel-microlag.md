@@ -68,31 +68,37 @@ anula el `React.memo` y vuelve el microlag. Las props de `CanvasLayer` deben
 seguir siendo SharedValues (refs), primitivos o el settings estable — nada
 mutado in-place (rompería el shallow-compare del memo).
 
-## Microlag al SCROLLEAR con cards SELECCIONADAS = sombra de capa iOS por frame
+## Microlag al SCROLLEAR con cards SELECCIONADAS = sombra iOS por frame → halo gradiente → shouldRasterizeIOS → QUITAR shouldRasterizeIOS
 
-Síntoma: al deslizar el carrusel mientras hay geometrías seleccionadas, microlag
-que se SUAVIZA al llegar a las tiles NO seleccionadas. El scroll handler es 100%
-hilo UI (sin `runOnJS`) → cero renders de JS durante el scroll; la ÚNICA diferencia
-entre una tile seleccionada y una no seleccionada es la sombra del glifo.
+### Historia de fixes (en orden cronológico):
 
-Causa: el glifo seleccionado tenía una sombra de capa iOS (`shadowColor`,
-`shadowRadius`, `shadowOpacity` 0.66) sobre un SVG (forma alfa compleja) SIN
-`shadowPath`. En iOS una sombra sin `shadowPath` se RECALCULA (pase offscreen del
-alpha-mask) cada frame que la capa se mueve → el scroll la mueve cada frame. Las no
-seleccionadas tenían `shadowOpacity` 0 → iOS omite la sombra → fluidas.
+**Fix 1 — sombra:** el glifo seleccionado tenía `shadowOpacity: 0.66` sin `shadowPath`
+sobre un SVG → iOS recalcula la sombra alpha-mask CADA frame de scroll → microlag.
+Fix: reemplazar sombra por halo de `RadialGradient` Svg cuya opacidad anima en el UI thread.
 
-Fix: reemplazar la sombra por una HALO de degradado radial ESTÁTICA (`Svg` +
-`RadialGradient` en el color del tile, detrás del glifo) cuya OPACIDAD anima en el
-UI thread vía `useAnimatedStyle` desde el `glow` SharedValue (mapea 0→1→0.66
-directo). La opacidad compone en GPU sin pase offscreen → sin costo por frame; y se
-ve también en Android (shadow* es solo iOS). NO usar `shouldRasterizeIOS`
-(re-rasteriza cada frame de la animación de ~1s + borroso en retina; ya documentado
-insuficiente arriba).
+**Fix 2 — shouldRasterizeIOS nested (insuficiente):** se agregó `shouldRasterizeIOS` al
+Pressable + a los Animated.View internos (halo y glifo). El anidamiento creaba 3 texturas
+GPU separadas por tile → triple pasada de composición durante deceleration → drop de frames.
 
-`CarouselTile` DEBE estar memoizada (`React.memo`): si no, cada tick de un slider
-re-renderea las ~44 tiles (cada una un SVG + gesto Pan), agravando este microlag y
-el lag de sliders. Su `onToggle` debe ser un callback ESTABLE del padre (no un
-`onPress` inline nuevo por render, que rompe el memo).
+**Fix 3 — shouldRasterizeIOS solo en Pressable (insuficiente):** se quitó de halo y glifo,
+dejándolo solo en el Pressable. Mejor, pero persistía.
+
+**Fix 4 — CAUSA REAL → quitar shouldRasterizeIOS totalmente:**
+
+Reanimated evalúa `haloStyle`/`glyphStyle`/`titleStyle` cada frame desde su worklet loop
+(incluso con valores estables como glow=0.66, scale=1.1). Cada evaluación llama
+`setNativeProps` en los sublayers del Pressable. En iOS, cualquier `setNativeProps`
+sobre un sublayer de un CALayer con `shouldRasterize=true` **invalida el bitmap cacheado →
+re-rasteriza ese frame → SVG RadialGradient + geometría = caro**.
+
+**El fix correcto:** quitar `shouldRasterizeIOS` del Pressable (mantener
+`renderToHardwareTextureAndroid` que no tiene este problema en Android). Sin cache de
+rasterización, los `setNativeProps` de Reanimated son updates normales de CALayer,
+manejados por el GPU sin overhead de cache-invalidation.
+
+**Regla:** NO usar `shouldRasterizeIOS` en ningún view que contenga (o esté dentro de)
+`useAnimatedStyle` views — Reanimated invalida el cache en cada evaluación de worklet,
+incluso para valores estables. Usar `renderToHardwareTextureAndroid` solo en Android.
 
 ## No tocar: layout animations, reorder del DOM
 

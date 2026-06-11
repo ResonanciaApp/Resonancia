@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -19,36 +19,50 @@ type Props = {
 };
 
 /**
- * Slider horizontal (0–1) que corre íntegramente en el UI thread mediante
- * Gesture.Pan() + useSharedValue. No hay lag ni microlag de JS thread.
+ * Slider horizontal (0–1) sin rebote.
  *
- * Anti-rebote: comparamos el prop `value` con `lastEmit.value` en el useEffect.
- * Durante el arrastre, el padre refleja exactamente lo que emitimos → la
- * diferencia es ~0 y el efecto no toca fraction. Solo si un agente externo
- * (p. ej. "restablecer") cambia el valor a algo distinto de lo que emitimos,
- * el efecto sincroniza el thumb. Sin flags de hilo ni races posibles.
+ * Anti-rebote: `lastEmitRef` es un useRef JS-puro (no SharedValue). Se
+ * actualiza en `emit` (hilo JS) ANTES de llamar a `onChange`, así que cuando
+ * React re-renderiza con el nuevo `value` prop y el useEffect compara, el ref
+ * ya vale exactamente lo que acabamos de emitir → diff = 0 → skip.
+ *
+ * Un SharedValue leído en useEffect sufre una ventana de inconsistencia
+ * cross-thread (el hilo UI puede haber avanzado más que la copia JS), lo que
+ * produce el rebote. El useRef no tiene ese problema porque vive sólo en JS.
+ *
+ * `lastEmitSV` sigue siendo un SharedValue sólo para el throttle de onUpdate
+ * (comparación dentro del worklet, en el hilo UI).
  */
 export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   const fraction = useSharedValue(value);
   const trackWidth = useSharedValue(1);
-  const lastEmit = useSharedValue(value);
 
-  // Sincroniza cambios EXTERNOS al thumb. Durante el arrastre, `value` es el
-  // eco de lo que acabamos de emitir → lastEmit.value ≈ value → skip.
-  // Un reset externo (p. ej. botón "restablecer") produce value ≠ lastEmit →
-  // se aplica.
-  useEffect(() => {
-    if (Math.abs(value - lastEmit.value) > 0.001) {
-      fraction.value = value;
-      lastEmit.value = value;
-    }
-  }, [value, fraction, lastEmit]);
+  // UI-thread throttle: evitar runOnJS excesivos durante el arrastre
+  const lastEmitSV = useSharedValue(value);
+  // JS-thread echo-guard: previene que useEffect sincronice el thumb con sus
+  // propios ecos. DEBE ser useRef (JS-puro) — un SharedValue aquí introduce
+  // la race cross-thread que causaba el rebote.
+  const lastEmitRef = useRef(value);
 
-  const onChangeRef = React.useRef(onChange);
+  const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+
   const emit = React.useCallback((v: number) => {
+    // Actualizar ANTES de onChange para que cuando React re-renderice con el
+    // nuevo value, el useEffect vea lastEmitRef.current === value → skip.
+    lastEmitRef.current = v;
     onChangeRef.current(v);
   }, []);
+
+  // Sincroniza el thumb sólo cuando el padre cambia el valor externamente
+  // (p. ej. "restablecer"). Durante el arrastre, value === lastEmitRef.current
+  // → diff ≈ 0 → skip. Sin races posibles porque todo corre en el hilo JS.
+  useEffect(() => {
+    if (Math.abs(value - lastEmitRef.current) > 0.001) {
+      fraction.value = value;
+      lastEmitRef.current = value;
+    }
+  }, [value, fraction]);
 
   const gesture = React.useMemo(
     () =>
@@ -58,25 +72,28 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
           const raw = (e.x - TRACK_PAD) / trackWidth.value;
           const f = Math.min(1, Math.max(0, raw));
           fraction.value = f;
-          lastEmit.value = f;
+          lastEmitSV.value = f;
           runOnJS(emit)(f);
         })
         .onUpdate((e) => {
           const raw = (e.x - TRACK_PAD) / trackWidth.value;
           const f = Math.min(1, Math.max(0, raw));
           fraction.value = f;
-          if (Math.abs(f - lastEmit.value) >= EMIT_EPS) {
-            lastEmit.value = f;
+          if (Math.abs(f - lastEmitSV.value) >= EMIT_EPS) {
+            lastEmitSV.value = f;
             runOnJS(emit)(f);
           }
         })
         .onFinalize(() => {
-          if (Math.abs(fraction.value - lastEmit.value) > 0.001) {
-            lastEmit.value = fraction.value;
-            runOnJS(emit)(fraction.value);
-          }
+          const f = fraction.value;
+          // Siempre emitir el valor final: garantiza que el padre quede en sync
+          // aunque onUpdate no haya llegado a emitir el último valor (por el
+          // throttle EMIT_EPS). El eco de este emit llegará con
+          // lastEmitRef.current === f → useEffect → skip. Sin rebote.
+          lastEmitSV.value = f;
+          runOnJS(emit)(f);
         }),
-    [emit, fraction, trackWidth, lastEmit],
+    [emit, fraction, trackWidth, lastEmitSV],
   );
 
   const fillStyle = useAnimatedStyle(() => ({
