@@ -65,6 +65,8 @@ export type GeoSettings = {
   ghostAmount: number;
   /** Partículas 0–1: puntos que emanan radialmente desde el centro del glifo. 0 = off. */
   particleAmount: number;
+  /** Vibración 0–1: micro-oscilaciones rápidas de translateX/Y (efecto frecuencia sonora). */
+  vibracionAmount: number;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */

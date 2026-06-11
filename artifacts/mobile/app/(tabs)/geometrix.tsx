@@ -196,6 +196,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     threeDAmount: 0,
     ghostAmount: 0,
     particleAmount: 0,
+    vibracionAmount: 0,
   };
 }
 
@@ -540,6 +541,8 @@ function GeometryLayer({
   const tiltYSV = useSharedValue(0);
   // Fantasma: fase 0→1 (bounce) para pulsar opacidad/offset de los duplicados.
   const ghostPhaseSV = useSharedValue(0);
+  const vibXSV = useSharedValue(0);
+  const vibYSV = useSharedValue(0);
   // Osciladores de distorsión (fase 0↔1; punto neutro 0.5). Onda → cizalla,
   // Warp → squash & stretch. El aStyle los mapea a la deformación final.
   const waveSV = useSharedValue(0.5);
@@ -585,6 +588,7 @@ function GeometryLayer({
     threeDAmount,
     ghostAmount,
     particleAmount,
+    vibracionAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -600,6 +604,7 @@ function GeometryLayer({
   const safe3D = Number.isFinite(threeDAmount) ? clamp01(threeDAmount ?? 0) : 0;
   const safeGhost = Number.isFinite(ghostAmount) ? clamp01(ghostAmount ?? 0) : 0;
   const safeParticles = Number.isFinite(particleAmount) ? clamp01(particleAmount ?? 0) : 0;
+  const safeVib = Number.isFinite(vibracionAmount) ? clamp01(vibracionAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -728,6 +733,30 @@ function GeometryLayer({
       ghostPhaseSV.value = withTiming(0, { duration: 400 });
     }
   }, [ghostOn, motion, ghostPhaseSV, index]);
+
+  // Vibración: dos osciladores a frecuencias ligeramente distintas y desfasados
+  // entre sí. La combinación crea un camino 2D tipo Lissajous que nunca se repite
+  // exactamente → se siente como vibración orgánica, no mecánica.
+  // X: semiperíodo 45 ms (~11 Hz)  |  Y: 37 ms (~13.5 Hz), offset 11 ms.
+  const vibOn = safeVib > 0 && motion;
+  useEffect(() => {
+    if (vibOn) {
+      vibXSV.value = withRepeat(
+        withTiming(1, { duration: 45, easing: Easing.linear }),
+        -1,
+        true,
+      );
+      vibYSV.value = withDelay(
+        11,
+        withRepeat(withTiming(1, { duration: 37, easing: Easing.linear }), -1, true),
+      );
+    } else {
+      cancelAnimation(vibXSV);
+      cancelAnimation(vibYSV);
+      vibXSV.value = withTiming(0, { duration: 120 });
+      vibYSV.value = withTiming(0, { duration: 120 });
+    }
+  }, [vibOn, vibXSV, vibYSV]);
 
   // Sentido del giro: derecha (horario, +1) o izquierda (antihorario, -1).
   // Los toggles son excluyentes; si ambos quedaran apagados no hay giro.
@@ -859,6 +888,19 @@ function GeometryLayer({
     };
   });
 
+  // Vibración: translateX/Y oscilantes. El worklet mapea SVs (−1..1) × amplitud.
+  // Amplitud máx = 2.8 px (sutil incluso al 100%). Se aplica en un wrapper
+  // Animated.View aparte para no contaminar el worklet principal (aStyle).
+  const vibAStyle = useAnimatedStyle(() => {
+    const amp = safeVib * 2.8;
+    return {
+      transform: [
+        { translateX: vibXSV.value * amp },
+        { translateY: vibYSV.value * amp },
+      ],
+    };
+  });
+
   // Glow efectivo: el propio de la capa se suma al general (panel maestro),
   // acotado a 0–1. Halo aditivo detrás del trazo (copias más anchas y tenues).
   const safeGeoGlow = Number.isFinite(geoGlow) ? Math.max(0, Math.min(1, geoGlow)) : 0;
@@ -867,6 +909,8 @@ function GeometryLayer({
 
   return (
     <Animated.View style={[styles.layer, aStyle]} pointerEvents="none">
+      {/* Vibración: micro-oscilaciones rápidas de todo el contenido de la capa. */}
+      <Animated.View style={[styles.layer, vibAStyle]} pointerEvents="none">
       {/* Halo: aura radial suave detrás de todo. */}
       {safeHalo > 0 && (
         <View style={styles.layer} pointerEvents="none">
@@ -1006,6 +1050,7 @@ function GeometryLayer({
           liveScaleSV={liveScaleForGlyph}
         />
       </Animated.View>
+      </Animated.View>{/* vibAStyle wrapper */}
     </Animated.View>
   );
 }
@@ -4947,8 +4992,8 @@ export default function GeometrixScreen() {
             {/* ── Energía ───────────────────────────────────────────────── */}
             <SettingsSection
               title="Energía"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
@@ -4979,6 +5024,15 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={g0?.expansionAmount ?? 0}
                       onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "expansionAmount", v))}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Vibración</Text>
+                    </View>
+                    <VolumeSlider
+                      value={g0?.vibracionAmount ?? 0}
+                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "vibracionAmount", v))}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
@@ -5603,8 +5657,8 @@ export default function GeometrixScreen() {
                   {/* ── Energía ───────────────────────────────────────────── */}
                   <SettingsSection
                     title="Energía"
-                    isModified={isSectionModified(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"])}
-                    onReset={() => resetSection(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount"])}
+                    isModified={isSectionModified(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
+                    onReset={() => resetSection(iid, ["fadeLoopAmount", "breatheAmount", "expansionAmount", "vibracionAmount"])}
                     onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
                   >
                     <View style={styles.fieldRow}>
@@ -5631,6 +5685,15 @@ export default function GeometrixScreen() {
                     <VolumeSlider
                       value={s.expansionAmount ?? 0}
                       onChange={(v) => updateSetting(iid, "expansionAmount", v)}
+                      color="#FFFFFF"
+                      trackColor="rgba(255,255,255,0.12)"
+                    />
+                    <View style={styles.fieldRow}>
+                      <Text style={styles.fieldLabel}>Vibración</Text>
+                    </View>
+                    <VolumeSlider
+                      value={s.vibracionAmount ?? 0}
+                      onChange={(v) => updateSetting(iid, "vibracionAmount", v)}
                       color="#FFFFFF"
                       trackColor="rgba(255,255,255,0.12)"
                     />
