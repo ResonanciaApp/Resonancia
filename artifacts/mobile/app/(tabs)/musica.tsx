@@ -542,13 +542,7 @@ export default function MiMusicaScreen() {
     <View style={styles.root}>
       {/* ── Capa de fondo (gradiente + dim) — completamente aislada del contenido ── */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <LinearGradient
-          colors={themeGradient}
-          locations={[0, 0.4, 1]}
-          start={{ x: 0.1, y: 0 }}
-          end={{ x: 0.9, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#080B1A" }]} />
         {bgDim > 0.01 && (
           <View
             style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
@@ -762,7 +756,7 @@ export default function MiMusicaScreen() {
 const styles = StyleSheet.create({
   root:     { flex: 1 },
   inner:    { flex: 1 },
-  topPanel: {},
+  topPanel: { backgroundColor: "#080B1A" },
 
   header:    { paddingHorizontal: 15, marginBottom: 0 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
@@ -842,7 +836,7 @@ const styles = StyleSheet.create({
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
   scroll:        { flex: 1 },
-  scrollContent: { paddingHorizontal: 9, paddingTop: 0 },
+  scrollContent: { paddingHorizontal: 9, paddingTop: 5 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 11 },
