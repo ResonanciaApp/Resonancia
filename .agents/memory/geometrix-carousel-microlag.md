@@ -68,6 +68,32 @@ anula el `React.memo` y vuelve el microlag. Las props de `CanvasLayer` deben
 seguir siendo SharedValues (refs), primitivos o el settings estable — nada
 mutado in-place (rompería el shallow-compare del memo).
 
+## Microlag al SCROLLEAR con cards SELECCIONADAS = sombra de capa iOS por frame
+
+Síntoma: al deslizar el carrusel mientras hay geometrías seleccionadas, microlag
+que se SUAVIZA al llegar a las tiles NO seleccionadas. El scroll handler es 100%
+hilo UI (sin `runOnJS`) → cero renders de JS durante el scroll; la ÚNICA diferencia
+entre una tile seleccionada y una no seleccionada es la sombra del glifo.
+
+Causa: el glifo seleccionado tenía una sombra de capa iOS (`shadowColor`,
+`shadowRadius`, `shadowOpacity` 0.66) sobre un SVG (forma alfa compleja) SIN
+`shadowPath`. En iOS una sombra sin `shadowPath` se RECALCULA (pase offscreen del
+alpha-mask) cada frame que la capa se mueve → el scroll la mueve cada frame. Las no
+seleccionadas tenían `shadowOpacity` 0 → iOS omite la sombra → fluidas.
+
+Fix: reemplazar la sombra por una HALO de degradado radial ESTÁTICA (`Svg` +
+`RadialGradient` en el color del tile, detrás del glifo) cuya OPACIDAD anima en el
+UI thread vía `useAnimatedStyle` desde el `glow` SharedValue (mapea 0→1→0.66
+directo). La opacidad compone en GPU sin pase offscreen → sin costo por frame; y se
+ve también en Android (shadow* es solo iOS). NO usar `shouldRasterizeIOS`
+(re-rasteriza cada frame de la animación de ~1s + borroso en retina; ya documentado
+insuficiente arriba).
+
+`CarouselTile` DEBE estar memoizada (`React.memo`): si no, cada tick de un slider
+re-renderea las ~44 tiles (cada una un SVG + gesto Pan), agravando este microlag y
+el lag de sliders. Su `onToggle` debe ser un callback ESTABLE del padre (no un
+`onPress` inline nuevo por render, que rompe el memo).
+
 ## No tocar: layout animations, reorder del DOM
 
 Cualquier cambio que reintroduzca `LinearTransition`, reorder del array `active` en el momento del

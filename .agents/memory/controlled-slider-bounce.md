@@ -43,7 +43,14 @@ posición → salto visible al soltar.
    `fraction.value !== lastEmit.value`) ANTES de `runOnJS(endDrag)` → por FIFO el
    prop `value` iguala al thumb al limpiar el flag → guard de epsilon no-opea →
    sin rebote. Caveat aceptable: drags rápidos (~0.016/frame) superan el gate y
-   emiten casi por frame, pero con `React.memo` en las capas eso es barato.
+   emiten casi por frame; para que eso sea barato NO basta `React.memo` en las
+   capas del lienzo — el carrusel de ~44 tiles TAMBIÉN debe estar memoizado (con
+   `onToggle` estable, no `onPress` inline), o cada tick re-renderea las 44 tiles
+   (SVG + gesto Pan) y el slider se SIENTE con lag/rebote. Ese "rebote" es
+   saturación del hilo JS (eco con lag del prop `value`), no el thumb (que es UI
+   thread y va fluido). React 18/19 ya batea los N `setSettings` del panel general
+   en UN render, así que colapsar el forEach no ayuda; lo caro es el render del
+   root + reconciliar capas/tiles.
 
 **Why:** el padre re-renderea ~6500 líneas (geometrix) por tick, así que el hilo
 JS va por detrás del UI; el orden causal del flag importa, y un gesto re-armado a

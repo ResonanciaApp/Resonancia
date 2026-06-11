@@ -1328,7 +1328,7 @@ type CarouselTileProps = {
   isSelected: boolean;
   isActivating: boolean;
   color: string;
-  onPress: () => void;
+  onToggle: (id: string) => void;
   // Reordenamiento por arrastre (long-press + drag).
   draggable: boolean;
   isDragging: boolean;
@@ -1357,14 +1357,14 @@ type CarouselTileProps = {
 // estilo "Aurora": pulso de escala + resplandor del color de la geometría. El
 // glide a su posición lo resuelve solo (modelo FLIP): deriva su slot de orderSV
 // y se posiciona con translateX; el deslizamiento al cambiar de slot es slideOffset.
-function CarouselTile({
+function CarouselTileInner({
   id,
   name,
   tileW,
   isSelected,
   isActivating,
   color,
-  onPress,
+  onToggle,
   draggable,
   isDragging,
   itemW,
@@ -1403,10 +1403,17 @@ function CarouselTile({
     }
   }, [isActivating, isSelected, scale, glow]);
 
+  const haloGradId = React.useId().replace(/:/g, "") + "-halo";
   const glyphStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
-    shadowOpacity: glow.value,
   }));
+  // Halo: opacidad GPU (sin pase offscreen) en lugar de una sombra de capa iOS.
+  // Una shadow* sin shadowPath se recalcula CADA frame que la vista se mueve (el
+  // scroll del carrusel) → microlag SOLO en las tiles con sombra (las
+  // seleccionadas tenían shadowOpacity 0.66; las demás 0 → fluidas). Un degradado
+  // radial ESTÁTICO cuya opacidad anima en el UI thread no tiene ese costo (y se
+  // ve también en Android, donde shadow* no aplica).
+  const haloStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
 
   // Título de la geometría sobre la card: aparece con fade-in al unísono de la
   // selección (activación) y se desvanece 0,15 s después de que la geometría se
@@ -1743,7 +1750,7 @@ function CarouselTile({
       </Animated.Text>
       <GestureDetector gesture={dragGesture}>
         <Pressable
-          onPress={onPress}
+          onPress={() => onToggle(id)}
           style={[
             styles.tile,
             { width: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
@@ -1752,15 +1759,26 @@ function CarouselTile({
         >
           <View style={styles.tileGlyph}>
             <Animated.View
-              style={[
-                glyphStyle,
-                {
-                  shadowColor: color,
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowRadius: 11,
-                },
-              ]}
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, styles.tileHaloWrap, haloStyle]}
             >
+              <Svg width={tileW * 0.9} height={tileW * 0.9}>
+                <Defs>
+                  <RadialGradient id={haloGradId} cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor={color} stopOpacity={0.5} />
+                    <Stop offset="55%" stopColor={color} stopOpacity={0.18} />
+                    <Stop offset="100%" stopColor={color} stopOpacity={0} />
+                  </RadialGradient>
+                </Defs>
+                <Circle
+                  cx={(tileW * 0.9) / 2}
+                  cy={(tileW * 0.9) / 2}
+                  r={(tileW * 0.9) / 2}
+                  fill={`url(#${haloGradId})`}
+                />
+              </Svg>
+            </Animated.View>
+            <Animated.View style={glyphStyle}>
               <SacredGlyph
                 id={baseOf(id)}
                 color={isSelected ? color : "#7A8FA8"}
@@ -1774,6 +1792,13 @@ function CarouselTile({
     </Animated.View>
   );
 }
+
+// Memoizada: al arrastrar un slider o al seleccionar una geometría, el root
+// (~6500 líneas) se re-renderiza, pero cada tile solo se reconcilia si SUS props
+// cambian. Por eso `onToggle` es un callback ESTABLE del padre (antes era un
+// `onPress` inline nuevo por render → rompía el memo y re-renderizaba las ~44
+// tiles, con su SVG + gesto, en CADA tick del slider).
+const CarouselTile = React.memo(CarouselTileInner);
 
 // Icono "sliders" (ajustes generales) pintado con el degradado dorado del
 // logo Cubo 3, en vez de un color plano. react-native-svg permite stroke con
@@ -3803,7 +3828,7 @@ export default function GeometrixScreen() {
                   isSelected={selected}
                   isActivating={activating}
                   color={getSettings(gid).color}
-                  onPress={() => toggleGeometry(gid)}
+                  onToggle={toggleGeometry}
                   draggable={selected && !activating}
                   isDragging={draggingId === gid}
                   itemW={tileItemW}
@@ -6009,6 +6034,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   tileGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
+  tileHaloWrap: { alignItems: "center", justifyContent: "center" },
   tileLabel: { fontSize: 11, fontWeight: "600", textAlign: "center", paddingHorizontal: 4 },
 
   divider: {
