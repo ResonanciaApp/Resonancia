@@ -6150,7 +6150,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 0,
-    paddingLeft: 3,
+    paddingLeft: 20,
     paddingRight: 0,
     // El carrusel (styles.grid) sube con marginTop:-25 y solapa la mitad inferior
     // del header → tapaba el botón de audio (había que tocar por encima del icono
@@ -6252,6 +6252,7 @@ const styles = StyleSheet.create({
   catFilterRow: {
     flexDirection: "row",
     gap: 8,
+    paddingLeft: 20,
     paddingRight: 8,
     marginTop: 17,
     marginBottom: 3,
@@ -6277,7 +6278,7 @@ const styles = StyleSheet.create({
     color: colors.foreground,
   },
   grid: { flexGrow: 0 },
-  gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 0, paddingRight: 20 },
+  gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 20, paddingRight: 20 },
   // Modelo FLIP: contenedor relativo de altura/ancho fijos (dados inline). Las tiles
   // se posicionan en absoluto y se ubican SOLO con translateX según su slot (orderSV)
   // → el árbol nunca se reordena, no hay reflow de Fabric y el espaciado lo da itemW.
