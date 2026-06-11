@@ -10,6 +10,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  InteractionManager,
   Modal,
   Platform,
   Pressable,
@@ -2118,6 +2119,20 @@ export default function GeometrixScreen() {
     const dups = active.filter((id) => id.includes("::")).sort();
     return [...bases, ...dups];
   }, [active]);
+  // Diferir el montaje de las tiles del carrusel hasta después de que la transición
+  // de navegación termine. Cada CarouselTileInner registra ~16 objetos Reanimated
+  // (SharedValues, animated styles, reactions, gestures). Con 45 geometrías son
+  // ~720 registraciones sincrónicas que bloquean el hilo JS y evitan que useFocusEffect
+  // dispare requestHide() a tiempo, haciendo que la animación de fold del menú
+  // no se vea. InteractionManager espera a que todas las animaciones activas (incluida
+  // la transición de tabs) completen antes de montar las tiles.
+  const [carouselMounted, setCarouselMounted] = useState(false);
+  useEffect(() => {
+    const task = InteractionManager.runAfterInteractions(() => {
+      setCarouselMounted(true);
+    });
+    return () => task.cancel();
+  }, []);
   // Fila horizontal: 3 tiles completas + asomo de la 4ta para invitar al scroll.
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
   const [settings, setSettings] = useState<Record<string, GeoSettings>>({});
@@ -3774,7 +3789,7 @@ export default function GeometrixScreen() {
               { width: domOrder.length * tileItemW, height: tileW },
             ]}
           >
-            {domOrder.map((gid: string) => {
+            {carouselMounted && domOrder.map((gid: string) => {
               const g = getGeometry(baseOf(gid));
               if (!g) return null;
               const selected = active.includes(gid);
