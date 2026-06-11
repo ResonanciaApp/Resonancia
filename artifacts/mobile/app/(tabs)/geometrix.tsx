@@ -4117,6 +4117,12 @@ export default function GeometrixScreen() {
               />
             )}
           </View>
+          {/* Caja de clip independiente del transform del stage.
+              - marginHorizontal:-20 → extiende hasta el borde de pantalla (cancela el paddingH del content)
+              - overflow:hidden sin translateY → el clip superior cae exactamente en la divisora
+              - marginBottom negativo → extiende el clip hacia abajo, detrás de los thumbnails,
+                y corta ~10 px antes de llegar a ellos */}
+          <View style={[styles.stageClip, { marginBottom: -(10 + Math.round(bottomPb / 2)) }]}>
           {/* Escenario: centra la animación en el espacio del lienzo. */}
           <View
             style={styles.stage}
@@ -4281,6 +4287,7 @@ export default function GeometrixScreen() {
           )}
 
           </View>
+          </View>{/* /stageClip */}
 
           {/* Controles lado izquierdo: Atrás (deshacer) + Hold mode + actualizar.
               Contenedor siempre montado (box-none) para que "Atrás" se vea aun
@@ -6460,13 +6467,24 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
   },
-  stage: {
+  // Caja de clip sin transform: los límites de clip coinciden exactamente
+  // con la divisora (arriba), el borde de pantalla (lados) y los thumbnails-10px (abajo).
+  // El marginHorizontal:-20 cancela el paddingHorizontal:20 de content.
+  // El marginBottom negativo es dinámico (calculado en JSX con bottomPb).
+  stageClip: {
     flex: 1,
     alignSelf: "stretch",
+    marginHorizontal: -20,
+    overflow: "hidden",
+  },
+  stage: {
+    flex: 1,
+    // marginHorizontal:20 cancela el -20 del stageClip → el stage mide el ancho del content
+    // para que canvasSide se calcule igual que antes.
+    marginHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
     transform: [{ translateY: -18 }],
-    overflow: "hidden",
   },
   canvas: {
     alignItems: "center",
