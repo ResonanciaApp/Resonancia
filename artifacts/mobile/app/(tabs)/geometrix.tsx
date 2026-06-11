@@ -6266,8 +6266,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(190,150,80,0.18)",
   },
   catChipOn: {
-    backgroundColor: "rgba(190,150,80,0.16)",
-    borderColor: colors.primary,
+    backgroundColor: "#BE9650",
+    borderColor: "#BE9650",
   },
   catChipText: {
     fontSize: 12,
@@ -6275,7 +6275,8 @@ const styles = StyleSheet.create({
     color: colors.mutedForeground,
   },
   catChipTextOn: {
-    color: colors.foreground,
+    color: "#0B0F14",
+    fontWeight: "700",
   },
   grid: { flexGrow: 0 },
   gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 10, paddingRight: 20 },
