@@ -67,7 +67,7 @@ import Svg, {
 } from "react-native-svg";
 
 import { GeometrixPatternBg } from "@/components/GeometrixPatternBg";
-import { SacredGlyph } from "@/components/SacredGlyph";
+import { SacredGlyph, EXTENT, GLYPH_EXTENTS } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import {
   playGeometrixIntroOnce,
@@ -3203,13 +3203,32 @@ export default function GeometrixScreen() {
       const s = getSettings(id);
       targets.push({ offsetX: s.offsetX ?? 0, offsetY: s.offsetY ?? 0 });
     });
-    // Puntos de cuarto (25 % y 75 %) + guías del usuario: un solo eje cada uno.
+    // Snaps de borde: cuando se arrastra una geometría, ancla su borde al centro
+    // del lienzo y al límite del lienzo (funciona para CUALQUIER tipo y escala).
     if (canvasSide > 0) {
-      const q = canvasSide / 4;
-      targets.push({ offsetX: -q, offsetY: null }); // 25 % horizontal
-      targets.push({ offsetX:  q, offsetY: null }); // 75 % horizontal
-      targets.push({ offsetX: null, offsetY: -q }); // 25 % vertical
-      targets.push({ offsetX: null, offsetY:  q }); // 75 % vertical
+      if (pinchTargetId) {
+        const s = getSettings(pinchTargetId);
+        const geoId = baseOf(pinchTargetId) as GeometryId;
+        const safeScale = Number.isFinite(s.scale) ? (s.scale as number) : 1;
+        const safeZoom = Number.isFinite(s.zoom) && (s.zoom as number) > 0 ? (s.zoom as number) : 1;
+        const mag = (0.4 + safeScale * 0.6) * safeZoom;
+        const effectiveSize = canvasSide * 0.96 * mag;
+        const extents = GLYPH_EXTENTS[geoId];
+        const baseR = EXTENT[geoId] ?? 40;
+        const hwX = (extents?.rx ?? baseR) * effectiveSize / 100;
+        const hwY = (extents?.ry ?? baseR) * effectiveSize / 100;
+        const half = canvasSide / 2;
+        // Borde al centro del lienzo (tiling sin hueco: 4 en grilla 2×2)
+        targets.push({ offsetX: -hwX, offsetY: null });
+        targets.push({ offsetX:  hwX, offsetY: null });
+        targets.push({ offsetX: null, offsetY: -hwY });
+        targets.push({ offsetX: null, offsetY:  hwY });
+        // Borde al límite del lienzo
+        targets.push({ offsetX: -(half - hwX), offsetY: null });
+        targets.push({ offsetX:   half - hwX,  offsetY: null });
+        targets.push({ offsetX: null, offsetY: -(half - hwY) });
+        targets.push({ offsetX: null, offsetY:   half - hwY  });
+      }
       guides.forEach((g) => {
         const off = canvasSide * (g.pct / 100 - 0.5);
         if (g.orientation === "h") {
