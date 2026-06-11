@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
-  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
@@ -23,44 +22,27 @@ type Props = {
  * Slider horizontal (0–1) que corre íntegramente en el UI thread mediante
  * Gesture.Pan() + useSharedValue. No hay lag ni microlag de JS thread.
  *
- * Anti-rebote: `isDragging` es un SharedValue (UI thread), no un React.ref
- * (JS thread). La reacción que sincroniza el prop externo se ejecuta en el
- * mismo hilo que el gesto, por lo que no hay race condition entre el worklet
- * que pone isDragging=1 y el useEffect del prop que llega en un tick posterior.
+ * Anti-rebote: comparamos el prop `value` con `lastEmit.value` en el useEffect.
+ * Durante el arrastre, el padre refleja exactamente lo que emitimos → la
+ * diferencia es ~0 y el efecto no toca fraction. Solo si un agente externo
+ * (p. ej. "restablecer") cambia el valor a algo distinto de lo que emitimos,
+ * el efecto sincroniza el thumb. Sin flags de hilo ni races posibles.
  */
 export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
   const fraction = useSharedValue(value);
   const trackWidth = useSharedValue(1);
   const lastEmit = useSharedValue(value);
 
-  // UI-thread drag flag. Se pone a 1 en onBegin (worklet) ANTES de que se
-  // encole ningún runOnJS(emit) → la reacción abajo nunca ve un cambio externo
-  // mientras se arrastra. Se limpia a 0 en onFinalize (worklet).
-  const isDragging = useSharedValue(0);
-
-  // Espejo del prop `value` en el UI thread para que la reacción pueda
-  // comparar sin cruzar al JS thread.
-  const externalFraction = useSharedValue(value);
+  // Sincroniza cambios EXTERNOS al thumb. Durante el arrastre, `value` es el
+  // eco de lo que acabamos de emitir → lastEmit.value ≈ value → skip.
+  // Un reset externo (p. ej. botón "restablecer") produce value ≠ lastEmit →
+  // se aplica.
   useEffect(() => {
-    externalFraction.value = value;
-  }, [value, externalFraction]);
-
-  // Sincroniza cambios externos (p. ej. botón "restablecer") SOLO cuando el
-  // usuario no está arrastrando. Corre en el UI thread → garantizado que lee
-  // el isDragging actualizado por el gesto en el mismo hilo.
-  useAnimatedReaction(
-    () => externalFraction.value,
-    (next, prev) => {
-      if (
-        isDragging.value === 0 &&
-        prev !== null &&
-        Math.abs(next - fraction.value) > 0.001
-      ) {
-        fraction.value = next;
-      }
-    },
-    [fraction, isDragging],
-  );
+    if (Math.abs(value - lastEmit.value) > 0.001) {
+      fraction.value = value;
+      lastEmit.value = value;
+    }
+  }, [value, fraction, lastEmit]);
 
   const onChangeRef = React.useRef(onChange);
   onChangeRef.current = onChange;
@@ -68,21 +50,11 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
     onChangeRef.current(v);
   }, []);
 
-  // Limpia el flag en el hilo JS, después de que todos los runOnJS(emit) de
-  // onUpdate hayan corrido (FIFO). Si se limpiara en el worklet (UI thread),
-  // quedaría a 0 ANTES de que las emisiones pendientes lleguen al JS thread;
-  // la reacción las procesaría con isDragging=0 y snapearía fraction.value
-  // a cada valor intermedio → bounce visible en releases rápidos.
-  const clearDragging = React.useCallback(() => {
-    isDragging.value = 0;
-  }, [isDragging]);
-
   const gesture = React.useMemo(
     () =>
       Gesture.Pan()
         .minDistance(0)
         .onBegin((e) => {
-          isDragging.value = 1; // worklet (UI thread) — inmediato, antes de cualquier runOnJS
           const raw = (e.x - TRACK_PAD) / trackWidth.value;
           const f = Math.min(1, Math.max(0, raw));
           fraction.value = f;
@@ -99,13 +71,12 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
           }
         })
         .onFinalize(() => {
-          if (fraction.value !== lastEmit.value) {
+          if (Math.abs(fraction.value - lastEmit.value) > 0.001) {
             lastEmit.value = fraction.value;
-            runOnJS(emit)(fraction.value); // encola ANTES que clearDragging (FIFO)
+            runOnJS(emit)(fraction.value);
           }
-          runOnJS(clearDragging)(); // FIFO: corre después de todos los emit pendientes
         }),
-    [emit, clearDragging, isDragging, fraction, trackWidth, lastEmit],
+    [emit, fraction, trackWidth, lastEmit],
   );
 
   const fillStyle = useAnimatedStyle(() => ({
