@@ -223,49 +223,44 @@ export default function HomeScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
+      {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 12 }]}>
+        <View style={styles.headerTopRow}>
+          <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
+            {photoUri ? (
+              <Image
+                source={{ uri: photoUri }}
+                style={styles.avatarSmall}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={styles.avatarFallback}>
+                <Feather name="user" size={15} color="#7A8FA8" />
+              </View>
+            )}
+          </Pressable>
+          <View style={styles.headerTabs}>
+            {NAV_TABS.map((tab) => (
+              <Pressable
+                key={tab.id}
+                onPress={() => router.push(`/category/${tab.id}` as never)}
+                style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.55 : 1 }]}
+              >
+                <Text style={styles.headerTabText}>{tab.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </View>
+
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── 1. INTENCIÓN ── */}
+        {/* ── 1. COLECCIONES ── */}
         <View style={styles.header}>
-          <View style={styles.headerTopRow}>
-            {/* Avatar — abre el drawer (reemplaza la hamburguesa) */}
-            <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
-              {photoUri ? (
-                <Image
-                  source={{ uri: photoUri }}
-                  style={styles.avatarSmall}
-                  resizeMode="cover"
-                />
-              ) : (
-                <View style={styles.avatarFallback}>
-                  <Feather name="user" size={15} color="#7A8FA8" />
-                </View>
-              )}
-            </Pressable>
-
-            {/* Tabs de navegación rápida: Ancestrales · Meditaciones · Música */}
-            <View style={styles.headerTabs}>
-              {NAV_TABS.map((tab) => (
-                <Pressable
-                  key={tab.id}
-                  onPress={() => router.push(`/category/${tab.id}` as never)}
-                  style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.55 : 1 }]}
-                >
-                  <Text style={styles.headerTabText}>{tab.label}</Text>
-                </Pressable>
-              ))}
-            </View>
-
-            {/* Fuego / racha — oculto temporalmente, re-habilitar quitando el comentario */}
-            {/* <NotificationBell /> */}
-          </View>
-
-          {/* Colecciones — 10 px debajo de la fila avatar + tabs */}
-          <View style={{ marginTop: 10 }}>
-            <View style={styles.coleccionGrid}>
+          <View style={styles.coleccionGrid}>
               {PLAYLISTS.map((pl) => (
                 <Pressable
                   key={pl.id}
@@ -281,7 +276,6 @@ export default function HomeScreen() {
                   </View>
                 </Pressable>
               ))}
-            </View>
           </View>
 
         </View>
@@ -444,6 +438,12 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  stickyHeader: {
+    paddingHorizontal: GRID_PAD,
+    paddingBottom: 10,
+    backgroundColor: "#0B0F14",
+    zIndex: 10,
+  },
   scroll: { flex: 1 },
 
   // Header
