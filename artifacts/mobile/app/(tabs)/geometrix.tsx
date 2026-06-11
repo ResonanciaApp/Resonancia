@@ -828,6 +828,15 @@ function GeometryLayer({
   // trabajo por frame) → visualmente idéntico al estático. Las miniaturas de la
   // galería NO pasan por aquí (llaman a SacredGlyph sin liveScaleSV) → estáticas.
   const liveScaleForGlyph = pinchScaleSV;
+  // Tamaño REAL al que se redibuja el SVG = tamaño base × magnificación
+  // confirmada. Debe declararse ANTES de los worklets que lo usan (ghostAStyle,
+  // expansionEcho, etc.) porque Reanimated captura los valores del closure en el
+  // momento en que se llama a useAnimatedStyle; si effectiveSize estuviera
+  // declarado después, el worklet capturaría undefined y los cálculos darían NaN.
+  const effectiveSize = size * committedMag;
+  // Trazo base de 1px real: el viewBox es 0–100, así que 1px = 100 / size.
+  const base1px = effectiveSize > 0 ? 100 / effectiveSize : 1;
+  const sw = base1px * (1 + safeThickness * 5);
   // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
   const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
   // Fantasma 1: desplazado +X −Y, pulsando en fase con ghostPhaseSV.
@@ -850,15 +859,6 @@ function GeometryLayer({
     };
   });
 
-  // Tamaño REAL al que se redibuja el SVG = tamaño base × magnificación
-  // confirmada. Al crecer el size, el SVG (vector) queda nítido a cualquier
-  // escala (sin pixelado por estiramiento de un transform).
-  const effectiveSize = size * committedMag;
-  // Trazo base de 1px real: el viewBox es 0–100, así que 1px = 100 / size.
-  // Se calcula sobre effectiveSize → el grosor VISUAL se mantiene constante
-  // aunque se amplíe (el trazo no engorda al hacer zoom).
-  const base1px = effectiveSize > 0 ? 100 / effectiveSize : 1;
-  const sw = base1px * (1 + safeThickness * 5);
   // Glow efectivo: el propio de la capa se suma al general (panel maestro),
   // acotado a 0–1. Halo aditivo detrás del trazo (copias más anchas y tenues).
   const safeGeoGlow = Number.isFinite(geoGlow) ? Math.max(0, Math.min(1, geoGlow)) : 0;

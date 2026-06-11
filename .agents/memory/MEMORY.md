@@ -50,6 +50,7 @@
 - [Geometrix live-rotation sync effect dep](geometrix-rotation-sync-effect.md) — el effect que sincroniza liveRot debe depender del escalar manualAngle, no de getSettings; el commit de zoom del pinch simultáneo lo pisaba ("gira y vuelve")
 - [Geometrix settings sheet](geometrix-settings-sheet.md) — preview deriva del alto MEDIDO del sheet (fijar alto = preview fijo); "modificado/restablecer" excluye transformaciones por gesto (TRANSFORM_KEYS) y compara settings fusionados
 - [Reanimated slider oscillator](reanimated-slider-oscillator.md) — loop start/stop deps deben ser boolean on/off (no la amplitud analógica) o cada tick del slider colapsa el barrido; amplitud vive en el worklet
+- [Reanimated closure capture order](reanimated-closure-capture-order.md) — variables usadas en worklets deben declararse ANTES de useAnimatedStyle o Reanimated captura undefined (Babel serializa el closure al llamar al hook)
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre directo (wrap > botón); sibling con margin negativo roba taps (zIndex); onda one-shot reposa en 1; glow = ring+shadow no disco
 - [Tab-slide image grid jank](tab-slide-image-jank.md) — grilla que anima al cambiar de tab: anima por prop (no key=remontaje) + expo-image cachePolicy memory-disk, o las imágenes cargan escalonadas
 - [Controlled slider bounce](controlled-slider-bounce.md) — slider Reanimated controlado + source-of-truth por gesto: guard del useEffect con flag (runOnJS/FIFO) + epsilon, o rebota al soltar
