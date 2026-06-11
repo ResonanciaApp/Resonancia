@@ -194,9 +194,6 @@ function defaultSettings(id: GeometryId): GeoSettings {
     ripple: 0,
     expansionAmount: 0,
     threeDAmount: 0,
-    ghostAmount: 0,
-    particleAmount: 0,
-    vibracionAmount: 0,
   };
 }
 
@@ -539,10 +536,6 @@ function GeometryLayerInner({
   // Perspectiva 3D: dos osciladores con períodos primos → Lissajous natural.
   const tiltXSV = useSharedValue(0);
   const tiltYSV = useSharedValue(0);
-  // Fantasma: fase 0→1 (bounce) para pulsar opacidad/offset de los duplicados.
-  const ghostPhaseSV = useSharedValue(0);
-  const vibXSV = useSharedValue(0);
-  const vibYSV = useSharedValue(0);
   // Osciladores de distorsión (fase 0↔1; punto neutro 0.5). Onda → cizalla,
   // Onda → cizalla oscilante.
   const waveSV = useSharedValue(0.5);
@@ -584,9 +577,6 @@ function GeometryLayerInner({
     ripple,
     expansionAmount,
     threeDAmount,
-    ghostAmount,
-    particleAmount,
-    vibracionAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -599,9 +589,6 @@ function GeometryLayerInner({
   const safeOnda = Number.isFinite(onda) ? clamp01(onda) : 0;
   const safeRipple = Number.isFinite(ripple) ? clamp01(ripple) : 0;
   const safe3D = Number.isFinite(threeDAmount) ? clamp01(threeDAmount ?? 0) : 0;
-  const safeGhost = Number.isFinite(ghostAmount) ? clamp01(ghostAmount ?? 0) : 0;
-  const safeParticles = Number.isFinite(particleAmount) ? clamp01(particleAmount ?? 0) : 0;
-  const safeVib = Number.isFinite(vibracionAmount) ? clamp01(vibracionAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -659,7 +646,6 @@ function GeometryLayerInner({
   // ENCENDER/APAGAR (deps booleanas) — mover el slider no lo reinicia.
   const ondaOn = safeOnda > 0;
   const threeDOn = safe3D > 0;
-  const ghostOn = safeGhost > 0;
   useEffect(() => {
     if (ondaOn && motion) {
       waveSV.value = withSequence(
@@ -699,46 +685,6 @@ function GeometryLayerInner({
       tiltYSV.value = withTiming(0.5, { duration: 500, easing: Easing.inOut(Easing.ease) });
     }
   }, [threeDOn, motion, tiltXSV, tiltYSV]);
-
-  // Fantasma: fase 0→1 (bounce, inOut(sin)) → opacidad y offset oscilan.
-  // La duración varía con index → capas distintas están desfasadas entre sí.
-  // Se congela junto con el movimiento general.
-  useEffect(() => {
-    if (ghostOn && motion) {
-      ghostPhaseSV.value = withRepeat(
-        withTiming(1, { duration: 2600 + index * 400, easing: Easing.inOut(Easing.sin) }),
-        -1,
-        true,
-      );
-    } else {
-      cancelAnimation(ghostPhaseSV);
-      ghostPhaseSV.value = withTiming(0, { duration: 400 });
-    }
-  }, [ghostOn, motion, ghostPhaseSV, index]);
-
-  // Vibración: dos osciladores a frecuencias ligeramente distintas y desfasados
-  // entre sí. La combinación crea un camino 2D tipo Lissajous que nunca se repite
-  // exactamente → se siente como vibración orgánica, no mecánica.
-  // X: semiperíodo 45 ms (~11 Hz)  |  Y: 37 ms (~13.5 Hz), offset 11 ms.
-  const vibOn = safeVib > 0 && motion;
-  useEffect(() => {
-    if (vibOn) {
-      vibXSV.value = withRepeat(
-        withTiming(1, { duration: 45, easing: Easing.linear }),
-        -1,
-        true,
-      );
-      vibYSV.value = withDelay(
-        11,
-        withRepeat(withTiming(1, { duration: 37, easing: Easing.linear }), -1, true),
-      );
-    } else {
-      cancelAnimation(vibXSV);
-      cancelAnimation(vibYSV);
-      vibXSV.value = withTiming(0, { duration: 120 });
-      vibYSV.value = withTiming(0, { duration: 120 });
-    }
-  }, [vibOn, vibXSV, vibYSV]);
 
   // Sentido del giro: derecha (horario, +1) o izquierda (antihorario, -1).
   // Los toggles son excluyentes; si ambos quedaran apagados no hay giro.
@@ -886,39 +832,6 @@ function GeometryLayerInner({
   const sw = base1px * (1 + safeThickness * 5);
   // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
   const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
-  // Fantasma 1: desplazado +X −Y, pulsando en fase con ghostPhaseSV.
-  // El offset es proporcional al tamaño efectivo del glifo.
-  const ghostAStyle1 = useAnimatedStyle(() => {
-    const ph = ghostPhaseSV.value; // 0..1
-    const off = effectiveSize * 0.065 * safeGhost;
-    return {
-      opacity: (0.07 + ph * 0.38) * safeGhost,
-      transform: [{ translateX: off }, { translateY: -off * 0.55 }],
-    };
-  });
-  // Fantasma 2: desplazado −X +Y, pulsando en contrafase (1 − ph).
-  const ghostAStyle2 = useAnimatedStyle(() => {
-    const ph = 1 - ghostPhaseSV.value; // contrafase
-    const off = effectiveSize * 0.065 * safeGhost;
-    return {
-      opacity: (0.05 + ph * 0.28) * safeGhost,
-      transform: [{ translateX: -off }, { translateY: off * 0.55 }],
-    };
-  });
-
-  // Vibración: translateX/Y oscilantes. El worklet mapea SVs (−1..1) × amplitud.
-  // Amplitud máx = 2.8 px (sutil incluso al 100%). Se aplica en un wrapper
-  // Animated.View aparte para no contaminar el worklet principal (aStyle).
-  const vibAStyle = useAnimatedStyle(() => {
-    const amp = safeVib * 2.8;
-    return {
-      transform: [
-        { translateX: vibXSV.value * amp },
-        { translateY: vibYSV.value * amp },
-      ],
-    };
-  });
-
   // Glow efectivo: el propio de la capa se suma al general (panel maestro),
   // acotado a 0–1. Halo aditivo detrás del trazo (copias más anchas y tenues).
   const safeGeoGlow = Number.isFinite(geoGlow) ? Math.max(0, Math.min(1, geoGlow)) : 0;
@@ -927,8 +840,6 @@ function GeometryLayerInner({
 
   return (
     <Animated.View style={[styles.layer, aStyle]} pointerEvents="none">
-      {/* Vibración: micro-oscilaciones rápidas de todo el contenido de la capa. */}
-      <Animated.View style={[styles.layer, vibAStyle]} pointerEvents="none">
       {/* Halo: aura radial suave detrás de todo. */}
       {safeHalo > 0 && (
         <View style={styles.layer} pointerEvents="none">
@@ -994,43 +905,6 @@ function GeometryLayerInner({
           </View>
         </>
       )}
-      {/* Partículas: puntos que emanan radialmente desde el centro. */}
-      {safeParticles > 0 && (
-        <ParticleField
-          size={effectiveSize}
-          color={dispColor}
-          amount={safeParticles}
-        />
-      )}
-      {/* Fantasma: duplicados desplazados en contrafase que simulan eco visual. */}
-      {safeGhost > 0 && (
-        <>
-          <Animated.View style={[styles.layer, ghostAStyle1]} pointerEvents="none">
-            <SacredGlyph
-              id={geo.id}
-              color={dispColor}
-              gradient={dispGrad}
-              size={effectiveSize}
-              strokeWidth={sw}
-              kaleidoscope={kaleidoscope}
-              kaleidSegments={kaleidSegments}
-              liveScaleSV={liveScaleForGlyph}
-            />
-          </Animated.View>
-          <Animated.View style={[styles.layer, ghostAStyle2]} pointerEvents="none">
-            <SacredGlyph
-              id={geo.id}
-              color={dispColor}
-              gradient={dispGrad}
-              size={effectiveSize}
-              strokeWidth={sw}
-              kaleidoscope={kaleidoscope}
-              kaleidSegments={kaleidSegments}
-              liveScaleSV={liveScaleForGlyph}
-            />
-          </Animated.View>
-        </>
-      )}
       {/* Expansión: eco del glifo que crece y se desvanece en bucle. */}
       {(expansionAmount ?? 0) > 0 && motion && (
         <ExpansionEcho
@@ -1068,7 +942,6 @@ function GeometryLayerInner({
           liveScaleSV={liveScaleForGlyph}
         />
       </Animated.View>
-      </Animated.View>{/* vibAStyle wrapper */}
     </Animated.View>
   );
 }
@@ -3259,9 +3132,6 @@ export default function GeometrixScreen() {
           ripple:          maybe(0.25, 0.1, 0.50),
           expansionAmount: maybe(0.25, 0.1, 0.55),
           threeDAmount:    maybe(0.20, 0.1, 0.45),
-          ghostAmount:     maybe(0.20, 0.1, 0.45),
-          particleAmount:  maybe(0.25, 0.1, 0.50),
-          vibracionAmount: maybe(0.20, 0.1, 0.40),
           kaleidoscope:    rnd() < 0.30,
           kaleidSegments:  pick([4, 6, 8, 12] as const),
           // Transformaciones de gesto: intactas
