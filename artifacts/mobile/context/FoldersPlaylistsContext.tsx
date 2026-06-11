@@ -34,6 +34,7 @@ interface FoldersPlaylistsCtx {
   isInFolder: (folderId: string, sessionId: string) => boolean;
   // Playlists
   createPlaylist: (name: string, initialSessionId?: string) => Playlist;
+  renamePlaylist: (playlistId: string, name: string) => void;
   addToPlaylist: (playlistId: string, sessionId: string) => void;
   removeFromPlaylist: (playlistId: string, sessionId: string) => void;
   deletePlaylist: (playlistId: string) => void;
@@ -142,6 +143,12 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     return pl;
   }, [updatePlaylists]);
 
+  const renamePlaylist = useCallback((playlistId: string, name: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) => p.id === playlistId ? { ...p, name: name.trim() } : p)
+    );
+  }, [updatePlaylists]);
+
   const addToPlaylist = useCallback((playlistId: string, sessionId: string) => {
     updatePlaylists((prev) =>
       prev.map((p) =>
@@ -183,6 +190,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         deleteFolder,
         isInFolder,
         createPlaylist,
+        renamePlaylist,
         addToPlaylist,
         removeFromPlaylist,
         deletePlaylist,

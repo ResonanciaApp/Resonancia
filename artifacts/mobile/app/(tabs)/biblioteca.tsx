@@ -30,6 +30,7 @@ import { PLAYLISTS, type Playlist } from "@/data/playlists";
 import { ARTISTS, type Artist } from "@/data/artists";
 import { GUIDES, type Guide } from "@/data/guides";
 import { SESSIONS, getSessionById } from "@/data/sessions";
+import { useFoldersPlaylists, type Playlist as UserPlaylist } from "@/context/FoldersPlaylistsContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -138,6 +139,22 @@ function PlaylistGrid({ pl, onPress }: { pl: Playlist; onPress: () => void }) {
   );
 }
 
+// ── Fila de playlist del usuario ─────────────────────────────────────────────
+function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+      <View style={styles.userPlCover}>
+        <Feather name="music" size={20} color={MUTED} />
+      </View>
+      <View style={styles.rowInfo}>
+        <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
+        <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
+      </View>
+      <Feather name="more-horizontal" size={18} color={MUTED} />
+    </Pressable>
+  );
+}
+
 // ── Resonador fila ───────────────────────────────────────────────────────────
 function ResonadorRow({ name, photo, role, onPress }: {
   name: string;
@@ -219,12 +236,75 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 }
 
 // ── Modal de Crear (+) ────────────────────────────────────────────────────────
-function CreateSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+// ── Modal de nombre de playlist ───────────────────────────────────────────────
+function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { playlists, createPlaylist } = useFoldersPlaylists();
+  const [name, setName] = useState("");
+  const inputRef = useRef<TextInput>(null);
+
+  const suggestedName = `Mi playlist n.° ${playlists.length + 1}`;
+
+  useEffect(() => {
+    if (visible) setName(suggestedName);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreate = () => {
+    const trimmed = name.trim() || suggestedName;
+    const pl = createPlaylist(trimmed);
+    onClose();
+    router.push(`/playlist/${pl.id}` as never);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      onRequestClose={onClose}
+      onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
+    >
+      <View style={styles.nameOverlay}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <View style={styles.nameCard}>
+          <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={TEXT} />
+          </Pressable>
+          <Text style={styles.nameCardTitle}>Ponle un nombre a tu playlist</Text>
+          <View style={styles.nameInputWrap}>
+            <TextInput
+              ref={inputRef}
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              selectTextOnFocus
+              returnKeyType="done"
+              onSubmitEditing={handleCreate}
+              placeholderTextColor={MUTED}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleCreate}
+          >
+            <Text style={styles.nameCreateBtnText}>Crear</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+// ── Hoja de crear ────────────────────────────────────────────────────────────
+function CreateSheet({ visible, onClose, onCreatePlaylist }: {
+  visible: boolean;
+  onClose: () => void;
+  onCreatePlaylist: () => void;
+}) {
   const ITEMS = [
-    { icon: "list" as const,     title: "Crear una Playlist",     sub: "Crea una playlist con sesiones" },
-    { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes" },
-    { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas" },
-    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlist" },
+    { icon: "list" as const,     title: "Crear una Playlist",     sub: "Crea una playlist con sesiones",        onPress: () => { onClose(); onCreatePlaylist(); } },
+    { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: onClose },
+    { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); router.push("/geometrix" as never); } },
+    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlist",                 onPress: onClose },
   ];
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -233,7 +313,7 @@ function CreateSheet({ visible, onClose }: { visible: boolean; onClose: () => vo
         <View style={styles.sheetHandle} />
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
         {ITEMS.map((it) => (
-          <Pressable key={it.title} style={({ pressed }) => [styles.sheetRow, { opacity: pressed ? 0.7 : 1 }]} onPress={onClose}>
+          <Pressable key={it.title} style={({ pressed }) => [styles.sheetRow, { opacity: pressed ? 0.7 : 1 }]} onPress={it.onPress}>
             <View style={styles.sheetIcon}>
               <Feather name={it.icon} size={20} color={GOLD} />
             </View>
@@ -262,6 +342,8 @@ export default function BibliotecaScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [searchVisible, setSearchVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
+  const [nombreVisible, setNombreVisible] = useState(false);
+  const { playlists: userPlaylists } = useFoldersPlaylists();
 
   const toggleSort = () => setSort((s) => (s === "recientes" ? "agregado" : "recientes"));
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
@@ -282,18 +364,37 @@ export default function BibliotecaScreen() {
 
   const renderContent = () => {
     if (activeTab === "playlists") {
+      const sortedUserPl = [...userPlaylists].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
       if (viewMode === "grid") {
         return (
           <View style={styles.gridWrap}>
+            {sortedUserPl.map((pl) => (
+              <Pressable key={pl.id} style={({ pressed }) => [{ width: (width - H_PAD * 2 - 12) / 3, opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push(`/playlist/${pl.id}` as never)}>
+                <View style={[styles.gridThumb, { width: (width - H_PAD * 2 - 12) / 3, height: (width - H_PAD * 2 - 12) / 3, backgroundColor: "rgba(190,150,80,0.08)", alignItems: "center", justifyContent: "center" }]}>
+                  <Feather name="music" size={28} color={MUTED} />
+                </View>
+                <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
+              </Pressable>
+            ))}
             {PLAYLISTS.map((pl) => (
               <PlaylistGrid key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
             ))}
           </View>
         );
       }
-      return PLAYLISTS.map((pl) => (
-        <PlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
-      ));
+      return (
+        <>
+          {sortedUserPl.map((pl) => (
+            <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
+          ))}
+          {PLAYLISTS.map((pl) => (
+            <PlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
+          ))}
+        </>
+      );
     }
 
     if (activeTab === "mezclas") {
@@ -425,7 +526,12 @@ export default function BibliotecaScreen() {
 
       {/* Overlays */}
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
-      <CreateSheet  visible={createVisible}  onClose={() => setCreateVisible(false)} />
+      <CreateSheet
+        visible={createVisible}
+        onClose={() => setCreateVisible(false)}
+        onCreatePlaylist={() => setNombreVisible(true)}
+      />
+      <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
     </View>
   );
 }
@@ -557,7 +663,80 @@ const styles = StyleSheet.create({
   },
   emptyBtnText: { color: "#000", fontWeight: "700", fontSize: 14 },
 
-  // ── Búsqueda overlay ────────────────────────────────────────────────────────
+  // ── User playlist cover ──────────────────────────────────────────────────────
+  userPlCover: {
+    width: 52,
+    height: 52,
+    borderRadius: 8,
+    backgroundColor: "rgba(190,150,80,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(190,150,80,0.15)",
+  },
+
+  // ── Modal de nombre ──────────────────────────────────────────────────────────
+  nameOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.82)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  nameCard: {
+    width: "100%",
+    backgroundColor: "#14192B",
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 32,
+    alignItems: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(190,150,80,0.15)",
+  },
+  nameCloseBtn: {
+    alignSelf: "flex-end",
+    marginBottom: 8,
+  },
+  nameCardTitle: {
+    color: TEXT,
+    fontSize: 17,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  nameInputWrap: {
+    width: "100%",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: GOLD,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 28,
+  },
+  nameInput: {
+    color: TEXT,
+    fontSize: 22,
+    fontWeight: "700",
+    textAlign: "center",
+    padding: 0,
+  },
+  nameCreateBtn: {
+    backgroundColor: GOLD,
+    borderRadius: 30,
+    paddingHorizontal: 48,
+    paddingVertical: 14,
+  },
+  nameCreateBtnText: {
+    color: "#0B0F14",
+    fontSize: 15,
+    fontWeight: "800",
+    letterSpacing: 0.3,
+  },
+
+  // ── Búsqueda overlay ──────────────────────────────────────────────────────────
   searchModalRoot: {
     flex: 1,
     backgroundColor: "#080B1A",
