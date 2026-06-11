@@ -38,6 +38,8 @@ export default function CarpetaDetailScreen() {
     renameFolder,
     addPlaylistToFolder,
     removePlaylistFromFolder,
+    addFolderToFolder,
+    removeFolderFromFolder,
     createPlaylist,
     createFolder,
   } = useFoldersPlaylists();
@@ -69,6 +71,11 @@ export default function CarpetaDetailScreen() {
     .map((pid) => allPlaylists.find((p) => p.id === pid))
     .filter(Boolean) as typeof allPlaylists;
 
+  const subFolderIds = folder.subFolderIds ?? [];
+  const subFolders = subFolderIds
+    .map((fid) => folders.find((f) => f.id === fid))
+    .filter(Boolean) as typeof folders;
+
   const handleDelete = () => {
     Alert.alert(
       "Eliminar carpeta",
@@ -95,6 +102,7 @@ export default function CarpetaDetailScreen() {
 
   const handleCreateSubFolder = (name: string) => {
     const sub = createFolder(name);
+    addFolderToFolder(folder!.id, sub.id);
     setNombreCarpetaVisible(false);
     router.push(`/carpeta/${sub.id}` as never);
   };
@@ -146,13 +154,40 @@ export default function CarpetaDetailScreen() {
         contentContainerStyle={{ paddingBottom: bottomPad + 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {folderPlaylists.length === 0 ? (
+        {subFolders.length === 0 && folderPlaylists.length === 0 ? (
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyTitle}>Esta carpeta está vacía</Text>
-            <Text style={styles.emptySub}>Agrega playlists desde Tu biblioteca.</Text>
+            <Text style={styles.emptySub}>Agrega playlists o carpetas desde Tu biblioteca.</Text>
           </View>
         ) : (
           <View style={{ paddingTop: 12 }}>
+            {/* Subcarpetas */}
+            {subFolders.map((sub) => (
+              <Pressable
+                key={sub.id}
+                style={({ pressed }) => [styles.playlistRow, { opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push(`/carpeta/${sub.id}` as never)}
+              >
+                <View style={styles.plCover}>
+                  <Feather name="folder" size={18} color={GOLD} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.plName} numberOfLines={1}>{sub.name}</Text>
+                  <Text style={styles.plMeta}>
+                    Carpeta · {(sub.subFolderIds ?? []).length + (sub.playlistIds ?? []).length} elemento{(sub.subFolderIds ?? []).length + (sub.playlistIds ?? []).length !== 1 ? "s" : ""}
+                  </Text>
+                </View>
+                <Pressable
+                  onPress={() => removeFolderFromFolder(folder.id, sub.id)}
+                  hitSlop={10}
+                  style={styles.removePlBtn}
+                >
+                  <Feather name="x" size={16} color={MUTED} />
+                </Pressable>
+              </Pressable>
+            ))}
+
+            {/* Playlists */}
             {folderPlaylists.map((pl) => (
               <Pressable
                 key={pl.id}
