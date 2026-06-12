@@ -528,56 +528,6 @@ export default function HomeScreen() {
           <QuoteOfTheDay />
         </View>
 
-        {/* ── 6. SESIÓN DESTACADA ── */}
-        {filteredFeatured && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP + 45 }]}>
-            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>
-              Sesión destacada
-            </Text>
-            <Pressable
-              style={styles.heroCard}
-              onPress={() => router.push(`/session/${filteredFeatured.id}` as never)}
-            >
-              <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
-              {/* Frosted glass panel */}
-              {(() => {
-                const voiceLabel = getVoiceLabel(filteredFeatured);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const guideId = (filteredFeatured as any).guideId as string | undefined;
-                const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
-                return (
-                  <View style={styles.heroFrosted}>
-                    {/* Meta: ★ rating · Guiada/Sin voz · duración — dorado */}
-                    <View style={styles.heroMetaRow}>
-                      <Feather name="star" size={11} color={colors.primary} />
-                      <Text style={[styles.heroMetaText, { color: colors.primary }]}>
-                        {" "}4.7{voiceLabel ? ` · ${voiceLabel}` : ""} · {filteredFeatured.durationLabel}
-                      </Text>
-                    </View>
-                    {/* Fila inferior: título+autor a la izq, botón a la der */}
-                    <View style={styles.heroBottom}>
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={[styles.heroTitle, { color: "#e4e6f5" }]} numberOfLines={2}>
-                          {filteredFeatured.title}
-                        </Text>
-                        <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
-                          {heroAuthor}
-                        </Text>
-                      </View>
-                      <Pressable
-                        onPress={(e) => { e.stopPropagation(); playSession(filteredFeatured); }}
-                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
-                      >
-                        <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
-                      </Pressable>
-                    </View>
-                  </View>
-                );
-              })()}
-            </Pressable>
-          </View>
-        )}
-
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
