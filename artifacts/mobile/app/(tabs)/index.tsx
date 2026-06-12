@@ -20,6 +20,7 @@ import RAnimated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -162,13 +163,16 @@ export default function HomeScreen() {
       pillWidthSV.value = 0;
       pillOpacitySV.value = 0;
       setSesionesVisible(true);
-      pillWidthSV.value = withTiming(PILL_W, { duration: 220 });
-      pillOpacitySV.value = withTiming(1, { duration: 180 });
+      // Ancho primero (empuja Música), luego fade-in del contenido
+      pillWidthSV.value = withTiming(PILL_W, { duration: 200 });
+      pillOpacitySV.value = withDelay(80, withTiming(1, { duration: 160 }));
     } else {
-      pillWidthSV.value = withTiming(0, { duration: 180 });
-      pillOpacitySV.value = withTiming(0, { duration: 150 }, (finished) => {
+      // Fade-out rápido primero → texto invisible antes de que el clip lo cruce
+      pillOpacitySV.value = withTiming(0, { duration: 100 });
+      // Luego contrae ancho (arrastra Música de vuelta)
+      pillWidthSV.value = withDelay(80, withTiming(0, { duration: 180 }, (finished) => {
         if (finished) runOnJS(setSesionesVisible)(false);
-      });
+      }));
     }
   }, [sesionesOpen]);
 
