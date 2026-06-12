@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { SESSIONS } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -237,7 +238,10 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-
+            {/* ── Mezclas de la comunidad ── */}
+            <View style={styles.section}>
+              <CommunityMixesCarousel />
+            </View>
           </>
         )}
       </ScrollView>
