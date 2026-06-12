@@ -360,7 +360,7 @@ export default function HomeScreen() {
                       maxWidth: subFilterWidthAnim.interpolate({
                         inputRange: [0, 1], outputRange: [0, 300],
                       }),
-                      overflow: "hidden",
+                      overflow: "visible",
                       marginLeft: -32,
                     }}>
                       {/* Capa interna: opacity + translateX (native driver) */}
