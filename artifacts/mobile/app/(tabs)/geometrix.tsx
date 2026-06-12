@@ -6316,8 +6316,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.03)",
+    borderWidth: 1,
+    borderColor: "transparent",
   },
-  catChipOn: {},
+  catChipOn: {
+    borderColor: "rgba(101,132,212,0.50)",
+  },
   catChipText: {
     fontSize: 12,
     fontWeight: "400",
