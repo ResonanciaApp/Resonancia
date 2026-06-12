@@ -1570,7 +1570,7 @@ function CarouselTileInner({
             isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
           ]}
         >
-          <View style={styles.tileGlyph}>
+          <View style={[styles.tileGlyph, !isSelected && { opacity: 0.5 }]}>
             <SacredGlyph
               id={baseOf(id)}
               color={isSelected ? color : "#fbf9f1"}
@@ -4247,7 +4247,7 @@ export default function GeometrixScreen() {
                   >
                     <HandIcon
                       size={17}
-                      color={holdMode ? colors.primary : colors.mutedForeground}
+                      color={holdMode ? colors.primary : "rgba(242,235,213,0.70)"}
                     />
                   </Pressable>
                 </Animated.View>
@@ -4314,7 +4314,7 @@ export default function GeometrixScreen() {
               <Feather
                 name={pillOpen ? "eye-off" : "eye"}
                 size={16}
-                color={pillOpen ? colors.primary : colors.mutedForeground}
+                color={pillOpen ? colors.primary : "rgba(242,235,213,0.70)"}
               />
             </Pressable>
           </View>
@@ -4581,7 +4581,7 @@ export default function GeometrixScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={holdMode ? "Desactivar Hold" : "Activar Hold"}
                   >
-                    <HandIcon size={17} color={holdMode ? colors.primary : colors.mutedForeground} />
+                    <HandIcon size={17} color={holdMode ? colors.primary : "rgba(242,235,213,0.70)"} />
                   </Pressable>
                 </Animated.View>
               )}
