@@ -6010,7 +6010,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-creaciones")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="grid" size={20} color="#6b5dc1" />
+                <Feather name="grid" size={20} color="#6584d4" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Mis Creaciones</Text>
@@ -6025,7 +6025,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-comunidad")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="users" size={20} color="#6b5dc1" />
+                <Feather name="users" size={20} color="#6584d4" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Comunidad</Text>
@@ -6040,7 +6040,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-aprende")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="book-open" size={20} color="#6b5dc1" />
+                <Feather name="book-open" size={20} color="#6584d4" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Aprende</Text>
@@ -6108,7 +6108,7 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 15,
     borderRadius: 16,
-    backgroundColor: "rgba(190,150,80,0.05)",
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
   landingItemPrimary: {
     backgroundColor: "#BE9650",
@@ -6117,7 +6117,7 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 13,
-    backgroundColor: "rgba(190,150,80,0.1)",
+    backgroundColor: "rgba(101,132,212,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -6133,12 +6133,12 @@ const styles = StyleSheet.create({
   },
   landingItemDesc: {
     fontSize: 12,
-    color: "#e8e6f5",
+    color: "#7A8FA8",
   },
   landingHint: {
     textAlign: "center",
     fontSize: 11,
-    color: "rgba(192,186,224,0.45)",
+    color: "rgba(122,143,168,0.6)",
     marginTop: 28,
     letterSpacing: 0.3,
   },
