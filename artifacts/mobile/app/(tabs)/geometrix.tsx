@@ -6287,7 +6287,9 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 15,
     borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(8,14,36,0.85)",
+    borderWidth: 1,
+    borderColor: "rgba(101,132,212,0.35)",
   },
   landingItemIcon: {
     width: 46,
