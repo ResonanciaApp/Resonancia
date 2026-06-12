@@ -17,16 +17,18 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { getPlaylistById } from "@/data/playlists";
 import { getSessionById } from "@/data/sessions";
+import type { Session } from "@/data/sessions";
 
 const { width } = Dimensions.get("window");
 const SAVED_KEY = "@resonance_saved_colecciones";
 
-const BG = "#0B0F14";
+const BG = "#080B1A";
 const GOLD = "#BE9650";
 const FG = "#EDE1D3";
 const MUTED = "#7A8FA8";
@@ -34,8 +36,9 @@ const MUTED = "#7A8FA8";
 export default function ColeccionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { playSession } = usePlayer();
+  const { playSession, currentSession, isPlaying } = usePlayer();
   const [saved, setSaved] = useState(false);
+  const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
   const playlist = getPlaylistById(id ?? "");
 
@@ -64,6 +67,12 @@ export default function ColeccionScreen() {
     });
   };
 
+  const handleDownload = () => {
+    // placeholder hasta que tengamos offline downloads
+    // eslint-disable-next-line no-console
+    console.log("[Coleccion] Descargar no implementado aún");
+  };
+
   if (!playlist) {
     return (
       <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
@@ -78,6 +87,9 @@ export default function ColeccionScreen() {
   const sessions = playlist.sessionIds
     .map((sid) => getSessionById(sid))
     .filter((s): s is NonNullable<typeof s> => !!s);
+
+  const isPlayingCollection = isPlaying && currentSession &&
+    sessions.some((s) => s.id === currentSession.id);
 
   const handlePlay = (sessionId: string) => {
     const s = getSessionById(sessionId);
@@ -142,16 +154,13 @@ export default function ColeccionScreen() {
             )}
             <Pressable onPress={toggleSave} hitSlop={10}>
               <Feather
-                name={saved ? "check-circle" : "plus-circle"}
+                name="heart"
                 size={26}
                 color={saved ? GOLD : MUTED}
               />
             </Pressable>
-            <Pressable hitSlop={10}>
+            <Pressable hitSlop={10} onPress={handleDownload}>
               <Feather name="download" size={24} color={MUTED} />
-            </Pressable>
-            <Pressable hitSlop={10} onPress={handleShare}>
-              <Feather name="more-horizontal" size={24} color={MUTED} />
             </Pressable>
           </View>
           <View style={styles.actionRight}>
@@ -160,9 +169,15 @@ export default function ColeccionScreen() {
             </Pressable>
             <Pressable
               style={styles.playCircle}
-              onPress={() => sessions[0] && handlePlay(sessions[0].id)}
+              onPress={() => {
+                if (isPlayingCollection) {
+                  router.push("/player" as never);
+                } else {
+                  sessions[0] && handlePlay(sessions[0].id);
+                }
+              }}
             >
-              <Feather name="play" size={26} color={BG} style={{ marginLeft: 3 }} />
+              <Feather name={isPlayingCollection ? "pause" : "play"} size={26} color={BG} style={{ marginLeft: isPlayingCollection ? 0 : 3 }} />
             </Pressable>
           </View>
         </View>
@@ -186,7 +201,7 @@ export default function ColeccionScreen() {
                   <Text style={styles.trackTitle} numberOfLines={1}>{s.title}</Text>
                   <Text style={styles.trackArtist} numberOfLines={1}>{creator.name}</Text>
                 </View>
-                <Pressable hitSlop={12} style={styles.trackMore}>
+                <Pressable hitSlop={12} style={styles.trackMore} onPress={() => setActionsSession(s)}>
                   <Feather name="more-vertical" size={18} color={MUTED} />
                 </Pressable>
               </Pressable>
@@ -194,6 +209,12 @@ export default function ColeccionScreen() {
           })}
         </View>
       </ScrollView>
+
+      <SessionActionsSheet
+        session={actionsSession}
+        visible={actionsSession !== null}
+        onClose={() => setActionsSession(null)}
+      />
     </View>
   );
 }

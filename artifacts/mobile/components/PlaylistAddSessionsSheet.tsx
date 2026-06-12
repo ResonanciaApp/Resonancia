@@ -250,7 +250,7 @@ export function PlaylistAddSessionsSheet({
   onClose: () => void;
 }) {
   const insets    = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState<Tab>("Sugeridas");
+  const [activeTab, setActiveTab] = useState<Tab>("Sesiones sugeridas");
   const { playlists, addToPlaylist, removeFromPlaylist, isInPlaylist } = useFoldersPlaylists();
   const { history } = usePlayer();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;

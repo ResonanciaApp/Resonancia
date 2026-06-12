@@ -27,7 +27,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
-import { GEOMETRIES } from "@/data/geometries";
+import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 
 const BG = "#080B1A"; // mismo color que Inicio
 const GOLD = "#BE9650";
@@ -146,7 +146,7 @@ export default function PlaylistDetailScreen() {
             {playlist.coverType === "geometrix" && playlist.coverGeometryId ? (
               <View style={styles.coverGlyph}>
                 <SacredGlyph
-                  id={playlist.coverGeometryId}
+                  id={playlist.coverGeometryId as GeometryId}
                   color={GOLD}
                   size={80}
                   strokeWidth={1.2}
