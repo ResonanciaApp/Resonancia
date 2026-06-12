@@ -59,8 +59,17 @@ const RING_RADIUS     = 23;
 const CIRCUMFERENCE   = 2 * Math.PI * RING_RADIUS;
 const PREVIEW_MS      = 11_000;
 
-const TABS = ["Sugeridas", "Música", "Recientes"] as const;
+const TABS = ["Sesiones sugeridas", "Música sugerida", "Recientes"] as const;
 type Tab = (typeof TABS)[number];
+
+// categorías que van en cada tab
+const SUGGESTED_CATEGORIES = new Set([
+  "sonidos-ancestrales",
+  "meditaciones-guiadas",
+]);
+const MUSIC_CATEGORIES = new Set([
+  "musica-sonidos",
+]);
 
 // ─── Animated SVG circle ─────────────────────────────────────────────────────
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -320,12 +329,14 @@ export function PlaylistAddSessionsSheet({
 
   useEffect(() => {
     if (!visible) return;
-    setActiveTab("Sugeridas");
+    setActiveTab("Sesiones sugeridas");
     const inPl = new Set(playlist?.sessionIds ?? []);
     const pool = SESSIONS.filter((s) => !inPl.has(s.id));
-    snapshot.current.suggested = shuffle(pool).slice(0, 30);
-    snapshot.current.music = SESSIONS.filter(
-      (s) => s.categoryId === "musica-sonidos" && !inPl.has(s.id)
+    snapshot.current.suggested = shuffle(
+      pool.filter((s) => SUGGESTED_CATEGORIES.has(s.categoryId))
+    ).slice(0, 30);
+    snapshot.current.music = shuffle(
+      pool.filter((s) => MUSIC_CATEGORIES.has(s.categoryId))
     ).slice(0, 30);
     const recent: Session[] = [];
     if (history?.length) {
@@ -344,8 +355,8 @@ export function PlaylistAddSessionsSheet({
   useEffect(() => { if (visible) forceUpdate((n) => n + 1); }, [visible]);
 
   const data = useMemo(() => {
-    if (activeTab === "Sugeridas") return snapshot.current.suggested;
-    if (activeTab === "Música")    return snapshot.current.music;
+    if (activeTab === "Sesiones sugeridas") return snapshot.current.suggested;
+    if (activeTab === "Música sugerida")    return snapshot.current.music;
     return snapshot.current.recent;
   }, [activeTab, visible]); // eslint-disable-line react-hooks/exhaustive-deps
 

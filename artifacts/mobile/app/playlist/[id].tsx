@@ -5,6 +5,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   Alert,
+  FlatList,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -18,12 +20,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
+import { SacredGlyph } from "@/components/SacredGlyph";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
+import { GEOMETRIES } from "@/data/geometries";
 
 const BG = "#080B1A"; // mismo color que Inicio
 const GOLD = "#BE9650";
@@ -43,7 +47,7 @@ export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover, setPlaylistCoverGeometry } = useFoldersPlaylists();
   const { playSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -52,6 +56,7 @@ export default function PlaylistDetailScreen() {
   const [renaming, setRenaming] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [addSheetVisible, setAddSheetVisible] = useState(false);
+  const [coverModalVisible, setCoverModalVisible] = useState(false);
 
   const playlist = playlists.find((p) => p.id === id);
 
@@ -136,22 +141,19 @@ export default function PlaylistDetailScreen() {
       >
         {/* ── Hero ────────────────────────────────────────────────────────── */}
         <View style={styles.hero}>
-          {/* Cover art — tap para cambiar foto */}
-          <Pressable
-            style={styles.cover}
-            onPress={async () => {
-              const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 0.85,
-              });
-              if (!result.canceled && result.assets[0]?.uri) {
-                setPlaylistCover(playlist.id, result.assets[0].uri);
-              }
-            }}
-          >
-            {playlist.coverUri ? (
+          {/* Cover art — tap para elegir foto o geometría */}
+          <Pressable style={styles.cover} onPress={() => setCoverModalVisible(true)}>
+            {playlist.coverType === "geometrix" && playlist.coverGeometryId ? (
+              <View style={styles.coverGlyph}>
+                <SacredGlyph
+                  id={playlist.coverGeometryId}
+                  color={GOLD}
+                  size={80}
+                  strokeWidth={1.2}
+                  opacity={1}
+                />
+              </View>
+            ) : playlist.coverUri ? (
               <Image
                 source={{ uri: playlist.coverUri }}
                 style={StyleSheet.absoluteFill}
@@ -255,6 +257,24 @@ export default function PlaylistDetailScreen() {
         visible={addSheetVisible}
         playlistId={playlist.id}
         onClose={() => setAddSheetVisible(false)}
+      />
+
+      {/* Modal de selección de cover */}
+      <CoverPickerModal
+        visible={coverModalVisible}
+        onClose={() => setCoverModalVisible(false)}
+        onPickImage={async () => {
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.85,
+          });
+          if (!result.canceled && result.assets[0]?.uri) {
+            setPlaylistCover(playlist.id, result.assets[0].uri);
+          }
+        }}
+        onPickGeometry={(geoId) => setPlaylistCoverGeometry(playlist.id, geoId)}
       />
     </View>
   );
@@ -431,4 +451,156 @@ const styles = StyleSheet.create({
   moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   addIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+
+  // Cover glyph
+  coverGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
+});
+
+// ── CoverPickerModal ───────────────────────────────────────────────────────
+function CoverPickerModal({
+  visible,
+  onClose,
+  onPickImage,
+  onPickGeometry,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onPickImage: () => void;
+  onPickGeometry: (geoId: string) => void;
+}) {
+  const [showGeometries, setShowGeometries] = useState(false);
+  const insets = useSafeAreaInsets();
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+
+  if (showGeometries) {
+    return (
+      <Modal visible={visible} animationType="slide" transparent onRequestClose={() => { setShowGeometries(false); onClose(); }}>
+        <Pressable style={modalStyles.backdrop} onPress={() => { setShowGeometries(false); onClose(); }} />
+        <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
+          <View style={modalStyles.handle} />
+          <View style={modalStyles.headerRow}>
+            <Pressable onPress={() => setShowGeometries(false)} hitSlop={12} style={modalStyles.headerClose}>
+              <Feather name="arrow-left" size={20} color={MUTED} />
+            </Pressable>
+            <Text style={modalStyles.headerTitle}>Elige una geometría</Text>
+            <View style={modalStyles.headerSpacer} />
+          </View>
+          <FlatList
+            data={GEOMETRIES}
+            keyExtractor={(g) => g.id}
+            numColumns={3}
+            contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
+            renderItem={({ item }) => (
+              <Pressable
+                style={({ pressed }) => [modalStyles.geometryItem, { opacity: pressed ? 0.7 : 1 }]}
+                onPress={() => { onPickGeometry(item.id); setShowGeometries(false); onClose(); }}
+              >
+                <View style={modalStyles.geometryThumb}>
+                  <SacredGlyph id={item.id as any} color={item.color} size={56} strokeWidth={1} opacity={1} />
+                </View>
+                <Text style={modalStyles.geometryName} numberOfLines={1}>{item.name}</Text>
+              </Pressable>
+            )}
+          />
+        </View>
+      </Modal>
+    );
+  }
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={modalStyles.backdrop} onPress={onClose} />
+      <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
+        <View style={modalStyles.handle} />
+        <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
+        <Pressable
+          style={({ pressed }) => [modalStyles.sheetRow, { opacity: pressed ? 0.7 : 1 }]}
+          onPress={() => { onPickImage(); onClose(); }}
+        >
+          <Feather name="image" size={22} color={GOLD} />
+          <Text style={modalStyles.sheetRowText}>Foto de la galería</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [modalStyles.sheetRow, { opacity: pressed ? 0.7 : 1 }]}
+          onPress={() => setShowGeometries(true)}
+        >
+          <Feather name="hexagon" size={22} color={GOLD} />
+          <Text style={modalStyles.sheetRowText}>Geometría sagrada</Text>
+        </Pressable>
+      </View>
+    </Modal>
+  );
+}
+
+const modalStyles = StyleSheet.create({
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
+  sheet: {
+    position: "absolute",
+    bottom: 0, left: 0, right: 0,
+    backgroundColor: "#0E1326",
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    paddingHorizontal: 20,
+  },
+  handle: {
+    alignSelf: "center",
+    width: 36, height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    marginTop: 10, marginBottom: 4,
+  },
+  sheetTitle: {
+    color: TEXT,
+    fontSize: 16,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  sheetRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.08)",
+  },
+  sheetRowText: {
+    color: TEXT,
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  headerSpacer: { width: 32 },
+  headerTitle: {
+    flex: 1,
+    textAlign: "center",
+    color: TEXT,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  headerClose: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+  geometryItem: {
+    flex: 1,
+    alignItems: "center",
+    margin: 6,
+    paddingVertical: 12,
+    backgroundColor: "rgba(190,150,80,0.05)",
+    borderRadius: 12,
+  },
+  geometryThumb: {
+    width: 64,
+    height: 64,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  geometryName: {
+    color: TEXT,
+    fontSize: 12,
+    marginTop: 6,
+    textAlign: "center",
+  },
 });
