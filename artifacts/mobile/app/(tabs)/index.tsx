@@ -400,11 +400,13 @@ export default function HomeScreen() {
                               <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
                                 <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
                               </View>
-                              {/* Spacer invisible bold → da ancho al Pressable */}
-                              <Text numberOfLines={1} style={[styles.sesSegBtnTextBold, { color: "transparent" }]}>{sf.label}</Text>
-                              {/* Textos animados en AbsoluteFill → cross-fade bold/regular */}
-                              <View style={[StyleSheet.absoluteFill, styles.sesSegBtnTextContainer]}>
-                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, bgAnimStyle]}>{sf.label}</RAnimated.Text>
+                              {/* Contenedor normal-flow → se posiciona con el padding del Pressable */}
+                              <View>
+                                {/* Spacer invisible bold → da alto y ancho al contenedor */}
+                                <Text numberOfLines={1} style={[styles.sesSegBtnTextBold, { color: "transparent" }]}>{sf.label}</Text>
+                                {/* Bold: aparece con el fondo */}
+                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, bgAnimStyle]}>{sf.label}</RAnimated.Text>
+                                {/* Regular: desaparece con el fondo */}
                                 <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnText, styles.sesSegBtnTextOverlay, bgInvAnimStyle]}>{sf.label}</RAnimated.Text>
                               </View>
                             </Pressable>
@@ -707,15 +709,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
   },
-  sesSegBtnTextContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
   sesSegBtnTextOverlay: {
     position: "absolute",
+    top: 0,
     left: 0,
-    right: 0,
-    textAlign: "center",
   },
   sesSegBtnText: {
     fontSize: 13,
