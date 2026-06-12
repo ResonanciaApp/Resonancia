@@ -69,8 +69,8 @@ const SES_SUB_FILTERS = [
   { id: "sonidos-ancestrales",  label: "Ancestral"  },
   { id: "meditaciones-guiadas", label: "Meditación" },
 ];
-// #BE9650 × 0.96 ≈ 4% más oscuro
-const SUB_CHIP_ACTIVE_BG = "#a48a4b";
+const SUB_CHIP_ACTIVE_BG_0 = "#5c7d51"; // Ancestral
+const SUB_CHIP_ACTIVE_BG_1 = "#81688f"; // Meditación
 const GRID_GAP = 12;
 const GRID_PAD = 15;
 
@@ -385,6 +385,7 @@ export default function HomeScreen() {
                         {SES_SUB_FILTERS.map((sf, i) => {
                           const bgAnimStyle  = i === 0 ? subBg0AnimStyle  : subBg1AnimStyle;
                           const txtAnimStyle = i === 0 ? subText0AnimStyle : subText1AnimStyle;
+                          const activeBg     = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
                           return (
                             <Pressable
                               key={sf.id}
@@ -405,6 +406,7 @@ export default function HomeScreen() {
                                   StyleSheet.absoluteFill,
                                   styles.sesSegBtnBg,
                                   i === 0 && styles.sesSegBtnBgFirst,
+                                  { backgroundColor: activeBg },
                                   bgAnimStyle,
                                 ]}
                               />
@@ -705,7 +707,6 @@ const styles = StyleSheet.create({
     paddingRight: 9,
   },
   sesSegBtnBg: {
-    backgroundColor: SUB_CHIP_ACTIVE_BG,
     borderRadius: 20,
   },
   sesSegBtnBgFirst: {
