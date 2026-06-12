@@ -355,47 +355,54 @@ export default function HomeScreen() {
 
                   {/* Sub-filtros: aparecen justo después de "Sesiones" */}
                   {tab.id === "sesiones" && sesionesVisible && (
-                    <Animated.View
-                      style={[
-                        styles.sesSegPill,
-                        {
-                          opacity: subFilterAnim,
-                          maxWidth: subFilterWidthAnim.interpolate({
-                            inputRange: [0, 1], outputRange: [0, 300],
-                          }),
-                          transform: [{
-                            translateX: subFilterAnim.interpolate({
-                              inputRange: [0, 1], outputRange: [-24, 0],
-                            }),
-                          }],
-                        },
-                      ]}
-                    >
-                      {SES_SUB_FILTERS.map((sf, i) => {
-                        const subSel = sesSubFilter === sf.id;
-                        return (
-                          <Pressable
-                            key={sf.id}
-                            onPress={() => {
-                              const next = subSel ? null : sf.id;
-                              setSesSubFilter(next);
-                              setActiveFilter(next ? [next] : NAV_TABS[1].cats);
-                            }}
-                            style={({ pressed }) => [
-                              styles.sesSegBtn,
-                              i === 0 && styles.sesSegBtnFirst,
-                              i === 0 && subSel
-                                ? styles.sesSegBtnFirstActive
-                                : subSel && styles.sesSegBtnActive,
-                              { opacity: pressed ? 0.75 : 1 },
-                            ]}
-                          >
-                            <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
-                              {sf.label}
-                            </Text>
-                          </Pressable>
-                        );
-                      })}
+                    /* Capa externa: maxWidth (JS driver) empuja "Música" */
+                    <Animated.View style={{
+                      maxWidth: subFilterWidthAnim.interpolate({
+                        inputRange: [0, 1], outputRange: [0, 300],
+                      }),
+                      overflow: "hidden",
+                      marginLeft: -32,
+                    }}>
+                      {/* Capa interna: opacity + translateX (native driver) */}
+                      <Animated.View
+                        style={[
+                          styles.sesSegPill,
+                          {
+                            opacity: subFilterAnim,
+                            transform: [{
+                              translateX: subFilterAnim.interpolate({
+                                inputRange: [0, 1], outputRange: [-24, 0],
+                              }),
+                            }],
+                          },
+                        ]}
+                      >
+                        {SES_SUB_FILTERS.map((sf, i) => {
+                          const subSel = sesSubFilter === sf.id;
+                          return (
+                            <Pressable
+                              key={sf.id}
+                              onPress={() => {
+                                const next = subSel ? null : sf.id;
+                                setSesSubFilter(next);
+                                setActiveFilter(next ? [next] : NAV_TABS[1].cats);
+                              }}
+                              style={({ pressed }) => [
+                                styles.sesSegBtn,
+                                i === 0 && styles.sesSegBtnFirst,
+                                i === 0 && subSel
+                                  ? styles.sesSegBtnFirstActive
+                                  : subSel && styles.sesSegBtnActive,
+                                { opacity: pressed ? 0.75 : 1 },
+                              ]}
+                            >
+                              <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
+                                {sf.label}
+                              </Text>
+                            </Pressable>
+                          );
+                        })}
+                      </Animated.View>
                     </Animated.View>
                   )}
                 </React.Fragment>
@@ -659,10 +666,8 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
-    marginLeft: -32,
     paddingRight: 3,
     gap: 1,
-    zIndex: 0,
   },
   sesSegBtn: {
     paddingHorizontal: 6,
