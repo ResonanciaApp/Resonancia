@@ -2,8 +2,8 @@ import { View, Text, Image, Pressable, StyleSheet, Share } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
 
-const BLUE_BG       = "#151A23";
-const BLUE_CHIP_BG  = "#0F1A2A";
+const BLUE_BG       = "#0D1825";
+const BLUE_CHIP_BG  = "rgba(100,185,230,0.12)";
 const BLUE_ACCENT   = "#BE9650";
 const BLUE_MUTED    = "#7A8FA8";
 
@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 16,
+    backgroundColor: "rgba(100,185,230,0.09)",
+    borderRadius: 16,
   },
   chip: {
     alignSelf: "flex-start",
