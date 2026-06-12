@@ -6150,27 +6150,21 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 15,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.2)",
     backgroundColor: "rgba(190,150,80,0.05)",
   },
   landingItemPrimary: {
     backgroundColor: "#BE9650",
-    borderColor: "#BE9650",
   },
   landingItemIcon: {
     width: 46,
     height: 46,
     borderRadius: 13,
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.3)",
     backgroundColor: "rgba(190,150,80,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
   landingItemIconPrimary: {
     backgroundColor: "rgba(11,15,20,0.2)",
-    borderColor: "rgba(11,15,20,0.2)",
   },
   landingItemText: { flex: 1 },
   landingItemTitle: {
