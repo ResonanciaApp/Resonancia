@@ -3169,15 +3169,11 @@ export default function GeometrixScreen() {
   // `divider: true` dibuja una línea sutil ANTES del ítem (separadores de grupo).
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean; color?: string; divider?: boolean }[] = [
     { key: "general", icon: "sliders", label: "Ajustes", onPress: () => setGeneralOpen(true) },
-    { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
-    { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
-    { key: "aprende", icon: "book-open", label: "Aprende", onPress: () => router.push("/geometrix-aprende") },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
     { key: "fullscreen-edit", icon: "edit-2", label: "Lienzo expandido", onPress: () => setFullscreenEdit(true) },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "randomize", icon: "shuffle", label: "Aleatorizar", onPress: randomizeSettings, divider: true },
-    { key: "cerrar", icon: "log-out", label: "Cerrar lienzo", onPress: () => router.push("/"), divider: true },
     { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#b93c47" },
   ];
   // Sin geometrías activas se colapsa el desplegable; si el menú está oculto
