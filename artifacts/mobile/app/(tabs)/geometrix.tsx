@@ -2087,8 +2087,19 @@ export default function GeometrixScreen() {
   // para que el lienzo no quede tapado por el menú de la app.
   const bottomPb = Platform.OS === "web" ? 8 : insets.bottom;
   const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
-  const { hidden: menuHidden } = useTabBarVisibility();
+  const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
   const bottomReserve = tabBarHeight;
+
+  // Ocultar la tab bar solo cuando el usuario está en el lienzo (no en el landing).
+  // Se restaura al volver al landing o al salir de Geometrix.
+  useEffect(() => {
+    if (!showLanding) {
+      requestHide();
+    } else {
+      showMenu();
+    }
+    return () => { showMenu(); };
+  }, [showLanding, requestHide, showMenu]);
 
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
@@ -3823,8 +3834,8 @@ export default function GeometrixScreen() {
       <View style={styles.content}>
         {/* ── Zona superior con fondo de Inicio ── */}
         <LinearGradient
-          colors={["#090D20", "#080A18", "#06070F"]}
-          locations={[0, 0.5, 1]}
+          colors={["#060210", "#0B0420", "#040404"]}
+          locations={[0, 0.55, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={[styles.topPanel, { paddingTop: insets.top + 12 }]}
@@ -6217,7 +6228,7 @@ export default function GeometrixScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#06070F" },
+  root: { flex: 1, backgroundColor: "#040404" },
   content:  { flex: 1, paddingHorizontal: 20 },
 
   // ── Landing overlay ───────────────────────────────────────────────────────
@@ -6348,7 +6359,7 @@ const styles = StyleSheet.create({
   // ── Buscador de tema de fondo (modal) ──
   themeSheet: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#06070F",
+    backgroundColor: "#040404",
     paddingHorizontal: 20,
   },
   themeHeaderRow: {
@@ -6492,6 +6503,7 @@ const styles = StyleSheet.create({
     right: -20,
     top: 0,
     bottom: 0,
+    backgroundColor: "#000000",
   },
   // Caja de clip sin transform: los límites de clip coinciden exactamente
   // con la divisora (arriba), el borde de pantalla (lados) y los thumbnails-10px (abajo).
@@ -6732,7 +6744,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#06070F",
+    backgroundColor: "#040404",
     overflow: "hidden",
     paddingHorizontal: 22,
     paddingTop: 22,
