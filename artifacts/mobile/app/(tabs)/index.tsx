@@ -344,7 +344,7 @@ export default function HomeScreen() {
                     style={({ pressed }) => [
                       styles.headerTabChip,
                       sel && styles.headerTabChipActive,
-                      tab.id === "sesiones" && sesionesOpen && styles.headerTabChipOnTop,
+                      tab.id === "sesiones" && sesionesVisible && styles.headerTabChipOnTop,
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
