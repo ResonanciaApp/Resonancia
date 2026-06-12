@@ -6,7 +6,6 @@
  *  2. Temporizador  → abre TimerSheet
  *  3. Marcar como favorito / Quitar de favoritos
  *  4. Añadir a una carpeta → abre AddToFolderSheet
- *  5. Añadir al Playlist  → abre AddToPlaylistSheet (pantalla completa)
  */
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -23,7 +22,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
-import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { TimerSheet } from "@/components/TimerSheet";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePlayer } from "@/context/PlayerContext";
@@ -44,7 +42,6 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
 
   const [showTimer, setShowTimer] = useState(false);
   const [showFolder, setShowFolder] = useState(false);
-  const [showPlaylist, setShowPlaylist] = useState(false);
 
   // Favorite toast
   const [toastVisible, setToastVisible] = useState(false);
@@ -57,7 +54,6 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
     if (visible) {
       setShowTimer(false);
       setShowFolder(false);
-      setShowPlaylist(false);
     }
   }, [visible]);
 
@@ -112,16 +108,12 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
     setShowFolder(true);
   };
 
-  const handlePlaylist = () => {
-    setShowPlaylist(true);
-  };
-
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
     <>
       <Modal
-        visible={visible && !showPlaylist}
+        visible={visible}
         transparent
         animationType="slide"
         onRequestClose={onClose}
@@ -187,12 +179,6 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
             label="Añadir a una carpeta"
             onPress={handleFolder}
             colors={colors}
-          />
-          <ActionRow
-            icon="list"
-            label="Añadir al Playlist"
-            onPress={handlePlaylist}
-            colors={colors}
             last
           />
 
@@ -237,17 +223,6 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
         )}
       </Modal>
 
-      {/* Full-screen: Add to Playlist */}
-      {session && (
-        <AddToPlaylistSheet
-          visible={showPlaylist}
-          sessionId={session.id}
-          onClose={() => {
-            setShowPlaylist(false);
-            onClose();
-          }}
-        />
-      )}
     </>
   );
 }
@@ -309,7 +284,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#151A23",
+    backgroundColor: "#12182E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,

@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo, useState } from "react";
 import {
   Alert,
@@ -24,9 +24,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
-import { getVoiceLabel } from "@/config/audio-map";
 
-const BG = ["#090D20", "#080A18", "#06070F"] as const;
+const BG = "#080B1A"; // mismo color que Inicio
 const GOLD = "#BE9650";
 const TEXT = "#EDE1D3";
 const MUTED = "#7A8FA8";
@@ -44,7 +43,7 @@ export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover } = useFoldersPlaylists();
   const { playSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -80,7 +79,7 @@ export default function PlaylistDetailScreen() {
 
   if (!playlist) {
     return (
-      <LinearGradient colors={BG} style={styles.root}>
+      <View style={[styles.root, { backgroundColor: BG }]}>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="list" size={48} color={MUTED} style={{ marginBottom: 16 }} />
           <Text style={{ color: MUTED, fontSize: 16 }}>Playlist no encontrada</Text>
@@ -88,7 +87,7 @@ export default function PlaylistDetailScreen() {
             <Text style={{ color: GOLD, fontSize: 15 }}>← Volver</Text>
           </Pressable>
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 
@@ -117,7 +116,7 @@ export default function PlaylistDetailScreen() {
   };
 
   return (
-    <LinearGradient style={styles.root} colors={BG} locations={[0, 0.5, 1]}>
+    <View style={[styles.root, { backgroundColor: BG }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -137,10 +136,31 @@ export default function PlaylistDetailScreen() {
       >
         {/* ── Hero ────────────────────────────────────────────────────────── */}
         <View style={styles.hero}>
-          {/* Cover art */}
-          <View style={styles.cover}>
-            <Feather name="music" size={40} color={MUTED} />
-          </View>
+          {/* Cover art — tap para cambiar foto */}
+          <Pressable
+            style={styles.cover}
+            onPress={async () => {
+              const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.85,
+              });
+              if (!result.canceled && result.assets[0]?.uri) {
+                setPlaylistCover(playlist.id, result.assets[0].uri);
+              }
+            }}
+          >
+            {playlist.coverUri ? (
+              <Image
+                source={{ uri: playlist.coverUri }}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+              />
+            ) : (
+              <Feather name="music" size={40} color={MUTED} />
+            )}
+          </Pressable>
 
           {/* Info */}
           <View style={styles.heroInfo}>
@@ -236,7 +256,7 @@ export default function PlaylistDetailScreen() {
         playlistId={playlist.id}
         onClose={() => setAddSheetVisible(false)}
       />
-    </LinearGradient>
+    </View>
   );
 }
 

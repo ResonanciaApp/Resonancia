@@ -22,6 +22,7 @@ export type Playlist = {
   id: string;
   name: string;
   sessionIds: string[]; // ordered
+  coverUri?: string;
   createdAt: string;
 };
 
@@ -43,6 +44,7 @@ interface FoldersPlaylistsCtx {
   // Playlists
   createPlaylist: (name: string, initialSessionId?: string) => Playlist;
   renamePlaylist: (playlistId: string, name: string) => void;
+  setPlaylistCover: (playlistId: string, uri: string) => void;
   addToPlaylist: (playlistId: string, sessionId: string) => void;
   removeFromPlaylist: (playlistId: string, sessionId: string) => void;
   deletePlaylist: (playlistId: string) => void;
@@ -211,6 +213,12 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     );
   }, [updatePlaylists]);
 
+  const setPlaylistCover = useCallback((playlistId: string, uri: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) => p.id === playlistId ? { ...p, coverUri: uri } : p)
+    );
+  }, [updatePlaylists]);
+
   const addToPlaylist = useCallback((playlistId: string, sessionId: string) => {
     updatePlaylists((prev) =>
       prev.map((p) =>
@@ -259,6 +267,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         isInFolder,
         createPlaylist,
         renamePlaylist,
+        setPlaylistCover,
         addToPlaylist,
         removeFromPlaylist,
         deletePlaylist,
