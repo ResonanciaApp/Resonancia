@@ -4278,28 +4278,11 @@ export default function GeometrixScreen() {
             </View>
           </View>
 
-          {/* Fila de controles arriba a la derecha: ajustes + flecha drop-down.
-              Vive fuera del "stage" como overlay absoluto de canvasWrap. */}
-          <View style={styles.actionTop}>
-            {/* Header: solo la flecha desplegable. Los ajustes generales viven
-                ahora como primera opción dentro del desplegable. */}
-            <View style={styles.actionTopRow}>
-              <Pressable
-                onPress={() => setPillOpen((o) => !o)}
-                style={styles.actionTopBtn}
-                accessibilityRole="button"
-                accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
-                hitSlop={4}
-              >
-                <Feather
-                  name={pillOpen ? "chevron-up" : "chevron-down"}
-                  size={16}
-                  color={colors.mutedForeground}
-                />
-              </Pressable>
-            </View>
-
-            {/* Píldora que se despliega hacia abajo */}
+          {/* Barra de herramientas + ojo: fila horizontal justo encima del
+              carrusel de thumbnails. El ojo queda a la derecha; las tools
+              se revelan con fade-in hacia la izquierda. */}
+          <View style={[styles.actionTop, { bottom: bottomPb + 44 }]}>
+            {/* Tools en fila horizontal, aparecen a la izquierda del ojo */}
             <Animated.View
               pointerEvents={pillOpen ? "auto" : "none"}
               style={[styles.pillRow, pillStyle, pillCardinalStyle]}
@@ -4312,14 +4295,7 @@ export default function GeometrixScreen() {
                       a.onPress();
                       setPillOpen(false);
                     }}
-                    style={[
-                      styles.pillBtn,
-                      a.key === "creaciones" && { marginTop: -4.5 },
-                      a.key === "comunidad"  && { marginTop: -5.5 },
-                      a.key === "save"       && { marginTop: -4.5 },
-                      a.key === "guias"      && { marginTop: -4.5 },
-                      a.key === "borrar"     && { marginTop: -4.5 },
-                    ]}
+                    style={styles.pillBtn}
                     accessibilityRole="button"
                     accessibilityLabel={a.label}
                     hitSlop={6}
@@ -4333,6 +4309,20 @@ export default function GeometrixScreen() {
                 </React.Fragment>
               ))}
             </Animated.View>
+            {/* Ojo: muestra / oculta la barra de herramientas */}
+            <Pressable
+              onPress={() => setPillOpen((o) => !o)}
+              style={styles.actionTopBtn}
+              accessibilityRole="button"
+              accessibilityLabel={pillOpen ? "Ocultar herramientas" : "Mostrar herramientas"}
+              hitSlop={8}
+            >
+              <Feather
+                name={pillOpen ? "eye-off" : "eye"}
+                size={16}
+                color={pillOpen ? colors.primary : colors.mutedForeground}
+              />
+            </Pressable>
           </View>
 
           {/* Thumbnails de geometrías activas: fila centrada anclada justo sobre
@@ -4623,12 +4613,16 @@ export default function GeometrixScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={pillOpen ? "Ocultar acciones" : "Mostrar acciones"}
               >
-                <Feather name={pillOpen ? "chevron-up" : "chevron-down"} size={16} color={colors.mutedForeground} />
+                <Feather
+                  name={pillOpen ? "eye-off" : "eye"}
+                  size={16}
+                  color={pillOpen ? colors.primary : colors.mutedForeground}
+                />
               </Pressable>
             </View>
 
-            {/* Píldora desplegable (mismo contenido que el principal) */}
-            <View pointerEvents="box-none" style={{ position: "absolute", top: insets.top + 12, right: 16, zIndex: 6, alignItems: "flex-end" }}>
+            {/* Barra horizontal (fullscreen) */}
+            <View pointerEvents="box-none" style={{ position: "absolute", bottom: insets.bottom + 100, right: 16, zIndex: 6, flexDirection: "row", alignItems: "center" }}>
               <Animated.View
                 pointerEvents={pillOpen ? "auto" : "none"}
                 style={[styles.pillRow, pillStyle, pillCardinalStyle]}
@@ -4638,14 +4632,7 @@ export default function GeometrixScreen() {
                     {a.divider && <View style={styles.pillDivider} />}
                     <Pressable
                       onPress={() => { a.onPress(); setPillOpen(false); }}
-                      style={[
-                        styles.pillBtn,
-                        a.key === "creaciones" && { marginTop: -4.5 },
-                        a.key === "comunidad"  && { marginTop: -5.5 },
-                        a.key === "save"       && { marginTop: -4.5 },
-                        a.key === "guias"      && { marginTop: -4.5 },
-                        a.key === "borrar"     && { marginTop: -4.5 },
-                      ]}
+                      style={styles.pillBtn}
                       accessibilityRole="button"
                       accessibilityLabel={a.label}
                       hitSlop={6}
@@ -6532,11 +6519,10 @@ const styles = StyleSheet.create({
 
   actionTop: {
     position: "absolute",
-    top: 0,
     right: -19,
     zIndex: 6,
-    flexDirection: "column",
-    alignItems: "flex-end",
+    flexDirection: "row",
+    alignItems: "center",
   },
   actionLeft: {
     position: "absolute",
@@ -6586,29 +6572,30 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillRow: {
-    marginTop: 6,
-    flexDirection: "column",
+    marginRight: 4,
+    flexDirection: "row",
     alignItems: "center",
     gap: 0,
-    paddingVertical: 6,
-    paddingHorizontal: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: CARD_BORDER,
     backgroundColor: "rgba(255,255,255,0.02)",
   },
   pillBtn: {
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 999,
-    marginVertical: 1.5,
+    marginHorizontal: 1.5,
   },
   pillDivider: {
-    width: 18,
-    height: StyleSheet.hairlineWidth,
+    height: 18,
+    width: StyleSheet.hairlineWidth,
     backgroundColor: "#9298d0",
+    marginHorizontal: 3,
   },
   thumbsScroll: {
     position: "absolute",
