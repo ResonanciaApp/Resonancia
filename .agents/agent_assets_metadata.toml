@@ -1145,3 +1145,9 @@ id = "y9L2wBOwIMTLMVWRbeYfj"
 uri = "file://screenshots/geometrias-ref.jpg"
 type = "image"
 title = "Geometrix — Referencia de geometrías"
+
+[[outputs]]
+id = "HBLq0S1c3VioK1LGLDkR9"
+uri = "file://geometrix-geometrias.zip"
+type = "unspecified"
+title = "Geometrix — 44 geometrías SVG"
