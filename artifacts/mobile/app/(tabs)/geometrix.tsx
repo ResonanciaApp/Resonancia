@@ -4171,101 +4171,57 @@ export default function GeometrixScreen() {
           </View>
           </View>{/* /stageClip */}
 
-          {/* Controles: Atrás (deshacer) + Hold mode. */}
-          <View pointerEvents="box-none" style={styles.actionLeft}>
-            <View style={styles.actionTopRow}>
-              {/* Atrás: deshace el último cambio. Visible si hay historial. */}
+          {/* Barra unificada: controles de edición (izq) + herramientas + ojo (der).
+              Una sola fila plana; los iconos de herramientas hacen fade puro. */}
+          <View pointerEvents="box-none" style={styles.actionBar}>
+            {/* Izquierda: undo / redo / hold / actualizar */}
+            <View style={styles.actionBarLeft}>
               {canUndo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
-                  <Pressable
-                    onPress={undo}
-                    style={styles.actionTopBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel="Atrás (deshacer el último cambio)"
-                    hitSlop={4}
-                  >
+                  <Pressable onPress={undo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Atrás (deshacer el último cambio)" hitSlop={4}>
                     <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
-              {/* Adelantar: rehace el último paso deshecho. */}
               {canRedo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
-                  <Pressable
-                    onPress={redo}
-                    style={styles.actionTopBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel="Adelantar (rehacer el último cambio)"
-                    hitSlop={4}
-                  >
+                  <Pressable onPress={redo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Adelantar (rehacer el último cambio)" hitSlop={4}>
                     <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
-              {/* Toggle Hold: visible con ≥2 capas activas. */}
               {active.length >= 2 && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                   <Pressable
                     onPress={() => setHoldMode((v) => !v)}
-                    style={[
-                      styles.actionTopBtn,
-                      holdMode && {
-                        backgroundColor: "rgba(190,150,80,0.18)",
-                        borderRadius: 8,
-                      },
-                    ]}
+                    style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
                     accessibilityRole="button"
                     accessibilityLabel={holdMode ? "Desactivar modo Hold" : "Activar modo Hold (transforma todas las capas)"}
                     hitSlop={4}
                   >
-                    <HandIcon
-                      size={17}
-                      color={holdMode ? colors.primary : CANVAS_ICON}
-                    />
+                    <HandIcon size={16} color={holdMode ? colors.primary : CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
               {editingCreation && isDirty && (
-                <Animated.View
-                  entering={FadeIn.duration(260)}
-                  exiting={FadeOut.duration(180)}
-                  style={{ flexDirection: "row", alignItems: "center" }}
-                >
-                  <Pressable
-                    onPress={updateComposition}
-                    style={styles.actionTopBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel="Actualizar composición"
-                    hitSlop={4}
-                  >
+                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)}>
+                  <Pressable onPress={updateComposition} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Actualizar composición" hitSlop={4}>
                     <Feather name="refresh-cw" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
             </View>
-          </View>
-
-          {/* Barra de herramientas + ojo: fila horizontal justo encima del
-              carrusel de thumbnails. El ojo queda a la derecha; las tools
-              se revelan con fade-in hacia la izquierda. */}
-          <View style={[styles.actionTop, { top: 0 }]}>
-            {/* Tools en fila horizontal, aparecen a la izquierda del ojo */}
-            <Animated.View
-              pointerEvents={pillOpen ? "auto" : "none"}
-              style={[styles.pillRow, pillStyle, pillCardinalStyle]}
-            >
-              {pillActions.map((a) => (
-                <React.Fragment key={a.key}>
-                  {a.divider && <View style={styles.pillDivider} />}
+            {/* Derecha: herramientas en fade + ojo anclado */}
+            <View style={styles.actionBarRight}>
+              <Animated.View pointerEvents={pillOpen ? "auto" : "none"} style={[styles.actionBarFadeGroup, pillStyle]}>
+                {pillActions.map((a) => (
                   <Pressable
-                    onPress={() => {
-                      a.onPress();
-                      setPillOpen(false);
-                    }}
-                    style={styles.pillBtn}
+                    key={a.key}
+                    onPress={() => { a.onPress(); setPillOpen(false); }}
+                    style={styles.actionTopBtn}
                     accessibilityRole="button"
                     accessibilityLabel={a.label}
-                    hitSlop={6}
+                    hitSlop={4}
                   >
                     {a.gradient ? (
                       <GoldSlidersIcon size={16} />
@@ -4273,23 +4229,18 @@ export default function GeometrixScreen() {
                       <Feather name={a.icon} size={16} color={a.color ?? CANVAS_ICON} />
                     )}
                   </Pressable>
-                </React.Fragment>
-              ))}
-            </Animated.View>
-            {/* Ojo: muestra / oculta la barra de herramientas */}
-            <Pressable
-              onPress={() => setPillOpen((o) => !o)}
-              style={styles.actionTopBtn}
-              accessibilityRole="button"
-              accessibilityLabel={pillOpen ? "Ocultar herramientas" : "Mostrar herramientas"}
-              hitSlop={8}
-            >
-              <Feather
-                name={pillOpen ? "eye-off" : "eye"}
-                size={16}
-                color={pillOpen ? colors.primary : CANVAS_ICON}
-              />
-            </Pressable>
+                ))}
+              </Animated.View>
+              <Pressable
+                onPress={() => setPillOpen((o) => !o)}
+                style={styles.actionTopBtn}
+                accessibilityRole="button"
+                accessibilityLabel={pillOpen ? "Ocultar herramientas" : "Mostrar herramientas"}
+                hitSlop={8}
+              >
+                <Feather name={pillOpen ? "eye-off" : "eye"} size={16} color={pillOpen ? colors.primary : CANVAS_ICON} />
+              </Pressable>
+            </View>
           </View>
 
           {/* Thumbnails de geometrías activas: fila centrada anclada justo sobre
@@ -4588,29 +4539,27 @@ export default function GeometrixScreen() {
               </Pressable>
             </View>
 
-            {/* Barra horizontal (fullscreen) */}
+            {/* Barra horizontal (fullscreen): misma lógica de fade, sin contenedor */}
             <View pointerEvents="box-none" style={{ position: "absolute", bottom: insets.bottom + 100, right: 16, zIndex: 6, flexDirection: "row", alignItems: "center" }}>
               <Animated.View
                 pointerEvents={pillOpen ? "auto" : "none"}
-                style={[styles.pillRow, pillStyle, pillCardinalStyle]}
+                style={[styles.actionBarFadeGroup, pillStyle]}
               >
                 {pillActions.map((a) => (
-                  <React.Fragment key={a.key}>
-                    {a.divider && <View style={styles.pillDivider} />}
-                    <Pressable
-                      onPress={() => { a.onPress(); setPillOpen(false); }}
-                      style={styles.pillBtn}
-                      accessibilityRole="button"
-                      accessibilityLabel={a.label}
-                      hitSlop={6}
-                    >
-                      {a.gradient ? (
-                        <GoldSlidersIcon size={18} />
-                      ) : (
-                        <Feather name={a.icon} size={18} color={a.color ?? CANVAS_ICON} />
-                      )}
-                    </Pressable>
-                  </React.Fragment>
+                  <Pressable
+                    key={a.key}
+                    onPress={() => { a.onPress(); setPillOpen(false); }}
+                    style={styles.actionTopBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel={a.label}
+                    hitSlop={4}
+                  >
+                    {a.gradient ? (
+                      <GoldSlidersIcon size={16} />
+                    ) : (
+                      <Feather name={a.icon} size={16} color={a.color ?? CANVAS_ICON} />
+                    )}
+                  </Pressable>
                 ))}
               </Animated.View>
             </View>
@@ -6484,20 +6433,27 @@ const styles = StyleSheet.create({
   },
   layer: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
 
-  actionTop: {
+  actionBar: {
     position: "absolute",
+    top: 0,
+    left: -21,
     right: -19,
     zIndex: 6,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
-  actionLeft: {
-    position: "absolute",
-    top: 0,
-    left: -21,
-    zIndex: 6,
-    flexDirection: "column",
-    alignItems: "flex-start",
+  actionBarLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  actionBarRight: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  actionBarFadeGroup: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   catScroll: {
     flexGrow: 0,
@@ -6510,10 +6466,6 @@ const styles = StyleSheet.create({
     paddingRight: 8,
     paddingTop: 10,
     paddingBottom: 4,
-  },
-  actionTopRow: {
-    flexDirection: "row",
-    alignItems: "center",
   },
   actionTopBtn: {
     width: 38,
@@ -6549,30 +6501,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(122,143,168,0.45)",
     backgroundColor: "rgba(255,255,255,0.02)",
-  },
-  pillRow: {
-    marginRight: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 0,
-    paddingVertical: 4,
-    paddingHorizontal: 6,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.02)",
-  },
-  pillBtn: {
-    width: 30,
-    height: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 999,
-    marginHorizontal: 1.5,
-  },
-  pillDivider: {
-    height: 18,
-    width: StyleSheet.hairlineWidth,
-    backgroundColor: "#9298d0",
-    marginHorizontal: 3,
   },
   thumbsScroll: {
     position: "absolute",
