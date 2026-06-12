@@ -696,7 +696,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     height: 32,
     borderRadius: 20,
-    alignItems: "center",
     justifyContent: "center",
   },
   sesSegBtnFirst: {
