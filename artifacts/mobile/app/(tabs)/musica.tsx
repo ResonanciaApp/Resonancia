@@ -300,7 +300,7 @@ const SoundCard = memo(function SoundCard({
   const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
   const borderCol = anim.interpolate({
     inputRange:  [0, 1],
-    outputRange: [hexToRgba(accentColor, 0), hexToRgba(accentColor, 1)],
+    outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,1)"],
   });
   const overlayOpacity = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
 
@@ -313,7 +313,6 @@ const SoundCard = memo(function SoundCard({
           style={[
             styles.cardShadowWrap,
             decorated && styles.cardShadowWrapActive,
-            decorated && { shadowColor: accentColor },
             { transform: [{ rotate }, { scale }], borderColor: borderCol },
           ]}
         >
@@ -855,7 +854,7 @@ const styles = StyleSheet.create({
 
   // Wrapper sin transform — contiene la card que rota + ícono fijo + badge
   cardCircleWrapper: {
-    width: "82%",
+    width: "79%",
     aspectRatio: 1,
     alignSelf: "center",
   },
@@ -875,10 +874,6 @@ const styles = StyleSheet.create({
   },
   cardShadowWrapActive: {
     borderWidth: 3.5,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.55,
-    shadowRadius: 14,
-    elevation: 10,
   },
 
   // Anillo de expansión (color se pasa dinámicamente via inline style)
