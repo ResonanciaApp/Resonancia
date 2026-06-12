@@ -8,20 +8,20 @@ import {
   Animated,
   Dimensions,
   Image,
-  LayoutAnimation,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  UIManager,
   View,
 } from "react-native";
-
-if (Platform.OS === "android") {
-  UIManager.setLayoutAnimationEnabledExperimental?.(true);
-}
+import RAnimated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
@@ -153,27 +153,29 @@ export default function HomeScreen() {
   const [sesionesOpen, setSesionesOpen] = useState(false);
   const [sesionesVisible, setSesionesVisible] = useState(false);
   const [sesSubFilter, setSesSubFilter] = useState<string | null>(null);
-  const subFilterAnim = useRef(new Animated.Value(0)).current;
+  const pillWidthSV = useSharedValue(0);
+  const pillOpacitySV = useSharedValue(0);
+  const PILL_W = 220;
 
   useEffect(() => {
     if (sesionesOpen) {
-      subFilterAnim.setValue(0);
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      pillWidthSV.value = 0;
+      pillOpacitySV.value = 0;
       setSesionesVisible(true);
-      Animated.timing(subFilterAnim, {
-        toValue: 1, duration: 220, useNativeDriver: true,
-      }).start();
+      pillWidthSV.value = withTiming(PILL_W, { duration: 220 });
+      pillOpacitySV.value = withTiming(1, { duration: 180 });
     } else {
-      Animated.timing(subFilterAnim, {
-        toValue: 0, duration: 180, useNativeDriver: true,
-      }).start(({ finished }) => {
-        if (finished) {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          setSesionesVisible(false);
-        }
+      pillWidthSV.value = withTiming(0, { duration: 180 });
+      pillOpacitySV.value = withTiming(0, { duration: 150 }, (finished) => {
+        if (finished) runOnJS(setSesionesVisible)(false);
       });
     }
   }, [sesionesOpen]);
+
+  const pillAnimStyle = useAnimatedStyle(() => ({
+    width: pillWidthSV.value,
+    opacity: pillOpacitySV.value,
+  }));
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -355,12 +357,8 @@ export default function HomeScreen() {
 
                   {/* Sub-filtros: aparecen justo después de "Sesiones" */}
                   {tab.id === "sesiones" && sesionesVisible && (
-                      <Animated.View
-                        style={[
-                          styles.sesSegPill,
-                          { opacity: subFilterAnim },
-                        ]}
-                      >
+                    <RAnimated.View style={[styles.sesSegPillWrapper, pillAnimStyle]}>
+                      <View style={styles.sesSegPill}>
                         {SES_SUB_FILTERS.map((sf, i) => {
                           const subSel = sesSubFilter === sf.id;
                           return (
@@ -386,7 +384,8 @@ export default function HomeScreen() {
                             </Pressable>
                           );
                         })}
-                      </Animated.View>
+                      </View>
+                    </RAnimated.View>
                   )}
                 </React.Fragment>
               );
@@ -642,14 +641,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
   },
+  sesSegPillWrapper: {
+    overflow: "hidden",
+    marginLeft: -32,
+    height: 32,
+    borderRadius: 20,
+  },
   sesSegPill: {
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 20,
     height: 32,
-    marginLeft: -32,
     backgroundColor: "rgba(255,255,255,0.06)",
-    overflow: "hidden",
     paddingRight: 3,
     gap: 1,
   },
