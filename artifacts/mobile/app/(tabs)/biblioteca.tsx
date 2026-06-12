@@ -127,7 +127,6 @@ function PlaylistRow({ pl, onPress }: { pl: Playlist; onPress: () => void }) {
         <Text style={styles.rowTitle} numberOfLines={1}>{pl.title}</Text>
         <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
       </View>
-      <Feather name="more-horizontal" size={18} color={MUTED} />
     </Pressable>
   );
 }
@@ -157,7 +156,6 @@ function FolderRow({ folder, onPress }: { folder: UserFolder; onPress: () => voi
           Carpeta · {count === 0 ? "Vacía" : `${count} playlist${count !== 1 ? "s" : ""}`}
         </Text>
       </View>
-      <Feather name="chevron-right" size={18} color={MUTED} />
     </Pressable>
   );
 }
@@ -173,7 +171,6 @@ function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => voi
         <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
         <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
       </View>
-      <Feather name="more-horizontal" size={18} color={MUTED} />
     </Pressable>
   );
 }
