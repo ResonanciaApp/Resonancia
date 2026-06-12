@@ -2203,8 +2203,8 @@ export default function GeometrixScreen() {
     motion: true,
     glow: 0,
     bgColor: null,
-    bgGradientId: "violeta-noche",
-    bgBrightness: 0.02,
+    bgGradientId: null,
+    bgBrightness: 0.5,
     bgPattern: null,
   });
   const { isPremium } = usePremium();
@@ -6358,10 +6358,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
-  // Fondo del header (topPanel): edge-to-edge cancelando el paddingH:20 del content.
+  // Fondo del header (topPanel): topPanel ya tiene marginHorizontal:-20 → absoluteFill directo.
   headerBgLayer: {
-    position: "absolute",
-    top: 0, bottom: 0, left: -20, right: -20,
+    ...StyleSheet.absoluteFillObject,
   },
   // Fondo del lienzo (canvasWrap): edge-to-edge, igual que headerBgLayer.
   canvasBgLayer: {
