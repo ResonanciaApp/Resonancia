@@ -327,7 +327,7 @@ export default function HomeScreen() {
                     style={({ pressed }) => [
                       styles.headerTabChip,
                       sel && styles.headerTabChipActive,
-
+                      tab.id === "sesiones" && sesionesOpen && styles.headerTabChipOnTop,
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
@@ -631,14 +631,13 @@ const styles = StyleSheet.create({
   sesSegPill: {
     flexDirection: "row",
     alignItems: "center",
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    borderRadius: 20,
     height: 32,
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
-    marginLeft: -6,
+    marginLeft: -20,
+    paddingLeft: 15,
+    zIndex: 0,
   },
   sesSegBtn: {
     paddingHorizontal: 11,
@@ -665,9 +664,9 @@ const styles = StyleSheet.create({
   headerTabChipActive: {
     backgroundColor: "#BE9650",
   },
-  headerTabChipConnected: {
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
+  headerTabChipOnTop: {
+    zIndex: 2,
+    elevation: 2,
   },
   headerTabChipSubActive: {
     backgroundColor: SUB_CHIP_ACTIVE_BG,
