@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 16,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#5A6A8A" },
+  searchInput: { flex: 1, fontSize: 14, color: "#0D1520" },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: 23 },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
