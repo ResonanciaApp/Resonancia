@@ -128,11 +128,18 @@ function PreviewThumb({
 function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) {
   const fillProgress  = useSharedValue(added ? 1 : 0);
   const checkOpacity  = useSharedValue(added ? 1 : 0);
+  const rippleScale   = useSharedValue(0);
+  const rippleOpacity = useSharedValue(0);
   const prevAdded     = useRef(added);
 
   useEffect(() => {
     if (added && !prevAdded.current) {
-      // Solo la animación inicial: relleno dorado + check
+      // Onda expansiva dorada
+      rippleScale.value = 0.3;
+      rippleOpacity.value = 0.3;
+      rippleScale.value = withTiming(1.8, { duration: 450 });
+      rippleOpacity.value = withTiming(0, { duration: 450 });
+      // Relleno + check
       fillProgress.value  = withSpring(1, { stiffness: 280, damping: 22 });
       checkOpacity.value  = withTiming(1, { duration: 200, easing: Easing.out(Easing.quad) });
     } else if (!added && prevAdded.current) {
@@ -150,8 +157,20 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
   const plusStyle  = useAnimatedStyle(() => ({ opacity: 1 - checkOpacity.value }));
   const checkStyle = useAnimatedStyle(() => ({ opacity: checkOpacity.value }));
 
+  const rippleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: rippleScale.value }],
+    opacity: rippleOpacity.value,
+  }));
+
   return (
     <Pressable onPress={onPress} hitSlop={12} style={styles.addBtnOuter}>
+      {/* Onda expansiva (detrás del círculo) */}
+      <Animated.View
+        style={[StyleSheet.absoluteFill, styles.centered, rippleStyle]}
+        pointerEvents="none"
+      >
+        <View style={styles.rippleCore} />
+      </Animated.View>
       <Animated.View style={[styles.addCircle, circleStyle]}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.centered, plusStyle]}>
           <Feather name="plus" size={16} color={MUTED} />
@@ -506,6 +525,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   centered: { alignItems: "center", justifyContent: "center" },
+  rippleCore: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: GOLD,
+  },
 
   // Empty
   emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 60 },
