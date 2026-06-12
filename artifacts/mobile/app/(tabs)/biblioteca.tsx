@@ -899,16 +899,33 @@ export default function BibliotecaScreen() {
         </View>
 
         {/* Fila 2: chips de tab */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.chipRow}
-          contentContainerStyle={styles.chipRowContent}
-        >
-          {LIB_TABS.map((t) => (
-            <LibChip key={t.id} label={t.label} sel={activeTab === t.id} onPress={() => setActiveTab(activeTab === t.id ? null : t.id)} />
-          ))}
-        </ScrollView>
+        {activeTab === null ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.chipRow}
+            contentContainerStyle={styles.chipRowContent}
+          >
+            {LIB_TABS.map((t) => (
+              <LibChip key={t.id} label={t.label} sel={false} onPress={() => setActiveTab(t.id)} />
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.chipRowFiltered}>
+            {/* X para volver al modo general */}
+            <Pressable
+              onPress={() => setActiveTab(null)}
+              hitSlop={10}
+              style={styles.chipCloseBtn}
+            >
+              <Feather name="x" size={15} color={MUTED} />
+            </Pressable>
+            {/* Solo el tab activo */}
+            {LIB_TABS.filter((t) => t.id === activeTab).map((t) => (
+              <LibChip key={t.id} label={t.label} sel={true} onPress={() => setActiveTab(null)} />
+            ))}
+          </View>
+        )}
 
         {/* Sombra inferior del sticky header */}
         <View style={styles.headerShadow} />
@@ -985,6 +1002,21 @@ const styles = StyleSheet.create({
 
   chipRow: { flexGrow: 0, marginBottom: 10 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2 },
+  chipRowFiltered: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 10,
+    paddingVertical: 2,
+  },
+  chipCloseBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   chip: {
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999,
