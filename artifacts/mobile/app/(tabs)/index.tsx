@@ -378,13 +378,11 @@ export default function HomeScreen() {
                           }}
                           style={({ pressed }) => [
                             styles.headerTabChip,
-                            sesAncestral && styles.headerTabChipActive,
+                            sesAncestral && styles.sesAncestralChipActive,
                             { opacity: pressed ? 0.7 : 1 },
                           ]}
                         >
-                          <Text style={[styles.headerTabText, sesAncestral && styles.headerTabTextActive]}>
-                            Ancestral
-                          </Text>
+                          <Text style={styles.headerTabText}>Ancestral</Text>
                         </Pressable>
                         <Pressable
                           onPress={() => {
@@ -394,13 +392,11 @@ export default function HomeScreen() {
                           }}
                           style={({ pressed }) => [
                             styles.headerTabChip,
-                            sesMeditacion && styles.headerTabChipActive,
+                            sesMeditacion && styles.sesMeditacionChipActive,
                             { opacity: pressed ? 0.7 : 1 },
                           ]}
                         >
-                          <Text style={[styles.headerTabText, sesMeditacion && styles.headerTabTextActive]}>
-                            Meditación
-                          </Text>
+                          <Text style={styles.headerTabText}>Meditación</Text>
                         </Pressable>
                       </RAnimated.View>
                     </RAnimated.View>
@@ -677,6 +673,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     paddingLeft: 6,
+  },
+  sesAncestralChipActive: {
+    backgroundColor: "#47633E",
+  },
+  sesMeditacionChipActive: {
+    backgroundColor: "#6B4C7C",
   },
   headerTabChipActive: {
     backgroundColor: "#BE9650",
