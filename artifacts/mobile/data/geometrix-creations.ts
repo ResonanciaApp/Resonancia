@@ -117,14 +117,6 @@ export type GeometrixAudio = { moduleKey: string; trackId: string } | null;
 export const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
 /** Degradados de TRAZO (Ajustes personalizados de cada capa). */
-/** Paleta reducida para el swatch de color sólido en la UI.
- *  Orden: morado (por defecto), azul, vino rojizo. */
-export const SWATCH_PALETTE = [
-  "#B69BE0",
-  "#7AA8E0",
-  "#E0989B",
-] as const;
-
 export const STROKE_GRADIENTS: { id: string; colors: readonly [string, string] }[] = [
   { id: "dorado-rosa", colors: [PALETTE[0], PALETTE[5]] },
   { id: "rosa-lavanda", colors: [PALETTE[5], PALETTE[4]] },

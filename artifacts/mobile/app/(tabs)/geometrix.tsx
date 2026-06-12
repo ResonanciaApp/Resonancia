@@ -87,7 +87,6 @@ import {
   HOME_GRADIENT,
   scaleColors,
   STROKE_GRADIENTS,
-  SWATCH_PALETTE,
   type BgPattern,
   type CanvasGuide,
   type GeoSettings,
@@ -5143,7 +5142,7 @@ export default function GeometrixScreen() {
                   <>
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={[styles.swatchRow, { marginTop: 10 }]}>
-                      {SWATCH_PALETTE.map((c) => {
+                      {PALETTE.map((c) => {
                         const on = !g0?.gradientId && g0?.color?.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
@@ -5765,7 +5764,7 @@ export default function GeometrixScreen() {
                   >
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={[styles.swatchRow, { marginTop: 10 }]}>
-                      {SWATCH_PALETTE.map((c) => {
+                      {PALETTE.map((c) => {
                         const on = !s.gradientId && s.color.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
