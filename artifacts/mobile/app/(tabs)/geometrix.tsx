@@ -5768,16 +5768,8 @@ export default function GeometrixScreen() {
             settingsGeo && frozenSheetH != null && { height: frozenSheetH },
           ]}
         >
-          {/* Mismo fondo que la pantalla de inicio, recortado al radius. */}
-          <LinearGradient
-            colors={HOME_GRADIENT}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={[
-              StyleSheet.absoluteFill,
-              { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
-            ]}
-          />
+          {/* Fondo sólido #12182E (sin gradiente que lo tape) */}
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#12182E", borderTopLeftRadius: 24, borderTopRightRadius: 24 }]} />
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderLeft}>
               {settingsGeo ? (
@@ -6683,7 +6675,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   sheet: {
-    backgroundColor: "#06070F",
+    backgroundColor: "#12182E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: "hidden",
