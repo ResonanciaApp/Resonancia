@@ -4953,8 +4953,8 @@ export default function GeometrixScreen() {
               <Text style={styles.fieldLabel}>Color de fondo</Text>
               {/* Degradados */}
               <View style={[styles.swatchRow, { marginTop: 10 }]}>
-                {BG_GRADIENTS.filter((gr) => ["violeta-noche", "indigo-noche", "verdeagua-noche", "vino-noche"].includes(gr.id))
-                  .sort((a, b) => ["violeta-noche", "indigo-noche", "verdeagua-noche", "vino-noche"].indexOf(a.id) - ["violeta-noche", "indigo-noche", "verdeagua-noche", "vino-noche"].indexOf(b.id))
+                {BG_GRADIENTS.filter((gr) => ["violeta-noche", "verdeagua-noche", "vino-noche"].includes(gr.id))
+                  .sort((a, b) => ["violeta-noche", "verdeagua-noche", "vino-noche"].indexOf(a.id) - ["violeta-noche", "verdeagua-noche", "vino-noche"].indexOf(b.id))
                   .map((gr) => {
                   const on = master.bgGradientId === gr.id;
                   return (
