@@ -6390,7 +6390,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateY: -18 }],
   },
   canvas: {
     alignItems: "center",
