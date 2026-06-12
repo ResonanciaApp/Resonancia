@@ -4844,12 +4844,6 @@ export default function GeometrixScreen() {
                 { width: generalPreviewSize, height: generalPreviewSize },
               ]}
             >
-              <LinearGradient
-                colors={(selectedBg ?? HOME_GRADIENT) as [string, string]}
-                start={{ x: 0.5, y: 0 }}
-                end={{ x: 0.5, y: 1 }}
-                style={[StyleSheet.absoluteFill, { opacity: 0.5 }]}
-              />
               {master.bgPattern && (
                 <GeometrixPatternBg
                   geoId={master.bgPattern.geoId}
@@ -5598,12 +5592,6 @@ export default function GeometrixScreen() {
           >
             <Text style={styles.previewLabel}>Vista previa</Text>
             <View style={[styles.previewBox, { width: previewSize, height: previewSize }]}>
-              <LinearGradient
-                colors={(selectedBg ?? HOME_GRADIENT) as [string, string]}
-                start={{ x: 0.5, y: 0 }}
-                end={{ x: 0.5, y: 1 }}
-                style={[StyleSheet.absoluteFill, { opacity: 0.5 }]}
-              />
               {master.bgPattern && (
                 <GeometrixPatternBg
                   geoId={master.bgPattern.geoId}
@@ -6715,7 +6703,7 @@ const styles = StyleSheet.create({
   previewBox: {
     borderRadius: 18,
     overflow: "hidden",
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.6)",
     alignItems: "center",
     justifyContent: "center",
   },
