@@ -2090,18 +2090,13 @@ export default function GeometrixScreen() {
   const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
   const bottomReserve = tabBarHeight;
 
-  // Ocultar la tab bar solo cuando el usuario está en el lienzo (no en el landing).
-  // useFocusEffect garantiza que el cleanup corre al perder el foco (los tabs
-  // permanecen montados, por lo que useEffect simple nunca desmonta).
+  // Ocultar la tab bar siempre que el usuario esté en Geometrix (landing o lienzo).
+  // Se restaura automáticamente al cambiar de tab gracias al cleanup de useFocusEffect.
   useFocusEffect(
     useCallback(() => {
-      if (!showLanding) {
-        requestHide();
-      } else {
-        showMenu();
-      }
+      requestHide();
       return () => { showMenu(); };
-    }, [showLanding, requestHide, showMenu])
+    }, [requestHide, showMenu])
   );
 
   // Persistencia local de composiciones ("Mis creaciones").
