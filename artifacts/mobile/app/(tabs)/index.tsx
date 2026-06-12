@@ -454,7 +454,7 @@ export default function HomeScreen() {
                     {/* Fila inferior: título+autor a la izq, botón a la der */}
                     <View style={styles.heroBottom}>
                       <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={[styles.heroTitle, { color: colors.foreground }]} numberOfLines={2}>
+                        <Text style={[styles.heroTitle, { color: "#e4e6f5" }]} numberOfLines={2}>
                           {filteredFeatured.title}
                         </Text>
                         <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
@@ -644,7 +644,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: "700",
-    color: "#EDE1D3",
+    color: "#e4e6f5",
     lineHeight: 18,
   },
   catGrid: {
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   catCardLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#e4e6f5",
     lineHeight: 18,
   },
 
@@ -719,7 +719,7 @@ const styles = StyleSheet.create({
   recentTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#e4e6f5",
     lineHeight: 17,
     marginTop: 8,
   },
@@ -819,7 +819,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center" },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#e4e6f5" },
   squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
   diarioList: { gap: 10 },
 
