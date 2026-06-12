@@ -715,7 +715,7 @@ const styles = StyleSheet.create({
   },
   sesSegBtnText: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: "400",
     letterSpacing: 0.1,
   },
   headerTabChip: {
@@ -731,7 +731,7 @@ const styles = StyleSheet.create({
   },
   headerTabChipOnTop: {
     zIndex: 2,
-    elevation: 2,
+    elevation: 0,
   },
   headerTabChipSubActive: {
     backgroundColor: "#a48a4b",
