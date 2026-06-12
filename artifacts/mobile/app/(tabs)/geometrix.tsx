@@ -3162,6 +3162,7 @@ export default function GeometrixScreen() {
     { key: "general", icon: "sliders", label: "Ajustes", onPress: () => setGeneralOpen(true) },
     { key: "creaciones", icon: "grid", label: "Mis creaciones", onPress: () => router.push("/geometrix-creaciones") },
     { key: "comunidad", icon: "users", label: "Comunidad", onPress: () => router.push("/geometrix-comunidad") },
+    { key: "aprende", icon: "book-open", label: "Aprende", onPress: () => router.push("/geometrix-aprende") },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
     { key: "fullscreen-edit", icon: "edit-2", label: "Lienzo expandido", onPress: () => setFullscreenEdit(true) },
