@@ -3156,7 +3156,7 @@ export default function GeometrixScreen() {
     { key: "fullscreen-edit", icon: "edit-2", label: "Lienzo expandido", onPress: () => setFullscreenEdit(true) },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
     { key: "randomize", icon: "shuffle", label: "Aleatorizar", onPress: randomizeSettings, divider: true },
-    { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas, color: "#b93c47" },
+    { key: "borrar", icon: "trash-2", label: "Borrar", onPress: clearCanvas },
   ];
   // Sin geometrías activas se colapsa el desplegable; si el menú está oculto
   // se mantiene para que el usuario siempre pueda restaurarlo con la X.
