@@ -302,7 +302,6 @@ const SoundCard = memo(function SoundCard({
     inputRange:  [0, 1],
     outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,1)"],
   });
-  const overlayOpacity = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
@@ -330,11 +329,6 @@ const SoundCard = memo(function SoundCard({
             ) : (
               <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
             )}
-            {/* Overlay oscuro — fade out al activar, fade in al desactivar */}
-            <Animated.View
-              pointerEvents="none"
-              style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)", opacity: overlayOpacity }]}
-            />
           </View>
         </Animated.View>
 
