@@ -635,8 +635,8 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
-    marginLeft: -20,
-    paddingLeft: 15,
+    marginLeft: -25,
+    paddingLeft: 20,
     zIndex: 0,
   },
   sesSegBtn: {
