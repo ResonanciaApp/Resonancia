@@ -24,7 +24,6 @@ import {
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -234,36 +233,51 @@ export function PlaylistAddSessionsSheet({
   const soundRef     = useRef<Audio.Sound | null>(null);
   const timerRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Rastrea para qué sesión se está cargando audio (evita race si el usuario
+  // cambia de preview mientras el createAsync aún no terminó).
+  const loadingForRef = useRef<string | null>(null);
+
   const stopPreview = useCallback(async () => {
+    loadingForRef.current = null;
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
     cancelAnimation(progressSV);
     progressSV.value = 0;
-    if (soundRef.current) {
-      try {
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
-      } catch {}
-      soundRef.current = null;
-    }
+    const s = soundRef.current;
+    soundRef.current = null;
+    if (s) { void s.stopAsync().catch(() => {}); void s.unloadAsync().catch(() => {}); }
     setPreviewId(null);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const startPreview = useCallback(async (session: Session) => {
-    await stopPreview();
-    const src = AUDIO_MAP[session.id];
-    if (!src) return; // sin audio → nada
+    // Parar sonido anterior sin bloquear — fire-and-forget
+    loadingForRef.current = null;
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+    cancelAnimation(progressSV);
+    const old = soundRef.current;
+    soundRef.current = null;
+    if (old) { void old.stopAsync().catch(() => {}); void old.unloadAsync().catch(() => {}); }
 
+    const src = AUDIO_MAP[session.id];
+    if (!src) { setPreviewId(null); return; }
+
+    // ── Arrancar UI inmediatamente ──────────────────────────────────────────
     setPreviewId(session.id);
     progressSV.value = 0;
+    progressSV.value = withTiming(1, { duration: PREVIEW_MS, easing: Easing.linear });
+    timerRef.current = setTimeout(() => { void stopPreview(); }, PREVIEW_MS);
+    loadingForRef.current = session.id;
 
+    // ── Cargar audio en background (no bloquea la animación) ────────────────
     try {
       const { sound } = await Audio.Sound.createAsync(src as number, { shouldPlay: true });
-      soundRef.current = sound;
-      progressSV.value = withTiming(1, { duration: PREVIEW_MS, easing: Easing.linear });
-      timerRef.current = setTimeout(() => { void stopPreview(); }, PREVIEW_MS);
-    } catch {
-      setPreviewId(null);
-    }
+      if (loadingForRef.current === session.id) {
+        soundRef.current = sound;
+      } else {
+        // Otro preview arrancó antes de que terminara de cargar → descartar
+        void sound.stopAsync().catch(() => {});
+        void sound.unloadAsync().catch(() => {});
+      }
+    } catch { /* ignorar */ }
   }, [stopPreview]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePreviewToggle = useCallback((session: Session) => {
@@ -352,22 +366,20 @@ export function PlaylistAddSessionsSheet({
           </Pressable>
         </View>
 
-        {/* Tabs */}
+        {/* Tabs — centrados, 15 px bajo el título */}
         <View style={styles.tabsWrapper}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsContent}>
-            {TABS.map((tab) => {
-              const active = tab === activeTab;
-              return (
-                <Pressable
-                  key={tab}
-                  style={({ pressed }) => [styles.tabChip, active && styles.tabChipActive, { opacity: pressed ? 0.8 : 1 }]}
-                  onPress={() => setActiveTab(tab)}
-                >
-                  <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+          {TABS.map((tab) => {
+            const active = tab === activeTab;
+            return (
+              <Pressable
+                key={tab}
+                style={({ pressed }) => [styles.tabChip, active && styles.tabChipActive, { opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => setActiveTab(tab)}
+              >
+                <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
+              </Pressable>
+            );
+          })}
         </View>
 
         {/* Lista */}
@@ -430,8 +442,14 @@ const styles = StyleSheet.create({
   headerClose: { width: 28, alignItems: "flex-end" },
 
   // Tabs
-  tabsWrapper: { marginBottom: 8 },
-  tabsContent: { paddingHorizontal: 16, gap: 8, paddingRight: 32 },
+  tabsWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 15,
+    marginBottom: 8,
+    paddingHorizontal: 16,
+  },
   tabChip: {
     paddingHorizontal: 18, paddingVertical: 9,
     borderRadius: 20,
