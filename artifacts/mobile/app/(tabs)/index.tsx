@@ -496,6 +496,11 @@ export default function HomeScreen() {
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
+        {/* ── 5. FRASE DEL DÍA ── */}
+        <View style={{ marginBottom: SECTION_GAP }}>
+          <QuoteOfTheDay />
+        </View>
+
         <SessionCarousel
           title="Más de lo que te gusta"
           sessions={filteredMoreLike}
@@ -523,12 +528,6 @@ export default function HomeScreen() {
             />
           </View>
         )}
-
-        {/* ── 5. FRASE DEL DÍA ── */}
-        <View style={{ marginBottom: SECTION_GAP }}>
-          <QuoteOfTheDay />
-        </View>
-
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
