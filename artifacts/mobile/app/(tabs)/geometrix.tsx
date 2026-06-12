@@ -4267,7 +4267,7 @@ export default function GeometrixScreen() {
                   >
                     <View style={styles.emptyLogoWrap}>
                       <Image
-                        source={require("@/assets/images/geometrix/cubo-3.png")}
+                        source={require("@/assets/images/geometrix/cubo-4.png")}
                         style={styles.emptyLogo}
                         contentFit="contain"
                       />
@@ -6097,7 +6097,7 @@ export default function GeometrixScreen() {
           {/* Logo + título */}
           <View style={styles.landingHero}>
             <Image
-              source={require("@/assets/images/geometrix/cubo-3.png")}
+              source={require("@/assets/images/geometrix/cubo-4.png")}
               style={styles.landingLogo}
               contentFit="contain"
             />
