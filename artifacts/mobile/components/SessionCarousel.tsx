@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -107,7 +108,9 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
               {item.image != null ? (
                 <Image source={item.image} style={styles.thumb} resizeMode="cover" />
               ) : (
-                <View style={[styles.thumb, styles.thumbFallback]} />
+                <View style={[styles.thumb, styles.thumbFallback]}>
+                  <Feather name="music" size={32} color="#BE9650" />
+                </View>
               )}
             </View>
             <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   thumb: { width: CARD_W, height: CARD_W },
-  thumbFallback: { backgroundColor: "rgba(190,150,80,0.10)" },
+  thumbFallback: { backgroundColor: "rgba(190,150,80,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
     position: "absolute",
     top: 6,
