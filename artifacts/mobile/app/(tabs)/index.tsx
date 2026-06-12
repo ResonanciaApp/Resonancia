@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headerTabChipSubActive: {
-    backgroundColor: SUB_CHIP_ACTIVE_BG,
+    backgroundColor: "#a48a4b",
   },
   headerTabText: {
     fontSize: 13,
