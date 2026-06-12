@@ -4180,21 +4180,7 @@ export default function GeometrixScreen() {
                 </Animated.View>
               )}
             </View>
-            {/* Hold: posición absoluta debajo del undo, mismo left que actionBarLeft */}
-            {active.length >= 2 && (
-              <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarHold}>
-                <Pressable
-                  onPress={() => setHoldMode((v) => !v)}
-                  style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
-                  accessibilityRole="button"
-                  accessibilityLabel={holdMode ? "Desactivar modo Hold" : "Activar modo Hold (transforma todas las capas)"}
-                  hitSlop={4}
-                >
-                  <HandIcon size={16} color={holdMode ? colors.primary : CANVAS_ICON} />
-                </Pressable>
-              </Animated.View>
-            )}
-            {/* Derecha: herramientas en fade + ojo anclado */}
+            {/* Derecha: herramientas en fade + ojo + hold (columna) */}
             <View style={styles.actionBarRight}>
               <Animated.View pointerEvents={pillOpen ? "auto" : "none"} style={[styles.actionBarFadeGroup, pillStyle]}>
                 {pillActions.map((a) => (
@@ -4214,15 +4200,30 @@ export default function GeometrixScreen() {
                   </Pressable>
                 ))}
               </Animated.View>
-              <Pressable
-                onPress={() => setPillOpen((o) => !o)}
-                style={styles.actionTopBtn}
-                accessibilityRole="button"
-                accessibilityLabel={pillOpen ? "Ocultar herramientas" : "Mostrar herramientas"}
-                hitSlop={8}
-              >
-                <Feather name={pillOpen ? "eye-off" : "eye"} size={16} color={pillOpen ? colors.primary : CANVAS_ICON} />
-              </Pressable>
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Pressable
+                  onPress={() => setPillOpen((o) => !o)}
+                  style={styles.actionTopBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel={pillOpen ? "Ocultar herramientas" : "Mostrar herramientas"}
+                  hitSlop={8}
+                >
+                  <Feather name={pillOpen ? "eye-off" : "eye"} size={16} color={pillOpen ? colors.primary : CANVAS_ICON} />
+                </Pressable>
+                {active.length >= 2 && (
+                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                    <Pressable
+                      onPress={() => setHoldMode((v) => !v)}
+                      style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
+                      accessibilityRole="button"
+                      accessibilityLabel={holdMode ? "Desactivar modo Hold" : "Activar modo Hold (transforma todas las capas)"}
+                      hitSlop={4}
+                    >
+                      <HandIcon size={16} color={holdMode ? colors.primary : CANVAS_ICON} />
+                    </Pressable>
+                  </Animated.View>
+                )}
+              </View>
             </View>
           </View>
 
@@ -4463,7 +4464,7 @@ export default function GeometrixScreen() {
 
           {/* Controles flotantes — solo los 3 permitidos */}
           <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-            {/* Izquierda: deshacer + adelantar + hold */}
+            {/* Izquierda: deshacer + adelantar */}
             <View pointerEvents="box-none" style={[styles.fullscreenEditControls, { left: 16, top: insets.top + 12 }]}>
               {canUndo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
@@ -4479,24 +4480,10 @@ export default function GeometrixScreen() {
                   </Pressable>
                 </Animated.View>
               )}
-              {active.length >= 2 && (
-                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
-                  <Pressable
-                    onPress={() => setHoldMode((v) => !v)}
-                    style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
-                    hitSlop={4}
-                    accessibilityRole="button"
-                    accessibilityLabel={holdMode ? "Desactivar Hold" : "Activar Hold"}
-                  >
-                    <HandIcon size={17} color={holdMode ? colors.primary : CANVAS_ICON} />
-                  </Pressable>
-                </Animated.View>
-              )}
             </View>
 
-            {/* Derecha: minimizar + flechita */}
+            {/* Derecha: minimizar + ojo + hold (columna) */}
             <View style={[styles.fullscreenEditControls, { right: 16, top: insets.top + 12 }]}>
-              {/* Salir del lienzo expandido */}
               <Pressable
                 onPress={exitFullscreen}
                 style={styles.actionTopBtn}
@@ -4506,7 +4493,6 @@ export default function GeometrixScreen() {
               >
                 <Feather name="minimize-2" size={16} color={CANVAS_ICON} />
               </Pressable>
-              {/* Flechita desplegable */}
               <Pressable
                 onPress={() => setPillOpen((o) => !o)}
                 style={styles.actionTopBtn}
@@ -4520,6 +4506,19 @@ export default function GeometrixScreen() {
                   color={pillOpen ? colors.primary : CANVAS_ICON}
                 />
               </Pressable>
+              {active.length >= 2 && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Pressable
+                    onPress={() => setHoldMode((v) => !v)}
+                    style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
+                    hitSlop={4}
+                    accessibilityRole="button"
+                    accessibilityLabel={holdMode ? "Desactivar Hold" : "Activar Hold"}
+                  >
+                    <HandIcon size={17} color={holdMode ? colors.primary : CANVAS_ICON} />
+                  </Pressable>
+                </Animated.View>
+              )}
             </View>
 
             {/* Barra horizontal (fullscreen): misma lógica de fade, sin contenedor */}
