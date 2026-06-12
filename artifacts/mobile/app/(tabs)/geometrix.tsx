@@ -2203,7 +2203,7 @@ export default function GeometrixScreen() {
     motion: true,
     glow: 0,
     bgColor: null,
-    bgGradientId: null,
+    bgGradientId: "violeta-noche",
     bgBrightness: 0.5,
     bgPattern: null,
   });
