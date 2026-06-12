@@ -136,6 +136,7 @@ export const BG_GRADIENTS: { id: string; colors: readonly [string, string] }[] =
   { id: "vino-noche", colors: ["#280B16", "#06070F"] },
   { id: "bosque-noche", colors: ["#0A2614", "#06070F"] },
   { id: "ambar-noche", colors: ["#2A1A05", "#06070F"] },
+  { id: "brasa-negra", colors: ["#040404", "#1C0E02"] },
 ];
 
 /** Resolver del degradado de TRAZO. null/desconocido → undefined (color sólido). */
