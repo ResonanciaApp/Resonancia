@@ -6418,7 +6418,6 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   catScroll: {
-    flexGrow: 0,
     flex: 1,
   },
   catScrollContent: {
