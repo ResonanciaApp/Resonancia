@@ -3909,31 +3909,42 @@ export default function GeometrixScreen() {
           </View>
         </Modal>
 
-        {/* Tab de categorías: slider horizontal encima del carrusel */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.catScroll}
-          contentContainerStyle={styles.catScrollContent}
-        >
-          {GEOMETRY_CATEGORIES.map((c) => {
-            const on = activeCategory === c.id;
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => setActiveCategory(c.id)}
-                style={[styles.catChip, on ? styles.catChipOn : null]}
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={`Filtrar geometrías: ${c.label}`}
-              >
-                <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
-                  {c.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        {/* Tab de categorías + botón salir */}
+        <View style={styles.catRow}>
+          <Pressable
+            onPress={() => setShowLanding(true)}
+            style={styles.exitBtn}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Salir del lienzo"
+          >
+            <Feather name="chevron-left" size={20} color="rgba(255,255,255,0.55)" />
+          </Pressable>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.catScroll}
+            contentContainerStyle={styles.catScrollContent}
+          >
+            {GEOMETRY_CATEGORIES.map((c) => {
+              const on = activeCategory === c.id;
+              return (
+                <Pressable
+                  key={c.id}
+                  onPress={() => setActiveCategory(c.id)}
+                  style={[styles.catChip, on ? styles.catChipOn : null]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+                >
+                  <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
+                    {c.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
 
         <GeometrixCarousel
           active={active}
@@ -6394,8 +6405,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  catRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 6,
+  },
+  exitBtn: {
+    width: 32,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
   catScroll: {
     flexGrow: 0,
+    flex: 1,
   },
   catScrollContent: {
     flexDirection: "row",
