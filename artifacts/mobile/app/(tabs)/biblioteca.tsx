@@ -518,6 +518,32 @@ function SortSheet({
   );
 }
 
+// ── Wrapper animado para transiciones de tab ──────────────────────────────────
+function AnimatedTabContent({
+  animType,
+  children,
+}: {
+  animType: "slide" | "fade" | "none";
+  children: React.ReactNode;
+}) {
+  const opacity = useRef(new Animated.Value(animType === "none" ? 1 : 0)).current;
+  const tx      = useRef(new Animated.Value(animType === "slide" ? 28 : 0)).current;
+
+  useEffect(() => {
+    if (animType === "none") return;
+    Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 240, useNativeDriver: true }),
+      Animated.timing(tx,      { toValue: 0, duration: 240, useNativeDriver: true }),
+    ]).start();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <Animated.View style={{ opacity, transform: [{ translateX: tx }] }}>
+      {children}
+    </Animated.View>
+  );
+}
+
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function BibliotecaScreen() {
   const insets = useSafeAreaInsets();
@@ -937,24 +963,33 @@ export default function BibliotecaScreen() {
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Ordenar + toggle vista — solo cuando hay un tab activo */}
-        {activeTab !== null && (
-          <View style={styles.controlRow}>
-            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <Feather name="chevrons-down" size={14} color={MUTED} />
-              <Text style={styles.sortText}>
-                {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
-              </Text>
-            </Pressable>
-            <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
-              {viewMode === "list"
-                ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
-                : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
-              }
-            </Pressable>
-          </View>
-        )}
-        {renderContent()}
+        <AnimatedTabContent
+          key={activeTab ?? "general"}
+          animType={
+            activeTab === null        ? "none"
+            : activeTab === "playlists" ? "slide"
+            : "fade"
+          }
+        >
+          {/* Ordenar + toggle vista — solo cuando hay un tab activo */}
+          {activeTab !== null && (
+            <View style={styles.controlRow}>
+              <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
+                <Feather name="chevrons-down" size={14} color={MUTED} />
+                <Text style={styles.sortText}>
+                  {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
+                </Text>
+              </Pressable>
+              <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
+                {viewMode === "list"
+                  ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
+                  : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
+                }
+              </Pressable>
+            </View>
+          )}
+          {renderContent()}
+        </AnimatedTabContent>
       </ScrollView>
 
       {/* Overlays */}
