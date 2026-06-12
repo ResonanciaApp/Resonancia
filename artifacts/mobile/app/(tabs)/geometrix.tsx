@@ -6341,9 +6341,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  catChipOn: {
-    backgroundColor: "#BE9650",
-  },
+  catChipOn: {},
   catChipText: {
     fontSize: 13,
     fontWeight: "400",
@@ -6351,7 +6349,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   catChipTextOn: {
-    color: "#0B0F14",
+    color: "#fbf9f1",
     fontWeight: "600",
   },
   grid: { flexGrow: 0 },
