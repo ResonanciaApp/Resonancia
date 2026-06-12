@@ -160,10 +160,14 @@ export default function HomeScreen() {
   const subBg0SV = useSharedValue(0);
   const subBg1SV = useSharedValue(0);
 
-  const subBg0AnimStyle    = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
-  const subBg1AnimStyle    = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
-  const subBgInv0AnimStyle = useAnimatedStyle(() => ({ opacity: 1 - subBg0SV.value }));
-  const subBgInv1AnimStyle = useAnimatedStyle(() => ({ opacity: 1 - subBg1SV.value }));
+  // Fondos: fade suave
+  const subBg0AnimStyle = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
+  const subBg1AnimStyle = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
+  // Textos: switch instantáneo en el punto medio (evita efecto doble/borroso)
+  const subTextBold0 = useAnimatedStyle(() => ({ opacity: subBg0SV.value >= 0.5 ? 1 : 0 }));
+  const subTextBold1 = useAnimatedStyle(() => ({ opacity: subBg1SV.value >= 0.5 ? 1 : 0 }));
+  const subTextReg0  = useAnimatedStyle(() => ({ opacity: subBg0SV.value < 0.5  ? 1 : 0 }));
+  const subTextReg1  = useAnimatedStyle(() => ({ opacity: subBg1SV.value < 0.5  ? 1 : 0 }));
 
   useEffect(() => {
     const DUR = 220;
@@ -378,10 +382,11 @@ export default function HomeScreen() {
                         pointerEvents={sesionesOpen ? "auto" : "none"}
                       >
                         {SES_SUB_FILTERS.map((sf, i) => {
-                          const isActive      = sesSubFilter === sf.id;
-                          const bgAnimStyle   = i === 0 ? subBg0AnimStyle    : subBg1AnimStyle;
-                          const bgInvAnimStyle = i === 0 ? subBgInv0AnimStyle : subBgInv1AnimStyle;
-                          const activeBg      = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
+                          const isActive     = sesSubFilter === sf.id;
+                          const bgAnimStyle  = i === 0 ? subBg0AnimStyle : subBg1AnimStyle;
+                          const txtBoldStyle = i === 0 ? subTextBold0    : subTextBold1;
+                          const txtRegStyle  = i === 0 ? subTextReg0     : subTextReg1;
+                          const activeBg     = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
                           return (
                             <Pressable
                               key={sf.id}
@@ -404,10 +409,10 @@ export default function HomeScreen() {
                               <View>
                                 {/* Spacer invisible bold → da alto y ancho al contenedor */}
                                 <Text numberOfLines={1} style={[styles.sesSegBtnTextBold, { color: "transparent" }]}>{sf.label}</Text>
-                                {/* Bold: aparece con el fondo */}
-                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, bgAnimStyle]}>{sf.label}</RAnimated.Text>
-                                {/* Regular: desaparece con el fondo */}
-                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnText, styles.sesSegBtnTextOverlay, bgInvAnimStyle]}>{sf.label}</RAnimated.Text>
+                                {/* Bold: switch en punto medio del fade */}
+                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, txtBoldStyle]}>{sf.label}</RAnimated.Text>
+                                {/* Regular: switch inverso */}
+                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnText, styles.sesSegBtnTextOverlay, txtRegStyle]}>{sf.label}</RAnimated.Text>
                               </View>
                             </Pressable>
                           );
