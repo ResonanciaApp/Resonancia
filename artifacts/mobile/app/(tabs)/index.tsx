@@ -355,11 +355,11 @@ export default function HomeScreen() {
                     }}
                     style={({ pressed }) => [
                       styles.headerTabChip,
-                      sel && styles.headerTabChipActive,
+                      sel && (tab.id === "musica" ? styles.sesMusicaChipActive : styles.headerTabChipActive),
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
-                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+                    <Text style={[styles.headerTabText, sel && tab.id !== "musica" && styles.headerTabTextActive]}>
                       {tab.label}
                     </Text>
                   </Pressable>
@@ -679,6 +679,9 @@ const styles = StyleSheet.create({
   },
   sesMeditacionChipActive: {
     backgroundColor: "#6B4C7C",
+  },
+  sesMusicaChipActive: {
+    backgroundColor: "#406EAC",
   },
   headerTabChipActive: {
     backgroundColor: "#BE9650",
