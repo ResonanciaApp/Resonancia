@@ -486,8 +486,8 @@ export function MixerSheet() {
             </Pressable>
           </ScrollView>
 
-          {/* Separador */}
-          <View style={[styles.warmSeparator, { backgroundColor: palette.separator }]} />
+          {/* Separador sonidos / tab */}
+          <View style={styles.warmSeparator} />
 
           {/* Footer: Timer | Play | Guardar + Actualizar */}
           <View style={styles.footerRow}>
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     marginBottom: 15,
   },
-  warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -2 },
+  warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(255,255,255,0.03)" },
   headerDivider: { height: 1, marginTop: 4, marginBottom: 29, marginHorizontal: -2 },
   thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.5)" },
   thumbRadius: { borderRadius: 11 },
