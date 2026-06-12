@@ -65,8 +65,8 @@ const NAV_TABS = [
   { id: "musica",   label: "Música",   cats: ["musica-sonidos"] },
 ];
 const SES_SUB_FILTERS = [
-  { id: "sonidos-ancestrales",  label: "Sonoterapia"  },
-  { id: "meditaciones-guiadas", label: "Meditaciones" },
+  { id: "sonidos-ancestrales",  label: "Ancestral"  },
+  { id: "meditaciones-guiadas", label: "Meditación" },
 ];
 // #BE9650 × 0.96 ≈ 4% más oscuro
 const SUB_CHIP_ACTIVE_BG = "#B6904D";
