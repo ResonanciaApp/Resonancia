@@ -63,6 +63,7 @@ import Svg, {
   Line,
   LinearGradient as SvgLinearGradient,
   Path,
+  Polygon,
   RadialGradient,
   Rect,
   Stop,
@@ -2036,6 +2037,141 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
     </>
   );
 });
+
+/* ─── Crear Geometría Card — Crystal Nebula ──────────────────────────────── */
+const CB_BLUE  = "#6584d4";
+const CB_BLUE2 = "#c7caec";
+const CB_GOLD  = "#BE9650";
+
+// Puntos de estrella de 12 vértices (alternando r=16 y r=8)
+const STAR_PTS = Array.from({ length: 12 }, (_, i) => {
+  const a   = ((i * 30) - 90) * Math.PI / 180;
+  const rad = i % 2 === 0 ? 16 : 8;
+  return `${29 + rad * Math.cos(a)},${29 + rad * Math.sin(a)}`;
+}).join(" ");
+
+function CrearGeometriaCard({ onPress }: { onPress: () => void }) {
+  const rotAnim     = useSharedValue(0);
+  const nebulaOp    = useSharedValue(0.12);
+  const nebulaScale = useSharedValue(1);
+
+  useEffect(() => {
+    rotAnim.value = withRepeat(
+      withTiming(360, { duration: 18000, easing: Easing.linear }),
+      -1, false,
+    );
+    nebulaOp.value = withRepeat(
+      withSequence(
+        withTiming(0.20, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
+        withTiming(0.08, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
+      ),
+      -1, false,
+    );
+    nebulaScale.value = withRepeat(
+      withSequence(
+        withTiming(1.15, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
+        withTiming(1,    { duration: 3000, easing: Easing.inOut(Easing.sin) }),
+      ),
+      -1, false,
+    );
+  }, []);
+
+  const rotStyle    = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotAnim.value}deg` }],
+  }));
+  const nebulaStyle = useAnimatedStyle(() => ({
+    opacity: nebulaOp.value,
+    transform: [{ scale: nebulaScale.value }],
+  }));
+
+  const PARTICLES = [
+    { l: 160, t: 10, r: 1.5, op: 0.55 },
+    { l: 228, t: 28, r: 1.0, op: 0.35 },
+    { l: 120, t: 48, r: 1.2, op: 0.42 },
+    { l: 250, t: 54, r: 0.9, op: 0.28 },
+  ] as const;
+
+  return (
+    <Pressable
+      style={({ pressed }) => [{ opacity: pressed ? 0.78 : 1 }]}
+      onPress={onPress}
+      accessibilityRole="button"
+    >
+      {/* Sombra exterior azul */}
+      <View style={styles.cbOuter}>
+        <View style={styles.cbCard}>
+          {/* Nebulosa respira */}
+          <Animated.View style={[styles.cbNebula, nebulaStyle]} />
+
+          {/* Cuadrícula de fondo */}
+          <Svg style={StyleSheet.absoluteFillObject} pointerEvents="none">
+            {[86, 172, 258].map((x, i) => (
+              <Line key={`v${i}`} x1={x} y1={0} x2={x} y2={90}
+                stroke={CB_BLUE} strokeWidth={0.4} opacity={0.07} />
+            ))}
+            {[29, 58].map((y, i) => (
+              <Line key={`h${i}`} x1={0} y1={y} x2={342} y2={y}
+                stroke={CB_BLUE} strokeWidth={0.4} opacity={0.07} />
+            ))}
+          </Svg>
+
+          {/* Partículas de luz */}
+          {PARTICLES.map((p, i) => (
+            <View key={i} style={{
+              position: "absolute", left: p.l, top: p.t,
+              width: p.r * 2, height: p.r * 2, borderRadius: p.r,
+              backgroundColor: CB_BLUE2, opacity: p.op,
+            }} />
+          ))}
+
+          {/* Fila de contenido */}
+          <View style={styles.cbRow}>
+            {/* Ícono */}
+            <View style={styles.cbIconWrap}>
+              {/* Base estática: círculo + plus + punto dorado */}
+              <Svg width={58} height={58} viewBox="0 0 58 58"
+                style={StyleSheet.absoluteFillObject}>
+                <Circle cx={29} cy={29} r={26}
+                  fill="rgba(101,132,212,0.12)"
+                  stroke={CB_BLUE} strokeWidth={0.8} opacity={0.65} />
+                <Line x1={29} y1={21} x2={29} y2={37}
+                  stroke={CB_BLUE2} strokeWidth={2.2} strokeLinecap="round" />
+                <Line x1={21} y1={29} x2={37} y2={29}
+                  stroke={CB_BLUE2} strokeWidth={2.2} strokeLinecap="round" />
+                <Circle cx={29} cy={29} r={2.8} fill={CB_GOLD} opacity={0.9} />
+              </Svg>
+              {/* Estrella giratoria encima */}
+              <Animated.View
+                style={[StyleSheet.absoluteFillObject, rotStyle]}
+                pointerEvents="none"
+              >
+                <Svg width={58} height={58} viewBox="0 0 58 58">
+                  <Polygon points={STAR_PTS}
+                    fill="none" stroke={CB_BLUE} strokeWidth={0.8}
+                    opacity={0.5} />
+                </Svg>
+              </Animated.View>
+            </View>
+
+            {/* Texto */}
+            <View style={styles.cbText}>
+              <Text style={styles.cbTitle}>Crear Geometría</Text>
+              <Text style={styles.cbDesc}>Comienza desde cero</Text>
+              <View style={styles.cbTag}>
+                <Text style={styles.cbTagText}>LIENZO VACÍO</Text>
+              </View>
+            </View>
+
+            {/* Chevron en círculo */}
+            <View style={styles.cbChevron}>
+              <Feather name="chevron-right" size={12} color={CB_BLUE2} />
+            </View>
+          </View>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
 
 export default function GeometrixScreen() {
   const insets = useSafeAreaInsets();
@@ -5990,23 +6126,13 @@ export default function GeometrixScreen() {
 
           {/* Menú de opciones */}
           <View style={styles.landingMenu}>
-            {/* Crear Geometría — primario */}
-            <Pressable
-              style={({ pressed }) => [styles.landingItem, styles.landingItemPrimary, { opacity: pressed ? 0.8 : 1 }]}
+            {/* Crear Geometría — Crystal Nebula */}
+            <CrearGeometriaCard
               onPress={() => {
                 setShowLanding(false);
                 stopIntro();
               }}
-            >
-              <View style={[styles.landingItemIcon, styles.landingItemIconPrimary]}>
-                <Feather name="plus-circle" size={22} color="#0B0F14" />
-              </View>
-              <View style={styles.landingItemText}>
-                <Text style={[styles.landingItemTitle, { color: "#0B0F14" }]}>Crear Geometría</Text>
-                <Text style={[styles.landingItemDesc, { color: "rgba(11,15,20,0.65)" }]}>Comienza desde cero</Text>
-              </View>
-              <Feather name="chevron-right" size={16} color="rgba(11,15,20,0.5)" />
-            </Pressable>
+            />
 
             {/* Mis Creaciones */}
             <Pressable
@@ -6106,6 +6232,83 @@ const styles = StyleSheet.create({
   landingMenu: {
     gap: 10,
   },
+  /* ── Crystal Nebula card styles ── */
+  cbOuter: {
+    borderRadius: 18,
+    shadowColor: "#6584d4",
+    shadowOpacity: 0.28,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 10,
+  },
+  cbCard: {
+    backgroundColor: "rgba(8,14,36,0.97)",
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(101,132,212,0.48)",
+    overflow: "hidden",
+  },
+  cbNebula: {
+    position: "absolute",
+    width: 200,
+    height: 140,
+    right: -20,
+    top: "50%" as unknown as number,
+    marginTop: -70,
+    borderRadius: 100,
+    backgroundColor: "#6584d4",
+  },
+  cbRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    padding: 15,
+  },
+  cbIconWrap: {
+    width: 58,
+    height: 58,
+    flexShrink: 0,
+    position: "relative",
+  },
+  cbText: { flex: 1 },
+  cbTitle: {
+    fontSize: 15,
+    fontWeight: "700" as const,
+    color: "#EDE1D3",
+    marginBottom: 3,
+    letterSpacing: 0.3,
+  },
+  cbDesc: {
+    fontSize: 12,
+    color: "#7A8FA8",
+    lineHeight: 17,
+  },
+  cbTag: {
+    marginTop: 6,
+    alignSelf: "flex-start" as const,
+    backgroundColor: "rgba(101,132,212,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(101,132,212,0.2)",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  cbTagText: {
+    fontSize: 10,
+    color: "#c7caec",
+    letterSpacing: 0.5,
+  },
+  cbChevron: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(101,132,212,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(101,132,212,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   landingItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -6113,9 +6316,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.04)",
-  },
-  landingItemPrimary: {
-    backgroundColor: "#BE9650",
   },
   landingItemIcon: {
     width: 46,
