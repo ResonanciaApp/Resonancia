@@ -360,7 +360,7 @@ export default function HomeScreen() {
                       maxWidth: subFilterWidthAnim.interpolate({
                         inputRange: [0, 1], outputRange: [0, 300],
                       }),
-                      overflow: "visible",
+                      overflow: "hidden",
                       marginLeft: -32,
                     }}>
                       {/* Capa interna: opacity + translateX (native driver) */}
@@ -664,6 +664,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     height: 32,
+    minWidth: 230,
+    flexShrink: 0,
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
     paddingRight: 3,
