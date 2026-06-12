@@ -8,14 +8,20 @@ import {
   Animated,
   Dimensions,
   Image,
+  LayoutAnimation,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  UIManager,
   View,
 } from "react-native";
+
+if (Platform.OS === "android") {
+  UIManager.setLayoutAnimationEnabledExperimental?.(true);
+}
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
@@ -148,29 +154,23 @@ export default function HomeScreen() {
   const [sesionesVisible, setSesionesVisible] = useState(false);
   const [sesSubFilter, setSesSubFilter] = useState<string | null>(null);
   const subFilterAnim = useRef(new Animated.Value(0)).current;
-  const subFilterWidthAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (sesionesOpen) {
+      subFilterAnim.setValue(0);
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setSesionesVisible(true);
-      Animated.parallel([
-        Animated.timing(subFilterAnim, {
-          toValue: 1, duration: 220, useNativeDriver: true,
-        }),
-        Animated.timing(subFilterWidthAnim, {
-          toValue: 1, duration: 220, useNativeDriver: false,
-        }),
-      ]).start();
+      Animated.timing(subFilterAnim, {
+        toValue: 1, duration: 220, useNativeDriver: true,
+      }).start();
     } else {
-      Animated.parallel([
-        Animated.timing(subFilterAnim, {
-          toValue: 0, duration: 180, useNativeDriver: true,
-        }),
-        Animated.timing(subFilterWidthAnim, {
-          toValue: 0, duration: 180, useNativeDriver: false,
-        }),
-      ]).start(({ finished }) => {
-        if (finished) setSesionesVisible(false);
+      Animated.timing(subFilterAnim, {
+        toValue: 0, duration: 180, useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setSesionesVisible(false);
+        }
       });
     }
   }, [sesionesOpen]);
@@ -355,26 +355,10 @@ export default function HomeScreen() {
 
                   {/* Sub-filtros: aparecen justo después de "Sesiones" */}
                   {tab.id === "sesiones" && sesionesVisible && (
-                    /* Capa externa: maxWidth (JS driver) empuja "Música" */
-                    <Animated.View style={{
-                      maxWidth: subFilterWidthAnim.interpolate({
-                        inputRange: [0, 1], outputRange: [0, 300],
-                      }),
-                      overflow: "hidden",
-                      marginLeft: -32,
-                    }}>
-                      {/* Capa interna: opacity + translateX (native driver) */}
                       <Animated.View
                         style={[
                           styles.sesSegPill,
-                          {
-                            opacity: subFilterAnim,
-                            transform: [{
-                              translateX: subFilterAnim.interpolate({
-                                inputRange: [0, 1], outputRange: [-24, 0],
-                              }),
-                            }],
-                          },
+                          { opacity: subFilterAnim },
                         ]}
                       >
                         {SES_SUB_FILTERS.map((sf, i) => {
@@ -403,7 +387,6 @@ export default function HomeScreen() {
                           );
                         })}
                       </Animated.View>
-                    </Animated.View>
                   )}
                 </React.Fragment>
               );
@@ -664,8 +647,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     height: 32,
-    minWidth: 230,
-    flexShrink: 0,
+    marginLeft: -32,
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
     paddingRight: 3,
