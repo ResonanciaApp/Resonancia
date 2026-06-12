@@ -345,7 +345,7 @@ export default function HomeScreen() {
                           opacity: subFilterAnim,
                           transform: [{
                             translateX: subFilterAnim.interpolate({
-                              inputRange: [0, 1], outputRange: [24, 0],
+                              inputRange: [0, 1], outputRange: [-24, 0],
                             }),
                           }],
                         },
