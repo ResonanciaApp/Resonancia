@@ -372,7 +372,7 @@ export default function GeometrixCreacionesScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1A1030" }]}>
+    <View style={[styles.root, { backgroundColor: "#0B0714" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Render oculto que se captura como póster. Queda detrás del degradado
