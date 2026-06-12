@@ -86,6 +86,7 @@ import {
   gradientColors,
   HOME_GRADIENT,
   scaleColors,
+  scaleHex,
   STROKE_GRADIENTS,
   type BgPattern,
   type CanvasGuide,
@@ -3798,6 +3799,15 @@ export default function GeometrixScreen() {
     : HOME_GRADIENT;
   const canvasBgLocations = selectedBg ? undefined : ([0, 0.5, 1] as [number, number, number]);
 
+  // Fondo de los sheets que responde al tono del degradado seleccionado.
+  const sheetBgColor = useMemo(() => {
+    if (master.bgGradientId) {
+      const cols = bgGradientColors(master.bgGradientId);
+      return cols ? scaleHex(cols[0], 0.55) : "#060d1f";
+    }
+    if (master.bgColor) return scaleHex(master.bgColor, 0.25);
+    return "#060d1f";
+  }, [master.bgGradientId, master.bgColor]);
 
   return (
     <View style={styles.root}>
@@ -4896,7 +4906,7 @@ export default function GeometrixScreen() {
           }}
           style={[
             styles.sheet,
-            { paddingBottom: insets.bottom + 16 },
+            { paddingBottom: insets.bottom + 16, backgroundColor: sheetBgColor },
             // Una vez congelado, alto FIJO: al desplegar una sección el contenido
             // scrollea dentro del sheet (arrastra hacia abajo) en vez de crecer
             // hacia arriba, y la vista previa mantiene tamaño y posición.
@@ -5629,7 +5639,7 @@ export default function GeometrixScreen() {
           }}
           style={[
             styles.sheet,
-            { paddingBottom: insets.bottom + 16, backgroundColor: "#060d1f" },
+            { paddingBottom: insets.bottom + 16, backgroundColor: sheetBgColor },
             // Una vez congelado, alto FIJO: la vista previa (anclada a este alto)
             // no cambia de tamaño/posición y, al desplegar una sección, el
             // contenido scrollea dentro del sheet en vez de crecer hacia arriba.
