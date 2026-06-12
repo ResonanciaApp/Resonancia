@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import RAnimated, {
+  interpolateColor,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -156,6 +157,24 @@ export default function HomeScreen() {
   const [sesSubFilter, setSesSubFilter] = useState<string | null>(null);
   const spacerWidthSV = useSharedValue(0);
   const pillOpacitySV = useSharedValue(0);
+  // SVs para fade de fondo y color de texto de cada sub-botón (0=inactivo, 1=activo)
+  const subBg0SV = useSharedValue(0);
+  const subBg1SV = useSharedValue(0);
+
+  const subBg0AnimStyle  = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
+  const subBg1AnimStyle  = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
+  const subText0AnimStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(subBg0SV.value, [0, 1], ["#FFFFFF", "#0B0F14"]),
+  }));
+  const subText1AnimStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(subBg1SV.value, [0, 1], ["#FFFFFF", "#0B0F14"]),
+  }));
+
+  useEffect(() => {
+    const DUR = 220;
+    subBg0SV.value = withTiming(sesSubFilter === SES_SUB_FILTERS[0].id ? 1 : 0, { duration: DUR });
+    subBg1SV.value = withTiming(sesSubFilter === SES_SUB_FILTERS[1].id ? 1 : 0, { duration: DUR });
+  }, [sesSubFilter]);
 
   useEffect(() => {
     if (sesionesOpen) {
@@ -364,27 +383,35 @@ export default function HomeScreen() {
                         pointerEvents={sesionesOpen ? "auto" : "none"}
                       >
                         {SES_SUB_FILTERS.map((sf, i) => {
-                          const subSel = sesSubFilter === sf.id;
+                          const bgAnimStyle  = i === 0 ? subBg0AnimStyle  : subBg1AnimStyle;
+                          const txtAnimStyle = i === 0 ? subText0AnimStyle : subText1AnimStyle;
                           return (
                             <Pressable
                               key={sf.id}
                               onPress={() => {
-                                const next = subSel ? null : sf.id;
+                                const next = sesSubFilter === sf.id ? null : sf.id;
                                 setSesSubFilter(next);
                                 setActiveFilter(next ? [next] : NAV_TABS[1].cats);
                               }}
                               style={({ pressed }) => [
                                 styles.sesSegBtn,
                                 i === 0 && styles.sesSegBtnFirst,
-                                i === 0 && subSel
-                                  ? styles.sesSegBtnFirstActive
-                                  : subSel && styles.sesSegBtnActive,
                                 { opacity: pressed ? 0.75 : 1 },
                               ]}
                             >
-                              <Text style={[styles.headerTabText, { fontWeight: "600" }, subSel && styles.headerTabTextActive]}>
+                              {/* Fondo animado (fade 220ms) */}
+                              <RAnimated.View
+                                style={[
+                                  StyleSheet.absoluteFill,
+                                  styles.sesSegBtnBg,
+                                  i === 0 && styles.sesSegBtnBgFirst,
+                                  bgAnimStyle,
+                                ]}
+                              />
+                              {/* Texto con color animado */}
+                              <RAnimated.Text style={[styles.sesSegBtnText, txtAnimStyle]}>
                                 {sf.label}
-                              </Text>
+                              </RAnimated.Text>
                             </Pressable>
                           );
                         })}
@@ -676,13 +703,18 @@ const styles = StyleSheet.create({
   sesSegBtnFirst: {
     paddingLeft: 45,
   },
-  sesSegBtnFirstActive: {
+  sesSegBtnBg: {
     backgroundColor: SUB_CHIP_ACTIVE_BG,
+    borderRadius: 20,
+  },
+  sesSegBtnBgFirst: {
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
   },
-  sesSegBtnActive: {
-    backgroundColor: SUB_CHIP_ACTIVE_BG,
+  sesSegBtnText: {
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 0.1,
   },
   headerTabChip: {
     borderRadius: 20,
