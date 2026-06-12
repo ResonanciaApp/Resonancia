@@ -33,7 +33,7 @@ import { ARTISTS, type Artist } from "@/data/artists";
 import { GUIDES, type Guide } from "@/data/guides";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as UserFolder } from "@/context/FoldersPlaylistsContext";
-import { baseOf } from "@/data/geometries";
+import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 
 const { width } = Dimensions.get("window");
@@ -165,7 +165,13 @@ function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => voi
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
-        <Feather name="music" size={20} color={MUTED} />
+        {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
+        ) : pl.coverUri ? (
+          <Image source={{ uri: pl.coverUri }} style={styles.userPlCover} contentFit="cover" />
+        ) : (
+          <Feather name="music" size={20} color={MUTED} />
+        )}
       </View>
       <View style={styles.rowInfo}>
         <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
@@ -682,7 +688,13 @@ export default function BibliotecaScreen() {
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
                 <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(190,150,80,0.08)", alignItems: "center", justifyContent: "center" }]}>
-                  <Feather name="music" size={24} color={MUTED} />
+                  {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                    <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW * 0.55} strokeWidth={1.6} opacity={1} />
+                  ) : pl.coverUri ? (
+                    <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                  ) : (
+                    <Feather name="music" size={24} color={MUTED} />
+                  )}
                 </View>
                 <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
               </Pressable>
