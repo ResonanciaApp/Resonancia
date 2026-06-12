@@ -1797,7 +1797,7 @@ function SettingsSection({
         </Animated.View>
       </Pressable>
       {/* Línea separadora */}
-      <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginBottom: open && hasContent ? 10 : 0 }} />
+      <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.03)", marginBottom: open && hasContent ? 10 : 0 }} />
       {open && hasContent && (
         <Animated.View
           entering={FadeInDown.duration(220).easing(Easing.out(Easing.quad))}
@@ -6763,11 +6763,11 @@ const styles = StyleSheet.create({
   sheetHeaderVDivider: {
     width: 1,
     height: 18,
-    backgroundColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(255,255,255,0.09)",
   },
   sheetHeaderDivider: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     marginBottom: 14,
   },
   sheetTitle: { fontSize: 20, fontWeight: "700", color: CANVAS_ICON },
