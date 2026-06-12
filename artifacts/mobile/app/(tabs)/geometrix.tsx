@@ -4168,47 +4168,44 @@ export default function GeometrixScreen() {
           {/* Barra unificada: controles de edición (izq) + herramientas + ojo (der).
               Una sola fila plana; los iconos de herramientas hacen fade puro. */}
           <View pointerEvents="box-none" style={styles.actionBar}>
-            {/* Izquierda: columna — fila undo/redo/actualizar arriba, hold debajo */}
+            {/* Izquierda: undo / redo / actualizar (fila) */}
             <View style={styles.actionBarLeft}>
-              {/* Fila superior: undo + redo + actualizar */}
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                {canUndo && (
-                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
-                    <Pressable onPress={undo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Atrás (deshacer el último cambio)" hitSlop={4}>
-                      <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
-                    </Pressable>
-                  </Animated.View>
-                )}
-                {canRedo && (
-                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
-                    <Pressable onPress={redo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Adelantar (rehacer el último cambio)" hitSlop={4}>
-                      <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
-                    </Pressable>
-                  </Animated.View>
-                )}
-                {editingCreation && isDirty && (
-                  <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)} style={styles.actionBarItem}>
-                    <Pressable onPress={updateComposition} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Actualizar composición" hitSlop={4}>
-                      <Feather name="refresh-cw" size={16} color={CANVAS_ICON} />
-                    </Pressable>
-                  </Animated.View>
-                )}
-              </View>
-              {/* Fila inferior: hold — debajo del undo */}
-              {active.length >= 2 && (
+              {canUndo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
-                  <Pressable
-                    onPress={() => setHoldMode((v) => !v)}
-                    style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
-                    accessibilityRole="button"
-                    accessibilityLabel={holdMode ? "Desactivar modo Hold" : "Activar modo Hold (transforma todas las capas)"}
-                    hitSlop={4}
-                  >
-                    <HandIcon size={16} color={holdMode ? colors.primary : CANVAS_ICON} />
+                  <Pressable onPress={undo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Atrás (deshacer el último cambio)" hitSlop={4}>
+                    <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
+                  </Pressable>
+                </Animated.View>
+              )}
+              {canRedo && (
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
+                  <Pressable onPress={redo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Adelantar (rehacer el último cambio)" hitSlop={4}>
+                    <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
+                  </Pressable>
+                </Animated.View>
+              )}
+              {editingCreation && isDirty && (
+                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)} style={styles.actionBarItem}>
+                  <Pressable onPress={updateComposition} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Actualizar composición" hitSlop={4}>
+                    <Feather name="refresh-cw" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
             </View>
+            {/* Hold: posición absoluta debajo del undo, mismo left que actionBarLeft */}
+            {active.length >= 2 && (
+              <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarHold}>
+                <Pressable
+                  onPress={() => setHoldMode((v) => !v)}
+                  style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
+                  accessibilityRole="button"
+                  accessibilityLabel={holdMode ? "Desactivar modo Hold" : "Activar modo Hold (transforma todas las capas)"}
+                  hitSlop={4}
+                >
+                  <HandIcon size={16} color={holdMode ? colors.primary : CANVAS_ICON} />
+                </Pressable>
+              </Animated.View>
+            )}
             {/* Derecha: herramientas en fade + ojo anclado */}
             <View style={styles.actionBarRight}>
               <Animated.View pointerEvents={pillOpen ? "auto" : "none"} style={[styles.actionBarFadeGroup, pillStyle]}>
@@ -6441,8 +6438,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 2,
     top: 0,
-    flexDirection: "column",
-    alignItems: "flex-start",
+    bottom: 0,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  actionBarHold: {
+    position: "absolute",
+    left: 2,
+    top: 32,
+    width: 38,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionBarRight: {
     position: "absolute",
