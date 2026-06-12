@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import RAnimated, {
+  Easing,
   interpolateColor,
   runOnJS,
   useAnimatedStyle,
@@ -174,12 +175,6 @@ export default function HomeScreen() {
   const subText1AnimStyle = useAnimatedStyle(() => ({
     color: interpolateColor(subBg1SV.value, [0, 1], [SUB_TEXT_INACTIVE, SUB_TEXT_ACTIVE]),
   }));
-
-  useEffect(() => {
-    const DUR = 220;
-    subBg0SV.value = withTiming(sesSubFilter === SES_SUB_FILTERS[0].id ? 1 : 0, { duration: DUR });
-    subBg1SV.value = withTiming(sesSubFilter === SES_SUB_FILTERS[1].id ? 1 : 0, { duration: DUR });
-  }, [sesSubFilter]);
 
   useEffect(() => {
     if (sesionesOpen) {
@@ -397,6 +392,9 @@ export default function HomeScreen() {
                               key={sf.id}
                               onPress={() => {
                                 const next = isActive ? null : sf.id;
+                                const cfg = { duration: 200, easing: Easing.out(Easing.quad) };
+                                subBg0SV.value = withTiming(next === SES_SUB_FILTERS[0].id ? 1 : 0, cfg);
+                                subBg1SV.value = withTiming(next === SES_SUB_FILTERS[1].id ? 1 : 0, cfg);
                                 setSesSubFilter(next);
                                 setActiveFilter(next ? [next] : NAV_TABS[1].cats);
                               }}
