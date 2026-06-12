@@ -1573,7 +1573,7 @@ function CarouselTileInner({
           <View style={styles.tileGlyph}>
             <SacredGlyph
               id={baseOf(id)}
-              color={isSelected ? color : "#7A8FA8"}
+              color={isSelected ? color : "#fbf9f1"}
               size={tileW * 0.66}
               strokeWidth={isSelected ? 1.5 : 1.4}
             />
