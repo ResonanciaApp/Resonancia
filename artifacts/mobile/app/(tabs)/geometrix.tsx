@@ -101,6 +101,7 @@ import { SESSIONS, type Session } from "@/data/sessions";
 
 const colors = colorsConst.light;
 const CARD_BORDER = "rgba(242,235,213,0.04)";
+const CANVAS_ICON = "rgba(208,199,171,0.50)";
 
 // Snapshot inmutable de una composición, para el historial de "Atrás".
 type CompSnapshot = {
@@ -4183,7 +4184,7 @@ export default function GeometrixScreen() {
                     accessibilityLabel="Atrás (deshacer el último cambio)"
                     hitSlop={4}
                   >
-                    <Feather name="corner-up-left" size={16} color={colors.mutedForeground} />
+                    <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
@@ -4197,7 +4198,7 @@ export default function GeometrixScreen() {
                     accessibilityLabel="Adelantar (rehacer el último cambio)"
                     hitSlop={4}
                   >
-                    <Feather name="corner-up-right" size={16} color={colors.mutedForeground} />
+                    <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
@@ -4219,7 +4220,7 @@ export default function GeometrixScreen() {
                   >
                     <HandIcon
                       size={17}
-                      color={holdMode ? colors.primary : "rgba(242,235,213,0.70)"}
+                      color={holdMode ? colors.primary : CANVAS_ICON}
                     />
                   </Pressable>
                 </Animated.View>
@@ -4237,7 +4238,7 @@ export default function GeometrixScreen() {
                     accessibilityLabel="Actualizar composición"
                     hitSlop={4}
                   >
-                    <Feather name="refresh-cw" size={16} color={colors.mutedForeground} />
+                    <Feather name="refresh-cw" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
@@ -4269,7 +4270,7 @@ export default function GeometrixScreen() {
                     {a.gradient ? (
                       <GoldSlidersIcon size={16} />
                     ) : (
-                      <Feather name={a.icon} size={16} color={a.color ?? "#7a879d"} />
+                      <Feather name={a.icon} size={16} color={a.color ?? CANVAS_ICON} />
                     )}
                   </Pressable>
                 </React.Fragment>
@@ -4286,7 +4287,7 @@ export default function GeometrixScreen() {
               <Feather
                 name={pillOpen ? "eye-off" : "eye"}
                 size={16}
-                color={pillOpen ? colors.primary : "rgba(242,235,213,0.70)"}
+                color={pillOpen ? colors.primary : CANVAS_ICON}
               />
             </Pressable>
           </View>
@@ -4533,14 +4534,14 @@ export default function GeometrixScreen() {
               {canUndo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                   <Pressable onPress={undo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Deshacer">
-                    <Feather name="corner-up-left" size={16} color={colors.mutedForeground} />
+                    <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
               {canRedo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                   <Pressable onPress={redo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Adelantar">
-                    <Feather name="corner-up-right" size={16} color={colors.mutedForeground} />
+                    <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
@@ -4553,7 +4554,7 @@ export default function GeometrixScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={holdMode ? "Desactivar Hold" : "Activar Hold"}
                   >
-                    <HandIcon size={17} color={holdMode ? colors.primary : "rgba(242,235,213,0.70)"} />
+                    <HandIcon size={17} color={holdMode ? colors.primary : CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
@@ -4569,7 +4570,7 @@ export default function GeometrixScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="Salir del lienzo expandido"
               >
-                <Feather name="minimize-2" size={16} color={colors.mutedForeground} />
+                <Feather name="minimize-2" size={16} color={CANVAS_ICON} />
               </Pressable>
               {/* Flechita desplegable */}
               <Pressable
@@ -4582,7 +4583,7 @@ export default function GeometrixScreen() {
                 <Feather
                   name={pillOpen ? "eye-off" : "eye"}
                   size={16}
-                  color={pillOpen ? colors.primary : colors.mutedForeground}
+                  color={pillOpen ? colors.primary : CANVAS_ICON}
                 />
               </Pressable>
             </View>
@@ -4606,7 +4607,7 @@ export default function GeometrixScreen() {
                       {a.gradient ? (
                         <GoldSlidersIcon size={18} />
                       ) : (
-                        <Feather name={a.icon} size={18} color={a.color ?? "#7a879d"} />
+                        <Feather name={a.icon} size={18} color={a.color ?? CANVAS_ICON} />
                       )}
                     </Pressable>
                   </React.Fragment>
