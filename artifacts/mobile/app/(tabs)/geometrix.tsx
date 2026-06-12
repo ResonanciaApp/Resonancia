@@ -70,6 +70,7 @@ import Svg, {
 } from "react-native-svg";
 
 import { GeometrixPatternBg } from "@/components/GeometrixPatternBg";
+import { LandingBgGeo } from "@/components/LandingBgGeo";
 import { SacredGlyph, EXTENT, GLYPH_EXTENTS } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import {
@@ -5971,6 +5972,9 @@ export default function GeometrixScreen() {
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
+
+          {/* Geometrías sagradas animadas en el fondo */}
+          <LandingBgGeo />
 
           {/* Logo + título */}
           <View style={styles.landingHero}>
