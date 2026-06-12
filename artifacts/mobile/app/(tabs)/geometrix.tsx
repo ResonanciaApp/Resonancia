@@ -6439,7 +6439,7 @@ const styles = StyleSheet.create({
   },
   actionBarLeft: {
     position: "absolute",
-    left: 0,
+    left: 2,
     top: 0,
     flexDirection: "column",
     alignItems: "flex-start",
