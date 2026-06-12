@@ -87,6 +87,7 @@ import {
   HOME_GRADIENT,
   scaleColors,
   STROKE_GRADIENTS,
+  SWATCH_PALETTE,
   type BgPattern,
   type CanvasGuide,
   type GeoSettings,
@@ -168,11 +169,10 @@ function GradientSwatch({
 }
 
 /** Ajustes editables por geometría. Los sliders guardan 0–1. */
-function defaultSettings(id: GeometryId): GeoSettings {
-  const meta = GEOMETRIES.find((g) => g.id === id);
+function defaultSettings(_id: GeometryId): GeoSettings {
   return {
-    color: meta?.color ?? colors.primary,
-    gradientId: null,
+    color: "#B69BE0",
+    gradientId: "lavanda-azul",
     // Estática por defecto: el usuario activa el movimiento (giro/respirar/
     // fade) en los ajustes por capa cuando quiera.
     rotate: false,
@@ -190,7 +190,7 @@ function defaultSettings(id: GeometryId): GeoSettings {
     offsetY: 0,
     kaleidoscope: false,
     kaleidSegments: 6,
-    saturation: 0.5,
+    saturation: 0,
     bloom: 0,
     halo: 0,
     onda: 0,
@@ -5142,7 +5142,7 @@ export default function GeometrixScreen() {
                   <>
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={[styles.swatchRow, { marginTop: 10 }]}>
-                      {PALETTE.map((c) => {
+                      {SWATCH_PALETTE.map((c) => {
                         const on = !g0?.gradientId && g0?.color?.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
@@ -5764,7 +5764,7 @@ export default function GeometrixScreen() {
                   >
                     <Text style={styles.fieldLabel}>Color sólido</Text>
                     <View style={[styles.swatchRow, { marginTop: 10 }]}>
-                      {PALETTE.map((c) => {
+                      {SWATCH_PALETTE.map((c) => {
                         const on = !s.gradientId && s.color.toLowerCase() === c.toLowerCase();
                         return (
                           <Pressable
