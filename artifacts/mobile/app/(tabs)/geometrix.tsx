@@ -2204,7 +2204,7 @@ export default function GeometrixScreen() {
     glow: 0,
     bgColor: null,
     bgGradientId: "violeta-noche",
-    bgBrightness: 0.5,
+    bgBrightness: 0.02,
     bgPattern: null,
   });
   const { isPremium } = usePremium();
@@ -4960,7 +4960,9 @@ export default function GeometrixScreen() {
                     size={24}
                   />
                 </Pressable>
-                {BG_GRADIENTS.map((gr) => {
+                {BG_GRADIENTS.filter((gr) => ["violeta-noche", "indigo-noche", "verdeagua-noche", "vino-noche"].includes(gr.id))
+                  .sort((a, b) => ["violeta-noche", "indigo-noche", "verdeagua-noche", "vino-noche"].indexOf(a.id) - ["violeta-noche", "indigo-noche", "verdeagua-noche", "vino-noche"].indexOf(b.id))
+                  .map((gr) => {
                   const on = master.bgGradientId === gr.id;
                   return (
                     <Pressable
