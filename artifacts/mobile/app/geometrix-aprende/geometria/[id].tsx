@@ -102,7 +102,7 @@ export default function GeometrixAprendeDetalleScreen() {
         >
           <Feather name="arrow-left" size={18} color={colors.foreground} />
         </Pressable>
-        <Text style={[styles.headerTitle, { color: colors.mutedForeground }]} numberOfLines={1}>
+        <Text style={[styles.headerTitle, { color: "#c0bae0" }]} numberOfLines={1}>
           {geo.category === "sagradas" ? "Geometría Sagrada" : geo.category === "poliedros" ? "Poliedros 3D" : "Formas y Estrellas"}
         </Text>
         <Pressable style={[styles.iconBtn, { borderColor: colors.primary + "30" }]} hitSlop={8}>
@@ -144,7 +144,7 @@ export default function GeometrixAprendeDetalleScreen() {
         <View style={styles.attrGrid}>
           {learn.attributes.map((attr) => (
             <View key={attr.label} style={[styles.attrCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
-              <Text style={[styles.attrLabel, { color: colors.mutedForeground }]}>{attr.label}</Text>
+              <Text style={[styles.attrLabel, { color: "#c0bae0" }]}>{attr.label}</Text>
               <Text style={[styles.attrValue, { color: colors.foreground }]}>{attr.value}</Text>
             </View>
           ))}
@@ -154,7 +154,7 @@ export default function GeometrixAprendeDetalleScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.primary }]}>✦  Sobre esta geometría</Text>
           {paragraphs.map((para, i) => (
-            <Text key={i} style={[styles.para, { color: colors.mutedForeground }]}>{para}</Text>
+            <Text key={i} style={[styles.para, { color: "#c0bae0" }]}>{para}</Text>
           ))}
         </View>
 
