@@ -3787,19 +3787,15 @@ export default function GeometrixScreen() {
     shadowOffset: { width: 0, height: 0 },
   }));
 
-  // Vista previa lo más grande posible: cuadrado que llena el aire libre entre
-  // el tope seguro y el sheet de ajustes (medido), limitado por el ancho.
-  const previewFree = height - sheetHeight - insets.top - 12 - 36;
-  // Vista previa más grande (los controles del panel se compactaron para
-  // dejarle más aire), limitada por el ancho y el espacio libre medido.
+  // Vista previa: cuadrado lo más grande posible, anclado a 50 px del top
+  // y llegando hasta el sheet de ajustes (medido). Resta 24 px para la etiqueta
+  // "Vista previa" + gap.
   const previewSize = sheetHeight
-    ? Math.max(96, Math.min((width - 32) * 0.744, previewFree * 0.936))
+    ? Math.max(96, Math.min(width - 32, height - sheetHeight - 74))
     : 0;
-  // Vista previa del panel general: mismo tamaño que la de ajustes
-  // personalizados (idéntica fórmula), anclada a su propio sheet.
-  const generalPreviewFree = height - generalSheetHeight - insets.top - 12 - 36;
+  // Vista previa del panel general: misma fórmula.
   const generalPreviewSize = generalSheetHeight
-    ? Math.max(96, Math.min((width - 32) * 0.744, generalPreviewFree * 0.936))
+    ? Math.max(96, Math.min(width - 32, height - generalSheetHeight - 74))
     : 0;
   // En inmersión la geometría llena la pantalla, centrada.
   const immersiveSize = Math.min(width, height) * 0.96;
