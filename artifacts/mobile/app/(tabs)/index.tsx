@@ -344,13 +344,14 @@ export default function HomeScreen() {
                       if (tab.id === "sesiones") {
                         const next = !sesionesOpen;
                         setSesionesOpen(next);
-                        if (!next) { setSesAncestral(false); setSesMeditacion(false); }
-                        setActiveFilter(NAV_TABS[1].cats);
+                        setSesAncestral(false);
+                        setSesMeditacion(false);
+                        setActiveFilter(next ? NAV_TABS[1].cats : null);
                       } else {
                         setSesionesOpen(false);
                         setSesAncestral(false);
                         setSesMeditacion(false);
-                        setActiveFilter(tab.cats.length === 0 ? null : tab.cats);
+                        setActiveFilter(sel || tab.cats.length === 0 ? null : tab.cats);
                       }
                     }}
                     style={({ pressed }) => [
