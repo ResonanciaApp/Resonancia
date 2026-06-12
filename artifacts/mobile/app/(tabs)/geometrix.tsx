@@ -100,7 +100,7 @@ import { AUDIO_MAP } from "@/config/audio-map";
 import { SESSIONS, type Session } from "@/data/sessions";
 
 const colors = colorsConst.light;
-const CARD_BORDER = "#161f33";
+const CARD_BORDER = "#f2ebd5";
 
 // Snapshot inmutable de una composición, para el historial de "Atrás".
 type CompSnapshot = {
