@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 11,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#f2f3f8" },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#e4e6f5" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,
