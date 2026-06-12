@@ -363,7 +363,10 @@ export default function HomeScreen() {
                             }}
                             style={({ pressed }) => [
                               styles.sesSegBtn,
-                              subSel && styles.sesSegBtnActive,
+                              i === 0 && styles.sesSegBtnFirst,
+                              i === 0 && subSel
+                                ? styles.sesSegBtnFirstActive
+                                : subSel && styles.sesSegBtnActive,
                               { opacity: pressed ? 0.75 : 1 },
                             ]}
                           >
@@ -634,7 +637,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
     marginLeft: -25,
-    paddingLeft: 20,
     paddingRight: 3,
     gap: 2,
     zIndex: 0,
@@ -645,6 +647,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+  },
+  sesSegBtnFirst: {
+    paddingLeft: 22,
+  },
+  sesSegBtnFirstActive: {
+    backgroundColor: SUB_CHIP_ACTIVE_BG,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
   },
   sesSegBtnActive: {
     backgroundColor: SUB_CHIP_ACTIVE_BG,
