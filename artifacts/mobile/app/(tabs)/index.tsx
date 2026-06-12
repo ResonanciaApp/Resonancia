@@ -16,6 +16,14 @@ import {
   Text,
   View,
 } from "react-native";
+import RAnimated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
@@ -138,6 +146,45 @@ export default function HomeScreen() {
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
+
+  // Sub-filtros de Sesiones
+  const [sesionesOpen,    setSesionesOpen]    = useState(false);
+  const [sesionesVisible, setSesionesVisible] = useState(false);
+  const [sesAncestral,    setSesAncestral]    = useState(false);
+  const [sesMeditacion,   setSesMeditacion]   = useState(false);
+  const spacerWidthSV  = useSharedValue(0);
+  const pillOpacitySV  = useSharedValue(0);
+  const pillTranslateSV = useSharedValue(20);
+  const spacerAnimStyle = useAnimatedStyle(() => ({ width: spacerWidthSV.value }));
+  const pillAnimStyle   = useAnimatedStyle(() => ({
+    opacity:   pillOpacitySV.value,
+    transform: [{ translateX: pillTranslateSV.value }],
+  }));
+
+  useEffect(() => {
+    const easeOut = { duration: 200, easing: Easing.out(Easing.quad) };
+    if (sesionesOpen) {
+      spacerWidthSV.value   = 0;
+      pillOpacitySV.value   = 0;
+      pillTranslateSV.value = 20;
+      setSesionesVisible(true);
+      spacerWidthSV.value   = withTiming(188, easeOut);
+      pillOpacitySV.value   = withDelay(80, withTiming(1, { duration: 160 }));
+      pillTranslateSV.value = withDelay(80, withTiming(0, { duration: 180, easing: Easing.out(Easing.quad) }));
+    } else {
+      pillOpacitySV.value   = withTiming(0, { duration: 110 });
+      pillTranslateSV.value = withTiming(20, { duration: 130, easing: Easing.in(Easing.quad) });
+      spacerWidthSV.value   = withDelay(80, withTiming(0, { duration: 160 }, (finished) => {
+        if (finished) runOnJS(setSesionesVisible)(false);
+      }));
+    }
+  }, [sesionesOpen]);
+
+  const updateSesFilter = (anc: boolean, med: boolean) => {
+    if (anc && !med)  setActiveFilter(["sonidos-ancestrales"]);
+    else if (!anc && med) setActiveFilter(["meditaciones-guiadas"]);
+    else              setActiveFilter(NAV_TABS[1].cats);
+  };
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -285,23 +332,80 @@ export default function HomeScreen() {
             contentContainerStyle={styles.headerTabsContent}
           >
             {NAV_TABS.map((tab) => {
-              const sel = tab.cats.length === 0
-                ? activeFilter === null
-                : activeFilter?.join() === tab.cats.join();
+              const sel = tab.id === "sesiones"
+                ? sesionesOpen || (sesAncestral || sesMeditacion)
+                : tab.cats.length === 0
+                  ? activeFilter === null
+                  : activeFilter?.join() === tab.cats.join();
               return (
-                <Pressable
-                  key={tab.id}
-                  onPress={() => setActiveFilter(tab.cats.length === 0 ? null : tab.cats)}
-                  style={({ pressed }) => [
-                    styles.headerTabChip,
-                    sel && styles.headerTabChipActive,
-                    { opacity: pressed ? 0.7 : 1 },
-                  ]}
-                >
-                  <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
-                    {tab.label}
-                  </Text>
-                </Pressable>
+                <React.Fragment key={tab.id}>
+                  <Pressable
+                    onPress={() => {
+                      if (tab.id === "sesiones") {
+                        const next = !sesionesOpen;
+                        setSesionesOpen(next);
+                        if (!next) { setSesAncestral(false); setSesMeditacion(false); }
+                        setActiveFilter(NAV_TABS[1].cats);
+                      } else {
+                        setSesionesOpen(false);
+                        setSesAncestral(false);
+                        setSesMeditacion(false);
+                        setActiveFilter(tab.cats.length === 0 ? null : tab.cats);
+                      }
+                    }}
+                    style={({ pressed }) => [
+                      styles.headerTabChip,
+                      sel && styles.headerTabChipActive,
+                      { opacity: pressed ? 0.7 : 1 },
+                    ]}
+                  >
+                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+                      {tab.label}
+                    </Text>
+                  </Pressable>
+
+                  {tab.id === "sesiones" && sesionesVisible && (
+                    <RAnimated.View style={[styles.sesSubSpacer, spacerAnimStyle]}>
+                      <RAnimated.View
+                        style={[styles.sesSubRow, pillAnimStyle]}
+                        pointerEvents={sesionesOpen ? "auto" : "none"}
+                      >
+                        <Pressable
+                          onPress={() => {
+                            const next = !sesAncestral;
+                            setSesAncestral(next);
+                            updateSesFilter(next, sesMeditacion);
+                          }}
+                          style={({ pressed }) => [
+                            styles.headerTabChip,
+                            sesAncestral && styles.headerTabChipActive,
+                            { opacity: pressed ? 0.7 : 1 },
+                          ]}
+                        >
+                          <Text style={[styles.headerTabText, sesAncestral && styles.headerTabTextActive]}>
+                            Ancestral
+                          </Text>
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            const next = !sesMeditacion;
+                            setSesMeditacion(next);
+                            updateSesFilter(sesAncestral, next);
+                          }}
+                          style={({ pressed }) => [
+                            styles.headerTabChip,
+                            sesMeditacion && styles.headerTabChipActive,
+                            { opacity: pressed ? 0.7 : 1 },
+                          ]}
+                        >
+                          <Text style={[styles.headerTabText, sesMeditacion && styles.headerTabTextActive]}>
+                            Meditación
+                          </Text>
+                        </Pressable>
+                      </RAnimated.View>
+                    </RAnimated.View>
+                  )}
+                </React.Fragment>
               );
             })}
           </ScrollView>
@@ -562,6 +666,17 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  sesSubSpacer: {
+    height: 32,
+    overflow: "visible",
+    marginLeft: -6,
+  },
+  sesSubRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingLeft: 6,
   },
   headerTabChipActive: {
     backgroundColor: "#BE9650",
