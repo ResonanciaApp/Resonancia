@@ -4995,12 +4995,8 @@ export default function GeometrixScreen() {
             frozenGeneralSheetH != null && { height: frozenGeneralSheetH },
           ]}
         >
-          <LinearGradient
-            colors={HOME_GRADIENT}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={[StyleSheet.absoluteFill, styles.sheetGradient]}
-          />
+          {/* Fondo sólido #12182E (sin gradiente que lo tape) */}
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#12182E", borderTopLeftRadius: 24, borderTopRightRadius: 24 }]} />
           <View style={styles.sheetHeader}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Text style={styles.sheetTitle}>Ajustes generales</Text>
