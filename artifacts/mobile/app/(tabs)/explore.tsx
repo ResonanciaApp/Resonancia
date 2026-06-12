@@ -21,7 +21,6 @@ import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { TAG_CARDS, TAGS_PREVIEW_COUNT } from "@/data/tags";
 import { TEMAS } from "@/data/temas";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
@@ -245,56 +244,6 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Otras Temáticas — carrusel por tag ── */}
-            {TAG_CARDS.slice(0, TAGS_PREVIEW_COUNT).map((tag) => {
-              const tagSessions = SESSIONS.filter(
-                (s) => s.themeTag?.includes(tag.label)
-              ).slice(0, 10);
-              if (tagSessions.length === 0) return null;
-              return (
-                <View style={styles.section} key={tag.id}>
-                  <View style={styles.sectionRow}>
-                    <Text style={styles.sectionTitle}>{tag.label}</Text>
-                  </View>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={{ marginHorizontal: -H_PAD }}
-                    contentContainerStyle={styles.carouselContent}
-                  >
-                    {tagSessions.map((s) => (
-                      <Pressable
-                        key={s.id}
-                        onPress={() => handleSessionPress(s)}
-                        style={({ pressed }) => [styles.sqCard, { opacity: pressed ? 0.82 : 1 }]}
-                      >
-                        <View style={styles.sqImageWrap}>
-                          <Image
-                            source={s.image as number}
-                            style={StyleSheet.absoluteFill}
-                            contentFit="cover"
-                            placeholder={BLUR_PLACEHOLDER}
-                            transition={IMAGE_TRANSITION}
-                            cachePolicy="memory-disk"
-                          />
-                          {s.isPremium && (
-                            <View style={styles.premiumBadge}>
-                              <Feather name="star" size={10} color="#BE9650" />
-                            </View>
-                          )}
-                        </View>
-                        <Text style={[styles.sqTitle, { color: colors.foreground }]} numberOfLines={2}>
-                          {s.title}
-                        </Text>
-                        <Text style={[styles.sqAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-                          {getSessionAuthor(s)}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </ScrollView>
-                </View>
-              );
-            })}
 
           </>
         )}
