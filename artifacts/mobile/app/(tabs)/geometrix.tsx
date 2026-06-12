@@ -3815,14 +3815,8 @@ export default function GeometrixScreen() {
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
-          style={[styles.topPanel, { paddingTop: insets.top + 12 }]}
+          style={[styles.topPanel, { paddingTop: insets.top + 4 }]}
         >
-        {/* Header — solo botón volver */}
-        <View style={styles.header}>
-          <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backBtn}>
-            <Feather name="arrow-left" size={22} color="#FFFFFF" />
-          </Pressable>
-        </View>
 
         {/* ── Buscador de tema de fondo (audio propio de Geometrix) ── */}
         <Modal
