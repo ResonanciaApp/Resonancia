@@ -6320,7 +6320,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   catChipOn: {
-    borderColor: "rgba(101,132,212,0.70)",
+    borderColor: "rgba(101,132,212,0.15)",
   },
   catChipText: {
     fontSize: 12,
