@@ -3811,7 +3811,7 @@ export default function GeometrixScreen() {
   const selectedBg = master.bgColor
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
-  const canvasBgColors = scaleColors(selectedBg ?? HOME_GRADIENT, bgFactor);
+  const canvasBgColors = scaleColors(selectedBg ?? ["#000000", "#000000"], bgFactor);
 
 
   return (
@@ -4275,7 +4275,7 @@ export default function GeometrixScreen() {
           {/* Barra de herramientas + ojo: fila horizontal justo encima del
               carrusel de thumbnails. El ojo queda a la derecha; las tools
               se revelan con fade-in hacia la izquierda. */}
-          <View style={[styles.actionTop, { bottom: bottomPb + 44 }]}>
+          <View style={[styles.actionTop, { top: 0 }]}>
             {/* Tools en fila horizontal, aparecen a la izquierda del ojo */}
             <Animated.View
               pointerEvents={pillOpen ? "auto" : "none"}
