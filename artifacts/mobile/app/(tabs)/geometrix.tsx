@@ -4965,7 +4965,7 @@ export default function GeometrixScreen() {
                           ...m,
                           bgColor: null,
                           bgGradientId: gr.id,
-                          bgBrightness: m.bgGradientId === gr.id ? m.bgBrightness : 0.03,
+                          bgBrightness: m.bgGradientId === gr.id ? m.bgBrightness : 0.13,
                         }))
                       }
                       style={[styles.swatch, on && styles.swatchOn]}
