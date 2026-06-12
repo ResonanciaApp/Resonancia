@@ -3930,6 +3930,32 @@ export default function GeometrixScreen() {
           </View>
         </Modal>
 
+        {/* Tab de categorías: slider horizontal encima del carrusel */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.catScroll}
+          contentContainerStyle={styles.catScrollContent}
+        >
+          {GEOMETRY_CATEGORIES.map((c) => {
+            const on = activeCategory === c.id;
+            return (
+              <Pressable
+                key={c.id}
+                onPress={() => setActiveCategory(c.id)}
+                style={[styles.catChip, on ? styles.catChipOn : null]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+              >
+                <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
+                  {c.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
         <GeometrixCarousel
           active={active}
           effActivating={effActivating}
@@ -4150,9 +4176,8 @@ export default function GeometrixScreen() {
           </View>
           </View>{/* /stageClip */}
 
-          {/* Controles: Atrás (deshacer) + Hold mode + categorías (slider). */}
+          {/* Controles: Atrás (deshacer) + Hold mode. */}
           <View pointerEvents="box-none" style={styles.actionLeft}>
-            {/* Botones undo/redo/hold */}
             <View style={styles.actionTopRow}>
               {/* Atrás: deshace el último cambio. Visible si hay historial. */}
               {canUndo && (
@@ -4223,32 +4248,6 @@ export default function GeometrixScreen() {
                 </Animated.View>
               )}
             </View>
-            {/* Tab de categorías: slider horizontal a la derecha de la flechita */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.catScroll}
-              contentContainerStyle={styles.catScrollContent}
-              pointerEvents="auto"
-            >
-              {GEOMETRY_CATEGORIES.map((c) => {
-                const on = activeCategory === c.id;
-                return (
-                  <Pressable
-                    key={c.id}
-                    onPress={() => setActiveCategory(c.id)}
-                    style={[styles.catChip, on ? styles.catChipOn : null]}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: on }}
-                    accessibilityLabel={`Filtrar geometrías: ${c.label}`}
-                  >
-                    <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
-                      {c.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
           </View>
 
           {/* Barra de herramientas + ojo: fila horizontal justo encima del
@@ -6501,20 +6500,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: -21,
-    right: 30,
-    zIndex: 5,
-    flexDirection: "row",
-    alignItems: "center",
+    zIndex: 6,
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   catScroll: {
-    flex: 1,
+    flexGrow: 0,
   },
   catScrollContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingLeft: 4,
+    gap: 8,
+    paddingLeft: 10,
     paddingRight: 8,
+    paddingTop: 10,
+    paddingBottom: 4,
   },
   actionTopRow: {
     flexDirection: "row",
