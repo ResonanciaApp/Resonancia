@@ -6311,7 +6311,8 @@ const styles = StyleSheet.create({
   catChipText: {
     fontSize: 12,
     fontWeight: "400",
-    color: "#e7e8f1",
+    color: "#b0bbfa",
+    opacity: 0.5,
     letterSpacing: 0.1,
   },
   catChipTextOn: {
