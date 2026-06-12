@@ -647,8 +647,11 @@ const styles = StyleSheet.create({
   },
   sesSegSpacer: {
     // width animado (0→188) — empuja a Música sin texto ni clip
+    // marginLeft:-6 cancela el gap que flexbox inserta antes del spacer
+    // → Música queda en la misma posición con spacer a 0 que sin spacer (sin snap al desmontar)
     height: 32,
     overflow: "visible",
+    marginLeft: -6,
   },
   sesSegPill: {
     // Dentro del spacer, overflow:visible → sin clip boundary sobre el texto
