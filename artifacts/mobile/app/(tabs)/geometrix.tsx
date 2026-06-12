@@ -2056,8 +2056,6 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
         </View>
       </Animated.ScrollView>
 
-      {/* Línea divisora */}
-      <View style={styles.divider} />
     </>
   );
 });
