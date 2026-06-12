@@ -2509,6 +2509,30 @@ export default function GeometrixScreen() {
   const [themeSession, setThemeSession] = useState<Session | null>(null);
   const [themeSearchOpen, setThemeSearchOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<GeometryCategory>(GEOMETRY_CATEGORIES[0].id);
+
+  // Animación de pills de categoría: la seleccionada queda opaca, las demás se desvanecen y deslizan
+  const catOp0 = useSharedValue(1);   const catTX0 = useSharedValue(0);
+  const catOp1 = useSharedValue(0.3); const catTX1 = useSharedValue(0);
+  const catOp2 = useSharedValue(0.3); const catTX2 = useSharedValue(0);
+  const catPillOpacities  = [catOp0, catOp1, catOp2];
+  const catPillTranslates = [catTX0, catTX1, catTX2];
+  const catPillStyle0 = useAnimatedStyle(() => ({ opacity: catOp0.value, transform: [{ translateX: catTX0.value }] }));
+  const catPillStyle1 = useAnimatedStyle(() => ({ opacity: catOp1.value, transform: [{ translateX: catTX1.value }] }));
+  const catPillStyle2 = useAnimatedStyle(() => ({ opacity: catOp2.value, transform: [{ translateX: catTX2.value }] }));
+  const catPillStyles = [catPillStyle0, catPillStyle1, catPillStyle2];
+
+  useEffect(() => {
+    const selectedIdx = GEOMETRY_CATEGORIES.findIndex((c) => c.id === activeCategory);
+    const cfg = { duration: 220, easing: Easing.out(Easing.quad) };
+    catPillOpacities.forEach((sv, i) => {
+      const isSelected = i === selectedIdx;
+      const dir = i < selectedIdx ? -1 : 1;
+      sv.value = withTiming(isSelected ? 1 : 0.22, cfg);
+      catPillTranslates[i].value = withTiming(isSelected ? 0 : dir * 12, cfg);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCategory]);
+
   const [themeQuery, setThemeQuery] = useState("");
   // Glow blanco del botón: 0 = apagado, 1 = plena intensidad. Al sonar arranca
   // una respiración muy sutil (75–100%) con periodo de 3 s; al parar vuelve a 0.
@@ -4045,21 +4069,22 @@ export default function GeometrixScreen() {
             style={styles.catScroll}
             contentContainerStyle={styles.catScrollContent}
           >
-            {GEOMETRY_CATEGORIES.map((c) => {
+            {GEOMETRY_CATEGORIES.map((c, i) => {
               const on = activeCategory === c.id;
               return (
-                <Pressable
-                  key={c.id}
-                  onPress={() => setActiveCategory(c.id)}
-                  style={[styles.catChip, on ? styles.catChipOn : null]}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  accessibilityLabel={`Filtrar geometrías: ${c.label}`}
-                >
-                  <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
-                    {c.label}
-                  </Text>
-                </Pressable>
+                <Animated.View key={c.id} style={catPillStyles[i]}>
+                  <Pressable
+                    onPress={() => setActiveCategory(c.id)}
+                    style={[styles.catChip, on ? styles.catChipOn : null]}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: on }}
+                    accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+                  >
+                    <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
+                      {c.label}
+                    </Text>
+                  </Pressable>
+                </Animated.View>
               );
             })}
           </ScrollView>
