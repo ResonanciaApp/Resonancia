@@ -404,9 +404,9 @@ export default function HomeScreen() {
                               <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
                                 <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
                               </View>
-                              {/* View sin estilos: spacer bold (normal flow) fija el ancho;
-                                  overlays absolute left:0/right:0 no se salen del contenedor */}
-                              <View>
+                              {/* overflow:hidden corta cualquier desborde del texto;
+                                  spacer bold (normal flow) fija el ancho del contenedor */}
+                              <View style={styles.sesSegBtnInner}>
                                 <Text numberOfLines={1} style={styles.sesSegBtnTextSpacer}>{sf.label}</Text>
                                 <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, txtBoldStyle]}>{sf.label}</RAnimated.Text>
                                 <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextReg,  styles.sesSegBtnTextOverlay, txtRegStyle]}>{sf.label}</RAnimated.Text>
@@ -704,6 +704,9 @@ const styles = StyleSheet.create({
   },
   sesSegBtnSecond: {
     paddingRight: 9,
+  },
+  sesSegBtnInner: {
+    overflow: "hidden",
   },
   sesSegBtnTextOverlay: {
     position: "absolute",
