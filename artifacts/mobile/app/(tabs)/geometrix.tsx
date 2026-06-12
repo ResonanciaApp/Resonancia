@@ -3811,13 +3811,7 @@ export default function GeometrixScreen() {
 
       <View style={styles.content}>
         {/* ── Zona superior con fondo de Inicio ── */}
-        <LinearGradient
-          colors={["#080704", "#0D0A04", "#040404"]}
-          locations={[0, 0.5, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={[styles.topPanel, { paddingTop: insets.top + 4 }]}
-        >
+        <View style={[styles.topPanel, { paddingTop: insets.top + 4 }]}>
 
         {/* ── Buscador de tema de fondo (audio propio de Geometrix) ── */}
         <Modal
@@ -3965,7 +3959,7 @@ export default function GeometrixScreen() {
           getSettings={getSettings}
         />
 
-        </LinearGradient>
+        </View>
 
         {/* Fondo interactivo: animación centrada en el espacio entre la
             divisora y la tab bar. paddingBottom despeja la tab bar para que el
