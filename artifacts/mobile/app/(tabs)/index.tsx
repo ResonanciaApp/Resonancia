@@ -399,21 +399,25 @@ export default function HomeScreen() {
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
         {!activeFilter && (
-          <CoverCarousel
-            title="Tus playlist"
-            items={playlistItems}
-            onPress={(id) => router.push(`/playlist/${id}` as never)}
-          />
+          <View style={{ marginBottom: SECTION_GAP }}>
+            <CoverCarousel
+              title="Tus playlist"
+              items={playlistItems}
+              onPress={(id) => router.push(`/playlist/${id}` as never)}
+            />
+          </View>
         )}
         {!activeFilter && (
-          <CoverCarousel
-            title="Tus mezclas"
-            items={mezclaItems}
-            onPress={(id) => {
-              const preset = presets.find((p) => p.id === id);
-              if (preset) { loadPreset(preset); openSheet(); }
-            }}
-          />
+          <View style={{ marginBottom: SECTION_GAP }}>
+            <CoverCarousel
+              title="Tus mezclas"
+              items={mezclaItems}
+              onPress={(id) => {
+                const preset = presets.find((p) => p.id === id);
+                if (preset) { loadPreset(preset); openSheet(); }
+              }}
+            />
+          </View>
         )}
 
         {/* ── 5. FRASE DEL DÍA ── */}
