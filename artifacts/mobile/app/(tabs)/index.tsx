@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import RAnimated, {
+  interpolateColor,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -160,14 +161,19 @@ export default function HomeScreen() {
   const subBg0SV = useSharedValue(0);
   const subBg1SV = useSharedValue(0);
 
+  const SUB_TEXT_ACTIVE   = "#FFFFFF";
+  const SUB_TEXT_INACTIVE = "rgba(255,255,255,0.50)";
+
   // Fondos: fade suave
   const subBg0AnimStyle = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
   const subBg1AnimStyle = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
-  // Textos: switch instantáneo en el punto medio (evita efecto doble/borroso)
-  const subTextBold0 = useAnimatedStyle(() => ({ opacity: subBg0SV.value >= 0.5 ? 1 : 0 }));
-  const subTextBold1 = useAnimatedStyle(() => ({ opacity: subBg1SV.value >= 0.5 ? 1 : 0 }));
-  const subTextReg0  = useAnimatedStyle(() => ({ opacity: subBg0SV.value < 0.5  ? 1 : 0 }));
-  const subTextReg1  = useAnimatedStyle(() => ({ opacity: subBg1SV.value < 0.5  ? 1 : 0 }));
+  // Texto: color interpolado (siempre bold → sin layout shift)
+  const subText0AnimStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(subBg0SV.value, [0, 1], [SUB_TEXT_INACTIVE, SUB_TEXT_ACTIVE]),
+  }));
+  const subText1AnimStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(subBg1SV.value, [0, 1], [SUB_TEXT_INACTIVE, SUB_TEXT_ACTIVE]),
+  }));
 
   useEffect(() => {
     const DUR = 220;
@@ -382,11 +388,10 @@ export default function HomeScreen() {
                         pointerEvents={sesionesOpen ? "auto" : "none"}
                       >
                         {SES_SUB_FILTERS.map((sf, i) => {
-                          const isActive     = sesSubFilter === sf.id;
-                          const bgAnimStyle  = i === 0 ? subBg0AnimStyle : subBg1AnimStyle;
-                          const txtBoldStyle = i === 0 ? subTextBold0    : subTextBold1;
-                          const txtRegStyle  = i === 0 ? subTextReg0     : subTextReg1;
-                          const activeBg     = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
+                          const isActive       = sesSubFilter === sf.id;
+                          const bgAnimStyle    = i === 0 ? subBg0AnimStyle  : subBg1AnimStyle;
+                          const txtColorStyle  = i === 0 ? subText0AnimStyle : subText1AnimStyle;
+                          const activeBg       = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
                           return (
                             <Pressable
                               key={sf.id}
@@ -405,15 +410,8 @@ export default function HomeScreen() {
                               <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
                                 <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
                               </View>
-                              {/* Contenedor normal-flow → se posiciona con el padding del Pressable */}
-                              <View>
-                                {/* Spacer invisible bold → da alto y ancho al contenedor */}
-                                <Text numberOfLines={1} style={[styles.sesSegBtnTextBold, { color: "transparent" }]}>{sf.label}</Text>
-                                {/* Bold: switch en punto medio del fade */}
-                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, txtBoldStyle]}>{sf.label}</RAnimated.Text>
-                                {/* Regular: switch inverso */}
-                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnText, styles.sesSegBtnTextOverlay, txtRegStyle]}>{sf.label}</RAnimated.Text>
-                              </View>
+                              {/* Un solo texto siempre bold → sin layout shift por cambio de fontWeight */}
+                              <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, txtColorStyle]}>{sf.label}</RAnimated.Text>
                             </Pressable>
                           );
                         })}
@@ -713,18 +711,6 @@ const styles = StyleSheet.create({
   sesSegBtnBgFirst: {
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-  },
-  sesSegBtnTextOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-  },
-  sesSegBtnText: {
-    fontSize: 13,
-    fontWeight: "400",
-    color: "#FFFFFF",
-    letterSpacing: 0.1,
   },
   sesSegBtnTextBold: {
     fontSize: 13,
