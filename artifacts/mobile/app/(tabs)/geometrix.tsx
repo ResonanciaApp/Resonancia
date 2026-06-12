@@ -4156,22 +4156,24 @@ export default function GeometrixScreen() {
           {/* Barra unificada: controles de edición (izq) + herramientas + ojo (der).
               Una sola fila plana; los iconos de herramientas hacen fade puro. */}
           <View pointerEvents="box-none" style={styles.actionBar}>
-            {/* Izquierda: undo / redo / actualizar (fila) */}
+            {/* Izquierda: undo (arriba) / redo (abajo) en columna + actualizar al lado */}
             <View style={styles.actionBarLeft}>
-              {canUndo && (
-                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
-                  <Pressable onPress={undo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Atrás (deshacer el último cambio)" hitSlop={4}>
-                    <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
-                  </Pressable>
-                </Animated.View>
-              )}
-              {canRedo && (
-                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
-                  <Pressable onPress={redo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Adelantar (rehacer el último cambio)" hitSlop={4}>
-                    <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
-                  </Pressable>
-                </Animated.View>
-              )}
+              <View style={{ flexDirection: "column" }}>
+                {canUndo && (
+                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
+                    <Pressable onPress={undo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Atrás (deshacer el último cambio)" hitSlop={4}>
+                      <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
+                    </Pressable>
+                  </Animated.View>
+                )}
+                {canRedo && (
+                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
+                    <Pressable onPress={redo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Adelantar (rehacer el último cambio)" hitSlop={4}>
+                      <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
+                    </Pressable>
+                  </Animated.View>
+                )}
+              </View>
               {editingCreation && isDirty && (
                 <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)} style={styles.actionBarItem}>
                   <Pressable onPress={updateComposition} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Actualizar composición" hitSlop={4}>
@@ -4464,8 +4466,8 @@ export default function GeometrixScreen() {
 
           {/* Controles flotantes — solo los 3 permitidos */}
           <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-            {/* Izquierda: deshacer + adelantar */}
-            <View pointerEvents="box-none" style={[styles.fullscreenEditControls, { left: 16, top: insets.top + 12 }]}>
+            {/* Izquierda: deshacer (arriba) + adelantar (abajo) en columna */}
+            <View pointerEvents="box-none" style={[styles.fullscreenEditControls, { left: 16, top: insets.top + 12, flexDirection: "column" }]}>
               {canUndo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                   <Pressable onPress={undo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Deshacer">
