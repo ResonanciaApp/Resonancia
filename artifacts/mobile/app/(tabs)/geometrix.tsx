@@ -2087,15 +2087,8 @@ export default function GeometrixScreen() {
   // para que el lienzo no quede tapado por el menú de la app.
   const bottomPb = Platform.OS === "web" ? 8 : insets.bottom;
   const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
-  // El menú inferior se esconde al entrar a Geometrix (más espacio para el
-  // lienzo); cuando está oculto solo hay que despejar la safe area + la
-  // pestañita de reaparición, no la tab bar completa.
-  const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
-  // La barra de Geometrix tiene 56px + safe area inferior
-  const GEO_NAV_HEIGHT = 56;
-  const bottomReserve = menuHidden
-    ? bottomPb + GEO_NAV_HEIGHT
-    : tabBarHeight;
+  const { hidden: menuHidden } = useTabBarVisibility();
+  const bottomReserve = tabBarHeight;
 
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
@@ -2570,14 +2563,7 @@ export default function GeometrixScreen() {
   }, [active, stopIntro]);
 
 
-  // Al entrar a Geometrix: esconder el menú inferior (más espacio para el
-  // lienzo). Al salir: restaurarlo para el resto de la app.
-  useFocusEffect(
-    useCallback(() => {
-      requestHide();
-      return () => showMenu();
-    }, [requestHide, showMenu]),
-  );
+
 
   // Al salir de Geometrix (las pestañas quedan montadas): resetear la UI.
   // Al entrar: disparar el intro de audio si el lienzo está vacío.
@@ -6226,42 +6212,6 @@ export default function GeometrixScreen() {
         </View>
       )}
 
-      {/* ── Barra de navegación inferior de Geometrix ── */}
-      {menuHidden && (
-        <View style={[styles.geoNav, { paddingBottom: bottomPb, height: GEO_NAV_HEIGHT + bottomPb, zIndex: 250 }]}>
-          {/* Inicio — activo cuando showLanding; lleva al landing desde el canvas */}
-          <Pressable style={styles.geoNavItem} hitSlop={6} onPress={() => setShowLanding(true)}>
-            <View style={[styles.geoNavIconWrap, showLanding && styles.geoNavIconActive]}>
-              <Feather name="home" size={19} color={showLanding ? "#0B0F14" : "#7A8FA8"} />
-            </View>
-            <Text style={[styles.geoNavLabel, showLanding && styles.geoNavLabelActive]}>Inicio</Text>
-          </Pressable>
-
-          {/* Mis Creaciones */}
-          <Pressable style={styles.geoNavItem} hitSlop={6} onPress={() => router.push("/geometrix-creaciones")}>
-            <View style={styles.geoNavIconWrap}>
-              <Feather name="grid" size={18} color="#7A8FA8" />
-            </View>
-            <Text style={styles.geoNavLabel}>Mis creaciones</Text>
-          </Pressable>
-
-          {/* Comunidad */}
-          <Pressable style={styles.geoNavItem} hitSlop={6} onPress={() => router.push("/geometrix-comunidad")}>
-            <View style={styles.geoNavIconWrap}>
-              <Feather name="users" size={18} color="#7A8FA8" />
-            </View>
-            <Text style={styles.geoNavLabel}>Comunidad</Text>
-          </Pressable>
-
-          {/* Aprende */}
-          <Pressable style={styles.geoNavItem} hitSlop={6} onPress={() => router.push("/geometrix-aprende")}>
-            <View style={styles.geoNavIconWrap}>
-              <Feather name="book-open" size={18} color="#7A8FA8" />
-            </View>
-            <Text style={styles.geoNavLabel}>Aprende</Text>
-          </Pressable>
-        </View>
-      )}
     </View>
   );
 }
@@ -6269,46 +6219,6 @@ export default function GeometrixScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#06070F" },
   content:  { flex: 1, paddingHorizontal: 20 },
-
-  geoNav: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-around",
-    paddingTop: 8,
-    backgroundColor: "rgba(6,7,15,0.96)",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(190,150,80,0.2)",
-  },
-  geoNavItem: {
-    flex: 1,
-    alignItems: "center",
-    gap: 4,
-    paddingVertical: 2,
-  },
-  geoNavIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  geoNavIconActive: {
-    backgroundColor: "#BE9650",
-  },
-  geoNavLabel: {
-    fontSize: 9,
-    fontWeight: "500",
-    color: "#7A8FA8",
-    textAlign: "center",
-  },
-  geoNavLabelActive: {
-    color: "#BE9650",
-    fontWeight: "700",
-  },
 
   // ── Landing overlay ───────────────────────────────────────────────────────
   landingOverlay: {

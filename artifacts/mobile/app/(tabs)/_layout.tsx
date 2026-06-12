@@ -29,7 +29,7 @@ const PILL_BG = "rgba(107,154,181,0.18)";
 const BAR_BORDER = "#0e132f";
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["musica2", "musica3", "descanzo", "profile", "geometrix"]);
+const HIDDEN_ROUTES = new Set(["musica2", "musica3", "descanzo", "profile"]);
 
 const TAB_CONFIG: Record<
   string,
