@@ -6430,6 +6430,8 @@ const styles = StyleSheet.create({
   actionBarFadeGroup: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 20,
   },
   actionBarItem: {
     width: 38,
