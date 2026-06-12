@@ -20,7 +20,6 @@ import RAnimated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -154,30 +153,21 @@ export default function HomeScreen() {
   const [sesionesOpen, setSesionesOpen] = useState(false);
   const [sesionesVisible, setSesionesVisible] = useState(false);
   const [sesSubFilter, setSesSubFilter] = useState<string | null>(null);
-  const pillWidthSV = useSharedValue(0);
   const pillOpacitySV = useSharedValue(0);
-  const PILL_W = 220;
 
   useEffect(() => {
     if (sesionesOpen) {
-      pillWidthSV.value = 0;
       pillOpacitySV.value = 0;
       setSesionesVisible(true);
-      // Ancho primero (empuja Música), luego fade-in del contenido
-      pillWidthSV.value = withTiming(PILL_W, { duration: 200 });
-      pillOpacitySV.value = withDelay(80, withTiming(1, { duration: 160 }));
+      pillOpacitySV.value = withTiming(1, { duration: 200 });
     } else {
-      // Fade-out rápido primero → texto invisible antes de que el clip lo cruce
-      pillOpacitySV.value = withTiming(0, { duration: 100 });
-      // Luego contrae ancho (arrastra Música de vuelta)
-      pillWidthSV.value = withDelay(80, withTiming(0, { duration: 180 }, (finished) => {
+      pillOpacitySV.value = withTiming(0, { duration: 160 }, (finished) => {
         if (finished) runOnJS(setSesionesVisible)(false);
-      }));
+      });
     }
   }, [sesionesOpen]);
 
   const pillAnimStyle = useAnimatedStyle(() => ({
-    width: pillWidthSV.value,
     opacity: pillOpacitySV.value,
   }));
 
@@ -359,36 +349,39 @@ export default function HomeScreen() {
                     </Text>
                   </Pressable>
 
-                  {/* Sub-filtros: aparecen justo después de "Sesiones" */}
+                  {/* Sub-filtros: aparecen justo después de "Sesiones"
+                      marginLeft:-32 se solapa con Sesiones; marginRight:-188
+                      absorbe el espacio neto (220-32=188) → Música no se mueve */}
                   {tab.id === "sesiones" && sesionesVisible && (
-                    <RAnimated.View style={[styles.sesSegPillWrapper, pillAnimStyle]}>
-                      <View style={styles.sesSegPill}>
-                        {SES_SUB_FILTERS.map((sf, i) => {
-                          const subSel = sesSubFilter === sf.id;
-                          return (
-                            <Pressable
-                              key={sf.id}
-                              onPress={() => {
-                                const next = subSel ? null : sf.id;
-                                setSesSubFilter(next);
-                                setActiveFilter(next ? [next] : NAV_TABS[1].cats);
-                              }}
-                              style={({ pressed }) => [
-                                styles.sesSegBtn,
-                                i === 0 && styles.sesSegBtnFirst,
-                                i === 0 && subSel
-                                  ? styles.sesSegBtnFirstActive
-                                  : subSel && styles.sesSegBtnActive,
-                                { opacity: pressed ? 0.75 : 1 },
-                              ]}
-                            >
-                              <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
-                                {sf.label}
-                              </Text>
-                            </Pressable>
-                          );
-                        })}
-                      </View>
+                    <RAnimated.View
+                      style={[styles.sesSegPill, pillAnimStyle, { zIndex: 10 }]}
+                      pointerEvents={sesionesOpen ? "auto" : "none"}
+                    >
+                      {SES_SUB_FILTERS.map((sf, i) => {
+                        const subSel = sesSubFilter === sf.id;
+                        return (
+                          <Pressable
+                            key={sf.id}
+                            onPress={() => {
+                              const next = subSel ? null : sf.id;
+                              setSesSubFilter(next);
+                              setActiveFilter(next ? [next] : NAV_TABS[1].cats);
+                            }}
+                            style={({ pressed }) => [
+                              styles.sesSegBtn,
+                              i === 0 && styles.sesSegBtnFirst,
+                              i === 0 && subSel
+                                ? styles.sesSegBtnFirstActive
+                                : subSel && styles.sesSegBtnActive,
+                              { opacity: pressed ? 0.75 : 1 },
+                            ]}
+                          >
+                            <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
+                              {sf.label}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
                     </RAnimated.View>
                   )}
                 </React.Fragment>
@@ -645,18 +638,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
   },
-  sesSegPillWrapper: {
-    overflow: "hidden",
-    marginLeft: -32,
-    height: 32,
-    borderRadius: 20,
-  },
   sesSegPill: {
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 20,
     height: 32,
     width: 220,
+    marginLeft: -32,
+    marginRight: -188,   // absorbe el espacio neto (220-32) → Música no se desplaza
     backgroundColor: "rgba(255,255,255,0.06)",
     paddingRight: 3,
     gap: 1,
