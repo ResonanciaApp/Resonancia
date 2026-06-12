@@ -20,6 +20,7 @@ import RAnimated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -153,23 +154,28 @@ export default function HomeScreen() {
   const [sesionesOpen, setSesionesOpen] = useState(false);
   const [sesionesVisible, setSesionesVisible] = useState(false);
   const [sesSubFilter, setSesSubFilter] = useState<string | null>(null);
+  const spacerWidthSV = useSharedValue(0);
   const pillOpacitySV = useSharedValue(0);
 
   useEffect(() => {
     if (sesionesOpen) {
+      spacerWidthSV.value = 0;
       pillOpacitySV.value = 0;
       setSesionesVisible(true);
-      pillOpacitySV.value = withTiming(1, { duration: 200 });
+      // Spacer empuja Música primero; pill aparece cuando ya hay espacio
+      spacerWidthSV.value = withTiming(188, { duration: 200 });
+      pillOpacitySV.value = withDelay(100, withTiming(1, { duration: 140 }));
     } else {
-      pillOpacitySV.value = withTiming(0, { duration: 160 }, (finished) => {
+      // Pill desaparece primero; spacer colapsa después (Música se arrastra de vuelta)
+      pillOpacitySV.value = withTiming(0, { duration: 120 });
+      spacerWidthSV.value = withDelay(100, withTiming(0, { duration: 160 }, (finished) => {
         if (finished) runOnJS(setSesionesVisible)(false);
-      });
+      }));
     }
   }, [sesionesOpen]);
 
-  const pillAnimStyle = useAnimatedStyle(() => ({
-    opacity: pillOpacitySV.value,
-  }));
+  const spacerAnimStyle = useAnimatedStyle(() => ({ width: spacerWidthSV.value }));
+  const pillAnimStyle = useAnimatedStyle(() => ({ opacity: pillOpacitySV.value }));
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -349,39 +355,40 @@ export default function HomeScreen() {
                     </Text>
                   </Pressable>
 
-                  {/* Sub-filtros: aparecen justo después de "Sesiones"
-                      marginLeft:-32 se solapa con Sesiones; marginRight:-188
-                      absorbe el espacio neto (220-32=188) → Música no se mueve */}
+                  {/* Sub-filtros: spacer vacío empuja Música (no hay texto → no hay glitch);
+                      pill dentro con overflow:visible → nunca hay clip boundary sobre texto */}
                   {tab.id === "sesiones" && sesionesVisible && (
-                    <RAnimated.View
-                      style={[styles.sesSegPill, pillAnimStyle, { zIndex: 10 }]}
-                      pointerEvents={sesionesOpen ? "auto" : "none"}
-                    >
-                      {SES_SUB_FILTERS.map((sf, i) => {
-                        const subSel = sesSubFilter === sf.id;
-                        return (
-                          <Pressable
-                            key={sf.id}
-                            onPress={() => {
-                              const next = subSel ? null : sf.id;
-                              setSesSubFilter(next);
-                              setActiveFilter(next ? [next] : NAV_TABS[1].cats);
-                            }}
-                            style={({ pressed }) => [
-                              styles.sesSegBtn,
-                              i === 0 && styles.sesSegBtnFirst,
-                              i === 0 && subSel
-                                ? styles.sesSegBtnFirstActive
-                                : subSel && styles.sesSegBtnActive,
-                              { opacity: pressed ? 0.75 : 1 },
-                            ]}
-                          >
-                            <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
-                              {sf.label}
-                            </Text>
-                          </Pressable>
-                        );
-                      })}
+                    <RAnimated.View style={[styles.sesSegSpacer, spacerAnimStyle]}>
+                      <RAnimated.View
+                        style={[styles.sesSegPill, pillAnimStyle]}
+                        pointerEvents={sesionesOpen ? "auto" : "none"}
+                      >
+                        {SES_SUB_FILTERS.map((sf, i) => {
+                          const subSel = sesSubFilter === sf.id;
+                          return (
+                            <Pressable
+                              key={sf.id}
+                              onPress={() => {
+                                const next = subSel ? null : sf.id;
+                                setSesSubFilter(next);
+                                setActiveFilter(next ? [next] : NAV_TABS[1].cats);
+                              }}
+                              style={({ pressed }) => [
+                                styles.sesSegBtn,
+                                i === 0 && styles.sesSegBtnFirst,
+                                i === 0 && subSel
+                                  ? styles.sesSegBtnFirstActive
+                                  : subSel && styles.sesSegBtnActive,
+                                { opacity: pressed ? 0.75 : 1 },
+                              ]}
+                            >
+                              <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
+                                {sf.label}
+                              </Text>
+                            </Pressable>
+                          );
+                        })}
+                      </RAnimated.View>
                     </RAnimated.View>
                   )}
                 </React.Fragment>
@@ -638,17 +645,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
   },
+  sesSegSpacer: {
+    // width animado (0→188) — empuja a Música sin texto ni clip
+    height: 32,
+    overflow: "visible",
+  },
   sesSegPill: {
+    // Dentro del spacer, overflow:visible → sin clip boundary sobre el texto
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 20,
     height: 32,
     width: 220,
-    marginLeft: -32,
-    marginRight: -188,   // absorbe el espacio neto (220-32) → Música no se desplaza
+    marginLeft: -32,   // se solapa 32px con el chip "Sesiones"
     backgroundColor: "rgba(255,255,255,0.06)",
     paddingRight: 3,
     gap: 1,
+    overflow: "hidden", // solo para recortar fondos activos de botones, no el texto
   },
   sesSegBtn: {
     paddingHorizontal: 6,
