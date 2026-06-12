@@ -6311,11 +6311,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.02)",
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   catChipOn: {},
   catChipText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "400",
     color: "rgba(251,249,241,0.50)",
     letterSpacing: 0.1,
