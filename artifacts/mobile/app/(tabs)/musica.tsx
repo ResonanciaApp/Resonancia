@@ -830,7 +830,7 @@ const styles = StyleSheet.create({
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
   scroll:        { flex: 1 },
-  scrollContent: { paddingHorizontal: 9, paddingTop: 5 },
+  scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 11 },
