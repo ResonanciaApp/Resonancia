@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
-    marginLeft: -30,
+    marginLeft: -33,
     paddingRight: 3,
     gap: 2,
     zIndex: 0,
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   sesSegBtnFirst: {
-    paddingLeft: 27,
+    paddingLeft: 30,
   },
   sesSegBtnFirstActive: {
     backgroundColor: SUB_CHIP_ACTIVE_BG,
