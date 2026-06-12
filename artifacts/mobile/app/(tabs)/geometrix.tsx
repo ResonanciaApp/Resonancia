@@ -4327,24 +4327,6 @@ export default function GeometrixScreen() {
                         </View>
                       )}
                     </Pressable>
-                    {/* Flechita: abre ajustes personalizados directamente. */}
-                    <Pressable
-                      onPress={() => {
-                        setSelectedId(iid);
-                        setSettingsGeoId(iid);
-                        setSettingsOpen(true);
-                      }}
-                      style={styles.thumbCaret}
-                      hitSlop={8}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Ajustes de ${g.name}`}
-                    >
-                      <Feather
-                        name="chevron-down"
-                        size={16}
-                        color={colors.mutedForeground}
-                      />
-                    </Pressable>
                   </Animated.View>
                 );
               })}
@@ -4615,20 +4597,6 @@ export default function GeometrixScreen() {
                           <Feather name="eye-off" size={14} color="rgba(255,255,255,0.85)" />
                         </View>
                       )}
-                    </Pressable>
-                    {/* Flechita: abre ajustes personalizados (el sheet vive en el árbol padre) */}
-                    <Pressable
-                      onPress={() => {
-                        setSelectedId(iid);
-                        setSettingsGeoId(iid);
-                        setSettingsOpen(true);
-                      }}
-                      style={styles.thumbCaret}
-                      hitSlop={8}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Ajustes de ${g.name}`}
-                    >
-                      <Feather name="chevron-down" size={16} color={colors.mutedForeground} />
                     </Pressable>
                   </View>
                 );
@@ -6531,18 +6499,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   thumbItem: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 16,
     backgroundColor: "transparent",
     paddingVertical: 1,
     paddingHorizontal: 1,
-  },
-  thumbCaret: {
-    marginLeft: 2,
-    alignItems: "center",
-    justifyContent: "center",
   },
   menuBackdrop: {
     flex: 1,
