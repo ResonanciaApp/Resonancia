@@ -1568,7 +1568,7 @@ function CarouselTileInner({
           style={[
             styles.tile,
             { width: tileW, height: tileW, borderColor: isSelected ? hexAlpha(color, 0.2) : CARD_BORDER },
-            isSelected ? { backgroundColor: "rgba(255,255,255,0.04)" } : { backgroundColor: "rgba(255,255,255,0.06)" },
+            isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
           ]}
         >
           <View style={[styles.tileGlyph, !isSelected && { opacity: 0.5 }]}>
@@ -6309,6 +6309,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 32,
     borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.06)",
     alignItems: "center",
     justifyContent: "center",
   },
