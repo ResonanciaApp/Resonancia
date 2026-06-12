@@ -2110,8 +2110,8 @@ function CrearGeometriaCard({ onPress }: { onPress: () => void }) {
               <Svg width={58} height={58} viewBox="0 0 58 58"
                 style={StyleSheet.absoluteFillObject}>
                 <Circle cx={29} cy={29} r={26}
-                  fill="rgba(190,150,80,0.08)"
-                  stroke={CB_GOLD} strokeWidth={0.8} opacity={0.75} />
+                  fill="rgba(101,132,212,0.12)"
+                  stroke={CB_BLUE} strokeWidth={0.8} opacity={0.65} />
                 <Line x1={29} y1={21} x2={29} y2={37}
                   stroke={CB_BLUE2} strokeWidth={2.2} strokeLinecap="round" />
                 <Line x1={21} y1={29} x2={37} y2={29}
@@ -6274,9 +6274,9 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(101,132,212,0.1)",
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.35)",
+    borderColor: "rgba(101,132,212,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
