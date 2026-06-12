@@ -6409,6 +6409,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 6,
+    paddingTop: 10,
+    paddingBottom: 4,
   },
   exitBtn: {
     width: 32,
@@ -6426,8 +6428,6 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingLeft: 10,
     paddingRight: 8,
-    paddingTop: 10,
-    paddingBottom: 4,
   },
   actionTopBtn: {
     width: 38,
