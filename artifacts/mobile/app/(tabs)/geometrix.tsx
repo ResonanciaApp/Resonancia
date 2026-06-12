@@ -1772,7 +1772,7 @@ function SettingsSection({
       >
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 7 }}>
           {SECTION_ICONS[title] != null && (
-            <Feather name={SECTION_ICONS[title]!} size={13} color="#FFFFFF" />
+            <Feather name={SECTION_ICONS[title]!} size={13} color={colors.foreground} />
           )}
           <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.mutedForeground }}>
             {title}
@@ -4864,8 +4864,8 @@ export default function GeometrixScreen() {
                     setSettingsOpen(true);
                   }}
                 >
-                  <Feather name="sliders" size={18} color="#FFFFFF" />
-                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>Personalizar</Text>
+                  <Feather name="sliders" size={18} color={colors.foreground} />
+                  <Text style={[styles.menuItemText, { color: colors.foreground }]}>Personalizar</Text>
                 </Pressable>
 
                 <Pressable
@@ -4882,9 +4882,9 @@ export default function GeometrixScreen() {
                   <Feather
                     name={hiddenIds.includes(menuGeoId!) ? "eye" : "eye-off"}
                     size={18}
-                    color="#FFFFFF"
+                    color={colors.foreground}
                   />
-                  <Text style={[styles.menuItemText, { color: "#FFFFFF" }]}>
+                  <Text style={[styles.menuItemText, { color: colors.foreground }]}>
                     {hiddenIds.includes(menuGeoId!) ? "Mostrar" : "Ocultar"}
                   </Text>
                 </Pressable>
@@ -5000,7 +5000,7 @@ export default function GeometrixScreen() {
           <View style={styles.sheetHeader}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Text style={styles.sheetTitle}>Ajustes generales</Text>
-              <Feather name="sliders" size={20} color="#fff" />
+              <Feather name="sliders" size={20} color={colors.foreground} />
             </View>
             <Pressable
               onPress={() => setGeneralOpen(false)}
