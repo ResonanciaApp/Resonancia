@@ -3972,6 +3972,7 @@ export default function GeometrixScreen() {
           commitReorder={commitReorder}
           getSettings={getSettings}
         />
+        <View style={styles.carouselDivider} />
 
         </View>
 
@@ -6169,6 +6170,11 @@ const styles = StyleSheet.create({
   },
 
   topPanel: { marginHorizontal: -20 },
+  carouselDivider: {
+    height: 1,
+    marginHorizontal: -20,
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
 
   header: {
     flexDirection: "row",
