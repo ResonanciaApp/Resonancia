@@ -339,7 +339,7 @@ export default function HomeScreen() {
                   {tab.id === "sesiones" && sesionesOpen && (
                     <Animated.View
                       style={[
-                        styles.headerTabsSubRow,
+                        styles.sesSegPill,
                         {
                           opacity: subFilterAnim,
                           transform: [{
@@ -350,26 +350,28 @@ export default function HomeScreen() {
                         },
                       ]}
                     >
-                      {SES_SUB_FILTERS.map((sf) => {
+                      {SES_SUB_FILTERS.map((sf, i) => {
                         const subSel = sesSubFilter === sf.id;
                         return (
-                          <Pressable
-                            key={sf.id}
-                            onPress={() => {
-                              const next = subSel ? null : sf.id;
-                              setSesSubFilter(next);
-                              setActiveFilter(next ? [next] : NAV_TABS[1].cats);
-                            }}
-                            style={({ pressed }) => [
-                              styles.headerTabChip,
-                              subSel && styles.headerTabChipSubActive,
-                              { opacity: pressed ? 0.7 : 1 },
-                            ]}
-                          >
-                            <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
-                              {sf.label}
-                            </Text>
-                          </Pressable>
+                          <React.Fragment key={sf.id}>
+                            {i > 0 && <View style={styles.sesSegDivider} />}
+                            <Pressable
+                              onPress={() => {
+                                const next = subSel ? null : sf.id;
+                                setSesSubFilter(next);
+                                setActiveFilter(next ? [next] : NAV_TABS[1].cats);
+                              }}
+                              style={({ pressed }) => [
+                                styles.sesSegBtn,
+                                subSel && styles.sesSegBtnActive,
+                                { opacity: pressed ? 0.75 : 1 },
+                              ]}
+                            >
+                              <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
+                                {sf.label}
+                              </Text>
+                            </Pressable>
+                          </React.Fragment>
                         );
                       })}
                     </Animated.View>
@@ -625,10 +627,27 @@ const styles = StyleSheet.create({
     gap: 6,
     alignItems: "center",
   },
-  headerTabsSubRow: {
+  sesSegPill: {
     flexDirection: "row",
-    gap: 6,
     alignItems: "center",
+    borderRadius: 20,
+    height: 32,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    overflow: "hidden",
+  },
+  sesSegBtn: {
+    paddingHorizontal: 11,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sesSegBtnActive: {
+    backgroundColor: SUB_CHIP_ACTIVE_BG,
+  },
+  sesSegDivider: {
+    width: 1,
+    height: 18,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   headerTabChip: {
     borderRadius: 20,
