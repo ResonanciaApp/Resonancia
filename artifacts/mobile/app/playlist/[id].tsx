@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -22,12 +22,14 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
+import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const BG = "#080B1A"; // mismo color que Inicio
 const GOLD = "#BE9650";
@@ -47,7 +49,7 @@ export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover, setPlaylistCoverGeometry } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -153,6 +155,10 @@ export default function PlaylistDetailScreen() {
                   opacity={1}
                 />
               </View>
+            ) : playlist.coverType === "creation" && playlist.coverCreationId ? (
+              <View style={styles.coverCreation}>
+                <CreationCoverPreview creationId={playlist.coverCreationId} size={110} />
+              </View>
             ) : playlist.coverUri ? (
               <Image
                 source={{ uri: playlist.coverUri }}
@@ -160,7 +166,13 @@ export default function PlaylistDetailScreen() {
                 contentFit="cover"
               />
             ) : (
-              <Feather name="music" size={40} color={MUTED} />
+              <View style={styles.coverEmpty}>
+                <Feather name="music" size={40} color={MUTED} />
+                {/* Badge "+" en esquina inferior derecha */}
+                <View style={styles.coverPlusBadge}>
+                  <Feather name="plus" size={14} color="#FFFFFF" />
+                </View>
+              </View>
             )}
           </Pressable>
 
@@ -275,6 +287,7 @@ export default function PlaylistDetailScreen() {
           }
         }}
         onPickGeometry={(geoId) => setPlaylistCoverGeometry(playlist.id, geoId)}
+        onPickCreation={(cid) => setPlaylistCoverCreation(playlist.id, cid)}
       />
     </View>
   );
@@ -454,6 +467,26 @@ const styles = StyleSheet.create({
 
   // Cover glyph
   coverGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
+  coverCreation: { flex: 1, overflow: "hidden", borderRadius: 8 },
+  coverEmpty: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  coverPlusBadge: {
+    position: "absolute",
+    bottom: 6,
+    right: 6,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: GOLD,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#080B1A",
+  },
 });
 
 // ── CoverPickerModal ───────────────────────────────────────────────────────
@@ -462,15 +495,24 @@ function CoverPickerModal({
   onClose,
   onPickImage,
   onPickGeometry,
+  onPickCreation,
 }: {
   visible: boolean;
   onClose: () => void;
   onPickImage: () => void;
   onPickGeometry: (geoId: string) => void;
+  onPickCreation: (creationId: string) => void;
 }) {
   const [showGeometries, setShowGeometries] = useState(false);
+  const [geoTab, setGeoTab] = useState<"library" | "creations">("library");
+  const { creations } = useGeometrixCreations();
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+
+  const creationItems = useMemo(
+    () => creations.map((c) => ({ id: c.id, name: c.name, creation: c })),
+    [creations]
+  );
 
   if (showGeometries) {
     return (
@@ -485,23 +527,64 @@ function CoverPickerModal({
             <Text style={modalStyles.headerTitle}>Elige una geometría</Text>
             <View style={modalStyles.headerSpacer} />
           </View>
-          <FlatList
-            data={GEOMETRIES}
-            keyExtractor={(g) => g.id}
-            numColumns={3}
-            contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
-            renderItem={({ item }) => (
-              <Pressable
-                style={({ pressed }) => [modalStyles.geometryItem, { opacity: pressed ? 0.7 : 1 }]}
-                onPress={() => { onPickGeometry(item.id); setShowGeometries(false); onClose(); }}
-              >
-                <View style={modalStyles.geometryThumb}>
-                  <SacredGlyph id={item.id as any} color={item.color} size={56} strokeWidth={1} opacity={1} />
+          {/* Tabs */}
+          <View style={modalStyles.tabRow}>
+            <Pressable
+              style={[modalStyles.tab, geoTab === "library" && modalStyles.tabActive]}
+              onPress={() => setGeoTab("library")}
+            >
+              <Text style={[modalStyles.tabText, geoTab === "library" && modalStyles.tabTextActive]}>Biblioteca</Text>
+            </Pressable>
+            <Pressable
+              style={[modalStyles.tab, geoTab === "creations" && modalStyles.tabActive]}
+              onPress={() => setGeoTab("creations")}
+            >
+              <Text style={[modalStyles.tabText, geoTab === "creations" && modalStyles.tabTextActive]}>Mis creaciones</Text>
+            </Pressable>
+          </View>
+          {geoTab === "library" ? (
+            <FlatList
+              data={GEOMETRIES}
+              keyExtractor={(g) => g.id}
+              numColumns={3}
+              contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
+              renderItem={({ item }) => (
+                <Pressable
+                  style={({ pressed }) => [modalStyles.geometryItem, { opacity: pressed ? 0.7 : 1 }]}
+                  onPress={() => { onPickGeometry(item.id); setShowGeometries(false); onClose(); }}
+                >
+                  <View style={modalStyles.geometryThumb}>
+                    <SacredGlyph id={item.id as any} color={item.color} size={56} strokeWidth={1} opacity={1} />
+                  </View>
+                  <Text style={modalStyles.geometryName} numberOfLines={1}>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+          ) : (
+            <FlatList
+              data={creationItems}
+              keyExtractor={(c) => c.id}
+              numColumns={2}
+              contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
+              ListEmptyComponent={
+                <View style={{ paddingVertical: 40, alignItems: "center" }}>
+                  <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
+                  <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
                 </View>
-                <Text style={modalStyles.geometryName} numberOfLines={1}>{item.name}</Text>
-              </Pressable>
-            )}
-          />
+              }
+              renderItem={({ item }) => (
+                <Pressable
+                  style={({ pressed }) => [modalStyles.creationItem, { opacity: pressed ? 0.7 : 1 }]}
+                  onPress={() => { onPickCreation(item.id); setShowGeometries(false); onClose(); }}
+                >
+                  <View style={modalStyles.creationThumb}>
+                    <CreationCoverPreview creationId={item.id} size={100} />
+                  </View>
+                  <Text style={modalStyles.creationName} numberOfLines={1}>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+          )}
         </View>
       </Modal>
     );
@@ -602,5 +685,51 @@ const modalStyles = StyleSheet.create({
     fontSize: 12,
     marginTop: 6,
     textAlign: "center",
+  },
+  tabRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+    marginBottom: 12,
+  },
+  tab: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  tabActive: {
+    backgroundColor: "rgba(190,150,80,0.15)",
+  },
+  tabText: {
+    color: MUTED,
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  tabTextActive: {
+    color: GOLD,
+  },
+  creationItem: {
+    flex: 1,
+    alignItems: "center",
+    margin: 6,
+    paddingVertical: 10,
+    backgroundColor: "rgba(190,150,80,0.05)",
+    borderRadius: 12,
+  },
+  creationThumb: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  creationName: {
+    color: TEXT,
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: "center",
+    paddingHorizontal: 4,
   },
 });

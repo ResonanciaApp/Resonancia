@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -15,6 +16,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
+import { CreationCoverPreview } from "@/components/CreationCoverPreview";
+import { SacredGlyph } from "@/components/SacredGlyph";
+import { baseOf, type GeometryId } from "@/data/geometries";
 
 const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
 
@@ -73,8 +77,16 @@ export default function PlaylistsScreen() {
                 { borderBottomColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.75 : 1 },
               ]}
             >
-              <View style={[styles.plIcon, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
-                <Feather name="list" size={22} color={colors.primary} />
+              <View style={[styles.plIcon, { backgroundColor: "rgba(190,150,80,0.12)", overflow: "hidden" }]}>
+                {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                  <SacredGlyph id={pl.coverGeometryId as GeometryId} color={colors.primary} size={36} strokeWidth={1.6} opacity={1} />
+                ) : pl.coverType === "creation" && pl.coverCreationId ? (
+                  <CreationCoverPreview creationId={pl.coverCreationId} size={36} />
+                ) : pl.coverUri ? (
+                  <Image source={{ uri: pl.coverUri }} style={{ width: 36, height: 36, borderRadius: 6 }} contentFit="cover" />
+                ) : (
+                  <Feather name="list" size={22} color={colors.primary} />
+                )}
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.rowName, { color: colors.foreground }]} numberOfLines={1}>

@@ -35,6 +35,7 @@ import { SESSIONS, getSessionById } from "@/data/sessions";
 import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as UserFolder } from "@/context/FoldersPlaylistsContext";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
+import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -167,6 +168,8 @@ function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => voi
       <View style={styles.userPlCover}>
         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
+        ) : pl.coverType === "creation" && pl.coverCreationId ? (
+          <CreationCoverPreview creationId={pl.coverCreationId} size={36} />
         ) : pl.coverUri ? (
           <Image source={{ uri: pl.coverUri }} style={styles.userPlCover} contentFit="cover" />
         ) : (
@@ -690,6 +693,8 @@ export default function BibliotecaScreen() {
                 <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(190,150,80,0.08)", alignItems: "center", justifyContent: "center" }]}>
                   {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW * 0.55} strokeWidth={1.6} opacity={1} />
+                  ) : pl.coverType === "creation" && pl.coverCreationId ? (
+                    <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
                   ) : pl.coverUri ? (
                     <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                   ) : (

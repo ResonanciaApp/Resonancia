@@ -18,6 +18,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { CreationCoverPreview } from "@/components/CreationCoverPreview";
+import { SacredGlyph } from "@/components/SacredGlyph";
+import { baseOf, type GeometryId } from "@/data/geometries";
 
 const BG = ["#090D20", "#080A18", "#06070F"] as const;
 const GOLD = "#BE9650";
@@ -195,7 +198,15 @@ export default function CarpetaDetailScreen() {
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}
               >
                 <View style={styles.plCover}>
-                  <Feather name="music" size={18} color={MUTED} />
+                  {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                    <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
+                  ) : pl.coverType === "creation" && pl.coverCreationId ? (
+                    <CreationCoverPreview creationId={pl.coverCreationId} size={36} />
+                  ) : pl.coverUri ? (
+                    <Image source={{ uri: pl.coverUri }} style={{ width: 36, height: 36, borderRadius: 6 }} contentFit="cover" />
+                  ) : (
+                    <Feather name="music" size={18} color={MUTED} />
+                  )}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.plName} numberOfLines={1}>{pl.name}</Text>

@@ -23,9 +23,10 @@ export type Playlist = {
   name: string;
   sessionIds: string[]; // ordered
   coverUri?: string;
-  /** 'image' = foto del celular; 'geometrix' = geometría sagrada */
-  coverType?: "image" | "geometrix";
+  /** 'image' = foto del celular; 'geometrix' = geometría sagrada; 'creation' = composición propia */
+  coverType?: "image" | "geometrix" | "creation";
   coverGeometryId?: string;
+  coverCreationId?: string;
   createdAt: string;
 };
 
@@ -49,6 +50,7 @@ interface FoldersPlaylistsCtx {
   renamePlaylist: (playlistId: string, name: string) => void;
   setPlaylistCover: (playlistId: string, uri: string) => void;
   setPlaylistCoverGeometry: (playlistId: string, geometryId: string) => void;
+  setPlaylistCoverCreation: (playlistId: string, creationId: string) => void;
   addToPlaylist: (playlistId: string, sessionId: string) => void;
   removeFromPlaylist: (playlistId: string, sessionId: string) => void;
   deletePlaylist: (playlistId: string) => void;
@@ -229,6 +231,12 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     );
   }, [updatePlaylists]);
 
+  const setPlaylistCoverCreation = useCallback((playlistId: string, creationId: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) => p.id === playlistId ? { ...p, coverType: "creation" as const, coverCreationId: creationId } : p)
+    );
+  }, [updatePlaylists]);
+
   const addToPlaylist = useCallback((playlistId: string, sessionId: string) => {
     updatePlaylists((prev) =>
       prev.map((p) =>
@@ -279,6 +287,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         renamePlaylist,
         setPlaylistCover,
         setPlaylistCoverGeometry,
+        setPlaylistCoverCreation,
         addToPlaylist,
         removeFromPlaylist,
         deletePlaylist,
