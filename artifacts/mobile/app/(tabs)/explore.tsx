@@ -155,13 +155,6 @@ export default function ExploreScreen() {
               )}
             </Pressable>
             <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Buscar</Text>
-            <Pressable
-              onPress={() => router.push("/historial" as never)}
-              hitSlop={12}
-              style={styles.headerClockBtn}
-            >
-              <Feather name="clock" size={18} color="#FFFFFF" />
-            </Pressable>
           </View>
         </View>
 
@@ -265,11 +258,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.12)",
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(190,150,80,0.25)",
-  },
-  headerClockBtn: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.03)",
-    alignItems: "center", justifyContent: "center",
   },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
 
