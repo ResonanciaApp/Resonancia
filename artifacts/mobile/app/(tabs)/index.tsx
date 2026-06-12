@@ -375,11 +375,10 @@ export default function HomeScreen() {
                         style={[styles.sesSegPill, pillAnimStyle]}
                         pointerEvents={sesionesOpen ? "auto" : "none"}
                       >
-                        {/* Fondos de color a nivel pill completo (fade 220ms) */}
-                        <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: SUB_CHIP_ACTIVE_BG_0 }, subBg0AnimStyle]} />
-                        <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: SUB_CHIP_ACTIVE_BG_1 }, subBg1AnimStyle]} />
                         {SES_SUB_FILTERS.map((sf, i) => {
-                          const isActive = sesSubFilter === sf.id;
+                          const isActive    = sesSubFilter === sf.id;
+                          const bgAnimStyle = i === 0 ? subBg0AnimStyle : subBg1AnimStyle;
+                          const activeBg    = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
                           return (
                             <Pressable
                               key={sf.id}
@@ -394,6 +393,16 @@ export default function HomeScreen() {
                                 { opacity: pressed ? 0.75 : 1 },
                               ]}
                             >
+                              {/* Fondo animado solo de este botón (fade 220ms) */}
+                              <RAnimated.View
+                                style={[
+                                  StyleSheet.absoluteFill,
+                                  styles.sesSegBtnBg,
+                                  i === 0 && styles.sesSegBtnBgFirst,
+                                  { backgroundColor: activeBg },
+                                  bgAnimStyle,
+                                ]}
+                              />
                               <Text style={[styles.sesSegBtnText, isActive && styles.sesSegBtnTextActive]}>
                                 {sf.label}
                               </Text>
@@ -679,6 +688,8 @@ const styles = StyleSheet.create({
     overflow: "hidden", // solo para recortar fondos activos de botones, no el texto
   },
   sesSegBtn: {
+    flex: 1,
+    overflow: "hidden",
     paddingHorizontal: 6,
     height: 32,
     borderRadius: 20,
@@ -688,6 +699,13 @@ const styles = StyleSheet.create({
   sesSegBtnFirst: {
     paddingLeft: 42,
     paddingRight: 9,
+  },
+  sesSegBtnBg: {
+    borderRadius: 20,
+  },
+  sesSegBtnBgFirst: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
   },
   sesSegBtnText: {
     fontSize: 13,
