@@ -305,19 +305,19 @@ export default function HomeScreen() {
           >
             {NAV_TABS.map((tab) => {
               const sel = tab.id === "sesiones"
-                ? sesionesOpen
+                ? activeFilter !== null && tab.cats.some(c => activeFilter.includes(c))
                 : tab.cats.length === 0
-                  ? activeFilter === null && !sesionesOpen
-                  : activeFilter?.join() === tab.cats.join() && !sesionesOpen;
+                  ? activeFilter === null
+                  : activeFilter?.join() === tab.cats.join();
               return (
                 <React.Fragment key={tab.id}>
                   <Pressable
                     onPress={() => {
                       if (tab.id === "sesiones") {
-                        const opening = !sesionesOpen;
-                        setSesionesOpen(opening);
+                        // toggle sub-chips, pero Sesiones SIEMPRE queda seleccionado
+                        setSesionesOpen(prev => !prev);
                         setSesSubFilter(null);
-                        setActiveFilter(opening ? tab.cats : null);
+                        setActiveFilter(tab.cats);
                       } else {
                         setSesionesOpen(false);
                         setSesSubFilter(null);
