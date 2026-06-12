@@ -395,6 +395,7 @@ export function PlaylistAddSessionsSheet({
             data={data}
             keyExtractor={(s) => s.id}
             renderItem={renderItem}
+            extraData={previewId}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingTop: 4 }}
             getItemLayout={(_, index) => ({ length: 68, offset: 68 * index, index })}
