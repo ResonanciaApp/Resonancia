@@ -3825,7 +3825,7 @@ export default function GeometrixScreen() {
       {/* Oculta la barra de estado en pantalla completa (View absoluto, no Modal). */}
       <StatusBar hidden={fullscreenEdit} translucent />
       <LinearGradient
-        colors={HOME_GRADIENT}
+        colors={["#040404", "#040404"]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -3834,8 +3834,8 @@ export default function GeometrixScreen() {
       <View style={styles.content}>
         {/* ── Zona superior con fondo de Inicio ── */}
         <LinearGradient
-          colors={["#060210", "#0B0420", "#040404"]}
-          locations={[0, 0.55, 1]}
+          colors={["#080704", "#0D0A04", "#040404"]}
+          locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={[styles.topPanel, { paddingTop: insets.top + 12 }]}
