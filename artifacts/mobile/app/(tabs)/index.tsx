@@ -182,7 +182,7 @@ export default function HomeScreen() {
       pillOpacitySV.value = 0;
       setSesionesVisible(true);
       // Spacer empuja Música primero; pill aparece cuando ya hay espacio
-      spacerWidthSV.value = withTiming(165, { duration: 200 });
+      spacerWidthSV.value = withTiming(169, { duration: 200 });
       pillOpacitySV.value = withDelay(100, withTiming(1, { duration: 140 }));
     } else {
       // Pill desaparece primero; spacer colapsa después (Música se arrastra de vuelta)
@@ -686,7 +686,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     height: 32,
-    width: 197,
+    width: 201,
     marginLeft: -32,   // se solapa 32px con el chip "Sesiones"
     backgroundColor: "rgba(255,255,255,0.06)",
     paddingRight: 3,
