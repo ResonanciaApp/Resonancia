@@ -17,7 +17,6 @@ import {
   View,
 } from "react-native";
 import RAnimated, {
-  interpolateColor,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -163,12 +162,6 @@ export default function HomeScreen() {
 
   const subBg0AnimStyle  = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
   const subBg1AnimStyle  = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
-  const subText0AnimStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(subBg0SV.value, [0, 1], ["#FFFFFF", "#0B0F14"]),
-  }));
-  const subText1AnimStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(subBg1SV.value, [0, 1], ["#FFFFFF", "#0B0F14"]),
-  }));
 
   useEffect(() => {
     const DUR = 220;
@@ -382,15 +375,16 @@ export default function HomeScreen() {
                         style={[styles.sesSegPill, pillAnimStyle]}
                         pointerEvents={sesionesOpen ? "auto" : "none"}
                       >
+                        {/* Fondos de color a nivel pill completo (fade 220ms) */}
+                        <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: SUB_CHIP_ACTIVE_BG_0 }, subBg0AnimStyle]} />
+                        <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: SUB_CHIP_ACTIVE_BG_1 }, subBg1AnimStyle]} />
                         {SES_SUB_FILTERS.map((sf, i) => {
-                          const bgAnimStyle  = i === 0 ? subBg0AnimStyle  : subBg1AnimStyle;
-                          const txtAnimStyle = i === 0 ? subText0AnimStyle : subText1AnimStyle;
-                          const activeBg     = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
+                          const isActive = sesSubFilter === sf.id;
                           return (
                             <Pressable
                               key={sf.id}
                               onPress={() => {
-                                const next = sesSubFilter === sf.id ? null : sf.id;
+                                const next = isActive ? null : sf.id;
                                 setSesSubFilter(next);
                                 setActiveFilter(next ? [next] : NAV_TABS[1].cats);
                               }}
@@ -400,20 +394,9 @@ export default function HomeScreen() {
                                 { opacity: pressed ? 0.75 : 1 },
                               ]}
                             >
-                              {/* Fondo animado (fade 220ms) */}
-                              <RAnimated.View
-                                style={[
-                                  StyleSheet.absoluteFill,
-                                  styles.sesSegBtnBg,
-                                  i === 0 && styles.sesSegBtnBgFirst,
-                                  { backgroundColor: activeBg },
-                                  bgAnimStyle,
-                                ]}
-                              />
-                              {/* Texto con color animado */}
-                              <RAnimated.Text style={[styles.sesSegBtnText, txtAnimStyle]}>
+                              <Text style={[styles.sesSegBtnText, isActive && styles.sesSegBtnTextActive]}>
                                 {sf.label}
-                              </RAnimated.Text>
+                              </Text>
                             </Pressable>
                           );
                         })}
@@ -706,17 +689,14 @@ const styles = StyleSheet.create({
     paddingLeft: 42,
     paddingRight: 9,
   },
-  sesSegBtnBg: {
-    borderRadius: 20,
-  },
-  sesSegBtnBgFirst: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
   sesSegBtnText: {
     fontSize: 13,
     fontWeight: "400",
+    color: "#FFFFFF",
     letterSpacing: 0.1,
+  },
+  sesSegBtnTextActive: {
+    fontWeight: "700",
   },
   headerTabChip: {
     borderRadius: 20,
