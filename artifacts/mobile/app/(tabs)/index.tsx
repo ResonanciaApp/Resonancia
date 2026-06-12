@@ -396,18 +396,16 @@ export default function HomeScreen() {
                                 { opacity: pressed ? 0.75 : 1 },
                               ]}
                             >
-                              {/* Fondo animado solo de este botón (fade 220ms) */}
+                              {/* Fondo animado (absoluteFill del botón, 220ms) */}
                               <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
                                 <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
                               </View>
-                              {/* Texto sincronizado con el fondo: bold↔regular cross-fade */}
-                              <View style={styles.sesSegBtnLabel}>
-                                {/* Spacer invisible (bold) para reservar ancho */}
-                                <Text numberOfLines={1} style={[styles.sesSegBtnTextBold, { color: "transparent" }]}>{sf.label}</Text>
-                                {/* Bold: opacidad = SV (aparece con el color) */}
-                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnLabelAbs, bgAnimStyle]}>{sf.label}</RAnimated.Text>
-                                {/* Regular: opacidad inversa (desaparece con el color) */}
-                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnText, styles.sesSegBtnLabelAbs, bgInvAnimStyle]}>{sf.label}</RAnimated.Text>
+                              {/* Spacer invisible bold → da ancho al Pressable */}
+                              <Text numberOfLines={1} style={[styles.sesSegBtnTextBold, { color: "transparent" }]}>{sf.label}</Text>
+                              {/* Textos animados en AbsoluteFill → cross-fade bold/regular */}
+                              <View style={[StyleSheet.absoluteFill, styles.sesSegBtnTextContainer]}>
+                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, bgAnimStyle]}>{sf.label}</RAnimated.Text>
+                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnText, styles.sesSegBtnTextOverlay, bgInvAnimStyle]}>{sf.label}</RAnimated.Text>
                               </View>
                             </Pressable>
                           );
@@ -691,7 +689,6 @@ const styles = StyleSheet.create({
     overflow: "hidden", // solo para recortar fondos activos de botones, no el texto
   },
   sesSegBtn: {
-    flex: 1,
     paddingHorizontal: 6,
     height: 32,
     borderRadius: 20,
@@ -710,15 +707,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
   },
-  sesSegBtnLabel: {
+  sesSegBtnTextContainer: {
     alignItems: "center",
     justifyContent: "center",
   },
-  sesSegBtnLabelAbs: {
+  sesSegBtnTextOverlay: {
     position: "absolute",
-    textAlign: "center",
     left: 0,
     right: 0,
+    textAlign: "center",
   },
   sesSegBtnText: {
     fontSize: 13,
