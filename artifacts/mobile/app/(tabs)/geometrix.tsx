@@ -6864,7 +6864,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  swatchFill: { width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: "#4b4f5c" },
+  swatchFill: { width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: "#4b4f5c", opacity: 0.03 },
   swatchOn: { borderColor: "#EDE1D3" },
 
   rotBadge: {
