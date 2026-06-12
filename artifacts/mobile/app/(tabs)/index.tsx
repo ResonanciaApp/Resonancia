@@ -145,16 +145,22 @@ export default function HomeScreen() {
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
   const [sesionesOpen, setSesionesOpen] = useState(false);
+  const [sesionesVisible, setSesionesVisible] = useState(false);
   const [sesSubFilter, setSesSubFilter] = useState<string | null>(null);
   const subFilterAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (sesionesOpen) {
+      setSesionesVisible(true);
       Animated.timing(subFilterAnim, {
         toValue: 1, duration: 220, useNativeDriver: true,
       }).start();
     } else {
-      subFilterAnim.setValue(0);
+      Animated.timing(subFilterAnim, {
+        toValue: 0, duration: 180, useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) setSesionesVisible(false);
+      });
     }
   }, [sesionesOpen, subFilterAnim]);
 
@@ -337,7 +343,7 @@ export default function HomeScreen() {
                   </Pressable>
 
                   {/* Sub-filtros: aparecen justo después de "Sesiones" */}
-                  {tab.id === "sesiones" && sesionesOpen && (
+                  {tab.id === "sesiones" && sesionesVisible && (
                     <Animated.View
                       style={[
                         styles.sesSegPill,
