@@ -1235,24 +1235,6 @@ function CarouselTileInner({
   edgeIntent,
 }: CarouselTileProps) {
 
-  // Título de la geometría sobre la card: aparece con fade-in al unísono de la
-  // selección (activación) y se desvanece 0,15 s después de que la geometría se
-  // estaciona en su posición (fin del HOLD + glide al frente).
-  const titleOpacity = useSharedValue(0);
-  useEffect(() => {
-    if (isActivating) {
-      const FADE_IN = 900;
-      const PARK = CAROUSEL_HOLD_MS + CAROUSEL_FLOW_MS;
-      titleOpacity.value = withSequence(
-        withTiming(0.95, { duration: FADE_IN, easing: Easing.inOut(Easing.quad) }),
-        withDelay(
-          PARK - FADE_IN + 150,
-          withTiming(0, { duration: 320, easing: Easing.in(Easing.ease) }),
-        ),
-      );
-    }
-  }, [isActivating, titleOpacity]);
-  const titleStyle = useAnimatedStyle(() => ({ opacity: titleOpacity.value }));
 
   // ── Reordenamiento por arrastre ───────────────────────────────────────────
   // Long-press (~250 ms) + drag horizontal. Mientras se arrastra, la card sigue
@@ -1576,17 +1558,10 @@ function CarouselTileInner({
             <SacredGlyph
               id={baseOf(id)}
               color={isSelected ? color : "#c7caec"}
-              size={tileW * 0.66}
+              size={tileW * 0.72}
               strokeWidth={isSelected ? 1.5 : 1.4}
             />
           </View>
-          <Animated.Text
-            pointerEvents="none"
-            numberOfLines={1}
-            style={[styles.tileTitle, titleStyle]}
-          >
-            {name}
-          </Animated.Text>
         </Pressable>
       </GestureDetector>
     </Animated.View>
@@ -6323,8 +6298,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.02)",
     alignItems: "center",
-    justifyContent: "flex-start",
-    paddingTop: 6,
+    justifyContent: "center",
   },
   tileGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
   tileHaloWrap: { alignItems: "center", justifyContent: "center" },
