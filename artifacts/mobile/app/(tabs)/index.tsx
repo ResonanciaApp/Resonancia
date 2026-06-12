@@ -354,25 +354,23 @@ export default function HomeScreen() {
                       {SES_SUB_FILTERS.map((sf, i) => {
                         const subSel = sesSubFilter === sf.id;
                         return (
-                          <React.Fragment key={sf.id}>
-                            {i > 0 && <View style={styles.sesSegDivider} />}
-                            <Pressable
-                              onPress={() => {
-                                const next = subSel ? null : sf.id;
-                                setSesSubFilter(next);
-                                setActiveFilter(next ? [next] : NAV_TABS[1].cats);
-                              }}
-                              style={({ pressed }) => [
-                                styles.sesSegBtn,
-                                subSel && styles.sesSegBtnActive,
-                                { opacity: pressed ? 0.75 : 1 },
-                              ]}
-                            >
-                              <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
-                                {sf.label}
-                              </Text>
-                            </Pressable>
-                          </React.Fragment>
+                          <Pressable
+                            key={sf.id}
+                            onPress={() => {
+                              const next = subSel ? null : sf.id;
+                              setSesSubFilter(next);
+                              setActiveFilter(next ? [next] : NAV_TABS[1].cats);
+                            }}
+                            style={({ pressed }) => [
+                              styles.sesSegBtn,
+                              subSel && styles.sesSegBtnActive,
+                              { opacity: pressed ? 0.75 : 1 },
+                            ]}
+                          >
+                            <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
+                              {sf.label}
+                            </Text>
+                          </Pressable>
                         );
                       })}
                     </Animated.View>
@@ -637,21 +635,20 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginLeft: -25,
     paddingLeft: 20,
+    paddingRight: 3,
+    paddingVertical: 3,
+    gap: 2,
     zIndex: 0,
   },
   sesSegBtn: {
     paddingHorizontal: 11,
-    height: 32,
+    height: 26,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   sesSegBtnActive: {
     backgroundColor: SUB_CHIP_ACTIVE_BG,
-  },
-  sesSegDivider: {
-    width: 1,
-    height: 18,
-    backgroundColor: "rgba(255,255,255,0.15)",
   },
   headerTabChip: {
     borderRadius: 20,
