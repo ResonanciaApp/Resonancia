@@ -701,7 +701,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   sesSegBtnFirst: {
-    paddingLeft: 45,
+    paddingLeft: 42,
+    paddingRight: 9,
   },
   sesSegBtnBg: {
     backgroundColor: SUB_CHIP_ACTIVE_BG,
