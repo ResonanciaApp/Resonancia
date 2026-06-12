@@ -6117,7 +6117,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-creaciones")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="grid" size={20} color="#6584d4" />
+                <Feather name="grid" size={20} color="#BE9650" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Mis Creaciones</Text>
@@ -6132,7 +6132,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-comunidad")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="users" size={20} color="#6584d4" />
+                <Feather name="users" size={20} color="#BE9650" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Comunidad</Text>
@@ -6147,7 +6147,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-aprende")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="book-open" size={20} color="#6584d4" />
+                <Feather name="book-open" size={20} color="#BE9650" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Aprende</Text>
@@ -6288,7 +6288,7 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 13,
-    backgroundColor: "rgba(101,132,212,0.08)",
+    backgroundColor: "rgba(190,150,80,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
