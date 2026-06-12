@@ -4295,9 +4295,9 @@ export default function GeometrixScreen() {
                     hitSlop={6}
                   >
                     {a.gradient ? (
-                      <GoldSlidersIcon size={18} />
+                      <GoldSlidersIcon size={16} />
                     ) : (
-                      <Feather name={a.icon} size={18} color={a.color ?? "#7a879d"} />
+                      <Feather name={a.icon} size={16} color={a.color ?? "#7a879d"} />
                     )}
                   </Pressable>
                 </React.Fragment>
