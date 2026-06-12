@@ -623,11 +623,14 @@ const styles = StyleSheet.create({
   },
   headerTabs: {
     flex: 1,
+    marginHorizontal: -GRID_PAD,
+    overflow: "visible",
   },
   headerTabsContent: {
     flexDirection: "row",
     gap: 6,
     alignItems: "center",
+    paddingHorizontal: GRID_PAD,
   },
   sesSegPill: {
     flexDirection: "row",
@@ -642,7 +645,7 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   sesSegBtn: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     height: 32,
     borderRadius: 20,
     alignItems: "center",
