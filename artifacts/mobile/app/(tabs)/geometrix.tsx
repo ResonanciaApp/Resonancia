@@ -84,6 +84,7 @@ import { GEOMETRIES, GEOMETRY_CATEGORIES, PALETTE, baseOf, categoryOf, getGeomet
 import {
   BG_GRADIENTS,
   bgGradientColors,
+  HEADER_GRADIENT,
   brightnessFactor,
   gradientColors,
   HOME_GRADIENT,
@@ -3887,6 +3888,10 @@ export default function GeometrixScreen() {
     ? scaleColors(selectedBg, bgFactor)
     : HOME_GRADIENT;
   const canvasBgLocations = selectedBg ? undefined : ([0, 0.5, 1] as [number, number, number]);
+  // Header del canvas: +3% lightness sobre el fondo del lienzo.
+  const headerBgColors = selectedBg
+    ? scaleColors(selectedBg, bgFactor * 1.15)
+    : HEADER_GRADIENT;
 
   // Fondo de los sheets que responde al tono del degradado seleccionado.
   const sheetBgColor = useMemo(() => {
@@ -3906,10 +3911,10 @@ export default function GeometrixScreen() {
       <View style={styles.content}>
         {/* ── Zona superior: header + carrusel ── */}
         <View style={[styles.topPanel, { paddingTop: insets.top + 4 }]}>
-          {/* Fondo del header */}
+          {/* Fondo del header (+3% brillo sobre el lienzo) */}
           <View pointerEvents="none" style={styles.headerBgLayer}>
             <LinearGradient
-              colors={canvasBgColors}
+              colors={headerBgColors}
               locations={canvasBgLocations}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
