@@ -16,14 +16,6 @@ import {
   Text,
   View,
 } from "react-native";
-import RAnimated, {
-  Easing,
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NotificationBell } from "@/components/NotificationBell";
@@ -65,12 +57,6 @@ const NAV_TABS = [
   { id: "sesiones", label: "Sesiones", cats: ["sonidos-ancestrales", "meditaciones-guiadas"] },
   { id: "musica",   label: "Música",   cats: ["musica-sonidos"] },
 ];
-const SES_SUB_FILTERS = [
-  { id: "sonidos-ancestrales",  label: "Ancestral"  },
-  { id: "meditaciones-guiadas", label: "Meditación" },
-];
-const SUB_CHIP_ACTIVE_BG_0 = "#5c7d51"; // Ancestral
-const SUB_CHIP_ACTIVE_BG_1 = "#81688f"; // Meditación
 const GRID_GAP = 12;
 const GRID_PAD = 15;
 
@@ -152,52 +138,6 @@ export default function HomeScreen() {
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
-  const [sesionesOpen, setSesionesOpen] = useState(false);
-  const [sesionesVisible, setSesionesVisible] = useState(false);
-  const [sesSubFilter,  setSesSubFilter]  = useState<string | null>(null);
-  const [sesSubFilter2, setSesSubFilter2] = useState<string | null>(null);
-  const spacerWidthSV = useSharedValue(0);
-  const pillOpacitySV = useSharedValue(0);
-  // SVs para fade de fondo y color de texto (pill 1: índices 0-1; pill 2: índices 2-3)
-  const subBg0SV = useSharedValue(0);
-  const subBg1SV = useSharedValue(0);
-  const subBg2SV = useSharedValue(0);
-  const subBg3SV = useSharedValue(0);
-
-  // Fondos: fade suave
-  const subBg0AnimStyle = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
-  const subBg1AnimStyle = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
-  const subBg2AnimStyle = useAnimatedStyle(() => ({ opacity: subBg2SV.value }));
-  const subBg3AnimStyle = useAnimatedStyle(() => ({ opacity: subBg3SV.value }));
-  // Textos: switch instantáneo en el punto medio — bold activo, regular inactivo, mismo color blanco
-  const subTextBold0 = useAnimatedStyle(() => ({ opacity: subBg0SV.value >= 0.5 ? 1 : 0 }));
-  const subTextBold1 = useAnimatedStyle(() => ({ opacity: subBg1SV.value >= 0.5 ? 1 : 0 }));
-  const subTextBold2 = useAnimatedStyle(() => ({ opacity: subBg2SV.value >= 0.5 ? 1 : 0 }));
-  const subTextBold3 = useAnimatedStyle(() => ({ opacity: subBg3SV.value >= 0.5 ? 1 : 0 }));
-  const subTextReg0  = useAnimatedStyle(() => ({ opacity: subBg0SV.value < 0.5  ? 1 : 0 }));
-  const subTextReg1  = useAnimatedStyle(() => ({ opacity: subBg1SV.value < 0.5  ? 1 : 0 }));
-  const subTextReg2  = useAnimatedStyle(() => ({ opacity: subBg2SV.value < 0.5  ? 1 : 0 }));
-  const subTextReg3  = useAnimatedStyle(() => ({ opacity: subBg3SV.value < 0.5  ? 1 : 0 }));
-
-  useEffect(() => {
-    if (sesionesOpen) {
-      spacerWidthSV.value = 0;
-      pillOpacitySV.value = 0;
-      setSesionesVisible(true);
-      // Spacer empuja Música primero; pill aparece cuando ya hay espacio
-      spacerWidthSV.value = withTiming(379, { duration: 200 });
-      pillOpacitySV.value = withDelay(100, withTiming(1, { duration: 140 }));
-    } else {
-      // Pill desaparece primero; spacer colapsa después (Música se arrastra de vuelta)
-      pillOpacitySV.value = withTiming(0, { duration: 120 });
-      spacerWidthSV.value = withDelay(100, withTiming(0, { duration: 160 }, (finished) => {
-        if (finished) runOnJS(setSesionesVisible)(false);
-      }));
-    }
-  }, [sesionesOpen]);
-
-  const spacerAnimStyle = useAnimatedStyle(() => ({ width: spacerWidthSV.value }));
-  const pillAnimStyle = useAnimatedStyle(() => ({ opacity: pillOpacitySV.value }));
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -345,125 +285,23 @@ export default function HomeScreen() {
             contentContainerStyle={styles.headerTabsContent}
           >
             {NAV_TABS.map((tab) => {
-              const sel = tab.id === "sesiones"
-                ? activeFilter !== null && tab.cats.some(c => activeFilter.includes(c))
-                : tab.cats.length === 0
-                  ? activeFilter === null
-                  : activeFilter?.join() === tab.cats.join();
+              const sel = tab.cats.length === 0
+                ? activeFilter === null
+                : activeFilter?.join() === tab.cats.join();
               return (
-                <React.Fragment key={tab.id}>
-                  <Pressable
-                    onPress={() => {
-                      if (tab.id === "sesiones") {
-                        // toggle sub-chips, pero Sesiones SIEMPRE queda seleccionado
-                        setSesionesOpen(prev => !prev);
-                        setSesSubFilter(null);
-                        setActiveFilter(tab.cats);
-                      } else {
-                        setSesionesOpen(false);
-                        setSesSubFilter(null);
-                        setActiveFilter(tab.cats.length === 0 ? null : tab.cats);
-                      }
-                    }}
-                    style={({ pressed }) => [
-                      styles.headerTabChip,
-                      sel && styles.headerTabChipActive,
-                      tab.id === "sesiones" && sesionesVisible && styles.headerTabChipOnTop,
-                      { opacity: pressed ? 0.7 : 1 },
-                    ]}
-                  >
-                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
-                      {tab.label}
-                    </Text>
-                  </Pressable>
-
-                  {/* Sub-filtros: spacer vacío empuja Música; row contiene dos pills independientes */}
-                  {tab.id === "sesiones" && sesionesVisible && (
-                    <RAnimated.View style={[styles.sesSegSpacer, spacerAnimStyle]}>
-                      <RAnimated.View
-                        style={[styles.sesSegPillsRow, pillAnimStyle]}
-                        pointerEvents={sesionesOpen ? "auto" : "none"}
-                      >
-                        {/* ── Pill 1 ── */}
-                        <View style={styles.sesSegPill}>
-                          {SES_SUB_FILTERS.map((sf, i) => {
-                            const isActive     = sesSubFilter === sf.id;
-                            const bgAnimStyle  = i === 0 ? subBg0AnimStyle : subBg1AnimStyle;
-                            const txtBoldStyle = i === 0 ? subTextBold0    : subTextBold1;
-                            const txtRegStyle  = i === 0 ? subTextReg0     : subTextReg1;
-                            const activeBg     = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
-                            return (
-                              <Pressable
-                                key={sf.id}
-                                onPress={() => {
-                                  const next = isActive ? null : sf.id;
-                                  const cfg = { duration: 200, easing: Easing.out(Easing.quad) };
-                                  subBg0SV.value = withTiming(next === SES_SUB_FILTERS[0].id ? 1 : 0, cfg);
-                                  subBg1SV.value = withTiming(next === SES_SUB_FILTERS[1].id ? 1 : 0, cfg);
-                                  setSesSubFilter(next);
-                                  setActiveFilter(next ? [next] : NAV_TABS[1].cats);
-                                }}
-                                style={({ pressed }) => [
-                                  styles.sesSegBtn,
-                                  i === 0 && styles.sesSegBtnFirst,
-                                  i === 1 && styles.sesSegBtnSecond,
-                                  { opacity: pressed ? 0.75 : 1 },
-                                ]}
-                              >
-                                <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
-                                  <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
-                                </View>
-                                <View style={styles.sesSegBtnInner}>
-                                  <Text numberOfLines={1} style={styles.sesSegBtnTextSpacer}>{sf.label}</Text>
-                                  <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, txtBoldStyle]}>{sf.label}</RAnimated.Text>
-                                  <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextReg,  styles.sesSegBtnTextOverlay, txtRegStyle]}>{sf.label}</RAnimated.Text>
-                                </View>
-                              </Pressable>
-                            );
-                          })}
-                        </View>
-
-                        {/* ── Pill 2 (duplicado independiente) ── */}
-                        <View style={styles.sesSegPill}>
-                          {SES_SUB_FILTERS.map((sf, i) => {
-                            const isActive2    = sesSubFilter2 === sf.id;
-                            const bgAnimStyle  = i === 0 ? subBg2AnimStyle : subBg3AnimStyle;
-                            const txtBoldStyle = i === 0 ? subTextBold2    : subTextBold3;
-                            const txtRegStyle  = i === 0 ? subTextReg2     : subTextReg3;
-                            const activeBg     = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
-                            return (
-                              <Pressable
-                                key={sf.id}
-                                onPress={() => {
-                                  const next = isActive2 ? null : sf.id;
-                                  const cfg = { duration: 200, easing: Easing.out(Easing.quad) };
-                                  subBg2SV.value = withTiming(next === SES_SUB_FILTERS[0].id ? 1 : 0, cfg);
-                                  subBg3SV.value = withTiming(next === SES_SUB_FILTERS[1].id ? 1 : 0, cfg);
-                                  setSesSubFilter2(next);
-                                }}
-                                style={({ pressed }) => [
-                                  styles.sesSegBtn,
-                                  i === 0 && styles.sesSegBtnFirst,
-                                  i === 1 && styles.sesSegBtnSecond,
-                                  { opacity: pressed ? 0.75 : 1 },
-                                ]}
-                              >
-                                <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
-                                  <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
-                                </View>
-                                <View style={styles.sesSegBtnInner}>
-                                  <Text numberOfLines={1} style={styles.sesSegBtnTextSpacer}>{sf.label}</Text>
-                                  <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, txtBoldStyle]}>{sf.label}</RAnimated.Text>
-                                  <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextReg,  styles.sesSegBtnTextOverlay, txtRegStyle]}>{sf.label}</RAnimated.Text>
-                                </View>
-                              </Pressable>
-                            );
-                          })}
-                        </View>
-                      </RAnimated.View>
-                    </RAnimated.View>
-                  )}
-                </React.Fragment>
+                <Pressable
+                  key={tab.id}
+                  onPress={() => setActiveFilter(tab.cats.length === 0 ? null : tab.cats)}
+                  style={({ pressed }) => [
+                    styles.headerTabChip,
+                    sel && styles.headerTabChipActive,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+                    {tab.label}
+                  </Text>
+                </Pressable>
               );
             })}
           </ScrollView>
@@ -717,80 +555,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
   },
-  sesSegSpacer: {
-    // width animado (0→188) — empuja a Música sin texto ni clip
-    // marginLeft:-6 cancela el gap que flexbox inserta antes del spacer
-    // → Música queda en la misma posición con spacer a 0 que sin spacer (sin snap al desmontar)
-    height: 32,
-    overflow: "visible",
-    marginLeft: -6,
-  },
-  sesSegPillsRow: {
-    // row que contiene ambas pills; marginLeft:-32 solapa con el chip "Sesiones"
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginLeft: -32,
-  },
-  sesSegPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 20,
-    height: 32,
-    width: 204,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    paddingRight: 3,
-    gap: 1,
-    overflow: "hidden", // recorta fondos activos de botones
-  },
-  sesSegBtn: {
-    paddingHorizontal: 6,
-    height: 32,
-    borderRadius: 20,
-    justifyContent: "center",
-  },
-  sesSegBtnFirst: {
-    paddingLeft: 42,
-    paddingRight: 9,
-  },
-  sesSegBtnSecond: {
-    paddingRight: 9,
-  },
-  sesSegBtnInner: {
-    overflow: "hidden",
-  },
-  sesSegBtnTextOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-  },
-  sesSegBtnTextReg: {
-    fontSize: 13,
-    fontWeight: "400",
-    color: "#FFFFFF",
-    letterSpacing: 0.1,
-  },
-  sesSegBtnTextSpacer: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "transparent",
-    letterSpacing: 0.1,
-  },
-  sesSegBtnBg: {
-    borderRadius: 20,
-    overflow: "hidden",
-  },
-  sesSegBtnBgFirst: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-  sesSegBtnTextBold: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    letterSpacing: 0.1,
-  },
   headerTabChip: {
     borderRadius: 20,
     paddingHorizontal: 10,
@@ -801,13 +565,6 @@ const styles = StyleSheet.create({
   },
   headerTabChipActive: {
     backgroundColor: "#BE9650",
-  },
-  headerTabChipOnTop: {
-    zIndex: 2,
-    elevation: 0,
-  },
-  headerTabChipSubActive: {
-    backgroundColor: "#a48a4b",
   },
   headerTabText: {
     fontSize: 13,
