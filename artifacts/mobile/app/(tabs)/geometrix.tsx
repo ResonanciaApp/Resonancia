@@ -5986,9 +5986,10 @@ export default function GeometrixScreen() {
       {showLanding && (
         <View style={styles.landingOverlay}>
           <LinearGradient
-            colors={["#0B0714", "#030306"]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
+            colors={HOME_GRADIENT}
+            locations={[0, 0.5, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
 
@@ -6080,7 +6081,7 @@ export default function GeometrixScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#0B0714" },
+  root: { flex: 1, backgroundColor: "#090D20" },
   content:  { flex: 1, paddingHorizontal: 20 },
 
   // ── Landing overlay ───────────────────────────────────────────────────────
