@@ -404,13 +404,12 @@ export default function HomeScreen() {
                               <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
                                 <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
                               </View>
-                              {/* Dos textos superpuestos (absolute): bold=activo, regular=inactivo.
-                                  El btn2 usa flex:1 → ancho fijo por el pill → fontWeight no mueve el layout */}
-                              <View style={styles.sesSegBtnInner}>
+                              {/* View sin estilos: spacer bold (normal flow) fija el ancho;
+                                  overlays absolute left:0/right:0 no se salen del contenedor */}
+                              <View>
+                                <Text numberOfLines={1} style={styles.sesSegBtnTextSpacer}>{sf.label}</Text>
                                 <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnTextOverlay, txtBoldStyle]}>{sf.label}</RAnimated.Text>
                                 <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextReg,  styles.sesSegBtnTextOverlay, txtRegStyle]}>{sf.label}</RAnimated.Text>
-                                {/* Spacer invisible bold → da ancho mínimo al contenedor */}
-                                <Text numberOfLines={1} style={styles.sesSegBtnTextSpacer}>{sf.label}</Text>
                               </View>
                             </Pressable>
                           );
@@ -705,15 +704,13 @@ const styles = StyleSheet.create({
     paddingRight: 9,
   },
   sesSegBtnSecond: {
-    flex: 1,           // ancho fijo determinado por el pill → fontWeight no mueve el layout
     paddingRight: 9,
-  },
-  sesSegBtnInner: {
-    alignItems: "center",
-    justifyContent: "center",
   },
   sesSegBtnTextOverlay: {
     position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
   },
   sesSegBtnTextReg: {
     fontSize: 13,
