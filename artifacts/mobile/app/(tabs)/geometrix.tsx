@@ -2100,7 +2100,11 @@ export default function GeometrixScreen() {
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
   // Param de ruta: id de una creación a abrir (lo manda la pantalla de la lista).
-  const params = useLocalSearchParams<{ load?: string; play?: string; new?: string }>();
+  const params = useLocalSearchParams<{ load?: string; play?: string; new?: string; preloadId?: string }>();
+
+  // Landing screen: se muestra al entrar con el canvas vacío. Se oculta al
+  // tocar "Crear Geometría" o al cargar una creación existente.
+  const [showLanding, setShowLanding] = useState(true);
 
   // `active` guarda IDs de instancia (ver `baseOf`): el original de cada
   // geometría usa el id base pelado; los duplicados usan `${base}::${sufijo}`.
@@ -2579,6 +2583,10 @@ export default function GeometrixScreen() {
   // Al entrar: disparar el intro de audio si el lienzo está vacío.
   useFocusEffect(
     useCallback(() => {
+      // Mostrar landing si el canvas está vacío (sin params de carga directa).
+      if (activeRef.current.length === 0 && !params.load && !params.new && !params.preloadId) {
+        setShowLanding(true);
+      }
       // Audio de intro sincronizado con el "logo reveal" (cubo-3): solo cuando
       // el lienzo está vacío, que es cuando aparece el logo.
       if (activeRef.current.length === 0) {
@@ -6127,6 +6135,97 @@ export default function GeometrixScreen() {
         </View>
       </Modal>
 
+      {/* ── Landing screen: aparece al entrar con canvas vacío ── */}
+      {showLanding && (
+        <View style={styles.landingOverlay}>
+          <LinearGradient
+            colors={["#020308", "#040610", "#060A14"]}
+            style={StyleSheet.absoluteFill}
+          />
+
+          {/* Logo + título */}
+          <View style={styles.landingHero}>
+            <Image
+              source={require("@/assets/images/geometrix/cubo-3.png")}
+              style={styles.landingLogo}
+              contentFit="contain"
+            />
+            <Text style={styles.landingTitle}>GEOMETRIX</Text>
+            <Text style={styles.landingSubtitle}>SACRED GEOMETRY</Text>
+            <View style={styles.landingSep} />
+          </View>
+
+          {/* Menú de opciones */}
+          <View style={styles.landingMenu}>
+            {/* Crear Geometría — primario */}
+            <Pressable
+              style={({ pressed }) => [styles.landingItem, styles.landingItemPrimary, { opacity: pressed ? 0.8 : 1 }]}
+              onPress={() => {
+                setShowLanding(false);
+                stopIntro();
+              }}
+            >
+              <View style={[styles.landingItemIcon, styles.landingItemIconPrimary]}>
+                <Feather name="plus-circle" size={22} color="#0B0F14" />
+              </View>
+              <View style={styles.landingItemText}>
+                <Text style={[styles.landingItemTitle, { color: "#0B0F14" }]}>Crear Geometría</Text>
+                <Text style={[styles.landingItemDesc, { color: "rgba(11,15,20,0.65)" }]}>Comienza desde cero</Text>
+              </View>
+              <Feather name="chevron-right" size={16} color="rgba(11,15,20,0.5)" />
+            </Pressable>
+
+            {/* Mis Creaciones */}
+            <Pressable
+              style={({ pressed }) => [styles.landingItem, { opacity: pressed ? 0.75 : 1 }]}
+              onPress={() => router.push("/geometrix-creaciones")}
+            >
+              <View style={styles.landingItemIcon}>
+                <Feather name="grid" size={20} color={colors.primary} />
+              </View>
+              <View style={styles.landingItemText}>
+                <Text style={styles.landingItemTitle}>Mis Creaciones</Text>
+                <Text style={styles.landingItemDesc}>Tus obras guardadas</Text>
+              </View>
+              <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+            </Pressable>
+
+            {/* Comunidad */}
+            <Pressable
+              style={({ pressed }) => [styles.landingItem, { opacity: pressed ? 0.75 : 1 }]}
+              onPress={() => router.push("/geometrix-comunidad")}
+            >
+              <View style={styles.landingItemIcon}>
+                <Feather name="users" size={20} color={colors.primary} />
+              </View>
+              <View style={styles.landingItemText}>
+                <Text style={styles.landingItemTitle}>Comunidad</Text>
+                <Text style={styles.landingItemDesc}>Explora y comparte</Text>
+              </View>
+              <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+            </Pressable>
+
+            {/* Aprende */}
+            <Pressable
+              style={({ pressed }) => [styles.landingItem, { opacity: pressed ? 0.75 : 1 }]}
+              onPress={() => router.push("/geometrix-aprende")}
+            >
+              <View style={styles.landingItemIcon}>
+                <Feather name="book-open" size={20} color={colors.primary} />
+              </View>
+              <View style={styles.landingItemText}>
+                <Text style={styles.landingItemTitle}>Aprende</Text>
+                <Text style={styles.landingItemDesc}>Descubre y profundiza</Text>
+              </View>
+              <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
+            </Pressable>
+          </View>
+
+          {/* Hint */}
+          <Text style={styles.landingHint}>Explora la geometría del universo</Text>
+        </View>
+      )}
+
       {/* ── Barra de navegación inferior de Geometrix ── */}
       {menuHidden && (
         <View style={[styles.geoNav, { paddingBottom: bottomPb, height: GEO_NAV_HEIGHT + bottomPb }]}>
@@ -6210,6 +6309,93 @@ const styles = StyleSheet.create({
     color: "#BE9650",
     fontWeight: "700",
   },
+
+  // ── Landing overlay ───────────────────────────────────────────────────────
+  landingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 200,
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  landingHero: {
+    alignItems: "center",
+    marginBottom: 36,
+  },
+  landingLogo: {
+    width: 80,
+    height: 80,
+    marginBottom: 16,
+    opacity: 0.95,
+  },
+  landingTitle: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#EDE1D3",
+    letterSpacing: 6,
+    marginBottom: 4,
+  },
+  landingSubtitle: {
+    fontSize: 11,
+    fontWeight: "500",
+    color: "#7A8FA8",
+    letterSpacing: 4,
+    marginBottom: 20,
+  },
+  landingSep: {
+    width: 48,
+    height: 1,
+    backgroundColor: "rgba(190,150,80,0.4)",
+  },
+  landingMenu: {
+    gap: 10,
+  },
+  landingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    padding: 15,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.2)",
+    backgroundColor: "rgba(190,150,80,0.05)",
+  },
+  landingItemPrimary: {
+    backgroundColor: "#BE9650",
+    borderColor: "#BE9650",
+  },
+  landingItemIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 13,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.3)",
+    backgroundColor: "rgba(190,150,80,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  landingItemIconPrimary: {
+    backgroundColor: "rgba(11,15,20,0.2)",
+    borderColor: "rgba(11,15,20,0.2)",
+  },
+  landingItemText: { flex: 1 },
+  landingItemTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#EDE1D3",
+    marginBottom: 2,
+  },
+  landingItemDesc: {
+    fontSize: 12,
+    color: "#7A8FA8",
+  },
+  landingHint: {
+    textAlign: "center",
+    fontSize: 11,
+    color: "rgba(122,143,168,0.45)",
+    marginTop: 28,
+    letterSpacing: 0.3,
+  },
+
   topPanel: { marginHorizontal: -20 },
 
   header: {
