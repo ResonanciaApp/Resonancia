@@ -64,7 +64,7 @@ const EXPORT_SIZE = 540;
 // Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
 // Oscurecido un 90% (se conserva el 10% del brillo) sobre el degradado original
 // ["#14102E","#1C1448","#2A1A5C","#1A1340","#0A0818"].
-const CREACIONES_BG = ["#0B0714", "#030306"] as const;
+const CREACIONES_BG = ["#090D20", "#080A18", "#06070F"] as const;
 
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
