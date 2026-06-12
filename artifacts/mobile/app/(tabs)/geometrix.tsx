@@ -6318,6 +6318,7 @@ const styles = StyleSheet.create({
   catChipTextOn: {
     color: "#fbf9f1",
     fontWeight: "600",
+    opacity: 1,
   },
   grid: { flexGrow: 0 },
   gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 10, paddingRight: 20 },
