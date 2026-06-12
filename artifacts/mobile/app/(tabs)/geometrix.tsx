@@ -6173,7 +6173,7 @@ const styles = StyleSheet.create({
   carouselDivider: {
     height: 1,
     marginHorizontal: -20,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
 
   header: {
