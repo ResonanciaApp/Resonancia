@@ -6462,6 +6462,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   actionBarItem: {
+    width: 38,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
   },
