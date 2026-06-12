@@ -160,8 +160,10 @@ export default function HomeScreen() {
   const subBg0SV = useSharedValue(0);
   const subBg1SV = useSharedValue(0);
 
-  const subBg0AnimStyle  = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
-  const subBg1AnimStyle  = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
+  const subBg0AnimStyle    = useAnimatedStyle(() => ({ opacity: subBg0SV.value }));
+  const subBg1AnimStyle    = useAnimatedStyle(() => ({ opacity: subBg1SV.value }));
+  const subBgInv0AnimStyle = useAnimatedStyle(() => ({ opacity: 1 - subBg0SV.value }));
+  const subBgInv1AnimStyle = useAnimatedStyle(() => ({ opacity: 1 - subBg1SV.value }));
 
   useEffect(() => {
     const DUR = 220;
@@ -376,9 +378,10 @@ export default function HomeScreen() {
                         pointerEvents={sesionesOpen ? "auto" : "none"}
                       >
                         {SES_SUB_FILTERS.map((sf, i) => {
-                          const isActive    = sesSubFilter === sf.id;
-                          const bgAnimStyle = i === 0 ? subBg0AnimStyle : subBg1AnimStyle;
-                          const activeBg    = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
+                          const isActive      = sesSubFilter === sf.id;
+                          const bgAnimStyle   = i === 0 ? subBg0AnimStyle    : subBg1AnimStyle;
+                          const bgInvAnimStyle = i === 0 ? subBgInv0AnimStyle : subBgInv1AnimStyle;
+                          const activeBg      = i === 0 ? SUB_CHIP_ACTIVE_BG_0 : SUB_CHIP_ACTIVE_BG_1;
                           return (
                             <Pressable
                               key={sf.id}
@@ -394,18 +397,18 @@ export default function HomeScreen() {
                               ]}
                             >
                               {/* Fondo animado solo de este botón (fade 220ms) */}
-                              <RAnimated.View
-                                style={[
-                                  StyleSheet.absoluteFill,
-                                  styles.sesSegBtnBg,
-                                  i === 0 && styles.sesSegBtnBgFirst,
-                                  { backgroundColor: activeBg },
-                                  bgAnimStyle,
-                                ]}
-                              />
-                              <Text style={[styles.sesSegBtnText, isActive && styles.sesSegBtnTextActive]}>
-                                {sf.label}
-                              </Text>
+                              <View style={[StyleSheet.absoluteFill, styles.sesSegBtnBg, i === 0 && styles.sesSegBtnBgFirst]}>
+                                <RAnimated.View style={[StyleSheet.absoluteFill, { backgroundColor: activeBg }, bgAnimStyle]} />
+                              </View>
+                              {/* Texto sincronizado con el fondo: bold↔regular cross-fade */}
+                              <View style={styles.sesSegBtnLabel}>
+                                {/* Spacer invisible (bold) para reservar ancho */}
+                                <Text numberOfLines={1} style={[styles.sesSegBtnTextBold, { color: "transparent" }]}>{sf.label}</Text>
+                                {/* Bold: opacidad = SV (aparece con el color) */}
+                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnTextBold, styles.sesSegBtnLabelAbs, bgAnimStyle]}>{sf.label}</RAnimated.Text>
+                                {/* Regular: opacidad inversa (desaparece con el color) */}
+                                <RAnimated.Text numberOfLines={1} style={[styles.sesSegBtnText, styles.sesSegBtnLabelAbs, bgInvAnimStyle]}>{sf.label}</RAnimated.Text>
+                              </View>
                             </Pressable>
                           );
                         })}
@@ -689,7 +692,6 @@ const styles = StyleSheet.create({
   },
   sesSegBtn: {
     flex: 1,
-    overflow: "hidden",
     paddingHorizontal: 6,
     height: 32,
     borderRadius: 20,
@@ -702,10 +704,21 @@ const styles = StyleSheet.create({
   },
   sesSegBtnBg: {
     borderRadius: 20,
+    overflow: "hidden",
   },
   sesSegBtnBgFirst: {
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
+  },
+  sesSegBtnLabel: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sesSegBtnLabelAbs: {
+    position: "absolute",
+    textAlign: "center",
+    left: 0,
+    right: 0,
   },
   sesSegBtnText: {
     fontSize: 13,
@@ -713,8 +726,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     letterSpacing: 0.1,
   },
-  sesSegBtnTextActive: {
+  sesSegBtnTextBold: {
+    fontSize: 13,
     fontWeight: "700",
+    color: "#FFFFFF",
+    letterSpacing: 0.1,
   },
   headerTabChip: {
     borderRadius: 20,
