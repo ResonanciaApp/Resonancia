@@ -4761,8 +4761,8 @@ export default function GeometrixScreen() {
                     setSettingsOpen(true);
                   }}
                 >
-                  <Feather name="sliders" size={18} color={colors.foreground} />
-                  <Text style={[styles.menuItemText, { color: colors.foreground }]}>Personalizar</Text>
+                  <Feather name="sliders" size={18} color={CANVAS_ICON} />
+                  <Text style={styles.menuItemText}>Personalizar</Text>
                 </Pressable>
 
                 <Pressable
@@ -4779,9 +4779,9 @@ export default function GeometrixScreen() {
                   <Feather
                     name={hiddenIds.includes(menuGeoId!) ? "eye" : "eye-off"}
                     size={18}
-                    color={colors.foreground}
+                    color={CANVAS_ICON}
                   />
-                  <Text style={[styles.menuItemText, { color: colors.foreground }]}>
+                  <Text style={styles.menuItemText}>
                     {hiddenIds.includes(menuGeoId!) ? "Mostrar" : "Ocultar"}
                   </Text>
                 </Pressable>
@@ -4794,8 +4794,8 @@ export default function GeometrixScreen() {
                     toggleGeometry(id);
                   }}
                 >
-                  <Feather name="trash-2" size={18} color="#8a4646" />
-                  <Text style={[styles.menuItemText, { color: "#8a4646" }]}>Quitar</Text>
+                  <Feather name="trash-2" size={18} color={CANVAS_ICON} />
+                  <Text style={styles.menuItemText}>Quitar</Text>
                 </Pressable>
               </View>
 
@@ -5687,7 +5687,7 @@ export default function GeometrixScreen() {
                     <Feather
                       name={hiddenIds.includes(settingsGeoId!) ? "eye" : "eye-off"}
                       size={19}
-                      color={colors.mutedForeground}
+                      color={CANVAS_ICON}
                     />
                   </Pressable>
                   <View style={styles.sheetHeaderVDivider} />
@@ -5699,7 +5699,7 @@ export default function GeometrixScreen() {
                     accessibilityRole="button"
                     accessibilityLabel="Duplicar geometría"
                   >
-                    <Feather name="copy" size={18} color={colors.mutedForeground} />
+                    <Feather name="copy" size={18} color={CANVAS_ICON} />
                   </Pressable>
                   <View style={styles.sheetHeaderVDivider} />
                   {/* Borrar */}
@@ -5715,7 +5715,7 @@ export default function GeometrixScreen() {
                     accessibilityRole="button"
                     accessibilityLabel="Borrar geometría"
                   >
-                    <Feather name="trash-2" size={18} color="#8a4646" />
+                    <Feather name="trash-2" size={18} color={CANVAS_ICON} />
                   </Pressable>
                   <View style={styles.sheetHeaderVDivider} />
                 </>
@@ -5730,7 +5730,7 @@ export default function GeometrixScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar ajustes"
               >
-                <Feather name="x" size={20} color={colors.mutedForeground} />
+                <Feather name="x" size={20} color={CANVAS_ICON} />
               </Pressable>
             </View>
           </View>
@@ -6579,7 +6579,7 @@ const styles = StyleSheet.create({
   menuItemText: {
     fontSize: 15,
     fontWeight: "400",
-    color: colors.foreground,
+    color: CANVAS_ICON,
   },
   immersiveRoot: {
     flex: 1,
@@ -6768,7 +6768,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
     marginBottom: 14,
   },
-  sheetTitle: { fontSize: 20, fontWeight: "700", color: colors.foreground },
+  sheetTitle: { fontSize: 20, fontWeight: "700", color: CANVAS_ICON },
   sheetEmpty: { alignItems: "center", gap: 10, paddingVertical: 40 },
   sheetEmptyText: { fontSize: 14, color: colors.mutedForeground, textAlign: "center" },
 
