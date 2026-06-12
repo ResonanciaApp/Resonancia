@@ -5629,7 +5629,7 @@ export default function GeometrixScreen() {
           }}
           style={[
             styles.sheet,
-            { paddingBottom: insets.bottom + 16, backgroundColor: "#3f62ba" },
+            { paddingBottom: insets.bottom + 16, backgroundColor: "#0c1a3e" },
             // Una vez congelado, alto FIJO: la vista previa (anclada a este alto)
             // no cambia de tamaño/posición y, al desplegar una sección, el
             // contenido scrollea dentro del sheet en vez de crecer hacia arriba.
@@ -6729,7 +6729,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   sheet: {
-    backgroundColor: "#3f62ba",
+    backgroundColor: "#0c1a3e",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: "hidden",
