@@ -3802,12 +3802,24 @@ export default function GeometrixScreen() {
     <View style={styles.root}>
       {/* Oculta la barra de estado en pantalla completa (View absoluto, no Modal). */}
       <StatusBar hidden={fullscreenEdit} translucent />
-      <LinearGradient
-        colors={["#040404", "#040404"]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      {/* Fondo único para toda la pantalla: header + lienzo */}
+      <View pointerEvents="none" style={styles.canvasBgLayer}>
+        <LinearGradient
+          colors={canvasBgColors}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        {master.bgPattern && (
+          <GeometrixPatternBg
+            geoId={master.bgPattern.geoId}
+            opacity={master.bgPattern.opacity}
+            tileSize={master.bgPattern.tileSize}
+            spacing={master.bgPattern.spacing}
+            color={colors.primary}
+          />
+        )}
+      </View>
 
       <View style={styles.content}>
         {/* ── Zona superior con fondo de Inicio ── */}
@@ -3965,28 +3977,6 @@ export default function GeometrixScreen() {
             divisora y la tab bar. paddingBottom despeja la tab bar para que el
             lienzo no se recorte. */}
         <View style={[styles.canvasWrap, { paddingBottom: bottomReserve }]}>
-          {/* Fondo del lienzo (solo de la divisora hacia abajo). Se extiende
-              edge-to-edge (left/right -20 rompe el padding del content); el
-              color elegido llega justo a la divisora, sin degradado. */}
-          <View pointerEvents="none" style={styles.canvasBgLayer}>
-            {/* Color de fondo a pleno desde la divisora hacia abajo (sin
-                degradado de transición). */}
-            <LinearGradient
-              colors={canvasBgColors}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            {master.bgPattern && (
-              <GeometrixPatternBg
-                geoId={master.bgPattern.geoId}
-                opacity={master.bgPattern.opacity}
-                tileSize={master.bgPattern.tileSize}
-                spacing={master.bgPattern.spacing}
-                color={colors.primary}
-              />
-            )}
-          </View>
           {/* Caja de clip independiente del transform del stage.
               - marginHorizontal:-20 → extiende hasta el borde de pantalla (cancela el paddingH del content)
               - overflow:hidden sin translateY → el clip superior cae exactamente en la divisora
@@ -6379,12 +6369,8 @@ const styles = StyleSheet.create({
   // del content). Empieza en la divisora (top: 0); el color llega justo a la
   // línea, sin degradado.
   canvasBgLayer: {
-    position: "absolute",
-    left: -20,
-    right: -20,
-    top: 0,
-    bottom: 0,
-    backgroundColor: "#000000",
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#040404",
   },
   // Caja de clip sin transform: los límites de clip coinciden exactamente
   // con la divisora (arriba), el borde de pantalla (lados) y los thumbnails-10px (abajo).
