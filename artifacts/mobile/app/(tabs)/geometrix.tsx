@@ -6454,14 +6454,13 @@ const styles = StyleSheet.create({
   },
   catChipText: {
     fontSize: 12,
-    fontWeight: "400",
+    fontWeight: "600",
     color: "#c7caec",
     opacity: 0.5,
     letterSpacing: 0.1,
   },
   catChipTextOn: {
     color: "#fbf9f1",
-    fontWeight: "600",
     opacity: 1,
   },
   grid: { flexGrow: 0 },
