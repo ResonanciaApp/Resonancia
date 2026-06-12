@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const BG = "#0B0F14";
 const CARD = "rgba(255,255,255,0.04)";
@@ -12,129 +12,221 @@ const PILL_BORDER = "rgba(101,132,212,0.15)";
 
 type Tab = "inicio" | "aprende" | "creaciones" | "comunidad";
 
-function GeoIcon({ size = 28, color = BLUE2 }: { size?: number; color?: string }) {
+/* ─── CSS animations ─────────────────────────────────────────────── */
+const CSS = `
+@keyframes geoFade {
+  0%   { opacity: 0; transform: scale(0.96) rotate(0deg); }
+  30%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.04) rotate(6deg); }
+}
+@keyframes geoGlow {
+  0%   { opacity: 0; filter: blur(0px); }
+  40%  { opacity: 1; filter: blur(2px); }
+  60%  { opacity: 1; filter: blur(1px); }
+  100% { opacity: 0; filter: blur(4px); }
+}
+@keyframes geoPulse {
+  0%   { opacity: 0; transform: scale(1); }
+  25%  { opacity: 0.8; transform: scale(1.03); }
+  75%  { opacity: 0.8; transform: scale(0.97); }
+  100% { opacity: 0; transform: scale(1); }
+}
+@keyframes geoSpin {
+  0%   { opacity: 0; transform: rotate(-4deg) scale(0.95); }
+  50%  { opacity: 1; transform: rotate(4deg) scale(1.02); }
+  100% { opacity: 0; transform: rotate(8deg) scale(0.95); }
+}
+@keyframes glowPulse {
+  0%,100% { opacity:0; }
+  50%      { opacity:1; }
+}
+`;
+
+/* ─── Background sacred geometry layer ──────────────────────────── */
+function BgGeo() {
   return (
-    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <circle cx="14" cy="14" r="12" stroke={color} strokeWidth="1" strokeOpacity="0.6" />
-      <circle cx="14" cy="14" r="7" stroke={color} strokeWidth="1" strokeOpacity="0.9" />
-      {[0,60,120,180,240,300].map(a => (
-        <line key={a}
-          x1={14 + 12*Math.cos(a*Math.PI/180)}
-          y1={14 + 12*Math.sin(a*Math.PI/180)}
-          x2={14 + 12*Math.cos((a+60)*Math.PI/180)}
-          y2={14 + 12*Math.sin((a+60)*Math.PI/180)}
-          stroke={color} strokeWidth="0.7" strokeOpacity="0.5" />
-      ))}
-    </svg>
+    <>
+      <style>{CSS}</style>
+
+      {/* ── TOP area ─── */}
+
+      {/* Flor de Vida — centro-derecha arriba, azul pálido */}
+      <svg width="160" height="160" viewBox="0 0 160 160" fill="none"
+        style={{ position:"absolute", top:-20, right:-20, pointerEvents:"none",
+          animation:"geoFade 9s ease-in-out 0s infinite" }}>
+        {[
+          [80,80],[110,80],[95,54],[65,54],[50,80],[65,106],[95,106]
+        ].map(([cx,cy],i) => (
+          <circle key={i} cx={cx} cy={cy} r={30} stroke={BLUE2}
+            strokeWidth="0.6" strokeOpacity={i===0?"0.5":"0.28"} />
+        ))}
+        <circle cx={80} cy={80} r={90} stroke={BLUE2} strokeWidth="0.4" strokeOpacity="0.12" />
+      </svg>
+
+      {/* Glow blob — esquina sup derecha */}
+      <div style={{ position:"absolute", top:0, right:0, width:200, height:200,
+        background:`radial-gradient(ellipse at top right, rgba(101,132,212,0.14) 0%, transparent 65%)`,
+        animation:"glowPulse 11s ease-in-out 1s infinite", pointerEvents:"none" }} />
+
+      {/* Sri Yantra (estrella de 6 ptas) — izquierda arriba */}
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none"
+        style={{ position:"absolute", top:30, left:-30, pointerEvents:"none",
+          animation:"geoSpin 12s ease-in-out 3s infinite" }}>
+        <polygon points="60,10 110,100 10,100" stroke={GOLD} strokeWidth="0.7" strokeOpacity="0.25" />
+        <polygon points="60,110 10,20 110,20" stroke={GOLD} strokeWidth="0.7" strokeOpacity="0.15" />
+        <circle cx="60" cy="60" r="50" stroke={GOLD} strokeWidth="0.4" strokeOpacity="0.1" strokeDasharray="4 6" />
+      </svg>
+
+      {/* Vesica Piscis — centro arriba */}
+      <svg width="130" height="80" viewBox="0 0 130 80" fill="none"
+        style={{ position:"absolute", top:60, left:"50%", marginLeft:-65, pointerEvents:"none",
+          animation:"geoPulse 8s ease-in-out 5s infinite" }}>
+        <ellipse cx="50" cy="40" rx="40" ry="40" stroke={BLUE2} strokeWidth="0.6" strokeOpacity="0.2" />
+        <ellipse cx="80" cy="40" rx="40" ry="40" stroke={BLUE2} strokeWidth="0.6" strokeOpacity="0.2" />
+      </svg>
+
+      {/* Glow blob — izquierda medio */}
+      <div style={{ position:"absolute", top:80, left:-40, width:180, height:180,
+        background:`radial-gradient(ellipse, rgba(190,150,80,0.08) 0%, transparent 70%)`,
+        animation:"glowPulse 14s ease-in-out 6s infinite", pointerEvents:"none" }} />
+
+      {/* Polígono — derecha medio */}
+      <svg width="100" height="100" viewBox="0 0 100 100" fill="none"
+        style={{ position:"absolute", top:140, right:-10, pointerEvents:"none",
+          animation:"geoFade 10s ease-in-out 7s infinite" }}>
+        {[0,45,90,135,180,225,270,315].map((a,i) => (
+          <line key={i}
+            x1={50} y1={50}
+            x2={50+44*Math.cos(a*Math.PI/180)}
+            y2={50+44*Math.sin(a*Math.PI/180)}
+            stroke={BLUE} strokeWidth="0.5" strokeOpacity="0.2" />
+        ))}
+        <circle cx="50" cy="50" r="44" stroke={BLUE} strokeWidth="0.5" strokeOpacity="0.15" />
+        <circle cx="50" cy="50" r="28" stroke={BLUE} strokeWidth="0.4" strokeOpacity="0.1" />
+      </svg>
+
+      {/* ── BOTTOM area ─── */}
+
+      {/* Metatrón — izquierda abajo */}
+      <svg width="180" height="180" viewBox="0 0 180 180" fill="none"
+        style={{ position:"absolute", bottom:-30, left:-40, pointerEvents:"none",
+          animation:"geoSpin 15s ease-in-out 2s infinite" }}>
+        {[0,60,120,180,240,300].map((a,i) => {
+          const x = 90 + 60*Math.cos(a*Math.PI/180);
+          const y = 90 + 60*Math.sin(a*Math.PI/180);
+          return <circle key={i} cx={x} cy={y} r={60} stroke={BLUE}
+            strokeWidth="0.5" strokeOpacity={i===0?"0.12":"0.08"} />;
+        })}
+        <circle cx="90" cy="90" r="60" stroke={BLUE} strokeWidth="0.5" strokeOpacity="0.15" />
+        <circle cx="90" cy="90" r="90" stroke={BLUE} strokeWidth="0.4" strokeOpacity="0.06" strokeDasharray="5 7" />
+      </svg>
+
+      {/* Glow dorado — centro abajo */}
+      <div style={{ position:"absolute", bottom:0, left:"50%", transform:"translateX(-50%)",
+        width:280, height:160,
+        background:`radial-gradient(ellipse at bottom, rgba(190,150,80,0.12) 0%, transparent 70%)`,
+        animation:"glowPulse 10s ease-in-out 4s infinite", pointerEvents:"none" }} />
+
+      {/* Espiral pentagonal — derecha abajo */}
+      <svg width="150" height="150" viewBox="0 0 150 150" fill="none"
+        style={{ position:"absolute", bottom:-20, right:-20, pointerEvents:"none",
+          animation:"geoPulse 13s ease-in-out 8s infinite" }}>
+        {[72,54,36,22,14,9].map((r,i) => (
+          <circle key={i} cx="75" cy="75" r={r*1.15} stroke={GOLD}
+            strokeWidth="0.5" strokeOpacity={0.25 - i*0.04} />
+        ))}
+        <polygon points="75,20 130,55 130,95 75,130 20,95 20,55"
+          stroke={GOLD} strokeWidth="0.5" strokeOpacity="0.12" />
+      </svg>
+
+      {/* Vesica Piscis — centro-derecha abajo */}
+      <svg width="140" height="90" viewBox="0 0 140 90" fill="none"
+        style={{ position:"absolute", bottom:60, right:10, pointerEvents:"none",
+          animation:"geoGlow 11s ease-in-out 9s infinite" }}>
+        <ellipse cx="55" cy="45" rx="42" ry="42" stroke={GOLD2} strokeWidth="0.6" strokeOpacity="0.18" />
+        <ellipse cx="85" cy="45" rx="42" ry="42" stroke={GOLD2} strokeWidth="0.6" strokeOpacity="0.18" />
+      </svg>
+    </>
   );
 }
 
+/* ─── Simple SVG icons ───────────────────────────────────────────── */
 function FlowerOfLife({ size = 80 }: { size?: number }) {
   const r = size * 0.18;
   const cx = size / 2, cy = size / 2;
-  const centers = [
-    [cx, cy],
-    ...([0,60,120,180,240,300].map(a => [cx + r*Math.cos(a*Math.PI/180)*2, cy + r*Math.sin(a*Math.PI/180)*2])),
-  ];
+  const centers = [[cx,cy], ...([0,60,120,180,240,300].map(a => [cx+r*Math.cos(a*Math.PI/180)*2, cy+r*Math.sin(a*Math.PI/180)*2]))];
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none">
-      {centers.map(([x,y],i) => (
-        <circle key={i} cx={x} cy={y} r={r} stroke={BLUE2} strokeWidth="0.8" strokeOpacity={i===0?0.9:0.5} />
-      ))}
+      {centers.map(([x,y],i) => <circle key={i} cx={x} cy={y} r={r} stroke={BLUE2} strokeWidth="0.8" strokeOpacity={i===0?0.9:0.5} />)}
       <circle cx={cx} cy={cy} r={r*3} stroke={GOLD} strokeWidth="0.6" strokeOpacity="0.3" strokeDasharray="3 4" />
     </svg>
   );
 }
-
-function MetatronIcon({ size = 24, color = BLUE }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <polygon points="12,2 22,20 2,20" stroke={color} strokeWidth="1.2" strokeOpacity="0.9" />
-      <polygon points="12,22 2,4 22,4" stroke={color} strokeWidth="1.2" strokeOpacity="0.6" />
-    </svg>
-  );
+function MetatronIcon({ size=24, color=BLUE }: { size?: number; color?: string }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <polygon points="12,2 22,20 2,20" stroke={color} strokeWidth="1.2" strokeOpacity="0.9" />
+    <polygon points="12,22 2,4 22,4" stroke={color} strokeWidth="1.2" strokeOpacity="0.6" />
+  </svg>;
+}
+function SriYantraIcon({ size=24, color=GOLD }: { size?: number; color?: string }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <polygon points="12,2 22,20 2,20" stroke={color} strokeWidth="1.1" strokeOpacity="0.9" />
+    <polygon points="12,22 2,4 22,4" stroke={color} strokeWidth="1.1" strokeOpacity="0.6" />
+    <circle cx="12" cy="12" r="3" stroke={color} strokeWidth="0.8" strokeOpacity="0.4" />
+  </svg>;
+}
+function VesicaIcon({ size=24, color=BLUE2 }: { size?: number; color?: string }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <circle cx="9" cy="12" r="7" stroke={color} strokeWidth="1.1" strokeOpacity="0.8" />
+    <circle cx="15" cy="12" r="7" stroke={color} strokeWidth="1.1" strokeOpacity="0.8" />
+  </svg>;
+}
+function GeoIcon({ size=28, color=BLUE2 }: { size?: number; color?: string }) {
+  return <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+    <circle cx="14" cy="14" r="12" stroke={color} strokeWidth="1" strokeOpacity="0.6" />
+    <circle cx="14" cy="14" r="7" stroke={color} strokeWidth="1" strokeOpacity="0.9" />
+    {[0,60,120,180,240,300].map(a => (
+      <line key={a} x1={14+12*Math.cos(a*Math.PI/180)} y1={14+12*Math.sin(a*Math.PI/180)}
+        x2={14+12*Math.cos((a+60)*Math.PI/180)} y2={14+12*Math.sin((a+60)*Math.PI/180)}
+        stroke={color} strokeWidth="0.7" strokeOpacity="0.5" />
+    ))}
+  </svg>;
 }
 
-function SriYantraIcon({ size = 24, color = GOLD }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      {[[12,2,22,22,2,22],[12,22,2,2,22,2]].map((pts,i) => (
-        <polygon key={i} points={`${pts[0]},${pts[1]} ${pts[2]},${pts[3]} ${pts[4]},${pts[5]}`}
-          stroke={color} strokeWidth="1.1" strokeOpacity={i===0?0.9:0.6} />
-      ))}
-      <circle cx="12" cy="12" r="3" stroke={color} strokeWidth="0.8" strokeOpacity="0.4" />
-    </svg>
-  );
-}
-
-function VesicaIcon({ size = 24, color = BLUE2 }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="9" cy="12" r="7" stroke={color} strokeWidth="1.1" strokeOpacity="0.8" />
-      <circle cx="15" cy="12" r="7" stroke={color} strokeWidth="1.1" strokeOpacity="0.8" />
-    </svg>
-  );
-}
-
-function TabBar({ active, onTab }: { active: Tab; onTab: (t: Tab) => void }) {
-  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: "inicio", label: "Inicio", icon: <SriYantraIcon size={20} color={active==="inicio"?GOLD:MUTED} /> },
-    { id: "aprende", label: "Aprende", icon: <MetatronIcon size={20} color={active==="aprende"?BLUE:MUTED} /> },
-    { id: "creaciones", label: "Creaciones", icon: <VesicaIcon size={20} color={active==="creaciones"?BLUE2:MUTED} /> },
-    { id: "comunidad", label: "Comunidad", icon: <GeoIcon size={20} color={active==="comunidad"?GOLD:MUTED} /> },
-  ];
-  return (
-    <div style={{ display:"flex", justifyContent:"space-around", alignItems:"center",
-      padding:"8px 4px 16px", background:"rgba(6,10,15,0.95)",
-      borderTop:"1px solid rgba(255,255,255,0.05)" }}>
-      {tabs.map(t => (
-        <button key={t.id} onClick={() => onTab(t.id)} style={{
-          background:"none", border:"none", cursor:"pointer",
-          display:"flex", flexDirection:"column", alignItems:"center", gap:3, padding:"4px 8px"
-        }}>
-          {t.icon}
-          <span style={{ fontSize:9, fontFamily:"system-ui",
-            color: active===t.id ? (t.id==="aprende"||t.id==="creaciones"?BLUE:GOLD) : MUTED,
-            fontWeight: active===t.id ? 600 : 400, letterSpacing:"0.02em"
-          }}>{t.label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
+/* ─── Screens ────────────────────────────────────────────────────── */
 function Inicio() {
   const geometries = [
-    { label:"Mandala Solar", color: GOLD },
-    { label:"Doble Toro", color: BLUE },
-    { label:"Espiral Áurea", color: GOLD2 },
-    { label:"Metatrón", color: BLUE2 },
-    { label:"Flor de Vida", color: GOLD },
-    { label:"Icosaedro", color: BLUE },
+    { label:"Mandala Solar", color:GOLD },
+    { label:"Doble Toro", color:BLUE },
+    { label:"Espiral Áurea", color:GOLD2 },
+    { label:"Metatrón", color:BLUE2 },
+    { label:"Flor de Vida", color:GOLD },
+    { label:"Icosaedro", color:BLUE },
   ];
   return (
-    <div style={{ overflowY:"auto", flex:1, padding:"0 16px 8px" }}>
+    <div style={{ overflowY:"auto", flex:1, padding:"0 16px 8px", position:"relative" }}>
+      <BgGeo />
+
       {/* Header */}
-      <div style={{ paddingTop:16, paddingBottom:12 }}>
-        <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui", marginBottom:4, textTransform:"uppercase" }}>
-          Geometrix
-        </p>
-        <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif", margin:0, lineHeight:1.2 }}>
-          El Lienzo Sagrado
-        </h1>
+      <div style={{ paddingTop:16, paddingBottom:12, position:"relative", zIndex:1 }}>
+        <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui",
+          marginBottom:4, textTransform:"uppercase" }}>Geometrix</p>
+        <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif",
+          margin:0, lineHeight:1.2 }}>El Lienzo Sagrado</h1>
       </div>
 
-      {/* Hero */}
+      {/* Hero card */}
       <div style={{ background:CARD, borderRadius:20, padding:"28px 20px", display:"flex",
-        flexDirection:"column", alignItems:"center", marginBottom:16, position:"relative", overflow:"hidden" }}>
+        flexDirection:"column", alignItems:"center", marginBottom:16,
+        position:"relative", overflow:"hidden", zIndex:1 }}>
         <div style={{ position:"absolute", top:0, right:0, width:120, height:120, opacity:0.08,
           background:`radial-gradient(circle, ${GOLD} 0%, transparent 70%)` }} />
         <FlowerOfLife size={110} />
         <h2 style={{ color:FG, fontSize:17, fontWeight:600, fontFamily:"Georgia, serif",
           margin:"14px 0 6px", textAlign:"center" }}>Crear nueva geometría</h2>
-        <p style={{ color:MUTED, fontSize:12, fontFamily:"system-ui", textAlign:"center", margin:"0 0 16px", lineHeight:1.5 }}>
-          Compone desde el lienzo vacío o elige una base
-        </p>
+        <p style={{ color:MUTED, fontSize:12, fontFamily:"system-ui", textAlign:"center",
+          margin:"0 0 16px", lineHeight:1.5 }}>Compone desde el lienzo vacío o elige una base</p>
         <button style={{ background:`linear-gradient(135deg, ${GOLD} 0%, ${GOLD2} 100%)`,
           border:"none", borderRadius:50, padding:"10px 28px", cursor:"pointer",
           color:"#0B0F14", fontWeight:700, fontSize:13, fontFamily:"system-ui", letterSpacing:"0.04em" }}>
@@ -143,7 +235,7 @@ function Inicio() {
       </div>
 
       {/* Continuar */}
-      <div style={{ marginBottom:16 }}>
+      <div style={{ marginBottom:16, position:"relative", zIndex:1 }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
           <span style={{ color:FG, fontSize:13, fontWeight:600, fontFamily:"system-ui" }}>Continuar</span>
           <span style={{ color:GOLD, fontSize:11, fontFamily:"system-ui" }}>Ver todas →</span>
@@ -156,17 +248,17 @@ function Inicio() {
                 background:`rgba(${g.color===GOLD?"190,150,80":"101,132,212"},0.08)`,
                 display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {i===0 ? <SriYantraIcon size={28} color={g.color} /> :
-                 i===1 ? <GeoIcon size={28} color={g.color} /> :
-                         <FlowerOfLife size={36} />}
+                 i===1 ? <GeoIcon size={28} color={g.color} /> : <FlowerOfLife size={36} />}
               </div>
-              <span style={{ color:FG, fontSize:10, fontFamily:"system-ui", textAlign:"center", lineHeight:1.3 }}>{g.label}</span>
+              <span style={{ color:FG, fontSize:10, fontFamily:"system-ui",
+                textAlign:"center", lineHeight:1.3 }}>{g.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Destacadas */}
-      <div>
+      {/* Comunidad */}
+      <div style={{ position:"relative", zIndex:1 }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
           <span style={{ color:FG, fontSize:13, fontWeight:600, fontFamily:"system-ui" }}>De la comunidad</span>
           <span style={{ color:GOLD, fontSize:11, fontFamily:"system-ui" }}>Ver más →</span>
@@ -180,9 +272,7 @@ function Inicio() {
                 {i%2===0 ? <MetatronIcon size={26} color={g.color} /> : <VesicaIcon size={26} color={g.color} />}
               </div>
               <span style={{ color:FG, fontSize:10, fontFamily:"system-ui", textAlign:"center" }}>{g.label}</span>
-              <div style={{ display:"flex", alignItems:"center", gap:4 }}>
-                <span style={{ fontSize:8, color:MUTED, fontFamily:"system-ui" }}>♥ {12+i*7}</span>
-              </div>
+              <span style={{ fontSize:8, color:MUTED, fontFamily:"system-ui" }}>♥ {12+i*7}</span>
             </div>
           ))}
         </div>
@@ -193,9 +283,9 @@ function Inicio() {
 
 function Aprende() {
   const [cat, setCat] = useState(0);
-  const cats = ["Todo", "Sagrada", "Poliedros", "Fractales", "Física"];
+  const cats = ["Todo","Geometría Sagrada","Poliedros","Fractales"];
   const lessons = [
-    { title:"Flor de Vida — Origen", sub:"Geometría Sagrada · 8 min", icon:<FlowerOfLife size={44} />, new:true },
+    { title:"Flor de Vida — Origen", sub:"Geometría Sagrada · 8 min", icon:<FlowerOfLife size={44} />, isNew:true },
     { title:"La sección áurea φ", sub:"Proporción · 12 min", icon:<SriYantraIcon size={28} color={GOLD} /> },
     { title:"Tetraedro: la forma primordial", sub:"Poliedros · 6 min", icon:<MetatronIcon size={28} color={BLUE} /> },
     { title:"Fractales y conciencia", sub:"Fractales · 15 min", icon:<GeoIcon size={28} color={BLUE2} /> },
@@ -204,27 +294,24 @@ function Aprende() {
   return (
     <div style={{ overflowY:"auto", flex:1, padding:"0 16px 8px" }}>
       <div style={{ paddingTop:16, paddingBottom:12 }}>
-        <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui", marginBottom:4, textTransform:"uppercase" }}>Geometrix</p>
-        <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif", margin:0, lineHeight:1.2 }}>Aprende</h1>
+        <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui",
+          marginBottom:4, textTransform:"uppercase" }}>Geometrix</p>
+        <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif", margin:0 }}>Aprende</h1>
       </div>
-
-      {/* Pills */}
-      <div style={{ display:"flex", gap:8, overflowX:"auto", paddingBottom:12, marginBottom:4 }}>
+      <div style={{ display:"flex", gap:8, overflowX:"auto", paddingBottom:12 }}>
         {cats.map((c,i) => (
           <button key={i} onClick={() => setCat(i)} style={{
-            background: i===cat ? "rgba(101,132,212,0.15)" : CARD,
-            border: `1px solid ${i===cat ? PILL_BORDER : "transparent"}`,
+            background: i===cat?"rgba(101,132,212,0.15)":CARD,
+            border:`1px solid ${i===cat?PILL_BORDER:"transparent"}`,
             borderRadius:50, padding:"6px 14px", cursor:"pointer", whiteSpace:"nowrap",
-            color: i===cat ? BLUE2 : MUTED, fontSize:11, fontFamily:"system-ui",
-            fontWeight: i===cat ? 600 : 400, flexShrink:0,
+            color:i===cat?BLUE2:MUTED, fontSize:11, fontFamily:"system-ui",
+            fontWeight:i===cat?600:400, flexShrink:0
           }}>{c}</button>
         ))}
       </div>
-
-      {/* Featured lesson */}
       <div style={{ background:CARD, borderRadius:20, padding:16, marginBottom:16, position:"relative", overflow:"hidden" }}>
-        <div style={{ position:"absolute", top:-20, right:-20, opacity:0.06,
-          width:100, height:100, background:`radial-gradient(circle, ${BLUE} 0%, transparent 70%)` }} />
+        <div style={{ position:"absolute", top:-20, right:-20, opacity:0.06, width:100, height:100,
+          background:`radial-gradient(circle, ${BLUE} 0%, transparent 70%)` }} />
         <div style={{ display:"flex", gap:14, alignItems:"center" }}>
           <div style={{ width:72, height:72, background:"rgba(101,132,212,0.08)", borderRadius:16,
             display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
@@ -233,15 +320,12 @@ function Aprende() {
           <div>
             <span style={{ background:"rgba(190,150,80,0.15)", color:GOLD, fontSize:9, fontFamily:"system-ui",
               padding:"2px 8px", borderRadius:50, fontWeight:600, letterSpacing:"0.05em" }}>NUEVO</span>
-            <h3 style={{ color:FG, fontSize:14, fontWeight:600, fontFamily:"Georgia, serif", margin:"6px 0 4px", lineHeight:1.3 }}>
-              Flor de Vida — Origen y significado
-            </h3>
+            <h3 style={{ color:FG, fontSize:14, fontWeight:600, fontFamily:"Georgia, serif",
+              margin:"6px 0 4px", lineHeight:1.3 }}>Flor de Vida — Origen y significado</h3>
             <p style={{ color:MUTED, fontSize:11, fontFamily:"system-ui", margin:0 }}>Geometría Sagrada · 8 min</p>
           </div>
         </div>
       </div>
-
-      {/* Lesson list */}
       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
         {lessons.slice(1).map((l,i) => (
           <div key={i} style={{ background:CARD, borderRadius:14, padding:"12px 14px",
@@ -251,7 +335,8 @@ function Aprende() {
               {l.icon}
             </div>
             <div style={{ flex:1 }}>
-              <p style={{ color:FG, fontSize:12, fontWeight:600, fontFamily:"system-ui", margin:"0 0 2px", lineHeight:1.3 }}>{l.title}</p>
+              <p style={{ color:FG, fontSize:12, fontWeight:600, fontFamily:"system-ui",
+                margin:"0 0 2px", lineHeight:1.3 }}>{l.title}</p>
               <p style={{ color:MUTED, fontSize:10, fontFamily:"system-ui", margin:0 }}>{l.sub}</p>
             </div>
             <span style={{ color:BLUE2, fontSize:16, opacity:0.5 }}>›</span>
@@ -275,31 +360,30 @@ function Creaciones() {
     <div style={{ overflowY:"auto", flex:1, padding:"0 16px 8px" }}>
       <div style={{ paddingTop:16, paddingBottom:12, display:"flex", justifyContent:"space-between", alignItems:"flex-end" }}>
         <div>
-          <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui", marginBottom:4, textTransform:"uppercase" }}>Geometrix</p>
-          <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif", margin:0, lineHeight:1.2 }}>Mis Creaciones</h1>
+          <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui",
+            marginBottom:4, textTransform:"uppercase" }}>Geometrix</p>
+          <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif", margin:0 }}>Mis Creaciones</h1>
         </div>
         <button style={{ background:GOLD, border:"none", borderRadius:50, width:34, height:34,
           display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer",
           color:"#0B0F14", fontSize:18, fontWeight:700 }}>+</button>
       </div>
-
       <div style={{ display:"flex", gap:8, marginBottom:16 }}>
         {["Recientes","Más vistas","Guardadas"].map((f,i) => (
           <button key={i} style={{
-            background: i===0 ? "rgba(101,132,212,0.15)" : CARD,
-            border: `1px solid ${i===0 ? PILL_BORDER : "transparent"}`,
+            background:i===0?"rgba(101,132,212,0.15)":CARD,
+            border:`1px solid ${i===0?PILL_BORDER:"transparent"}`,
             borderRadius:50, padding:"6px 14px", cursor:"pointer",
-            color: i===0 ? BLUE2 : MUTED, fontSize:10, fontFamily:"system-ui", fontWeight: i===0?600:400
+            color:i===0?BLUE2:MUTED, fontSize:10, fontFamily:"system-ui", fontWeight:i===0?600:400
           }}>{f}</button>
         ))}
       </div>
-
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
         {items.map((item,i) => (
           <div key={i} style={{ background:CARD, borderRadius:16, padding:"16px 12px",
             display:"flex", flexDirection:"column", alignItems:"center", gap:10 }}>
             <div style={{ width:60, height:60, borderRadius:14,
-              background: i%2===0 ? "rgba(190,150,80,0.08)" : "rgba(101,132,212,0.08)",
+              background:i%2===0?"rgba(190,150,80,0.08)":"rgba(101,132,212,0.08)",
               display:"flex", alignItems:"center", justifyContent:"center" }}>
               {item.icon}
             </div>
@@ -324,21 +408,20 @@ function Comunidad() {
   return (
     <div style={{ overflowY:"auto", flex:1, padding:"0 16px 8px" }}>
       <div style={{ paddingTop:16, paddingBottom:12 }}>
-        <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui", marginBottom:4, textTransform:"uppercase" }}>Geometrix</p>
-        <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif", margin:0, lineHeight:1.2 }}>Comunidad</h1>
+        <p style={{ color:MUTED, fontSize:11, letterSpacing:"0.15em", fontFamily:"system-ui",
+          marginBottom:4, textTransform:"uppercase" }}>Geometrix</p>
+        <h1 style={{ color:FG, fontSize:22, fontWeight:700, fontFamily:"Georgia, serif", margin:0 }}>Comunidad</h1>
       </div>
-
       <div style={{ display:"flex", gap:8, marginBottom:14 }}>
         {["Tendencias","Nuevas","Seguidos"].map((f,i) => (
           <button key={i} style={{
-            background: i===0 ? "rgba(101,132,212,0.15)" : CARD,
-            border: `1px solid ${i===0 ? PILL_BORDER : "transparent"}`,
+            background:i===0?"rgba(101,132,212,0.15)":CARD,
+            border:`1px solid ${i===0?PILL_BORDER:"transparent"}`,
             borderRadius:50, padding:"6px 14px", cursor:"pointer",
-            color: i===0 ? BLUE2 : MUTED, fontSize:10, fontFamily:"system-ui", fontWeight: i===0?600:400
+            color:i===0?BLUE2:MUTED, fontSize:10, fontFamily:"system-ui", fontWeight:i===0?600:400
           }}>{f}</button>
         ))}
       </div>
-
       <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
         {posts.map((p,i) => (
           <div key={i} style={{ background:CARD, borderRadius:16, padding:"14px 14px",
@@ -349,8 +432,9 @@ function Comunidad() {
               {p.icon}
             </div>
             <div style={{ flex:1 }}>
-              <p style={{ color:MUTED, fontSize:9, fontFamily:"system-ui", margin:"0 0 3px", letterSpacing:"0.05em" }}>@{p.user}</p>
-              <p style={{ color:FG, fontSize:12, fontWeight:600, fontFamily:"system-ui", margin:"0 0 6px", lineHeight:1.3 }}>{p.title}</p>
+              <p style={{ color:MUTED, fontSize:9, fontFamily:"system-ui", margin:"0 0 3px" }}>@{p.user}</p>
+              <p style={{ color:FG, fontSize:12, fontWeight:600, fontFamily:"system-ui",
+                margin:"0 0 6px", lineHeight:1.3 }}>{p.title}</p>
               <div style={{ display:"flex", gap:12 }}>
                 <span style={{ color:BLUE2, fontSize:10, fontFamily:"system-ui" }}>♥ {p.likes}</span>
                 <span style={{ color:MUTED, fontSize:10, fontFamily:"system-ui" }}>↗ Compartir</span>
@@ -363,6 +447,35 @@ function Comunidad() {
   );
 }
 
+/* ─── Tab bar ────────────────────────────────────────────────────── */
+function TabBar({ active, onTab }: { active: Tab; onTab: (t: Tab) => void }) {
+  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    { id:"inicio",     label:"Inicio",      icon:<SriYantraIcon size={20} color={active==="inicio"?GOLD:MUTED} /> },
+    { id:"aprende",    label:"Aprende",     icon:<MetatronIcon size={20} color={active==="aprende"?BLUE:MUTED} /> },
+    { id:"creaciones", label:"Creaciones",  icon:<VesicaIcon size={20} color={active==="creaciones"?BLUE2:MUTED} /> },
+    { id:"comunidad",  label:"Comunidad",   icon:<GeoIcon size={20} color={active==="comunidad"?GOLD:MUTED} /> },
+  ];
+  return (
+    <div style={{ display:"flex", justifyContent:"space-around", alignItems:"center",
+      padding:"8px 4px 16px", background:"rgba(6,10,15,0.95)",
+      borderTop:"1px solid rgba(255,255,255,0.05)" }}>
+      {tabs.map(t => (
+        <button key={t.id} onClick={() => onTab(t.id)} style={{
+          background:"none", border:"none", cursor:"pointer",
+          display:"flex", flexDirection:"column", alignItems:"center", gap:3, padding:"4px 8px"
+        }}>
+          {t.icon}
+          <span style={{ fontSize:9, fontFamily:"system-ui",
+            color: active===t.id?(t.id==="aprende"||t.id==="creaciones"?BLUE:GOLD):MUTED,
+            fontWeight: active===t.id?600:400, letterSpacing:"0.02em"
+          }}>{t.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Root ───────────────────────────────────────────────────────── */
 export function PropuestaA() {
   const [tab, setTab] = useState<Tab>("inicio");
   return (
@@ -372,15 +485,13 @@ export function PropuestaA() {
       <div style={{ height:44, background:BG, display:"flex", alignItems:"center",
         justifyContent:"space-between", padding:"0 20px", flexShrink:0 }}>
         <span style={{ color:FG, fontSize:12, fontWeight:600 }}>9:41</span>
-        <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-          <span style={{ color:FG, fontSize:10, opacity:0.6 }}>●●●</span>
-        </div>
+        <span style={{ color:FG, fontSize:10, opacity:0.5 }}>●●●</span>
       </div>
 
-      {tab === "inicio" && <Inicio />}
-      {tab === "aprende" && <Aprende />}
-      {tab === "creaciones" && <Creaciones />}
-      {tab === "comunidad" && <Comunidad />}
+      {tab==="inicio"     && <Inicio />}
+      {tab==="aprende"    && <Aprende />}
+      {tab==="creaciones" && <Creaciones />}
+      {tab==="comunidad"  && <Comunidad />}
 
       <div style={{ flexShrink:0 }}>
         <TabBar active={tab} onTab={setTab} />
