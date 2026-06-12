@@ -4977,33 +4977,18 @@ export default function GeometrixScreen() {
                     <Pressable
                       key={`bg-${gr.id}`}
                       onPress={() =>
-                        setMaster((m) => ({ ...m, bgColor: null, bgGradientId: gr.id }))
+                        setMaster((m) => ({
+                          ...m,
+                          bgColor: null,
+                          bgGradientId: gr.id,
+                          bgBrightness: m.bgGradientId === gr.id ? m.bgBrightness : 0.03,
+                        }))
                       }
                       style={[styles.swatch, on && styles.swatchOn]}
                       accessibilityRole="button"
                       accessibilityLabel={`Fondo degradado ${gr.id}`}
                     >
                       <GradientSwatch colors={gr.colors} size={24} />
-                    </Pressable>
-                  );
-                })}
-              </View>
-              {/* Sólidos */}
-              <Text style={[styles.fieldLabel, { marginTop: 12 }]}>Color sólido</Text>
-              <View style={[styles.swatchRow, { marginTop: 8 }]}>
-                {PALETTE.map((c) => {
-                  const on = master.bgColor === c;
-                  return (
-                    <Pressable
-                      key={`bgsolid-${c}`}
-                      onPress={() =>
-                        setMaster((m) => ({ ...m, bgColor: c, bgGradientId: null }))
-                      }
-                      style={[styles.swatch, on && styles.swatchOn]}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Fondo sólido ${c}`}
-                    >
-                      <View style={[styles.swatchFill, { backgroundColor: c }]} />
                     </Pressable>
                   );
                 })}
@@ -6864,7 +6849,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  swatchFill: { width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: "#4b4f5c", opacity: 0.03 },
+  swatchFill: { width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: "#4b4f5c" },
   swatchOn: { borderColor: "#EDE1D3" },
 
   rotBadge: {
