@@ -1,17 +1,16 @@
 /**
- * PlaylistAddSessionsSheet
+ * PlaylistAddSessionsSheet — v3
  *
- * Fixes vs prior version:
- * - Data is FROZEN at sheet-open time (useRef snapshot). Adding a session does NOT
- *   remove it from the list → no reordering, no item remount → animation works.
- * - isAdded is derived reactively from context (isInPlaylist) so the button state
- *   updates correctly without touching the stable list.
- * - overflow:"hidden" removed from sheet so the horizontal tabs ScrollView is not
- *   hard-clipped at the right edge; the rounded top corners still render correctly.
- * - Third tab label shortened to "Recientes" so all three chips fit without crowding.
+ * Cambios vs v2:
+ * - Animación de ticket simplificada: solo fill+check, sin rebote/ripple extra.
+ * - Tap en ticket (check) elimina la sesión de la playlist.
+ * - Todas las filas muestran overlay oscuro + icono play sobre la miniatura.
+ * - Tap en miniatura: play 11 s con progreso circular (SVG), luego auto-pausa.
+ * - Título "Agregar a una playlist" centrado.
  */
 
 import { Feather } from "@expo/vector-icons";
+import { Audio } from "expo-av";
 import { Image } from "expo-image";
 import React, {
   useCallback,
@@ -31,82 +30,129 @@ import {
   View,
 } from "react-native";
 import Animated, {
+  cancelAnimation,
   Easing,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
-  withSequence,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import Svg, { Circle } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { AUDIO_MAP } from "@/config/audio-map";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const BG_SHEET = "#0E1326";
-const GOLD = "#BE9650";
+const BG_SHEET  = "#0E1326";
+const GOLD      = "#BE9650";
 const NAVY_CHECK = "#060A0F";
-const TEXT = "#EDE1D3";
-const MUTED = "#7A8FA8";
+const TEXT      = "#EDE1D3";
+const MUTED     = "#7A8FA8";
 
-// Shorter labels so all three chips fit comfortably in the row
+const THUMB_SIZE      = 50;
+const RING_RADIUS     = 23;
+const CIRCUMFERENCE   = 2 * Math.PI * RING_RADIUS;
+const PREVIEW_MS      = 11_000;
+
 const TABS = ["Sugeridas", "Música", "Recientes"] as const;
 type Tab = (typeof TABS)[number];
 
-// ─── Animated + Button ────────────────────────────────────────────────────────
+// ─── Animated SVG circle ─────────────────────────────────────────────────────
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+// ─── Miniatura con overlay play/pause + progreso circular ────────────────────
+function PreviewThumb({
+  session,
+  isPreviewing,
+  progressSV,
+  onPress,
+}: {
+  session: Session;
+  isPreviewing: boolean;
+  progressSV: ReturnType<typeof useSharedValue<number>>;
+  onPress: () => void;
+}) {
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: CIRCUMFERENCE * (1 - progressSV.value),
+  }));
+
+  return (
+    <Pressable onPress={onPress} style={styles.thumbWrap}>
+      <Image
+        source={session.image as never}
+        style={styles.thumb}
+        placeholder={BLUR_PLACEHOLDER}
+        transition={IMAGE_TRANSITION}
+        contentFit="cover"
+      />
+      {/* Overlay oscuro */}
+      <View style={styles.thumbOverlay} />
+
+      {/* Icono play / pause centrado */}
+      <View style={styles.thumbIcon}>
+        <Feather name={isPreviewing ? "pause" : "play"} size={14} color="#FFF" />
+      </View>
+
+      {/* Progreso circular — solo cuando está reproduciendo */}
+      {isPreviewing && (
+        <Svg
+          style={StyleSheet.absoluteFill}
+          width={THUMB_SIZE}
+          height={THUMB_SIZE}
+        >
+          <AnimatedCircle
+            cx={THUMB_SIZE / 2}
+            cy={THUMB_SIZE / 2}
+            r={RING_RADIUS}
+            stroke={GOLD}
+            strokeWidth={2.5}
+            strokeDasharray={`${CIRCUMFERENCE} ${CIRCUMFERENCE}`}
+            strokeLinecap="round"
+            fill="none"
+            rotation={-90}
+            origin={`${THUMB_SIZE / 2}, ${THUMB_SIZE / 2}`}
+            animatedProps={animatedProps}
+          />
+        </Svg>
+      )}
+    </Pressable>
+  );
+}
+
+// ─── Botón ticket (+ / ✓) ────────────────────────────────────────────────────
 function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) {
-  const scale = useSharedValue(1);
-  const rippleScale = useSharedValue(0.4);
-  const rippleOpacity = useSharedValue(0);
-  const fillProgress = useSharedValue(added ? 1 : 0);
-  const checkOpacity = useSharedValue(added ? 1 : 0);
-  const prevAdded = useRef(added);
+  const fillProgress  = useSharedValue(added ? 1 : 0);
+  const checkOpacity  = useSharedValue(added ? 1 : 0);
+  const prevAdded     = useRef(added);
 
   useEffect(() => {
     if (added && !prevAdded.current) {
-      // onda expansiva
-      rippleScale.value = 0.4;
-      rippleOpacity.value = 0.7;
-      rippleScale.value = withTiming(2.6, { duration: 500, easing: Easing.out(Easing.cubic) });
-      rippleOpacity.value = withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) });
-      // relleno dorado + check
-      fillProgress.value = withSpring(1, { stiffness: 320, damping: 22 });
-      checkOpacity.value = withTiming(1, { duration: 220, easing: Easing.out(Easing.quad) });
-      // rebote de escala
-      scale.value = withSequence(
-        withSpring(0.78, { stiffness: 420, damping: 18 }),
-        withSpring(1.22, { stiffness: 360, damping: 14 }),
-        withSpring(1, { stiffness: 340, damping: 24 })
-      );
+      // Solo la animación inicial: relleno dorado + check
+      fillProgress.value  = withSpring(1, { stiffness: 280, damping: 22 });
+      checkOpacity.value  = withTiming(1, { duration: 200, easing: Easing.out(Easing.quad) });
     } else if (!added && prevAdded.current) {
-      fillProgress.value = withTiming(0, { duration: 200 });
-      checkOpacity.value = withTiming(0, { duration: 150 });
-      scale.value = withSpring(1);
+      fillProgress.value  = withTiming(0, { duration: 180 });
+      checkOpacity.value  = withTiming(0, { duration: 140 });
     }
     prevAdded.current = added;
   }, [added]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const circleStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
     backgroundColor: `rgba(190,150,80,${fillProgress.value})`,
     borderColor: fillProgress.value > 0.5 ? GOLD : "rgba(190,150,80,0.35)",
   }));
 
-  const rippleStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: rippleScale.value }],
-    opacity: rippleOpacity.value,
-  }));
-
-  const plusStyle = useAnimatedStyle(() => ({ opacity: 1 - checkOpacity.value }));
+  const plusStyle  = useAnimatedStyle(() => ({ opacity: 1 - checkOpacity.value }));
   const checkStyle = useAnimatedStyle(() => ({ opacity: checkOpacity.value }));
 
   return (
     <Pressable onPress={onPress} hitSlop={12} style={styles.addBtnOuter}>
-      <Animated.View style={[styles.ripple, rippleStyle]} />
       <Animated.View style={[styles.addCircle, circleStyle]}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.centered, plusStyle]}>
           <Feather name="plus" size={16} color={MUTED} />
@@ -123,30 +169,35 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
 function SessionRow({
   session,
   isAdded,
-  onAdd,
+  onAddRemove,
+  isPreviewing,
+  progressSV,
+  onPreviewToggle,
 }: {
   session: Session;
   isAdded: boolean;
-  onAdd: () => void;
+  onAddRemove: () => void;
+  isPreviewing: boolean;
+  progressSV: ReturnType<typeof useSharedValue<number>>;
+  onPreviewToggle: () => void;
 }) {
-  const guide = session.guideId ? getGuideById(session.guideId) : null;
-  const artist = session.artistId ? getArtist(session.artistId) : null;
+  const guide  = session.guideId  ? getGuideById(session.guideId) : null;
+  const artist = session.artistId ? getArtist(session.artistId)   : null;
   const author = guide?.name ?? artist?.name ?? "Casa del Cuenco";
 
   return (
     <View style={styles.sessionRow}>
-      <Image
-        source={session.image as never}
-        style={styles.thumb}
-        placeholder={BLUR_PLACEHOLDER}
-        transition={IMAGE_TRANSITION}
-        contentFit="cover"
+      <PreviewThumb
+        session={session}
+        isPreviewing={isPreviewing}
+        progressSV={progressSV}
+        onPress={onPreviewToggle}
       />
       <View style={styles.sessionInfo}>
         <Text style={styles.sessionTitle} numberOfLines={2}>{session.title}</Text>
         <Text style={styles.sessionAuthor} numberOfLines={1}>{author}</Text>
       </View>
-      <AddButton added={isAdded} onPress={onAdd} />
+      <AddButton added={isAdded} onPress={onAddRemove} />
     </View>
   );
 }
@@ -171,43 +222,78 @@ export function PlaylistAddSessionsSheet({
   playlistId: string;
   onClose: () => void;
 }) {
-  const insets = useSafeAreaInsets();
+  const insets    = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<Tab>("Sugeridas");
-  const { playlists, addToPlaylist, isInPlaylist } = useFoldersPlaylists();
+  const { playlists, addToPlaylist, removeFromPlaylist, isInPlaylist } = useFoldersPlaylists();
   const { history } = usePlayer();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
-  const playlist = playlists.find((p) => p.id === playlistId);
+  // ── Preview state ────────────────────────────────────────────────────────
+  const [previewId, setPreviewId] = useState<string | null>(null);
+  const progressSV   = useSharedValue(0);
+  const soundRef     = useRef<Audio.Sound | null>(null);
+  const timerRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  /**
-   * Frozen snapshot: computed ONCE when the sheet opens.
-   * Adding a session only changes isInPlaylist (button state) but does NOT
-   * remove the item from the list → no reordering, no item remount → animation works.
-   */
+  const stopPreview = useCallback(async () => {
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+    cancelAnimation(progressSV);
+    progressSV.value = 0;
+    if (soundRef.current) {
+      try {
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+      } catch {}
+      soundRef.current = null;
+    }
+    setPreviewId(null);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const startPreview = useCallback(async (session: Session) => {
+    await stopPreview();
+    const src = AUDIO_MAP[session.id];
+    if (!src) return; // sin audio → nada
+
+    setPreviewId(session.id);
+    progressSV.value = 0;
+
+    try {
+      const { sound } = await Audio.Sound.createAsync(src as number, { shouldPlay: true });
+      soundRef.current = sound;
+      progressSV.value = withTiming(1, { duration: PREVIEW_MS, easing: Easing.linear });
+      timerRef.current = setTimeout(() => { void stopPreview(); }, PREVIEW_MS);
+    } catch {
+      setPreviewId(null);
+    }
+  }, [stopPreview]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handlePreviewToggle = useCallback((session: Session) => {
+    if (previewId === session.id) {
+      void stopPreview();
+    } else {
+      void startPreview(session);
+    }
+  }, [previewId, stopPreview, startPreview]);
+
+  // Detener preview al cerrar la hoja
+  useEffect(() => {
+    if (!visible) { void stopPreview(); }
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Snapshot frozen ──────────────────────────────────────────────────────
+  const playlist = playlists.find((p) => p.id === playlistId);
   const snapshot = useRef<{ suggested: Session[]; music: Session[]; recent: Session[] }>({
-    suggested: [],
-    music: [],
-    recent: [],
+    suggested: [], music: [], recent: [],
   });
 
   useEffect(() => {
     if (!visible) return;
-    // Reset tab
     setActiveTab("Sugeridas");
-
-    // Snapshot the excluded set at open-time
     const inPl = new Set(playlist?.sessionIds ?? []);
-
-    // Sugeridas: all sessions not in playlist, shuffled
     const pool = SESSIONS.filter((s) => !inPl.has(s.id));
     snapshot.current.suggested = shuffle(pool).slice(0, 30);
-
-    // Música: musica-sonidos category not in playlist
     snapshot.current.music = SESSIONS.filter(
       (s) => s.categoryId === "musica-sonidos" && !inPl.has(s.id)
     ).slice(0, 30);
-
-    // Recientes: from play history, deduped, not in playlist
     const recent: Session[] = [];
     if (history?.length) {
       const seen = new Set<string>();
@@ -221,76 +307,60 @@ export function PlaylistAddSessionsSheet({
     snapshot.current.recent = recent.slice(0, 30);
   }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Derive display list from frozen snapshot — NEVER changes after open
   const [, forceUpdate] = useState(0);
-  // Force a re-read of the ref after the effect runs
-  useEffect(() => {
-    if (visible) forceUpdate((n) => n + 1);
-  }, [visible]);
+  useEffect(() => { if (visible) forceUpdate((n) => n + 1); }, [visible]);
 
   const data = useMemo(() => {
     if (activeTab === "Sugeridas") return snapshot.current.suggested;
-    if (activeTab === "Música") return snapshot.current.music;
+    if (activeTab === "Música")    return snapshot.current.music;
     return snapshot.current.recent;
   }, [activeTab, visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleAdd = useCallback(
-    (sessionId: string) => addToPlaylist(playlistId, sessionId),
-    [addToPlaylist, playlistId]
-  );
-
-  // renderItem is stable — uses isInPlaylist from context for reactive button state
   const renderItem = useCallback(
     ({ item }: { item: Session }) => (
       <SessionRow
         session={item}
         isAdded={isInPlaylist(playlistId, item.id)}
-        onAdd={() => handleAdd(item.id)}
+        onAddRemove={() => {
+          if (isInPlaylist(playlistId, item.id)) {
+            removeFromPlaylist(playlistId, item.id);
+          } else {
+            addToPlaylist(playlistId, item.id);
+          }
+        }}
+        isPreviewing={previewId === item.id}
+        progressSV={progressSV}
+        onPreviewToggle={() => handlePreviewToggle(item)}
       />
     ),
-    [isInPlaylist, playlistId, handleAdd]
+    [isInPlaylist, playlistId, addToPlaylist, removeFromPlaylist, previewId, progressSV, handlePreviewToggle]
   );
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onRequestClose={onClose}
-      statusBarTranslucent
-    >
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose} />
 
-      {/* Sheet — NO overflow:hidden so tabs ScrollView isn't clipped at right edge */}
       <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
-        {/* Rounded top corners bg — separate from content so overflow:hidden doesn't apply to the whole sheet */}
         <View style={styles.handle} />
 
-        {/* Header */}
+        {/* Header — título centrado */}
         <View style={styles.headerRow}>
+          <View style={styles.headerSpacer} />
           <Text style={styles.headerTitle}>Agregar a una playlist</Text>
-          <Pressable onPress={onClose} hitSlop={12}>
+          <Pressable onPress={onClose} hitSlop={12} style={styles.headerClose}>
             <Feather name="x" size={20} color={MUTED} />
           </Pressable>
         </View>
 
-        {/* Tabs — three shorter labels that all fit without hard clipping */}
+        {/* Tabs */}
         <View style={styles.tabsWrapper}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.tabsContent}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsContent}>
             {TABS.map((tab) => {
               const active = tab === activeTab;
               return (
                 <Pressable
                   key={tab}
-                  style={({ pressed }) => [
-                    styles.tabChip,
-                    active && styles.tabChipActive,
-                    { opacity: pressed ? 0.8 : 1 },
-                  ]}
+                  style={({ pressed }) => [styles.tabChip, active && styles.tabChipActive, { opacity: pressed ? 0.8 : 1 }]}
                   onPress={() => setActiveTab(tab)}
                 >
                   <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
@@ -300,14 +370,12 @@ export function PlaylistAddSessionsSheet({
           </ScrollView>
         </View>
 
-        {/* List */}
+        {/* Lista */}
         {data.length === 0 ? (
           <View style={styles.emptyWrap}>
             <Feather name="music" size={40} color={MUTED} style={{ marginBottom: 12 }} />
             <Text style={styles.emptyText}>
-              {activeTab === "Recientes"
-                ? "Aún no escuchaste ninguna sesión"
-                : "No hay más sesiones disponibles"}
+              {activeTab === "Recientes" ? "Aún no escuchaste ninguna sesión" : "No hay más sesiones disponibles"}
             </Text>
           </View>
         ) : (
@@ -327,55 +395,49 @@ export function PlaylistAddSessionsSheet({
 
 // ─── Estilos ──────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.55)",
-  },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
   sheet: {
     position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+    bottom: 0, left: 0, right: 0,
     height: "82%",
     backgroundColor: BG_SHEET,
-    // No overflow:"hidden" → tabs ScrollView scrolls cleanly past the right edge
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
   },
   handle: {
     alignSelf: "center",
-    width: 36,
-    height: 4,
+    width: 36, height: 4,
     borderRadius: 2,
     backgroundColor: "rgba(255,255,255,0.2)",
-    marginTop: 10,
-    marginBottom: 4,
+    marginTop: 10, marginBottom: 4,
   },
+
+  // Header centrado
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
+  headerSpacer: { width: 28 },
   headerTitle: {
+    flex: 1,
+    textAlign: "center",
     color: TEXT,
     fontSize: 16,
     fontWeight: "700",
   },
+  headerClose: { width: 28, alignItems: "flex-end" },
 
   // Tabs
   tabsWrapper: { marginBottom: 8 },
   tabsContent: { paddingHorizontal: 16, gap: 8, paddingRight: 32 },
   tabChip: {
-    paddingHorizontal: 18,
-    paddingVertical: 9,
+    paddingHorizontal: 18, paddingVertical: 9,
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  tabChipActive: {
-    backgroundColor: GOLD,
-  },
+  tabChipActive: { backgroundColor: GOLD },
   tabText: { color: TEXT, fontSize: 14, fontWeight: "600" },
   tabTextActive: { color: "#0B0F14", fontWeight: "700" },
 
@@ -388,49 +450,45 @@ const styles = StyleSheet.create({
     gap: 12,
     height: 68,
   },
+
+  // Miniatura con overlay
+  thumbWrap: {
+    width: THUMB_SIZE, height: THUMB_SIZE,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
   thumb: {
-    width: 50,
-    height: 50,
+    width: THUMB_SIZE, height: THUMB_SIZE,
     borderRadius: 8,
     backgroundColor: "rgba(255,255,255,0.05)",
   },
+  thumbOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.38)",
+    borderRadius: 8,
+  },
+  thumbIcon: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   sessionInfo: { flex: 1 },
   sessionTitle: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
   sessionAuthor: { color: MUTED, fontSize: 12, marginTop: 2 },
 
   // Add button
-  addBtnOuter: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  ripple: {
-    position: "absolute",
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: GOLD,
-  },
+  addBtnOuter: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   addCircle: {
-    width: 30,
-    height: 30,
+    width: 30, height: 30,
     borderRadius: 15,
     borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",
   },
-  centered: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  centered: { alignItems: "center", justifyContent: "center" },
 
   // Empty
-  emptyWrap: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingBottom: 60,
-  },
+  emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 60 },
   emptyText: { color: MUTED, fontSize: 14, textAlign: "center" },
 });
