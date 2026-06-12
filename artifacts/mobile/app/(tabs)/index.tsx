@@ -382,7 +382,7 @@ export default function HomeScreen() {
                                 { opacity: pressed ? 0.75 : 1 },
                               ]}
                             >
-                              <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
+                              <Text style={[styles.headerTabText, { fontWeight: "600" }, subSel && styles.headerTabTextActive]}>
                                 {sf.label}
                               </Text>
                             </Pressable>
