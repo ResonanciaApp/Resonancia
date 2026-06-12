@@ -6713,7 +6713,7 @@ const styles = StyleSheet.create({
   previewBox: {
     borderRadius: 18,
     overflow: "hidden",
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
