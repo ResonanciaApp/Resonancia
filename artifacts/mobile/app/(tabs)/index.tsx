@@ -70,7 +70,7 @@ const SES_SUB_FILTERS = [
   { id: "meditaciones-guiadas", label: "Meditación" },
 ];
 // #BE9650 × 0.96 ≈ 4% más oscuro
-const SUB_CHIP_ACTIVE_BG = "#B6904D";
+const SUB_CHIP_ACTIVE_BG = "#a48a4b";
 const GRID_GAP = 12;
 const GRID_PAD = 15;
 
