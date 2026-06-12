@@ -100,7 +100,7 @@ import { AUDIO_MAP } from "@/config/audio-map";
 import { SESSIONS, type Session } from "@/data/sessions";
 
 const colors = colorsConst.light;
-const CARD_BORDER = "#f2ebd5";
+const CARD_BORDER = "rgba(242,235,213,0.20)";
 
 // Snapshot inmutable de una composición, para el historial de "Atrás".
 type CompSnapshot = {
@@ -1566,7 +1566,7 @@ function CarouselTileInner({
           renderToHardwareTextureAndroid
           style={[
             styles.tile,
-            { width: tileW, height: tileW, borderColor: hexAlpha(isSelected ? color : CARD_BORDER, isSelected ? 0.2 : 0.8) },
+            { width: tileW, height: tileW, borderColor: isSelected ? hexAlpha(color, 0.2) : CARD_BORDER },
             isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
           ]}
         >
