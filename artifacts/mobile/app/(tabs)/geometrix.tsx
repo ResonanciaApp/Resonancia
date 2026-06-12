@@ -2717,15 +2717,15 @@ export default function GeometrixScreen() {
     setSelectedId(null);
     setSettings({});
     setEditingCreation(null);
-    setMaster({
+    setMaster((m) => ({
       opacity: 1,
       motion: true,
       glow: 0,
-      bgColor: null,
-      bgGradientId: null,
-      bgBrightness: 0.5,
-      bgPattern: null,
-    });
+      bgColor: m.bgColor,
+      bgGradientId: m.bgGradientId,
+      bgBrightness: m.bgBrightness,
+      bgPattern: m.bgPattern,
+    }));
   }, []);
 
   const updateSetting = useCallback(
