@@ -169,10 +169,11 @@ function GradientSwatch({
 }
 
 /** Ajustes editables por geometría. Los sliders guardan 0–1. */
-function defaultSettings(_id: GeometryId): GeoSettings {
+function defaultSettings(id: GeometryId): GeoSettings {
+  const meta = GEOMETRIES.find((g) => g.id === id);
   return {
-    color: "#B69BE0",
-    gradientId: "lavanda-azul",
+    color: meta?.color ?? colors.primary,
+    gradientId: null,
     // Estática por defecto: el usuario activa el movimiento (giro/respirar/
     // fade) en los ajustes por capa cuando quiera.
     rotate: false,
@@ -190,7 +191,7 @@ function defaultSettings(_id: GeometryId): GeoSettings {
     offsetY: 0,
     kaleidoscope: false,
     kaleidSegments: 6,
-    saturation: 0,
+    saturation: 0.5,
     bloom: 0,
     halo: 0,
     onda: 0,
