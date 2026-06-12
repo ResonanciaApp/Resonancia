@@ -1826,6 +1826,8 @@ type GeometrixCarouselProps = {
   orderSV: SharedValue<string[]>;
   instantOrderFlag: SharedValue<number>;
   draggingId: string | null;
+  activeCategory: GeometryCategory;
+  onCategoryChange: (id: GeometryCategory) => void;
   toggleGeometry: (id: string) => void;
   handleDragStart: (id: string) => void;
   commitReorder: (id: string, idx: number) => void;
@@ -1837,6 +1839,8 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   orderSV,
   instantOrderFlag,
   draggingId,
+  activeCategory,
+  onCategoryChange,
   toggleGeometry,
   handleDragStart,
   commitReorder,
@@ -1867,9 +1871,13 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
     }
   });
 
-  const [activeCategory, setActiveCategory] = useState<GeometryCategory>(
-    GEOMETRY_CATEGORIES[0].id,
-  );
+  // activeCategory viene del padre; al cambiar se resetea el scroll del carrusel.
+  useEffect(() => {
+    carScrollX.value = 0;
+    carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCategory]);
+
   const carouselOrder = useMemo<string[]>(() => {
     const front = active.filter((id) => !effActivating.has(id));
     const frontSet = new Set(front);
@@ -1986,38 +1994,11 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   const goCategory = useCallback((id: GeometryCategory) => {
     carScrollX.value = 0;
     carouselScrollRef.current?.scrollTo?.({ x: 0, animated: false });
-    setActiveCategory(id);
-  }, [carScrollX, carouselScrollRef]);
+    onCategoryChange(id);
+  }, [carScrollX, carouselScrollRef, onCategoryChange]);
 
   return (
     <>
-      {/* Filtro por categoría: el carrusel muestra solo la categoría activa */}
-      <View style={styles.catFilterRow}>
-        {GEOMETRY_CATEGORIES.map((c) => {
-          const on = activeCategory === c.id;
-          return (
-            <Pressable
-              key={c.id}
-              onPress={() => {
-                if (activeCategory === c.id) return;
-                goCategory(c.id);
-              }}
-              style={[styles.catChip, on ? styles.catChipOn : null]}
-              accessibilityRole="button"
-              accessibilityState={{ selected: on }}
-              accessibilityLabel={`Filtrar geometrías: ${c.label}`}
-            >
-              <Text
-                style={[styles.catChipText, on ? styles.catChipTextOn : null]}
-                numberOfLines={1}
-              >
-                {c.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
       {/* Galería de geometrías (una fila horizontal, scrolleable).
           onScrollEndDrag detecta swipe de cambio de categoría sin GestureDetector. */}
       <Animated.ScrollView
@@ -2437,6 +2418,7 @@ export default function GeometrixScreen() {
   const themePlayerRef = useRef<AudioPlayer | null>(null);
   const [themeSession, setThemeSession] = useState<Session | null>(null);
   const [themeSearchOpen, setThemeSearchOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<GeometryCategory>(GEOMETRY_CATEGORIES[0].id);
   const [themeQuery, setThemeQuery] = useState("");
   // Glow blanco del botón: 0 = apagado, 1 = plena intensidad. Al sonar arranca
   // una respiración muy sutil (75–100%) con periodo de 3 s; al parar vuelve a 0.
@@ -3166,6 +3148,7 @@ export default function GeometrixScreen() {
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   // `divider: true` dibuja una línea sutil ANTES del ítem (separadores de grupo).
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean; color?: string; divider?: boolean }[] = [
+    { key: "audio", icon: "volume-2", label: "Audio de fondo", onPress: () => { if (themeSession) stopTheme(); else setThemeSearchOpen(true); } },
     { key: "general", icon: "sliders", label: "Ajustes", onPress: () => setGeneralOpen(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
@@ -3834,41 +3817,10 @@ export default function GeometrixScreen() {
           end={{ x: 0, y: 1 }}
           style={[styles.topPanel, { paddingTop: insets.top + 12 }]}
         >
-        {/* Header */}
+        {/* Header — solo botón volver */}
         <View style={styles.header}>
           <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color="#FFFFFF" />
-          </Pressable>
-          <View style={styles.headerText}>
-            <View style={styles.titleRow}>
-              <Text style={styles.title}>Geometrix</Text>
-              {/* Logo cubo-3 inline, a la derecha del título. */}
-              <Image
-                source={require("@/assets/images/geometrix/cubo-3.png")}
-                style={styles.titleLogo}
-                contentFit="contain"
-              />
-            </View>
-          </View>
-          {/* Tema de fondo: si NO suena nada, abre el buscador; si YA está
-              sonando, el mismo botón detiene y resetea el reproductor. */}
-          <Pressable
-            onPress={() => {
-              if (themeSession) stopTheme();
-              else setThemeSearchOpen(true);
-            }}
-            hitSlop={12}
-            style={[styles.themeBtn, themeSession ? styles.themeBtnOn : null]}
-            accessibilityRole="button"
-            accessibilityLabel={themeSession ? "Detener audio de fondo" : "Elegir audio de fondo"}
-          >
-            <Animated.View style={themeGlowStyle}>
-              <Feather
-                name="volume-2"
-                size={15}
-                color={themeSession ? "rgba(255,255,255,0.88)" : colors.mutedForeground}
-              />
-            </Animated.View>
           </Pressable>
         </View>
 
@@ -3984,6 +3936,8 @@ export default function GeometrixScreen() {
           orderSV={orderSV}
           instantOrderFlag={instantOrderFlag}
           draggingId={draggingId}
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
           toggleGeometry={toggleGeometry}
           handleDragStart={handleDragStart}
           commitReorder={commitReorder}
@@ -4196,10 +4150,9 @@ export default function GeometrixScreen() {
           </View>
           </View>{/* /stageClip */}
 
-          {/* Controles lado izquierdo: Atrás (deshacer) + Hold mode + actualizar.
-              Contenedor siempre montado (box-none) para que "Atrás" se vea aun
-              con el lienzo vacío (p. ej. tras limpiar). */}
+          {/* Controles: Atrás (deshacer) + Hold mode + categorías (slider). */}
           <View pointerEvents="box-none" style={styles.actionLeft}>
+            {/* Botones undo/redo/hold */}
             <View style={styles.actionTopRow}>
               {/* Atrás: deshace el último cambio. Visible si hay historial. */}
               {canUndo && (
@@ -4270,6 +4223,32 @@ export default function GeometrixScreen() {
                 </Animated.View>
               )}
             </View>
+            {/* Tab de categorías: slider horizontal a la derecha de la flechita */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.catScroll}
+              contentContainerStyle={styles.catScrollContent}
+              pointerEvents="auto"
+            >
+              {GEOMETRY_CATEGORIES.map((c) => {
+                const on = activeCategory === c.id;
+                return (
+                  <Pressable
+                    key={c.id}
+                    onPress={() => setActiveCategory(c.id)}
+                    style={[styles.catChip, on ? styles.catChipOn : null]}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: on }}
+                    accessibilityLabel={`Filtrar geometrías: ${c.label}`}
+                  >
+                    <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
+                      {c.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
 
           {/* Barra de herramientas + ojo: fila horizontal justo encima del
@@ -6522,9 +6501,20 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: -21,
-    zIndex: 6,
-    flexDirection: "column",
-    alignItems: "flex-start",
+    right: 30,
+    zIndex: 5,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  catScroll: {
+    flex: 1,
+  },
+  catScrollContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingLeft: 4,
+    paddingRight: 8,
   },
   actionTopRow: {
     flexDirection: "row",
