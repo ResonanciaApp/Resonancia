@@ -101,7 +101,7 @@ import { SESSIONS, type Session } from "@/data/sessions";
 
 const colors = colorsConst.light;
 const CARD_BORDER = "rgba(242,235,213,0.04)";
-const CANVAS_ICON = "rgba(208,199,171,0.50)";
+const CANVAS_ICON = "rgba(251,249,241,0.50)";
 
 // Snapshot inmutable de una composición, para el historial de "Atrás".
 type CompSnapshot = {
