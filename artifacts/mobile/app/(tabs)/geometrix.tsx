@@ -2051,37 +2051,17 @@ const STAR_PTS = Array.from({ length: 12 }, (_, i) => {
 }).join(" ");
 
 function CrearGeometriaCard({ onPress }: { onPress: () => void }) {
-  const rotAnim     = useSharedValue(0);
-  const nebulaOp    = useSharedValue(0.12);
-  const nebulaScale = useSharedValue(1);
+  const rotAnim = useSharedValue(0);
 
   useEffect(() => {
     rotAnim.value = withRepeat(
       withTiming(360, { duration: 18000, easing: Easing.linear }),
       -1, false,
     );
-    nebulaOp.value = withRepeat(
-      withSequence(
-        withTiming(0.20, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
-        withTiming(0.08, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
-      ),
-      -1, false,
-    );
-    nebulaScale.value = withRepeat(
-      withSequence(
-        withTiming(1.15, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
-        withTiming(1,    { duration: 3000, easing: Easing.inOut(Easing.sin) }),
-      ),
-      -1, false,
-    );
   }, []);
 
-  const rotStyle    = useAnimatedStyle(() => ({
+  const rotStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotAnim.value}deg` }],
-  }));
-  const nebulaStyle = useAnimatedStyle(() => ({
-    opacity: nebulaOp.value,
-    transform: [{ scale: nebulaScale.value }],
   }));
 
   const PARTICLES = [
@@ -2100,9 +2080,6 @@ function CrearGeometriaCard({ onPress }: { onPress: () => void }) {
       {/* Sombra exterior azul */}
       <View style={styles.cbOuter}>
         <View style={styles.cbCard}>
-          {/* Nebulosa respira */}
-          <Animated.View style={[styles.cbNebula, nebulaStyle]} />
-
           {/* Cuadrícula de fondo */}
           <Svg style={StyleSheet.absoluteFillObject} pointerEvents="none">
             {[86, 172, 258].map((x, i) => (
@@ -6247,16 +6224,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(101,132,212,0.48)",
     overflow: "hidden",
-  },
-  cbNebula: {
-    position: "absolute",
-    width: 200,
-    height: 140,
-    right: -20,
-    top: "50%" as unknown as number,
-    marginTop: -70,
-    borderRadius: 100,
-    backgroundColor: "#6584d4",
   },
   cbRow: {
     flexDirection: "row",
