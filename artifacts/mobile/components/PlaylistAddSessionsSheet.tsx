@@ -185,7 +185,7 @@ function SessionRow({
   const author = guide?.name ?? artist?.name ?? "Casa del Cuenco";
 
   return (
-    <View style={styles.sessionRow}>
+    <Pressable onPress={onPreviewToggle} style={styles.sessionRow}>
       <PreviewThumb
         session={session}
         isPreviewing={isPreviewing}
@@ -197,7 +197,7 @@ function SessionRow({
         <Text style={styles.sessionAuthor} numberOfLines={1}>{author}</Text>
       </View>
       <AddButton added={isAdded} onPress={onAddRemove} />
-    </View>
+    </Pressable>
   );
 }
 
