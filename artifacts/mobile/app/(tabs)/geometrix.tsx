@@ -6028,7 +6028,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-creaciones")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="grid" size={20} color={colors.primary} />
+                <Feather name="grid" size={20} color="#6b5dc1" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Mis Creaciones</Text>
@@ -6043,7 +6043,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-comunidad")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="users" size={20} color={colors.primary} />
+                <Feather name="users" size={20} color="#6b5dc1" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Comunidad</Text>
@@ -6058,7 +6058,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-aprende")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="book-open" size={20} color={colors.primary} />
+                <Feather name="book-open" size={20} color="#6b5dc1" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Aprende</Text>
@@ -6108,7 +6108,7 @@ const styles = StyleSheet.create({
   landingSubtitle: {
     fontSize: 11,
     fontWeight: "500",
-    color: "#7A8FA8",
+    color: "#e8e6f5",
     letterSpacing: 4,
     marginBottom: 20,
   },
@@ -6151,7 +6151,7 @@ const styles = StyleSheet.create({
   },
   landingItemDesc: {
     fontSize: 12,
-    color: "#c0bae0",
+    color: "#e8e6f5",
   },
   landingHint: {
     textAlign: "center",
