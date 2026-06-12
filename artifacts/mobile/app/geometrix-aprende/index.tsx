@@ -109,7 +109,6 @@ export default function GeometrixAprendeScreen() {
                 styles.card,
                 {
                   backgroundColor: "rgba(255,255,255,0.03)",
-                  borderColor: colors.primary + "28",
                   opacity: pressed ? 0.75 : 1,
                 },
               ]}
@@ -118,7 +117,7 @@ export default function GeometrixAprendeScreen() {
               }
             >
               {/* Icon */}
-              <View style={[styles.iconWrap, { borderColor: colors.primary + "38", backgroundColor: colors.primary + "0D" }]}>
+              <View style={[styles.iconWrap, { backgroundColor: colors.primary + "0D" }]}>
                 <CategoryIcon id={cat.id} color={colors.primary} />
               </View>
 
@@ -126,7 +125,7 @@ export default function GeometrixAprendeScreen() {
               <View style={styles.cardText}>
                 <View style={styles.cardRow}>
                   <Text style={[styles.cardTitle, { color: colors.foreground }]}>{cat.label}</Text>
-                  <View style={[styles.badge, { backgroundColor: colors.primary + "18", borderColor: colors.primary + "35" }]}>
+                  <View style={[styles.badge, { backgroundColor: colors.primary + "18" }]}>
                     <Text style={[styles.badgeText, { color: colors.primary }]}>{meta.count}</Text>
                   </View>
                 </View>
@@ -140,8 +139,8 @@ export default function GeometrixAprendeScreen() {
         })}
 
         {/* Coming soon */}
-        <View style={[styles.comingSoon, { borderColor: colors.primary + "20" }]}>
-          <View style={[styles.csIcon, { borderColor: colors.primary + "22" }]}>
+        <View style={styles.comingSoon}>
+          <View style={styles.csIcon}>
             <Feather name="clock" size={16} color={colors.primary + "55"} />
           </View>
           <View>
@@ -169,30 +168,26 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 16,
     borderRadius: 16,
-    borderWidth: 1,
   },
   iconWrap: {
     width: 58, height: 58, borderRadius: 14,
-    borderWidth: 1,
     alignItems: "center", justifyContent: "center",
   },
   cardText: { flex: 1 },
   cardRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 },
   cardTitle: { fontSize: 15, fontWeight: "700" },
   badge: {
-    borderRadius: 8, borderWidth: 1,
+    borderRadius: 8,
     paddingHorizontal: 8, paddingVertical: 2,
   },
   badgeText: { fontSize: 11, fontWeight: "600" },
   cardDesc: { fontSize: 12, lineHeight: 18 },
   comingSoon: {
     flexDirection: "row", alignItems: "center", gap: 12,
-    padding: 14, borderRadius: 16, borderWidth: 1,
-    borderStyle: "dashed",
+    padding: 14, borderRadius: 16,
   },
   csIcon: {
     width: 36, height: 36, borderRadius: 10,
-    borderWidth: 1, borderStyle: "dashed",
     alignItems: "center", justifyContent: "center",
   },
   csTitle: { fontSize: 13, fontWeight: "600" },

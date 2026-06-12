@@ -1567,7 +1567,7 @@ function CarouselTileInner({
           renderToHardwareTextureAndroid
           style={[
             styles.tile,
-            { width: tileW, height: tileW, borderColor: isSelected ? hexAlpha(color, 0.2) : CARD_BORDER },
+            { width: tileW, height: tileW },
             isSelected && { backgroundColor: "rgba(255,255,255,0.04)" },
           ]}
         >
@@ -6344,7 +6344,6 @@ const styles = StyleSheet.create({
   },
   tile: {
     borderRadius: 16,
-    borderWidth: 1,
     backgroundColor: "rgba(255,255,255,0.02)",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -6719,8 +6718,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     overflow: "hidden",
     backgroundColor: "rgba(8,10,24,0.88)",
-    borderWidth: 1,
-    borderColor: CARD_BORDER,
     alignItems: "center",
     justifyContent: "center",
   },

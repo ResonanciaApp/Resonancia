@@ -111,13 +111,13 @@ export default function GeometrixAprendeCategoriaScreen() {
           <Feather name="arrow-left" size={18} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>{catInfo.label}</Text>
-        <View style={[styles.countBadge, { backgroundColor: colors.primary + "15", borderColor: colors.primary + "30" }]}>
+        <View style={[styles.countBadge, { backgroundColor: colors.primary + "15" }]}>
           <Text style={[styles.countText, { color: colors.primary }]}>{geometrias.length}</Text>
         </View>
       </View>
 
       {/* Category hero */}
-      <View style={[styles.hero, { backgroundColor: colors.primary + "0A", borderColor: colors.primary + "25" }]}>
+      <View style={[styles.hero, { backgroundColor: colors.primary + "0A" }]}>
         <MiniGlyph id={catId === "sagradas" ? "flor-vida" : catId === "poliedros" ? "hexaedro" : "espiral"} color={colors.primary} />
         <Text style={[styles.heroDesc, { color: colors.mutedForeground }]}>{meta?.desc}</Text>
       </View>
@@ -139,14 +139,13 @@ export default function GeometrixAprendeCategoriaScreen() {
                 styles.item,
                 {
                   backgroundColor: "rgba(255,255,255,0.03)",
-                  borderColor: colors.primary + "28",
                   opacity: pressed ? 0.75 : 1,
                 },
               ]}
               onPress={() => router.push(`/geometrix-aprende/geometria/${geo.id}`)}
             >
               {/* Mini glyph */}
-              <View style={[styles.glyphWrap, { backgroundColor: colors.primary + "0C", borderColor: colors.primary + "22" }]}>
+              <View style={[styles.glyphWrap, { backgroundColor: colors.primary + "0C" }]}>
                 <MiniGlyph id={geo.id} color={colors.primary} />
               </View>
 
@@ -154,7 +153,7 @@ export default function GeometrixAprendeCategoriaScreen() {
               <View style={styles.itemText}>
                 <View style={styles.itemRow}>
                   <Text style={[styles.itemName, { color: colors.foreground }]}>{geo.name}</Text>
-                  <View style={[styles.tag, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "25" }]}>
+                  <View style={[styles.tag, { backgroundColor: colors.primary + "12" }]}>
                     <Text style={[styles.tagText, { color: colors.primary }]}>{learn.tag}</Text>
                   </View>
                 </View>
@@ -175,28 +174,28 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, gap: 12 },
   backBtn: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   title: { flex: 1, fontSize: 18, fontWeight: "700" },
-  countBadge: { borderRadius: 8, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 4 },
+  countBadge: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
   countText: { fontSize: 12, fontWeight: "600" },
   hero: {
     flexDirection: "row", alignItems: "center", gap: 12,
     marginHorizontal: 20, marginBottom: 14,
-    padding: 14, borderRadius: 12, borderWidth: 1,
+    padding: 14, borderRadius: 12,
   },
   heroDesc: { flex: 1, fontSize: 12, lineHeight: 18 },
   divider: { height: 1, marginHorizontal: 20, marginBottom: 12 },
   list: { paddingHorizontal: 20, paddingTop: 4, gap: 10 },
   item: {
     flexDirection: "row", alignItems: "center", gap: 12,
-    padding: 13, borderRadius: 13, borderWidth: 1,
+    padding: 13, borderRadius: 13,
   },
   glyphWrap: {
     width: 48, height: 48, borderRadius: 12,
-    borderWidth: 1, alignItems: "center", justifyContent: "center",
+    alignItems: "center", justifyContent: "center",
   },
   itemText: { flex: 1 },
   itemRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 3 },
   itemName: { fontSize: 14, fontWeight: "600", flexShrink: 1 },
-  tag: { borderRadius: 6, borderWidth: 1, paddingHorizontal: 6, paddingVertical: 1 },
+  tag: { borderRadius: 6, paddingHorizontal: 6, paddingVertical: 1 },
   tagText: { fontSize: 10, fontWeight: "500" },
   itemSummary: { fontSize: 11, lineHeight: 16 },
 });

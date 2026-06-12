@@ -130,7 +130,7 @@ export default function GeometrixAprendeDetalleScreen() {
 
           <View style={styles.tagsRow}>
             {learn.tags.map((tag) => (
-              <View key={tag} style={[styles.tag, { backgroundColor: colors.primary + "15", borderColor: colors.primary + "30" }]}>
+              <View key={tag} style={[styles.tag, { backgroundColor: colors.primary + "15" }]}>
                 <Text style={[styles.tagText, { color: colors.primary }]}>{tag}</Text>
               </View>
             ))}
@@ -143,7 +143,7 @@ export default function GeometrixAprendeDetalleScreen() {
         {/* Attributes grid */}
         <View style={styles.attrGrid}>
           {learn.attributes.map((attr) => (
-            <View key={attr.label} style={[styles.attrCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.primary + "25" }]}>
+            <View key={attr.label} style={[styles.attrCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
               <Text style={[styles.attrLabel, { color: colors.mutedForeground }]}>{attr.label}</Text>
               <Text style={[styles.attrValue, { color: colors.foreground }]}>{attr.value}</Text>
             </View>
@@ -177,7 +177,7 @@ export default function GeometrixAprendeDetalleScreen() {
             </LinearGradient>
           </Pressable>
 
-          <Pressable style={[styles.ctaSecondary, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.primary + "30" }]} hitSlop={4}>
+          <Pressable style={[styles.ctaSecondary, { backgroundColor: "rgba(255,255,255,0.03)" }]} hitSlop={4}>
             <Feather name="download" size={18} color={colors.primary} />
           </Pressable>
         </View>
@@ -197,11 +197,11 @@ const styles = StyleSheet.create({
   glyphContainer: { marginBottom: 12 },
   geoName: { fontSize: 24, fontWeight: "700", letterSpacing: 0.4, marginBottom: 10 },
   tagsRow: { flexDirection: "row", gap: 6, flexWrap: "wrap", justifyContent: "center" },
-  tag: { borderRadius: 8, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 3 },
+  tag: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 3 },
   tagText: { fontSize: 11, fontWeight: "500" },
   divider: { height: 1, marginHorizontal: 20, marginBottom: 16 },
   attrGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: 20, marginBottom: 16 },
-  attrCard: { width: "47.5%", padding: 12, borderRadius: 12, borderWidth: 1 },
+  attrCard: { width: "47.5%", padding: 12, borderRadius: 12 },
   attrLabel: { fontSize: 9, fontWeight: "500", letterSpacing: 0.8, textTransform: "uppercase", marginBottom: 4 },
   attrValue: { fontSize: 12, fontWeight: "600", lineHeight: 16 },
   section: { paddingHorizontal: 20, marginBottom: 20 },
@@ -211,5 +211,5 @@ const styles = StyleSheet.create({
   ctaBtn: { flex: 1, borderRadius: 14, overflow: "hidden" },
   ctaGradient: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 50 },
   ctaText: { fontSize: 14, fontWeight: "700", color: "#0B0F14" },
-  ctaSecondary: { width: 50, height: 50, borderRadius: 14, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+  ctaSecondary: { width: 50, height: 50, borderRadius: 14, alignItems: "center", justifyContent: "center" },
 });
