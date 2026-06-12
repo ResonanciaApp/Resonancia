@@ -4200,7 +4200,7 @@ export default function GeometrixScreen() {
                   </Pressable>
                 ))}
               </Animated.View>
-              <View style={{ flexDirection: "column", alignItems: "center" }}>
+              <View style={{ width: 38, height: 32 }}>
                 <Pressable
                   onPress={() => setPillOpen((o) => !o)}
                   style={styles.actionTopBtn}
@@ -4211,7 +4211,7 @@ export default function GeometrixScreen() {
                   <Feather name={pillOpen ? "eye-off" : "eye"} size={16} color={pillOpen ? colors.primary : CANVAS_ICON} />
                 </Pressable>
                 {active.length >= 2 && (
-                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={{ position: "absolute", top: 32, left: 0, right: 0 }}>
                     <Pressable
                       onPress={() => setHoldMode((v) => !v)}
                       style={styles.actionTopBtn}
