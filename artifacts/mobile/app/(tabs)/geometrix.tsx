@@ -6426,7 +6426,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingLeft: 10,
+    paddingLeft: 0,
     paddingRight: 8,
   },
   actionTopBtn: {
