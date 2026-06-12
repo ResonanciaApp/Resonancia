@@ -3795,7 +3795,8 @@ export default function GeometrixScreen() {
     : bgGradientColors(master.bgGradientId);
   const canvasBgColors = selectedBg
     ? scaleColors(selectedBg, bgFactor)
-    : (["#0B0714", "#030306"] as const);
+    : HOME_GRADIENT;
+  const canvasBgLocations = selectedBg ? undefined : ([0, 0.5, 1] as [number, number, number]);
 
 
   return (
@@ -3806,6 +3807,7 @@ export default function GeometrixScreen() {
       <View pointerEvents="none" style={styles.canvasBgLayer}>
         <LinearGradient
           colors={canvasBgColors}
+          locations={canvasBgLocations}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFill}
@@ -4347,6 +4349,7 @@ export default function GeometrixScreen() {
         >
           <LinearGradient
             colors={canvasBgColors}
+            locations={canvasBgLocations}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
@@ -4388,6 +4391,7 @@ export default function GeometrixScreen() {
           {/* Fondo */}
           <LinearGradient
             colors={canvasBgColors}
+            locations={canvasBgLocations}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
