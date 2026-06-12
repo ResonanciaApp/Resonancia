@@ -4848,7 +4848,7 @@ export default function GeometrixScreen() {
                 colors={(selectedBg ?? HOME_GRADIENT) as [string, string]}
                 start={{ x: 0.5, y: 0 }}
                 end={{ x: 0.5, y: 1 }}
-                style={StyleSheet.absoluteFill}
+                style={[StyleSheet.absoluteFill, { opacity: 0.5 }]}
               />
               {master.bgPattern && (
                 <GeometrixPatternBg
@@ -5602,7 +5602,7 @@ export default function GeometrixScreen() {
                 colors={(selectedBg ?? HOME_GRADIENT) as [string, string]}
                 start={{ x: 0.5, y: 0 }}
                 end={{ x: 0.5, y: 1 }}
-                style={StyleSheet.absoluteFill}
+                style={[StyleSheet.absoluteFill, { opacity: 0.5 }]}
               />
               {master.bgPattern && (
                 <GeometrixPatternBg
