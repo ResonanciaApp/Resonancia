@@ -6228,13 +6228,13 @@ export default function GeometrixScreen() {
 
       {/* ── Barra de navegación inferior de Geometrix ── */}
       {menuHidden && (
-        <View style={[styles.geoNav, { paddingBottom: bottomPb, height: GEO_NAV_HEIGHT + bottomPb }]}>
-          {/* Crear — activo siempre (estamos en el canvas) */}
-          <Pressable style={styles.geoNavItem} hitSlop={6}>
-            <View style={[styles.geoNavIconWrap, styles.geoNavIconActive]}>
-              <Feather name="layers" size={19} color="#0B0F14" />
+        <View style={[styles.geoNav, { paddingBottom: bottomPb, height: GEO_NAV_HEIGHT + bottomPb, zIndex: 250 }]}>
+          {/* Inicio — activo cuando showLanding; lleva al landing desde el canvas */}
+          <Pressable style={styles.geoNavItem} hitSlop={6} onPress={() => setShowLanding(true)}>
+            <View style={[styles.geoNavIconWrap, showLanding && styles.geoNavIconActive]}>
+              <Feather name="home" size={19} color={showLanding ? "#0B0F14" : "#7A8FA8"} />
             </View>
-            <Text style={[styles.geoNavLabel, styles.geoNavLabelActive]}>Crear</Text>
+            <Text style={[styles.geoNavLabel, showLanding && styles.geoNavLabelActive]}>Inicio</Text>
           </Pressable>
 
           {/* Mis Creaciones */}
