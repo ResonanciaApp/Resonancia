@@ -310,72 +310,73 @@ export default function HomeScreen() {
                   ? activeFilter === null && !sesionesOpen
                   : activeFilter?.join() === tab.cats.join() && !sesionesOpen;
               return (
-                <Pressable
-                  key={tab.id}
-                  onPress={() => {
-                    if (tab.id === "sesiones") {
-                      const opening = !sesionesOpen;
-                      setSesionesOpen(opening);
-                      setSesSubFilter(null);
-                      setActiveFilter(opening ? tab.cats : null);
-                    } else {
-                      setSesionesOpen(false);
-                      setSesSubFilter(null);
-                      setActiveFilter(tab.cats.length === 0 ? null : tab.cats);
-                    }
-                  }}
-                  style={({ pressed }) => [
-                    styles.headerTabChip,
-                    sel && styles.headerTabChipActive,
-                    { opacity: pressed ? 0.7 : 1 },
-                  ]}
-                >
-                  <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
-                    {tab.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
+                <React.Fragment key={tab.id}>
+                  <Pressable
+                    onPress={() => {
+                      if (tab.id === "sesiones") {
+                        const opening = !sesionesOpen;
+                        setSesionesOpen(opening);
+                        setSesSubFilter(null);
+                        setActiveFilter(opening ? tab.cats : null);
+                      } else {
+                        setSesionesOpen(false);
+                        setSesSubFilter(null);
+                        setActiveFilter(tab.cats.length === 0 ? null : tab.cats);
+                      }
+                    }}
+                    style={({ pressed }) => [
+                      styles.headerTabChip,
+                      sel && styles.headerTabChipActive,
+                      { opacity: pressed ? 0.7 : 1 },
+                    ]}
+                  >
+                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+                      {tab.label}
+                    </Text>
+                  </Pressable>
 
-            {/* Sub-filtros de Sesiones: Sonoterapia · Meditaciones */}
-            {sesionesOpen && (
-              <Animated.View
-                style={[
-                  styles.headerTabsSubRow,
-                  {
-                    opacity: subFilterAnim,
-                    transform: [{
-                      translateX: subFilterAnim.interpolate({
-                        inputRange: [0, 1], outputRange: [24, 0],
-                      }),
-                    }],
-                  },
-                ]}
-              >
-                {SES_SUB_FILTERS.map((sf) => {
-                  const subSel = sesSubFilter === sf.id;
-                  return (
-                    <Pressable
-                      key={sf.id}
-                      onPress={() => {
-                        const next = subSel ? null : sf.id;
-                        setSesSubFilter(next);
-                        setActiveFilter(next ? [next] : NAV_TABS[1].cats);
-                      }}
-                      style={({ pressed }) => [
-                        styles.headerTabChip,
-                        subSel && styles.headerTabChipSubActive,
-                        { opacity: pressed ? 0.7 : 1 },
+                  {/* Sub-filtros: aparecen justo después de "Sesiones" */}
+                  {tab.id === "sesiones" && sesionesOpen && (
+                    <Animated.View
+                      style={[
+                        styles.headerTabsSubRow,
+                        {
+                          opacity: subFilterAnim,
+                          transform: [{
+                            translateX: subFilterAnim.interpolate({
+                              inputRange: [0, 1], outputRange: [24, 0],
+                            }),
+                          }],
+                        },
                       ]}
                     >
-                      <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
-                        {sf.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </Animated.View>
-            )}
+                      {SES_SUB_FILTERS.map((sf) => {
+                        const subSel = sesSubFilter === sf.id;
+                        return (
+                          <Pressable
+                            key={sf.id}
+                            onPress={() => {
+                              const next = subSel ? null : sf.id;
+                              setSesSubFilter(next);
+                              setActiveFilter(next ? [next] : NAV_TABS[1].cats);
+                            }}
+                            style={({ pressed }) => [
+                              styles.headerTabChip,
+                              subSel && styles.headerTabChipSubActive,
+                              { opacity: pressed ? 0.7 : 1 },
+                            ]}
+                          >
+                            <Text style={[styles.headerTabText, subSel && styles.headerTabTextActive]}>
+                              {sf.label}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </Animated.View>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </ScrollView>
         </View>
       </View>
