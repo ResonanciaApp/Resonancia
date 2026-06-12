@@ -4210,7 +4210,7 @@ export default function GeometrixScreen() {
                   accessibilityLabel={pillOpen ? "Ocultar herramientas" : "Mostrar herramientas"}
                   hitSlop={8}
                 >
-                  <Feather name={pillOpen ? "eye-off" : "eye"} size={16} color={pillOpen ? colors.primary : CANVAS_ICON} />
+                  <Feather name={pillOpen ? "eye" : "eye-off"} size={16} color={pillOpen ? CANVAS_ICON : colors.primary} />
                 </Pressable>
                 {active.length >= 2 && (
                   <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={{ position: "absolute", top: 32, left: 0, right: 0 }}>
