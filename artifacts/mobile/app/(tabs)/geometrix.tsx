@@ -3793,7 +3793,7 @@ export default function GeometrixScreen() {
   const selectedBg = master.bgColor
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
-  const canvasBgColors = scaleColors(selectedBg ?? ["#000000", "#000000"], bgFactor);
+  const canvasBgColors = scaleColors(selectedBg ?? ["#1A1030", "#06070F"], bgFactor);
 
 
   return (
