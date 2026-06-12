@@ -1773,9 +1773,9 @@ function SettingsSection({
       >
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 7 }}>
           {SECTION_ICONS[title] != null && (
-            <Feather name={SECTION_ICONS[title]!} size={13} color={colors.foreground} />
+            <Feather name={SECTION_ICONS[title]!} size={13} color={CANVAS_ICON} />
           )}
-          <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.mutedForeground }}>
+          <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: CANVAS_ICON }}>
             {title}
           </Text>
         </View>
@@ -1793,7 +1793,7 @@ function SettingsSection({
           </Pressable>
         )}
         <Animated.View style={chevronStyle}>
-          <Feather name="chevron-down" size={15} color={colors.mutedForeground} />
+          <Feather name="chevron-down" size={15} color={CANVAS_ICON} />
         </Animated.View>
       </Pressable>
       {/* Línea separadora */}
@@ -6806,7 +6806,7 @@ const styles = StyleSheet.create({
   },
 
   gradientLabel: { marginTop: 10 },
-  fieldLabel: { fontSize: 12, fontWeight: "600", color: colors.mutedForeground },
+  fieldLabel: { fontSize: 12, fontWeight: "600", color: CANVAS_ICON },
   fieldRow: {
     flexDirection: "row",
     alignItems: "center",
