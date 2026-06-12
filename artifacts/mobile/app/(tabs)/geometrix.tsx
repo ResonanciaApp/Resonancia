@@ -4214,7 +4214,7 @@ export default function GeometrixScreen() {
                   <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                     <Pressable
                       onPress={() => setHoldMode((v) => !v)}
-                      style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
+                      style={styles.actionTopBtn}
                       accessibilityRole="button"
                       accessibilityLabel={holdMode ? "Desactivar modo Hold" : "Activar modo Hold (transforma todas las capas)"}
                       hitSlop={4}
@@ -4510,7 +4510,7 @@ export default function GeometrixScreen() {
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                   <Pressable
                     onPress={() => setHoldMode((v) => !v)}
-                    style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
+                    style={styles.actionTopBtn}
                     hitSlop={4}
                     accessibilityRole="button"
                     accessibilityLabel={holdMode ? "Desactivar Hold" : "Activar Hold"}
