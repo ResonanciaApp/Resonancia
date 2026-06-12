@@ -568,13 +568,12 @@ const styles = StyleSheet.create({
   },
   headerTabText: {
     fontSize: 13,
-    fontWeight: "400",
+    fontWeight: "600",
     color: "#FFFFFF",
     letterSpacing: 0.1,
   },
   headerTabTextActive: {
     color: "#0B0F14",
-    fontWeight: "600",
   },
   intentionCard: {
     paddingVertical: 10,
