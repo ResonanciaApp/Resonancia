@@ -638,11 +638,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginLeft: -32,
     paddingRight: 3,
-    gap: 2,
+    gap: 1,
     zIndex: 0,
   },
   sesSegBtn: {
-    paddingHorizontal: 11,
+    paddingHorizontal: 8,
     height: 32,
     borderRadius: 20,
     alignItems: "center",
