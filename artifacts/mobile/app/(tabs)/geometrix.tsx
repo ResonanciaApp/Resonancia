@@ -4156,9 +4156,9 @@ export default function GeometrixScreen() {
           {/* Barra unificada: controles de edición (izq) + herramientas + ojo (der).
               Una sola fila plana; los iconos de herramientas hacen fade puro. */}
           <View pointerEvents="box-none" style={styles.actionBar}>
-            {/* Izquierda: undo (arriba) / redo (abajo) en columna + actualizar al lado */}
+            {/* Izquierda: undo fijo, redo en absoluto debajo + actualizar al lado */}
             <View style={styles.actionBarLeft}>
-              <View style={{ flexDirection: "column" }}>
+              <View style={{ width: 38, height: 32 }}>
                 {canUndo && (
                   <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
                     <Pressable onPress={undo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Atrás (deshacer el último cambio)" hitSlop={4}>
@@ -4167,7 +4167,7 @@ export default function GeometrixScreen() {
                   </Animated.View>
                 )}
                 {canRedo && (
-                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
+                  <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={{ position: "absolute", top: 32, left: 0, right: 0 }}>
                     <Pressable onPress={redo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Adelantar (rehacer el último cambio)" hitSlop={4}>
                       <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
                     </Pressable>
@@ -4466,8 +4466,8 @@ export default function GeometrixScreen() {
 
           {/* Controles flotantes — solo los 3 permitidos */}
           <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-            {/* Izquierda: deshacer (arriba) + adelantar (abajo) en columna */}
-            <View pointerEvents="box-none" style={[styles.fullscreenEditControls, { left: 16, top: insets.top + 12, flexDirection: "column" }]}>
+            {/* Izquierda: undo fijo, redo en absoluto debajo */}
+            <View pointerEvents="box-none" style={[{ position: "absolute", left: 16, top: insets.top + 12, width: 38, height: 32 }]}>
               {canUndo && (
                 <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
                   <Pressable onPress={undo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Deshacer">
@@ -4476,7 +4476,7 @@ export default function GeometrixScreen() {
                 </Animated.View>
               )}
               {canRedo && (
-                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={{ position: "absolute", top: 32, left: 0, right: 0 }}>
                   <Pressable onPress={redo} style={styles.actionTopBtn} hitSlop={4} accessibilityRole="button" accessibilityLabel="Adelantar">
                     <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
                   </Pressable>
