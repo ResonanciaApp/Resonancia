@@ -148,21 +148,32 @@ export default function HomeScreen() {
   const [sesionesVisible, setSesionesVisible] = useState(false);
   const [sesSubFilter, setSesSubFilter] = useState<string | null>(null);
   const subFilterAnim = useRef(new Animated.Value(0)).current;
+  const subFilterWidthAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (sesionesOpen) {
       setSesionesVisible(true);
-      Animated.timing(subFilterAnim, {
-        toValue: 1, duration: 220, useNativeDriver: true,
-      }).start();
+      Animated.parallel([
+        Animated.timing(subFilterAnim, {
+          toValue: 1, duration: 220, useNativeDriver: true,
+        }),
+        Animated.timing(subFilterWidthAnim, {
+          toValue: 1, duration: 220, useNativeDriver: false,
+        }),
+      ]).start();
     } else {
-      Animated.timing(subFilterAnim, {
-        toValue: 0, duration: 180, useNativeDriver: true,
-      }).start(({ finished }) => {
+      Animated.parallel([
+        Animated.timing(subFilterAnim, {
+          toValue: 0, duration: 180, useNativeDriver: true,
+        }),
+        Animated.timing(subFilterWidthAnim, {
+          toValue: 0, duration: 180, useNativeDriver: false,
+        }),
+      ]).start(({ finished }) => {
         if (finished) setSesionesVisible(false);
       });
     }
-  }, [sesionesOpen, subFilterAnim]);
+  }, [sesionesOpen]);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -349,6 +360,9 @@ export default function HomeScreen() {
                         styles.sesSegPill,
                         {
                           opacity: subFilterAnim,
+                          maxWidth: subFilterWidthAnim.interpolate({
+                            inputRange: [0, 1], outputRange: [0, 300],
+                          }),
                           transform: [{
                             translateX: subFilterAnim.interpolate({
                               inputRange: [0, 1], outputRange: [-24, 0],
