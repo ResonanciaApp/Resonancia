@@ -64,7 +64,7 @@ const EXPORT_SIZE = 540;
 // Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
 // Oscurecido un 90% (se conserva el 10% del brillo) sobre el degradado original
 // ["#14102E","#1C1448","#2A1A5C","#1A1340","#0A0818"].
-const CREACIONES_BG = ["#020205", "#030207", "#040309", "#030206", "#010102"] as const;
+const CREACIONES_BG = ["#0B0714", "#030306"] as const;
 
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
@@ -1005,7 +1005,7 @@ const styles = StyleSheet.create({
   },
   newLabel: { fontSize: 13, fontWeight: "600" },
 
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden" },
+  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.03)" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
   playBtn: {

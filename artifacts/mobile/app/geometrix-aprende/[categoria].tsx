@@ -16,6 +16,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Line, Polygon } from "react-native-svg";
 
+import { LinearGradient } from "expo-linear-gradient";
+
 import {
   GEOMETRIES,
   GEOMETRY_CATEGORIES,
@@ -23,6 +25,8 @@ import {
 } from "@/data/geometries";
 import { getGeometryLearn, CATEGORY_META } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
+
+const GEO_BG = ["#0B0714", "#030306"] as const;
 
 function MiniGlyph({ id, color }: { id: string; color: string }) {
   // Flor de la Vida mini
@@ -85,14 +89,16 @@ export default function GeometrixAprendeCategoriaScreen() {
 
   if (!catInfo) {
     return (
-      <View style={[styles.root, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" }]}>
+      <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
+        <LinearGradient colors={GEO_BG} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
         <Text style={{ color: colors.mutedForeground }}>Categoría no encontrada</Text>
       </View>
     );
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, { paddingTop: insets.top }]}>
+      <LinearGradient colors={GEO_BG} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -132,7 +138,7 @@ export default function GeometrixAprendeCategoriaScreen() {
               style={({ pressed }) => [
                 styles.item,
                 {
-                  backgroundColor: colors.card,
+                  backgroundColor: "rgba(255,255,255,0.03)",
                   borderColor: colors.primary + "28",
                   opacity: pressed ? 0.75 : 1,
                 },

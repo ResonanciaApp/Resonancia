@@ -79,7 +79,8 @@ export default function GeometrixAprendeDetalleScreen() {
 
   if (!geo) {
     return (
-      <View style={[styles.root, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" }]}>
+      <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
+        <LinearGradient colors={["#0B0714", "#030306"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
         <Text style={{ color: colors.mutedForeground }}>Geometría no encontrada</Text>
       </View>
     );
@@ -88,7 +89,8 @@ export default function GeometrixAprendeDetalleScreen() {
   const paragraphs = learn.description.split("\n\n").filter(Boolean);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, { paddingTop: insets.top }]}>
+      <LinearGradient colors={["#0B0714", "#030306"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -141,7 +143,7 @@ export default function GeometrixAprendeDetalleScreen() {
         {/* Attributes grid */}
         <View style={styles.attrGrid}>
           {learn.attributes.map((attr) => (
-            <View key={attr.label} style={[styles.attrCard, { backgroundColor: colors.card, borderColor: colors.primary + "25" }]}>
+            <View key={attr.label} style={[styles.attrCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.primary + "25" }]}>
               <Text style={[styles.attrLabel, { color: colors.mutedForeground }]}>{attr.label}</Text>
               <Text style={[styles.attrValue, { color: colors.foreground }]}>{attr.value}</Text>
             </View>
@@ -175,7 +177,7 @@ export default function GeometrixAprendeDetalleScreen() {
             </LinearGradient>
           </Pressable>
 
-          <Pressable style={[styles.ctaSecondary, { backgroundColor: colors.card, borderColor: colors.primary + "30" }]} hitSlop={4}>
+          <Pressable style={[styles.ctaSecondary, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.primary + "30" }]} hitSlop={4}>
             <Feather name="download" size={18} color={colors.primary} />
           </Pressable>
         </View>

@@ -6735,7 +6735,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   sheet: {
-    backgroundColor: "#12182E",
+    backgroundColor: "#3f3c4d",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: "hidden",

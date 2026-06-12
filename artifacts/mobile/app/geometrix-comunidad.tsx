@@ -53,7 +53,7 @@ import {
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
 
-const MURAL_BG = ["#020205", "#030207", "#040309", "#030206", "#010102"] as const;
+const MURAL_BG = ["#0B0714", "#030306"] as const;
 
 // ── Capa animable (misma lógica que PreviewGlyph en geometrix-creaciones) ──
 function GlyphLayer({
@@ -255,7 +255,7 @@ export default function GeometrixComunidadScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: "#010102" }]}>
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={MURAL_BG}
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   stateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden" },
+  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.03)" },
 
   // Preview llena el 100% del ancho de la card (no tiene width fijo propio)
   preview: { width: "100%", overflow: "hidden" },

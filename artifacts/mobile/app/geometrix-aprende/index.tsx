@@ -15,9 +15,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Line, Polygon, Rect } from "react-native-svg";
 
+import { LinearGradient } from "expo-linear-gradient";
+
 import { GEOMETRY_CATEGORIES, type GeometryCategory } from "@/data/geometries";
 import { CATEGORY_META } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
+
+const GEO_BG = ["#0B0714", "#030306"] as const;
 
 // ── Íconos SVG por categoría ─────────────────────────────────────────────────
 function CategoryIcon({ id, color }: { id: GeometryCategory; color: string }) {
@@ -65,7 +69,8 @@ export default function GeometrixAprendeScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, { paddingTop: insets.top }]}>
+      <LinearGradient colors={GEO_BG} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -103,7 +108,7 @@ export default function GeometrixAprendeScreen() {
               style={({ pressed }) => [
                 styles.card,
                 {
-                  backgroundColor: colors.card,
+                  backgroundColor: "rgba(255,255,255,0.03)",
                   borderColor: colors.primary + "28",
                   opacity: pressed ? 0.75 : 1,
                 },
