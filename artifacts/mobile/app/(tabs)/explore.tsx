@@ -274,9 +274,9 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, color: "#111111" },
 
-  section:      { paddingHorizontal: H_PAD, marginBottom: 28 },
-  sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF" },
+  section:      { paddingHorizontal: H_PAD, marginBottom: 23 },
+  sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF", marginBottom: 7 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
