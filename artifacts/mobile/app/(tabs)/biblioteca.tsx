@@ -531,6 +531,8 @@ export default function BibliotecaScreen() {
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [mixesLimit, setMixesLimit] = useState(12);
+  const [geoLimit, setGeoLimit] = useState(8);
   const [searchVisible, setSearchVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
   const [nombreVisible, setNombreVisible] = useState(false);
@@ -539,6 +541,9 @@ export default function BibliotecaScreen() {
 
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
+
+  // Reset paginación al cambiar de tab
+  useEffect(() => { setMixesLimit(12); setGeoLimit(8); }, [activeTab]);
 
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
@@ -695,26 +700,35 @@ export default function BibliotecaScreen() {
       }
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      const visibleMixes = presets.slice(0, mixesLimit);
+      const hasMixesMore = presets.length > mixesLimit;
       if (viewMode === "grid") {
         return (
-          <View style={styles.gridWrap}>
-            {presets.map((mix) => (
-              <Pressable key={mix.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]} onPress={() => loadMix(mix)}>
-                <View style={[styles.gridThumb, { width: cellW, height: cellW, alignItems: "center", justifyContent: "center" }]}>
-                  <MaterialCommunityIcons name="tune-variant" size={28} color={loadedPresetId === mix.id && mixerPlaying ? GOLD : MUTED} />
-                </View>
-                <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
-                <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
-                  {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-                </Text>
+          <>
+            <View style={styles.gridWrap}>
+              {visibleMixes.map((mix) => (
+                <Pressable key={mix.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]} onPress={() => loadMix(mix)}>
+                  <View style={[styles.gridThumb, { width: cellW, height: cellW, alignItems: "center", justifyContent: "center" }]}>
+                    <MaterialCommunityIcons name="tune-variant" size={28} color={loadedPresetId === mix.id && mixerPlaying ? GOLD : MUTED} />
+                  </View>
+                  <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
+                  <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
+                    {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+            {hasMixesMore && (
+              <Pressable style={styles.loadMoreBtn} onPress={() => setMixesLimit((n) => n + 12)}>
+                <Text style={styles.loadMoreText}>Cargar más</Text>
               </Pressable>
-            ))}
-          </View>
+            )}
+          </>
         );
       }
       return (
         <>
-          {presets.map((mix) => (
+          {visibleMixes.map((mix) => (
             <MixRow
               key={mix.id}
               mix={mix}
@@ -722,6 +736,11 @@ export default function BibliotecaScreen() {
               onPress={() => loadMix(mix)}
             />
           ))}
+          {hasMixesMore && (
+            <Pressable style={styles.loadMoreBtn} onPress={() => setMixesLimit((n) => n + 12)}>
+              <Text style={styles.loadMoreText}>Cargar más</Text>
+            </Pressable>
+          )}
         </>
       );
     }
@@ -741,44 +760,53 @@ export default function BibliotecaScreen() {
       }
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      const visibleGeo = geometrixCreations.slice(0, geoLimit);
+      const hasGeoMore = geometrixCreations.length > geoLimit;
       if (viewMode === "grid") {
         return (
-          <View style={styles.gridWrap}>
-            {geometrixCreations.map((c) => {
-              const firstLayers = c.active.slice(0, 3);
-              return (
-                <Pressable
-                  key={c.id}
-                  style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                  onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
-                >
-                  <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                    <LinearGradient colors={["#08091A", "#0E0F2E"]} style={StyleSheet.absoluteFill} />
-                    {firstLayers.map((instId, idx) => {
-                      const geoId = baseOf(instId);
-                      const settings = c.settings[instId];
-                      if (!settings) return null;
-                      const layerSize = cellW * 0.45 + idx * 4;
-                      return (
-                        <View key={instId} style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]} pointerEvents="none">
-                          <SacredGlyph id={geoId} color={settings.color} gradient={gradientColors(settings.gradientId)} size={layerSize} strokeWidth={1 + settings.thickness * 1.5} />
-                        </View>
-                      );
-                    })}
-                  </View>
-                  <Text style={styles.gridTitle} numberOfLines={2}>{c.name}</Text>
-                  <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
-                    {c.active.length} {c.active.length === 1 ? "capa" : "capas"}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          <>
+            <View style={styles.gridWrap}>
+              {visibleGeo.map((c) => {
+                const firstLayers = c.active.slice(0, 3);
+                return (
+                  <Pressable
+                    key={c.id}
+                    style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                    onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
+                  >
+                    <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
+                      <LinearGradient colors={["#08091A", "#0E0F2E"]} style={StyleSheet.absoluteFill} />
+                      {firstLayers.map((instId, idx) => {
+                        const geoId = baseOf(instId);
+                        const settings = c.settings[instId];
+                        if (!settings) return null;
+                        const layerSize = cellW * 0.45 + idx * 4;
+                        return (
+                          <View key={instId} style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]} pointerEvents="none">
+                            <SacredGlyph id={geoId} color={settings.color} gradient={gradientColors(settings.gradientId)} size={layerSize} strokeWidth={1 + settings.thickness * 1.5} />
+                          </View>
+                        );
+                      })}
+                    </View>
+                    <Text style={styles.gridTitle} numberOfLines={2}>{c.name}</Text>
+                    <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
+                      {c.active.length} {c.active.length === 1 ? "capa" : "capas"}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            {hasGeoMore && (
+              <Pressable style={styles.loadMoreBtn} onPress={() => setGeoLimit((n) => n + 8)}>
+                <Text style={styles.loadMoreText}>Cargar más</Text>
+              </Pressable>
+            )}
+          </>
         );
       }
       return (
         <>
-          {geometrixCreations.map((c) => (
+          {visibleGeo.map((c) => (
             <GeometrixRow
               key={c.id}
               creation={c}
@@ -790,6 +818,11 @@ export default function BibliotecaScreen() {
               }
             />
           ))}
+          {hasGeoMore && (
+            <Pressable style={styles.loadMoreBtn} onPress={() => setGeoLimit((n) => n + 8)}>
+              <Text style={styles.loadMoreText}>Cargar más</Text>
+            </Pressable>
+          )}
         </>
       );
     }
@@ -1250,4 +1283,23 @@ const styles = StyleSheet.create({
   },
   sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
   sheetItemSub:   { fontSize: 12, color: MUTED },
+
+  // ── Cargar más ────────────────────────────────────────────────────────────────
+  loadMoreBtn: {
+    alignSelf: "center",
+    marginTop: 16,
+    marginBottom: 8,
+    paddingHorizontal: 32,
+    paddingVertical: 11,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.45)",
+    backgroundColor: "rgba(190,150,80,0.07)",
+  },
+  loadMoreText: {
+    color: GOLD,
+    fontSize: 14,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
 });
