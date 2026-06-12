@@ -401,6 +401,7 @@ export default function HomeScreen() {
                               style={({ pressed }) => [
                                 styles.sesSegBtn,
                                 i === 0 && styles.sesSegBtnFirst,
+                                i === 1 && { paddingRight: 9 },
                                 { opacity: pressed ? 0.75 : 1 },
                               ]}
                             >
@@ -684,7 +685,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     height: 32,
-    width: 201,
+    width: 204,
     marginLeft: -32,   // se solapa 32px con el chip "Sesiones"
     backgroundColor: "rgba(255,255,255,0.06)",
     paddingRight: 3,
