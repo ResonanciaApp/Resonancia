@@ -631,7 +631,10 @@ const styles = StyleSheet.create({
   sesSegPill: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 20,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
     height: 32,
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
