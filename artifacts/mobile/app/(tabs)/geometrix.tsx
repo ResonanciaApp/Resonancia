@@ -4892,8 +4892,6 @@ export default function GeometrixScreen() {
             frozenGeneralSheetH != null && { height: frozenGeneralSheetH },
           ]}
         >
-          {/* Fondo sólido #12182E (sin gradiente que lo tape) */}
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#12182E", borderTopLeftRadius: 24, borderTopRightRadius: 24 }]} />
           <View style={styles.sheetHeader}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Text style={styles.sheetTitle}>Ajustes generales</Text>
@@ -5644,8 +5642,6 @@ export default function GeometrixScreen() {
             settingsGeo && frozenSheetH != null && { height: frozenSheetH },
           ]}
         >
-          {/* Fondo sólido #12182E (sin gradiente que lo tape) */}
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#12182E", borderTopLeftRadius: 24, borderTopRightRadius: 24 }]} />
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderLeft}>
               {settingsGeo ? (
