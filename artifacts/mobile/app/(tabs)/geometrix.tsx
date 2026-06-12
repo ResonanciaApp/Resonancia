@@ -1574,7 +1574,7 @@ function CarouselTileInner({
           <View style={[styles.tileGlyph, !isSelected && { opacity: 0.5 }]}>
             <SacredGlyph
               id={baseOf(id)}
-              color={isSelected ? color : "#b0bbfa"}
+              color={isSelected ? color : "#c7caec"}
               size={tileW * 0.66}
               strokeWidth={isSelected ? 1.5 : 1.4}
             />
@@ -6311,7 +6311,7 @@ const styles = StyleSheet.create({
   catChipText: {
     fontSize: 12,
     fontWeight: "400",
-    color: "#b0bbfa",
+    color: "#c7caec",
     opacity: 0.5,
     letterSpacing: 0.1,
   },
