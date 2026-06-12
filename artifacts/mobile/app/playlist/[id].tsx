@@ -48,7 +48,7 @@ export default function PlaylistDetailScreen() {
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover, setPlaylistCoverGeometry } = useFoldersPlaylists();
-  const { playSession } = usePlayer();
+  const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
