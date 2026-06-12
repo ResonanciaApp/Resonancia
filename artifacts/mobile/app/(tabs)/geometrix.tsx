@@ -4177,21 +4177,21 @@ export default function GeometrixScreen() {
             {/* Izquierda: undo / redo / hold / actualizar */}
             <View style={styles.actionBarLeft}>
               {canUndo && (
-                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
                   <Pressable onPress={undo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Atrás (deshacer el último cambio)" hitSlop={4}>
                     <Feather name="corner-up-left" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
               {canRedo && (
-                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
                   <Pressable onPress={redo} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Adelantar (rehacer el último cambio)" hitSlop={4}>
                     <Feather name="corner-up-right" size={16} color={CANVAS_ICON} />
                   </Pressable>
                 </Animated.View>
               )}
               {active.length >= 2 && (
-                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)}>
+                <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(160)} style={styles.actionBarItem}>
                   <Pressable
                     onPress={() => setHoldMode((v) => !v)}
                     style={[styles.actionTopBtn, holdMode && { backgroundColor: "rgba(190,150,80,0.18)", borderRadius: 8 }]}
@@ -4204,7 +4204,7 @@ export default function GeometrixScreen() {
                 </Animated.View>
               )}
               {editingCreation && isDirty && (
-                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)}>
+                <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(180)} style={styles.actionBarItem}>
                   <Pressable onPress={updateComposition} style={styles.actionTopBtn} accessibilityRole="button" accessibilityLabel="Actualizar composición" hitSlop={4}>
                     <Feather name="refresh-cw" size={16} color={CANVAS_ICON} />
                   </Pressable>
@@ -6460,6 +6460,10 @@ const styles = StyleSheet.create({
   actionBarFadeGroup: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  actionBarItem: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   catScroll: {
     flexGrow: 0,
