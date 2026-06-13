@@ -5459,7 +5459,7 @@ export default function GeometrixScreen() {
                         borderColor: isWf0 ? colors.primary + "55" : "rgba(255,255,255,0.07)",
                       }}>
                         <Text style={{ color: isWf0 ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
-                          Invertir
+                          Calado
                         </Text>
                         <Toggle
                           value={isWf0}
@@ -6077,7 +6077,7 @@ export default function GeometrixScreen() {
                             borderColor: isWfSingle ? colors.primary + "55" : "rgba(255,255,255,0.07)",
                           }}>
                             <Text style={{ color: isWfSingle ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
-                              Invertir
+                              Calado
                             </Text>
                             <Toggle
                               value={isWfSingle}
