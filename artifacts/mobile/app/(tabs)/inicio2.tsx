@@ -585,12 +585,6 @@ export default function HomeScreen2() {
 
         {/* ── 4-9. CARRUSELES PERSONALIZADOS ── */}
         <SessionCarousel
-          title="Sesiones recomendadas"
-          sessions={filteredRecommended}
-          isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
-        />
-        <SessionCarousel
           title="Recientes"
           sessions={filteredRecent}
           isPremium={isPremium}
