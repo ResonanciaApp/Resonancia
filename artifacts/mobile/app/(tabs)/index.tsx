@@ -77,7 +77,7 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = 150;
 
 const SECTION_GAP = 33;
-const BG_GRADIENT = ["#7B2CBF", "#C2185B", "#4A148C"] as const;
+const BG_GRADIENT = ["#4FC3F7", "#1976D2", "#1A237E", "#7B1FA2"] as const;
 
 const ND = Platform.OS !== "web";
 
@@ -302,7 +302,7 @@ export default function HomeScreen() {
     <LinearGradient
       style={styles.root}
       colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
+      locations={[0, 0.33, 0.66, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
