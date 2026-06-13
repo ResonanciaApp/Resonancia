@@ -172,12 +172,16 @@ const styles = StyleSheet.create({
   },
   emoji: {
     fontSize: 32,
+    textAlign: "center",
+    alignSelf: "center",
   },
   cardLabel: {
     fontSize: 12,
     fontWeight: "500",
     color: MUTED,
     textAlign: "center",
+    alignSelf: "center",
+    width: "100%",
   },
   cardLabelSelected: {
     color: PRIMARY,
