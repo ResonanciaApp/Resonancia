@@ -20,23 +20,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useGetSharedMixes, useReportSharedMix } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
-import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 
-// ── Tipos ──────────────────────────────────────────────────────────
-type CategoryFilter = MixCategory;
-
-const TABS: { id: CategoryFilter; label: string }[] = [
-  { id: "dormir",        label: "Descanso"   },
-  { id: "motivarme",     label: "Meditación" },
-  { id: "concentracion", label: "Enfoque"    },
-];
 
 const GOLD = "#D4AF37";
 const STACK_THUMB = 30;
-const STACK_SHIFT = 19;
+
 const MAX_VISIBLE = 8;
 
 // ── Componente principal ───────────────────────────────────────────
@@ -47,17 +38,11 @@ export function CommunityMixesCarousel() {
   const { importPreset, presets } = useMixer();
   const reportMix = useReportSharedMix();
 
-  // ── Tab state ─────────────────────────────────────────────────
-  const [activeTab, setActiveTab] = useState<CategoryFilter>("dormir");
-
   // ── 3-dot menu state ──────────────────────────────────────────
   const [menuMix, setMenuMix] = useState<SharedMix | null>(null);
 
-  // ── Filtrado ──────────────────────────────────────────────────
-  const filtered = allMixes.filter((m) => m.category === activeTab);
-
-  const visible = filtered.slice(0, MAX_VISIBLE);
-  const remaining = filtered.length - visible.length;
+  const visible = allMixes.slice(0, MAX_VISIBLE);
+  const remaining = allMixes.length - visible.length;
 
   // ── Helpers ───────────────────────────────────────────────────
   const isFavorited = useCallback(
@@ -141,13 +126,10 @@ export function CommunityMixesCarousel() {
     <View style={styles.section}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-          <Feather name="sliders" size={18} color="#FFFFFF" />
-          <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
-            Mezclas de la comunidad
-          </Text>
-        </View>
-        {filtered.length > MAX_VISIBLE && (
+        <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
+          Mezclas de la comunidad
+        </Text>
+        {allMixes.length > MAX_VISIBLE && (
           <Pressable onPress={() => router.push("/mezclas-comunidad" as never)} hitSlop={8}>
             <Text style={[styles.verTodas, { color: colors.primary }]}>Ver todos</Text>
           </Pressable>
@@ -155,32 +137,6 @@ export function CommunityMixesCarousel() {
       </View>
 
       <View style={styles.panel}>
-      {/* ── Tabs — píldoras (mismo diseño que "Mi Música") ── */}
-      <View style={styles.tabRow} accessibilityRole="tablist">
-        {TABS.map(({ id, label }) => {
-          const sel = id === activeTab;
-          return (
-            <Pressable
-              key={id}
-              onPress={() => setActiveTab(id)}
-              style={[styles.tabBlock, sel && styles.tabBlockSel]}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: sel }}
-            >
-              <Text
-                numberOfLines={1}
-                style={[styles.tabLabel, { color: "#FFFFFF", fontWeight: sel ? "700" : "400" }]}
-              >
-                {label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* Línea divisora entre los tabs y las sesiones */}
-      <View style={styles.tabsDivider} />
-
       {/* Empty state */}
       {visible.length === 0 && (
         <View style={[styles.emptyState, { backgroundColor: colors.card }]}>
@@ -220,7 +176,7 @@ export function CommunityMixesCarousel() {
           ]}
         >
           <Text style={[styles.verMasText, { color: colors.mutedForeground }]}>
-            Ver las {filtered.length} mezclas →
+            Ver las {allMixes.length} mezclas →
           </Text>
         </Pressable>
       )}
@@ -270,8 +226,8 @@ function MixRow({
           {rank}
         </Text>
 
-        {/* Miniaturas apiladas de los sonidos */}
-        <SoundStack sounds={mix.sounds} />
+        {/* Avatar del creador */}
+        <CreatorAvatar author={mix.author} />
 
         {/* Info */}
         <View style={styles.info}>
@@ -326,32 +282,22 @@ function MixRow({
   );
 }
 
-// ── Miniaturas apiladas de los sonidos ─────────────────────────────
-const STACK_MAX = 2;
-
-function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
-  if (!sounds || sounds.length === 0) return null;
-  const visible = sounds.slice(0, STACK_MAX);
+// ── Avatar del creador ─────────────────────────────────────────────
+function CreatorAvatar({ author }: { author: SharedMix["author"] }) {
+  const initial = author.displayName?.charAt(0)?.toUpperCase() ?? "?";
   return (
-    <View style={[styles.stack, { width: STACK_THUMB + (visible.length - 1) * STACK_SHIFT }]}>
-      {visible.map((s, i) => {
-        const img = getSoundImage(s.id);
-        return (
-          <View
-            key={`${s.id}-${i}`}
-            style={[
-              styles.stackThumb,
-              { left: i * STACK_SHIFT, zIndex: visible.length - i },
-            ]}
-          >
-            {img ? (
-              <ExpoImage source={img} style={styles.stackImg} contentFit="cover" />
-            ) : (
-              <View style={[styles.stackImg, { backgroundColor: "#1F2937" }]} />
-            )}
-          </View>
-        );
-      })}
+    <View style={styles.avatarWrap}>
+      {author.avatarUrl ? (
+        <ExpoImage
+          source={{ uri: author.avatarUrl }}
+          style={styles.avatarImg}
+          contentFit="cover"
+        />
+      ) : (
+        <View style={[styles.avatarImg, styles.avatarFallback]}>
+          <Text style={styles.avatarInitial}>{initial}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -465,37 +411,22 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
-  // Tabs (píldoras) — mismo diseño que "Mi Música"
-  tabRow: {
-    flexDirection: "row",
-    gap: 8,
-    marginBottom: 12,
+  // Avatar del creador
+  avatarWrap: { flexShrink: 0 },
+  avatarImg: {
+    width: STACK_THUMB,
+    height: STACK_THUMB,
+    borderRadius: STACK_THUMB / 2,
+    overflow: "hidden",
   },
-  tabsDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(74,12,12,0.08)",
-    marginBottom: 12,
-  },
-  tabBlock: {
-    flex: 1,
-    flexDirection: "column",
+  avatarFallback: {
+    backgroundColor: "rgba(212,175,55,0.18)",
     alignItems: "center",
-    gap: 5,
-    paddingTop: 15,
-    paddingBottom: 13,
-    paddingHorizontal: 2,
-    borderRadius: 14,
-    minWidth: 62,
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: "transparent",
-    backgroundColor: "rgba(74,12,12,0.08)",
+    borderColor: "rgba(212,175,55,0.30)",
   },
-  tabBlockSel: {
-    backgroundColor: "rgba(100,142,195,0.14)",
-    borderColor: "#1b263f",
-    borderWidth: 1,
-  },
-  tabLabel: { fontSize: 15, letterSpacing: 0, textAlign: "center" },
+  avatarInitial: { fontSize: 13, fontWeight: "700", color: GOLD },
 
   // Empty
   emptyState: {
@@ -521,24 +452,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     flexShrink: 0,
-  },
-  stack: {
-    height: STACK_THUMB,
-    flexShrink: 0,
-  },
-  stackThumb: {
-    position: "absolute",
-    top: 0,
-    width: STACK_THUMB,
-    height: STACK_THUMB,
-    borderRadius: STACK_THUMB / 2,
-    borderWidth: 1.5,
-    borderColor: "#1B060F",
-    overflow: "hidden",
-  },
-  stackImg: {
-    width: "100%",
-    height: "100%",
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
