@@ -46,7 +46,7 @@ const EMPTY_FORM: FormState = {
   icon: "sparkles",
   color: "#BE9650",
   gradientStart: "#0B0F14",
-  gradientEnd: "#151A23",
+  gradientEnd: "#131820",
 };
 
 function Field({
