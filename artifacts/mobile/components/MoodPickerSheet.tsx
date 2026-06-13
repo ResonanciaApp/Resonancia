@@ -40,9 +40,12 @@ export function MoodPickerSheet({ visible, onClose }: Props) {
       onRequestClose={handleClose}
       statusBarTranslucent
     >
-      <Pressable style={styles.backdrop} onPress={handleClose} />
+      <View style={styles.container}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={handleClose}>
+          <View style={[StyleSheet.absoluteFill, styles.backdrop]} />
+        </Pressable>
 
-      <View style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
+        <View style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
         <View style={styles.handle} />
 
         <Pressable onPress={handleClose} style={styles.closeBtn} hitSlop={8}>
@@ -86,12 +89,13 @@ export function MoodPickerSheet({ visible, onClose }: Props) {
             Continuar
           </Text>
         </Pressable>
+        </View>
       </View>
     </Modal>
   );
 }
 
-const SHEET_BG = "#0D1219";
+const SHEET_BG = "#0B0F14";
 const PRIMARY = "#BE9650";
 const FG = "#EDE1D3";
 const MUTED = "rgba(237,225,211,0.40)";
@@ -101,9 +105,12 @@ const CARD_SELECTED_BG = "rgba(190,150,80,0.18)";
 const CARD_SELECTED_BORDER = "#BE9650";
 
 const styles = StyleSheet.create({
-  backdrop: {
+  container: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.60)",
+    justifyContent: "flex-end",
+  },
+  backdrop: {
+    backgroundColor: "rgba(0,0,0,0.65)",
   },
   sheet: {
     backgroundColor: SHEET_BG,
