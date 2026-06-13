@@ -24,6 +24,8 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { useMixer, type MixPreset } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { useLoadMix } from "@/hooks/useLoadMix";
@@ -590,6 +592,23 @@ export default function BibliotecaScreen() {
   const { presets, loadedPresetId, isPlaying: mixerPlaying } = useMixer();
   const loadMix = useLoadMix();
 
+  const { history, playSession } = usePlayer();
+  const { isPremium } = usePremium();
+
+  const listenedRecently = useMemo(() => {
+    const seen = new Set<string>();
+    const result: import("@/data/sessions").Session[] = [];
+    for (let i = history.length - 1; i >= 0; i--) {
+      const h = history[i];
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s) result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history]);
+
   // Resonadores = artistas featured + guías featured
   const resonadores = useMemo(() => {
     const artists = ARTISTS.filter((a) => a.featured !== false && a.id !== "resonancia").map((a) => ({
@@ -981,6 +1000,16 @@ export default function BibliotecaScreen() {
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* ── ESCUCHADAS RECIENTEMENTE ── */}
+        {listenedRecently.length > 0 && (
+          <SessionCarousel
+            title="Escuchadas recientemente"
+            sessions={listenedRecently}
+            isPremium={isPremium}
+            onPress={(s) => { playSession(s); router.push("/player" as never); }}
+          />
+        )}
+
         <AnimatedTabContent
           key={activeTab ?? "general"}
           animType={
