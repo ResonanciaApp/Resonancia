@@ -11,6 +11,8 @@ import {
   View,
 } from "react-native";
 
+import { LinearGradient } from "expo-linear-gradient";
+
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
@@ -21,8 +23,7 @@ const STACK_SIZE = 38;
 const STACK_SHIFT = 15;
 const MAX_STACK = 3;
 
-// Solid dark-indigo — sin transparencias
-const SOLID_BG = "#2A153D";
+const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const BORDER_R = 12;
 
 function formatElapsed(sec: number): string {
@@ -90,7 +91,12 @@ export function MiniPlayer() {
 
   const shell = (children: React.ReactNode, onPress: () => void) => (
     <Pressable onPress={onPress} style={styles.wrapper}>
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: SOLID_BG, borderRadius: BORDER_R }]} />
+      <LinearGradient
+        colors={GRAD_COLORS}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       {children}
     </Pressable>
   );
