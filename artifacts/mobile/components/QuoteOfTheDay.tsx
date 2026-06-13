@@ -1,30 +1,37 @@
 import { useState } from "react";
-import { View, Text, Pressable, StyleSheet, Share } from "react-native";
+import { View, Text, Pressable, StyleSheet, Share, Modal } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay } from "@/data/quotes";
 
-const BLUE_ACCENT = "#D4AF37";
-const BLUE_MUTED  = "rgba(242,231,228,0.45)";
+const GOLD   = "#D4AF37";
+const MUTED  = "rgba(242,231,228,0.45)";
+const CARD_BG = "rgba(100,185,230,0.09)";
 
 export default function QuoteOfTheDay() {
   const quote = getQuoteOfTheDay();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded]     = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
-  async function handleShare() {
+  async function handleSendFriend() {
+    setMenuVisible(false);
     try {
       await Share.share({
         message: `"${quote.text}"\n\n— ${quote.author}\n\nVía RESONANCIA`,
       });
-    } catch {
-      // ignore
-    }
+    } catch { /* ignore */ }
+  }
+
+  function handleShareProfile() {
+    setMenuVisible(false);
+    // TODO: integrar con perfil
   }
 
   return (
     <View style={styles.card}>
+      {/* Frase */}
       <Text
-        style={[styles.quoteText, { color: "#FFFFFF" }]}
+        style={styles.quoteText}
         numberOfLines={expanded ? undefined : 3}
         onTextLayout={(e) => {
           if (!expanded) setIsTruncated(e.nativeEvent.lines.length >= 3);
@@ -34,23 +41,54 @@ export default function QuoteOfTheDay() {
       </Text>
 
       {!expanded && isTruncated && (
-        <Pressable onPress={() => setExpanded(true)} hitSlop={8} style={styles.readMore}>
-          <Text style={[styles.readMoreText, { color: BLUE_ACCENT }]}>Leer más</Text>
+        <Pressable onPress={() => setExpanded(true)} hitSlop={8} style={styles.readMoreBtn}>
+          <Text style={styles.readMoreText}>Leer más</Text>
         </Pressable>
       )}
 
-      <Text style={[styles.author, { color: BLUE_ACCENT }]}>{quote.author}</Text>
+      {/* Autor centrado */}
+      <Text style={styles.author}>— {quote.author}</Text>
 
+      {/* Footer: ··· izquierda */}
       <View style={styles.footer}>
         <Pressable
-          onPress={handleShare}
+          onPress={() => setMenuVisible(true)}
           hitSlop={12}
-          style={({ pressed }) => [styles.shareBtn, { opacity: pressed ? 0.6 : 1 }]}
+          style={({ pressed }) => [styles.menuBtn, { opacity: pressed ? 0.6 : 1 }]}
         >
-          <Feather name="share-2" size={18} color={BLUE_MUTED} />
-          <Text style={[styles.shareText, { color: BLUE_MUTED }]}>Compartir</Text>
+          <Feather name="more-horizontal" size={20} color={MUTED} />
         </Pressable>
       </View>
+
+      {/* Mini menú */}
+      <Modal
+        transparent
+        visible={menuVisible}
+        animationType="fade"
+        onRequestClose={() => setMenuVisible(false)}
+      >
+        <Pressable style={styles.menuBackdrop} onPress={() => setMenuVisible(false)}>
+          <View style={styles.menuSheet}>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={handleSendFriend}
+            >
+              <Feather name="send" size={16} color={GOLD} />
+              <Text style={styles.menuItemText}>Enviar a un amigo</Text>
+            </Pressable>
+
+            <View style={styles.menuDivider} />
+
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={handleShareProfile}
+            >
+              <Feather name="user" size={16} color={GOLD} />
+              <Text style={styles.menuItemText}>Compartir en mi perfil</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -61,39 +99,70 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingHorizontal: 20,
     paddingTop: 18,
-    paddingBottom: 16,
-    backgroundColor: "rgba(100,185,230,0.09)",
+    paddingBottom: 12,
+    backgroundColor: CARD_BG,
     borderRadius: 16,
   },
   quoteText: {
     fontSize: 17,
     fontWeight: "700",
     lineHeight: 25,
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 8,
   },
-  readMore: {
+  readMoreBtn: {
+    alignSelf: "center",
     marginBottom: 8,
   },
   readMoreText: {
     fontSize: 13,
     fontWeight: "600",
+    color: GOLD,
   },
   author: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "500",
-    marginBottom: 16,
+    color: GOLD,
+    textAlign: "center",
+    marginBottom: 14,
   },
   footer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  menuBtn: {
+    padding: 2,
+  },
+
+  // Mini menú
+  menuBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
     justifyContent: "flex-end",
   },
-  shareBtn: {
+  menuSheet: {
+    backgroundColor: "#1E0A12",
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 36,
+  },
+  menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 14,
+    paddingVertical: 16,
   },
-  shareText: {
-    fontSize: 13,
+  menuItemText: {
+    fontSize: 16,
+    color: "#F4DAD5",
+    fontWeight: "500",
+  },
+  menuDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(190,150,80,0.2)",
   },
 });
