@@ -572,6 +572,9 @@ export default function MiMusicaScreen() {
             <View style={styles.headerRow}>
               <Text style={[styles.pageTitle, { flex: 1, color: themeText }]}>Mezclador</Text>
             </View>
+            <Text style={[styles.pageSubtitle, { color: themeText }]}>
+              Elige tus sonidos favoritos y mézclalos a tu gusto.
+            </Text>
           </View>
 
           {/* ── Pills de tabs principales ── */}
@@ -764,6 +767,7 @@ const styles = StyleSheet.create({
   avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212,175,55,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(212,175,55,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: DARK },
+  pageSubtitle: { fontSize: 13, fontWeight: "400", opacity: 0.55, marginTop: 4 },
 
   headerBtns: { flexDirection: "row", alignItems: "center", gap: 8 },
   headerIconBtn: {
