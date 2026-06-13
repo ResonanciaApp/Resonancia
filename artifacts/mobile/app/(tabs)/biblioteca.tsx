@@ -992,6 +992,7 @@ export default function BibliotecaScreen() {
           </View>
         )}
 
+        <View style={styles.stickyDivider} />
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
@@ -1004,6 +1005,7 @@ export default function BibliotecaScreen() {
         {listenedRecently.length > 0 && (
           <>
             <SessionCarousel
+              style={{ marginTop: 10 }}
               title="Escuchadas recientemente"
               sessions={listenedRecently}
               isPremium={isPremium}
@@ -1067,6 +1069,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     paddingHorizontal: H_PAD,
   },
+  stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(244,218,213,0.15)", marginTop: 10 },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
