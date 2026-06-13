@@ -26,7 +26,7 @@ import {
 import { getGeometryLearn, CATEGORY_META } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
 
-const GEO_BG = ["#120A22", "#0F081D", "#080614"] as const;
+const GEO_BG = ["#10091F", "#0E071A", "#070512"] as const;
 
 function MiniGlyph({ id, color }: { id: string; color: string }) {
   // Flor de la Vida mini
