@@ -928,8 +928,9 @@ function SacredGlyphImpl({
         : "";
 
     // ── Sin caleidoscopio: SVG plano ──────────────────────────────────────
+    const overflowAttr = wireframe ? ' overflow="visible"' : "";
     if (!kaleidoscope) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${outlineAttrs}>${gradDefs ? `<defs>${gradDefs}</defs>` : ""}${content}</svg>`;
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${overflowAttr}${outlineAttrs}>${gradDefs ? `<defs>${gradDefs}</defs>` : ""}${content}</svg>`;
     }
 
     // ── Modo caleidoscopio: simetría radial de N segmentos ────────────────
@@ -950,7 +951,7 @@ function SacredGlyphImpl({
     const uses = Array.from({ length: N }, (_, i) =>
       `<use href="#${motifId}" transform="rotate(${(i * wedgeAngle).toFixed(3)} ${Cx} ${Cx})"/>`
     ).join("");
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${outlineAttrs}><defs>${gradDefs}<clipPath id="${clipId}"><path d="${wedgePath}"/></clipPath><g id="${motifId}" clip-path="url(#${clipId})">${content}</g></defs>${uses}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${overflowAttr}${outlineAttrs}><defs>${gradDefs}<clipPath id="${clipId}"><path d="${wedgePath}"/></clipPath><g id="${motifId}" clip-path="url(#${clipId})">${content}</g></defs>${uses}</svg>`;
   }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments, strokeScale, outlineWidth, wireframe]);
 
   // Zoom en vivo (UI thread): cambia width/height por shared value sin re-render.
