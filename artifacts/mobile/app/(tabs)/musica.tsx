@@ -766,7 +766,7 @@ export default function MiMusicaScreen() {
 const styles = StyleSheet.create({
   root:     { flex: 1 },
   inner:    { flex: 1 },
-  topPanel: { backgroundColor: "#1B060F" },
+  topPanel: { backgroundColor: "transparent" },
 
   header:    { paddingHorizontal: 15, marginBottom: 0 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },

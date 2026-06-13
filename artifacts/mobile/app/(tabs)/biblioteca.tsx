@@ -1038,11 +1038,11 @@ export default function BibliotecaScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1B060F" },
+  root: { flex: 1 },
 
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
-    backgroundColor: "#1B060F",
+    backgroundColor: "transparent",
     zIndex: 10,
     paddingHorizontal: H_PAD,
   },
