@@ -119,11 +119,6 @@ export default function HomeScreen2() {
     router.push("/intencion-onboarding" as never);
   }
 
-  // ── Ondas expansivas del botón de play en Destacada de hoy ──
-  const heroWave1 = useRef(new Animated.Value(0)).current;
-  const heroWave2 = useRef(new Animated.Value(0)).current;
-  const heroWave3 = useRef(new Animated.Value(0)).current;
-
   const cursorOpacity = useRef(new Animated.Value(1)).current;
   useEffect(() => {
     const blink = Animated.loop(
@@ -328,25 +323,6 @@ export default function HomeScreen2() {
     !!currentSession && !!filteredFeatured &&
     currentSession.id === filteredFeatured.id && isPlaying;
 
-  useEffect(() => {
-    const makeLoop = (val: Animated.Value, delay: number) =>
-      Animated.loop(
-        Animated.sequence([
-          Animated.delay(delay),
-          Animated.timing(val, { toValue: 1, duration: 1400, useNativeDriver: true }),
-          Animated.timing(val, { toValue: 0, duration: 0, useNativeDriver: true }),
-        ])
-      );
-    if (isFeaturedPlaying) {
-      const a1 = makeLoop(heroWave1, 0);
-      const a2 = makeLoop(heroWave2, 500);
-      const a3 = makeLoop(heroWave3, 1000);
-      a1.start(); a2.start(); a3.start();
-      return () => { a1.stop(); a2.stop(); a3.stop(); heroWave1.setValue(0); heroWave2.setValue(0); heroWave3.setValue(0); };
-    } else {
-      heroWave1.setValue(0); heroWave2.setValue(0); heroWave3.setValue(0);
-    }
-  }, [isFeaturedPlaying, heroWave1, heroWave2, heroWave3]);
 
   const { open: openDrawer } = useDrawer();
   const { photoUri } = useUserProfile();
@@ -577,42 +553,30 @@ export default function HomeScreen2() {
                           {heroAuthor}
                         </Text>
                       </View>
-                      <View style={styles.heroBtnWrap}>
-                        {[heroWave1, heroWave2, heroWave3].map((w, i) => (
-                          <Animated.View
-                            key={i}
-                            pointerEvents="none"
-                            style={[styles.heroWave, {
-                              opacity: w.interpolate({ inputRange: [0, 1], outputRange: [0.4, 0] }),
-                              transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 2.4] }) }],
-                            }]}
-                          />
-                        ))}
-                        <Pressable
-                          onPress={(e) => {
-                            e.stopPropagation();
-                            if (currentSession?.id === filteredFeatured.id) {
-                              pauseResume();
-                            } else {
-                              playSession(filteredFeatured);
-                            }
-                          }}
-                          style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
-                        >
-                          <LinearGradient
-                            colors={["#D6AD5F", "#B47344"]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={StyleSheet.absoluteFill}
-                          />
-                          <Ionicons
-                            name={isFeaturedPlaying ? "pause" : "play"}
-                            size={20}
-                            color="#FFFFFF"
-                            style={{ marginLeft: isFeaturedPlaying ? 0 : 2 }}
-                          />
-                        </Pressable>
-                      </View>
+                      <Pressable
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          if (currentSession?.id === filteredFeatured.id) {
+                            pauseResume();
+                          } else {
+                            playSession(filteredFeatured);
+                          }
+                        }}
+                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
+                      >
+                        <LinearGradient
+                          colors={["#D6AD5F", "#B47344"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={StyleSheet.absoluteFill}
+                        />
+                        <Ionicons
+                          name={isFeaturedPlaying ? "pause" : "play"}
+                          size={20}
+                          color="#FFFFFF"
+                          style={{ marginLeft: isFeaturedPlaying ? 0 : 2 }}
+                        />
+                      </Pressable>
                     </View>
                   </View>
                 );
@@ -1085,18 +1049,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-  },
-  heroBtnWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: -10 }],
-  },
-  heroWave: {
-    position: "absolute",
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: "rgba(214,173,95,0.45)",
   },
   heroBtn: {
     width: 46,
