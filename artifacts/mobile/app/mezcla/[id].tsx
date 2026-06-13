@@ -35,6 +35,7 @@ import {
 import type { MixComment, SharedMixesPage } from "@workspace/api-client-react";
 
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { getSoundImage } from "@/config/sound-images";
 import { SOUNDS } from "@/data/sounds";
@@ -209,15 +210,15 @@ export default function CommunityMixScreen() {
 
   if (isLoading) {
     return (
-      <View style={[styles.center, { backgroundColor: colors.background }]}>
+      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.center}>
         <ActivityIndicator color={colors.primary} />
-      </View>
+      </LinearGradient>
     );
   }
 
   if (!mix) {
     return (
-      <View style={[styles.center, { backgroundColor: colors.background, paddingHorizontal: 32 }]}>
+      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={[styles.center, { paddingHorizontal: 32 }]}>
         <Feather name="cloud-off" size={32} color={colors.mutedForeground} />
         <Text style={[styles.notFound, { color: colors.foreground }]}>
           Esta mezcla ya no está disponible.
@@ -225,7 +226,7 @@ export default function CommunityMixScreen() {
         <Pressable onPress={() => router.back()} style={[styles.backPill, { borderColor: colors.border }]}>
           <Text style={{ color: colors.accent, fontWeight: "600" }}>Volver</Text>
         </Pressable>
-      </View>
+      </LinearGradient>
     );
   }
 
@@ -234,8 +235,12 @@ export default function CommunityMixScreen() {
   const authorAvatar = resolveAvatarUrl(mix.author.avatarUrl) ?? (mix.isMine ? photoUri : null);
 
   return (
+    <LinearGradient
+      colors={["#4A0C0C", "#27070E", "#1B060F"]}
+      style={styles.root}
+    >
     <KeyboardAvoidingView
-      style={[styles.root, { backgroundColor: colors.background }]}
+      style={styles.root}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
@@ -429,6 +434,7 @@ export default function CommunityMixScreen() {
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
