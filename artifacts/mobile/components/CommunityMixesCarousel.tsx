@@ -218,12 +218,6 @@ function MixRow({
 
         {/* Info */}
         <View style={styles.info}>
-          <Text
-            style={[styles.mixCount, { color: GOLD }]}
-            numberOfLines={1}
-          >
-            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-          </Text>
           <View style={styles.nameRow}>
             <Text
               style={[styles.mixName, { color: colors.foreground }]}
