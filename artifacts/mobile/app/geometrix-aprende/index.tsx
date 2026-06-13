@@ -21,7 +21,7 @@ import { GEOMETRY_CATEGORIES, type GeometryCategory } from "@/data/geometries";
 import { CATEGORY_META } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
 
-const GEO_BG = ["#251646", "#1F113C", "#110C2A"] as const;
+const GEO_BG = ["#160D2A", "#130A24", "#0A0719"] as const;
 
 // ── Íconos SVG por categoría ─────────────────────────────────────────────────
 function CategoryIcon({ id, color }: { id: GeometryCategory; color: string }) {
