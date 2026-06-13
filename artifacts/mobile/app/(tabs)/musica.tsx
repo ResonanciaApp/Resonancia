@@ -625,7 +625,7 @@ export default function MiMusicaScreen() {
             </View>
           ) : null}
 
-
+          <View style={styles.stickyDivider} />
         </View>
 
         {/* ── Scroll principal ── */}
@@ -768,6 +768,7 @@ const styles = StyleSheet.create({
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: DARK },
   pageSubtitle: { fontSize: 13, fontWeight: "400", opacity: 0.55, marginTop: 4 },
+  stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(244,218,213,0.15)", marginTop: 10 },
 
   headerBtns: { flexDirection: "row", alignItems: "center", gap: 8 },
   headerIconBtn: {
