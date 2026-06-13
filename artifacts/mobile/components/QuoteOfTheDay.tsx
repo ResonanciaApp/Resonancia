@@ -3,13 +3,13 @@ import { View, Text, Pressable, StyleSheet, Share, Modal } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay } from "@/data/quotes";
 
-const GOLD   = "#D4AF37";
-const MUTED  = "rgba(242,231,228,0.45)";
+const GOLD    = "#D4AF37";
+const MUTED   = "rgba(242,231,228,0.45)";
 const CARD_BG = "rgba(100,185,230,0.09)";
 
 export default function QuoteOfTheDay() {
   const quote = getQuoteOfTheDay();
-  const [expanded, setExpanded]     = useState(false);
+  const [expanded, setExpanded]       = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -40,9 +40,16 @@ export default function QuoteOfTheDay() {
         "{quote.text}"
       </Text>
 
-      {!expanded && isTruncated && (
-        <Pressable onPress={() => setExpanded(true)} hitSlop={8} style={styles.readMoreBtn}>
-          <Text style={styles.readMoreText}>Leer más</Text>
+      {/* Leer más / Leer menos — encima del autor */}
+      {(isTruncated || expanded) && (
+        <Pressable
+          onPress={() => setExpanded((v) => !v)}
+          hitSlop={8}
+          style={styles.readMoreBtn}
+        >
+          <Text style={styles.readMoreText}>
+            {expanded ? "Leer menos" : "Leer más"}
+          </Text>
         </Pressable>
       )}
 
@@ -113,7 +120,7 @@ const styles = StyleSheet.create({
   },
   readMoreBtn: {
     alignSelf: "center",
-    marginBottom: 8,
+    marginBottom: 10,
   },
   readMoreText: {
     fontSize: 13,
