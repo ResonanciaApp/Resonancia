@@ -43,15 +43,10 @@ export default function QuoteOfTheDay() {
       {/* Autor centrado */}
       <Text style={styles.author}>— {quote.author}</Text>
 
-      {/* Fila inferior: ··· izquierda + Leer más centrado */}
+      {/* Fila inferior: Leer más centrado + ··· derecha */}
       <View style={styles.footer}>
-        <Pressable
-          onPress={() => setMenuVisible(true)}
-          hitSlop={12}
-          style={({ pressed }) => [styles.menuBtn, { opacity: pressed ? 0.6 : 1 }]}
-        >
-          <Feather name="more-horizontal" size={20} color={MUTED} />
-        </Pressable>
+        {/* Spacer para centrar visualmente el botón */}
+        <View style={{ width: 28 }} />
 
         {(isTruncated || expanded) && (
           <Pressable
@@ -64,8 +59,13 @@ export default function QuoteOfTheDay() {
           </Pressable>
         )}
 
-        {/* Spacer para centrar visualmente el botón */}
-        <View style={{ width: 28 }} />
+        <Pressable
+          onPress={() => setMenuVisible(true)}
+          hitSlop={12}
+          style={({ pressed }) => [styles.menuBtn, { opacity: pressed ? 0.6 : 1 }]}
+        >
+          <Feather name="more-horizontal" size={20} color={MUTED} />
+        </Pressable>
       </View>
 
       {/* Mini menú */}
