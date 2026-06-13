@@ -347,6 +347,7 @@ function ExpansionEcho({
   grad,
   size,
   strokeWidth,
+  strokeScale = 1,
   kaleidoscope,
   kaleidSegments,
   liveScaleSV,
@@ -357,6 +358,7 @@ function ExpansionEcho({
   grad: readonly [string, string] | undefined;
   size: number;
   strokeWidth: number;
+  strokeScale?: number;
   kaleidoscope: boolean;
   kaleidSegments: number;
   liveScaleSV?: SharedValue<number>;
@@ -381,6 +383,7 @@ function ExpansionEcho({
         gradient={grad}
         size={size}
         strokeWidth={strokeWidth}
+        strokeScale={strokeScale}
         kaleidoscope={kaleidoscope}
         kaleidSegments={kaleidSegments}
         liveScaleSV={liveScaleSV}
@@ -869,6 +872,7 @@ function GeometryLayerInner({
               color={bloomColor}
               size={effectiveSize}
               strokeWidth={sw * (5 + safeBloom * 5)}
+              strokeScale={thinFactor}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -880,6 +884,7 @@ function GeometryLayerInner({
               color={bloomColor}
               size={effectiveSize}
               strokeWidth={sw * (2.4 + safeBloom * 2.6)}
+              strokeScale={thinFactor}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -896,6 +901,7 @@ function GeometryLayerInner({
               gradient={dispGrad}
               size={effectiveSize}
               strokeWidth={sw * (3 + safeGlow * 3)}
+              strokeScale={thinFactor}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -908,6 +914,7 @@ function GeometryLayerInner({
               gradient={dispGrad}
               size={effectiveSize}
               strokeWidth={sw * (1.8 + safeGlow * 1.6)}
+              strokeScale={thinFactor}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -923,6 +930,7 @@ function GeometryLayerInner({
           grad={dispGrad}
           size={effectiveSize}
           strokeWidth={sw}
+          strokeScale={thinFactor}
           kaleidoscope={kaleidoscope}
           kaleidSegments={kaleidSegments}
           liveScaleSV={liveScaleForGlyph}
@@ -947,6 +955,7 @@ function GeometryLayerInner({
           gradient={dispGrad}
           size={effectiveSize}
           strokeWidth={sw}
+          strokeScale={thinFactor}
           kaleidoscope={kaleidoscope}
           kaleidSegments={kaleidSegments}
           liveScaleSV={liveScaleForGlyph}

@@ -852,6 +852,10 @@ export interface SacredGlyphProps {
   color: string;
   size: number;
   strokeWidth?: number;
+  /** Factor de escala para los stroke-width del SVG (1 = sin cambio).
+      Usar 0.45 para strokeMode "thin". Se aplica multiplicando cada
+      valor stroke-width presente en el SVG string antes de renderizar. */
+  strokeScale?: number;
   opacity?: number;
   /** Degradado del trazo [desde, hasta]. Si se pasa, manda sobre `color`.
       Debe ser una referencia estable (memo) para no romper React.memo. */
@@ -872,6 +876,7 @@ function SacredGlyphImpl({
   color,
   size,
   opacity = 1,
+  strokeScale = 1,
   gradient,
   kaleidoscope = false,
   kaleidSegments = 6,
@@ -888,7 +893,16 @@ function SacredGlyphImpl({
   const svgXml = React.useMemo(() => {
     const raw = GLYPH_STRINGS[id as string] ?? "";
     const ec = gradient ? `url(#${gradId})` : color;
-    const content = raw ? raw.replace(/GLYPH_STROKE/g, ec) : "<g></g>";
+    let content = raw ? raw.replace(/GLYPH_STROKE/g, ec) : "<g></g>";
+    // strokeScale ≠ 1: escala proporcionalmente todos los stroke-width del SVG.
+    // Preserva los anchos relativos entre trazos (si hay varios valores distintos)
+    // y no afecta geometrías tipo fill (mosaicos) que no tienen stroke-width.
+    if (strokeScale !== 1) {
+      content = content.replace(/stroke-width="([^"]*)"/g, (_, v) => {
+        const scaled = parseFloat(v) * strokeScale;
+        return `stroke-width="${scaled.toFixed(4)}"`;
+      });
+    }
     const gradDefs = gradient
       ? `<linearGradient id="${gradId}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${gradient[0]}"/><stop offset="100%" stop-color="${gradient[1]}"/></linearGradient>`
       : "";
@@ -917,7 +931,7 @@ function SacredGlyphImpl({
       `<use href="#${motifId}" transform="rotate(${(i * wedgeAngle).toFixed(3)} ${Cx} ${Cx})"/>`
     ).join("");
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs>${gradDefs}<clipPath id="${clipId}"><path d="${wedgePath}"/></clipPath><g id="${motifId}" clip-path="url(#${clipId})">${content}</g></defs>${uses}</svg>`;
-  }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments]);
+  }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments, strokeScale]);
 
   // Zoom en vivo (UI thread): cambia width/height por shared value sin re-render.
   const animStyle = useAnimatedStyle(() => {
