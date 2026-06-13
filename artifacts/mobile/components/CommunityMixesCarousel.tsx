@@ -22,6 +22,7 @@ import type { SharedMix } from "@workspace/api-client-react";
 
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { type MixCategory } from "@/data/mix-categories";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 
 
@@ -276,11 +277,12 @@ function MixRow({
 // ── Avatar del creador ─────────────────────────────────────────────
 function CreatorAvatar({ author }: { author: SharedMix["author"] }) {
   const initial = author.displayName?.charAt(0)?.toUpperCase() ?? "?";
+  const uri = resolveAvatarUrl(author.avatarUrl);
   return (
     <View style={styles.avatarWrap}>
-      {author.avatarUrl ? (
+      {uri ? (
         <ExpoImage
-          source={{ uri: author.avatarUrl }}
+          source={{ uri }}
           style={styles.avatarImg}
           contentFit="cover"
         />
