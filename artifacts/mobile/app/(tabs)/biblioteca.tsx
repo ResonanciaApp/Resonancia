@@ -952,7 +952,10 @@ export default function BibliotecaScreen() {
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
-          <Text style={styles.headerTitle}>Biblioteca</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.headerTitle}>Tu Biblioteca</Text>
+            <Text style={styles.headerSubtitle}>Acá tendrás acceso a tu contenido personalizado</Text>
+          </View>
           <View style={styles.headerIcons}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
               <Feather name="search" size={21} color={TEXT} />
@@ -1084,7 +1087,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  headerTitle: { flex: 1, fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
+  headerTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
+  headerSubtitle: { fontSize: 13, color: MUTED, marginTop: 3, fontWeight: "400" },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
 
