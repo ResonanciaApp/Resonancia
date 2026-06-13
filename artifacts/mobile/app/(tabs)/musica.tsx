@@ -183,7 +183,7 @@ const PillTab = memo(function PillTab({
       <View style={[styles.pillTab, { backgroundColor: "rgba(27,6,15,0.30)" }]}>
         {sel && (
           <LinearGradient
-            colors={["#D4AF37", "#E9C46A"]}
+            colors={["#D6AD5F", "#B47344"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}
@@ -206,7 +206,7 @@ const SubTabPill = memo(function SubTabPill({
       <View style={[styles.subTabPill, { backgroundColor: "rgba(27,6,15,0.30)" }]}>
         {sel && (
           <LinearGradient
-            colors={["#D4AF37", "#E9C46A"]}
+            colors={["#D6AD5F", "#B47344"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}

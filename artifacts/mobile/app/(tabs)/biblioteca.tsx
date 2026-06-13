@@ -116,7 +116,7 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && (
         <LinearGradient
-          colors={["#D4AF37", "#E9C46A"]}
+          colors={["#D6AD5F", "#B47344"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}
