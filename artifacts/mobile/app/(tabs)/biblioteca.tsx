@@ -982,8 +982,6 @@ export default function BibliotecaScreen() {
           </View>
         )}
 
-        {/* Sombra inferior del sticky header */}
-        <View style={styles.headerShadow} />
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
@@ -1101,16 +1099,6 @@ const styles = StyleSheet.create({
   sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
   viewToggleBtn: { padding: 2 },
 
-  headerShadow: {
-    height: 10,
-    marginHorizontal: -H_PAD,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 8,
-    backgroundColor: "#1B060F",
-  },
 
   // ── Scroll content ──────────────────────────────────────────────────────────
   scroll: { flex: 1 },
