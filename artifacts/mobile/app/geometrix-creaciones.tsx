@@ -64,7 +64,7 @@ const EXPORT_SIZE = 540;
 // Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
 // Oscurecido un 90% (se conserva el 10% del brillo) sobre el degradado original
 // ["#14102E","#1C1448","#2A1A5C","#1A1340","#0A0818"].
-const CREACIONES_BG = ["#2C1C4F", "#1F113C", "#181234"] as const;
+const CREACIONES_BG = ["#251646", "#1F113C", "#110C2A"] as const;
 
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
@@ -372,7 +372,7 @@ export default function GeometrixCreacionesScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: "#181234" }]}>
+    <View style={[styles.root, { backgroundColor: "#110C2A" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Render oculto que se captura como póster. Queda detrás del degradado

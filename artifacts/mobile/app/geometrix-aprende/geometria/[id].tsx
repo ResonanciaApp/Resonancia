@@ -80,7 +80,7 @@ export default function GeometrixAprendeDetalleScreen() {
   if (!geo) {
     return (
       <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
-        <LinearGradient colors={["#2C1C4F", "#181234"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+        <LinearGradient colors={["#251646", "#110C2A"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
         <Text style={{ color: colors.mutedForeground }}>Geometría no encontrada</Text>
       </View>
     );
@@ -90,7 +90,7 @@ export default function GeometrixAprendeDetalleScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
-      <LinearGradient colors={["#2C1C4F", "#181234"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+      <LinearGradient colors={["#251646", "#110C2A"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
