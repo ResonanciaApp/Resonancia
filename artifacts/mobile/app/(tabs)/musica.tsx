@@ -182,7 +182,7 @@ const PillTab = memo(function PillTab({
     <Pressable onPress={onPress}>
       <View style={[
         styles.pillTab,
-        { backgroundColor: sel ? "#D4AF37" : "rgba(27,6,15,0.30)" },
+        { backgroundColor: sel ? "#D4AF37" : "rgba(79,17,30,0.30)" },
       ]}>
         <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {tab.label}
@@ -200,7 +200,7 @@ const SubTabPill = memo(function SubTabPill({
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        { backgroundColor: sel ? "#D4AF37" : "rgba(27,6,15,0.30)" },
+        { backgroundColor: sel ? "#D4AF37" : "rgba(79,17,30,0.30)" },
       ]}>
         <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {label}
