@@ -87,7 +87,7 @@ export default function EstadoAnimoScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#0B0F14",
+    backgroundColor: "#1B060F",
   },
   header: {
     flexDirection: "row",
