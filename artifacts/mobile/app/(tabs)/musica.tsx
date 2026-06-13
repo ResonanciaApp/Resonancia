@@ -570,18 +570,7 @@ export default function MiMusicaScreen() {
           {/* ── Header ── */}
           <View style={styles.header}>
             <View style={styles.headerRow}>
-              {/* Avatar — abre el drawer */}
-              <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
-                {photoUri ? (
-                  <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
-                ) : (
-                  <View style={styles.avatarFallback}>
-                    <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
-                  </View>
-                )}
-              </Pressable>
-
-              <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10, color: themeText }]}>Mezclador</Text>
+              <Text style={[styles.pageTitle, { flex: 1, color: themeText }]}>Mezclador</Text>
             </View>
           </View>
 

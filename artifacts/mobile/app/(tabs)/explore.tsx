@@ -154,16 +154,7 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
-              {photoUri ? (
-                <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
-              ) : (
-                <View style={styles.avatarFallback}>
-                  <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
-                </View>
-              )}
-            </Pressable>
-            <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Buscar</Text>
+            <Text style={[styles.pageTitle, { flex: 1 }]}>Buscar</Text>
           </View>
         </View>
 

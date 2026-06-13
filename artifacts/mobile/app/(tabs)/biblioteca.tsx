@@ -931,17 +931,8 @@ export default function BibliotecaScreen() {
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
-        {/* Fila 1: avatar + título + iconos */}
+        {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
-          <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
-            {photoUri ? (
-              <Image source={{ uri: photoUri }} style={styles.avatarImg} contentFit="cover" />
-            ) : (
-              <View style={styles.avatarFallback}>
-                <Feather name="user" size={15} color={MUTED} />
-              </View>
-            )}
-          </Pressable>
           <Text style={styles.headerTitle}>Biblioteca</Text>
           <View style={styles.headerIcons}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
