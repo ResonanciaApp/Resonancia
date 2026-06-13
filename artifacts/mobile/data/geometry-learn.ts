@@ -283,16 +283,16 @@ export const CATEGORY_META: Record<
   GeometryCategory,
   { desc: string; count: number }
 > = {
-  sagradas: {
-    desc: "Patrones universales que conectan la naturaleza con lo divino",
-    count: 20,
+  circulares: {
+    desc: "Patrones radiales y sagrados que conectan la naturaleza con lo divino",
+    count: 46,
   },
-  poliedros: {
-    desc: "Los cinco sólidos de Platón y sus extensiones dimensionales",
-    count: 9,
+  rectilineas: {
+    desc: "Poliedros platónicos, sólidos y estructuras geométricas rectilíneas",
+    count: 31,
   },
-  formas: {
-    desc: "Polígonos, espirales y estrellas que revelan el orden matemático",
-    count: 15,
+  combinaciones: {
+    desc: "Mandalas, estrellas y espirales que revelan el orden matemático",
+    count: 25,
   },
 };

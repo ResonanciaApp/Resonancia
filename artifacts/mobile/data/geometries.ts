@@ -1,72 +1,85 @@
 /**
- * LIBRERÍA DE GEOMETRÍAS SAGRADAS — sección "Geometrix"
+ * LIBRERÍA DE GEOMETRÍAS — sección "Geometrix"
  * ─────────────────────────────────────────────────────────────────
- * Cada geometría se dibuja con SVG en components/SacredGlyph.tsx
- * (mismo id). El usuario las activa por capas para componer un fondo
- * animado. `color` define el tono de trazo de cada capa.
+ * 102 geometrías en 3 categorías: Circulares · Rectilíneas · Combinaciones
+ * Los datos SVG viven en data/glyph-strings.ts.
  * ─────────────────────────────────────────────────────────────────
  */
 
 export type GeometryId =
+  // ── Circulares (46) ───────────────────────────────────────────
   | "caleidoscopio"
   | "flor-vida"
   | "semilla-vida"
   | "vesica"
   | "metatron"
-  | "merkaba"
-  | "sri-yantra"
   | "toroide"
   | "mandala"
-  | "espiral"
-  | "pentagrama"
-  | "hexagrama"
   | "triquetra"
-  | "arbol-vida"
   | "fruto-vida"
   | "huevo-vida"
-  | "cubo-vida"
-  | "octagrama"
-  | "eneagrama"
   | "nudo-celta"
   | "yin-yang"
   | "circulos"
   | "loto"
-  | "cuadrado"
   | "circulo"
-  | "triangulo"
+  | "espiral-fibonacci"
+  | "roseta-ocho"
+  | "torus-infinito"
+  | "c-1"  | "c-2"  | "c-3"  | "c-4"  | "c-5"  | "c-6"  | "c-7"  | "c-8"  | "c-9"
+  | "c-10" | "c-11" | "c-12" | "c-13" | "c-14" | "c-15" | "c-16" | "c-17" | "c-18"
+  | "c-19" | "c-20" | "c-21" | "c-22"
+  | "c-asset-3" | "c-asset-5" | "c-asset-10" | "c-asset-11" | "c-asset-12" | "c-asset-24"
+  // ── Rectilíneas (31) ──────────────────────────────────────────
+  | "merkaba"
+  | "cubo-vida"
   | "tetraedro"
   | "hexaedro"
   | "octaedro"
   | "icosaedro"
   | "dodecaedro"
   | "cuboctaedro"
-  | "espiral-fibonacci"
+  | "ivm"
+  | "cuadrado"
+  | "triangulo"
+  | "r-1geometry"  | "r-1geometry2"
+  | "r-2geometry"  | "r-2geometry2"
+  | "r-3geometry"  | "r-3geometry2"
+  | "r-4geometry"  | "r-4geometry2"
+  | "r-asset-1"  | "r-asset-2"  | "r-asset-4"  | "r-asset-6"  | "r-asset-7"
+  | "r-asset-9"  | "r-asset-17" | "r-asset-20" | "r-asset-21" | "r-asset-22"
+  | "r-asset-26" | "r-asset-27"
+  // ── Combinaciones (25) ────────────────────────────────────────
+  | "arbol-vida"
+  | "espiral"
+  | "pentagrama"
+  | "hexagrama"
+  | "octagrama"
+  | "eneagrama"
+  | "sri-yantra"
   | "decagrama"
   | "cruz-solar"
-  | "roseta-ocho"
   | "vector-equilibrium"
   | "metatron-expandido"
-  | "torus-infinito"
-  | "ivm"
-  | "estrella-tetraedrica"
   | "hexagono-sagrado"
   | "estrella-12"
   | "estrella"
+  | "estrella-tetraedrica"
+  | "k-asset-8"  | "k-asset-13" | "k-asset-14" | "k-asset-15" | "k-asset-16"
+  | "k-asset-18" | "k-asset-19" | "k-asset-23" | "k-asset-25" | "k-asset-28"
   ;
 
 /**
  * Categoría a la que pertenece cada geometría. Sirve para el filtro del carrusel
- * en la pantalla Geometrix: en lugar de mostrar las ~44 tiles de una sola pasada
- * (lo que bloquea el hilo JS al montar tantos objetos Reanimated), el carrusel
- * muestra solo la categoría activa (~9-20 tiles).
+ * en la pantalla Geometrix.
  */
-export type GeometryCategory = "sagradas" | "poliedros" | "formas";
+export type GeometryCategory = "circulares" | "rectilineas" | "combinaciones";
 
 /** Metadatos de cada categoría para los chips de filtro (en orden de aparición). */
 export const GEOMETRY_CATEGORIES: { id: GeometryCategory; label: string }[] = [
-  { id: "sagradas", label: "Geometría Sagrada" },
-  { id: "poliedros", label: "Poliedros 3D" },
-  { id: "formas", label: "Formas y Estrellas" },
+  { id: "circulares",    label: "Circulares"   },
+  { id: "rectilineas",   label: "Rectilíneas"  },
+  { id: "combinaciones", label: "Combinaciones" },
 ];
 
 export interface GeometryMeta {
@@ -79,8 +92,7 @@ export interface GeometryMeta {
 /**
  * Paleta compartida de colores. Es la MISMA (y en el MISMO orden) que la de
  * los ajustes personalizados por capa. El color por defecto de cada geometría
- * se asigna recorriendo esta paleta de forma cíclica (intercalado), por lo que
- * los tabs del grid van rotando los colores con la lógica de la paleta.
+ * se asigna recorriendo esta paleta de forma cíclica (intercalado).
  */
 export const PALETTE = [
   "#BE9650",
@@ -93,50 +105,111 @@ export const PALETTE = [
 ] as const;
 
 const GEOMETRY_DEFS: { id: GeometryId; name: string; category: GeometryCategory }[] = [
-  { id: "caleidoscopio", name: "Caleidoscopio",         category: "formas"    },
-  { id: "flor-vida",    name: "Flor de la Vida",        category: "sagradas"  },
-  { id: "semilla-vida", name: "Semilla de la Vida",     category: "sagradas"  },
-  { id: "vesica",       name: "Vesica Piscis",          category: "sagradas"  },
-  { id: "metatron",     name: "Cubo de Metatrón",       category: "sagradas"  },
-  { id: "merkaba",      name: "Merkaba",                category: "sagradas"  },
-  { id: "sri-yantra",   name: "Sri Yantra",             category: "sagradas"  },
-  { id: "toroide",      name: "Toroide",                category: "sagradas"  },
-  { id: "mandala",      name: "Mandala",                category: "sagradas"  },
-  { id: "espiral",      name: "Espiral Áurea",          category: "formas"    },
-  { id: "pentagrama",   name: "Pentagrama",             category: "formas"    },
-  { id: "hexagrama",    name: "Hexagrama",              category: "formas"    },
-  { id: "triquetra",    name: "Triquetra",              category: "sagradas"  },
-  { id: "arbol-vida",   name: "Árbol de la Vida",       category: "sagradas"  },
-  { id: "fruto-vida",   name: "Fruto de la Vida",       category: "sagradas"  },
-  { id: "huevo-vida",   name: "Huevo de la Vida",       category: "sagradas"  },
-  { id: "cubo-vida",    name: "Cubo de la Vida",        category: "sagradas"  },
-  { id: "octagrama",    name: "Octagrama",              category: "formas"    },
-  { id: "eneagrama",    name: "Eneagrama",              category: "formas"    },
-  { id: "nudo-celta",   name: "Nudo Celta",             category: "sagradas"  },
-  { id: "yin-yang",     name: "Yin-Yang",               category: "sagradas"  },
-  { id: "circulos",     name: "Círculos Concéntricos",  category: "formas"    },
-  { id: "loto",         name: "Loto",                   category: "sagradas"  },
-  { id: "cuadrado",             name: "Cuadrado",                     category: "formas"    },
-  { id: "circulo",              name: "Círculo",                      category: "formas"    },
-  { id: "triangulo",            name: "Triángulo",                    category: "formas"    },
-  { id: "tetraedro",            name: "Tetraedro",                    category: "poliedros" },
-  { id: "hexaedro",             name: "Cubo (Hexaedro)",              category: "poliedros" },
-  { id: "octaedro",             name: "Octaedro",                     category: "poliedros" },
-  { id: "icosaedro",            name: "Icosaedro",                    category: "poliedros" },
-  { id: "dodecaedro",           name: "Dodecaedro",                   category: "poliedros" },
-  { id: "cuboctaedro",          name: "Cuboctaedro",                  category: "poliedros" },
-  { id: "espiral-fibonacci",    name: "Espiral de Fibonacci",         category: "formas"    },
-  { id: "decagrama",            name: "Decagrama",                    category: "formas"    },
-  { id: "cruz-solar",           name: "Cruz Solar",                   category: "sagradas"  },
-  { id: "roseta-ocho",          name: "Roseta de Ocho Pétalos",       category: "formas"    },
-  { id: "vector-equilibrium",   name: "Vector Equilibrium",           category: "poliedros" },
-  { id: "metatron-expandido",   name: "Cubo de Metatrón Expandido",   category: "sagradas"  },
-  { id: "torus-infinito",       name: "Torus Infinito",               category: "sagradas"  },
-  { id: "ivm",                  name: "Lattice Isotrópica Vectorial", category: "poliedros" },
-  { id: "estrella-tetraedrica", name: "Estrella Tetraédrica",         category: "poliedros" },
-  { id: "hexagono-sagrado",     name: "Hexágono Sagrado",             category: "sagradas"  },
-  { id: "estrella-12",          name: "Estrella de 12 Puntas",        category: "formas"    },
-  { id: "estrella",             name: "Estrella",                     category: "formas"    },
+  // ── Circulares ─────────────────────────────────────────────────────────────
+  { id: "caleidoscopio",     name: "Caleidoscopio",              category: "circulares" },
+  { id: "flor-vida",         name: "Flor de la Vida",            category: "circulares" },
+  { id: "semilla-vida",      name: "Semilla de la Vida",         category: "circulares" },
+  { id: "vesica",            name: "Vesica Piscis",              category: "circulares" },
+  { id: "metatron",          name: "Cubo de Metatrón",           category: "circulares" },
+  { id: "toroide",           name: "Toroide",                    category: "circulares" },
+  { id: "mandala",           name: "Mandala",                    category: "circulares" },
+  { id: "triquetra",         name: "Triquetra",                  category: "circulares" },
+  { id: "fruto-vida",        name: "Fruto de la Vida",           category: "circulares" },
+  { id: "huevo-vida",        name: "Huevo de la Vida",           category: "circulares" },
+  { id: "nudo-celta",        name: "Nudo Celta",                 category: "circulares" },
+  { id: "yin-yang",          name: "Yin-Yang",                   category: "circulares" },
+  { id: "circulos",          name: "Círculos Concéntricos",      category: "circulares" },
+  { id: "loto",              name: "Loto",                       category: "circulares" },
+  { id: "circulo",           name: "Círculo",                    category: "circulares" },
+  { id: "espiral-fibonacci", name: "Espiral de Fibonacci",       category: "circulares" },
+  { id: "roseta-ocho",       name: "Roseta de Ocho Pétalos",     category: "circulares" },
+  { id: "torus-infinito",    name: "Torus Infinito",             category: "circulares" },
+  { id: "c-1",  name: "Circular 1",  category: "circulares" },
+  { id: "c-2",  name: "Circular 2",  category: "circulares" },
+  { id: "c-3",  name: "Circular 3",  category: "circulares" },
+  { id: "c-4",  name: "Circular 4",  category: "circulares" },
+  { id: "c-5",  name: "Circular 5",  category: "circulares" },
+  { id: "c-6",  name: "Circular 6",  category: "circulares" },
+  { id: "c-7",  name: "Circular 7",  category: "circulares" },
+  { id: "c-8",  name: "Circular 8",  category: "circulares" },
+  { id: "c-9",  name: "Circular 9",  category: "circulares" },
+  { id: "c-10", name: "Circular 10", category: "circulares" },
+  { id: "c-11", name: "Circular 11", category: "circulares" },
+  { id: "c-12", name: "Circular 12", category: "circulares" },
+  { id: "c-13", name: "Circular 13", category: "circulares" },
+  { id: "c-14", name: "Circular 14", category: "circulares" },
+  { id: "c-15", name: "Circular 15", category: "circulares" },
+  { id: "c-16", name: "Circular 16", category: "circulares" },
+  { id: "c-17", name: "Circular 17", category: "circulares" },
+  { id: "c-18", name: "Circular 18", category: "circulares" },
+  { id: "c-19", name: "Circular 19", category: "circulares" },
+  { id: "c-20", name: "Circular 20", category: "circulares" },
+  { id: "c-21", name: "Circular 21", category: "circulares" },
+  { id: "c-22", name: "Circular 22", category: "circulares" },
+  { id: "c-asset-3",  name: "Circular A3",  category: "circulares" },
+  { id: "c-asset-5",  name: "Circular A5",  category: "circulares" },
+  { id: "c-asset-10", name: "Circular A10", category: "circulares" },
+  { id: "c-asset-11", name: "Circular A11", category: "circulares" },
+  { id: "c-asset-12", name: "Circular A12", category: "circulares" },
+  { id: "c-asset-24", name: "Circular A24", category: "circulares" },
+  // ── Rectilíneas ────────────────────────────────────────────────────────────
+  { id: "merkaba",     name: "Merkaba",                     category: "rectilineas" },
+  { id: "cubo-vida",   name: "Cubo de la Vida",             category: "rectilineas" },
+  { id: "tetraedro",   name: "Tetraedro",                   category: "rectilineas" },
+  { id: "hexaedro",    name: "Cubo (Hexaedro)",             category: "rectilineas" },
+  { id: "octaedro",    name: "Octaedro",                    category: "rectilineas" },
+  { id: "icosaedro",   name: "Icosaedro",                   category: "rectilineas" },
+  { id: "dodecaedro",  name: "Dodecaedro",                  category: "rectilineas" },
+  { id: "cuboctaedro", name: "Cuboctaedro",                 category: "rectilineas" },
+  { id: "ivm",         name: "Lattice Isotrópica Vectorial",category: "rectilineas" },
+  { id: "cuadrado",    name: "Cuadrado",                    category: "rectilineas" },
+  { id: "triangulo",   name: "Triángulo",                   category: "rectilineas" },
+  { id: "r-1geometry",  name: "Rectilínea 1a", category: "rectilineas" },
+  { id: "r-1geometry2", name: "Rectilínea 1b", category: "rectilineas" },
+  { id: "r-2geometry",  name: "Rectilínea 2a", category: "rectilineas" },
+  { id: "r-2geometry2", name: "Rectilínea 2b", category: "rectilineas" },
+  { id: "r-3geometry",  name: "Rectilínea 3a", category: "rectilineas" },
+  { id: "r-3geometry2", name: "Rectilínea 3b", category: "rectilineas" },
+  { id: "r-4geometry",  name: "Rectilínea 4a", category: "rectilineas" },
+  { id: "r-4geometry2", name: "Rectilínea 4b", category: "rectilineas" },
+  { id: "r-asset-1",  name: "Rectilínea A1",  category: "rectilineas" },
+  { id: "r-asset-2",  name: "Rectilínea A2",  category: "rectilineas" },
+  { id: "r-asset-4",  name: "Rectilínea A4",  category: "rectilineas" },
+  { id: "r-asset-6",  name: "Rectilínea A6",  category: "rectilineas" },
+  { id: "r-asset-7",  name: "Rectilínea A7",  category: "rectilineas" },
+  { id: "r-asset-9",  name: "Rectilínea A9",  category: "rectilineas" },
+  { id: "r-asset-17", name: "Rectilínea A17", category: "rectilineas" },
+  { id: "r-asset-20", name: "Rectilínea A20", category: "rectilineas" },
+  { id: "r-asset-21", name: "Rectilínea A21", category: "rectilineas" },
+  { id: "r-asset-22", name: "Rectilínea A22", category: "rectilineas" },
+  { id: "r-asset-26", name: "Rectilínea A26", category: "rectilineas" },
+  { id: "r-asset-27", name: "Rectilínea A27", category: "rectilineas" },
+  // ── Combinaciones ──────────────────────────────────────────────────────────
+  { id: "arbol-vida",           name: "Árbol de la Vida",           category: "combinaciones" },
+  { id: "espiral",              name: "Espiral Áurea",              category: "combinaciones" },
+  { id: "pentagrama",           name: "Pentagrama",                 category: "combinaciones" },
+  { id: "hexagrama",            name: "Hexagrama",                  category: "combinaciones" },
+  { id: "octagrama",            name: "Octagrama",                  category: "combinaciones" },
+  { id: "eneagrama",            name: "Eneagrama",                  category: "combinaciones" },
+  { id: "sri-yantra",           name: "Sri Yantra",                 category: "combinaciones" },
+  { id: "decagrama",            name: "Decagrama",                  category: "combinaciones" },
+  { id: "cruz-solar",           name: "Cruz Solar",                 category: "combinaciones" },
+  { id: "vector-equilibrium",   name: "Vector Equilibrium",         category: "combinaciones" },
+  { id: "metatron-expandido",   name: "Cubo de Metatrón Expandido", category: "combinaciones" },
+  { id: "hexagono-sagrado",     name: "Hexágono Sagrado",           category: "combinaciones" },
+  { id: "estrella-12",          name: "Estrella de 12 Puntas",      category: "combinaciones" },
+  { id: "estrella",             name: "Estrella",                   category: "combinaciones" },
+  { id: "estrella-tetraedrica", name: "Estrella Tetraédrica",       category: "combinaciones" },
+  { id: "k-asset-8",  name: "Combinación A8",  category: "combinaciones" },
+  { id: "k-asset-13", name: "Combinación A13", category: "combinaciones" },
+  { id: "k-asset-14", name: "Combinación A14", category: "combinaciones" },
+  { id: "k-asset-15", name: "Combinación A15", category: "combinaciones" },
+  { id: "k-asset-16", name: "Combinación A16", category: "combinaciones" },
+  { id: "k-asset-18", name: "Combinación A18", category: "combinaciones" },
+  { id: "k-asset-19", name: "Combinación A19", category: "combinaciones" },
+  { id: "k-asset-23", name: "Combinación A23", category: "combinaciones" },
+  { id: "k-asset-25", name: "Combinación A25", category: "combinaciones" },
+  { id: "k-asset-28", name: "Combinación A28", category: "combinaciones" },
 ];
 
 export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
@@ -148,9 +221,9 @@ export function getGeometry(id: GeometryId): GeometryMeta | undefined {
   return GEOMETRIES.find((g) => g.id === id);
 }
 
-/** Categoría de un id (base o de instancia). Default "formas" si no se encuentra. */
+/** Categoría de un id (base o de instancia). Default "circulares" si no se encuentra. */
 export function categoryOf(id: string): GeometryCategory {
-  return getGeometry(baseOf(id))?.category ?? "formas";
+  return getGeometry(baseOf(id))?.category ?? "circulares";
 }
 
 /**

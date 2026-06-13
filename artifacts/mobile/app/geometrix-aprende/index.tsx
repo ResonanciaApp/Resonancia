@@ -25,7 +25,7 @@ const GEO_BG = ["#090D20", "#080A18", "#06070F"] as const;
 
 // ── Íconos SVG por categoría ─────────────────────────────────────────────────
 function CategoryIcon({ id, color }: { id: GeometryCategory; color: string }) {
-  if (id === "sagradas") {
+  if (id === "circulares") {
     // Flor de la Vida simplificada
     const petals = Array.from({ length: 6 }, (_, i) => {
       const a = (i * Math.PI) / 3;
@@ -40,7 +40,7 @@ function CategoryIcon({ id, color }: { id: GeometryCategory; color: string }) {
       </Svg>
     );
   }
-  if (id === "poliedros") {
+  if (id === "rectilineas") {
     // Cubo axonométrico
     return (
       <Svg width={36} height={36} viewBox="0 0 36 36">

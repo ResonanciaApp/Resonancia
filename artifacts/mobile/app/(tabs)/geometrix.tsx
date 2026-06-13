@@ -72,7 +72,7 @@ import Svg, {
 
 import { GeometrixPatternBg } from "@/components/GeometrixPatternBg";
 import { LandingBgGeo } from "@/components/LandingBgGeo";
-import { SacredGlyph, EXTENT, GLYPH_EXTENTS } from "@/components/SacredGlyph";
+import { SacredGlyph } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import {
   playGeometrixIntroOnce,

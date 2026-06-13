@@ -118,7 +118,7 @@ export default function GeometrixAprendeCategoriaScreen() {
 
       {/* Category hero */}
       <View style={[styles.hero, { backgroundColor: colors.primary + "0A" }]}>
-        <MiniGlyph id={catId === "sagradas" ? "flor-vida" : catId === "poliedros" ? "hexaedro" : "espiral"} color={colors.primary} />
+        <MiniGlyph id={catId === "circulares" ? "flor-vida" : catId === "rectilineas" ? "hexaedro" : "espiral"} color={colors.primary} />
         <Text style={[styles.heroDesc, { color: "#c0bae0" }]}>{meta?.desc}</Text>
       </View>
 

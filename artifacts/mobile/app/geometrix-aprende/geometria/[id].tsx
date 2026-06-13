@@ -103,7 +103,7 @@ export default function GeometrixAprendeDetalleScreen() {
           <Feather name="arrow-left" size={18} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: "#c0bae0" }]} numberOfLines={1}>
-          {geo.category === "sagradas" ? "Geometría Sagrada" : geo.category === "poliedros" ? "Poliedros 3D" : "Formas y Estrellas"}
+          {geo.category === "circulares" ? "Circulares" : geo.category === "rectilineas" ? "Rectilíneas" : "Combinaciones"}
         </Text>
         <Pressable style={[styles.iconBtn, { borderColor: colors.primary + "30" }]} hitSlop={8}>
           <Feather name="star" size={16} color={colors.mutedForeground} />

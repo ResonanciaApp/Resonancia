@@ -5,10 +5,10 @@
  */
 import React from "react";
 import Animated, {
-  useAnimatedProps,
+  useAnimatedStyle,
   type SharedValue,
 } from "react-native-reanimated";
-import Svg, {
+import {
   Circle,
   ClipPath,
   Defs,
@@ -19,15 +19,12 @@ import Svg, {
   Path,
   Polygon,
   Stop,
+  SvgXml,
   Use,
 } from "react-native-svg";
 
 import type { GeometryId } from "@/data/geometries";
-
-// Versiones animables del SVG: permiten que el UI thread redibuje el glifo a su
-// tamaño en vivo durante el pellizco (sin transform → trazo nítido, sin re-render).
-const AnimatedSvg = Animated.createAnimatedComponent(Svg);
-const AnimatedG = Animated.createAnimatedComponent(G);
+import { GLYPH_STRINGS } from "@/data/glyph-strings";
 
 const C = 50;
 
@@ -38,7 +35,7 @@ const C = 50;
  * que todas se vean del mismo tamaño en miniaturas, tabs y capas.
  */
 const TARGET_EXTENT = 39;
-export const EXTENT: Record<GeometryId, number> = {
+export const EXTENT: Record<string, number> = {
   caleidoscopio: 44,
   "flor-vida": 36,
   "semilla-vida": 39,
@@ -97,7 +94,7 @@ export const EXTENT: Record<GeometryId, number> = {
  *
  * Valores calculados directamente de las coordenadas dibujadas en glyphElements.
  */
-export const GLYPH_EXTENTS: Partial<Record<GeometryId, { rx: number; ry: number }>> = {
+export const GLYPH_EXTENTS: Partial<Record<string, { rx: number; ry: number }>> = {
   // Vesica Piscis: dos círculos r=24 con centros a ±12 del centro → ancho > alto
   vesica:               { rx: 36,    ry: 24    },
   // Árbol de la Vida: muy alto (y 9..92 + r=5.5) y angosto (x 27..73 + r=5.5)
@@ -874,150 +871,64 @@ function SacredGlyphImpl({
   id,
   color,
   size,
-  strokeWidth = 1.2,
   opacity = 1,
   gradient,
   kaleidoscope = false,
   kaleidSegments = 6,
   liveScaleSV,
 }: SacredGlyphProps) {
-  // Escala uniforme para que todas las geometrías llenen el mismo radio.
-  const k = TARGET_EXTENT / (EXTENT[id] ?? 44);
-  // Compensar el grosor para que el trazo se vea igual tras el escalado.
-  const sw = strokeWidth / k;
-  const t = C - C * k;
   // Id único y seguro para SVG (useId trae ":" que algunos renderers no aceptan).
   const uid = React.useId().replace(/:/g, "");
-  const gradId = `geo-grad-${uid}`;
-  const clipId = `geo-clip-${uid}`;
-  const motifId = `geo-motif-${uid}`;
-  const stroke = gradient ? `url(#${gradId})` : color;
+  const gradId = `gg${uid}`;
+  const clipId = `gc${uid}`;
+  const motifId = `gm${uid}`;
 
-  // Pellizco en vivo (UI thread): el SVG se redibuja a `size * escala` y el
-  // trazo se compensa para que el grosor VISUAL no cambie. En reposo escala = 1
-  // → width/height y strokeWidth quedan idénticos al render estático.
-  const svgAnimProps = useAnimatedProps(() => {
-    const s = size * (liveScaleSV ? liveScaleSV.value : 1);
+  // Construye la cadena SVG (con o sin caleidoscopio) y sustituye el placeholder
+  // de color. Se recalcula solo cuando cambian los parámetros visuales.
+  const svgXml = React.useMemo(() => {
+    const raw = GLYPH_STRINGS[id as string] ?? "";
+    const ec = gradient ? `url(#${gradId})` : color;
+    const content = raw ? raw.replace(/GLYPH_STROKE/g, ec) : "<g/>";
+    const gradDefs = gradient
+      ? `<linearGradient id="${gradId}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${gradient[0]}"/><stop offset="100%" stop-color="${gradient[1]}"/></linearGradient>`
+      : "";
+
+    // ── Sin caleidoscopio: SVG plano ──────────────────────────────────────
+    if (!kaleidoscope) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${gradDefs ? `<defs>${gradDefs}</defs>` : ""}${content}</svg>`;
+    }
+
+    // ── Modo caleidoscopio: simetría radial de N segmentos ────────────────
+    // El motivo completo se define una sola vez en <defs> (recortado a la cuña)
+    // y se referencia N veces con <use transform="rotate(i*angle)"/>.
+    const N = Math.max(2, Math.min(24, kaleidSegments));
+    const wedgeAngle = 360 / N;
+    const halfW = wedgeAngle / 2;
+    const r = 72;
+    const Cx = 50;
+    const toRad = (d: number) => (d * Math.PI) / 180;
+    const x1 = (Cx + r * Math.cos(toRad(-halfW))).toFixed(3);
+    const y1 = (Cx + r * Math.sin(toRad(-halfW))).toFixed(3);
+    const x2 = (Cx + r * Math.cos(toRad(halfW))).toFixed(3);
+    const y2 = (Cx + r * Math.sin(toRad(halfW))).toFixed(3);
+    const largeArc = wedgeAngle > 180 ? 1 : 0;
+    const wedgePath = `M ${Cx} ${Cx} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+    const uses = Array.from({ length: N }, (_, i) =>
+      `<use href="#${motifId}" transform="rotate(${(i * wedgeAngle).toFixed(3)} ${Cx} ${Cx})"/>`
+    ).join("");
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs>${gradDefs}<clipPath id="${clipId}"><path d="${wedgePath}"/></clipPath><g id="${motifId}" clip-path="url(#${clipId})">${content}</g></defs>${uses}</svg>`;
+  }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments]);
+
+  // Zoom en vivo (UI thread): cambia width/height por shared value sin re-render.
+  const animStyle = useAnimatedStyle(() => {
+    const s = size * (liveScaleSV != null ? liveScaleSV.value : 1);
     return { width: s, height: s };
   });
-  const gAnimProps = useAnimatedProps(() => {
-    return { strokeWidth: sw / (liveScaleSV ? liveScaleSV.value : 1) };
-  });
-  // Trazo "fino" decorativo (0.5× y 0.55× del principal). Esas líneas fijan su
-  // strokeWidth explícito → NO heredan la contra-escala del <G> principal, así
-  // que engrosaban en el pellizco (muy visible en metatron). Las agrupamos en un
-  // AnimatedG con estos animatedProps para que se contra-escalen igual.
-  const gHalf50AnimProps = useAnimatedProps(() => {
-    return { strokeWidth: (sw * 0.5) / (liveScaleSV ? liveScaleSV.value : 1) };
-  });
-  const gHalf55AnimProps = useAnimatedProps(() => {
-    return { strokeWidth: (sw * 0.55) / (liveScaleSV ? liveScaleSV.value : 1) };
-  });
-  // Solo el objetivo del pellizco usa el camino animado; el resto (capas no
-  // seleccionadas, miniaturas) usa el SVG estático para no pagar overhead.
-  const SvgComp = liveScaleSV ? AnimatedSvg : Svg;
-  const GComp = liveScaleSV ? AnimatedG : G;
-  const svgSizeProps = liveScaleSV
-    ? { animatedProps: svgAnimProps }
-    : { width: size, height: size };
-  const gStrokeProps = liveScaleSV
-    ? { animatedProps: gAnimProps }
-    : { strokeWidth: sw };
-  // Grupo de trazo fino que se pasa a glyphElements: AnimatedG contra-escalado
-  // en modo pellizco; <G> estático (trazo explícito) en reposo/miniatura.
-  const half: HalfStroke = liveScaleSV
-    ? {
-        G: AnimatedG,
-        props50: { animatedProps: gHalf50AnimProps },
-        props55: { animatedProps: gHalf55AnimProps },
-      }
-    : {
-        G: G,
-        props50: { strokeWidth: sw * 0.5 },
-        props55: { strokeWidth: sw * 0.55 },
-      };
-
-  // ── Sin caleidoscopio: renderizado normal ──────────────────────────────────
-  if (!kaleidoscope) {
-    return (
-      <SvgComp viewBox="0 0 100 100" opacity={opacity} {...svgSizeProps}>
-        {gradient && (
-          <Defs>
-            <LinearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <Stop offset="0%" stopColor={gradient[0]} />
-              <Stop offset="100%" stopColor={gradient[1]} />
-            </LinearGradient>
-          </Defs>
-        )}
-        <GComp
-          transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
-          stroke={stroke}
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          {...gStrokeProps}
-        >
-          {glyphElements(id, sw, half)}
-        </GComp>
-      </SvgComp>
-    );
-  }
-
-  // ── Modo caleidoscopio: simetría radial de N segmentos ────────────────────
-  // La cuña tiene un ángulo de (360/N)°. Recortamos el motivo completo dentro
-  // de esa cuña (clipPath triangular desde el centro) y la replicamos N veces
-  // rotando alrededor del centro (50,50) del viewBox.
-  const N = Math.max(2, Math.min(24, kaleidSegments));
-  const wedgeAngle = 360 / N; // grados por segmento
-  const halfW = wedgeAngle / 2;
-  const r = 72; // radio del clipPath, mayor que el extent para no cortar
-
-  // Dos rayos que forman la cuña simétrica respecto al eje horizontal derecho.
-  const toRad = (deg: number) => (deg * Math.PI) / 180;
-  const x1 = (C + r * Math.cos(toRad(-halfW))).toFixed(3);
-  const y1 = (C + r * Math.sin(toRad(-halfW))).toFixed(3);
-  const x2 = (C + r * Math.cos(toRad(halfW))).toFixed(3);
-  const y2 = (C + r * Math.sin(toRad(halfW))).toFixed(3);
-  // Arco grande solo si la cuña supera 180°.
-  const largeArc = wedgeAngle > 180 ? 1 : 0;
-  const wedgePath = `M ${C} ${C} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
 
   return (
-    <SvgComp viewBox="0 0 100 100" opacity={opacity} {...svgSizeProps}>
-      <Defs>
-        {gradient && (
-          <LinearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <Stop offset="0%" stopColor={gradient[0]} />
-            <Stop offset="100%" stopColor={gradient[1]} />
-          </LinearGradient>
-        )}
-        {/* Cuña que recorta una fracción del motivo. */}
-        <ClipPath id={clipId}>
-          <Path d={wedgePath} />
-        </ClipPath>
-        {/* Motif: el glyph completo recortado a la cuña, referenciable con <Use>. */}
-        <G id={motifId} clipPath={`url(#${clipId})`}>
-          <GComp
-            transform={`translate(${t.toFixed(3)} ${t.toFixed(3)}) scale(${k.toFixed(4)})`}
-            stroke={stroke}
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            {...gStrokeProps}
-          >
-            {glyphElements(id, sw, half)}
-          </GComp>
-        </G>
-      </Defs>
-      {/* Replicar la cuña N veces rotando alrededor del centro. */}
-      {Array.from({ length: N }, (_, i) => (
-        <Use
-          key={i}
-          href={`#${motifId}`}
-          transform={`rotate(${(i * wedgeAngle).toFixed(3)} ${C} ${C})`}
-        />
-      ))}
-    </SvgComp>
+    <Animated.View style={[animStyle, { opacity }]}>
+      <SvgXml xml={svgXml} width="100%" height="100%" />
+    </Animated.View>
   );
 }
 
