@@ -999,7 +999,7 @@ const styles = StyleSheet.create({
   },
   newLabel: { fontSize: 13, fontWeight: "600" },
 
-  card: { borderRadius: 16, borderWidth: 1, borderColor: "#a79fb8", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
+  card: { borderRadius: 16, borderWidth: 1, borderColor: "rgba(167,159,184,0.1)", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
   playBtn: {

@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   stateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
-  card: { borderRadius: 16, borderWidth: 1, borderColor: "#a79fb8", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
+  card: { borderRadius: 16, borderWidth: 1, borderColor: "rgba(167,159,184,0.1)", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
 
   // Preview llena el 100% del ancho de la card (no tiene width fijo propio)
   preview: { width: "100%", overflow: "hidden" },
