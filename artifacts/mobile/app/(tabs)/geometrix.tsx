@@ -2135,9 +2135,6 @@ function CrearGeometriaCard({ onPress }: { onPress: () => void }) {
             <View style={styles.cbText}>
               <Text style={styles.cbTitle}>Crear Geometría</Text>
               <Text style={styles.cbDesc}>Comienza desde cero</Text>
-              <View style={styles.cbTag}>
-                <Text style={styles.cbTagText}>LIENZO VACÍO</Text>
-              </View>
             </View>
 
             {/* Chevron en círculo */}
