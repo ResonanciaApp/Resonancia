@@ -536,7 +536,7 @@ export default function MiMusicaScreen() {
     <View style={styles.root}>
       {/* ── Capa de fondo (gradiente + dim) — completamente aislada del contenido ── */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#080B1A" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1B060F" }]} />
         {bgDim > 0.01 && (
           <View
             style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
@@ -750,7 +750,7 @@ export default function MiMusicaScreen() {
 const styles = StyleSheet.create({
   root:     { flex: 1 },
   inner:    { flex: 1 },
-  topPanel: { backgroundColor: "#080B1A" },
+  topPanel: { backgroundColor: "#1B060F" },
 
   header:    { paddingHorizontal: 15, marginBottom: 0 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },

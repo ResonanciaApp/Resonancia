@@ -38,7 +38,7 @@ function hexTint(hex: string, alpha: number): string {
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
-  if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(255,255,255,0.04)`;
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(74,12,12,0.08)`;
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
