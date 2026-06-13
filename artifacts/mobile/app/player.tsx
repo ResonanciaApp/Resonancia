@@ -338,7 +338,8 @@ export default function PlayerScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: playerBg }]}>
+    <View style={styles.root}>
+      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
       <ExpoImage
         source={currentSession.image as any}

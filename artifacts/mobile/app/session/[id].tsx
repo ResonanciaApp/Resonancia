@@ -153,7 +153,8 @@ export default function SessionDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: categoryBg }]}>
+    <View style={styles.root}>
+      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -165,7 +166,7 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <LinearGradient
-            colors={["rgba(0,0,0,0.25)", "transparent", categoryBg]}
+            colors={["rgba(0,0,0,0.25)", "transparent", "#1B060F"]}
             locations={[0, 0.45, 1]}
             style={StyleSheet.absoluteFill}
           />
@@ -344,7 +345,7 @@ export default function SessionDetailScreen() {
 
       {/* ── Sticky "Escuchar ahora" ──────────────────────────────────────── */}
       <View style={[styles.stickyPlay, { paddingBottom: bottomPad + 10 }]}>
-        <LinearGradient colors={["transparent", categoryBg]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["transparent", "#1B060F"]} style={StyleSheet.absoluteFill} />
         <Pressable
           onPress={handlePlay}
           style={({ pressed }) => [
