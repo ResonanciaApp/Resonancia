@@ -723,6 +723,7 @@ const styles = StyleSheet.create({
   },
   coleccionTitleRow: {
     flex: 1,
+    alignSelf: "stretch",
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
