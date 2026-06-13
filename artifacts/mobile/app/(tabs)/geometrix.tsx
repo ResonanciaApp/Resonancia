@@ -6245,17 +6245,17 @@ const styles = StyleSheet.create({
   /* ── Crystal Nebula card styles ── */
   cbOuter: {
     borderRadius: 18,
-    shadowColor: "#6584d4",
+    shadowColor: "#7B64FF",
     shadowOpacity: 0.28,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 3 },
     elevation: 10,
   },
   cbCard: {
-    backgroundColor: "rgba(8,14,36,0.97)",
+    backgroundColor: "rgba(16,9,31,0.97)",
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(101,132,212,0.48)",
+    borderColor: "rgba(123,100,255,0.45)",
     overflow: "hidden",
   },
   cbRow: {
@@ -6280,31 +6280,31 @@ const styles = StyleSheet.create({
   },
   cbDesc: {
     fontSize: 12,
-    color: "#7A8FA8",
+    color: "#c1b9d5",
     lineHeight: 17,
   },
   cbTag: {
     marginTop: 6,
     alignSelf: "flex-start" as const,
-    backgroundColor: "rgba(101,132,212,0.12)",
+    backgroundColor: "rgba(123,100,255,0.10)",
     borderWidth: 1,
-    borderColor: "rgba(101,132,212,0.2)",
+    borderColor: "rgba(123,100,255,0.22)",
     borderRadius: 20,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
   cbTagText: {
     fontSize: 10,
-    color: "#c7caec",
+    color: "#dbd1f3",
     letterSpacing: 0.5,
   },
   cbChevron: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "rgba(101,132,212,0.1)",
+    backgroundColor: "rgba(123,100,255,0.10)",
     borderWidth: 1,
-    borderColor: "rgba(101,132,212,0.2)",
+    borderColor: "rgba(123,100,255,0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -6337,7 +6337,7 @@ const styles = StyleSheet.create({
   },
   landingItemDesc: {
     fontSize: 12,
-    color: "#dbd1f3",
+    color: "#c1b9d5",
   },
   landingHint: {
     textAlign: "center",
