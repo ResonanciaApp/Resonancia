@@ -2,7 +2,18 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@clerk/react";
 import { toast } from "sonner";
 import { GLYPH_STRINGS } from "@/lib/glyph-strings";
-import { GripVertical, ChevronUp, ChevronDown, Eye, EyeOff, Save, RotateCcw } from "lucide-react";
+import { GripVertical, ChevronUp, ChevronDown, Eye, EyeOff, Save, RotateCcw, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -143,6 +154,7 @@ function GeometryRowItem({
   onMoveUp,
   onMoveDown,
   onChange,
+  onDelete,
 }: {
   row: GeometryRow;
   index: number;
@@ -150,6 +162,7 @@ function GeometryRowItem({
   onMoveUp: () => void;
   onMoveDown: () => void;
   onChange: (updated: Partial<GeometryRow>) => void;
+  onDelete: () => void;
 }) {
   const displayName = row.name || row.defaultName;
   // "Trazo fino" solo tiene efecto en geometrías dibujadas con líneas (su SVG
@@ -333,7 +346,7 @@ function GeometryRowItem({
         </div>
       </div>
 
-      {/* Visible toggle */}
+      {/* Visible toggle + delete */}
       <div className="flex flex-col items-center gap-1 pt-1 shrink-0">
         <button
           type="button"
@@ -354,6 +367,36 @@ function GeometryRowItem({
         <span className="text-[9px] text-muted-foreground/50">
           {row.visible ? "visible" : "oculta"}
         </span>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              type="button"
+              className="p-1.5 rounded-md transition-colors text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 mt-1"
+              title="Borrar geometría"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Borrar geometría?</AlertDialogTitle>
+              <AlertDialogDescription>
+                <span className="font-medium text-foreground">{displayName}</span> dejará de aparecer en
+                el carrusel de la app. Esta acción no se puede deshacer desde el panel.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={onDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Borrar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
@@ -408,6 +451,23 @@ export default function GeometrixPage() {
       return out;
     });
     setDirty(true);
+  }
+
+  async function handleDelete(id: string) {
+    try {
+      const token = await getToken();
+      const res = await fetch(`${API_BASE}/admin/geometrix/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", ...authHeaders(token) },
+      });
+      if (!res.ok) throw new Error("Error al borrar");
+      const data = await res.json();
+      setRows(data.geometries as GeometryRow[]);
+      setDirty(false);
+      toast.success("Geometría borrada");
+    } catch {
+      toast.error("No se pudo borrar la geometría");
+    }
   }
 
   async function handleSave() {
@@ -521,6 +581,7 @@ export default function GeometrixPage() {
                         onMoveUp={() => moveRow(catRows, index, index - 1)}
                         onMoveDown={() => moveRow(catRows, index, index + 1)}
                         onChange={(patch) => updateRow(row.id, patch)}
+                        onDelete={() => handleDelete(row.id)}
                       />
                     ))}
                   </CardContent>

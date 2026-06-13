@@ -10,6 +10,7 @@ export const geometrixSettingsTable = pgTable("geometrix_settings", {
   strokeMode: text("stroke_mode").notNull().default("natural"),
   outlineWidth: real("outline_width").notNull().default(0),
   wireframeDefault: boolean("wireframe_default").notNull().default(false),
+  deleted: boolean("deleted").notNull().default(false),
   visible: boolean("visible").notNull().default(true),
   description: text("description"),
   color: text("color"),

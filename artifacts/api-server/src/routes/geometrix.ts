@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { eq } from "drizzle-orm";
 import {
   db,
   geometrixSettingsTable,
@@ -128,16 +129,22 @@ function serializeSetting(
   };
 }
 
-function buildMerged(rows: GeometrixSetting[]) {
+function buildMerged(rows: GeometrixSetting[], { includeDeleted = false } = {}) {
   const rowMap = new Map(rows.map((r) => [r.id, r]));
   const catCounters: Record<string, number> = {};
 
-  return GEOMETRY_DEFAULTS.map((def) => {
-    const cat = def.category;
-    const fallback = catCounters[cat] ?? 0;
-    catCounters[cat] = fallback + 1;
-    return serializeSetting(def, rowMap.get(def.id), fallback);
-  });
+  return GEOMETRY_DEFAULTS
+    .filter((def) => {
+      if (includeDeleted) return true;
+      const row = rowMap.get(def.id);
+      return !row?.deleted;
+    })
+    .map((def) => {
+      const cat = def.category;
+      const fallback = catCounters[cat] ?? 0;
+      catCounters[cat] = fallback + 1;
+      return serializeSetting(def, rowMap.get(def.id), fallback);
+    });
 }
 
 // GET /admin/geometrix — lista completa con ajustes (admin)
@@ -205,6 +212,37 @@ router.put("/admin/geometrix", requireAuth, requireRole("admin"), async (req, re
     res.json({ geometries: buildMerged(rows) });
   } catch (err) {
     req.log.error({ err }, "Error updating geometrix settings");
+    res.status(500).json({ error: "Error interno" });
+  }
+});
+
+// DELETE /admin/geometrix/:id — soft-delete (marca deleted=true)
+router.delete("/admin/geometrix/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const { id } = req.params;
+  const isValid = GEOMETRY_DEFAULTS.some((g) => g.id === id);
+  if (!isValid) {
+    res.status(404).json({ error: "Geometría no encontrada" });
+    return;
+  }
+
+  try {
+    await db
+      .insert(geometrixSettingsTable)
+      .values({
+        id,
+        deleted: true,
+        visible: false,
+        updatedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: geometrixSettingsTable.id,
+        set: { deleted: true, visible: false, updatedAt: new Date() },
+      });
+
+    const rows = await db.select().from(geometrixSettingsTable);
+    res.json({ geometries: buildMerged(rows) });
+  } catch (err) {
+    req.log.error({ err }, "Error deleting geometry");
     res.status(500).json({ error: "Error interno" });
   }
 });
