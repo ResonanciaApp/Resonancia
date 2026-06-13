@@ -157,7 +157,6 @@ export function CommunityMixesCarousel() {
             <MixRow
               key={mix.id}
               mix={mix}
-              rank={i + 1}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => setMenuMix(mix)}
@@ -200,19 +199,16 @@ type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 
 function MixRow({
   mix,
-  rank,
   colors,
   onPress,
   onDotsPress,
 }: {
   mix: SharedMix;
-  rank: number;
   colors: Colors;
   onPress: () => void;
   onDotsPress: () => void;
 }) {
   const trending = mix.trending === true;
-  const isFirst = rank === 1;
   const dividerColor = "rgba(61,14,22,0.40)";
 
   return (
@@ -221,11 +217,6 @@ function MixRow({
         onPress={onPress}
         style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
       >
-        {/* Rank */}
-        <Text style={[styles.rank, { color: isFirst ? GOLD : "#3A4A5A" }]}>
-          {rank}
-        </Text>
-
         {/* Avatar del creador */}
         <CreatorAvatar author={mix.author} />
 
@@ -445,13 +436,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
     paddingVertical: 11,
-  },
-  rank: {
-    width: 20,
-    textAlign: "right",
-    fontSize: 13,
-    fontWeight: "700",
-    flexShrink: 0,
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
