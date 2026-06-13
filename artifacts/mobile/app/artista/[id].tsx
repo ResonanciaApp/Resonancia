@@ -38,7 +38,7 @@ export default function ArtistaScreen() {
 
   if (!artist) {
     return (
-      <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
+      <View style={[styles.root, { backgroundColor: "#4A0C0C" }]}>
         <StatusBar barStyle="light-content" />
         <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>

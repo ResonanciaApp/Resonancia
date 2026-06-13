@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -65,9 +66,10 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
       statusBarTranslucent
     >
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#1B060F" }]}
+        style={styles.root}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
+        <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
         {/* ── Paso: Lista de playlists ── */}
         {step === "list" && (
           <>

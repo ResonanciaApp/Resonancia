@@ -1140,7 +1140,7 @@ export default function ProfileScreen() {
                     <View
                       style={[
                         pStyles.thumbBg,
-                        { backgroundColor: "#1B060F", alignItems: "center", justifyContent: "center" },
+                        { backgroundColor: "#4A0C0C", alignItems: "center", justifyContent: "center" },
                         profileBgCreationId === null && pStyles.thumbBgOn,
                       ]}
                     >

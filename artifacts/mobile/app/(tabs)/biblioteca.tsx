@@ -1303,12 +1303,12 @@ const styles = StyleSheet.create({
   // ── Búsqueda overlay ──────────────────────────────────────────────────────────
   searchModalRoot: {
     flex: 1,
-    backgroundColor: "#1B060F",
+    backgroundColor: "#4A0C0C",
   },
   searchOverlay: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1B060F",
+    backgroundColor: "#4A0C0C",
     paddingTop: Platform.OS === "ios" ? 56 : 36,
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
@@ -1324,7 +1324,7 @@ const styles = StyleSheet.create({
   cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
   searchEmpty: {
     flex: 1,
-    backgroundColor: "#1B060F",
+    backgroundColor: "#4A0C0C",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,

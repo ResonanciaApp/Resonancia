@@ -196,7 +196,7 @@ function TabLayoutInner() {
   return (
     <View style={{ flex: 1 }}>
       <Tabs
-        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#1B060F" } }}
+        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#4A0C0C" } }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />

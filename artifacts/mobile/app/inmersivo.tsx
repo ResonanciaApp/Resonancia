@@ -140,7 +140,7 @@ export default function InmersivoScreen() {
             cachePolicy="memory-disk"
           />
         ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1B060F" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#4A0C0C" }]} />
         )}
       </Animated.View>
       <LinearGradient
@@ -208,7 +208,7 @@ export default function InmersivoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1B060F" },
+  root: { flex: 1, backgroundColor: "#4A0C0C" },
 
   header: {
     flexDirection: "row",

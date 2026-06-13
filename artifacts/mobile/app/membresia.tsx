@@ -21,7 +21,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useSubscription } from "@/lib/revenuecat";
 
 const P = {
-  bg0:        "#1B060F",
+  bg0:        "#4A0C0C",
   bg1:        "#27070E",
   bg2:        "#4A0C0C",
   glow:       "#3D0E16",

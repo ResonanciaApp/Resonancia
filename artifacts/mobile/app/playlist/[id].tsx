@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
@@ -31,7 +32,7 @@ import { getGuideById } from "@/data/guides";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
-const BG = "#1B060F";
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 const GOLD = "#D4AF37";
 const TEXT = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
@@ -86,7 +87,8 @@ export default function PlaylistDetailScreen() {
 
   if (!playlist) {
     return (
-      <View style={[styles.root, { backgroundColor: BG }]}>
+      <View style={styles.root}>
+        <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="list" size={48} color={MUTED} style={{ marginBottom: 16 }} />
           <Text style={{ color: MUTED, fontSize: 16 }}>Playlist no encontrada</Text>
@@ -123,7 +125,8 @@ export default function PlaylistDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: BG }]}>
+    <View style={styles.root}>
+      <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}

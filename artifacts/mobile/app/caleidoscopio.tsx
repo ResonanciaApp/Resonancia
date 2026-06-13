@@ -24,6 +24,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient as ExpoGradient } from "expo-linear-gradient";
 import Svg, { Circle, ClipPath, Defs, G, LinearGradient, Path, Stop } from "react-native-svg";
 
 // ── Paletas ───────────────────────────────────────────────────────────────────
@@ -429,6 +430,7 @@ export default function Caleidoscopio() {
 
   return (
     <View style={styles.root}>
+      <ExpoGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
 
       {/* Canvas */}
@@ -569,7 +571,7 @@ export default function Caleidoscopio() {
 // ── Estilos ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  root:             { flex: 1, backgroundColor: "#1B060F" },
+  root:             { flex: 1 },
   topBar:           { position: "absolute", top: 0, left: 0, right: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingBottom: 12, zIndex: 20 },
   iconBtn:          { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)" },
   topCenter:        { alignItems: "center", flex: 1, paddingHorizontal: 8 },

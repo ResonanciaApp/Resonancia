@@ -17,7 +17,7 @@ import {
 import { SocialAuthButtons } from "@/components/SocialAuthButtons";
 
 const COLORS = {
-  bg: "#1B060F",
+  bg: "#4A0C0C",
   card: "rgba(74,12,12,0.08)",
   primary: "#D4AF37",
   accent: "#D4AF37",
@@ -75,7 +75,7 @@ export default function SignUpScreen() {
     (signUp.missingFields?.length ?? 0) === 0;
 
   return (
-    <LinearGradient colors={[COLORS.bg, "#080F0A"]} style={styles.container}>
+    <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}

@@ -107,7 +107,7 @@ export default function TagScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#1B060F",
+            backgroundColor: "#4A0C0C",
             borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },

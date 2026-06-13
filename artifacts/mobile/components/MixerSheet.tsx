@@ -73,7 +73,7 @@ function isLightGradient(g: readonly [string, string, string]): boolean {
 
 /** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
-  bg: "#1B060F",
+  bg: "#4A0C0C",
   handle: "rgba(74,12,12,0.08)",
   trackBg: "#27070E",
   trackBorder: "rgba(61,14,22,0.40)",
