@@ -356,19 +356,18 @@ export default function HomeScreen() {
                     }}
                     style={({ pressed }) => [
                       styles.headerTabChip,
-                      sel && tab.id === "musica" && styles.sesMusicaChipActive,
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
-                    {sel && tab.id !== "musica" && (
+                    {sel && (
                       <LinearGradient
-                        colors={["#CE8D4D", "#BC5F2C"]}
+                        colors={["#D4AF37", "#E9C46A"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={StyleSheet.absoluteFill}
                       />
                     )}
-                    <Text style={[styles.headerTabText, sel && tab.id !== "musica" && styles.headerTabTextActive]}>
+                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
                       {tab.label}
                     </Text>
                   </Pressable>
@@ -387,10 +386,17 @@ export default function HomeScreen() {
                           }}
                           style={({ pressed }) => [
                             styles.headerTabChip,
-                            sesAncestral && styles.sesAncestralChipActive,
                             { opacity: pressed ? 0.7 : 1 },
                           ]}
                         >
+                          {sesAncestral && (
+                            <LinearGradient
+                              colors={["#D4AF37", "#E9C46A"]}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 0 }}
+                              style={StyleSheet.absoluteFill}
+                            />
+                          )}
                           <Text style={styles.headerTabText}>Ancestral</Text>
                         </Pressable>
                         <Pressable
@@ -401,10 +407,17 @@ export default function HomeScreen() {
                           }}
                           style={({ pressed }) => [
                             styles.headerTabChip,
-                            sesMeditacion && styles.sesMeditacionChipActive,
                             { opacity: pressed ? 0.7 : 1 },
                           ]}
                         >
+                          {sesMeditacion && (
+                            <LinearGradient
+                              colors={["#D4AF37", "#E9C46A"]}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 0 }}
+                              style={StyleSheet.absoluteFill}
+                            />
+                          )}
                           <Text style={styles.headerTabText}>Meditación</Text>
                         </Pressable>
                       </RAnimated.View>
@@ -632,15 +645,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     paddingLeft: 6,
-  },
-  sesAncestralChipActive: {
-    backgroundColor: "#47633E",
-  },
-  sesMeditacionChipActive: {
-    backgroundColor: "#6B4C7C",
-  },
-  sesMusicaChipActive: {
-    backgroundColor: "#406EAC",
   },
   headerTabText: {
     fontSize: 13,
