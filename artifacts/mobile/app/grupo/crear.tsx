@@ -21,7 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useGrupos } from "@/hooks/useGrupos";
 
-const BG_GRADIENT = ["#0B0F14", "#0B0F14", "#0B0F14"] as const;
+const BG_GRADIENT = ["#1B060F", "#1B060F", "#1B060F"] as const;
 
 // ─── Image library ────────────────────────────────────────────────────────────
 const GALLERY = [
@@ -106,7 +106,7 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#0B0F14" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#1B060F" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
   name: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },
@@ -236,7 +236,7 @@ export default function CrearGrupoScreen() {
               returnKeyType="done"
               onSubmitEditing={() => canNext1 && setStep(2)}
             />
-            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#BE9650" : colors.mutedForeground }]}>
+            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#D4AF37" : colors.mutedForeground }]}>
               {remaining}
             </Text>
           </View>
@@ -406,7 +406,7 @@ export default function CrearGrupoScreen() {
           {step === 5 && (
             <>
               <View style={styles.successIcon}>
-                <View style={[styles.successGrad, { backgroundColor: "#BE9650" }]}>
+                <View style={[styles.successGrad, { backgroundColor: "#D4AF37" }]}>
                   <Feather name="check" size={28} color="#070E09" />
                 </View>
               </View>
@@ -486,9 +486,9 @@ const styles = StyleSheet.create({
   // Gallery
   galleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   galleryItem: { borderRadius: 10, overflow: "hidden", position: "relative" },
-  galleryItemSelected: { borderWidth: 2.5, borderColor: "#BE9650", borderRadius: 10 },
+  galleryItemSelected: { borderWidth: 2.5, borderColor: "#D4AF37", borderRadius: 10 },
   galleryImg: { width: 68, height: 68 },
-  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#BE9650", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
+  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#D4AF37", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
 
   // Success
   successIcon: { alignSelf: "center", marginBottom: 16, borderRadius: 30, overflow: "hidden" },

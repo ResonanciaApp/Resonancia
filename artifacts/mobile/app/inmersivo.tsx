@@ -19,8 +19,8 @@ import { getSoundImage } from "@/config/sound-images";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundById, hasSoundFile } from "@/data/sounds";
 
-const ACCENT = "#A8C4A8";
-const TRACK = "rgba(255,255,255,0.16)";
+const ACCENT = "#D4AF37";
+const TRACK = "rgba(61,14,22,0.40)";
 
 function formatRemaining(seconds: number | null): string {
   if (seconds == null) return "Sin límite";
@@ -140,11 +140,11 @@ export default function InmersivoScreen() {
             cachePolicy="memory-disk"
           />
         ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0B130A" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1B060F" }]} />
         )}
       </Animated.View>
       <LinearGradient
-        colors={["rgba(6,11,6,0.55)", "rgba(6,11,6,0.35)", "rgba(6,11,6,0.92)"]}
+        colors={["rgba(27,6,15,0.55)", "rgba(27,6,15,0.35)", "rgba(27,6,15,0.92)"]}
         locations={[0, 0.45, 1]}
         style={StyleSheet.absoluteFill}
       />
@@ -177,7 +177,7 @@ export default function InmersivoScreen() {
           <Feather
             name={isPlaying ? "pause" : "play"}
             size={36}
-            color="#0B130A"
+            color="#1B060F"
             style={isPlaying ? undefined : { marginLeft: 4 }}
           />
         </Pressable>
@@ -208,7 +208,7 @@ export default function InmersivoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#060B06" },
+  root: { flex: 1, backgroundColor: "#1B060F" },
 
   header: {
     flexDirection: "row",
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   headerCenter: { flex: 1, alignItems: "center" },
   headerKicker: {
-    color: "rgba(232,245,224,0.6)",
+    color: "rgba(242,231,228,0.45)",
     fontSize: 10,
     fontWeight: "700",
     letterSpacing: 1.5,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   remainingLabel: {
-    color: "rgba(232,245,224,0.65)",
+    color: "rgba(242,231,228,0.45)",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.5,
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 42,
-    backgroundColor: "#E8F5E0",
+    backgroundColor: "#D4AF37",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -271,13 +271,13 @@ const styles = StyleSheet.create({
   },
 
   panel: {
-    backgroundColor: "rgba(10,18,9,0.66)",
+    backgroundColor: "rgba(27,6,15,0.66)",
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
     paddingHorizontal: 20,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderColor: "rgba(168,196,168,0.14)",
+    borderColor: "rgba(61,14,22,0.40)",
   },
   panelTitle: {
     color: "#FFFFFF",

@@ -57,7 +57,7 @@ export default function SerieScreen() {
           {
             paddingTop: topPad,
             backgroundColor: colors.background,
-            borderBottomColor: "rgba(182,149,95,0.15)",
+            borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },
         ]}
@@ -69,7 +69,7 @@ export default function SerieScreen() {
             hitSlop={10}
             style={({ pressed }) => [
               styles.stickyBack,
-              { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.2)", opacity: pressed ? 0.7 : 1 },
+              { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.2)", opacity: pressed ? 0.7 : 1 },
             ]}
           >
             <Feather name="arrow-left" size={18} color={colors.foreground} />
@@ -128,8 +128,8 @@ export default function SerieScreen() {
                 style={({ pressed }) => [
                   styles.row,
                   {
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    borderColor: "rgba(182,149,95,0.14)",
+                    backgroundColor: "rgba(74,12,12,0.08)",
+                    borderColor: "rgba(212,175,55,0.14)",
                     opacity: pressed ? 0.82 : 1,
                   },
                 ]}

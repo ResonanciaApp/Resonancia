@@ -37,7 +37,7 @@ const DURATION_FILTERS = [
   { label: "30+ min",   min: 31, max: 9999 },
 ];
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function TagScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -107,8 +107,8 @@ export default function TagScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#090D20",
-            borderBottomColor: "rgba(182,149,95,0.15)",
+            backgroundColor: "#1B060F",
+            borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },
         ]}
@@ -120,7 +120,7 @@ export default function TagScreen() {
             hitSlop={10}
             style={({ pressed }) => [
               styles.stickyBack,
-              { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.2)", opacity: pressed ? 0.7 : 1 },
+              { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.2)", opacity: pressed ? 0.7 : 1 },
             ]}
           >
             <Feather name="arrow-left" size={18} color={colors.foreground} />
@@ -181,7 +181,7 @@ export default function TagScreen() {
               styles.filterPill,
               {
                 backgroundColor: !durationFilter ? colors.primary : colors.card,
-                borderColor: !durationFilter ? colors.primary : "rgba(182,149,95,0.25)",
+                borderColor: !durationFilter ? colors.primary : "rgba(212,175,55,0.25)",
               },
             ]}
           >
@@ -199,7 +199,7 @@ export default function TagScreen() {
                   styles.filterPill,
                   {
                     backgroundColor: active ? colors.primary : colors.card,
-                    borderColor: active ? colors.primary : "rgba(182,149,95,0.25)",
+                    borderColor: active ? colors.primary : "rgba(212,175,55,0.25)",
                   },
                 ]}
               >
@@ -212,7 +212,7 @@ export default function TagScreen() {
         </ScrollView>
 
         {filteredSessions.length === 0 ? (
-          <View style={[styles.emptyBox, { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.15)" }]}>
+          <View style={[styles.emptyBox, { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.15)" }]}>
             <Feather name="inbox" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Sin sesiones en este filtro</Text>
             <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>Probá otra duración</Text>
@@ -274,7 +274,7 @@ export default function TagScreen() {
                     onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.listRow,
-                      { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.08)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <View style={[styles.listThumb, { backgroundColor: colors.card }]}>

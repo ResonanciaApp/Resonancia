@@ -283,7 +283,7 @@ export default function CommunityMixScreen() {
         </ScrollView>
 
         {/* Glass panel */}
-        <View style={[styles.glassPanel, { backgroundColor: "rgba(21,26,35,0.82)", borderColor: "rgba(255,255,255,0.09)" }]}>
+        <View style={[styles.glassPanel, { backgroundColor: "rgba(27,6,15,0.88)", borderColor: "rgba(61,14,22,0.50)" }]}>
 
           {/* Categoría + título */}
           {categoryMeta && (
@@ -296,7 +296,7 @@ export default function CommunityMixScreen() {
           </Text>
 
           {/* Autor */}
-          <View style={[styles.authorRow, { borderBottomColor: "rgba(255,255,255,0.07)" }]}>
+          <View style={[styles.authorRow, { borderBottomColor: "rgba(61,14,22,0.40)" }]}>
             {authorAvatar ? (
               <Image
                 source={{ uri: authorAvatar }}
@@ -304,7 +304,7 @@ export default function CommunityMixScreen() {
                 contentFit="cover"
               />
             ) : (
-              <View style={[styles.avatar, { backgroundColor: "rgba(190,150,80,0.12)", borderColor: `${colors.primary}44` }]}>
+              <View style={[styles.avatar, { backgroundColor: "rgba(212,175,55,0.12)", borderColor: `${colors.primary}44` }]}>
                 <Text style={[styles.avatarTxt, { color: colors.accent }]}>{authorInitial}</Text>
               </View>
             )}
@@ -337,7 +337,7 @@ export default function CommunityMixScreen() {
           <View style={styles.actions}>
             <Pressable
               onPress={handleLike}
-              style={[styles.actionBtn, { backgroundColor: "rgba(255,255,255,0.05)" }]}
+              style={[styles.actionBtn, { backgroundColor: "rgba(74,12,12,0.08)" }]}
             >
               <Feather
                 name="heart"
@@ -351,7 +351,7 @@ export default function CommunityMixScreen() {
 
             <Pressable
               onPress={handleShare}
-              style={[styles.actionBtn, { backgroundColor: "rgba(255,255,255,0.05)" }]}
+              style={[styles.actionBtn, { backgroundColor: "rgba(74,12,12,0.08)" }]}
             >
               <Feather name="share-2" size={20} color={colors.mutedForeground} />
               <Text style={[styles.actionTxt, { color: colors.foreground }]}>Compartir</Text>
@@ -372,7 +372,7 @@ export default function CommunityMixScreen() {
           </View>
 
           {/* Caja para escribir — sin borde */}
-          <View style={[styles.composer, { backgroundColor: "rgba(255,255,255,0.05)" }]}>
+          <View style={[styles.composer, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
             <TextInput
               value={draft}
               onChangeText={setDraft}
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 40, height: 40, borderRadius: 20,
     alignItems: "center", justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
 
   soundsRow: {
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     top: 4, left: 16, right: 16, bottom: 4,
     borderRadius: 29,
     opacity: 0.35,
-    shadowColor: "#BE9650",
+    shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 22,
     shadowOpacity: 1,

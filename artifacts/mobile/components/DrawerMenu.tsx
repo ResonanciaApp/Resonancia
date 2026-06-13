@@ -116,7 +116,7 @@ export function DrawerMenu() {
 
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <LinearGradient
-          colors={["#090D20", "#080A18", "#06070F"]}
+          colors={["#4A0C0C", "#27070E", "#1B060F"]}
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24 }]}
         >
           {/* Perfil del usuario (si está logueado) — con X a la derecha */}
@@ -126,7 +126,7 @@ export function DrawerMenu() {
                 <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
               ) : (
                 <View style={styles.profilePhotoFallback}>
-                  <Feather name="user" size={22} color="#BE9650" />
+                  <Feather name="user" size={22} color="#D4AF37" />
                 </View>
               )}
               <View style={styles.profileInfo}>
@@ -136,17 +136,17 @@ export function DrawerMenu() {
                   style={styles.verPerfilBtn}
                 >
                   <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                  <Feather name="chevron-right" size={11} color="#BE9650" />
+                  <Feather name="chevron-right" size={11} color="#D4AF37" />
                 </Pressable>
               </View>
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#BE9650" />
+                <Feather name="x" size={20} color="#D4AF37" />
               </Pressable>
             </View>
           ) : (
             <View style={styles.closeBtnRow}>
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#BE9650" />
+                <Feather name="x" size={20} color="#D4AF37" />
               </Pressable>
             </View>
           )}
@@ -171,7 +171,7 @@ export function DrawerMenu() {
                   )}
                   {item.label === "Premium" ? (
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-                      <Text style={[styles.itemLabel, { color: "#BE9650" }]}>Premium</Text>
+                      <Text style={[styles.itemLabel, { color: "#D4AF37" }]}>Premium</Text>
                       {isPremium && (
                         <View style={styles.premiumCheck}>
                           <Feather name="check" size={11} color="#5FB98C" />
@@ -187,7 +187,7 @@ export function DrawerMenu() {
               ))}
             </View>
 
-            <View style={[styles.divider, { backgroundColor: "#BE965010", marginVertical: 16 }]} />
+            <View style={[styles.divider, { backgroundColor: "#D4AF3710", marginVertical: 16 }]} />
 
             <View style={styles.itemGroup}>
               {SECONDARY_ITEMS.map((item) => (
@@ -258,15 +258,15 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#BE9650",
+    borderColor: "#D4AF37",
   },
   profilePhotoFallback: {
     width: 48,
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#BE9650",
-    backgroundColor: "rgba(182,149,95,0.12)",
+    borderColor: "#D4AF37",
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   verPerfilText: {
-    color: "#BE9650",
+    color: "#D4AF37",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  itemPressed: { backgroundColor: "rgba(182,149,95,0.08)" },
+  itemPressed: { backgroundColor: "rgba(212,175,55,0.08)" },
   itemIcon: { width: 26, alignItems: "center" },
   premiumCheck: {
     width: 18,

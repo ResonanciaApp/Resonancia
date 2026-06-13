@@ -33,7 +33,7 @@ import {
 } from "@/data/sounds";
 
 // ── Paleta Mármol Blanco ──────────────────────────────────────────────────────
-const GOLD  = "#BE9650";
+const GOLD  = "#D4AF37";
 const DARK  = "#1A1E2B";
 const MUTED = "#6B7A96";
 
@@ -219,7 +219,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   const tiltDir   = idx % 2 === 0 ? "-4deg" : "4deg";
   const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
   const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
-  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(190,150,80,0)", "rgba(190,150,80,1)"] });
+  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(212,175,55,0)", "rgba(212,175,55,1)"] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
@@ -233,7 +233,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
         {image ? (
           <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
         ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
         )}
         {!decorated && (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)", borderRadius: 999 }]} />
@@ -367,7 +367,7 @@ export default function MiMusicaBlancoScreen() {
                   <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
                 ) : (
                   <View style={styles.avatarFallback}>
-                    <Feather name="user" size={15} color="#7A8FA8" />
+                    <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
                   </View>
                 )}
               </Pressable>
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
-  avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(190,150,80,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(190,150,80,0.25)" },
+  avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212,175,55,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(212,175,55,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: DARK },
   heartBtn:  {

@@ -22,7 +22,7 @@ const STACK_SHIFT = 15;
 const MAX_STACK = 3;
 
 // Solid dark-indigo — sin transparencias
-const SOLID_BG = "#1c2240";
+const SOLID_BG = "#27070E";
 const BORDER_R = 12;
 
 function formatElapsed(sec: number): string {
@@ -221,11 +221,11 @@ const styles = StyleSheet.create({
   // ── Sesión ────────────────────────────────────────────────────
   progressBar: {
     height: 2,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(61,14,22,0.40)",
   },
   progressFill: {
     height: 2,
-    backgroundColor: "#BE9650",
+    backgroundColor: "#D4AF37",
     borderRadius: 1,
   },
 
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   stackFallback: {
-    backgroundColor: "rgba(190,150,80,0.18)",
+    backgroundColor: "rgba(212,175,55,0.18)",
   },
   timerText: {
     fontSize: 14,
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "700",
     letterSpacing: 0.8,
-    color: "#090F17",
+    color: "#1B060F",
     backgroundColor: "#FFFFFF",
     overflow: "hidden",
     borderRadius: 10,

@@ -4,8 +4,8 @@ import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
 
 const BLUE_BG       = "#0D1825";
 const BLUE_CHIP_BG  = "rgba(100,185,230,0.12)";
-const BLUE_ACCENT   = "#BE9650";
-const BLUE_MUTED    = "#7A8FA8";
+const BLUE_ACCENT   = "#D4AF37";
+const BLUE_MUTED    = "rgba(242,231,228,0.45)";
 
 const AVATARS = [
   require("@/assets/images/sessions/session-1.jpg"),

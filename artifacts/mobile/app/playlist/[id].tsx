@@ -31,10 +31,10 @@ import { getGuideById } from "@/data/guides";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
-const BG = "#080B1A"; // mismo color que Inicio
-const GOLD = "#BE9650";
-const TEXT = "#EDE1D3";
-const MUTED = "#7A8FA8";
+const BG = "#1B060F";
+const GOLD = "#D4AF37";
+const TEXT = "#F4DAD5";
+const MUTED = "rgba(242,231,228,0.45)";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -218,7 +218,7 @@ export default function PlaylistDetailScreen() {
               style={({ pressed }) => [styles.playAllFab, { opacity: pressed ? 0.8 : 1 }]}
               onPress={handlePlayAll}
             >
-              <Feather name="play" size={20} color="#090F17" />
+              <Feather name="play" size={20} color="#1B060F" />
             </Pressable>
           )}
         </View>
@@ -372,9 +372,9 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 8,
-    backgroundColor: "rgba(190,150,80,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.2)",
+    borderColor: "rgba(212,175,55,0.20)",
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5, borderBottomColor: GOLD, paddingVertical: 2, padding: 0,
   },
   cambiarBtn: {
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.18)",
+    borderColor: "rgba(61,14,22,0.40)",
   },
   addBtnText: { color: TEXT, fontSize: 14, fontWeight: "600" },
 
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.06)",
+    borderBottomColor: "rgba(61,14,22,0.30)",
   },
   orderNum: { width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
   thumb: { width: 52, height: 52, borderRadius: 8 },
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#080B1A",
+    borderColor: "#1B060F",
   },
 });
 
@@ -620,7 +620,7 @@ const modalStyles = StyleSheet.create({
   sheet: {
     position: "absolute",
     bottom: 0, left: 0, right: 0,
-    backgroundColor: "#0E1326",
+    backgroundColor: "#27070E",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
@@ -629,7 +629,7 @@ const modalStyles = StyleSheet.create({
     alignSelf: "center",
     width: 36, height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     marginTop: 10, marginBottom: 4,
   },
   sheetTitle: {
@@ -645,7 +645,7 @@ const modalStyles = StyleSheet.create({
     gap: 14,
     paddingVertical: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetRowText: {
     color: TEXT,
@@ -671,7 +671,7 @@ const modalStyles = StyleSheet.create({
     alignItems: "center",
     margin: 6,
     paddingVertical: 12,
-    backgroundColor: "rgba(190,150,80,0.05)",
+    backgroundColor: "rgba(212,175,55,0.05)",
     borderRadius: 12,
   },
   geometryThumb: {
@@ -696,10 +696,10 @@ const modalStyles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   tabActive: {
-    backgroundColor: "rgba(190,150,80,0.15)",
+    backgroundColor: "rgba(212,175,55,0.15)",
   },
   tabText: {
     color: MUTED,
@@ -714,7 +714,7 @@ const modalStyles = StyleSheet.create({
     alignItems: "center",
     margin: 6,
     paddingVertical: 10,
-    backgroundColor: "rgba(190,150,80,0.05)",
+    backgroundColor: "rgba(212,175,55,0.05)",
     borderRadius: 12,
   },
   creationThumb: {

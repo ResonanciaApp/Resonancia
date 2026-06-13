@@ -117,7 +117,7 @@ export default function CreatorProfileScreen() {
           <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
         ) : mixes.length === 0 ? (
           <View style={styles.empty}>
-            <Feather name="music" size={28} color="rgba(190,150,80,0.35)" />
+            <Feather name="music" size={28} color="rgba(212,175,55,0.35)" />
             <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
               Este creador todavía no tiene mezclas públicas.
             </Text>
@@ -133,7 +133,7 @@ export default function CreatorProfileScreen() {
                 }
                 style={({ pressed }) => [
                   styles.mixRow,
-                  { backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.7 : 1 },
+                  { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.7 : 1 },
                 ]}
               >
                 <SoundStack sounds={mix.sounds} />
@@ -146,7 +146,7 @@ export default function CreatorProfileScreen() {
                     {mix.likes > 0 ? ` · ${mix.likes} me gusta` : ""}
                   </Text>
                 </View>
-                <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.25)" />
+                <Feather name="chevron-right" size={18} color="rgba(244,218,213,0.25)" />
               </Pressable>
             ))}
           </View>
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     height: STACK_THUMB,
     borderRadius: STACK_THUMB / 2,
     borderWidth: 1.5,
-    borderColor: "#0B0F14",
+    borderColor: "#1B060F",
     overflow: "hidden",
   },
   stackImg: { width: "100%", height: "100%" },

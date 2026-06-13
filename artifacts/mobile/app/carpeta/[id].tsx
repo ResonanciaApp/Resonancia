@@ -22,10 +22,10 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
-const BG = ["#090D20", "#080A18", "#06070F"] as const;
-const GOLD = "#BE9650";
-const TEXT = "#EDE1D3";
-const MUTED = "#7A8FA8";
+const BG = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const GOLD = "#D4AF37";
+const TEXT = "#F4DAD5";
+const MUTED = "rgba(242,231,228,0.45)";
 const SHEET_BG = "#0E1326";
 
 export default function CarpetaDetailScreen() {
@@ -406,15 +406,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.06)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   plCover: {
     width: 52,
     height: 52,
     borderRadius: 8,
-    backgroundColor: "rgba(190,150,80,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.18)",
+    borderColor: "rgba(212,175,55,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     marginBottom: 8,
     marginTop: 4,
   },
@@ -450,13 +450,13 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.06)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetIconWrap: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     alignItems: "center",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.15)",
+    borderColor: "rgba(212,175,55,0.15)",
   },
   nameCloseBtn: { alignSelf: "flex-end", marginBottom: 8 },
   nameCardTitle: {
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   },
   nameInputWrap: {
     width: "100%",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 10,
     borderBottomWidth: 2,
     borderBottomColor: GOLD,
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   nameCreateBtnText: {
-    color: "#0B0F14",
+    color: "#1B060F",
     fontSize: 15,
     fontWeight: "800",
     letterSpacing: 0.3,

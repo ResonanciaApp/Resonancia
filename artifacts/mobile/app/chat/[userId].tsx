@@ -636,7 +636,7 @@ export default function ChatScreen() {
                 </Text>
               </View>
               <Pressable onPress={sendRecording} style={styles.sendBtn}>
-                <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>
@@ -675,7 +675,7 @@ export default function ChatScreen() {
                 disabled={draft.trim().length === 0 || sendMsg.isPending}
                 style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
               >
-                <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#080F0A" />
                 </LinearGradient>
               </Pressable>
@@ -776,7 +776,7 @@ function MessageBubble({
           style={[
             styles.sessionCard,
             {
-              backgroundColor: isMine ? "#BE9650" : colors.card,
+              backgroundColor: isMine ? "#D4AF37" : colors.card,
               borderColor: isMine ? "transparent" : colors.border,
             },
           ]}
@@ -813,7 +813,7 @@ function MessageBubble({
             styles.bubble,
             isMine
               ? {
-                  backgroundColor: "#BE9650",
+                  backgroundColor: "#D4AF37",
                   borderTopRightRadius: groupedWithPrev ? compactRadius : 18,
                   borderBottomRightRadius: groupedWithNext ? compactRadius : tailRadius,
                 }
@@ -841,7 +841,7 @@ function MessageBubble({
           <Feather
             name={message.readAt ? "check-circle" : "check"}
             size={11}
-            color={message.readAt ? "#BE9650" : colors.mutedForeground}
+            color={message.readAt ? "#D4AF37" : colors.mutedForeground}
           />
           <Text style={[styles.readText, { color: colors.mutedForeground }]}>
             {message.readAt ? "Visto" : "Enviado"}
@@ -991,7 +991,7 @@ function PendingBubble({ item }: { item: PendingAttachment }) {
           <View
             style={[
               styles.audioBubble,
-              { backgroundColor: "#BE9650", borderWidth: 0 },
+              { backgroundColor: "#D4AF37", borderWidth: 0 },
             ]}
           >
             <View style={styles.audioPlayBtn}>
@@ -1235,7 +1235,7 @@ function AudioAttachment({
   };
 
   const progressPct = totalMs > 0 ? Math.min(1, positionMs / totalMs) : 0;
-  const bg = isMine ? "#BE9650" : colors.card;
+  const bg = isMine ? "#D4AF37" : colors.card;
   const fg = isMine ? "#080F0A" : colors.foreground;
   const trackBg = isMine ? "#080F0A33" : colors.border;
   const trackFill = isMine ? "#080F0A" : colors.primary;

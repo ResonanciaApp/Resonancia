@@ -26,10 +26,10 @@ import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
-const FG      = "#EDE1D3";
-const MUTED   = "#7A8FA8";
-const GOLD    = "#BE9650";
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const FG      = "#F4DAD5";
+const MUTED   = "rgba(242,231,228,0.45)";
+const GOLD    = "#D4AF37";
 const BORDER  = "#1E2733";
 const THUMB   = 44;
 const SHIFT   = 26;
@@ -68,7 +68,7 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
             {img ? (
               <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
             ) : (
-              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(182,149,95,0.15)" }]}>
+              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]}>
                 <Feather name="music" size={14} color={colors.primary} />
               </View>
             )}
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   tabBlockSel: {
     borderColor: "transparent",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   tabLabel: { fontSize: 15, letterSpacing: 0.1 },
 

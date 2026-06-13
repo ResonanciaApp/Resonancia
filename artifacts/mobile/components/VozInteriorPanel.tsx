@@ -14,7 +14,7 @@ import { type VozEntry, useVozInterior } from "@/hooks/useVozInterior";
 import { useColors } from "@/hooks/useColors";
 
 const BAR_COUNT = 7;
-const ACCENT = "#BE9650";
+const ACCENT = "#D4AF37";
 const PINK = "#D4709A";
 const GRADIENT: [string, string] = ["#241C0C", "#141008"];
 
@@ -213,7 +213,7 @@ export function VozInteriorPanel() {
   };
 
   return (
-    <View style={[styles.panel, { backgroundColor: "rgba(255,255,255,0.05)" }]}>
+    <View style={[styles.panel, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
@@ -302,9 +302,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.06)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   headerLeft: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
   headerIconBg: {
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 5,

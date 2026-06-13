@@ -41,7 +41,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 
@@ -107,7 +107,7 @@ export default function AmigosScreen() {
 function GuestPrompt() {
   const colors = useColors();
   return (
-    <View style={[styles.guestCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
+    <View style={[styles.guestCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
       <Feather name="users" size={28} color={colors.primary} />
       <Text style={[styles.guestTitle, { color: colors.foreground }]}>Crea tu cuenta para agregar amigos</Text>
       <Text style={[styles.guestText, { color: colors.mutedForeground }]}>
@@ -118,9 +118,9 @@ function GuestPrompt() {
         onPress={() => router.push("/(auth)/sign-up")}
         style={({ pressed }) => [styles.guestBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
-        <LinearGradient colors={["#C8A55E", "#BE9650", "#B08840"]} style={styles.guestBtnGrad}>
+        <LinearGradient colors={["#D4AF37", "#C49F27", "#B08820"]} style={styles.guestBtnGrad}>
           <Text style={styles.guestBtnText}>Crear cuenta</Text>
-          <Feather name="arrow-right" size={16} color="#0B0F14" />
+          <Feather name="arrow-right" size={16} color="#1B060F" />
         </LinearGradient>
       </Pressable>
       <Pressable onPress={() => router.push("/(auth)/sign-in")}>
@@ -196,7 +196,7 @@ function SignedInAmigos() {
 
   return (
     <>
-      <View style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
+      <View style={[styles.searchRow, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
         <Feather name="search" size={16} color={colors.mutedForeground} />
         <TextInput
           value={search}
@@ -303,7 +303,7 @@ function SearchResultRow({
   const colors = useColors();
   const status = user.friendshipStatus;
   return (
-    <View style={[styles.friendRow, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
+    <View style={[styles.friendRow, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
       <Avatar user={user} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: colors.foreground }]}>{user.displayName}</Text>
@@ -312,7 +312,7 @@ function SearchResultRow({
       {status === "none" && (
         <Pressable onPress={onAdd} style={[styles.acceptBtn, { backgroundColor: colors.primary }]}>
           <View style={styles.acceptGrad}>
-            <Feather name="user-plus" size={14} color="#0B0F14" />
+            <Feather name="user-plus" size={14} color="#1B060F" />
           </View>
         </Pressable>
       )}
@@ -322,7 +322,7 @@ function SearchResultRow({
       {status === "pending_incoming" && (
         <Pressable onPress={onAdd} style={[styles.acceptBtn, { backgroundColor: colors.primary }]}>
           <View style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#0B0F14" />
+            <Feather name="check" size={14} color="#1B060F" />
           </View>
         </Pressable>
       )}
@@ -345,7 +345,7 @@ function RequestRow({
   const colors = useColors();
   const requester = request.requester;
   return (
-    <View style={[styles.requestCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
+    <View style={[styles.requestCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
       <Avatar user={requester} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: colors.foreground }]}>{requester.displayName}</Text>
@@ -354,7 +354,7 @@ function RequestRow({
       <View style={styles.requestBtns}>
         <Pressable style={[styles.acceptBtn, { backgroundColor: colors.primary }]} onPress={onAccept}>
           <View style={styles.acceptGrad}>
-            <Feather name="check" size={14} color="#0B0F14" />
+            <Feather name="check" size={14} color="#1B060F" />
           </View>
         </Pressable>
         <Pressable
@@ -387,7 +387,7 @@ function FriendRow({
       delayLongPress={350}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />
@@ -418,7 +418,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
       onPress={() => router.push(`/chat/${friend.id}` as never)}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />

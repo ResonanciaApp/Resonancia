@@ -30,7 +30,7 @@ function PlayOverlay() {
   return (
     <View style={styles.playOverlay} pointerEvents="none">
       <View style={styles.playCircle}>
-        <Feather name="play" size={16} color="#090F17" style={{ marginLeft: 2 }} />
+        <Feather name="play" size={16} color="#1B060F" style={{ marginLeft: 2 }} />
       </View>
     </View>
   );
@@ -52,7 +52,7 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
         onPress={handlePress}
         style={({ pressed }) => [
           styles.hRow,
-          { backgroundColor: cardBg ?? "rgba(255,255,255,0.05)", opacity: pressed ? 0.8 : 1 },
+          { backgroundColor: cardBg ?? "rgba(74,12,12,0.08)", opacity: pressed ? 0.8 : 1 },
         ]}
       >
         <View style={styles.hImageWrap}>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 8,
     left: 8,
-    backgroundColor: "rgba(6,10,15,0.72)",
+    backgroundColor: "rgba(27,6,15,0.72)",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(214,168,91,0.92)",
+    backgroundColor: "rgba(212,175,55,0.92)",
     alignItems: "center",
     justifyContent: "center",
   },

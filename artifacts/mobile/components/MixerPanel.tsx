@@ -70,7 +70,7 @@ export function MixerPanel() {
                 {img ? (
                   <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
                 ) : (
-                  <View style={[styles.stackThumbImg, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
+                  <View style={[styles.stackThumbImg, { backgroundColor: "rgba(212,175,55,0.18)" }]}>
                     <Feather name="music" size={12} color={colors.primary} />
                   </View>
                 )}
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   border: {
     ...StyleSheet.absoluteFillObject,
     borderWidth: 1,
-    borderColor: "rgba(182,149,95,0.2)",
+    borderColor: "rgba(212,175,55,0.20)",
     borderRadius: 18,
   },
   row: {

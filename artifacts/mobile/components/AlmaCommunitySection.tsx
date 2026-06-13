@@ -97,7 +97,7 @@ export function AlmaCommunitySection() {
                   {
                     borderBottomColor: isExpiring
                       ? "rgba(192,112,90,0.20)"
-                      : "rgba(255,255,255,0.07)",
+                      : "rgba(61,14,22,0.40)",
                     opacity: pressed ? 0.8 : 1,
                   },
                 ]}
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(198,155,79,0.35)",
+    borderColor: "rgba(212,175,55,0.35)",
     paddingHorizontal: 28,
     paddingVertical: 9,
     marginBottom: 16,
@@ -188,14 +188,14 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   avatarDefault: {
-    backgroundColor: "rgba(198,155,79,0.18)",
+    backgroundColor: "rgba(212,175,55,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarInitial: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#BE9650",
+    color: "#D4AF37",
   },
   msgBody: { flex: 1 },
   msgAuthor: { fontSize: 11, fontWeight: "600", marginBottom: 3, opacity: 0.75 },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.28)",
+    borderColor: "rgba(212,175,55,0.28)",
   },
   cargarMasText: { fontSize: 14, fontWeight: "600" },
 });

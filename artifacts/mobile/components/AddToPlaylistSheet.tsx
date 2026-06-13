@@ -65,7 +65,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
       statusBarTranslucent
     >
       <KeyboardAvoidingView
-        style={[styles.root, { backgroundColor: "#090F17" }]}
+        style={[styles.root, { backgroundColor: "#1B060F" }]}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         {/* ── Paso: Lista de playlists ── */}
@@ -91,7 +91,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
             >
               {playlists.length === 0 ? (
                 <View style={styles.emptyWrap}>
-                  <View style={[styles.emptyIcon, { backgroundColor: "rgba(190,150,80,0.1)" }]}>
+                  <View style={[styles.emptyIcon, { backgroundColor: "rgba(212,175,55,0.10)" }]}>
                     <Feather name="list" size={36} color={colors.primary} />
                   </View>
                   <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
@@ -110,10 +110,10 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                       onPress={() => handleToggle(pl.id)}
                       style={({ pressed }) => [
                         styles.row,
-                        { borderBottomColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.7 : 1 },
+                        { borderBottomColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.7 : 1 },
                       ]}
                     >
-                      <View style={[styles.playlistIcon, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
+                      <View style={[styles.playlistIcon, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
                         <Feather name="list" size={18} color={colors.primary} />
                       </View>
                       <View style={{ flex: 1 }}>
@@ -129,7 +129,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                       {inIt ? (
                         <Feather name="check-circle" size={22} color={colors.primary} />
                       ) : (
-                        <Feather name="circle" size={22} color="rgba(255,255,255,0.2)" />
+                        <Feather name="circle" size={22} color="rgba(244,218,213,0.25)" />
                       )}
                     </Pressable>
                   );
@@ -144,7 +144,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 style={({ pressed }) => [styles.createRow, { opacity: pressed ? 0.75 : 1 }]}
               >
                 <View style={[styles.plusCircle, { backgroundColor: "#FFFFFF" }]}>
-                  <Feather name="plus" size={18} color="#090F17" />
+                  <Feather name="plus" size={18} color="#1B060F" />
                 </View>
                 <Text style={[styles.createLabel, { color: colors.foreground }]}>
                   Crear una Playlist
@@ -176,8 +176,8 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
               placeholderTextColor={colors.mutedForeground}
               style={[styles.input, {
                 color: colors.foreground,
-                borderColor: "rgba(255,255,255,0.12)",
-                backgroundColor: "rgba(255,255,255,0.05)",
+                borderColor: "rgba(61,14,22,0.40)",
+                backgroundColor: "rgba(74,12,12,0.08)",
               }]}
               autoFocus
               returnKeyType="done"
@@ -195,12 +195,12 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
               style={({ pressed }) => [
                 styles.createBtn,
                 {
-                  backgroundColor: newName.trim() ? colors.primary : "rgba(190,150,80,0.3)",
+                  backgroundColor: newName.trim() ? colors.primary : "rgba(212,175,55,0.30)",
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
             >
-              <Text style={[styles.createBtnLabel, { color: "#090F17" }]}>
+              <Text style={[styles.createBtnLabel, { color: "#1B060F" }]}>
                 Crear Playlist
               </Text>
             </Pressable>
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   topTitle: {
     flex: 1,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(255,255,255,0.08)",
+    borderTopColor: "rgba(61,14,22,0.40)",
   },
   createRow: {
     flexDirection: "row",

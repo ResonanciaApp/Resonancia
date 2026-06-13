@@ -29,7 +29,7 @@ import Svg, { Circle, ClipPath, Defs, G, LinearGradient, Path, Stop } from "reac
 // ── Paletas ───────────────────────────────────────────────────────────────────
 
 const THEMES = [
-  { name: "Dorado",  fill: ["#BE9650","#D6A85B","#EDE1D3","#C8A870","#BE9650"], stroke: "#EDE1D3", glow: "#BE9650" },
+  { name: "Dorado",  fill: ["#D4AF37","#E9C46A","#F4DAD5","#C49F27","#D4AF37"], stroke: "#F4DAD5", glow: "#D4AF37" },
   { name: "Violeta", fill: ["#B69BE0","#9B7FD4","#D4B0F0","#7AA8E0","#C4A8F0"], stroke: "#D4B0F0", glow: "#B69BE0" },
   { name: "Mar",     fill: ["#4B9EFF","#7FD1C0","#7AA8E0","#A0C8F0","#50D0C0"], stroke: "#A0E0F8", glow: "#4B9EFF" },
   { name: "Rosa",    fill: ["#E0989B","#FF8B9A","#F0C0C4","#D670A0","#FFAABB"], stroke: "#FFD0D8", glow: "#FF8B9A" },
@@ -440,7 +440,7 @@ export default function Caleidoscopio() {
         <Svg width={W} height={H}>
           <Defs>
             <LinearGradient id="bgGrad" x1="50%" y1="0%" x2="50%" y2="100%">
-              <Stop offset="0%" stopColor="#0B0F14" />
+              <Stop offset="0%" stopColor="#1B060F" />
               <Stop offset="100%" stopColor="#060A0F" />
             </LinearGradient>
             <ClipPath id="kclip">
@@ -457,7 +457,7 @@ export default function Caleidoscopio() {
           ))}
 
           {/* Vignette circular */}
-          <Circle cx={CX} cy={CY} r={R * 0.98} fill="none" stroke="#0B0F14" strokeWidth={R * 0.08} />
+          <Circle cx={CX} cy={CY} r={R * 0.98} fill="none" stroke="#1B060F" strokeWidth={R * 0.08} />
         </Svg>
       </View>
 
@@ -466,14 +466,14 @@ export default function Caleidoscopio() {
           {/* Barra superior */}
           <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
             <Pressable onPress={() => router.back()} hitSlop={12} style={styles.iconBtn} accessibilityRole="button">
-              <Feather name="chevron-left" size={22} color="#EDE1D3" />
+              <Feather name="chevron-left" size={22} color="#F4DAD5" />
             </Pressable>
             <View style={styles.topCenter}>
               <Text style={styles.topTitle}>Caleidoscopio</Text>
               <Text style={styles.topSub}>{pattern.name} · {segments} seg · {theme.name}</Text>
             </View>
             <Pressable onPress={() => setPaused((v) => !v)} hitSlop={12} style={styles.iconBtn} accessibilityRole="button">
-              <Feather name={paused ? "play" : "pause"} size={18} color="#EDE1D3" />
+              <Feather name={paused ? "play" : "pause"} size={18} color="#F4DAD5" />
             </Pressable>
           </View>
 
@@ -492,7 +492,7 @@ export default function Caleidoscopio() {
                     style={[styles.patternBtn, on && styles.patternBtnOn]}
                     activeOpacity={0.75}
                   >
-                    <Feather name={p.icon} size={16} color={on ? "#BE9650" : "#7A8FA8"} />
+                    <Feather name={p.icon} size={16} color={on ? "#D4AF37" : "rgba(242,231,228,0.45)"} />
                     <Text style={[styles.patternBtnText, on && styles.patternBtnTextOn]}>{p.name}</Text>
                   </TouchableOpacity>
                 );
@@ -550,7 +550,7 @@ export default function Caleidoscopio() {
 
             {/* Guardar */}
             <TouchableOpacity style={styles.saveBtn} onPress={() => {}} activeOpacity={0.8}>
-              <Feather name="download" size={15} color="#BE9650" />
+              <Feather name="download" size={15} color="#D4AF37" />
               <Text style={styles.saveBtnText}>Guardar como fondo</Text>
             </TouchableOpacity>
           </View>
@@ -569,35 +569,35 @@ export default function Caleidoscopio() {
 // ── Estilos ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  root:             { flex: 1, backgroundColor: "#0B0F14" },
+  root:             { flex: 1, backgroundColor: "#1B060F" },
   topBar:           { position: "absolute", top: 0, left: 0, right: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingBottom: 12, zIndex: 20 },
-  iconBtn:          { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.06)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
+  iconBtn:          { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)" },
   topCenter:        { alignItems: "center", flex: 1, paddingHorizontal: 8 },
-  topTitle:         { color: "#EDE1D3", fontSize: 15, fontWeight: "600", letterSpacing: 0.3 },
-  topSub:           { color: "#7A8FA8", fontSize: 11, marginTop: 1 },
-  bottomPanel:      { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "rgba(11,15,20,0.9)", borderTopWidth: 1, borderTopColor: "rgba(190,150,80,0.12)", paddingHorizontal: 20, paddingTop: 14, zIndex: 20 },
-  sectionLabel:     { color: "#7A8FA8", fontSize: 10, fontWeight: "600", letterSpacing: 1, textTransform: "uppercase", marginBottom: 7 },
+  topTitle:         { color: "#F4DAD5", fontSize: 15, fontWeight: "600", letterSpacing: 0.3 },
+  topSub:           { color: "rgba(242,231,228,0.45)", fontSize: 11, marginTop: 1 },
+  bottomPanel:      { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "rgba(27,6,15,0.9)", borderTopWidth: 1, borderTopColor: "rgba(212,175,55,0.12)", paddingHorizontal: 20, paddingTop: 14, zIndex: 20 },
+  sectionLabel:     { color: "rgba(242,231,228,0.45)", fontSize: 10, fontWeight: "600", letterSpacing: 1, textTransform: "uppercase", marginBottom: 7 },
   patternScroll:    { marginBottom: 12 },
-  patternBtn:       { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.04)", borderWidth: 1, borderColor: "rgba(255,255,255,0.07)", marginRight: 7 },
-  patternBtnOn:     { backgroundColor: "rgba(190,150,80,0.15)", borderColor: "rgba(190,150,80,0.5)" },
-  patternBtnText:   { color: "#7A8FA8", fontSize: 12 },
-  patternBtnTextOn: { color: "#BE9650", fontWeight: "600" },
+  patternBtn:       { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20, backgroundColor: "rgba(74,12,12,0.08)", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)", marginRight: 7 },
+  patternBtnOn:     { backgroundColor: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)" },
+  patternBtnText:   { color: "rgba(242,231,228,0.45)", fontSize: 12 },
+  patternBtnTextOn: { color: "#D4AF37", fontWeight: "600" },
   twoCol:           { flexDirection: "row", gap: 16, marginBottom: 10 },
   colBlock:         { flex: 1 },
   row:              { flexDirection: "row", gap: 6 },
-  segBtn:           { flex: 1, height: 34, borderRadius: 9, backgroundColor: "rgba(255,255,255,0.04)", borderWidth: 1, borderColor: "rgba(255,255,255,0.07)", alignItems: "center", justifyContent: "center" },
-  segBtnOn:         { backgroundColor: "rgba(190,150,80,0.18)", borderColor: "rgba(190,150,80,0.55)" },
-  segBtnText:       { color: "#7A8FA8", fontSize: 13 },
-  segBtnTextOn:     { color: "#BE9650", fontWeight: "700" },
+  segBtn:           { flex: 1, height: 34, borderRadius: 9, backgroundColor: "rgba(74,12,12,0.08)", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)", alignItems: "center", justifyContent: "center" },
+  segBtnOn:         { backgroundColor: "rgba(212,175,55,0.18)", borderColor: "rgba(212,175,55,0.55)" },
+  segBtnText:       { color: "rgba(242,231,228,0.45)", fontSize: 13 },
+  segBtnTextOn:     { color: "#D4AF37", fontWeight: "700" },
   colorBtn:         { flex: 1, height: 28, borderRadius: 7, opacity: 0.55, borderWidth: 2, borderColor: "transparent" },
   colorBtnOn:       { opacity: 1, borderColor: "rgba(255,255,255,0.8)" },
   speedRow:         { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 7 },
-  speedVal:         { color: "#BE9650", fontSize: 10 },
+  speedVal:         { color: "#D4AF37", fontSize: 10 },
   trackWrap:        { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 4 },
-  speedDot:         { width: 11, height: 11, borderRadius: 6, backgroundColor: "rgba(255,255,255,0.12)" },
-  speedDotOn:       { backgroundColor: "#BE9650", transform: [{ scale: 1.3 }] },
-  saveBtn:          { height: 42, borderRadius: 12, backgroundColor: "rgba(190,150,80,0.1)", borderWidth: 1, borderColor: "rgba(190,150,80,0.35)", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
-  saveBtnText:      { color: "#BE9650", fontSize: 13, fontWeight: "600" },
+  speedDot:         { width: 11, height: 11, borderRadius: 6, backgroundColor: "rgba(74,12,12,0.35)" },
+  speedDotOn:       { backgroundColor: "#D4AF37", transform: [{ scale: 1.3 }] },
+  saveBtn:          { height: 42, borderRadius: 12, backgroundColor: "rgba(212,175,55,0.10)", borderWidth: 1, borderColor: "rgba(212,175,55,0.35)", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
+  saveBtnText:      { color: "#D4AF37", fontSize: 13, fontWeight: "600" },
   tapHint:          { position: "absolute", alignSelf: "center", zIndex: 10 },
   tapHintText:      { color: "rgba(237,225,211,0.3)", fontSize: 11, letterSpacing: 0.5 },
 });

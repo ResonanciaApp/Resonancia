@@ -20,7 +20,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function PlaylistsScreen() {
   const colors = useColors();
@@ -57,7 +57,7 @@ export default function PlaylistsScreen() {
       >
         {playlists.length === 0 ? (
           <View style={styles.emptyWrap}>
-            <View style={[styles.emptyIcon, { backgroundColor: "rgba(190,150,80,0.1)" }]}>
+            <View style={[styles.emptyIcon, { backgroundColor: "rgba(212,175,55,0.10)" }]}>
               <Feather name="list" size={40} color={colors.primary} />
             </View>
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
@@ -74,10 +74,10 @@ export default function PlaylistsScreen() {
               onPress={() => router.push(`/playlist/${pl.id}` as never)}
               style={({ pressed }) => [
                 styles.row,
-                { borderBottomColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.75 : 1 },
+                { borderBottomColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.75 : 1 },
               ]}
             >
-              <View style={[styles.plIcon, { backgroundColor: "rgba(190,150,80,0.12)", overflow: "hidden" }]}>
+              <View style={[styles.plIcon, { backgroundColor: "rgba(212,175,55,0.12)", overflow: "hidden" }]}>
                 {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                   <SacredGlyph id={pl.coverGeometryId as GeometryId} color={colors.primary} size={36} strokeWidth={1.6} opacity={1} />
                 ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -104,10 +104,10 @@ export default function PlaylistsScreen() {
                   style={[styles.playBtn, { backgroundColor: colors.primary }]}
                   hitSlop={8}
                 >
-                  <Feather name="play" size={14} color="#090F17" />
+                  <Feather name="play" size={14} color="#1B060F" />
                 </Pressable>
               )}
-              <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.25)" />
+              <Feather name="chevron-right" size={18} color="rgba(242,231,228,0.25)" />
             </Pressable>
           ))
         )}
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   title: { flex: 1, fontSize: 18, fontWeight: "700", textAlign: "center" },

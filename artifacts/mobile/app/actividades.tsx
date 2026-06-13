@@ -169,7 +169,7 @@ export default function ActividadesScreen() {
         style={[styles.fab, { bottom: bottomPad + 24 }]}
         onPress={() => router.push("/crear-actividad" as never)}
       >
-        <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.fabGrad}>
+        <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.fabGrad}>
           <Feather name="plus" size={22} color="#080F0A" />
         </LinearGradient>
       </Pressable>

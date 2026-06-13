@@ -26,7 +26,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function SeguidoresScreen() {
   const colors = useColors();
@@ -133,7 +133,7 @@ export default function SeguidoresScreen() {
                     <Text
                       style={[
                         styles.followBtnText,
-                        { color: isFollowing ? colors.primary : "#090F17" },
+                        { color: isFollowing ? colors.primary : "#1B060F" },
                       ]}
                     >
                       {isFollowing ? "Siguiendo" : "Seguir"}

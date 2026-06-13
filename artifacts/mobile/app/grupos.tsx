@@ -20,7 +20,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 import { type GrupoLocal, isAdminGrupo, useGrupos } from "@/hooks/useGrupos";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 // ─── Image gallery (same as crear.tsx) ───────────────────────────────────────
 const GALLERY = [
@@ -146,7 +146,7 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
           onPress={() => handleSelect("publico")}
           style={[styles.sheetOption, { backgroundColor: colors.background, borderColor: colors.border }]}
         >
-          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(61,14,22,0.40)" }]}>
             <Feather name="users" size={22} color={colors.foreground} />
           </View>
           <View style={{ flex: 1 }}>
@@ -162,7 +162,7 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
           onPress={() => handleSelect("privado")}
           style={[styles.sheetOption, { backgroundColor: colors.background, borderColor: colors.border }]}
         >
-          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(61,14,22,0.40)" }]}>
             <Feather name="lock" size={22} color={colors.foreground} />
           </View>
           <View style={{ flex: 1 }}>
@@ -201,7 +201,7 @@ function TabOjear({
             onPress={() => router.push(`/grupo/${g.id}` as never)}
             style={({ pressed }) => [
               styles.popularRow,
-              { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
             ]}
           >
             <LocalGrupoAvatar grupo={g} size={54} />
@@ -237,7 +237,7 @@ function LocalGrupoAvatar({ grupo, size = 54 }: { grupo: GrupoLocal; size?: numb
   }
   return (
     <View style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: "#1C2333" }}>
-      <Text style={{ color: "#BE9650", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
+      <Text style={{ color: "#D4AF37", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
     </View>
   );
 }
@@ -259,14 +259,14 @@ function TabMisGrupos({
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Grupos que gestiono</Text>
           <Pressable onPress={onCreatePress} hitSlop={8}>
-            <View style={[styles.addBtn, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}>
+            <View style={[styles.addBtn, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
               <Feather name="plus" size={20} color={colors.foreground} />
             </View>
           </Pressable>
         </View>
 
         {gruposCreados.length === 0 ? (
-          <View style={[styles.emptyBox, { borderColor: "rgba(255,255,255,0.07)" }]}>
+          <View style={[styles.emptyBox, { borderColor: "rgba(61,14,22,0.40)" }]}>
             <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
               No gestionas ningún grupo todavía.{"\n"}¿Te apasiona algún tema? Crea un grupo público o privado hoy.
             </Text>
@@ -278,7 +278,7 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <LocalGrupoAvatar grupo={g} size={54} />
@@ -320,7 +320,7 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
@@ -358,7 +358,7 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
       {FEED_POSTS.map((post) => (
         <View
           key={post.id}
-          style={[styles.feedCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }]}
+          style={[styles.feedCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}
         >
           {/* Post header */}
           <View style={styles.feedHeader}>

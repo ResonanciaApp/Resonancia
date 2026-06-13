@@ -58,13 +58,13 @@ function AuthorAvatar({ uri, name, size = 38 }: { uri?: string | null; name?: st
     return <Image source={{ uri }} style={{ width: size, height: size, borderRadius: radius }} />;
   }
   return (
-    <View style={[{ width: size, height: size, borderRadius: radius, backgroundColor: "rgba(198,155,79,0.18)", alignItems: "center", justifyContent: "center" }]}>
-      <Text style={{ fontSize: size * 0.4, fontWeight: "700", color: "#BE9650" }}>{initials}</Text>
+    <View style={[{ width: size, height: size, borderRadius: radius, backgroundColor: "rgba(212,175,55,0.18)", alignItems: "center", justifyContent: "center" }]}>
+      <Text style={{ fontSize: size * 0.4, fontWeight: "700", color: "#D4AF37" }}>{initials}</Text>
     </View>
   );
 }
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function MensajesDelAlmaScreen() {
   const colors = useColors();
@@ -153,7 +153,7 @@ export default function MensajesDelAlmaScreen() {
           }
         >
           {/* Compose card */}
-          <View style={[styles.composeCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(198,155,79,0.18)" }]}>
+          <View style={[styles.composeCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,175,55,0.18)" }]}>
             <View style={styles.composeTop}>
               <AuthorAvatar uri={photoUri} name={username} size={36} />
               <TextInput
@@ -167,12 +167,12 @@ export default function MensajesDelAlmaScreen() {
                 selectionColor={colors.primary}
               />
             </View>
-            <View style={[styles.composeFooter, { borderTopColor: "rgba(255,255,255,0.06)" }]}>
+            <View style={[styles.composeFooter, { borderTopColor: "rgba(61,14,22,0.40)" }]}>
               <Text style={[styles.charCount, { color: remaining < 40 ? "#D07060" : colors.mutedForeground }]}>
                 {remaining}
               </Text>
               <View style={styles.composeFooterRight}>
-                <View style={[styles.infoBadge, { borderColor: "rgba(255,255,255,0.10)" }]}>
+                <View style={[styles.infoBadge, { borderColor: "rgba(61,14,22,0.40)" }]}>
                   <Feather name="clock" size={10} color={colors.mutedForeground} />
                   <Text style={[styles.infoBadgeText, { color: colors.mutedForeground }]}>24 h</Text>
                 </View>
@@ -182,15 +182,15 @@ export default function MensajesDelAlmaScreen() {
                   style={({ pressed }) => [
                     styles.sendBtn,
                     {
-                      backgroundColor: text.trim() ? colors.primary : "rgba(198,155,79,0.20)",
+                      backgroundColor: text.trim() ? colors.primary : "rgba(212,175,55,0.20)",
                       opacity: pressed ? 0.8 : 1,
                     },
                   ]}
                 >
                   {isSubmitting ? (
-                    <ActivityIndicator size="small" color="#090F17" />
+                    <ActivityIndicator size="small" color="#1B060F" />
                   ) : (
-                    <Text style={[styles.sendBtnText, { color: text.trim() ? "#090F17" : colors.mutedForeground }]}>
+                    <Text style={[styles.sendBtnText, { color: text.trim() ? "#1B060F" : colors.mutedForeground }]}>
                       Compartir
                     </Text>
                   )}
@@ -234,7 +234,7 @@ export default function MensajesDelAlmaScreen() {
                       {
                         borderBottomColor: isExpiring
                           ? "rgba(192,112,90,0.18)"
-                          : "rgba(255,255,255,0.07)",
+                          : "rgba(61,14,22,0.40)",
                       },
                     ]}
                   >

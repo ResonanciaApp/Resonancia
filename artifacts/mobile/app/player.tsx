@@ -89,9 +89,9 @@ function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
           height: ART_SIZE + 40,
           borderRadius: (ART_SIZE + 40) / 2,
           position: "absolute",
-          backgroundColor: "rgba(100,140,210,0.05)",
+          backgroundColor: "rgba(74,12,12,0.08)",
           borderWidth: 1,
-          borderColor: "rgba(100,140,210,0.15)",
+          borderColor: "rgba(61,14,22,0.40)",
         },
         animStyle,
       ]}
@@ -355,10 +355,10 @@ export default function PlayerScreen() {
       <ScrollView showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={[styles.scrollContent, { paddingTop: topPad + 8 }]}>
         {/* Art + Glow */}
         <View style={styles.artSection}>
-          <GlowRing size={ART_SIZE + 80} color="rgba(100,140,210,0.12)" delay={0} duration={4000} />
-          <GlowRing size={ART_SIZE + 120} color="rgba(100,140,210,0.07)" delay={700} duration={4000} />
+          <GlowRing size={ART_SIZE + 80} color="rgba(212,175,55,0.12)" delay={0} duration={4000} />
+          <GlowRing size={ART_SIZE + 120} color="rgba(212,175,55,0.07)" delay={700} duration={4000} />
           <BreathingPulse isPlaying={isPlaying} />
-          <View style={[styles.artFrame, { borderColor: "rgba(100,140,210,0.25)" }]}>
+          <View style={[styles.artFrame, { borderColor: "rgba(212,175,55,0.25)" }]}>
             <ExpoImage
               source={currentSession.image as any}
               style={styles.artImage}
@@ -367,7 +367,7 @@ export default function PlayerScreen() {
               transition={IMAGE_TRANSITION}
             />
             <LinearGradient
-              colors={["transparent", "rgba(6,10,15,0.4)"]}
+              colors={["transparent", "rgba(27,6,15,0.4)"]}
               style={[StyleSheet.absoluteFill, { borderRadius: ART_SIZE / 2 }]}
             />
           </View>
@@ -397,7 +397,7 @@ export default function PlayerScreen() {
           )}
           {isLoopSession && (
             <View style={styles.durationChip}>
-              <Feather name="clock" size={11} color="#A8D49F" />
+              <Feather name="clock" size={11} color="#E9C46A" />
               <Text style={styles.durationChipText}>
                 Apagar en {formatRemaining(Math.max(0, totalSeconds - elapsed))}
               </Text>
@@ -443,7 +443,7 @@ export default function PlayerScreen() {
           {Platform.OS !== "web" ? (
             <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
           ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(6,10,15,0.55)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.55)" }]} />
           )}
           <View style={styles.controls}>
             <Pressable onPress={skipBackward} style={styles.controlSide}>
@@ -452,7 +452,7 @@ export default function PlayerScreen() {
             </Pressable>
 
             <View style={styles.playOuter}>
-              <View style={[styles.playRing, { borderColor: "rgba(100,140,210,0.25)" }]} />
+              <View style={[styles.playRing, { borderColor: "rgba(212,175,55,0.35)" }]} />
               <Pressable
                 onPress={handlePlayPause}
                 disabled={isLoading}
@@ -591,8 +591,8 @@ export default function PlayerScreen() {
                     style={[
                       styles.timerChip,
                       {
-                        backgroundColor: selected ? colors.primary : "rgba(100,140,210,0.08)",
-                        borderColor: selected ? colors.primary : "rgba(100,140,210,0.2)",
+                        backgroundColor: selected ? colors.primary : "rgba(74,12,12,0.08)",
+                        borderColor: selected ? colors.primary : "rgba(61,14,22,0.40)",
                         flexDirection: "row",
                         alignItems: "center",
                         gap: 4,
@@ -745,12 +745,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: "rgba(160,200,140,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     borderWidth: 1,
-    borderColor: "rgba(160,200,140,0.25)",
+    borderColor: "rgba(212,175,55,0.25)",
   },
   durationChipText: {
-    color: "#E8F5E0",
+    color: "#F4DAD5",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
   controlsWrapper: {
     overflow: "hidden",
     borderTopWidth: 1,
-    borderTopColor: "rgba(100,140,210,0.12)",
+    borderTopColor: "rgba(61,14,22,0.40)",
     paddingTop: 20,
   },
   controls: {
@@ -827,7 +827,7 @@ const styles = StyleSheet.create({
     borderRadius: 38,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#648CD2",
+    shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 16,
@@ -891,7 +891,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     marginBottom: 12,
     borderTopWidth: 1,
-    borderTopColor: "rgba(100,140,210,0.1)",
+    borderTopColor: "rgba(61,14,22,0.30)",
   },
   timerHeader: {
     flexDirection: "row",

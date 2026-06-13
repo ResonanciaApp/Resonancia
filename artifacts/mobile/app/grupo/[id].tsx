@@ -91,7 +91,7 @@ const SEED_GRUPOS: Record<string, {
     name: "Cuencos y Frecuencias",
     description: "Todo sobre cuencos tibetanos, de cristal y terapia de sonido",
     moderator: "Casa del Cuenco",
-    modColor: "#BE9650",
+    modColor: "#D4AF37",
     modInitials: "CC",
     members: 567,
     icon: "disc",
@@ -99,7 +99,7 @@ const SEED_GRUPOS: Record<string, {
     gradient: ["#7A5520", "#3E2208"],
     rules: ["Compartir con generosidad y apertura", "Incluir fuente cuando sea posible", "Cero spam comercial"],
     memberList: [
-      { name: "Casa del Cuenco", role: "Moderador", color: "#BE9650", initials: "CC", active: true },
+      { name: "Casa del Cuenco", role: "Moderador", color: "#D4AF37", initials: "CC", active: true },
       { name: "Sofía Herrera", role: "Miembro", color: "#f4c993", initials: "SH", active: true },
       { name: "Luna Vega", role: "Miembro", color: "#C8B4E0", initials: "LV", active: true },
       { name: "Pablo Torres", role: "Miembro", color: "#8AAAD4", initials: "PT", active: false },
@@ -107,7 +107,7 @@ const SEED_GRUPOS: Record<string, {
       { name: "Tomás Blanco", role: "Miembro", color: "#A8C4A8", initials: "TB", active: false },
     ],
     posts: [
-      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#BE9650", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
+      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#D4AF37", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
       { id: "p2", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 09:30", text: "Compartí unas fotos de mi set nuevo 🎶 Cuenco tibetano en FA, dos de cristal en SOL y RE. Tardé 3 años en armarlo y por fin está completo. ¿Alguien más colecciona?", likes: 33, replies: 9 },
       { id: "p3", author: "Pablo Torres", initials: "PT", color: "#8AAAD4", time: "Ayer · 20:15", text: "Pregunta para los que practican: ¿cada cuánto hacen sesiones personales en casa? Yo estoy tratando de instalar una rutina diaria de 20 minutos.", likes: 15, replies: 14 },
       { id: "p4", author: "Ana Quiroga", initials: "AQ", color: "#EDD9B8", time: "Ayer · 16:00", text: "Descubrí que el cuenco en nota SI tiene un efecto increíble cuando trabajo con el chakra corona en clientes. ¿Alguien más trabaja en sesiones terapéuticas?", likes: 19, replies: 6 },
@@ -213,7 +213,7 @@ function buildLocalViewModel(
   localPosts: ReturnType<typeof useGrupoPosts>["posts"],
 ): ViewModel {
   const userInitials = initialsFrom(userName);
-  const userColor = "#BE9650";
+  const userColor = "#D4AF37";
 
   // welcome aparece arriba (pinned); el resto, más recientes después.
   const welcome = localPosts.find((p) => p.id === "welcome");
@@ -242,8 +242,8 @@ function buildLocalViewModel(
     modInitials: userInitials,
     members: 1,
     icon: "users",
-    color: "#BE9650",
-    gradient: ["#BE9650", "#3E2208"],
+    color: "#D4AF37",
+    gradient: ["#D4AF37", "#3E1010"],
     rules: DEFAULT_RULES_LOCAL,
     memberList: [
       { name: `${userName} (vos)`, role: "Admin", color: userColor, initials: userInitials, active: true },
@@ -334,7 +334,7 @@ export default function GrupoDetailScreen() {
     ensureWelcomePost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#BE9650",
+      color: "#D4AF37",
       text: localGrupo.bienvenida,
     });
   }, [localGrupo, userName, ensureWelcomePost]);
@@ -372,7 +372,7 @@ export default function GrupoDetailScreen() {
     addPost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#BE9650",
+      color: "#D4AF37",
       text,
     });
     setCompose("");
@@ -450,7 +450,7 @@ export default function GrupoDetailScreen() {
               <Text style={styles.groupName}>{grupo.name}</Text>
               <Text style={styles.groupSub} numberOfLines={1}>{grupo.description}</Text>
               <View style={styles.groupMeta}>
-                <Feather name="users" size={11} color="rgba(255,255,255,0.55)" />
+                <Feather name="users" size={11} color="rgba(244,218,213,0.55)" />
                 <Text style={styles.groupMetaText}>
                   {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
                 </Text>
@@ -465,7 +465,7 @@ export default function GrupoDetailScreen() {
           <View style={styles.tabs}>
             {(["discusion", "miembros", "info"] as TabType[]).map((t) => (
               <Pressable key={t} onPress={() => setTab(t)} style={[styles.tabItem, tab === t && styles.tabItemActive]}>
-                <Text style={[styles.tabText, { color: tab === t ? "#FFFFFF" : "rgba(255,255,255,0.35)" }]}>
+                <Text style={[styles.tabText, { color: tab === t ? "#FFFFFF" : "rgba(244,218,213,0.35)" }]}>
                   {t === "discusion" ? "Discusión" : t === "miembros" ? "Miembros" : "Info"}
                 </Text>
               </Pressable>
@@ -495,7 +495,7 @@ export default function GrupoDetailScreen() {
                     style={[
                       styles.postCard,
                       {
-                        backgroundColor: post.pinned ? colors.primary + "10" : "rgba(255,255,255,0.03)",
+                        backgroundColor: post.pinned ? colors.primary + "10" : "rgba(74,12,12,0.08)",
                         borderColor: post.pinned ? colors.primary + "44" : colors.border,
                       },
                     ]}
@@ -595,7 +595,7 @@ export default function GrupoDetailScreen() {
 
             {/* Compose bar */}
             <View style={[styles.composeBar, { paddingBottom: bottomPad + 8, backgroundColor: colors.background, borderTopColor: colors.border }]}>
-              <View style={[styles.composeInput, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
+              <View style={[styles.composeInput, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: colors.border }]}>
                 <TextInput
                   value={compose}
                   onChangeText={setCompose}
@@ -627,7 +627,7 @@ export default function GrupoDetailScreen() {
               {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
             </Text>
             {grupo.memberList.map((m) => (
-              <View key={m.name} style={[styles.memberRow, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
+              <View key={m.name} style={[styles.memberRow, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: colors.border }]}>
                 <View style={{ position: "relative" }}>
                   <View style={[styles.memberAvatar, { backgroundColor: m.color + "30" }]}>
                     <Text style={[styles.memberInitials, { color: m.color }]}>{m.initials}</Text>
@@ -665,7 +665,7 @@ export default function GrupoDetailScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* About */}
-            <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: colors.border }]}>
               <View style={styles.infoCardHeader}>
                 <Feather name="info" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Sobre el grupo</Text>
@@ -684,7 +684,7 @@ export default function GrupoDetailScreen() {
             </View>
 
             {/* Moderator */}
-            <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: colors.border }]}>
               <View style={styles.infoCardHeader}>
                 <Feather name="shield" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>
@@ -701,7 +701,7 @@ export default function GrupoDetailScreen() {
 
             {/* Invite link (local groups) */}
             {grupo.isLocalGroup && grupo.inviteCode && (
-              <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
+              <View style={[styles.infoCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: colors.border }]}>
                 <View style={styles.infoCardHeader}>
                   <Feather name="link" size={16} color={colors.primary} />
                   <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Enlace de invitación</Text>
@@ -715,7 +715,7 @@ export default function GrupoDetailScreen() {
             )}
 
             {/* Rules */}
-            <View style={[styles.infoCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: colors.border }]}>
               <View style={styles.infoCardHeader}>
                 <Feather name="book-open" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Reglas del espacio</Text>
@@ -761,10 +761,10 @@ const styles = StyleSheet.create({
   groupIcon: { width: 52, height: 52, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   groupIconImg: { width: 52, height: 52, borderRadius: 14 },
   groupName: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 3 },
-  groupSub: { color: "rgba(255,255,255,0.55)", fontSize: 12, marginBottom: 6 },
+  groupSub: { color: "rgba(244,218,213,0.55)", fontSize: 12, marginBottom: 6 },
   groupMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
-  groupMetaText: { color: "rgba(255,255,255,0.55)", fontSize: 11 },
-  groupMetaDot: { color: "rgba(255,255,255,0.55)", fontSize: 11 },
+  groupMetaText: { color: "rgba(244,218,213,0.55)", fontSize: 11 },
+  groupMetaDot: { color: "rgba(244,218,213,0.55)", fontSize: 11 },
   activeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#7ED65A" },
   tabs: { flexDirection: "row" },
   tabItem: { flex: 1, alignItems: "center", paddingVertical: 12 },

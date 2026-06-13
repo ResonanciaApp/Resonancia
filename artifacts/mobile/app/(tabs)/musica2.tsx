@@ -32,10 +32,10 @@ import {
 } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
-const GOLD     = "#BE9650";
-const FG       = "#EDE1D3";
-const MUTED    = "#7A8FA8";
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const GOLD     = "#D4AF37";
+const FG       = "#F4DAD5";
+const MUTED    = "rgba(242,231,228,0.45)";
 
 const SUB_TAB_LABELS: Partial<Record<SoundCategoryId, string>> = {
   cuencos_tibetanos: "Tibetanos",
@@ -288,7 +288,7 @@ const SoundCard = memo(function SoundCard({
         {image ? (
           <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
         ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(182,149,95,0.1)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.1)" }]} />
         )}
         {!decorated && (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
@@ -454,7 +454,7 @@ export default function MiMusicaTestScreen() {
             >
               <MaterialCommunityIcons name="heart" size={18} color="#FFFFFF" />
               <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
-                <MaterialCommunityIcons name="heart" size={18} color="#BE9650" />
+                <MaterialCommunityIcons name="heart" size={18} color="#D4AF37" />
               </Animated.View>
             </Pressable>
           </View>
@@ -509,7 +509,7 @@ export default function MiMusicaTestScreen() {
                       style={[
                         styles.subTabPill,
                         {
-                          backgroundColor: sel ? c08 : "rgba(255,255,255,0.02)",
+                          backgroundColor: sel ? c08 : "rgba(74,12,12,0.04)",
                           borderColor: sel ? c50 : "#1C2740",
                         },
                       ]}
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
   pageSub:   { fontSize: 13, color: MUTED, marginTop: 0 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
-    borderRadius: 20, backgroundColor: "rgba(255,255,255,0.03)", marginLeft: 12,
+    borderRadius: 20, backgroundColor: "rgba(74,12,12,0.08)", marginLeft: 12,
   },
   heartGlow: {
     position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 999,
     borderWidth: 1,
-    backgroundColor: "rgba(255,255,255,0.02)",
+    backgroundColor: "rgba(74,12,12,0.04)",
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
@@ -591,14 +591,14 @@ const styles = StyleSheet.create({
   borderFlash: {
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.67)",
+    borderColor: "rgba(212,175,55,0.67)",
   },
   carouselTileSelected: {
-    backgroundColor: "rgba(190,150,80,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
   },
   carouselTileLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
 
-  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginTop: 4 },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(61,14,22,0.40)", marginTop: 4 },
 
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
     right: 16,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(61,14,22,0.40)",
   },
   subTabRow: { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
   subTabPill: {

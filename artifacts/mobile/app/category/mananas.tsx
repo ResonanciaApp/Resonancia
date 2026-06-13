@@ -109,7 +109,7 @@ function SubIcon({ sub, size }: { sub: SubDef; size: number }) {
 type ActiveTab = "Audios" | "Videos" | "Maestros";
 const TABS: ActiveTab[] = ["Audios", "Videos", "Maestros"];
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function MananasScreen() {
   const colors = useColors();
@@ -272,7 +272,7 @@ export default function MananasScreen() {
                     onPress={() => setSelectedTag(sub.tag)}
                     style={({ pressed }) => [
                       styles.catRow,
-                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(182,149,95,0.08)" },
+                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(212,175,55,0.08)" },
                       { opacity: pressed ? 0.75 : 1 },
                     ]}
                   >
@@ -354,7 +354,7 @@ export default function MananasScreen() {
             </Pressable>
 
             {/* Tabs */}
-            <View style={[styles.tabBar, { borderBottomColor: "rgba(255,255,255,0.08)", paddingHorizontal: H_PAD }]}>
+            <View style={[styles.tabBar, { borderBottomColor: "rgba(61,14,22,0.40)", paddingHorizontal: H_PAD }]}>
               {TABS.map((tab, idx) => (
                 <Pressable
                   key={tab}
@@ -394,7 +394,7 @@ export default function MananasScreen() {
                     onActionsPress={() => setActionsSession(recentlyPlayed)}
                   />
                 ) : (
-                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "rgba(255,255,255,0.03)" }]}>
+                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "rgba(74,12,12,0.08)" }]}>
                     <Feather name="headphones" size={28} color={colors.mutedForeground} />
                     <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
                       Aún no escuchaste ninguna sesión en esta categoría
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
     alignSelf: "stretch",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: Platform.OS === "ios" ? 12 : 8,
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 15, fontWeight: "600" },
   tabIndicator: {
     position: "absolute", bottom: 0, height: 2,
-    backgroundColor: "#FFFFFF", borderRadius: 1,
+    backgroundColor: "#D4AF37", borderRadius: 1,
   },
 
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },

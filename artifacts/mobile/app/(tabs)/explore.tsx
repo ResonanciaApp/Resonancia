@@ -90,7 +90,7 @@ export default function ExploreScreen() {
           style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
         >
           <Text style={styles.sectionTitle}>{title}</Text>
-          <Feather name="chevron-right" size={18} color="#7A8FA8" />
+          <Feather name="chevron-right" size={18} color="rgba(242,231,228,0.45)" />
         </Pressable>
         <ScrollView
           horizontal
@@ -115,7 +115,7 @@ export default function ExploreScreen() {
                 />
                 {s.isPremium && (
                   <View style={styles.premiumBadge}>
-                    <Feather name="star" size={10} color="#BE9650" />
+                    <Feather name="star" size={10} color="#D4AF37" />
                   </View>
                 )}
               </View>
@@ -151,7 +151,7 @@ export default function ExploreScreen() {
                 <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
               ) : (
                 <View style={styles.avatarFallback}>
-                  <Feather name="user" size={15} color="#7A8FA8" />
+                  <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
                 </View>
               )}
             </Pressable>
@@ -259,9 +259,9 @@ const styles = StyleSheet.create({
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center", justifyContent: "center",
-    borderWidth: 1, borderColor: "rgba(190,150,80,0.25)",
+    borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
 
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     height: SQCARD_W,
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   premiumBadge: {
     position: "absolute",

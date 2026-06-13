@@ -67,7 +67,7 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
             {img ? (
               <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
             ) : (
-              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(182,149,95,0.15)" }]}>
+              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]}>
                 <Feather name="music" size={14} color={colors.primary} />
               </View>
             )}
@@ -133,7 +133,7 @@ export default function CategoryMixesScreen() {
       <Pressable
         key={mix.id}
         onPress={() => handleOpen(mix)}
-        style={[styles.mixRow, { backgroundColor: "rgba(255,255,255,0.06)" }]}
+        style={[styles.mixRow, { backgroundColor: "rgba(74,12,12,0.08)" }]}
       >
         {/* Stack de imágenes de sonidos */}
         <SoundStack sounds={mix.sounds} />

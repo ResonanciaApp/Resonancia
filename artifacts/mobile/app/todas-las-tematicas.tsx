@@ -41,7 +41,7 @@ export default function TodasLasTemáticasScreen() {
           hitSlop={10}
           style={({ pressed }) => [
             styles.backBtn,
-            { backgroundColor: colors.card, borderColor: "rgba(182,149,95,0.2)", opacity: pressed ? 0.7 : 1 },
+            { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.20)", opacity: pressed ? 0.7 : 1 },
           ]}
         >
           <Feather name="arrow-left" size={18} color={colors.foreground} />
@@ -72,13 +72,13 @@ export default function TodasLasTemáticasScreen() {
                 resizeMode="cover"
               />
               <LinearGradient
-                colors={["#090D20", "#080A18", "#06070F"]}
+                colors={["#4A0C0C", "#27070E", "#1B060F"]}
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
               />
               <View
                 style={[
                   StyleSheet.absoluteFill,
-                  { borderRadius: 16, borderWidth: 1, borderColor: "rgba(182,149,95,0.22)" },
+                  { borderRadius: 16, borderWidth: 1, borderColor: "rgba(212,175,55,0.22)" },
                 ]}
               />
               <Text style={styles.label}>{tag.label}</Text>

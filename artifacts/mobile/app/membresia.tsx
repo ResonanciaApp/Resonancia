@@ -21,21 +21,21 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useSubscription } from "@/lib/revenuecat";
 
 const P = {
-  bg0:        "#06150F",
-  bg1:        "#0D261D",
-  bg2:        "#17352A",
-  glow:       "#234236",
-  cardBg:     "#0F2A20",
-  cardSelBg:  "#173A2B",
-  gold:       "#D6A14D",
-  goldSoft:   "#C89544",
-  goldHi:     "#F0C36A",
-  textMain:   "#EDE7DA",
+  bg0:        "#1B060F",
+  bg1:        "#27070E",
+  bg2:        "#4A0C0C",
+  glow:       "#3D0E16",
+  cardBg:     "#27070E",
+  cardSelBg:  "#4A0C0C",
+  gold:       "#D4AF37",
+  goldSoft:   "#D4AF37",
+  goldHi:     "#E9C46A",
+  textMain:   "#F4DAD5",
   textMuted:  "#FFFFFF",
-  border:     "rgba(169,122,52,0.35)",
-  borderSel:  "#D6A14D",
-  saveBg:     "#1F4A2E",
-  saveText:   "#A8E07A",
+  border:     "rgba(212,175,55,0.35)",
+  borderSel:  "#D4AF37",
+  saveBg:     "#3D0E16",
+  saveText:   "#E9C46A",
 };
 
 const BENEFITS = [
@@ -61,7 +61,7 @@ function computeSavings(
   return pct > 0 ? pct : null;
 }
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function MembresiaScreen() {
   const insets = useSafeAreaInsets();
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 8, textAlign: "center" },
   modalBody: { fontSize: 14, textAlign: "center", marginBottom: 20, lineHeight: 20 },
   modalBtnRow: { flexDirection: "row", gap: 12 },
-  modalBtnGhost: { flex: 1, borderRadius: 50, paddingVertical: 13, alignItems: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" },
+  modalBtnGhost: { flex: 1, borderRadius: 50, paddingVertical: 13, alignItems: "center", borderWidth: 1, borderColor: "rgba(244,218,213,0.15)" },
   modalBtnGhostText: { fontSize: 14, fontWeight: "600" },
   modalBtnPrimary: { flex: 1, borderRadius: 50, overflow: "hidden" },
   modalBtnPrimaryGrad: { paddingVertical: 14, alignItems: "center" },

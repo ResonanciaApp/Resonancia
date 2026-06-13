@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#090D20",
+    backgroundColor: "#27070E",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignSelf: "center",
     marginBottom: 16,
   },
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   optLabel: {
     fontSize: 16,

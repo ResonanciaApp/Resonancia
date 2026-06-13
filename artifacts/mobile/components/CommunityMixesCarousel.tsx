@@ -34,7 +34,7 @@ const TABS: { id: CategoryFilter; label: string }[] = [
   { id: "concentracion", label: "Enfoque"    },
 ];
 
-const GOLD = "#BE9650";
+const GOLD = "#D4AF37";
 const STACK_THUMB = 30;
 const STACK_SHIFT = 19;
 const MAX_VISIBLE = 8;
@@ -184,7 +184,7 @@ export function CommunityMixesCarousel() {
       {/* Empty state */}
       {visible.length === 0 && (
         <View style={[styles.emptyState, { backgroundColor: colors.card }]}>
-          <Feather name="music" size={28} color="rgba(190,150,80,0.35)" />
+          <Feather name="music" size={28} color="rgba(212,175,55,0.35)" />
           <Text style={[styles.emptyText, { color: colors.foreground }]}>
             Aún no hay mezclas compartidas
           </Text>
@@ -216,7 +216,7 @@ export function CommunityMixesCarousel() {
           onPress={() => router.push("/mezclas-comunidad" as never)}
           style={({ pressed }) => [
             styles.verMasBtn,
-            { borderColor: "rgba(190,150,80,0.2)", opacity: pressed ? 0.7 : 1 },
+            { borderColor: "rgba(212,175,55,0.20)", opacity: pressed ? 0.7 : 1 },
           ]}
         >
           <Text style={[styles.verMasText, { color: colors.mutedForeground }]}>
@@ -257,7 +257,7 @@ function MixRow({
 }) {
   const trending = mix.trending === true;
   const isFirst = rank === 1;
-  const dividerColor = "rgba(255,255,255,0.05)";
+  const dividerColor = "rgba(61,14,22,0.40)";
 
   return (
     <View>
@@ -405,7 +405,7 @@ function MixContextMenu({
           </Pressable>
         </View>
 
-        <View style={[menuStyles.sep, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+        <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
         {/* Agregar a favoritos */}
         <Pressable
@@ -416,10 +416,10 @@ function MixContextMenu({
           <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
             Agregar a favoritos
           </Text>
-          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
         </Pressable>
 
-        <View style={[menuStyles.sep, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+        <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
         {/* Ver perfil del creador */}
         <Pressable
@@ -430,10 +430,10 @@ function MixContextMenu({
           <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
             Ver perfil del creador
           </Text>
-          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
         </Pressable>
 
-        <View style={[menuStyles.sep, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+        <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
         {/* Reportar mezcla */}
         <Pressable
@@ -444,7 +444,7 @@ function MixContextMenu({
           <Text style={[menuStyles.actionLabel, { color: "#D08B7A" }]}>
             Reportar mezcla
           </Text>
-          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
         </Pressable>
       </View>
     </Modal>
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   },
   tabsDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     marginBottom: 12,
   },
   tabBlock: {
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     minWidth: 62,
     borderWidth: 1,
     borderColor: "transparent",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   tabBlockSel: {
     backgroundColor: "rgba(100,142,195,0.14)",
@@ -533,7 +533,7 @@ const styles = StyleSheet.create({
     height: STACK_THUMB,
     borderRadius: STACK_THUMB / 2,
     borderWidth: 1.5,
-    borderColor: "#0B0F14",
+    borderColor: "#1B060F",
     overflow: "hidden",
   },
   stackImg: {
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
   mixName: { fontSize: 13, fontWeight: "600", flexShrink: 1 },
   trendBadge: {
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     borderRadius: 4,
     paddingHorizontal: 5,
     paddingVertical: 1,
@@ -588,7 +588,7 @@ const menuStyles = StyleSheet.create({
   },
   handle: {
     width: 36, height: 4, borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     alignSelf: "center", marginBottom: 16,
   },
   header: {

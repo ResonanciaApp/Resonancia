@@ -151,7 +151,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
           </View>
 
           {/* Divider */}
-          <View style={[styles.divider, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+          <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
           {/* ── Opciones ── */}
           <ActionRow
@@ -188,7 +188,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
               style={[
                 styles.toast,
                 {
-                  backgroundColor: "rgba(21,26,35,0.96)",
+                  backgroundColor: "rgba(27,6,15,0.96)",
                   opacity: toastAnim,
                   transform: [{ translateY: toastAnim.interpolate({ inputRange: [0, 1], outputRange: [10, 0] }) }],
                 },
@@ -253,7 +253,7 @@ function ActionRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.actionRow,
-        !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.07)" },
+        !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.40)" },
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
@@ -270,7 +270,7 @@ function ActionRow({
         <Text style={[styles.actionRight, { color: colors.mutedForeground }]}>{right}</Text>
       )}
       {!right && (
-        <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+        <Feather name="chevron-right" size={16} color="rgba(242,231,228,0.25)" />
       )}
     </Pressable>
   );
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#12182E",
+    backgroundColor: "#27070E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignSelf: "center",
     marginBottom: 16,
   },
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(61,14,22,0.40)",
   },
   toastText: {
     fontSize: 15,

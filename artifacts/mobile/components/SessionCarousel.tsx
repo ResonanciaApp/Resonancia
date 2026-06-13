@@ -109,7 +109,7 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
                 <Image source={item.image} style={styles.thumb} resizeMode="cover" />
               ) : (
                 <View style={[styles.thumb, styles.thumbFallback]}>
-                  <Feather name="music" size={32} color="#BE9650" />
+                  <Feather name="music" size={32} color="#D4AF37" />
                 </View>
               )}
             </View>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   thumb: { width: CARD_W, height: CARD_W },
-  thumbFallback: { backgroundColor: "rgba(190,150,80,0.10)", alignItems: "center", justifyContent: "center" },
+  thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
     position: "absolute",
     top: 6,
@@ -166,5 +166,5 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     marginTop: 8,
   },
-  cardCreator: { fontSize: 11, color: "#7A8FA8", marginTop: 4 },
+  cardCreator: { fontSize: 11, color: "rgba(242,231,228,0.45)", marginTop: 4 },
 });

@@ -16,11 +16,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 const SHARE_OPTIONS = [
   { icon: "message-circle" as const, label: "WhatsApp", color: "#25D366" },
-  { icon: "mail" as const, label: "Email", color: "#BE9650" },
+  { icon: "mail" as const, label: "Email", color: "#D4AF37" },
   { icon: "instagram" as const, label: "Instagram", color: "#E4405F" },
   { icon: "share-2" as const, label: "Más opciones", color: "#8AAAD4" },
 ];
@@ -63,7 +63,7 @@ export default function InvitarScreen() {
 
         {/* Invite card */}
         <View style={[styles.inviteCard, { borderColor: colors.primary + "44" }]}>
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.03)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(74,12,12,0.08)" }]} />
           <View style={styles.inviteTop}>
             <Feather name="gift" size={20} color={colors.primary} />
             <Text style={[styles.inviteLabel, { color: colors.primary }]}>7 días gratis para tu amigo</Text>

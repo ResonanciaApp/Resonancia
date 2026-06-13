@@ -61,7 +61,7 @@ const TIMER_OPTIONS: { minutes: number | null; label: string; free: boolean }[] 
   { minutes: null, label: "Sin límite", free: false },
 ];
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function SonidosScreen() {
   const colors = useColors();
@@ -361,16 +361,16 @@ export default function SonidosScreen() {
                 style={[
                   styles.modalSheet,
                   {
-                    backgroundColor: "rgba(9,14,23,0.98)",
+                    backgroundColor: "rgba(27,6,15,0.98)",
                     paddingBottom: Math.max(insets.bottom, 24) + 8,
                   },
                 ]}
               >
-                <View style={[styles.dragHandle, { backgroundColor: "rgba(198,155,79,0.25)" }]} />
+                <View style={[styles.dragHandle, { backgroundColor: "rgba(212,175,55,0.25)" }]} />
                 {pendingSession && (
                   <>
                     <View style={styles.modalHeader}>
-                      <View style={[styles.modalIcon, { backgroundColor: "rgba(198,155,79,0.12)" }]}>
+                      <View style={[styles.modalIcon, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
                         <Feather name="clock" size={20} color={colors.primary} />
                       </View>
                       <View style={{ flex: 1 }}>
@@ -396,8 +396,8 @@ export default function SonidosScreen() {
                             style={({ pressed }) => [
                               styles.durationBtn,
                               {
-                                backgroundColor: pressed ? colors.primary : "rgba(198,155,79,0.10)",
-                                borderColor: pressed ? colors.primary : "rgba(198,155,79,0.28)",
+                                backgroundColor: pressed ? colors.primary : "rgba(212,175,55,0.10)",
+                                borderColor: pressed ? colors.primary : "rgba(212,175,55,0.28)",
                               },
                             ]}
                             onPress={() => handleSelectTimer(opt)}
@@ -407,14 +407,14 @@ export default function SonidosScreen() {
                                 <Text
                                   style={[
                                     styles.durationNum,
-                                    { fontSize: 18, color: pressed ? "#090F17" : colors.foreground },
+                                    { fontSize: 18, color: pressed ? "#1B060F" : colors.foreground },
                                   ]}
                                 >
                                   {opt.label}
                                 </Text>
                                 {lockedOpt && (
                                   <View style={styles.timerLock}>
-                                    <Feather name="lock" size={9} color="#BE9650" />
+                                    <Feather name="lock" size={9} color="#D4AF37" />
                                   </View>
                                 )}
                               </>
@@ -425,7 +425,7 @@ export default function SonidosScreen() {
                     </View>
 
                     <Pressable
-                      style={[styles.cancelBtn, { borderColor: "rgba(198,155,79,0.22)" }]}
+                      style={[styles.cancelBtn, { borderColor: "rgba(212,175,55,0.22)" }]}
                       onPress={handleCancelTimer}
                     >
                       <Text style={[styles.cancelText, { color: colors.foreground }]}>
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === "ios" ? 10 : 7,
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
 
   divider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     marginTop: 16,
   },
 
@@ -531,9 +531,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "transparent",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
-  tabBlockActive: { backgroundColor: "rgba(100,142,195,0.14)" },
+  tabBlockActive: { backgroundColor: "rgba(212,175,55,0.14)" },
   tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
 
   grid: {},
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: "rgba(214,168,91,0.16)",
+    backgroundColor: "rgba(212,175,55,0.16)",
     alignItems: "center",
     justifyContent: "center",
   },

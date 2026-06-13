@@ -40,7 +40,7 @@ function initialsFor(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function UsuarioScreen() {
   const colors = useColors();
@@ -98,7 +98,7 @@ export default function UsuarioScreen() {
       end={{ x: 0, y: 1 }}
     >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#090D20", "#06070F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#4A0C0C", "#1B060F"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <ActivityIndicator color={colors.primary} />
@@ -117,7 +117,7 @@ export default function UsuarioScreen() {
       end={{ x: 0, y: 1 }}
     >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#090D20", "#06070F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#4A0C0C", "#1B060F"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />
@@ -153,7 +153,7 @@ export default function UsuarioScreen() {
       end={{ x: 0, y: 1 }}
     >
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#090D20", "#06070F"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#4A0C0C", "#1B060F"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}
@@ -198,7 +198,7 @@ export default function UsuarioScreen() {
         {/* Stats */}
         <View style={[styles.statsRow, { paddingHorizontal: H_PAD }]}>
           {statCards.map((stat) => (
-            <View key={stat.label} style={[styles.statCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+            <View key={stat.label} style={[styles.statCard, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
               <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
               <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
             </View>
@@ -207,7 +207,7 @@ export default function UsuarioScreen() {
 
         {profile.stats.topCategoryLabel ? (
           <View style={[styles.section, { paddingHorizontal: H_PAD }]}>
-            <View style={[styles.topCatCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+            <View style={[styles.topCatCard, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
               <Feather name="headphones" size={16} color={colors.accent} />
               <Text style={[styles.topCatLabel, { color: colors.mutedForeground }]}>
                 Categoría más escuchada
@@ -233,8 +233,8 @@ export default function UsuarioScreen() {
               style={({ pressed }) => [
                 styles.followBtn,
                 {
-                  backgroundColor: isFollowing ? "transparent" : "#BE9650",
-                  borderColor: "#BE9650",
+                  backgroundColor: isFollowing ? "transparent" : "#D4AF37",
+                  borderColor: "#D4AF37",
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
@@ -242,9 +242,9 @@ export default function UsuarioScreen() {
               <Feather
                 name={isFollowing ? "user-check" : "user-plus"}
                 size={15}
-                color={isFollowing ? "#BE9650" : "#090F17"}
+                color={isFollowing ? "#D4AF37" : "#1B060F"}
               />
-              <Text style={[styles.followBtnText, { color: isFollowing ? "#BE9650" : "#090F17" }]}>
+              <Text style={[styles.followBtnText, { color: isFollowing ? "#D4AF37" : "#1B060F" }]}>
                 {isFollowing ? "Siguiendo" : "Seguir"}
               </Text>
             </Pressable>
@@ -253,7 +253,7 @@ export default function UsuarioScreen() {
             onPress={() => router.push(`/chat/${profile.id}` as never)}
             style={({ pressed }) => [
               styles.messageBtn,
-              { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.85 : 1 },
+              { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.85 : 1 },
             ]}
           >
             <Feather name="message-circle" size={16} color={colors.primary} />
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     width: PHOTO_SIZE,
     height: PHOTO_SIZE,
     borderRadius: PHOTO_SIZE / 2,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   photoFallback: { alignItems: "center", justifyContent: "center" },
   initials: { fontSize: 38, fontWeight: "700" },

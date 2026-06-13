@@ -23,7 +23,7 @@ import { getTemaById } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function TemaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -70,7 +70,7 @@ export default function TemaScreen() {
             styles.backBtn,
             {
               backgroundColor: colors.card,
-              borderColor: "rgba(182,149,95,0.2)",
+              borderColor: "rgba(212,175,55,0.20)",
               opacity: pressed ? 0.7 : 1,
             },
           ]}
@@ -116,7 +116,7 @@ export default function TemaScreen() {
         <View
           style={[
             styles.divider,
-            { backgroundColor: "rgba(182,149,95,0.12)" },
+            { backgroundColor: "rgba(212,175,55,0.12)" },
           ]}
         />
 
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   row: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.06)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
 
   empty: {

@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function CarpetasScreen() {
   const colors = useColors();
@@ -53,7 +53,7 @@ export default function CarpetasScreen() {
       >
         {folders.length === 0 ? (
           <View style={styles.emptyWrap}>
-            <View style={[styles.emptyIcon, { backgroundColor: "rgba(190,150,80,0.1)" }]}>
+            <View style={[styles.emptyIcon, { backgroundColor: "rgba(212,175,55,0.10)" }]}>
               <Feather name="folder" size={40} color={colors.primary} />
             </View>
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
@@ -70,10 +70,10 @@ export default function CarpetasScreen() {
               onPress={() => router.push(`/carpeta/${folder.id}` as never)}
               style={({ pressed }) => [
                 styles.row,
-                { borderBottomColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.75 : 1 },
+                { borderBottomColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.75 : 1 },
               ]}
             >
-              <View style={[styles.folderIcon, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
+              <View style={[styles.folderIcon, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
                 <Feather name="folder" size={22} color={colors.primary} />
               </View>
               <View style={{ flex: 1 }}>
@@ -86,7 +86,7 @@ export default function CarpetasScreen() {
                     : `${folder.sessionIds.length} sesión${folder.sessionIds.length !== 1 ? "es" : ""}`}
                 </Text>
               </View>
-              <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.25)" />
+              <Feather name="chevron-right" size={18} color="rgba(244,218,213,0.25)" />
             </Pressable>
           ))
         )}
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   title: { flex: 1, fontSize: 18, fontWeight: "700", textAlign: "center" },

@@ -28,8 +28,8 @@ import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
 const RATINGS_KEY = "@resonance_ratings";
-const ACCENT = "#BE9650";
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const ACCENT = "#D4AF37";
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 type TabDef = {
   label: string;
@@ -202,7 +202,7 @@ export default function SonidosAncestalesScreen() {
                 <MaterialCommunityIcons
                   name={icon as never}
                   size={24}
-                  color={sel ? "#D6933A" : colors.mutedForeground}
+                  color={sel ? "#D4AF37" : colors.mutedForeground}
                 />
                 <Text
                   style={[
@@ -259,7 +259,7 @@ export default function SonidosAncestalesScreen() {
         )}
 
         <CategoryInfoPanel
-          accentColor={"#C4956A"}
+          accentColor={"#D4AF37"}
           heading="¿Qué son los sonidos ancestrales?"
           items={[
             {
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   searchBtn: {
     width: 40, height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignItems: "center", justifyContent: "center",
   },
   catIconCircle: {
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === "ios" ? 10 : 7,
@@ -347,15 +347,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "transparent",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   tabBlockActive: {
-    backgroundColor: "rgba(100,142,195,0.14)",
+    backgroundColor: "rgba(212,175,55,0.14)",
   },
   tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
   divider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     marginTop: 16,
   },
 

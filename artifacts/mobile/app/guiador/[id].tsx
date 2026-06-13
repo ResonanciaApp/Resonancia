@@ -38,9 +38,9 @@ export default function GuiadorScreen() {
 
   if (!guide) {
     return (
-      <View style={[styles.root, { backgroundColor: "#060208" }]}>
+      <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -73,7 +73,7 @@ export default function GuiadorScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#060208" }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}
@@ -98,8 +98,8 @@ export default function GuiadorScreen() {
               transition={IMAGE_TRANSITION}
             />
             {guide.certified && (
-              <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#060208" }]}>
-                <Feather name="check" size={15} color="#1A120A" />
+              <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#1B060F" }]}>
+                <Feather name="check" size={15} color="#1B060F" />
               </View>
             )}
           </View>
@@ -109,7 +109,7 @@ export default function GuiadorScreen() {
           </View>
 
           {guide.certified && (
-            <View style={[styles.certChip, { backgroundColor: "rgba(182,149,95,0.16)" }]}>
+            <View style={[styles.certChip, { backgroundColor: "rgba(212,175,55,0.16)" }]}>
               <Feather name="award" size={12} color={colors.primary} />
               <Text style={[styles.certText, { color: colors.primary }]}>Guía certificada</Text>
             </View>
@@ -146,7 +146,7 @@ export default function GuiadorScreen() {
               <Pressable
                 key={link.url}
                 onPress={() => Linking.openURL(link.url)}
-                style={[styles.linkChip, { borderColor: "rgba(255,255,255,0.14)" }]}
+                style={[styles.linkChip, { borderColor: "rgba(61,14,22,0.40)" }]}
               >
                 <Feather name="external-link" size={13} color={colors.foreground} />
                 <Text style={[styles.linkText, { color: colors.foreground }]}>{link.label}</Text>
@@ -172,7 +172,7 @@ export default function GuiadorScreen() {
                   onPress={() => handlePlay(session.id)}
                   style={({ pressed }) => [
                     styles.trackRow,
-                    { backgroundColor: "rgba(255,255,255,0.04)", opacity: pressed ? 0.8 : 1 },
+                    { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   <View style={styles.trackImgWrap}>
@@ -193,7 +193,7 @@ export default function GuiadorScreen() {
                       {session.meditationTag ?? session.subtitle} · {session.durationLabel}
                     </Text>
                   </View>
-                  <View style={[styles.playBtn, { backgroundColor: "rgba(182,149,95,0.18)" }]}>
+                  <View style={[styles.playBtn, { backgroundColor: "rgba(212,175,55,0.18)" }]}>
                     <Feather name={locked ? "lock" : "play"} size={15} color={colors.primary} />
                   </View>
                 </Pressable>
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     width: PHOTO_SIZE,
     height: PHOTO_SIZE,
     borderRadius: PHOTO_SIZE / 2,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   badge: {
     position: "absolute",
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   metaRow: { flexDirection: "row", alignItems: "center", marginTop: 10, flexWrap: "wrap", justifyContent: "center" },
   metaItem: { flexDirection: "row", alignItems: "center", gap: 4 },
   metaText: { fontSize: 12 },
-  metaDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.3)", marginHorizontal: 8 },
+  metaDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: "rgba(244,218,213,0.30)", marginHorizontal: 8 },
   trackCount: { fontSize: 12, fontWeight: "600", marginTop: 10 },
 
   section: {},

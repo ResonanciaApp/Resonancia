@@ -70,7 +70,7 @@ export function SessionSortHeader({
           <View
             style={[
               styles.menu,
-              { top: pos.top, right: pos.right, backgroundColor: colors.card, borderColor: "rgba(255,255,255,0.08)" },
+              { top: pos.top, right: pos.right, backgroundColor: colors.card, borderColor: "rgba(61,14,22,0.50)" },
             ]}
           >
             {SORT_OPTIONS.map((opt) => {
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   backdrop: { flex: 1 },
   menu: {

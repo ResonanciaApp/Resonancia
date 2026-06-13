@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#070E09", padding: 28, justifyContent: "center", gap: 16 },
   title: { color: "#FFFFFF", fontSize: 24, fontFamily: "PlayfairDisplay_700Bold" },
   body: { color: "rgba(237,225,211,0.65)", fontSize: 14, lineHeight: 20 },
-  btn: { backgroundColor: "#BE9650", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
+  btn: { backgroundColor: "#D4AF37", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
   btnText: { color: "#080F0A", fontFamily: "Inter_700Bold", fontSize: 15, letterSpacing: 0.3 },
-  status: { color: "rgba(182,149,95,0.7)", fontSize: 12, textAlign: "center" },
+  status: { color: "rgba(212,175,55,0.7)", fontSize: 12, textAlign: "center" },
 });

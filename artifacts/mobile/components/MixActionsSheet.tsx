@@ -56,7 +56,7 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
             {img ? (
               <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
             ) : (
-              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(182,149,95,0.15)" }]} />
+              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]} />
             )}
           </View>
         );
@@ -223,7 +223,7 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
           </Pressable>
         </View>
 
-        <View style={[styles.divider, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+        <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
         <ActionRow
           icon="users"
@@ -307,7 +307,7 @@ function ActionRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.actionRow,
-        !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.07)" },
+        !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.40)" },
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
@@ -316,7 +316,7 @@ function ActionRow({
       {right ? (
         <Text style={[styles.actionRight, { color: colors.mutedForeground }]}>{right}</Text>
       ) : (
-        <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.2)" />
+        <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.25)" />
       )}
     </Pressable>
   );
@@ -325,7 +325,7 @@ function ActionRow({
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
   sheet: {
-    backgroundColor: "#151A23",
+    backgroundColor: "#27070E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   handle: {
     width: 36, height: 4, borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     alignSelf: "center", marginBottom: 16,
   },
   header: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 14 },
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center",
     position: "absolute", bottom: 80, left: 20, right: 20,
     borderRadius: 14, paddingVertical: 14, paddingHorizontal: 16,
-    borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.1)",
+    borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(61,14,22,0.40)",
   },
   toastText: { fontSize: 15, fontWeight: "600" },
 });

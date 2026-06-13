@@ -26,8 +26,8 @@ export function ArtistCard({ artist }: { artist: Artist }) {
           transition={IMAGE_TRANSITION}
         />
         {artist.certified && (
-          <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#060905" }]}>
-            <Feather name="check" size={12} color="#1A120A" />
+          <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#1B060F" }]}>
+            <Feather name="check" size={12} color="#1B060F" />
           </View>
         )}
       </View>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     width: PHOTO_SIZE,
     height: PHOTO_SIZE,
     borderRadius: PHOTO_SIZE / 2,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   badge: {
     position: "absolute",

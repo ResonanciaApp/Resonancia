@@ -100,7 +100,7 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                       onPress={() => handleToggle(folder.id)}
                       style={({ pressed }) => [styles.row, { opacity: pressed ? 0.7 : 1 }]}
                     >
-                      <View style={[styles.folderIcon, { backgroundColor: "rgba(190,150,80,0.12)" }]}>
+                      <View style={[styles.folderIcon, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
                         <Feather name="folder" size={18} color={colors.primary} />
                       </View>
                       <Text style={[styles.rowLabel, { color: colors.foreground }]} numberOfLines={1}>
@@ -112,7 +112,7 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                       {inIt ? (
                         <Feather name="check-circle" size={20} color={colors.primary} />
                       ) : (
-                        <Feather name="circle" size={20} color="rgba(255,255,255,0.2)" />
+                        <Feather name="circle" size={20} color="rgba(244,218,213,0.25)" />
                       )}
                     </Pressable>
                   );
@@ -124,11 +124,11 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                 onPress={() => setStep("create")}
                 style={({ pressed }) => [
                   styles.newRow,
-                  { borderTopColor: "rgba(255,255,255,0.08)", opacity: pressed ? 0.7 : 1 },
+                  { borderTopColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.7 : 1 },
                 ]}
               >
                 <View style={[styles.plusCircle, { backgroundColor: colors.primary }]}>
-                  <Feather name="plus" size={14} color="#090F17" />
+                  <Feather name="plus" size={14} color="#1B060F" />
                 </View>
                 <Text style={[styles.newLabel, { color: colors.foreground }]}>
                   Nueva Carpeta
@@ -159,8 +159,8 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                 placeholderTextColor={colors.mutedForeground}
                 style={[styles.input, {
                   color: colors.foreground,
-                  borderColor: "rgba(255,255,255,0.12)",
-                  backgroundColor: "rgba(255,255,255,0.05)",
+                  borderColor: "rgba(61,14,22,0.40)",
+                  backgroundColor: "rgba(74,12,12,0.08)",
                 }]}
                 autoFocus
                 returnKeyType="done"
@@ -174,12 +174,12 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                 style={({ pressed }) => [
                   styles.createBtn,
                   {
-                    backgroundColor: newName.trim() ? colors.primary : "rgba(190,150,80,0.3)",
+                    backgroundColor: newName.trim() ? colors.primary : "rgba(212,175,55,0.30)",
                     opacity: pressed ? 0.8 : 1,
                   },
                 ]}
               >
-                <Text style={[styles.createBtnLabel, { color: "#090F17" }]}>
+                <Text style={[styles.createBtnLabel, { color: "#1B060F" }]}>
                   Crear carpeta
                 </Text>
               </Pressable>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#151A23",
+    backgroundColor: "#27070E",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     alignSelf: "center",
     marginBottom: 16,
   },
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   folderIcon: {
     width: 36,

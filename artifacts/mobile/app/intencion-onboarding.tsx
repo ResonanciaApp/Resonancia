@@ -47,7 +47,7 @@ export default function IntencionOnboardingScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Icon */}
-        <View style={[styles.iconWrap, { backgroundColor: "rgba(198,155,79,0.09)", borderColor: "rgba(198,155,79,0.20)" }]}>
+        <View style={[styles.iconWrap, { backgroundColor: "rgba(212,175,55,0.09)", borderColor: "rgba(212,175,55,0.20)" }]}>
           <Feather name="target" size={28} color={colors.primary} />
         </View>
 
@@ -58,12 +58,12 @@ export default function IntencionOnboardingScreen() {
         </Text>
 
         {/* Tips card */}
-        <View style={[styles.tipsCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(198,155,79,0.12)" }]}>
+        <View style={[styles.tipsCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,175,55,0.12)" }]}>
           <Text style={[styles.tipsTitle, { color: colors.foreground }]}>Las mejores intenciones...</Text>
           <View style={styles.tipsList}>
             {TIPS.map((tip) => (
               <View key={tip} style={styles.tipRow}>
-                <View style={[styles.checkCircle, { backgroundColor: "rgba(198,155,79,0.10)", borderColor: "rgba(198,155,79,0.25)" }]}>
+                <View style={[styles.checkCircle, { backgroundColor: "rgba(212,175,55,0.10)", borderColor: "rgba(212,175,55,0.25)" }]}>
                   <Feather name="check" size={12} color={colors.primary} />
                 </View>
                 <Text style={[styles.tipText, { color: colors.mutedForeground }]}>{tip}</Text>
@@ -73,7 +73,7 @@ export default function IntencionOnboardingScreen() {
         </View>
 
         {/* Example */}
-        <View style={[styles.exampleCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "rgba(198,155,79,0.15)" }]}>
+        <View style={[styles.exampleCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,175,55,0.15)" }]}>
           <Text style={[styles.exampleLabel, { color: colors.primary }]}>EJEMPLO</Text>
           <Text style={[styles.exampleHoy, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
           <Text style={[styles.exampleText, { color: colors.foreground }]}>

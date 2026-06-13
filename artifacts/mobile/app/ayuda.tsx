@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 const FAQS = [
   {
@@ -90,7 +90,7 @@ export default function AyudaScreen() {
           {TOPICS.map((t) => (
             <Pressable
               key={t.label}
-              style={({ pressed }) => [styles.topicCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent", opacity: pressed ? 0.8 : 1 }]}
+              style={({ pressed }) => [styles.topicCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent", opacity: pressed ? 0.8 : 1 }]}
             >
               <View style={[styles.topicIcon, { backgroundColor: t.color + "22" }]}>
                 <Feather name={t.icon} size={18} color={t.color} />
@@ -107,7 +107,7 @@ export default function AyudaScreen() {
             <Pressable
               key={i}
               onPress={() => setOpenIndex(openIndex === i ? null : i)}
-              style={[styles.faqItem, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: openIndex === i ? colors.primary + "66" : "transparent" }]}
+              style={[styles.faqItem, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: openIndex === i ? colors.primary + "66" : "transparent" }]}
             >
               <View style={styles.faqHeader}>
                 <Text style={[styles.faqQ, { color: colors.foreground, flex: 1 }]}>{faq.q}</Text>
@@ -125,7 +125,7 @@ export default function AyudaScreen() {
         </View>
 
         {/* Contact */}
-        <View style={[styles.contactCard, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+        <View style={[styles.contactCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
           <Feather name="message-square" size={22} color={colors.primary} />
           <View style={{ flex: 1 }}>
             <Text style={[styles.contactTitle, { color: colors.foreground }]}>¿No encontraste lo que buscabas?</Text>

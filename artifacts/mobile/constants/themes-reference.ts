@@ -16,7 +16,7 @@ export const THEME_A = {
   colors: {
     background:          "#070E09",
     card:                "#111E16",
-    primary:             "#BE9650",
+    primary:             "#D4AF37",
     primaryForeground:   "#070E09",
     foreground:          "#C8C1B5",
     cardForeground:      "#C8C1B5",
@@ -61,12 +61,12 @@ export const THEME_A = {
     gradient:           ["#5C1A3A", "#3A0D22"] as [string, string],  // rosa/púrpura
     headerTitle:        "#C8A860",
     headerSubtitle:     "rgba(200,168,96,0.65)",
-    cycleBadgeBg:       "rgba(182,149,95,0.18)",
+    cycleBadgeBg:       "rgba(212,175,55,0.18)",
     cycleBadgeText:     "#C8A860",
     clockIcon:          "#C8A860",
     infoIcon:           "rgba(200,168,96,0.7)",
-    iconBg:             "rgba(182,149,95,0.22)",
-    mainIcon:           "#BE9650",
+    iconBg:             "rgba(212,175,55,0.22)",
+    mainIcon:           "#D4AF37",
   },
 
   // ── data/categories.ts — 3 Minutos de Sabiduría ─────────────────────────
@@ -91,7 +91,7 @@ export const THEME_B = {
   colors: {
     background:          "#070E09",
     card:                "#1A2A1E",
-    primary:             "#BE9650",
+    primary:             "#D4AF37",
     primaryForeground:   "#070E09",
     foreground:          "#C8C1B5",
     cardForeground:      "#C8C1B5",

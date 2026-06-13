@@ -321,7 +321,7 @@ export default function HomeScreen() {
               />
             ) : (
               <View style={styles.avatarFallback}>
-                <Feather name="user" size={15} color="#7A8FA8" />
+                <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
               </View>
             )}
           </Pressable>
@@ -436,7 +436,7 @@ export default function HomeScreen() {
                   <View style={styles.coleccionTitleRow}>
                     <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
                     {isPlaying && currentSession && pl.sessionIds.includes(currentSession.id) && (
-                      <EqualizerBars color="#BE9650" size="sm" />
+                      <EqualizerBars color="#D4AF37" size="sm" />
                     )}
                   </View>
                 </Pressable>
@@ -460,7 +460,7 @@ export default function HomeScreen() {
           </View>
 
           {VIDEOS.length === 0 ? (
-            <View style={[styles.videosEmpty, { borderColor: "rgba(100,140,210,0.15)", backgroundColor: "rgba(255,255,255,0.03)" }]}>
+            <View style={[styles.videosEmpty, { borderColor: "rgba(61,14,22,0.40)", backgroundColor: "rgba(74,12,12,0.08)" }]}>
               <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
               <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
               <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
@@ -596,11 +596,11 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.25)",
+    borderColor: "rgba(212,175,55,0.25)",
   },
   headerTabs: {
     flex: 1,
@@ -618,7 +618,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 32,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   headerTabTextActive: {
-    color: "#0B0F14",
+    color: "#1B060F",
   },
   intentionCard: {
     paddingVertical: 10,
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 8,
     overflow: "hidden",
     height: 62,
@@ -728,7 +728,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: "700",
-    color: "#e4e6f5",
+    color: "#F4DAD5",
     lineHeight: 18,
   },
   catGrid: {
@@ -743,7 +743,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
   catCardLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#e4e6f5",
+    color: "#F4DAD5",
     lineHeight: 18,
   },
 
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   recentThumb: {
     width: "100%",
@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 8,
     left: 8,
-    backgroundColor: "rgba(6,10,15,0.72)",
+    backgroundColor: "rgba(27,6,15,0.72)",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -803,7 +803,7 @@ const styles = StyleSheet.create({
   recentTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#e4e6f5",
+    color: "#F4DAD5",
     lineHeight: 17,
     marginTop: 8,
   },
@@ -817,11 +817,11 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   recentCreatorName: {
     fontSize: 11,
-    color: "#7A8FA8",
+    color: "rgba(242,231,228,0.45)",
     flex: 1,
     marginTop: 4,
   },
@@ -832,7 +832,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#0e132f",
+    borderColor: "#3D0E16",
   },
   heroImage: { width: "100%", height: "100%" },
   glowCenter: {
@@ -849,9 +849,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 16,
     paddingBottom: 18,
-    backgroundColor: "rgba(9,15,23,0.80)",
+    backgroundColor: "rgba(27,6,15,0.80)",
     borderTopWidth: 1,
-    borderTopColor: "rgba(70,130,220,0.22)",
+    borderTopColor: "rgba(61,14,22,0.60)",
   },
   heroMetaRow: {
     flexDirection: "row",
@@ -873,9 +873,9 @@ const styles = StyleSheet.create({
     borderRadius: 23,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#111634",
+    backgroundColor: "#27070E",
     borderWidth: 1,
-    borderColor: "#191f45",
+    borderColor: "#3D0E16",
     transform: [{ translateY: -10 }],
   },
 
@@ -891,7 +891,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     padding: 16,
     borderWidth: 1,
-    borderColor: "rgba(100,140,210,0.18)",
+    borderColor: "rgba(61,14,22,0.40)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -899,11 +899,11 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: "rgba(100,140,210,0.14)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
-  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#e4e6f5" },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#F4DAD5" },
   squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
   diarioList: { gap: 10 },
 

@@ -153,8 +153,8 @@ export default function IntencionScreen() {
                   style={({ pressed }) => [
                     styles.ideaChip,
                     {
-                      backgroundColor: text === idea ? "rgba(198,155,79,0.10)" : "rgba(255,255,255,0.04)",
-                      borderColor: text === idea ? "rgba(198,155,79,0.35)" : "rgba(255,255,255,0.07)",
+                      backgroundColor: text === idea ? "rgba(212,175,55,0.10)" : "rgba(74,12,12,0.08)",
+                      borderColor: text === idea ? "rgba(212,175,55,0.35)" : "rgba(61,14,22,0.40)",
                       opacity: pressed ? 0.75 : 1,
                     },
                   ]}
@@ -162,7 +162,7 @@ export default function IntencionScreen() {
                   <LinearGradient
                     colors={
                       text === idea
-                        ? ["rgba(182,149,95,0.08)", "rgba(182,149,95,0.04)"]
+                        ? ["rgba(212,175,55,0.08)", "rgba(212,175,55,0.04)"]
                         : ["transparent", "transparent"]
                     }
                     style={StyleSheet.absoluteFill}

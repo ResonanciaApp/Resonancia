@@ -112,7 +112,7 @@ export default function CreacionesScreen() {
             <View
               style={[
                 styles.emptyIcon,
-                { backgroundColor: "rgba(190,150,80,0.1)" },
+                { backgroundColor: "rgba(212,175,55,0.10)" },
               ]}
             >
               <Feather name="layers" size={36} color={colors.primary} />
@@ -151,7 +151,7 @@ export default function CreacionesScreen() {
                   <View
                     style={[
                       styles.thumb,
-                      { backgroundColor: "rgba(190,150,80,0.08)" },
+                      { backgroundColor: "rgba(212,175,55,0.08)" },
                     ]}
                   >
                     {imageSource ? (

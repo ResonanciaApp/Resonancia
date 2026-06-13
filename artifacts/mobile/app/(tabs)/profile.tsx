@@ -114,7 +114,7 @@ function computeStreak(events: { playedAt: string }[]): number {
   return count;
 }
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 // ── Personalize sheet styles (defined before component to avoid TDZ on Hermes)
 const pStyles = StyleSheet.create({
@@ -126,7 +126,7 @@ const pStyles = StyleSheet.create({
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
     borderWidth: 1,
-    borderColor: "#1a2046",
+    borderColor: "#3D0E16",
     borderBottomColor: "transparent",
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
@@ -138,21 +138,21 @@ const pStyles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "#2A3545",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignSelf: "center",
     marginBottom: 22,
   },
   sectionTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#EDE1D3",
+    color: "#F4DAD5",
     letterSpacing: 0.8,
     textTransform: "uppercase",
     marginBottom: 4,
   },
   sectionSub: {
     fontSize: 12,
-    color: "#7A8FA8",
+    color: "rgba(242,231,228,0.45)",
     marginBottom: 14,
     lineHeight: 17,
   },
@@ -168,10 +168,10 @@ const pStyles = StyleSheet.create({
     marginBottom: 6,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#12122f",
+    borderColor: "#3D0E16",
   },
   thumbBgOn: {
-    borderColor: "#1a2046",
+    borderColor: "#4A0C0C",
   },
   thumbCheck: {
     flex: 1,
@@ -181,12 +181,12 @@ const pStyles = StyleSheet.create({
   },
   thumbLabel: {
     fontSize: 11,
-    color: "#7A8FA8",
+    color: "rgba(242,231,228,0.45)",
     textAlign: "center",
   },
   emptyText: {
     fontSize: 12,
-    color: "#7A8FA8",
+    color: "rgba(242,231,228,0.45)",
     fontStyle: "italic",
     paddingVertical: 20,
   },
@@ -201,16 +201,16 @@ const pStyles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#12122f",
+    borderColor: "#3D0E16",
   },
   swatchOn: {
-    borderColor: "#1a2046",
+    borderColor: "#4A0C0C",
   },
   swatchGrad: {
     flex: 1,
   },
   reminderCard: {
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 18,
     padding: 16,
     marginBottom: 24,
@@ -224,26 +224,26 @@ const pStyles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(190,150,80,0.1)",
+    backgroundColor: "rgba(212,175,55,0.10)",
     alignItems: "center",
     justifyContent: "center",
   },
   reminderLabel: {
     flex: 1,
     fontSize: 14,
-    color: "#EDE1D3",
+    color: "#F4DAD5",
     fontWeight: "500",
   },
   timePicker: {
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: "#1E2A38",
+    borderTopColor: "#3D0E16",
     alignItems: "center",
   },
   timeLabel: {
     fontSize: 10,
-    color: "#7A8FA8",
+    color: "rgba(242,231,228,0.45)",
     letterSpacing: 1.2,
     textTransform: "uppercase",
     marginBottom: 14,
@@ -260,14 +260,14 @@ const pStyles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(190,150,80,0.1)",
+    backgroundColor: "rgba(212,175,55,0.10)",
     alignItems: "center",
     justifyContent: "center",
   },
   timeValue: {
     fontSize: 38,
     fontWeight: "200",
-    color: "#EDE1D3",
+    color: "#F4DAD5",
     letterSpacing: 3,
     minWidth: 120,
     textAlign: "center",
@@ -280,14 +280,14 @@ const pStyles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   minuteBtnOn: {
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
   },
   minuteText: {
     fontSize: 13,
-    color: "#7A8FA8",
+    color: "rgba(242,231,228,0.45)",
     fontWeight: "500",
   },
 });
@@ -935,7 +935,7 @@ export default function ProfileScreen() {
           onPress={() => router.push("/membresia" as never)}
           style={({ pressed }) => [
             styles.planCard,
-            { backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.85 : 1 },
+            { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.85 : 1 },
           ]}
         >
           {isPremium ? (
@@ -969,7 +969,7 @@ export default function ProfileScreen() {
         {!isPremium && (
           <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
             <LinearGradient
-              colors={["#090D20", "#080A18", "#06070F"]}
+              colors={["#4A0C0C", "#27070E", "#1B060F"]}
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
             />
@@ -988,12 +988,12 @@ export default function ProfileScreen() {
                 { icon: "users",      text: "Muro general de la comunidad" },
               ].map((f) => (
                 <View key={f.text} style={styles.premiumFeatureRow}>
-                  <Feather name={f.icon as never} size={11} color="#BE9650" />
+                  <Feather name={f.icon as never} size={11} color="#D4AF37" />
                   <Text style={[styles.premiumFeatureText, { color: "#FFFFFF" }]}>{f.text}</Text>
                 </View>
               ))}
             </View>
-            <View style={[styles.premiumBadge, { backgroundColor: "#17352A", borderColor: "#A97A34" }]}>
+            <View style={[styles.premiumBadge, { backgroundColor: "#3D0E16", borderColor: "#D4AF37" }]}>
               <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
             </View>
           </Pressable>
@@ -1007,10 +1007,10 @@ export default function ProfileScreen() {
 
 
         {/* ── Tu Progreso (racha card) ── */}
-        <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+        <View style={[styles.rachaCard, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
           {/* Header: flame + title */}
           <View style={styles.rachaTop}>
-            <View style={[styles.rachaBubble, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+            <View style={[styles.rachaBubble, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
               <Text style={styles.rachaFlame}>{activity.streak > 0 ? "🔥" : "✨"}</Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -1046,7 +1046,7 @@ export default function ProfileScreen() {
                       },
                     ]}
                   >
-                    {done && <Feather name="check" size={13} color="#090F17" />}
+                    {done && <Feather name="check" size={13} color="#1B060F" />}
                   </View>
                 </View>
               );
@@ -1055,7 +1055,7 @@ export default function ProfileScreen() {
 
           {/* Max streak row */}
           <View style={[styles.rachaMaxRow, { borderTopColor: colors.border ?? "#1E2A38" }]}>
-            <View style={[styles.rachaMaxIcon, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+            <View style={[styles.rachaMaxIcon, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
               <Text style={{ fontSize: 16 }}>🛡️</Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -1140,7 +1140,7 @@ export default function ProfileScreen() {
                     <View
                       style={[
                         pStyles.thumbBg,
-                        { backgroundColor: "#0B0F14", alignItems: "center", justifyContent: "center" },
+                        { backgroundColor: "#1B060F", alignItems: "center", justifyContent: "center" },
                         profileBgCreationId === null && pStyles.thumbBgOn,
                       ]}
                     >
@@ -1242,14 +1242,14 @@ export default function ProfileScreen() {
               <View style={pStyles.reminderCard}>
                 <View style={pStyles.reminderRow}>
                   <View style={pStyles.reminderBell}>
-                    <Feather name="bell" size={18} color="#BE9650" />
+                    <Feather name="bell" size={18} color="#D4AF37" />
                   </View>
                   <Text style={pStyles.reminderLabel}>Activar recordatorio</Text>
                   <Switch
                     value={reminderEnabled}
                     onValueChange={(v) => saveReminder(v, reminderHour, reminderMinute)}
-                    trackColor={{ false: "#1E2A38", true: "#2D4A3A" }}
-                    thumbColor={reminderEnabled ? "#BE9650" : "#7A8FA8"}
+                    trackColor={{ false: "#3D0E16", true: "#4A0C0C" }}
+                    thumbColor={reminderEnabled ? "#D4AF37" : "rgba(242,231,228,0.45)"}
                   />
                 </View>
 
@@ -1262,7 +1262,7 @@ export default function ProfileScreen() {
                         onPress={() => saveReminder(reminderEnabled, (reminderHour - 1 + 24) % 24, reminderMinute)}
                         style={pStyles.timeBtn}
                       >
-                        <Feather name="minus" size={16} color="#BE9650" />
+                        <Feather name="minus" size={16} color="#D4AF37" />
                       </Pressable>
                       <Text style={pStyles.timeValue}>
                         {String(reminderHour).padStart(2, "0")}:{String(reminderMinute).padStart(2, "0")}
@@ -1272,7 +1272,7 @@ export default function ProfileScreen() {
                         onPress={() => saveReminder(reminderEnabled, (reminderHour + 1) % 24, reminderMinute)}
                         style={pStyles.timeBtn}
                       >
-                        <Feather name="plus" size={16} color="#BE9650" />
+                        <Feather name="plus" size={16} color="#D4AF37" />
                       </Pressable>
                     </View>
                     <View style={pStyles.minuteRow}>
@@ -1282,7 +1282,7 @@ export default function ProfileScreen() {
                           onPress={() => saveReminder(reminderEnabled, reminderHour, m)}
                           style={[pStyles.minuteBtn, reminderMinute === m && pStyles.minuteBtnOn]}
                         >
-                          <Text style={[pStyles.minuteText, reminderMinute === m && { color: "#BE9650" }]}>
+                          <Text style={[pStyles.minuteText, reminderMinute === m && { color: "#D4AF37" }]}>
                             :{String(m).padStart(2, "0")}
                           </Text>
                         </Pressable>
@@ -1385,7 +1385,7 @@ function ModalField({ label, value, onChangeText, placeholder, colors, icon, mul
       <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>{label}</Text>
       <View style={[
         styles.fieldBox,
-        { borderColor: colors.border, backgroundColor: "rgba(255,255,255,0.04)" },
+        { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" },
         multiline && { minHeight: 90, alignItems: "flex-start" },
       ]}>
         {icon && <Feather name={icon} size={15} color={colors.mutedForeground} style={{ marginTop: multiline ? 2 : 0 }} />}
@@ -1451,11 +1451,11 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#BE9650",
+    backgroundColor: "#D4AF37",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#090F17",
+    borderColor: "#1B060F",
   },
   userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },

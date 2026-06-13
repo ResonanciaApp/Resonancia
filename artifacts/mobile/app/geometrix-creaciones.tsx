@@ -64,7 +64,7 @@ const EXPORT_SIZE = 540;
 // Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
 // Oscurecido un 90% (se conserva el 10% del brillo) sobre el degradado original
 // ["#14102E","#1C1448","#2A1A5C","#1A1340","#0A0818"].
-const CREACIONES_BG = ["#090D20", "#080A18", "#06070F"] as const;
+const CREACIONES_BG = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
@@ -556,7 +556,7 @@ export default function GeometrixCreacionesScreen() {
                       <Feather
                         name={isPlaying ? "pause" : "play"}
                         size={14}
-                        color="#EDE1D3"
+                        color="#F4DAD5"
                         style={isPlaying ? undefined : { marginLeft: 1 }}
                       />
                     </Pressable>
@@ -1005,7 +1005,7 @@ const styles = StyleSheet.create({
   },
   newLabel: { fontSize: 13, fontWeight: "600" },
 
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.03)" },
+  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(74,12,12,0.08)" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
   playBtn: {
@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: "rgba(0,0,0,0.45)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
+    borderColor: "rgba(61,14,22,0.40)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1057,7 +1057,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#06070F",
+    backgroundColor: "#1B060F",
     overflow: "hidden",
     paddingHorizontal: 14,
     paddingTop: 16,
@@ -1067,7 +1067,7 @@ const styles = StyleSheet.create({
   sheetTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#EDE1D3",
+    color: "#F4DAD5",
     paddingHorizontal: 8,
     paddingBottom: 10,
   },
@@ -1085,16 +1085,16 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.4)",
+    borderColor: "rgba(212,175,55,0.40)",
   },
   sheetRowIconDanger: {
     backgroundColor: "rgba(239,68,68,0.12)",
     borderColor: "rgba(239,68,68,0.4)",
   },
-  sheetRowText: { fontSize: 15, fontWeight: "600", color: "#EDE1D3" },
-  sheetRowSub: { fontSize: 12, color: "#7A8FA8", marginTop: 1 },
+  sheetRowText: { fontSize: 15, fontWeight: "600", color: "#F4DAD5" },
+  sheetRowSub: { fontSize: 12, color: "rgba(242,231,228,0.45)", marginTop: 1 },
   exportHidden: {
     position: "absolute",
     left: 0,
@@ -1125,9 +1125,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#06070F",
+    backgroundColor: "#1B060F",
   },
-  exportToastText: { fontSize: 14, fontWeight: "600", color: "#EDE1D3" },
+  exportToastText: { fontSize: 14, fontWeight: "600", color: "#F4DAD5" },
   sheetCancel: {
     marginTop: 6,
     paddingVertical: 12,
@@ -1137,7 +1137,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "#7A8FA8" },
+  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "rgba(242,231,228,0.45)" },
 
   confirmCard: {
     width: "100%",
@@ -1145,7 +1145,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#06070F",
+    backgroundColor: "#1B060F",
     overflow: "hidden",
     paddingHorizontal: 22,
     paddingTop: 22,
@@ -1164,14 +1164,14 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
     marginBottom: 2,
   },
-  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#EDE1D3" },
+  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#F4DAD5" },
   confirmSubtitle: {
     fontSize: 13.5,
-    color: "#7A8FA8",
+    color: "rgba(242,231,228,0.45)",
     textAlign: "center",
     lineHeight: 20,
   },
-  confirmName: { color: "#EDE1D3", fontWeight: "600" },
+  confirmName: { color: "#F4DAD5", fontWeight: "600" },
   confirmActions: {
     flexDirection: "row",
     gap: 10,
@@ -1187,7 +1187,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "#7A8FA8" },
+  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(242,231,228,0.45)" },
   confirmBtnDanger: {
     flex: 1,
     paddingVertical: 12,

@@ -19,7 +19,7 @@ type Props = {
 
 export function GlowRing({
   size,
-  color = "rgba(182,149,95,0.3)",
+  color = "rgba(212,175,55,0.30)",
   delay = 0,
   duration = 3000,
 }: Props) {

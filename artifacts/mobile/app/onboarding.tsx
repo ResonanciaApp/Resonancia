@@ -27,13 +27,13 @@ const STORAGE_KEY = "cdc_onboarding_done";
 const PROFILE_KEY = "cdc_onboarding_profile";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
-const BG       = "#090F17";
-const CARD     = "rgba(255,255,255,0.03)";
-const GOLD     = "#BE9650";
-const GOLD_LT  = "#BE9650";
-const MUTED    = "#7A8FA8";
+const BG       = "#1B060F";
+const CARD     = "rgba(74,12,12,0.08)";
+const GOLD     = "#D4AF37";
+const GOLD_LT  = "#D4AF37";
+const MUTED    = "rgba(242,231,228,0.45)";
 const FG       = "#FFFFFF";
-const BORDER   = "rgba(182,149,95,0.25)";
+const BORDER   = "rgba(212,175,55,0.25)";
 
 // ── Survey definition ─────────────────────────────────────────────────────────
 type Question = {
@@ -111,7 +111,7 @@ function Dots({ total, current }: { total: number; current: number }) {
           style={[
             styles.dot,
             {
-              backgroundColor: i === current ? GOLD : "rgba(182,149,95,0.3)",
+              backgroundColor: i === current ? GOLD : "rgba(212,175,55,0.30)",
               width: i === current ? 20 : 7,
             },
           ]}
@@ -296,7 +296,7 @@ export default function Onboarding() {
   if (step === -1) {
     return (
       <LinearGradient
-        colors={["#04070D", "#090F17", "#0A0F18", "#090F17"]}
+        colors={["#2A040C", "#1B060F", "#27070E", "#1B060F"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
@@ -347,7 +347,7 @@ export default function Onboarding() {
 
     return (
       <LinearGradient
-        colors={["#080F0A", "#0A1510", "#12221A"]}
+        colors={["#4A0C0C", "#27070E", "#1B060F"]}
         style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
@@ -407,7 +407,7 @@ export default function Onboarding() {
 
   return (
     <LinearGradient
-      colors={["#080F0A", "#0A1510", "#12221A"]}
+      colors={["#4A0C0C", "#27070E", "#1B060F"]}
       style={[styles.fill, { paddingTop: insets.top }]}
       start={{ x: 0.3, y: 0 }}
       end={{ x: 0.7, y: 1 }}
@@ -482,7 +482,7 @@ export default function Onboarding() {
           <Text
             style={[
               styles.primaryBtnText,
-              !canContinue && { color: "rgba(255,255,255,0.4)" },
+              !canContinue && { color: "rgba(244,218,213,0.40)" },
             ]}
           >
             {step === QUESTIONS.length - 1 ? "Ver mi espacio   →" : "Continuar   →"}
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     borderRadius: 140,
-    backgroundColor: "rgba(182,149,95,0.06)",
+    backgroundColor: "rgba(212,175,55,0.06)",
   },
   welcomeLogo: { width: 165, height: 165, alignSelf: "center" },
   welcomeTitle: {
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: "rgba(182,149,95,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
   // Progress
   progressBar: {
     height: 2,
-    backgroundColor: "rgba(182,149,95,0.15)",
+    backgroundColor: "rgba(212,175,55,0.15)",
     marginTop: 4,
   },
   progressFill: {
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(182,149,95,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   },
   optionCardSelected: {
     borderColor: GOLD,
-    backgroundColor: "rgba(182,149,95,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
   },
   optionEmoji: { fontSize: 26 },
   optionLabel: {
@@ -713,14 +713,14 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: "center",
   },
-  primaryBtnDisabled: { backgroundColor: "rgba(182,149,95,0.2)" },
+  primaryBtnDisabled: { backgroundColor: "rgba(212,175,55,0.2)" },
   skipBtn: {
     alignItems: "center",
     paddingVertical: 10,
     marginTop: 4,
   },
   skipBtnText: {
-    color: "rgba(182,149,95,0.5)",
+    color: "rgba(212,175,55,0.5)",
     fontSize: 12,
     fontFamily: "Inter_600SemiBold",
     letterSpacing: 2,

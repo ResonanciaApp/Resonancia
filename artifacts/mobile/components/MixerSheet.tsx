@@ -55,10 +55,10 @@ type SaveMode = "new" | "update";
 const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
-const DARK_GRADIENT = ["#151A23", "#0B0F14"] as const;
+const DARK_GRADIENT = ["#27070E", "#1B060F"] as const;
 
 /** Mismo degradé que el fondo de la pantalla de Inicio. */
-const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const HOME_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 
 /** Devuelve true si el primer color del gradiente es claro (luminancia media > 100). */
@@ -73,22 +73,22 @@ function isLightGradient(g: readonly [string, string, string]): boolean {
 
 /** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
-  bg: "#0B0F14",
-  handle: "rgba(255,255,255,0.12)",
-  trackBg: "#151A23",
-  trackBorder: "rgba(255,255,255,0.07)",
+  bg: "#1B060F",
+  handle: "rgba(74,12,12,0.08)",
+  trackBg: "#27070E",
+  trackBorder: "rgba(61,14,22,0.40)",
   sliderThumb: "#FFFFFF",
-  sliderTrack: "rgba(255,255,255,0.10)",
+  sliderTrack: "rgba(61,14,22,0.40)",
   addBorder: "transparent",
-  addText: "rgba(255,255,255,0.30)",
-  separator: "rgba(255,255,255,0.06)",
+  addText: "rgba(244,218,213,0.30)",
+  separator: "rgba(61,14,22,0.40)",
   playBg: "transparent",
   playBorder: "transparent",
-  playText: "rgba(255,255,255,0.75)",
+  playText: "rgba(244,218,213,0.75)",
   saveBg: "transparent",
   saveBorder: "transparent",
-  saveText: "rgba(190,150,80,0.80)",
-  caption: "rgba(122,143,168,0.7)",
+  saveText: "rgba(212,175,55,0.80)",
+  caption: "rgba(242,231,228,0.45)",
 } as const;
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
@@ -110,20 +110,20 @@ function TrackThumb({ sound }: { sound: MixSound }) {
 export function MixerSheet() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const sheetGradient: readonly [string, string, string] = ["#1c2240", "#1c2240", "#1c2240"];
+  const sheetGradient: readonly [string, string, string] = ["#27070E", "#1B060F", "#1B060F"];
   const isLight = false;
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
-    sliderThumb:    isLight ? "#BE9650"              : WARM.sliderThumb,
+    sliderThumb:    isLight ? "#D4AF37"              : WARM.sliderThumb,
     sliderTrack:    isLight ? "rgba(0,0,0,0.10)"    : WARM.sliderTrack,
     addText:        isLight ? "rgba(0,0,0,0.32)"    : WARM.addText,
     separator:      isLight ? "rgba(0,0,0,0.07)"    : WARM.separator,
     iconColor:      isLight ? "#1A1E2B"             : "#FFFFFF",
     fg:             isLight ? "#1A1E2B"             : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
-    inputBg:        isLight ? "rgba(0,0,0,0.04)"   : "rgba(255,255,255,0.03)",
-    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"   : "rgba(255,255,255,0.12)",
-    footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(255,255,255,0.45)",
+    inputBg:        isLight ? "rgba(0,0,0,0.04)"   : "rgba(74,12,12,0.08)",
+    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"   : "rgba(74,12,12,0.35)",
+    footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(244,218,213,0.45)",
   };
   const { isPremium } = usePremium();
   const {
@@ -680,9 +680,9 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     marginBottom: 15,
   },
-  warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(255,255,255,0.03)" },
+  warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(61,14,22,0.40)" },
   headerDivider: { height: 1, marginTop: 4, marginBottom: 29, marginHorizontal: -2 },
-  thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.5)" },
+  thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "rgba(244,218,213,0.50)" },
   thumbRadius: { borderRadius: 11 },
   trackInfo: { flex: 1, justifyContent: "center" },
   trackName: { fontSize: 15, fontWeight: "700", marginBottom: -3 },
@@ -766,7 +766,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     letterSpacing: 1.5,
     textTransform: "uppercase",
-    color: "rgba(190,150,80,0.80)",
+    color: "rgba(212,175,55,0.80)",
   },
 
   // Modal guardar
@@ -802,7 +802,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 2,
     borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   catTabBlockSel: {
     backgroundColor: "rgba(100,142,195,0.14)",

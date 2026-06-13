@@ -326,7 +326,7 @@ export function MensajesAnonimosPanel() {
           <Text style={[styles.infoSubtitle, { color: "#FFD6EB" }]}>¿Cómo funciona?</Text>
           <View style={styles.infoList}>
             {HOW_IT_WORKS.map((step, i) => (
-              <View key={i} style={[styles.infoStepCard, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(212,112,154,0.18)" }]}>
+              <View key={i} style={[styles.infoStepCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,112,154,0.18)" }]}>
                 <View style={[styles.infoStepIcon, { backgroundColor: `${ACCENT}22` }]}>
                   <Feather name={step.icon} size={15} color={ACCENT} />
                 </View>
@@ -340,7 +340,7 @@ export function MensajesAnonimosPanel() {
 
           {/* Por qué existe */}
           <Text style={[styles.infoSubtitle, { color: "#FFD6EB", marginTop: 16 }]}>¿Por qué existe?</Text>
-          <View style={[styles.infoQuote, { borderLeftColor: ACCENT, backgroundColor: "rgba(255,255,255,0.06)" }]}>
+          <View style={[styles.infoQuote, { borderLeftColor: ACCENT, backgroundColor: "rgba(74,12,12,0.08)" }]}>
             <Text style={[styles.infoQuoteText, { color: "rgba(255,214,235,0.85)" }]}>
               "¿Qué pasaría si pudieras soltar algo hoy, sin que nadie sepa que fuiste vos, pero sintiendo que alguien lo recibió?"
             </Text>
@@ -357,7 +357,7 @@ export function MensajesAnonimosPanel() {
           </View>
 
           {/* Espacio seguro */}
-          <View style={[styles.infoRules, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(182,149,95,0.2)" }]}>
+          <View style={[styles.infoRules, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,175,55,0.2)" }]}>
             <View style={styles.infoRulesHeader}>
               <Feather name="shield" size={13} color="rgba(255,214,235,0.6)" />
               <Text style={[styles.infoRulesTitle, { color: "#FFD6EB" }]}>Espacio seguro</Text>
@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(255,255,255,0.65)",
+    color: "rgba(244,218,213,0.65)",
     fontSize: 11,
     marginTop: 2,
   },

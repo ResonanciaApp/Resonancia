@@ -48,11 +48,11 @@ import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const BG_SHEET  = "#0E1326";
-const GOLD      = "#BE9650";
+const BG_SHEET  = "#27070E";
+const GOLD      = "#D4AF37";
 const NAVY_CHECK = "#060A0F";
-const TEXT      = "#EDE1D3";
-const MUTED     = "#7A8FA8";
+const TEXT      = "#F4DAD5";
+const MUTED     = "rgba(242,231,228,0.45)";
 
 const THUMB_SIZE      = 50;
 const RING_RADIUS     = 23;
@@ -159,8 +159,8 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
   }, [added]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const circleStyle = useAnimatedStyle(() => ({
-    backgroundColor: `rgba(190,150,80,${fillProgress.value})`,
-    borderColor: fillProgress.value > 0.5 ? GOLD : "rgba(190,150,80,0.35)",
+    backgroundColor: `rgba(212,175,55,${fillProgress.value})`,
+    borderColor: fillProgress.value > 0.5 ? GOLD : "rgba(212,175,55,0.35)",
   }));
 
   const plusStyle  = useAnimatedStyle(() => ({ opacity: 1 - checkOpacity.value }));
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 36, height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     marginTop: 10, marginBottom: 4,
   },
 
@@ -484,11 +484,11 @@ const styles = StyleSheet.create({
   tabChip: {
     paddingHorizontal: 18, paddingVertical: 9,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(74,12,12,0.35)",
   },
   tabChipActive: { backgroundColor: GOLD },
   tabText: { color: TEXT, fontSize: 14, fontWeight: "600" },
-  tabTextActive: { color: "#0B0F14", fontWeight: "700" },
+  tabTextActive: { color: "#1B060F", fontWeight: "700" },
 
   // Session rows
   sessionRow: {
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   thumb: {
     width: THUMB_SIZE, height: THUMB_SIZE,
     borderRadius: 8,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   thumbOverlay: {
     ...StyleSheet.absoluteFillObject,

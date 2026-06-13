@@ -220,8 +220,8 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
             },
           ]}
         >
-          <Feather name={draggingItem.icon} size={22} color="#EDE1D3" />
-          <Text style={[styles.label, { color: "#EDE1D3" }]} numberOfLines={1}>
+          <Feather name={draggingItem.icon} size={22} color="#F4DAD5" />
+          <Text style={[styles.label, { color: "#F4DAD5" }]} numberOfLines={1}>
             {draggingItem.label}
           </Text>
         </Animated.View>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     width:           2.5,
     height:          BLOCK_H,
     borderRadius:    2,
-    backgroundColor: "#BE9650",
+    backgroundColor: "#D4AF37",
   },
   block: {
     height:          BLOCK_H,
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     alignItems:      "center",
     justifyContent:  "center",
     gap:             8,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   blockDragging: {
     opacity: 0.25,
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     alignItems:      "center",
     justifyContent:  "center",
     gap:             8,
-    backgroundColor: "rgba(255,255,255,0.14)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     ...Platform.select({
       ios: {
         shadowColor:   "#000",

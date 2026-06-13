@@ -37,7 +37,7 @@ import {
 } from "@/data/sounds";
 
 // ── Paleta Mármol Blanco ──────────────────────────────────────────────────────
-const GOLD     = "#BE9650";
+const GOLD     = "#D4AF37";
 const DARK     = "#1A1E2B";
 const MUTED    = "#6B7A96";
 const SEL_BLUE = "#1A3B7A";   // azul profundo — borde y halo de cards seleccionadas
@@ -103,7 +103,7 @@ const BG_PRESETS = [
 
 // ── Presets oscuros ────────────────────────────────────────────────────────────
 const DARK_PRESETS = [
-  { id: "cosmos",     label: "Cosmos",     colors: ["#090D20", "#080A18", "#06070F"] as const, selTabBg: "#0D1525", accentColor: "#1A3B7A" },
+  { id: "cosmos",     label: "Cosmos",     colors: ["#4A0C0C", "#27070E", "#1B060F"] as const, selTabBg: "#27070E", accentColor: "#1A3B7A" },
   { id: "noche",      label: "Noche",      colors: ["#080C12", "#0D1520", "#080C12"] as const, selTabBg: "#152535", accentColor: "#1B4080" },
   { id: "indigo",     label: "Índigo",     colors: ["#090B1C", "#0F1438", "#090B1C"] as const, selTabBg: "#1A2560", accentColor: "#2545C0" },
   { id: "crepusculo", label: "Crepúsculo", colors: ["#0E0B16", "#1A1030", "#0E0B16"] as const, selTabBg: "#281A50", accentColor: "#5025B0" },
@@ -182,9 +182,9 @@ const PillTab = memo(function PillTab({
     <Pressable onPress={onPress}>
       <View style={[
         styles.pillTab,
-        { backgroundColor: sel ? "#BE9650" : "rgba(255,255,255,0.06)" },
+        { backgroundColor: sel ? "#D4AF37" : "rgba(74,12,12,0.08)" },
       ]}>
-        <Text style={[styles.pillTabLabel, { color: sel ? "#0B0F14" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
+        <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {tab.label}
         </Text>
       </View>
@@ -200,9 +200,9 @@ const SubTabPill = memo(function SubTabPill({
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        { backgroundColor: sel ? "#BE9650" : "rgba(255,255,255,0.06)" },
+        { backgroundColor: sel ? "#D4AF37" : "rgba(74,12,12,0.08)" },
       ]}>
-        <Text style={[styles.subTabText, { color: sel ? "#0B0F14" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
+        <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {label}
         </Text>
       </View>
@@ -327,7 +327,7 @@ const SoundCard = memo(function SoundCard({
                 recyclingKey={sound.id}
               />
             ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.12)" }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
             )}
           </View>
         </Animated.View>
@@ -461,9 +461,9 @@ export default function MiMusicaScreen() {
   const themeGradient     = isDark ? currentDarkPreset.colors : currentPreset.colors;
   const themeSelBg        = isDark ? currentDarkPreset.selTabBg : DARK;
   const themeAccent       = isDark ? currentDarkPreset.accentColor : SEL_BLUE;
-  const themeText    = isDark ? "#EDE1D3" : DARK;
+  const themeText    = isDark ? "#F4DAD5" : DARK;
   const themeMuted   = isDark ? "#8A9AB8" : MUTED;
-  const themeIconBtn = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)";
+  const themeIconBtn = isDark ? "rgba(61,14,22,0.40)" : "rgba(0,0,0,0.05)";
 
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -560,7 +560,7 @@ export default function MiMusicaScreen() {
                   <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
                 ) : (
                   <View style={styles.avatarFallback}>
-                    <Feather name="user" size={15} color="#7A8FA8" />
+                    <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
                   </View>
                 )}
               </Pressable>
@@ -671,7 +671,7 @@ export default function MiMusicaScreen() {
                     onPress={() => handleThemeChange(t)}
                     style={[styles.themeBtn, sel && styles.themeBtnActive]}
                   >
-                    <View style={[styles.themeSwatch, { backgroundColor: t === "claro" ? "#EAECF2" : "#0B0F14" }]} />
+                    <View style={[styles.themeSwatch, { backgroundColor: t === "claro" ? "#EAECF2" : "#1B060F" }]} />
                     <Text style={[styles.themeBtnText, sel && { color: GOLD, fontWeight: "700" }]}>
                       {t === "claro" ? "Claro" : "Azul"}
                     </Text>
@@ -756,7 +756,7 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
-  avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(190,150,80,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(190,150,80,0.25)" },
+  avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212,175,55,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(212,175,55,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: DARK },
 
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
     height: 1,
     marginTop: 8,
     marginHorizontal: 0,
-    backgroundColor: "rgba(190,150,80,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
   },
 
   pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 20 },
@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(190,150,80,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
   },
 
   activeIconWrap: {

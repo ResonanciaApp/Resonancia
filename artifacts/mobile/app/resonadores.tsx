@@ -11,12 +11,12 @@ import { GUIDES, getGuideTrackCount } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 
 const C = {
-  gold:     "#BE9650",
+  gold:     "#D4AF37",
   goldSoft: "#A97A34",
   fg:       "#FFFFFF",
-  muted:    "#7A8FA8",
-  card:     "rgba(255,255,255,0.03)",
-  border:   "rgba(198,155,79,0.18)",
+  muted:    "rgba(242,231,228,0.45)",
+  card:     "rgba(74,12,12,0.08)",
+  border:   "rgba(212,175,55,0.18)",
   certified: "#5FB98C",
 };
 
@@ -74,7 +74,7 @@ function CollaboratorCard({
         <Image source={photo} style={styles.photo} contentFit="cover" />
         {role === "LA CASA" && (
           <LinearGradient
-            colors={["#090D20", "#080A18", "#06070F"]}
+            colors={["#4A0C0C", "#27070E", "#1B060F"]}
             style={StyleSheet.absoluteFill}
           />
         )}
@@ -132,7 +132,7 @@ export default function ResonadoresScreen() {
       >
         {/* ── Hero ── */}
         <LinearGradient
-          colors={["#090D20", "#080A18", "#06070F"]}
+          colors={["#4A0C0C", "#27070E", "#1B060F"]}
           style={[styles.hero, { paddingTop: topPad + 16 }]}
         >
           <Pressable
@@ -262,9 +262,9 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "rgba(198,155,79,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     borderWidth: 1,
-    borderColor: "rgba(198,155,79,0.35)",
+    borderColor: "rgba(212,175,55,0.35)",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     borderRadius: 34,
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "rgba(198,155,79,0.3)",
+    borderColor: "rgba(212,175,55,0.3)",
   },
   photo: {
     width: "100%",

@@ -36,10 +36,10 @@ export function SacredBackground({ variant = "solid", solidColor }: SacredBackgr
         cachePolicy="memory-disk"
       />
       {/* Overlay ligero — la imagen ya es oscura */}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(8,4,2,0.72)" }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.72)" }]} />
       {/* Glow cálido dorado — esquina superior derecha */}
       <LinearGradient
-        colors={["rgba(182,149,95,0.05)", "rgba(182,149,95,0.00)"]}
+        colors={["rgba(212,175,55,0.05)", "rgba(212,175,55,0.00)"]}
         start={{ x: 1, y: 0 }}
         end={{ x: 0.2, y: 0.5 }}
         style={StyleSheet.absoluteFill}

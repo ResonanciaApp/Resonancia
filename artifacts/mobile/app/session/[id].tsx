@@ -122,8 +122,8 @@ export default function SessionDetailScreen() {
   const renderBadges = () => {
     let tag: string | undefined;
     let tagColor = colors.accent;
-    let tagBg = "rgba(182,149,95,0.15)";
-    let tagBorder = "rgba(182,149,95,0.3)";
+    let tagBg = "rgba(212,175,55,0.15)";
+    let tagBorder = "rgba(212,175,55,0.3)";
 
     if (isGuiada && session.meditationTag) {
       tag = session.meditationTag;
@@ -198,7 +198,7 @@ export default function SessionDetailScreen() {
                   <Feather
                     name="star"
                     size={13}
-                    color={star <= rating ? colors.primary : "rgba(198,155,79,0.28)"}
+                    color={star <= rating ? colors.primary : "rgba(212,175,55,0.28)"}
                   />
                 </Pressable>
               ))}
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 16,
     borderRadius: 30,
-    shadowColor: "#BE9650",
+    shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

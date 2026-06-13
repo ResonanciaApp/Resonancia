@@ -33,7 +33,7 @@ const TABS = [
 ];
 type TabId = (typeof TABS)[number]["id"];
 
-const TAB_INDICATOR_COLOR = "#BE9650";
+const TAB_INDICATOR_COLOR = "#D4AF37";
 
 // ── Mini-stack de imágenes de sonidos ────────────────────────────
 const THUMB = 38;
@@ -52,7 +52,7 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
             {img ? (
               <Image source={img} style={mixStyles.thumbImg} resizeMode="cover" />
             ) : (
-              <View style={[mixStyles.thumbImg, { backgroundColor: "rgba(182,149,95,0.15)" }]} />
+              <View style={[mixStyles.thumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]} />
             )}
           </View>
         );
@@ -68,7 +68,7 @@ function FavMixRow({ mix, onPress }: { mix: MixPreset; onPress: () => void }) {
       onPress={onPress}
       style={({ pressed }) => [
         mixStyles.row,
-        { backgroundColor: "rgba(255,255,255,0.06)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <SoundStack sounds={mix.sounds} />
@@ -172,9 +172,9 @@ export default function FavoritesScreen() {
       style={[
         styles.searchWrap,
         {
-          backgroundColor: "rgba(255,255,255,0.04)",
+          backgroundColor: "rgba(74,12,12,0.08)",
           borderWidth: StyleSheet.hairlineWidth,
-          borderColor: "rgba(255,255,255,0.07)",
+          borderColor: "rgba(61,14,22,0.40)",
         },
       ]}
     >
@@ -201,7 +201,7 @@ export default function FavoritesScreen() {
     <View>
       {favSessions.length > 0 && searchBar}
       {favSessions.length === 0 ? (
-        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
           <Feather name="heart" size={20} color={colors.border} />
           <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
             Aún no guardaste sesiones favoritas
@@ -214,7 +214,7 @@ export default function FavoritesScreen() {
           </Pressable>
         </View>
       ) : filteredSessions.length === 0 ? (
-        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.04)" }]}>
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
           <Feather name="search" size={18} color={colors.border} />
           <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
             Ninguna sesión coincide con tu búsqueda.
@@ -230,7 +230,7 @@ export default function FavoritesScreen() {
     <View>
       {favMixes.length > 0 && searchBar}
       {favMixes.length === 0 ? (
-        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
           <Feather name="heart" size={20} color={colors.border} />
           <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
             Aún no guardaste mezclas favoritas
@@ -243,7 +243,7 @@ export default function FavoritesScreen() {
           </Pressable>
         </View>
       ) : filteredMixes.length === 0 ? (
-        <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.04)" }]}>
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
           <Feather name="search" size={18} color={colors.border} />
           <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
             Ninguna mezcla coincide con tu búsqueda.
@@ -265,7 +265,7 @@ export default function FavoritesScreen() {
   );
 
   const renderMusica = () => (
-    <View style={[styles.emptySmall, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
+    <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
       <Feather name="music" size={20} color={colors.border} />
       <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
         Próximamente
@@ -293,7 +293,7 @@ export default function FavoritesScreen() {
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
             hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: "rgba(255,255,255,0.04)" }]}
+            style={[styles.backBtn, { backgroundColor: "rgba(74,12,12,0.08)" }]}
           >
             <Feather name="chevron-left" size={20} color={colors.foreground} />
           </Pressable>
@@ -311,7 +311,7 @@ export default function FavoritesScreen() {
         <View
           style={[
             styles.tabBar,
-            { borderBottomColor: "rgba(255,255,255,0.08)" },
+            { borderBottomColor: "rgba(61,14,22,0.40)" },
           ]}
         >
           {TABS.map(({ id, label }, idx) => (

@@ -206,12 +206,12 @@ export default function RespiracionScreen() {
                   style={[
                     styles.chip,
                     {
-                      borderColor: active ? "#BE9650" : "rgba(255,255,255,0.14)",
-                      backgroundColor: active ? "rgba(198,155,79,0.18)" : "rgba(255,255,255,0.06)",
+                      borderColor: active ? "#D4AF37" : "rgba(61,14,22,0.40)",
+                      backgroundColor: active ? "rgba(212,175,55,0.18)" : "rgba(74,12,12,0.08)",
                     },
                   ]}
                 >
-                  <Text style={[styles.chipText, { color: active ? "#BE9650" : colors.mutedForeground }]}>
+                  <Text style={[styles.chipText, { color: active ? "#D4AF37" : colors.mutedForeground }]}>
                     {p.name}
                   </Text>
                 </Pressable>
@@ -227,15 +227,15 @@ export default function RespiracionScreen() {
 
         {/* Circle area */}
         <View style={styles.circleContainer}>
-          <View style={[styles.ghostRing, { borderColor: "rgba(198,155,79,0.12)" }]} />
+          <View style={[styles.ghostRing, { borderColor: "rgba(212,175,55,0.12)" }]} />
           <Animated.View
             style={[
               styles.circle,
-              { borderColor: "rgba(198,155,79,0.6)", transform: [{ scale }] },
+              { borderColor: "rgba(212,175,55,0.6)", transform: [{ scale }] },
             ]}
           >
             <LinearGradient
-              colors={["#090D20", "#080A18", "#06070F"]}
+              colors={["#4A0C0C", "#27070E", "#1B060F"]}
               style={StyleSheet.absoluteFill}
             />
 
@@ -246,7 +246,7 @@ export default function RespiracionScreen() {
               </View>
             )}
             {!running && !completed && (
-              <Feather name="wind" size={34} color="rgba(198,155,79,0.65)" />
+              <Feather name="wind" size={34} color="rgba(212,175,55,0.65)" />
             )}
             {completed && (
               <Text style={styles.completedIcon}>✓</Text>
@@ -264,10 +264,10 @@ export default function RespiracionScreen() {
                 {
                   backgroundColor:
                     i < cycles
-                      ? "#BE9650"
+                      ? "#D4AF37"
                       : i === cycles && running
-                        ? "rgba(198,155,79,0.45)"
-                        : "rgba(255,255,255,0.14)",
+                        ? "rgba(212,175,55,0.45)"
+                        : "rgba(61,14,22,0.40)",
                 },
               ]}
             />
@@ -291,7 +291,7 @@ export default function RespiracionScreen() {
                 <View
                   style={[
                     styles.legendDot,
-                    { backgroundColor: active ? "#BE9650" : "rgba(255,255,255,0.2)" },
+                    { backgroundColor: active ? "#D4AF37" : "rgba(74,12,12,0.35)" },
                   ]}
                 />
                 <Text style={[styles.legendText, { color: active ? colors.foreground : colors.mutedForeground }]}>
@@ -308,7 +308,7 @@ export default function RespiracionScreen() {
           style={({ pressed }) => [styles.mainBtn, { opacity: pressed ? 0.82 : 1 }]}
         >
           <LinearGradient
-            colors={["#090D20", "#080A18", "#06070F"]}
+            colors={["#4A0C0C", "#27070E", "#1B060F"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 50 }]}
@@ -316,7 +316,7 @@ export default function RespiracionScreen() {
           <Feather
             name={btnIcon}
             size={22}
-            color="#090F17"
+            color="#1B060F"
             style={!running && !completed ? { marginLeft: 3 } : undefined}
           />
           <Text style={styles.mainBtnText}>{btnLabel}</Text>
@@ -388,13 +388,13 @@ const styles = StyleSheet.create({
   countdownNum: {
     fontSize: 38,
     fontWeight: "200",
-    color: "#BE9650",
+    color: "#D4AF37",
     marginTop: 2,
     lineHeight: 44,
   },
   completedIcon: {
     fontSize: 44,
-    color: "#BE9650",
+    color: "#D4AF37",
   },
 
   cycleRow: {
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
   mainBtnText: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#090F17",
+    color: "#1B060F",
     letterSpacing: 0.3,
   },
 });

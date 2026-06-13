@@ -53,7 +53,7 @@ import {
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
 
-const MURAL_BG = ["#090D20", "#080A18", "#06070F"] as const;
+const MURAL_BG = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 // ── Capa animable (misma lógica que PreviewGlyph en geometrix-creaciones) ──
 function GlyphLayer({
@@ -125,7 +125,7 @@ function GlyphLayer({
     <Animated.View style={[StyleSheet.absoluteFill, styles.layerCenter, aStyle]} pointerEvents="none">
       <SacredGlyph
         id={id}
-        color={settings.color ?? "#BE9650"}
+        color={settings.color ?? "#D4AF37"}
         gradient={gradientColors(settings.gradientId ?? null)}
         size={glyphSize}
         strokeWidth={1 + (settings.thickness ?? 0.5) * 2}
@@ -274,7 +274,7 @@ export default function GeometrixComunidadScreen() {
         }}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#BE9650" />
+          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#D4AF37" />
         }
       >
         {/* Header */}
@@ -307,7 +307,7 @@ export default function GeometrixComunidadScreen() {
         {/* Cargando */}
         {isLoading && (
           <View style={styles.centerState}>
-            <ActivityIndicator color="#BE9650" size="large" />
+            <ActivityIndicator color="#D4AF37" size="large" />
             <Text style={[styles.stateText, { color: "#c0bae0" }]}>Cargando…</Text>
           </View>
         )}
@@ -315,7 +315,7 @@ export default function GeometrixComunidadScreen() {
         {/* Empty state */}
         {!isLoading && glyphs.length === 0 && (
           <View style={styles.centerState}>
-            <Feather name="users" size={40} color="#BE9650" style={{ opacity: 0.4 }} />
+            <Feather name="users" size={40} color="#D4AF37" style={{ opacity: 0.4 }} />
             <Text style={[styles.stateTitle, { color: colors.foreground }]}>
               Todavía no hay composiciones
             </Text>
@@ -350,7 +350,7 @@ export default function GeometrixComunidadScreen() {
                         <Feather
                           name={isPlaying ? "pause" : "play"}
                           size={13}
-                          color="#EDE1D3"
+                          color="#F4DAD5"
                           style={isPlaying ? undefined : { marginLeft: 1 }}
                         />
                       </Pressable>
@@ -383,13 +383,13 @@ export default function GeometrixComunidadScreen() {
                       <Feather
                         name="heart"
                         size={14}
-                        color={g.likedByMe ? "#BE9650" : "#7A8FA8"}
+                        color={g.likedByMe ? "#D4AF37" : "rgba(242,231,228,0.45)"}
                       />
                       {g.likes > 0 && (
                         <Text
                           style={[
                             styles.likeCount,
-                            { color: g.likedByMe ? "#BE9650" : colors.mutedForeground },
+                            { color: g.likedByMe ? "#D4AF37" : colors.mutedForeground },
                           ]}
                         >
                           {g.likes}
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   stateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.03)" },
+  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(74,12,12,0.08)" },
 
   // Preview llena el 100% del ancho de la card (no tiene width fijo propio)
   preview: { width: "100%", overflow: "hidden" },
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: "rgba(0,0,0,0.45)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
+    borderColor: "rgba(61,14,22,0.40)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#06070F",
+    backgroundColor: "#1B060F",
     overflow: "hidden",
     paddingHorizontal: 22,
     paddingTop: 22,
@@ -542,9 +542,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
     marginBottom: 2,
   },
-  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#EDE1D3" },
-  confirmSubtitle: { fontSize: 13.5, color: "#7A8FA8", textAlign: "center", lineHeight: 20 },
-  confirmName: { color: "#EDE1D3", fontWeight: "600" },
+  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#F4DAD5" },
+  confirmSubtitle: { fontSize: 13.5, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
+  confirmName: { color: "#F4DAD5", fontWeight: "600" },
   confirmActions: { flexDirection: "row", gap: 10, marginTop: 14, alignSelf: "stretch" },
   btnGhost: {
     flex: 1,
@@ -554,7 +554,7 @@ const styles = StyleSheet.create({
     borderColor: "#161f33",
     alignItems: "center",
   },
-  btnGhostText: { fontSize: 14, fontWeight: "600", color: "#7A8FA8" },
+  btnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(242,231,228,0.45)" },
   btnDanger: { flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: "#ef4444", alignItems: "center" },
   btnDangerText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
 });

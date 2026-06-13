@@ -39,11 +39,11 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#BE9650";
-const NAVY = "#0B0F14";
-const DARK_BLUE = "#1A3A6E";
-const TEXT = "#EDE1D3";
-const MUTED = "#7A8FA8";
+const GOLD = "#D4AF37";
+const NAVY = "#1B060F";
+const DARK_BLUE = "#27070E";
+const TEXT = "#F4DAD5";
+const MUTED = "rgba(242,231,228,0.45)";
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
@@ -72,7 +72,7 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
             key={s.id}
             style={[
               styles.stackThumb,
-              { left: i * SHIFT, zIndex: i, backgroundColor: "rgba(190,150,80,0.12)" },
+              { left: i * SHIFT, zIndex: i, backgroundColor: "rgba(212,175,55,0.12)" },
             ]}
           >
             {img ? (
@@ -439,7 +439,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#08091A", "#0E0F2E"]}
+          colors={["#27070E", "#1B060F"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -690,7 +690,7 @@ export default function BibliotecaScreen() {
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
-                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(190,150,80,0.08)", alignItems: "center", justifyContent: "center" }]}>
+                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center" }]}>
                   {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW * 0.55} strokeWidth={1.6} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -815,7 +815,7 @@ export default function BibliotecaScreen() {
                     onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
                   >
                     <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                      <LinearGradient colors={["#08091A", "#0E0F2E"]} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={["#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
                       {firstLayers.map((instId, idx) => {
                         const geoId = baseOf(instId);
                         const settings = c.settings[instId];
@@ -1023,11 +1023,11 @@ export default function BibliotecaScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#080B1A" },
+  root: { flex: 1, backgroundColor: "#1B060F" },
 
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
-    backgroundColor: "#080B1A",
+    backgroundColor: "#1B060F",
     zIndex: 10,
     paddingHorizontal: H_PAD,
   },
@@ -1041,9 +1041,9 @@ const styles = StyleSheet.create({
   avatarImg: { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center", justifyContent: "center",
-    borderWidth: 1, borderColor: "rgba(190,150,80,0.25)",
+    borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
   headerTitle: { flex: 1, fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
@@ -1062,18 +1062,18 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
   chip: {
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
-  chipSel: { backgroundColor: "#BE9650" },
+  chipSel: { backgroundColor: "#D4AF37" },
   chipText: { fontSize: 13, fontWeight: "500", color: TEXT },
-  chipTextSel: { color: "#0B0F14", fontWeight: "700" },
+  chipTextSel: { color: "#1B060F", fontWeight: "700" },
 
   controlRow: {
     flexDirection: "row",
@@ -1094,7 +1094,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 6,
     elevation: 8,
-    backgroundColor: "#080B1A",
+    backgroundColor: "#1B060F",
   },
 
   // ── Scroll content ──────────────────────────────────────────────────────────
@@ -1111,7 +1111,7 @@ const styles = StyleSheet.create({
   rowThumb: {
     width: 56, height: 56,
     borderRadius: 6,
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
   },
   rowInfo: { flex: 1, gap: 3 },
   rowTitle: { fontSize: 15, fontWeight: "600", color: TEXT },
@@ -1136,7 +1136,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
-  gridThumb: { borderRadius: 6, backgroundColor: "rgba(190,150,80,0.12)" },
+  gridThumb: { borderRadius: 6, backgroundColor: "rgba(212,175,55,0.12)" },
   gridTitle: { fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
@@ -1156,7 +1156,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     marginBottom: 16,
   },
   sortSheetTitle: {
@@ -1171,7 +1171,7 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sortSheetLabel: { color: MUTED, fontSize: 15, flex: 1 },
   sortSheetLabelActive: { color: TEXT, fontWeight: "600" },
@@ -1180,7 +1180,7 @@ const styles = StyleSheet.create({
   resonadorAvatar: {
     width: 52, height: 52,
     borderRadius: 26,
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   verifiedText: { fontSize: 11, color: MUTED },
@@ -1227,7 +1227,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.15)",
+    borderColor: "rgba(212,175,55,0.15)",
   },
   geoInfo: { flex: 1 },
   geoName: { color: TEXT, fontSize: 14, fontWeight: "600" },
@@ -1238,11 +1238,11 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 8,
-    backgroundColor: "rgba(190,150,80,0.08)",
+    backgroundColor: "rgba(212,175,55,0.08)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.15)",
+    borderColor: "rgba(212,175,55,0.15)",
   },
 
   // ── Modal de nombre ──────────────────────────────────────────────────────────
@@ -1262,7 +1262,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     alignItems: "center",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.15)",
+    borderColor: "rgba(212,175,55,0.15)",
   },
   nameCloseBtn: {
     alignSelf: "flex-end",
@@ -1278,7 +1278,7 @@ const styles = StyleSheet.create({
   },
   nameInputWrap: {
     width: "100%",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     borderRadius: 10,
     borderBottomWidth: 2,
     borderBottomColor: GOLD,
@@ -1300,7 +1300,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   nameCreateBtnText: {
-    color: "#0B0F14",
+    color: "#1B060F",
     fontSize: 15,
     fontWeight: "800",
     letterSpacing: 0.3,
@@ -1309,12 +1309,12 @@ const styles = StyleSheet.create({
   // ── Búsqueda overlay ──────────────────────────────────────────────────────────
   searchModalRoot: {
     flex: 1,
-    backgroundColor: "#080B1A",
+    backgroundColor: "#1B060F",
   },
   searchOverlay: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#080B1A",
+    backgroundColor: "#1B060F",
     paddingTop: Platform.OS === "ios" ? 56 : 36,
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
@@ -1330,7 +1330,7 @@ const styles = StyleSheet.create({
   cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
   searchEmpty: {
     flex: 1,
-    backgroundColor: "#080B1A",
+    backgroundColor: "#1B060F",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
@@ -1347,7 +1347,7 @@ const styles = StyleSheet.create({
   },
   sheetHandle: {
     width: 40, height: 4, borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     alignSelf: "center", marginBottom: 20,
   },
   sheetTitle: { fontSize: 17, fontWeight: "700", color: TEXT, marginBottom: 20 },
@@ -1355,11 +1355,11 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 16,
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.06)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetIcon: {
     width: 44, height: 44, borderRadius: 12,
-    backgroundColor: "rgba(190,150,80,0.12)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center", justifyContent: "center",
   },
   sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
@@ -1374,8 +1374,8 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.45)",
-    backgroundColor: "rgba(190,150,80,0.07)",
+    borderColor: "rgba(212,175,55,0.45)",
+    backgroundColor: "rgba(212,175,55,0.07)",
   },
   loadMoreText: {
     color: GOLD,

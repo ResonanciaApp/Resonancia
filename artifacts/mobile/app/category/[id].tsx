@@ -55,7 +55,7 @@ export default function CategoryScreen() {
 
         {/* Category Hero */}
         {category && (
-          <View style={[styles.heroCard, { borderColor: "rgba(182,149,95,0.2)" }]}>
+          <View style={[styles.heroCard, { borderColor: "rgba(212,175,55,0.20)" }]}>
             <LinearGradient
               colors={[category.gradient[1], category.gradient[1]] as [string, string]}
               style={[StyleSheet.absoluteFill, { borderRadius: 22 }]}
@@ -63,7 +63,7 @@ export default function CategoryScreen() {
             <View
               style={[
                 styles.iconBg,
-                { backgroundColor: "rgba(182,149,95,0.15)", borderColor: "rgba(182,149,95,0.25)" },
+                { backgroundColor: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.25)" },
               ]}
             >
               {category.id === "meditaciones-guiadas" ? (
@@ -95,7 +95,7 @@ export default function CategoryScreen() {
               {category.subtitle}
             </Text>
             <View style={styles.heroMeta}>
-              <View style={[styles.metaBadge, { backgroundColor: "rgba(182,149,95,0.15)" }]}>
+              <View style={[styles.metaBadge, { backgroundColor: "rgba(212,175,55,0.15)" }]}>
                 <Text style={[styles.metaBadgeText, { color: colors.accent }]}>
                   {allSessions.length} Sesiones
                 </Text>

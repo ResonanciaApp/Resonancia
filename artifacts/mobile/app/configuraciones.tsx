@@ -30,7 +30,7 @@ import { useBrightness } from "@/context/BrightnessContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -300,7 +300,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Notificaciones ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>NOTIFICACIONES</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
           <View style={styles.row}>
             <RowIcon icon="bell" colors={colors} />
             <View style={{ flex: 1 }}>
@@ -314,13 +314,13 @@ export default function ConfiguracionesScreen() {
             <Switch
               value={settings.dailyEnabled}
               onValueChange={onToggleDaily}
-              trackColor={{ false: "rgba(255,255,255,0.12)", true: colors.primary + "88" }}
+              trackColor={{ false: "rgba(61,14,22,0.50)", true: colors.primary + "88" }}
               thumbColor={settings.dailyEnabled ? colors.primary : "#666"}
             />
           </View>
 
           {settings.dailyEnabled && (
-            <View style={[styles.subBlock, { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" }]}>
+            <View style={[styles.subBlock, { borderTopWidth: 1, borderTopColor: "rgba(61,14,22,0.40)" }]}>
               <Text style={[styles.rowSub, { color: colors.mutedForeground, marginBottom: 10 }]}>
                 Hora del recordatorio
               </Text>
@@ -335,7 +335,7 @@ export default function ConfiguracionesScreen() {
                         styles.chip,
                         {
                           backgroundColor: active ? colors.primary : "transparent",
-                          borderColor: active ? colors.primary : "rgba(255,255,255,0.12)",
+                          borderColor: active ? colors.primary : "rgba(61,14,22,0.50)",
                         },
                       ]}
                     >
@@ -349,7 +349,7 @@ export default function ConfiguracionesScreen() {
             </View>
           )}
 
-          <View style={[styles.row, { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" }]}>
+          <View style={[styles.row, { borderTopWidth: 1, borderTopColor: "rgba(61,14,22,0.40)" }]}>
             <RowIcon icon="users" colors={colors} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.rowLabel, { color: colors.foreground }]}>Actividad de la comunidad</Text>
@@ -360,7 +360,7 @@ export default function ConfiguracionesScreen() {
             <Switch
               value={settings.communityEnabled}
               onValueChange={(v) => update({ communityEnabled: v })}
-              trackColor={{ false: "rgba(255,255,255,0.12)", true: colors.primary + "88" }}
+              trackColor={{ false: "rgba(61,14,22,0.50)", true: colors.primary + "88" }}
               thumbColor={settings.communityEnabled ? colors.primary : "#666"}
             />
           </View>
@@ -368,7 +368,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Reproductor ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>REPRODUCTOR</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
           <View style={styles.subBlock}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <RowIcon icon="moon" colors={colors} />
@@ -392,7 +392,7 @@ export default function ConfiguracionesScreen() {
                       styles.chip,
                       {
                         backgroundColor: active ? colors.primary : "transparent",
-                        borderColor: active ? colors.primary : "rgba(255,255,255,0.12)",
+                        borderColor: active ? colors.primary : "rgba(61,14,22,0.50)",
                         flexDirection: "row",
                         alignItems: "center",
                         gap: 4,
@@ -414,7 +414,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Cuenta ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CUENTA</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
           <ActionRow
             icon="user"
             label="Editar perfil"
@@ -435,7 +435,7 @@ export default function ConfiguracionesScreen() {
         {(isCreator || isAdmin) && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CREADORES</Text>
-            <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+            <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
               {isCreator && (
                 <ActionRow
                   icon="upload-cloud"
@@ -480,7 +480,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Apariencia ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APARIENCIA</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
           <View style={[styles.row, { flexDirection: "column", alignItems: "flex-start", paddingVertical: 14, gap: 10 }]}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <RowIcon icon="sun" colors={colors} />
@@ -494,7 +494,7 @@ export default function ConfiguracionesScreen() {
                 value={brightness}
                 onChange={setBrightness}
                 color={colors.primary}
-                trackColor="rgba(255,255,255,0.12)"
+                trackColor="rgba(61,14,22,0.50)"
               />
             </View>
           </View>
@@ -502,7 +502,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── App ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APP</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
           <ActionRow icon="info" label="Acerca de RESONANCIA" onPress={handleAbout} colors={colors} />
           <ActionRow icon="star" label="Calificar la app" onPress={handleRate} colors={colors} border />
           <ActionRow icon="file-text" label="Términos y privacidad" onPress={handleTerms} colors={colors} border />
@@ -518,7 +518,7 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Soporte ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>SOPORTE</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
           <ActionRow
             icon="mail"
             label="Contactar al equipo"
@@ -538,14 +538,14 @@ export default function ConfiguracionesScreen() {
         {__DEV__ && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>DESARROLLO</Text>
-            <View style={[styles.group, { backgroundColor: "rgba(255,255,255,0.03)", borderColor: "transparent" }]}>
+            <View style={[styles.group, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "transparent" }]}>
               <View style={styles.row}>
                 <RowIcon icon="star" colors={colors} />
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Modo Premium (testing)</Text>
                 <Switch
                   value={isPremiumDev}
                   onValueChange={(v) => setPremiumDev(v)}
-                  trackColor={{ false: "rgba(255,255,255,0.12)", true: colors.primary + "AA" }}
+                  trackColor={{ false: "rgba(61,14,22,0.50)", true: colors.primary + "AA" }}
                   thumbColor={isPremiumDev ? colors.primary : "#888"}
                 />
               </View>
@@ -608,7 +608,7 @@ function ActionRow({
       disabled={!onPress || disabled}
       style={({ pressed }) => [
         styles.row,
-        border && { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.07)" },
+        border && { borderTopWidth: 1, borderTopColor: "rgba(61,14,22,0.40)" },
         { opacity: pressed && onPress ? 0.75 : disabled ? 0.5 : 1 },
       ]}
     >

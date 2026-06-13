@@ -82,7 +82,7 @@ const ACTIVITIES: Record<string, {
     description:
       "Un fin de semana de silencio, sonido y naturaleza en un entorno privilegiado de los Andes mendocinos. El programa incluye baños de cuencos, meditaciones guiadas, caminatas conscientes y momentos de silencio profundo.\n\nIncluye alojamiento y alimentación vegetariana. Cupos muy limitados.",
     gradient: ["#3A5438", "#1E2E1C"],
-    orgColor: "#BE9650",
+    orgColor: "#D4AF37",
     orgInitials: "CC",
     tags: ["Retiro", "Silencio", "Naturaleza", "Full weekend"],
   },
@@ -138,10 +138,10 @@ export default function ActividadDetailScreen() {
         <Text style={styles.heroTitle}>{act.title}</Text>
 
         <View style={styles.heroMeta}>
-          <Feather name="map-pin" size={13} color="rgba(255,255,255,0.55)" />
+          <Feather name="map-pin" size={13} color="rgba(244,218,213,0.55)" />
           <Text style={styles.heroMetaText}>{act.city}</Text>
           <Text style={styles.heroMetaSep}>·</Text>
-          <Feather name="calendar" size={13} color="rgba(255,255,255,0.55)" />
+          <Feather name="calendar" size={13} color="rgba(244,218,213,0.55)" />
           <Text style={styles.heroMetaText}>{act.date}</Text>
         </View>
       </LinearGradient>
@@ -237,7 +237,7 @@ export default function ActividadDetailScreen() {
             onPress={() => setShowReserva(true)}
             style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.ctaGrad}>
+            <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.ctaGrad}>
               <Feather name="send" size={17} color="#080F0A" />
               <Text style={styles.ctaText}>Solicitar reserva</Text>
             </LinearGradient>
@@ -286,7 +286,7 @@ export default function ActividadDetailScreen() {
               onPress={handleEnviarReserva}
               style={({ pressed }) => [styles.modalBtn, { opacity: pressed ? 0.85 : 1 }]}
             >
-              <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.modalBtnGrad}>
+              <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.modalBtnGrad}>
                 <Text style={styles.modalBtnText}>Enviar solicitud</Text>
               </LinearGradient>
             </Pressable>
@@ -353,7 +353,7 @@ export default function ActividadDetailScreen() {
                   onPress={handleEnviarMensaje}
                   style={({ pressed }) => [styles.modalBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["#090D20", "#080A18", "#06070F"]} style={styles.modalBtnGrad}>
+                  <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.modalBtnGrad}>
                     <Feather name="send" size={16} color="#080F0A" />
                     <Text style={styles.modalBtnText}>Enviar mensaje</Text>
                   </LinearGradient>
@@ -391,8 +391,8 @@ const styles = StyleSheet.create({
   typeBadgeText: { color: "#FFFFFF", fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
   heroTitle: { color: "#FFFFFF", fontSize: 24, fontWeight: "700", lineHeight: 30, marginBottom: 12 },
   heroMeta: { flexDirection: "row", alignItems: "center", gap: 6 },
-  heroMetaText: { color: "rgba(255,255,255,0.55)", fontSize: 12 },
-  heroMetaSep: { color: "rgba(255,255,255,0.55)", fontSize: 12 },
+  heroMetaText: { color: "rgba(244,218,213,0.55)", fontSize: 12 },
+  heroMetaSep: { color: "rgba(244,218,213,0.55)", fontSize: 12 },
   // Chips
   chipsRow: { flexDirection: "row", gap: 10 },
   chip: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10, borderRadius: 14, borderWidth: 1, padding: 14 },

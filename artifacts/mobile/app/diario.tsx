@@ -63,7 +63,7 @@ function groupByDay(entries: DiarioEntry[]): DiarioDayGroup[] {
   return groups;
 }
 
-const BG_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 export default function DiarioScreen() {
   const colors = useColors();
@@ -251,5 +251,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  addBtnText: { fontSize: 16, fontWeight: "700", color: "#090F17" },
+  addBtnText: { fontSize: 16, fontWeight: "700", color: "#1B060F" },
 });

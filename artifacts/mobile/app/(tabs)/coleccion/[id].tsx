@@ -28,10 +28,10 @@ import type { Session } from "@/data/sessions";
 const { width } = Dimensions.get("window");
 const SAVED_KEY = "@resonance_saved_colecciones";
 
-const BG = "#080B1A";
-const GOLD = "#BE9650";
-const FG = "#EDE1D3";
-const MUTED = "#7A8FA8";
+const BG = "#1B060F";
+const GOLD = "#D4AF37";
+const FG = "#F4DAD5";
+const MUTED = "rgba(242,231,228,0.45)";
 
 export default function ColeccionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -284,11 +284,11 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(190,150,80,0.06)",
+    borderBottomColor: "rgba(212,175,55,0.06)",
   },
   trackThumb: {
     width: 52, height: 52, borderRadius: 8,
-    backgroundColor: "rgba(190,150,80,0.05)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   trackInfo: { flex: 1 },
   trackTitle: { fontSize: 14, fontWeight: "600", color: FG, marginBottom: 3 },
