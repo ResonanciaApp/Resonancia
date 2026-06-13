@@ -5,7 +5,7 @@ import { getQuoteOfTheDay } from "@/data/quotes";
 
 const GOLD    = "#D4AF37";
 const MUTED   = "rgba(242,231,228,0.45)";
-const CARD_BG = "rgba(100,185,230,0.09)";
+const CARD_BG = "rgba(72,40,120,0.09)";
 
 export default function QuoteOfTheDay() {
   const quote = getQuoteOfTheDay();
