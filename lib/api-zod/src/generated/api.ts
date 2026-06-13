@@ -2020,3 +2020,71 @@ export const DeleteAdminSoundParams = zod.object({
 })
 
 
+/**
+ * @summary Obtener configuración de todas las geometrías (admin)
+ */
+export const GetAdminGeometrixResponse = zod.object({
+  "geometries": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullish(),
+  "defaultName": zod.string(),
+  "category": zod.enum(['circulares', 'rectilineas', 'combinaciones']),
+  "sortOrder": zod.number(),
+  "geometryType": zod.enum(['wireframe', 'mosaic']),
+  "strokeMode": zod.enum(['thin', 'natural']),
+  "visible": zod.boolean(),
+  "description": zod.string().nullish(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Guardar configuración de geometrías (bulk upsert, admin)
+ */
+export const UpdateAdminGeometrixBodyItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "geometryType": zod.enum(['wireframe', 'mosaic']),
+  "strokeMode": zod.enum(['thin', 'natural']),
+  "visible": zod.boolean(),
+  "description": zod.string().nullish()
+})
+export const UpdateAdminGeometrixBody = zod.array(UpdateAdminGeometrixBodyItem)
+
+export const UpdateAdminGeometrixResponse = zod.object({
+  "geometries": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullish(),
+  "defaultName": zod.string(),
+  "category": zod.enum(['circulares', 'rectilineas', 'combinaciones']),
+  "sortOrder": zod.number(),
+  "geometryType": zod.enum(['wireframe', 'mosaic']),
+  "strokeMode": zod.enum(['thin', 'natural']),
+  "visible": zod.boolean(),
+  "description": zod.string().nullish(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Configuración pública de geometrías (para la app móvil)
+ */
+export const GetGeometrixSettingsResponse = zod.object({
+  "geometries": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullish(),
+  "defaultName": zod.string(),
+  "category": zod.enum(['circulares', 'rectilineas', 'combinaciones']),
+  "sortOrder": zod.number(),
+  "geometryType": zod.enum(['wireframe', 'mosaic']),
+  "strokeMode": zod.enum(['thin', 'natural']),
+  "visible": zod.boolean(),
+  "description": zod.string().nullish(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+

@@ -100,6 +100,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { useGeometrixCatalog } from "@/hooks/useGeometrixCatalog";
 import { AUDIO_MAP } from "@/config/audio-map";
 import { SESSIONS, type Session } from "@/data/sessions";
 
@@ -1812,6 +1813,7 @@ type GeometrixCarouselProps = {
   handleDragStart: (id: string) => void;
   commitReorder: (id: string, idx: number) => void;
   getSettings: (id: string) => GeoSettings;
+  catalogGeometries: GeometryMeta[];
 };
 const GeometrixCarousel = React.memo(function GeometrixCarousel({
   active,
@@ -1825,6 +1827,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   handleDragStart,
   commitReorder,
   getSettings,
+  catalogGeometries,
 }: GeometrixCarouselProps) {
   const { width } = useWindowDimensions();
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
@@ -1861,11 +1864,11 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   const carouselOrder = useMemo<string[]>(() => {
     const front = active.filter((id) => !effActivating.has(id));
     const frontSet = new Set(front);
-    const tail = GEOMETRIES.filter(
+    const tail = catalogGeometries.filter(
       (g) => g.category === activeCategory && !frontSet.has(g.id),
     ).map((g) => g.id);
     return [...front, ...tail];
-  }, [active, effActivating, activeCategory]);
+  }, [active, effActivating, activeCategory, catalogGeometries]);
   useEffect(() => {
     instantOrderFlag.value = 0;
     orderSV.value = carouselOrder;
@@ -1873,15 +1876,15 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
 
   const domOrder = useMemo<string[]>(() => {
     const activeSet = new Set(active);
-    const catBases = GEOMETRIES.filter((g) => g.category === activeCategory).map(
+    const catBases = catalogGeometries.filter((g) => g.category === activeCategory).map(
       (g) => g.id,
     );
-    const otherActiveBases = GEOMETRIES.filter(
+    const otherActiveBases = catalogGeometries.filter(
       (g) => g.category !== activeCategory && activeSet.has(g.id),
     ).map((g) => g.id);
     const activeDups = active.filter((id) => id.includes("::")).sort();
     return [...catBases, ...otherActiveBases, ...activeDups];
-  }, [active, activeCategory]);
+  }, [active, activeCategory, catalogGeometries]);
 
   const CAROUSEL_BATCH = 6;
   const mountedIdsRef = useRef<Set<string>>(new Set<string>());
@@ -1925,7 +1928,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   }, [newTilesInDom]);
   useEffect(() => {
     if (newTilesInDom.length > 0) return;
-    const allIds = GEOMETRIES.map((g) => g.id);
+    const allIds = catalogGeometries.map((g) => g.id);
     const notMounted = allIds.filter((id) => !mountedIdsRef.current.has(id));
     if (notMounted.length === 0) return;
     let raf = 0;
@@ -2143,6 +2146,9 @@ export default function GeometrixScreen() {
       return () => { showMenu(); };
     }, [requestHide, showMenu])
   );
+
+  // Catálogo de geometrías con ajustes del servidor (orden, visibilidad, nombre).
+  const { geometries: catalogGeometries } = useGeometrixCatalog();
 
   // Persistencia local de composiciones ("Mis creaciones").
   const { creations, saveCreation, updateCreation, getCreation } = useGeometrixCreations();
@@ -4051,6 +4057,7 @@ export default function GeometrixScreen() {
           handleDragStart={handleDragStart}
           commitReorder={commitReorder}
           getSettings={getSettings}
+          catalogGeometries={catalogGeometries}
         />
         <View style={styles.carouselDivider} />
 

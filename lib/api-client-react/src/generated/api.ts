@@ -44,9 +44,12 @@ import type {
   FollowedUser,
   FriendRequest,
   FriendRequestInput,
+  GeometrixSettingUpdate,
+  GetAdminGeometrix200,
   GetAdminSounds200,
   GetAdminUsersParams,
   GetDirectMessagesParams,
+  GetGeometrixSettings200,
   GetMessagesParams,
   GetMixerSounds200,
   GetMyPlaysParams,
@@ -87,6 +90,7 @@ import type {
   TypingStatus,
   UnreadCount,
   UnregisterPushTokenBody,
+  UpdateAdminGeometrix200,
   UpdateMixerSoundBody,
   UserProfile,
   UserProfileUpdate,
@@ -5689,4 +5693,229 @@ export const useDeleteAdminSound = <TError = ErrorType<ErrorResponse>,
       > => {
       return useMutation(getDeleteAdminSoundMutationOptions(options));
     }
+
+export const getGetAdminGeometrixUrl = () => {
+
+
+
+
+  return `/api/admin/geometrix`
+}
+
+/**
+ * @summary Obtener configuración de todas las geometrías (admin)
+ */
+export const getAdminGeometrix = async ( options?: RequestInit): Promise<GetAdminGeometrix200> => {
+
+  return customFetch<GetAdminGeometrix200>(getGetAdminGeometrixUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminGeometrixQueryKey = () => {
+    return [
+    `/api/admin/geometrix`
+    ] as const;
+    }
+
+
+export const getGetAdminGeometrixQueryOptions = <TData = Awaited<ReturnType<typeof getAdminGeometrix>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminGeometrix>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminGeometrixQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminGeometrix>>> = ({ signal }) => getAdminGeometrix({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminGeometrix>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminGeometrixQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminGeometrix>>>
+export type GetAdminGeometrixQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Obtener configuración de todas las geometrías (admin)
+ */
+
+export function useGetAdminGeometrix<TData = Awaited<ReturnType<typeof getAdminGeometrix>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminGeometrix>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminGeometrixQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminGeometrixUrl = () => {
+
+
+
+
+  return `/api/admin/geometrix`
+}
+
+/**
+ * @summary Guardar configuración de geometrías (bulk upsert, admin)
+ */
+export const updateAdminGeometrix = async (geometrixSettingUpdate: GeometrixSettingUpdate[], options?: RequestInit): Promise<UpdateAdminGeometrix200> => {
+
+  return customFetch<UpdateAdminGeometrix200>(getUpdateAdminGeometrixUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      geometrixSettingUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminGeometrixMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminGeometrix>>, TError,{data: BodyType<GeometrixSettingUpdate[]>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminGeometrix>>, TError,{data: BodyType<GeometrixSettingUpdate[]>}, TContext> => {
+
+const mutationKey = ['updateAdminGeometrix'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminGeometrix>>, {data: BodyType<GeometrixSettingUpdate[]>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminGeometrix(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminGeometrixMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminGeometrix>>>
+    export type UpdateAdminGeometrixMutationBody = BodyType<GeometrixSettingUpdate[]>
+    export type UpdateAdminGeometrixMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Guardar configuración de geometrías (bulk upsert, admin)
+ */
+export const useUpdateAdminGeometrix = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminGeometrix>>, TError,{data: BodyType<GeometrixSettingUpdate[]>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminGeometrix>>,
+        TError,
+        {data: BodyType<GeometrixSettingUpdate[]>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminGeometrixMutationOptions(options));
+    }
+
+export const getGetGeometrixSettingsUrl = () => {
+
+
+
+
+  return `/api/geometrix/settings`
+}
+
+/**
+ * @summary Configuración pública de geometrías (para la app móvil)
+ */
+export const getGeometrixSettings = async ( options?: RequestInit): Promise<GetGeometrixSettings200> => {
+
+  return customFetch<GetGeometrixSettings200>(getGetGeometrixSettingsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetGeometrixSettingsQueryKey = () => {
+    return [
+    `/api/geometrix/settings`
+    ] as const;
+    }
+
+
+export const getGetGeometrixSettingsQueryOptions = <TData = Awaited<ReturnType<typeof getGeometrixSettings>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGeometrixSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetGeometrixSettingsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGeometrixSettings>>> = ({ signal }) => getGeometrixSettings({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGeometrixSettings>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetGeometrixSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof getGeometrixSettings>>>
+export type GetGeometrixSettingsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Configuración pública de geometrías (para la app móvil)
+ */
+
+export function useGetGeometrixSettings<TData = Awaited<ReturnType<typeof getGeometrixSettings>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGeometrixSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetGeometrixSettingsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 

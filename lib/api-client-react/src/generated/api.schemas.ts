@@ -1156,6 +1156,70 @@ export interface UpdateMixerSoundBody {
   sortOrder?: number;
 }
 
+export type GeometrixSettingItemCategory = typeof GeometrixSettingItemCategory[keyof typeof GeometrixSettingItemCategory];
+
+
+export const GeometrixSettingItemCategory = {
+  circulares: 'circulares',
+  rectilineas: 'rectilineas',
+  combinaciones: 'combinaciones',
+} as const;
+
+export type GeometrixSettingItemGeometryType = typeof GeometrixSettingItemGeometryType[keyof typeof GeometrixSettingItemGeometryType];
+
+
+export const GeometrixSettingItemGeometryType = {
+  wireframe: 'wireframe',
+  mosaic: 'mosaic',
+} as const;
+
+export type GeometrixSettingItemStrokeMode = typeof GeometrixSettingItemStrokeMode[keyof typeof GeometrixSettingItemStrokeMode];
+
+
+export const GeometrixSettingItemStrokeMode = {
+  thin: 'thin',
+  natural: 'natural',
+} as const;
+
+export interface GeometrixSettingItem {
+  id: string;
+  name?: string | null;
+  defaultName: string;
+  category: GeometrixSettingItemCategory;
+  sortOrder: number;
+  geometryType: GeometrixSettingItemGeometryType;
+  strokeMode: GeometrixSettingItemStrokeMode;
+  visible: boolean;
+  description?: string | null;
+  updatedAt: string;
+}
+
+export type GeometrixSettingUpdateGeometryType = typeof GeometrixSettingUpdateGeometryType[keyof typeof GeometrixSettingUpdateGeometryType];
+
+
+export const GeometrixSettingUpdateGeometryType = {
+  wireframe: 'wireframe',
+  mosaic: 'mosaic',
+} as const;
+
+export type GeometrixSettingUpdateStrokeMode = typeof GeometrixSettingUpdateStrokeMode[keyof typeof GeometrixSettingUpdateStrokeMode];
+
+
+export const GeometrixSettingUpdateStrokeMode = {
+  thin: 'thin',
+  natural: 'natural',
+} as const;
+
+export interface GeometrixSettingUpdate {
+  id: string;
+  name?: string | null;
+  sortOrder: number;
+  geometryType: GeometrixSettingUpdateGeometryType;
+  strokeMode: GeometrixSettingUpdateStrokeMode;
+  visible: boolean;
+  description?: string | null;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };
@@ -1254,5 +1318,17 @@ export type GetMixerSounds200 = {
 
 export type GetAdminSounds200 = {
   sounds: AdminMixerSoundItem[];
+};
+
+export type GetAdminGeometrix200 = {
+  geometries: GeometrixSettingItem[];
+};
+
+export type UpdateAdminGeometrix200 = {
+  geometries: GeometrixSettingItem[];
+};
+
+export type GetGeometrixSettings200 = {
+  geometries: GeometrixSettingItem[];
 };
 

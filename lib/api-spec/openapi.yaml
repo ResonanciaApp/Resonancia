@@ -2067,6 +2067,97 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/geometrix:
+    get:
+      operationId: getAdminGeometrix
+      tags: [admin]
+      summary: Obtener configuración de todas las geometrías (admin)
+      responses:
+        "200":
+          description: Lista completa de geometrías con ajustes
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [geometries]
+                properties:
+                  geometries:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GeometrixSettingItem"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateAdminGeometrix
+      tags: [admin]
+      summary: Guardar configuración de geometrías (bulk upsert, admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/GeometrixSettingUpdate"
+      responses:
+        "200":
+          description: Configuración guardada
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [geometries]
+                properties:
+                  geometries:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GeometrixSettingItem"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /geometrix/settings:
+    get:
+      operationId: getGeometrixSettings
+      tags: [geometrix]
+      summary: Configuración pública de geometrías (para la app móvil)
+      responses:
+        "200":
+          description: Lista de geometrías con ajustes
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [geometries]
+                properties:
+                  geometries:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GeometrixSettingItem"
 components:
   schemas:
     PlaybackEvent:
@@ -3535,3 +3626,55 @@ components:
           nullable: true
         sortOrder:
           type: integer
+    GeometrixSettingItem:
+      type: object
+      required: [id, defaultName, category, sortOrder, geometryType, strokeMode, visible, updatedAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          nullable: true
+        defaultName:
+          type: string
+        category:
+          type: string
+          enum: [circulares, rectilineas, combinaciones]
+        sortOrder:
+          type: integer
+        geometryType:
+          type: string
+          enum: [wireframe, mosaic]
+        strokeMode:
+          type: string
+          enum: [thin, natural]
+        visible:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+    GeometrixSettingUpdate:
+      type: object
+      required: [id, sortOrder, geometryType, strokeMode, visible]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+        geometryType:
+          type: string
+          enum: [wireframe, mosaic]
+        strokeMode:
+          type: string
+          enum: [thin, natural]
+        visible:
+          type: boolean
+        description:
+          type: string
+          nullable: true

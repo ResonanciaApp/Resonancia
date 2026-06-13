@@ -20,6 +20,7 @@ import {
   LogOut,
   PlusCircle,
   Music2,
+  Hexagon,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -32,6 +33,7 @@ import MezclasPage from "@/pages/mezclas";
 import CategoriasPage from "@/pages/categorias";
 import SesionesPage from "@/pages/sesiones";
 import SonidosPage from "@/pages/sonidos";
+import GeometrixPage from "@/pages/geometrix";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -151,6 +153,7 @@ const NAV = [
   { href: "/categorias", label: "Categorías", icon: FolderTree },
   { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
   { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
+  { href: "/geometrix", label: "Geometrix", icon: Hexagon },
 ];
 
 function isActive(location: string, href: string) {
@@ -265,6 +268,7 @@ function AdminGate() {
         <Route path="/categorias" component={CategoriasPage} />
         <Route path="/sesiones/nueva" component={SesionesPage} />
         <Route path="/sonidos" component={SonidosPage} />
+        <Route path="/geometrix" component={GeometrixPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardShell>

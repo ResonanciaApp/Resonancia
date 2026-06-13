@@ -38,3 +38,4 @@ export * from "./follows";
 export * from "./mixer-sounds";
 export * from "./shared-glyphs";
 export * from "./shared-glyph-likes";
+export * from "./geometrix-settings";
