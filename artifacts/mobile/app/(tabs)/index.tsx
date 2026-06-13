@@ -592,6 +592,7 @@ export default function HomeScreen2() {
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
           style={{ paddingTop: 11 }}
+          titleOffset={10}
         />
 
         {/* ── VIDEOS DESTACADOS ── */}

@@ -25,9 +25,10 @@ type SessionCarouselProps = {
   isPremium: boolean;
   onPress: (s: Session) => void;
   style?: object;
+  titleOffset?: number;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset }: SessionCarouselProps) {
   if (sessions.length === 0) return null;
   return (
     <View style={[styles.section, style]}>
@@ -66,7 +67,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style }: 
                   <Text style={styles.durText}>{s.durationLabel}</Text>
                 </View>
               </View>
-              <Text style={styles.cardTitle} numberOfLines={2}>{s.title}</Text>
+              <Text style={[styles.cardTitle, titleOffset ? { marginTop: titleOffset } : null]} numberOfLines={2}>{s.title}</Text>
             </Pressable>
           );
         })}
