@@ -382,7 +382,7 @@ function MixContextMenu({
 // ── Estilos ────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   section: { paddingHorizontal: 20 },
-  panel: { backgroundColor: "rgba(255,255,255,0.50)", borderRadius: 14, padding: 4 },
+  panel: { backgroundColor: "rgba(255,255,255,0.05)", borderRadius: 14, padding: 4 },
 
   headerRow: {
     flexDirection: "row",
