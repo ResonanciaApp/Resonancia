@@ -1129,7 +1129,8 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(190,150,80,0.18)",
     marginHorizontal: 20,
-    marginVertical: 8,
+    marginTop: -17,
+    marginBottom: 8,
   },
 
   // ── Lista (fila) ────────────────────────────────────────────────────────────
