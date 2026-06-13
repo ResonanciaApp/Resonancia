@@ -1,26 +1,15 @@
-import { View, Text, Image, Pressable, StyleSheet, Share } from "react-native";
+import { useState } from "react";
+import { View, Text, Pressable, StyleSheet, Share } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { getQuoteOfTheDay, getShareCountForDay } from "@/data/quotes";
+import { getQuoteOfTheDay } from "@/data/quotes";
 
-const BLUE_BG       = "#0D1825";
-const BLUE_CHIP_BG  = "rgba(100,185,230,0.12)";
-const BLUE_ACCENT   = "#D4AF37";
-const BLUE_MUTED    = "rgba(242,231,228,0.45)";
-
-const AVATARS = [
-  require("@/assets/images/sessions/session-1.jpg"),
-  require("@/assets/images/sessions/session-7.jpg"),
-  require("@/assets/images/sessions/session-7.jpg"),
-];
-
-function formatCount(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
-  return String(n);
-}
+const BLUE_ACCENT = "#D4AF37";
+const BLUE_MUTED  = "rgba(242,231,228,0.45)";
 
 export default function QuoteOfTheDay() {
   const quote = getQuoteOfTheDay();
-  const shareCount = getShareCountForDay();
+  const [expanded, setExpanded] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
 
   async function handleShare() {
     try {
@@ -34,39 +23,32 @@ export default function QuoteOfTheDay() {
 
   return (
     <View style={styles.card}>
-      {/* Quote */}
-      <Text style={[styles.quoteText, { color: "#FFFFFF" }]}>
+      <Text
+        style={[styles.quoteText, { color: "#FFFFFF" }]}
+        numberOfLines={expanded ? undefined : 3}
+        onTextLayout={(e) => {
+          if (!expanded) setIsTruncated(e.nativeEvent.lines.length >= 3);
+        }}
+      >
         "{quote.text}"
       </Text>
 
-      {/* Author */}
+      {!expanded && isTruncated && (
+        <Pressable onPress={() => setExpanded(true)} hitSlop={8} style={styles.readMore}>
+          <Text style={[styles.readMoreText, { color: BLUE_ACCENT }]}>Leer más</Text>
+        </Pressable>
+      )}
+
       <Text style={[styles.author, { color: BLUE_ACCENT }]}>{quote.author}</Text>
 
-      {/* Footer */}
       <View style={styles.footer}>
-        {/* Avatars + count */}
-        <View style={styles.countChip}>
-          <View style={styles.avatarRow}>
-            {AVATARS.map((src, i) => (
-              <Image
-                key={i}
-                source={src}
-                style={[styles.avatar, { marginLeft: i === 0 ? 0 : -10, borderColor: BLUE_BG }]}
-              />
-            ))}
-          </View>
-          <Text style={[styles.countText, { color: BLUE_MUTED }]}>
-            {formatCount(shareCount)} compartieron
-          </Text>
-        </View>
-
-        {/* Share — solo icono */}
         <Pressable
           onPress={handleShare}
           hitSlop={12}
-          style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}
+          style={({ pressed }) => [styles.shareBtn, { opacity: pressed ? 0.6 : 1 }]}
         >
-          <Feather name="share-2" size={20} color={BLUE_ACCENT} />
+          <Feather name="share-2" size={18} color={BLUE_MUTED} />
+          <Text style={[styles.shareText, { color: BLUE_MUTED }]}>Compartir</Text>
         </Pressable>
       </View>
     </View>
@@ -83,49 +65,35 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(100,185,230,0.09)",
     borderRadius: 16,
   },
-  chip: {
-    alignSelf: "flex-start",
-    borderRadius: 50,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    marginBottom: 16,
-  },
-  chipText: {
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 0.2,
-  },
   quoteText: {
     fontSize: 17,
     fontWeight: "700",
     lineHeight: 25,
-    marginBottom: 12,
+    marginBottom: 8,
+  },
+  readMore: {
+    marginBottom: 8,
+  },
+  readMoreText: {
+    fontSize: 13,
+    fontWeight: "600",
   },
   author: {
     fontSize: 14,
     fontWeight: "500",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   footer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
   },
-  countChip: {
+  shareBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 6,
   },
-  avatarRow: {
-    flexDirection: "row",
-  },
-  avatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 2,
-  },
-  countText: {
+  shareText: {
     fontSize: 13,
   },
 });
