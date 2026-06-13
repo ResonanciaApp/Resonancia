@@ -954,7 +954,7 @@ export default function BibliotecaScreen() {
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitle}>Tu Biblioteca</Text>
-            <Text style={styles.headerSubtitle}>Acá tendrás acceso a tu contenido personalizado</Text>
+            <Text style={styles.headerSubtitle}>Escucha y organiza tu contenido</Text>
           </View>
           <View style={styles.headerIcons}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
