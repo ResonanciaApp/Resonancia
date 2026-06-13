@@ -105,18 +105,18 @@ function GeometryThumbnail({ id, color }: { id: string; color?: string | null })
 
   if (!svgContent) {
     return (
-      <div className="w-10 h-10 rounded border border-border/40 flex items-center justify-center shrink-0 bg-secondary/20">
+      <div className="w-[120px] h-[120px] rounded border border-border/40 flex items-center justify-center shrink-0 bg-secondary/20">
         <span className="text-[8px] text-muted-foreground/40 font-mono">?</span>
       </div>
     );
   }
 
   return (
-    <div className="w-10 h-10 rounded border border-border/30 shrink-0 bg-secondary/20 overflow-hidden flex items-center justify-center">
+    <div className="w-[120px] h-[120px] rounded border border-border/30 shrink-0 bg-secondary/20 overflow-hidden flex items-center justify-center">
       <svg
         viewBox="0 0 100 100"
-        width="36"
-        height="36"
+        width="108"
+        height="108"
         xmlns="http://www.w3.org/2000/svg"
         dangerouslySetInnerHTML={{ __html: svgContent }}
       />
