@@ -544,7 +544,7 @@ export default function HomeScreen2() {
                         <Text style={[styles.heroTitle, { color: "#e4e6f5" }]} numberOfLines={2}>
                           {filteredFeatured.title}
                         </Text>
-                        <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
+                        <Text style={[styles.heroAuthor, { color: "rgba(255,255,255,0.60)" }]} numberOfLines={1}>
                           {heroAuthor}
                         </Text>
                       </View>
