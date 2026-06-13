@@ -34,11 +34,6 @@ export default function QuoteOfTheDay() {
 
   return (
     <View style={styles.card}>
-      {/* Chip */}
-      <View style={[styles.chip, { backgroundColor: BLUE_CHIP_BG }]}>
-        <Text style={[styles.chipText, { color: BLUE_ACCENT }]}>Frase del día</Text>
-      </View>
-
       {/* Quote */}
       <Text style={[styles.quoteText, { color: "#FFFFFF" }]}>
         "{quote.text}"

@@ -590,8 +590,11 @@ export default function HomeScreen2() {
             </ScrollView>
           )}
         </View>
-        {/* ── 5. FRASE DEL DÍA ── */}
+        {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
+          <Text style={[styles.sectionTitle, { marginHorizontal: 16, marginBottom: 12 }]}>
+            Reflexión de la semana
+          </Text>
           <QuoteOfTheDay />
         </View>
 
