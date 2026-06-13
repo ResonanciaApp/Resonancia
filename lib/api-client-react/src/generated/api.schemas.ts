@@ -1189,6 +1189,11 @@ export interface GeometrixSettingItem {
   sortOrder: number;
   geometryType: GeometrixSettingItemGeometryType;
   strokeMode: GeometrixSettingItemStrokeMode;
+  /**
+     * @minimum 0
+     * @maximum 1.5
+     */
+  outlineWidth: number;
   visible: boolean;
   description?: string | null;
   color?: string | null;
@@ -1217,6 +1222,11 @@ export interface GeometrixSettingUpdate {
   sortOrder: number;
   geometryType: GeometrixSettingUpdateGeometryType;
   strokeMode: GeometrixSettingUpdateStrokeMode;
+  /**
+     * @minimum 0
+     * @maximum 1.5
+     */
+  outlineWidth?: number;
   visible: boolean;
   description?: string | null;
   color?: string | null;

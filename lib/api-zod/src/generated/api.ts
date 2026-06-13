@@ -2023,6 +2023,11 @@ export const DeleteAdminSoundParams = zod.object({
 /**
  * @summary Obtener configuración de todas las geometrías (admin)
  */
+export const getAdminGeometrixResponseGeometriesItemOutlineWidthMin = 0;
+export const getAdminGeometrixResponseGeometriesItemOutlineWidthMax = 1.5;
+
+
+
 export const GetAdminGeometrixResponse = zod.object({
   "geometries": zod.array(zod.object({
   "id": zod.string(),
@@ -2032,6 +2037,7 @@ export const GetAdminGeometrixResponse = zod.object({
   "sortOrder": zod.number(),
   "geometryType": zod.enum(['wireframe', 'mosaic']),
   "strokeMode": zod.enum(['thin', 'natural']),
+  "outlineWidth": zod.number().min(getAdminGeometrixResponseGeometriesItemOutlineWidthMin).max(getAdminGeometrixResponseGeometriesItemOutlineWidthMax),
   "visible": zod.boolean(),
   "description": zod.string().nullish(),
   "color": zod.string().nullish(),
@@ -2043,17 +2049,28 @@ export const GetAdminGeometrixResponse = zod.object({
 /**
  * @summary Guardar configuración de geometrías (bulk upsert, admin)
  */
+export const updateAdminGeometrixBodyOutlineWidthMin = 0;
+export const updateAdminGeometrixBodyOutlineWidthMax = 1.5;
+
+
+
 export const UpdateAdminGeometrixBodyItem = zod.object({
   "id": zod.string(),
   "name": zod.string().nullish(),
   "sortOrder": zod.number(),
   "geometryType": zod.enum(['wireframe', 'mosaic']),
   "strokeMode": zod.enum(['thin', 'natural']),
+  "outlineWidth": zod.number().min(updateAdminGeometrixBodyOutlineWidthMin).max(updateAdminGeometrixBodyOutlineWidthMax).optional(),
   "visible": zod.boolean(),
   "description": zod.string().nullish(),
   "color": zod.string().nullish()
 })
 export const UpdateAdminGeometrixBody = zod.array(UpdateAdminGeometrixBodyItem)
+
+export const updateAdminGeometrixResponseGeometriesItemOutlineWidthMin = 0;
+export const updateAdminGeometrixResponseGeometriesItemOutlineWidthMax = 1.5;
+
+
 
 export const UpdateAdminGeometrixResponse = zod.object({
   "geometries": zod.array(zod.object({
@@ -2064,6 +2081,7 @@ export const UpdateAdminGeometrixResponse = zod.object({
   "sortOrder": zod.number(),
   "geometryType": zod.enum(['wireframe', 'mosaic']),
   "strokeMode": zod.enum(['thin', 'natural']),
+  "outlineWidth": zod.number().min(updateAdminGeometrixResponseGeometriesItemOutlineWidthMin).max(updateAdminGeometrixResponseGeometriesItemOutlineWidthMax),
   "visible": zod.boolean(),
   "description": zod.string().nullish(),
   "color": zod.string().nullish(),
@@ -2075,6 +2093,11 @@ export const UpdateAdminGeometrixResponse = zod.object({
 /**
  * @summary Configuración pública de geometrías (para la app móvil)
  */
+export const getGeometrixSettingsResponseGeometriesItemOutlineWidthMin = 0;
+export const getGeometrixSettingsResponseGeometriesItemOutlineWidthMax = 1.5;
+
+
+
 export const GetGeometrixSettingsResponse = zod.object({
   "geometries": zod.array(zod.object({
   "id": zod.string(),
@@ -2084,6 +2107,7 @@ export const GetGeometrixSettingsResponse = zod.object({
   "sortOrder": zod.number(),
   "geometryType": zod.enum(['wireframe', 'mosaic']),
   "strokeMode": zod.enum(['thin', 'natural']),
+  "outlineWidth": zod.number().min(getGeometrixSettingsResponseGeometriesItemOutlineWidthMin).max(getGeometrixSettingsResponseGeometriesItemOutlineWidthMax),
   "visible": zod.boolean(),
   "description": zod.string().nullish(),
   "color": zod.string().nullish(),

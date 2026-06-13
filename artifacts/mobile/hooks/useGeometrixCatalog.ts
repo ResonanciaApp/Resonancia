@@ -11,16 +11,18 @@
  * El hook re-usa la caché de TanStack Query configurada en la app.
  */
 import { useMemo } from "react";
-import { useGetGeometrixSettings } from "@workspace/api-client-react";
+import { useGetGeometrixSettings, getGetGeometrixSettingsQueryKey } from "@workspace/api-client-react";
 import { GEOMETRIES, type GeometryMeta, type GeometryCategory } from "@/data/geometries";
 
-export interface GeometryMetaExtended extends GeometryMeta {
+export interface GeometryMetaExtended extends Omit<GeometryMeta, "color"> {
   /** Nombre que debe mostrarse (override o defaultName). */
   displayName: string;
   /** Tipo determinado por el servidor (wireframe vs mosaico). */
   geometryType: "wireframe" | "mosaic";
   /** Modo de trazo para wireframes (fino vs natural). */
   strokeMode: "thin" | "natural";
+  /** Grosor del contorno exterior para mosaicos (px reales, 0 = sin contorno). */
+  outlineWidth: number;
   /** Descripción para la sección Aprende (null si no hay). */
   description: string | null;
   /** Color de trazo override (hex). null = usar el color del PALETTE de la app. */
@@ -34,6 +36,7 @@ export function useGeometrixCatalog(): {
 } {
   const { data, isLoading } = useGetGeometrixSettings({
     query: {
+      queryKey: getGetGeometrixSettingsQueryKey(),
       staleTime: 5 * 60 * 1000,
       retry: false,
     },
@@ -46,6 +49,7 @@ export function useGeometrixCatalog(): {
         displayName: g.name,
         geometryType: "wireframe" as const,
         strokeMode: "natural" as const,
+        outlineWidth: 0,
         description: null,
         color: null,
       }));
@@ -68,6 +72,7 @@ export function useGeometrixCatalog(): {
         displayName: s?.name ?? g.name,
         geometryType: (s?.geometryType as "wireframe" | "mosaic") ?? "wireframe",
         strokeMode: (s?.strokeMode as "thin" | "natural") ?? "natural",
+        outlineWidth: s?.outlineWidth ?? 0,
         description: s?.description ?? null,
         color: s?.color ?? null,
       });

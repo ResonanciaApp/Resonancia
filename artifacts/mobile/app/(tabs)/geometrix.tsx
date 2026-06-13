@@ -81,6 +81,7 @@ import {
 import colorsConst from "@/constants/colors";
 import { SOUND_MAP } from "@/config/sound-map";
 import { GEOMETRIES, GEOMETRY_CATEGORIES, PALETTE, baseOf, categoryOf, getGeometry, INSTANCE_SEP, type GeometryId, type GeometryMeta, type GeometryCategory } from "@/data/geometries";
+import { type GeometryMetaExtended } from "@/hooks/useGeometrixCatalog";
 import {
   BG_GRADIENTS,
   bgGradientColors,
@@ -843,6 +844,11 @@ function GeometryLayerInner({
   // strokeMode "thin" (ajustado desde el admin) adelgaza el trazo a ~45%.
   const thinFactor = (geo as { strokeMode?: string }).strokeMode === "thin" ? 0.45 : 1;
   const sw = base1px * (1 + safeThickness * 5) * thinFactor;
+  // outlineWidth (admin): grosor de contorno exterior en px reales (mosaicos).
+  // Se convierte a unidades viewBox (viewBox=100×100) para pasar a SacredGlyph.
+  const outlineWidthPx = (geo as { outlineWidth?: number }).outlineWidth ?? 0;
+  const outlineWidthSvg =
+    outlineWidthPx > 0 && effectiveSize > 0 ? outlineWidthPx * (100 / effectiveSize) : 0;
   // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
   const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
   // Glow efectivo: el propio de la capa se suma al general (panel maestro),
@@ -873,6 +879,7 @@ function GeometryLayerInner({
               size={effectiveSize}
               strokeWidth={sw * (5 + safeBloom * 5)}
               strokeScale={thinFactor}
+              outlineWidth={outlineWidthSvg}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -885,6 +892,7 @@ function GeometryLayerInner({
               size={effectiveSize}
               strokeWidth={sw * (2.4 + safeBloom * 2.6)}
               strokeScale={thinFactor}
+              outlineWidth={outlineWidthSvg}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -902,6 +910,7 @@ function GeometryLayerInner({
               size={effectiveSize}
               strokeWidth={sw * (3 + safeGlow * 3)}
               strokeScale={thinFactor}
+              outlineWidth={outlineWidthSvg}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -915,6 +924,7 @@ function GeometryLayerInner({
               size={effectiveSize}
               strokeWidth={sw * (1.8 + safeGlow * 1.6)}
               strokeScale={thinFactor}
+              outlineWidth={outlineWidthSvg}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -956,6 +966,7 @@ function GeometryLayerInner({
           size={effectiveSize}
           strokeWidth={sw}
           strokeScale={thinFactor}
+          outlineWidth={outlineWidthSvg}
           kaleidoscope={kaleidoscope}
           kaleidSegments={kaleidSegments}
           liveScaleSV={liveScaleForGlyph}
@@ -1824,7 +1835,7 @@ type GeometrixCarouselProps = {
   handleDragStart: (id: string) => void;
   commitReorder: (id: string, idx: number) => void;
   getSettings: (id: string) => GeoSettings;
-  catalogGeometries: GeometryMeta[];
+  catalogGeometries: GeometryMetaExtended[];
 };
 const GeometrixCarousel = React.memo(function GeometrixCarousel({
   active,
@@ -3150,7 +3161,7 @@ export default function GeometrixScreen() {
   const activeMetas: { iid: string; geo: GeometryMeta }[] = active
     .map((iid) => {
       const base = baseOf(iid);
-      const geo = catalogGeoMap.get(base) ?? getGeometry(base);
+      const geo = (catalogGeoMap.get(base) ?? getGeometry(base)) as GeometryMeta | undefined;
       return geo ? { iid, geo } : null;
     })
     .filter((m): m is { iid: string; geo: GeometryMeta } => m !== null);

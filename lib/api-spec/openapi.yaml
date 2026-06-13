@@ -3628,7 +3628,7 @@ components:
           type: integer
     GeometrixSettingItem:
       type: object
-      required: [id, defaultName, category, sortOrder, geometryType, strokeMode, visible, updatedAt]
+      required: [id, defaultName, category, sortOrder, geometryType, strokeMode, outlineWidth, visible, updatedAt]
       properties:
         id:
           type: string
@@ -3648,6 +3648,11 @@ components:
         strokeMode:
           type: string
           enum: [thin, natural]
+        outlineWidth:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1.5
         visible:
           type: boolean
         description:
@@ -3676,6 +3681,11 @@ components:
         strokeMode:
           type: string
           enum: [thin, natural]
+        outlineWidth:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1.5
         visible:
           type: boolean
         description:

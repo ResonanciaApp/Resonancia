@@ -33,6 +33,7 @@ interface GeometryRow {
   sortOrder: number;
   geometryType: GeometryType;
   strokeMode: StrokeMode;
+  outlineWidth: number;
   visible: boolean;
   description: string | null;
   color: string | null;
@@ -77,6 +78,7 @@ async function saveGeometries(rows: GeometryRow[], token: string | null): Promis
     sortOrder: r.sortOrder,
     geometryType: r.geometryType,
     strokeMode: r.strokeMode,
+    outlineWidth: r.outlineWidth ?? 0,
     visible: r.visible,
     description: r.description?.trim() || null,
     color: r.color || null,
@@ -95,7 +97,7 @@ function sortByOrder(rows: GeometryRow[]): GeometryRow[] {
   return [...rows].sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-function GeometryThumbnail({ id, color }: { id: string; color?: string | null }) {
+function GeometryThumbnail({ id, color, outlineWidth }: { id: string; color?: string | null; outlineWidth?: number }) {
   const svgContent = useMemo(() => {
     const raw = GLYPH_STRINGS[id];
     if (!raw) return null;
@@ -111,6 +113,10 @@ function GeometryThumbnail({ id, color }: { id: string; color?: string | null })
     );
   }
 
+  const hasOutline = (outlineWidth ?? 0) > 0;
+  const outlineSvgUnits = hasOutline ? ((outlineWidth ?? 0) * (100 / 108)).toFixed(4) : undefined;
+  const outlineColor = color ?? "#D4AF37";
+
   return (
     <div className="w-[120px] h-[120px] rounded border border-border/30 shrink-0 bg-secondary/20 overflow-hidden flex items-center justify-center">
       <svg
@@ -118,6 +124,8 @@ function GeometryThumbnail({ id, color }: { id: string; color?: string | null })
         width="108"
         height="108"
         xmlns="http://www.w3.org/2000/svg"
+        stroke={hasOutline ? outlineColor : undefined}
+        strokeWidth={hasOutline ? outlineSvgUnits : undefined}
         dangerouslySetInnerHTML={{ __html: svgContent }}
       />
     </div>
@@ -183,7 +191,7 @@ function GeometryRowItem({
       </div>
 
       {/* Thumbnail */}
-      <GeometryThumbnail id={row.id} color={row.color} />
+      <GeometryThumbnail id={row.id} color={row.color} outlineWidth={row.outlineWidth} />
 
       {/* Contenido principal */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-3 min-w-0">
@@ -238,10 +246,18 @@ function GeometryRowItem({
             </div>
           ) : (
             <div className="flex-1 space-y-1">
-              <Label className="text-xs text-muted-foreground">Trazo</Label>
-              <p className="text-[11px] leading-tight text-muted-foreground/60 h-8 flex items-center">
-                No aplica (relleno)
-              </p>
+              <Label className="text-xs text-muted-foreground">
+                Contorno — {(row.outlineWidth ?? 0).toFixed(1)} px
+              </Label>
+              <input
+                type="range"
+                min={0}
+                max={1.5}
+                step={0.1}
+                value={row.outlineWidth ?? 0}
+                onChange={(e) => onChange({ outlineWidth: parseFloat(e.target.value) })}
+                className="w-full h-1.5 accent-yellow-600 cursor-pointer mt-2.5"
+              />
             </div>
           )}
         </div>

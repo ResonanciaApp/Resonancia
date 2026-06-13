@@ -856,6 +856,10 @@ export interface SacredGlyphProps {
       Usar 0.45 para strokeMode "thin". Se aplica multiplicando cada
       valor stroke-width presente en el SVG string antes de renderizar. */
   strokeScale?: number;
+  /** Grosor del contorno exterior en unidades del viewBox SVG (0–1 aprox).
+      Solo tiene efecto en mosaicos (fill sin stroke-width). Calculado por
+      el caller: outlineWidthPx * (100 / effectiveSize). 0 = sin contorno. */
+  outlineWidth?: number;
   opacity?: number;
   /** Degradado del trazo [desde, hasta]. Si se pasa, manda sobre `color`.
       Debe ser una referencia estable (memo) para no romper React.memo. */
@@ -877,6 +881,7 @@ function SacredGlyphImpl({
   size,
   opacity = 1,
   strokeScale = 1,
+  outlineWidth = 0,
   gradient,
   kaleidoscope = false,
   kaleidSegments = 6,
@@ -907,9 +912,15 @@ function SacredGlyphImpl({
       ? `<linearGradient id="${gradId}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${gradient[0]}"/><stop offset="100%" stop-color="${gradient[1]}"/></linearGradient>`
       : "";
 
+    // Atributos de contorno exterior (solo para mosaicos fill-based).
+    const outlineAttrs =
+      outlineWidth > 0
+        ? ` stroke="${ec}" stroke-width="${outlineWidth.toFixed(4)}"`
+        : "";
+
     // ── Sin caleidoscopio: SVG plano ──────────────────────────────────────
     if (!kaleidoscope) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${gradDefs ? `<defs>${gradDefs}</defs>` : ""}${content}</svg>`;
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${outlineAttrs}>${gradDefs ? `<defs>${gradDefs}</defs>` : ""}${content}</svg>`;
     }
 
     // ── Modo caleidoscopio: simetría radial de N segmentos ────────────────
@@ -930,8 +941,8 @@ function SacredGlyphImpl({
     const uses = Array.from({ length: N }, (_, i) =>
       `<use href="#${motifId}" transform="rotate(${(i * wedgeAngle).toFixed(3)} ${Cx} ${Cx})"/>`
     ).join("");
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs>${gradDefs}<clipPath id="${clipId}"><path d="${wedgePath}"/></clipPath><g id="${motifId}" clip-path="url(#${clipId})">${content}</g></defs>${uses}</svg>`;
-  }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments, strokeScale]);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${outlineAttrs}><defs>${gradDefs}<clipPath id="${clipId}"><path d="${wedgePath}"/></clipPath><g id="${motifId}" clip-path="url(#${clipId})">${content}</g></defs>${uses}</svg>`;
+  }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments, strokeScale, outlineWidth]);
 
   // Zoom en vivo (UI thread): cambia width/height por shared value sin re-render.
   const animStyle = useAnimatedStyle(() => {
