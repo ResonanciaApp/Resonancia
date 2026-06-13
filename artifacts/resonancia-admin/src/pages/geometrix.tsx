@@ -217,21 +217,23 @@ function GeometryRowItem({
 
         {/* Tipo + Trazo */}
         <div className="flex gap-2 items-end">
-          <div className="flex-1 space-y-1">
-            <Label className="text-xs text-muted-foreground">Tipo</Label>
-            <Select
-              value={row.geometryType}
-              onValueChange={(v) => onChange({ geometryType: v as GeometryType })}
-            >
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="wireframe">Wireframe</SelectItem>
-                <SelectItem value="mosaic">Mosaico</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {row.geometryType !== "mosaic" && (
+            <div className="flex-1 space-y-1">
+              <Label className="text-xs text-muted-foreground">Tipo</Label>
+              <Select
+                value={row.geometryType}
+                onValueChange={(v) => onChange({ geometryType: v as GeometryType })}
+              >
+                <SelectTrigger className="h-8 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="wireframe">Wireframe</SelectItem>
+                  <SelectItem value="mosaic">Mosaico</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           {supportsThin ? (
             <div className="flex-1 space-y-1">
               <Label className="text-xs text-muted-foreground">Trazo</Label>
