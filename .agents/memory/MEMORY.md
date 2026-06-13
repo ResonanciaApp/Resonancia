@@ -61,3 +61,4 @@
 - [Geometrix undo (Atrás)](geometrix-undo-history.md) — pila de snapshots {active,settings,master,hiddenIds}; restaurar por setState revierte gestos (props ganan en reposo); debounce agrupa ráfagas; hiddenIds cleanup debe mantener ref estable; reset en load/new NO en clearCanvas
 - [Geometrix category filter](geometrix-category-filter.md) — carrusel renderiza solo la categoría activa (evita montar 44 tiles → lag); reordenar dentro de una categoría permuta solo sus slots en `active` (z-order global), nunca splice al final
 - [Reanimated slide-push sin glitch](reanimated-slide-push-noглitch.md) — spacer vacío (width animado, sin texto) + pill con opacity pura (width fijo); marginLeft:-gap en el spacer cancela el mini-snap al desmontar
+- [Geometrix trazo fino vs relleno](geometrix-thin-stroke.md) — "fino" (strokeMode) solo escala stroke-width; mosaicos de relleno (c/k/r-asset) no cambian; geometryType es metadato no usado en render; admin gatea "Trazo" por SVG real

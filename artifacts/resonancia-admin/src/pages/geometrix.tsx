@@ -140,7 +140,13 @@ function GeometryRowItem({
   onChange: (updated: Partial<GeometryRow>) => void;
 }) {
   const displayName = row.name || row.defaultName;
-  const isWireframe = row.geometryType === "wireframe";
+  // "Trazo fino" solo tiene efecto en geometrías dibujadas con líneas (su SVG
+  // define stroke-width). Las de relleno sólido (mosaicos "asset…") no tienen
+  // grosor de línea que adelgazar, así que el control no aplica. Esto se deriva
+  // del SVG real (intrínseco), NO del geometryType editable por el usuario.
+  // Se usa la MISMA regex con la que SacredGlyph escala el trazo en el móvil
+  // (stroke-width="…") para no mostrar "Trazo" donde el render no haría nada.
+  const supportsThin = /stroke-width="[^"]+"/.test(GLYPH_STRINGS[row.id] ?? "");
 
   return (
     <div
@@ -214,7 +220,7 @@ function GeometryRowItem({
               </SelectContent>
             </Select>
           </div>
-          {isWireframe && (
+          {supportsThin ? (
             <div className="flex-1 space-y-1">
               <Label className="text-xs text-muted-foreground">Trazo</Label>
               <Select
@@ -229,6 +235,13 @@ function GeometryRowItem({
                   <SelectItem value="thin">Fino</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+          ) : (
+            <div className="flex-1 space-y-1">
+              <Label className="text-xs text-muted-foreground">Trazo</Label>
+              <p className="text-[11px] leading-tight text-muted-foreground/60 h-8 flex items-center">
+                No aplica (relleno)
+              </p>
             </div>
           )}
         </div>
