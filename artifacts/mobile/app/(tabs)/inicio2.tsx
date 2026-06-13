@@ -462,6 +462,7 @@ export default function HomeScreen2() {
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
         <View style={styles.header}>
+          <Text style={styles.sectionTitle}>Playlist destacadas</Text>
           <View style={styles.coleccionGrid}>
               {filteredPlaylists.map((pl) => (
                 <Pressable
