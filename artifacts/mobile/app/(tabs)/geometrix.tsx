@@ -55,8 +55,6 @@ import Animated, {
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { captureRef } from "react-native-view-shot";
-import { shareAsync } from "expo-sharing";
 
 import Svg, {
   Circle,
@@ -3224,10 +3222,15 @@ export default function GeometrixScreen() {
       return;
     }
     try {
+      const { captureRef } = await import("react-native-view-shot");
+      const { shareAsync } = await import("expo-sharing");
       const uri = await captureRef(canvasViewRef, { format: "png", quality: 1, result: "tmpfile" });
       await shareAsync(uri, { mimeType: "image/png", dialogTitle: "Exportar geometría" });
     } catch {
-      Alert.alert("Error", "No se pudo exportar la imagen.");
+      Alert.alert(
+        "Exportar PNG",
+        "Para usar esta función necesitás reconstruir el dev client con el nuevo binario. Por ahora podés usar 'Pantalla inmersiva' + captura de pantalla del sistema.",
+      );
     }
   }
 
