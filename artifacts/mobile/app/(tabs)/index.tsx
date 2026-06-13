@@ -361,7 +361,7 @@ export default function HomeScreen() {
                   >
                     {sel && (
                       <LinearGradient
-                        colors={["#FF6B3D", "#FF9E4D"]}
+                        colors={["#D6AD5F", "#B47344"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={StyleSheet.absoluteFill}
