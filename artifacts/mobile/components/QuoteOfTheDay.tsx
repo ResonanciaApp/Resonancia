@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.55)",
     textAlign: "center",
     marginTop: 15,
-    marginBottom: 14,
+    marginBottom: 29,
   },
   footer: {
     flexDirection: "row",
