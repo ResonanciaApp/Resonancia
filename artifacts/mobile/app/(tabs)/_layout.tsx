@@ -137,8 +137,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
         <LinearGradient
-          colors={["#4A0C0C", "#27070E", "#1B060F"]}
-          locations={[0, 0.5, 1]}
+          colors={["#27070E", "#1B060F"]}
+          locations={[0, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
