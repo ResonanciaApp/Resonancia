@@ -6280,7 +6280,7 @@ const styles = StyleSheet.create({
   },
   cbDesc: {
     fontSize: 12,
-    color: "#c1b9d5",
+    color: "#b9b1ca",
     lineHeight: 17,
   },
   cbTag: {
@@ -6337,7 +6337,7 @@ const styles = StyleSheet.create({
   },
   landingItemDesc: {
     fontSize: 12,
-    color: "#c1b9d5",
+    color: "#b9b1ca",
   },
   landingHint: {
     textAlign: "center",
