@@ -681,6 +681,7 @@ export default function HomeScreen2() {
         />
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
+        <View style={styles.sectionDivider} />
         <View style={{ marginBottom: SECTION_GAP }}>
           <AlmaCommunitySection />
         </View>
@@ -890,6 +891,12 @@ const styles = StyleSheet.create({
 
   // Section — igual para todas las secciones
   section: { marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD },
+  sectionDivider: {
+    marginHorizontal: GRID_PAD * 2,
+    marginBottom: SECTION_GAP,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(244,218,213,0.15)",
+  },
   sectionRow: {
     flexDirection: "row",
     alignItems: "center",
