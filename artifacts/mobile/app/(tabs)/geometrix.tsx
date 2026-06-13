@@ -3172,8 +3172,8 @@ export default function GeometrixScreen() {
           halo:            maybe(0.30, 0.1, 0.65),
           ripple:          maybe(0.25, 0.1, 0.50),
           expansionAmount: maybe(0.25, 0.1, 0.55),
-          kaleidoscope:    rnd() < 0.30,
-          kaleidSegments:  pick([4, 6, 8, 12] as const),
+          kaleidoscope:    false,
+          kaleidSegments:  cur.kaleidSegments,
           // Transformaciones de gesto: intactas
           scale:       cur.scale,
           zoom:        cur.zoom,
