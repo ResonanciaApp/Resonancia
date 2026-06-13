@@ -560,6 +560,30 @@ export default function ConfiguracionesScreen() {
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Probar animación de racha</Text>
                 <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
               </Pressable>
+              <Pressable
+                onPress={() =>
+                  Alert.alert(
+                    "Limpiar Biblioteca",
+                    "¿Borrar todas las carpetas y playlists?",
+                    [
+                      { text: "Cancelar", style: "cancel" },
+                      {
+                        text: "Borrar",
+                        style: "destructive",
+                        onPress: async () => {
+                          await AsyncStorage.multiRemove(["@resonance_folders", "@resonance_playlists"]);
+                          Alert.alert("Listo", "Carpetas y playlists eliminadas. Reinicia la app.");
+                        },
+                      },
+                    ],
+                  )
+                }
+                style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+              >
+                <RowIcon icon="trash-2" colors={colors} />
+                <Text style={[styles.rowLabel, { color: "#D08B7A" }]}>Limpiar carpetas y playlists</Text>
+                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              </Pressable>
             </View>
           </>
         )}
