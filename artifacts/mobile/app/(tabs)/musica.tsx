@@ -189,7 +189,7 @@ const PillTab = memo(function PillTab({
             style={StyleSheet.absoluteFill}
           />
         )}
-        <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
+        <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: "600" }]}>
           {tab.label}
         </Text>
       </View>
@@ -212,7 +212,7 @@ const SubTabPill = memo(function SubTabPill({
             style={StyleSheet.absoluteFill}
           />
         )}
-        <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
+        <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: "600" }]}>
           {label}
         </Text>
       </View>
