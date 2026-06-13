@@ -6200,7 +6200,7 @@ export default function GeometrixScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#0F0234" },
+  root: { flex: 1, backgroundColor: "#1A1030" },
   content:  { flex: 1, paddingHorizontal: 20 },
 
   // ── Landing overlay ───────────────────────────────────────────────────────
@@ -6727,7 +6727,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     overflow: "hidden",
     borderRadius: 18,
-    backgroundColor: "#0D032E",
+    backgroundColor: "#0E091E",
     borderWidth: 1,
     borderColor: "#1b1f41",
   },
