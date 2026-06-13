@@ -50,14 +50,10 @@ export type GeoSettings = {
   bloom: number;
   /** Halo 0–1: aura radial suave detrás del glifo. 0 = off. */
   halo: number;
-  /** Onda 0–1: cizalla (skew) oscilante que ondula la figura. 0 = off. */
-  onda: number;
   /** Ripple 0–1: anillos concéntricos que emanan del centro en bucle. 0 = off. */
   ripple: number;
   /** Expansión 0–1: eco del glifo que crece y se desvanece en bucle. 0 = off. */
   expansionAmount: number;
-  /** Perspectiva 3D 0–1: inclina la capa en 3D (rotateX/Y oscilantes). 0 = plano. */
-  threeDAmount: number;
   /** Modo wireframe (solo mosaicos): convierte el relleno en contorno fino. undefined = usar el default del admin. */
   wireframe?: boolean;
 };

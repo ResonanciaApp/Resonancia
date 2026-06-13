@@ -199,10 +199,8 @@ function defaultSettings(id: GeometryId): GeoSettings {
     saturation: 0.5,
     bloom: 0,
     halo: 0,
-    onda: 0,
     ripple: 0,
     expansionAmount: 0,
-    threeDAmount: 0,
   };
 }
 
@@ -545,12 +543,6 @@ function GeometryLayerInner({
   const rot = useSharedValue(0);
   const pulse = useSharedValue(0);
   const fade = useSharedValue(1);
-  // Perspectiva 3D: dos osciladores con períodos primos → Lissajous natural.
-  const tiltXSV = useSharedValue(0);
-  const tiltYSV = useSharedValue(0);
-  // Osciladores de distorsión (fase 0↔1; punto neutro 0.5). Onda → cizalla,
-  // Onda → cizalla oscilante.
-  const waveSV = useSharedValue(0.5);
   // Aparición suave: al montar la capa (al seleccionar la geometría) entra con
   // fade in en lugar de aparecer de golpe.
   const enter = useSharedValue(0);
@@ -585,10 +577,8 @@ function GeometryLayerInner({
     saturation,
     bloom,
     halo,
-    onda,
     ripple,
     expansionAmount,
-    threeDAmount,
   } = settings;
   const grad = gradientColors(gradientId);
   // Saturación: transforma el color (y el degradado) por luminancia. 0.5 = original.
@@ -598,9 +588,7 @@ function GeometryLayerInner({
   // Efectos nuevos saneados (0 = off; saturación 0.5 = neutro).
   const safeBloom = Number.isFinite(bloom) ? clamp01(bloom) : 0;
   const safeHalo = Number.isFinite(halo) ? clamp01(halo) : 0;
-  const safeOnda = Number.isFinite(onda) ? clamp01(onda) : 0;
   const safeRipple = Number.isFinite(ripple) ? clamp01(ripple) : 0;
-  const safe3D = Number.isFinite(threeDAmount) ? clamp01(threeDAmount ?? 0) : 0;
   const bloomColor = mixHex(dispColor, "#FFFFFF", 0.55);
 
   // Velocidad de giro: a mayor rotateSpeed, menor duración (más rápido).
@@ -653,50 +641,6 @@ function GeometryLayerInner({
     }
   }, [fadeLoopAmount, motion, fade, index]);
 
-  // Onda (cizalla): oscilador que el aStyle mapea a la deformación. La AMPLITUD
-  // vive en el worklet (safeOnda), así que el bucle solo se (re)arranca al
-  // ENCENDER/APAGAR (deps booleanas) — mover el slider no lo reinicia.
-  const ondaOn = safeOnda > 0;
-  const threeDOn = safe3D > 0;
-  useEffect(() => {
-    if (ondaOn && motion) {
-      waveSV.value = withSequence(
-        withTiming(0, { duration: 750, easing: Easing.inOut(Easing.ease) }),
-        withRepeat(withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) }), -1, true),
-      );
-    } else {
-      cancelAnimation(waveSV);
-      waveSV.value = withTiming(0.5, { duration: 300 });
-    }
-  }, [ondaOn, motion, waveSV]);
-
-  // Perspectiva 3D: tiltX y tiltY oscilan con períodos primos distintos para
-  // crear un movimiento Lissajous (el plano se inclina en todas las direcciones
-  // progresivamente). La amplitud maxTilt se escala por safe3D en el worklet,
-  // así mover el slider no reinicia el bucle. Se congela con el movimiento.
-  useEffect(() => {
-    if (threeDOn && motion) {
-      // Entrada suave: desde el neutro (0.5) baja a 0 en 600ms, luego arranca
-      // el bucle 0→1→0→1… (reverse:true, inOut(sin)).
-      // inOut(sin) = medio período de seno → velocidad exactamente 0 en los
-      // extremos → transición continua sin saltos en cada rebote.
-      // En el worklet: (SV − 0.5) × 2 mapea 0..1 → −1..+1.
-      tiltXSV.value = withSequence(
-        withTiming(0, { duration: 600, easing: Easing.out(Easing.ease) }),
-        withRepeat(withTiming(1, { duration: 3200, easing: Easing.inOut(Easing.sin) }), -1, true),
-      );
-      tiltYSV.value = withSequence(
-        withTiming(0, { duration: 900, easing: Easing.out(Easing.ease) }),
-        withRepeat(withTiming(1, { duration: 4700, easing: Easing.inOut(Easing.sin) }), -1, true),
-      );
-    } else {
-      cancelAnimation(tiltXSV);
-      cancelAnimation(tiltYSV);
-      // Volver al neutro (0.5 = tilt 0) suavemente.
-      tiltXSV.value = withTiming(0.5, { duration: 500, easing: Easing.inOut(Easing.ease) });
-      tiltYSV.value = withTiming(0.5, { duration: 500, easing: Easing.inOut(Easing.ease) });
-    }
-  }, [threeDOn, motion, tiltXSV, tiltYSV]);
 
   // Sentido del giro: derecha (horario, +1) o izquierda (antihorario, -1).
   // Los toggles son excluyentes; si ambos quedaran apagados no hay giro.
@@ -804,21 +748,9 @@ function GeometryLayerInner({
     } else {
       angleDeg = committedAngle;
     }
-    // Onda: cizalla (skewX) oscilante. Warp: squash & stretch (ancho/alto en
-    // contrafase, volumen ~constante). Neutro cuando el efecto está en 0.
-    const wavePhase = waveSV.value * 2 - 1; // -1..1
-    const skewDeg = wavePhase * safeOnda * 14;
-    // 3D: perspectiva fija + inclinación Lissajous en X/Y. Los SVs van 0..1;
-    // (SV − 0.5) × 2 los mapea a −1..+1 → rango completo de tilt en ambos ejes.
-    // Cuando safe3D=0 → maxTilt=0 → rotateX/Y = 0deg → plano exacto.
-    const maxTilt = safe3D * 28; // 0° a 28°
     return {
       transform: [
-        { perspective: 600 },
-        { rotateX: `${(tiltXSV.value - 0.5) * 2 * maxTilt}deg` },
-        { rotateY: `${(tiltYSV.value - 0.5) * 2 * maxTilt}deg` },
         { rotate: `${angleDeg}deg` },
-        { skewX: `${skewDeg}deg` },
         { scale: breatheScale },
       ],
       // Opacidad propia × general (maestra) × fundido cíclico × aparición.
@@ -3238,7 +3170,6 @@ export default function GeometrixScreen() {
           fadeLoopAmount:  maybe(0.25, 0.1, 0.50),
           bloom:           maybe(0.25, 0.1, 0.55),
           halo:            maybe(0.30, 0.1, 0.65),
-          onda:            maybe(0.25, 0.1, 0.50),
           ripple:          maybe(0.25, 0.1, 0.50),
           expansionAmount: maybe(0.25, 0.1, 0.55),
           kaleidoscope:    rnd() < 0.30,
