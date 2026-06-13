@@ -592,9 +592,6 @@ export default function HomeScreen2() {
         </View>
         {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
-          <Text style={[styles.sectionTitle, { marginHorizontal: 16, marginBottom: 12 }]}>
-            Reflexión de la semana
-          </Text>
           <QuoteOfTheDay />
         </View>
 

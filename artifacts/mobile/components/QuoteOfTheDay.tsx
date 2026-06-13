@@ -29,6 +29,9 @@ export default function QuoteOfTheDay() {
 
   return (
     <View style={styles.card}>
+      {/* Título dentro de la card */}
+      <Text style={styles.cardTitle}>Reflexión de la semana</Text>
+
       {/* Frase */}
       <Text
         style={styles.quoteText}
@@ -110,6 +113,13 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     backgroundColor: CARD_BG,
     borderRadius: 16,
+  },
+  cardTitle: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.55)",
+    textAlign: "center",
+    marginBottom: 30,
   },
   quoteText: {
     fontSize: 17,
