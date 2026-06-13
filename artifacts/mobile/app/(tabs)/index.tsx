@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -552,7 +552,13 @@ export default function HomeScreen2() {
                         onPress={(e) => { e.stopPropagation(); playSession(filteredFeatured); }}
                         style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
                       >
-                        <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
+                        <LinearGradient
+                          colors={["#D6AD5F", "#B47344"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={StyleSheet.absoluteFill}
+                        />
+                        <Ionicons name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
                       </Pressable>
                     </View>
                   </View>
@@ -1024,11 +1030,9 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#27070E",
-    borderWidth: 1,
-    borderColor: "#3D0E16",
     transform: [{ translateY: -10 }],
   },
 
