@@ -31,6 +31,7 @@ import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
+import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
@@ -101,7 +102,7 @@ function BlinkingCursor({ color }: { color: string }) {
 }
 
 
-export default function HomeScreen() {
+export default function HomeScreen2() {
   const colors = useColors();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
@@ -112,9 +113,25 @@ export default function HomeScreen() {
   const { presets, loadPreset, openSheet } = useMixer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
+  const [moodSheetVisible, setMoodSheetVisible] = useState(false);
+
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
   }
+
+  const cursorOpacity = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    const blink = Animated.loop(
+      Animated.sequence([
+        Animated.delay(500),
+        Animated.timing(cursorOpacity, { toValue: 0, duration: 80, useNativeDriver: true }),
+        Animated.delay(500),
+        Animated.timing(cursorOpacity, { toValue: 1, duration: 80, useNativeDriver: true }),
+      ])
+    );
+    blink.start();
+    return () => blink.stop();
+  }, [cursorOpacity]);
 
   const featured = getFeaturedSessions();
   const featuredSession = React.useMemo(() => {
@@ -425,9 +442,30 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* ── INTENCIÓN ── */}
+        <Pressable
+          onPress={handleIntentionPress}
+          style={({ pressed }) => [styles.intencionWrap, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Text style={styles.intencionSuper}>Hoy voy a…</Text>
+          <View style={styles.intencionRow}>
+            <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
+            {currentIntencion ? (
+              <Text style={styles.intencionText} numberOfLines={3}>
+                {currentIntencion}
+              </Text>
+            ) : (
+              <Text style={styles.intencionPlaceholder}>
+                Establece tu intención aquí
+              </Text>
+            )}
+          </View>
+        </Pressable>
+
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
         <View style={styles.header}>
+
           <View style={styles.coleccionGrid}>
               {filteredPlaylists.map((pl) => (
                 <Pressable
@@ -449,7 +487,72 @@ export default function HomeScreen() {
         </View>
         )}
 
-        {/* ── 3. VIDEOS DESTACADOS ── */}
+        {/* ── ESTADO DE ÁNIMO ── */}
+        <Pressable
+          onPress={() => setMoodSheetVisible(true)}
+          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
+        >
+          <Text style={styles.moodEmoji}>🙂</Text>
+          <Text style={styles.moodRowLabel}>¿Cómo te sientes?</Text>
+          <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
+        </Pressable>
+
+        {/* ── SESIÓN DESTACADA ── */}
+        {filteredFeatured && (
+          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>
+              Destacada de hoy
+            </Text>
+            <Pressable
+              style={styles.heroCard}
+              onPress={() => router.push(`/session/${filteredFeatured.id}` as never)}
+            >
+              <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
+              {(() => {
+                const voiceLabel = getVoiceLabel(filteredFeatured);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const guideId = (filteredFeatured as any).guideId as string | undefined;
+                const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
+                return (
+                  <View style={styles.heroFrosted}>
+                    <View style={styles.heroMetaRow}>
+                      <Feather name="star" size={11} color={colors.primary} />
+                      <Text style={[styles.heroMetaText, { color: colors.primary }]}>
+                        {" "}4.7{voiceLabel ? ` · ${voiceLabel}` : ""} · {filteredFeatured.durationLabel}
+                      </Text>
+                    </View>
+                    <View style={styles.heroBottom}>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={[styles.heroTitle, { color: "#e4e6f5" }]} numberOfLines={2}>
+                          {filteredFeatured.title}
+                        </Text>
+                        <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
+                          {heroAuthor}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={(e) => { e.stopPropagation(); playSession(filteredFeatured); }}
+                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
+                      >
+                        <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
+                      </Pressable>
+                    </View>
+                  </View>
+                );
+              })()}
+            </Pressable>
+          </View>
+        )}
+
+        {/* ── RECIENTES ── */}
+        <SessionCarousel
+          title="Recientes"
+          sessions={filteredRecent}
+          isPremium={isPremium}
+          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+        />
+
+        {/* ── VIDEOS DESTACADOS ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle]}>
@@ -487,27 +590,7 @@ export default function HomeScreen() {
             </ScrollView>
           )}
         </View>
-
-        {/* ── 4-9. CARRUSELES PERSONALIZADOS ── */}
-        <SessionCarousel
-          title="Sesiones recomendadas"
-          sessions={filteredRecommended}
-          isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
-        />
-        <SessionCarousel
-          title="Recientes"
-          sessions={filteredRecent}
-          isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
-        />
-        <SessionCarousel
-          title="Escuchadas recientemente"
-          sessions={filteredListened}
-          isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
-        />
-        {/* ── 5. FRASE DEL DÍA ── */}
+        {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
           <QuoteOfTheDay />
         </View>
@@ -518,27 +601,6 @@ export default function HomeScreen() {
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
-        {!activeFilter && (
-          <View style={{ marginBottom: SECTION_GAP }}>
-            <CoverCarousel
-              title="Tus playlist"
-              items={playlistItems}
-              onPress={(id) => router.push(`/playlist/${id}` as never)}
-            />
-          </View>
-        )}
-        {!activeFilter && (
-          <View style={{ marginBottom: SECTION_GAP }}>
-            <CoverCarousel
-              title="Tus mezclas"
-              items={mezclaItems}
-              onPress={(id) => {
-                const preset = presets.find((p) => p.id === id);
-                if (preset) { loadPreset(preset); openSheet(); }
-              }}
-            />
-          </View>
-        )}
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
@@ -552,6 +614,11 @@ export default function HomeScreen() {
         </View>
 
       </ScrollView>
+
+      <MoodPickerSheet
+        visible={moodSheetVisible}
+        onClose={() => setMoodSheetVisible(false)}
+      />
 
       <SessionActionsSheet
         session={actionsSession}
@@ -571,6 +638,77 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   scroll: { flex: 1 },
+
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(190,150,80,0.18)",
+    marginHorizontal: 20,
+    marginVertical: 8,
+  },
+
+  // Estado de ánimo
+  moodRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 16,
+    marginBottom: SECTION_GAP,
+    backgroundColor: "rgba(190,150,80,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.18)",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 10,
+  },
+  moodEmoji: {
+    fontSize: 22,
+  },
+  moodRowLabel: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#EDE1D3",
+  },
+
+  // Intención
+  intencionWrap: {
+    alignItems: "center",
+    paddingHorizontal: GRID_PAD,
+    paddingVertical: 20,
+    marginBottom: SECTION_GAP + 15,
+  },
+  intencionSuper: {
+    fontSize: 13,
+    color: "rgba(237,225,211,0.45)",
+    marginBottom: 8,
+    letterSpacing: 0.3,
+  },
+  intencionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  intencionCursor: {
+    width: 2,
+    height: 26,
+    borderRadius: 1,
+    backgroundColor: "#BE9650",
+    marginRight: 6,
+  },
+  intencionText: {
+    fontSize: 22,
+    color: "#EDE1D3",
+    fontWeight: "300",
+    textAlign: "center",
+    flexShrink: 1,
+  },
+  intencionPlaceholder: {
+    fontSize: 22,
+    color: "rgba(237,225,211,0.35)",
+    fontWeight: "300",
+    textAlign: "center",
+    flexShrink: 1,
+  },
 
   // Header
   header: {
