@@ -1002,12 +1002,15 @@ export default function BibliotecaScreen() {
       >
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         {listenedRecently.length > 0 && (
-          <SessionCarousel
-            title="Escuchadas recientemente"
-            sessions={listenedRecently}
-            isPremium={isPremium}
-            onPress={(s) => { playSession(s); router.push("/player" as never); }}
-          />
+          <>
+            <SessionCarousel
+              title="Escuchadas recientemente"
+              sessions={listenedRecently}
+              isPremium={isPremium}
+              onPress={(s) => { playSession(s); router.push("/player" as never); }}
+            />
+            <View style={styles.divider} />
+          </>
         )}
 
         <AnimatedTabContent
@@ -1122,6 +1125,12 @@ const styles = StyleSheet.create({
 
   // ── Scroll content ──────────────────────────────────────────────────────────
   scroll: { flex: 1 },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(190,150,80,0.18)",
+    marginHorizontal: 20,
+    marginVertical: 8,
+  },
 
   // ── Lista (fila) ────────────────────────────────────────────────────────────
   row: {
