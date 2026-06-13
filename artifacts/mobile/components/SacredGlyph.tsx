@@ -888,7 +888,7 @@ function SacredGlyphImpl({
   const svgXml = React.useMemo(() => {
     const raw = GLYPH_STRINGS[id as string] ?? "";
     const ec = gradient ? `url(#${gradId})` : color;
-    const content = raw ? raw.replace(/GLYPH_STROKE/g, ec) : "<g/>";
+    const content = raw ? raw.replace(/GLYPH_STROKE/g, ec) : "<g></g>";
     const gradDefs = gradient
       ? `<linearGradient id="${gradId}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${gradient[0]}"/><stop offset="100%" stop-color="${gradient[1]}"/></linearGradient>`
       : "";
