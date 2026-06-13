@@ -40,21 +40,20 @@ export default function QuoteOfTheDay() {
         "{quote.text}"
       </Text>
 
-      {/* Leer más / Leer menos — encima del autor */}
+      {/* Autor centrado */}
+      <Text style={styles.author}>— {quote.author}</Text>
+
+      {/* Leer más / Leer menos — debajo del autor */}
       {(isTruncated || expanded) && (
         <Pressable
           onPress={() => setExpanded((v) => !v)}
-          hitSlop={8}
-          style={styles.readMoreBtn}
+          style={({ pressed }) => [styles.readMoreBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
           <Text style={styles.readMoreText}>
             {expanded ? "Leer menos" : "Leer más"}
           </Text>
         </Pressable>
       )}
-
-      {/* Autor centrado */}
-      <Text style={styles.author}>— {quote.author}</Text>
 
       {/* Footer: ··· izquierda */}
       <View style={styles.footer}>
@@ -120,7 +119,13 @@ const styles = StyleSheet.create({
   },
   readMoreBtn: {
     alignSelf: "center",
-    marginBottom: 10,
+    marginBottom: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: "rgba(190,150,80,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.35)",
   },
   readMoreText: {
     fontSize: 13,
