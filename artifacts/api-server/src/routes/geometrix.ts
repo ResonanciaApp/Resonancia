@@ -121,6 +121,7 @@ function serializeSetting(
     strokeMode: (row?.strokeMode as "thin" | "natural") ?? "natural",
     visible: row?.visible ?? true,
     description: row?.description ?? null,
+    color: row?.color ?? null,
     updatedAt: row?.updatedAt?.toISOString() ?? new Date().toISOString(),
   };
 }
@@ -176,6 +177,7 @@ router.put("/admin/geometrix", requireAuth, requireRole("admin"), async (req, re
           strokeMode: item.strokeMode,
           visible: item.visible,
           description: item.description ?? null,
+          color: item.color ?? null,
           updatedAt: new Date(),
         })
         .onConflictDoUpdate({
@@ -187,6 +189,7 @@ router.put("/admin/geometrix", requireAuth, requireRole("admin"), async (req, re
             strokeMode: item.strokeMode,
             visible: item.visible,
             description: item.description ?? null,
+            color: item.color ?? null,
             updatedAt: new Date(),
           },
         });

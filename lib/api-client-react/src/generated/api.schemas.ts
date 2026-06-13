@@ -1191,6 +1191,7 @@ export interface GeometrixSettingItem {
   strokeMode: GeometrixSettingItemStrokeMode;
   visible: boolean;
   description?: string | null;
+  color?: string | null;
   updatedAt: string;
 }
 
@@ -1218,6 +1219,7 @@ export interface GeometrixSettingUpdate {
   strokeMode: GeometrixSettingUpdateStrokeMode;
   visible: boolean;
   description?: string | null;
+  color?: string | null;
 }
 
 export type GetMessagesParams = {

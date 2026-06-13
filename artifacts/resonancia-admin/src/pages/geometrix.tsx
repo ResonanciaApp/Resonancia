@@ -34,8 +34,15 @@ interface GeometryRow {
   strokeMode: StrokeMode;
   visible: boolean;
   description: string | null;
+  color: string | null;
   updatedAt: string;
 }
+
+const COLOR_PALETTE = [
+  "#BE9650", "#8B9FC9", "#C4887A", "#7FB5A0",
+  "#B8A5C8", "#C4A882", "#87B5C4", "#A89878",
+  "#C4B87A", "#8BA87F", "#C47A8A", "#7A9AC4",
+];
 
 const CATEGORY_LABELS: Record<GeometryCategory, string> = {
   circulares: "Circulares",
@@ -65,6 +72,7 @@ async function saveGeometries(rows: GeometryRow[]): Promise<GeometryRow[]> {
     strokeMode: r.strokeMode,
     visible: r.visible,
     description: r.description?.trim() || null,
+    color: r.color || null,
   }));
   const res = await fetch(`${API_BASE}/admin/geometrix`, {
     method: "PUT",
@@ -185,6 +193,57 @@ function GeometryRowItem({
               </Select>
             </div>
           )}
+        </div>
+
+        {/* Color */}
+        <div className="lg:col-span-2 space-y-1.5">
+          <div className="flex items-center gap-2">
+            <Label className="text-xs text-muted-foreground">Color del trazo</Label>
+            {row.color && (
+              <button
+                type="button"
+                onClick={() => onChange({ color: null })}
+                className="text-[10px] text-muted-foreground hover:text-foreground underline"
+              >
+                restaurar default
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-1.5 items-center">
+            {COLOR_PALETTE.map((c) => (
+              <button
+                key={c}
+                type="button"
+                title={c}
+                onClick={() => onChange({ color: row.color === c ? null : c })}
+                className="w-5 h-5 rounded-full border-2 transition-all"
+                style={{
+                  background: c,
+                  borderColor: row.color === c ? "#fff" : "transparent",
+                  boxShadow: row.color === c ? `0 0 0 1px ${c}` : "none",
+                  outline: "none",
+                }}
+              />
+            ))}
+            {/* Custom hex */}
+            <div className="flex items-center gap-1 ml-1">
+              <div
+                className="w-5 h-5 rounded-full border border-dashed border-muted-foreground/40 overflow-hidden shrink-0"
+                style={{ background: row.color && !COLOR_PALETTE.includes(row.color) ? row.color : "transparent" }}
+              />
+              <input
+                type="text"
+                maxLength={7}
+                placeholder="#hex"
+                value={row.color && !COLOR_PALETTE.includes(row.color) ? row.color : ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (/^#[0-9a-fA-F]{0,6}$/.test(v)) onChange({ color: v.length === 7 ? v : null });
+                }}
+                className="h-6 w-16 px-1.5 text-[11px] font-mono rounded border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Descripción */}

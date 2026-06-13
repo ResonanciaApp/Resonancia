@@ -3653,6 +3653,9 @@ components:
         description:
           type: string
           nullable: true
+        color:
+          type: string
+          nullable: true
         updatedAt:
           type: string
           format: date-time
@@ -3676,5 +3679,8 @@ components:
         visible:
           type: boolean
         description:
+          type: string
+          nullable: true
+        color:
           type: string
           nullable: true

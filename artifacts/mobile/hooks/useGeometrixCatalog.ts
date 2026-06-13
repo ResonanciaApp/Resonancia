@@ -23,6 +23,8 @@ export interface GeometryMetaExtended extends GeometryMeta {
   strokeMode: "thin" | "natural";
   /** Descripción para la sección Aprende (null si no hay). */
   description: string | null;
+  /** Color de trazo override (hex). null = usar el color del PALETTE de la app. */
+  color: string | null;
 }
 
 export function useGeometrixCatalog(): {
@@ -45,6 +47,7 @@ export function useGeometrixCatalog(): {
         geometryType: "wireframe" as const,
         strokeMode: "natural" as const,
         description: null,
+        color: null,
       }));
     }
 
@@ -66,6 +69,7 @@ export function useGeometrixCatalog(): {
         geometryType: (s?.geometryType as "wireframe" | "mosaic") ?? "wireframe",
         strokeMode: (s?.strokeMode as "thin" | "natural") ?? "natural",
         description: s?.description ?? null,
+        color: s?.color ?? null,
       });
     }
 

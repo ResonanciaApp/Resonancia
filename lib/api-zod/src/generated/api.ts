@@ -2034,6 +2034,7 @@ export const GetAdminGeometrixResponse = zod.object({
   "strokeMode": zod.enum(['thin', 'natural']),
   "visible": zod.boolean(),
   "description": zod.string().nullish(),
+  "color": zod.string().nullish(),
   "updatedAt": zod.coerce.date()
 }))
 })
@@ -2049,7 +2050,8 @@ export const UpdateAdminGeometrixBodyItem = zod.object({
   "geometryType": zod.enum(['wireframe', 'mosaic']),
   "strokeMode": zod.enum(['thin', 'natural']),
   "visible": zod.boolean(),
-  "description": zod.string().nullish()
+  "description": zod.string().nullish(),
+  "color": zod.string().nullish()
 })
 export const UpdateAdminGeometrixBody = zod.array(UpdateAdminGeometrixBodyItem)
 
@@ -2064,6 +2066,7 @@ export const UpdateAdminGeometrixResponse = zod.object({
   "strokeMode": zod.enum(['thin', 'natural']),
   "visible": zod.boolean(),
   "description": zod.string().nullish(),
+  "color": zod.string().nullish(),
   "updatedAt": zod.coerce.date()
 }))
 })
@@ -2083,6 +2086,7 @@ export const GetGeometrixSettingsResponse = zod.object({
   "strokeMode": zod.enum(['thin', 'natural']),
   "visible": zod.boolean(),
   "description": zod.string().nullish(),
+  "color": zod.string().nullish(),
   "updatedAt": zod.coerce.date()
 }))
 })

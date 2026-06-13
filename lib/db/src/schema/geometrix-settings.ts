@@ -10,6 +10,7 @@ export const geometrixSettingsTable = pgTable("geometrix_settings", {
   strokeMode: text("stroke_mode").notNull().default("natural"),
   visible: boolean("visible").notNull().default(true),
   description: text("description"),
+  color: text("color"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -28,6 +29,7 @@ export const BulkUpdateGeometrixSchema = z.array(
     strokeMode: z.enum(["thin", "natural"]),
     visible: z.boolean(),
     description: z.string().max(1000).nullable().optional(),
+    color: z.string().max(20).nullable().optional(),
   }),
 );
 export type BulkUpdateGeometrix = z.infer<typeof BulkUpdateGeometrixSchema>;
