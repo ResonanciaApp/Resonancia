@@ -133,7 +133,7 @@ export default function ExploreScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: "#080B1A" }]}>
+    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
