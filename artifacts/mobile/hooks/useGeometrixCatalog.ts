@@ -64,6 +64,7 @@ export function useGeometrixCatalog(): {
       circulares: [],
       rectilineas: [],
       combinaciones: [],
+      chakras: [],
     };
 
     for (const g of GEOMETRIES) {
