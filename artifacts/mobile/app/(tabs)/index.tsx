@@ -359,13 +359,16 @@ export default function HomeScreen() {
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
-                    {sel && (
+                    {sel && tab.id !== "musica" && (
                       <LinearGradient
                         colors={["#D4AF37", "#E9C46A"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={StyleSheet.absoluteFill}
                       />
+                    )}
+                    {sel && tab.id === "musica" && (
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#406EAC" }]} />
                     )}
                     <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
                       {tab.label}
@@ -390,12 +393,7 @@ export default function HomeScreen() {
                           ]}
                         >
                           {sesAncestral && (
-                            <LinearGradient
-                              colors={["#D4AF37", "#E9C46A"]}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 1, y: 0 }}
-                              style={StyleSheet.absoluteFill}
-                            />
+                            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#47633E" }]} />
                           )}
                           <Text style={styles.headerTabText}>Ancestral</Text>
                         </Pressable>
@@ -411,12 +409,7 @@ export default function HomeScreen() {
                           ]}
                         >
                           {sesMeditacion && (
-                            <LinearGradient
-                              colors={["#D4AF37", "#E9C46A"]}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 1, y: 0 }}
-                              style={StyleSheet.absoluteFill}
-                            />
+                            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#6B4C7C" }]} />
                           )}
                           <Text style={styles.headerTabText}>Meditación</Text>
                         </Pressable>
