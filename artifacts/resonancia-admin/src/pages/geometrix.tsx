@@ -144,7 +144,7 @@ function GeometryRowItem({
 
   return (
     <div
-      className={`flex gap-3 items-start p-3 rounded-lg border transition-colors ${
+      className={`flex gap-3 items-center p-3 rounded-lg border transition-colors ${
         row.visible
           ? "border-border bg-card hover:bg-secondary/30"
           : "border-border/40 bg-muted/20 opacity-60"
