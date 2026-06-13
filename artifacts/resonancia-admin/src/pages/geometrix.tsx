@@ -18,8 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const BASE_URL = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
-const API_BASE = `${BASE_URL}/api`;
+const API_BASE = "/api";
 
 type GeometryCategory = "circulares" | "rectilineas" | "combinaciones";
 type GeometryType = "wireframe" | "mosaic";
