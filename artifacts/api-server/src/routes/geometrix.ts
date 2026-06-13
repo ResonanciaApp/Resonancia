@@ -19,7 +19,7 @@ const router: IRouter = Router();
 const GEOMETRY_DEFAULTS: {
   id: string;
   name: string;
-  category: "circulares" | "rectilineas" | "combinaciones";
+  category: "circulares" | "rectilineas" | "combinaciones" | "chakras";
   geometryType: "wireframe" | "mosaic";
 }[] = [
   // ── Circulares ──────────────────────────────────────────────────────────────
@@ -105,6 +105,14 @@ const GEOMETRY_DEFAULTS: {
   { id: "k-asset-23",           name: "Combinación A23",            category: "combinaciones", geometryType: "mosaic" },
   { id: "k-asset-25",           name: "Combinación A25",            category: "combinaciones", geometryType: "mosaic" },
   { id: "k-asset-28",           name: "Combinación A28",            category: "combinaciones", geometryType: "mosaic" },
+  // ── 7 Chakras ────────────────────────────────────────────────────────────────
+  { id: "chakra-1", name: "Muladhara",    category: "chakras", geometryType: "mosaic" },
+  { id: "chakra-2", name: "Svadhisthana", category: "chakras", geometryType: "mosaic" },
+  { id: "chakra-3", name: "Manipura",     category: "chakras", geometryType: "mosaic" },
+  { id: "chakra-4", name: "Anahata",      category: "chakras", geometryType: "mosaic" },
+  { id: "chakra-5", name: "Vishuddha",    category: "chakras", geometryType: "mosaic" },
+  { id: "chakra-6", name: "Ajna",         category: "chakras", geometryType: "mosaic" },
+  { id: "chakra-7", name: "Sahasrara",    category: "chakras", geometryType: "mosaic" },
 ];
 
 function serializeSetting(
