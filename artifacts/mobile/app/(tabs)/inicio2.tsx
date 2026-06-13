@@ -504,7 +504,7 @@ export default function HomeScreen2() {
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>
-              Sesión destacada
+              Destacada de hoy
             </Text>
             <Pressable
               style={styles.heroCard}
