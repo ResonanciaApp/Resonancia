@@ -368,7 +368,7 @@ export default function HomeScreen() {
                       />
                     )}
                     {sel && tab.id === "musica" && (
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#282b9b" }]} />
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#3a6d70" }]} />
                     )}
                     <Text style={[styles.headerTabText, sel && tab.id !== "musica" && styles.headerTabTextActive]}>
                       {tab.label}
@@ -409,7 +409,7 @@ export default function HomeScreen() {
                           ]}
                         >
                           {sesMeditacion && (
-                            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#6B4C7C" }]} />
+                            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#6c4486" }]} />
                           )}
                           <Text style={styles.headerTabText}>Meditación</Text>
                         </Pressable>
