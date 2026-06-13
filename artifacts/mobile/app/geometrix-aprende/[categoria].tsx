@@ -119,7 +119,7 @@ export default function GeometrixAprendeCategoriaScreen() {
       {/* Category hero */}
       <View style={[styles.hero, { backgroundColor: colors.primary + "0A" }]}>
         <MiniGlyph id={catId === "circulares" ? "flor-vida" : catId === "rectilineas" ? "hexaedro" : "espiral"} color={colors.primary} />
-        <Text style={[styles.heroDesc, { color: "#b9b1ca" }]}>{meta?.desc}</Text>
+        <Text style={[styles.heroDesc, { color: "#a79fb8" }]}>{meta?.desc}</Text>
       </View>
 
       {/* Divider */}
@@ -157,7 +157,7 @@ export default function GeometrixAprendeCategoriaScreen() {
                     <Text style={[styles.tagText, { color: colors.primary }]}>{learn.tag}</Text>
                   </View>
                 </View>
-                <Text style={[styles.itemSummary, { color: "#b9b1ca" }]} numberOfLines={2}>{learn.summary}</Text>
+                <Text style={[styles.itemSummary, { color: "#a79fb8" }]} numberOfLines={2}>{learn.summary}</Text>
               </View>
 
               <Feather name="chevron-right" size={14} color={colors.mutedForeground} />

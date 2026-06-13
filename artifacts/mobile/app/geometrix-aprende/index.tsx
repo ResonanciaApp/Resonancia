@@ -89,7 +89,7 @@ export default function GeometrixAprendeScreen() {
       </View>
 
       {/* Intro */}
-      <Text style={[styles.intro, { color: "#b9b1ca" }]}>
+      <Text style={[styles.intro, { color: "#a79fb8" }]}>
         Descubre el significado y origen de cada forma sagrada. Elige una categoría para comenzar.
       </Text>
 
@@ -129,7 +129,7 @@ export default function GeometrixAprendeScreen() {
                     <Text style={[styles.badgeText, { color: colors.primary }]}>{meta.count}</Text>
                   </View>
                 </View>
-                <Text style={[styles.cardDesc, { color: "#b9b1ca" }]}>{meta.desc}</Text>
+                <Text style={[styles.cardDesc, { color: "#a79fb8" }]}>{meta.desc}</Text>
               </View>
 
               {/* Chevron */}
@@ -145,7 +145,7 @@ export default function GeometrixAprendeScreen() {
           </View>
           <View>
             <Text style={[styles.csTitle, { color: colors.foreground + "55" }]}>Más categorías próximamente</Text>
-            <Text style={[styles.csDesc, { color: "#b9b1ca80" }]}>Mandalas, Espirales, Fractales…</Text>
+            <Text style={[styles.csDesc, { color: "#a79fb880" }]}>Mandalas, Espirales, Fractales…</Text>
           </View>
         </View>
       </ScrollView>
