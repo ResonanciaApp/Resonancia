@@ -77,7 +77,7 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = 150;
 
 const SECTION_GAP = 33;
-const BG_GRADIENT = ["#571111", "#2D0911", "#1F0712"] as const;
+const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
 const ND = Platform.OS !== "web";
 
