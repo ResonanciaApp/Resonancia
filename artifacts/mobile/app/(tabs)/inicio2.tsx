@@ -31,6 +31,7 @@ import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { SacredBackground } from "@/components/SacredBackground";
+import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
@@ -111,6 +112,8 @@ export default function HomeScreen2() {
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
+
+  const [moodSheetVisible, setMoodSheetVisible] = useState(false);
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
@@ -459,6 +462,16 @@ export default function HomeScreen2() {
           </View>
         </Pressable>
 
+        {/* ── ESTADO DE ÁNIMO ── */}
+        <Pressable
+          onPress={() => setMoodSheetVisible(true)}
+          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
+        >
+          <Text style={styles.moodEmoji}>🙂</Text>
+          <Text style={styles.moodRowLabel}>¿Cómo te sientes?</Text>
+          <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
+        </Pressable>
+
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
         <View style={styles.header}>
@@ -588,6 +601,11 @@ export default function HomeScreen2() {
 
       </ScrollView>
 
+      <MoodPickerSheet
+        visible={moodSheetVisible}
+        onClose={() => setMoodSheetVisible(false)}
+      />
+
       <SessionActionsSheet
         session={actionsSession}
         visible={actionsSession !== null}
@@ -606,6 +624,30 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   scroll: { flex: 1 },
+
+  // Estado de ánimo
+  moodRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 16,
+    marginBottom: SECTION_GAP,
+    backgroundColor: "rgba(190,150,80,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.18)",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 10,
+  },
+  moodEmoji: {
+    fontSize: 22,
+  },
+  moodRowLabel: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#EDE1D3",
+  },
 
   // Intención
   intencionWrap: {
