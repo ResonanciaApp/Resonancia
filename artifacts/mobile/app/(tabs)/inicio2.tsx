@@ -462,6 +462,9 @@ export default function HomeScreen2() {
           </View>
         </Pressable>
 
+        {/* ── DIVISOR ── */}
+        <View style={styles.divider} />
+
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
         <View style={styles.header}>
@@ -624,6 +627,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   scroll: { flex: 1 },
+
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(190,150,80,0.18)",
+    marginHorizontal: 20,
+    marginVertical: 8,
+  },
 
   // Estado de ánimo
   moodRow: {
