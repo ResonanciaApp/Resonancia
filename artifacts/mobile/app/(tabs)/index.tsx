@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 32,
     overflow: "hidden",
-    backgroundColor: "rgba(74,12,12,0.08)",
+    backgroundColor: "rgba(27,6,15,0.30)",
     alignItems: "center",
     justifyContent: "center",
   },
