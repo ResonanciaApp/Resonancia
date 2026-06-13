@@ -693,6 +693,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
     paddingVertical: 20,
+    marginTop: 7,
     marginBottom: SECTION_GAP + 15,
   },
   intencionSuper: {
