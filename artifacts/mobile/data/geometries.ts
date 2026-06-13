@@ -26,9 +26,6 @@ export type GeometryId =
   | "espiral-fibonacci"
   | "roseta-ocho"
   | "torus-infinito"
-  | "c-1"  | "c-2"  | "c-3"  | "c-4"  | "c-5"  | "c-6"  | "c-7"  | "c-8"  | "c-9"
-  | "c-10" | "c-11" | "c-12" | "c-13" | "c-14" | "c-15" | "c-16" | "c-17" | "c-18"
-  | "c-19" | "c-20" | "c-21" | "c-22"
   | "c-asset-3" | "c-asset-5" | "c-asset-10" | "c-asset-11" | "c-asset-12" | "c-asset-24"
   // ── Rectilíneas (31) ──────────────────────────────────────────
   | "merkaba"
@@ -124,28 +121,6 @@ const GEOMETRY_DEFS: { id: GeometryId; name: string; category: GeometryCategory 
   { id: "espiral-fibonacci", name: "Espiral de Fibonacci",       category: "circulares" },
   { id: "roseta-ocho",       name: "Roseta de Ocho Pétalos",     category: "circulares" },
   { id: "torus-infinito",    name: "Torus Infinito",             category: "circulares" },
-  { id: "c-1",  name: "Circular 1",  category: "circulares" },
-  { id: "c-2",  name: "Circular 2",  category: "circulares" },
-  { id: "c-3",  name: "Circular 3",  category: "circulares" },
-  { id: "c-4",  name: "Circular 4",  category: "circulares" },
-  { id: "c-5",  name: "Circular 5",  category: "circulares" },
-  { id: "c-6",  name: "Circular 6",  category: "circulares" },
-  { id: "c-7",  name: "Circular 7",  category: "circulares" },
-  { id: "c-8",  name: "Circular 8",  category: "circulares" },
-  { id: "c-9",  name: "Circular 9",  category: "circulares" },
-  { id: "c-10", name: "Circular 10", category: "circulares" },
-  { id: "c-11", name: "Circular 11", category: "circulares" },
-  { id: "c-12", name: "Circular 12", category: "circulares" },
-  { id: "c-13", name: "Circular 13", category: "circulares" },
-  { id: "c-14", name: "Circular 14", category: "circulares" },
-  { id: "c-15", name: "Circular 15", category: "circulares" },
-  { id: "c-16", name: "Circular 16", category: "circulares" },
-  { id: "c-17", name: "Circular 17", category: "circulares" },
-  { id: "c-18", name: "Circular 18", category: "circulares" },
-  { id: "c-19", name: "Circular 19", category: "circulares" },
-  { id: "c-20", name: "Circular 20", category: "circulares" },
-  { id: "c-21", name: "Circular 21", category: "circulares" },
-  { id: "c-22", name: "Circular 22", category: "circulares" },
   { id: "c-asset-3",  name: "Circular A3",  category: "circulares" },
   { id: "c-asset-5",  name: "Circular A5",  category: "circulares" },
   { id: "c-asset-10", name: "Circular A10", category: "circulares" },
