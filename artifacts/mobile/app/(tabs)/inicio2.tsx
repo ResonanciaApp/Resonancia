@@ -462,16 +462,6 @@ export default function HomeScreen2() {
           </View>
         </Pressable>
 
-        {/* ── ESTADO DE ÁNIMO ── */}
-        <Pressable
-          onPress={() => setMoodSheetVisible(true)}
-          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
-        >
-          <Text style={styles.moodEmoji}>🙂</Text>
-          <Text style={styles.moodRowLabel}>¿Cómo te sientes?</Text>
-          <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
-        </Pressable>
-
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
         <View style={styles.header}>
@@ -496,6 +486,16 @@ export default function HomeScreen2() {
 
         </View>
         )}
+
+        {/* ── ESTADO DE ÁNIMO ── */}
+        <Pressable
+          onPress={() => setMoodSheetVisible(true)}
+          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
+        >
+          <Text style={styles.moodEmoji}>🙂</Text>
+          <Text style={styles.moodRowLabel}>¿Cómo te sientes?</Text>
+          <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
+        </Pressable>
 
         {/* ── 3. VIDEOS DESTACADOS ── */}
         <View style={styles.section}>
