@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@clerk/react";
 import { toast } from "sonner";
 import { GripVertical, ChevronUp, ChevronDown, Eye, EyeOff, Save, RotateCcw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,14 +57,20 @@ const CATEGORY_COUNT: Record<GeometryCategory, number> = {
   combinaciones: 25,
 };
 
-async function fetchGeometries(): Promise<GeometryRow[]> {
-  const res = await fetch(`${API_BASE}/admin/geometrix`, { credentials: "include" });
+function authHeaders(token: string | null): Record<string, string> {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function fetchGeometries(token: string | null): Promise<GeometryRow[]> {
+  const res = await fetch(`${API_BASE}/admin/geometrix`, {
+    headers: { ...authHeaders(token) },
+  });
   if (!res.ok) throw new Error(`Error ${res.status}`);
   const data = await res.json();
   return data.geometries as GeometryRow[];
 }
 
-async function saveGeometries(rows: GeometryRow[]): Promise<GeometryRow[]> {
+async function saveGeometries(rows: GeometryRow[], token: string | null): Promise<GeometryRow[]> {
   const body = rows.map((r) => ({
     id: r.id,
     name: r.name?.trim() || null,
@@ -76,8 +83,7 @@ async function saveGeometries(rows: GeometryRow[]): Promise<GeometryRow[]> {
   }));
   const res = await fetch(`${API_BASE}/admin/geometrix`, {
     method: "PUT",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders(token) },
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Error ${res.status}`);
@@ -288,6 +294,7 @@ function GeometryRowItem({
 }
 
 export default function GeometrixPage() {
+  const { getToken } = useAuth();
   const [rows, setRows] = useState<GeometryRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -297,7 +304,8 @@ export default function GeometrixPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchGeometries();
+      const token = await getToken();
+      const data = await fetchGeometries(token);
       setRows(data);
       setDirty(false);
     } catch {
@@ -305,7 +313,7 @@ export default function GeometrixPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [getToken]);
 
   useEffect(() => {
     load();
@@ -339,7 +347,8 @@ export default function GeometrixPage() {
   async function handleSave() {
     setSaving(true);
     try {
-      const saved = await saveGeometries(rows);
+      const token = await getToken();
+      const saved = await saveGeometries(rows, token);
       setRows(saved);
       setDirty(false);
       toast.success("Configuración guardada");
