@@ -385,7 +385,7 @@ function MixContextMenu({
 const styles = StyleSheet.create({
   section: { paddingHorizontal: 20 },
   panel: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "transparent",
     borderRadius: 0,
     paddingHorizontal: 20,
     paddingVertical: 4,
