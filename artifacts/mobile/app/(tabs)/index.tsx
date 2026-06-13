@@ -362,7 +362,7 @@ export default function HomeScreen() {
                   >
                     {sel && tab.id !== "musica" && (
                       <LinearGradient
-                        colors={["#953535", "#CE8D4D"]}
+                        colors={["#CE8D4D", "#BC5F2C"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={StyleSheet.absoluteFill}
