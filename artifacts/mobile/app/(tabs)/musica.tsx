@@ -180,7 +180,7 @@ const PillTab = memo(function PillTab({
 }) {
   return (
     <Pressable onPress={onPress}>
-      <View style={[styles.pillTab, { backgroundColor: "rgba(79,17,30,0.30)" }]}>
+      <View style={[styles.pillTab, { backgroundColor: "rgba(27,6,15,0.30)" }]}>
         {sel && (
           <LinearGradient
             colors={["#D4AF37", "#E9C46A"]}
@@ -203,7 +203,7 @@ const SubTabPill = memo(function SubTabPill({
 }: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string }) {
   return (
     <Pressable onPress={onPress}>
-      <View style={[styles.subTabPill, { backgroundColor: "rgba(79,17,30,0.30)" }]}>
+      <View style={[styles.subTabPill, { backgroundColor: "rgba(27,6,15,0.30)" }]}>
         {sel && (
           <LinearGradient
             colors={["#D4AF37", "#E9C46A"]}
