@@ -80,7 +80,7 @@ export default function GeometrixAprendeDetalleScreen() {
   if (!geo) {
     return (
       <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
-        <LinearGradient colors={["#0B0714", "#030306"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+        <LinearGradient colors={["#0F0234", "#090229"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
         <Text style={{ color: colors.mutedForeground }}>Geometría no encontrada</Text>
       </View>
     );
@@ -90,7 +90,7 @@ export default function GeometrixAprendeDetalleScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
-      <LinearGradient colors={["#0B0714", "#030306"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+      <LinearGradient colors={["#0F0234", "#090229"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -102,7 +102,7 @@ export default function GeometrixAprendeDetalleScreen() {
         >
           <Feather name="arrow-left" size={18} color={colors.foreground} />
         </Pressable>
-        <Text style={[styles.headerTitle, { color: "#c0bae0" }]} numberOfLines={1}>
+        <Text style={[styles.headerTitle, { color: "#BBA8E8" }]} numberOfLines={1}>
           {geo.category === "circulares" ? "Circulares" : geo.category === "rectilineas" ? "Rectilíneas" : "Combinaciones"}
         </Text>
         <Pressable style={[styles.iconBtn, { borderColor: colors.primary + "30" }]} hitSlop={8}>
@@ -143,8 +143,8 @@ export default function GeometrixAprendeDetalleScreen() {
         {/* Attributes grid */}
         <View style={styles.attrGrid}>
           {learn.attributes.map((attr) => (
-            <View key={attr.label} style={[styles.attrCard, { backgroundColor: "rgba(255,255,255,0.03)" }]}>
-              <Text style={[styles.attrLabel, { color: "#c0bae0" }]}>{attr.label}</Text>
+            <View key={attr.label} style={[styles.attrCard, { backgroundColor: "rgba(123,100,255,0.05)" }]}>
+              <Text style={[styles.attrLabel, { color: "#BBA8E8" }]}>{attr.label}</Text>
               <Text style={[styles.attrValue, { color: colors.foreground }]}>{attr.value}</Text>
             </View>
           ))}
@@ -154,7 +154,7 @@ export default function GeometrixAprendeDetalleScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.primary }]}>✦  Sobre esta geometría</Text>
           {paragraphs.map((para, i) => (
-            <Text key={i} style={[styles.para, { color: "#c0bae0" }]}>{para}</Text>
+            <Text key={i} style={[styles.para, { color: "#BBA8E8" }]}>{para}</Text>
           ))}
         </View>
 
@@ -177,7 +177,7 @@ export default function GeometrixAprendeDetalleScreen() {
             </LinearGradient>
           </Pressable>
 
-          <Pressable style={[styles.ctaSecondary, { backgroundColor: "rgba(255,255,255,0.03)" }]} hitSlop={4}>
+          <Pressable style={[styles.ctaSecondary, { backgroundColor: "rgba(123,100,255,0.05)" }]} hitSlop={4}>
             <Feather name="download" size={18} color={colors.primary} />
           </Pressable>
         </View>

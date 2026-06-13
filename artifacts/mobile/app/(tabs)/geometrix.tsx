@@ -104,7 +104,7 @@ import { AUDIO_MAP } from "@/config/audio-map";
 import { SESSIONS, type Session } from "@/data/sessions";
 
 const colors = colorsConst.light;
-const CARD_BORDER = "rgba(242,235,213,0.04)";
+const CARD_BORDER = "rgba(123,100,255,0.08)";
 const CANVAS_ICON = "rgba(251,249,241,0.50)";
 
 // Snapshot inmutable de una composición, para el historial de "Atrás".
@@ -216,9 +216,9 @@ const TRANSFORM_KEYS: (keyof GeoSettings)[] = [
 ];
 
 // Color fijo del fondo del toggle cuando está activado (estático, no usa el color de la geometría).
-const TOGGLE_ON_COLOR = "#a1adcf";
-// Color de las guías persistentes del usuario (azul visible sobre fondos oscuros).
-const GUIDE_COLOR = "#4B9EFF";
+const TOGGLE_ON_COLOR = "#BBA8E8";
+// Color de las guías persistentes del usuario (violeta visible sobre fondos oscuros).
+const GUIDE_COLOR = "#7B64FF";
 
 // ── Interruptor sutil (on/off) ────────────────────────────────────
 function Toggle({
@@ -3852,7 +3852,7 @@ export default function GeometrixScreen() {
     borderColor: interpolateColor(
       pillCardinalSV.value,
       [0, 1],
-      [CARD_BORDER, "#1e2870"],
+      [CARD_BORDER, "#3B2080"],
     ),
   }));
 
@@ -6200,7 +6200,7 @@ export default function GeometrixScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#090D20" },
+  root: { flex: 1, backgroundColor: "#0F0234" },
   content:  { flex: 1, paddingHorizontal: 20 },
 
   // ── Landing overlay ───────────────────────────────────────────────────────
@@ -6374,8 +6374,8 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: "row", alignItems: "center" },
   titleLogo: { width: 18, height: 18, marginLeft: 5, opacity: 0.92 },
   title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3, lineHeight: 25 },
-  titleDesc: { fontSize: 12, color: "#c0bae0", marginTop: 3, letterSpacing: 0.2 },
-  subtitle: { fontSize: 13, color: "#c0bae0", marginTop: 3 },
+  titleDesc: { fontSize: 12, color: "#BBA8E8", marginTop: 3, letterSpacing: 0.2 },
+  subtitle: { fontSize: 13, color: "#BBA8E8", marginTop: 3 },
 
   // ── Botón "tema de fondo" (top-right del header) ──
   // Mismo tamaño y fondo que el botón Fuego de Inicio (40×40, borderRadius 20)
@@ -6403,7 +6403,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   themeTitle: { fontSize: 20, fontWeight: "700", color: colors.foreground },
-  themeSub: { fontSize: 13, color: "#c0bae0", marginTop: 4, marginBottom: 14 },
+  themeSub: { fontSize: 13, color: "#BBA8E8", marginTop: 4, marginBottom: 14 },
   themeSearchBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -6415,7 +6415,7 @@ const styles = StyleSheet.create({
   },
   themeSearchInput: { flex: 1, fontSize: 15, color: colors.foreground, paddingVertical: 0 },
   themeResults: { marginTop: 12, flex: 1 },
-  themeHint: { color: "#c0bae0", fontSize: 13, textAlign: "center", marginTop: 24 },
+  themeHint: { color: "#BBA8E8", fontSize: 13, textAlign: "center", marginTop: 24 },
   themeRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -6444,7 +6444,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   themeRowTitle: { fontSize: 14, fontWeight: "600", color: colors.foreground },
-  themeRowSub: { fontSize: 12, color: "#c0bae0", marginTop: 2 },
+  themeRowSub: { fontSize: 12, color: "#BBA8E8", marginTop: 2 },
   themeSelectBtn: {
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -6727,7 +6727,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     overflow: "hidden",
     borderRadius: 18,
-    backgroundColor: "#080A18",
+    backgroundColor: "#0D032E",
     borderWidth: 1,
     borderColor: "#1b1f41",
   },
@@ -6824,7 +6824,7 @@ const styles = StyleSheet.create({
   savedTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
   savedSubtitle: {
     fontSize: 13.5,
-    color: "#c0bae0",
+    color: "#BBA8E8",
     textAlign: "center",
     lineHeight: 20,
   },

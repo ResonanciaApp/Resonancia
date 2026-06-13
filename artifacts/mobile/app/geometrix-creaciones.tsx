@@ -64,7 +64,7 @@ const EXPORT_SIZE = 540;
 // Fondo premium oscuro: índigos, violetas, azulinos y púrpura (diagonal).
 // Oscurecido un 90% (se conserva el 10% del brillo) sobre el degradado original
 // ["#14102E","#1C1448","#2A1A5C","#1A1340","#0A0818"].
-const CREACIONES_BG = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const CREACIONES_BG = ["#0F0234", "#0D032E", "#090229"] as const;
 
 function formatRelative(iso: string): string {
   const then = new Date(iso).getTime();
@@ -372,7 +372,7 @@ export default function GeometrixCreacionesScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: "#0B0714" }]}>
+    <View style={[styles.root, { backgroundColor: "#090229" }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Render oculto que se captura como póster. Queda detrás del degradado
@@ -492,7 +492,7 @@ export default function GeometrixCreacionesScreen() {
               },
             ]}
           >
-            <View style={[styles.newIcon, { backgroundColor: "rgba(21,28,58,0.35)" }]}>
+            <View style={[styles.newIcon, { backgroundColor: "rgba(123,100,255,0.15)" }]}>
               <Feather name="plus" size={26} color="#FFFFFF" />
             </View>
             <Text style={[styles.newLabel, { color: "#FFFFFF" }]}>Nueva composición</Text>
@@ -585,7 +585,7 @@ export default function GeometrixCreacionesScreen() {
 
         {/* Empty state (solo la card "Nueva" cuando no hay nada guardado) */}
         {creations.length === 0 && (
-          <Text style={[styles.emptyHint, { color: "#c0bae0" }]}>
+          <Text style={[styles.emptyHint, { color: "#BBA8E8" }]}>
             Armá una composición en Geometrix y tocá "Guardar" para verla acá.
           </Text>
         )}
@@ -796,7 +796,7 @@ export default function GeometrixCreacionesScreen() {
             <Text style={[styles.modalTitle, { color: colors.foreground }]}>
               Compartir en comunidad
             </Text>
-            <Text style={{ fontSize: 13, color: "#c0bae0", lineHeight: 18 }}>
+            <Text style={{ fontSize: 13, color: "#BBA8E8", lineHeight: 18 }}>
               Tu composición aparecerá en el muro de Geometrix para que otros la vean y puedan darle me gusta.
             </Text>
             <TextInput
@@ -1005,7 +1005,7 @@ const styles = StyleSheet.create({
   },
   newLabel: { fontSize: 13, fontWeight: "600" },
 
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(74,12,12,0.08)" },
+  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
   playBtn: {
@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: "rgba(0,0,0,0.45)",
     borderWidth: 1,
-    borderColor: "rgba(61,14,22,0.40)",
+    borderColor: "rgba(123,100,255,0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1057,7 +1057,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#4A0C0C",
+    backgroundColor: "#130A3A",
     overflow: "hidden",
     paddingHorizontal: 14,
     paddingTop: 16,
@@ -1125,7 +1125,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#4A0C0C",
+    backgroundColor: "#130A3A",
   },
   exportToastText: { fontSize: 14, fontWeight: "600", color: "#F4DAD5" },
   sheetCancel: {
@@ -1145,7 +1145,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#4A0C0C",
+    backgroundColor: "#130A3A",
     overflow: "hidden",
     paddingHorizontal: 22,
     paddingTop: 22,

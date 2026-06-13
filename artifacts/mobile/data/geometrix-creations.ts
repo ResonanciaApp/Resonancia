@@ -114,10 +114,10 @@ export type GeometrixAudio = { moduleKey: string; trackId: string } | null;
 // ───────────────────────────────────────────────────────────────────────────
 
 /** Degradado por defecto del lienzo (fondo de Inicio). */
-export const HOME_GRADIENT = ["#090D20", "#080A18", "#06070F"] as const;
+export const HOME_GRADIENT = ["#0F0234", "#0D032E", "#090229"] as const;
 
 /** Degradado del header del canvas (+3% lightness sobre HOME_GRADIENT). */
-export const HEADER_GRADIENT = ["#0C122C", "#0C0F24", "#0A0C1A"] as const;
+export const HEADER_GRADIENT = ["#160A3C", "#110830", "#0D0627"] as const;
 
 /** Degradados de TRAZO (Ajustes personalizados de cada capa). */
 export const STROKE_GRADIENTS: { id: string; colors: readonly [string, string] }[] = [

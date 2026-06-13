@@ -21,7 +21,7 @@ import { GEOMETRY_CATEGORIES, type GeometryCategory } from "@/data/geometries";
 import { CATEGORY_META } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
 
-const GEO_BG = ["#090D20", "#080A18", "#06070F"] as const;
+const GEO_BG = ["#0F0234", "#0D032E", "#090229"] as const;
 
 // ── Íconos SVG por categoría ─────────────────────────────────────────────────
 function CategoryIcon({ id, color }: { id: GeometryCategory; color: string }) {
@@ -89,7 +89,7 @@ export default function GeometrixAprendeScreen() {
       </View>
 
       {/* Intro */}
-      <Text style={[styles.intro, { color: "#c0bae0" }]}>
+      <Text style={[styles.intro, { color: "#BBA8E8" }]}>
         Descubre el significado y origen de cada forma sagrada. Elige una categoría para comenzar.
       </Text>
 
@@ -108,7 +108,7 @@ export default function GeometrixAprendeScreen() {
               style={({ pressed }) => [
                 styles.card,
                 {
-                  backgroundColor: "rgba(255,255,255,0.03)",
+                  backgroundColor: "rgba(123,100,255,0.05)",
                   opacity: pressed ? 0.75 : 1,
                 },
               ]}
@@ -129,7 +129,7 @@ export default function GeometrixAprendeScreen() {
                     <Text style={[styles.badgeText, { color: colors.primary }]}>{meta.count}</Text>
                   </View>
                 </View>
-                <Text style={[styles.cardDesc, { color: "#c0bae0" }]}>{meta.desc}</Text>
+                <Text style={[styles.cardDesc, { color: "#BBA8E8" }]}>{meta.desc}</Text>
               </View>
 
               {/* Chevron */}
@@ -145,7 +145,7 @@ export default function GeometrixAprendeScreen() {
           </View>
           <View>
             <Text style={[styles.csTitle, { color: colors.foreground + "55" }]}>Más categorías próximamente</Text>
-            <Text style={[styles.csDesc, { color: "#c0bae080" }]}>Mandalas, Espirales, Fractales…</Text>
+            <Text style={[styles.csDesc, { color: "#BBA8E880" }]}>Mandalas, Espirales, Fractales…</Text>
           </View>
         </View>
       </ScrollView>

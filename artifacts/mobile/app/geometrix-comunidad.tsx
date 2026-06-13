@@ -53,7 +53,7 @@ import {
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
 
-const MURAL_BG = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const MURAL_BG = ["#0F0234", "#0D032E", "#090229"] as const;
 
 // ── Capa animable (misma lógica que PreviewGlyph en geometrix-creaciones) ──
 function GlyphLayer({
@@ -308,7 +308,7 @@ export default function GeometrixComunidadScreen() {
         {isLoading && (
           <View style={styles.centerState}>
             <ActivityIndicator color="#D4AF37" size="large" />
-            <Text style={[styles.stateText, { color: "#c0bae0" }]}>Cargando…</Text>
+            <Text style={[styles.stateText, { color: "#BBA8E8" }]}>Cargando…</Text>
           </View>
         )}
 
@@ -319,7 +319,7 @@ export default function GeometrixComunidadScreen() {
             <Text style={[styles.stateTitle, { color: colors.foreground }]}>
               Todavía no hay composiciones
             </Text>
-            <Text style={[styles.stateText, { color: "#c0bae0" }]}>
+            <Text style={[styles.stateText, { color: "#BBA8E8" }]}>
               Sé el primero en compartir una creación desde "Mis creaciones".
             </Text>
           </View>
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   stateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(74,12,12,0.08)" },
+  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
 
   // Preview llena el 100% del ancho de la card (no tiene width fijo propio)
   preview: { width: "100%", overflow: "hidden" },
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: "rgba(0,0,0,0.45)",
     borderWidth: 1,
-    borderColor: "rgba(61,14,22,0.40)",
+    borderColor: "rgba(123,100,255,0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#151c3a",
-    backgroundColor: "#4A0C0C",
+    backgroundColor: "#130A3A",
     overflow: "hidden",
     paddingHorizontal: 22,
     paddingTop: 22,

@@ -26,7 +26,7 @@ import {
 import { getGeometryLearn, CATEGORY_META } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
 
-const GEO_BG = ["#0B0714", "#030306"] as const;
+const GEO_BG = ["#0F0234", "#090229"] as const;
 
 function MiniGlyph({ id, color }: { id: string; color: string }) {
   // Flor de la Vida mini
@@ -119,7 +119,7 @@ export default function GeometrixAprendeCategoriaScreen() {
       {/* Category hero */}
       <View style={[styles.hero, { backgroundColor: colors.primary + "0A" }]}>
         <MiniGlyph id={catId === "circulares" ? "flor-vida" : catId === "rectilineas" ? "hexaedro" : "espiral"} color={colors.primary} />
-        <Text style={[styles.heroDesc, { color: "#c0bae0" }]}>{meta?.desc}</Text>
+        <Text style={[styles.heroDesc, { color: "#BBA8E8" }]}>{meta?.desc}</Text>
       </View>
 
       {/* Divider */}
@@ -138,7 +138,7 @@ export default function GeometrixAprendeCategoriaScreen() {
               style={({ pressed }) => [
                 styles.item,
                 {
-                  backgroundColor: "rgba(255,255,255,0.03)",
+                  backgroundColor: "rgba(123,100,255,0.05)",
                   opacity: pressed ? 0.75 : 1,
                 },
               ]}
@@ -157,7 +157,7 @@ export default function GeometrixAprendeCategoriaScreen() {
                     <Text style={[styles.tagText, { color: colors.primary }]}>{learn.tag}</Text>
                   </View>
                 </View>
-                <Text style={[styles.itemSummary, { color: "#c0bae0" }]} numberOfLines={2}>{learn.summary}</Text>
+                <Text style={[styles.itemSummary, { color: "#BBA8E8" }]} numberOfLines={2}>{learn.summary}</Text>
               </View>
 
               <Feather name="chevron-right" size={14} color={colors.mutedForeground} />
