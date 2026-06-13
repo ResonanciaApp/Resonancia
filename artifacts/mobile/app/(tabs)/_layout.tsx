@@ -1,4 +1,4 @@
-import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -24,9 +24,9 @@ import {
 } from "@/context/TabBarVisibilityContext";
 
 const ACTIVE_COLOR = "#FFFFFF";
-const INACTIVE_COLOR = "#8094B5";
-const PILL_BG = "rgba(107,154,181,0.18)";
-const BAR_BORDER = "#0e132f";
+const INACTIVE_COLOR = "#F4DAD5";
+const PILL_BG = "rgba(244,218,213,0.18)";
+const BAR_BORDER = "rgba(244,218,213,0.10)";
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["musica2", "musica3", "descanzo", "profile"]);
@@ -112,7 +112,6 @@ type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>["tab
 
 function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
-  const isIOS = Platform.OS === "ios";
   const isWeb = Platform.OS === "web";
   const pb = isWeb ? 8 : insets.bottom;
   const extra = Math.round(pb / 2);
@@ -137,14 +136,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {isIOS ? (
-          <>
-            <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.65)" }]} />
-          </>
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(3, 6, 29, 0.90)" }]} />
-        )}
+        <LinearGradient
+          colors={["#4A0C0C", "#27070E", "#1B060F"]}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
         <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
