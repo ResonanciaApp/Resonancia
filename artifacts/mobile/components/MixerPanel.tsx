@@ -56,7 +56,7 @@ export function MixerPanel() {
   return (
     <Pressable onPress={openSheet} style={styles.wrapper}>
       {/* Fondo */}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#212543", borderRadius: 18 }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#4B2E83", borderRadius: 18 }]} />
       <View style={styles.border} />
 
       {/* Contenido */}
