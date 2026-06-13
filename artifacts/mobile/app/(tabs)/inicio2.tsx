@@ -342,98 +342,6 @@ export default function HomeScreen2() {
               </View>
             )}
           </Pressable>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.headerTabs}
-            contentContainerStyle={styles.headerTabsContent}
-          >
-            {NAV_TABS.map((tab) => {
-              const sel = tab.id === "sesiones"
-                ? sesionesOpen || (sesAncestral || sesMeditacion)
-                : tab.cats.length === 0
-                  ? activeFilter === null
-                  : activeFilter?.join() === tab.cats.join();
-              return (
-                <React.Fragment key={tab.id}>
-                  <Pressable
-                    onPress={() => {
-                      if (tab.id === "sesiones") {
-                        const next = !sesionesOpen;
-                        setSesionesOpen(next);
-                        setSesAncestral(false);
-                        setSesMeditacion(false);
-                        setActiveFilter(next ? NAV_TABS[1].cats : null);
-                      } else {
-                        setSesionesOpen(false);
-                        setSesAncestral(false);
-                        setSesMeditacion(false);
-                        setActiveFilter(sel || tab.cats.length === 0 ? null : tab.cats);
-                      }
-                    }}
-                    style={({ pressed }) => [
-                      styles.headerTabChip,
-                      { opacity: pressed ? 0.7 : 1 },
-                    ]}
-                  >
-                    {sel && (
-                      <LinearGradient
-                        colors={["#D6AD5F", "#B47344"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={StyleSheet.absoluteFill}
-                      />
-                    )}
-                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
-                      {tab.label}
-                    </Text>
-                  </Pressable>
-
-                  {tab.id === "sesiones" && sesionesVisible && (
-                    <RAnimated.View style={[styles.sesSubSpacer, spacerAnimStyle]}>
-                      <RAnimated.View
-                        style={[styles.sesSubRow, pillAnimStyle]}
-                        pointerEvents={sesionesOpen ? "auto" : "none"}
-                      >
-                        <Pressable
-                          onPress={() => {
-                            const next = !sesAncestral;
-                            setSesAncestral(next);
-                            updateSesFilter(next, sesMeditacion);
-                          }}
-                          style={({ pressed }) => [
-                            styles.headerTabChip,
-                            { opacity: pressed ? 0.7 : 1 },
-                          ]}
-                        >
-                          {sesAncestral && (
-                            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#47633E" }]} />
-                          )}
-                          <Text style={styles.headerTabText}>Ancestral</Text>
-                        </Pressable>
-                        <Pressable
-                          onPress={() => {
-                            const next = !sesMeditacion;
-                            setSesMeditacion(next);
-                            updateSesFilter(sesAncestral, next);
-                          }}
-                          style={({ pressed }) => [
-                            styles.headerTabChip,
-                            { opacity: pressed ? 0.7 : 1 },
-                          ]}
-                        >
-                          {sesMeditacion && (
-                            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#6c4486" }]} />
-                          )}
-                          <Text style={styles.headerTabText}>Meditación</Text>
-                        </Pressable>
-                      </RAnimated.View>
-                    </RAnimated.View>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </ScrollView>
         </View>
       </View>
 
@@ -461,6 +369,100 @@ export default function HomeScreen2() {
             )}
           </View>
         </Pressable>
+
+        {/* ── FILTRO TABS ── */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.headerTabs}
+          contentContainerStyle={[styles.headerTabsContent, { marginBottom: 12 }]}
+        >
+          {NAV_TABS.map((tab) => {
+            const sel = tab.id === "sesiones"
+              ? sesionesOpen || (sesAncestral || sesMeditacion)
+              : tab.cats.length === 0
+                ? activeFilter === null
+                : activeFilter?.join() === tab.cats.join();
+            return (
+              <React.Fragment key={tab.id}>
+                <Pressable
+                  onPress={() => {
+                    if (tab.id === "sesiones") {
+                      const next = !sesionesOpen;
+                      setSesionesOpen(next);
+                      setSesAncestral(false);
+                      setSesMeditacion(false);
+                      setActiveFilter(next ? NAV_TABS[1].cats : null);
+                    } else {
+                      setSesionesOpen(false);
+                      setSesAncestral(false);
+                      setSesMeditacion(false);
+                      setActiveFilter(sel || tab.cats.length === 0 ? null : tab.cats);
+                    }
+                  }}
+                  style={({ pressed }) => [
+                    styles.headerTabChip,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  {sel && (
+                    <LinearGradient
+                      colors={["#D6AD5F", "#B47344"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
+                  <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+                    {tab.label}
+                  </Text>
+                </Pressable>
+
+                {tab.id === "sesiones" && sesionesVisible && (
+                  <RAnimated.View style={[styles.sesSubSpacer, spacerAnimStyle]}>
+                    <RAnimated.View
+                      style={[styles.sesSubRow, pillAnimStyle]}
+                      pointerEvents={sesionesOpen ? "auto" : "none"}
+                    >
+                      <Pressable
+                        onPress={() => {
+                          const next = !sesAncestral;
+                          setSesAncestral(next);
+                          updateSesFilter(next, sesMeditacion);
+                        }}
+                        style={({ pressed }) => [
+                          styles.headerTabChip,
+                          { opacity: pressed ? 0.7 : 1 },
+                        ]}
+                      >
+                        {sesAncestral && (
+                          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#47633E" }]} />
+                        )}
+                        <Text style={styles.headerTabText}>Ancestral</Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => {
+                          const next = !sesMeditacion;
+                          setSesMeditacion(next);
+                          updateSesFilter(sesAncestral, next);
+                        }}
+                        style={({ pressed }) => [
+                          styles.headerTabChip,
+                          { opacity: pressed ? 0.7 : 1 },
+                        ]}
+                      >
+                        {sesMeditacion && (
+                          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#6c4486" }]} />
+                        )}
+                        <Text style={styles.headerTabText}>Meditación</Text>
+                      </Pressable>
+                    </RAnimated.View>
+                  </RAnimated.View>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </ScrollView>
 
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
