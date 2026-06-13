@@ -96,6 +96,7 @@ export function useGeometrixCatalog(): {
       ...categorized.circulares,
       ...categorized.rectilineas,
       ...categorized.combinaciones,
+      ...categorized.chakras,
     ];
   }, [data]);
 
