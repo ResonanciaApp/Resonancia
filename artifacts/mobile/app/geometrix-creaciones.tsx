@@ -515,7 +515,7 @@ export default function GeometrixCreacionesScreen() {
                 onLongPress={() => showActions(c)}
                 style={({ pressed }) => [
                   styles.card,
-                  { width: cardW, borderColor: "#151c3a", opacity: pressed ? 0.85 : 1 },
+                  { width: cardW, opacity: pressed ? 0.85 : 1 },
                 ]}
               >
                 {/* Preview en vivo */}
@@ -568,10 +568,6 @@ export default function GeometrixCreacionesScreen() {
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
                       {c.name}
-                    </Text>
-                    <Text style={[styles.meta, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {c.active.length} geometría{c.active.length !== 1 ? "s" : ""} ·{" "}
-                      {formatRelative(c.updatedAt)}
                     </Text>
                   </View>
                   <Pressable onPress={() => showActions(c)} hitSlop={10} style={styles.moreBtn}>
@@ -1005,7 +1001,7 @@ const styles = StyleSheet.create({
   },
   newLabel: { fontSize: 13, fontWeight: "600" },
 
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
+  card: { borderRadius: 16, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
   playBtn: {

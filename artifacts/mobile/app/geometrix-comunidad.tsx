@@ -334,7 +334,7 @@ export default function GeometrixComunidadScreen() {
               return (
                 <View
                   key={g.id}
-                  style={[styles.card, { width: cardW, borderColor: "#151c3a" }]}
+                  style={[styles.card, { width: cardW }]}
                 >
                   {/* Preview: ocupa todo el ancho de la card */}
                   <View style={[styles.preview, { height: previewH }]}>
@@ -363,19 +363,6 @@ export default function GeometrixComunidadScreen() {
                       <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
                         {g.name}
                       </Text>
-                      <Pressable
-                        onPress={() =>
-                          router.push({
-                            pathname: "/usuario/[id]",
-                            params: { id: g.author.id },
-                          } as never)
-                        }
-                        hitSlop={6}
-                      >
-                        <Text style={[styles.author, styles.authorLink, { color: colors.primary }]} numberOfLines={1}>
-                          {g.author.displayName ?? g.author.username}
-                        </Text>
-                      </Pressable>
                     </View>
 
                     {/* Like */}
@@ -475,7 +462,7 @@ const styles = StyleSheet.create({
   stateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
-  card: { borderRadius: 16, borderWidth: 1, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
+  card: { borderRadius: 16, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
 
   // Preview llena el 100% del ancho de la card (no tiene width fijo propio)
   preview: { width: "100%", overflow: "hidden" },
