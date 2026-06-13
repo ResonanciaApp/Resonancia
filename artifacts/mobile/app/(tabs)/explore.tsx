@@ -156,6 +156,7 @@ export default function ExploreScreen() {
           <View style={styles.headerRow}>
             <Text style={[styles.pageTitle, { flex: 1 }]}>Buscar</Text>
           </View>
+          <Text style={styles.pageSubtitle}>Explora entre todas nuestras categorías</Text>
         </View>
 
         {/* ── Search bar ── */}
@@ -238,7 +239,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Mezclas de la comunidad ── */}
-            <View style={styles.section}>
+            <View style={{ marginBottom: 23 }}>
               <CommunityMixesCarousel />
             </View>
           </>
@@ -262,7 +263,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
+  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
+  pageSubtitle: { fontSize: 14, color: "rgba(244,218,213,0.55)", marginTop: 2 },
 
   searchBar: {
     flexDirection: "row",
