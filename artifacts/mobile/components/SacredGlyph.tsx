@@ -873,6 +873,9 @@ export interface SacredGlyphProps {
       para mantener el grosor VISUAL constante — sin transform (trazo nítido) y
       sin re-render de React. En reposo vale 1 → render idéntico al estático. */
   liveScaleSV?: SharedValue<number>;
+  /** Modo wireframe para mosaicos: convierte fill sólido → stroke fino (0.4 SVG units).
+      No tiene efecto en geometrías wireframe nativas (ya usan stroke). */
+  wireframe?: boolean;
 }
 
 function SacredGlyphImpl({
@@ -882,6 +885,7 @@ function SacredGlyphImpl({
   opacity = 1,
   strokeScale = 1,
   outlineWidth = 0,
+  wireframe = false,
   gradient,
   kaleidoscope = false,
   kaleidSegments = 6,
@@ -896,7 +900,12 @@ function SacredGlyphImpl({
   // Construye la cadena SVG (con o sin caleidoscopio) y sustituye el placeholder
   // de color. Se recalcula solo cuando cambian los parámetros visuales.
   const svgXml = React.useMemo(() => {
-    const raw = GLYPH_STRINGS[id as string] ?? "";
+    let raw = GLYPH_STRINGS[id as string] ?? "";
+    // Wireframe para mosaicos: convertir fill sólido → contorno fino (0.4 SVG units)
+    // ANTES de sustituir el placeholder de color, para que el stroke también se coloree.
+    if (wireframe) {
+      raw = raw.replace(/fill="GLYPH_STROKE"/g, 'fill="none" stroke="GLYPH_STROKE" stroke-width="0.4"');
+    }
     const ec = gradient ? `url(#${gradId})` : color;
     let content = raw ? raw.replace(/GLYPH_STROKE/g, ec) : "<g></g>";
     // strokeScale ≠ 1: escala proporcionalmente todos los stroke-width del SVG.
@@ -942,7 +951,7 @@ function SacredGlyphImpl({
       `<use href="#${motifId}" transform="rotate(${(i * wedgeAngle).toFixed(3)} ${Cx} ${Cx})"/>`
     ).join("");
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${outlineAttrs}><defs>${gradDefs}<clipPath id="${clipId}"><path d="${wedgePath}"/></clipPath><g id="${motifId}" clip-path="url(#${clipId})">${content}</g></defs>${uses}</svg>`;
-  }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments, strokeScale, outlineWidth]);
+  }, [id, color, gradient, gradId, clipId, motifId, kaleidoscope, kaleidSegments, strokeScale, outlineWidth, wireframe]);
 
   // Zoom en vivo (UI thread): cambia width/height por shared value sin re-render.
   const animStyle = useAnimatedStyle(() => {

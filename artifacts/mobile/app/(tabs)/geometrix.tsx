@@ -849,6 +849,12 @@ function GeometryLayerInner({
   const outlineWidthPx = (geo as { outlineWidth?: number }).outlineWidth ?? 0;
   const outlineWidthSvg =
     outlineWidthPx > 0 && effectiveSize > 0 ? outlineWidthPx * (100 / effectiveSize) : 0;
+  // wireframe: el usuario puede invertir el modo relleno↔contorno fino en la sesión.
+  // El default viene del admin (wireframeDefault); el usuario lo sobreescribe en Transformación.
+  const geoWireframeDefault = (geo as { wireframeDefault?: boolean }).wireframeDefault ?? false;
+  const isWireframe =
+    (settings.wireframe !== undefined ? settings.wireframe : geoWireframeDefault) &&
+    (geo as { geometryType?: string }).geometryType === "mosaic";
   // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
   const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
   // Glow efectivo: el propio de la capa se suma al general (panel maestro),
@@ -880,6 +886,7 @@ function GeometryLayerInner({
               strokeWidth={sw * (5 + safeBloom * 5)}
               strokeScale={thinFactor}
               outlineWidth={outlineWidthSvg}
+              wireframe={isWireframe}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -893,6 +900,7 @@ function GeometryLayerInner({
               strokeWidth={sw * (2.4 + safeBloom * 2.6)}
               strokeScale={thinFactor}
               outlineWidth={outlineWidthSvg}
+              wireframe={isWireframe}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -911,6 +919,7 @@ function GeometryLayerInner({
               strokeWidth={sw * (3 + safeGlow * 3)}
               strokeScale={thinFactor}
               outlineWidth={outlineWidthSvg}
+              wireframe={isWireframe}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -925,6 +934,7 @@ function GeometryLayerInner({
               strokeWidth={sw * (1.8 + safeGlow * 1.6)}
               strokeScale={thinFactor}
               outlineWidth={outlineWidthSvg}
+              wireframe={isWireframe}
               kaleidoscope={kaleidoscope}
               kaleidSegments={kaleidSegments}
               liveScaleSV={liveScaleForGlyph}
@@ -967,6 +977,7 @@ function GeometryLayerInner({
           strokeWidth={sw}
           strokeScale={thinFactor}
           outlineWidth={outlineWidthSvg}
+          wireframe={isWireframe}
           kaleidoscope={kaleidoscope}
           kaleidSegments={kaleidSegments}
           liveScaleSV={liveScaleForGlyph}
@@ -5424,14 +5435,40 @@ export default function GeometrixScreen() {
             {/* ── Transformación ────────────────────────────────────────── */}
             <SettingsSection
               title="Transformación"
-              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate"]))}
-              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate"]))}
+              isModified={activeMetas.length > 0 && activeMetas.some((m) => isSectionModified(m.iid, ["thickness", "rotateLeft", "rotate", "wireframe"]))}
+              onReset={() => activeMetas.forEach((m) => resetSection(m.iid, ["thickness", "rotateLeft", "rotate", "wireframe"]))}
               onOpen={(y) => generalScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
             >
               {(() => {
                 const g0 = activeMetas.length > 0 ? getSettings(activeMetas[0].iid) : null;
+                const allMosaic = activeMetas.length > 0 && activeMetas.every(
+                  (m) => (catalogGeoMap.get(baseOf(m.iid)) as { geometryType?: string } | undefined)?.geometryType === "mosaic"
+                );
+                const wfDefault0 = (catalogGeoMap.get(baseOf(activeMetas[0]?.iid ?? "")) as { wireframeDefault?: boolean } | undefined)?.wireframeDefault ?? false;
+                const isWf0 = g0 ? (g0.wireframe !== undefined ? g0.wireframe : wfDefault0) : false;
                 return (
                   <>
+                    {allMosaic && (
+                      <View style={{
+                        flexDirection: "row", alignItems: "center",
+                        justifyContent: "space-between", marginBottom: 10,
+                        paddingVertical: 8, paddingHorizontal: 10,
+                        backgroundColor: isWf0 ? colors.primary + "14" : "rgba(255,255,255,0.03)",
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: isWf0 ? colors.primary + "55" : "rgba(255,255,255,0.07)",
+                      }}>
+                        <Text style={{ color: isWf0 ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                          Invertir
+                        </Text>
+                        <Toggle
+                          value={isWf0}
+                          onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "wireframe", v))}
+                          color={colors.primary}
+                          compact
+                        />
+                      </View>
+                    )}
                     <View style={styles.fieldRow}>
                       <Text style={styles.fieldLabel}>Girar izquierda</Text>
                       <Toggle
@@ -5460,15 +5497,19 @@ export default function GeometrixScreen() {
                         compact
                       />
                     </View>
-                    <View style={[styles.fieldRow, { marginTop: 8 }]}>
-                      <Text style={styles.fieldLabel}>Grosor</Text>
-                    </View>
-                    <VolumeSlider
-                      value={g0?.thickness ?? 0.5}
-                      onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "thickness", v))}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
+                    {!allMosaic && (
+                      <>
+                        <View style={[styles.fieldRow, { marginTop: 8 }]}>
+                          <Text style={styles.fieldLabel}>Grosor</Text>
+                        </View>
+                        <VolumeSlider
+                          value={g0?.thickness ?? 0.5}
+                          onChange={(v) => activeMetas.forEach((m) => updateSetting(m.iid, "thickness", v))}
+                          color="#FFFFFF"
+                          trackColor="rgba(255,255,255,0.12)"
+                        />
+                      </>
+                    )}
                   </>
                 );
               })()}
@@ -6013,46 +6054,79 @@ export default function GeometrixScreen() {
                   </SettingsSection>
 
                   {/* ── Transformación ────────────────────────────────────── */}
-                  <SettingsSection
-                    title="Transformación"
-                    isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate"])}
-                    onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate"])}
-                    onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
-                  >
-                    <View style={styles.fieldRow}>
-                      <Text style={styles.fieldLabel}>Girar izquierda</Text>
-                      <Toggle
-                        value={s.rotateLeft}
-                        onChange={(v) => {
-                          updateSetting(iid, "rotateLeft", v);
-                          if (v) updateSetting(iid, "rotate", false);
-                        }}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
-                    </View>
-                    <View style={[styles.fieldRow, { marginTop: 8 }]}>
-                      <Text style={styles.fieldLabel}>Girar derecha</Text>
-                      <Toggle
-                        value={s.rotate}
-                        onChange={(v) => {
-                          updateSetting(iid, "rotate", v);
-                          if (v) updateSetting(iid, "rotateLeft", false);
-                        }}
-                        color={TOGGLE_ON_COLOR}
-                        compact
-                      />
-                    </View>
-                    <View style={[styles.fieldRow, { marginTop: 8 }]}>
-                      <Text style={styles.fieldLabel}>Grosor</Text>
-                    </View>
-                    <VolumeSlider
-                      value={s.thickness}
-                      onChange={(v) => updateSetting(iid, "thickness", v)}
-                      color="#FFFFFF"
-                      trackColor="rgba(255,255,255,0.12)"
-                    />
-                  </SettingsSection>
+                  {(() => {
+                    const settingsGeo = catalogGeoMap.get(baseOf(iid));
+                    const isMosaicSingle = (settingsGeo as { geometryType?: string } | undefined)?.geometryType === "mosaic";
+                    const wfDefaultSingle = (settingsGeo as { wireframeDefault?: boolean } | undefined)?.wireframeDefault ?? false;
+                    const isWfSingle = s.wireframe !== undefined ? s.wireframe : wfDefaultSingle;
+                    return (
+                      <SettingsSection
+                        title="Transformación"
+                        isModified={isSectionModified(iid, ["thickness", "rotateLeft", "rotate", "wireframe"])}
+                        onReset={() => resetSection(iid, ["thickness", "rotateLeft", "rotate", "wireframe"])}
+                        onOpen={(y) => settingsScrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: true })}
+                      >
+                        {isMosaicSingle && (
+                          <View style={{
+                            flexDirection: "row", alignItems: "center",
+                            justifyContent: "space-between", marginBottom: 10,
+                            paddingVertical: 8, paddingHorizontal: 10,
+                            backgroundColor: isWfSingle ? colors.primary + "14" : "rgba(255,255,255,0.03)",
+                            borderRadius: 10,
+                            borderWidth: 1,
+                            borderColor: isWfSingle ? colors.primary + "55" : "rgba(255,255,255,0.07)",
+                          }}>
+                            <Text style={{ color: isWfSingle ? colors.primary : colors.mutedForeground, fontWeight: "600", fontSize: 13 }}>
+                              Invertir
+                            </Text>
+                            <Toggle
+                              value={isWfSingle}
+                              onChange={(v) => updateSetting(iid, "wireframe", v)}
+                              color={colors.primary}
+                              compact
+                            />
+                          </View>
+                        )}
+                        <View style={styles.fieldRow}>
+                          <Text style={styles.fieldLabel}>Girar izquierda</Text>
+                          <Toggle
+                            value={s.rotateLeft}
+                            onChange={(v) => {
+                              updateSetting(iid, "rotateLeft", v);
+                              if (v) updateSetting(iid, "rotate", false);
+                            }}
+                            color={TOGGLE_ON_COLOR}
+                            compact
+                          />
+                        </View>
+                        <View style={[styles.fieldRow, { marginTop: 8 }]}>
+                          <Text style={styles.fieldLabel}>Girar derecha</Text>
+                          <Toggle
+                            value={s.rotate}
+                            onChange={(v) => {
+                              updateSetting(iid, "rotate", v);
+                              if (v) updateSetting(iid, "rotateLeft", false);
+                            }}
+                            color={TOGGLE_ON_COLOR}
+                            compact
+                          />
+                        </View>
+                        {!isMosaicSingle && (
+                          <>
+                            <View style={[styles.fieldRow, { marginTop: 8 }]}>
+                              <Text style={styles.fieldLabel}>Grosor</Text>
+                            </View>
+                            <VolumeSlider
+                              value={s.thickness}
+                              onChange={(v) => updateSetting(iid, "thickness", v)}
+                              color="#FFFFFF"
+                              trackColor="rgba(255,255,255,0.12)"
+                            />
+                          </>
+                        )}
+                      </SettingsSection>
+                    );
+                  })()}
 
                   {/* ── Calidoscopio ──────────────────────────────────────── */}
                   <SettingsSection

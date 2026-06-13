@@ -34,6 +34,7 @@ interface GeometryRow {
   geometryType: GeometryType;
   strokeMode: StrokeMode;
   outlineWidth: number;
+  wireframeDefault: boolean;
   visible: boolean;
   description: string | null;
   color: string | null;
@@ -79,6 +80,7 @@ async function saveGeometries(rows: GeometryRow[], token: string | null): Promis
     geometryType: r.geometryType,
     strokeMode: r.strokeMode,
     outlineWidth: r.outlineWidth ?? 0,
+    wireframeDefault: r.wireframeDefault ?? false,
     visible: r.visible,
     description: r.description?.trim() || null,
     color: r.color || null,
@@ -97,13 +99,21 @@ function sortByOrder(rows: GeometryRow[]): GeometryRow[] {
   return [...rows].sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-function GeometryThumbnail({ id, color, outlineWidth }: { id: string; color?: string | null; outlineWidth?: number }) {
+function GeometryThumbnail({ id, color, wireframeDefault }: { id: string; color?: string | null; wireframeDefault?: boolean }) {
   const svgContent = useMemo(() => {
     const raw = GLYPH_STRINGS[id];
     if (!raw) return null;
     const stroke = color ?? "#D4AF37";
-    return raw.replace(/GLYPH_STROKE/g, stroke);
-  }, [id, color]);
+    let content = raw.replace(/GLYPH_STROKE/g, stroke);
+    if (wireframeDefault) {
+      content = content.replace(/fill="([^"]+)"/g, (_m, fillColor) =>
+        fillColor === "none"
+          ? 'fill="none"'
+          : `fill="none" stroke="${fillColor}" stroke-width="3.5"`
+      );
+    }
+    return content;
+  }, [id, color, wireframeDefault]);
 
   if (!svgContent) {
     return (
@@ -113,10 +123,6 @@ function GeometryThumbnail({ id, color, outlineWidth }: { id: string; color?: st
     );
   }
 
-  const hasOutline = (outlineWidth ?? 0) > 0;
-  const outlineSvgUnits = hasOutline ? ((outlineWidth ?? 0) * (100 / 108)).toFixed(4) : undefined;
-  const outlineColor = color ?? "#D4AF37";
-
   return (
     <div className="w-[120px] h-[120px] rounded border border-border/30 shrink-0 bg-secondary/20 overflow-hidden flex items-center justify-center">
       <svg
@@ -124,8 +130,6 @@ function GeometryThumbnail({ id, color, outlineWidth }: { id: string; color?: st
         width="108"
         height="108"
         xmlns="http://www.w3.org/2000/svg"
-        stroke={hasOutline ? outlineColor : undefined}
-        strokeWidth={hasOutline ? outlineSvgUnits : undefined}
         dangerouslySetInnerHTML={{ __html: svgContent }}
       />
     </div>
@@ -191,7 +195,7 @@ function GeometryRowItem({
       </div>
 
       {/* Thumbnail */}
-      <GeometryThumbnail id={row.id} color={row.color} outlineWidth={row.outlineWidth} />
+      <GeometryThumbnail id={row.id} color={row.color} wireframeDefault={row.wireframeDefault} />
 
       {/* Contenido principal */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-3 min-w-0">
@@ -246,18 +250,17 @@ function GeometryRowItem({
             </div>
           ) : (
             <div className="flex-1 space-y-1">
-              <Label className="text-xs text-muted-foreground">
-                Contorno — {(row.outlineWidth ?? 0).toFixed(1)} px
-              </Label>
-              <input
-                type="range"
-                min={0}
-                max={1.5}
-                step={0.1}
-                value={row.outlineWidth ?? 0}
-                onChange={(e) => onChange({ outlineWidth: parseFloat(e.target.value) })}
-                className="w-full h-1.5 accent-yellow-600 cursor-pointer mt-2.5"
-              />
+              <Label className="text-xs text-muted-foreground">Modo por defecto</Label>
+              <div className="flex items-center gap-2 mt-1.5">
+                <Switch
+                  id={`wf-${row.id}`}
+                  checked={row.wireframeDefault ?? false}
+                  onCheckedChange={(v) => onChange({ wireframeDefault: v })}
+                />
+                <label htmlFor={`wf-${row.id}`} className="text-xs text-muted-foreground cursor-pointer select-none">
+                  {row.wireframeDefault ? "Wireframe sutil" : "Mosaico"}
+                </label>
+              </div>
             </div>
           )}
         </div>

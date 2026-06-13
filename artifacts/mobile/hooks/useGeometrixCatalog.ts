@@ -23,6 +23,8 @@ export interface GeometryMetaExtended extends Omit<GeometryMeta, "color"> {
   strokeMode: "thin" | "natural";
   /** Grosor del contorno exterior para mosaicos (px reales, 0 = sin contorno). */
   outlineWidth: number;
+  /** Modo wireframe por defecto para mosaicos (admin). El usuario puede invertirlo en el editor. */
+  wireframeDefault: boolean;
   /** Descripción para la sección Aprende (null si no hay). */
   description: string | null;
   /** Color de trazo override (hex). null = usar el color del PALETTE de la app. */
@@ -50,6 +52,7 @@ export function useGeometrixCatalog(): {
         geometryType: "wireframe" as const,
         strokeMode: "natural" as const,
         outlineWidth: 0,
+        wireframeDefault: false,
         description: null,
         color: null,
       }));
@@ -73,6 +76,7 @@ export function useGeometrixCatalog(): {
         geometryType: (s?.geometryType as "wireframe" | "mosaic") ?? "wireframe",
         strokeMode: (s?.strokeMode as "thin" | "natural") ?? "natural",
         outlineWidth: s?.outlineWidth ?? 0,
+        wireframeDefault: s?.wireframeDefault ?? false,
         description: s?.description ?? null,
         color: s?.color ?? null,
       });

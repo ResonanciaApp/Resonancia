@@ -1194,6 +1194,7 @@ export interface GeometrixSettingItem {
      * @maximum 1.5
      */
   outlineWidth: number;
+  wireframeDefault: boolean;
   visible: boolean;
   description?: string | null;
   color?: string | null;
@@ -1227,6 +1228,7 @@ export interface GeometrixSettingUpdate {
      * @maximum 1.5
      */
   outlineWidth?: number;
+  wireframeDefault?: boolean;
   visible: boolean;
   description?: string | null;
   color?: string | null;

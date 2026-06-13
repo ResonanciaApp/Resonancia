@@ -58,6 +58,8 @@ export type GeoSettings = {
   expansionAmount: number;
   /** Perspectiva 3D 0–1: inclina la capa en 3D (rotateX/Y oscilantes). 0 = plano. */
   threeDAmount: number;
+  /** Modo wireframe (solo mosaicos): convierte el relleno en contorno fino. undefined = usar el default del admin. */
+  wireframe?: boolean;
 };
 
 /** Patrón de fondo: geometría teselada detrás del lienzo. */
