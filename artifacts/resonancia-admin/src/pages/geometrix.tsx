@@ -32,7 +32,7 @@ import {
 
 const API_BASE = "/api";
 
-type GeometryCategory = "circulares" | "rectilineas" | "combinaciones";
+type GeometryCategory = "circulares" | "rectilineas" | "combinaciones" | "chakras";
 type GeometryType = "wireframe" | "mosaic";
 type StrokeMode = "thin" | "natural";
 
@@ -62,12 +62,14 @@ const CATEGORY_LABELS: Record<GeometryCategory, string> = {
   circulares: "Circulares",
   rectilineas: "Rectilíneas",
   combinaciones: "Combinaciones",
+  chakras: "7 Chakras",
 };
 
 const CATEGORY_COUNT: Record<GeometryCategory, number> = {
   circulares: 24,
   rectilineas: 31,
   combinaciones: 25,
+  chakras: 7,
 };
 
 function authHeaders(token: string | null): Record<string, string> {
@@ -485,7 +487,7 @@ export default function GeometrixPage() {
     }
   }
 
-  const categories: GeometryCategory[] = ["circulares", "rectilineas", "combinaciones"];
+  const categories: GeometryCategory[] = ["circulares", "rectilineas", "combinaciones", "chakras"];
 
   const hiddenCount = rows.filter((r) => !r.visible).length;
   const totalVisible = rows.filter((r) => r.visible).length;
