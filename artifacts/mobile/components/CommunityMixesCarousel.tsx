@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
 const menuStyles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
   sheet: {
-    backgroundColor: "#0B0F14",
+    backgroundColor: "#1A060C",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
