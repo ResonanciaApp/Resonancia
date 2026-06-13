@@ -428,29 +428,20 @@ export default function HomeScreen2() {
         {/* ── INTENCIÓN ── */}
         <Pressable
           onPress={handleIntentionPress}
-          style={({ pressed }) => [styles.intencionCard, { opacity: pressed ? 0.82 : 1 }]}
+          style={({ pressed }) => [styles.intencionWrap, { opacity: pressed ? 0.7 : 1 }]}
         >
-          <LinearGradient
-            colors={["rgba(190,150,80,0.13)", "rgba(190,150,80,0.06)"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-          <View style={styles.intencionInner}>
-            <Feather name="compass" size={16} color="#BE9650" style={{ marginRight: 8, marginTop: 1 }} />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.intencionLabel}>Mi intención</Text>
-              {currentIntencion ? (
-                <Text style={styles.intencionText} numberOfLines={2}>
-                  {currentIntencion}
-                </Text>
-              ) : (
-                <Text style={styles.intencionPlaceholder}>
-                  Establece tu intención aquí
-                </Text>
-              )}
-            </View>
-            <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" style={{ marginLeft: 6 }} />
+          <Text style={styles.intencionSuper}>Hoy voy a…</Text>
+          <View style={styles.intencionRow}>
+            <View style={styles.intencionCursor} />
+            {currentIntencion ? (
+              <Text style={styles.intencionText} numberOfLines={3}>
+                {currentIntencion}
+              </Text>
+            ) : (
+              <Text style={styles.intencionPlaceholder}>
+                Establece tu intención aquí
+              </Text>
+            )}
           </View>
         </Pressable>
 
@@ -602,38 +593,43 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   // Intención
-  intencionCard: {
-    marginHorizontal: GRID_PAD,
+  intencionWrap: {
+    alignItems: "center",
+    paddingHorizontal: GRID_PAD,
+    paddingVertical: 20,
     marginBottom: SECTION_GAP,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.22)",
-    overflow: "hidden",
   },
-  intencionInner: {
+  intencionSuper: {
+    fontSize: 13,
+    color: "rgba(237,225,211,0.45)",
+    marginBottom: 8,
+    letterSpacing: 0.3,
+  },
+  intencionRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    paddingHorizontal: 14,
-    paddingVertical: 13,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  intencionLabel: {
-    fontSize: 10,
-    letterSpacing: 1.1,
-    textTransform: "uppercase",
-    color: "#BE9650",
-    fontWeight: "600",
-    marginBottom: 3,
+  intencionCursor: {
+    width: 2,
+    height: 26,
+    borderRadius: 1,
+    backgroundColor: "#BE9650",
+    marginRight: 6,
   },
   intencionText: {
-    fontSize: 14,
+    fontSize: 22,
     color: "#EDE1D3",
-    lineHeight: 20,
     fontWeight: "300",
+    textAlign: "center",
+    flexShrink: 1,
   },
   intencionPlaceholder: {
-    fontSize: 14,
-    color: "rgba(237,225,211,0.45)",
-    fontStyle: "italic",
+    fontSize: 22,
+    color: "rgba(237,225,211,0.35)",
+    fontWeight: "300",
+    textAlign: "center",
+    flexShrink: 1,
   },
 
   // Header
