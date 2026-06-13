@@ -43,19 +43,7 @@ export default function QuoteOfTheDay() {
       {/* Autor centrado */}
       <Text style={styles.author}>— {quote.author}</Text>
 
-      {/* Leer más / Leer menos — debajo del autor */}
-      {(isTruncated || expanded) && (
-        <Pressable
-          onPress={() => setExpanded((v) => !v)}
-          style={({ pressed }) => [styles.readMoreBtn, { opacity: pressed ? 0.8 : 1 }]}
-        >
-          <Text style={styles.readMoreText}>
-            {expanded ? "Leer menos" : "Leer más"}
-          </Text>
-        </Pressable>
-      )}
-
-      {/* Footer: ··· izquierda */}
+      {/* Fila inferior: ··· izquierda + Leer más centrado */}
       <View style={styles.footer}>
         <Pressable
           onPress={() => setMenuVisible(true)}
@@ -64,6 +52,20 @@ export default function QuoteOfTheDay() {
         >
           <Feather name="more-horizontal" size={20} color={MUTED} />
         </Pressable>
+
+        {(isTruncated || expanded) && (
+          <Pressable
+            onPress={() => setExpanded((v) => !v)}
+            style={({ pressed }) => [styles.readMoreBtn, { opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Text style={styles.readMoreText}>
+              {expanded ? "Leer menos" : "Leer más"}
+            </Text>
+          </Pressable>
+        )}
+
+        {/* Spacer para centrar visualmente el botón */}
+        <View style={{ width: 28 }} />
       </View>
 
       {/* Mini menú */}
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
   },
   menuBtn: {
     padding: 2,
