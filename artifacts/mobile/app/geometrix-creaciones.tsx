@@ -565,11 +565,9 @@ export default function GeometrixCreacionesScreen() {
 
                 {/* Info */}
                 <View style={styles.info}>
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
-                      {c.name}
-                    </Text>
-                  </View>
+                  <Text style={[styles.name, { color: colors.foreground, textAlign: "center", flex: 1 }]} numberOfLines={1}>
+                    {c.name}
+                  </Text>
                   <Pressable onPress={() => showActions(c)} hitSlop={10} style={styles.moreBtn}>
                     <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
                   </Pressable>
@@ -1001,7 +999,7 @@ const styles = StyleSheet.create({
   },
   newLabel: { fontSize: 13, fontWeight: "600" },
 
-  card: { borderRadius: 16, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
+  card: { borderRadius: 16, borderWidth: 1, borderColor: "#a79fb8", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
   preview: { width: "100%", overflow: "hidden" },
   previewCenter: { flex: 1, alignItems: "center", justifyContent: "center" },
   playBtn: {

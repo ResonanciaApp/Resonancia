@@ -340,6 +340,20 @@ export default function GeometrixComunidadScreen() {
                   <View style={[styles.preview, { height: previewH }]}>
                     <GlyphPreview glyph={g} previewH={previewH} playing={isPlaying} />
 
+                    {/* Like — esquina superior izquierda */}
+                    <Pressable onPress={() => handleLike(g)} hitSlop={8} style={styles.likeOverlay}>
+                      <Feather
+                        name="heart"
+                        size={13}
+                        color={g.likedByMe ? "#D4AF37" : "rgba(242,231,228,0.5)"}
+                      />
+                      {g.likes > 0 && (
+                        <Text style={[styles.likeCount, { color: g.likedByMe ? "#D4AF37" : colors.mutedForeground }]}>
+                          {g.likes}
+                        </Text>
+                      )}
+                    </Pressable>
+
                     {/* Botón play/pause — solo si la composición tiene movimiento */}
                     {canPlay && (
                       <Pressable
@@ -357,32 +371,11 @@ export default function GeometrixComunidadScreen() {
                     )}
                   </View>
 
-                  {/* Info */}
+                  {/* Info — solo título centrado */}
                   <View style={styles.info}>
-                    <View style={{ flex: 1, minWidth: 0 }}>
-                      <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
-                        {g.name}
-                      </Text>
-                    </View>
-
-                    {/* Like */}
-                    <Pressable onPress={() => handleLike(g)} hitSlop={8} style={styles.likeBtn}>
-                      <Feather
-                        name="heart"
-                        size={14}
-                        color={g.likedByMe ? "#D4AF37" : "rgba(242,231,228,0.45)"}
-                      />
-                      {g.likes > 0 && (
-                        <Text
-                          style={[
-                            styles.likeCount,
-                            { color: g.likedByMe ? "#D4AF37" : colors.mutedForeground },
-                          ]}
-                        >
-                          {g.likes}
-                        </Text>
-                      )}
-                    </Pressable>
+                    <Text style={[styles.name, { color: colors.foreground, textAlign: "center", flex: 1 }]} numberOfLines={1}>
+                      {g.name}
+                    </Text>
                   </View>
                 </View>
               );
@@ -462,7 +455,7 @@ const styles = StyleSheet.create({
   stateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
-  card: { borderRadius: 16, overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
+  card: { borderRadius: 16, borderWidth: 1, borderColor: "#a79fb8", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
 
   // Preview llena el 100% del ancho de la card (no tiene width fijo propio)
   preview: { width: "100%", overflow: "hidden" },
@@ -494,6 +487,18 @@ const styles = StyleSheet.create({
   author: { fontSize: 11 },
 
   likeBtn: { flexDirection: "row", alignItems: "center", gap: 3 },
+  likeOverlay: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    backgroundColor: "rgba(0,0,0,0.38)",
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+  },
   likeCount: { fontSize: 11, fontWeight: "600" },
   authorLink: { textDecorationLine: "underline", opacity: 0.9 },
 
