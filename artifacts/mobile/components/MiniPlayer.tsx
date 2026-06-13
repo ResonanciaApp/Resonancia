@@ -47,6 +47,30 @@ export function MiniPlayer() {
   if (mixPlaying) everPlayedRef.current = true;
   const colors = useColors();
 
+  // ── Ondas sutiles ──────────────────────────────────────────────
+  const wave1 = useRef(new Animated.Value(0)).current;
+  const wave2 = useRef(new Animated.Value(0)).current;
+  const activeIsPlaying = currentSession ? isPlaying : mixPlaying;
+
+  useEffect(() => {
+    const makeLoop = (val: Animated.Value, delay: number) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(val, { toValue: 1, duration: 1800, useNativeDriver: true }),
+          Animated.timing(val, { toValue: 0, duration: 0, useNativeDriver: true }),
+        ])
+      );
+    if (activeIsPlaying) {
+      const a1 = makeLoop(wave1, 0);
+      const a2 = makeLoop(wave2, 700);
+      a1.start(); a2.start();
+      return () => { a1.stop(); a2.stop(); wave1.setValue(0); wave2.setValue(0); };
+    } else {
+      wave1.setValue(0); wave2.setValue(0);
+    }
+  }, [activeIsPlaying, wave1, wave2]);
+
   const mixActive = !currentSession && activeSounds.length > 0;
 
   // ── Timer de reproducción (solo mezcla) ──────────────────────
@@ -165,12 +189,20 @@ export function MiniPlayer() {
           </>
         )}
 
-        <Pressable
-          onPress={(e) => { e.stopPropagation(); togglePlay(); }}
-          style={styles.playPauseBtn}
-        >
-          <Feather name={mixPlaying ? "pause" : "play"} size={20} color={colors.foreground} />
-        </Pressable>
+        <View style={styles.waveWrap}>
+          {[wave1, wave2].map((w, i) => (
+            <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveMix, {
+              opacity: w.interpolate({ inputRange: [0, 1], outputRange: [0.20, 0] }),
+              transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 1.8] }) }],
+            }]} />
+          ))}
+          <Pressable
+            onPress={(e) => { e.stopPropagation(); togglePlay(); }}
+            style={styles.playPauseBtn}
+          >
+            <Feather name={mixPlaying ? "pause" : "play"} size={20} color={colors.foreground} />
+          </Pressable>
+        </View>
       </View>,
       () => {
         if (loadedPresetId?.startsWith("community-")) {
@@ -197,12 +229,20 @@ export function MiniPlayer() {
           </Text>
         </View>
         {/* Solo botón Play/Pause */}
-        <Pressable
-          onPress={(e) => { e.stopPropagation(); pauseResume(); }}
-          style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)" }]}
-        >
-          <Feather name={isPlaying ? "pause" : "play"} size={18} color="#FFFFFF" />
-        </Pressable>
+        <View style={styles.waveWrap}>
+          {[wave1, wave2].map((w, i) => (
+            <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveSession, {
+              opacity: w.interpolate({ inputRange: [0, 1], outputRange: [0.22, 0] }),
+              transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 1.8] }) }],
+            }]} />
+          ))}
+          <Pressable
+            onPress={(e) => { e.stopPropagation(); pauseResume(); }}
+            style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)" }]}
+          >
+            <Feather name={isPlaying ? "pause" : "play"} size={18} color="#FFFFFF" />
+          </Pressable>
+        </View>
       </View>
 
       {/* Barra de progreso — ABAJO */}
@@ -309,6 +349,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  waveWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  wave: {
+    position: "absolute",
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.18)",
+  },
+  waveSession: { width: 38, height: 38 },
+  waveMix:    { width: 32, height: 32 },
   terminarBtn: {
     alignItems: "center",
     justifyContent: "center",
