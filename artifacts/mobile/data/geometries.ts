@@ -64,19 +64,23 @@ export type GeometryId =
   | "estrella-tetraedrica"
   | "k-asset-8"  | "k-asset-13" | "k-asset-14" | "k-asset-15" | "k-asset-16"
   | "k-asset-18" | "k-asset-19" | "k-asset-23" | "k-asset-25" | "k-asset-28"
+  // ── 7 Chakras (7) ────────────────────────────────────────────────
+  | "chakra-1" | "chakra-2" | "chakra-3" | "chakra-4"
+  | "chakra-5" | "chakra-6" | "chakra-7"
   ;
 
 /**
  * Categoría a la que pertenece cada geometría. Sirve para el filtro del carrusel
  * en la pantalla Geometrix.
  */
-export type GeometryCategory = "circulares" | "rectilineas" | "combinaciones";
+export type GeometryCategory = "circulares" | "rectilineas" | "combinaciones" | "chakras";
 
 /** Metadatos de cada categoría para los chips de filtro (en orden de aparición). */
 export const GEOMETRY_CATEGORIES: { id: GeometryCategory; label: string }[] = [
   { id: "circulares",    label: "Circulares"   },
   { id: "rectilineas",   label: "Rectilíneas"  },
   { id: "combinaciones", label: "Combinaciones" },
+  { id: "chakras",       label: "7 Chakras"    },
 ];
 
 export interface GeometryMeta {
@@ -185,6 +189,14 @@ const GEOMETRY_DEFS: { id: GeometryId; name: string; category: GeometryCategory 
   { id: "k-asset-23", name: "Combinación A23", category: "combinaciones" },
   { id: "k-asset-25", name: "Combinación A25", category: "combinaciones" },
   { id: "k-asset-28", name: "Combinación A28", category: "combinaciones" },
+  // ── 7 Chakras ──────────────────────────────────────────────────────────────
+  { id: "chakra-1", name: "Muladhara",     category: "chakras" },
+  { id: "chakra-2", name: "Svadhisthana",  category: "chakras" },
+  { id: "chakra-3", name: "Manipura",      category: "chakras" },
+  { id: "chakra-4", name: "Anahata",       category: "chakras" },
+  { id: "chakra-5", name: "Vishuddha",     category: "chakras" },
+  { id: "chakra-6", name: "Ajna",          category: "chakras" },
+  { id: "chakra-7", name: "Sahasrara",     category: "chakras" },
 ];
 
 export const GEOMETRIES: GeometryMeta[] = GEOMETRY_DEFS.map((g, i) => ({
