@@ -590,12 +590,6 @@ export default function HomeScreen2() {
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
-        <SessionCarousel
-          title="Escuchadas recientemente"
-          sessions={filteredListened}
-          isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
-        />
         {/* ── 5. FRASE DEL DÍA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
           <QuoteOfTheDay />
