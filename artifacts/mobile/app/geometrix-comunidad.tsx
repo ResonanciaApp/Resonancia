@@ -53,7 +53,7 @@ import {
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
 
-const MURAL_BG = ["#160D2A", "#130A24", "#0A0719"] as const;
+const MURAL_BG = ["#120A22", "#0F081D", "#080614"] as const;
 
 // ── Capa animable (misma lógica que PreviewGlyph en geometrix-creaciones) ──
 function GlyphLayer({
