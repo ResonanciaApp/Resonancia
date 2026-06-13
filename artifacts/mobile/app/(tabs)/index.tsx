@@ -368,9 +368,9 @@ export default function HomeScreen() {
                       />
                     )}
                     {sel && tab.id === "musica" && (
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#406EAC" }]} />
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#282b9b" }]} />
                     )}
-                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+                    <Text style={[styles.headerTabText, sel && tab.id !== "musica" && styles.headerTabTextActive]}>
                       {tab.label}
                     </Text>
                   </Pressable>
