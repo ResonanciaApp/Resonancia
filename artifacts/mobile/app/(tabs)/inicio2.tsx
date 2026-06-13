@@ -500,6 +500,53 @@ export default function HomeScreen2() {
           <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
         </Pressable>
 
+        {/* ── SESIÓN DESTACADA ── */}
+        {filteredFeatured && (
+          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>
+              Sesión destacada
+            </Text>
+            <Pressable
+              style={styles.heroCard}
+              onPress={() => router.push(`/session/${filteredFeatured.id}` as never)}
+            >
+              <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
+              {(() => {
+                const voiceLabel = getVoiceLabel(filteredFeatured);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const guideId = (filteredFeatured as any).guideId as string | undefined;
+                const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
+                return (
+                  <View style={styles.heroFrosted}>
+                    <View style={styles.heroMetaRow}>
+                      <Feather name="star" size={11} color={colors.primary} />
+                      <Text style={[styles.heroMetaText, { color: colors.primary }]}>
+                        {" "}4.7{voiceLabel ? ` · ${voiceLabel}` : ""} · {filteredFeatured.durationLabel}
+                      </Text>
+                    </View>
+                    <View style={styles.heroBottom}>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={[styles.heroTitle, { color: "#e4e6f5" }]} numberOfLines={2}>
+                          {filteredFeatured.title}
+                        </Text>
+                        <Text style={[styles.heroAuthor, { color: "#8BBDD4" }]} numberOfLines={1}>
+                          {heroAuthor}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={(e) => { e.stopPropagation(); playSession(filteredFeatured); }}
+                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
+                      >
+                        <Feather name="play" size={20} color="#FFFFFF" style={{ marginLeft: 2 }} />
+                      </Pressable>
+                    </View>
+                  </View>
+                );
+              })()}
+            </Pressable>
+          </View>
+        )}
+
         {/* ── 3. VIDEOS DESTACADOS ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
