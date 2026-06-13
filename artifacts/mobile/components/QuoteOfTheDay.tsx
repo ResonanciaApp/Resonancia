@@ -139,18 +139,12 @@ const styles = StyleSheet.create({
   },
   readMoreBtn: {
     alignSelf: "center",
-    marginBottom: 14,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: "rgba(190,150,80,0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.35)",
+    paddingVertical: 4,
   },
   readMoreText: {
     fontSize: 13,
     fontWeight: "600",
-    color: GOLD,
+    color: "#7B4FA6",
   },
   author: {
     fontSize: 13,
