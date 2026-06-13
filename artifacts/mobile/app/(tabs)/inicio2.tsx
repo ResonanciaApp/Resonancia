@@ -544,7 +544,15 @@ export default function HomeScreen2() {
           </View>
         )}
 
-        {/* ── 3. VIDEOS DESTACADOS ── */}
+        {/* ── RECIENTES ── */}
+        <SessionCarousel
+          title="Recientes"
+          sessions={filteredRecent}
+          isPremium={isPremium}
+          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+        />
+
+        {/* ── VIDEOS DESTACADOS ── */}
         <View style={styles.section}>
           <View style={styles.sectionRow}>
             <Text style={[styles.sectionTitle]}>
@@ -582,14 +590,6 @@ export default function HomeScreen2() {
             </ScrollView>
           )}
         </View>
-
-        {/* ── 4-9. CARRUSELES PERSONALIZADOS ── */}
-        <SessionCarousel
-          title="Recientes"
-          sessions={filteredRecent}
-          isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
-        />
         {/* ── 5. FRASE DEL DÍA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
           <QuoteOfTheDay />
