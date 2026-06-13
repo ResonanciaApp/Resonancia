@@ -727,6 +727,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
     gap: 6,
+    backgroundColor: "rgba(27,6,15,0.30)",
   },
   coleccionTitle: {
     flex: 1,
