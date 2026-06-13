@@ -2052,18 +2052,6 @@ const STAR_PTS = Array.from({ length: 12 }, (_, i) => {
 }).join(" ");
 
 function CrearGeometriaCard({ onPress }: { onPress: () => void }) {
-  const rotAnim = useSharedValue(0);
-
-  useEffect(() => {
-    rotAnim.value = withRepeat(
-      withTiming(360, { duration: 18000, easing: Easing.linear }),
-      -1, false,
-    );
-  }, []);
-
-  const rotStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotAnim.value}deg` }],
-  }));
 
   const PARTICLES = [
     { l: 160, t: 10, r: 1.5, op: 0.55 },
@@ -2118,17 +2106,6 @@ function CrearGeometriaCard({ onPress }: { onPress: () => void }) {
                   stroke={CB_BLUE2} strokeWidth={2.2} strokeLinecap="round" />
                 <Circle cx={29} cy={29} r={2.8} fill={CB_GOLD} opacity={0.9} />
               </Svg>
-              {/* Estrella giratoria encima */}
-              <Animated.View
-                style={[StyleSheet.absoluteFillObject, rotStyle]}
-                pointerEvents="none"
-              >
-                <Svg width={58} height={58} viewBox="0 0 58 58">
-                  <Polygon points={STAR_PTS}
-                    fill="none" stroke={CB_BLUE} strokeWidth={0.8}
-                    opacity={0.5} />
-                </Svg>
-              </Animated.View>
             </View>
 
             {/* Texto */}
