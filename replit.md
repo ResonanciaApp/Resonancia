@@ -1,6 +1,6 @@
 # RESONANCIA — Casa del Cuenco
 
-App de meditación y sueño en español (Expo SDK 54). Estética oscura navy + dorado.
+App de meditación y sueño en español (Expo SDK 54). Estética oscura borgoña + dorado.
 
 ## Run & Operate
 
@@ -89,8 +89,8 @@ Panel admin-only que reusa la misma DB/API. Auth = **Clerk cookie-based same-ori
 
 - **"RA"** = "Restart App" — reiniciar el workflow `artifacts/mobile: expo`
 - Idioma: español neutro en toda la UI y en las respuestas del agente (no usar modismos argentinos)
-- Colores (navy + dorado): bg `#0B0F14`, primary `#BE9650`, accent `#D6A85B`, fg `#EDE1D3`, mutedForeground `#7A8FA8`. (Migrada de café/bronce a navy en app y decks; decks no se vuelven a tocar.)
-- **Fondo de cards y módulos (estándar)**: tinte dorado translúcido `rgba(190,150,80,0.05)` (= `#BE9650` al 5%) sobre el bg oscuro. Es EL color que deben usar todas las cards/módulos. Token central en `artifacts/mobile/constants/colors.ts` (`card` y alias `darkChocolate`). Antes era el navy sólido `#151A23` (ya migrado). Nota: muchas pantallas hardcodean fondos de card (`rgba(255,255,255,0.03)`, `#151A23`) que NO usan el token; migrarlas progresivamente a este tinte cuando se toquen.
+- Colores (borgoña + dorado): bg `#1B060F` (warmBlack), bgMid `#4A0C0C`, primary `#D4AF37`, accent `#E9C46A`, fg `#F4DAD5`, mutedForeground `rgba(242,231,228,0.45)`, border `#3D0E16`, secondary `#27070E`.
+- **Fondo de cards y módulos (estándar)**: tinte `rgba(74,12,12,0.08)` (= `#4A0C0C` al 8%) sobre el bg oscuro. Es EL color que deben usar todas las cards/módulos. Token central en `artifacts/mobile/constants/colors.ts` (`card` y alias `darkChocolate`). Nota: muchas pantallas hardcodean fondos de card que NO usan el token; migrarlas progresivamente a este tinte cuando se toquen.
 - Pre-existing TS errors (ignorar): VozInterior, MensajesAnon, MiniPlayer, session/[id], SessionCard, PlayerContext, player.tsx
 
 ## Pendientes (backlog)

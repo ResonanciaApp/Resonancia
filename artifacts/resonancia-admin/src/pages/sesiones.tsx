@@ -23,10 +23,10 @@ import {
 // ── Constantes de taxonomía ────────────────────────────────────────────────
 
 const CATS = [
-  { id: "sonidos-ancestrales", label: "Ancestrales",  categoryLabel: "Ancestrales", color: "#BE9650" },
-  { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#8B9FC9" },
-  { id: "musica-sonidos",       label: "Música",       categoryLabel: "Música",       color: "#D6A85B" },
-  { id: "podcast",              label: "Sonidos",      categoryLabel: "Sonidos",      color: "#7A8FA8" },
+  { id: "sonidos-ancestrales", label: "Ancestrales",  categoryLabel: "Ancestrales", color: "#D4AF37" },
+  { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
+  { id: "musica-sonidos",       label: "Música",       categoryLabel: "Música",       color: "#C4956A" },
+  { id: "podcast",              label: "Sonidos",      categoryLabel: "Sonidos",      color: "#9B8A86" },
 ] as const;
 
 type CatId = typeof CATS[number]["id"];

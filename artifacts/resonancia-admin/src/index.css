@@ -69,76 +69,78 @@
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  /* Navy Background */
-  --background: 213 29% 6%;
-  /* Foreground */
-  --foreground: 32 38% 88%;
-  
-  /* Borders */
-  --border: 219 25% 15%;
-  --input: 219 25% 18%;
-  --ring: 38 47% 53%;
+  /* Borgoña oscuro background (#1B060F) */
+  --background: 334 63% 7%;
+  /* Foreground cálido (#F4DAD5) */
+  --foreground: 10 59% 90%;
 
-  /* Cards */
-  --card: 219 25% 11%;
-  --card-foreground: 32 38% 88%;
-  --card-border: 219 25% 15%;
+  /* Borders (#3D0E16) */
+  --border: 350 63% 15%;
+  /* Input (#27070E) */
+  --input: 347 70% 9%;
+  /* Ring — dorado (#D4AF37) */
+  --ring: 46 65% 52%;
 
-  /* Sidebar */
-  --sidebar: 219 25% 9%;
-  --sidebar-foreground: 32 38% 88%;
-  --sidebar-border: 219 25% 15%;
-  --sidebar-primary: 38 47% 53%;
-  --sidebar-primary-foreground: 213 29% 6%;
-  --sidebar-accent: 219 25% 15%;
-  --sidebar-accent-foreground: 32 38% 88%;
-  --sidebar-ring: 38 47% 53%;
+  /* Cards (#27070E) */
+  --card: 347 70% 9%;
+  --card-foreground: 10 59% 90%;
+  --card-border: 350 63% 15%;
+
+  /* Sidebar (más oscuro que card, #1B060F) */
+  --sidebar: 334 63% 7%;
+  --sidebar-foreground: 10 59% 90%;
+  --sidebar-border: 350 63% 15%;
+  --sidebar-primary: 46 65% 52%;
+  --sidebar-primary-foreground: 334 63% 7%;
+  --sidebar-accent: 350 63% 15%;
+  --sidebar-accent-foreground: 10 59% 90%;
+  --sidebar-ring: 46 65% 52%;
 
   /* Popover */
-  --popover: 219 25% 11%;
-  --popover-foreground: 32 38% 88%;
-  --popover-border: 219 25% 15%;
+  --popover: 347 70% 9%;
+  --popover-foreground: 10 59% 90%;
+  --popover-border: 350 63% 15%;
 
-  /* Primary (Gold) */
-  --primary: 38 47% 53%;
-  --primary-foreground: 213 29% 6%;
+  /* Primary — dorado (#D4AF37) */
+  --primary: 46 65% 52%;
+  --primary-foreground: 334 63% 7%;
 
-  /* Secondary */
-  --secondary: 219 25% 15%;
-  --secondary-foreground: 32 38% 88%;
+  /* Secondary — borgoña medio (#3D0E16) */
+  --secondary: 350 63% 15%;
+  --secondary-foreground: 10 59% 90%;
 
   /* Muted */
-  --muted: 219 25% 15%;
-  --muted-foreground: 213 24% 57%;
+  --muted: 350 63% 15%;
+  --muted-foreground: 10 30% 60%;
 
-  /* Accent */
-  --accent: 38 62% 60%;
-  --accent-foreground: 213 29% 6%;
+  /* Accent — dorado claro (#E9C46A) */
+  --accent: 43 74% 67%;
+  --accent-foreground: 334 63% 7%;
 
   /* Destructive */
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 32 38% 88%;
+  --destructive-foreground: 10 59% 90%;
 
   /* Charts */
-  --chart-1: 38 47% 53%;
-  --chart-2: 38 62% 60%;
-  --chart-3: 213 24% 57%;
-  --chart-4: 219 25% 20%;
-  --chart-5: 32 38% 88%;
+  --chart-1: 46 65% 52%;
+  --chart-2: 43 74% 67%;
+  --chart-3: 10 30% 60%;
+  --chart-4: 350 63% 20%;
+  --chart-5: 10 59% 90%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
   --radius: 0.5rem;
 
-  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
-  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
-  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
-  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
-  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 2px 4px -1px hsl(0 0% 0% / 0.2);
-  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 4px 6px -1px hsl(0 0% 0% / 0.2);
-  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 8px 10px -1px hsl(0 0% 0% / 0.2);
-  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.3);
+  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.3);
+  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 1px 2px -1px hsl(0 0% 0% / 0.3);
+  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 1px 2px -1px hsl(0 0% 0% / 0.3);
+  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 2px 4px -1px hsl(0 0% 0% / 0.3);
+  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 4px 6px -1px hsl(0 0% 0% / 0.3);
+  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 8px 10px -1px hsl(0 0% 0% / 0.3);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.3);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
