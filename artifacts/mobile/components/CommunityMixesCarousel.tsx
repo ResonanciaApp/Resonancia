@@ -130,11 +130,6 @@ export function CommunityMixesCarousel() {
         <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
           Mezclas de la comunidad
         </Text>
-        {allMixes.length > MAX_VISIBLE && (
-          <Pressable onPress={() => router.push("/mezclas-comunidad" as never)} hitSlop={8}>
-            <Text style={[styles.verTodas, { color: colors.primary }]}>Ver todos</Text>
-          </Pressable>
-        )}
       </View>
 
       <View style={styles.panel}>
