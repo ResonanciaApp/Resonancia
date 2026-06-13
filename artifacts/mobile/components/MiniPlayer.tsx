@@ -22,7 +22,7 @@ const STACK_SHIFT = 15;
 const MAX_STACK = 3;
 
 // Solid dark-indigo — sin transparencias
-const SOLID_BG = "#27070E";
+const SOLID_BG = "#4B2E83";
 const BORDER_R = 12;
 
 function formatElapsed(sec: number): string {
