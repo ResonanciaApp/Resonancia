@@ -359,18 +359,15 @@ export default function HomeScreen() {
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
-                    {sel && tab.id !== "musica" && (
+                    {sel && (
                       <LinearGradient
-                        colors={["#D4AF37", "#E9C46A"]}
+                        colors={["#FF6B3D", "#FF9E4D"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={StyleSheet.absoluteFill}
                       />
                     )}
-                    {sel && tab.id === "musica" && (
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#3a6d70" }]} />
-                    )}
-                    <Text style={[styles.headerTabText, sel && tab.id !== "musica" && styles.headerTabTextActive]}>
+                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
                       {tab.label}
                     </Text>
                   </Pressable>
