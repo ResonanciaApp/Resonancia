@@ -116,10 +116,10 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 13,
-    fontWeight: "500",
+    fontWeight: "700",
     color: "rgba(255,255,255,0.55)",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 15,
   },
   quoteText: {
     fontSize: 17,
