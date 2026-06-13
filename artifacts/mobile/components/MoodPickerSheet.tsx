@@ -67,10 +67,12 @@ export function MoodPickerSheet({ visible, onClose }: Props) {
                   { opacity: pressed ? 0.8 : 1 },
                 ]}
               >
-                <Text style={styles.emoji}>{mood.emoji}</Text>
-                <Text style={[styles.cardLabel, isSelected && styles.cardLabelSelected]}>
-                  {mood.label}
-                </Text>
+                <View style={styles.cardInner}>
+                  <Text style={styles.emoji}>{mood.emoji}</Text>
+                  <Text style={[styles.cardLabel, isSelected && styles.cardLabelSelected]}>
+                    {mood.label}
+                  </Text>
+                </View>
               </Pressable>
             );
           })}
@@ -164,24 +166,26 @@ const styles = StyleSheet.create({
     borderColor: CARD_BORDER,
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
+  },
+  cardInner: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardSelected: {
     backgroundColor: CARD_SELECTED_BG,
     borderColor: CARD_SELECTED_BORDER,
   },
   emoji: {
-    fontSize: 32,
+    fontSize: 30,
     textAlign: "center",
-    alignSelf: "center",
+    marginBottom: 5,
   },
   cardLabel: {
     fontSize: 12,
     fontWeight: "500",
     color: MUTED,
     textAlign: "center",
-    alignSelf: "center",
-    width: "100%",
   },
   cardLabelSelected: {
     color: PRIMARY,
