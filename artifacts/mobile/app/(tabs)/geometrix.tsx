@@ -6122,7 +6122,7 @@ export default function GeometrixScreen() {
           {/* Logo + título */}
           <View style={styles.landingHero}>
             <Image
-              source={require("@/assets/images/geometrix/cubo-4.png")}
+              source={require("@/assets/images/geometrix/cubo-3.png")}
               style={styles.landingLogo}
               contentFit="contain"
             />
