@@ -164,11 +164,15 @@ const styles = StyleSheet.create({
     backgroundColor: CARD_BG,
     borderWidth: 1.5,
     borderColor: CARD_BORDER,
-    alignItems: "center",
-    justifyContent: "center",
   },
   cardInner: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: "center",
+    justifyContent: "center",
   },
   cardSelected: {
     backgroundColor: CARD_SELECTED_BG,
