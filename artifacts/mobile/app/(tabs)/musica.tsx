@@ -546,7 +546,13 @@ export default function MiMusicaScreen() {
     <View style={styles.root}>
       {/* ── Capa de fondo (gradiente + dim) — completamente aislada del contenido ── */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1B060F" }]} />
+        <LinearGradient
+          colors={["#4A0C0C", "#27070E", "#1B060F"]}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
         {bgDim > 0.01 && (
           <View
             style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}

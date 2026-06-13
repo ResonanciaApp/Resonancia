@@ -16,6 +16,7 @@ import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
@@ -133,7 +134,14 @@ export default function ExploreScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
+    <View style={styles.root}>
+      <LinearGradient
+        colors={["#4A0C0C", "#27070E", "#1B060F"]}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
