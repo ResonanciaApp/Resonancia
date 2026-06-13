@@ -113,7 +113,9 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
                 </View>
               )}
             </View>
-            <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
+            <View style={styles.cardTitleWrap}>
+              <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
+            </View>
           </Pressable>
         ))}
       </ScrollView>
@@ -159,12 +161,20 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   durText: { fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
+  cardTitleWrap: {
+    width: CARD_W,
+    backgroundColor: "rgba(27,6,15,0.30)",
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 7,
+    marginTop: 0,
+  },
   cardTitle: {
     fontSize: 13,
     fontWeight: "700",
     color: "#FFFFFF",
     lineHeight: 17,
-    marginTop: 8,
   },
   cardCreator: { fontSize: 11, color: "rgba(242,231,228,0.45)", marginTop: 4 },
 });
