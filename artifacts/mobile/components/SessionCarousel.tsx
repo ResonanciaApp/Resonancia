@@ -24,12 +24,13 @@ type SessionCarouselProps = {
   sessions: Session[];
   isPremium: boolean;
   onPress: (s: Session) => void;
+  style?: object;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style }: SessionCarouselProps) {
   if (sessions.length === 0) return null;
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, style]}>
       <Text style={styles.sectionTitle}>{title}</Text>
       <ScrollView
         horizontal
