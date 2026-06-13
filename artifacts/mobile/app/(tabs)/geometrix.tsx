@@ -6337,7 +6337,7 @@ const styles = StyleSheet.create({
   },
   landingItemDesc: {
     fontSize: 12,
-    color: "#7A8FA8",
+    color: "#dbd1f3",
   },
   landingHint: {
     textAlign: "center",
