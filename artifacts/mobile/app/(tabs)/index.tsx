@@ -705,7 +705,7 @@ const styles = StyleSheet.create({
   intencionPlaceholder: {
     fontSize: 22,
     color: "rgba(237,225,211,0.35)",
-    fontWeight: "300",
+    fontWeight: "600",
     textAlign: "center",
     flexShrink: 1,
   },
