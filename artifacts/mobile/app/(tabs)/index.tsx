@@ -356,10 +356,18 @@ export default function HomeScreen() {
                     }}
                     style={({ pressed }) => [
                       styles.headerTabChip,
-                      sel && (tab.id === "musica" ? styles.sesMusicaChipActive : styles.headerTabChipActive),
+                      sel && tab.id === "musica" && styles.sesMusicaChipActive,
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
+                    {sel && tab.id !== "musica" && (
+                      <LinearGradient
+                        colors={["#953535", "#CE8D4D"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    )}
                     <Text style={[styles.headerTabText, sel && tab.id !== "musica" && styles.headerTabTextActive]}>
                       {tab.label}
                     </Text>
@@ -609,6 +617,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     height: 32,
+    overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.06)",
     alignItems: "center",
     justifyContent: "center",
@@ -632,9 +641,6 @@ const styles = StyleSheet.create({
   },
   sesMusicaChipActive: {
     backgroundColor: "#406EAC",
-  },
-  headerTabChipActive: {
-    backgroundColor: "#BE9650",
   },
   headerTabText: {
     fontSize: 13,
