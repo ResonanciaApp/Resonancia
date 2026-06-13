@@ -6206,6 +6206,15 @@ export default function GeometrixScreen() {
           {/* Geometrías sagradas animadas en el fondo */}
           <LandingBgGeo />
 
+          {/* Botón volver */}
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={12}
+            style={({ pressed }) => [styles.landingBackBtn, { opacity: pressed ? 0.6 : 1 }]}
+          >
+            <Feather name="arrow-left" size={22} color="rgba(244,218,213,0.75)" />
+          </Pressable>
+
           {/* Logo + título */}
           <View style={styles.landingHero}>
             <Image
@@ -6293,6 +6302,13 @@ const styles = StyleSheet.create({
     zIndex: 200,
     justifyContent: "center",
     paddingHorizontal: 24,
+  },
+  landingBackBtn: {
+    position: "absolute",
+    top: Platform.OS === "ios" ? 54 : 28,
+    left: 20,
+    zIndex: 10,
+    padding: 6,
   },
   landingHero: {
     alignItems: "center",
