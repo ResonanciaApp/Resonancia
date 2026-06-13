@@ -425,6 +425,35 @@ export default function HomeScreen2() {
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* ── INTENCIÓN ── */}
+        <Pressable
+          onPress={handleIntentionPress}
+          style={({ pressed }) => [styles.intencionCard, { opacity: pressed ? 0.82 : 1 }]}
+        >
+          <LinearGradient
+            colors={["rgba(190,150,80,0.13)", "rgba(190,150,80,0.06)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={styles.intencionInner}>
+            <Feather name="compass" size={16} color="#BE9650" style={{ marginRight: 8, marginTop: 1 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.intencionLabel}>Mi intención</Text>
+              {currentIntencion ? (
+                <Text style={styles.intencionText} numberOfLines={2}>
+                  {currentIntencion}
+                </Text>
+              ) : (
+                <Text style={styles.intencionPlaceholder}>
+                  Establece tu intención aquí
+                </Text>
+              )}
+            </View>
+            <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" style={{ marginLeft: 6 }} />
+          </View>
+        </Pressable>
+
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
         <View style={styles.header}>
@@ -571,6 +600,41 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   scroll: { flex: 1 },
+
+  // Intención
+  intencionCard: {
+    marginHorizontal: GRID_PAD,
+    marginBottom: SECTION_GAP,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.22)",
+    overflow: "hidden",
+  },
+  intencionInner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingHorizontal: 14,
+    paddingVertical: 13,
+  },
+  intencionLabel: {
+    fontSize: 10,
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    color: "#BE9650",
+    fontWeight: "600",
+    marginBottom: 3,
+  },
+  intencionText: {
+    fontSize: 14,
+    color: "#EDE1D3",
+    lineHeight: 20,
+    fontWeight: "300",
+  },
+  intencionPlaceholder: {
+    fontSize: 14,
+    color: "rgba(237,225,211,0.45)",
+    fontStyle: "italic",
+  },
 
   // Header
   header: {
