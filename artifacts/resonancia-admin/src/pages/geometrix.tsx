@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@clerk/react";
 import { toast } from "sonner";
+import { GLYPH_STRINGS } from "@/lib/glyph-strings";
 import { GripVertical, ChevronUp, ChevronDown, Eye, EyeOff, Save, RotateCcw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -94,6 +95,35 @@ function sortByOrder(rows: GeometryRow[]): GeometryRow[] {
   return [...rows].sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
+function GeometryThumbnail({ id, color }: { id: string; color?: string | null }) {
+  const svgContent = useMemo(() => {
+    const raw = GLYPH_STRINGS[id];
+    if (!raw) return null;
+    const stroke = color ?? "#D4AF37";
+    return raw.replace(/GLYPH_STROKE/g, stroke);
+  }, [id, color]);
+
+  if (!svgContent) {
+    return (
+      <div className="w-10 h-10 rounded border border-border/40 flex items-center justify-center shrink-0 bg-secondary/20">
+        <span className="text-[8px] text-muted-foreground/40 font-mono">?</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-10 h-10 rounded border border-border/30 shrink-0 bg-secondary/20 overflow-hidden flex items-center justify-center">
+      <svg
+        viewBox="0 0 100 100"
+        width="36"
+        height="36"
+        xmlns="http://www.w3.org/2000/svg"
+        dangerouslySetInnerHTML={{ __html: svgContent }}
+      />
+    </div>
+  );
+}
+
 function GeometryRowItem({
   row,
   index,
@@ -145,6 +175,9 @@ function GeometryRowItem({
           <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
         </button>
       </div>
+
+      {/* Thumbnail */}
+      <GeometryThumbnail id={row.id} color={row.color} />
 
       {/* Contenido principal */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-3 min-w-0">
