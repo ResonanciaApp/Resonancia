@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Tabs, usePathname } from "expo-router";
+import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
@@ -16,7 +16,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
-import { NotificationBell } from "@/components/NotificationBell";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import {
@@ -131,20 +130,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     }).start();
   }, [hidden, barHeight, translateY]);
 
-  // Fade del fuego: desaparece rápido al entrar a una sesión, vuelve al salir.
-  const pathname = usePathname();
-  const onSession = pathname.includes("/session/");
-  const fireOpacity = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    Animated.timing(fireOpacity, {
-      toValue: onSession ? 0 : 1,
-      duration: onSession ? 120 : 280,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start();
-  }, [onSession, fireOpacity]);
-
   return (
     <>
       {/* Tab bar principal — se desliza hacia abajo al ocultarse */}
@@ -159,14 +144,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           style={StyleSheet.absoluteFill}
         />
         <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
-
-        {/* Fuego — izquierda de la barra, sobre el gradiente */}
-        <Animated.View
-          style={[styles.fireLeft, { opacity: fireOpacity }]}
-          pointerEvents={onSession ? "none" : "auto"}
-        >
-          <NotificationBell />
-        </Animated.View>
 
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
@@ -299,14 +276,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 0.3,
     fontWeight: "500",
-  },
-  fireLeft: {
-    position: "absolute",
-    left: 6,
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
-    zIndex: 2,
   },
   miniPlayerFloat: {
     position: "absolute",

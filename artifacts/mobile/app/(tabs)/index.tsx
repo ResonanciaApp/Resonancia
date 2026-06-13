@@ -178,6 +178,16 @@ export default function HomeScreen2() {
     transform: [{ translateX: pillTranslateSV.value }],
   }));
 
+  // Fuego: fade out rápido cuando el panel de Sesiones se abre desde la derecha
+  const fireOpacity = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    Animated.timing(fireOpacity, {
+      toValue: sesionesOpen ? 0 : 1,
+      duration: sesionesOpen ? 120 : 280,
+      useNativeDriver: true,
+    }).start();
+  }, [sesionesOpen, fireOpacity]);
+
   useEffect(() => {
     const easeOut = { duration: 200, easing: Easing.out(Easing.quad) };
     if (sesionesOpen) {
@@ -348,6 +358,7 @@ export default function HomeScreen2() {
             style={styles.headerTabs}
             contentContainerStyle={styles.headerTabsContent}
           >
+
             {NAV_TABS.map((tab) => {
               const sel = tab.id === "sesiones"
                 ? sesionesOpen || (sesAncestral || sesMeditacion)
@@ -434,6 +445,13 @@ export default function HomeScreen2() {
               );
             })}
           </ScrollView>
+          {/* Fuego — derecha del header */}
+          <Animated.View
+            style={{ opacity: fireOpacity }}
+            pointerEvents={sesionesOpen ? "none" : "auto"}
+          >
+            <NotificationBell />
+          </Animated.View>
         </View>
       </View>
 
