@@ -260,24 +260,23 @@ export function NotificationBell() {
 
 const styles = StyleSheet.create({
   btn: {
-    minWidth: 40,
-    height: 40,
+    height: 32,
     borderRadius: 20,
-    backgroundColor: "rgba(244,218,213,0.10)",
+    backgroundColor: "rgba(27,6,15,0.30)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 5,
+    gap: 4,
     paddingHorizontal: 10,
   },
   num: {
     color: "#FFFFFF",
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "700",
   },
   fire: {
-    width: 18,
-    height: 18,
+    width: 14,
+    height: 14,
   },
   fireImg: {
     width: "100%",
