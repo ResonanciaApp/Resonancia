@@ -34,8 +34,12 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       prev !== pathname
     ) {
       reopenOnHome.current = false;
-      setInstant(true);
-      setIsOpen(true);
+      // Esperar a que la transición de pantalla termine antes de reabrir
+      const t = setTimeout(() => {
+        setInstant(false);
+        setIsOpen(true);
+      }, 320);
+      return () => clearTimeout(t);
     }
   }, [pathname]);
 
