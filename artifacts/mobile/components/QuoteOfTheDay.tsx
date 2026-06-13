@@ -31,6 +31,7 @@ export default function QuoteOfTheDay() {
     <View style={styles.card}>
       {/* Título dentro de la card */}
       <Text style={styles.cardTitle}>Reflexión de la semana</Text>
+      <View style={styles.titleDivider} />
 
       {/* Frase */}
       <Text
@@ -119,6 +120,13 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "rgba(255,255,255,0.55)",
     textAlign: "center",
+    marginBottom: 10,
+  },
+  titleDivider: {
+    alignSelf: "center",
+    width: 160,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.2)",
     marginBottom: 15,
   },
   quoteText: {
