@@ -607,27 +607,6 @@ export default function HomeScreen2() {
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
         />
-        {!activeFilter && (
-          <View style={{ marginBottom: SECTION_GAP }}>
-            <CoverCarousel
-              title="Tus playlist"
-              items={playlistItems}
-              onPress={(id) => router.push(`/playlist/${id}` as never)}
-            />
-          </View>
-        )}
-        {!activeFilter && (
-          <View style={{ marginBottom: SECTION_GAP }}>
-            <CoverCarousel
-              title="Tus mezclas"
-              items={mezclaItems}
-              onPress={(id) => {
-                const preset = presets.find((p) => p.id === id);
-                if (preset) { loadPreset(preset); openSheet(); }
-              }}
-            />
-          </View>
-        )}
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
