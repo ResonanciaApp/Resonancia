@@ -312,7 +312,8 @@ function MixContextMenu({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <Pressable style={menuStyles.backdrop} onPress={onClose} />
+      <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} onPress={onClose} />
 
       <View style={[menuStyles.sheet, { paddingBottom: insets.bottom + 8 }]}>
         {/* Handle */}
@@ -374,6 +375,7 @@ function MixContextMenu({
           </Text>
           <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
         </Pressable>
+      </View>
       </View>
     </Modal>
   );
@@ -473,7 +475,7 @@ const styles = StyleSheet.create({
 const menuStyles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
   sheet: {
-    backgroundColor: "#151A23",
+    backgroundColor: "#0B0F14",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
