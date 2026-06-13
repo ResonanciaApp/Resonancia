@@ -4444,7 +4444,7 @@ export default function GeometrixScreen() {
                       accessibilityRole="button"
                       accessibilityLabel={`Ajustes de ${g.name}`}
                     >
-                      <Feather name="chevron-up" size={11} color="rgba(190,150,80,0.85)" />
+                      <Feather name="chevron-right" size={11} color={s.color} />
                     </Pressable>
                   </Animated.View>
                 );
@@ -4729,7 +4729,7 @@ export default function GeometrixScreen() {
                       accessibilityRole="button"
                       accessibilityLabel={`Ajustes de ${g.name}`}
                     >
-                      <Feather name="chevron-up" size={11} color="rgba(190,150,80,0.85)" />
+                      <Feather name="chevron-right" size={11} color={s.color} />
                     </Pressable>
                   </View>
                 );
@@ -6671,7 +6671,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    maxHeight: 74,
+    maxHeight: 56,
   },
   thumbsRow: {
     flexGrow: 1,
@@ -6699,19 +6699,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   thumbItem: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     borderRadius: 16,
     backgroundColor: "transparent",
     paddingVertical: 1,
     paddingHorizontal: 1,
   },
   thumbChevronBtn: {
-    width: 36,
-    height: 16,
+    width: 16,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 2,
+    marginLeft: 2,
   },
   menuBackdrop: {
     flex: 1,
