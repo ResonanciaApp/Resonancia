@@ -2137,7 +2137,6 @@ export default function GeometrixScreen() {
   const tabBarHeight = 56 + Math.round(bottomPb / 2) + bottomPb;
   const { requestHide, showMenu, hidden: menuHidden } = useTabBarVisibility();
   const bottomReserve = tabBarHeight;
-  const canvasViewRef = useRef<View>(null);
 
   // Ocultar la tab bar siempre que el usuario esté en Geometrix (landing o lienzo).
   // Se restaura automáticamente al cambiar de tab gracias al cleanup de useFocusEffect.
@@ -3216,31 +3215,12 @@ export default function GeometrixScreen() {
     });
   }, [active]);
 
-  async function exportCanvasPNG() {
-    if (!canvasViewRef.current) {
-      Alert.alert("Error", "No hay lienzo para exportar.");
-      return;
-    }
-    try {
-      const { captureRef } = await import("react-native-view-shot");
-      const { shareAsync } = await import("expo-sharing");
-      const uri = await captureRef(canvasViewRef, { format: "png", quality: 1, result: "tmpfile" });
-      await shareAsync(uri, { mimeType: "image/png", dialogTitle: "Exportar geometría" });
-    } catch {
-      Alert.alert(
-        "Exportar PNG",
-        "Para usar esta función necesitás reconstruir el dev client con el nuevo binario. Por ahora podés usar 'Pantalla inmersiva' + captura de pantalla del sistema.",
-      );
-    }
-  }
-
   // Acciones de la píldora desplegable (flecha bajo la divisora). Solo iconos.
   // `divider: true` dibuja una línea sutil ANTES del ítem (separadores de grupo).
   const pillActions: { key: string; icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; gradient?: boolean; color?: string; divider?: boolean }[] = [
     { key: "audio", icon: "volume-2", label: "Audio de fondo", onPress: () => { if (themeSession) stopTheme(); else setThemeSearchOpen(true); } },
     { key: "general", icon: "sliders", label: "Ajustes", onPress: () => setGeneralOpen(true) },
     { key: "save", icon: "save", label: "Guardar", onPress: saveComposition },
-    { key: "export", icon: "image", label: "Exportar PNG", onPress: exportCanvasPNG },
     { key: "immersive", icon: "maximize", label: "Pantalla inmersiva", onPress: () => setImmersive(true), divider: true },
     { key: "fullscreen-edit", icon: "edit-2", label: "Lienzo expandido", onPress: () => setFullscreenEdit(true) },
     { key: "guias", icon: "crosshair", label: "Guías", onPress: () => setGuidesOpen(true) },
@@ -4127,7 +4107,6 @@ export default function GeometrixScreen() {
               // exitFullscreen() limpia todos los shared values antes de cerrar.
               <GestureDetector key={gestureKey} gesture={canvasGesture}>
                 <View
-                  ref={canvasViewRef}
                   style={[styles.canvas, { width: canvasSide, height: canvasSide }]}
                 >
                 {layerSize > 0 &&
