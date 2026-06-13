@@ -113,7 +113,15 @@ function MixRow({ mix, isPlayingThis, onPress }: { mix: MixPreset; isPlayingThis
 // ── Chip de tab ───────────────────────────────────────────────────────────────
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
+      {sel && (
+        <LinearGradient
+          colors={["#D4AF37", "#E9C46A"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -1070,8 +1078,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999,
     backgroundColor: "rgba(74,12,12,0.08)",
+    overflow: "hidden",
   },
-  chipSel: { backgroundColor: "#D4AF37" },
   chipText: { fontSize: 13, fontWeight: "500", color: TEXT },
   chipTextSel: { color: "#1B060F", fontWeight: "700" },
 

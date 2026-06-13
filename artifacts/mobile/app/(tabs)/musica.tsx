@@ -180,10 +180,15 @@ const PillTab = memo(function PillTab({
 }) {
   return (
     <Pressable onPress={onPress}>
-      <View style={[
-        styles.pillTab,
-        { backgroundColor: sel ? "#D4AF37" : "rgba(79,17,30,0.30)" },
-      ]}>
+      <View style={[styles.pillTab, { backgroundColor: "rgba(79,17,30,0.30)" }]}>
+        {sel && (
+          <LinearGradient
+            colors={["#D4AF37", "#E9C46A"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
         <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {tab.label}
         </Text>
@@ -198,10 +203,15 @@ const SubTabPill = memo(function SubTabPill({
 }: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string }) {
   return (
     <Pressable onPress={onPress}>
-      <View style={[
-        styles.subTabPill,
-        { backgroundColor: sel ? "#D4AF37" : "rgba(79,17,30,0.30)" },
-      ]}>
+      <View style={[styles.subTabPill, { backgroundColor: "rgba(79,17,30,0.30)" }]}>
+        {sel && (
+          <LinearGradient
+            colors={["#D4AF37", "#E9C46A"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
         <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: sel ? "600" : "400" }]}>
           {label}
         </Text>
@@ -826,6 +836,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 32,
     borderRadius: 20,
+    overflow: "hidden",
   },
   pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
 
@@ -840,6 +851,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 32,
     borderRadius: 20,
+    overflow: "hidden",
   },
   subTabText: { fontSize: 13, letterSpacing: 0.1 },
 
