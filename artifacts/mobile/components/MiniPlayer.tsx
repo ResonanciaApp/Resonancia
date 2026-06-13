@@ -192,7 +192,7 @@ export function MiniPlayer() {
         <View style={styles.waveWrap}>
           {[wave1, wave2].map((w, i) => (
             <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveMix, {
-              opacity: w.interpolate({ inputRange: [0, 1], outputRange: [0.20, 0] }),
+              opacity: w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.20, 0] }),
               transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 1.8] }) }],
             }]} />
           ))}
@@ -232,7 +232,7 @@ export function MiniPlayer() {
         <View style={styles.waveWrap}>
           {[wave1, wave2].map((w, i) => (
             <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveSession, {
-              opacity: w.interpolate({ inputRange: [0, 1], outputRange: [0.22, 0] }),
+              opacity: w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.22, 0] }),
               transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 1.8] }) }],
             }]} />
           ))}
