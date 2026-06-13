@@ -308,7 +308,7 @@ export default function GeometrixComunidadScreen() {
         {isLoading && (
           <View style={styles.centerState}>
             <ActivityIndicator color="#D4AF37" size="large" />
-            <Text style={[styles.stateText, { color: "#BBA8E8" }]}>Cargando…</Text>
+            <Text style={[styles.stateText, { color: "#b9b1ca" }]}>Cargando…</Text>
           </View>
         )}
 
@@ -319,7 +319,7 @@ export default function GeometrixComunidadScreen() {
             <Text style={[styles.stateTitle, { color: colors.foreground }]}>
               Todavía no hay composiciones
             </Text>
-            <Text style={[styles.stateText, { color: "#BBA8E8" }]}>
+            <Text style={[styles.stateText, { color: "#b9b1ca" }]}>
               Sé el primero en compartir una creación desde "Mis creaciones".
             </Text>
           </View>

@@ -585,7 +585,7 @@ export default function GeometrixCreacionesScreen() {
 
         {/* Empty state (solo la card "Nueva" cuando no hay nada guardado) */}
         {creations.length === 0 && (
-          <Text style={[styles.emptyHint, { color: "#BBA8E8" }]}>
+          <Text style={[styles.emptyHint, { color: "#b9b1ca" }]}>
             Armá una composición en Geometrix y tocá "Guardar" para verla acá.
           </Text>
         )}
@@ -796,7 +796,7 @@ export default function GeometrixCreacionesScreen() {
             <Text style={[styles.modalTitle, { color: colors.foreground }]}>
               Compartir en comunidad
             </Text>
-            <Text style={{ fontSize: 13, color: "#BBA8E8", lineHeight: 18 }}>
+            <Text style={{ fontSize: 13, color: "#b9b1ca", lineHeight: 18 }}>
               Tu composición aparecerá en el muro de Geometrix para que otros la vean y puedan darle me gusta.
             </Text>
             <TextInput
