@@ -4432,6 +4432,20 @@ export default function GeometrixScreen() {
                         </View>
                       )}
                     </Pressable>
+                    {/* Flechita: abre ajustes personalizados para esta geometría */}
+                    <Pressable
+                      onPress={() => {
+                        setSettingsGeoId(iid);
+                        setMenuGeoId(null);
+                        setSettingsOpen(true);
+                      }}
+                      hitSlop={8}
+                      style={styles.thumbChevronBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Ajustes de ${g.name}`}
+                    >
+                      <Feather name="chevron-up" size={11} color="rgba(190,150,80,0.85)" />
+                    </Pressable>
                   </Animated.View>
                 );
               })}
@@ -4702,6 +4716,20 @@ export default function GeometrixScreen() {
                           <Feather name="eye-off" size={14} color="rgba(255,255,255,0.85)" />
                         </View>
                       )}
+                    </Pressable>
+                    {/* Flechita: abre ajustes personalizados para esta geometría */}
+                    <Pressable
+                      onPress={() => {
+                        setSettingsGeoId(iid);
+                        setMenuGeoId(null);
+                        setSettingsOpen(true);
+                      }}
+                      hitSlop={8}
+                      style={styles.thumbChevronBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Ajustes de ${g.name}`}
+                    >
+                      <Feather name="chevron-up" size={11} color="rgba(190,150,80,0.85)" />
                     </Pressable>
                   </View>
                 );
@@ -6643,7 +6671,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    maxHeight: 56,
+    maxHeight: 74,
   },
   thumbsRow: {
     flexGrow: 1,
@@ -6677,6 +6705,13 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     paddingVertical: 1,
     paddingHorizontal: 1,
+  },
+  thumbChevronBtn: {
+    width: 36,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 2,
   },
   menuBackdrop: {
     flex: 1,
