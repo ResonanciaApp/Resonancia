@@ -837,7 +837,9 @@ function GeometryLayerInner({
   const effectiveSize = size * committedMag;
   // Trazo base de 1px real: el viewBox es 0–100, así que 1px = 100 / size.
   const base1px = effectiveSize > 0 ? 100 / effectiveSize : 1;
-  const sw = base1px * (1 + safeThickness * 5);
+  // strokeMode "thin" (ajustado desde el admin) adelgaza el trazo a ~45%.
+  const thinFactor = (geo as { strokeMode?: string }).strokeMode === "thin" ? 0.45 : 1;
+  const sw = base1px * (1 + safeThickness * 5) * thinFactor;
   // Estilo del halo de aparición (shadowOpacity animado), igual que las cards.
   const glowStyle = useAnimatedStyle(() => ({ shadowOpacity: appearGlow.value }));
   // Glow efectivo: el propio de la capa se suma al general (panel maestro),
@@ -3130,9 +3132,16 @@ export default function GeometrixScreen() {
   // queda al frente. Reordenar las cards (drag) reordena las capas.
   // Cada capa activa es una INSTANCIA (`iid`): puede haber varias del mismo tipo
   // (duplicados). `geo` es la metadata base (glifo, nombre) resuelta vía `baseOf`.
+  // Mapa rápido del catálogo del servidor (tiene strokeMode, color, etc.)
+  // Fallback: getGeometry con metadata estática (sin overrides).
+  const catalogGeoMap = useMemo(
+    () => new Map(catalogGeometries.map((g) => [g.id, g])),
+    [catalogGeometries],
+  );
   const activeMetas: { iid: string; geo: GeometryMeta }[] = active
     .map((iid) => {
-      const geo = getGeometry(baseOf(iid));
+      const base = baseOf(iid);
+      const geo = catalogGeoMap.get(base) ?? getGeometry(base);
       return geo ? { iid, geo } : null;
     })
     .filter((m): m is { iid: string; geo: GeometryMeta } => m !== null);
