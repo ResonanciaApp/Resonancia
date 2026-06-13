@@ -1072,7 +1072,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     paddingHorizontal: H_PAD,
   },
-  stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(244,218,213,0.15)", marginTop: 10 },
+  stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(244,218,213,0.15)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
