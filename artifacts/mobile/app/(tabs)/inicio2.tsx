@@ -116,6 +116,20 @@ export default function HomeScreen2() {
     router.push("/intencion-onboarding" as never);
   }
 
+  const cursorOpacity = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    const blink = Animated.loop(
+      Animated.sequence([
+        Animated.delay(500),
+        Animated.timing(cursorOpacity, { toValue: 0, duration: 80, useNativeDriver: true }),
+        Animated.delay(500),
+        Animated.timing(cursorOpacity, { toValue: 1, duration: 80, useNativeDriver: true }),
+      ])
+    );
+    blink.start();
+    return () => blink.stop();
+  }, [cursorOpacity]);
+
   const featured = getFeaturedSessions();
   const featuredSession = React.useMemo(() => {
     if (!featured.length) return undefined;
@@ -432,7 +446,7 @@ export default function HomeScreen2() {
         >
           <Text style={styles.intencionSuper}>Hoy voy a…</Text>
           <View style={styles.intencionRow}>
-            <View style={styles.intencionCursor} />
+            <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
             {currentIntencion ? (
               <Text style={styles.intencionText} numberOfLines={3}>
                 {currentIntencion}
