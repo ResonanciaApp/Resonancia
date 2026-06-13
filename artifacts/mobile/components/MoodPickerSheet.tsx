@@ -168,9 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cardInner: {
-    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
   },
   cardSelected: {
     backgroundColor: CARD_SELECTED_BG,
