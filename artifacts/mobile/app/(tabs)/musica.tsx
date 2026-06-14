@@ -718,7 +718,7 @@ export default function MiMusicaScreen() {
             <View style={[styles.heroTextWrap, { paddingTop: topPad + 6 }]}>
               <Text style={styles.heroTitle}>Mezclador</Text>
               <Text style={styles.heroSubtitle}>
-                Elige tus sonidos favoritos y mézclalos a tu gusto.
+                Crea, combina y mezcla distintos sonidos de la naturaleza y el universo. Utiliza el filtro inteligente para orientar tus creaciones en base a lo que necesites en este momento.
               </Text>
             </View>
           </View>
@@ -988,10 +988,11 @@ const styles = StyleSheet.create({
   // ── Hero ────────────────────────────────────────────────────────────────────
   heroWrap: { width: "100%", overflow: "hidden" },
   heroTextWrap: {
-    position: "absolute", bottom: 12, left: 15, right: 15,
+    position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
+    alignItems: "center", justifyContent: "center",
   },
-  heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5" },
-  heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 3 },
+  heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5", textAlign: "center" },
+  heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
   pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 8 },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 6 },
