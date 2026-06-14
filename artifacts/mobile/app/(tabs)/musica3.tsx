@@ -109,7 +109,7 @@ const PillTab = memo(function PillTab({
         styles.pillTab,
         sel
           ? { backgroundColor: c + "1A", borderWidth: 1, borderColor: c + "80" }
-          : { backgroundColor: "transparent", borderWidth: 1, borderColor: "rgba(0,0,0,0.10)" },
+          : { backgroundColor: "rgba(245,244,242,1)", borderWidth: 1, borderColor: "rgba(0,0,0,0.13)" },
       ]}>
         <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? c : MUTED, fontWeight: sel ? "700" : "400" }]}>
           {tab.label}
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: 0 },
   subTabLine: {
     position: "absolute", left: 16, right: 16, bottom: 0,
     height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
