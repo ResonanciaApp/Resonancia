@@ -836,8 +836,8 @@ const styles = StyleSheet.create({
   pillTab: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 4,
+    height: 62,
+    paddingHorizontal: 12,
     borderRadius: 12,
     overflow: "hidden",
     gap: 5,
