@@ -698,30 +698,35 @@ export default function MiMusicaScreen() {
         <View style={styles.topPanel}>
 
           {/* ── Hero Banner ── */}
-          <View style={[styles.heroWrap, { height: 160 + topPad }]}>
-            <Image
-              source={require("@/assets/images/hero-mezclador.png")}
-              style={StyleSheet.absoluteFill}
-              contentFit="cover"
-              contentPosition="center"
-            />
-            {/* Crossfade generoso: universo → fondo oscuro */}
+          {/* Contenedor exterior: incluye 80px de sangría para que el fade cruce el borde */}
+          <View style={{ height: 160 + topPad + 80, marginBottom: -80 }}>
+            {/* Imagen recortada a su altura real */}
+            <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 160 + topPad, overflow: "hidden" }}>
+              <Image
+                source={require("@/assets/images/hero-mezclador.png")}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+                contentPosition="center"
+              />
+            </View>
+            {/* Máscara de fusión: cubre imagen + sangría → fade natural sin corte */}
             <LinearGradient
               colors={[
                 "rgba(27,6,15,0)",
-                "rgba(27,6,15,0.15)",
-                "rgba(27,6,15,0.50)",
-                "rgba(27,6,15,0.82)",
+                "rgba(27,6,15,0)",
+                "rgba(27,6,15,0.40)",
+                "rgba(27,6,15,0.78)",
+                "#1B060F",
                 "#1B060F",
               ]}
-              locations={[0, 0.25, 0.55, 0.80, 1]}
+              locations={[0, 0.30, 0.55, 0.72, 0.88, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            {/* Título sobre el hero */}
-            <View style={[styles.heroTextWrap, { paddingTop: topPad + 6 }]}>
+            {/* Título centrado en la zona visible de la imagen */}
+            <View style={[styles.heroTextWrap, { height: 160 + topPad, paddingTop: topPad + 6 }]}>
               <Text style={styles.heroTitle}>Mezclador</Text>
               <Text style={styles.heroSubtitle}>
                 Crea, combina y mezcla distintos sonidos de la naturaleza y el universo. Utiliza el filtro inteligente para orientar tus creaciones en base a lo que necesites en este momento.
