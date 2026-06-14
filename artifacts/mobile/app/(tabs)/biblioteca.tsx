@@ -638,18 +638,11 @@ export default function BibliotecaScreen() {
       const visibleRecent = sortedRecent.slice(0, recentLimit);
       const hasMoreRecent = sortedRecent.length > recentLimit;
 
-      const favSessions = sortSessions(SESSIONS.filter((s) => favorites.includes(s.id)));
-      const visibleFav = favSessions.slice(0, favLimit);
-      const hasMoreFav = favSessions.length > favLimit;
-
       return (
         <>
           {/* ── Escuchadas recientemente ── */}
           {listenedRecently.length > 0 && (
             <>
-              <View style={styles.recentHeader}>
-                <Text style={styles.recentSectionTitle}>Escuchadas recientemente</Text>
-              </View>
               {viewMode === "grid" ? (
                 <View style={styles.gridWrap}>
                   {visibleRecent.map((s) => (
@@ -668,36 +661,6 @@ export default function BibliotecaScreen() {
                   <Text style={styles.loadMoreText}>Cargar más</Text>
                 </Pressable>
               )}
-              {favSessions.length > 0 && <View style={styles.divider} />}
-            </>
-          )}
-
-          {/* ── Favoritos ── */}
-          {favSessions.length > 0 && (
-            <>
-              <View style={[styles.recentHeader, { marginTop: listenedRecently.length > 0 ? 4 : 0 }]}>
-                <Text style={styles.recentSectionTitle}>Favoritos</Text>
-              </View>
-              {viewMode === "grid" ? (
-                <View style={styles.gridWrap}>
-                  {visibleFav.map((s) => (
-                    <SessionCard key={s.id} session={s} width={cellW} />
-                  ))}
-                </View>
-              ) : (
-                <View style={{ paddingHorizontal: H_PAD }}>
-                  {visibleFav.map((s) => (
-                    <SessionCard key={s.id} session={s} horizontal cardBg="rgba(74,12,12,0.08)" />
-                  ))}
-                </View>
-              )}
-              {hasMoreFav && (
-                <Pressable style={styles.loadMoreBtn} onPress={() => setFavLimit((n) => n + 12)}>
-                  <Text style={styles.loadMoreText}>Cargar más</Text>
-                </Pressable>
-              )}
-            </>
-          )}
         </>
       );
     }
