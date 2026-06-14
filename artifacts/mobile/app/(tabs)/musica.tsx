@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5" },
+  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#D4AF37" },
   pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
