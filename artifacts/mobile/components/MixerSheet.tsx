@@ -171,7 +171,7 @@ export function MixerSheet() {
     fg:             isLight ? "#1A1E2B"             : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
     inputBg:        isLight ? "rgba(0,0,0,0.04)"   : "rgba(74,12,12,0.08)",
-    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"   : "rgba(74,12,12,0.35)",
+    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"   : "rgba(61,14,22,0.80)",
     footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(244,218,213,0.45)",
   };
   const { isPremium } = usePremium();
@@ -209,7 +209,7 @@ export function MixerSheet() {
 
   // Valores animados: entrada (slideIn) + fade al guardar
   const sheetOpacity = useRef(new Animated.Value(1)).current;
-  const sheetEnterY  = useRef(new Animated.Value(400)).current;
+  const sheetEnterY  = useRef(new Animated.Value(Dimensions.get("window").height)).current;
   const saveOverlayOpacity = useRef(new Animated.Value(0)).current;
 
   // PanResponder para arrastrar hacia abajo y cerrar
@@ -244,7 +244,7 @@ export function MixerSheet() {
   useEffect(() => {
     if (isSheetOpen) {
       sheetOpacity.setValue(1);
-      sheetEnterY.setValue(400);
+      sheetEnterY.setValue(Dimensions.get("window").height);
       Animated.spring(sheetEnterY, {
         toValue: 0,
         tension: 65,
@@ -792,19 +792,14 @@ const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
-    justifyContent: "flex-end",
   },
   sheet: {
-    height: Math.round(Dimensions.get("window").height * 0.93),
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    height: Dimensions.get("window").height,
     paddingHorizontal: 20,
     overflow: "hidden",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
   handleZone: {
     alignSelf: "stretch",
@@ -839,18 +834,18 @@ const styles = StyleSheet.create({
   trackRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    borderRadius: 16,
-    paddingHorizontal: 14,
+    gap: 9,
+    borderRadius: 12,
+    paddingHorizontal: 10,
     paddingVertical: 0,
-    marginBottom: 15,
+    marginBottom: 11,
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(61,14,22,0.40)" },
   headerDivider: { height: 1, marginTop: 4, marginBottom: 29, marginHorizontal: -2 },
-  thumb: { width: 56, height: 56, borderRadius: 12, overflow: "hidden", borderWidth: 1, borderColor: "rgba(244,218,213,0.50)" },
-  thumbRadius: { borderRadius: 11 },
+  thumb: { width: 42, height: 42, borderRadius: 9, overflow: "hidden", borderWidth: 1, borderColor: "rgba(244,218,213,0.50)" },
+  thumbRadius: { borderRadius: 8 },
   trackInfo: { flex: 1, justifyContent: "center" },
-  trackName: { fontSize: 15, fontWeight: "700", marginBottom: -3 },
+  trackName: { fontSize: 12, fontWeight: "700", marginBottom: -2 },
   _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",
