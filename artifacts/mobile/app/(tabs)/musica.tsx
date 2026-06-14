@@ -1015,13 +1015,13 @@ const styles = StyleSheet.create({
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
   },
-  heroTitleRow: { flexDirection: "row", alignItems: "center", paddingHorizontal: 15, marginBottom: 12 },
+  heroTitleRow: { flexDirection: "row", alignItems: "center", paddingHorizontal: 15, marginBottom: 0 },
   heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF", flex: 1 },
   introText: { fontSize: 16, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.5, textAlign: "center", textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },
   heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 999, padding: 12, alignItems: "center", justifyContent: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
-  pillRow:        { flexGrow: 0, marginTop: -4, marginBottom: -10, backgroundColor: "transparent" },
+  pillRow:        { flexGrow: 0, marginTop: -27, marginBottom: -10, backgroundColor: "transparent" },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 28, paddingBottom: 14 },
   pillTabOuter: {},
   pillTab: {
