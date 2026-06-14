@@ -676,11 +676,9 @@ export default function MiMusicaScreen() {
     <View style={styles.root}>
       {/* ── Capa de fondo (gradiente + dim) — completamente aislada del contenido ── */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        {/* Alcanza #1B060F antes del borde del hero (la fase rojiza queda detrás
-            de la imagen) y lo mantiene → el hero se funde sin línea de corte */}
         <LinearGradient
-          colors={["#4A0C0C", "#27070E", "#1B060F", "#1B060F"]}
-          locations={[0, 0.11, 0.20, 1]}
+          colors={["#4A0C0C", "#27070E", "#1B060F"]}
+          locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
@@ -707,14 +705,15 @@ export default function MiMusicaScreen() {
               contentFit="cover"
               contentPosition="center"
             />
-            {/* Máscara de fusión — termina en el mismo color del fondo */}
+            {/* Máscara de fusión — el color final (#36090D) es la interpolación exacta
+                del degradado de fondo en la posición Y del borde del hero (~28% pantalla) */}
             <LinearGradient
               colors={[
-                "rgba(27,6,15,0)",
-                "rgba(27,6,15,0.10)",
-                "rgba(27,6,15,0.50)",
-                "rgba(27,6,15,0.85)",
-                "#1B060F",
+                "rgba(54,9,13,0)",
+                "rgba(54,9,13,0.10)",
+                "rgba(54,9,13,0.50)",
+                "rgba(54,9,13,0.85)",
+                "#36090D",
               ]}
               locations={[0, 0.28, 0.56, 0.80, 1]}
               start={{ x: 0, y: 0 }}
