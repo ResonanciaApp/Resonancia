@@ -1043,7 +1043,7 @@ const styles = StyleSheet.create({
     shadowRadius: 7,
     elevation: 3,
   },
-  pillTabLabel: { fontSize: 11, letterSpacing: 0.1 },
+  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "600" },
 
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
