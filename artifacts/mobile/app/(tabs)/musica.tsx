@@ -536,7 +536,7 @@ export default function MiMusicaScreen() {
     Animated.sequence([
       Animated.delay(700),
       Animated.timing(introTextAnim, { toValue: 1, duration: 1400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.delay(2000),
+      Animated.delay(1300),
       Animated.timing(introTextAnim,    { toValue: 0, duration: 1100, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
       Animated.timing(settingsIconAnim, { toValue: 1, duration: 900, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
     ]).start();
@@ -733,12 +733,15 @@ export default function MiMusicaScreen() {
             </Animated.View>
           </View>
 
-          {/* Título + ícono de ajustes — entran juntos al terminar la frase */}
-          <Animated.View style={[styles.heroTitleRow, { opacity: settingsIconAnim }]}>
-            <Text style={styles.heroTitle}>Mezclador</Text>
-            <Pressable onPress={openSettings} style={styles.heroSettingsBtn}>
-              <MaterialCommunityIcons name="tune-variant" size={16} color="#FFFFFF" />
-            </Pressable>
+          {/* Título + subtítulo + ícono de ajustes — entran juntos al terminar la frase */}
+          <Animated.View style={{ opacity: settingsIconAnim }}>
+            <View style={styles.heroTitleRow}>
+              <Text style={styles.heroTitle}>Mezclador</Text>
+              <Pressable onPress={openSettings} style={styles.heroSettingsBtn}>
+                <MaterialCommunityIcons name="tune-variant" size={16} color="#FFFFFF" />
+              </Pressable>
+            </View>
+            <Text style={styles.heroSubLabel}>Explora este universo vibracional.</Text>
           </Animated.View>
 
           {/* ── Pills de tabs principales ── */}
@@ -1016,6 +1019,7 @@ const styles = StyleSheet.create({
   introText: { fontSize: 16, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.5, textAlign: "center", textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },
   heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 999, padding: 12, alignItems: "center", justifyContent: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
+  heroSubLabel: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.65)", paddingHorizontal: 15, marginTop: 2 },
 
   pillRow:        { flexGrow: 0, marginTop: -7, marginBottom: -10, backgroundColor: "transparent" },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 28, paddingBottom: 14 },
