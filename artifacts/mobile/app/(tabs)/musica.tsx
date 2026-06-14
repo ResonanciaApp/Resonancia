@@ -674,14 +674,37 @@ export default function MiMusicaScreen() {
 
   return (
     <View style={styles.root}>
-      {/* ── Capa de fondo (gradiente + dim) — completamente aislada del contenido ── */}
+      {/* ── Capa de fondo (gradiente + imagen universo + dim) — un solo fondo continuo ── */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        {/* Degradado raíz: EL fondo único de toda la pantalla */}
         <LinearGradient
           colors={["#4A0C0C", "#27070E", "#1B060F"]}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
+        />
+        {/* Imagen del universo en la mitad superior, sobre el degradado raíz */}
+        <Image
+          source={require("@/assets/images/hero-mezclador.png")}
+          style={styles.heroBgImage}
+          contentFit="cover"
+          contentPosition="center"
+        />
+        {/* Desvanece la imagen hacia el COLOR EXACTO del bg raíz al 50% (#27070E):
+            debajo de la imagen se ve el mismo degradado raíz → sin costura */}
+        <LinearGradient
+          colors={[
+            "rgba(74,12,12,0)",
+            "rgba(74,12,12,0)",
+            "rgba(60,10,13,0.45)",
+            "rgba(45,8,13,0.85)",
+            "#27070E",
+          ]}
+          locations={[0, 0.40, 0.62, 0.82, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.heroBgImage}
         />
         {bgDim > 0.01 && (
           <View
@@ -697,32 +720,7 @@ export default function MiMusicaScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanel}>
 
-          {/* ── Hero Banner — cubre hero + pills + divisor ── */}
-          <View style={styles.heroWrap}>
-            <Image
-              source={require("@/assets/images/hero-mezclador.png")}
-              style={StyleSheet.absoluteFill}
-              contentFit="cover"
-              contentPosition="center"
-            />
-            {/* Imagen nítida en la zona superior; fade suave hasta completamente
-                opaco en el color del bg raíz a la Y del divisor (~38% pantalla) */}
-            <LinearGradient
-              colors={[
-                "rgba(54,9,13,0)",
-                "rgba(54,9,13,0)",
-                "rgba(54,9,13,0.35)",
-                "rgba(54,9,13,0.88)",
-                "#2F080E",
-              ]}
-              locations={[0, 0.50, 0.67, 0.88, 1]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-          </View>
-          {/* Spacer + título: establece el alto del hero y posiciona el título */}
+          {/* Spacer + título: la imagen del universo vive en la capa de fondo (un solo fondo) */}
           <View style={{ height: 210 + topPad, width: "100%", pointerEvents: "none" }}>
             <View style={[styles.heroTextWrap, { paddingTop: topPad + 6 }]}>
               <Text style={styles.heroTitle}>Mezclador</Text>
@@ -993,6 +991,7 @@ const styles = StyleSheet.create({
 
   // ── Hero ────────────────────────────────────────────────────────────────────
   heroWrap: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden" },
+  heroBgImage: { position: "absolute", top: 0, left: 0, right: 0, height: "50%" },
   heroTextWrap: {
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
