@@ -1006,7 +1006,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     height: 35,
     borderRadius: 20,
-    overflow: "hidden",
   },
   subTabText: { fontSize: 13, letterSpacing: 0.1 },
 
