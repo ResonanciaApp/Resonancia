@@ -534,6 +534,7 @@ export default function MiMusicaScreen() {
     introTextAnim.setValue(0);
     settingsIconAnim.setValue(0);
     Animated.sequence([
+      Animated.delay(400),
       Animated.timing(introTextAnim, { toValue: 1, duration: 1400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       Animated.delay(1300),
       Animated.timing(introTextAnim,    { toValue: 0, duration: 1100, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
