@@ -111,7 +111,6 @@ const PillTab = memo(function PillTab({
           ? { backgroundColor: c + "1A", borderWidth: 1, borderColor: c + "80" }
           : { backgroundColor: "transparent", borderWidth: 1, borderColor: "rgba(0,0,0,0.10)" },
       ]}>
-        <MaterialCommunityIcons name={tab.icon as any} size={14} color={sel ? c : MUTED} />
         <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? c : MUTED, fontWeight: sel ? "700" : "400" }]}>
           {tab.label}
         </Text>
@@ -563,7 +562,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     gap: 4,
   },
-  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "700" },
+  pillTabLabel: { fontSize: 12, letterSpacing: 0.1, fontWeight: "700" },
 
   carouselScroll:   { flexGrow: 0, marginTop: 4 },
   carouselContent:  { paddingBottom: 12, flexDirection: "row" },
