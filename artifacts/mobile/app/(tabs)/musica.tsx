@@ -220,7 +220,7 @@ const PillTab = memo(function PillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 2, height: 5 }, shadowOpacity: 0.36, shadowRadius: 9, elevation: 6 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.36, shadowRadius: 9, elevation: 6 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
@@ -268,7 +268,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 2, height: 5 }, shadowOpacity: 0.36, shadowRadius: 9, elevation: 6 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.36, shadowRadius: 9, elevation: 6 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
