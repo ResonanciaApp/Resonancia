@@ -226,7 +226,7 @@ const PillTab = memo(function PillTab({
         <View style={styles.pillIconGlow}>
           <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#1B060F" : "#D6AD5F"} />
         </View>
-        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "rgba(255,255,255,0.50)", fontWeight: "600" }]}>
+        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#EDDFD5" }]}>
           {tab.label}
         </Text>
       </View>
@@ -302,7 +302,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
           numberOfLines={1}
           style={[
             styles.pillTabLabel,
-            { color: sel ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.50)", fontWeight: "600" },
+            { color: "#EDDFD5" },
           ]}
         >
           {tab.label}
@@ -329,7 +329,7 @@ const SubTabPill = memo(function SubTabPill({
           borderColor: "rgba(255,255,255,0.50)",
         },
       ]}>
-        <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: sel ? "700" : "500" }]}>
+        <Text style={[styles.subTabText, { color: "#EDDFD5" }]}>
           {label}
         </Text>
       </View>
@@ -990,7 +990,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
   },
-  subTabText: { fontSize: 16, letterSpacing: 0.1 },
+  subTabText: { fontSize: 13, letterSpacing: 0.1 },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
