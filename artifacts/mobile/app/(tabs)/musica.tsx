@@ -705,10 +705,16 @@ export default function MiMusicaScreen() {
               contentFit="cover"
               contentPosition="center"
             />
-            {/* Crossfade: universo → fondo oscuro */}
+            {/* Crossfade generoso: universo → fondo oscuro */}
             <LinearGradient
-              colors={["transparent", "rgba(27,6,15,0.55)", "#1B060F"]}
-              locations={[0.35, 0.72, 1]}
+              colors={[
+                "rgba(27,6,15,0)",
+                "rgba(27,6,15,0.15)",
+                "rgba(27,6,15,0.50)",
+                "rgba(27,6,15,0.82)",
+                "#1B060F",
+              ]}
+              locations={[0, 0.25, 0.55, 0.80, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
