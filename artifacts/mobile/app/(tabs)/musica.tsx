@@ -86,6 +86,18 @@ const TAB_COLORS: Record<MainTabId, string> = {
   bpm:            "#9D4EDD",
 };
 
+const TAB_TINT: Record<MainTabId, { bg: string; glow: string; border: string }> = {
+  popular:        { bg: "rgba(90,15,15,0.72)",   glow: "#C04040", border: "rgba(200,60,60,0.28)"   },
+  naturaleza:     { bg: "rgba(10,55,22,0.72)",   glow: "#16A34A", border: "rgba(30,140,60,0.28)"   },
+  ancestrales:    { bg: "rgba(70,40,5,0.72)",    glow: "#C07820", border: "rgba(180,110,20,0.28)"  },
+  sintetizadores: { bg: "rgba(8,20,72,0.72)",    glow: "#3B82F6", border: "rgba(60,130,240,0.28)"  },
+  binaurales:     { bg: "rgba(28,18,62,0.72)",   glow: "#A78BFA", border: "rgba(167,139,250,0.28)" },
+  voces:          { bg: "rgba(60,10,46,0.72)",   glow: "#C03090", border: "rgba(200,50,150,0.28)"  },
+  asmr:           { bg: "rgba(3,40,36,0.72)",    glow: "#2DD4BF", border: "rgba(45,212,191,0.28)"  },
+  ruidos:         { bg: "rgba(5,30,52,0.72)",    glow: "#38BDF8", border: "rgba(56,189,248,0.28)"  },
+  bpm:            { bg: "rgba(28,12,46,0.72)",   glow: "#9D4EDD", border: "rgba(157,78,221,0.28)"  },
+};
+
 const TAB_GRADIENTS: Record<MainTabId, { from: string; to: string }> = {
   popular:        { from: "#D6AD5F", to: "#B47344" },
   naturaleza:     { from: "#063022", to: "#16A34A" },
@@ -201,20 +213,21 @@ const PillTab = memo(function PillTab({
   isDark?: boolean;
   selBg?: string;
 }) {
+  const tint = TAB_TINT[tab.id as MainTabId];
   return (
     <Pressable
       onPress={onPress}
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.25, shadowRadius: 12, elevation: 6 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.45, shadowRadius: 12, elevation: 6 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.32)" }
+          ? { backgroundColor: tint.bg, borderWidth: 1, borderColor: tint.border }
           : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)" },
       ]}>
         {/* Ícono */}
@@ -240,8 +253,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
   sel: boolean;
   onPress: () => void;
 }) {
-  const grad = TAB_GRADIENTS[tab.id as MainTabId];
-  const glowColor = grad.to;
+  const tint = TAB_TINT[tab.id as MainTabId];
 
   return (
     <Pressable
@@ -249,7 +261,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.25, shadowRadius: 12, elevation: 6 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.45, shadowRadius: 12, elevation: 6 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
@@ -257,7 +269,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
         style={[
           styles.pillTab,
           sel
-            ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.32)" }
+            ? { backgroundColor: tint.bg, borderWidth: 1, borderColor: tint.border }
             : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)" },
         ]}
       >
