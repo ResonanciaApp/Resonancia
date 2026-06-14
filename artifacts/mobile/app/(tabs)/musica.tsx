@@ -206,32 +206,23 @@ const PillTab = memo(function PillTab({
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: "#4A0C0C", shadowColor: "#7A1515", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.55, shadowRadius: 14, elevation: 10 }
-          : { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
+          ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.45)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.50, shadowRadius: 15, elevation: 10 }
+          : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.14, shadowRadius: 7, elevation: 3 },
       ]}>
         {sel && (
-          <>
-            <LinearGradient
-              colors={["#7A1515", "#4A0C0C"]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            {/* Brillo sutil encima */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.14)", "rgba(255,255,255,0.02)", "transparent"]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-          </>
+          <LinearGradient
+            colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.02)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
         )}
         {/* Ícono */}
         <View style={styles.pillIconGlow}>
-          <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#F4DAD5" : "#FFFFFF"} />
+          <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#FFFFFF" : "rgba(255,255,255,0.65)"} />
         </View>
-        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#EDDFD5" }]}>
+        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#F4DAD5" : "rgba(255,255,255,0.50)" }]}>
           {tab.label}
         </Text>
       </View>
@@ -259,48 +250,27 @@ const DesignCPillTab = memo(function DesignCPillTab({
         style={[
           styles.pillTab,
           sel
-            ? {
-                backgroundColor: grad.from,
-                shadowColor: glowColor,
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.60,
-                shadowRadius: 18,
-                elevation: 12,
-              }
-            : { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
+            ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.45)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.50, shadowRadius: 15, elevation: 10 }
+            : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.14, shadowRadius: 7, elevation: 3 },
         ]}
       >
         {sel && (
-          <>
-            {/* Gradiente principal diagonal (from → to) */}
-            <LinearGradient
-              colors={[grad.to, grad.from]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-            {/* Brillo Aura encima — centro más claro */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.26)", "rgba(255,255,255,0.04)", "transparent"]}
-              start={{ x: 0.5, y: 0.05 }}
-              end={{ x: 0.5, y: 0.90 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-          </>
+          <LinearGradient
+            colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.02)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
         )}
         <MaterialCommunityIcons
           name={tab.icon as any}
           size={21}
-          color={sel ? "rgba(255,255,255,0.95)" : "#FFFFFF"}
+          color={sel ? "#FFFFFF" : "rgba(255,255,255,0.65)"}
         />
         <Text
           numberOfLines={1}
-          style={[
-            styles.pillTabLabel,
-            { color: "#EDDFD5" },
-          ]}
+          style={[styles.pillTabLabel, { color: sel ? "#F4DAD5" : "rgba(255,255,255,0.50)" }]}
         >
           {tab.label}
         </Text>
