@@ -696,14 +696,13 @@ export default function MiMusicaScreen() {
         <LinearGradient
           colors={[
             "rgba(39,7,14,0.65)",
-            "rgba(39,7,14,0.20)",
             "rgba(74,12,12,0)",
             "rgba(60,10,13,0.40)",
             "rgba(45,8,13,0.75)",
             "rgba(45,8,13,0.92)",
             "#27070E",
           ]}
-          locations={[0, 0.08, 0.23, 0.36, 0.50, 0.68, 1]}
+          locations={[0, 0.07, 0.20, 0.34, 0.52, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.heroBgImage}
