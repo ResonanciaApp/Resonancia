@@ -243,7 +243,7 @@ const PillTab = memo(function PillTab({
       ]}>
         {/* Ícono */}
         <View style={styles.pillIconGlow}>
-          <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? tint.glow : "rgba(255,255,255,0.65)"} />
+          <MaterialCommunityIcons name={tab.icon as any} size={23} color={sel ? tint.glow : "rgba(255,255,255,0.65)"} />
         </View>
         <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "rgba(255,255,255,0.50)" }]}>
           {tab.label}
@@ -290,7 +290,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
       >
         <MaterialCommunityIcons
           name={tab.icon as any}
-          size={21}
+          size={26}
           color={sel ? tint.glow : "rgba(255,255,255,0.65)"}
         />
         <Text
