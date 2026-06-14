@@ -686,20 +686,33 @@ export default function MiMusicaScreen() {
 
   return (
     <View style={styles.root}>
-      {/* ── Capa de fondo: degradado borgoña igual que Inicio ── */}
-      <LinearGradient
-        colors={["#4A0C0C", "#27070E", "#1B060F"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
-      {bgDim > 0.01 && (
-        <View
-          pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
+      {/* ── Capa de fondo: imagen completa de pantalla ── */}
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <Image
+          source={require("@/assets/images/mezclador-bg.jpg")}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          contentPosition="center"
         />
-      )}
+        {/* Velo oscuro en la mitad inferior para que las cards sean legibles */}
+        <LinearGradient
+          colors={[
+            "transparent",
+            "rgba(6,3,9,0.55)",
+            "rgba(6,3,9,0.82)",
+            "rgba(6,3,9,0.95)",
+          ]}
+          locations={[0.30, 0.52, 0.72, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        {bgDim > 0.01 && (
+          <View
+            style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${(bgDim * 0.55).toFixed(2)})` }]}
+          />
+        )}
+      </View>
 
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
 
