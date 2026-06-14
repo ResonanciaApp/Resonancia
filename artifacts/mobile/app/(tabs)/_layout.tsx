@@ -118,8 +118,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   // Alto total de la barra: se desliza esa distancia (+ holgura) para esconderse.
   const barHeight = 31 + extra + pb;
-  const { hidden } = useTabBarVisibility();
-  const translateY = useRef(new Animated.Value(0)).current;
+  const { hidden, showMenu } = useTabBarVisibility();
+  const translateY  = useRef(new Animated.Value(0)).current;
+  const handleOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(translateY, {
@@ -128,7 +129,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
-  }, [hidden, barHeight, translateY]);
+    Animated.timing(handleOpacity, {
+      toValue: hidden ? 1 : 0,
+      duration: 280,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [hidden, barHeight, translateY, handleOpacity]);
 
   return (
     <>
@@ -171,6 +178,32 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             );
           })}
         </View>
+      </Animated.View>
+
+      {/* Pestañita para recuperar el menú cuando está oculto */}
+      <Animated.View
+        pointerEvents={hidden ? "auto" : "none"}
+        style={{
+          position: "absolute",
+          bottom: pb + 6,
+          alignSelf: "center",
+          opacity: handleOpacity,
+        }}
+      >
+        <Pressable
+          onPress={showMenu}
+          hitSlop={12}
+          style={{
+            backgroundColor: "rgba(255,255,255,0.18)",
+            borderRadius: 999,
+            paddingHorizontal: 18,
+            paddingVertical: 5,
+            borderWidth: 0.5,
+            borderColor: "rgba(255,255,255,0.25)",
+          }}
+        >
+          <MaterialCommunityIcons name="chevron-up" size={14} color="rgba(255,255,255,0.75)" />
+        </Pressable>
       </Animated.View>
 
     </>
