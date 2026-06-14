@@ -695,11 +695,11 @@ export default function MiMusicaScreen() {
             debajo de la imagen se ve el mismo degradado raíz → sin costura */}
         <LinearGradient
           colors={[
-            "rgba(39,7,14,0.65)",
+            "rgba(39,7,14,0.85)",
             "rgba(74,12,12,0)",
-            "rgba(60,10,13,0.40)",
-            "rgba(45,8,13,0.75)",
-            "rgba(45,8,13,0.92)",
+            "rgba(60,10,13,0.60)",
+            "rgba(45,8,13,0.95)",
+            "#27070E",
             "#27070E",
           ]}
           locations={[0, 0.07, 0.20, 0.34, 0.52, 1]}
