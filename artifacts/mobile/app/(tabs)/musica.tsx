@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     shadowColor: "#FFFFFF",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.24,
-    shadowRadius: 10,
+    shadowRadius: 6,
     elevation: 6,
   },
   pillTab: {
