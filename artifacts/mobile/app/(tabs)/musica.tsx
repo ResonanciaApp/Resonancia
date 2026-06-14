@@ -81,8 +81,8 @@ const TAB_COLORS: Record<MainTabId, string> = {
   sintetizadores: "#3B82F6",
   binaurales:     "#A78BFA",
   voces:          "#FF3CAC",
-  asmr:           "#2DD4BF",
-  ruidos:         "#38BDF8",
+  asmr:           "#0D9488",
+  ruidos:         "#0284C7",
   bpm:            "#9D4EDD",
 };
 
@@ -93,8 +93,8 @@ const TAB_TINT: Record<MainTabId, { bg: string; glow: string; border: string }> 
   sintetizadores: { bg: "rgba(8,20,72,0.20)",    glow: "#3B82F6", border: "rgba(60,130,240,0.28)"  },
   binaurales:     { bg: "rgba(28,18,62,0.20)",   glow: "#A78BFA", border: "rgba(167,139,250,0.28)" },
   voces:          { bg: "rgba(60,10,46,0.20)",   glow: "#C03090", border: "rgba(200,50,150,0.28)"  },
-  asmr:           { bg: "rgba(3,40,36,0.20)",    glow: "#2DD4BF", border: "rgba(45,212,191,0.28)"  },
-  ruidos:         { bg: "rgba(5,30,52,0.20)",    glow: "#38BDF8", border: "rgba(56,189,248,0.28)"  },
+  asmr:           { bg: "rgba(3,40,36,0.20)",    glow: "#0D9488", border: "rgba(13,148,136,0.28)"  },
+  ruidos:         { bg: "rgba(5,30,52,0.20)",    glow: "#0284C7", border: "rgba(2,132,199,0.28)"   },
   bpm:            { bg: "rgba(28,12,46,0.20)",   glow: "#9D4EDD", border: "rgba(157,78,221,0.28)"  },
 };
 
@@ -112,8 +112,8 @@ const TAB_GRADIENTS: Record<MainTabId, { from: string; to: string }> = {
   sintetizadores: { from: "#08142A", to: "#3B82F6" },
   binaurales:     { from: "#1E1B3A", to: "#A78BFA" },
   voces:          { from: "#3A0D2D", to: "#FF3CAC" },
-  asmr:           { from: "#03312E", to: "#2DD4BF" },
-  ruidos:         { from: "#08253A", to: "#38BDF8" },
+  asmr:           { from: "#03312E", to: "#0D9488" },
+  ruidos:         { from: "#08253A", to: "#0284C7" },
   bpm:            { from: "#201033", to: "#9D4EDD" },
 };
 
