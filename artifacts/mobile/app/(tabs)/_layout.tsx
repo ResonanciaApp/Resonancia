@@ -2,6 +2,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
@@ -24,7 +25,27 @@ import {
 } from "@/context/TabBarVisibilityContext";
 
 const ACTIVE_COLOR = "#FFFFFF";
-const INACTIVE_COLOR = "#F4DAD5";
+const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
+const GRAD_START = "#FF6B3D";
+const GRAD_END   = "#FF9E4D";
+
+const ICON_SIZE = 23;
+
+function GradientIcon({ children }: { children: React.ReactNode }) {
+  return (
+    <MaskedView
+      style={{ width: ICON_SIZE, height: ICON_SIZE }}
+      maskElement={<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>{children}</View>}
+    >
+      <LinearGradient
+        colors={[GRAD_START, GRAD_END]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ width: ICON_SIZE, height: ICON_SIZE }}
+      />
+    </MaskedView>
+  );
+}
 const PILL_BG = "rgba(244,218,213,0.18)";
 const BAR_BORDER = "rgba(244,218,213,0.10)";
 
@@ -73,7 +94,25 @@ function TabItem({
   }, [isFocused]);
 
   const isIOS = Platform.OS === "ios";
-  const iconColor = isFocused ? ACTIVE_COLOR : INACTIVE_COLOR;
+  const labelColor = isFocused ? GRAD_END : INACTIVE_COLOR;
+
+  const iconEl = isFocused ? (
+    <GradientIcon>
+      {conf.image ? (
+        <Image source={conf.image} style={{ width: ICON_SIZE, height: ICON_SIZE }} tintColor="#000" resizeMode="contain" />
+      ) : isIOS ? (
+        <SymbolView name={conf.sfIconFill as never} tintColor="#000" size={ICON_SIZE} />
+      ) : (
+        <Feather name={conf.featherIcon as never} size={ICON_SIZE} color="#000" />
+      )}
+    </GradientIcon>
+  ) : conf.image ? (
+    <Image source={conf.image} style={{ width: ICON_SIZE, height: ICON_SIZE }} tintColor={INACTIVE_COLOR} resizeMode="contain" />
+  ) : isIOS ? (
+    <SymbolView name={conf.sfIcon as never} tintColor={INACTIVE_COLOR} size={ICON_SIZE} />
+  ) : (
+    <Feather name={conf.featherIcon as never} size={ICON_SIZE} color={INACTIVE_COLOR} />
+  );
 
   return (
     <Pressable
@@ -84,24 +123,9 @@ function TabItem({
     >
       <View style={styles.iconWrap}>
         <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
-        {conf.image ? (
-          <Image
-            source={conf.image}
-            style={{ width: 23, height: 23 }}
-            tintColor={iconColor}
-            resizeMode="contain"
-          />
-        ) : isIOS ? (
-          <SymbolView
-            name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never}
-            tintColor={iconColor}
-            size={23}
-          />
-        ) : (
-          <Feather name={conf.featherIcon as never} size={23} color={iconColor} />
-        )}
+        {iconEl}
       </View>
-      <Text style={[styles.label, { color: iconColor }]}>{conf.label}</Text>
+      <Text style={[styles.label, { color: labelColor }]}>{conf.label}</Text>
     </Pressable>
   );
 }
