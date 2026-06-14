@@ -416,10 +416,7 @@ export default function MiMusicaBlancoScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="Mis mezclas guardadas"
               >
-                <MaterialCommunityIcons name="heart" size={18} color={DARK} />
-                <Animated.View pointerEvents="none" style={[styles.heartGlow, { opacity: heartGlow }]}>
-                  <MaterialCommunityIcons name="heart" size={18} color={GOLD} />
-                </Animated.View>
+                <MaterialCommunityIcons name="cog-outline" size={20} color={DARK} />
               </Pressable>
             </View>
           </View>
