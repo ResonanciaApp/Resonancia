@@ -229,11 +229,12 @@ const PillTab = memo(function PillTab({
           pointerEvents="none"
           style={{
             position: "absolute", width: 104, height: 72, borderRadius: 20,
-            backgroundColor: "transparent",
+            backgroundColor: tint.glow + "18",
             shadowColor: tint.glow,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.60,
-            shadowRadius: 48,
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.90,
+            shadowRadius: 52,
+            elevation: 0,
           }}
         />
       )}
@@ -290,11 +291,12 @@ const DesignCPillTab = memo(function DesignCPillTab({
           pointerEvents="none"
           style={{
             position: "absolute", width: 104, height: 72, borderRadius: 20,
-            backgroundColor: "transparent",
+            backgroundColor: tint.glow + "18",
             shadowColor: tint.glow,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.60,
-            shadowRadius: 48,
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.90,
+            shadowRadius: 52,
+            elevation: 0,
           }}
         />
       )}
