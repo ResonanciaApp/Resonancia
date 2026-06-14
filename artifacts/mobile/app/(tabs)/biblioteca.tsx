@@ -661,6 +661,8 @@ export default function BibliotecaScreen() {
                   <Text style={styles.loadMoreText}>Cargar más</Text>
                 </Pressable>
               )}
+            </>
+          )}
         </>
       );
     }
