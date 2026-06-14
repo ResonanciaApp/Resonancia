@@ -577,6 +577,8 @@ export default function BibliotecaScreen() {
   const [recentViewMode, setRecentViewMode] = useState<ViewMode>("list");
   const [mixesLimit, setMixesLimit] = useState(12);
   const [geoLimit, setGeoLimit] = useState(8);
+  const [recentLimit, setRecentLimit] = useState(12);
+  const [favLimit, setFavLimit] = useState(12);
   const [searchVisible, setSearchVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
   const [nombreVisible, setNombreVisible] = useState(false);
@@ -587,7 +589,7 @@ export default function BibliotecaScreen() {
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
 
   // Reset paginación al cambiar de tab
-  useEffect(() => { setMixesLimit(12); setGeoLimit(8); }, [activeTab]);
+  useEffect(() => { setMixesLimit(12); setGeoLimit(8); setRecentLimit(12); setFavLimit(12); }, [activeTab]);
 
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
@@ -606,7 +608,6 @@ export default function BibliotecaScreen() {
       seen.add(h.sessionId);
       const s = getSessionById(h.sessionId);
       if (s) result.push(s);
-      if (result.length === 10) break;
     }
     return result;
   }, [history]);
@@ -625,21 +626,20 @@ export default function BibliotecaScreen() {
   const renderContent = () => {
     // ── Modo general (sin tab seleccionado) ──────────────────────────────────
     if (activeTab === null) {
-      const sortedFolders = [...userFolders].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      const sortedUserPl = [...userPlaylists].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      const visibleRecent = listenedRecently.slice(0, recentLimit);
+      const hasMoreRecent = listenedRecently.length > recentLimit;
+      const favSessions = SESSIONS.filter((s) => favorites.includes(s.id));
+      const visibleFav = favSessions.slice(0, favLimit);
+      const hasMoreFav = favSessions.length > favLimit;
       return (
         <>
           {/* ── Escuchadas recientemente ── */}
           {listenedRecently.length > 0 && (
             <>
               <View style={styles.recentHeader}>
-                <Text style={styles.generalSectionLabel}>Escuchadas recientemente</Text>
+                <Text style={styles.recentSectionTitle}>Escuchadas recientemente</Text>
                 <Pressable
                   hitSlop={10}
                   onPress={() => setRecentViewMode((v) => v === "list" ? "grid" : "list")}
@@ -653,88 +653,42 @@ export default function BibliotecaScreen() {
               </View>
               {recentViewMode === "grid" ? (
                 <View style={styles.gridWrap}>
-                  {listenedRecently.map((s) => (
-                    <SessionCard
-                      key={s.id}
-                      session={s}
-                      width={cellW}
-                    />
+                  {visibleRecent.map((s) => (
+                    <SessionCard key={s.id} session={s} width={cellW} />
                   ))}
                 </View>
               ) : (
                 <View style={{ paddingHorizontal: H_PAD }}>
-                  {listenedRecently.map((s) => (
-                    <SessionCard
-                      key={s.id}
-                      session={s}
-                      horizontal
-                      cardBg="rgba(74,12,12,0.08)"
-                    />
+                  {visibleRecent.map((s) => (
+                    <SessionCard key={s.id} session={s} horizontal cardBg="rgba(74,12,12,0.08)" />
                   ))}
                 </View>
               )}
-              <View style={styles.divider} />
+              {hasMoreRecent && (
+                <Pressable style={styles.loadMoreBtn} onPress={() => setRecentLimit((n) => n + 12)}>
+                  <Text style={styles.loadMoreText}>Cargar más</Text>
+                </Pressable>
+              )}
+              {favSessions.length > 0 && <View style={styles.divider} />}
             </>
           )}
 
-          {/* Carpetas + playlists del usuario + oficiales */}
-          {sortedFolders.map((folder) => (
-            <FolderRow key={folder.id} folder={folder} onPress={() => router.push(`/carpeta/${folder.id}` as never)} />
-          ))}
-          {sortedUserPl.map((pl) => (
-            <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
-          ))}
-          {PLAYLISTS.map((pl) => (
-            <PlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
-          ))}
-
-          {/* Mezclas */}
-          {presets.length > 0 && (
+          {/* ── Favoritos ── */}
+          {favSessions.length > 0 && (
             <>
-              <Text style={styles.generalSectionLabel}>Mezclas</Text>
-              {presets.map((mix) => (
-                <MixRow
-                  key={mix.id}
-                  mix={mix}
-                  isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-                  onPress={() => loadMix(mix)}
-                />
-              ))}
-            </>
-          )}
-
-          {/* Geometrix */}
-          {geometrixCreations.length > 0 && (
-            <>
-              <Text style={styles.generalSectionLabel}>Geometrix</Text>
-              {geometrixCreations.map((c) => (
-                <GeometrixRow
-                  key={c.id}
-                  creation={c}
-                  onPress={() =>
-                    router.navigate({
-                      pathname: "/(tabs)/geometrix",
-                      params: { load: c.id },
-                    } as never)
-                  }
-                />
-              ))}
-            </>
-          )}
-
-          {/* Resonadores */}
-          {resonadores.length > 0 && (
-            <>
-              <Text style={styles.generalSectionLabel}>Resonadores</Text>
-              {resonadores.map((r) => (
-                <ResonadorRow
-                  key={r.id}
-                  name={r.name}
-                  photo={r.photo}
-                  role={r.role}
-                  onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
-                />
-              ))}
+              <View style={[styles.recentHeader, { marginTop: listenedRecently.length > 0 ? 4 : 0 }]}>
+                <Text style={styles.recentSectionTitle}>Favoritos</Text>
+              </View>
+              <View style={{ paddingHorizontal: H_PAD }}>
+                {visibleFav.map((s) => (
+                  <SessionCard key={s.id} session={s} horizontal cardBg="rgba(74,12,12,0.08)" />
+                ))}
+              </View>
+              {hasMoreFav && (
+                <Pressable style={styles.loadMoreBtn} onPress={() => setFavLimit((n) => n + 12)}>
+                  <Text style={styles.loadMoreText}>Cargar más</Text>
+                </Pressable>
+              )}
             </>
           )}
         </>
@@ -1136,7 +1090,7 @@ const styles = StyleSheet.create({
 
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
-    backgroundColor: "transparent",
+    backgroundColor: "#1B060F",
     zIndex: 10,
     paddingHorizontal: H_PAD,
   },
@@ -1310,6 +1264,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     marginTop: 20,
     marginBottom: 4,
+  },
+  recentSectionTitle: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: MUTED,
   },
   emptyState: {
     alignItems: "center",
