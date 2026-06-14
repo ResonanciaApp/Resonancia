@@ -199,8 +199,9 @@ const PillTab = memo(function PillTab({
   );
 });
 
-// ── NeonPillTab — tile oscuro con borde neón borgoña ─────────────────────────
-const NEON_RED = "#E03258";
+// ── NeonPillTab — tile oscuro borgoña con borde rojo + etiqueta debajo ───────
+const NEON_RED  = "#D63040";   // borde + ícono en estado inactivo
+const NEON_SEL  = "#D4AF37";   // dorado cuando está seleccionado
 const NeonPillTab = memo(function NeonPillTab({
   tab,
   sel,
@@ -210,65 +211,30 @@ const NeonPillTab = memo(function NeonPillTab({
   sel: boolean;
   onPress: () => void;
 }) {
-  const glowAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(glowAnim, {
-      toValue: sel ? 1 : 0,
-      duration: 220,
-      useNativeDriver: false,
-    }).start();
-  }, [sel, glowAnim]);
-
-  const borderColor = glowAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(224,50,88,0.55)", "rgba(212,175,55,1)"],
-  });
-  const bgColor = glowAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(10,2,5,0.92)", "rgba(212,175,55,0.18)"],
-  });
-
   return (
     <Pressable onPress={onPress} style={styles.neonTabOuter}>
-      <Animated.View
+      {/* Tile cuadrado */}
+      <View
         style={[
-          styles.neonTab,
-          {
-            backgroundColor: bgColor,
-            borderColor,
-            shadowColor: sel ? "#D4AF37" : NEON_RED,
-          },
+          styles.neonTile,
+          sel
+            ? { borderColor: NEON_SEL, backgroundColor: "rgba(212,175,55,0.12)", shadowColor: NEON_SEL }
+            : { borderColor: NEON_RED,  backgroundColor: "#1C0508",              shadowColor: NEON_RED },
         ]}
       >
-        {/* Glow interior sutil */}
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              borderRadius: 18,
-              borderWidth: 1,
-              borderColor: sel ? "rgba(212,175,55,0.15)" : "rgba(224,50,88,0.10)",
-            },
-          ]}
-          pointerEvents="none"
-        />
         <MaterialCommunityIcons
           name={tab.icon as any}
-          size={20}
-          color={sel ? "#D4AF37" : NEON_RED}
-          style={sel ? styles.neonIconSel : styles.neonIconUnsel}
+          size={22}
+          color={sel ? NEON_SEL : NEON_RED}
         />
-        <Text
-          numberOfLines={1}
-          style={[
-            styles.neonTabLabel,
-            { color: sel ? "#D4AF37" : "rgba(224,50,88,0.85)" },
-          ]}
-        >
-          {tab.label}
-        </Text>
-      </Animated.View>
+      </View>
+      {/* Etiqueta debajo del tile */}
+      <Text
+        numberOfLines={1}
+        style={[styles.neonTabLabel, { color: sel ? NEON_SEL : "#FFFFFF" }]}
+      >
+        {tab.label}
+      </Text>
     </Pressable>
   );
 });
@@ -943,33 +909,28 @@ const styles = StyleSheet.create({
   pillTabLabel: { fontSize: 11, letterSpacing: 0.1 },
 
   // ── NeonPillTab ──────────────────────────────────────────────────────────────
-  neonTabOuter: {},
-  neonTab: {
+  neonTabOuter: {
+    alignItems: "center",
+    gap: 7,
+  },
+  neonTile: {
     alignItems: "center",
     justifyContent: "center",
-    width: 72,
-    height: 72,
+    width: 70,
+    height: 70,
     borderRadius: 18,
     borderWidth: 1.5,
-    gap: 5,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.75,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOpacity: 0.55,
+    shadowRadius: 7,
+    elevation: 5,
   },
-  neonIconUnsel: {
-    shadowColor: "#E03258",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 6,
+  neonTabLabel: {
+    fontSize: 11,
+    letterSpacing: 0.1,
+    fontWeight: "500",
+    textAlign: "center",
   },
-  neonIconSel: {
-    shadowColor: "#D4AF37",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 6,
-  },
-  neonTabLabel: { fontSize: 10, letterSpacing: 0.2, fontWeight: "600" },
 
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
