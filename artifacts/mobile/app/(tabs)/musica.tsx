@@ -697,31 +697,33 @@ export default function MiMusicaScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanel}>
 
-          {/* ── Hero Banner ── */}
-          <View style={[styles.heroWrap, { height: 210 + topPad }]}>
+          {/* ── Hero Banner — cubre hero + pills + divisor ── */}
+          <View style={styles.heroWrap}>
             <Image
               source={require("@/assets/images/hero-mezclador.png")}
               style={StyleSheet.absoluteFill}
               contentFit="cover"
               contentPosition="center"
             />
-            {/* Lógica Calm: imagen nítida ~58%, fade suave solo en el tercio inferior.
-                Color final = interpolación del bg al ~30% pantalla (borde del hero) */}
+            {/* Imagen nítida en la zona superior; fade suave; final semi-opaco
+                para que el universo se transluzca sutilmente en la zona de tabs */}
             <LinearGradient
               colors={[
                 "rgba(54,9,13,0)",
                 "rgba(54,9,13,0)",
                 "rgba(54,9,13,0.35)",
-                "rgba(54,9,13,0.80)",
-                "#36090D",
+                "rgba(54,9,13,0.72)",
+                "rgba(54,9,13,0.88)",
               ]}
-              locations={[0, 0.58, 0.74, 0.90, 1]}
+              locations={[0, 0.50, 0.67, 0.82, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            {/* Título centrado en la zona visible */}
+          </View>
+          {/* Spacer + título: establece el alto del hero y posiciona el título */}
+          <View style={{ height: 210 + topPad, width: "100%", pointerEvents: "none" }}>
             <View style={[styles.heroTextWrap, { paddingTop: topPad + 6 }]}>
               <Text style={styles.heroTitle}>Mezclador</Text>
             </View>
@@ -990,7 +992,7 @@ const styles = StyleSheet.create({
   },
 
   // ── Hero ────────────────────────────────────────────────────────────────────
-  heroWrap: { width: "100%", overflow: "hidden" },
+  heroWrap: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden" },
   heroTextWrap: {
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
