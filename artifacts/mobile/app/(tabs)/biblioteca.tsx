@@ -985,7 +985,13 @@ export default function BibliotecaScreen() {
       <SacredBackground variant="solid" />
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+      <LinearGradient
+        colors={["#4A0C0C", "#27070E", "#1B060F"]}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}
+      >
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
@@ -1032,7 +1038,7 @@ export default function BibliotecaScreen() {
         )}
 
         <View style={styles.stickyDivider} />
-      </View>
+      </LinearGradient>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
       <ScrollView
@@ -1090,7 +1096,6 @@ const styles = StyleSheet.create({
 
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
-    backgroundColor: "#1B060F",
     zIndex: 10,
     paddingHorizontal: H_PAD,
   },
