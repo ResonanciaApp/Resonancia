@@ -393,18 +393,13 @@ export default function MiMusicaBlancoScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories]);
 
   return (
-    <View style={styles.root}>
+    <ImageBackground source={BG_HEADER} style={styles.root} resizeMode="cover">
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
-        <ImageBackground
-          source={BG_HEADER}
-          style={[styles.topPanel, { paddingTop: topPad + 12 }]}
-          imageStyle={styles.topPanelImg}
-          resizeMode="cover"
-        >
+        <View style={[styles.topPanel, { paddingTop: topPad + 12 }]}>
 
           {/* ── Header ── */}
           <View style={styles.header}>
@@ -497,7 +492,7 @@ export default function MiMusicaBlancoScreen() {
             <View style={styles.separator} />
           )}
 
-        </ImageBackground>
+        </View>
 
         {/* ── Scroll principal ── */}
         <ScrollView
@@ -536,24 +531,16 @@ export default function MiMusicaBlancoScreen() {
         ))}
       </View>
 
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  root:  { flex: 1, backgroundColor: "#FFFFFF" },
+  root:  { flex: 1 },
   inner: { flex: 1, backgroundColor: "transparent" },
 
   topPanel: {
     backgroundColor: "transparent",
-  },
-  topPanelImg: {
-    resizeMode: "cover",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    opacity: 0.92,
   },
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
