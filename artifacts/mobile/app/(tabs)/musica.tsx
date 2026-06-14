@@ -93,6 +93,18 @@ const MAIN_TABS: {
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
+const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
+  popular:        ["#4A0C0C", "#27070E", "#1B060F"],
+  naturaleza:     ["#0E2416", "#0B1A10", "#1B060F"],
+  ancestrales:    ["#2A1A06", "#1E1204", "#1B060F"],
+  sintetizadores: ["#061A2E", "#041220", "#1B060F"],
+  binaurales:     ["#130825", "#0D0619", "#1B060F"],
+  voces:          ["#250810", "#1A060C", "#1B060F"],
+  asmr:           ["#062018", "#041510", "#1B060F"],
+  ruidos:         ["#081620", "#060F18", "#1B060F"],
+  bpm:            ["#201A04", "#161302", "#1B060F"],
+};
+
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
   naturaleza:     ["#3B4933", "#303E27"],
@@ -329,7 +341,7 @@ export default function MezcladorScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
           <LinearGradient
-            colors={["#4A0C0C", "#27070E", "#1B060F"]}
+            colors={TAB_HEADER_GRADIENT[mainTab]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[styles.topPanel, { paddingTop: topPad + 2 }]}
