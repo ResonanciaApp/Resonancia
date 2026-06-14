@@ -658,11 +658,6 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               )}
-              {hasMoreRecent && (
-                <Pressable style={styles.loadMoreBtn} onPress={() => setRecentLimit((n) => n + 5)}>
-                  <Text style={styles.loadMoreText}>Cargar más</Text>
-                </Pressable>
-              )}
             </>
           )}
 
