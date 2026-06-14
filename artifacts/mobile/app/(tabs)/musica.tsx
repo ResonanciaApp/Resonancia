@@ -191,7 +191,7 @@ const PillTab = memo(function PillTab({
         <View style={styles.pillIconGlow}>
           <MaterialCommunityIcons name={tab.icon as any} size={18} color="#D6AD5F" />
         </View>
-        <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: "600" }]}>
+        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: "600" }]}>
           {tab.label}
         </Text>
       </View>
@@ -836,8 +836,8 @@ const styles = StyleSheet.create({
   pillTab: {
     alignItems: "center",
     justifyContent: "center",
+    width: 80,
     height: 62,
-    paddingHorizontal: 12,
     borderRadius: 12,
     overflow: "hidden",
     gap: 5,
