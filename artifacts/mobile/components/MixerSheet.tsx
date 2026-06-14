@@ -802,6 +802,8 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 2,
     borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   catTabBlockSel: {
