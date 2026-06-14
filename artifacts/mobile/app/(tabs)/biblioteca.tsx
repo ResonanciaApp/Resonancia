@@ -1212,7 +1212,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
     paddingHorizontal: H_PAD,
-    paddingVertical: 10,
+    height: 62,
+    marginBottom: 7,
   },
   rowThumb: {
     width: 56, height: 56,
@@ -1284,8 +1285,8 @@ const styles = StyleSheet.create({
 
   // ── Resonadores ─────────────────────────────────────────────────────────────
   resonadorAvatar: {
-    width: 52, height: 52,
-    borderRadius: 26,
+    width: 70, height: 62,
+    borderRadius: 8,
     backgroundColor: "rgba(212,175,55,0.12)",
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
