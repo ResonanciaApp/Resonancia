@@ -38,10 +38,10 @@ const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
 ];
 
 const { width: SCREEN_W } = Dimensions.get("window");
-const COLS = 3;
 const H_PAD = 16;
-const CARD_GAP = 10;
-const CARD_W = Math.floor((SCREEN_W - H_PAD * 2 - CARD_GAP * (COLS - 1)) / COLS);
+const CARD_GAP = 12;
+// ~2.2 tarjetas visibles → indica que hay más para deslizar
+const CARD_W = Math.floor(SCREEN_W / 2.2 - CARD_GAP);
 const CARD_H = Math.floor(CARD_W * 4 / 3);
 
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
@@ -200,7 +200,14 @@ export default function EscenasMixer() {
           {/* ── Sección escenas ── */}
           <Text style={styles.sectionTitle}>Escenas</Text>
 
-          <View style={styles.grid}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.slider}
+            decelerationRate="fast"
+            snapToInterval={CARD_W + CARD_GAP}
+            snapToAlignment="start"
+          >
             {IMAGE_SCENES.map((scene) => {
               const active = selectedId === scene.id;
               return (
@@ -217,7 +224,7 @@ export default function EscenasMixer() {
                     />
                     {active && (
                       <View style={styles.activeOverlay}>
-                        <Feather name="check-circle" size={26} color="#FFF" />
+                        <Feather name="check-circle" size={28} color="#FFF" />
                       </View>
                     )}
                     {!scene.image && (
@@ -230,7 +237,7 @@ export default function EscenasMixer() {
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
 
           <Text style={styles.hint}>
             Toca una escena para previsualizarla antes de elegirla.
@@ -371,21 +378,22 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  grid: {
+  slider: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    paddingHorizontal: H_PAD,
+    paddingBottom: 4,
     gap: CARD_GAP,
   },
   cardWrap: { width: CARD_W, alignItems: "center" },
   card: {
     width: CARD_W,
     height: CARD_H,
-    borderRadius: 14,
+    borderRadius: 16,
     overflow: "hidden",
     backgroundColor: "#222",
   },
   cardActive: {
-    borderWidth: 2.5,
+    borderWidth: 3,
     borderColor: "#D4AF37",
   },
   activeOverlay: {
