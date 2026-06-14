@@ -963,8 +963,8 @@ const styles = StyleSheet.create({
   heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5", textAlign: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
-  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 8, backgroundColor: "transparent" },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 16, paddingBottom: 2 },
+  pillRow:        { flexGrow: 0, marginTop: 8, marginBottom: -10, backgroundColor: "transparent" },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 16, paddingBottom: 14 },
   pillTabOuter: {},
   pillTab: {
     alignItems: "center",
