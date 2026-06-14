@@ -21,11 +21,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { SessionCard } from "@/components/SessionCard";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { SessionCarousel } from "@/components/SessionCarousel";
 import { useMixer, type MixPreset } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { useLoadMix } from "@/hooks/useLoadMix";
@@ -47,7 +47,7 @@ const DARK_BLUE = "#27070E";
 const TEXT = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
 
-type LibTab = "playlists" | "mezclas" | "geometrix" | "resonadores";
+type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
@@ -55,6 +55,7 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "playlists",   label: "Playlist" },
   { id: "mezclas",     label: "Mezclas" },
   { id: "geometrix",   label: "Geometrix" },
+  { id: "favoritos",   label: "Favoritos" },
   { id: "resonadores", label: "Resonadores" },
 ];
 
@@ -573,6 +574,7 @@ export default function BibliotecaScreen() {
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [recentViewMode, setRecentViewMode] = useState<ViewMode>("list");
   const [mixesLimit, setMixesLimit] = useState(12);
   const [geoLimit, setGeoLimit] = useState(8);
   const [searchVisible, setSearchVisible] = useState(false);
@@ -592,7 +594,7 @@ export default function BibliotecaScreen() {
   const { presets, loadedPresetId, isPlaying: mixerPlaying } = useMixer();
   const loadMix = useLoadMix();
 
-  const { history, playSession } = usePlayer();
+  const { history, favorites } = usePlayer();
   const { isPremium } = usePremium();
 
   const listenedRecently = useMemo(() => {
@@ -629,8 +631,52 @@ export default function BibliotecaScreen() {
       const sortedUserPl = [...userPlaylists].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
       return (
         <>
+          {/* ── Escuchadas recientemente ── */}
+          {listenedRecently.length > 0 && (
+            <>
+              <View style={styles.recentHeader}>
+                <Text style={styles.generalSectionLabel}>Escuchadas recientemente</Text>
+                <Pressable
+                  hitSlop={10}
+                  onPress={() => setRecentViewMode((v) => v === "list" ? "grid" : "list")}
+                  style={styles.viewToggleBtn}
+                >
+                  {recentViewMode === "list"
+                    ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
+                    : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
+                  }
+                </Pressable>
+              </View>
+              {recentViewMode === "grid" ? (
+                <View style={styles.gridWrap}>
+                  {listenedRecently.map((s) => (
+                    <SessionCard
+                      key={s.id}
+                      session={s}
+                      width={cellW}
+                    />
+                  ))}
+                </View>
+              ) : (
+                <View style={{ paddingHorizontal: H_PAD }}>
+                  {listenedRecently.map((s) => (
+                    <SessionCard
+                      key={s.id}
+                      session={s}
+                      horizontal
+                      cardBg="rgba(74,12,12,0.08)"
+                    />
+                  ))}
+                </View>
+              )}
+              <View style={styles.divider} />
+            </>
+          )}
+
           {/* Carpetas + playlists del usuario + oficiales */}
           {sortedFolders.map((folder) => (
             <FolderRow key={folder.id} folder={folder} onPress={() => router.push(`/carpeta/${folder.id}` as never)} />
@@ -894,6 +940,42 @@ export default function BibliotecaScreen() {
       );
     }
 
+    if (activeTab === "favoritos") {
+      const favSessions = SESSIONS.filter((s) => favorites.includes(s.id));
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      if (favSessions.length === 0) {
+        return (
+          <View style={styles.emptyState}>
+            <Feather name="heart" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.emptyTitle}>Tus favoritos aparecerán aquí</Text>
+            <Text style={styles.emptySub}>Toca el corazón en cualquier sesión para guardarla aquí.</Text>
+          </View>
+        );
+      }
+      if (viewMode === "grid") {
+        return (
+          <View style={styles.gridWrap}>
+            {favSessions.map((s) => (
+              <SessionCard key={s.id} session={s} width={cellW} />
+            ))}
+          </View>
+        );
+      }
+      return (
+        <View style={{ paddingHorizontal: H_PAD }}>
+          {favSessions.map((s) => (
+            <SessionCard
+              key={s.id}
+              session={s}
+              horizontal
+              cardBg="rgba(74,12,12,0.08)"
+            />
+          ))}
+        </View>
+      );
+    }
+
     if (activeTab === "resonadores") {
       if (resonadores.length === 0) {
         return (
@@ -1004,20 +1086,6 @@ export default function BibliotecaScreen() {
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── ESCUCHADAS RECIENTEMENTE ── */}
-        {listenedRecently.length > 0 && (
-          <>
-            <SessionCarousel
-              style={{ marginTop: 10 }}
-              title="Escuchadas recientemente"
-              sessions={listenedRecently}
-              isPremium={isPremium}
-              onPress={(s) => { playSession(s); router.push("/player" as never); }}
-            />
-            <View style={styles.divider} />
-          </>
-        )}
-
         <AnimatedTabContent
           key={activeTab ?? "general"}
           animType={
@@ -1124,6 +1192,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     paddingBottom: 10,
+  },
+  recentHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    paddingBottom: 8,
   },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
