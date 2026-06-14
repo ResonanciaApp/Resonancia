@@ -71,7 +71,7 @@ const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
   ruidos:            "volume-vibrate",
 };
 
-type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores";
+type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "binaurales" | "voces" | "asmr" | "ruidos" | "bpm";
 
 const MAIN_TABS: {
   id: MainTabId;
@@ -80,10 +80,15 @@ const MAIN_TABS: {
   color: string;
   categories: SoundCategoryId[] | null;
 }[] = [
-  { id: "popular",        label: "Todos",     icon: "music-note-eighth", color: "#1A1E2B", categories: null },
-  { id: "naturaleza",     label: "Naturales", icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
-  { id: "ancestrales",    label: "Sagrados",  icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
-  { id: "sintetizadores", label: "Digital",   icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio", "frecuencias"] },
+  { id: "popular",        label: "Todos",      icon: "music-note-eighth", color: "#1A1E2B", categories: null },
+  { id: "naturaleza",     label: "Naturales",  icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
+  { id: "ancestrales",    label: "Sagrados",   icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
+  { id: "sintetizadores", label: "Digital",    icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
+  { id: "binaurales",     label: "Binaurales", icon: "sine-wave",         color: "#4A60C0", categories: ["frecuencias"] },
+  { id: "voces",          label: "Voces",      icon: "microphone",        color: "#9060A0", categories: ["mantras"] },
+  { id: "asmr",           label: "ASMR",       icon: "headphones",        color: "#408070", categories: ["asmr"] },
+  { id: "ruidos",         label: "Ruidos",     icon: "radio",             color: "#607080", categories: ["ruidos"] },
+  { id: "bpm",            label: "BPM",        icon: "metronome",         color: "#A04040", categories: ["bpm"] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
@@ -97,10 +102,15 @@ function hexAlpha(hex: string, a: number): string {
 }
 
 const TAB_TINT: Record<MainTabId, { glow: string }> = {
-  popular:        { glow: "#9D4EDD" },
-  naturaleza:     { glow: "#16A34A" },
-  ancestrales:    { glow: "#C07820" },
-  sintetizadores: { glow: "#3B82F6" },
+  popular:        { glow: "#284a86" },
+  naturaleza:     { glow: "#43B97F" },
+  ancestrales:    { glow: "#FFB347" },
+  sintetizadores: { glow: "#7A5CFA" },
+  binaurales:     { glow: "#2DD4BF" },
+  voces:          { glow: "#FF6B6B" },
+  asmr:           { glow: "#0D9488" },
+  ruidos:         { glow: "#0EA5E9" },
+  bpm:            { glow: "#FFD166" },
 };
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
@@ -108,6 +118,11 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   naturaleza:     ["#43B97F", "#0D5C3A"],   // selva esmeralda
   ancestrales:    ["#FFB347", "#E85D04"],   // atardecer cálido
   sintetizadores: ["#7A5CFA", "#3A0CA3"],   // púrpura cósmico
+  binaurales:     ["#2DD4BF", "#0E7490"],   // brisa tropical
+  voces:          ["#FF6B6B", "#C9184A"],   // coral vibrante
+  asmr:           ["#0D9488", "#065F4A"],   // verde esmeralda profundo
+  ruidos:         ["#0EA5E9", "#0369A1"],   // azul cielo
+  bpm:            ["#FFD166", "#B8860B"],   // sol dorado
 };
 
 // ── PillTab ───────────────────────────────────────────────────────────────────
