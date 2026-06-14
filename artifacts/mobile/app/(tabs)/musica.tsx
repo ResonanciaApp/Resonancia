@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
   },
   pillTabLabel: { fontSize: 12, letterSpacing: 0.1, fontWeight: "700" },
 
-  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: 14 },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
   scroll:        { flex: 1, backgroundColor: "#EDECEA" },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
