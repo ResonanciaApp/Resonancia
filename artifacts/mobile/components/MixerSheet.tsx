@@ -548,6 +548,21 @@ export function MixerSheet() {
             </Pressable>
           </ScrollView>
 
+          {/* Modo Inmersivo */}
+          <Pressable
+            onPress={() => {
+              closeSheet();
+              router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}` as never);
+            }}
+            style={styles.immersivoBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Entrar en Modo Inmersivo"
+          >
+            <MaterialCommunityIcons name="image-filter-center-focus" size={17} color="rgba(212,175,55,0.75)" />
+            <Text style={styles.immersivoBtnText}>Modo Inmersivo</Text>
+            <MaterialCommunityIcons name="chevron-right" size={16} color="rgba(212,175,55,0.45)" />
+          </Pressable>
+
           {/* Separador sonidos / tab */}
           <View style={styles.warmSeparator} />
 
@@ -944,6 +959,29 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   modalBtnText: { fontSize: 14, fontWeight: "600" },
+
+  // ── Botón Modo Inmersivo ───────────────────────────────────────────────────
+  immersivoBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginHorizontal: 4,
+    marginTop: 4,
+    marginBottom: 2,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    borderRadius: 12,
+    backgroundColor: "rgba(212,175,55,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.12)",
+  },
+  immersivoBtnText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: "600",
+    color: "rgba(212,175,55,0.80)",
+    letterSpacing: 0.3,
+  },
 
   // ── Picker de fondo ────────────────────────────────────────────────────────
   bgPickerPanel: {
