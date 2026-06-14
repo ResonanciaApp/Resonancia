@@ -655,38 +655,27 @@ export default function MiMusicaScreen() {
 
   return (
     <View style={styles.root}>
-      {/* ── Capa de fondo (gradiente + imagen universo + dim) — un solo fondo continuo ── */}
+      {/* ── Capa de fondo: imagen completa de pantalla ── */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        {/* Degradado raíz: EL fondo único de toda la pantalla */}
-        <LinearGradient
-          colors={["#4A0C0C", "#27070E", "#1B060F"]}
-          locations={[0, 0.5, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-        {/* Imagen del universo en la mitad superior, sobre el degradado raíz */}
+        {/* Imagen cubre toda la pantalla */}
         <Image
           source={require("@/assets/images/hero-earth.png")}
-          style={styles.heroBgImage}
+          style={StyleSheet.absoluteFill}
           contentFit="cover"
           contentPosition="center"
         />
-        {/* Desvanece la imagen hacia el COLOR EXACTO del bg raíz al 50% (#27070E):
-            debajo de la imagen se ve el mismo degradado raíz → sin costura */}
+        {/* Velo oscuro en la mitad inferior para que las cards sean legibles */}
         <LinearGradient
           colors={[
-            "rgba(39,7,14,0.65)",
-            "rgba(74,12,12,0)",
-            "rgba(60,10,13,0.40)",
-            "rgba(45,8,13,0.75)",
-            "rgba(45,8,13,0.92)",
-            "#27070E",
+            "transparent",
+            "rgba(6,3,9,0.55)",
+            "rgba(6,3,9,0.82)",
+            "rgba(6,3,9,0.95)",
           ]}
-          locations={[0, 0.07, 0.20, 0.34, 0.52, 1]}
+          locations={[0.30, 0.52, 0.72, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
-          style={styles.heroBgImage}
+          style={StyleSheet.absoluteFill}
         />
         {bgDim > 0.01 && (
           <View
@@ -973,7 +962,6 @@ const styles = StyleSheet.create({
 
   // ── Hero ────────────────────────────────────────────────────────────────────
   heroWrap: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden" },
-  heroBgImage: { position: "absolute", top: 0, left: 0, right: 0, height: "60%" },
   heroTextWrap: {
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
