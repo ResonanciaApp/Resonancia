@@ -15,7 +15,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -606,10 +605,8 @@ export default function MiMusicaScreen() {
   const themeMuted   = isDark ? "#8A9AB8" : MUTED;
   const themeIconBtn = isDark ? "rgba(61,14,22,0.40)" : "rgba(0,0,0,0.05)";
 
-  const { height: screenHeight } = useWindowDimensions();
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const heroHeight = Math.round(screenHeight * 0.15) + topPad;
 
   const handleMainTab = (id: MainTabId) => {
     if (id === mainTab) return;
@@ -701,21 +698,21 @@ export default function MiMusicaScreen() {
         <View style={styles.topPanel}>
 
           {/* ── Hero Banner ── */}
-          <View style={[styles.heroWrap, { height: heroHeight }]}>
+          <View style={[styles.heroWrap, { height: 190 + topPad }]}>
             <Image
               source={require("@/assets/images/hero-mezclador.png")}
               style={StyleSheet.absoluteFill}
               contentFit="cover"
               contentPosition="center"
             />
-            {/* Máscara de fusión — color final = interpolación del bg al 15%+topPad (~20% pantalla) */}
+            {/* Máscara de fusión — color final = interpolación del bg al ~28% pantalla */}
             <LinearGradient
               colors={[
-                "rgba(60,10,13,0)",
-                "rgba(60,10,13,0.10)",
-                "rgba(60,10,13,0.50)",
-                "rgba(60,10,13,0.85)",
-                "#3C0A0D",
+                "rgba(54,9,13,0)",
+                "rgba(54,9,13,0.10)",
+                "rgba(54,9,13,0.50)",
+                "rgba(54,9,13,0.85)",
+                "#36090D",
               ]}
               locations={[0, 0.28, 0.56, 0.80, 1]}
               start={{ x: 0, y: 0 }}
