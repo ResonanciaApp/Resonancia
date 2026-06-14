@@ -698,23 +698,24 @@ export default function MiMusicaScreen() {
         <View style={styles.topPanel}>
 
           {/* ── Hero Banner ── */}
-          <View style={[styles.heroWrap, { height: 190 + topPad }]}>
+          <View style={[styles.heroWrap, { height: 210 + topPad }]}>
             <Image
               source={require("@/assets/images/hero-mezclador.png")}
               style={StyleSheet.absoluteFill}
               contentFit="cover"
               contentPosition="center"
             />
-            {/* Máscara de fusión — color final = interpolación del bg al ~28% pantalla */}
+            {/* Lógica Calm: imagen nítida ~58%, fade suave solo en el tercio inferior.
+                Color final = interpolación del bg al ~30% pantalla (borde del hero) */}
             <LinearGradient
               colors={[
                 "rgba(54,9,13,0)",
-                "rgba(54,9,13,0.10)",
-                "rgba(54,9,13,0.50)",
-                "rgba(54,9,13,0.85)",
+                "rgba(54,9,13,0)",
+                "rgba(54,9,13,0.35)",
+                "rgba(54,9,13,0.80)",
                 "#36090D",
               ]}
-              locations={[0, 0.55, 0.72, 0.88, 1]}
+              locations={[0, 0.58, 0.74, 0.90, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
