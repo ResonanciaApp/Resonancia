@@ -207,7 +207,7 @@ const PillTab = memo(function PillTab({
         styles.pillTab,
         sel
           ? { backgroundColor: "#4A0C0C", shadowColor: "#7A1515", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.55, shadowRadius: 14, elevation: 10 }
-          : { backgroundColor: "rgba(27,6,15,0.70)" },
+          : { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
       ]}>
         {sel && (
           <>
@@ -275,7 +275,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
                 shadowRadius: 18,
                 elevation: 12,
               }
-            : { backgroundColor: "rgba(27,6,15,0.70)" },
+            : { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
         ]}
       >
         {sel && (
@@ -336,11 +336,8 @@ const SubTabPill = memo(function SubTabPill({
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        { backgroundColor: "rgba(27,6,15,0.70)" },
-        sel && {
-          borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.50)",
-        },
+        { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
+        sel && { borderColor: "rgba(255,255,255,0.50)" },
       ]}>
         <Text style={[styles.subTabText, { color: "#EDDFD5" }]}>
           {label}
@@ -787,7 +784,7 @@ export default function MiMusicaScreen() {
             </View>
           ) : null}
 
-          {/* <View style={styles.stickyDivider} /> */}
+          <View style={styles.stickyDivider} />
         </View>
 
         {/* ── Scroll principal ── */}
@@ -1023,6 +1020,8 @@ const styles = StyleSheet.create({
 
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
+
+  stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginHorizontal: 15, marginTop: 6 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
