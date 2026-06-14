@@ -96,7 +96,7 @@ const COUNTS_KEY = "@resonance_sound_play_counts_m3";
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
   naturaleza:     ["#3B4933", "#303E27"],
-  ancestrales:    ["#FFB347", "#E85D04"],
+  ancestrales:    ["#A3631F", "#A3631F"],
   sintetizadores: ["#7A5CFA", "#3A0CA3"],
   binaurales:     ["#2DD4BF", "#0E7490"],
   voces:          ["#FF6B6B", "#C9184A"],
