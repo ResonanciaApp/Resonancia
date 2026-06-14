@@ -213,7 +213,7 @@ const PillTab = memo(function PillTab({
 });
 
 
-// ── DesignCPillTab — color sólido + shimmer + halo exterior ──────────────────
+// ── AuraPillTab — degradado radial centro claro → borde oscuro + halo exterior ─
 const DesignCPillTab = memo(function DesignCPillTab({
   tab,
   sel,
@@ -224,6 +224,11 @@ const DesignCPillTab = memo(function DesignCPillTab({
   onPress: () => void;
 }) {
   const color = TAB_COLORS[tab.id as MainTabId];
+  const r = parseInt(color.slice(1, 3), 16);
+  const g = parseInt(color.slice(3, 5), 16);
+  const b = parseInt(color.slice(5, 7), 16);
+  const darkBg = `rgba(${Math.max(0, r - 28)},${Math.max(0, g - 28)},${Math.max(0, b - 28)},1)`;
+
   return (
     <Pressable onPress={onPress} style={styles.pillTabOuter}>
       <View
@@ -231,31 +236,39 @@ const DesignCPillTab = memo(function DesignCPillTab({
           styles.pillTab,
           sel
             ? {
-                backgroundColor: color,
+                backgroundColor: darkBg,
                 shadowColor: color,
                 shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.75,
-                shadowRadius: 14,
-                elevation: 10,
+                shadowOpacity: 0.55,
+                shadowRadius: 18,
+                elevation: 12,
               }
             : { backgroundColor: "rgba(27,6,15,0.30)" },
         ]}
       >
         {sel && (
           <>
-            {/* Shimmer diagonal en esquina superior-izquierda */}
+            {/* Brillo central simulado — centro claro hacia abajo */}
             <LinearGradient
-              colors={["rgba(255,255,255,0.22)", "transparent"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0.75, y: 0.75 }}
+              colors={["rgba(255,255,255,0.30)", "rgba(255,255,255,0.06)", "transparent"]}
+              start={{ x: 0.5, y: 0.05 }}
+              end={{ x: 0.5, y: 0.90 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
               pointerEvents="none"
             />
-            {/* Borde interior blanco sutil */}
+            {/* Banda horizontal sutil de luz en el centro */}
+            <LinearGradient
+              colors={["transparent", "rgba(255,255,255,0.08)", "transparent"]}
+              start={{ x: 0, y: 0.42 }}
+              end={{ x: 1, y: 0.42 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+              pointerEvents="none"
+            />
+            {/* Ring interior */}
             <View
               style={[
                 StyleSheet.absoluteFill,
-                { borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.20)" },
+                { margin: 3, borderRadius: 17, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
               ]}
               pointerEvents="none"
             />
