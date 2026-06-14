@@ -685,14 +685,25 @@ export default function MiMusicaScreen() {
             style={styles.pillRow}
             contentContainerStyle={styles.pillRowContent}
           >
-            {MAIN_TABS.map((tab) => (
-              <DesignCPillTab
-                key={tab.id}
-                tab={tab}
-                sel={mainTab === tab.id}
-                onPress={() => handleMainTab(tab.id)}
-              />
-            ))}
+            {MAIN_TABS.map((tab) =>
+              tab.id === "popular" ? (
+                <PillTab
+                  key={tab.id}
+                  tab={tab}
+                  sel={mainTab === tab.id}
+                  onPress={() => handleMainTab(tab.id)}
+                  isDark={isDark}
+                  selBg={themeSelBg}
+                />
+              ) : (
+                <DesignCPillTab
+                  key={tab.id}
+                  tab={tab}
+                  sel={mainTab === tab.id}
+                  onPress={() => handleMainTab(tab.id)}
+                />
+              )
+            )}
           </ScrollView>
 
           {/* ── Sub-tabs (píldoras horizontales) ── */}
