@@ -10,6 +10,7 @@
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -39,6 +40,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
+import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID, MIXER_BG_KEY } from "@/config/immersive-presets";
 
 const TIMER_OPTIONS = [15, 30, 45, 60];
 const FREE_MIX_PER_CATEGORY = 1;
@@ -110,8 +112,54 @@ function TrackThumb({ sound }: { sound: MixSound }) {
 export function MixerSheet() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const sheetGradient: readonly [string, string, string] = ["#27070E", "#1B060F", "#1B060F"];
   const isLight = false;
+
+  // ── Fondo personalizable ──────────────────────────────────────────────────
+  const [bgPresetId,   setBgPresetId]   = useState<string>(DEFAULT_BG_PRESET_ID);
+  const [bgPickerOpen, setBgPickerOpen] = useState(false);
+  const bgPickerY = useRef(new Animated.Value(700)).current;
+  const bgBreath  = useRef(new Animated.Value(1)).current;
+
+  const activeBgPreset =
+    GRADIENT_PRESETS.find((p) => p.id === bgPresetId) ??
+    GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
+  const sheetGradient = activeBgPreset.colors;
+
+  // Cargar preset guardado
+  useEffect(() => {
+    AsyncStorage.getItem(MIXER_BG_KEY)
+      .then((id) => { if (id) setBgPresetId(id); })
+      .catch(() => {});
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Animación de "respiración" del fondo
+  useEffect(() => {
+    const anim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(bgBreath, { toValue: 0.78, duration: 5000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(bgBreath, { toValue: 1,    duration: 5000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+      ]),
+    );
+    anim.start();
+    return () => anim.stop();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const openBgPicker = () => {
+    bgPickerY.setValue(700);
+    setBgPickerOpen(true);
+    Animated.spring(bgPickerY, { toValue: 0, tension: 65, friction: 14, useNativeDriver: true }).start();
+  };
+
+  const closeBgPicker = () => {
+    Animated.timing(bgPickerY, { toValue: 700, duration: 220, easing: Easing.in(Easing.quad), useNativeDriver: true })
+      .start(() => setBgPickerOpen(false));
+  };
+
+  const selectBgPreset = (id: string) => {
+    setBgPresetId(id);
+    AsyncStorage.setItem(MIXER_BG_KEY, id).catch(() => {});
+  };
+
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
     sliderThumb:    isLight ? "#D4AF37"              : WARM.sliderThumb,
@@ -403,13 +451,14 @@ export function MixerSheet() {
           ]}
           onPress={(e) => e.stopPropagation()}
         >
-          <LinearGradient
-            colors={sheetGradient}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={styles.sheetGradient}
-            pointerEvents="none"
-          />
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: bgBreath }]} pointerEvents="none">
+            <LinearGradient
+              colors={[...sheetGradient]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={styles.sheetGradient}
+            />
+          </Animated.View>
           {/* Handle con PanResponder para arrastrar y cerrar */}
           <View style={styles.handleZone} {...panResponder.panHandlers}>
             <View style={[styles.handle, { backgroundColor: palette.handle }]} />
@@ -428,6 +477,19 @@ export function MixerSheet() {
             <Text style={[styles.title, { color: palette.fg, flex: 1 }]} numberOfLines={1}>
               {originPreset?.name ?? "Tu mezcla"}
             </Text>
+            <Pressable
+              onPress={openBgPicker}
+              hitSlop={10}
+              style={styles.headerBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Elegir fondo"
+            >
+              <MaterialCommunityIcons
+                name="palette-outline"
+                size={22}
+                color={bgPresetId !== DEFAULT_BG_PRESET_ID ? "#E9C46A" : palette.fg}
+              />
+            </Pressable>
             <Pressable
               onPress={handleClear}
               hitSlop={8}
@@ -616,6 +678,55 @@ export function MixerSheet() {
                     </Text>
                   </Pressable>
                 </View>
+          </Pressable>
+        </Animated.View>
+      )}
+      {/* ── Picker de fondo: panel deslizante in-tree ── */}
+      {bgPickerOpen && (
+        <Animated.View
+          style={[styles.bgPickerPanel, { transform: [{ translateY: bgPickerY }] }]}
+        >
+          <Pressable style={StyleSheet.absoluteFill} onPress={closeBgPicker} />
+          <Pressable
+            style={styles.bgPickerCard}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View style={styles.bgPickerHandle} />
+            <Text style={styles.bgPickerTitle}>Elige tu fondo</Text>
+
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.bgPickerGrid}
+            >
+              {GRADIENT_PRESETS.map((preset) => {
+                const sel = preset.id === bgPresetId;
+                return (
+                  <Pressable
+                    key={preset.id}
+                    onPress={() => selectBgPreset(preset.id)}
+                    style={[styles.bgPresetCard, sel && styles.bgPresetCardSel]}
+                  >
+                    <LinearGradient
+                      colors={[...preset.colors]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <Text style={styles.bgPresetEmoji}>{preset.emoji}</Text>
+                    <Text style={styles.bgPresetName} numberOfLines={1}>{preset.name}</Text>
+                    {sel && (
+                      <View style={styles.bgPresetCheck}>
+                        <Feather name="check" size={12} color="#1B060F" />
+                      </View>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+
+            <Pressable style={styles.bgPickerDone} onPress={closeBgPicker}>
+              <Text style={styles.bgPickerDoneText}>Listo</Text>
+            </Pressable>
           </Pressable>
         </Animated.View>
       )}
@@ -833,4 +944,94 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   modalBtnText: { fontSize: 14, fontWeight: "600" },
+
+  // ── Picker de fondo ────────────────────────────────────────────────────────
+  bgPickerPanel: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "flex-end",
+  },
+  bgPickerCard: {
+    backgroundColor: "#0F0308",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderTopWidth: 1,
+    borderColor: "rgba(212,175,55,0.15)",
+    paddingHorizontal: 20,
+    paddingBottom: 32,
+    maxHeight: "80%",
+  },
+  bgPickerHandle: {
+    width: 36,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: "rgba(244,218,213,0.25)",
+    alignSelf: "center",
+    marginTop: 10,
+    marginBottom: 16,
+  },
+  bgPickerTitle: {
+    color: "#F4DAD5",
+    fontSize: 17,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    marginBottom: 16,
+  },
+  bgPickerGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    paddingBottom: 8,
+  },
+  bgPresetCard: {
+    width: "30.5%",
+    height: 90,
+    borderRadius: 14,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingBottom: 7,
+    borderWidth: 1.5,
+    borderColor: "transparent",
+  },
+  bgPresetCardSel: {
+    borderColor: "#D4AF37",
+  },
+  bgPresetEmoji: {
+    fontSize: 20,
+    marginBottom: 2,
+  },
+  bgPresetName: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.80)",
+    letterSpacing: 0.2,
+    textAlign: "center",
+    paddingHorizontal: 4,
+  },
+  bgPresetCheck: {
+    position: "absolute",
+    top: 6,
+    right: 6,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#D4AF37",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bgPickerDone: {
+    marginTop: 14,
+    backgroundColor: "rgba(212,175,55,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.30)",
+    borderRadius: 14,
+    paddingVertical: 13,
+    alignItems: "center",
+  },
+  bgPickerDoneText: {
+    color: "#D4AF37",
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
 });
