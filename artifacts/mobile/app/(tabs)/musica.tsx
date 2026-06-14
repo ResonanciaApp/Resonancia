@@ -193,12 +193,22 @@ const PillTab = memo(function PillTab({
     <Pressable onPress={onPress} style={styles.pillTabOuter}>
       <View style={[styles.pillTab, { backgroundColor: sel ? undefined : "rgba(27,6,15,0.30)" }]}>
         {sel && (
-          <LinearGradient
-            colors={["#D6AD5F", "#B47344"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-          />
+          <>
+            <LinearGradient
+              colors={["#D6AD5F", "#B47344"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            {/* Ring interior igual que tabs generales */}
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                { margin: 3, borderRadius: 17, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
+              ]}
+              pointerEvents="none"
+            />
+          </>
         )}
         {/* Ícono con color degradado + glow sutil */}
         <View style={styles.pillIconGlow}>
@@ -276,7 +286,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
         )}
         <MaterialCommunityIcons
           name={tab.icon as any}
-          size={18}
+          size={21}
           color={sel ? "rgba(255,255,255,0.95)" : "#D6AD5F"}
         />
         <Text
