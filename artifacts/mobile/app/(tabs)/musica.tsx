@@ -315,9 +315,9 @@ const SubTabPill = memo(function SubTabPill({
       <View style={[
         styles.subTabPill,
         sel
-          ? { backgroundColor: tintBg ?? "rgba(0,0,0,0.50)", borderWidth: 0 }
+          ? { backgroundColor: tintBg ?? "rgba(255,255,255,0.12)", borderWidth: 0 }
           : {
-              backgroundColor: "rgba(0,0,0,0.50)",
+              backgroundColor: "rgba(255,255,255,0.08)",
               borderWidth: 1,
               borderTopColor:    "rgba(255,255,255,0.07)",
               borderBottomColor: "rgba(255,255,255,0.05)",
@@ -372,7 +372,7 @@ const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.Re
   }, []);
 
   return (
-    <Animated.View style={{ opacity }}>
+    <Animated.View style={{ opacity, backgroundColor: "transparent" }}>
       {children}
     </Animated.View>
   );
@@ -999,7 +999,7 @@ const styles = StyleSheet.create({
 
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginHorizontal: 15, marginTop: 6 },
 
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -1, zIndex: 1 },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: -1, zIndex: 1, backgroundColor: "transparent" },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
   subTabPill: {
     alignItems: "center",
