@@ -537,10 +537,8 @@ export default function MiMusicaScreen() {
       Animated.delay(700),
       Animated.timing(introTextAnim, { toValue: 1, duration: 1400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       Animated.delay(2000),
-      Animated.parallel([
-        Animated.timing(introTextAnim,    { toValue: 0, duration: 1100, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-        Animated.timing(settingsIconAnim, { toValue: 1, duration: 1100, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      ]),
+      Animated.timing(introTextAnim,    { toValue: 0, duration: 1100, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(settingsIconAnim, { toValue: 1, duration: 900, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
     ]).start();
   }, [])); // eslint-disable-line react-hooks/exhaustive-deps
   const bgPresetRef    = useRef(bgPreset);
