@@ -369,6 +369,176 @@ s2.addText("2 / 2", {
   align: "right",
 });
 
+// ─── SLIDE 3: Cortos vs Largos ───────────────────────────────────────────────
+
+const s3 = pptx.addSlide();
+s3.background = { color: BG };
+
+// Franja superior dorada
+s3.addShape(pptx.ShapeType.rect, {
+  x: 0, y: 0, w: "100%", h: 0.07,
+  fill: { color: GOLD },
+  line: { color: GOLD },
+});
+
+// Rectángulo lateral decorativo
+s3.addShape(pptx.ShapeType.rect, {
+  x: 0, y: 0, w: 0.04, h: "100%",
+  fill: { color: BG_MID },
+  line: { color: BG_MID },
+});
+
+// Título
+s3.addText("Guía para el Productor", {
+  x: 0.3, y: 0.2, w: 8, h: 0.7,
+  fontSize: 28,
+  bold: true,
+  color: GOLD,
+  fontFace: "Georgia",
+});
+
+// Subtítulo
+s3.addText("Parte 3 — Clips cortos vs Clips largos", {
+  x: 0.3, y: 0.85, w: 8, h: 0.4,
+  fontSize: 13,
+  color: MUTED,
+  fontFace: "Calibri",
+  italic: true,
+});
+
+// Línea separadora
+s3.addShape(pptx.ShapeType.line, {
+  x: 0.3, y: 1.2, w: 12.7, h: 0,
+  line: { color: BORDER, width: 1.5 },
+});
+
+// ── Columna izquierda: Cortos ──
+s3.addShape(pptx.ShapeType.rect, {
+  x: 0.3, y: 1.35, w: 5.95, h: 0.46,
+  fill: { color: BG_MID },
+  line: { color: BORDER },
+});
+s3.addText("Clips cortos  (30–40 s)", {
+  x: 0.3, y: 1.35, w: 5.95, h: 0.46,
+  fontSize: 14,
+  bold: true,
+  color: GOLD,
+  fontFace: "Georgia",
+  align: "center",
+  valign: "middle",
+});
+
+s3.addText("Bloques individuales del mezclador (SOUND_MAP)", {
+  x: 0.3, y: 1.88, w: 5.95, h: 0.3,
+  fontSize: 10,
+  color: MUTED,
+  fontFace: "Calibri",
+  italic: true,
+  align: "center",
+});
+
+const shortItems = [
+  ["Loop seamless", "Crítico — se escucha el punto de unión decenas de veces por sesión"],
+  ["Fade in/out en el archivo", "No incluir — el app controla el volumen con el slider"],
+  ["Contenido", "Un solo sonido limpio (el cuenco, el pájaro, el agua). Sin mezcla interna"],
+  ["Dinámica", "Estable y sin variación — es un loop continuo, no una composición"],
+  ["EQ / Reverb", "Tratamiento individual del instrumento. Reverb que muera antes del loop"],
+];
+
+shortItems.forEach(([label, desc], i) => {
+  s3.addText(label, {
+    x: 0.35, y: 2.28 + i * 0.72, w: 2.0, h: 0.3,
+    fontSize: 10,
+    bold: true,
+    color: ACCENT,
+    fontFace: "Calibri",
+  });
+  s3.addText(desc, {
+    x: 0.35, y: 2.54 + i * 0.72, w: 5.75, h: 0.36,
+    fontSize: 9.5,
+    color: FG,
+    fontFace: "Calibri",
+    wrap: true,
+  });
+});
+
+// Divisor vertical
+s3.addShape(pptx.ShapeType.line, {
+  x: 6.67, y: 1.35, w: 0, h: 5.8,
+  line: { color: BORDER, width: 1 },
+});
+
+// ── Columna derecha: Largos ──
+s3.addShape(pptx.ShapeType.rect, {
+  x: 6.85, y: 1.35, w: 6.1, h: 0.46,
+  fill: { color: BG_MID },
+  line: { color: BORDER },
+});
+s3.addText("Clips largos  (2–3 min)", {
+  x: 6.85, y: 1.35, w: 6.1, h: 0.46,
+  fontSize: 14,
+  bold: true,
+  color: GOLD,
+  fontFace: "Georgia",
+  align: "center",
+  valign: "middle",
+});
+
+s3.addText("Sesión completa para el reproductor inmersivo (AUDIO_MAP / AMBIENT_MAP)", {
+  x: 6.85, y: 1.88, w: 6.1, h: 0.3,
+  fontSize: 10,
+  color: MUTED,
+  fontFace: "Calibri",
+  italic: true,
+  align: "center",
+});
+
+const longItems = [
+  ["Loop seamless", "Necesario si la sesión está marcada como loop — con 2–3 min la repetición es mucho menos perceptible"],
+  ["Fade in/out en el archivo", "Sí, recomendable — arranque suave y cierre gradual forman parte de la experiencia"],
+  ["Contenido", "Mezcla interna: cuencos + pajaritos + agua equilibrados en niveles por el productor antes de exportar"],
+  ["Dinámica", "Puede evolucionar — momentos más densos, silencios, variación. Es una composición"],
+  ["EQ / Reverb", "EQ global de la mezcla terminada. Verificar mono-compatibility del resultado final"],
+];
+
+longItems.forEach(([label, desc], i) => {
+  s3.addText(label, {
+    x: 6.9, y: 2.28 + i * 0.72, w: 2.1, h: 0.3,
+    fontSize: 10,
+    bold: true,
+    color: ACCENT,
+    fontFace: "Calibri",
+  });
+  s3.addText(desc, {
+    x: 6.9, y: 2.54 + i * 0.72, w: 5.9, h: 0.36,
+    fontSize: 9.5,
+    color: FG,
+    fontFace: "Calibri",
+    wrap: true,
+  });
+});
+
+// Franja inferior
+s3.addShape(pptx.ShapeType.rect, {
+  x: 0, y: 7.35, w: "100%", h: 0.15,
+  fill: { color: BG_MID },
+  line: { color: BG_MID },
+});
+s3.addText("RESONANCIA — Casa del Cuenco", {
+  x: 0.3, y: 7.3, w: 6, h: 0.2,
+  fontSize: 8,
+  color: MUTED,
+  fontFace: "Calibri",
+  italic: true,
+});
+s3.addText("3 / 3", {
+  x: 12.5, y: 7.3, w: 0.8, h: 0.2,
+  fontSize: 8,
+  color: MUTED,
+  fontFace: "Calibri",
+  align: "right",
+});
+
 // ── Exportar ──
 await pptx.writeFile({ fileName: "exports/guia-productor.pptx" });
 console.log("✓ exports/guia-productor.pptx generado");
