@@ -87,7 +87,7 @@ const TAB_COLORS: Record<MainTabId, string> = {
 };
 
 const TAB_TINT: Record<MainTabId, { bg: string; glow: string; border: string }> = {
-  popular:        { bg: "rgba(90,15,15,0.20)",   glow: "#C04040", border: "rgba(200,60,60,0.28)"   },
+  popular:        { bg: "rgba(28,12,46,0.20)",   glow: "#9D4EDD", border: "rgba(157,78,221,0.28)"  },
   naturaleza:     { bg: "rgba(10,55,22,0.20)",   glow: "#16A34A", border: "rgba(30,140,60,0.28)"   },
   ancestrales:    { bg: "rgba(70,40,5,0.20)",    glow: "#C07820", border: "rgba(180,110,20,0.28)"  },
   sintetizadores: { bg: "rgba(8,20,72,0.20)",    glow: "#3B82F6", border: "rgba(60,130,240,0.28)"  },
@@ -693,8 +693,6 @@ export default function MiMusicaScreen() {
           contentFit="cover"
           contentPosition="center"
         />
-        {/* Overlay global sutil para oscurecer la imagen */}
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.32)" }]} />
         {/* Velo oscuro en la mitad inferior para que las cards sean legibles */}
         <LinearGradient
           colors={[
