@@ -676,9 +676,11 @@ export default function MiMusicaScreen() {
     <View style={styles.root}>
       {/* ── Capa de fondo (gradiente + dim) — completamente aislada del contenido ── */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        {/* Alcanza #1B060F antes del borde del hero (la fase rojiza queda detrás
+            de la imagen) y lo mantiene → el hero se funde sin línea de corte */}
         <LinearGradient
-          colors={["#4A0C0C", "#27070E", "#1B060F"]}
-          locations={[0, 0.5, 1]}
+          colors={["#4A0C0C", "#27070E", "#1B060F", "#1B060F"]}
+          locations={[0, 0.11, 0.20, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
