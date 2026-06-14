@@ -225,14 +225,6 @@ const PillTab = memo(function PillTab({
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            {/* Ring interior */}
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { margin: 3, borderRadius: 17, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
-              ]}
-              pointerEvents="none"
-            />
           </>
         )}
         {/* Ícono */}
@@ -294,14 +286,6 @@ const DesignCPillTab = memo(function DesignCPillTab({
               start={{ x: 0.5, y: 0.05 }}
               end={{ x: 0.5, y: 0.90 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-            {/* Ring interior sutil */}
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { margin: 3, borderRadius: 17, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
-              ]}
               pointerEvents="none"
             />
           </>
