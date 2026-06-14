@@ -17,9 +17,11 @@ import {
   View,
 } from "react-native";
 
-const BG_HEADER = require("../../assets/images/mezclador-bg-v3.jpg");
+import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const BG_HEADER = require("../../assets/images/mezclador-bg-v3.jpg");
 
 import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
@@ -108,17 +110,26 @@ const PillTab = memo(function PillTab({
   const c = tab.color;
   return (
     <Pressable onPress={onPress}>
-      <View style={[
-        styles.pillTab,
-        sel
-          ? { backgroundColor: c + "1A", borderWidth: 1, borderColor: c + "80" }
-          : { backgroundColor: "rgba(245,244,242,1)", borderWidth: 1, borderColor: "rgba(0,0,0,0.13)" },
-      ]}>
-        <MaterialCommunityIcons name={tab.icon as any} size={17} color={sel ? c : MUTED} />
-        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? c : MUTED, fontWeight: sel ? "700" : "400" }]}>
-          {tab.label}
-        </Text>
-      </View>
+      {sel ? (
+        <LinearGradient
+          colors={["#284a86", "#113067"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.pillTab}
+        >
+          <MaterialCommunityIcons name={tab.icon as any} size={17} color="#FFFFFF" />
+          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#FFFFFF", fontWeight: "700" }]}>
+            {tab.label}
+          </Text>
+        </LinearGradient>
+      ) : (
+        <View style={[styles.pillTab, { backgroundColor: "rgba(245,244,242,1)", borderWidth: 1, borderColor: "rgba(0,0,0,0.13)" }]}>
+          <MaterialCommunityIcons name={tab.icon as any} size={17} color={MUTED} />
+          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: MUTED, fontWeight: "400" }]}>
+            {tab.label}
+          </Text>
+        </View>
+      )}
     </Pressable>
   );
 });
