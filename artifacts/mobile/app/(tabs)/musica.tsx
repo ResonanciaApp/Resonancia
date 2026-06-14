@@ -303,20 +303,51 @@ const DesignCPillTab = memo(function DesignCPillTab({
   );
 });
 
-// ── SubTabPill con fade ───────────────────────────────────────────────────────
+// ── SubTabPill — Aura (hereda degradado del tab general) ─────────────────────
 const SubTabPill = memo(function SubTabPill({
   label, sel, onPress, color,
 }: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string; color?: string }) {
+  const c = color ?? "#D6AD5F";
+  const r = parseInt(c.replace(/^#/, "").slice(0, 2), 16);
+  const g = parseInt(c.replace(/^#/, "").slice(2, 4), 16);
+  const b = parseInt(c.replace(/^#/, "").slice(4, 6), 16);
+  const darkBg = `rgba(${Math.max(0, r - 28)},${Math.max(0, g - 28)},${Math.max(0, b - 28)},1)`;
+
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        {
-          backgroundColor: sel
-            ? (color ?? "#D6AD5F")
-            : "rgba(27,6,15,0.30)",
-        },
+        sel
+          ? {
+              backgroundColor: darkBg,
+              shadowColor: c,
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.50,
+              shadowRadius: 12,
+              elevation: 8,
+            }
+          : { backgroundColor: "rgba(27,6,15,0.30)" },
       ]}>
+        {sel && (
+          <>
+            {/* Brillo central simulado (Aura) */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.28)", "rgba(255,255,255,0.05)", "transparent"]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+              pointerEvents="none"
+            />
+            {/* Ring interior sutil */}
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                { margin: 2, borderRadius: 18, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
+              ]}
+              pointerEvents="none"
+            />
+          </>
+        )}
         <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: "600" }]}>
           {label}
         </Text>
@@ -972,12 +1003,12 @@ const styles = StyleSheet.create({
   subTabPill: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
-    height: 32,
+    paddingHorizontal: 13,
+    height: 35,
     borderRadius: 20,
     overflow: "hidden",
   },
-  subTabText: { fontSize: 13, letterSpacing: 0.1 },
+  subTabText: { fontSize: 16, letterSpacing: 0.1 },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
