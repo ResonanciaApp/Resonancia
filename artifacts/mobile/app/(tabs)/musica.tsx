@@ -220,7 +220,7 @@ const PillTab = memo(function PillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.95, shadowRadius: 28, elevation: 14 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.75, shadowRadius: 16, elevation: 10 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
@@ -268,7 +268,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.95, shadowRadius: 28, elevation: 14 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.75, shadowRadius: 16, elevation: 10 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
@@ -964,7 +964,7 @@ const styles = StyleSheet.create({
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
   pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 8, backgroundColor: "transparent" },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 28 },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 16 },
   pillTabOuter: {},
   pillTab: {
     alignItems: "center",
