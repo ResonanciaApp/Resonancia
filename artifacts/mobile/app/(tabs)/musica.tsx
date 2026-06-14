@@ -740,7 +740,7 @@ export default function MiMusicaScreen() {
             <Text style={styles.heroTitle}>Mezclador</Text>
             <Animated.View style={{ opacity: settingsIconAnim }}>
               <Pressable onPress={openSettings} style={styles.heroSettingsBtn}>
-                <MaterialCommunityIcons name="tune-variant" size={21} color="#FFFFFF" />
+                <MaterialCommunityIcons name="tune-variant" size={16} color="#FFFFFF" />
               </Pressable>
             </Animated.View>
           </View>
