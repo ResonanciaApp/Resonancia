@@ -25,8 +25,8 @@ import {
 
 const ACTIVE_COLOR = "#FFFFFF";
 const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
-const GRAD_START = "#FF6B3D";
-const GRAD_END   = "#FF9E4D";
+const GRAD_START = "#D4AF37";
+const GRAD_END   = "#E9C46A";
 
 const ICON_SIZE = 23;
 const PILL_BG = "rgba(244,218,213,0.18)";
