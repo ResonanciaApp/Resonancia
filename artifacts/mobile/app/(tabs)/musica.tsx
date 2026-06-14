@@ -383,6 +383,9 @@ export default function MezcladorScreen() {
             </ScrollView>
 
             {/* ── Sub-tabs ── */}
+            {(!subTabCategories || subTabCategories.length <= 1) && (
+              <View style={{ height: 44 }} />
+            )}
             {subTabCategories && subTabCategories.length > 1 ? (
               <View style={styles.subTabZone}>
                 <View style={styles.subTabLine} pointerEvents="none" />
