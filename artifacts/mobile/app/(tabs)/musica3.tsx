@@ -585,11 +585,12 @@ const styles = StyleSheet.create({
 
   topPanel: {
     backgroundColor: "transparent",
+    zIndex: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.28,
-    shadowRadius: 8,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.38,
+    shadowRadius: 12,
+    elevation: 14,
   },
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
