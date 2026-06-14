@@ -236,16 +236,16 @@ const PillTab = memo(function PillTab({
         sel
           ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.42) }
           : {
-              backgroundColor: "rgba(0,0,0,0.62)",
+              backgroundColor: "rgba(255,255,255,0.18)",
               borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.15)",
+              borderColor: "rgba(148,103,189,0.30)",
             },
       ]}>
         {/* Ícono */}
         <View style={styles.pillIconGlow}>
-          <MaterialCommunityIcons name={tab.icon as any} size={23} color={sel ? "#FFFFFF" : "rgba(255,255,255,0.65)"} />
+          <MaterialCommunityIcons name={tab.icon as any} size={23} color={sel ? "#FFFFFF" : "#3D1A6E"} />
         </View>
-        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "rgba(255,255,255,0.50)" }]}>
+        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "#3D1A6E" }]}>
           {tab.label}
         </Text>
       </View>
@@ -282,20 +282,20 @@ const DesignCPillTab = memo(function DesignCPillTab({
           sel
             ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.42) }
             : {
-                backgroundColor: "rgba(0,0,0,0.62)",
+                backgroundColor: "rgba(255,255,255,0.18)",
                 borderWidth: 1,
-                borderColor: "rgba(255,255,255,0.15)",
+                borderColor: "rgba(148,103,189,0.30)",
               },
         ]}
       >
         <MaterialCommunityIcons
           name={tab.icon as any}
           size={26}
-          color={sel ? "#FFFFFF" : "rgba(255,255,255,0.65)"}
+          color={sel ? "#FFFFFF" : "#3D1A6E"}
         />
         <Text
           numberOfLines={1}
-          style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "rgba(255,255,255,0.50)" }]}
+          style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "#3D1A6E" }]}
         >
           {tab.label}
         </Text>
