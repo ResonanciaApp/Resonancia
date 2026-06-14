@@ -453,12 +453,30 @@ export function MixerSheet() {
           onPress={(e) => e.stopPropagation()}
         >
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: bgBreath }]} pointerEvents="none">
-            <LinearGradient
-              colors={[...sheetGradient]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={styles.sheetGradient}
-            />
+            {activeBgPreset.image ? (
+              <>
+                <Image
+                  source={activeBgPreset.image}
+                  style={[StyleSheet.absoluteFill, styles.sheetGradient]}
+                  contentFit="cover"
+                />
+                {/* Overlay oscuro para legibilidad del contenido del sheet (más denso que en inmersivo) */}
+                <View
+                  style={[
+                    StyleSheet.absoluteFill,
+                    styles.sheetGradient,
+                    { backgroundColor: "rgba(8,3,6,0.68)" },
+                  ]}
+                />
+              </>
+            ) : (
+              <LinearGradient
+                colors={[...sheetGradient]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={styles.sheetGradient}
+              />
+            )}
           </Animated.View>
           {/* Handle con PanResponder para arrastrar y cerrar */}
           <View style={styles.handleZone} {...panResponder.panHandlers}>
