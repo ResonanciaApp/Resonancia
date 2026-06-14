@@ -658,7 +658,7 @@ const styles = StyleSheet.create({
   scroll:        { flex: 1, backgroundColor: "#EDECEA" },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: -10 },
   subTabLine: {
     position: "absolute", left: 16, right: 16, bottom: 0,
     height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
