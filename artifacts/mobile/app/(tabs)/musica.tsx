@@ -724,9 +724,6 @@ export default function MiMusicaScreen() {
             {/* Título centrado en la zona visible */}
             <View style={[styles.heroTextWrap, { paddingTop: topPad + 6 }]}>
               <Text style={styles.heroTitle}>Mezclador</Text>
-              <Text style={styles.heroSubtitle}>
-                Crea, combina y mezcla distintos sonidos de la naturaleza y el universo. Utiliza el filtro inteligente para orientar tus creaciones en base a lo que necesites en este momento.
-              </Text>
             </View>
           </View>
 
