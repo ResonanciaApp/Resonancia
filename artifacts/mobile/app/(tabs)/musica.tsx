@@ -234,17 +234,13 @@ const PillTab = memo(function PillTab({
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.21) }
+          ? { backgroundColor: hexAlpha(tint.glow, 0.30), borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.21) }
           : {
               backgroundColor: "rgba(0,0,0,0.62)",
               borderWidth: 1,
               borderColor: "rgba(255,255,255,0.15)",
             },
       ]}>
-        {/* Ícono */}
-        <View style={styles.pillIconGlow}>
-          <MaterialCommunityIcons name={tab.icon as any} size={19} color={sel ? "#FFFFFF" : "rgba(255,255,255,0.65)"} />
-        </View>
         <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "rgba(255,255,255,0.50)" }]}>
           {tab.label}
         </Text>
@@ -280,7 +276,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
         style={[
           styles.pillTab,
           sel
-            ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.21) }
+            ? { backgroundColor: hexAlpha(tint.glow, 0.30), borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.21) }
             : {
                 backgroundColor: "rgba(0,0,0,0.62)",
                 borderWidth: 1,
@@ -288,11 +284,6 @@ const DesignCPillTab = memo(function DesignCPillTab({
               },
         ]}
       >
-        <MaterialCommunityIcons
-          name={tab.icon as any}
-          size={22}
-          color={sel ? "#FFFFFF" : "rgba(255,255,255,0.65)"}
-        />
         <Text
           numberOfLines={1}
           style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "rgba(255,255,255,0.50)" }]}
