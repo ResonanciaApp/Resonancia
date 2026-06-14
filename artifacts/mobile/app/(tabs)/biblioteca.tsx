@@ -626,7 +626,7 @@ export default function BibliotecaScreen() {
     // ── Modo general (sin tab seleccionado) ──────────────────────────────────
     if (activeTab === null) {
       const GRID_GAP = 10;
-      const cellW = (width - H_PAD * 2 - GRID_GAP * 6) / 7;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 9) / 10;
 
       const sortSessions = (arr: import("@/data/sessions").Session[]) => {
         if (sort === "alfabetico") return [...arr].sort((a, b) => a.title.localeCompare(b.title, "es"));
@@ -681,7 +681,7 @@ export default function BibliotecaScreen() {
 
       // Ancho de celda: 4 cols con 3 gaps entre ellas
       const GRID_GAP = 10;
-      const cellW = (width - H_PAD * 2 - GRID_GAP * 6) / 7;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 9) / 10;
 
       if (viewMode === "grid") {
         return (
@@ -738,7 +738,7 @@ export default function BibliotecaScreen() {
         );
       }
       const GRID_GAP = 10;
-      const cellW = (width - H_PAD * 2 - GRID_GAP * 6) / 7;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 9) / 10;
       const visibleMixes = presets.slice(0, mixesLimit);
       const hasMixesMore = presets.length > mixesLimit;
       if (viewMode === "grid") {
@@ -798,7 +798,7 @@ export default function BibliotecaScreen() {
         );
       }
       const GRID_GAP = 10;
-      const cellW = (width - H_PAD * 2 - GRID_GAP * 6) / 7;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 9) / 10;
       const visibleGeo = geometrixCreations.slice(0, geoLimit);
       const hasGeoMore = geometrixCreations.length > geoLimit;
       if (viewMode === "grid") {
@@ -869,7 +869,7 @@ export default function BibliotecaScreen() {
     if (activeTab === "favoritos") {
       const favSessions = SESSIONS.filter((s) => favorites.includes(s.id));
       const GRID_GAP = 10;
-      const cellW = (width - H_PAD * 2 - GRID_GAP * 6) / 7;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 9) / 10;
       if (favSessions.length === 0) {
         return (
           <View style={styles.emptyState}>
@@ -913,7 +913,7 @@ export default function BibliotecaScreen() {
         );
       }
       const GRID_GAP = 10;
-      const cellW = (width - H_PAD * 2 - GRID_GAP * 6) / 7;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 9) / 10;
       if (viewMode === "grid") {
         return (
           <View style={styles.gridWrap}>
