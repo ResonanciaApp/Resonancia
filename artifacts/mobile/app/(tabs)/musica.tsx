@@ -199,6 +199,80 @@ const PillTab = memo(function PillTab({
   );
 });
 
+// ── NeonPillTab — tile oscuro con borde neón borgoña ─────────────────────────
+const NEON_RED = "#E03258";
+const NeonPillTab = memo(function NeonPillTab({
+  tab,
+  sel,
+  onPress,
+}: {
+  tab: (typeof MAIN_TABS)[0];
+  sel: boolean;
+  onPress: () => void;
+}) {
+  const glowAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(glowAnim, {
+      toValue: sel ? 1 : 0,
+      duration: 220,
+      useNativeDriver: false,
+    }).start();
+  }, [sel, glowAnim]);
+
+  const borderColor = glowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(224,50,88,0.55)", "rgba(212,175,55,1)"],
+  });
+  const bgColor = glowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(10,2,5,0.92)", "rgba(212,175,55,0.18)"],
+  });
+
+  return (
+    <Pressable onPress={onPress} style={styles.neonTabOuter}>
+      <Animated.View
+        style={[
+          styles.neonTab,
+          {
+            backgroundColor: bgColor,
+            borderColor,
+            shadowColor: sel ? "#D4AF37" : NEON_RED,
+          },
+        ]}
+      >
+        {/* Glow interior sutil */}
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              borderRadius: 18,
+              borderWidth: 1,
+              borderColor: sel ? "rgba(212,175,55,0.15)" : "rgba(224,50,88,0.10)",
+            },
+          ]}
+          pointerEvents="none"
+        />
+        <MaterialCommunityIcons
+          name={tab.icon as any}
+          size={20}
+          color={sel ? "#D4AF37" : NEON_RED}
+          style={sel ? styles.neonIconSel : styles.neonIconUnsel}
+        />
+        <Text
+          numberOfLines={1}
+          style={[
+            styles.neonTabLabel,
+            { color: sel ? "#D4AF37" : "rgba(224,50,88,0.85)" },
+          ]}
+        >
+          {tab.label}
+        </Text>
+      </Animated.View>
+    </Pressable>
+  );
+});
+
 // ── SubTabPill con fade ───────────────────────────────────────────────────────
 const SubTabPill = memo(function SubTabPill({
   label, sel, onPress, selBg,
@@ -598,6 +672,23 @@ export default function MiMusicaScreen() {
             ))}
           </ScrollView>
 
+          {/* ── Carrusel Neón (comparación) ── */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.pillRow}
+            contentContainerStyle={styles.pillRowContent}
+          >
+            {MAIN_TABS.map((tab) => (
+              <NeonPillTab
+                key={tab.id}
+                tab={tab}
+                sel={mainTab === tab.id}
+                onPress={() => handleMainTab(tab.id)}
+              />
+            ))}
+          </ScrollView>
+
           {/* ── Sub-tabs (píldoras horizontales) ── */}
           {subTabCategories && subTabCategories.length > 1 ? (
             <View style={styles.subTabZone}>
@@ -850,6 +941,35 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   pillTabLabel: { fontSize: 11, letterSpacing: 0.1 },
+
+  // ── NeonPillTab ──────────────────────────────────────────────────────────────
+  neonTabOuter: {},
+  neonTab: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 72,
+    height: 72,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    gap: 5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.75,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  neonIconUnsel: {
+    shadowColor: "#E03258",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 6,
+  },
+  neonIconSel: {
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 6,
+  },
+  neonTabLabel: { fontSize: 10, letterSpacing: 0.2, fontWeight: "600" },
 
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
