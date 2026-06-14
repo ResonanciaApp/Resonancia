@@ -1157,3 +1157,9 @@ id = "L3OObIaDI-cDZuZ9Ungkk"
 uri = "file://exports/guia-productor.pptx"
 type = "slides"
 title = "Guía para el Productor — 3 slides (PPTX)"
+
+[[outputs]]
+id = "33CNHPrJ1AytiEIlNPmVS"
+uri = "file://exports/guia-productor.pdf"
+type = "pdf"
+title = "Guía para el Productor (PDF)"
