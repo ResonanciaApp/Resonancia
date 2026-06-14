@@ -695,14 +695,15 @@ export default function MiMusicaScreen() {
             debajo de la imagen se ve el mismo degradado raíz → sin costura */}
         <LinearGradient
           colors={[
-            "rgba(39,7,14,0.70)",
-            "rgba(39,7,14,0.35)",
-            "rgba(39,7,14,0.45)",
-            "rgba(39,7,14,0.65)",
-            "rgba(45,8,13,0.90)",
+            "rgba(39,7,14,0.60)",
+            "rgba(39,7,14,0.15)",
+            "rgba(74,12,12,0)",
+            "rgba(74,12,12,0)",
+            "rgba(60,10,13,0.45)",
+            "rgba(45,8,13,0.85)",
             "#27070E",
           ]}
-          locations={[0, 0.22, 0.45, 0.65, 0.85, 1]}
+          locations={[0, 0.28, 0.45, 0.58, 0.72, 0.88, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.heroBgImage}
