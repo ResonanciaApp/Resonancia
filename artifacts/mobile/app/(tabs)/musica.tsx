@@ -938,7 +938,7 @@ const styles = StyleSheet.create({
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
   pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 8 },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 6 },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 18 },
   pillTabOuter: {},
   pillTab: {
     alignItems: "center",
