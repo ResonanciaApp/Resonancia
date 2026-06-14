@@ -97,7 +97,7 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
   naturaleza:     ["#3B4933", "#303E27"],
   ancestrales:    ["#A3631F", "#A3631F"],
-  sintetizadores: ["#7A5CFA", "#3A0CA3"],
+  sintetizadores: ["#2C62AB", "#2C62AB"],
   binaurales:     ["#2DD4BF", "#0E7490"],
   voces:          ["#FF6B6B", "#C9184A"],
   asmr:           ["#0D9488", "#065F4A"],
