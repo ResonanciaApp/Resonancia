@@ -73,6 +73,19 @@ const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
 
 type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "binaurales" | "voces" | "asmr" | "ruidos" | "bpm";
 
+// ── Color único por tab (estado seleccionado — Diseño C) ──────────────────────
+const TAB_COLORS: Record<MainTabId, string> = {
+  popular:        "#1AB5C8",
+  naturaleza:     "#3DAA70",
+  ancestrales:    "#D4741A",
+  sintetizadores: "#2979FF",
+  binaurales:     "#7B5FE8",
+  voces:          "#D44F8A",
+  asmr:           "#00897B",
+  ruidos:         "#F57C00",
+  bpm:            "#E53935",
+};
+
 const MAIN_TABS: {
   id: MainTabId;
   label: string;
@@ -199,6 +212,73 @@ const PillTab = memo(function PillTab({
   );
 });
 
+
+// ── DesignCPillTab — color sólido + shimmer + halo exterior ──────────────────
+const DesignCPillTab = memo(function DesignCPillTab({
+  tab,
+  sel,
+  onPress,
+}: {
+  tab: (typeof MAIN_TABS)[0];
+  sel: boolean;
+  onPress: () => void;
+}) {
+  const color = TAB_COLORS[tab.id as MainTabId];
+  return (
+    <Pressable onPress={onPress} style={styles.pillTabOuter}>
+      <View
+        style={[
+          styles.pillTab,
+          sel
+            ? {
+                backgroundColor: color,
+                shadowColor: color,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.75,
+                shadowRadius: 14,
+                elevation: 10,
+              }
+            : { backgroundColor: "rgba(27,6,15,0.30)" },
+        ]}
+      >
+        {sel && (
+          <>
+            {/* Shimmer diagonal en esquina superior-izquierda */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.22)", "transparent"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0.75, y: 0.75 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+              pointerEvents="none"
+            />
+            {/* Borde interior blanco sutil */}
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                { borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.20)" },
+              ]}
+              pointerEvents="none"
+            />
+          </>
+        )}
+        <MaterialCommunityIcons
+          name={tab.icon as any}
+          size={18}
+          color={sel ? "rgba(255,255,255,0.95)" : "#D6AD5F"}
+        />
+        <Text
+          numberOfLines={1}
+          style={[
+            styles.pillTabLabel,
+            { color: sel ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.50)", fontWeight: "600" },
+          ]}
+        >
+          {tab.label}
+        </Text>
+      </View>
+    </Pressable>
+  );
+});
 
 // ── SubTabPill con fade ───────────────────────────────────────────────────────
 const SubTabPill = memo(function SubTabPill({
@@ -587,14 +667,40 @@ export default function MiMusicaScreen() {
             style={styles.pillRow}
             contentContainerStyle={styles.pillRowContent}
           >
+            {MAIN_TABS.map((tab) =>
+              tab.id === "popular" ? (
+                <DesignCPillTab
+                  key={tab.id}
+                  tab={tab}
+                  sel={mainTab === tab.id}
+                  onPress={() => handleMainTab(tab.id)}
+                />
+              ) : (
+                <PillTab
+                  key={tab.id}
+                  tab={tab}
+                  sel={mainTab === tab.id}
+                  onPress={() => handleMainTab(tab.id)}
+                  isDark={isDark}
+                  selBg={themeSelBg}
+                />
+              )
+            )}
+          </ScrollView>
+
+          {/* ── Carrusel Diseño C — comparación ── */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.pillRow}
+            contentContainerStyle={styles.pillRowContent}
+          >
             {MAIN_TABS.map((tab) => (
-              <PillTab
+              <DesignCPillTab
                 key={tab.id}
                 tab={tab}
                 sel={mainTab === tab.id}
                 onPress={() => handleMainTab(tab.id)}
-                isDark={isDark}
-                selBg={themeSelBg}
               />
             ))}
           </ScrollView>
