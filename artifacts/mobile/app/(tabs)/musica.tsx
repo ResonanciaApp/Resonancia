@@ -220,7 +220,7 @@ const PillTab = memo(function PillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.60, shadowRadius: 13, elevation: 8 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.48, shadowRadius: 10, elevation: 7 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
@@ -268,7 +268,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.60, shadowRadius: 13, elevation: 8 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.48, shadowRadius: 10, elevation: 7 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
@@ -314,8 +314,16 @@ const SubTabPill = memo(function SubTabPill({
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
-        sel && { borderColor: "rgba(255,255,255,0.50)" },
+        sel
+          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 0 }
+          : {
+              backgroundColor: "rgba(0,0,0,0.32)",
+              borderWidth: 1,
+              borderTopColor:    "rgba(255,255,255,0.07)",
+              borderBottomColor: "rgba(255,255,255,0.05)",
+              borderLeftColor:   "rgba(255,255,255,0.03)",
+              borderRightColor:  "rgba(255,255,255,0.02)",
+            },
       ]}>
         <Text style={[styles.subTabText, { color: "#EDDFD5" }]}>
           {label}
