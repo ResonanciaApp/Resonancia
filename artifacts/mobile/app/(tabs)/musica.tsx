@@ -187,17 +187,9 @@ const PillTab = memo(function PillTab({
             style={StyleSheet.absoluteFill}
           />
         )}
-        {/* Ícono con fondo degradado + glow sutil */}
+        {/* Ícono con color degradado + glow sutil */}
         <View style={styles.pillIconGlow}>
-          <View style={styles.pillIconWrap}>
-            <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <MaterialCommunityIcons name={tab.icon as any} size={18} color="#1B060F" />
-          </View>
+          <MaterialCommunityIcons name={tab.icon as any} size={18} color="#D6AD5F" />
         </View>
         <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: "600" }]}>
           {tab.label}
@@ -851,20 +843,11 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   pillIconGlow: {
-    borderRadius: 9,
     shadowColor: "#D6AD5F",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.28,
     shadowRadius: 7,
     elevation: 3,
-  },
-  pillIconWrap: {
-    width: 34,
-    height: 34,
-    borderRadius: 9,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
   },
   pillTabLabel: { fontSize: 11, letterSpacing: 0.1 },
 
