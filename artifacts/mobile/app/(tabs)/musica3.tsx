@@ -418,7 +418,7 @@ export default function MiMusicaBlancoScreen() {
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
-        <View style={[styles.topPanel, { paddingTop: topPad + 12 }]}>
+        <View style={[styles.topPanel, { paddingTop: topPad + 2 }]}>
 
           {/* ── Header ── */}
           <View style={styles.header}>
