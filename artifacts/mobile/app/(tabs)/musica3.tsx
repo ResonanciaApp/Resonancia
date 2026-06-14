@@ -259,6 +259,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
+      {/* Capa exterior: transform + sombra (sin overflow:hidden para que borderRadius funcione) */}
       <Animated.View
         style={[
           styles.cardImageWrap,
@@ -266,21 +267,24 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
           { transform: [{ rotate }, { scale }], borderColor: borderCol },
         ]}
       >
-        {image ? (
-          <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
-        )}
-        {!decorated && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
-        )}
-        {locked && (
-          <Image
-            source={require("../../assets/images/estrella-premium.png")}
-            style={[styles.lockBadge, { width: 20, height: 20 }]}
-            contentFit="contain"
-          />
-        )}
+        {/* Capa interior: recorte real de esquinas */}
+        <View style={styles.cardClipInner}>
+          {image ? (
+            <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
+          )}
+          {!decorated && (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
+          )}
+          {locked && (
+            <Image
+              source={require("../../assets/images/estrella-premium.png")}
+              style={[styles.lockBadge, { width: 20, height: 20 }]}
+              contentFit="contain"
+            />
+          )}
+        </View>
       </Animated.View>
       <View style={styles.cardFooter}>
         <Text style={styles.soundName} numberOfLines={1}>{sound.name}</Text>
@@ -605,10 +609,15 @@ const styles = StyleSheet.create({
     width: "79%",
     aspectRatio: 1,
     alignSelf: "center",
-    overflow: "hidden",
     borderRadius: 16,
     borderWidth: 2.5,
     borderColor: "transparent",
+  },
+  cardClipInner: {
+    flex: 1,
+    borderRadius: 14,
+    overflow: "hidden",
+    backgroundColor: "rgba(212,175,55,0.08)",
   },
   cardImageWrapActive: {
     shadowColor: GOLD,
