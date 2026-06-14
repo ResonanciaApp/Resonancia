@@ -599,10 +599,10 @@ const styles = StyleSheet.create({
   },
   subTabText: { fontSize: 12, fontWeight: "600" },
 
-  grid:     { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
-  soundCard: { width: "31%" },
+  grid:     { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "space-evenly" },
+  soundCard: { width: "28%" },
   cardImageWrap: {
-    width: "100%",
+    width: "79%",
     aspectRatio: 1,
     alignSelf: "center",
     overflow: "hidden",
