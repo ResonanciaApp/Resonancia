@@ -684,6 +684,36 @@ uri = "file://artifacts/mobile/assets/images/hero-mezclador.png"
 type = "image"
 title = "starry universe hero mezclador"
 
+[[generated]]
+id = "UeyqRAJydH539Zdl-Dz1Z"
+uri = "file://artifacts/mobile/assets/images/immersive/bosque.png"
+type = "image"
+title = "misty bioluminescent forest night"
+
+[[generated]]
+id = "uvVRdpDRPsWrMZ9KAmt_t"
+uri = "file://artifacts/mobile/assets/images/immersive/montanas.png"
+type = "image"
+title = "mountain twilight glacial lake"
+
+[[generated]]
+id = "XMiS03H4aVdreNcwEBN7r"
+uri = "file://artifacts/mobile/assets/images/immersive/oceano.png"
+type = "image"
+title = "deep ocean bioluminescent underwater"
+
+[[generated]]
+id = "3cV2Pfn1cZ-zkQQXPBtET"
+uri = "file://artifacts/mobile/assets/images/immersive/desierto.png"
+type = "image"
+title = "vast desert golden hour dunes"
+
+[[generated]]
+id = "ZRbfMYtF0tmU70I605Y8P"
+uri = "file://artifacts/mobile/assets/images/immersive/estrellas.png"
+type = "image"
+title = "milky way stars mountain silhouette"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

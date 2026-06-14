@@ -1,11 +1,59 @@
+import { ImageSourcePropType } from "react-native";
+
 export type GradientPreset = {
   id: string;
   name: string;
   colors: readonly [string, string, string];
   emoji: string;
+  /** Si está presente, usa esta imagen de fondo en lugar del degradado */
+  image?: ImageSourcePropType;
+  /** Color de overlay oscuro encima de la imagen para legibilidad (rgba) */
+  imageOverlay?: string;
 };
 
 export const GRADIENT_PRESETS: GradientPreset[] = [
+  // ── Imágenes de naturaleza ─────────────────────────────────────────────────
+  {
+    id: "bosque",
+    name: "Bosque",
+    colors: ["#022B18", "#053D24", "#010F09"],
+    emoji: "🌲",
+    image: require("../assets/images/immersive/bosque.png"),
+    imageOverlay: "rgba(2,20,10,0.38)",
+  },
+  {
+    id: "montanas",
+    name: "Montañas",
+    colors: ["#0A0818", "#161030", "#05040E"],
+    emoji: "🏔️",
+    image: require("../assets/images/immersive/montanas.png"),
+    imageOverlay: "rgba(8,5,20,0.35)",
+  },
+  {
+    id: "oceano-img",
+    name: "Océano",
+    colors: ["#010F1F", "#022444", "#010810"],
+    emoji: "🌊",
+    image: require("../assets/images/immersive/oceano.png"),
+    imageOverlay: "rgba(1,10,28,0.38)",
+  },
+  {
+    id: "desierto-img",
+    name: "Desierto",
+    colors: ["#1A1008", "#2B1A0A", "#0D0804"],
+    emoji: "🏜️",
+    image: require("../assets/images/immersive/desierto.png"),
+    imageOverlay: "rgba(18,10,4,0.35)",
+  },
+  {
+    id: "estrellas",
+    name: "Estrellas",
+    colors: ["#060B1A", "#0D1533", "#030509"],
+    emoji: "✨",
+    image: require("../assets/images/immersive/estrellas.png"),
+    imageOverlay: "rgba(4,6,18,0.32)",
+  },
+  // ── Degradados puros ───────────────────────────────────────────────────────
   { id: "borgona",  name: "Borgoña",           colors: ["#27070E", "#1B060F", "#0F0308"], emoji: "🍷" },
   { id: "cosmos",   name: "Cosmos",             colors: ["#060B1A", "#0D1533", "#030509"], emoji: "🌌" },
   { id: "aurora",   name: "Aurora Boreal",      colors: ["#022B18", "#053D24", "#010F09"], emoji: "🌿" },
@@ -17,7 +65,7 @@ export const GRADIENT_PRESETS: GradientPreset[] = [
   { id: "dorado",   name: "Meditación Dorada",  colors: ["#1A1200", "#2B1E00", "#0D0900"], emoji: "✨" },
   { id: "bruma",    name: "Bruma Matinal",      colors: ["#14101E", "#221A35", "#0A0810"], emoji: "🌫️" },
   { id: "nebulosa", name: "Nebulosa",           colors: ["#0A0825", "#140F3D", "#050412"], emoji: "💫" },
-  { id: "desierto", name: "Desierto",           colors: ["#1A1008", "#2B1A0A", "#0D0804"], emoji: "🏜️" },
+  { id: "desierto", name: "Desierto Oscuro",    colors: ["#1A1008", "#2B1A0A", "#0D0804"], emoji: "🏜️" },
   { id: "indigo",   name: "Índigo Profundo",    colors: ["#06061A", "#0A0A2B", "#030310"], emoji: "🔵" },
   { id: "fuego",    name: "Fuego Sagrado",      colors: ["#200800", "#380E00", "#100400"], emoji: "🔥" },
 ];

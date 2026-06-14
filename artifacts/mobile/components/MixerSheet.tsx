@@ -11,6 +11,7 @@
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -721,12 +722,25 @@ export function MixerSheet() {
                     onPress={() => selectBgPreset(preset.id)}
                     style={[styles.bgPresetCard, sel && styles.bgPresetCardSel]}
                   >
-                    <LinearGradient
-                      colors={[...preset.colors]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={StyleSheet.absoluteFill}
-                    />
+                    {preset.image ? (
+                      <>
+                        <Image
+                          source={preset.image}
+                          style={StyleSheet.absoluteFill}
+                          contentFit="cover"
+                        />
+                        {preset.imageOverlay && (
+                          <View style={[StyleSheet.absoluteFill, { backgroundColor: preset.imageOverlay, borderRadius: 12 }]} />
+                        )}
+                      </>
+                    ) : (
+                      <LinearGradient
+                        colors={[...preset.colors]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    )}
                     <Text style={styles.bgPresetEmoji}>{preset.emoji}</Text>
                     <Text style={styles.bgPresetName} numberOfLines={1}>{preset.name}</Text>
                     {sel && (
