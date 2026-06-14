@@ -650,7 +650,7 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               ) : (
-                <View style={{ paddingHorizontal: H_PAD }}>
+                <View style={{ paddingHorizontal: H_PAD, gap: 7 }}>
                   {visibleRecent.map((s) => (
                     <SessionCard key={s.id} session={s} horizontal cardBg="rgba(74,12,12,0.08)" />
                   ))}
