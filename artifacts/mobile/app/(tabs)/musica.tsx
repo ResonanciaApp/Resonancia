@@ -735,15 +735,13 @@ export default function MiMusicaScreen() {
             </Animated.View>
           </View>
 
-          {/* Título + ícono de ajustes en la misma fila */}
-          <View style={styles.heroTitleRow}>
+          {/* Título + ícono de ajustes — entran juntos al terminar la frase */}
+          <Animated.View style={[styles.heroTitleRow, { opacity: settingsIconAnim }]}>
             <Text style={styles.heroTitle}>Mezclador</Text>
-            <Animated.View style={{ opacity: settingsIconAnim }}>
-              <Pressable onPress={openSettings} style={styles.heroSettingsBtn}>
-                <MaterialCommunityIcons name="tune-variant" size={16} color="#FFFFFF" />
-              </Pressable>
-            </Animated.View>
-          </View>
+            <Pressable onPress={openSettings} style={styles.heroSettingsBtn}>
+              <MaterialCommunityIcons name="tune-variant" size={16} color="#FFFFFF" />
+            </Pressable>
+          </Animated.View>
 
           {/* ── Pills de tabs principales ── */}
           <ScrollView
