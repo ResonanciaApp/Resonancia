@@ -703,7 +703,7 @@ export default function MiMusicaScreen() {
             "rgba(45,8,13,0.92)",
             "#27070E",
           ]}
-          locations={[0, 0.20, 0.35, 0.48, 0.62, 0.80, 1]}
+          locations={[0, 0.08, 0.23, 0.36, 0.50, 0.68, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.heroBgImage}
