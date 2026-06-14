@@ -619,7 +619,7 @@ export default function BibliotecaScreen() {
   // Resonadores = artistas featured + guías featured
   const resonadores = useMemo(() => {
     const artists = ARTISTS.filter((a) => a.featured !== false && a.id !== "resonancia").map((a) => ({
-      id: a.id, name: a.name, photo: a.photo, tags: ["Músico", "Productor"], kind: "artist" as const,
+      id: a.id, name: a.name, photo: a.photo, tags: ["Músico"], kind: "artist" as const,
     }));
     const guides = GUIDES.filter((g) => g.featured !== false && g.id !== "casa-cuenco").map((g) => ({
       id: g.id, name: g.name, photo: g.photo, tags: ["Voz Guía"], kind: "guide" as const,
@@ -1290,15 +1290,8 @@ const styles = StyleSheet.create({
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   verifiedText: { fontSize: 11, color: MUTED },
-  resonadorTag: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 20,
-    backgroundColor: "rgba(212,175,55,0.10)",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.20)",
-  },
-  resonadorTagText: { fontSize: 10, color: GOLD, fontWeight: "600" },
+  resonadorTag: {},
+  resonadorTagText: { fontSize: 11, color: "rgba(255,255,255,0.85)" },
 
   // ── Estado vacío ────────────────────────────────────────────────────────────
   generalSectionLabel: {
