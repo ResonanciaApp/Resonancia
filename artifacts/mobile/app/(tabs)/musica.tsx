@@ -75,15 +75,27 @@ type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "
 
 // ── Color único por tab (estado seleccionado — Diseño C) ──────────────────────
 const TAB_COLORS: Record<MainTabId, string> = {
-  popular:        "#1AB5C8",
-  naturaleza:     "#3DAA70",
-  ancestrales:    "#D4741A",
-  sintetizadores: "#2979FF",
-  binaurales:     "#7B5FE8",
-  voces:          "#D44F8A",
-  asmr:           "#00897B",
-  ruidos:         "#F57C00",
-  bpm:            "#E53935",
+  popular:        "#D6AD5F",
+  naturaleza:     "#16A34A",
+  ancestrales:    "#FF8A1C",
+  sintetizadores: "#3B82F6",
+  binaurales:     "#A78BFA",
+  voces:          "#FF3CAC",
+  asmr:           "#2DD4BF",
+  ruidos:         "#38BDF8",
+  bpm:            "#9D4EDD",
+};
+
+const TAB_GRADIENTS: Record<MainTabId, { from: string; to: string }> = {
+  popular:        { from: "#D6AD5F", to: "#B47344" },
+  naturaleza:     { from: "#063022", to: "#16A34A" },
+  ancestrales:    { from: "#3A1A00", to: "#FF8A1C" },
+  sintetizadores: { from: "#08142A", to: "#3B82F6" },
+  binaurales:     { from: "#1E1B3A", to: "#A78BFA" },
+  voces:          { from: "#3A0D2D", to: "#FF3CAC" },
+  asmr:           { from: "#03312E", to: "#2DD4BF" },
+  ruidos:         { from: "#08253A", to: "#38BDF8" },
+  bpm:            { from: "#201033", to: "#9D4EDD" },
 };
 
 const MAIN_TABS: {
@@ -223,7 +235,7 @@ const PillTab = memo(function PillTab({
 });
 
 
-// ── AuraPillTab — degradado radial centro claro → borde oscuro + halo exterior ─
+// ── AuraPillTab — degradado de imagen + brillo central + ring ─────────────────
 const DesignCPillTab = memo(function DesignCPillTab({
   tab,
   sel,
@@ -233,11 +245,8 @@ const DesignCPillTab = memo(function DesignCPillTab({
   sel: boolean;
   onPress: () => void;
 }) {
-  const color = TAB_COLORS[tab.id as MainTabId];
-  const r = parseInt(color.slice(1, 3), 16);
-  const g = parseInt(color.slice(3, 5), 16);
-  const b = parseInt(color.slice(5, 7), 16);
-  const darkBg = `rgba(${Math.max(0, r - 28)},${Math.max(0, g - 28)},${Math.max(0, b - 28)},1)`;
+  const grad = TAB_GRADIENTS[tab.id as MainTabId];
+  const glowColor = grad.to;
 
   return (
     <Pressable onPress={onPress} style={styles.pillTabOuter}>
@@ -246,10 +255,10 @@ const DesignCPillTab = memo(function DesignCPillTab({
           styles.pillTab,
           sel
             ? {
-                backgroundColor: darkBg,
-                shadowColor: color,
+                backgroundColor: grad.from,
+                shadowColor: glowColor,
                 shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.55,
+                shadowOpacity: 0.60,
                 shadowRadius: 18,
                 elevation: 12,
               }
@@ -258,23 +267,23 @@ const DesignCPillTab = memo(function DesignCPillTab({
       >
         {sel && (
           <>
-            {/* Brillo central simulado — centro claro hacia abajo */}
+            {/* Gradiente principal diagonal (from → to) */}
             <LinearGradient
-              colors={["rgba(255,255,255,0.30)", "rgba(255,255,255,0.06)", "transparent"]}
+              colors={[grad.to, grad.from]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+              pointerEvents="none"
+            />
+            {/* Brillo Aura encima — centro más claro */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.26)", "rgba(255,255,255,0.04)", "transparent"]}
               start={{ x: 0.5, y: 0.05 }}
               end={{ x: 0.5, y: 0.90 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
               pointerEvents="none"
             />
-            {/* Banda horizontal sutil de luz en el centro */}
-            <LinearGradient
-              colors={["transparent", "rgba(255,255,255,0.08)", "transparent"]}
-              start={{ x: 0, y: 0.42 }}
-              end={{ x: 1, y: 0.42 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-            {/* Ring interior */}
+            {/* Ring interior sutil */}
             <View
               style={[
                 StyleSheet.absoluteFill,
@@ -303,15 +312,12 @@ const DesignCPillTab = memo(function DesignCPillTab({
   );
 });
 
-// ── SubTabPill — Aura (hereda degradado del tab general) ─────────────────────
+// ── SubTabPill — hereda gradiente del tab general ────────────────────────────
 const SubTabPill = memo(function SubTabPill({
-  label, sel, onPress, color,
-}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string; color?: string }) {
-  const c = color ?? "#D6AD5F";
-  const r = parseInt(c.replace(/^#/, "").slice(0, 2), 16);
-  const g = parseInt(c.replace(/^#/, "").slice(2, 4), 16);
-  const b = parseInt(c.replace(/^#/, "").slice(4, 6), 16);
-  const darkBg = `rgba(${Math.max(0, r - 28)},${Math.max(0, g - 28)},${Math.max(0, b - 28)},1)`;
+  label, sel, onPress, color, gradFrom,
+}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string; color?: string; gradFrom?: string }) {
+  const colorTo   = color    ?? "#D6AD5F";
+  const colorFrom = gradFrom ?? "#3A1A00";
 
   return (
     <Pressable onPress={onPress}>
@@ -319,8 +325,8 @@ const SubTabPill = memo(function SubTabPill({
         styles.subTabPill,
         sel
           ? {
-              backgroundColor: darkBg,
-              shadowColor: c,
+              backgroundColor: colorFrom,
+              shadowColor: colorTo,
               shadowOffset: { width: 0, height: 0 },
               shadowOpacity: 0.50,
               shadowRadius: 12,
@@ -330,15 +336,23 @@ const SubTabPill = memo(function SubTabPill({
       ]}>
         {sel && (
           <>
-            {/* Brillo central simulado (Aura) */}
+            {/* Gradiente principal del tab */}
             <LinearGradient
-              colors={["rgba(255,255,255,0.28)", "rgba(255,255,255,0.05)", "transparent"]}
+              colors={[colorTo, colorFrom]}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
               pointerEvents="none"
             />
-            {/* Ring interior sutil */}
+            {/* Brillo Aura encima */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.24)", "rgba(255,255,255,0.04)", "transparent"]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+              pointerEvents="none"
+            />
+            {/* Ring interior */}
             <View
               style={[
                 StyleSheet.absoluteFill,
@@ -763,6 +777,7 @@ export default function MiMusicaScreen() {
                         isDark={isDark}
                         selBg={themeSelBg}
                         color={TAB_COLORS[mainTab]}
+                        gradFrom={TAB_GRADIENTS[mainTab]?.from}
                       />
                     );
                   })}
