@@ -404,18 +404,10 @@ export default function MiMusicaBlancoScreen() {
           {/* ── Header ── */}
           <View style={styles.header}>
             <View style={styles.headerRow}>
-              {/* Avatar — abre el drawer */}
-              <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
-                {photoUri ? (
-                  <Image source={{ uri: photoUri }} style={styles.avatarSmall} contentFit="cover" />
-                ) : (
-                  <View style={styles.avatarFallback}>
-                    <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
-                  </View>
-                )}
-              </Pressable>
-
-              <Text style={[styles.pageTitle, { flex: 1, marginLeft: 10 }]}>Mi Música</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.pageTitle}>Mezclador</Text>
+                <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
+              </View>
               <Pressable
                 onPress={() => router.push("/mezclas" as never)}
                 style={styles.heartBtn}
@@ -550,6 +542,7 @@ const styles = StyleSheet.create({
   avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212,175,55,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(212,175,55,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
   pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: DARK },
+  pageSubtitle: { fontSize: 13, fontWeight: "400", color: MUTED, marginTop: 2 },
   heartBtn:  {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
