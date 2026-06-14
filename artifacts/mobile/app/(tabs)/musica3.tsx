@@ -404,6 +404,7 @@ export default function MiMusicaBlancoScreen() {
           {/* ── Header ── */}
           <View style={styles.header}>
             <View style={styles.headerRow}>
+              <MaterialCommunityIcons name="tune-variant" size={32} color={DARK} style={{ marginRight: 12, opacity: 0.85 }} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.pageTitle}>Mezclador</Text>
                 <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
