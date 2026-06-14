@@ -196,10 +196,10 @@ function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => voi
 }
 
 // ── Resonador fila ───────────────────────────────────────────────────────────
-function ResonadorRow({ name, photo, role, onPress }: {
+function ResonadorRow({ name, photo, tags, onPress }: {
   name: string;
   photo: import("react-native").ImageSourcePropType;
-  role: string;
+  tags: string[];
   onPress: () => void;
 }) {
   return (
@@ -207,7 +207,13 @@ function ResonadorRow({ name, photo, role, onPress }: {
       <Image source={photo} style={styles.resonadorAvatar} resizeMode="cover" />
       <View style={styles.rowInfo}>
         <Text style={styles.rowTitle} numberOfLines={1}>{name}</Text>
-        <Text style={styles.verifiedText}>{role}</Text>
+        <View style={{ flexDirection: "row", gap: 6, marginTop: 3 }}>
+          {tags.map((t) => (
+            <View key={t} style={styles.resonadorTag}>
+              <Text style={styles.resonadorTagText}>{t}</Text>
+            </View>
+          ))}
+        </View>
       </View>
     </Pressable>
   );
@@ -613,10 +619,10 @@ export default function BibliotecaScreen() {
   // Resonadores = artistas featured + guías featured
   const resonadores = useMemo(() => {
     const artists = ARTISTS.filter((a) => a.featured !== false && a.id !== "resonancia").map((a) => ({
-      id: a.id, name: a.name, photo: a.photo, role: "Músico · Productor", kind: "artist" as const,
+      id: a.id, name: a.name, photo: a.photo, tags: ["Músico", "Productor"], kind: "artist" as const,
     }));
     const guides = GUIDES.filter((g) => g.featured !== false && g.id !== "casa-cuenco").map((g) => ({
-      id: g.id, name: g.name, photo: g.photo, role: "Voz Guía", kind: "guide" as const,
+      id: g.id, name: g.name, photo: g.photo, tags: ["Voz Guía"], kind: "guide" as const,
     }));
     return [...artists, ...guides];
   }, []);
@@ -665,7 +671,7 @@ export default function BibliotecaScreen() {
               key={r.id}
               name={r.name}
               photo={r.photo}
-              role={r.role}
+              tags={r.tags}
               onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
             />
           ))}
@@ -950,7 +956,7 @@ export default function BibliotecaScreen() {
           key={r.id}
           name={r.name}
           photo={r.photo}
-          role={r.role}
+          tags={r.tags}
           onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
         />
       ));
@@ -1101,7 +1107,7 @@ export default function BibliotecaScreen() {
                     key={r.id}
                     name={r.name}
                     photo={r.photo}
-                    role={r.role}
+                    tags={r.tags}
                     onPress={() => {
                       setAddResonadorVisible(false);
                       setAddResonadorQ("");
@@ -1284,6 +1290,15 @@ const styles = StyleSheet.create({
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   verifiedText: { fontSize: 11, color: MUTED },
+  resonadorTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 20,
+    backgroundColor: "rgba(212,175,55,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.20)",
+  },
+  resonadorTagText: { fontSize: 10, color: GOLD, fontWeight: "600" },
 
   // ── Estado vacío ────────────────────────────────────────────────────────────
   generalSectionLabel: {
