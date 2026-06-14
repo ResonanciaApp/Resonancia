@@ -576,7 +576,7 @@ export default function BibliotecaScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [mixesLimit, setMixesLimit] = useState(12);
   const [geoLimit, setGeoLimit] = useState(8);
-  const [recentLimit, setRecentLimit] = useState(5);
+  const [recentLimit, setRecentLimit] = useState(3);
   const [addResonadorVisible, setAddResonadorVisible] = useState(false);
   const [addResonadorQ, setAddResonadorQ] = useState("");
   const [favLimit, setFavLimit] = useState(12);
