@@ -114,6 +114,7 @@ const PillTab = memo(function PillTab({
           ? { backgroundColor: c + "1A", borderWidth: 1, borderColor: c + "80" }
           : { backgroundColor: "rgba(245,244,242,1)", borderWidth: 1, borderColor: "rgba(0,0,0,0.13)" },
       ]}>
+        <MaterialCommunityIcons name={tab.icon as any} size={14} color={sel ? c : MUTED} />
         <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? c : MUTED, fontWeight: sel ? "700" : "400" }]}>
           {tab.label}
         </Text>
@@ -404,7 +405,6 @@ export default function MiMusicaBlancoScreen() {
           {/* ── Header ── */}
           <View style={styles.header}>
             <View style={styles.headerRow}>
-              <MaterialCommunityIcons name="tune-variant" size={32} color={DARK} style={{ marginRight: 12, opacity: 0.85 }} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.pageTitle}>Mezclador</Text>
                 <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
