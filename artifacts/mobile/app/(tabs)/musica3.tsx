@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     alignSelf: "center",
     overflow: "hidden",
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 2.5,
     borderColor: "transparent",
   },
