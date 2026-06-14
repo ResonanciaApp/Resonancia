@@ -576,7 +576,9 @@ export default function BibliotecaScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [mixesLimit, setMixesLimit] = useState(12);
   const [geoLimit, setGeoLimit] = useState(8);
-  const [recentLimit, setRecentLimit] = useState(12);
+  const [recentLimit, setRecentLimit] = useState(5);
+  const [addResonadorVisible, setAddResonadorVisible] = useState(false);
+  const [addResonadorQ, setAddResonadorQ] = useState("");
   const [favLimit, setFavLimit] = useState(12);
   const [searchVisible, setSearchVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
@@ -657,12 +659,33 @@ export default function BibliotecaScreen() {
                 </View>
               )}
               {hasMoreRecent && (
-                <Pressable style={styles.loadMoreBtn} onPress={() => setRecentLimit((n) => n + 12)}>
+                <Pressable style={styles.loadMoreBtn} onPress={() => setRecentLimit((n) => n + 5)}>
                   <Text style={styles.loadMoreText}>Cargar más</Text>
                 </Pressable>
               )}
             </>
           )}
+
+          {/* ── Resonadores ── */}
+          <Text style={[styles.generalSectionLabel, { marginTop: 24 }]}>Resonadores</Text>
+          {resonadores.slice(0, 3).map((r) => (
+            <ResonadorRow
+              key={r.id}
+              name={r.name}
+              photo={r.photo}
+              role={r.role}
+              onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+            />
+          ))}
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="plus" size={20} color={TEXT} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
+          </Pressable>
         </>
       );
     }
@@ -1051,6 +1074,53 @@ export default function BibliotecaScreen() {
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
+
+      {/* ── Modal Agregar Resonador ── */}
+      <Modal
+        visible={addResonadorVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
+      >
+        <View style={styles.addResModalBg}>
+          <View style={styles.addResModalSheet}>
+            <View style={styles.addResModalHeader}>
+              <Text style={styles.addResModalTitle}>Buscar Resonador</Text>
+              <Pressable hitSlop={10} onPress={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}>
+                <Feather name="x" size={22} color={TEXT} />
+              </Pressable>
+            </View>
+            <View style={styles.addResSearchRow}>
+              <Feather name="search" size={16} color={MUTED} />
+              <TextInput
+                style={styles.addResSearchInput}
+                placeholder="Artistas, guiadores..."
+                placeholderTextColor={MUTED}
+                value={addResonadorQ}
+                onChangeText={setAddResonadorQ}
+                autoFocus
+              />
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {resonadores
+                .filter((r) => addResonadorQ.length === 0 || r.name.toLowerCase().includes(addResonadorQ.toLowerCase()))
+                .map((r) => (
+                  <ResonadorRow
+                    key={r.id}
+                    name={r.name}
+                    photo={r.photo}
+                    role={r.role}
+                    onPress={() => {
+                      setAddResonadorVisible(false);
+                      setAddResonadorQ("");
+                      router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never);
+                    }}
+                  />
+                ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1425,5 +1495,72 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     letterSpacing: 0.2,
+  },
+
+  // ── Agregar Resonador ────────────────────────────────────────────────────────
+  addResonadorBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingHorizontal: H_PAD,
+    paddingVertical: 10,
+  },
+  addResonadorIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.22)",
+  },
+  addResonadorLabel: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: TEXT,
+  },
+  addResModalBg: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.65)",
+    justifyContent: "flex-end",
+  },
+  addResModalSheet: {
+    backgroundColor: "#27070E",
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    paddingTop: 18,
+    paddingBottom: 48,
+    maxHeight: "75%",
+  },
+  addResModalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    marginBottom: 14,
+  },
+  addResModalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: TEXT,
+  },
+  addResSearchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 12,
+    marginHorizontal: H_PAD,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.20)",
+  },
+  addResSearchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: TEXT,
   },
 });
