@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@workspace/db": "workspace:*",
-    "drizzle-orm": "catalog:"
+    "drizzle-orm": "catalog:",
+    "pptxgenjs": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "catalog:",
