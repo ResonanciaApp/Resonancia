@@ -8,25 +8,32 @@ export function TabVarA() {
 
   return (
     <div style={{ width: 390, height: 310, background: "#1B060F", overflow: "hidden", position: "relative", fontFamily: "-apple-system,BlinkMacSystemFont,sans-serif" }}>
-      {/* Space bg */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 130% 80% at 80% -10%, #1a2a4a 0%, #0d1a2e 30%, #1B060F 65%, #27070E 100%)" }} />
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "60%", background: "linear-gradient(to bottom, rgba(27,6,15,0.50) 0%, transparent 30%, rgba(39,7,14,0.80) 80%, #27070E 100%)" }} />
 
-      {/* Title */}
       <div style={{ position: "relative", zIndex: 1, textAlign: "center", paddingTop: 36, paddingBottom: 20 }}>
         <span style={{ color: "#F4DAD5", fontSize: 27, fontWeight: 700, letterSpacing: 0.5 }}>Mezclador</span>
       </div>
 
-      {/* Tabs */}
       <div style={{ position: "relative", zIndex: 1, display: "flex", gap: 8, paddingLeft: 15 }}>
         {tabs.map((t, i) => (
           <div key={i} style={{ position: "relative", opacity: t.partial ? 0.5 : 1 }}>
-            {/* Glow behind — vino cálido */}
+            {/* Glow selected — vino intenso y grande */}
+            {t.sel && (
+              <div style={{
+                position: "absolute", top: -18, left: -18, right: -18, bottom: -18,
+                borderRadius: 38,
+                background: "radial-gradient(ellipse at 50% 50%, rgba(180,30,30,0.75) 0%, rgba(122,21,21,0.45) 35%, transparent 70%)",
+                filter: "blur(14px)",
+                zIndex: 0,
+              }} />
+            )}
+            {/* Glow unselected — vino cálido */}
             {!t.sel && (
               <div style={{
                 position: "absolute", inset: -6,
                 borderRadius: 26,
-                background: "radial-gradient(ellipse at 50% 50%, rgba(122,21,21,0.40) 0%, transparent 70%)",
+                background: "radial-gradient(ellipse at 50% 50%, rgba(122,21,21,0.38) 0%, transparent 70%)",
                 filter: "blur(8px)",
                 zIndex: 0,
               }} />
@@ -34,9 +41,9 @@ export function TabVarA() {
             <div style={{
               position: "relative", zIndex: 1,
               width: 104, height: 72, borderRadius: 20,
-              background: t.sel ? "linear-gradient(180deg,#7A1515,#4A0C0C)" : "rgba(0,0,0,0.48)",
-              border: t.sel ? "none" : "1px solid rgba(255,255,255,0.09)",
-              boxShadow: t.sel ? "0 0 14px 0 rgba(122,21,21,0.55)" : "none",
+              background: t.sel ? "linear-gradient(180deg,#8B1A1A,#4A0C0C)" : "rgba(0,0,0,0.48)",
+              border: t.sel ? "1px solid rgba(200,60,60,0.30)" : "1px solid rgba(255,255,255,0.09)",
+              boxShadow: t.sel ? "inset 0 1px 0 rgba(255,120,120,0.15)" : "none",
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5,
             }}>
               <span style={{ color: t.sel ? "#F4DAD5" : "rgba(255,255,255,0.72)", display: "flex" }}>{t.icon}</span>
@@ -47,7 +54,7 @@ export function TabVarA() {
       </div>
 
       <div style={{ position: "relative", zIndex: 1, textAlign: "center", color: "rgba(244,218,213,0.40)", fontSize: 11, marginTop: 10 }}>
-        A — Ghost negro + glow vino (#7A1515)
+        A — Glow vino en sel + unsel
       </div>
     </div>
   );

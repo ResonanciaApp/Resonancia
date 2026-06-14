@@ -18,7 +18,17 @@ export function TabVarC() {
       <div style={{ position: "relative", zIndex: 1, display: "flex", gap: 8, paddingLeft: 15 }}>
         {tabs.map((t, i) => (
           <div key={i} style={{ position: "relative", opacity: t.partial ? 0.5 : 1 }}>
-            {/* Glow behind — blanco frío, más sutil */}
+            {/* Glow selected — vino intenso */}
+            {t.sel && (
+              <div style={{
+                position: "absolute", top: -18, left: -18, right: -18, bottom: -18,
+                borderRadius: 38,
+                background: "radial-gradient(ellipse at 50% 50%, rgba(180,30,30,0.75) 0%, rgba(122,21,21,0.45) 35%, transparent 70%)",
+                filter: "blur(14px)",
+                zIndex: 0,
+              }} />
+            )}
+            {/* Glow unselected — blanco frío */}
             {!t.sel && (
               <div style={{
                 position: "absolute", inset: -5,
@@ -31,9 +41,9 @@ export function TabVarC() {
             <div style={{
               position: "relative", zIndex: 1,
               width: 104, height: 72, borderRadius: 20,
-              background: t.sel ? "linear-gradient(180deg,#7A1515,#4A0C0C)" : "rgba(0,0,0,0.48)",
-              border: t.sel ? "none" : "1px solid rgba(255,255,255,0.11)",
-              boxShadow: t.sel ? "0 0 14px 0 rgba(122,21,21,0.55)" : "none",
+              background: t.sel ? "linear-gradient(180deg,#8B1A1A,#4A0C0C)" : "rgba(0,0,0,0.48)",
+              border: t.sel ? "1px solid rgba(200,60,60,0.30)" : "1px solid rgba(255,255,255,0.11)",
+              boxShadow: t.sel ? "inset 0 1px 0 rgba(255,120,120,0.15)" : "none",
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5,
             }}>
               <span style={{ color: t.sel ? "#F4DAD5" : "rgba(255,255,255,0.72)", display: "flex" }}>{t.icon}</span>
@@ -44,7 +54,7 @@ export function TabVarC() {
       </div>
 
       <div style={{ position: "relative", zIndex: 1, textAlign: "center", color: "rgba(244,218,213,0.40)", fontSize: 11, marginTop: 10 }}>
-        C — Ghost negro + glow blanco suave
+        C — Glow vino en sel + glow blanco en unsel
       </div>
     </div>
   );
