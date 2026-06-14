@@ -24,6 +24,7 @@ const STACK_SHIFT = 15;
 const MAX_STACK = 3;
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
+const MIX_BG = "rgba(0,0,0,0.8)";
 const BORDER_R = 12;
 
 function formatElapsed(sec: number): string {
@@ -113,14 +114,18 @@ export function MiniPlayer() {
 
   if (!currentSession && !mixActive) return null;
 
-  const shell = (children: React.ReactNode, onPress: () => void) => (
+  const shell = (children: React.ReactNode, onPress: () => void, mixMode = false) => (
     <Pressable onPress={onPress} style={styles.wrapper}>
-      <LinearGradient
-        colors={GRAD_COLORS}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      {mixMode ? (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
+      ) : (
+        <LinearGradient
+          colors={GRAD_COLORS}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       {children}
     </Pressable>
   );
@@ -211,6 +216,7 @@ export function MiniPlayer() {
           openSheet();
         }
       },
+      true,
     );
   }
 
@@ -372,7 +378,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     overflow: "hidden",
     borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 7,
+    paddingHorizontal: 12,
+    paddingVertical: 3,
   },
 });
