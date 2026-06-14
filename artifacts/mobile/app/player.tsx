@@ -426,10 +426,10 @@ export default function PlayerScreen() {
           >
             <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
               <Animated.View
-                style={[styles.progressFill, fillAnimStyle, { backgroundColor: colors.primary }]}
+                style={[styles.progressFill, fillAnimStyle, { backgroundColor: "#D6AD5F" }]}
               />
               <Animated.View
-                style={[styles.progressThumb, thumbAnimStyle, { backgroundColor: colors.primary }]}
+                style={[styles.progressThumb, thumbAnimStyle, { backgroundColor: "#D6AD5F" }]}
               />
             </View>
           </View>
@@ -453,12 +453,18 @@ export default function PlayerScreen() {
             </Pressable>
 
             <View style={styles.playOuter}>
-              <View style={[styles.playRing, { borderColor: "rgba(212,175,55,0.35)" }]} />
+              <View style={[styles.playRing, { borderColor: "rgba(214,173,95,0.35)" }]} />
               <Pressable
                 onPress={handlePlayPause}
                 disabled={isLoading}
-                style={[styles.playButton, { backgroundColor: colors.primary, opacity: isLoading ? 0.7 : 1 }]}
+                style={[styles.playButton, { overflow: "hidden", opacity: isLoading ? 0.7 : 1 }]}
               >
+                <LinearGradient
+                  colors={["#D6AD5F", "#B47344"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFill}
+                />
                 {isLoading ? (
                   <Feather name="loader" size={32} color={colors.primaryForeground} />
                 ) : (
@@ -546,11 +552,11 @@ export default function PlayerScreen() {
               <View style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}>
                 <View
                   pointerEvents="none"
-                  style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: colors.primary }]}
+                  style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: "#D6AD5F" }]}
                 />
                 <View
                   pointerEvents="none"
-                  style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: colors.primary }]}
+                  style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: "#D6AD5F" }]}
                 />
               </View>
             </View>
@@ -592,8 +598,8 @@ export default function PlayerScreen() {
                     style={[
                       styles.timerChip,
                       {
-                        backgroundColor: selected ? colors.primary : "rgba(74,12,12,0.08)",
-                        borderColor: selected ? colors.primary : "rgba(61,14,22,0.40)",
+                        backgroundColor: selected ? "#D6AD5F" : "rgba(74,12,12,0.08)",
+                        borderColor: selected ? "#B47344" : "rgba(61,14,22,0.40)",
                         flexDirection: "row",
                         alignItems: "center",
                         gap: 4,
@@ -828,7 +834,7 @@ const styles = StyleSheet.create({
     borderRadius: 38,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#D4AF37",
+    shadowColor: "#C59052",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 16,

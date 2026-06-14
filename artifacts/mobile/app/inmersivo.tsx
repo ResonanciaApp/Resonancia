@@ -19,7 +19,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundById, hasSoundFile } from "@/data/sounds";
 
-const ACCENT = "#D4AF37";
+const ACCENT = "#D6AD5F";
 const TRACK = "rgba(61,14,22,0.40)";
 
 function formatRemaining(seconds: number | null): string {
@@ -174,6 +174,12 @@ export default function InmersivoScreen() {
           onPress={togglePlay}
           style={({ pressed }) => [styles.playBtn, { opacity: pressed ? 0.85 : 1 }]}
         >
+          <LinearGradient
+            colors={["#D6AD5F", "#B47344"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
           <Feather
             name={isPlaying ? "pause" : "play"}
             size={36}
@@ -260,7 +266,7 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 42,
-    backgroundColor: "#D4AF37",
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
