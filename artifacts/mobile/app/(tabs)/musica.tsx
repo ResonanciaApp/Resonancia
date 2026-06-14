@@ -695,15 +695,15 @@ export default function MiMusicaScreen() {
             debajo de la imagen se ve el mismo degradado raíz → sin costura */}
         <LinearGradient
           colors={[
-            "rgba(39,7,14,0.60)",
-            "rgba(39,7,14,0.15)",
+            "rgba(39,7,14,0.65)",
+            "rgba(39,7,14,0.20)",
             "rgba(74,12,12,0)",
             "rgba(74,12,12,0)",
-            "rgba(60,10,13,0.45)",
-            "rgba(45,8,13,0.85)",
+            "rgba(60,10,13,0.55)",
+            "rgba(45,8,13,0.90)",
             "#27070E",
           ]}
-          locations={[0, 0.28, 0.45, 0.58, 0.72, 0.88, 1]}
+          locations={[0, 0.25, 0.42, 0.56, 0.70, 0.86, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.heroBgImage}
@@ -993,7 +993,7 @@ const styles = StyleSheet.create({
 
   // ── Hero ────────────────────────────────────────────────────────────────────
   heroWrap: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden" },
-  heroBgImage: { position: "absolute", top: 0, left: 0, right: 0, height: "50%" },
+  heroBgImage: { position: "absolute", top: 0, left: 0, right: 0, height: "60%" },
   heroTextWrap: {
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
