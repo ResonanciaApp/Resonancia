@@ -588,20 +588,23 @@ export default function MiMusicaScreen() {
           </View>
 
           {/* ── Pills de tabs principales ── */}
-          <View style={styles.pillRow}>
-            <View style={styles.pillGrid}>
-              {MAIN_TABS.map((tab) => (
-                <PillTab
-                  key={tab.id}
-                  tab={tab}
-                  sel={mainTab === tab.id}
-                  onPress={() => handleMainTab(tab.id)}
-                  isDark={isDark}
-                  selBg={themeSelBg}
-                />
-              ))}
-            </View>
-          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.pillRow}
+            contentContainerStyle={styles.pillRowContent}
+          >
+            {MAIN_TABS.map((tab) => (
+              <PillTab
+                key={tab.id}
+                tab={tab}
+                sel={mainTab === tab.id}
+                onPress={() => handleMainTab(tab.id)}
+                isDark={isDark}
+                selBg={themeSelBg}
+              />
+            ))}
+          </ScrollView>
 
           {/* ── Sub-tabs (píldoras horizontales) ── */}
           {subTabCategories && subTabCategories.length > 1 ? (
@@ -835,9 +838,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
   },
 
-  pillRow:  { marginBottom: 4, marginTop: 16, paddingHorizontal: 15 },
-  pillGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 8, justifyContent: "space-evenly" },
-  pillTabOuter: { width: "28%" },
+  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 16 },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 6 },
+  pillTabOuter: {},
   pillTab: {
     alignItems: "center",
     justifyContent: "center",
