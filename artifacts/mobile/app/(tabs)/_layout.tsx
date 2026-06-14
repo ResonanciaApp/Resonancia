@@ -29,7 +29,7 @@ const PILL_BG = "rgba(244,218,213,0.18)";
 const BAR_BORDER = "rgba(244,218,213,0.10)";
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["musica2", "musica3", "descanzo", "profile"]);
+const HIDDEN_ROUTES = new Set(["descanzo", "profile"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -45,8 +45,6 @@ const TAB_CONFIG: Record<
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",              featherIcon: "home" },
   explore:    { label: "Buscar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",         featherIcon: "search" },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",    featherIcon: "sliders" },
-  musica2:    { label: "Música 2",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",    featherIcon: "sliders" },
-  musica3:    { label: "Mi Música",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",    featherIcon: "sliders" },
   geometrix:  { label: "Geometrix", sfIcon: "hexagon",              sfIconFill: "hexagon.fill",            featherIcon: "hexagon", image: require("@/assets/images/geometrix/cubo-1.png") },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",    featherIcon: "bookmark" },
   profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",             featherIcon: "user" },
