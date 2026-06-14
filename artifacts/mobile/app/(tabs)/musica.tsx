@@ -694,7 +694,7 @@ export default function MiMusicaScreen() {
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
         {/* Imagen cubre toda la pantalla */}
         <Image
-          source={require("@/assets/images/hero-earth.jpg")}
+          source={require("@/assets/images/mezclador-bg.jpg")}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
           contentPosition="center"
