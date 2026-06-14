@@ -666,25 +666,6 @@ export default function MiMusicaScreen() {
             style={styles.pillRow}
             contentContainerStyle={styles.pillRowContent}
           >
-            {MAIN_TABS.map((tab) => (
-              <PillTab
-                key={tab.id}
-                tab={tab}
-                sel={mainTab === tab.id}
-                onPress={() => handleMainTab(tab.id)}
-                isDark={isDark}
-                selBg={themeSelBg}
-              />
-            ))}
-          </ScrollView>
-
-          {/* ── Carrusel Diseño C — comparación ── */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.pillRow}
-            contentContainerStyle={styles.pillRowContent}
-          >
             {MAIN_TABS.map((tab) =>
               tab.id === "popular" ? (
                 <PillTab
