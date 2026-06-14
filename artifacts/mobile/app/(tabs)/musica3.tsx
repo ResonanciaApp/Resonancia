@@ -536,7 +536,7 @@ export default function MiMusicaBlancoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:  { flex: 1 },
+  root:  { flex: 1, backgroundColor: "#FFFFFF" },
   inner: { flex: 1, backgroundColor: "transparent" },
 
   topPanel: {
@@ -563,8 +563,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: 104,
-    height: 54,
-    borderRadius: 20,
+    height: 40,
+    borderRadius: 999,
     overflow: "hidden",
     gap: 4,
   },
