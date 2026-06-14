@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
-  subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 11 },
+  subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
   subTabPill: {
     alignItems: "center",
     justifyContent: "center",
