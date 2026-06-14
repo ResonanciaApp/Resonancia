@@ -315,11 +315,11 @@ const SubTabPill = memo(function SubTabPill({
       <View style={[
         styles.subTabPill,
         sel
-          ? { backgroundColor: tintBg ?? "rgba(0,0,0,0.20)", borderWidth: 0 }
+          ? { backgroundColor: tintBg ?? "rgba(255,255,255,0.12)", borderWidth: 0 }
           : {
-              backgroundColor: "rgba(0,0,0,0.57)",
+              backgroundColor: "rgba(255,255,255,0.08)",
               borderWidth: 1,
-              borderTopColor:    "rgba(255,255,255,0.12)",
+              borderTopColor:    "rgba(255,255,255,0.14)",
               borderBottomColor: "rgba(255,255,255,0.10)",
               borderLeftColor:   "rgba(255,255,255,0.08)",
               borderRightColor:  "rgba(255,255,255,0.07)",
