@@ -993,7 +993,7 @@ const styles = StyleSheet.create({
 
   // ── Hero ────────────────────────────────────────────────────────────────────
   heroWrap: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden" },
-  heroBgImage: { position: "absolute", top: 0, left: 0, right: 0, height: "60%" },
+  heroBgImage: { position: "absolute", top: 0, left: 0, right: 0, height: "30%" },
   heroTextWrap: {
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
