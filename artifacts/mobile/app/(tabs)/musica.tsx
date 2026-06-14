@@ -231,10 +231,10 @@ const PillTab = memo(function PillTab({
           : {
               backgroundColor: "rgba(0,0,0,0.42)",
               borderWidth: 1,
-              borderTopColor:    "rgba(255,255,255,0.22)",
-              borderLeftColor:   "rgba(255,255,255,0.14)",
-              borderRightColor:  "rgba(255,255,255,0.04)",
-              borderBottomColor: "rgba(255,255,255,0.03)",
+              borderTopColor:    "rgba(255,255,255,0.24)",
+              borderBottomColor: "rgba(255,255,255,0.18)",
+              borderLeftColor:   "rgba(255,255,255,0.09)",
+              borderRightColor:  "rgba(255,255,255,0.08)",
             },
       ]}>
         {/* Ícono */}
@@ -280,10 +280,10 @@ const DesignCPillTab = memo(function DesignCPillTab({
             : {
                 backgroundColor: "rgba(0,0,0,0.42)",
                 borderWidth: 1,
-                borderTopColor:    "rgba(255,255,255,0.22)",
-                borderLeftColor:   "rgba(255,255,255,0.14)",
-                borderRightColor:  "rgba(255,255,255,0.04)",
-                borderBottomColor: "rgba(255,255,255,0.03)",
+                borderTopColor:    "rgba(255,255,255,0.24)",
+                borderBottomColor: "rgba(255,255,255,0.18)",
+                borderLeftColor:   "rgba(255,255,255,0.09)",
+                borderRightColor:  "rgba(255,255,255,0.08)",
               },
         ]}
       >
