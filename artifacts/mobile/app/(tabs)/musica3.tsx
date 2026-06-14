@@ -103,6 +103,13 @@ const TAB_TINT: Record<MainTabId, { glow: string }> = {
   sintetizadores: { glow: "#3B82F6" },
 };
 
+const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
+  popular:        ["#284a86", "#113067"],   // azul profundo
+  naturaleza:     ["#1a6b3c", "#0d4425"],   // verde bosque
+  ancestrales:    ["#8a4a10", "#5c2e07"],   // ámbar oscuro
+  sintetizadores: ["#1a5c7a", "#0c3a52"],   // azul-teal profundo
+};
+
 // ── PillTab ───────────────────────────────────────────────────────────────────
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
@@ -112,7 +119,7 @@ const PillTab = memo(function PillTab({
     <Pressable onPress={onPress}>
       {sel ? (
         <LinearGradient
-          colors={["#284a86", "#113067"]}
+          colors={TAB_GRADIENT[tab.id]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.pillTab}
