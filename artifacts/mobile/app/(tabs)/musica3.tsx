@@ -272,7 +272,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
         )}
         {!decorated && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)", borderRadius: 999 }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
         )}
         {locked && (
           <Image
