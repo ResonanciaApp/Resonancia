@@ -145,7 +145,7 @@ const PillTab = memo(function PillTab({
           </Text>
         </LinearGradient>
       ) : (
-        <View style={[styles.pillTab, { backgroundColor: "rgba(245,244,242,1)", borderWidth: 1, borderColor: "rgba(0,0,0,0.13)" }]}>
+        <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE" }]}>
           <MaterialCommunityIcons name={tab.icon as any} size={17} color={MUTED} />
           <Text numberOfLines={1} style={[styles.pillTabLabel, { color: MUTED, fontWeight: "400" }]}>
             {tab.label}
@@ -507,7 +507,7 @@ export default function MiMusicaBlancoScreen() {
                             </Text>
                           </LinearGradient>
                         ) : (
-                          <View style={[styles.subTabPill, { backgroundColor: "rgba(0,0,0,0.03)", borderColor: "rgba(0,0,0,0.09)" }]}>
+                          <View style={[styles.subTabPill, { backgroundColor: "#F7F7F7", borderColor: "#E8E8E8" }]}>
                             {SUB_TAB_ICONS[catId] && (
                               <MaterialCommunityIcons
                                 name={SUB_TAB_ICONS[catId] as any}
