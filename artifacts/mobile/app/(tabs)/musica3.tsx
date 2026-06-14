@@ -466,30 +466,46 @@ export default function MiMusicaBlancoScreen() {
                     const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
                     if (!cat) return null;
                     const sel = subTab === catId;
-                    const tabColor = MAIN_TABS.find((t) => t.id === mainTab)?.color ?? GOLD;
+                    const grad = TAB_GRADIENT[mainTab];
                     return (
                       <Pressable
                         key={catId}
                         onPress={() => setSubTab(sel ? null : catId)}
-                        style={[
-                          styles.subTabPill,
-                          {
-                            backgroundColor: sel ? tabColor + "12" : "rgba(0,0,0,0.03)",
-                            borderColor: sel ? tabColor + "60" : "rgba(0,0,0,0.09)",
-                          },
-                        ]}
                       >
-                        {SUB_TAB_ICONS[catId] && (
-                          <MaterialCommunityIcons
-                            name={SUB_TAB_ICONS[catId] as any}
-                            size={15}
-                            color={sel ? tabColor : MUTED}
-                            style={{ marginRight: 5 }}
-                          />
+                        {sel ? (
+                          <LinearGradient
+                            colors={grad}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 0, y: 1 }}
+                            style={styles.subTabPill}
+                          >
+                            {SUB_TAB_ICONS[catId] && (
+                              <MaterialCommunityIcons
+                                name={SUB_TAB_ICONS[catId] as any}
+                                size={15}
+                                color="#FFFFFF"
+                                style={{ marginRight: 5 }}
+                              />
+                            )}
+                            <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: "700" }]}>
+                              {SUB_TAB_LABELS[catId] ?? cat.label}
+                            </Text>
+                          </LinearGradient>
+                        ) : (
+                          <View style={[styles.subTabPill, { backgroundColor: "rgba(0,0,0,0.03)", borderColor: "rgba(0,0,0,0.09)" }]}>
+                            {SUB_TAB_ICONS[catId] && (
+                              <MaterialCommunityIcons
+                                name={SUB_TAB_ICONS[catId] as any}
+                                size={15}
+                                color={MUTED}
+                                style={{ marginRight: 5 }}
+                              />
+                            )}
+                            <Text style={[styles.subTabText, { color: MUTED }]}>
+                              {SUB_TAB_LABELS[catId] ?? cat.label}
+                            </Text>
+                          </View>
                         )}
-                        <Text style={[styles.subTabText, { color: sel ? tabColor : MUTED }]}>
-                          {SUB_TAB_LABELS[catId] ?? cat.label}
-                        </Text>
                       </Pressable>
                     );
                   })}
