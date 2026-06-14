@@ -171,7 +171,7 @@ export function MixerSheet() {
     fg:             isLight ? "#1A1E2B"             : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
     inputBg:        isLight ? "rgba(0,0,0,0.04)"   : "rgba(74,12,12,0.08)",
-    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"   : "rgba(61,14,22,0.80)",
+    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"   : "rgba(0,0,0,0.40)",
     footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(244,218,213,0.45)",
   };
   const { isPremium } = usePremium();
@@ -448,7 +448,7 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: sheetGradient[2], paddingBottom: insets.bottom + 16 },
+            { backgroundColor: sheetGradient[2], paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
