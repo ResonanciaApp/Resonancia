@@ -114,7 +114,7 @@ const TAB_TINT: Record<MainTabId, { glow: string }> = {
 };
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
-  popular:        ["#8B7CFF", "#2A1B4D"],   // lavanda púrpura
+  popular:        ["#5E1E2D", "#1B090F"],   // borgoña oscuro
   naturaleza:     ["#43B97F", "#0D5C3A"],   // selva esmeralda
   ancestrales:    ["#FFB347", "#E85D04"],   // atardecer cálido
   sintetizadores: ["#7A5CFA", "#3A0CA3"],   // púrpura cósmico
