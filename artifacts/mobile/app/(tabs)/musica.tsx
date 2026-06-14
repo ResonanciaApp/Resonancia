@@ -124,7 +124,7 @@ const PillTab = memo(function PillTab({
           </Text>
         </LinearGradient>
       ) : (
-        <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE", opacity: 0.8 }]}>
+        <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE" }]}>
           <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(0,0,0,0.6)" />
           <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(0,0,0,0.6)", fontWeight: "400" }]}>
             {tab.label}
@@ -402,7 +402,7 @@ export default function MezcladorScreen() {
                               </Text>
                             </LinearGradient>
                           ) : (
-                            <View style={[styles.subTabPill, { backgroundColor: "#F7F7F7", borderColor: "#E8E8E8", opacity: 0.8 }]}>
+                            <View style={[styles.subTabPill, { backgroundColor: "#F7F7F7", borderColor: "#E8E8E8" }]}>
                               {SUB_TAB_ICONS[catId] && (
                                 <MaterialCommunityIcons
                                   name={SUB_TAB_ICONS[catId] as any}
