@@ -729,7 +729,7 @@ export default function MiMusicaScreen() {
           <View style={{ height: 110 + topPad, width: "100%" }}>
             <Animated.View
               pointerEvents="none"
-              style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: introTextAnim, transform: [{ translateY: 30 }] }]}
+              style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: introTextAnim, transform: [{ translateY: 50 }] }]}
             >
               <Text style={styles.introText}>¿Estás listo para crear?</Text>
             </Animated.View>
