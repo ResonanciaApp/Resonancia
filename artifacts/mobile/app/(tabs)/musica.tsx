@@ -220,28 +220,14 @@ const PillTab = memo(function PillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.85, shadowRadius: 22, elevation: 12 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.95, shadowRadius: 28, elevation: 14 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
-      {sel && (
-        <View
-          pointerEvents="none"
-          style={{
-            position: "absolute", width: 104, height: 72, borderRadius: 20,
-            backgroundColor: tint.glow + "18",
-            shadowColor: tint.glow,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.90,
-            shadowRadius: 52,
-            elevation: 0,
-          }}
-        />
-      )}
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: tint.bg, borderWidth: 0 }
+          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 0 }
           : {
               backgroundColor: "rgba(0,0,0,0.32)",
               borderWidth: 1,
@@ -282,29 +268,15 @@ const DesignCPillTab = memo(function DesignCPillTab({
       style={[
         styles.pillTabOuter,
         sel
-          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.85, shadowRadius: 22, elevation: 12 }
+          ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.95, shadowRadius: 28, elevation: 14 }
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
-      {sel && (
-        <View
-          pointerEvents="none"
-          style={{
-            position: "absolute", width: 104, height: 72, borderRadius: 20,
-            backgroundColor: tint.glow + "18",
-            shadowColor: tint.glow,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.90,
-            shadowRadius: 52,
-            elevation: 0,
-          }}
-        />
-      )}
       <View
         style={[
           styles.pillTab,
           sel
-            ? { backgroundColor: tint.bg, borderWidth: 0 }
+            ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 0 }
             : {
                 backgroundColor: "rgba(0,0,0,0.32)",
                 borderWidth: 1,
@@ -991,8 +963,8 @@ const styles = StyleSheet.create({
   heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5", textAlign: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
-  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 8 },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 18 },
+  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 8, backgroundColor: "transparent" },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 28 },
   pillTabOuter: {},
   pillTab: {
     alignItems: "center",
