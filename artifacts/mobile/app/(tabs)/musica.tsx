@@ -534,11 +534,12 @@ export default function MiMusicaScreen() {
     introTextAnim.setValue(0);
     settingsIconAnim.setValue(0);
     Animated.sequence([
-      Animated.timing(introTextAnim, { toValue: 1, duration: 900, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.delay(700),
+      Animated.timing(introTextAnim, { toValue: 1, duration: 1400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       Animated.delay(2000),
       Animated.parallel([
-        Animated.timing(introTextAnim,    { toValue: 0, duration: 650, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-        Animated.timing(settingsIconAnim, { toValue: 1, duration: 750, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(introTextAnim,    { toValue: 0, duration: 1100, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(settingsIconAnim, { toValue: 1, duration: 1100, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       ]),
     ]).start();
   }, [])); // eslint-disable-line react-hooks/exhaustive-deps
@@ -1015,7 +1016,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
   heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF", textAlign: "left", paddingHorizontal: 15, marginBottom: 12 },
-  introText: { fontSize: 21, fontWeight: "300", fontStyle: "italic", color: "#FFFFFF", letterSpacing: 0.8, textAlign: "center", textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },
+  introText: { fontSize: 21, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.5, textAlign: "center", textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },
   heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.13)", borderRadius: 999, padding: 16, alignItems: "center", justifyContent: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
