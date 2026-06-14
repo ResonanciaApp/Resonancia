@@ -72,3 +72,23 @@ export const GRADIENT_PRESETS: GradientPreset[] = [
 
 export const DEFAULT_BG_PRESET_ID = "borgona";
 export const MIXER_BG_KEY = "@resonance_mixer_bg";
+export const MIXER_OVERLAY_KEY = "@resonance_mixer_overlay";
+export const DEFAULT_OVERLAY = 0.65;
+
+let _bgListeners: Array<(id: string) => void> = [];
+export function subscribeBgPreset(fn: (id: string) => void) {
+  _bgListeners.push(fn);
+  return () => { _bgListeners = _bgListeners.filter((l) => l !== fn); };
+}
+export function emitBgPresetChange(id: string) {
+  _bgListeners.forEach((l) => l(id));
+}
+
+let _overlayListeners: Array<(v: number) => void> = [];
+export function subscribeOverlay(fn: (v: number) => void) {
+  _overlayListeners.push(fn);
+  return () => { _overlayListeners = _overlayListeners.filter((l) => l !== fn); };
+}
+export function emitOverlayChange(v: number) {
+  _overlayListeners.forEach((l) => l(v));
+}

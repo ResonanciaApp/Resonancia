@@ -165,6 +165,10 @@ function RootLayoutNav() {
           options={{ headerShown: false, presentation: "fullScreenModal", animation: "fade" }}
         />
         <Stack.Screen
+          name="escenas-mixer"
+          options={{ headerShown: false, presentation: "fullScreenModal", animation: "slide_from_bottom" }}
+        />
+        <Stack.Screen
           name="session/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

@@ -41,7 +41,15 @@ import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
-import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID, MIXER_BG_KEY } from "@/config/immersive-presets";
+import {
+  DEFAULT_BG_PRESET_ID,
+  DEFAULT_OVERLAY,
+  GRADIENT_PRESETS,
+  MIXER_BG_KEY,
+  MIXER_OVERLAY_KEY,
+  subscribeBgPreset,
+  subscribeOverlay,
+} from "@/config/immersive-presets";
 
 const TIMER_OPTIONS = [15, 30, 45, 60];
 const FREE_MIX_PER_CATEGORY = 1;
@@ -116,7 +124,8 @@ export function MixerSheet() {
   const isLight = false;
 
   // ── Fondo personalizable ──────────────────────────────────────────────────
-  const [bgPresetId,   setBgPresetId]   = useState<string>(DEFAULT_BG_PRESET_ID);
+  const [bgPresetId,    setBgPresetId]    = useState<string>(DEFAULT_BG_PRESET_ID);
+  const [overlayOpacity, setOverlayOpacity] = useState<number>(DEFAULT_OVERLAY);
   const [bgPickerOpen, setBgPickerOpen] = useState(false);
   const bgPickerY = useRef(new Animated.Value(700)).current;
   const bgBreath  = useRef(new Animated.Value(1)).current;
@@ -126,12 +135,22 @@ export function MixerSheet() {
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const sheetGradient = activeBgPreset.colors;
 
-  // Cargar preset guardado
+  // Cargar preset y overlay guardados
   useEffect(() => {
-    AsyncStorage.getItem(MIXER_BG_KEY)
-      .then((id) => { if (id) setBgPresetId(id); })
+    AsyncStorage.multiGet([MIXER_BG_KEY, MIXER_OVERLAY_KEY])
+      .then(([bg, ov]) => {
+        if (bg[1]) setBgPresetId(bg[1]);
+        if (ov[1]) setOverlayOpacity(parseFloat(ov[1]));
+      })
       .catch(() => {});
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Escucha cambios en vivo desde EscenasMixer
+  useEffect(() => {
+    const unsubBg = subscribeBgPreset((id) => setBgPresetId(id));
+    const unsubOv = subscribeOverlay((v) => setOverlayOpacity(v));
+    return () => { unsubBg(); unsubOv(); };
+  }, []);
 
   // Animación de "respiración" del fondo
   useEffect(() => {
@@ -471,7 +490,7 @@ export function MixerSheet() {
                   style={[
                     StyleSheet.absoluteFill,
                     styles.sheetGradient,
-                    { backgroundColor: "rgba(8,3,6,0.65)" },
+                    { backgroundColor: `rgba(8,3,6,${overlayOpacity})` },
                   ]}
                 />
               </>
@@ -503,16 +522,16 @@ export function MixerSheet() {
               {originPreset?.name ?? "Tu mezcla"}
             </Text>
             <Pressable
-              onPress={openBgPicker}
+              onPress={() => router.push("/escenas-mixer" as never)}
               hitSlop={10}
               style={styles.headerBtn}
               accessibilityRole="button"
-              accessibilityLabel="Elegir fondo"
+              accessibilityLabel="Escenas y ajustes de fondo"
             >
               <MaterialCommunityIcons
-                name="palette-outline"
+                name="tune-variant"
                 size={22}
-                color={bgPresetId !== DEFAULT_BG_PRESET_ID ? "#E9C46A" : palette.fg}
+                color={activeBgPreset.image ? "#E9C46A" : palette.fg}
               />
             </Pressable>
             <Pressable

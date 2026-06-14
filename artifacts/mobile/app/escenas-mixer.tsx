@@ -1,0 +1,408 @@
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Dimensions,
+  Modal,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { VolumeSlider } from "@/components/VolumeSlider";
+import { useMixer } from "@/context/MixerContext";
+import {
+  DEFAULT_BG_PRESET_ID,
+  DEFAULT_OVERLAY,
+  GRADIENT_PRESETS,
+  MIXER_BG_KEY,
+  MIXER_OVERLAY_KEY,
+  emitBgPresetChange,
+  emitOverlayChange,
+} from "@/config/immersive-presets";
+
+const { width: SCREEN_W } = Dimensions.get("window");
+const COLS = 3;
+const H_PAD = 16;
+const CARD_GAP = 10;
+const CARD_W = Math.floor((SCREEN_W - H_PAD * 2 - CARD_GAP * (COLS - 1)) / COLS);
+const CARD_H = Math.floor(CARD_W * 4 / 3);
+
+const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
+
+export default function EscenasMixer() {
+  const insets = useSafeAreaInsets();
+  const { isPlaying } = useMixer();
+
+  const [selectedId, setSelectedId] = useState<string>(DEFAULT_BG_PRESET_ID);
+  const [overlayOpacity, setOverlayOpacity] = useState<number>(DEFAULT_OVERLAY);
+  const [videoEnabled, setVideoEnabled] = useState(false);
+  const [previewScene, setPreviewScene] = useState<(typeof IMAGE_SCENES)[0] | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.multiGet([MIXER_BG_KEY, MIXER_OVERLAY_KEY]).then((pairs) => {
+      const bg = pairs[0][1];
+      const ov = pairs[1][1];
+      if (bg) setSelectedId(bg);
+      if (ov) setOverlayOpacity(parseFloat(ov));
+    });
+  }, []);
+
+  const applyScene = (id: string) => {
+    setSelectedId(id);
+    AsyncStorage.setItem(MIXER_BG_KEY, id);
+    emitBgPresetChange(id);
+  };
+
+  const applyOverlay = (v: number) => {
+    setOverlayOpacity(v);
+    AsyncStorage.setItem(MIXER_OVERLAY_KEY, String(v));
+    emitOverlayChange(v);
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      "¿Quitar escena?",
+      "Se volverá al fondo predeterminado del mezclador.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Quitar",
+          style: "destructive",
+          onPress: () => {
+            applyScene(DEFAULT_BG_PRESET_ID);
+            setPreviewScene(null);
+          },
+        },
+      ],
+    );
+  };
+
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <LinearGradient
+        colors={["#F2F3F7", "#E3E5EB"]}
+        style={[styles.root, { paddingTop: insets.top }]}
+      >
+        {/* ── Header ── */}
+        <View style={styles.header}>
+          <Pressable onPress={() => router.back()} hitSlop={14} style={styles.headerBtn}>
+            <Feather name="x" size={22} color="#2A2A2E" />
+          </Pressable>
+          <Text style={styles.headerTitle}>Escenas</Text>
+          <View style={styles.headerBtn} />
+        </View>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 32 }]}
+        >
+          {/* ── Controles ── */}
+          <View style={styles.controlsCard}>
+
+            {/* Oscuridad de la escena */}
+            <View style={styles.controlRow}>
+              <MaterialCommunityIcons name="brightness-6" size={20} color="#555" style={styles.controlIcon} />
+              <View style={styles.controlText}>
+                <Text style={styles.controlLabel}>Oscuridad de la escena</Text>
+                <Text style={styles.controlSub}>Ajusta cuánto se oscurece la imagen</Text>
+              </View>
+            </View>
+            <View style={styles.sliderWrap}>
+              <Feather name="sun" size={14} color="#999" />
+              <View style={styles.sliderFlex}>
+                <VolumeSlider
+                  value={overlayOpacity}
+                  onChange={applyOverlay}
+                  color="#4A4A5A"
+                  trackColor="rgba(0,0,0,0.12)"
+                />
+              </View>
+              <Feather name="moon" size={14} color="#555" />
+            </View>
+
+            <View style={styles.divider} />
+
+            {/* Audio en segundo plano */}
+            <View style={styles.controlRow}>
+              <MaterialCommunityIcons name="headphones" size={20} color="#555" style={styles.controlIcon} />
+              <View style={styles.controlText}>
+                <Text style={styles.controlLabel}>Sonido fuera de la app</Text>
+                <Text style={styles.controlSub}>El mezclador sigue sonando en segundo plano</Text>
+              </View>
+              <View style={[styles.statusBadge, { backgroundColor: isPlaying ? "#3DAF70" : "#C0C0C8" }]}>
+                <Text style={styles.statusBadgeText}>{isPlaying ? "Activo" : "Inactivo"}</Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            {/* Video toggle */}
+            <View style={[styles.controlRow, { opacity: 0.45 }]}>
+              <MaterialCommunityIcons name="video-outline" size={20} color="#555" style={styles.controlIcon} />
+              <View style={styles.controlText}>
+                <Text style={styles.controlLabel}>Video de la escena</Text>
+                <Text style={styles.controlSub}>Próximamente — escenas en movimiento</Text>
+              </View>
+              <Switch
+                value={videoEnabled}
+                onValueChange={setVideoEnabled}
+                disabled
+                trackColor={{ false: "#CCC", true: "#D4AF37" }}
+                thumbColor="#FFF"
+              />
+            </View>
+
+          </View>
+
+          {/* ── Sección escenas ── */}
+          <Text style={styles.sectionTitle}>Escenas</Text>
+
+          <View style={styles.grid}>
+            {IMAGE_SCENES.map((scene) => {
+              const active = selectedId === scene.id;
+              return (
+                <Pressable
+                  key={scene.id}
+                  onPress={() => setPreviewScene(scene)}
+                  style={styles.cardWrap}
+                >
+                  <View style={[styles.card, active && styles.cardActive]}>
+                    <Image
+                      source={scene.image}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                    />
+                    {active && (
+                      <View style={styles.activeOverlay}>
+                        <Feather name="check-circle" size={26} color="#FFF" />
+                      </View>
+                    )}
+                    {!scene.image && (
+                      <View style={[StyleSheet.absoluteFill, styles.gradientFallback, { backgroundColor: scene.colors[0] }]} />
+                    )}
+                  </View>
+                  <Text style={[styles.cardLabel, active && styles.cardLabelActive]} numberOfLines={1}>
+                    {scene.name}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <Text style={styles.hint}>
+            Toca una escena para previsualizarla antes de elegirla.
+          </Text>
+        </ScrollView>
+      </LinearGradient>
+
+      {/* ── Preview fullscreen ── */}
+      {previewScene && (
+        <Modal visible animationType="fade" statusBarTranslucent>
+          <View style={styles.previewRoot}>
+            <Image
+              source={previewScene.image}
+              style={[StyleSheet.absoluteFill, { top: -300, left: -300, right: -300, bottom: -300 }]}
+              contentFit="cover"
+            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${overlayOpacity})` }]} />
+
+            {/* Top row */}
+            <View style={[styles.previewTop, { paddingTop: insets.top + 12 }]}>
+              <Pressable onPress={() => setPreviewScene(null)} hitSlop={14} style={styles.previewIconBtn}>
+                <Feather name="x" size={24} color="#FFF" />
+              </Pressable>
+              <Text style={styles.previewTitle}>{previewScene.name}</Text>
+              <Pressable onPress={handleDelete} hitSlop={14} style={styles.previewIconBtn}>
+                <Feather name="trash-2" size={20} color="rgba(255,255,255,0.65)" />
+              </Pressable>
+            </View>
+
+            {/* Bottom CTA */}
+            <View style={[styles.previewBottom, { paddingBottom: insets.bottom + 24 }]}>
+              <Pressable
+                onPress={() => {
+                  applyScene(previewScene.id);
+                  setPreviewScene(null);
+                }}
+                style={[
+                  styles.applyBtn,
+                  selectedId === previewScene.id && styles.applyBtnActive,
+                ]}
+              >
+                {selectedId === previewScene.id && (
+                  <Feather name="check" size={17} color="#D4AF37" style={{ marginRight: 6 }} />
+                )}
+                <Text style={[
+                  styles.applyBtnText,
+                  selectedId === previewScene.id && styles.applyBtnTextActive,
+                ]}>
+                  {selectedId === previewScene.id ? "Escena activa" : "Elegir esta escena"}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  headerBtn: { width: 36, alignItems: "center", justifyContent: "center" },
+  headerTitle: { flex: 1, textAlign: "center", fontSize: 17, fontWeight: "700", color: "#1A1A22", letterSpacing: 0.2 },
+
+  scrollContent: { paddingHorizontal: H_PAD, paddingTop: 8 },
+
+  controlsCard: {
+    backgroundColor: "#FFF",
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    paddingVertical: 6,
+    marginBottom: 28,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  controlRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 13,
+  },
+  controlIcon: { marginRight: 12, width: 22 },
+  controlText: { flex: 1 },
+  controlLabel: { fontSize: 14, fontWeight: "600", color: "#1A1A22" },
+  controlSub: { fontSize: 12, color: "#888", marginTop: 1 },
+  sliderWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 10,
+    paddingHorizontal: 4,
+    gap: 8,
+  },
+  sliderFlex: { flex: 1 },
+  statusBadge: {
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  statusBadgeText: { fontSize: 11, fontWeight: "600", color: "#FFF" },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.08)", marginHorizontal: -18 },
+
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1A1A22",
+    marginBottom: 14,
+    letterSpacing: 0.2,
+  },
+
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: CARD_GAP,
+  },
+  cardWrap: { width: CARD_W, alignItems: "center" },
+  card: {
+    width: CARD_W,
+    height: CARD_H,
+    borderRadius: 14,
+    overflow: "hidden",
+    backgroundColor: "#222",
+  },
+  cardActive: {
+    borderWidth: 2.5,
+    borderColor: "#D4AF37",
+  },
+  activeOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  gradientFallback: { borderRadius: 14 },
+  cardLabel: { marginTop: 6, fontSize: 11, color: "#555", fontWeight: "500", textAlign: "center" },
+  cardLabelActive: { color: "#D4AF37", fontWeight: "700" },
+
+  hint: {
+    marginTop: 20,
+    fontSize: 11,
+    color: "#AAA",
+    textAlign: "center",
+    lineHeight: 16,
+  },
+
+  previewRoot: { flex: 1, backgroundColor: "#000" },
+  previewTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingBottom: 12,
+  },
+  previewIconBtn: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.40)",
+    borderRadius: 20,
+  },
+  previewTitle: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#FFF",
+    letterSpacing: 0.3,
+  },
+  previewBottom: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    paddingHorizontal: 32,
+  },
+  applyBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.92)",
+    borderRadius: 32,
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    width: "100%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  applyBtnActive: {
+    backgroundColor: "rgba(212,175,55,0.15)",
+    borderWidth: 1.5,
+    borderColor: "#D4AF37",
+  },
+  applyBtnText: { fontSize: 16, fontWeight: "700", color: "#1A1A22" },
+  applyBtnTextActive: { color: "#D4AF37" },
+});
