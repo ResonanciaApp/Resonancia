@@ -457,6 +457,8 @@ const SoundCard = memo(function SoundCard({
             ) : (
               <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
             )}
+            {/* Overlay sutil sobre la imagen */}
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           </View>
         </Animated.View>
 
