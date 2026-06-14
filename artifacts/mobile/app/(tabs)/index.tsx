@@ -586,6 +586,42 @@ export default function HomeScreen2() {
           </View>
         )}
 
+        {/* ── BANNER PREMIUM ── */}
+        {!isPremium && (
+          <Pressable
+            onPress={() => router.push("/membresia" as never)}
+            style={({ pressed }) => [styles.premBannerWrap, { opacity: pressed ? 0.82 : 1 }]}
+          >
+            <LinearGradient
+              colors={["#4A1212", "#2C0909", "#1E0608"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+            />
+            {/* Shimmer top-left */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.06)", "transparent"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0.6, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+              pointerEvents="none"
+            />
+            {/* Crown circle */}
+            <View style={styles.premCrownCircle}>
+              <Text style={{ fontSize: 18 }}>👑</Text>
+            </View>
+            {/* Text */}
+            <View style={{ flex: 1 }}>
+              <Text style={styles.premTitle}>Prueba Premium</Text>
+              <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
+            </View>
+            {/* Chevron */}
+            <View style={styles.premChevron}>
+              <Feather name="chevron-right" size={14} color="#D4AF37" />
+            </View>
+          </Pressable>
+        )}
+
         {/* ── RECIENTES ── */}
         <SessionCarousel
           title="Recientes"
@@ -1103,4 +1139,37 @@ const styles = StyleSheet.create({
   seeAll: { fontSize: 13 },
   heroLabel: { fontSize: 10, letterSpacing: 2, marginBottom: 6, fontWeight: "600" },
   heroSub: { fontSize: 13, marginBottom: 18, opacity: 0.85 },
+
+  // Banner premium compacto
+  premBannerWrap: {
+    marginHorizontal: GRID_PAD,
+    marginBottom: SECTION_GAP,
+    height: 68,
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    gap: 14,
+  },
+  premCrownCircle: {
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: "rgba(212,175,55,0.14)",
+    borderWidth: 1.5,
+    borderColor: "rgba(212,175,55,0.45)",
+    alignItems: "center", justifyContent: "center",
+    flexShrink: 0,
+  },
+  premTitle: { fontSize: 15, fontWeight: "700", color: "#EDE7DA", lineHeight: 20, marginBottom: 2 },
+  premSub:   { fontSize: 12, color: "rgba(255,255,255,0.52)" },
+  premChevron: {
+    width: 26, height: 26, borderRadius: 13,
+    backgroundColor: "rgba(212,175,55,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
+    alignItems: "center", justifyContent: "center",
+    flexShrink: 0,
+  },
 });
