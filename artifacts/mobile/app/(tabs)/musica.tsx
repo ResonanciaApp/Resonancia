@@ -724,7 +724,7 @@ export default function MiMusicaScreen() {
         <View style={styles.topPanel}>
 
           {/* Spacer hero con intro cinematográfico */}
-          <View style={{ height: 110 + topPad, width: "100%" }}>
+          <View style={{ height: 60 + topPad, width: "100%" }}>
             <Animated.View
               pointerEvents="none"
               style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: introTextAnim, transform: [{ translateY: 50 }] }]}
