@@ -788,7 +788,7 @@ export default function MiMusicaScreen() {
             </View>
           ) : null}
 
-          <View style={styles.stickyDivider} />
+          {/* <View style={styles.stickyDivider} /> */}
         </View>
 
         {/* ── Scroll principal ── */}
