@@ -282,20 +282,19 @@ const DesignCPillTab = memo(function DesignCPillTab({
 
 // ── SubTabPill con fade ───────────────────────────────────────────────────────
 const SubTabPill = memo(function SubTabPill({
-  label, sel, onPress, selBg,
-}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string }) {
+  label, sel, onPress, color,
+}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string; color?: string }) {
   return (
     <Pressable onPress={onPress}>
-      <View style={[styles.subTabPill, { backgroundColor: "rgba(27,6,15,0.30)" }]}>
-        {sel && (
-          <LinearGradient
-            colors={["#D6AD5F", "#B47344"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-          />
-        )}
-        <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: "600" }]}>
+      <View style={[
+        styles.subTabPill,
+        {
+          backgroundColor: sel
+            ? (color ?? "#D6AD5F")
+            : "rgba(27,6,15,0.30)",
+        },
+      ]}>
+        <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: "600" }]}>
           {label}
         </Text>
       </View>
@@ -717,6 +716,7 @@ export default function MiMusicaScreen() {
                         onPress={() => setSubTab(sel ? null : catId)}
                         isDark={isDark}
                         selBg={themeSelBg}
+                        color={TAB_COLORS[mainTab]}
                       />
                     );
                   })}
