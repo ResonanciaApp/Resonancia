@@ -83,6 +83,48 @@ const MAIN_TABS: {
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
 
+// ── Colores de tab ────────────────────────────────────────────────────────────
+function hexAlpha(hex: string, a: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+const TAB_TINT: Record<MainTabId, { glow: string }> = {
+  popular:        { glow: "#9D4EDD" },
+  naturaleza:     { glow: "#16A34A" },
+  ancestrales:    { glow: "#C07820" },
+  sintetizadores: { glow: "#3B82F6" },
+};
+
+// ── PillTab ───────────────────────────────────────────────────────────────────
+const PillTab = memo(function PillTab({
+  tab, sel, onPress,
+}: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
+  const tint = TAB_TINT[tab.id];
+  return (
+    <Pressable
+      onPress={onPress}
+      style={sel
+        ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.36, shadowRadius: 9, elevation: 6 }
+        : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 }}
+    >
+      <View style={[
+        styles.pillTab,
+        sel
+          ? { backgroundColor: hexAlpha(tint.glow, 0.30), borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.21) }
+          : { backgroundColor: "rgba(12,2,6,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" },
+      ]}>
+        <MaterialCommunityIcons name={tab.icon as any} size={14} color={sel ? "#FFFFFF" : "rgba(255,255,255,0.50)"} />
+        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "rgba(255,255,255,0.50)" }]}>
+          {tab.label}
+        </Text>
+      </View>
+    </Pressable>
+  );
+});
+
 // ── CarouselTile ──────────────────────────────────────────────────────────────
 const CarouselTile = memo(function CarouselTile({
   tab,
@@ -388,22 +430,18 @@ export default function MiMusicaBlancoScreen() {
             </View>
           </View>
 
-          {/* ── Carrusel de tabs ── */}
+          {/* ── Tabs en píldora ── */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            decelerationRate="fast"
-            snapToInterval={tileW + TILE_GAP}
-            snapToAlignment="start"
-            style={styles.carouselScroll}
-            contentContainerStyle={[styles.carouselContent, { paddingLeft: 0, paddingRight: TILE_H_PAD, gap: TILE_GAP }]}
+            style={styles.pillRow}
+            contentContainerStyle={styles.pillRowContent}
           >
             {MAIN_TABS.map((tab) => (
-              <CarouselTile
+              <PillTab
                 key={tab.id}
                 tab={tab}
                 sel={mainTab === tab.id}
-                tileW={tileW}
                 onPress={() => handleMainTab(tab.id)}
               />
             ))}
@@ -517,6 +555,20 @@ const styles = StyleSheet.create({
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
   },
   heartGlow: { position: "absolute", left: 0, right: 0, top: 0, bottom: 0, alignItems: "center", justifyContent: "center" },
+
+  pillRow:        { flexGrow: 0, marginTop: -7, marginBottom: -10, backgroundColor: "transparent" },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 28, paddingBottom: 14 },
+  pillTab: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 104,
+    height: 54,
+    borderRadius: 20,
+    overflow: "hidden",
+    gap: 4,
+  },
+  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "700" },
 
   carouselScroll:   { flexGrow: 0, marginTop: 4 },
   carouselContent:  { paddingBottom: 12, flexDirection: "row" },
