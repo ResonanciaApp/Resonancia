@@ -207,10 +207,7 @@ function ResonadorRow({ name, photo, role, onPress }: {
       <Image source={photo} style={styles.resonadorAvatar} resizeMode="cover" />
       <View style={styles.rowInfo}>
         <Text style={styles.rowTitle} numberOfLines={1}>{name}</Text>
-        <View style={styles.verifiedRow}>
-          <Feather name="check-circle" size={11} color={GOLD} />
-          <Text style={styles.verifiedText}>Verificado por Resonancia · {role}</Text>
-        </View>
+        <Text style={styles.verifiedText}>{role}</Text>
       </View>
     </Pressable>
   );
