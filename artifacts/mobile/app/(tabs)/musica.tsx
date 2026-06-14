@@ -98,6 +98,13 @@ const TAB_TINT: Record<MainTabId, { bg: string; glow: string; border: string }> 
   bpm:            { bg: "rgba(28,12,46,0.20)",   glow: "#9D4EDD", border: "rgba(157,78,221,0.28)"  },
 };
 
+function hexAlpha(hex: string, a: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
 const TAB_GRADIENTS: Record<MainTabId, { from: string; to: string }> = {
   popular:        { from: "#D6AD5F", to: "#B47344" },
   naturaleza:     { from: "#063022", to: "#16A34A" },
@@ -227,7 +234,7 @@ const PillTab = memo(function PillTab({
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: tint.glow }
+          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.30) }
           : {
               backgroundColor: "rgba(0,0,0,0.32)",
               borderWidth: 1,
@@ -276,7 +283,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
         style={[
           styles.pillTab,
           sel
-            ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: tint.glow }
+            ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.30) }
             : {
                 backgroundColor: "rgba(0,0,0,0.32)",
                 borderWidth: 1,
