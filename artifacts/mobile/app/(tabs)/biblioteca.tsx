@@ -574,7 +574,6 @@ export default function BibliotecaScreen() {
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [recentViewMode, setRecentViewMode] = useState<ViewMode>("list");
   const [mixesLimit, setMixesLimit] = useState(12);
   const [geoLimit, setGeoLimit] = useState(8);
   const [recentLimit, setRecentLimit] = useState(12);
@@ -628,11 +627,21 @@ export default function BibliotecaScreen() {
     if (activeTab === null) {
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-      const visibleRecent = listenedRecently.slice(0, recentLimit);
-      const hasMoreRecent = listenedRecently.length > recentLimit;
-      const favSessions = SESSIONS.filter((s) => favorites.includes(s.id));
+
+      const sortSessions = (arr: import("@/data/sessions").Session[]) => {
+        if (sort === "alfabetico") return [...arr].sort((a, b) => a.title.localeCompare(b.title, "es"));
+        if (sort === "agregado")   return [...arr].sort((a, b) => parseInt(b.id) - parseInt(a.id));
+        return arr; // "recientes" = orden natural
+      };
+
+      const sortedRecent = sortSessions(listenedRecently);
+      const visibleRecent = sortedRecent.slice(0, recentLimit);
+      const hasMoreRecent = sortedRecent.length > recentLimit;
+
+      const favSessions = sortSessions(SESSIONS.filter((s) => favorites.includes(s.id)));
       const visibleFav = favSessions.slice(0, favLimit);
       const hasMoreFav = favSessions.length > favLimit;
+
       return (
         <>
           {/* ── Escuchadas recientemente ── */}
@@ -640,18 +649,8 @@ export default function BibliotecaScreen() {
             <>
               <View style={styles.recentHeader}>
                 <Text style={styles.recentSectionTitle}>Escuchadas recientemente</Text>
-                <Pressable
-                  hitSlop={10}
-                  onPress={() => setRecentViewMode((v) => v === "list" ? "grid" : "list")}
-                  style={styles.viewToggleBtn}
-                >
-                  {recentViewMode === "list"
-                    ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
-                    : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
-                  }
-                </Pressable>
               </View>
-              {recentViewMode === "grid" ? (
+              {viewMode === "grid" ? (
                 <View style={styles.gridWrap}>
                   {visibleRecent.map((s) => (
                     <SessionCard key={s.id} session={s} width={cellW} />
@@ -679,11 +678,19 @@ export default function BibliotecaScreen() {
               <View style={[styles.recentHeader, { marginTop: listenedRecently.length > 0 ? 4 : 0 }]}>
                 <Text style={styles.recentSectionTitle}>Favoritos</Text>
               </View>
-              <View style={{ paddingHorizontal: H_PAD }}>
-                {visibleFav.map((s) => (
-                  <SessionCard key={s.id} session={s} horizontal cardBg="rgba(74,12,12,0.08)" />
-                ))}
-              </View>
+              {viewMode === "grid" ? (
+                <View style={styles.gridWrap}>
+                  {visibleFav.map((s) => (
+                    <SessionCard key={s.id} session={s} width={cellW} />
+                  ))}
+                </View>
+              ) : (
+                <View style={{ paddingHorizontal: H_PAD }}>
+                  {visibleFav.map((s) => (
+                    <SessionCard key={s.id} session={s} horizontal cardBg="rgba(74,12,12,0.08)" />
+                  ))}
+                </View>
+              )}
               {hasMoreFav && (
                 <Pressable style={styles.loadMoreBtn} onPress={() => setFavLimit((n) => n + 12)}>
                   <Text style={styles.loadMoreText}>Cargar más</Text>
@@ -1054,23 +1061,21 @@ export default function BibliotecaScreen() {
             : "fade"
           }
         >
-          {/* Ordenar + toggle vista — solo cuando hay un tab activo */}
-          {activeTab !== null && (
-            <View style={styles.controlRow}>
-              <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-                <Feather name="chevrons-down" size={14} color={MUTED} />
-                <Text style={styles.sortText}>
-                  {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
-                </Text>
-              </Pressable>
-              <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
-                {viewMode === "list"
-                  ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
-                  : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
-                }
-              </Pressable>
-            </View>
-          )}
+          {/* Ordenar + toggle vista */}
+          <View style={styles.controlRow}>
+            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
+              <Feather name="chevrons-down" size={14} color={MUTED} />
+              <Text style={styles.sortText}>
+                {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
+              </Text>
+            </Pressable>
+            <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
+              {viewMode === "list"
+                ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
+                : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
+              }
+            </Pressable>
+          </View>
           {renderContent()}
         </AnimatedTabContent>
       </ScrollView>
