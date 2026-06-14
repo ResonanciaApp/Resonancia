@@ -80,7 +80,8 @@ export function DrawerMenu() {
     if (visible) {
       setRendered(true);
     } else {
-      const t = setTimeout(() => setRendered(false), 180);
+      // 240ms = cierre 220ms + 20ms de margen para que no se corte antes
+      const t = setTimeout(() => setRendered(false), 240);
       return () => clearTimeout(t);
     }
   }, [visible]);

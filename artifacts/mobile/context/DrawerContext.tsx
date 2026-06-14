@@ -1,5 +1,5 @@
 import { Dimensions } from "react-native";
-import { Animated } from "react-native";
+import { Animated, Easing } from "react-native";
 import { usePathname } from "expo-router";
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
@@ -49,17 +49,19 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
         drawerAnim.setValue(1);
         return;
       }
-      Animated.spring(drawerAnim, {
+      // Apertura: timing con ease-out cúbico — arranque rápido, llega suave
+      Animated.timing(drawerAnim, {
         toValue: 1,
+        duration: 260,
+        easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
-        damping: 32,
-        stiffness: 380,
-        overshootClamping: true,
       }).start();
     } else {
+      // Cierre: timing con ease-in cúbico — sale suave, termina decisivo
       Animated.timing(drawerAnim, {
         toValue: 0,
-        duration: 150,
+        duration: 220,
+        easing: Easing.in(Easing.cubic),
         useNativeDriver: true,
       }).start();
     }
