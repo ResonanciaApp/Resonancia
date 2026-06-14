@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 80,
     height: 62,
-    borderRadius: 12,
+    borderRadius: 20,
     overflow: "hidden",
     gap: 5,
   },
