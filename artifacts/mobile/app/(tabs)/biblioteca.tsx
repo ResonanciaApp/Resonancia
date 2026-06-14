@@ -590,7 +590,7 @@ export default function BibliotecaScreen() {
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
 
   // Reset paginación al cambiar de tab
-  useEffect(() => { setMixesLimit(12); setGeoLimit(8); setRecentLimit(12); setFavLimit(12); }, [activeTab]);
+  useEffect(() => { setMixesLimit(12); setGeoLimit(8); setRecentLimit(3); setFavLimit(12); }, [activeTab]);
 
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
