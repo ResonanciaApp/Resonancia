@@ -102,22 +102,17 @@ const TAB_TINT: Record<MainTabId, { glow: string }> = {
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
-  const tint = TAB_TINT[tab.id];
+  const c = tab.color;
   return (
-    <Pressable
-      onPress={onPress}
-      style={sel
-        ? { shadowColor: tint.glow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.36, shadowRadius: 9, elevation: 6 }
-        : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 }}
-    >
+    <Pressable onPress={onPress}>
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: hexAlpha(tint.glow, 0.30), borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.21) }
-          : { backgroundColor: "rgba(12,2,6,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" },
+          ? { backgroundColor: c + "1A", borderWidth: 1, borderColor: c + "80" }
+          : { backgroundColor: "transparent", borderWidth: 1, borderColor: "rgba(0,0,0,0.10)" },
       ]}>
-        <MaterialCommunityIcons name={tab.icon as any} size={14} color={sel ? "#FFFFFF" : "rgba(255,255,255,0.50)"} />
-        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#FFFFFF" : "rgba(255,255,255,0.50)" }]}>
+        <MaterialCommunityIcons name={tab.icon as any} size={14} color={sel ? c : MUTED} />
+        <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? c : MUTED, fontWeight: sel ? "700" : "400" }]}>
           {tab.label}
         </Text>
       </View>
