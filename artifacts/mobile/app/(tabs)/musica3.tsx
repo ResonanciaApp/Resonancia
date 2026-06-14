@@ -105,9 +105,9 @@ const TAB_TINT: Record<MainTabId, { glow: string }> = {
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#284a86", "#113067"],   // azul profundo
-  naturaleza:     ["#1a6b3c", "#0d4425"],   // verde bosque
-  ancestrales:    ["#8a4a10", "#5c2e07"],   // ámbar oscuro
-  sintetizadores: ["#1a5c7a", "#0c3a52"],   // azul-teal profundo
+  naturaleza:     ["#43B97F", "#0D5C3A"],   // selva esmeralda
+  ancestrales:    ["#FFB347", "#E85D04"],   // atardecer cálido
+  sintetizadores: ["#7A5CFA", "#3A0CA3"],   // púrpura cósmico
 };
 
 // ── PillTab ───────────────────────────────────────────────────────────────────
