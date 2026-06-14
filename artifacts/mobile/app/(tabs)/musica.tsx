@@ -305,8 +305,8 @@ const DesignCPillTab = memo(function DesignCPillTab({
 
 // ── SubTabPill — hereda gradiente del tab general ────────────────────────────
 const SubTabPill = memo(function SubTabPill({
-  label, sel, onPress, color, gradFrom,
-}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string; color?: string; gradFrom?: string }) {
+  label, sel, onPress, color, gradFrom, tintBg,
+}: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string; color?: string; gradFrom?: string; tintBg?: string }) {
   const colorTo   = color    ?? "#D6AD5F";
   const colorFrom = gradFrom ?? "#3A1A00";
 
@@ -315,7 +315,7 @@ const SubTabPill = memo(function SubTabPill({
       <View style={[
         styles.subTabPill,
         sel
-          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 0 }
+          ? { backgroundColor: tintBg ?? "rgba(0,0,0,0.20)", borderWidth: 0 }
           : {
               backgroundColor: "rgba(0,0,0,0.32)",
               borderWidth: 1,
@@ -749,6 +749,7 @@ export default function MiMusicaScreen() {
                         onPress={() => setSubTab(sel ? null : catId)}
                         isDark={isDark}
                         selBg={themeSelBg}
+                        tintBg={TAB_TINT[mainTab].bg}
                         color={TAB_COLORS[mainTab]}
                         gradFrom={TAB_GRADIENTS[mainTab]?.from}
                       />
