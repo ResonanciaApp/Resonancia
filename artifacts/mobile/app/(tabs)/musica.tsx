@@ -282,12 +282,9 @@ const DesignCPillTab = memo(function DesignCPillTab({
           sel
             ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.42) }
             : {
-                backgroundColor: "rgba(0,0,0,0.32)",
+                backgroundColor: "rgba(0,0,0,0.18)",
                 borderWidth: 1,
-                borderTopColor:    "rgba(255,255,255,0.07)",
-                borderBottomColor: "rgba(255,255,255,0.05)",
-                borderLeftColor:   "rgba(255,255,255,0.03)",
-                borderRightColor:  "rgba(255,255,255,0.02)",
+                borderColor: "rgba(255,255,255,0.35)",
               },
         ]}
       >
