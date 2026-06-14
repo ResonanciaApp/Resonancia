@@ -704,12 +704,11 @@ export default function MiMusicaScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanel}>
 
-          {/* Spacer + título: la imagen del universo vive en la capa de fondo (un solo fondo) */}
-          <View style={{ height: 210 + topPad, width: "100%", pointerEvents: "none" }}>
-            <View style={[styles.heroTextWrap, { paddingTop: topPad + 6, transform: [{ translateY: -35 }] }]}>
-              <Text style={styles.heroTitle}>Mezclador</Text>
-            </View>
-          </View>
+          {/* Spacer hero: la imagen del universo vive en la capa de fondo */}
+          <View style={{ height: 210 + topPad, width: "100%", pointerEvents: "none" }} />
+
+          {/* Título fuera del hero, alineado a la izquierda */}
+          <Text style={styles.heroTitle}>Mezclador</Text>
 
           {/* ── Pills de tabs principales ── */}
           <ScrollView
@@ -981,7 +980,7 @@ const styles = StyleSheet.create({
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
   },
-  heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF", textAlign: "center" },
+  heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF", textAlign: "left", paddingHorizontal: 15, marginBottom: 12 },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
   pillRow:        { flexGrow: 0, marginTop: -4, marginBottom: -10, backgroundColor: "transparent" },
