@@ -61,7 +61,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           },
         ]}
       >
-        <View style={{ width: 108, height: 96 }}>
+        <View style={{ width: 65, height: 58 }}>
           <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
         </View>
@@ -152,50 +152,50 @@ const styles = StyleSheet.create({
   hRow: {
     flexDirection: "row",
     alignItems: "center",
-    height: 96,
-    marginBottom: 12,
+    height: 58,
+    marginBottom: 8,
   },
   hImage: {
-    width: 108,
-    height: 96,
-    borderRadius: 12,
+    width: 65,
+    height: 58,
+    borderRadius: 8,
   },
   hGradient: {
     position: "absolute",
-    left: 80,
+    left: 48,
     top: 0,
     bottom: 0,
-    width: 36,
+    width: 22,
   },
   hContent: {
     flex: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     justifyContent: "center",
   },
   hCategoryRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
-    marginBottom: 3,
+    gap: 4,
+    marginBottom: 2,
   },
   hCategory: {
-    fontSize: 9,
-    letterSpacing: 0.8,
+    fontSize: 8,
+    letterSpacing: 0.7,
     textTransform: "uppercase",
   },
   hTitle: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "700",
-    lineHeight: 20,
-    marginBottom: 5,
+    lineHeight: 17,
+    marginBottom: 3,
   },
   hMeta: {
     flexDirection: "row",
     alignItems: "center",
   },
   hDuration: {
-    fontSize: 11,
+    fontSize: 10,
   },
   freqPill: {
     marginLeft: 8,
