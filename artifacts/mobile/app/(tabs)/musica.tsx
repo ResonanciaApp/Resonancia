@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: 104,
-    height: 44,
+    height: 38,
     borderRadius: 999,
     overflow: "hidden",
     gap: 4,
