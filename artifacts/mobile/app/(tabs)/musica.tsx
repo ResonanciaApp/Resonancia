@@ -209,15 +209,6 @@ const PillTab = memo(function PillTab({
           ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.45)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.50, shadowRadius: 15, elevation: 10 }
           : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.14, shadowRadius: 7, elevation: 3 },
       ]}>
-        {sel && (
-          <LinearGradient
-            colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.02)", "transparent"]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-        )}
         {/* Ícono */}
         <View style={styles.pillIconGlow}>
           <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#FFFFFF" : "rgba(255,255,255,0.65)"} />
@@ -254,15 +245,6 @@ const DesignCPillTab = memo(function DesignCPillTab({
             : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.14, shadowRadius: 7, elevation: 3 },
         ]}
       >
-        {sel && (
-          <LinearGradient
-            colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.02)", "transparent"]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-        )}
         <MaterialCommunityIcons
           name={tab.icon as any}
           size={21}
