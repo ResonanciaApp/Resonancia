@@ -164,13 +164,11 @@ const slStyles = StyleSheet.create({
   },
 });
 
-// ── PillTab con animación Latido adaptada ─────────────────────────────────────
+// ── PillTab — tile cuadrado con ícono degradado ───────────────────────────────
 const PillTab = memo(function PillTab({
   tab,
   sel,
   onPress,
-  isDark,
-  selBg,
 }: {
   tab: (typeof MAIN_TABS)[0];
   sel: boolean;
@@ -179,8 +177,8 @@ const PillTab = memo(function PillTab({
   selBg?: string;
 }) {
   return (
-    <Pressable onPress={onPress}>
-      <View style={[styles.pillTab, { backgroundColor: "rgba(27,6,15,0.30)" }]}>
+    <Pressable onPress={onPress} style={styles.pillTabOuter}>
+      <View style={[styles.pillTab, { backgroundColor: sel ? undefined : "rgba(27,6,15,0.30)" }]}>
         {sel && (
           <LinearGradient
             colors={["#D6AD5F", "#B47344"]}
@@ -189,6 +187,18 @@ const PillTab = memo(function PillTab({
             style={StyleSheet.absoluteFill}
           />
         )}
+        {/* Ícono con fondo degradado + glow sutil */}
+        <View style={styles.pillIconGlow}>
+          <View style={styles.pillIconWrap}>
+            <LinearGradient
+              colors={["#D6AD5F", "#B47344"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <MaterialCommunityIcons name={tab.icon as any} size={18} color="#1B060F" />
+          </View>
+        </View>
         <Text style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF", fontWeight: "600" }]}>
           {tab.label}
         </Text>
@@ -578,23 +588,20 @@ export default function MiMusicaScreen() {
           </View>
 
           {/* ── Pills de tabs principales ── */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.pillRow}
-            contentContainerStyle={styles.pillRowContent}
-          >
-            {MAIN_TABS.map((tab) => (
-              <PillTab
-                key={tab.id}
-                tab={tab}
-                sel={mainTab === tab.id}
-                onPress={() => handleMainTab(tab.id)}
-                isDark={isDark}
-                selBg={themeSelBg}
-              />
-            ))}
-          </ScrollView>
+          <View style={styles.pillRow}>
+            <View style={styles.pillGrid}>
+              {MAIN_TABS.map((tab) => (
+                <PillTab
+                  key={tab.id}
+                  tab={tab}
+                  sel={mainTab === tab.id}
+                  onPress={() => handleMainTab(tab.id)}
+                  isDark={isDark}
+                  selBg={themeSelBg}
+                />
+              ))}
+            </View>
+          </View>
 
           {/* ── Sub-tabs (píldoras horizontales) ── */}
           {subTabCategories && subTabCategories.length > 1 ? (
@@ -828,17 +835,35 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
   },
 
-  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 20 },
-  pillRowContent: { flexDirection: "row", gap: 6, paddingHorizontal: 15, paddingVertical: 6 },
+  pillRow:  { marginBottom: 4, marginTop: 16, paddingHorizontal: 15 },
+  pillGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 8, justifyContent: "space-evenly" },
+  pillTabOuter: { width: "28%" },
   pillTab: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
-    height: 32,
-    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    borderRadius: 12,
     overflow: "hidden",
+    gap: 5,
   },
-  pillTabLabel: { fontSize: 13, letterSpacing: 0.1 },
+  pillIconGlow: {
+    borderRadius: 9,
+    shadowColor: "#D6AD5F",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.28,
+    shadowRadius: 7,
+    elevation: 3,
+  },
+  pillIconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 9,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pillTabLabel: { fontSize: 11, letterSpacing: 0.1 },
 
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
