@@ -95,7 +95,7 @@ const COUNTS_KEY = "@resonance_sound_play_counts_m3";
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#1B090F"],
-  naturaleza:     ["#43B97F", "#0D5C3A"],
+  naturaleza:     ["#3B4933", "#303E27"],
   ancestrales:    ["#FFB347", "#E85D04"],
   sintetizadores: ["#7A5CFA", "#3A0CA3"],
   binaurales:     ["#2DD4BF", "#0E7490"],
