@@ -234,7 +234,7 @@ const PillTab = memo(function PillTab({
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.17) }
+          ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.42) }
           : {
               backgroundColor: "rgba(0,0,0,0.32)",
               borderWidth: 1,
@@ -283,7 +283,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
         style={[
           styles.pillTab,
           sel
-            ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.17) }
+            ? { backgroundColor: "rgba(0,0,0,0.70)", borderWidth: 1, borderColor: hexAlpha(tint.glow, 0.42) }
             : {
                 backgroundColor: "rgba(0,0,0,0.32)",
                 borderWidth: 1,
