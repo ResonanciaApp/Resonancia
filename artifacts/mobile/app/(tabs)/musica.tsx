@@ -323,46 +323,13 @@ const SubTabPill = memo(function SubTabPill({
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
-        sel
-          ? {
-              backgroundColor: colorFrom,
-              shadowColor: colorTo,
-              shadowOffset: { width: 0, height: 0 },
-              shadowOpacity: 0.50,
-              shadowRadius: 12,
-              elevation: 8,
-            }
-          : { backgroundColor: "rgba(27,6,15,0.30)" },
+        { backgroundColor: "rgba(27,6,15,0.30)" },
+        sel && {
+          borderWidth: 1,
+          borderColor: "rgba(255,255,255,0.50)",
+        },
       ]}>
-        {sel && (
-          <>
-            {/* Gradiente principal del tab */}
-            <LinearGradient
-              colors={[colorTo, colorFrom]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-            {/* Brillo Aura encima */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.24)", "rgba(255,255,255,0.04)", "transparent"]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-            {/* Ring interior */}
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { margin: 2, borderRadius: 18, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
-              ]}
-              pointerEvents="none"
-            />
-          </>
-        )}
-        <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: "600" }]}>
+        <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: sel ? "700" : "500" }]}>
           {label}
         </Text>
       </View>
