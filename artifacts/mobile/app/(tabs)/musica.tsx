@@ -203,16 +203,29 @@ const PillTab = memo(function PillTab({
 }) {
   return (
     <Pressable onPress={onPress} style={styles.pillTabOuter}>
-      <View style={[styles.pillTab, { backgroundColor: sel ? undefined : "rgba(27,6,15,0.30)" }]}>
+      <View style={[
+        styles.pillTab,
+        sel
+          ? { backgroundColor: "#4A0C0C", shadowColor: "#7A1515", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.55, shadowRadius: 14, elevation: 10 }
+          : { backgroundColor: "rgba(27,6,15,0.30)" },
+      ]}>
         {sel && (
           <>
             <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              colors={["#7A1515", "#4A0C0C"]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
             />
-            {/* Ring interior igual que tabs generales */}
+            {/* Brillo sutil encima */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.14)", "rgba(255,255,255,0.02)", "transparent"]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            {/* Ring interior */}
             <View
               style={[
                 StyleSheet.absoluteFill,
@@ -222,9 +235,9 @@ const PillTab = memo(function PillTab({
             />
           </>
         )}
-        {/* Ícono con color degradado + glow sutil */}
+        {/* Ícono */}
         <View style={styles.pillIconGlow}>
-          <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#1B060F" : "#D6AD5F"} />
+          <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#F4DAD5" : "#7A1515"} />
         </View>
         <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#EDDFD5" }]}>
           {tab.label}
