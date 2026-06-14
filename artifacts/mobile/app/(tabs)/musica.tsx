@@ -319,10 +319,10 @@ const SubTabPill = memo(function SubTabPill({
           : {
               backgroundColor: "rgba(0,0,0,0.32)",
               borderWidth: 1,
-              borderTopColor:    "rgba(255,255,255,0.17)",
-              borderBottomColor: "rgba(255,255,255,0.15)",
-              borderLeftColor:   "rgba(255,255,255,0.13)",
-              borderRightColor:  "rgba(255,255,255,0.12)",
+              borderTopColor:    "rgba(255,255,255,0.12)",
+              borderBottomColor: "rgba(255,255,255,0.10)",
+              borderLeftColor:   "rgba(255,255,255,0.08)",
+              borderRightColor:  "rgba(255,255,255,0.07)",
             },
       ]}>
         <Text style={[styles.subTabText, { color: "#EDDFD5" }]}>
