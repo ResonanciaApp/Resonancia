@@ -735,6 +735,7 @@ export default function MiMusicaScreen() {
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
+                  style={{ backgroundColor: "transparent" }}
                   contentContainerStyle={styles.subTabRow}
                 >
                   {subTabCategories.map((catId) => {
