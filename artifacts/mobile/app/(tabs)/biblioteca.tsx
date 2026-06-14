@@ -652,7 +652,7 @@ export default function BibliotecaScreen() {
               ) : (
                 <View style={{ paddingHorizontal: H_PAD, gap: 7 }}>
                   {visibleRecent.map((s) => (
-                    <SessionCard key={s.id} session={s} horizontal cardBg="rgba(74,12,12,0.08)" />
+                    <SessionCard key={s.id} session={s} horizontal />
                   ))}
                 </View>
               )}
@@ -895,7 +895,6 @@ export default function BibliotecaScreen() {
               key={s.id}
               session={s}
               horizontal
-              cardBg="rgba(74,12,12,0.08)"
             />
           ))}
         </View>
@@ -946,23 +945,20 @@ export default function BibliotecaScreen() {
   };
 
   return (
-    <View style={styles.root}>
-      <LinearGradient
-        colors={["#4A0C0C", "#27070E", "#1B060F"]}
-        locations={[0, 0.5, 1]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+    <View style={[styles.root, { backgroundColor: "#27070E" }]}>
       <SacredBackground variant="solid" />
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
-      <LinearGradient
-        colors={["#4A0C0C", "#27070E", "#1B060F"]}
-        locations={[0, 0.5, 1]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}
+      <View
+        style={[styles.stickyHeader, {
+          paddingTop: topPad + 2,
+          backgroundColor: "#27070E",
+          shadowColor: "#000",
+          shadowOffset: { width: 2, height: 6 },
+          shadowOpacity: 0.55,
+          shadowRadius: 10,
+          elevation: 10,
+        }]}
       >
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
@@ -1010,7 +1006,7 @@ export default function BibliotecaScreen() {
         )}
 
         <View style={styles.stickyDivider} />
-      </LinearGradient>
+      </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
       <ScrollView
