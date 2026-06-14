@@ -312,57 +312,58 @@ const DesignCPillTab = memo(function DesignCPillTab({
   );
 });
 
-// ── SubTabPill — hereda gradiente del tab general ────────────────────────────
+// ── SubTabPill — crema no-sel / dorado sel + ring fijo ───────────────────────
 const SubTabPill = memo(function SubTabPill({
-  label, sel, onPress, color, gradFrom,
+  label, sel, onPress,
 }: { label: string; sel: boolean; onPress: () => void; isDark?: boolean; selBg?: string; color?: string; gradFrom?: string }) {
-  const colorTo   = color    ?? "#D6AD5F";
-  const colorFrom = gradFrom ?? "#3A1A00";
-
   return (
     <Pressable onPress={onPress}>
       <View style={[
         styles.subTabPill,
         sel
           ? {
-              backgroundColor: colorFrom,
-              shadowColor: colorTo,
+              backgroundColor: "#3A1A00",
+              shadowColor: "#D6AD5F",
               shadowOffset: { width: 0, height: 0 },
               shadowOpacity: 0.50,
               shadowRadius: 12,
               elevation: 8,
             }
-          : { backgroundColor: "rgba(27,6,15,0.30)" },
+          : { backgroundColor: "#EADBCD" },
       ]}>
+        {/* Gradiente de fondo — dorado si sel, crema si no */}
+        <LinearGradient
+          colors={sel ? ["#D6AD5F", "#B47344"] : ["#EADBCD", "#F1E5D9"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+          pointerEvents="none"
+        />
+        {/* Brillo Aura (solo sel) */}
         {sel && (
-          <>
-            {/* Gradiente principal del tab */}
-            <LinearGradient
-              colors={[colorTo, colorFrom]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-            {/* Brillo Aura encima */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.24)", "rgba(255,255,255,0.04)", "transparent"]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-              pointerEvents="none"
-            />
-            {/* Ring interior */}
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { margin: 2, borderRadius: 18, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
-              ]}
-              pointerEvents="none"
-            />
-          </>
+          <LinearGradient
+            colors={["rgba(255,255,255,0.24)", "rgba(255,255,255,0.04)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+            pointerEvents="none"
+          />
         )}
-        <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: "600" }]}>
+        {/* Ring interior — siempre presente, tono según estado */}
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              margin: 2, borderRadius: 18, borderWidth: 1,
+              borderColor: sel ? "rgba(255,255,255,0.18)" : "rgba(74,12,12,0.15)",
+            },
+          ]}
+          pointerEvents="none"
+        />
+        <Text style={[
+          styles.subTabText,
+          { color: sel ? "#FFFFFF" : "rgba(74,12,12,0.90)", fontWeight: "600" },
+        ]}>
           {label}
         </Text>
       </View>
@@ -776,8 +777,6 @@ export default function MiMusicaScreen() {
                         onPress={() => setSubTab(sel ? null : catId)}
                         isDark={isDark}
                         selBg={themeSelBg}
-                        color={TAB_COLORS[mainTab]}
-                        gradFrom={TAB_GRADIENTS[mainTab]?.from}
                       />
                     );
                   })}
@@ -1018,12 +1017,12 @@ const styles = StyleSheet.create({
   subTabPill: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 13,
-    height: 35,
+    paddingHorizontal: 12,
+    height: 34,
     borderRadius: 20,
     overflow: "hidden",
   },
-  subTabText: { fontSize: 16, letterSpacing: 0.1 },
+  subTabText: { fontSize: 15, letterSpacing: 0.1 },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
