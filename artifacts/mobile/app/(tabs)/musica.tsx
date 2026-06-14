@@ -318,7 +318,7 @@ const SubTabPill = memo(function SubTabPill({
           ? {
               backgroundColor: "rgba(255,255,255,0.04)",
               borderWidth: 1,
-              borderColor: "rgba(255,255,255,1)",
+              borderColor: "rgba(255,255,255,0.80)",
             }
           : {
               backgroundColor: "rgba(255,255,255,0.04)",
