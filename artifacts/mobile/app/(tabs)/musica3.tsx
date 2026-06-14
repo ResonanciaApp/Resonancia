@@ -614,7 +614,7 @@ const styles = StyleSheet.create({
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: 4 },
 
-  scroll:        { flex: 1 },
+  scroll:        { flex: 1, backgroundColor: "#EDECEA" },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: 0 },
