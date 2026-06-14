@@ -25,10 +25,17 @@ import {
   DEFAULT_OVERLAY,
   GRADIENT_PRESETS,
   MIXER_BG_KEY,
-  MIXER_OVERLAY_KEY,
   emitBgPresetChange,
-  emitOverlayChange,
 } from "@/config/immersive-presets";
+
+const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
+  { label: "Sin límite", value: null },
+  { label: "15 min", value: 15 },
+  { label: "30 min", value: 30 },
+  { label: "45 min", value: 45 },
+  { label: "60 min", value: 60 },
+  { label: "90 min", value: 90 },
+];
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const COLS = 3;
@@ -41,21 +48,34 @@ const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
 
 export default function EscenasMixer() {
   const insets = useSafeAreaInsets();
-  const { isPlaying } = useMixer();
+  const {
+    masterVolume,
+    setMasterVolume,
+    sleepTimerRemaining,
+    setSleepTimer,
+  } = useMixer();
 
   const [selectedId, setSelectedId] = useState<string>(DEFAULT_BG_PRESET_ID);
-  const [overlayOpacity, setOverlayOpacity] = useState<number>(DEFAULT_OVERLAY);
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [previewScene, setPreviewScene] = useState<(typeof IMAGE_SCENES)[0] | null>(null);
+  const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
 
   useEffect(() => {
-    AsyncStorage.multiGet([MIXER_BG_KEY, MIXER_OVERLAY_KEY]).then((pairs) => {
-      const bg = pairs[0][1];
-      const ov = pairs[1][1];
+    AsyncStorage.getItem(MIXER_BG_KEY).then((bg) => {
       if (bg) setSelectedId(bg);
-      if (ov) setOverlayOpacity(parseFloat(ov));
     });
   }, []);
+
+  // Sincronizar chip seleccionado con el timer activo
+  useEffect(() => {
+    if (sleepTimerRemaining == null) {
+      setTimerMinutes(null);
+    } else {
+      const mins = Math.ceil(sleepTimerRemaining / 60);
+      const match = TIMER_OPTIONS.find((o) => o.value != null && Math.abs(o.value - mins) <= 2);
+      setTimerMinutes(match?.value ?? null);
+    }
+  }, [sleepTimerRemaining]);
 
   const applyScene = (id: string) => {
     setSelectedId(id);
@@ -63,10 +83,9 @@ export default function EscenasMixer() {
     emitBgPresetChange(id);
   };
 
-  const applyOverlay = (v: number) => {
-    setOverlayOpacity(v);
-    AsyncStorage.setItem(MIXER_OVERLAY_KEY, String(v));
-    emitOverlayChange(v);
+  const handleTimerSelect = (v: number | null) => {
+    setTimerMinutes(v);
+    setSleepTimer(v);
   };
 
   const handleDelete = () => {
@@ -110,39 +129,52 @@ export default function EscenasMixer() {
           {/* ── Controles ── */}
           <View style={styles.controlsCard}>
 
-            {/* Oscuridad de la escena */}
+            {/* Volumen de la mezcla */}
             <View style={styles.controlRow}>
-              <MaterialCommunityIcons name="brightness-6" size={20} color="#555" style={styles.controlIcon} />
+              <MaterialCommunityIcons name="volume-high" size={20} color="#555" style={styles.controlIcon} />
               <View style={styles.controlText}>
-                <Text style={styles.controlLabel}>Oscuridad de la escena</Text>
-                <Text style={styles.controlSub}>Ajusta cuánto se oscurece la imagen</Text>
+                <Text style={styles.controlLabel}>Volumen de la mezcla</Text>
+                <Text style={styles.controlSub}>Nivel general de todos los sonidos</Text>
               </View>
             </View>
             <View style={styles.sliderWrap}>
-              <Feather name="sun" size={14} color="#999" />
+              <MaterialCommunityIcons name="volume-low" size={16} color="#999" />
               <View style={styles.sliderFlex}>
                 <VolumeSlider
-                  value={overlayOpacity}
-                  onChange={applyOverlay}
+                  value={masterVolume}
+                  onChange={setMasterVolume}
                   color="#4A4A5A"
                   trackColor="rgba(0,0,0,0.12)"
                 />
               </View>
-              <Feather name="moon" size={14} color="#555" />
+              <MaterialCommunityIcons name="volume-high" size={16} color="#555" />
             </View>
 
             <View style={styles.divider} />
 
-            {/* Audio en segundo plano */}
+            {/* Timer de reproducción */}
             <View style={styles.controlRow}>
-              <MaterialCommunityIcons name="headphones" size={20} color="#555" style={styles.controlIcon} />
+              <MaterialCommunityIcons name="timer-outline" size={20} color="#555" style={styles.controlIcon} />
               <View style={styles.controlText}>
-                <Text style={styles.controlLabel}>Sonido fuera de la app</Text>
-                <Text style={styles.controlSub}>El mezclador sigue sonando en segundo plano</Text>
+                <Text style={styles.controlLabel}>Apagar después de…</Text>
+                <Text style={styles.controlSub}>La mezcla se detiene automáticamente</Text>
               </View>
-              <View style={[styles.statusBadge, { backgroundColor: isPlaying ? "#3DAF70" : "#C0C0C8" }]}>
-                <Text style={styles.statusBadgeText}>{isPlaying ? "Activo" : "Inactivo"}</Text>
-              </View>
+            </View>
+            <View style={styles.chipRow}>
+              {TIMER_OPTIONS.map((opt) => {
+                const active = timerMinutes === opt.value;
+                return (
+                  <Pressable
+                    key={String(opt.value)}
+                    onPress={() => handleTimerSelect(opt.value)}
+                    style={[styles.chip, active && styles.chipActive]}
+                  >
+                    <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
 
             <View style={styles.divider} />
@@ -215,7 +247,7 @@ export default function EscenasMixer() {
               style={[StyleSheet.absoluteFill, { top: -300, left: -300, right: -300, bottom: -300 }]}
               contentFit="cover"
             />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${overlayOpacity})` }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${DEFAULT_OVERLAY})` }]} />
 
             {/* Top row */}
             <View style={[styles.previewTop, { paddingTop: insets.top + 12 }]}>
@@ -308,6 +340,28 @@ const styles = StyleSheet.create({
   },
   statusBadgeText: { fontSize: 11, fontWeight: "600", color: "#FFF" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.08)", marginHorizontal: -18 },
+
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    paddingBottom: 14,
+    paddingHorizontal: 4,
+  },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.06)",
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  chipActive: {
+    backgroundColor: "#1A1A22",
+    borderColor: "#1A1A22",
+  },
+  chipText: { fontSize: 13, fontWeight: "500", color: "#444" },
+  chipTextActive: { color: "#FFF", fontWeight: "700" },
 
   sectionTitle: {
     fontSize: 16,

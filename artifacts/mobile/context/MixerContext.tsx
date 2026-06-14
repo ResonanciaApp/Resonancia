@@ -130,6 +130,9 @@ type MixerContextType = {
   loadedPresetId: string | null;
   sleepTimerRemaining: number | null;
   setSleepTimer: (minutes: number | null) => void;
+  /** Volumen master (0-1) aplicado a todos los sonidos activos. */
+  masterVolume: number;
+  setMasterVolume: (v: number) => void;
   /** Si el editor en hoja inferior (MixerSheet) está abierto. */
   isSheetOpen: boolean;
   openSheet: () => void;
@@ -145,6 +148,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
   const [loadedPresetId, setLoadedPresetId] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [masterVolume, setMasterVolumeSt] = useState(1.0);
+  const masterVolumeRef = useRef(1.0);
+
+  const setMasterVolume = useCallback((v: number) => {
+    const clamped = Math.max(0, Math.min(1, v));
+    masterVolumeRef.current = clamped;
+    setMasterVolumeSt(clamped);
+  }, []);
 
   /**
    * Dos capas (a/b) del MISMO sonido por id, para el crossfade del loop. Las dos
@@ -568,7 +579,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             audibleStart === 0 ? 0 : Math.min(1, (Date.now() - audibleStart) / STARTUP_FADE_MS);
           // B muteada hasta confirmar su salto al pico (así no se oye ningún
           // transitorio del seed); A siempre suena (su borde de loop es inaudible).
-          setVol(p, (isSecondary && !bSeeded ? 0 : base * gain) * startup);
+          setVol(p, (isSecondary && !bSeeded ? 0 : base * gain) * startup * masterVolumeRef.current);
 
           // Recentrado de drift de la capa B contra A: mantener el desfase dur/2,
           // corrigiendo SOLO en el valle de B (gain bajo → seek inaudible).
@@ -1224,6 +1235,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         loadedPresetId,
         sleepTimerRemaining,
         setSleepTimer,
+        masterVolume,
+        setMasterVolume,
         isSheetOpen,
         openSheet,
         closeSheet,
