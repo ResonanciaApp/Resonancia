@@ -699,6 +699,8 @@ export default function MiMusicaScreen() {
           contentFit="cover"
           contentPosition="center"
         />
+        {/* Overlay global sutil para oscurecer la imagen */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.32)" }]} />
         {/* Velo oscuro en la mitad inferior para que las cards sean legibles */}
         <LinearGradient
           colors={[
