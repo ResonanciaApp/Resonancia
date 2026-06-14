@@ -607,7 +607,7 @@ const styles = StyleSheet.create({
   heartGlow: { position: "absolute", left: 0, right: 0, top: 0, bottom: 0, alignItems: "center", justifyContent: "center" },
 
   pillRow:        { flexGrow: 0, marginTop: -7, marginBottom: -10, backgroundColor: "transparent" },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 28, paddingBottom: 14 },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 3, paddingBottom: 14 },
   pillTab: {
     flexDirection: "row",
     alignItems: "center",
