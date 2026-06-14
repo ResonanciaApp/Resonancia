@@ -92,6 +92,14 @@ const MAIN_TABS: {
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
 
+const MEZ_PLACEHOLDERS = [
+  "¿Qué mundo sonoro querés crear hoy?",
+  "Diseñá tu paisaje interior...",
+  "Cada sonido, un portal hacia la calma",
+  "Combiná y creá tu ritual de bienestar",
+  "Dejá que los sonidos te lleven lejos",
+];
+
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   popular:        ["#4A0C0C", "#27070E", "#1B060F"],
@@ -270,6 +278,20 @@ export default function MezcladorScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
+  const [bannerIdx,     setBannerIdx]     = useState(0);
+  const bannerOpacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const cycle = () => {
+      Animated.timing(bannerOpacity, { toValue: 0, duration: 500, useNativeDriver: true }).start(() => {
+        setBannerIdx((i) => (i + 1) % MEZ_PLACEHOLDERS.length);
+        Animated.timing(bannerOpacity, { toValue: 1, duration: 500, useNativeDriver: true }).start();
+      });
+    };
+    const t = setInterval(cycle, 3800);
+    return () => clearInterval(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -382,9 +404,22 @@ export default function MezcladorScreen() {
               ))}
             </ScrollView>
 
+            {/* ── Banner rotativo ── */}
+            <View style={styles.bannerWrap}>
+              <Animated.Text
+                numberOfLines={1}
+                style={[styles.bannerText, { opacity: bannerOpacity }]}
+              >
+                {MEZ_PLACEHOLDERS[bannerIdx]}
+              </Animated.Text>
+              <Pressable style={styles.bannerBtn} hitSlop={6}>
+                <Text style={styles.bannerBtnText}>¿Cómo te sentís?</Text>
+              </Pressable>
+            </View>
+
             {/* ── Sub-tabs ── */}
             {(!subTabCategories || subTabCategories.length <= 1) && (
-              <View style={{ height: 44 }} />
+              <View style={{ height: 8 }} />
             )}
             {subTabCategories && subTabCategories.length > 1 ? (
               <View style={styles.subTabZone}>
@@ -522,6 +557,42 @@ const styles = StyleSheet.create({
 
   scroll:        { flex: 1, backgroundColor: "#EDECEA" },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
+
+  bannerWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 15,
+    marginBottom: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.13)",
+    gap: 10,
+  },
+  bannerText: {
+    flex: 1,
+    fontSize: 12,
+    color: "rgba(255,255,255,0.88)",
+    lineHeight: 18,
+    letterSpacing: 0.1,
+  },
+  bannerBtn: {
+    flexShrink: 0,
+    backgroundColor: "rgba(233,196,106,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(233,196,106,0.28)",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  bannerBtnText: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: "#E9C46A",
+    letterSpacing: 0.2,
+  },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -10 },
   subTabLine: {
