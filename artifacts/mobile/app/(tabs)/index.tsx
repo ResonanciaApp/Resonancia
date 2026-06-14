@@ -75,7 +75,8 @@ const HERO_HEIGHT = 320;
 
 const VIDEO_HERO_W = width - GRID_PAD * 2 - 56;
 const VIDEO_REG_W = 200;
-const RECENT_CARD_W = 150;
+// 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
+const RECENT_CARD_W = Math.floor((width - GRID_PAD - 16) / 1.25);
 
 const SECTION_GAP = 33;
 const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
@@ -593,6 +594,7 @@ export default function HomeScreen2() {
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
           style={{ paddingTop: 11 }}
           titleOffset={10}
+          cardWidth={RECENT_CARD_W}
         />
 
         {/* ── VIDEOS DESTACADOS ── */}

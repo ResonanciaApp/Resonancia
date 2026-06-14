@@ -26,10 +26,14 @@ type SessionCarouselProps = {
   onPress: (s: Session) => void;
   style?: object;
   titleOffset?: number;
+  cardWidth?: number;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth }: SessionCarouselProps) {
   if (sessions.length === 0) return null;
+  const cw = cardWidth ?? CARD_W;
+  const cardStyle = cw !== CARD_W ? { width: cw } : undefined;
+  const thumbStyle = cw !== CARD_W ? { width: cw, height: cw } : undefined;
   return (
     <View style={[styles.section, style]}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -41,10 +45,6 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
       >
         {sessions.map((s) => {
           const locked = !!s.isPremium && !isPremium;
-          const creator =
-            s.categoryId === "meditaciones-guiadas"
-              ? getGuide(s.guideId)
-              : getArtist(s.artistId);
           return (
             <Pressable
               key={s.id}
@@ -52,10 +52,10 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
                 if (locked) { router.push("/membresia" as never); return; }
                 onPress(s);
               }}
-              style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
+              style={({ pressed }) => [styles.card, cardStyle, { opacity: pressed ? 0.85 : 1 }]}
             >
-              <View style={styles.thumbWrap}>
-                <Image source={s.image as number} style={styles.thumb} resizeMode="cover" />
+              <View style={[styles.thumbWrap, thumbStyle]}>
+                <Image source={s.image as number} style={[styles.thumb, thumbStyle]} resizeMode="cover" />
                 {locked && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
