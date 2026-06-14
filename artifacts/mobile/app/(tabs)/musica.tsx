@@ -1044,7 +1044,7 @@ const styles = StyleSheet.create({
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
 
-  stickyDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.18)", marginHorizontal: 15, marginTop: 6 },
+  stickyDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.14)", marginTop: 6 },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -1, zIndex: 1, backgroundColor: "transparent" },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
