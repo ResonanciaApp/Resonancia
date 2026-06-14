@@ -602,12 +602,12 @@ const styles = StyleSheet.create({
   grid:     { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "flex-start" },
   soundCard: { width: "31%" },
   cardImageWrap: {
-    width: "77%",
+    width: "100%",
     aspectRatio: 1,
     alignSelf: "center",
     overflow: "hidden",
-    borderRadius: 999,
-    borderWidth: 3,
+    borderRadius: 12,
+    borderWidth: 2.5,
     borderColor: "transparent",
   },
   cardImageWrapActive: {
