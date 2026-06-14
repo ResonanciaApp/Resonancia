@@ -145,9 +145,9 @@ const PillTab = memo(function PillTab({
           </Text>
         </LinearGradient>
       ) : (
-        <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE" }]}>
-          <MaterialCommunityIcons name={tab.icon as any} size={17} color={MUTED} />
-          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: MUTED, fontWeight: "400" }]}>
+        <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE", opacity: 0.8 }]}>
+          <MaterialCommunityIcons name={tab.icon as any} size={17} color="#F4E6E6" />
+          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#F4E6E6", fontWeight: "400" }]}>
             {tab.label}
           </Text>
         </View>
@@ -512,16 +512,16 @@ export default function MiMusicaBlancoScreen() {
                             </Text>
                           </LinearGradient>
                         ) : (
-                          <View style={[styles.subTabPill, { backgroundColor: "#F7F7F7", borderColor: "#E8E8E8" }]}>
+                          <View style={[styles.subTabPill, { backgroundColor: "#F7F7F7", borderColor: "#E8E8E8", opacity: 0.8 }]}>
                             {SUB_TAB_ICONS[catId] && (
                               <MaterialCommunityIcons
                                 name={SUB_TAB_ICONS[catId] as any}
                                 size={15}
-                                color={MUTED}
+                                color="#F4E6E6"
                                 style={{ marginRight: 5 }}
                               />
                             )}
-                            <Text style={[styles.subTabText, { color: MUTED }]}>
+                            <Text style={[styles.subTabText, { color: "#F4E6E6" }]}>
                               {SUB_TAB_LABELS[catId] ?? cat.label}
                             </Text>
                           </View>
@@ -585,6 +585,11 @@ const styles = StyleSheet.create({
 
   topPanel: {
     backgroundColor: "transparent",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.28,
+    shadowRadius: 8,
+    elevation: 10,
   },
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
@@ -632,7 +637,7 @@ const styles = StyleSheet.create({
   borderFlash: { borderRadius: 999, borderWidth: 1 },
   carouselTileLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
 
-  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: 4 },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: 14 },
 
   scroll:        { flex: 1, backgroundColor: "#EDECEA" },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
