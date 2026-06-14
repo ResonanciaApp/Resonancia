@@ -433,6 +433,7 @@ export default function MiMusicaBlancoScreen() {
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
+        <View style={styles.topPanelShadow}>
         <LinearGradient
           colors={["#4A0C0C", "#27070E", "#1B060F"]}
           start={{ x: 0, y: 0 }}
@@ -537,6 +538,7 @@ export default function MiMusicaBlancoScreen() {
           )}
 
         </LinearGradient>
+        </View>
 
         {/* ── Scroll principal ── */}
         <ScrollView
@@ -583,14 +585,17 @@ const styles = StyleSheet.create({
   root:  { flex: 1, backgroundColor: "#FFFFFF" },
   inner: { flex: 1, backgroundColor: "transparent" },
 
-  topPanel: {
-    backgroundColor: "transparent",
+  topPanelShadow: {
     zIndex: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.38,
+    shadowOpacity: 0.45,
     shadowRadius: 12,
-    elevation: 14,
+    elevation: 16,
+    backgroundColor: "#4A0C0C",
+  },
+  topPanel: {
+    backgroundColor: "transparent",
   },
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
