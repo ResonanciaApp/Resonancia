@@ -714,7 +714,7 @@ export default function MiMusicaScreen() {
                 "rgba(54,9,13,0.85)",
                 "#36090D",
               ]}
-              locations={[0, 0.28, 0.56, 0.80, 1]}
+              locations={[0, 0.55, 0.72, 0.88, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
