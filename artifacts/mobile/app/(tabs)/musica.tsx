@@ -989,7 +989,7 @@ const styles = StyleSheet.create({
 
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginHorizontal: 15, marginTop: 6 },
 
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -5 },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: -5, zIndex: 1 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
   subTabPill: {
     alignItems: "center",
