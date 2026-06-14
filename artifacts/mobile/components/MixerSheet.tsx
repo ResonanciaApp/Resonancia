@@ -455,17 +455,23 @@ export function MixerSheet() {
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: bgBreath }]} pointerEvents="none">
             {activeBgPreset.image ? (
               <>
+                {/* Extendemos 40px en cada dirección para que cover recorte también
+                    verticalmente → elimina cualquier strip blanco/negro en bordes */}
                 <Image
                   source={activeBgPreset.image}
-                  style={[StyleSheet.absoluteFill, styles.sheetGradient]}
+                  style={{
+                    position: "absolute",
+                    top: -40, left: -40, right: -40, bottom: -40,
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                  }}
                   contentFit="cover"
                 />
-                {/* Overlay oscuro para legibilidad del contenido del sheet (más denso que en inmersivo) */}
                 <View
                   style={[
                     StyleSheet.absoluteFill,
                     styles.sheetGradient,
-                    { backgroundColor: "rgba(8,3,6,0.68)" },
+                    { backgroundColor: "rgba(8,3,6,0.65)" },
                   ]}
                 />
               </>
@@ -793,6 +799,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
+    overflow: "hidden",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
