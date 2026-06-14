@@ -954,10 +954,10 @@ export default function BibliotecaScreen() {
           paddingTop: topPad + 2,
           backgroundColor: "#27070E",
           shadowColor: "#000",
-          shadowOffset: { width: 2, height: 6 },
-          shadowOpacity: 0.55,
-          shadowRadius: 10,
-          elevation: 10,
+          shadowOffset: { width: 0, height: 9 },
+          shadowOpacity: 0.22,
+          shadowRadius: 7,
+          elevation: 7,
         }]}
       >
         {/* Fila 1: título + iconos */}
@@ -1005,7 +1005,6 @@ export default function BibliotecaScreen() {
           </View>
         )}
 
-        <View style={styles.stickyDivider} />
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
