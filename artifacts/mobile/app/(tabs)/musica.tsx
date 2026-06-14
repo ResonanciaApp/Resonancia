@@ -1027,7 +1027,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: 104,
-    height: 72,
+    height: 79,
     borderRadius: 20,
     overflow: "hidden",
     gap: 5,
