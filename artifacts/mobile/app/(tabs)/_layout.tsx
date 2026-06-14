@@ -78,7 +78,8 @@ function TabItem({
 
   const isIOS = Platform.OS === "ios";
   const iconColor = isFocused ? GRAD_END : INACTIVE_COLOR;
-  const labelColor = isFocused ? GRAD_END : INACTIVE_COLOR;
+  const labelColor = isFocused ? "#FFFFFF" : INACTIVE_COLOR;
+  const labelWeight = isFocused ? "700" : "400";
 
   return (
     <Pressable
@@ -97,7 +98,7 @@ function TabItem({
           <Feather name={conf.featherIcon as never} size={ICON_SIZE} color={iconColor} />
         )}
       </View>
-      <Text style={[styles.label, { color: labelColor }]}>{conf.label}</Text>
+      <Text style={[styles.label, { color: labelColor, fontWeight: labelWeight }]}>{conf.label}</Text>
     </Pressable>
   );
 }
