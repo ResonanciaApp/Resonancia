@@ -224,6 +224,19 @@ const PillTab = memo(function PillTab({
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
+      {sel && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute", width: 104, height: 72, borderRadius: 20,
+            backgroundColor: "transparent",
+            shadowColor: tint.glow,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.60,
+            shadowRadius: 48,
+          }}
+        />
+      )}
       <View style={[
         styles.pillTab,
         sel
@@ -272,6 +285,19 @@ const DesignCPillTab = memo(function DesignCPillTab({
           : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.07, shadowRadius: 5, elevation: 2 },
       ]}
     >
+      {sel && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute", width: 104, height: 72, borderRadius: 20,
+            backgroundColor: "transparent",
+            shadowColor: tint.glow,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.60,
+            shadowRadius: 48,
+          }}
+        />
+      )}
       <View
         style={[
           styles.pillTab,
