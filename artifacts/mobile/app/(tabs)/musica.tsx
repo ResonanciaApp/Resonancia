@@ -705,17 +705,17 @@ export default function MiMusicaScreen() {
               contentFit="cover"
               contentPosition="center"
             />
-            {/* Imagen nítida en la zona superior; fade suave; final semi-opaco
-                para que el universo se transluzca sutilmente en la zona de tabs */}
+            {/* Imagen nítida en la zona superior; fade suave hasta completamente
+                opaco en el color del bg raíz a la Y del divisor (~38% pantalla) */}
             <LinearGradient
               colors={[
                 "rgba(54,9,13,0)",
                 "rgba(54,9,13,0)",
                 "rgba(54,9,13,0.35)",
-                "rgba(54,9,13,0.72)",
                 "rgba(54,9,13,0.88)",
+                "#2F080E",
               ]}
-              locations={[0, 0.50, 0.67, 0.82, 1]}
+              locations={[0, 0.50, 0.67, 0.88, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
