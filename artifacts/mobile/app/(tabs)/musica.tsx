@@ -667,7 +667,7 @@ export default function MiMusicaScreen() {
         />
         {/* Imagen del universo en la mitad superior, sobre el degradado raíz */}
         <Image
-          source={require("@/assets/images/hero-earth.jpg")}
+          source={require("@/assets/images/hero-earth.png")}
           style={styles.heroBgImage}
           contentFit="cover"
           contentPosition="center"
