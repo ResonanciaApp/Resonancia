@@ -428,12 +428,17 @@ export default function MiMusicaBlancoScreen() {
 
   return (
     <ImageBackground source={BG_HEADER} style={styles.root} resizeMode="cover">
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
 
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
-        <View style={[styles.topPanel, { paddingTop: topPad + 2 }]}>
+        <LinearGradient
+          colors={["#4A0C0C", "#27070E", "#1B060F"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={[styles.topPanel, { paddingTop: topPad + 2 }]}
+        >
 
           {/* ── Header ── */}
           <View style={styles.header}>
@@ -449,7 +454,7 @@ export default function MiMusicaBlancoScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="Mis mezclas guardadas"
               >
-                <MaterialCommunityIcons name="cog-outline" size={20} color={DARK} />
+                <MaterialCommunityIcons name="cog-outline" size={20} color="#F4DAD5" />
               </Pressable>
             </View>
           </View>
@@ -531,7 +536,7 @@ export default function MiMusicaBlancoScreen() {
             <View style={styles.separator} />
           )}
 
-        </View>
+        </LinearGradient>
 
         {/* ── Scroll principal ── */}
         <ScrollView
@@ -588,8 +593,8 @@ const styles = StyleSheet.create({
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212,175,55,0.12)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(212,175,55,0.25)" },
   pageSuper: { fontSize: 10, letterSpacing: 1.8, color: GOLD, fontWeight: "600", marginBottom: 2 },
-  pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#120101" },
-  pageSubtitle: { fontSize: 13, fontWeight: "400", color: MUTED, marginTop: 2 },
+  pageTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5" },
+  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
   heartBtn:  {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
