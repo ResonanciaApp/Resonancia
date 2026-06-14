@@ -806,6 +806,16 @@ export default function MiMusicaScreen() {
           <View style={styles.stickyDivider} />
         </View>
 
+        {/* ── Zona inferior: fondo degradado igual que Inicio ── */}
+        <View style={{ flex: 1 }}>
+          <LinearGradient
+            colors={["#4A0C0C", "#27070E", "#1B060F"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+
         {/* ── Scroll principal ── */}
         <ScrollView
           style={styles.scroll}
@@ -831,6 +841,7 @@ export default function MiMusicaScreen() {
             </View>
           </ContentSlide>
         </ScrollView>
+        </View>{/* fin zona inferior */}
       </View>
 
       {/* ── Panel de ajustes de apariencia ── */}
