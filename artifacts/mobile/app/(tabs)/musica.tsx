@@ -199,45 +199,6 @@ const PillTab = memo(function PillTab({
   );
 });
 
-// ── NeonPillTab — tile oscuro borgoña con borde rojo + etiqueta debajo ───────
-const NEON_RED  = "#D63040";   // borde + ícono en estado inactivo
-const NEON_SEL  = "#D4AF37";   // dorado cuando está seleccionado
-const NeonPillTab = memo(function NeonPillTab({
-  tab,
-  sel,
-  onPress,
-}: {
-  tab: (typeof MAIN_TABS)[0];
-  sel: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable onPress={onPress} style={styles.neonTabOuter}>
-      {/* Tile cuadrado */}
-      <View
-        style={[
-          styles.neonTile,
-          sel
-            ? { borderColor: NEON_SEL, backgroundColor: "rgba(212,175,55,0.12)", shadowColor: NEON_SEL }
-            : { borderColor: NEON_RED,  backgroundColor: "#1C0508",              shadowColor: NEON_RED },
-        ]}
-      >
-        <MaterialCommunityIcons
-          name={tab.icon as any}
-          size={22}
-          color={sel ? NEON_SEL : NEON_RED}
-        />
-      </View>
-      {/* Etiqueta debajo del tile */}
-      <Text
-        numberOfLines={1}
-        style={[styles.neonTabLabel, { color: sel ? NEON_SEL : "#FFFFFF" }]}
-      >
-        {tab.label}
-      </Text>
-    </Pressable>
-  );
-});
 
 // ── SubTabPill con fade ───────────────────────────────────────────────────────
 const SubTabPill = memo(function SubTabPill({
@@ -638,23 +599,6 @@ export default function MiMusicaScreen() {
             ))}
           </ScrollView>
 
-          {/* ── Carrusel Neón (comparación) ── */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.pillRow}
-            contentContainerStyle={styles.pillRowContent}
-          >
-            {MAIN_TABS.map((tab) => (
-              <NeonPillTab
-                key={tab.id}
-                tab={tab}
-                sel={mainTab === tab.id}
-                onPress={() => handleMainTab(tab.id)}
-              />
-            ))}
-          </ScrollView>
-
           {/* ── Sub-tabs (píldoras horizontales) ── */}
           {subTabCategories && subTabCategories.length > 1 ? (
             <View style={styles.subTabZone}>
@@ -907,30 +851,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   pillTabLabel: { fontSize: 11, letterSpacing: 0.1 },
-
-  // ── NeonPillTab ──────────────────────────────────────────────────────────────
-  neonTabOuter: {
-    alignItems: "center",
-    gap: 7,
-  },
-  neonTile: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 70,
-    height: 70,
-    borderRadius: 18,
-    borderWidth: 1.5,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.55,
-    shadowRadius: 7,
-    elevation: 5,
-  },
-  neonTabLabel: {
-    fontSize: 11,
-    letterSpacing: 0.1,
-    fontWeight: "500",
-    textAlign: "center",
-  },
 
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 9, paddingTop: 35 },
