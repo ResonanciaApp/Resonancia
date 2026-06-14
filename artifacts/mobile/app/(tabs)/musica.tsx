@@ -228,7 +228,14 @@ const PillTab = memo(function PillTab({
         styles.pillTab,
         sel
           ? { backgroundColor: tint.bg, borderWidth: 1, borderColor: tint.border }
-          : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)" },
+          : {
+              backgroundColor: "rgba(0,0,0,0.42)",
+              borderWidth: 1,
+              borderTopColor:    "rgba(255,255,255,0.22)",
+              borderLeftColor:   "rgba(255,255,255,0.14)",
+              borderRightColor:  "rgba(255,255,255,0.04)",
+              borderBottomColor: "rgba(255,255,255,0.03)",
+            },
       ]}>
         {/* Ícono */}
         <View style={styles.pillIconGlow}>
@@ -270,7 +277,14 @@ const DesignCPillTab = memo(function DesignCPillTab({
           styles.pillTab,
           sel
             ? { backgroundColor: tint.bg, borderWidth: 1, borderColor: tint.border }
-            : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)" },
+            : {
+                backgroundColor: "rgba(0,0,0,0.42)",
+                borderWidth: 1,
+                borderTopColor:    "rgba(255,255,255,0.22)",
+                borderLeftColor:   "rgba(255,255,255,0.14)",
+                borderRightColor:  "rgba(255,255,255,0.04)",
+                borderBottomColor: "rgba(255,255,255,0.03)",
+              },
         ]}
       >
         <MaterialCommunityIcons
