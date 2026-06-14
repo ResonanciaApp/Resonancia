@@ -461,7 +461,7 @@ export function MixerSheet() {
                   source={activeBgPreset.image}
                   style={{
                     position: "absolute",
-                    top: -40, left: -40, right: -40, bottom: -40,
+                    top: -120, left: -120, right: -120, bottom: -120,
                     borderTopLeftRadius: 20,
                     borderTopRightRadius: 20,
                   }}
