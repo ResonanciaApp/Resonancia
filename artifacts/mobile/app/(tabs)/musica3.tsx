@@ -479,6 +479,19 @@ export default function MiMusicaBlancoScreen() {
           </ContentSlide>
         </ScrollView>
       </View>
+
+      {/* ── Selector de versión (dev) ── */}
+      <View pointerEvents="box-none" style={{ position: "absolute", bottom: 110, alignSelf: "center", flexDirection: "row", gap: 6, zIndex: 999 }}>
+        {([ ["V1","musica"], ["V2","musica2"], ["V3","musica3"], ["V4","musica4"] ] as [string,string][]).map(([label, route]) => (
+          <Pressable key={route} onPress={() => router.replace(`/(tabs)/${route}` as any)}
+            style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999,
+              backgroundColor: route === "musica3" ? "rgba(157,78,221,0.8)" : "rgba(0,0,0,0.65)",
+              borderWidth: 1, borderColor: route === "musica3" ? "#9D4EDD" : "rgba(255,255,255,0.25)" }}>
+            <Text style={{ color: "#FFFFFF", fontSize: 12, fontWeight: "700" }}>{label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
     </View>
   );
 }
