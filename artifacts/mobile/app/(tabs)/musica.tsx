@@ -207,7 +207,7 @@ const PillTab = memo(function PillTab({
         styles.pillTab,
         sel
           ? { backgroundColor: "#4A0C0C", shadowColor: "#7A1515", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.55, shadowRadius: 14, elevation: 10 }
-          : { backgroundColor: "rgba(255,255,255,0.40)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
+          : { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
       ]}>
         {sel && (
           <>
@@ -229,7 +229,7 @@ const PillTab = memo(function PillTab({
         )}
         {/* Ícono */}
         <View style={styles.pillIconGlow}>
-          <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#F4DAD5" : "#7A1515"} />
+          <MaterialCommunityIcons name={tab.icon as any} size={18} color={sel ? "#F4DAD5" : "#FFFFFF"} />
         </View>
         <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#EDDFD5" }]}>
           {tab.label}
@@ -267,7 +267,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
                 shadowRadius: 18,
                 elevation: 12,
               }
-            : { backgroundColor: "rgba(255,255,255,0.40)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
+            : { backgroundColor: "rgba(27,6,15,0.70)", borderWidth: 1, borderColor: "rgba(255,255,255,0.05)" },
         ]}
       >
         {sel && (
@@ -293,7 +293,7 @@ const DesignCPillTab = memo(function DesignCPillTab({
         <MaterialCommunityIcons
           name={tab.icon as any}
           size={21}
-          color={sel ? "rgba(255,255,255,0.95)" : "#7A1515"}
+          color={sel ? "rgba(255,255,255,0.95)" : "#FFFFFF"}
         />
         <Text
           numberOfLines={1}
