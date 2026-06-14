@@ -202,12 +202,20 @@ const PillTab = memo(function PillTab({
   selBg?: string;
 }) {
   return (
-    <Pressable onPress={onPress} style={styles.pillTabOuter}>
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.pillTabOuter,
+        sel
+          ? { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.55, shadowRadius: 16, elevation: 10 }
+          : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.12, shadowRadius: 7, elevation: 3 },
+      ]}
+    >
       <View style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.45)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.50, shadowRadius: 15, elevation: 10 }
-          : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.14, shadowRadius: 7, elevation: 3 },
+          ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.32)" }
+          : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)" },
       ]}>
         {/* Ícono */}
         <View style={styles.pillIconGlow}>
@@ -236,13 +244,21 @@ const DesignCPillTab = memo(function DesignCPillTab({
   const glowColor = grad.to;
 
   return (
-    <Pressable onPress={onPress} style={styles.pillTabOuter}>
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.pillTabOuter,
+        sel
+          ? { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.55, shadowRadius: 16, elevation: 10 }
+          : { shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.12, shadowRadius: 7, elevation: 3 },
+      ]}
+    >
       <View
         style={[
           styles.pillTab,
           sel
-            ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.45)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.50, shadowRadius: 15, elevation: 10 }
-            : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)", shadowColor: "#FFFFFF", shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.14, shadowRadius: 7, elevation: 3 },
+            ? { backgroundColor: "rgba(0,0,0,0.65)", borderWidth: 1, borderColor: "rgba(255,255,255,0.32)" }
+            : { backgroundColor: "rgba(0,0,0,0.42)", borderWidth: 1, borderColor: "rgba(255,255,255,0.09)" },
         ]}
       >
         <MaterialCommunityIcons
