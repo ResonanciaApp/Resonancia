@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF", textAlign: "left", paddingHorizontal: 15, marginBottom: 12 },
   introText: { fontSize: 21, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.5, textAlign: "center", textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },
-  heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.13)", borderRadius: 999, padding: 16, alignItems: "center", justifyContent: "center" },
+  heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 999, padding: 16, alignItems: "center", justifyContent: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
   pillRow:        { flexGrow: 0, marginTop: -4, marginBottom: -10, backgroundColor: "transparent" },
