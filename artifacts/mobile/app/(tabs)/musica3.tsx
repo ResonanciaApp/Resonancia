@@ -477,7 +477,7 @@ export default function MiMusicaBlancoScreen() {
                             colors={grad}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 0, y: 1 }}
-                            style={styles.subTabPill}
+                            style={[styles.subTabPill, { borderWidth: 0 }]}
                           >
                             {SUB_TAB_ICONS[catId] && (
                               <MaterialCommunityIcons
