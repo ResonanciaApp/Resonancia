@@ -32,6 +32,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { EscenasMixerContent } from "@/app/escenas-mixer";
 import { useSaveEvent } from "@/context/SaveEventContext";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
@@ -218,6 +219,7 @@ export function MixerSheet() {
   const [originId, setOriginId] = useState<string | null>(null);
 
   const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [escenasOpen, setEscenasOpen] = useState(false);
   const [saveMode, setSaveMode] = useState<SaveMode>("new");
   const [presetName, setPresetName] = useState("");
   const [mixDescription, setMixDescription] = useState("");
@@ -522,7 +524,7 @@ export function MixerSheet() {
               {originPreset?.name ?? "Tu mezcla"}
             </Text>
             <Pressable
-              onPress={() => router.push("/escenas-mixer" as never)}
+              onPress={() => setEscenasOpen(true)}
               hitSlop={10}
               style={styles.headerBtn}
               accessibilityRole="button"
@@ -803,6 +805,17 @@ export function MixerSheet() {
         </Animated.View>
       )}
       </Animated.View>
+
+      {/* Escenas: Modal anidado, sin tocar la navegación → al cerrar vuelve aquí */}
+      <Modal
+        visible={escenasOpen}
+        animationType="slide"
+        presentationStyle="fullScreen"
+        statusBarTranslucent
+        onRequestClose={() => setEscenasOpen(false)}
+      >
+        <EscenasMixerContent onClose={() => setEscenasOpen(false)} />
+      </Modal>
     </Modal>
   );
 }

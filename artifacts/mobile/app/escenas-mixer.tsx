@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
+
 import {
   Alert,
   Dimensions,
@@ -46,7 +47,12 @@ const CARD_H = Math.floor(CARD_W * 4 / 3);
 
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
 
-export default function EscenasMixer() {
+/** Pantalla de ruta (fallback si se accede directamente via URL). */
+export default function EscenasMixerScreen() {
+  return <EscenasMixerContent onClose={() => router.back()} />;
+}
+
+export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   const insets = useSafeAreaInsets();
   const {
     masterVolume,
@@ -115,7 +121,7 @@ export default function EscenasMixer() {
       >
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Pressable onPress={() => router.back()} hitSlop={14} style={styles.headerBtn}>
+          <Pressable onPress={onClose} hitSlop={14} style={styles.headerBtn}>
             <Feather name="x" size={22} color="#2A2A2E" />
           </Pressable>
           <Text style={styles.headerTitle}>Escenas</Text>
