@@ -1021,7 +1021,7 @@ const styles = StyleSheet.create({
   heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 999, padding: 12, alignItems: "center", justifyContent: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
-  pillRow:        { flexGrow: 0, marginTop: -27, marginBottom: -10, backgroundColor: "transparent" },
+  pillRow:        { flexGrow: 0, marginTop: -7, marginBottom: -10, backgroundColor: "transparent" },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 28, paddingBottom: 14 },
   pillTabOuter: {},
   pillTab: {
