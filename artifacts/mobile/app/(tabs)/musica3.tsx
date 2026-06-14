@@ -6,6 +6,7 @@ import {
   Alert,
   Animated,
   Easing,
+  ImageBackground,
   Platform,
   Pressable,
   ScrollView,
@@ -15,6 +16,8 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+
+const BG_HEADER = require("../../assets/images/mezclador-bg-v3.jpg");
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -396,7 +399,12 @@ export default function MiMusicaBlancoScreen() {
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
-        <View style={[styles.topPanel, { paddingTop: topPad + 12 }]}>
+        <ImageBackground
+          source={BG_HEADER}
+          style={[styles.topPanel, { paddingTop: topPad + 12 }]}
+          imageStyle={styles.topPanelImg}
+          resizeMode="cover"
+        >
 
           {/* ── Header ── */}
           <View style={styles.header}>
@@ -489,7 +497,7 @@ export default function MiMusicaBlancoScreen() {
             <View style={styles.separator} />
           )}
 
-        </View>
+        </ImageBackground>
 
         {/* ── Scroll principal ── */}
         <ScrollView
@@ -538,7 +546,14 @@ const styles = StyleSheet.create({
 
   topPanel: {
     backgroundColor: "transparent",
-    backgroundImage: undefined,
+  },
+  topPanelImg: {
+    resizeMode: "cover",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.92,
   },
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
