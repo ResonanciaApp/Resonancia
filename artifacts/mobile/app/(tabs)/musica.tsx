@@ -695,16 +695,32 @@ export default function MiMusicaScreen() {
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
-        <View style={[styles.topPanel, { paddingTop: topPad + 2 }]}>
+        <View style={styles.topPanel}>
 
-          {/* ── Header ── */}
-          <View style={styles.header}>
-            <View style={styles.headerRow}>
-              <Text style={[styles.pageTitle, { flex: 1, color: themeText }]}>Mezclador</Text>
+          {/* ── Hero Banner ── */}
+          <View style={[styles.heroWrap, { height: 160 + topPad }]}>
+            <Image
+              source={require("@/assets/images/hero-mezclador.png")}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+              contentPosition="center"
+            />
+            {/* Crossfade: universo → fondo oscuro */}
+            <LinearGradient
+              colors={["transparent", "rgba(27,6,15,0.55)", "#1B060F"]}
+              locations={[0.35, 0.72, 1]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            {/* Título sobre el hero */}
+            <View style={[styles.heroTextWrap, { paddingTop: topPad + 6 }]}>
+              <Text style={styles.heroTitle}>Mezclador</Text>
+              <Text style={styles.heroSubtitle}>
+                Elige tus sonidos favoritos y mézclalos a tu gusto.
+              </Text>
             </View>
-            <Text style={[styles.pageSubtitle, { color: themeText }]}>
-              Elige tus sonidos favoritos y mézclalos a tu gusto.
-            </Text>
           </View>
 
           {/* ── Pills de tabs principales ── */}
@@ -969,7 +985,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
   },
 
-  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 16 },
+  // ── Hero ────────────────────────────────────────────────────────────────────
+  heroWrap: { width: "100%", overflow: "hidden" },
+  heroTextWrap: {
+    position: "absolute", bottom: 12, left: 15, right: 15,
+  },
+  heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5" },
+  heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 3 },
+
+  pillRow:        { flexGrow: 0, marginBottom: 4, marginTop: 8 },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingVertical: 6 },
   pillTabOuter: {},
   pillTab: {
