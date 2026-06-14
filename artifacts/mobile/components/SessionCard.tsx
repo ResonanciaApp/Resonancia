@@ -67,7 +67,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         </View>
         <View style={styles.hContent}>
           <View style={styles.hCategoryRow}>
-            <Text style={[styles.hCategory, { color: "rgba(255,255,255,0.85)" }]}>
+            <Text style={[styles.hCategory, { color: "rgba(255,255,255,0.95)" }]}>
               {session.categoryLabel}
             </Text>
           </View>
@@ -75,7 +75,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             {session.title}
           </Text>
           <View style={styles.hMeta}>
-            <Text style={[styles.hDuration, { color: "rgba(255,255,255,0.85)" }]}>
+            <Text style={[styles.hDuration, { color: "rgba(255,255,255,0.95)" }]}>
               {session.durationLabel}
             </Text>
           </View>
