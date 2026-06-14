@@ -725,25 +725,25 @@ export default function MiMusicaScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanel}>
 
-          {/* Spacer hero con intro cinematográfico + botón ajustes */}
+          {/* Spacer hero con intro cinematográfico */}
           <View style={{ height: 110 + topPad, width: "100%" }}>
-            {/* Texto intro */}
             <Animated.View
               pointerEvents="none"
-              style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: introTextAnim }]}
+              style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: introTextAnim, transform: [{ translateY: 30 }] }]}
             >
               <Text style={styles.introText}>¿Estás listo para crear?</Text>
             </Animated.View>
-            {/* Ícono de ajustes generales */}
-            <Animated.View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: settingsIconAnim }]}>
+          </View>
+
+          {/* Título + ícono de ajustes en la misma fila */}
+          <View style={styles.heroTitleRow}>
+            <Text style={styles.heroTitle}>Mezclador</Text>
+            <Animated.View style={{ opacity: settingsIconAnim }}>
               <Pressable onPress={openSettings} style={styles.heroSettingsBtn}>
-                <MaterialCommunityIcons name="tune-variant" size={30} color="#FFFFFF" />
+                <MaterialCommunityIcons name="tune-variant" size={26} color="#FFFFFF" />
               </Pressable>
             </Animated.View>
           </View>
-
-          {/* Título fuera del hero, alineado a la izquierda */}
-          <Text style={styles.heroTitle}>Mezclador</Text>
 
           {/* ── Pills de tabs principales ── */}
           <ScrollView
@@ -1015,9 +1015,10 @@ const styles = StyleSheet.create({
     position: "absolute", top: 0, bottom: 12, left: 15, right: 15,
     alignItems: "center", justifyContent: "center",
   },
-  heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF", textAlign: "left", paddingHorizontal: 15, marginBottom: 12 },
-  introText: { fontSize: 21, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.5, textAlign: "center", textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },
-  heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 999, padding: 16, alignItems: "center", justifyContent: "center" },
+  heroTitleRow: { flexDirection: "row", alignItems: "center", paddingHorizontal: 15, marginBottom: 12 },
+  heroTitle: { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FFFFFF", flex: 1 },
+  introText: { fontSize: 16, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.5, textAlign: "center", textShadowColor: "rgba(0,0,0,0.6)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },
+  heroSettingsBtn: { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 999, padding: 12, alignItems: "center", justifyContent: "center" },
   heroSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.90)", marginTop: 6, textAlign: "center", lineHeight: 19 },
 
   pillRow:        { flexGrow: 0, marginTop: -4, marginBottom: -10, backgroundColor: "transparent" },
