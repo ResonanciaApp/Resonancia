@@ -87,15 +87,15 @@ const TAB_COLORS: Record<MainTabId, string> = {
 };
 
 const TAB_TINT: Record<MainTabId, { bg: string; glow: string; border: string }> = {
-  popular:        { bg: "rgba(90,15,15,0.72)",   glow: "#C04040", border: "rgba(200,60,60,0.28)"   },
-  naturaleza:     { bg: "rgba(10,55,22,0.72)",   glow: "#16A34A", border: "rgba(30,140,60,0.28)"   },
-  ancestrales:    { bg: "rgba(70,40,5,0.72)",    glow: "#C07820", border: "rgba(180,110,20,0.28)"  },
-  sintetizadores: { bg: "rgba(8,20,72,0.72)",    glow: "#3B82F6", border: "rgba(60,130,240,0.28)"  },
-  binaurales:     { bg: "rgba(28,18,62,0.72)",   glow: "#A78BFA", border: "rgba(167,139,250,0.28)" },
-  voces:          { bg: "rgba(60,10,46,0.72)",   glow: "#C03090", border: "rgba(200,50,150,0.28)"  },
-  asmr:           { bg: "rgba(3,40,36,0.72)",    glow: "#2DD4BF", border: "rgba(45,212,191,0.28)"  },
-  ruidos:         { bg: "rgba(5,30,52,0.72)",    glow: "#38BDF8", border: "rgba(56,189,248,0.28)"  },
-  bpm:            { bg: "rgba(28,12,46,0.72)",   glow: "#9D4EDD", border: "rgba(157,78,221,0.28)"  },
+  popular:        { bg: "rgba(90,15,15,0.20)",   glow: "#C04040", border: "rgba(200,60,60,0.28)"   },
+  naturaleza:     { bg: "rgba(10,55,22,0.20)",   glow: "#16A34A", border: "rgba(30,140,60,0.28)"   },
+  ancestrales:    { bg: "rgba(70,40,5,0.20)",    glow: "#C07820", border: "rgba(180,110,20,0.28)"  },
+  sintetizadores: { bg: "rgba(8,20,72,0.20)",    glow: "#3B82F6", border: "rgba(60,130,240,0.28)"  },
+  binaurales:     { bg: "rgba(28,18,62,0.20)",   glow: "#A78BFA", border: "rgba(167,139,250,0.28)" },
+  voces:          { bg: "rgba(60,10,46,0.20)",   glow: "#C03090", border: "rgba(200,50,150,0.28)"  },
+  asmr:           { bg: "rgba(3,40,36,0.20)",    glow: "#2DD4BF", border: "rgba(45,212,191,0.28)"  },
+  ruidos:         { bg: "rgba(5,30,52,0.20)",    glow: "#38BDF8", border: "rgba(56,189,248,0.28)"  },
+  bpm:            { bg: "rgba(28,12,46,0.20)",   glow: "#9D4EDD", border: "rgba(157,78,221,0.28)"  },
 };
 
 const TAB_GRADIENTS: Record<MainTabId, { from: string; to: string }> = {
@@ -231,10 +231,10 @@ const PillTab = memo(function PillTab({
           : {
               backgroundColor: "rgba(0,0,0,0.42)",
               borderWidth: 1,
-              borderTopColor:    "rgba(255,255,255,0.24)",
-              borderBottomColor: "rgba(255,255,255,0.18)",
-              borderLeftColor:   "rgba(255,255,255,0.09)",
-              borderRightColor:  "rgba(255,255,255,0.08)",
+              borderTopColor:    "rgba(255,255,255,0.07)",
+              borderBottomColor: "rgba(255,255,255,0.05)",
+              borderLeftColor:   "rgba(255,255,255,0.03)",
+              borderRightColor:  "rgba(255,255,255,0.02)",
             },
       ]}>
         {/* Ícono */}
@@ -280,10 +280,10 @@ const DesignCPillTab = memo(function DesignCPillTab({
             : {
                 backgroundColor: "rgba(0,0,0,0.42)",
                 borderWidth: 1,
-                borderTopColor:    "rgba(255,255,255,0.24)",
-                borderBottomColor: "rgba(255,255,255,0.18)",
-                borderLeftColor:   "rgba(255,255,255,0.09)",
-                borderRightColor:  "rgba(255,255,255,0.08)",
+                borderTopColor:    "rgba(255,255,255,0.07)",
+                borderBottomColor: "rgba(255,255,255,0.05)",
+                borderLeftColor:   "rgba(255,255,255,0.03)",
+                borderRightColor:  "rgba(255,255,255,0.02)",
               },
         ]}
       >
