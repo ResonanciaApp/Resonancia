@@ -62,6 +62,10 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
     onChangeRef.current(v);
   }, []);
 
+  const emitTap = React.useCallback((v: number) => {
+    onChangeRef.current(v);
+  }, []);
+
   // Sincroniza el thumb solo en cambios EXTERNOS (reset de ajustes, etc.).
   // Durante el gesto gestureActive=true bloquea todos los renders intermedios.
   // Cuando gestureActive=false, fraction.value ya contiene el valor final del
@@ -72,38 +76,53 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
     }
   }, [value, fraction]);
 
-  const gesture = React.useMemo(
-    () =>
-      Gesture.Pan()
-        .minDistance(0)
-        .onBegin((e) => {
-          const raw = (e.x - TRACK_PAD) / trackWidth.value;
-          const f = Math.min(1, Math.max(0, raw));
-          fraction.value = f;
+  const gesture = React.useMemo(() => {
+    // Tap: ajusta el volumen al tocar (sin arrastrar). No marca gestureActive
+    // porque emite un único valor → no hay renders intermedios que proteger.
+    const tap = Gesture.Tap()
+      .maxDistance(10)
+      .onEnd((e) => {
+        const raw = (e.x - TRACK_PAD) / trackWidth.value;
+        const f = Math.min(1, Math.max(0, raw));
+        fraction.value = f;
+        lastEmitSV.value = f;
+        runOnJS(emitTap)(f);
+      });
+
+    // Pan: SOLO horizontal. activeOffsetX → se activa al mover en X; failOffsetY
+    // → si el movimiento es vertical, el gesto FALLA y el ScrollView padre toma
+    // el control para hacer scroll. El volumen se fija en onStart (tras activar),
+    // NO en onBegin, para que iniciar un scroll sobre la card no altere el volumen.
+    const pan = Gesture.Pan()
+      .activeOffsetX([-10, 10])
+      .failOffsetY([-8, 8])
+      .onStart((e) => {
+        runOnJS(startGesture)();
+        const raw = (e.x - TRACK_PAD) / trackWidth.value;
+        const f = Math.min(1, Math.max(0, raw));
+        fraction.value = f;
+        lastEmitSV.value = f;
+        runOnJS(emitLive)(f);
+      })
+      .onUpdate((e) => {
+        const raw = (e.x - TRACK_PAD) / trackWidth.value;
+        const f = Math.min(1, Math.max(0, raw));
+        fraction.value = f;
+        if (Math.abs(f - lastEmitSV.value) >= EMIT_EPS) {
           lastEmitSV.value = f;
-          // startGesture DEBE ir primero (FIFO) para que gestureActive=true
-          // esté activo antes de cualquier render provocado por emitLive.
-          runOnJS(startGesture)();
           runOnJS(emitLive)(f);
-        })
-        .onUpdate((e) => {
-          const raw = (e.x - TRACK_PAD) / trackWidth.value;
-          const f = Math.min(1, Math.max(0, raw));
-          fraction.value = f;
-          if (Math.abs(f - lastEmitSV.value) >= EMIT_EPS) {
-            lastEmitSV.value = f;
-            runOnJS(emitLive)(f);
-          }
-        })
-        .onFinalize(() => {
-          const f = fraction.value;
-          lastEmitSV.value = f;
-          // endGesture DEBE ser el último runOnJS (FIFO): desactiva gestureActive
-          // y emite el valor final en una sola llamada.
-          runOnJS(endGesture)(f);
-        }),
-    [startGesture, emitLive, endGesture, fraction, trackWidth, lastEmitSV],
-  );
+        }
+      })
+      .onFinalize(() => {
+        const f = fraction.value;
+        lastEmitSV.value = f;
+        // endGesture DEBE ser el último runOnJS (FIFO): desactiva gestureActive
+        // y emite el valor final en una sola llamada.
+        runOnJS(endGesture)(f);
+      });
+
+    return Gesture.Race(tap, pan);
+  }, [startGesture, emitLive, endGesture, emitTap, fraction, trackWidth, lastEmitSV]);
 
   const fillStyle = useAnimatedStyle(() => ({
     width: fraction.value * trackWidth.value,

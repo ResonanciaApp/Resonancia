@@ -31,6 +31,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView as GHScrollView } from "react-native-gesture-handler";
 
 import { EscenasMixerContent } from "@/app/escenas-mixer";
 import { useSaveEvent } from "@/context/SaveEventContext";
@@ -485,11 +486,12 @@ export function MixerSheet() {
         <Animated.View
           style={{ transform: [{ translateY: sheetEnterY }] }}
         >
-        <View
+        <Pressable
           style={[
             styles.sheet,
             { backgroundColor: sheetGradient[2], paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 },
           ]}
+          onPress={(e) => e.stopPropagation()}
         >
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: bgBreath }]} pointerEvents="none">
             {activeBgPreset.image ? (
@@ -580,7 +582,7 @@ export function MixerSheet() {
             )}
           </View>
 
-          <ScrollView
+          <GHScrollView
             style={styles.trackScroll}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
@@ -624,7 +626,7 @@ export function MixerSheet() {
               <Feather name="plus" size={18} color={palette.addText} />
               <Text style={[styles.addBtnText, { color: palette.addText }]}>Agregar sonidos</Text>
             </Pressable>
-          </ScrollView>
+          </GHScrollView>
 
           {/* Modo Inmersivo */}
           <Animated.View style={{ opacity: immersivoFade, alignSelf: "center", marginBottom: 20, marginTop: 6 }}>
@@ -632,7 +634,7 @@ export function MixerSheet() {
               onPress={() => {
                 openImmersivo(bgPresetId);
               }}
-              style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, activeBgPreset.image && styles.immersivoBtnImage]}
+              style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, !!activeBgPreset.image && styles.immersivoBtnImage]}
               accessibilityRole="button"
               accessibilityLabel="Entrar en Modo Inmersivo"
             >
@@ -646,7 +648,7 @@ export function MixerSheet() {
                   style={styles.immersivoIconEye}
                 />
               </View>
-              <Text style={[styles.immersivoBtnText, isLight && { color: "#8C1A2B" }, activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
+              <Text style={[styles.immersivoBtnText, isLight && { color: "#8C1A2B" }, !!activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
                 Modo Inmersivo
               </Text>
             </Pressable>
@@ -699,7 +701,7 @@ export function MixerSheet() {
 
           </View>
 
-        </View>
+        </Pressable>
         </Animated.View>
       </Pressable>
 
