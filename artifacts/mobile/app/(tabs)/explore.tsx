@@ -261,11 +261,6 @@ export default function ExploreScreen() {
           </View>
         ) : (
           <>
-            {/* ── Carruseles por categoría ── */}
-            {renderCarousel("Explora nuevos sonidos",        ancestralesSessions,  "/category/sonidos-ancestrales")}
-            {renderCarousel("Explora música ambient",        musicaSessions,       "/category/musica-sonidos")}
-            {renderCarousel("Explora meditaciones guiadas",  meditacionesSessions, "/category/meditaciones-guiadas")}
-
             {/* ── Explorar todo (TEMAS 6×2) ── */}
             <View style={styles.section}>
               <View style={styles.sectionRow}>
