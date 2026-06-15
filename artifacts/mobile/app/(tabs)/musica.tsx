@@ -103,15 +103,15 @@ const MEZ_PLACEHOLDERS = [
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#4A0C0C", "#27070E", "#1B060F"],
-  naturaleza:     ["#0E2416", "#0B1A10", "#1B060F"],
-  ancestrales:    ["#2A1A06", "#1E1204", "#1B060F"],
-  sintetizadores: ["#061A2E", "#041220", "#1B060F"],
-  binaurales:     ["#130825", "#0D0619", "#1B060F"],
-  voces:          ["#250810", "#1A060C", "#1B060F"],
-  asmr:           ["#062018", "#041510", "#1B060F"],
-  ruidos:         ["#081620", "#060F18", "#1B060F"],
-  bpm:            ["#201A04", "#161302", "#1B060F"],
+  popular:        ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  naturaleza:     ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  ancestrales:    ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  sintetizadores: ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  binaurales:     ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  voces:          ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  asmr:           ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  ruidos:         ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
+  bpm:            ["#F7F6E5", "#EBE3F5", "#EBE3F5"],
 };
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
@@ -403,7 +403,7 @@ export default function MezcladorScreen() {
                   accessibilityRole="button"
                   accessibilityLabel="Mis mezclas guardadas"
                 >
-                  <MaterialCommunityIcons name="cog-outline" size={20} color="#F4DAD5" />
+                  <MaterialCommunityIcons name="cog-outline" size={20} color="#3D2B4E" />
                 </Pressable>
               </View>
             </View>
@@ -518,7 +518,7 @@ export default function MezcladorScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:  { flex: 1, backgroundColor: "#FFFFFF" },
+  root:  { flex: 1, backgroundColor: "#EBE3F5" },
   inner: { flex: 1, backgroundColor: "transparent" },
 
   topPanelShadow: {
@@ -528,14 +528,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.45,
     shadowRadius: 12,
     elevation: 16,
-    backgroundColor: "#4A0C0C",
+    backgroundColor: "#F7F6E5",
   },
   topPanel: { backgroundColor: "transparent" },
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5" },
-  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
+  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#1A1E2B" },
+  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(61,43,78,0.65)", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
-  scroll:        { flex: 1, backgroundColor: "#EDECEA" },
+  scroll:        { flex: 1, backgroundColor: "#EBE3F5" },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
   bannerWrap: {
