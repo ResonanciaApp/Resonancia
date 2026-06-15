@@ -28,17 +28,17 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const prev = prevPath.current;
     prevPath.current = pathname;
-    if (
-      reopenOnHome.current &&
-      (pathname === "/" || pathname === "") &&
-      prev !== pathname
-    ) {
+    const isTabsRoute =
+      pathname === "/" ||
+      pathname === "" ||
+      pathname === "/(tabs)" ||
+      pathname.startsWith("/(tabs)/");
+    if (reopenOnHome.current && isTabsRoute && prev !== pathname) {
       reopenOnHome.current = false;
-      // Esperar a que la transición de pantalla termine antes de reabrir
       const t = setTimeout(() => {
         setInstant(false);
         setIsOpen(true);
-      }, 320);
+      }, 80);
       return () => clearTimeout(t);
     }
   }, [pathname]);
