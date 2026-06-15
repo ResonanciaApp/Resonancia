@@ -640,15 +640,15 @@ export function MixerSheet() {
             >
               {/* Ícono: ojo dentro de fullscreen */}
               <View style={styles.immersivoIconWrap}>
-                <MaterialCommunityIcons name="fullscreen" size={30} color={isLight ? "#8C1A2B" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"} />
+                <MaterialCommunityIcons name="fullscreen" size={30} color={isLight ? "#3d304e" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"} />
                 <MaterialCommunityIcons
                   name="eye"
                   size={13}
-                  color={isLight ? "#8C1A2B" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"}
+                  color={isLight ? "#3d304e" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"}
                   style={styles.immersivoIconEye}
                 />
               </View>
-              <Text style={[styles.immersivoBtnText, isLight && { color: "#8C1A2B" }, !!activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
+              <Text style={[styles.immersivoBtnText, isLight && { color: "#3d304e" }, !!activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
                 Modo Inmersivo
               </Text>
             </Pressable>
@@ -1134,8 +1134,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.22)",
   },
   immersivoBtnLight: {
-    backgroundColor: "rgba(140,26,43,0.07)",
-    borderColor: "rgba(140,26,43,0.22)",
+    backgroundColor: "rgba(61,48,78,0.07)",
+    borderColor: "rgba(61,48,78,0.22)",
   },
   immersivoBtnImage: {
     backgroundColor: "rgba(255,255,255,0.10)",
