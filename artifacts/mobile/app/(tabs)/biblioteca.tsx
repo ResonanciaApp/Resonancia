@@ -676,7 +676,7 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               ) : (
-                <View style={{ gap: 13 }}>
+                <View style={{ gap: 9 }}>
                   {sortedPlaylists.map((pl) => (
                     <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
                   ))}
@@ -689,13 +689,13 @@ export default function BibliotecaScreen() {
           {listenedRecently.length > 0 && (
             <>
               {viewMode === "grid" ? (
-                <View style={[styles.gridWrap, sortedPlaylists.length > 0 && { marginTop: 13 }]}>
+                <View style={[styles.gridWrap, sortedPlaylists.length > 0 && { marginTop: 9 }]}>
                   {visibleRecent.map((s) => (
                     <SessionCard key={s.id} session={s} width={cellW} />
                   ))}
                 </View>
               ) : (
-                <View style={{ paddingHorizontal: H_PAD, gap: 13, marginTop: sortedPlaylists.length > 0 ? 13 : 0 }}>
+                <View style={{ paddingHorizontal: H_PAD, gap: 9, marginTop: sortedPlaylists.length > 0 ? 9 : 0 }}>
                   {visibleRecent.map((s) => (
                     <SessionCard key={s.id} session={s} horizontal />
                   ))}
@@ -705,7 +705,7 @@ export default function BibliotecaScreen() {
           )}
 
           {/* ── Resonadores ── */}
-          <View style={{ gap: 13, marginTop: 13 }}>
+          <View style={{ gap: 9, marginTop: 9 }}>
             {resonadores.slice(0, 2).map((r) => (
               <ResonadorRow
                 key={r.id}
