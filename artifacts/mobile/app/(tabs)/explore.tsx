@@ -423,7 +423,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 7,
     backgroundColor: "rgba(255,255,255,0.10)",
-    borderRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     alignItems: "center",
   },
   catCardTitle: {
