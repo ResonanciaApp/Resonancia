@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RESONANCIA — Compositor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1B060F;
+      color: #F4DAD5;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    h1 { color: #D4AF37; font-size: 1.9rem; letter-spacing: 0.14em; margin-bottom: 6px; }
+    .subtitle { color: rgba(244,218,213,0.55); font-size: 0.88rem; letter-spacing: 0.1em; margin-bottom: 36px; }
+    .track-info {
+      background: rgba(74,12,12,0.28);
+      border: 1px solid #3D0E16;
+      border-radius: 14px;
+      padding: 22px 28px;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 28px;
+    }
+    .track-info h2 { color: #D4AF37; font-size: 0.78rem; letter-spacing: 0.18em; margin-bottom: 14px; opacity: 0.8; }
+    .layer { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 0.82rem; color: rgba(244,218,213,0.75); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .progress-container { width: 100%; max-width: 500px; margin-bottom: 22px; }
+    .progress-bar { width: 100%; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #D4AF37, #E9C46A); border-radius: 2px; width: 0%; transition: width 0.8s linear; }
+    .time-display { display: flex; justify-content: space-between; font-size: 0.78rem; color: rgba(244,218,213,0.4); }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
+    button {
+      background: rgba(212,175,55,0.12);
+      color: #D4AF37;
+      border: 1px solid rgba(212,175,55,0.35);
+      border-radius: 8px;
+      padding: 11px 22px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover:not(:disabled) { background: rgba(212,175,55,0.22); }
+    button:disabled { opacity: 0.35; cursor: default; }
+    button.primary { background: #D4AF37; color: #1B060F; font-weight: bold; border-color: #D4AF37; }
+    button.primary:hover:not(:disabled) { background: #E9C46A; border-color: #E9C46A; }
+    .status { font-size: 0.80rem; color: rgba(244,218,213,0.45); letter-spacing: 0.04em; margin-top: 6px; min-height: 1.4em; text-align: center; max-width: 500px; }
+    .spin { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(212,175,55,0.25); border-top-color: #D4AF37; border-radius: 50%; animation: spin 0.9s linear infinite; margin-right: 7px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    canvas { width: 100%; max-width: 500px; height: 56px; margin-bottom: 22px; opacity: 0.7; }
+    .note { font-size: 0.74rem; color: rgba(244,218,213,0.3); margin-top: 20px; max-width: 500px; text-align: center; line-height: 1.6; }
+    a { color: rgba(212,175,55,0.7); }
+  </style>
+</head>
+<body>
+  <h1>✦ RESONANCIA ✦</h1>
+  <p class="subtitle">PISTA DE RELAJACIÓN ETÉREA · 7 MINUTOS</p>
+
+  <div class="track-info">
+    <h2>CAPAS DE LA COMPOSICIÓN</h2>
+    <div class="layer"><span class="dot" style="background:#9b6eff"></span>Pad sintetizador profundo — armónicos que aparecen y desaparecen</div>
+    <div class="layer"><span class="dot" style="background:#4fc3f7"></span>Cuencos tibetanos — cada 10-15 segundos (5 cuencos alternados)</div>
+    <div class="layer"><span class="dot" style="background:#1a4aaa"></span>Cuencos profundos — mismos cuencos 2 octavas abajo (0.25x)</div>
+    <div class="layer"><span class="dot" style="background:#a5d6a7"></span>Aves de otros planetas — síntesis FM etérea</div>
+    <div class="layer"><span class="dot" style="background:#f8bbd0"></span>Voz femenina — armónicos de La/Mi, vibrato, 3 secciones</div>
+  </div>
+
+  <canvas id="waveCanvas"></canvas>
+
+  <div class="progress-container">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="time-display">
+      <span id="timeElapsed">0:00</span>
+      <span>7:00</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="primary" id="playBtn" disabled>▶ Reproducir</button>
+    <button id="stopBtn" disabled>■ Detener</button>
+    <button id="recordBtn" disabled>⏺ Grabar y descargar</button>
+  </div>
+  <p class="status" id="statusMsg"><span class="spin"></span>Cargando cuencos sagrados…</p>
+
+  <p class="note">
+    La grabación genera un archivo <strong>.webm</strong>.<br>
+    Para convertir a MP3: <code>ffmpeg -i resonancia-relajacion-7min.webm -q:a 2 pista.mp3</code>
+  </p>
+
+  <script>
+    // ─── CONFIGURACIÓN ────────────────────────────────────────────────
+    const DURATION = 420; // 7 minutos en segundos
+
+    const BOWL_FILES = [
+      'audio/Mi_326hz_1781497662746.WAV',
+      'audio/Mi_328_hz_1781497662748.WAV',
+      'audio/LA_432hz_1781497679138.WAV',
+      'audio/LA_868_hz_1781497685367.WAV',
+      'audio/MI_648HZ_1781497697669.WAV',
+    ];
+
+    // ─── ESTADO ───────────────────────────────────────────────────────
+    let ctx, masterGain, reverbNode, delayNode;
+    let buffers = [];
+    let isPlaying = false;
+    let startTime = 0;
+    let animFrame = null;
+    let scheduledNodes = [];
+
+    // ─── INICIALIZACIÓN ───────────────────────────────────────────────
+    async function init() {
+      ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 44100 });
+
+      masterGain = ctx.createGain();
+      masterGain.gain.value = 0.82;
+      masterGain.connect(ctx.destination);
+
+      // Reverb etéreo (impulso sintético)
+      reverbNode = createReverb(7, 2.2);
+      reverbNode.connect(masterGain);
+
+      // Delay cósmico
+      delayNode = ctx.createDelay(0.6);
+      delayNode.delayTime.value = 0.42;
+      const delayFB = ctx.createGain(); delayFB.gain.value = 0.38;
+      const delayWet = ctx.createGain(); delayWet.gain.value = 0.28;
+      delayNode.connect(delayFB);
+      delayFB.connect(delayNode);
+      delayNode.connect(delayWet);
+      delayWet.connect(masterGain);
+
+      try {
+        buffers = await Promise.all(BOWL_FILES.map(loadBuffer));
+        setStatus('Listo — pulsa Reproducir para comenzar');
+        document.getElementById('playBtn').disabled = false;
+        document.getElementById('recordBtn').disabled = false;
+      } catch (e) {
+        setStatus('Error cargando audios: ' + e.message);
+      }
+    }
+
+    function createReverb(durSec, decay) {
+      const len = Math.floor(ctx.sampleRate * durSec);
+      const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const d = ir.getChannelData(c);
+        for (let i = 0; i < len; i++) {
+          const t = i / ctx.sampleRate;
+          // Exponential decay + diffusion
+          d[i] = (Math.random() * 2 - 1) * Math.exp(-decay * t);
+          // Reduce early reflections slightly
+          if (t < 0.04) d[i] *= t / 0.04;
+        }
+      }
+      const conv = ctx.createConvolver();
+      conv.buffer = ir;
+      return conv;
+    }
+
+    async function loadBuffer(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${url}`);
+      const ab = await res.arrayBuffer();
+      return ctx.decodeAudioData(ab);
+    }
+
+    // ─── CUENCOS ──────────────────────────────────────────────────────
+    function playBowl(bufIdx, time, rate, vol) {
+      const buf = buffers[bufIdx % buffers.length];
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.playbackRate.value = rate;
+
+      const dur = buf.duration / rate;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, time);
+      g.gain.linearRampToValueAtTime(vol, time + 0.12);
+      g.gain.setValueAtTime(vol, time + Math.min(dur * 0.55, 5));
+      g.gain.exponentialRampToValueAtTime(0.001, time + dur + 2);
+
+      src.connect(g);
+      g.connect(reverbNode);
+      g.connect(delayNode);
+      src.start(time);
+      src.stop(time + dur + 2.5);
+      scheduledNodes.push(src, g);
+    }
+
+    // ─── PAD DE SINTETIZADOR ──────────────────────────────────────────
+    // Armónicos de La (432 Hz) + Mi: 108, 162, 216, 270, 324, 432, 540, 648, 864
+    const PAD_LAYERS = [
+      { freq: 108,  baseVol: 0.50, period: 80, phase: 0.0,  type: 'sine' },
+      { freq: 162,  baseVol: 0.38, period: 65, phase: 1.3,  type: 'sine' },
+      { freq: 216,  baseVol: 0.45, period: 55, phase: 2.7,  type: 'triangle' },
+      { freq: 270,  baseVol: 0.22, period: 70, phase: 0.9,  type: 'triangle' },
+      { freq: 324,  baseVol: 0.40, period: 45, phase: 1.8,  type: 'triangle' },
+      { freq: 432,  baseVol: 0.48, period: 60, phase: 3.1,  type: 'triangle' },
+      { freq: 540,  baseVol: 0.18, period: 50, phase: 0.4,  type: 'sine' },
+      { freq: 648,  baseVol: 0.30, period: 42, phase: 2.2,  type: 'sine' },
+      { freq: 864,  baseVol: 0.16, period: 38, phase: 1.1,  type: 'sine' },
+    ];
+
+    function buildPad(t0) {
+      // Filtro paso-bajo general con LFO
+      const lpf = ctx.createBiquadFilter();
+      lpf.type = 'lowpass';
+      lpf.frequency.value = 1100;
+      lpf.Q.value = 0.7;
+
+      const lfoOsc = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfoOsc.frequency.value = 0.06;
+      lfoGain.gain.value = 380;
+      lfoOsc.connect(lfoGain);
+      lfoGain.connect(lpf.frequency);
+      lfoOsc.start(t0); lfoOsc.stop(t0 + DURATION);
+      lpf.connect(reverbNode);
+      scheduledNodes.push(lpf, lfoOsc, lfoGain);
+
+      PAD_LAYERS.forEach(({ freq, baseVol, period, phase, type }) => {
+        const osc = ctx.createOscillator();
+        osc.type = type;
+        osc.frequency.value = freq;
+
+        const env = ctx.createGain();
+
+        // Fade in suave al inicio
+        const fadeIn = 10 + phase * 2.5;
+        env.gain.setValueAtTime(0, t0);
+        env.gain.linearRampToValueAtTime(baseVol * 0.35, t0 + fadeIn);
+
+        // Ciclos de respiración únicos por armónico
+        let t = t0 + fadeIn;
+        let toggle = true;
+        while (t < t0 + DURATION - 4) {
+          const segDur = period * (0.35 + Math.abs(Math.sin(phase + t * 0.001)) * 0.3);
+          const targetVol = toggle
+            ? baseVol * (0.85 + Math.abs(Math.cos(phase)) * 0.15)
+            : baseVol * (0.12 + Math.abs(Math.sin(phase * 2)) * 0.15);
+          env.gain.linearRampToValueAtTime(targetVol, t + segDur);
+          t += segDur;
+          toggle = !toggle;
+        }
+        env.gain.linearRampToValueAtTime(0, t0 + DURATION);
+
+        osc.connect(env);
+        env.connect(lpf);
+        osc.start(t0); osc.stop(t0 + DURATION);
+        scheduledNodes.push(osc, env);
+      });
+    }
+
+    // ─── AVES DE OTROS PLANETAS (síntesis FM) ─────────────────────────
+    function scheduleBirds(t0) {
+      // Grupos de pájaros en momentos dispersos
+      const birdEvents = [14, 58, 118, 183, 248, 318, 382];
+      birdEvents.forEach(tOff => {
+        const numBirds = 2 + Math.floor(Math.random() * 2);
+        for (let b = 0; b < numBirds; b++) {
+          const delay = tOff + b * (0.18 + seededRand(b + tOff) * 0.4);
+          const cf = 320 + seededRand(b * 7 + tOff) * 600;
+          const mf = 55 + seededRand(b * 13 + tOff) * 90;
+          const idx = 9 + seededRand(b * 3 + tOff) * 12;
+          const dur = 0.35 + seededRand(b * 5 + tOff) * 0.7;
+          spawnBird(t0 + delay, cf, mf, idx, dur);
+        }
+      });
+    }
+
+    function spawnBird(time, cf, mf, idx, dur) {
+      const carrier  = ctx.createOscillator();
+      const modOsc   = ctx.createOscillator();
+      const modGain  = ctx.createGain();
+      const ampEnv   = ctx.createGain();
+      const bpf      = ctx.createBiquadFilter();
+
+      carrier.type = 'sine';
+      modOsc.type  = 'sine';
+      carrier.frequency.setValueAtTime(cf, time);
+      carrier.frequency.linearRampToValueAtTime(cf * (1.04 + seededRand(cf) * 0.12), time + dur);
+      modOsc.frequency.value = mf;
+      modGain.gain.value = mf * idx;
+
+      bpf.type = 'bandpass';
+      bpf.frequency.value = cf * 1.1;
+      bpf.Q.value = 2.5;
+
+      const vol = 0.11 + seededRand(cf + mf) * 0.07;
+      ampEnv.gain.setValueAtTime(0, time);
+      ampEnv.gain.linearRampToValueAtTime(vol, time + 0.07);
+      ampEnv.gain.setValueAtTime(vol * 0.65, time + dur * 0.55);
+      ampEnv.gain.exponentialRampToValueAtTime(0.001, time + dur + 0.35);
+
+      modOsc.connect(modGain);
+      modGain.connect(carrier.frequency);
+      carrier.connect(bpf);
+      bpf.connect(ampEnv);
+      ampEnv.connect(reverbNode);
+      ampEnv.connect(delayNode);
+
+      const end = time + dur + 0.5;
+      modOsc.start(time);  modOsc.stop(end);
+      carrier.start(time); carrier.stop(end);
+      scheduledNodes.push(carrier, modOsc, modGain, ampEnv, bpf);
+    }
+
+    // Pseudo-random determinista (sin Math.random para reproducibilidad)
+    function seededRand(seed) {
+      const x = Math.sin(seed + 1) * 43758.5453123;
+      return x - Math.floor(x);
+    }
+
+    // ─── VOZ FEMENINA (síntesis aditiva con vibrato) ───────────────────
+    // Armónicos de La y Mi — tres secciones que entran y salen
+    const VOICE_HARMONICS = [
+      { freq: 216,  vol: 0.17, formant: 800 },
+      { freq: 324,  vol: 0.20, formant: 1100 },
+      { freq: 432,  vol: 0.25, formant: 900 },
+      { freq: 648,  vol: 0.18, formant: 2600 },
+      { freq: 864,  vol: 0.12, formant: 3100 },
+    ];
+
+    function buildVoiceSection(t0, dur) {
+      const fadeT = Math.min(12, dur * 0.18);
+      VOICE_HARMONICS.forEach(({ freq, vol, formant }, i) => {
+        const osc       = ctx.createOscillator();
+        const vibLFO    = ctx.createOscillator();
+        const vibGain   = ctx.createGain();
+        const formantF  = ctx.createBiquadFilter();
+        const env       = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+
+        // Vibrato sutil (4.8 Hz, ±4 Hz)
+        vibLFO.frequency.value = 4.8 + i * 0.12;
+        vibGain.gain.value = 3.5 + i * 0.5;
+        vibLFO.connect(vibGain);
+        vibGain.connect(osc.frequency);
+
+        // Filtro formante (color de vocal)
+        formantF.type = 'bandpass';
+        formantF.frequency.value = formant;
+        formantF.Q.value = 7;
+
+        // Envolvente fade in / out suave
+        env.gain.setValueAtTime(0, t0);
+        env.gain.linearRampToValueAtTime(vol, t0 + fadeT);
+        env.gain.setValueAtTime(vol, t0 + dur - fadeT);
+        env.gain.linearRampToValueAtTime(0, t0 + dur);
+
+        osc.connect(formantF);
+        formantF.connect(env);
+        env.connect(reverbNode);
+        env.connect(delayNode);
+
+        vibLFO.start(t0); vibLFO.stop(t0 + dur);
+        osc.start(t0);    osc.stop(t0 + dur);
+        scheduledNodes.push(osc, vibLFO, vibGain, formantF, env);
+      });
+    }
+
+    // ─── TIMELINE COMPLETO (420 s) ────────────────────────────────────
+    function scheduleAll(t0) {
+      // PAD continuo
+      buildPad(t0);
+
+      // Cuencos normales (rate 1.0) — cada ~11-14 s
+      const bowlNormal = [0,11,23,36,49,62,75,89,102,115,128,141,154,167,180,193,206,219,232,245,258,271,284,297,310,323,336,349,362,375,388,401,414];
+      bowlNormal.forEach((t, i) => playBowl(i % 5, t0 + t, 1.0, 0.58 + (i % 4) * 0.04));
+
+      // Cuencos profundos (2 octavas abajo = rate 0.25) — desfasados ~5 s
+      const bowlDeep = [5,17,30,44,57,70,83,97,110,123,136,150,163,176,189,202,215,228,241,254,267,280,293,306,319,332,345,358,371,384,397,410];
+      bowlDeep.forEach((t, i) => playBowl((i + 2) % 5, t0 + t, 0.25, 0.46));
+
+      // Aves etéreas
+      scheduleBirds(t0);
+
+      // Voz femenina — 3 secciones
+      buildVoiceSection(t0 + 58,  122);   // 0:58 → 2:60
+      buildVoiceSection(t0 + 238,  75);   // 3:58 → 5:13
+      buildVoiceSection(t0 + 358,  60);   // 5:58 → 6:58
+    }
+
+    // ─── REPRODUCCIÓN ─────────────────────────────────────────────────
+    function play() {
+      if (isPlaying) return;
+      if (ctx.state === 'suspended') ctx.resume();
+      isPlaying = true;
+      scheduledNodes = [];
+      startTime = ctx.currentTime;
+      scheduleAll(startTime + 0.15);
+      document.getElementById('playBtn').disabled = true;
+      document.getElementById('stopBtn').disabled = false;
+      setStatus('Reproduciendo…');
+      tickProgress();
+    }
+
+    function stop() {
+      if (!isPlaying) return;
+      isPlaying = false;
+      scheduledNodes.forEach(n => { try { n.stop ? n.stop(0) : n.disconnect(); } catch(_) {} });
+      scheduledNodes = [];
+      cancelAnimationFrame(animFrame);
+      document.getElementById('playBtn').disabled = false;
+      document.getElementById('stopBtn').disabled = true;
+      document.getElementById('progressFill').style.width = '0%';
+      document.getElementById('timeElapsed').textContent = '0:00';
+      setStatus('Detenido — pulsa Reproducir para comenzar de nuevo');
+    }
+
+    function tickProgress() {
+      if (!isPlaying) return;
+      const elapsed = Math.min(ctx.currentTime - startTime, DURATION);
+      const pct = (elapsed / DURATION) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+      const m = Math.floor(elapsed / 60);
+      const s = Math.floor(elapsed % 60);
+      document.getElementById('timeElapsed').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+      drawWaveform(elapsed);
+      if (elapsed >= DURATION) { stop(); return; }
+      animFrame = requestAnimationFrame(tickProgress);
+    }
+
+    // ─── GRABACIÓN ─────────────────────────────────────────────────────
+    async function record() {
+      if (isPlaying) stop();
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const dest = ctx.createMediaStreamDestination();
+      masterGain.connect(dest);
+
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : 'audio/webm';
+      const rec = new MediaRecorder(dest.stream, { mimeType });
+      const chunks = [];
+      rec.ondataavailable = e => chunks.push(e.data);
+      rec.onstop = () => {
+        const blob = new Blob(chunks, { type: mimeType });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url;
+        a.download = 'resonancia-relajacion-7min.webm';
+        a.click();
+        URL.revokeObjectURL(url);
+        masterGain.disconnect(dest);
+        document.getElementById('recordBtn').disabled = false;
+        setStatus('✓ Descarga lista — convierte a MP3 con ffmpeg o Audacity');
+      };
+
+      rec.start(500);
+      document.getElementById('recordBtn').disabled = true;
+      setStatus('⏺ Grabando 7 minutos… no cierres esta pestaña');
+
+      scheduledNodes = [];
+      startTime = ctx.currentTime;
+      isPlaying = true;
+      scheduleAll(startTime + 0.15);
+      tickProgress();
+
+      setTimeout(() => {
+        rec.stop();
+        stop();
+      }, (DURATION + 3) * 1000);
+    }
+
+    // ─── VISUALIZADOR ─────────────────────────────────────────────────
+    const canvas = document.getElementById('waveCanvas');
+    const wCtx   = canvas.getContext('2d');
+
+    function drawWaveform(t) {
+      canvas.width  = canvas.offsetWidth  || 480;
+      canvas.height = canvas.offsetHeight || 56;
+      const W = canvas.width, H = canvas.height;
+      wCtx.clearRect(0, 0, W, H);
+
+      // Lissajous-like composite wave from composition state
+      wCtx.beginPath();
+      for (let i = 0; i < W; i++) {
+        const x = i / W;
+        // Mix of pad frequencies and time-based modulation
+        let y = Math.sin(x * 14 + t * 0.9) * 0.28
+              + Math.sin(x * 8  + t * 0.55) * 0.20
+              + Math.sin(x * 22 + t * 1.3)  * 0.10
+              + Math.sin(x * 5  + t * 0.3)  * 0.25;
+        // Breath modulation
+        y *= 0.55 + 0.45 * Math.sin(t * 0.11 + 0.5);
+        const py = H / 2 + y * H * 0.42;
+        i === 0 ? wCtx.moveTo(i, py) : wCtx.lineTo(i, py);
+      }
+      wCtx.strokeStyle = 'rgba(212,175,55,0.55)';
+      wCtx.lineWidth = 1.5;
+      wCtx.stroke();
+
+      // Second subtle layer
+      wCtx.beginPath();
+      for (let i = 0; i < W; i++) {
+        const x = i / W;
+        let y = Math.sin(x * 6 + t * 0.4) * 0.18
+              + Math.sin(x * 18 + t * 1.1) * 0.08;
+        y *= 0.4 + 0.6 * Math.cos(t * 0.07);
+        const py = H / 2 + y * H * 0.38;
+        i === 0 ? wCtx.moveTo(i, py) : wCtx.lineTo(i, py);
+      }
+      wCtx.strokeStyle = 'rgba(233,196,106,0.25)';
+      wCtx.lineWidth = 1;
+      wCtx.stroke();
+    }
+
+    // ─── EVENTOS ──────────────────────────────────────────────────────
+    document.getElementById('playBtn').addEventListener('click', play);
+    document.getElementById('stopBtn').addEventListener('click', stop);
+    document.getElementById('recordBtn').addEventListener('click', record);
+
+    function setStatus(msg) {
+      document.getElementById('statusMsg').innerHTML = msg;
+    }
+
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
