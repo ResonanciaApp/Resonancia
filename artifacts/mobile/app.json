@@ -51,6 +51,23 @@
           "origin": "https://replit.com/"
         }
       ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "packagingOptions": {
+              "pickFirst": [
+                "**/libc++_shared.so",
+                "**/libfbjni.so",
+                "**/libfolly_runtime.so",
+                "**/libglog.so",
+                "**/libreact_nativemodule_core.so",
+                "**/libjsi.so"
+              ]
+            }
+          }
+        }
+      ],
       "expo-font",
       "expo-web-browser",
       [
