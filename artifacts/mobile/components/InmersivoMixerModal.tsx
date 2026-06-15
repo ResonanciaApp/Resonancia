@@ -253,7 +253,7 @@ export function InmersivoContent() {
             {soundNames.length > 0 && (
               <View style={styles.soundsRow}>
                 {soundNames.map((name) => (
-                  <View key={name} style={styles.soundPill}>
+                  <View key={name} style={[styles.soundPill, { backgroundColor: bgPreset.colors[0] + "40", borderColor: bgPreset.colors[0] + "66" }]}>
                     <Text style={styles.soundPillText} numberOfLines={1}>{name}</Text>
                   </View>
                 ))}
@@ -340,17 +340,16 @@ export function InmersivoMixerModal() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#1B060F" },
   introHint: {
-    position: "absolute",
-    bottom: "18%",
-    left: 32,
-    right: 32,
+    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 40,
   },
   introHintText: {
     color: "rgba(255,255,255,0.70)",
-    fontSize: 14,
+    fontSize: 18,
     textAlign: "center",
-    lineHeight: 22,
+    lineHeight: 28,
     letterSpacing: 0.2,
   },
   controlsLayer: { ...StyleSheet.absoluteFillObject, justifyContent: "space-between" },
