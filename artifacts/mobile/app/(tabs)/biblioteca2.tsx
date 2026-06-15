@@ -155,6 +155,10 @@ function AnimatedChipRow({
   // Chip que se está mostrando como seleccionado (se conserva durante el
   // regreso para que pueda volver a su lugar antes de desmontarse).
   const [displayTab, setDisplayTab] = useState<LibTab | null>(activeTab);
+  // Chip que se ve en color "seleccionado" (oro). Se desacopla de displayTab:
+  // al deseleccionar cambia el color de inmediato, mientras el chip sigue
+  // animando de vuelta a su posición.
+  const [colorTab, setColorTab] = useState<LibTab | null>(activeTab);
   // Desplazamiento (px) hacia el margen del chip seleccionado.
   const [targetTranslate, setTargetTranslate] = useState(0);
 
@@ -176,11 +180,13 @@ function AnimatedChipRow({
     const visualLeft = off - scrollXRef.current;
     setTargetTranslate(CLOSE_SLOT - visualLeft); // negativo: lo lleva al margen
     setDisplayTab(id);
+    setColorTab(id); // se pone oro al instante
     onSelect(id);
     animate(1);
   };
 
   const handleClear = () => {
+    setColorTab(null); // vuelve a gris al instante del tap, antes de moverse
     onClear();
     animate(0, () => setDisplayTab(null));
   };
@@ -246,7 +252,7 @@ function AnimatedChipRow({
             >
               <LibChip
                 label={t.label}
-                sel={isSelected}
+                sel={colorTab === t.id}
                 onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
               />
             </Animated.View>
