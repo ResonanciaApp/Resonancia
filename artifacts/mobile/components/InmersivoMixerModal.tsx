@@ -234,21 +234,12 @@ export function InmersivoContent() {
             </Pressable>
 
             <View style={styles.packRow}>
-              {/* Sin afirmaciones — opción por defecto */}
-              <Pressable
-                onPress={() => { showControls(); setPackId("none"); }}
-                style={[styles.packPill, packId === "none" && styles.packPillSel]}
-              >
-                <Text style={[styles.packLabel, packId !== "none" && styles.packLabelOff]}>
-                  Sin afirmaciones
-                </Text>
-              </Pressable>
               {MESSAGE_PACKS.map((pack) => {
                 const sel = pack.id === packId;
                 return (
                   <Pressable
                     key={pack.id}
-                    onPress={() => { showControls(); setPackId(pack.id); }}
+                    onPress={() => { showControls(); setPackId(sel ? "none" : pack.id); }}
                     style={[styles.packPill, sel && styles.packPillSel]}
                   >
                     <Text style={[styles.packLabel, !sel && styles.packLabelOff]}>
