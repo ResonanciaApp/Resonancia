@@ -414,11 +414,12 @@ const styles = StyleSheet.create({
   catCardImage: {
     width: CAT_CARD_W,
     height: CAT_CARD_IMG_H,
-    borderRadius: 16,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
     overflow: "hidden",
   },
   catCardText: {
-    marginTop: 6,
+    marginTop: 3,
     paddingHorizontal: 10,
     paddingVertical: 7,
     backgroundColor: "rgba(255,255,255,0.10)",
