@@ -57,7 +57,12 @@ export function MixerSettingsSheet({
           <View style={[StyleSheet.absoluteFill, styles.backdrop]} />
         </Pressable>
 
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
+        <LinearGradient
+          colors={SHEET_GRADIENT}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}
+        >
           <View style={styles.handle} />
 
           <Pressable onPress={onClose} style={styles.closeBtn} hitSlop={8}>
@@ -178,19 +183,19 @@ export function MixerSettingsSheet({
               Limpiar filtros
             </Text>
           </Pressable>
-        </View>
+        </LinearGradient>
       </View>
     </Modal>
   );
 }
 
-const SHEET_BG = "#1B060F";
+const SHEET_GRADIENT = ["#F7F6E5", "#EBE3F5", "#F7F6E5"] as const;
 const PRIMARY = "#BE9650";
-const FG = "#EDE1D3";
-const MUTED = "rgba(237,225,211,0.40)";
-const CHIP_BG = "rgba(255,255,255,0.05)";
-const CHIP_BORDER = "rgba(255,255,255,0.08)";
-const CHIP_SEL_BG = "rgba(190,150,80,0.18)";
+const FG = "#1A1E2B";
+const MUTED = "#6B7A96";
+const CHIP_BG = "rgba(74,12,12,0.05)";
+const CHIP_BORDER = "rgba(0,0,0,0.08)";
+const CHIP_SEL_BG = "rgba(190,150,80,0.16)";
 
 const styles = StyleSheet.create({
   container: {
@@ -201,7 +206,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.65)",
   },
   sheet: {
-    backgroundColor: SHEET_BG,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
@@ -212,7 +216,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(0,0,0,0.12)",
     alignSelf: "center",
     marginBottom: 12,
   },
@@ -294,7 +298,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 14,
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.10)",
+    borderColor: "rgba(0,0,0,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
