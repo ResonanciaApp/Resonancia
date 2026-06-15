@@ -21,7 +21,7 @@ export default function SlideFinanzas1() {
           ANEXO FINANCIERO · HOJA 1 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Flujo de caja <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>año 1.</span>
+          Flujo de caja <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>año 1.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", marginTop: "1vh" }}>
           En millones de pesos chilenos (CLP) · TC referencial $900/USD · escenario base

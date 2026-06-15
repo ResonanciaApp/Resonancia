@@ -16,7 +16,7 @@ export default function Slide04Producto() {
             03 · EL PRODUCTO
           </div>
           <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "44vw" }}>
-            Una app completa, <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>ya construida.</span>
+            Una app completa, <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>ya construida.</span>
           </div>
         </div>
 

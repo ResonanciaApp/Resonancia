@@ -16,7 +16,7 @@ export default function Slide11Inversion() {
             12 · LA INVERSIÓN
           </div>
           <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "48vw" }}>
-            Buscamos <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>US$ 30.000</span>
+            Buscamos <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>US$ 30.000</span>
           </div>
           <div style={{ fontSize: "1.9vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5, marginTop: "2vh", maxWidth: "46vw" }}>
             para producir el catálogo, equipar el estudio, lanzar al mercado y operar hasta alcanzar flujo positivo.

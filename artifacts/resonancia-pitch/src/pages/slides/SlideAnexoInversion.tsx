@@ -75,7 +75,7 @@ export default function SlideAnexoInversion() {
           ANEXO · VALORACIÓN ESTIMADA
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          ¿Cuánto vale esta empresa <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>en 12 meses?</span>
+          ¿Cuánto vale esta empresa <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>en 12 meses?</span>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1, marginBottom: "0.4vh" }}>US$ 570.000</div>
+            <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1, marginBottom: "0.4vh" }}>US$ 570.000</div>
             <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", marginBottom: "1.4vh" }}>≈ $513M CLP · TC $900</div>
 
             <div style={{ marginBottom: "1.4vh" }}>

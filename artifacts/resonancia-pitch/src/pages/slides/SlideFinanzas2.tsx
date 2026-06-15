@@ -35,7 +35,7 @@ export default function SlideFinanzas2() {
           ANEXO FINANCIERO · HOJA 2 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Curva de crecimiento y <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>escenarios.</span>
+          Curva de crecimiento y <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>escenarios.</span>
         </div>
       </div>
 

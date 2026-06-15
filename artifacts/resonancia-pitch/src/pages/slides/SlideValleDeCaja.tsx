@@ -20,7 +20,7 @@ export default function SlideValleDeCaja() {
           ANEXO · USO DE LA INVERSIÓN
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          El valle de caja, <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>cubierto.</span>
+          El valle de caja, <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>cubierto.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", marginTop: "1vh" }}>
           Cómo se reparte la ronda de US$30.000: construir y lanzar, sostener los meses en rojo y un colchón · escenario base
@@ -109,7 +109,7 @@ export default function SlideValleDeCaja() {
           }}>
             <div>
               <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em" }}>RONDA TOTAL</div>
-              <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1.05 }}>US$ 30.000</div>
+              <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1.05 }}>US$ 30.000</div>
               <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)" }}>$27M CLP · TC $900</div>
             </div>
 

@@ -27,7 +27,7 @@ export default function Slide01Portada() {
           <div style={{ fontSize: "6vw", fontWeight: 300, lineHeight: 1.05, letterSpacing: "-0.04em", color: "#F4DAD5" }}>
             Tu refugio
           </div>
-          <div style={{ fontSize: "6vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.04em", background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "4vh" }}>
+          <div style={{ fontSize: "6vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.04em", background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "4vh" }}>
             de sonido y presencia.
           </div>
           <div style={{ fontSize: "1.8vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", maxWidth: "38vw", lineHeight: 1.6 }}>

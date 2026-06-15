@@ -10,13 +10,13 @@ export default function SlideAudiencia() {
           09 · NUESTRA AUDIENCIA
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          No partimos de cero: ya tenemos <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>una comunidad.</span>
+          No partimos de cero: ya tenemos <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>una comunidad.</span>
         </div>
       </div>
 
       {/* Hero number */}
       <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-        <div style={{ fontSize: "10vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 0.9, letterSpacing: "-0.04em" }}>
+        <div style={{ fontSize: "10vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 0.9, letterSpacing: "-0.04em" }}>
           +1.000.000
         </div>
         <div style={{ fontSize: "2vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.3, maxWidth: "26vw" }}>
