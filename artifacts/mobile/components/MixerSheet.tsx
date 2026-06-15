@@ -42,7 +42,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
-import { setReopenMixer } from "@/utils/immersivo-flags";
+import { setReopenMixer, consumeReopenMixer } from "@/utils/immersivo-flags";
 import {
   DEFAULT_BG_PRESET_ID,
   DEFAULT_OVERLAY,
@@ -267,14 +267,18 @@ export function MixerSheet() {
   useEffect(() => {
     if (isSheetOpen) {
       sheetOpacity.setValue(1);
-      sheetEnterY.setValue(Dimensions.get("window").height);
       immersivoFade.setValue(0);
-      Animated.spring(sheetEnterY, {
-        toValue: 0,
-        tension: 65,
-        friction: 14,
-        useNativeDriver: true,
-      }).start();
+      if (consumeReopenMixer()) {
+        sheetEnterY.setValue(0);
+      } else {
+        sheetEnterY.setValue(Dimensions.get("window").height);
+        Animated.spring(sheetEnterY, {
+          toValue: 0,
+          tension: 65,
+          friction: 14,
+          useNativeDriver: true,
+        }).start();
+      }
       Animated.timing(immersivoFade, {
         toValue: 1,
         duration: 480,

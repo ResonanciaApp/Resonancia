@@ -23,6 +23,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useMixer } from "@/context/MixerContext";
+import { setReopenMixer } from "@/utils/immersivo-flags";
 import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
 import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
@@ -57,7 +58,7 @@ function formatTimer(s: number | null): string {
 // ── Componente ───────────────────────────────────────────────────────────────
 export default function InmersivoMixerScreen() {
   const insets = useSafeAreaInsets();
-  const { activeSounds, isPlaying, togglePlay, sleepTimerRemaining, setSleepTimer } = useMixer();
+  const { activeSounds, isPlaying, togglePlay, sleepTimerRemaining, setSleepTimer, openSheet } = useMixer();
   const params = useLocalSearchParams<{ bgPresetId?: string; packId?: string }>();
 
   // ── Fondo ──────────────────────────────────────────────────────────────────
@@ -205,7 +206,7 @@ export default function InmersivoMixerScreen() {
           {/* Header */}
           <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
             <Pressable
-              onPress={() => router.back()}
+              onPress={() => { setReopenMixer(true); openSheet(); router.back(); }}
               style={styles.iconBtn}
               hitSlop={14}
             >
