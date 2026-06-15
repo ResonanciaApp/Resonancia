@@ -676,7 +676,7 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               ) : (
-                <View style={{ paddingHorizontal: H_PAD, gap: 7 }}>
+                <View style={{ gap: 7 }}>
                   {sortedPlaylists.map((pl) => (
                     <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
                   ))}
