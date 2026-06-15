@@ -79,6 +79,31 @@ const CATEGORY_CARDS = [
 
 type Session = (typeof SESSIONS)[number];
 
+/** Seed numérico basado en la fecha (YYYYMMDD) → mismo resultado todo el día */
+function dateSeed(): number {
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+
+function seededRandom(seed: number) {
+  let s = seed;
+  return () => {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+
+function getDailyRecommendations(count = 5): Session[] {
+  const pool = SESSIONS.filter((s) =>
+    s.categoryId === "sonidos-ancestrales" ||
+    s.categoryId === "meditaciones-guiadas" ||
+    s.categoryId === "musica-sonidos",
+  );
+  const rng = seededRandom(dateSeed());
+  const shuffled = [...pool].sort(() => rng() - 0.5);
+  return shuffled.slice(0, count);
+}
+
 function getSessionAuthor(s: Session): string {
   if (s.guideId) return getGuide(s.guideId).name;
   return getArtist(s.artistId).name;
@@ -95,6 +120,7 @@ export default function ExploreScreen() {
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
   const meditacionesSessions = SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10);
+  const dailyRecs = React.useMemo(() => getDailyRecommendations(5), []);
 
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -245,6 +271,19 @@ export default function ExploreScreen() {
           </>
         )}
 
+        {/* ── Recomendado para ti ── */}
+        {query.length === 0 && (
+          <View style={styles.recoSection}>
+            <Text style={[styles.sectionTitle, { marginBottom: 4 }]}>Recomendado para ti</Text>
+            <Text style={[styles.recoSub, { color: colors.mutedForeground }]}>Selección diaria · se renueva cada día</Text>
+            <View style={styles.recoList}>
+              {dailyRecs.map((s) => (
+                <SessionCard key={s.id} session={s} horizontal />
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* ── Search results ── */}
         {query.length > 0 ? (
           <View style={styles.section}>
@@ -352,6 +391,20 @@ const styles = StyleSheet.create({
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
   emptyTitle:   { fontSize: 16, fontWeight: "600" },
   emptySub:     { fontSize: 13 },
+
+  // Recomendado para ti
+  recoSection: {
+    paddingHorizontal: H_PAD,
+    marginBottom: 24,
+  },
+  recoSub: {
+    fontSize: 12,
+    marginBottom: 14,
+    marginTop: 2,
+  },
+  recoList: {
+    gap: 2,
+  },
 
   // Carrusel de categorías
   catCard: {
