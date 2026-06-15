@@ -489,6 +489,13 @@ export default function MezcladorScreen() {
         </View>
 
         {/* ── Scroll principal ── */}
+        <View style={styles.scrollBg}>
+          <LinearGradient
+            colors={["#F7F6E5", "#EBE3F5", "#EBE3F5"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
@@ -511,6 +518,7 @@ export default function MezcladorScreen() {
             </View>
           </ContentSlide>
         </ScrollView>
+        </View>
       </View>
 
     </ImageBackground>
@@ -565,7 +573,8 @@ const styles = StyleSheet.create({
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
-  scroll:        { flex: 1, backgroundColor: "#F7F6E5" },
+  scrollBg:      { flex: 1 },
+  scroll:        { flex: 1, backgroundColor: "transparent" },
   scrollContent: { paddingHorizontal: 14, paddingTop: 14 },
 
   bannerWrap: {
