@@ -333,11 +333,9 @@ export default function ExploreScreen() {
                     ) : (
                       <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
                     )}
-                    <View style={styles.temaCellLabelBg}>
-                      <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={2}>
-                        {t.label}
-                      </Text>
-                    </View>
+                    <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={2}>
+                      {t.label}
+                    </Text>
                   </Pressable>
                 ))}
               </View>
@@ -486,29 +484,21 @@ const styles = StyleSheet.create({
   temaCell: {
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    gap: 8,
     borderRadius: 14,
-    paddingTop: 14,
-    paddingBottom: 0,
-    overflow: "hidden",
+    paddingHorizontal: 8,
+    paddingVertical: 12,
   },
   temaCellIcon: {
     width: 26,
     height: 26,
-    marginBottom: 8,
-  },
-  temaCellLabelBg: {
-    width: "100%",
-    backgroundColor: "rgba(255,255,255,0.50)",
-    paddingVertical: 7,
-    paddingHorizontal: 6,
-    alignItems: "center",
   },
   temaCellLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
-    lineHeight: 15,
+    lineHeight: 16,
   },
 
 });
