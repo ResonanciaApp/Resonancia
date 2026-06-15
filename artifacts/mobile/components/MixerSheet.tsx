@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
   imageSceneOverlay: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.42)",
+    backgroundColor: "rgba(0,0,0,0.59)",
   },
   handleZone: {
     alignSelf: "stretch",
