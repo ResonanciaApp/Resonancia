@@ -62,6 +62,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   } = useMixer();
 
   const [selectedId, setSelectedId] = useState<string>(DEFAULT_BG_PRESET_ID);
+  const activeBgPreset = GRADIENT_PRESETS.find((p) => p.id === selectedId);
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [previewScene, setPreviewScene] = useState<(typeof IMAGE_SCENES)[0] | null>(null);
   const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
@@ -116,10 +117,20 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <LinearGradient
-        colors={["#F2F3F7", "#E3E5EB"]}
-        style={[styles.root, { paddingTop: insets.top }]}
-      >
+      <View style={[styles.root, { paddingTop: insets.top }]}>
+        {/* Imagen de la escena seleccionada — fondo muy sutil */}
+        {activeBgPreset?.image && (
+          <Image
+            source={activeBgPreset.image}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+          />
+        )}
+        {/* Overlay claro que tapa casi toda la imagen → queda apenas perceptible */}
+        <LinearGradient
+          colors={["rgba(242,243,247,0.93)", "rgba(227,229,235,0.93)"]}
+          style={StyleSheet.absoluteFill}
+        />
         {/* ── Header ── */}
         <View style={styles.header}>
           <Pressable onPress={onClose} hitSlop={14} style={styles.headerBtn}>
@@ -265,7 +276,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
             Toca una escena para previsualizarla antes de elegirla.
           </Text>
         </ScrollView>
-      </LinearGradient>
+      </View>
 
       {/* ── Preview fullscreen ── */}
       {previewScene && (
