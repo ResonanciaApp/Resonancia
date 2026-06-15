@@ -55,7 +55,6 @@ type ViewMode = "list" | "grid";
 const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "playlists",   label: "Playlist" },
   { id: "mezclas",     label: "Mezclas" },
-  { id: "geometrix",   label: "Geometrix" },
   { id: "favoritos",   label: "Favoritos" },
   { id: "resonadores", label: "Resonadores" },
 ];
