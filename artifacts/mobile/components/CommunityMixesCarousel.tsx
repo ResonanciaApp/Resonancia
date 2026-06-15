@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
   panel: {
     backgroundColor: "transparent",
     borderRadius: 0,
-    paddingHorizontal: 20,
+    paddingHorizontal: 35,
     paddingVertical: 4,
     marginHorizontal: -35,
   },
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: -8,
   },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
