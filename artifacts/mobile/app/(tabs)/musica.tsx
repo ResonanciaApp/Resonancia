@@ -287,7 +287,7 @@ export default function MezcladorScreen() {
       setTabBarColors(null);
     } else {
       const g = TAB_HEADER_GRADIENT[mainTab];
-      setTabBarColors([g[0], g[2]]);
+      setTabBarColors([g[0], g[1]]);
     }
   }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
