@@ -57,11 +57,14 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   const {
     masterVolume,
     setMasterVolume,
+    bgPresetId: contextBgPresetId,
     sleepTimerRemaining,
     setSleepTimer,
   } = useMixer();
 
-  const [selectedId, setSelectedId] = useState<string>(DEFAULT_BG_PRESET_ID);
+  const [selectedId, setSelectedId] = useState<string>(
+    contextBgPresetId ?? DEFAULT_BG_PRESET_ID,
+  );
   const activeBgPreset = GRADIENT_PRESETS.find((p) => p.id === selectedId);
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [previewScene, setPreviewScene] = useState<(typeof IMAGE_SCENES)[0] | null>(null);
@@ -126,9 +129,9 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
             contentFit="cover"
           />
         )}
-        {/* Overlay claro que tapa casi toda la imagen → queda apenas perceptible */}
+        {/* Overlay claro — cubre bastante pero deja que la imagen se perciba */}
         <LinearGradient
-          colors={["rgba(242,243,247,0.93)", "rgba(227,229,235,0.93)"]}
+          colors={["rgba(242,243,247,0.82)", "rgba(227,229,235,0.82)"]}
           style={StyleSheet.absoluteFill}
         />
         {/* ── Header ── */}
