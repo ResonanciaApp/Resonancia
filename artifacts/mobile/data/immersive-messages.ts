@@ -8,7 +8,7 @@ export type MessagePack = {
 export const MESSAGE_PACKS: MessagePack[] = [
   {
     id: "calma",
-    label: "Calma",
+    label: "Fluir",
     emoji: "🌊",
     messages: [
       "Respira profundo.\nEl presente es suficiente.",
@@ -34,7 +34,7 @@ export const MESSAGE_PACKS: MessagePack[] = [
   },
   {
     id: "energia",
-    label: "Energía",
+    label: "Positivismo",
     emoji: "⚡",
     messages: [
       "Eres vibración.\nEres sonido. Eres vida.",
@@ -47,7 +47,7 @@ export const MESSAGE_PACKS: MessagePack[] = [
   },
   {
     id: "sueno",
-    label: "Sueño",
+    label: "Desafios",
     emoji: "🌙",
     messages: [
       "Deja ir el día.\nEl descanso te espera.",
