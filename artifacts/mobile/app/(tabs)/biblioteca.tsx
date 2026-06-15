@@ -1380,7 +1380,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: H_PAD,
-    paddingVertical: 10,
+    height: 62,
+    marginBottom: 7,
     gap: 14,
   },
   geoThumb: {
