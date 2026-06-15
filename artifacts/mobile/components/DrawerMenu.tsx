@@ -27,24 +27,12 @@ type MenuItem = {
   route: string;
 };
 
-const LOGGED_OUT_ITEMS: MenuItem[] = [
-  { label: "Crear cuenta",  icon: "user-plus", route: "/(auth)/sign-up" },
-  { label: "Iniciar sesión", icon: "log-in",   route: "/(auth)/sign-in" },
-  { label: "Premium",       icon: "star",      route: "/membresia" },
-  { label: "Favoritos",     icon: "heart",     route: "/favorites" },
-  { label: "Carpetas",      icon: "folder",    route: "/carpetas" },
-  { label: "Playlists",     icon: "list",      route: "/playlists" },
-  { label: "Amigos",        icon: "users",     route: "/amigos" },
-  { label: "Grupos",        icon: "globe",     route: "/grupos" },
-];
-
-const LOGGED_IN_ITEMS: MenuItem[] = [
-  { label: "Premium",       icon: "star",      route: "/membresia" },
-  { label: "Favoritos",     icon: "heart",     route: "/favorites" },
-  { label: "Carpetas",      icon: "folder",    route: "/carpetas" },
-  { label: "Playlists",     icon: "list",      route: "/playlists" },
-  { label: "Amigos",        icon: "users",     route: "/amigos" },
-  { label: "Grupos",        icon: "globe",     route: "/grupos" },
+const MAIN_ITEMS: MenuItem[] = [
+  { label: "Premium",   icon: "star",     route: "/membresia" },
+  { label: "Geometrix", icon: "hexagon",  route: "/(tabs)/geometrix" },
+  { label: "Diario",    icon: "book-open", route: "/diario" },
+  { label: "Amigos",    icon: "users",    route: "/amigos" },
+  { label: "Grupos",    icon: "globe",    route: "/grupos" },
 ];
 
 const SECONDARY_ITEMS: MenuItem[] = [
@@ -92,7 +80,6 @@ export function DrawerMenu() {
     outputRange: [-DRAWER_PUSH, 0],
   });
 
-  const mainItems = loggedIn ? LOGGED_IN_ITEMS : LOGGED_OUT_ITEMS;
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
   const fullName = hasLocalName ? localFullName : (clerkName || "Explorador");
@@ -153,7 +140,7 @@ export function DrawerMenu() {
           {/* Items principales + secundarios — scrollable */}
           <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
             <View style={styles.itemGroup}>
-              {mainItems.map((item) => (
+              {MAIN_ITEMS.map((item) => (
                 <Pressable
                   key={item.label}
                   onPress={() => navigate(item.route)}
