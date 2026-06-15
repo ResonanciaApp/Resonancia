@@ -12,17 +12,17 @@ export default function SlideValleDeCaja() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
-        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "#7A8FA8", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
+        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
           ANEXO · USO DE LA INVERSIÓN
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          El valle de caja, <span style={{ color: "#BE9650" }}>cubierto.</span>
+          El valle de caja, <span style={{ color: "#D4AF37" }}>cubierto.</span>
         </div>
-        <div style={{ fontSize: "1.45vw", color: "#7A8FA8", marginTop: "1vh" }}>
+        <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", marginTop: "1vh" }}>
           Cómo se reparte la ronda de US$30.000: construir y lanzar, sostener los meses en rojo y un colchón · escenario base
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function SlideValleDeCaja() {
       <div style={{ flex: 1, display: "flex", gap: "2.5vw", alignItems: "stretch", marginTop: "2vh" }}>
         {/* Left: the valley */}
         <div style={{ flex: 1.15, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
             MESES EN ROJO · ANTES DE CRECER
           </div>
 
@@ -62,8 +62,8 @@ export default function SlideValleDeCaja() {
                     />
                   )}
                 </div>
-                <div style={{ fontSize: "1.35vw", fontWeight: 700, color: "#EDE1D3", marginTop: "0.6vh" }}>{m.mes}</div>
-                <div style={{ fontSize: "1.05vw", color: "#7A8FA8" }}>{m.subs}</div>
+                <div style={{ fontSize: "1.35vw", fontWeight: 700, color: "#F4DAD5", marginTop: "0.6vh" }}>{m.mes}</div>
+                <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)" }}>{m.subs}</div>
               </div>
             ))}
           </div>
@@ -72,7 +72,7 @@ export default function SlideValleDeCaja() {
           <div style={{
             marginTop: "2vh",
             padding: "2vh 1.8vw",
-            backgroundColor: "#090E17",
+            backgroundColor: "#27070E",
             border: "1px solid rgba(224,112,112,0.35)",
             borderRadius: "0.7vw",
             display: "flex",
@@ -80,26 +80,26 @@ export default function SlideValleDeCaja() {
             alignItems: "center",
           }}>
             <div>
-              <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#EDE1D3" }}>Pérdida acumulada (meses 1–3)</div>
-              <div style={{ fontSize: "1vw", color: "#7A8FA8" }}>A partir del mes 4 la operación es rentable mes a mes</div>
+              <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#F4DAD5" }}>Pérdida acumulada (meses 1–3)</div>
+              <div style={{ fontSize: "1vw", color: "rgba(242,231,228,0.50)" }}>A partir del mes 4 la operación es rentable mes a mes</div>
             </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#E07070", lineHeight: 1 }}>–$7,1M</div>
-              <div style={{ fontSize: "1.1vw", color: "#7A8FA8", marginTop: "0.3vh" }}>≈ US$ 7.900</div>
+              <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)", marginTop: "0.3vh" }}>≈ US$ 7.900</div>
             </div>
           </div>
         </div>
 
         {/* Right: how the round covers it */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
             CÓMO SE DESPLIEGA LA RONDA
           </div>
 
           <div style={{
             flex: 1,
-            backgroundColor: "#090E17",
-            border: "1px solid rgba(190,150,80,0.3)",
+            backgroundColor: "#27070E",
+            border: "1px solid rgba(212,175,55,0.3)",
             borderRadius: "0.9vw",
             padding: "2.4vh 2vw",
             display: "flex",
@@ -108,31 +108,31 @@ export default function SlideValleDeCaja() {
             gap: "1.6vh",
           }}>
             <div>
-              <div style={{ fontSize: "1.05vw", color: "#7A8FA8", letterSpacing: "0.06em" }}>RONDA TOTAL</div>
-              <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#BE9650", lineHeight: 1.05 }}>US$ 30.000</div>
-              <div style={{ fontSize: "1.05vw", color: "#7A8FA8" }}>$27M CLP · TC $900</div>
+              <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em" }}>RONDA TOTAL</div>
+              <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1.05 }}>US$ 30.000</div>
+              <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)" }}>$27M CLP · TC $900</div>
             </div>
 
-            <div style={{ height: "1px", backgroundColor: "rgba(190,150,80,0.2)" }} />
+            <div style={{ height: "1px", backgroundColor: "rgba(212,175,55,0.2)" }} />
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.2vw", color: "#EDE1D3" }}>Gasto upfront <span style={{ color: "#7A8FA8", fontSize: "0.95vw" }}>(pre-mes 1)</span></div>
-              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#EDE1D3" }}>US$ 18.880</div>
+              <div style={{ fontSize: "1.2vw", color: "#F4DAD5" }}>Gasto upfront <span style={{ color: "rgba(242,231,228,0.50)", fontSize: "0.95vw" }}>(pre-mes 1)</span></div>
+              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>US$ 18.880</div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.2vw", color: "#EDE1D3" }}>Runway operativo <span style={{ color: "#7A8FA8", fontSize: "0.95vw" }}>(valle meses 1–3)</span></div>
+              <div style={{ fontSize: "1.2vw", color: "#F4DAD5" }}>Runway operativo <span style={{ color: "rgba(242,231,228,0.50)", fontSize: "0.95vw" }}>(valle meses 1–3)</span></div>
               <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#E07070" }}>US$ 7.900</div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.2vw", color: "#EDE1D3" }}>Colchón / imprevistos</div>
+              <div style={{ fontSize: "1.2vw", color: "#F4DAD5" }}>Colchón / imprevistos</div>
               <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#6EC49A" }}>US$ 3.220</div>
             </div>
 
-            <div style={{ height: "1px", backgroundColor: "rgba(190,150,80,0.2)" }} />
+            <div style={{ height: "1px", backgroundColor: "rgba(212,175,55,0.2)" }} />
 
-            <div style={{ fontSize: "1.1vw", color: "#7A8FA8", lineHeight: 1.5 }}>
-              La ronda se despliega en dos fases: <strong style={{ color: "#EDE1D3" }}>construir y lanzar</strong> antes del mes 1, y
-              <strong style={{ color: "#EDE1D3" }}> sostener la operación</strong> hasta que el negocio se autofinancia (mes 4), con un colchón para imprevistos.
+            <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
+              La ronda se despliega en dos fases: <strong style={{ color: "#F4DAD5" }}>construir y lanzar</strong> antes del mes 1, y
+              <strong style={{ color: "#F4DAD5" }}> sostener la operación</strong> hasta que el negocio se autofinancia (mes 4), con un colchón para imprevistos.
             </div>
           </div>
         </div>

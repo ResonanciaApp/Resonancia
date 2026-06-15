@@ -1,8 +1,8 @@
 function Bullet({ text }: { text: string }) {
   return (
     <div style={{ display: "flex", alignItems: "flex-start", gap: "0.7vw", marginBottom: "0.6vh" }}>
-      <div style={{ width: "0.42vw", height: "0.42vw", backgroundColor: "#BE9650", transform: "rotate(45deg)", flexShrink: 0, marginTop: "0.5vw" }} />
-      <div style={{ fontSize: "1.05vw", color: "#7A8FA8", lineHeight: 1.35 }}>{text}</div>
+      <div style={{ width: "0.42vw", height: "0.42vw", backgroundColor: "#D4AF37", transform: "rotate(45deg)", flexShrink: 0, marginTop: "0.5vw" }} />
+      <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.35 }}>{text}</div>
     </div>
   );
 }
@@ -17,16 +17,16 @@ function ScenarioCard({
   return (
     <div style={{
       flex: 1,
-      backgroundColor: highlight ? "#090E17" : "rgba(255,255,255,0.02)",
-      border: `1.5px solid ${highlight ? "#BE9650" : "rgba(255,255,255,0.08)"}`,
+      backgroundColor: highlight ? "#27070E" : "rgba(255,255,255,0.02)",
+      border: `1.5px solid ${highlight ? "#D4AF37" : "rgba(255,255,255,0.08)"}`,
       borderRadius: "0.8vw",
       padding: "1.5vh 1.2vw",
       display: "flex",
       flexDirection: "column",
       gap: "0.8vh",
     }}>
-      <div style={{ fontSize: "1.3vw", fontWeight: 700, color: highlight ? "#BE9650" : "#EDE1D3" }}>{label}</div>
-      <div style={{ fontSize: "1.0vw", color: "#7A8FA8" }}>{subs} suscriptores</div>
+      <div style={{ fontSize: "1.3vw", fontWeight: 700, color: highlight ? "#D4AF37" : "#F4DAD5" }}>{label}</div>
+      <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.50)" }}>{subs} suscriptores</div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh", display: "flex", flexDirection: "column", gap: "0.35vh" }}>
         {[
@@ -35,23 +35,23 @@ function ScenarioCard({
         ].map(([k, v]) => (
           <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
             <div style={{ fontSize: "0.95vw", color: "#3D4F62" }}>{k}</div>
-            <div style={{ fontSize: "1.0vw", color: "#EDE1D3" }}>{v}</div>
+            <div style={{ fontSize: "1.0vw", color: "#F4DAD5" }}>{v}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ backgroundColor: highlight ? "rgba(190,150,80,0.1)" : "rgba(255,255,255,0.03)", borderRadius: "0.5vw", padding: "0.8vh 0.8vw" }}>
-        <div style={{ fontSize: "0.9vw", color: "#7A8FA8", marginBottom: "0.2vh" }}>VALORACIÓN ESTIMADA M12</div>
-        <div style={{ fontSize: "1.9vw", fontWeight: 700, color: highlight ? "#BE9650" : "#EDE1D3", lineHeight: 1 }}>{valuation}</div>
+      <div style={{ backgroundColor: highlight ? "rgba(212,175,55,0.1)" : "rgba(255,255,255,0.03)", borderRadius: "0.5vw", padding: "0.8vh 0.8vw" }}>
+        <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.2vh" }}>VALORACIÓN ESTIMADA M12</div>
+        <div style={{ fontSize: "1.9vw", fontWeight: 700, color: highlight ? "#D4AF37" : "#F4DAD5", lineHeight: 1 }}>{valuation}</div>
       </div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh" }}>
-        <div style={{ fontSize: "0.85vw", color: "#7A8FA8", marginBottom: "0.3vh" }}>STAKE 5,0% VALE</div>
+        <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.3vh" }}>STAKE 5,0% VALE</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>{stakeVal}</div>
           <div style={{
             fontSize: "1.05vw", fontWeight: 700,
-            color: highlight ? "#BE9650" : "#7A8FA8",
+            color: highlight ? "#D4AF37" : "rgba(242,231,228,0.50)",
             backgroundColor: "rgba(110,196,154,0.1)",
             border: "1px solid rgba(110,196,154,0.25)",
             borderRadius: "0.4vw",
@@ -67,15 +67,15 @@ export default function SlideAnexoInversion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
-        <div style={{ fontSize: "1.3vw", fontWeight: 600, color: "#7A8FA8", letterSpacing: "0.14em", marginBottom: "0.7vh" }}>
+        <div style={{ fontSize: "1.3vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "0.7vh" }}>
           ANEXO · VALORACIÓN ESTIMADA
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          ¿Cuánto vale esta empresa <span style={{ color: "#BE9650" }}>en 12 meses?</span>
+          ¿Cuánto vale esta empresa <span style={{ color: "#D4AF37" }}>en 12 meses?</span>
         </div>
       </div>
 
@@ -84,47 +84,47 @@ export default function SlideAnexoInversion() {
 
         {/* Left: Hoy */}
         <div style={{ flex: 0.9, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN HOY (PRE-INVERSIÓN)</div>
+          <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN HOY (PRE-INVERSIÓN)</div>
 
           <div style={{
-            backgroundColor: "#090E17",
-            border: "1.5px solid rgba(190,150,80,0.35)",
+            backgroundColor: "#27070E",
+            border: "1.5px solid rgba(212,175,55,0.35)",
             borderRadius: "0.9vw",
             padding: "1.8vh 1.5vw",
             flex: 1,
             display: "flex",
             flexDirection: "column",
           }}>
-            <div style={{ fontSize: "1.1vw", color: "#7A8FA8", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#BE9650", lineHeight: 1, marginBottom: "0.4vh" }}>US$ 570.000</div>
-            <div style={{ fontSize: "1.05vw", color: "#7A8FA8", marginBottom: "1.4vh" }}>≈ $513M CLP · TC $900</div>
+            <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
+            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1, marginBottom: "0.4vh" }}>US$ 570.000</div>
+            <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", marginBottom: "1.4vh" }}>≈ $513M CLP · TC $900</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
-              <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#EDE1D3", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
+              <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#F4DAD5", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
               <Bullet text="+1.000.000 seguidores activos = distribución con costo de adquisición casi nulo" />
               <Bullet text="180 pistas de audio listas al lanzar (activo de contenido producido)" />
               <Bullet text="App funcional con auth, player, suscripciones y back-office construidos" />
               <Bullet text="Precio premium ($6.900/mes IVA incl.) validado en el segmento objetivo" />
             </div>
 
-            <div style={{ borderTop: "1px solid rgba(190,150,80,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
-              <div style={{ fontSize: "0.95vw", color: "#7A8FA8", marginBottom: "0.5vh" }}>
-                US$30.000 ÷ post-money US$600K ≈ <span style={{ color: "#BE9650", fontWeight: 700 }}>5,0%</span>
+            <div style={{ borderTop: "1px solid rgba(212,175,55,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
+              <div style={{ fontSize: "0.95vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.5vh" }}>
+                US$30.000 ÷ post-money US$600K ≈ <span style={{ color: "#D4AF37", fontWeight: 700 }}>5,0%</span>
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
-                <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
+                <div style={{ flex: 1, backgroundColor: "rgba(212,175,55,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>Ticket</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#EDE1D3" }}>US$ 30K</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>US$ 30K</div>
                   <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>$27M CLP</div>
                 </div>
-                <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
+                <div style={{ flex: 1, backgroundColor: "rgba(212,175,55,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>Equity</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#BE9650" }}>5,0%</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#D4AF37" }}>5,0%</div>
                   <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>fijo</div>
                 </div>
-                <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
+                <div style={{ flex: 1, backgroundColor: "rgba(212,175,55,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>Post-money</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#EDE1D3" }}>US$ 600K</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>US$ 600K</div>
                   <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>$540M CLP</div>
                 </div>
               </div>
@@ -135,13 +135,13 @@ export default function SlideAnexoInversion() {
         {/* Arrow */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.8vh" }}>
           <div style={{ fontSize: "0.9vw", color: "#3D4F62", letterSpacing: "0.08em" }}>12 MESES</div>
-          <div style={{ fontSize: "2.5vw", color: "rgba(190,150,80,0.5)" }}>→</div>
+          <div style={{ fontSize: "2.5vw", color: "rgba(212,175,55,0.5)" }}>→</div>
           <div style={{ fontSize: "0.85vw", color: "#3D4F62", textAlign: "center" }}>múltiplo<br/>ARR</div>
         </div>
 
         {/* Right: M12 scenarios */}
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12</div>
+          <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
             <ScenarioCard
               label="Base"

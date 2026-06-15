@@ -13,17 +13,17 @@ export default function SlideFinanzas1() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#060A0F", color: "#EDE1D3", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
-        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "#7A8FA8", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
+        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
           ANEXO FINANCIERO · HOJA 1 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Flujo de caja <span style={{ color: "#BE9650" }}>año 1.</span>
+          Flujo de caja <span style={{ color: "#D4AF37" }}>año 1.</span>
         </div>
-        <div style={{ fontSize: "1.45vw", color: "#7A8FA8", marginTop: "1vh" }}>
+        <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", marginTop: "1vh" }}>
           En millones de pesos chilenos (CLP) · TC referencial $900/USD · escenario base
         </div>
       </div>
@@ -35,11 +35,11 @@ export default function SlideFinanzas1() {
           display: "grid",
           gridTemplateColumns: "1.2fr 1fr 1fr 1fr 1fr 1fr",
           padding: "1.4vh 1.2vw",
-          borderBottom: "1px solid rgba(190,150,80,0.35)",
+          borderBottom: "1px solid rgba(212,175,55,0.35)",
           marginBottom: "0.5vh",
         }}>
           {["Período", "Suscriptores", "Ingresos netos", "Fijo + mkt", "Contenido", "Resultado mes"].map((h) => (
-            <div key={h} style={{ fontSize: "1.15vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.06em" }}>{h}</div>
+            <div key={h} style={{ fontSize: "1.15vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.06em" }}>{h}</div>
           ))}
         </div>
 
@@ -55,11 +55,11 @@ export default function SlideFinanzas1() {
               alignItems: "center",
             }}
           >
-            <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>{r.mes}</div>
-            <div style={{ fontSize: "1.45vw", color: "#EDE1D3" }}>{r.subs}</div>
-            <div style={{ fontSize: "1.45vw", color: "#EDE1D3" }}>{r.ingreso}</div>
-            <div style={{ fontSize: "1.45vw", color: "#7A8FA8" }}>{r.costoFijo}</div>
-            <div style={{ fontSize: "1.45vw", color: r.costoVar === "$0" ? "#3D4F62" : "#7A8FA8" }}>{r.costoVar}</div>
+            <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4DAD5" }}>{r.mes}</div>
+            <div style={{ fontSize: "1.45vw", color: "#F4DAD5" }}>{r.subs}</div>
+            <div style={{ fontSize: "1.45vw", color: "#F4DAD5" }}>{r.ingreso}</div>
+            <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)" }}>{r.costoFijo}</div>
+            <div style={{ fontSize: "1.45vw", color: r.costoVar === "$0" ? "#3D4F62" : "rgba(242,231,228,0.50)" }}>{r.costoVar}</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 700, color: r.neg ? "#E07070" : "#6EC49A" }}>{r.resultado}</div>
           </div>
         ))}
@@ -69,16 +69,16 @@ export default function SlideFinanzas1() {
           display: "grid",
           gridTemplateColumns: "1.2fr 1fr 1fr 1fr 1fr 1fr",
           padding: "1.8vh 1.2vw",
-          borderTop: "1px solid rgba(190,150,80,0.35)",
+          borderTop: "1px solid rgba(212,175,55,0.35)",
           marginTop: "0.8vh",
-          backgroundColor: "#090E17",
+          backgroundColor: "#27070E",
           borderRadius: "0.6vw",
         }}>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#BE9650" }}>AÑO 1 TOTAL</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>5.000 al cierre</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#EDE1D3" }}>~$121M</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$46M</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#7A8FA8" }}>~$20M</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#D4AF37" }}>AÑO 1 TOTAL</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4DAD5" }}>5.000 al cierre</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4DAD5" }}>~$121M</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>~$46M</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>~$20M</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#6EC49A" }}>+$55M neto</div>
         </div>
       </div>
