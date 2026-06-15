@@ -48,7 +48,7 @@ const CARD_H = Math.floor(CARD_W * 4 / 3) + 150;
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
 /** Todas las escenas: primero los degradados (sin imagen), luego las de imagen */
 const ALL_SCENES = [
-  ...GRADIENT_PRESETS.filter((p) => !p.image && p.isLight),
+  ...GRADIENT_PRESETS.filter((p) => !p.image && p.isLight && p.id !== DEFAULT_BG_PRESET_ID),
   ...IMAGE_SCENES,
 ];
 
@@ -236,7 +236,19 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
           </View>
 
           {/* ── Sección escenas ── */}
-          <Text style={styles.sectionTitle}>Escenas</Text>
+          <View style={styles.scenesTitleRow}>
+            <Text style={styles.sectionTitle}>Escenas</Text>
+            {selectedId !== DEFAULT_BG_PRESET_ID && (
+              <Pressable
+                onPress={() => applyScene(DEFAULT_BG_PRESET_ID)}
+                style={styles.restablecerBtn}
+                hitSlop={8}
+              >
+                <Feather name="rotate-ccw" size={11} color="#8C6A1A" />
+                <Text style={styles.restablecerText}>Restablecer</Text>
+              </Pressable>
+            )}
+          </View>
 
           <ScrollView
             horizontal
@@ -432,11 +444,33 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
+  scenesTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
   sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
     color: "#1A1A22",
-    marginBottom: 14,
+    letterSpacing: 0.2,
+  },
+  restablecerBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(140,106,26,0.3)",
+    backgroundColor: "rgba(140,106,26,0.08)",
+  },
+  restablecerText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#8C6A1A",
     letterSpacing: 0.2,
   },
 
