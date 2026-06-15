@@ -44,7 +44,7 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
-const TEMA_COL_W = (width - H_PAD * 2 - GAP) / 2;
+const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP * 2) / 3);
 
 const CAT_CARD_GAP = 12;
 const CAT_CARD_W = Math.round((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2) - 30;
@@ -275,6 +275,7 @@ export default function ExploreScreen() {
                       styles.temaCell,
                       {
                         width: TEMA_COL_W,
+                        height: TEMA_COL_W,
                         opacity: pressed ? 0.75 : 1,
                         backgroundColor: hexTint(t.color, 0.12),
                       },
@@ -289,7 +290,7 @@ export default function ExploreScreen() {
                     ) : (
                       <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
                     )}
-                    <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={1}>
+                    <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={2}>
                       {t.label}
                     </Text>
                   </Pressable>
@@ -411,31 +412,31 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
 
-  // Explorar todo — grid 2 columnas, icono + texto horizontal
+  // Explorar todo — grid 3 columnas, icono arriba + texto centrado
   temaGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: GAP,
-    rowGap: 10,
     marginTop: 2,
   },
   temaCell: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    gap: 12,
+    justifyContent: "center",
+    gap: 8,
     borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 33,
+    paddingHorizontal: 8,
+    paddingVertical: 12,
   },
   temaCellIcon: {
     width: 26,
     height: 26,
   },
   temaCellLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "600",
-    flex: 1,
-    lineHeight: 19,
+    textAlign: "center",
+    lineHeight: 16,
   },
 
 });
