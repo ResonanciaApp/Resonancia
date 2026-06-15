@@ -46,6 +46,37 @@ function hexTint(hex: string, alpha: number): string {
 const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
 const TEMA_COL_W = (width - H_PAD * 2 - GAP) / 2;
 
+const CAT_CARD_GAP = 12;
+const CAT_CARD_W = Math.round((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2);
+const CAT_CARD_H = Math.round(CAT_CARD_W * 1.25);
+
+const CATEGORY_CARDS = [
+  {
+    id: "sonidos-ancestrales",
+    title: "Ancestral",
+    subtitle: "Cuencos, gongs y sonidos sagrados",
+    route: "/category/sonidos-ancestrales",
+    image: require("../../assets/images/categories/sonidos-ancestrales.png"),
+    overlay: "rgba(12,4,8,0.45)",
+  },
+  {
+    id: "meditaciones-guiadas",
+    title: "Meditaciones",
+    subtitle: "Guías de voz para calmar la mente",
+    route: "/category/meditaciones-guiadas",
+    image: require("../../assets/images/categories/meditaciones-guiadas.png"),
+    overlay: "rgba(4,8,16,0.42)",
+  },
+  {
+    id: "musica-sonidos",
+    title: "Música",
+    subtitle: "Ambient, naturaleza y paisajes sonoros",
+    route: "/category/musica-sonidos",
+    image: require("../../assets/images/categories/musica-sonidos.png"),
+    overlay: "rgba(4,14,8,0.42)",
+  },
+] as const;
+
 type Session = (typeof SESSIONS)[number];
 
 function getSessionAuthor(s: Session): string {
@@ -176,6 +207,43 @@ export default function ExploreScreen() {
           )}
         </View>
 
+        {/* ── Carrusel de categorías ── */}
+        {query.length === 0 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -H_PAD, marginBottom: 24 }}
+            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: CAT_CARD_GAP, paddingBottom: 2 }}
+            decelerationRate="fast"
+            snapToInterval={CAT_CARD_W + CAT_CARD_GAP}
+            snapToAlignment="start"
+          >
+            {CATEGORY_CARDS.map((cat) => (
+              <Pressable
+                key={cat.id}
+                onPress={() => router.push(cat.route as never)}
+                style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.85 : 1 }]}
+              >
+                <Image
+                  source={cat.image}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+                <LinearGradient
+                  colors={["transparent", cat.overlay]}
+                  locations={[0.35, 1]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <View style={styles.catCardText}>
+                  <Text style={styles.catCardTitle}>{cat.title}</Text>
+                  <Text style={styles.catCardSubtitle} numberOfLines={2}>{cat.subtitle}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </ScrollView>
+        )}
+
         {/* ── Search results ── */}
         {query.length > 0 ? (
           <View style={styles.section}>
@@ -287,6 +355,37 @@ const styles = StyleSheet.create({
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
   emptyTitle:   { fontSize: 16, fontWeight: "600" },
   emptySub:     { fontSize: 13 },
+
+  // Carrusel de categorías
+  catCard: {
+    width: CAT_CARD_W,
+    height: CAT_CARD_H,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "rgba(74,12,12,0.08)",
+  },
+  catCardText: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 14,
+    paddingBottom: 14,
+    paddingTop: 8,
+  },
+  catCardTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: 0.3,
+    marginBottom: 3,
+  },
+  catCardSubtitle: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.75)",
+    lineHeight: 16,
+    fontWeight: "400",
+  },
 
   // Carrusel cuadrado
   carouselContent: {
