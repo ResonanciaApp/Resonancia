@@ -207,7 +207,10 @@ export default function InmersivoMixerScreen() {
           {/* Header */}
           <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
             <Pressable
-              onPress={() => { router.back(); if (returnMixer === "1") openSheet(); }}
+              onPress={() => {
+                router.back();
+                if (returnMixer === "1") setTimeout(() => openSheet(), 180);
+              }}
               style={styles.iconBtn}
               hitSlop={14}
             >
