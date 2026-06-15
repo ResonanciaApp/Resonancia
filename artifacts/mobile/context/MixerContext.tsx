@@ -209,8 +209,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const bpmClockRef = useRef<number | null>(null);
   /** Espejo de activeBpm para leer sincrónicamente en callbacks. */
   const bpmValueRef = useRef<number | null>(null);
-  /** Timers de inicio cuantizado pendientes: soundId → timeout handle. */
-  const pendingBpmRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  /** Handle del próximo tick del reloj maestro BPM (seekTo(0) en el borde). */
+  const bpmTickRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Fase (ms dentro del loop) en que se pausó la mezcla, para re-anclar al reanudar. */
+  const bpmPausePhaseRef = useRef<number | null>(null);
+  /** Función del tick (ref estable para la recursión del setTimeout). */
+  const bpmTickFnRef = useRef<() => void>(() => {});
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
   activeSoundsRef.current = activeSounds;
@@ -250,6 +254,59 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   /** Activación postergada hasta que el track tenga duración válida (evita NaN). */
   const lockPendingRef = useRef(false);
 
+  /** Detiene el reloj maestro de loops BPM. */
+  const stopBpmScheduler = useCallback(() => {
+    if (bpmTickRef.current) {
+      clearTimeout(bpmTickRef.current);
+      bpmTickRef.current = null;
+    }
+  }, []);
+
+  /**
+   * Reloj maestro DETERMINISTA de los loops rítmicos. En vez de depender de
+   * status.currentTime (que llega tarde / poco frecuente → el loop se pasaba del
+   * final musical y dejaba el hueco de ~1 s), un único timer alineado a
+   * bpmClockRef hace seekTo(0) de TODOS los players BPM activos a la vez, justo
+   * en cada borde de compás (t0 + n·loopMs). Garantiza loop SIN hueco Y que las
+   * capas queden bloqueadas en fase entre sí, sin importar cuándo se sumaron. El
+   * buffer de 0.5 s del archivo absorbe el jitter del timer (el player nunca
+   * toca el fin del archivo → nunca se dispara el corte nativo).
+   */
+  const startBpmScheduler = useCallback(() => {
+    stopBpmScheduler();
+    const bpm = bpmValueRef.current;
+    const t0 = bpmClockRef.current;
+    if (bpm === null || t0 === null) return;
+    const loopMs = (60 / bpm) * 8 * 1000;
+    const elapsed = Date.now() - t0;
+    const nextIdx = Math.floor(elapsed / loopMs) + 1;
+    let delay = t0 + nextIdx * loopMs - Date.now();
+    if (delay < 8) delay += loopMs;
+    bpmTickRef.current = setTimeout(() => bpmTickFnRef.current(), delay);
+  }, [stopBpmScheduler]);
+
+  // El tick vive en un ref para que el setTimeout recursivo siempre llame a la
+  // última versión (cierra sobre los refs, que siempre están al día).
+  bpmTickFnRef.current = () => {
+    // Borde de compás: rebobinar TODOS los players BPM a 0 a la vez.
+    playersRef.current.forEach((pair, id) => {
+      if (getSoundById(id)?.bpm === undefined) return;
+      try {
+        void pair.a.seekTo(0);
+      } catch {
+        /* ignore */
+      }
+      // Auto-sanador: si por un tick perdido el player llegó al fin y paró,
+      // play() lo revive (es no-op si ya está sonando).
+      try {
+        if (isPlayingRef.current) pair.a.play();
+      } catch {
+        /* ignore */
+      }
+    });
+    startBpmScheduler(); // reprogramar el próximo borde
+  };
+
   /** Reproduce/pausa todos los players de la mezcla y actualiza el estado. */
   const applyPlaying = useCallback((next: boolean) => {
     // Suprimir el listener del lock screen por 1 s para que los status updates
@@ -274,8 +331,37 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // ignore
       }
     });
+
+    // ── Reloj maestro BPM: pausar/reanudar manteniendo la fase ─────────────
+    if (bpmValueRef.current !== null && bpmClockRef.current !== null) {
+      const loopMs = (60 / bpmValueRef.current) * 8 * 1000;
+      if (next) {
+        // Reanudar: re-anclar el reloj a la fase guardada para que los players
+        // (que retoman desde donde quedaron) sigan bloqueados en sincronía.
+        if (bpmPausePhaseRef.current !== null) {
+          const phase = bpmPausePhaseRef.current;
+          bpmClockRef.current = Date.now() - phase;
+          playersRef.current.forEach((pair, id) => {
+            if (getSoundById(id)?.bpm === undefined) return;
+            try {
+              void pair.a.seekTo(phase / 1000);
+            } catch {
+              /* ignore */
+            }
+          });
+          bpmPausePhaseRef.current = null;
+        }
+        startBpmScheduler();
+      } else {
+        // Pausar: guardar la fase actual del loop y frenar el scheduler.
+        bpmPausePhaseRef.current =
+          (Date.now() - bpmClockRef.current) % loopMs;
+        stopBpmScheduler();
+      }
+    }
+
     setIsPlaying(next);
-  }, []);
+  }, [startBpmScheduler, stopBpmScheduler]);
   const applyPlayingRef = useRef(applyPlaying);
   applyPlayingRef.current = applyPlaying;
   /** Wrapper estable de stopAll para registrarlo en el coordinador de audio. */
@@ -483,7 +569,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     try {
       baseVolumesRef.current.set(id, volume);
 
-      // ── Loops BPM: ganancia constante + loop por seekTo en caliente ───────
+      // ── Loops BPM: ganancia constante + loop por RELOJ MAESTRO ────────────
       // Dos motivos para NO usar el crossfade de dos capas en los drums:
       //   1) gain=|sin(π·pos/dur)| vale 0 en pos=0 → silenciaría el primer beat.
       //   2) las dos capas van desfasadas dur/2 → sonarían beats DISTINTOS a la
@@ -492,23 +578,22 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       //
       // Y NO se puede usar el loop NATIVO (a.loop=true): expo-audio reinicia el
       // loop esperando AVPlayerItemDidPlayToEndTime y recién ahí hace seek(0)+
-      // play() → SIEMPRE deja un hueco audible en el empalme (el usuario lo oía
-      // como "suena 3 tiempos y se corta ~1 s"). Para ritmo ese hueco arruina el
-      // groove.
+      // play() → SIEMPRE deja un hueco audible en el empalme. Para ritmo ese
+      // hueco arruina el groove.
       //
-      // Solución: loop=false + seekTo(0) EN CALIENTE (sin parar) justo al cruzar
-      // el final MUSICAL del compás, durante la cola silenciosa del patrón. El
-      // archivo trae 0.5 s de silencio extra al final (buffer) para que, si el
-      // seek llega unos ms tarde, el player no toque el fin del archivo (que
-      // dispararía el corte nativo). El umbral de wrap = duración MUSICAL del
-      // compás (no la del archivo), así el buffer nunca se escucha. updateInterval
-      // bajo para que el listener detecte el cruce con poca latencia.
+      // Solución (ver startBpmScheduler): loop=false y un ÚNICO reloj maestro
+      // determinista (timer alineado a bpmClockRef) hace seekTo(0) de TODOS los
+      // players BPM a la vez en cada borde de compás. No depende de
+      // status.currentTime (que llegaba tarde → dejaba el hueco). El archivo trae
+      // 0.5 s de silencio extra al final (buffer) que absorbe el jitter del timer
+      // para que el player nunca toque el fin del archivo. Acá el player solo se
+      // crea y arranca; el wrap y la sincronía entre capas los hace el scheduler.
+      // El listener queda SOLO para sincronizar el volumen master.
       const soundBpm = getSoundById(id)?.bpm;
       const isBpmLoop = soundBpm !== undefined;
       if (isBpmLoop) {
-        const musicalLoopSec = (60 / soundBpm) * 8; // 2 compases en 4/4
-        const a = createAudioPlayer(null, { updateInterval: 60 });
-        a.loop = false; // el loop lo maneja el seekTo de abajo, NO el nativo
+        const a = createAudioPlayer(null, { updateInterval: 200 });
+        a.loop = false; // el loop lo maneja el reloj maestro, NO el nativo
         a.replace(file);
         a.volume = volume * masterVolumeRef.current;
         const b = createAudioPlayer(null, { updateInterval: 200 });
@@ -516,19 +601,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         b.volume = 0;
         const pair: SoundPlayers = { a, b };
         playersRef.current.set(id, pair);
-        // Guard para no re-emitir el seek mientras está en vuelo (es async).
-        let wrapping = false;
-        const sub = a.addListener("playbackStatusUpdate", (status) => {
+        const sub = a.addListener("playbackStatusUpdate", () => {
           const cur = playersRef.current.get(id);
           if (!cur || cur.a !== a) return;
-          // Wrap: al cruzar el final musical, volver a 0 sin parar.
-          const ct = status.currentTime ?? 0;
-          if (!wrapping && ct >= musicalLoopSec) {
-            wrapping = true;
-            void a.seekTo(0);
-          } else if (wrapping && ct < musicalLoopSec * 0.5) {
-            wrapping = false; // el seek ya aterrizó cerca de 0
-          }
           // Sincronizar volumen si cambió el master.
           const base = baseVolumesRef.current.get(id) ?? volume;
           const target = base * masterVolumeRef.current;
@@ -804,13 +879,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const exists = prev.some((s) => s.id === id);
 
       if (exists) {
-        // Cancelar timer de inicio cuantizado si está pendiente
-        const pendingTimer = pendingBpmRef.current.get(id);
-        if (pendingTimer !== undefined) {
-          clearTimeout(pendingTimer);
-          pendingBpmRef.current.delete(id);
-        }
-
         const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
         if (removingOwner) clearLockScreen();
         // Estacionar (no destruir) para que reactivarlo sea instantáneo.
@@ -822,8 +890,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // Si ya no quedan sonidos rítmicos, liberar el clock BPM
         const anyBpmLeft = next.some((s) => getSoundById(s.id)?.bpm !== undefined);
         if (!anyBpmLeft && bpmValueRef.current !== null) {
+          stopBpmScheduler();
           bpmClockRef.current = null;
           bpmValueRef.current = null;
+          bpmPausePhaseRef.current = null;
           setActiveBpm(null);
         }
 
@@ -859,30 +929,27 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // Sin archivo de audio (o falla de carga): no agregar un sonido "fantasma"
       if (!player) return true;
 
-      // ── Inicio cuantizado para sonidos BPM ────────────────────────────────
+      // ── Sincronía de sonidos BPM (reloj maestro) ──────────────────────────
       if (soundBpm !== undefined) {
         if (bpmValueRef.current === null) {
-          // Primer sonido BPM: fijar clock y BPM, arrancar de inmediato
+          // Primer sonido BPM: el reloj nace en fase 0, así que el player DEBE
+          // estar en 0. resumePlayer (sonido estacionado) lo retoma desde su
+          // currentTime viejo → hay que rebobinarlo o el loop arranca desfasado
+          // hasta el primer borde del scheduler.
+          try { void player.a.seekTo(0); } catch { /* ignore */ }
           bpmClockRef.current = Date.now();
           bpmValueRef.current = soundBpm;
+          bpmPausePhaseRef.current = null;
           setActiveBpm(soundBpm);
-        } else if (isPlayingRef.current) {
-          // Sonido BPM adicional con mezcla corriendo: cuantizar al próximo beat
-          const beatMs = 60_000 / soundBpm;
-          const elapsed = Date.now() - bpmClockRef.current!;
-          const nextBeatMs = beatMs - (elapsed % beatMs);
-          // Pausar de inmediato (createPlayerFor/resumePlayer ya llamaron play)
-          try { player.a.pause(); } catch { /* ignore */ }
-          try { player.b.pause(); } catch { /* ignore */ }
-          const timer = setTimeout(() => {
-            pendingBpmRef.current.delete(id);
-            // Solo reanudar si el sonido sigue activo y la mezcla está sonando
-            if (activeSoundsRef.current.some((s) => s.id === id) && isPlayingRef.current) {
-              try { player.a.play(); } catch { /* ignore */ }
-              try { player.b.play(); } catch { /* ignore */ }
-            }
-          }, Math.max(10, nextBeatMs));
-          pendingBpmRef.current.set(id, timer);
+          startBpmScheduler();
+        } else if (isPlayingRef.current && bpmClockRef.current !== null) {
+          // Sonido BPM adicional con la mezcla sonando: alinearlo de inmediato a
+          // la fase actual del loop maestro (entra "en el groove") en vez de
+          // cuantizar al beat (eso desfasaba el patrón → desincronización
+          // irregular). El scheduler lo mantiene bloqueado en los próximos bordes.
+          const loopMs = (60 / soundBpm) * 8 * 1000;
+          const phase = ((Date.now() - bpmClockRef.current) % loopMs) / 1000;
+          try { void player.a.seekTo(phase); } catch { /* ignore */ }
         }
       }
 
@@ -904,6 +971,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       applyPlaying,
       syncLockScreen,
       clearLockScreen,
+      startBpmScheduler,
+      stopBpmScheduler,
     ],
   );
 
@@ -938,6 +1007,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const next = activeSoundsRef.current.filter((s) => s.id !== id);
       setActiveSounds(next);
       setLoadedPresetId(null);
+      // Si ya no quedan sonidos rítmicos, liberar el reloj maestro BPM.
+      const anyBpmLeft = next.some((s) => getSoundById(s.id)?.bpm !== undefined);
+      if (!anyBpmLeft && bpmValueRef.current !== null) {
+        stopBpmScheduler();
+        bpmClockRef.current = null;
+        bpmValueRef.current = null;
+        bpmPausePhaseRef.current = null;
+        setActiveBpm(null);
+      }
       if (next.length === 0) {
         setIsPlaying(false);
         isPlayingRef.current = false;
@@ -947,7 +1025,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         syncLockScreen();
       }
     },
-    [parkPlayer, clearSleepTimer, clearLockScreen, syncLockScreen],
+    [parkPlayer, clearSleepTimer, clearLockScreen, syncLockScreen, stopBpmScheduler],
   );
 
   const togglePlay = useCallback(() => {
@@ -962,11 +1040,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [applyPlaying, syncLockScreen]);
 
   const stopAll = useCallback(() => {
-    // Cancelar timers de inicio cuantizado BPM pendientes
-    pendingBpmRef.current.forEach((timer) => clearTimeout(timer));
-    pendingBpmRef.current.clear();
+    // Frenar el reloj maestro BPM y liberar el clock.
+    stopBpmScheduler();
     bpmClockRef.current = null;
     bpmValueRef.current = null;
+    bpmPausePhaseRef.current = null;
     setActiveBpm(null);
 
     // Cancelar cualquier fade-out de audio en curso (re-entradas rápidas) y
@@ -1058,7 +1136,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
     };
     fadeRafRef.current = requestAnimationFrame(step);
-  }, [clearSleepTimer, clearLockScreen]);
+  }, [clearSleepTimer, clearLockScreen, stopBpmScheduler]);
   stopAllRef.current = stopAll;
 
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
@@ -1193,11 +1271,30 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const playable = preset.sounds
         .filter((s) => SOUND_MAP[s.id])
         .slice(0, MAX_ACTIVE_SOUNDS);
+      // Liberar el reloj maestro BPM previo antes de armar la nueva mezcla.
+      stopBpmScheduler();
+      bpmClockRef.current = null;
+      bpmValueRef.current = null;
+      bpmPausePhaseRef.current = null;
+
       const created: ActiveSound[] = [];
       playable.forEach((s) => {
         const p = createPlayerFor(s.id, s.volume);
         if (p) created.push({ id: s.id, volume: s.volume });
       });
+      // Si el preset trae algún sonido rítmico, fijar el reloj maestro y
+      // arrancar el scheduler para que todos los loops BPM queden en fase.
+      const firstBpm = created
+        .map((s) => getSoundById(s.id)?.bpm)
+        .find((bpm) => bpm !== undefined);
+      if (firstBpm !== undefined) {
+        bpmClockRef.current = Date.now();
+        bpmValueRef.current = firstBpm;
+        setActiveBpm(firstBpm);
+        startBpmScheduler();
+      } else {
+        setActiveBpm(null);
+      }
       setActiveSounds(created);
       setIsPlaying(created.length > 0);
       isPlayingRef.current = created.length > 0;
@@ -1208,7 +1305,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       clearSleepTimer();
       if (created.length > 0) syncLockScreen();
     },
-    [createPlayerFor, ensureAudioMode, clearSleepTimer, clearLockScreen, syncLockScreen],
+    [
+      createPlayerFor,
+      ensureAudioMode,
+      clearSleepTimer,
+      clearLockScreen,
+      syncLockScreen,
+      startBpmScheduler,
+      stopBpmScheduler,
+    ],
   );
 
   const deletePreset = useCallback(
@@ -1314,6 +1419,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     return () => {
       clearLockScreen();
+      stopBpmScheduler();
       loopSubsRef.current.forEach((subs) => {
         subs.forEach((s) => {
           try {
@@ -1346,7 +1452,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       idlePlayersRef.current.clear();
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
     };
-  }, [clearLockScreen]);
+  }, [clearLockScreen, stopBpmScheduler]);
 
   const isActive = useCallback(
     (id: string) => activeSounds.some((s) => s.id === id),
