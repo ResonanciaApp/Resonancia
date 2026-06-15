@@ -72,26 +72,25 @@ export const SOUND_MAP: Record<string, ReturnType<typeof require> | undefined> =
   onda_beta:  require("@/assets/audio/mixer/onda_beta.mp3"),
   onda_gamma: require("@/assets/audio/mixer/onda_gamma.mp3"),
 
-  // ── BPM — TEST (stand-ins hasta recibir los loops reales) ───
-  // Reemplazar cada línea con el archivo .mp3 definitivo cuando lleguen.
-  // Los loops deben durar exactamente 2 compases en 4/4:
+  // ── BPM (loops sintéticos — reemplazar con masters de producción) ──
+  // Duración exacta de 2 compases en 4/4:
   //   90 BPM  → 5.333 s  |  100 BPM → 4.800 s  |  120 BPM → 4.000 s
-  kick_90:           require("@/assets/audio/mixer/cuencos.mp3"),
-  snare_90:          require("@/assets/audio/mixer/cuenco_grave.mp3"),
-  hihat_90:          require("@/assets/audio/mixer/campanas_bambu.mp3"),
-  shaker_90:         require("@/assets/audio/mixer/grillos.mp3"),
-  tambor_90:         require("@/assets/audio/mixer/gong.mp3"),
+  kick_90:           require("@/assets/audio/mixer/bpm/kick_90.mp3"),
+  snare_90:          require("@/assets/audio/mixer/bpm/snare_90.mp3"),
+  hihat_90:          require("@/assets/audio/mixer/bpm/hihat_90.mp3"),
+  shaker_90:         require("@/assets/audio/mixer/bpm/shaker_90.mp3"),
+  tambor_90:         require("@/assets/audio/mixer/bpm/tambor_90.mp3"),
 
-  kick_100:          require("@/assets/audio/mixer/cuenco_agudo.mp3"),
-  snare_100:         require("@/assets/audio/mixer/campanas_viento.mp3"),
-  hihat_100:         require("@/assets/audio/mixer/cuarzo_do.mp3"),
-  rimshot_100:       require("@/assets/audio/mixer/cuarzo_sol.mp3"),
-  shaker_100:        require("@/assets/audio/mixer/gong_planetario.mp3"),
+  kick_100:          require("@/assets/audio/mixer/bpm/kick_100.mp3"),
+  snare_100:         require("@/assets/audio/mixer/bpm/snare_100.mp3"),
+  hihat_100:         require("@/assets/audio/mixer/bpm/hihat_100.mp3"),
+  rimshot_100:       require("@/assets/audio/mixer/bpm/rimshot_100.mp3"),
+  shaker_100:        require("@/assets/audio/mixer/bpm/shaker_100.mp3"),
 
-  kick_120:          require("@/assets/audio/mixer/ruido_blanco.mp3"),
-  snare_120:         require("@/assets/audio/mixer/ruido_rosa.mp3"),
-  hihat_cerrado_120: require("@/assets/audio/mixer/onda_alpha.mp3"),
-  hihat_abierto_120: require("@/assets/audio/mixer/onda_beta.mp3"),
-  clap_120:          require("@/assets/audio/mixer/onda_theta.mp3"),
-  tambor_120:        require("@/assets/audio/mixer/gong_planetario.mp3"),
+  kick_120:          require("@/assets/audio/mixer/bpm/kick_120.mp3"),
+  snare_120:         require("@/assets/audio/mixer/bpm/snare_120.mp3"),
+  hihat_cerrado_120: require("@/assets/audio/mixer/bpm/hihat_cerrado_120.mp3"),
+  hihat_abierto_120: require("@/assets/audio/mixer/bpm/hihat_abierto_120.mp3"),
+  clap_120:          require("@/assets/audio/mixer/bpm/clap_120.mp3"),
+  tambor_120:        require("@/assets/audio/mixer/bpm/tambor_120.mp3"),
 };
