@@ -676,7 +676,7 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               ) : (
-                <View style={{ gap: 7 }}>
+                <View style={{ gap: 13 }}>
                   {sortedPlaylists.map((pl) => (
                     <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
                   ))}
@@ -689,13 +689,13 @@ export default function BibliotecaScreen() {
           {listenedRecently.length > 0 && (
             <>
               {viewMode === "grid" ? (
-                <View style={styles.gridWrap}>
+                <View style={[styles.gridWrap, sortedPlaylists.length > 0 && { marginTop: 13 }]}>
                   {visibleRecent.map((s) => (
                     <SessionCard key={s.id} session={s} width={cellW} />
                   ))}
                 </View>
               ) : (
-                <View style={{ paddingHorizontal: H_PAD, gap: 7 }}>
+                <View style={{ paddingHorizontal: H_PAD, gap: 13, marginTop: sortedPlaylists.length > 0 ? 13 : 0 }}>
                   {visibleRecent.map((s) => (
                     <SessionCard key={s.id} session={s} horizontal />
                   ))}
@@ -705,15 +705,17 @@ export default function BibliotecaScreen() {
           )}
 
           {/* ── Resonadores ── */}
-          {resonadores.slice(0, 2).map((r) => (
-            <ResonadorRow
-              key={r.id}
-              name={r.name}
-              photo={r.photo}
-              tags={r.tags}
-              onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
-            />
-          ))}
+          <View style={{ gap: 13, marginTop: 13 }}>
+            {resonadores.slice(0, 2).map((r) => (
+              <ResonadorRow
+                key={r.id}
+                name={r.name}
+                photo={r.photo}
+                tags={r.tags}
+                onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+              />
+            ))}
+          </View>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
