@@ -574,9 +574,10 @@ export function MixerSheet() {
                 </Text>
               </Pressable>
             </View>
-          </View>
 
-          <View style={[styles.headerDivider, { backgroundColor: palette.separator }]} />
+            {/* Línea divisora dentro del fondo para herencia de color */}
+            <View style={[styles.headerDivider, { backgroundColor: palette.separator }]} />
+          </View>
 
           <ScrollView
             style={styles.trackScroll}
@@ -911,6 +912,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#3d304e",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
   },
   headerRow: {
     flexDirection: "row",
