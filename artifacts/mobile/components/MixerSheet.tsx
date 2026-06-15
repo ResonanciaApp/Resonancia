@@ -622,21 +622,21 @@ export function MixerSheet() {
               onPress={() => {
                 router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}` as never);
               }}
-              style={[styles.immersivoBtn, activeBgPreset.image && styles.immersivoBtnImage]}
+              style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, activeBgPreset.image && styles.immersivoBtnImage]}
               accessibilityRole="button"
               accessibilityLabel="Entrar en Modo Inmersivo"
             >
               {/* Ícono: ojo dentro de fullscreen */}
               <View style={styles.immersivoIconWrap}>
-                <MaterialCommunityIcons name="fullscreen" size={30} color={activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"} />
+                <MaterialCommunityIcons name="fullscreen" size={30} color={isLight ? "#8C1A2B" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"} />
                 <MaterialCommunityIcons
                   name="eye"
                   size={13}
-                  color={activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"}
+                  color={isLight ? "#8C1A2B" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"}
                   style={styles.immersivoIconEye}
                 />
               </View>
-              <Text style={[styles.immersivoBtnText, activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
+              <Text style={[styles.immersivoBtnText, isLight && { color: "#8C1A2B" }, activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
                 Modo Inmersivo
               </Text>
             </Pressable>
@@ -1079,6 +1079,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.22)",
+  },
+  immersivoBtnLight: {
+    backgroundColor: "rgba(140,26,43,0.07)",
+    borderColor: "rgba(140,26,43,0.22)",
   },
   immersivoBtnImage: {
     backgroundColor: "rgba(0,0,0,0.28)",
