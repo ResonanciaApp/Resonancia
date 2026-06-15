@@ -320,7 +320,7 @@ export default function ExploreScreen() {
                         width: TEMA_COL_W,
                         height: TEMA_COL_W,
                         opacity: pressed ? 0.75 : 1,
-                        backgroundColor: hexTint(t.color, 0.12),
+                        backgroundColor: "rgba(255,255,255,0.12)",
                       },
                     ]}
                   >
