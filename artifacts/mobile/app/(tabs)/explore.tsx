@@ -24,6 +24,7 @@ import { SESSIONS } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { TEMAS } from "@/data/temas";
+import { TAG_CARDS } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
@@ -345,6 +346,42 @@ export default function ExploreScreen() {
             <View style={{ marginBottom: 23 }}>
               <CommunityMixesCarousel />
             </View>
+
+            {/* ── Otras temáticas ── */}
+            <View style={[styles.section, { marginBottom: 33 }]}>
+              <View style={styles.sectionRow}>
+                <Text style={styles.sectionTitle}>Otras temáticas</Text>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginHorizontal: -H_PAD }}
+                contentContainerStyle={{ paddingHorizontal: H_PAD, gap: CAT_CARD_GAP, paddingBottom: 4 }}
+                decelerationRate="fast"
+              >
+                {TAG_CARDS.map((t) => (
+                  <Pressable
+                    key={t.id}
+                    onPress={() => router.push(`/tema/${t.id}` as never)}
+                    style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.8 : 1 }]}
+                  >
+                    <View style={styles.tagCardImage}>
+                      <Image
+                        source={t.image}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                        placeholder={BLUR_PLACEHOLDER}
+                        transition={IMAGE_TRANSITION}
+                        cachePolicy="memory-disk"
+                      />
+                      <View style={styles.tagCardOverlay}>
+                        <Text style={styles.tagCardLabel} numberOfLines={2}>{t.label}</Text>
+                      </View>
+                    </View>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
           </>
         )}
       </ScrollView>
@@ -499,6 +536,33 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     lineHeight: 16,
+  },
+
+  // Otras temáticas
+  tagCard: {
+    width: CAT_CARD_W,
+  },
+  tagCardImage: {
+    width: CAT_CARD_W,
+    height: Math.round(CAT_CARD_W * 1.25),
+    borderRadius: 14,
+    overflow: "hidden",
+    backgroundColor: "rgba(74,12,12,0.08)",
+  },
+  tagCardOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
+  tagCardLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    lineHeight: 17,
   },
 
 });
