@@ -1779,8 +1779,6 @@ type GeometrixCarouselProps = {
   commitReorder: (id: string, idx: number) => void;
   getSettings: (id: string) => GeoSettings;
   catalogGeometries: GeometryMetaExtended[];
-  onCarouselPressStart?: () => void;
-  onCarouselPressEnd?: () => void;
 };
 const GeometrixCarousel = React.memo(function GeometrixCarousel({
   active,
@@ -1795,8 +1793,6 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   commitReorder,
   getSettings,
   catalogGeometries,
-  onCarouselPressStart,
-  onCarouselPressEnd,
 }: GeometrixCarouselProps) {
   const { width } = useWindowDimensions();
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
@@ -1965,10 +1961,6 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
         style={styles.grid}
         contentContainerStyle={styles.gridContent}
         showsHorizontalScrollIndicator={false}
-        onTouchStart={onCarouselPressStart}
-        onTouchEnd={onCarouselPressEnd}
-        onScrollEndDrag={onCarouselPressEnd}
-        onMomentumScrollEnd={onCarouselPressEnd}
       >
         <View
           style={[
@@ -2407,7 +2399,6 @@ export default function GeometrixScreen() {
   // ── Pausa de animaciones al tocar el carrusel / tab de categorías ─────────
   // Si hay más de 4 geometrías activas y el usuario está tocando el carrusel
   // o los pills de categoría, se congela el movimiento para evitar lag.
-  const [carouselPressing, setCarouselPressing] = useState(false);
 
   // ── Hold mode (transformación grupal) ────────────────────────────────────
   // Estado React + mirror SharedValue (para worklets sin re-render por frame).
@@ -3874,9 +3865,6 @@ export default function GeometrixScreen() {
     ? scaleColors(selectedBg, bgFactor * 1.15)
     : HEADER_GRADIENT;
 
-  // Movimiento efectivo: se congela si hay > 4 geometrías activas y el usuario
-  // está tocando el carrusel/tab, para evitar lag de layout + animaciones.
-  const effectiveMotion = master.motion && !(active.length > 4 && carouselPressing);
 
   // Fondo de los sheets que responde al tono del degradado seleccionado.
   const sheetBgColor = useMemo(() => {
@@ -4029,9 +4017,6 @@ export default function GeometrixScreen() {
             showsHorizontalScrollIndicator={false}
             style={styles.catScroll}
             contentContainerStyle={styles.catScrollContent}
-            onTouchStart={() => setCarouselPressing(true)}
-            onTouchEnd={() => setCarouselPressing(false)}
-            onScrollEndDrag={() => setCarouselPressing(false)}
           >
             {GEOMETRY_CATEGORIES.map((c) => {
               const on = activeCategory === c.id;
@@ -4066,8 +4051,6 @@ export default function GeometrixScreen() {
           commitReorder={commitReorder}
           getSettings={getSettings}
           catalogGeometries={catalogGeometries}
-          onCarouselPressStart={() => setCarouselPressing(true)}
-          onCarouselPressEnd={() => setCarouselPressing(false)}
         />
         <View style={styles.carouselDivider} />
 
@@ -4154,7 +4137,7 @@ export default function GeometrixScreen() {
                         holdRotDeltaDeg={holdRotDeltaDeg}
                         holdRotActive={holdRotActive}
                         masterOpacity={master.opacity}
-                        motion={effectiveMotion}
+                        motion={master.motion}
                         glow={master.glow}
                       />
                     );
@@ -4485,7 +4468,7 @@ export default function GeometrixScreen() {
                 size={immersiveSize}
                 settings={getSettings(m.iid)}
                 masterOpacity={master.opacity}
-                motion={effectiveMotion}
+                motion={master.motion}
                 glow={master.glow}
               />
             ))}
@@ -4552,7 +4535,7 @@ export default function GeometrixScreen() {
                     holdRotDeltaDeg={holdRotDeltaDeg}
                     holdRotActive={holdRotActive}
                     masterOpacity={master.opacity}
-                    motion={effectiveMotion}
+                    motion={master.motion}
                     glow={master.glow}
                   />
                 );
@@ -4980,7 +4963,7 @@ export default function GeometrixScreen() {
                   size={generalPreviewSize * 0.96}
                   settings={getSettings(m.iid)}
                   masterOpacity={master.opacity}
-                  motion={effectiveMotion}
+                  motion={master.motion}
                   glow={master.glow}
                 />
               ))}
@@ -5744,7 +5727,7 @@ export default function GeometrixScreen() {
                   size={previewSize * 0.96}
                   settings={getSettings(m.iid)}
                   masterOpacity={master.opacity}
-                  motion={effectiveMotion}
+                  motion={master.motion}
                   glow={master.glow}
                 />
               ))}
