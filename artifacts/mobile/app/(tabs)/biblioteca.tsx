@@ -705,7 +705,6 @@ export default function BibliotecaScreen() {
           )}
 
           {/* ── Resonadores ── */}
-          <Text style={[styles.generalSectionLabel, { marginTop: 24, marginBottom: 7 }]}>Resonadores</Text>
           {resonadores.slice(0, 2).map((r) => (
             <ResonadorRow
               key={r.id}
@@ -1325,9 +1324,10 @@ const styles = StyleSheet.create({
 
   // ── Resonadores ─────────────────────────────────────────────────────────────
   resonadorAvatar: {
-    width: 70, height: 62,
-    borderRadius: 8,
+    width: 62, height: 62,
+    borderRadius: 31,
     backgroundColor: "rgba(212,175,55,0.12)",
+    overflow: "hidden",
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   verifiedText: { fontSize: 11, color: MUTED },
