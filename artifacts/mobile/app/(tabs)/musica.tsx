@@ -404,18 +404,7 @@ export default function MezcladorScreen() {
               ))}
             </ScrollView>
 
-            {/* ── Banner rotativo ── */}
-            <View style={styles.bannerWrap}>
-              <Animated.Text
-                numberOfLines={1}
-                style={[styles.bannerText, { opacity: bannerOpacity }]}
-              >
-                {MEZ_PLACEHOLDERS[bannerIdx]}
-              </Animated.Text>
-              <Pressable style={styles.bannerBtn} hitSlop={6}>
-                <Text style={styles.bannerBtnText}>¿Cómo te sentís?</Text>
-              </Pressable>
-            </View>
+            {/* ── Banner rotativo — oculto temporalmente ── */}
 
             {/* ── Sub-tabs ── */}
             {(!subTabCategories || subTabCategories.length <= 1) && (
