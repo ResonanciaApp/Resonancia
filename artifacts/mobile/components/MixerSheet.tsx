@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -264,7 +264,8 @@ export function MixerSheet() {
   const [snapshotSounds, setSnapshotSounds] = useState<{ id: string; volume: number }[]>([]);
 
   // Al abrir: reset + entrada deslizante desde abajo
-  useEffect(() => {
+  // useLayoutEffect → corre antes del primer paint, evita el frame con opacity=0
+  useLayoutEffect(() => {
     if (isSheetOpen) {
       sheetOpacity.setValue(1);
       immersivoFade.setValue(0);
