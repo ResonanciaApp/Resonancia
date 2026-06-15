@@ -38,6 +38,7 @@ import { VolumeSlider } from "@/components/VolumeSlider";
 import { DEFAULT_MIX_IMAGE_KEY, MIX_IMAGE_GALLERY, getMixImage } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
+import { InmersivoContent } from "@/components/InmersivoMixerModal";
 import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
@@ -213,6 +214,8 @@ export function MixerSheet() {
     isSheetOpen,
     closeSheet,
     openImmersivo,
+    inmersivoOpen,
+    closeImmersivo,
   } = useMixer();
 
   // Preset del que partió esta edición (sobrevive a cambios de pistas, que
@@ -466,14 +469,14 @@ export function MixerSheet() {
   // Mantiene el Modal visible durante el fade de cierre aunque canShow
   // cambie a false (por stopAll). Se libera al terminar la animación.
   const [forceShowModal, setForceShowModal] = useState(false);
-  const modalVisible = canShow || forceShowModal;
+  const modalVisible = canShow || forceShowModal || inmersivoOpen;
 
   return (
     <Modal
       visible={modalVisible}
       transparent
       animationType="none"
-      onRequestClose={closeSheet}
+      onRequestClose={() => { if (inmersivoOpen) closeImmersivo(); else closeSheet(); }}
     >
       {/* La opacidad envuelve TODA la superficie (backdrop + sheet) para que
           el fade cubra el MixerPanel subyacente sin flashes */}
@@ -855,6 +858,13 @@ export function MixerSheet() {
       >
         <EscenasMixerContent onClose={() => setEscenasOpen(false)} />
       </Modal>
+
+      {/* Modo Inmersivo: absoluteFill dentro del mismo Modal → cero conflictos de capas nativas */}
+      {inmersivoOpen && (
+        <View style={StyleSheet.absoluteFill}>
+          <InmersivoContent />
+        </View>
+      )}
     </Modal>
   );
 }
