@@ -622,6 +622,7 @@ export function MixerSheet() {
             <Pressable
               onPress={() => {
                 setReopenMixer(true);
+                closeSheet();
                 router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}` as never);
               }}
               style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, activeBgPreset.image && styles.immersivoBtnImage]}
