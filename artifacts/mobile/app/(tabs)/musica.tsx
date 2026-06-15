@@ -214,7 +214,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   const tiltDir   = idx % 2 === 0 ? "-4deg" : "4deg";
   const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
   const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
-  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(212,175,55,0)", "rgba(212,175,55,1)"] });
+  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(140,26,43,0)", "rgba(140,26,43,1)"] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
@@ -607,7 +607,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
   },
   cardImageWrapActive: {
-    shadowColor: GOLD,
+    shadowColor: "#8C1A2B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
