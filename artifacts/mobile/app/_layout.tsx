@@ -23,6 +23,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { DrawerMenu } from "@/components/DrawerMenu";
 import { MixerSheet } from "@/components/MixerSheet";
+import { InmersivoMixerModal } from "@/components/InmersivoMixerModal";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { BrightnessProvider, useBrightness } from "@/context/BrightnessContext";
@@ -258,6 +259,7 @@ function RootLayoutNav() {
       </PushWrapper>
       <DrawerMenu />
       <MixerSheet />
+      <InmersivoMixerModal />
     </DrawerProvider>
   );
 }

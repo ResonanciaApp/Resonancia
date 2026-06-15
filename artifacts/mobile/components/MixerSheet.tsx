@@ -42,7 +42,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
-import { setReopenMixer, consumeReopenMixer } from "@/utils/immersivo-flags";
+import { consumeReopenMixer } from "@/utils/immersivo-flags";
 import {
   DEFAULT_BG_PRESET_ID,
   DEFAULT_OVERLAY,
@@ -212,6 +212,7 @@ export function MixerSheet() {
     setSleepTimer,
     isSheetOpen,
     closeSheet,
+    openImmersivo,
   } = useMixer();
 
   // Preset del que partió esta edición (sobrevive a cambios de pistas, que
@@ -626,9 +627,8 @@ export function MixerSheet() {
           <Animated.View style={{ opacity: immersivoFade, alignSelf: "center", marginBottom: 20, marginTop: 6 }}>
             <Pressable
               onPress={() => {
-                setReopenMixer(true);
                 closeSheet();
-                router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}` as never);
+                openImmersivo(bgPresetId);
               }}
               style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, activeBgPreset.image && styles.immersivoBtnImage]}
               accessibilityRole="button"

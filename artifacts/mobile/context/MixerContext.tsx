@@ -137,6 +137,11 @@ type MixerContextType = {
   isSheetOpen: boolean;
   openSheet: () => void;
   closeSheet: () => void;
+  /** Vista inmersiva (pantalla completa sobre todo) */
+  inmersivoOpen: boolean;
+  inmersivoPresetId: string | null;
+  openImmersivo: (presetId: string) => void;
+  closeImmersivo: () => void;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -925,6 +930,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
   const closeSheet = useCallback(() => setIsSheetOpen(false), []);
 
+  const [inmersivoOpen, setInmersivoOpen] = useState(false);
+  const [inmersivoPresetId, setInmersivoPresetId] = useState<string | null>(null);
+  const openImmersivo = useCallback((presetId: string) => {
+    setInmersivoPresetId(presetId);
+    setInmersivoOpen(true);
+  }, []);
+  const closeImmersivo = useCallback(() => setInmersivoOpen(false), []);
+
   const importPreset = useCallback(
     (preset: MixPreset) => {
       const alreadyExists = presetsRef.current.some((p) => p.id === preset.id);
@@ -1240,6 +1253,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         isSheetOpen,
         openSheet,
         closeSheet,
+        inmersivoOpen,
+        inmersivoPresetId,
+        openImmersivo,
+        closeImmersivo,
       }}
     >
       {children}
