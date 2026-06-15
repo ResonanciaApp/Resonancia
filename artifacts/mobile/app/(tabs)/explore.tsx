@@ -234,7 +234,6 @@ export default function ExploreScreen() {
                 </View>
                 <View style={styles.catCardText}>
                   <Text style={styles.catCardTitle}>{cat.title}</Text>
-                  <Text style={styles.catCardSubtitle} numberOfLines={2}>{cat.subtitle}</Text>
                 </View>
               </Pressable>
             ))}
@@ -356,25 +355,23 @@ const styles = StyleSheet.create({
   // Carrusel de categorías
   catCard: {
     width: CAT_CARD_W,
-    borderRadius: 16,
-    overflow: "hidden",
-    backgroundColor: "rgba(74,12,12,0.08)",
   },
   catCardImage: {
     width: CAT_CARD_W,
     height: CAT_CARD_IMG_H,
+    borderRadius: 16,
+    overflow: "hidden",
   },
   catCardText: {
-    paddingHorizontal: 11,
-    paddingTop: 10,
-    paddingBottom: 12,
+    paddingHorizontal: 4,
+    paddingTop: 8,
+    paddingBottom: 4,
   },
   catCardTitle: {
-    fontSize: 15,
-    fontWeight: "800",
+    fontSize: 14,
+    fontWeight: "700",
     color: "#FFFFFF",
     letterSpacing: 0.2,
-    marginBottom: 3,
   },
   catCardSubtitle: {
     fontSize: 11,
