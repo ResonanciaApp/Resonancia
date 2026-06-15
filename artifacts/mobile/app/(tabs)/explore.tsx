@@ -277,8 +277,11 @@ export default function ExploreScreen() {
           <View style={styles.recoSection}>
             <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>Recomendado para ti</Text>
             <View style={styles.recoList}>
-              {dailyRecs.map((s) => (
-                <SessionCard key={s.id} session={s} horizontal />
+              {dailyRecs.map((s, i) => (
+                <React.Fragment key={s.id}>
+                  {i > 0 && <View style={styles.recoDivider} />}
+                  <SessionCard session={s} horizontal />
+                </React.Fragment>
               ))}
             </View>
           </View>
@@ -439,7 +442,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   recoList: {
-    gap: 2,
+    gap: 6,
+  },
+  recoDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    marginHorizontal: 4,
   },
 
   // Carrusel de categorías
