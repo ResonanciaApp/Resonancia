@@ -46,6 +46,11 @@ const CARD_W = Math.floor(SCREEN_W / 2.2 - CARD_GAP);
 const CARD_H = Math.floor(CARD_W * 4 / 3) + 150;
 
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
+/** Todas las escenas: primero los degradados (sin imagen), luego las de imagen */
+const ALL_SCENES = [
+  ...GRADIENT_PRESETS.filter((p) => !p.image && p.isLight),
+  ...IMAGE_SCENES,
+];
 
 /** Pantalla de ruta (fallback si se accede directamente via URL). */
 export default function EscenasMixerScreen() {
@@ -241,30 +246,37 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
             snapToInterval={CARD_W + CARD_GAP}
             snapToAlignment="start"
           >
-            {IMAGE_SCENES.map((scene) => {
+            {ALL_SCENES.map((scene) => {
               const active = selectedId === scene.id;
+              const hasImage = !!scene.image;
               return (
                 <Pressable
                   key={scene.id}
-                  onPress={() => setPreviewScene(scene)}
+                  onPress={() => hasImage ? setPreviewScene(scene) : applyScene(scene.id)}
                   style={styles.cardWrap}
                 >
                   <View style={styles.card}>
-                    <Image
-                      source={scene.image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                    />
+                    {hasImage ? (
+                      <Image
+                        source={scene.image}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                      />
+                    ) : (
+                      <LinearGradient
+                        colors={[...scene.colors]}
+                        start={{ x: 0.3, y: 0 }}
+                        end={{ x: 0.7, y: 1 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    )}
                     {active && (
                       <>
-                        <View style={styles.activeOverlay}>
-                          <Feather name="check-circle" size={28} color="#FFF" />
+                        <View style={[styles.activeOverlay, !hasImage && { backgroundColor: "rgba(0,0,0,0.08)" }]}>
+                          <Feather name="check-circle" size={28} color={hasImage ? "#FFF" : "#555"} />
                         </View>
                         <View style={styles.activeBorder} pointerEvents="none" />
                       </>
-                    )}
-                    {!scene.image && (
-                      <View style={[StyleSheet.absoluteFill, styles.gradientFallback, { backgroundColor: scene.colors[0] }]} />
                     )}
                   </View>
                   <Text style={[styles.cardLabel, active && styles.cardLabelActive]} numberOfLines={1}>
