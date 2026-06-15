@@ -274,8 +274,7 @@ export default function ExploreScreen() {
         {/* ── Recomendado para ti ── */}
         {query.length === 0 && (
           <View style={styles.recoSection}>
-            <Text style={[styles.sectionTitle, { marginBottom: 4 }]}>Recomendado para ti</Text>
-            <Text style={[styles.recoSub, { color: colors.mutedForeground }]}>Selección diaria · se renueva cada día</Text>
+            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>Recomendado para ti</Text>
             <View style={styles.recoList}>
               {dailyRecs.map((s) => (
                 <SessionCard key={s.id} session={s} horizontal />
