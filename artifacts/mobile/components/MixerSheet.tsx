@@ -190,7 +190,7 @@ export function MixerSheet() {
     iconColor:      isLight ? "#1A1E2B"             : "#1B060F",
     fg:             isLight ? "#1A1E2B"             : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
-    inputBg:        isLight ? "rgba(0,0,0,0.04)"   : "rgba(74,12,12,0.08)",
+    inputBg:        isLight ? "rgba(74,12,12,0.10)"  : "rgba(74,12,12,0.08)",
     footerCircleBg: isLight ? "rgba(0,0,0,0.07)"       : "rgba(255,255,255,0.95)",
     footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(244,218,213,0.45)",
   };
