@@ -546,7 +546,7 @@ export function MixerSheet() {
               <MaterialCommunityIcons
                 name="tune-variant"
                 size={22}
-                color={activeBgPreset.image ? "#E9C46A" : palette.fg}
+                color={palette.fg}
               />
             </Pressable>
             <Pressable
