@@ -12,6 +12,7 @@ import React, {
 
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
+import { getSoundById } from "@/data/sounds";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
 import {
@@ -128,6 +129,12 @@ type MixerContextType = {
   importPreset: (preset: MixPreset) => void;
   /** ID del preset cargado actualmente (null si la mezcla activa no proviene de uno guardado o fue modificada). */
   loadedPresetId: string | null;
+  /**
+   * BPM activo de la mezcla (cuando hay sonidos rítmicos mezclados).
+   * null = sin ritmos (libre). Al activar el primer sonido BPM se fija;
+   * se libera cuando se quitan todos los sonidos de categoría "bpm".
+   */
+  activeBpm: number | null;
   sleepTimerRemaining: number | null;
   setSleepTimer: (minutes: number | null) => void;
   /** Volumen master (0-1) aplicado a todos los sonidos activos. */
@@ -195,6 +202,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
    */
   const fadeTeardownRef = useRef<(() => void) | null>(null);
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // ── BPM clock ─────────────────────────────────────────────────────────────
+  const [activeBpm, setActiveBpm] = useState<number | null>(null);
+  /** Date.now() de cuando arrancó el primer sonido BPM. */
+  const bpmClockRef = useRef<number | null>(null);
+  /** Espejo de activeBpm para leer sincrónicamente en callbacks. */
+  const bpmValueRef = useRef<number | null>(null);
+  /** Timers de inicio cuantizado pendientes: soundId → timeout handle. */
+  const pendingBpmRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
   activeSoundsRef.current = activeSounds;
@@ -730,6 +746,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const exists = prev.some((s) => s.id === id);
 
       if (exists) {
+        // Cancelar timer de inicio cuantizado si está pendiente
+        const pendingTimer = pendingBpmRef.current.get(id);
+        if (pendingTimer !== undefined) {
+          clearTimeout(pendingTimer);
+          pendingBpmRef.current.delete(id);
+        }
+
         const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
         if (removingOwner) clearLockScreen();
         // Estacionar (no destruir) para que reactivarlo sea instantáneo.
@@ -737,6 +760,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         const next = prev.filter((s) => s.id !== id);
         setActiveSounds(next);
         setLoadedPresetId(null);
+
+        // Si ya no quedan sonidos rítmicos, liberar el clock BPM
+        const anyBpmLeft = next.some((s) => getSoundById(s.id)?.bpm !== undefined);
+        if (!anyBpmLeft && bpmValueRef.current !== null) {
+          bpmClockRef.current = null;
+          bpmValueRef.current = null;
+          setActiveBpm(null);
+        }
+
         if (next.length === 0) {
           setIsPlaying(false);
           isPlayingRef.current = false;
@@ -751,6 +783,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
       if (prev.length >= MAX_ACTIVE_SOUNDS) return false;
 
+      // ── Compatibilidad de BPM ──────────────────────────────────────────────
+      // Sonidos de distintos BPM no se pueden mezclar: rechazar si el BPM del
+      // nuevo sonido es distinto al que ya está fijado en la mezcla.
+      const soundDef = getSoundById(id);
+      const soundBpm = soundDef?.bpm;
+      if (soundBpm !== undefined && bpmValueRef.current !== null && bpmValueRef.current !== soundBpm) {
+        return false;
+      }
+
       // Mezcla y sesión son mutuamente excluyentes (comparten Now Playing).
       stopSessionPlayback();
       void ensureAudioMode();
@@ -759,6 +800,34 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const player = resumePlayer(id, DEFAULT_VOLUME) ?? createPlayerFor(id, DEFAULT_VOLUME);
       // Sin archivo de audio (o falla de carga): no agregar un sonido "fantasma"
       if (!player) return true;
+
+      // ── Inicio cuantizado para sonidos BPM ────────────────────────────────
+      if (soundBpm !== undefined) {
+        if (bpmValueRef.current === null) {
+          // Primer sonido BPM: fijar clock y BPM, arrancar de inmediato
+          bpmClockRef.current = Date.now();
+          bpmValueRef.current = soundBpm;
+          setActiveBpm(soundBpm);
+        } else if (isPlayingRef.current) {
+          // Sonido BPM adicional con mezcla corriendo: cuantizar al próximo beat
+          const beatMs = 60_000 / soundBpm;
+          const elapsed = Date.now() - bpmClockRef.current!;
+          const nextBeatMs = beatMs - (elapsed % beatMs);
+          // Pausar de inmediato (createPlayerFor/resumePlayer ya llamaron play)
+          try { player.a.pause(); } catch { /* ignore */ }
+          try { player.b.pause(); } catch { /* ignore */ }
+          const timer = setTimeout(() => {
+            pendingBpmRef.current.delete(id);
+            // Solo reanudar si el sonido sigue activo y la mezcla está sonando
+            if (activeSoundsRef.current.some((s) => s.id === id) && isPlayingRef.current) {
+              try { player.a.play(); } catch { /* ignore */ }
+              try { player.b.play(); } catch { /* ignore */ }
+            }
+          }, Math.max(10, nextBeatMs));
+          pendingBpmRef.current.set(id, timer);
+        }
+      }
+
       // Si la mezcla estaba pausada, retomar todos al sumar un sonido
       if (!isPlayingRef.current) {
         applyPlaying(true);
@@ -835,6 +904,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [applyPlaying, syncLockScreen]);
 
   const stopAll = useCallback(() => {
+    // Cancelar timers de inicio cuantizado BPM pendientes
+    pendingBpmRef.current.forEach((timer) => clearTimeout(timer));
+    pendingBpmRef.current.clear();
+    bpmClockRef.current = null;
+    bpmValueRef.current = null;
+    setActiveBpm(null);
+
     // Cancelar cualquier fade-out de audio en curso (re-entradas rápidas) y
     // apagar de inmediato sus players: ya están desacoplados de los refs, así
     // que si no los frenamos acá quedan sonando huérfanos a volumen parcial.
@@ -1246,6 +1322,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         togglePresetFavorite,
         importPreset,
         loadedPresetId,
+        activeBpm,
         sleepTimerRemaining,
         setSleepTimer,
         masterVolume,

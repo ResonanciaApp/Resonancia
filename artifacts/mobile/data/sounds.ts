@@ -96,6 +96,17 @@ export interface MixSound {
   tags?: SoundTagId[];
   /** Si es true, requiere premium para usarse */
   isPremium?: boolean;
+  /**
+   * BPM del loop. Solo sonidos de category "bpm".
+   * Los sonidos del mismo BPM se pueden mezclar entre sí; no se pueden mezclar
+   * sonidos de BPM distintos (el mixer lo rechaza automáticamente).
+   */
+  bpm?: 90 | 100 | 120;
+  /**
+   * Número de compases del loop (4/4). Default asumido: 2.
+   * Sirve para calcular la cuantización exacta al entrar al siguiente compás.
+   */
+  loopBars?: number;
 }
 
 export const SOUNDS: MixSound[] = [
@@ -160,6 +171,31 @@ export const SOUNDS: MixSound[] = [
   { id: "onda_alpha", name: "Alpha · Calma", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural"] },
   { id: "onda_beta", name: "Beta · Enfoque", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural"] },
   { id: "onda_gamma", name: "Gamma · Claridad", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural", "psicodelicas"] },
+
+  // ── BPM 90 — Groove lento / meditación activa ────────────────
+  // Loops perfectamente cortados en 2 compases · 4/4 · 5.333 s exactos
+  { id: "kick_90",       name: "Kick",        icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
+  { id: "snare_90",      name: "Snare",       icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
+  { id: "hihat_90",      name: "Hi-Hat",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
+  { id: "shaker_90",     name: "Shaker",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
+  { id: "tambor_90",     name: "Tambor",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2, isPremium: true },
+
+  // ── BPM 100 — Tempo medio / flow ────────────────────────────
+  // Loops perfectamente cortados en 2 compases · 4/4 · 4.800 s exactos
+  { id: "kick_100",      name: "Kick",        icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
+  { id: "snare_100",     name: "Snare",       icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
+  { id: "hihat_100",     name: "Hi-Hat",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
+  { id: "rimshot_100",   name: "Rimshot",     icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
+  { id: "shaker_100",    name: "Shaker",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2, isPremium: true },
+
+  // ── BPM 120 — Energía / techno meditativo ────────────────────
+  // Loops perfectamente cortados en 2 compases · 4/4 · 4.000 s exactos
+  { id: "kick_120",          name: "Kick",           icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
+  { id: "snare_120",         name: "Snare",          icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
+  { id: "hihat_cerrado_120", name: "Hi-Hat Cerrado", icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
+  { id: "hihat_abierto_120", name: "Hi-Hat Abierto", icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
+  { id: "clap_120",          name: "Clap",           icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
+  { id: "tambor_120",        name: "Tambor",         icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2, isPremium: true },
 ];
 
 export function getSoundById(id: string): MixSound | undefined {

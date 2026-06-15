@@ -258,12 +258,178 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   );
 });
 
+// ── BpmSelector ───────────────────────────────────────────────────────────────
+const BPM_OPTIONS: Array<90 | 100 | 120> = [90, 100, 120];
+
+type BpmSelectorProps = {
+  selected: 90 | 100 | 120 | null;
+  locked: 90 | 100 | 120 | null;
+  onSelect: (bpm: 90 | 100 | 120 | null) => void;
+};
+
+const BpmSelector = memo(function BpmSelector({ selected, locked, onSelect }: BpmSelectorProps) {
+  const effective = locked ?? selected;
+  return (
+    <View style={bpmStyles.wrap}>
+      <View style={bpmStyles.header}>
+        <MaterialCommunityIcons name="metronome" size={14} color="#B8860B" />
+        <Text style={bpmStyles.headerText}>Elige el tempo</Text>
+        {locked !== null && (
+          <View style={bpmStyles.lockedBadge}>
+            <MaterialCommunityIcons name="lock-outline" size={11} color="#B8860B" />
+            <Text style={bpmStyles.lockedText}>{locked} BPM activo</Text>
+          </View>
+        )}
+      </View>
+      <View style={bpmStyles.chips}>
+        {BPM_OPTIONS.map((bpm) => {
+          const isSel = effective === bpm;
+          const isDisabled = locked !== null && locked !== bpm;
+          return (
+            <Pressable
+              key={bpm}
+              onPress={() => {
+                if (locked !== null) return;
+                onSelect(selected === bpm ? null : bpm);
+              }}
+              style={[
+                bpmStyles.chip,
+                isSel && bpmStyles.chipSelected,
+                isDisabled && bpmStyles.chipDisabled,
+              ]}
+            >
+              {isSel ? (
+                <LinearGradient
+                  colors={["#FFD166", "#B8860B"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={bpmStyles.chipGrad}
+                >
+                  <Text style={[bpmStyles.chipLabel, { color: "#1A1500", fontWeight: "800" }]}>{bpm}</Text>
+                  <Text style={[bpmStyles.chipUnit,  { color: "rgba(26,21,0,0.65)" }]}>BPM</Text>
+                </LinearGradient>
+              ) : (
+                <View style={bpmStyles.chipInner}>
+                  <Text style={[bpmStyles.chipLabel, { color: isDisabled ? "rgba(26,30,43,0.25)" : "rgba(26,30,43,0.7)" }]}>{bpm}</Text>
+                  <Text style={[bpmStyles.chipUnit,  { color: isDisabled ? "rgba(26,30,43,0.15)" : "rgba(26,30,43,0.4)" }]}>BPM</Text>
+                </View>
+              )}
+            </Pressable>
+          );
+        })}
+      </View>
+      <Text style={bpmStyles.hint}>
+        {locked !== null
+          ? "Ritmos del mismo tempo se sincronizan al beat."
+          : "Los ritmos de distintos BPM no se pueden mezclar entre sí."}
+      </Text>
+    </View>
+  );
+});
+
+const bpmStyles = StyleSheet.create({
+  wrap: {
+    marginHorizontal: 0,
+    marginBottom: 10,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+    backgroundColor: "rgba(212,175,55,0.06)",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.14)",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 12,
+  },
+  headerText: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "600",
+    color: "rgba(26,30,43,0.65)",
+    letterSpacing: 0.2,
+  },
+  lockedBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    backgroundColor: "rgba(212,175,55,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.3)",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  lockedText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#B8860B",
+    letterSpacing: 0.1,
+  },
+  chips: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 10,
+  },
+  chip: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(26,30,43,0.12)",
+    backgroundColor: "rgba(255,255,255,0.55)",
+    height: 56,
+  },
+  chipSelected: {
+    borderColor: "#B8860B",
+    shadowColor: "#B8860B",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.22,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  chipDisabled: {
+    opacity: 0.55,
+  },
+  chipGrad: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  chipInner: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  chipLabel: {
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: -0.5,
+    lineHeight: 24,
+  },
+  chipUnit: {
+    fontSize: 10,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+    lineHeight: 13,
+  },
+  hint: {
+    fontSize: 11,
+    color: "rgba(26,30,43,0.4)",
+    textAlign: "center",
+    lineHeight: 15,
+  },
+});
+
 // ── PANTALLA ──────────────────────────────────────────────────────────────────
 export default function MezcladorScreen() {
   const insets      = useSafeAreaInsets();
   const { isPremium }    = usePremium();
   const { open: openDrawer } = useDrawer();
-  const { isActive, toggleSound } = useMixer();
+  const { isActive, toggleSound, activeBpm } = useMixer();
   const { lastSavedAt } = useSaveEvent();
 
   const heartGlow = useRef(new Animated.Value(0)).current;
@@ -283,6 +449,7 @@ export default function MezcladorScreen() {
 
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
+  const [selectedBpm,    setSelectedBpm]    = useState<90 | 100 | 120 | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
   const [contentAnimKey, setContentAnimKey] = useState(0);
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
@@ -381,6 +548,7 @@ export default function MezcladorScreen() {
     setContentDir(ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
     setMainTab(id);
     setSubTab(null);
+    if (id !== "bpm") setSelectedBpm(null);
     setContentAnimKey((k) => k + 1);
     setSubTabAnimKey((k) => k + 1);
   };
@@ -406,6 +574,15 @@ export default function MezcladorScreen() {
       return;
     }
     if (!isActive(sound.id)) {
+      // Detectar BPM incompatible antes de llamar a toggleSound (devuelve false
+      // por dos motivos distintos: límite de sonidos Y BPM incompatible).
+      if (sound.bpm !== undefined && activeBpm !== null && activeBpm !== sound.bpm) {
+        Alert.alert(
+          `BPM incompatible`,
+          `Ya hay ritmos a ${activeBpm} BPM en tu mezcla. Quitá todos los sonidos rítmicos para cambiar el tempo.`,
+        );
+        return;
+      }
       const ok = toggleSound(sound.id);
       if (!ok) {
         Alert.alert("Límite alcanzado", `Podés mezclar hasta ${MAX_ACTIVE_SOUNDS} sonidos a la vez. Quitá uno para agregar otro.`);
@@ -428,13 +605,17 @@ export default function MezcladorScreen() {
   const currentTabDef    = MAIN_TABS.find((t) => t.id === mainTab);
   const subTabCategories = currentTabDef?.categories ?? null;
 
+  // BPM efectivo para filtrar: activeBpm tiene prioridad (ya hay ritmos sonando),
+  // si no, el que el usuario eligió en el selector local.
+  const effectiveBpm = activeBpm ?? selectedBpm;
+
   const displayedSounds = useMemo(() => {
     const base = !subTabCategories
       ? popularSounds
       : SOUNDS.filter(
           (s) =>
             (subTab ? [subTab] : subTabCategories).includes(s.category as SoundCategoryId) &&
-            hasSoundFile(s.id),
+            (mainTab !== "bpm" || effectiveBpm === null || s.bpm === effectiveBpm),
         );
 
     // Etiquetas activas: del ánimo elegido + las seleccionadas a mano
@@ -443,7 +624,7 @@ export default function MezcladorScreen() {
     if (activeTags.length === 0) return base;
 
     return base.filter((s) => (s.tags ?? []).some((t) => activeTags.includes(t)));
-  }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters]);
+  }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
 
   return (
     <ImageBackground source={BG_HEADER} style={styles.root} resizeMode="cover">
@@ -583,11 +764,26 @@ export default function MezcladorScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ContentSlide key={contentAnimKey} dir={contentDir}>
+            {mainTab === "bpm" && (
+              <BpmSelector
+                selected={selectedBpm}
+                locked={activeBpm as (90 | 100 | 120 | null)}
+                onSelect={setSelectedBpm}
+              />
+            )}
             {displayedSounds.length === 0 ? (
               <View style={styles.emptyState}>
                 <MaterialCommunityIcons name="music-note-off-outline" size={34} color="rgba(26,30,43,0.35)" />
-                <Text style={styles.emptyTitle}>Sin sonidos con estos filtros</Text>
-                <Text style={styles.emptyHint}>Probá con otra combinación o tocá “Limpiar filtros”.</Text>
+                <Text style={styles.emptyTitle}>
+                  {mainTab === "bpm"
+                    ? "Los loops BPM llegan pronto"
+                    : "Sin sonidos con estos filtros"}
+                </Text>
+                <Text style={styles.emptyHint}>
+                  {mainTab === "bpm"
+                    ? "Estamos preparando los audios rítmicos. Vuelve pronto."
+                    : "Probá con otra combinación o tocá Limpiar filtros."}
+                </Text>
               </View>
             ) : (
               <View style={[styles.grid, { marginTop: 14 }]}>
