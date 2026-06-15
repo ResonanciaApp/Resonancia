@@ -134,13 +134,13 @@ function PushWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RootLayoutNav() {
+function NavStack() {
+  // Navegación desde el menú: las pantallas destino del drawer entran sin slide
+  // propio (instantáneo), así el único movimiento es el cierre del drawer y no se
+  // alcanza a ver Inicio antes de la página. Desde otros lados, slide normal.
+  const { instantNav } = useDrawer();
+  const drawerScreenAnim = instantNav ? "none" : "slide_from_right";
   return (
-    <DrawerProvider>
-      <ApiAuthBridge />
-      <AuthGate />
-      <PushBridge />
-      <PushWrapper>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -242,19 +242,30 @@ function RootLayoutNav() {
           name="chat/[userId]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
-        <Stack.Screen name="diario" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="diario" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen
           name="diario-entrada"
           options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen name="favorites" options={{ headerShown: false, animation: "slide_from_right" }} />
-        <Stack.Screen name="amigos" options={{ headerShown: false, animation: "slide_from_right" }} />
-        <Stack.Screen name="grupos" options={{ headerShown: false, animation: "slide_from_right" }} />
-        <Stack.Screen name="ayuda" options={{ headerShown: false, animation: "slide_from_right" }} />
-        <Stack.Screen name="invitar" options={{ headerShown: false, animation: "slide_from_right" }} />
-        <Stack.Screen name="configuraciones" options={{ headerShown: false, animation: "slide_from_right" }} />
-        <Stack.Screen name="membresia" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="amigos" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="grupos" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="ayuda" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="invitar" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="configuraciones" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="membresia" options={{ headerShown: false, animation: drawerScreenAnim }} />
       </Stack>
+  );
+}
+
+function RootLayoutNav() {
+  return (
+    <DrawerProvider>
+      <ApiAuthBridge />
+      <AuthGate />
+      <PushBridge />
+      <PushWrapper>
+        <NavStack />
       </PushWrapper>
       <DrawerMenu />
       <MixerSheet />

@@ -10,13 +10,30 @@ type DrawerCtx = {
   open: () => void;
   close: () => void;
   drawerAnim: Animated.Value;
+  /** True durante una navegación iniciada desde el menú: las pantallas destino
+   *  del drawer entran SIN animación propia, así el único movimiento es el cierre
+   *  del drawer (evita el "flash" de Inicio antes de que aparezca la página). */
+  instantNav: boolean;
+  /** Activa instantNav por un instante (auto-reset) justo antes de navegar. */
+  markInstantNav: () => void;
 };
 
 const Ctx = createContext<DrawerCtx | null>(null);
 
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [instantNav, setInstantNav] = useState(false);
+  const instantNavTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drawerAnim = useRef(new Animated.Value(0)).current;
+
+  // Marca la próxima navegación como instantánea (sin slide de la pantalla destino)
+  // y se reinicia sola pasado el cierre del drawer, para que el "atrás" y las
+  // navegaciones desde otros lados conserven su animación normal.
+  const markInstantNav = useCallback(() => {
+    setInstantNav(true);
+    if (instantNavTimer.current) clearTimeout(instantNavTimer.current);
+    instantNavTimer.current = setTimeout(() => setInstantNav(false), 450);
+  }, []);
 
   // Animación imperativa: cancela cualquier animación en vuelo antes de empezar,
   // así un cierre a medio camino no compite con una apertura (evita parpadeos).
@@ -44,8 +61,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, [animate]);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, drawerAnim }),
-    [isOpen, open, close, drawerAnim],
+    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav }),
+    [isOpen, open, close, drawerAnim, instantNav, markInstantNav],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

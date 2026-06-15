@@ -42,7 +42,7 @@ const SECONDARY_ITEMS: MenuItem[] = [
 ];
 
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -77,6 +77,7 @@ export function DrawerMenu() {
   const displayPhoto = photoUri || clerkPhoto;
 
   const navigate = (route: string) => {
+    markInstantNav();
     onClose();
     router.push(route as never);
   };
