@@ -244,7 +244,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                 style={styles.restablecerBtn}
                 hitSlop={8}
               >
-                <Feather name="rotate-ccw" size={11} color="#8C6A1A" />
+                <Feather name="rotate-ccw" size={11} color="#8C1A2B" />
                 <Text style={styles.restablecerText}>Restablecer</Text>
               </Pressable>
             )}
@@ -464,13 +464,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(140,106,26,0.3)",
-    backgroundColor: "rgba(140,106,26,0.08)",
+    borderColor: "rgba(140,26,43,0.45)",
+    backgroundColor: "rgba(140,26,43,0.1)",
   },
   restablecerText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#8C6A1A",
+    color: "#8C1A2B",
     letterSpacing: 0.2,
   },
 

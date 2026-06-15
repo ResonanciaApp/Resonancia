@@ -797,7 +797,7 @@ export function MixerSheet() {
                   style={styles.restablecerBtn}
                   hitSlop={8}
                 >
-                  <Feather name="rotate-ccw" size={11} color="rgba(212,175,55,0.85)" />
+                  <Feather name="rotate-ccw" size={11} color="#C0304A" />
                   <Text style={styles.restablecerText}>Restablecer</Text>
                 </Pressable>
               )}
@@ -1187,13 +1187,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.25)",
-    backgroundColor: "rgba(212,175,55,0.07)",
+    borderColor: "rgba(140,26,43,0.5)",
+    backgroundColor: "rgba(140,26,43,0.12)",
   },
   restablecerText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "rgba(212,175,55,0.85)",
+    color: "#C0304A",
     letterSpacing: 0.2,
   },
   bgPickerGrid: {
