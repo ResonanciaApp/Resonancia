@@ -56,7 +56,7 @@ function InmersivoContent() {
   const {
     activeSounds, isPlaying, togglePlay,
     sleepTimerRemaining, setSleepTimer,
-    inmersivoPresetId, closeImmersivo, openSheet,
+    inmersivoPresetId, closeImmersivo,
   } = useMixer();
 
   const bgPreset =
@@ -155,9 +155,8 @@ function InmersivoContent() {
     .slice(0, 5);
 
   const handleBack = useCallback(() => {
-    openSheet();
     closeImmersivo();
-  }, [openSheet, closeImmersivo]);
+  }, [closeImmersivo]);
 
   return (
     <TouchableWithoutFeedback onPress={() => { if (timerPanelOpen) closeTimerPanel(); else showControls(); }}>

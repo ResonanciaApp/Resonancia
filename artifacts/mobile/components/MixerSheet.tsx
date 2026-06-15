@@ -627,7 +627,6 @@ export function MixerSheet() {
           <Animated.View style={{ opacity: immersivoFade, alignSelf: "center", marginBottom: 20, marginTop: 6 }}>
             <Pressable
               onPress={() => {
-                closeSheet();
                 openImmersivo(bgPresetId);
               }}
               style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, activeBgPreset.image && styles.immersivoBtnImage]}
