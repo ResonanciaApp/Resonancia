@@ -1217,3 +1217,39 @@ id = "33CNHPrJ1AytiEIlNPmVS"
 uri = "file://exports/guia-productor.pdf"
 type = "pdf"
 title = "Guía para el Productor (PDF)"
+
+[[outputs]]
+id = "UYS5ix3mSBP1F8YhsI1V1"
+uri = "file://exports/cierre-tienda/1-cuenco-resonante.jpg"
+type = "image"
+title = "1 — Cuenco Resonante"
+
+[[outputs]]
+id = "HSqB3BXqZBk5DNZcDYCq-"
+uri = "file://exports/cierre-tienda/2-mandala-sagrada.jpg"
+type = "image"
+title = "2 — Mandala Sagrada"
+
+[[outputs]]
+id = "qtvApefYZOGFpMVPvo56Y"
+uri = "file://exports/cierre-tienda/3-eclipse-dorado.jpg"
+type = "image"
+title = "3 — Eclipse Dorado"
+
+[[outputs]]
+id = "a0UgwLV5YaxGgf7yXiTY_"
+uri = "file://exports/cierre-tienda/4-constelacion-final.jpg"
+type = "image"
+title = "4 — Constelación Final"
+
+[[outputs]]
+id = "ugc_EBW4piIhfLYpcA_VH"
+uri = "file://exports/cierre-tienda/5-niebla-ascendente.jpg"
+type = "image"
+title = "5 — Niebla Ascendente"
+
+[[outputs]]
+id = "ioQIEfmmGRLaPmNPZ4bgg"
+uri = "file://exports/cierre-tienda/6-marco-ritual.jpg"
+type = "image"
+title = "6 — Marco Ritual"
