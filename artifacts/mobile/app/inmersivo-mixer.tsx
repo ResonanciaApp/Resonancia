@@ -57,8 +57,8 @@ function formatTimer(s: number | null): string {
 // ── Componente ───────────────────────────────────────────────────────────────
 export default function InmersivoMixerScreen() {
   const insets = useSafeAreaInsets();
-  const { activeSounds, isPlaying, togglePlay, sleepTimerRemaining, setSleepTimer } = useMixer();
-  const params = useLocalSearchParams<{ bgPresetId?: string; packId?: string }>();
+  const { activeSounds, isPlaying, togglePlay, sleepTimerRemaining, setSleepTimer, openSheet } = useMixer();
+  const params = useLocalSearchParams<{ bgPresetId?: string; packId?: string; returnMixer?: string }>();
 
   // ── Fondo ──────────────────────────────────────────────────────────────────
   const bgPreset =
@@ -82,6 +82,8 @@ export default function InmersivoMixerScreen() {
   const [msgIdx, setMsgIdx] = useState(0);
   const msgOpacity = useRef(new Animated.Value(1)).current;
   const activePack = MESSAGE_PACKS.find((p) => p.id === packId) ?? MESSAGE_PACKS[0]!;
+
+  const returnMixer = params.returnMixer;
 
   const advanceMsg = useCallback(() => {
     Animated.timing(msgOpacity, { toValue: 0, duration: MSG_FADE_MS, useNativeDriver: true }).start(() => {
@@ -205,7 +207,7 @@ export default function InmersivoMixerScreen() {
           {/* Header */}
           <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
             <Pressable
-              onPress={() => router.back()}
+              onPress={() => { router.back(); if (returnMixer === "1") openSheet(); }}
               style={styles.iconBtn}
               hitSlop={14}
             >
