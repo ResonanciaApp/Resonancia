@@ -335,6 +335,7 @@ export default function MezcladorScreen() {
   const clearFilters = () => {
     setMoodFilter(null);
     setTagFilters([]);
+    setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
   };
 
   const bgPalette = getMixerBgPalette(bgPaletteId);

@@ -14,6 +14,8 @@ import { MOODS, type MoodId } from "@/data/moods";
 import { SOUND_TAGS, type SoundTagId } from "@/data/sounds";
 import {
   MIXER_BG_PALETTES,
+  DEFAULT_MIXER_BG_PALETTE,
+  getMixerBgPalette,
   type MixerBgPaletteId,
 } from "@/data/mixer-bg-palettes";
 
@@ -42,7 +44,14 @@ export function MixerSettingsSheet({
 }: Props) {
   const insets = useSafeAreaInsets();
 
-  const hasFilters = moodFilter !== null || tagFilters.length > 0;
+  // El fondo del sheet refleja la paleta elegida (regla: elegir fondo cambia
+  // también el fondo de Ajustes del Mezclador).
+  const sheetGradient = getMixerBgPalette(bgPaletteId).colors;
+
+  const hasFilters =
+    moodFilter !== null ||
+    tagFilters.length > 0 ||
+    bgPaletteId !== DEFAULT_MIXER_BG_PALETTE;
 
   return (
     <Modal
@@ -58,7 +67,7 @@ export function MixerSettingsSheet({
         </Pressable>
 
         <LinearGradient
-          colors={SHEET_GRADIENT}
+          colors={sheetGradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}
@@ -135,7 +144,11 @@ export function MixerSettingsSheet({
             <Text style={styles.sectionHint}>
               Tono del área de sonidos (no afecta la cabecera).
             </Text>
-            <View style={styles.paletteWrap}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.paletteRow}
+            >
               {MIXER_BG_PALETTES.map((p) => {
                 const sel = bgPaletteId === p.id;
                 return (
@@ -161,7 +174,7 @@ export function MixerSettingsSheet({
                   </Pressable>
                 );
               })}
-            </View>
+            </ScrollView>
           </ScrollView>
 
           {/* ── Limpiar filtros ── */}
@@ -189,7 +202,6 @@ export function MixerSettingsSheet({
   );
 }
 
-const SHEET_GRADIENT = ["#F7F6E5", "#EBE3F5", "#F7F6E5"] as const;
 const PRIMARY = "#BE9650";
 const FG = "#1A1E2B";
 const MUTED = "#6B7A96";
@@ -284,13 +296,13 @@ const styles = StyleSheet.create({
     color: PRIMARY,
     fontWeight: "700",
   },
-  paletteWrap: {
+  paletteRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
+    gap: 14,
+    paddingRight: 4,
   },
   paletteItem: {
-    width: "18%",
+    width: 64,
     alignItems: "center",
   },
   swatch: {
