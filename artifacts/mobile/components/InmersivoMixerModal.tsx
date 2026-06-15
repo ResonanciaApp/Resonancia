@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
   packPill: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(255,255,255,0.10)", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
   packPillSel: { backgroundColor: "#362a46", borderColor: "rgba(255,255,255,0.30)" },
   packEmoji: { fontSize: 14 },
-  packLabel: { fontSize: 11, fontWeight: "700", color: "#E9C46A", letterSpacing: 0.2 },
+  packLabel: { fontSize: 11, fontWeight: "700", color: "rgba(255,255,255,0.95)", letterSpacing: 0.2 },
   packLabelOff: { color: "rgba(255,255,255,0.70)", fontWeight: "600" },
   soundsRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "center" },
   soundPill: { backgroundColor: "rgba(255,255,255,0.08)", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" },
