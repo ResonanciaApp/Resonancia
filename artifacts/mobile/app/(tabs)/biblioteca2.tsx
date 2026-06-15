@@ -565,7 +565,7 @@ function AnimatedTabContent({
 }
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
-export default function BibliotecaScreen() {
+export default function Biblioteca2Screen() {
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
@@ -1033,11 +1033,11 @@ export default function BibliotecaScreen() {
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>Tu Biblioteca</Text>
+            <Text style={styles.headerTitle}>Tu Biblioteca 2</Text>
           </View>
           <View style={styles.headerIcons}>
-            <Pressable hitSlop={10} onPress={() => router.navigate("/(tabs)/biblioteca2" as never)} style={styles.headerIconBtn}>
-              <Feather name="layers" size={21} color={TEXT} />
+            <Pressable hitSlop={10} onPress={() => router.navigate("/(tabs)/biblioteca" as never)} style={styles.headerIconBtn}>
+              <Feather name="corner-up-left" size={21} color={TEXT} />
             </Pressable>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
               <Feather name="search" size={21} color={TEXT} />
