@@ -483,15 +483,32 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     try {
       baseVolumesRef.current.set(id, volume);
 
-      // ── Loops BPM: ganancia constante, sin crossfade ──────────────────────
-      // El crossfade usa gain=|sin(π·pos/dur)|, que vale 0 en pos=0. Para
-      // loops de drum (4-5 s), eso silencia el primer beat de CADA vuelta.
-      // Solución: los BPM loops usan solo la capa A a ganancia fija 1.
-      // La capa B se crea pero no reproduce (la interfaz SoundPlayers la exige).
-      const isBpmLoop = !!(getSoundById(id)?.bpm);
+      // ── Loops BPM: ganancia constante + loop por seekTo en caliente ───────
+      // Dos motivos para NO usar el crossfade de dos capas en los drums:
+      //   1) gain=|sin(π·pos/dur)| vale 0 en pos=0 → silenciaría el primer beat.
+      //   2) las dos capas van desfasadas dur/2 → sonarían beats DISTINTOS a la
+      //      vez (golpes fantasma). El crossfade sirve para texturas continuas,
+      //      no para ritmo.
+      //
+      // Y NO se puede usar el loop NATIVO (a.loop=true): expo-audio reinicia el
+      // loop esperando AVPlayerItemDidPlayToEndTime y recién ahí hace seek(0)+
+      // play() → SIEMPRE deja un hueco audible en el empalme (el usuario lo oía
+      // como "suena 3 tiempos y se corta ~1 s"). Para ritmo ese hueco arruina el
+      // groove.
+      //
+      // Solución: loop=false + seekTo(0) EN CALIENTE (sin parar) justo al cruzar
+      // el final MUSICAL del compás, durante la cola silenciosa del patrón. El
+      // archivo trae 0.5 s de silencio extra al final (buffer) para que, si el
+      // seek llega unos ms tarde, el player no toque el fin del archivo (que
+      // dispararía el corte nativo). El umbral de wrap = duración MUSICAL del
+      // compás (no la del archivo), así el buffer nunca se escucha. updateInterval
+      // bajo para que el listener detecte el cruce con poca latencia.
+      const soundBpm = getSoundById(id)?.bpm;
+      const isBpmLoop = soundBpm !== undefined;
       if (isBpmLoop) {
-        const a = createAudioPlayer(null, { updateInterval: 200 });
-        a.loop = true;
+        const musicalLoopSec = (60 / soundBpm) * 8; // 2 compases en 4/4
+        const a = createAudioPlayer(null, { updateInterval: 60 });
+        a.loop = false; // el loop lo maneja el seekTo de abajo, NO el nativo
         a.replace(file);
         a.volume = volume * masterVolumeRef.current;
         const b = createAudioPlayer(null, { updateInterval: 200 });
@@ -499,10 +516,20 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         b.volume = 0;
         const pair: SoundPlayers = { a, b };
         playersRef.current.set(id, pair);
-        // Listener mínimo: solo actualiza el volumen si cambia el master
-        const sub = a.addListener("playbackStatusUpdate", () => {
+        // Guard para no re-emitir el seek mientras está en vuelo (es async).
+        let wrapping = false;
+        const sub = a.addListener("playbackStatusUpdate", (status) => {
           const cur = playersRef.current.get(id);
           if (!cur || cur.a !== a) return;
+          // Wrap: al cruzar el final musical, volver a 0 sin parar.
+          const ct = status.currentTime ?? 0;
+          if (!wrapping && ct >= musicalLoopSec) {
+            wrapping = true;
+            void a.seekTo(0);
+          } else if (wrapping && ct < musicalLoopSec * 0.5) {
+            wrapping = false; // el seek ya aterrizó cerca de 0
+          }
+          // Sincronizar volumen si cambió el master.
           const base = baseVolumesRef.current.get(id) ?? volume;
           const target = base * masterVolumeRef.current;
           if (Math.abs(a.volume - target) > 0.004) {

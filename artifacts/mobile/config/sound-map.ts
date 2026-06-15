@@ -73,24 +73,25 @@ export const SOUND_MAP: Record<string, ReturnType<typeof require> | undefined> =
   onda_gamma: require("@/assets/audio/mixer/onda_gamma.mp3"),
 
   // ── BPM (loops sintéticos — reemplazar con masters de producción) ──
+  // WAV PCM con conteo de muestras EXACTO para loop gapless (MP3 deja hueco).
   // Duración exacta de 2 compases en 4/4:
   //   90 BPM  → 5.333 s  |  100 BPM → 4.800 s  |  120 BPM → 4.000 s
-  kick_90:           require("@/assets/audio/mixer/bpm/kick_90.mp3"),
-  snare_90:          require("@/assets/audio/mixer/bpm/snare_90.mp3"),
-  hihat_90:          require("@/assets/audio/mixer/bpm/hihat_90.mp3"),
-  shaker_90:         require("@/assets/audio/mixer/bpm/shaker_90.mp3"),
-  tambor_90:         require("@/assets/audio/mixer/bpm/tambor_90.mp3"),
+  kick_90:           require("@/assets/audio/mixer/bpm/kick_90.wav"),
+  snare_90:          require("@/assets/audio/mixer/bpm/snare_90.wav"),
+  hihat_90:          require("@/assets/audio/mixer/bpm/hihat_90.wav"),
+  shaker_90:         require("@/assets/audio/mixer/bpm/shaker_90.wav"),
+  tambor_90:         require("@/assets/audio/mixer/bpm/tambor_90.wav"),
 
-  kick_100:          require("@/assets/audio/mixer/bpm/kick_100.mp3"),
-  snare_100:         require("@/assets/audio/mixer/bpm/snare_100.mp3"),
-  hihat_100:         require("@/assets/audio/mixer/bpm/hihat_100.mp3"),
-  rimshot_100:       require("@/assets/audio/mixer/bpm/rimshot_100.mp3"),
-  shaker_100:        require("@/assets/audio/mixer/bpm/shaker_100.mp3"),
+  kick_100:          require("@/assets/audio/mixer/bpm/kick_100.wav"),
+  snare_100:         require("@/assets/audio/mixer/bpm/snare_100.wav"),
+  hihat_100:         require("@/assets/audio/mixer/bpm/hihat_100.wav"),
+  rimshot_100:       require("@/assets/audio/mixer/bpm/rimshot_100.wav"),
+  shaker_100:        require("@/assets/audio/mixer/bpm/shaker_100.wav"),
 
-  kick_120:          require("@/assets/audio/mixer/bpm/kick_120.mp3"),
-  snare_120:         require("@/assets/audio/mixer/bpm/snare_120.mp3"),
-  hihat_cerrado_120: require("@/assets/audio/mixer/bpm/hihat_cerrado_120.mp3"),
-  hihat_abierto_120: require("@/assets/audio/mixer/bpm/hihat_abierto_120.mp3"),
-  clap_120:          require("@/assets/audio/mixer/bpm/clap_120.mp3"),
-  tambor_120:        require("@/assets/audio/mixer/bpm/tambor_120.mp3"),
+  kick_120:          require("@/assets/audio/mixer/bpm/kick_120.wav"),
+  snare_120:         require("@/assets/audio/mixer/bpm/snare_120.wav"),
+  hihat_cerrado_120: require("@/assets/audio/mixer/bpm/hihat_cerrado_120.wav"),
+  hihat_abierto_120: require("@/assets/audio/mixer/bpm/hihat_abierto_120.wav"),
+  clap_120:          require("@/assets/audio/mixer/bpm/clap_120.wav"),
+  tambor_120:        require("@/assets/audio/mixer/bpm/tambor_120.wav"),
 };
