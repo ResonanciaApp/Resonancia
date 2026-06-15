@@ -411,7 +411,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      <LinearGradient colors={["#FFFFFF", "#F4EFF9"]} style={styles.sheet}>
+      <View style={styles.sheet}>
         <View style={styles.sheetHandle} />
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
         {ITEMS.map((it) => (
@@ -425,7 +425,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
             </View>
           </Pressable>
         ))}
-      </LinearGradient>
+      </View>
     </Modal>
   );
 }
@@ -1455,28 +1455,29 @@ const styles = StyleSheet.create({
   // ── Hoja de crear ────────────────────────────────────────────────────────────
   sheet: {
     position: "absolute", left: 0, right: 0, bottom: 0,
+    backgroundColor: NAVY,
     borderTopLeftRadius: 24, borderTopRightRadius: 24,
     paddingHorizontal: 20, paddingTop: 12, paddingBottom: 36,
   },
   sheetHandle: {
     width: 40, height: 4, borderRadius: 999,
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(74,12,12,0.35)",
     alignSelf: "center", marginBottom: 20,
   },
-  sheetTitle: { fontSize: 17, fontWeight: "700", color: "#1A1E2B", marginBottom: 20 },
+  sheetTitle: { fontSize: 17, fontWeight: "700", color: TEXT, marginBottom: 20 },
   sheetRow: {
     flexDirection: "row", alignItems: "center", gap: 16,
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(0,0,0,0.07)",
+    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetIcon: {
     width: 44, height: 44, borderRadius: 12,
-    backgroundColor: "rgba(212,175,55,0.14)",
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center", justifyContent: "center",
   },
-  sheetItemTitle: { fontSize: 15, fontWeight: "600", color: "#1A1E2B", marginBottom: 2 },
-  sheetItemSub:   { fontSize: 12, color: "rgba(0,0,0,0.45)" },
+  sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
+  sheetItemSub:   { fontSize: 12, color: MUTED },
 
   // ── Cargar más ────────────────────────────────────────────────────────────────
   loadMoreBtn: {
