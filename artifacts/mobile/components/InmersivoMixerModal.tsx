@@ -27,7 +27,7 @@ import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-prese
 import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
 
 const CONTROLS_TIMEOUT = 2000;
-const MSG_DISPLAY_MS   = 14000;
+const MSG_DISPLAY_MS   = 3000;
 const MSG_FADE_MS      = 900;
 
 const TIMER_OPTIONS: Array<{ label: string; minutes: number }> = [
