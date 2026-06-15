@@ -66,3 +66,4 @@
 - [Hero como fondo único](hero-fade-bg-match.md) — imagen hero + bg degradado leídos como "dos fondos": fix = meter la imagen EN la capa de fondo raíz y desvanecerla al color EXACTO del degradado raíz a la Y del borde (mismo degradado continuo debajo, sin costura); top fade desde #4A0C0C opaco→transparente; offsets px vía locations
 - [Drawer animation glitches](drawer-animation.md) — drawer SIEMPRE montado (sin gate rendered) + animar imperativo con stopAnimation antes de cada transición + sombra solo si isOpen; no regresar
 - [biblioteca chip animation](biblioteca-chip-animation.md) — AnimatedChipRow: un progress 0/1 ida-y-vuelta; displayTab posiciona (se conserva al volver), colorTab da oro/gris al instante del tap
+- [Mixer settings sheet](mixer-settings-sheet.md) — engranaje del Mezclador abre Ajustes (filtro ánimo/etiquetas + paleta de fondo); estado local persistido; validar claves persistidas o el filtro crashea

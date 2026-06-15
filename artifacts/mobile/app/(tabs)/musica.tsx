@@ -32,10 +32,19 @@ import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import {
   type MixSound,
   type SoundCategoryId,
+  type SoundTagId,
   SOUNDS,
   SOUND_CATEGORIES,
+  SOUND_TAGS,
   hasSoundFile,
 } from "@/data/sounds";
+import { MOOD_SOUND_TAGS, type MoodId } from "@/data/moods";
+import {
+  DEFAULT_MIXER_BG_PALETTE,
+  getMixerBgPalette,
+  type MixerBgPaletteId,
+} from "@/data/mixer-bg-palettes";
+import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const GOLD  = "#D4AF37";
@@ -92,6 +101,7 @@ const MAIN_TABS: {
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
+const SETTINGS_KEY = "@resonance_mixer_settings_v1";
 
 const MEZ_PLACEHOLDERS = [
   "¿Qué mundo sonoro querés crear hoy?",
@@ -278,6 +288,57 @@ export default function MezcladorScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
+  // ── Ajustes del Mezclador (engranaje) ──
+  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [moodFilter,      setMoodFilter]      = useState<MoodId | null>(null);
+  const [tagFilters,      setTagFilters]      = useState<SoundTagId[]>([]);
+  const [bgPaletteId,     setBgPaletteId]     = useState<MixerBgPaletteId>(DEFAULT_MIXER_BG_PALETTE);
+  const settingsLoaded = useRef(false);
+
+  // Carga inicial de los ajustes guardados
+  useEffect(() => {
+    AsyncStorage.getItem(SETTINGS_KEY)
+      .then((raw) => {
+        if (raw) {
+          const s = JSON.parse(raw);
+          // Validar contra los valores actuales (descarta datos obsoletos/corruptos)
+          if (s.moodFilter && s.moodFilter in MOOD_SOUND_TAGS) {
+            setMoodFilter(s.moodFilter as MoodId);
+          }
+          if (Array.isArray(s.tagFilters)) {
+            const validTags = new Set(SOUND_TAGS.map((t) => t.id));
+            setTagFilters(s.tagFilters.filter((t: unknown): t is SoundTagId =>
+              typeof t === "string" && validTags.has(t as SoundTagId),
+            ));
+          }
+          if (s.bgPaletteId) setBgPaletteId(getMixerBgPalette(s.bgPaletteId).id);
+        }
+      })
+      .catch(() => {})
+      .finally(() => { settingsLoaded.current = true; });
+  }, []);
+
+  // Persistencia de los ajustes (tras la carga inicial)
+  useEffect(() => {
+    if (!settingsLoaded.current) return;
+    AsyncStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify({ moodFilter, tagFilters, bgPaletteId }),
+    ).catch(() => {});
+  }, [moodFilter, tagFilters, bgPaletteId]);
+
+  const toggleTagFilter = (t: SoundTagId) =>
+    setTagFilters((prev) =>
+      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t],
+    );
+
+  const clearFilters = () => {
+    setMoodFilter(null);
+    setTagFilters([]);
+  };
+
+  const bgPalette = getMixerBgPalette(bgPaletteId);
+
   // Sincroniza el color del menú inferior con el banner del tab activo
   useEffect(() => {
     if (mainTab === "popular") {
@@ -367,10 +428,21 @@ export default function MezcladorScreen() {
   const subTabCategories = currentTabDef?.categories ?? null;
 
   const displayedSounds = useMemo(() => {
-    if (!subTabCategories) return popularSounds;
-    const catFilter = subTab ? [subTab] : subTabCategories;
-    return SOUNDS.filter((s) => catFilter.includes(s.category as SoundCategoryId) && hasSoundFile(s.id));
-  }, [mainTab, subTab, popularSounds, subTabCategories]);
+    const base = !subTabCategories
+      ? popularSounds
+      : SOUNDS.filter(
+          (s) =>
+            (subTab ? [subTab] : subTabCategories).includes(s.category as SoundCategoryId) &&
+            hasSoundFile(s.id),
+        );
+
+    // Etiquetas activas: del ánimo elegido + las seleccionadas a mano
+    const moodTags = moodFilter ? MOOD_SOUND_TAGS[moodFilter] ?? [] : [];
+    const activeTags = Array.from(new Set([...moodTags, ...tagFilters]));
+    if (activeTags.length === 0) return base;
+
+    return base.filter((s) => (s.tags ?? []).some((t) => activeTags.includes(t)));
+  }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters]);
 
   return (
     <ImageBackground source={BG_HEADER} style={styles.root} resizeMode="cover">
@@ -393,15 +465,26 @@ export default function MezcladorScreen() {
                   <Text style={styles.pageTitle}>Mezclador</Text>
                   <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
                 </View>
-                <Pressable
-                  onPress={() => router.push("/mezclas" as never)}
-                  style={styles.heartBtn}
-                  hitSlop={8}
-                  accessibilityRole="button"
-                  accessibilityLabel="Mis mezclas guardadas"
-                >
-                  <MaterialCommunityIcons name="cog-outline" size={20} color="#F4DAD5" />
-                </Pressable>
+                <View style={styles.headerActions}>
+                  <Pressable
+                    onPress={() => router.push("/mezclas" as never)}
+                    style={styles.heartBtn}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Mis mezclas guardadas"
+                  >
+                    <MaterialCommunityIcons name="bookmark-outline" size={20} color="#F4DAD5" />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => setSettingsVisible(true)}
+                    style={styles.heartBtn}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Ajustes del Mezclador"
+                  >
+                    <MaterialCommunityIcons name="cog-outline" size={20} color="#F4DAD5" />
+                  </Pressable>
+                </View>
               </View>
             </View>
 
@@ -488,7 +571,7 @@ export default function MezcladorScreen() {
         {/* ── Scroll principal ── */}
         <View style={styles.scrollBg}>
           <LinearGradient
-            colors={["#F7F6E5", "#EBE3F5", "#EBE3F5"]}
+            colors={bgPalette.colors}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
@@ -499,24 +582,44 @@ export default function MezcladorScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ContentSlide key={contentAnimKey} dir={contentDir}>
-            <View style={[styles.grid, { marginTop: 14 }]}>
-              {displayedSounds.map((s, i) => (
-                <SoundCard
-                  key={s.id}
-                  sound={s}
-                  idx={i}
-                  active={isActive(s.id)}
-                  locked={!!s.isPremium && !isPremium}
-                  available={hasSoundFile(s.id)}
-                  image={getSoundImage(s.id)}
-                  onPress={() => handleSoundPress(s)}
-                />
-              ))}
-            </View>
+            {displayedSounds.length === 0 ? (
+              <View style={styles.emptyState}>
+                <MaterialCommunityIcons name="music-note-off-outline" size={34} color="rgba(26,30,43,0.35)" />
+                <Text style={styles.emptyTitle}>Sin sonidos con estos filtros</Text>
+                <Text style={styles.emptyHint}>Probá con otra combinación o tocá “Limpiar filtros”.</Text>
+              </View>
+            ) : (
+              <View style={[styles.grid, { marginTop: 14 }]}>
+                {displayedSounds.map((s, i) => (
+                  <SoundCard
+                    key={s.id}
+                    sound={s}
+                    idx={i}
+                    active={isActive(s.id)}
+                    locked={!!s.isPremium && !isPremium}
+                    available={hasSoundFile(s.id)}
+                    image={getSoundImage(s.id)}
+                    onPress={() => handleSoundPress(s)}
+                  />
+                ))}
+              </View>
+            )}
           </ContentSlide>
         </ScrollView>
         </View>
       </View>
+
+      <MixerSettingsSheet
+        visible={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+        moodFilter={moodFilter}
+        onMoodChange={setMoodFilter}
+        tagFilters={tagFilters}
+        onToggleTag={toggleTagFilter}
+        bgPaletteId={bgPaletteId}
+        onBgPaletteChange={setBgPaletteId}
+        onClear={clearFilters}
+      />
 
     </ImageBackground>
   );
@@ -539,6 +642,11 @@ const styles = StyleSheet.create({
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 8 },
+
+  emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
+  emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
+  emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
   pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5" },
   pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
   heartBtn: {

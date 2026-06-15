@@ -1,4 +1,5 @@
 import type { ThemeTag } from "@/data/tags";
+import type { SoundTagId } from "@/data/sounds";
 
 export type MoodId =
   | "tranquilo"
@@ -64,3 +65,18 @@ export const MOODS: Mood[] = [
 export function getMoodById(id: string): Mood | undefined {
   return MOODS.find((m) => m.id === id);
 }
+
+/**
+ * Mapeo de cada estado de ánimo a las etiquetas de sonido afines.
+ * Lo usa el filtro "¿Cómo te sientes?" de los Ajustes del Mezclador:
+ * al elegir un ánimo, se muestran solo los sonidos con alguna de estas
+ * etiquetas. Editable según el criterio de la marca.
+ */
+export const MOOD_SOUND_TAGS: Record<MoodId, SoundTagId[]> = {
+  tranquilo: ["naturaleza", "armonicos"],
+  triste:    ["armonicos", "solfeggio"],
+  cansado:   ["naturaleza", "binaural"],
+  ansioso:   ["naturaleza", "solfeggio"],
+  "en-panico": ["naturaleza", "armonicos"],
+  inseguro:  ["solfeggio", "binaural"],
+};
