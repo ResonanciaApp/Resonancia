@@ -1289,3 +1289,9 @@ id = "cGuLpzdIszJ313adYHiSF"
 uri = "file://exports/cierre-tienda-wide/6-marco-ritual.jpg"
 type = "image"
 title = "6 — Marco Ritual (1920×720)"
+
+[[outputs]]
+id = "JW5ot7pC7esHhSeyfSI7e"
+uri = "file://mobile-build.tar.gz"
+type = "unspecified"
+title = "Proyecto mobile (sin node_modules)"
