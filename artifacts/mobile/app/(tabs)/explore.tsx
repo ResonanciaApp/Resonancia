@@ -242,7 +242,7 @@ export default function ExploreScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: H_PAD, marginBottom: 24 }}
+            style={{ marginHorizontal: H_PAD, marginBottom: 33 }}
             contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 2 }}
             decelerationRate="fast"
             snapToInterval={CAT_CARD_W + CAT_CARD_GAP}
