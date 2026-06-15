@@ -186,7 +186,7 @@ export function MixerSheet() {
     sliderThumb:    isLight ? "#D4AF37"              : WARM.sliderThumb,
     sliderTrack:    isLight ? "rgba(0,0,0,0.10)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
     addText:        isLight ? "rgba(0,0,0,0.32)"    : WARM.addText,
-    separator:      isLight ? "rgba(0,0,0,0.07)"    : WARM.separator,
+    separator:      isLight ? "rgba(0,0,0,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.18)" : WARM.separator,
     iconColor:      isLight ? "#1A1E2B"             : "rgba(255,255,255,0.90)",
     fg:             isLight ? "#1A1E2B"             : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
