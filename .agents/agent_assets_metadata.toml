@@ -1253,3 +1253,39 @@ id = "ioQIEfmmGRLaPmNPZ4bgg"
 uri = "file://exports/cierre-tienda/6-marco-ritual.jpg"
 type = "image"
 title = "6 — Marco Ritual"
+
+[[outputs]]
+id = "NPVFt5VeGzCIx9_xsYFXZ"
+uri = "file://exports/cierre-tienda-wide/1-cuenco-resonante.jpg"
+type = "image"
+title = "1 — Cuenco Resonante (1920×720)"
+
+[[outputs]]
+id = "YCTEZPMKYKJihDG9a4DsH"
+uri = "file://exports/cierre-tienda-wide/2-mandala-sagrada.jpg"
+type = "image"
+title = "2 — Mandala Sagrada (1920×720)"
+
+[[outputs]]
+id = "pwcuDrAdFBFKQdCEV_81H"
+uri = "file://exports/cierre-tienda-wide/3-eclipse-dorado.jpg"
+type = "image"
+title = "3 — Eclipse Dorado (1920×720)"
+
+[[outputs]]
+id = "4WyMkmmHm5KFGt9ApS1GQ"
+uri = "file://exports/cierre-tienda-wide/4-constelacion-final.jpg"
+type = "image"
+title = "4 — Constelación Final (1920×720)"
+
+[[outputs]]
+id = "-4hf2REApEMB-uAJqdIxP"
+uri = "file://exports/cierre-tienda-wide/5-niebla-ascendente.jpg"
+type = "image"
+title = "5 — Niebla Ascendente (1920×720)"
+
+[[outputs]]
+id = "cGuLpzdIszJ313adYHiSF"
+uri = "file://exports/cierre-tienda-wide/6-marco-ritual.jpg"
+type = "image"
+title = "6 — Marco Ritual (1920×720)"
