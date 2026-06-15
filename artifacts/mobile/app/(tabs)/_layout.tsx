@@ -113,9 +113,19 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   // Alto total de la barra: se desliza esa distancia (+ holgura) para esconderse.
   const barHeight = 31 + extra + pb;
-  const { hidden, showMenu } = useTabBarVisibility();
+  const { hidden, showMenu, tabBarColors } = useTabBarVisibility();
   const translateY  = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
+  const accentOpacity = useRef(new Animated.Value(0)).current;
+
+  // Crossfade entre el gradiente por defecto y el color del tab activo
+  useEffect(() => {
+    Animated.timing(accentOpacity, {
+      toValue: tabBarColors ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [tabBarColors]);
 
   useEffect(() => {
     Animated.timing(translateY, {
@@ -138,6 +148,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
+        {/* Gradiente base (siempre visible) */}
         <LinearGradient
           colors={["#27070E", "#1B060F"]}
           locations={[0, 1]}
@@ -145,6 +156,16 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
+        {/* Gradiente de acento del tab del mezclador (crossfade) */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity }]}>
+          <LinearGradient
+            colors={tabBarColors ? [tabBarColors[0], tabBarColors[1]] : ["#27070E", "#1B060F"]}
+            locations={[0, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;

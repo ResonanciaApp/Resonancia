@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -28,6 +28,7 @@ import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { useSaveEvent } from "@/context/SaveEventContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import {
   type MixSound,
   type SoundCategoryId,
@@ -271,12 +272,31 @@ export default function MezcladorScreen() {
     });
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const { setTabBarColors } = useTabBarVisibility();
+
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
   const [contentAnimKey, setContentAnimKey] = useState(0);
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
+
+  // Sincroniza el color del menú inferior con el banner del tab activo
+  useEffect(() => {
+    if (mainTab === "popular") {
+      setTabBarColors(null);
+    } else {
+      const g = TAB_HEADER_GRADIENT[mainTab];
+      setTabBarColors([g[0], g[2]]);
+    }
+  }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Resetear al salir del Mezclador
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => { setTabBarColors(null); };
+    }, [setTabBarColors]),
+  );
 
   const [bannerIdx,     setBannerIdx]     = useState(0);
   const bannerOpacity = useRef(new Animated.Value(1)).current;
