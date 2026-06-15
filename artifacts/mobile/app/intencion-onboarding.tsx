@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React from "react";
 import {
   Platform,
@@ -86,8 +87,9 @@ export default function IntencionOnboardingScreen() {
       <View style={[styles.footer, { paddingBottom: bottomPad + 16 }]}>
         <Pressable
           onPress={handleEntendido}
-          style={({ pressed }) => [styles.btn, { backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 }]}
+          style={({ pressed }) => [styles.btn, { overflow: "hidden", opacity: pressed ? 0.85 : 1 }]}
         >
+          <GoldGradientFill />
           <Text style={styles.btnText}>¡Entendido!</Text>
           <Feather name="arrow-right" size={18} color="#070E09" />
         </Pressable>

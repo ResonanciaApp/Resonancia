@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -233,12 +234,14 @@ export default function UsuarioScreen() {
               style={({ pressed }) => [
                 styles.followBtn,
                 {
-                  backgroundColor: isFollowing ? "transparent" : "#D4AF37",
+                  backgroundColor: isFollowing ? "transparent" : undefined,
+                  overflow: "hidden",
                   borderColor: "#D4AF37",
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
             >
+              {!isFollowing && <GoldGradientFill />}
               <Feather
                 name={isFollowing ? "user-check" : "user-plus"}
                 size={15}

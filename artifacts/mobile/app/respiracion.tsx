@@ -1,3 +1,4 @@
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -291,9 +292,11 @@ export default function RespiracionScreen() {
                 <View
                   style={[
                     styles.legendDot,
-                    { backgroundColor: active ? "#D4AF37" : "rgba(74,12,12,0.35)" },
+                    { backgroundColor: active ? undefined : "rgba(74,12,12,0.35)", overflow: "hidden" },
                   ]}
-                />
+                >
+                  {active && <GoldGradientFill />}
+                </View>
                 <Text style={[styles.legendText, { color: active ? colors.foreground : colors.mutedForeground }]}>
                   {p.label} {p.duration}s
                 </Text>

@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -467,6 +468,7 @@ function NombreCarpetaModal({ visible, onClose }: { visible: boolean; onClose: (
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
+            <GoldGradientFill />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -525,6 +527,7 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
+            <GoldGradientFill />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -1015,6 +1018,7 @@ export default function BibliotecaScreen() {
             <Text style={styles.emptyTitle}>Tus Geometrix aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea y guarda una geometría sagrada para verla aquí.</Text>
             <Pressable style={styles.emptyBtn} onPress={() => router.navigate("/(tabs)/geometrix" as never)}>
+              <GoldGradientFill />
               <Text style={styles.emptyBtnText}>Ir a Geometrix</Text>
             </Pressable>
           </View>
@@ -1515,7 +1519,7 @@ const styles = StyleSheet.create({
   emptySub:   { fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
   emptyBtn: {
     marginTop: 24,
-    backgroundColor: GOLD,
+    overflow: "hidden",
     paddingHorizontal: 24, paddingVertical: 12,
     borderRadius: 999,
   },
@@ -1605,7 +1609,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   nameCreateBtn: {
-    backgroundColor: GOLD,
+    overflow: "hidden",
     borderRadius: 30,
     paddingHorizontal: 48,
     paddingVertical: 14,

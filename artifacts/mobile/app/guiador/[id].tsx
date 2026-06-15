@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
@@ -98,9 +99,9 @@ export default function GuiadorScreen() {
               transition={IMAGE_TRANSITION}
             />
             {guide.certified && (
-              <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#1B060F" }]}>
+              <GoldGradient style={[styles.badge, { borderColor: "#1B060F" }]}>
                 <Feather name="check" size={15} color="#1B060F" />
-              </View>
+              </GoldGradient>
             )}
           </View>
 

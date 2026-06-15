@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradient } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -117,9 +118,9 @@ export default function NuevasSessionesScreen() {
             </View>
             <View style={styles.cardBody}>
               {session.isNew && (
-                <View style={[styles.newBadge, { backgroundColor: colors.primary }]}>
+                <GoldGradient style={styles.newBadge}>
                   <Text style={styles.newBadgeText}>NUEVA</Text>
-                </View>
+                </GoldGradient>
               )}
               <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
                 {session.title}

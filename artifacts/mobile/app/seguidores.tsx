@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React from "react";
 import {
   ActivityIndicator,
@@ -124,12 +125,14 @@ export default function SeguidoresScreen() {
                     style={({ pressed }) => [
                       styles.followBtn,
                       {
-                        backgroundColor: isFollowing ? "transparent" : colors.primary,
-                        borderColor: isFollowing ? colors.primary : colors.primary,
+                        backgroundColor: isFollowing ? "transparent" : undefined,
+                        overflow: "hidden",
+                        borderColor: colors.primary,
                         opacity: pressed ? 0.8 : 1,
                       },
                     ]}
                   >
+                    {!isFollowing && <GoldGradientFill />}
                     <Text
                       style={[
                         styles.followBtnText,

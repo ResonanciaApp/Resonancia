@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -776,11 +777,13 @@ function MessageBubble({
           style={[
             styles.sessionCard,
             {
-              backgroundColor: isMine ? "#D4AF37" : colors.card,
+              backgroundColor: isMine ? undefined : colors.card,
+              overflow: "hidden",
               borderColor: isMine ? "transparent" : colors.border,
             },
           ]}
         >
+          {isMine && <GoldGradientFill />}
           <Image source={session.image as never} style={styles.sessionImg} contentFit="cover" />
           <View style={{ flex: 1, padding: 10 }}>
             <Text
@@ -813,7 +816,8 @@ function MessageBubble({
             styles.bubble,
             isMine
               ? {
-                  backgroundColor: "#D4AF37",
+                  backgroundColor: undefined,
+                  overflow: "hidden",
                   borderTopRightRadius: groupedWithPrev ? compactRadius : 18,
                   borderBottomRightRadius: groupedWithNext ? compactRadius : tailRadius,
                 }
@@ -826,6 +830,7 @@ function MessageBubble({
                 },
           ]}
         >
+          {isMine && <GoldGradientFill />}
           <Text
             style={[
               styles.bubbleText,
@@ -991,9 +996,10 @@ function PendingBubble({ item }: { item: PendingAttachment }) {
           <View
             style={[
               styles.audioBubble,
-              { backgroundColor: "#D4AF37", borderWidth: 0 },
+              { backgroundColor: undefined, overflow: "hidden", borderWidth: 0 },
             ]}
           >
+            <GoldGradientFill />
             <View style={styles.audioPlayBtn}>
               <Feather name="mic" size={18} color="#080F0A" />
             </View>
@@ -1235,7 +1241,6 @@ function AudioAttachment({
   };
 
   const progressPct = totalMs > 0 ? Math.min(1, positionMs / totalMs) : 0;
-  const bg = isMine ? "#D4AF37" : colors.card;
   const fg = isMine ? "#080F0A" : colors.foreground;
   const trackBg = isMine ? "#080F0A33" : colors.border;
   const trackFill = isMine ? "#080F0A" : colors.primary;
@@ -1245,12 +1250,14 @@ function AudioAttachment({
       style={[
         styles.audioBubble,
         {
-          backgroundColor: bg,
+          backgroundColor: isMine ? undefined : colors.card,
+          overflow: isMine ? "hidden" : undefined,
           borderColor: isMine ? "transparent" : colors.border,
           borderWidth: isMine ? 0 : 1,
         },
       ]}
     >
+      {isMine && <GoldGradientFill />}
       <Pressable onPress={toggle} hitSlop={6} style={styles.audioPlayBtn}>
         {loading ? (
           <ActivityIndicator size="small" color={fg} />

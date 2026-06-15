@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
@@ -865,6 +866,7 @@ export default function ProfileScreen() {
               </View>
             )}
             <View style={styles.avatarEditBadge}>
+              <GoldGradientFill />
               <Feather name="camera" size={11} color="#fff" />
             </View>
           </Pressable>
@@ -1041,11 +1043,13 @@ export default function ProfileScreen() {
                     style={[
                       styles.rachaDayCircle,
                       {
-                        backgroundColor: done ? colors.primary : "transparent",
+                        backgroundColor: done ? undefined : "transparent",
+                        overflow: "hidden",
                         borderColor: done ? colors.primary : isToday ? colors.foreground : colors.border ?? "#1E2A38",
                       },
                     ]}
                   >
+                    {done && <GoldGradientFill />}
                     {done && <Feather name="check" size={13} color="#1B060F" />}
                   </View>
                 </View>
@@ -1357,9 +1361,10 @@ export default function ProfileScreen() {
               onPress={saveEdit}
               style={({ pressed }) => [
                 styles.saveBtn,
-                { backgroundColor: colors.primary, opacity: pressed ? 0.88 : 1 },
+                { overflow: "hidden", opacity: pressed ? 0.88 : 1 },
               ]}
             >
+              <GoldGradientFill />
               <Text style={[styles.saveBtnText, { color: colors.primaryForeground }]}>Guardar</Text>
             </Pressable>
           </ScrollView>
@@ -1451,7 +1456,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#D4AF37",
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,

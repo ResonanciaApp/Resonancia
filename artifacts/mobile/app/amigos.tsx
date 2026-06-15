@@ -22,6 +22,7 @@ import {
   type UserSearchResult,
 } from "@workspace/api-client-react";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -310,7 +311,8 @@ function SearchResultRow({
         <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{user.username}</Text>
       </View>
       {status === "none" && (
-        <Pressable onPress={onAdd} style={[styles.acceptBtn, { backgroundColor: colors.primary }]}>
+        <Pressable onPress={onAdd} style={styles.acceptBtn}>
+          <GoldGradientFill />
           <View style={styles.acceptGrad}>
             <Feather name="user-plus" size={14} color="#1B060F" />
           </View>
@@ -320,7 +322,8 @@ function SearchResultRow({
         <Text style={[styles.statusBadge, { color: colors.mutedForeground }]}>Enviada</Text>
       )}
       {status === "pending_incoming" && (
-        <Pressable onPress={onAdd} style={[styles.acceptBtn, { backgroundColor: colors.primary }]}>
+        <Pressable onPress={onAdd} style={styles.acceptBtn}>
+          <GoldGradientFill />
           <View style={styles.acceptGrad}>
             <Feather name="check" size={14} color="#1B060F" />
           </View>
@@ -352,7 +355,8 @@ function RequestRow({
         <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{requester.username}</Text>
       </View>
       <View style={styles.requestBtns}>
-        <Pressable style={[styles.acceptBtn, { backgroundColor: colors.primary }]} onPress={onAccept}>
+        <Pressable style={styles.acceptBtn} onPress={onAccept}>
+          <GoldGradientFill />
           <View style={styles.acceptGrad}>
             <Feather name="check" size={14} color="#1B060F" />
           </View>
@@ -440,9 +444,9 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
         </Text>
       </View>
       {unreadCount > 0 && (
-        <View style={[styles.unreadBadge, { backgroundColor: colors.primary }]}>
+        <GoldGradient style={styles.unreadBadge}>
           <Text style={styles.unreadText}>{unreadCount > 9 ? "9+" : unreadCount}</Text>
-        </View>
+        </GoldGradient>
       )}
     </Pressable>
   );

@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -376,7 +377,9 @@ export default function MananasScreen() {
                     styles.tabIndicator,
                     { width: indicatorWidth, transform: [{ translateX: indicatorAnim }] },
                   ]}
-                />
+                >
+                  <GoldGradientFill />
+                </Animated.View>
               )}
             </View>
 
@@ -507,7 +510,7 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 15, fontWeight: "600" },
   tabIndicator: {
     position: "absolute", bottom: 0, height: 2,
-    backgroundColor: "#D4AF37", borderRadius: 1,
+    overflow: "hidden", borderRadius: 1,
   },
 
   sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },

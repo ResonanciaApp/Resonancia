@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image } from "expo-image";
@@ -144,9 +145,9 @@ export default function SessionDetailScreen() {
           </View>
         )}
         {session.isNew && (
-          <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+          <GoldGradient style={styles.badge}>
             <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-          </View>
+          </GoldGradient>
         )}
       </View>
     );
@@ -350,9 +351,10 @@ export default function SessionDetailScreen() {
           onPress={handlePlay}
           style={({ pressed }) => [
             styles.playBtn,
-            { backgroundColor: colors.primary, opacity: pressed ? 0.88 : 1 },
+            { overflow: "hidden", opacity: pressed ? 0.88 : 1 },
           ]}
         >
+          <GoldGradientFill />
           <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
             {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
           </Text>

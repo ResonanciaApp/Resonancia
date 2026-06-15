@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
@@ -173,6 +174,7 @@ export default function PlaylistDetailScreen() {
                 <Feather name="music" size={40} color={MUTED} />
                 {/* Badge "+" en esquina inferior derecha */}
                 <View style={styles.coverPlusBadge}>
+                  <GoldGradientFill />
                   <Feather name="plus" size={14} color="#FFFFFF" />
                 </View>
               </View>
@@ -202,7 +204,7 @@ export default function PlaylistDetailScreen() {
               <Text style={styles.cambiarBtnText}>Cambiar</Text>
             </Pressable>
             <View style={styles.creatorRow}>
-              <View style={styles.creatorDot} />
+              <GoldGradient style={styles.creatorDot} />
               <Text style={styles.creatorText}>Casa del Cuenco</Text>
             </View>
           </View>
@@ -221,6 +223,7 @@ export default function PlaylistDetailScreen() {
               style={({ pressed }) => [styles.playAllFab, { opacity: pressed ? 0.8 : 1 }]}
               onPress={handlePlayAll}
             >
+              <GoldGradientFill />
               <Feather name="play" size={20} color="#1B060F" />
             </Pressable>
           )}
@@ -397,7 +400,7 @@ const styles = StyleSheet.create({
   },
   cambiarBtnText: { color: TEXT, fontSize: 13, fontWeight: "600" },
   creatorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
-  creatorDot: { width: 18, height: 18, borderRadius: 9, backgroundColor: GOLD },
+  creatorDot: { width: 18, height: 18, borderRadius: 9 },
   creatorText: { color: MUTED, fontSize: 12 },
 
   // Stats
@@ -421,7 +424,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: GOLD,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -484,7 +487,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: GOLD,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,

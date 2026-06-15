@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 
 import { router, useLocalSearchParams } from "expo-router";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -323,14 +324,15 @@ export default function CommunityMixScreen() {
 
           {/* Botón reproducir con glow */}
           <View style={styles.playWrap}>
-            <View style={[styles.playGlow, { backgroundColor: colors.primary }]} />
+            <GoldGradient style={styles.playGlow} />
             <Pressable
               onPress={handlePlayPause}
               style={({ pressed }) => [
                 styles.playBtn,
-                { backgroundColor: colors.primary, opacity: pressed ? 0.88 : 1 },
+                { overflow: "hidden", opacity: pressed ? 0.88 : 1 },
               ]}
             >
+              <GoldGradientFill />
               <Feather name={isPlayingThis ? "pause" : "play"} size={24} color={colors.background} />
               <Text style={[styles.playTxt, { color: colors.background }]}>
                 {isPlayingThis ? "Pausar" : isThisLoaded ? "Reanudar" : "Reproducir mezcla"}
@@ -393,11 +395,13 @@ export default function CommunityMixScreen() {
               style={[
                 styles.sendBtn,
                 {
-                  backgroundColor: draft.trim() ? colors.primary : colors.card,
+                  backgroundColor: draft.trim() ? undefined : colors.card,
+                  overflow: "hidden",
                   opacity: addComment.isPending ? 0.6 : 1,
                 },
               ]}
             >
+              {!!draft.trim() && <GoldGradientFill />}
               <Feather name="send" size={16} color={colors.background} />
             </Pressable>
           </View>

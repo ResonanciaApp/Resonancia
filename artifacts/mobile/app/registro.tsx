@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React, { useCallback, useRef, useState } from "react";
 import {
   Animated,
@@ -324,10 +325,11 @@ function EmailFormStep({
               <View
                 style={[
                   styles.passHintDot,
-                  { borderColor: passValid ? colors.primary : colors.mutedForeground },
-                  passValid && { backgroundColor: colors.primary },
+                  { borderColor: passValid ? colors.primary : colors.mutedForeground, overflow: "hidden" },
                 ]}
-              />
+              >
+                {passValid && <GoldGradientFill />}
+              </View>
               <Text style={[styles.passHintText, { color: passValid ? colors.primary : colors.mutedForeground }]}>
                 Utiliza al menos 8 caracteres que incluyan letras y números
               </Text>
@@ -340,11 +342,13 @@ function EmailFormStep({
             style={({ pressed }) => [
               styles.continueBtn,
               {
-                backgroundColor: canContinue ? colors.primary : "rgba(212,175,55,0.18)",
+                backgroundColor: canContinue ? undefined : "rgba(212,175,55,0.18)",
+                overflow: "hidden",
                 opacity: pressed ? 0.85 : 1,
               },
             ]}
           >
+            {canContinue && <GoldGradientFill />}
             <Text style={[styles.continueBtnText, { color: canContinue ? colors.primaryForeground : colors.mutedForeground }]}>
               Continuar
             </Text>
@@ -544,11 +548,13 @@ function BirthYearStep({ topPad, bottomPad, colors, birthYear, setBirthYear, agr
           style={({ pressed }) => [
             styles.createBtn,
             {
-              backgroundColor: agreed ? colors.primary : "rgba(212,175,55,0.18)",
+              backgroundColor: agreed ? undefined : "rgba(212,175,55,0.18)",
+              overflow: "hidden",
               opacity: pressed ? 0.88 : 1,
             },
           ]}
         >
+          {agreed && <GoldGradientFill />}
           <Text style={[styles.createBtnText, { color: agreed ? colors.primaryForeground : colors.mutedForeground }]}>
             {loading ? "Creando cuenta..." : "Crear cuenta"}
           </Text>

@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useMemo, useState } from "react";
 import {
   Platform,
@@ -357,9 +358,7 @@ export default function ProgresoScreen() {
                 {t === "logros" ? "Logros" : "Historial"}
               </Text>
               {tab === t && (
-                <View
-                  style={[styles.tabIndicator, { backgroundColor: colors.primary }]}
-                />
+                <GoldGradient style={styles.tabIndicator} />
               )}
             </Pressable>
           ))}
@@ -556,13 +555,10 @@ export default function ProgresoScreen() {
                         { backgroundColor: colors.border },
                       ]}
                     >
-                      <View
+                      <GoldGradient
                         style={[
                           styles.progressFill,
-                          {
-                            width: `${pct * 100}%` as never,
-                            backgroundColor: colors.primary,
-                          },
+                          { width: `${pct * 100}%` as never },
                         ]}
                       />
                     </View>

@@ -12,6 +12,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Image } from "expo-image";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React, {
   useCallback,
   useEffect,
@@ -406,6 +407,7 @@ export function PlaylistAddSessionsSheet({
                 style={({ pressed }) => [styles.tabChip, active && styles.tabChipActive, { opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => setActiveTab(tab)}
               >
+                {active && <GoldGradientFill />}
                 <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
               </Pressable>
             );
@@ -486,7 +488,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "rgba(74,12,12,0.35)",
   },
-  tabChipActive: { backgroundColor: GOLD },
+  tabChipActive: { overflow: "hidden" },
   tabText: { color: TEXT, fontSize: 14, fontWeight: "600" },
   tabTextActive: { color: "#1B060F", fontWeight: "700" },
 
@@ -540,7 +542,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: GOLD,
+    backgroundColor: "#D4AF37",
   },
 
   // Empty

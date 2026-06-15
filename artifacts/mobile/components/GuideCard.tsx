@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradient } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -26,9 +27,9 @@ export function GuideCard({ guide }: { guide: Guide }) {
           transition={IMAGE_TRANSITION}
         />
         {guide.certified && (
-          <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: "#1B060F" }]}>
+          <GoldGradient style={[styles.badge, { borderColor: "#1B060F" }]}>
             <Feather name="check" size={12} color="#1B060F" />
-          </View>
+          </GoldGradient>
         )}
       </View>
       <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>

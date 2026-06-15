@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -135,7 +136,7 @@ export default function ColeccionScreen() {
         <View style={styles.meta}>
           <Text style={styles.description}>{playlist.description}</Text>
           <View style={styles.hechaRow}>
-            <View style={styles.goldDot} />
+            <GoldGradient style={styles.goldDot} />
             <Text style={styles.hechaText}>
               Hecha por <Text style={styles.hechaLabel}>Resonancia</Text>
             </Text>
@@ -177,6 +178,7 @@ export default function ColeccionScreen() {
                 }
               }}
             >
+              <GoldGradientFill />
               <Feather name={isPlayingCollection ? "pause" : "play"} size={26} color={BG} style={{ marginLeft: isPlayingCollection ? 0 : 3 }} />
             </Pressable>
           </View>
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
   meta: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 4 },
   description: { fontSize: 14, color: MUTED, lineHeight: 21, marginBottom: 12 },
   hechaRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 },
-  goldDot: { width: 20, height: 20, borderRadius: 10, backgroundColor: GOLD },
+  goldDot: { width: 20, height: 20, borderRadius: 10 },
   hechaText: { fontSize: 13, color: MUTED },
   hechaLabel: { color: FG, fontWeight: "600" },
   savedCount: { fontSize: 12, color: MUTED, marginTop: 2 },
@@ -268,7 +270,7 @@ const styles = StyleSheet.create({
   miniCover: { width: 44, height: 44, borderRadius: 8 },
   playCircle: {
     width: 56, height: 56, borderRadius: 28,
-    backgroundColor: GOLD,
+    overflow: "hidden",
     alignItems: "center", justifyContent: "center",
     shadowColor: GOLD,
     shadowOffset: { width: 0, height: 4 },

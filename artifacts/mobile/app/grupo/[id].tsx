@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -607,10 +608,11 @@ export default function GrupoDetailScreen() {
                 />
               </View>
               <Pressable
-                style={[styles.sendBtn, { backgroundColor: compose.trim() && grupo.isLocalGroup ? colors.primary : colors.card, borderColor: colors.border }]}
+                style={[styles.sendBtn, { backgroundColor: compose.trim() && grupo.isLocalGroup ? undefined : colors.card, overflow: "hidden", borderColor: colors.border }]}
                 onPress={handleSend}
                 disabled={!grupo.isLocalGroup}
               >
+                {compose.trim() && grupo.isLocalGroup && <GoldGradientFill />}
                 <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#080F0A" : colors.mutedForeground} />
               </Pressable>
             </View>

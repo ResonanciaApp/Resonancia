@@ -13,6 +13,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
@@ -776,8 +777,9 @@ export function MixerSheet() {
                   </Pressable>
                   <Pressable
                     onPress={confirmSave}
-                    style={[styles.modalBtn, { backgroundColor: colors.primary }]}
+                    style={[styles.modalBtn, { overflow: "hidden" }]}
                   >
+                    <GoldGradientFill />
                     <Text style={[styles.modalBtnText, { color: colors.primaryForeground, fontWeight: "700" }]}>
                       {saveMode === "update" ? "Actualizar" : "Guardar"}
                     </Text>
@@ -846,6 +848,7 @@ export function MixerSheet() {
                     <Text style={styles.bgPresetName} numberOfLines={1}>{preset.name}</Text>
                     {sel && (
                       <View style={styles.bgPresetCheck}>
+                        <GoldGradientFill />
                         <Feather name="check" size={12} color="#1B060F" />
                       </View>
                     )}
@@ -1249,7 +1252,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#D4AF37",
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },

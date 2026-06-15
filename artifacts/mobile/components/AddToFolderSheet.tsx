@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -127,9 +128,9 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                   { borderTopColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.7 : 1 },
                 ]}
               >
-                <View style={[styles.plusCircle, { backgroundColor: colors.primary }]}>
+                <GoldGradient style={styles.plusCircle}>
                   <Feather name="plus" size={14} color="#1B060F" />
-                </View>
+                </GoldGradient>
                 <Text style={[styles.newLabel, { color: colors.foreground }]}>
                   Nueva Carpeta
                 </Text>
@@ -174,11 +175,12 @@ export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
                 style={({ pressed }) => [
                   styles.createBtn,
                   {
-                    backgroundColor: newName.trim() ? colors.primary : "rgba(212,175,55,0.30)",
+                    backgroundColor: newName.trim() ? undefined : "rgba(212,175,55,0.30)",
                     opacity: pressed ? 0.8 : 1,
                   },
                 ]}
               >
+                {newName.trim() ? <GoldGradientFill /> : null}
                 <Text style={[styles.createBtnLabel, { color: "#1B060F" }]}>
                   Crear carpeta
                 </Text>
@@ -276,6 +278,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -294,6 +297,7 @@ const styles = StyleSheet.create({
   createBtn: {
     borderRadius: 14,
     paddingVertical: 16,
+    overflow: "hidden",
     alignItems: "center",
     marginBottom: 4,
   },

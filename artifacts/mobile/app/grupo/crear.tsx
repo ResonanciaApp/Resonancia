@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -341,6 +342,7 @@ export default function CrearGrupoScreen() {
                       <Image source={src} style={styles.galleryImg} />
                       {imageIdx === i && (
                         <View style={styles.galleryCheck}>
+                          <GoldGradientFill />
                           <Feather name="check" size={14} color="#fff" />
                         </View>
                       )}
@@ -406,9 +408,9 @@ export default function CrearGrupoScreen() {
           {step === 5 && (
             <>
               <View style={styles.successIcon}>
-                <View style={[styles.successGrad, { backgroundColor: "#D4AF37" }]}>
+                <GoldGradient style={styles.successGrad}>
                   <Feather name="check" size={28} color="#070E09" />
-                </View>
+                </GoldGradient>
               </View>
               <Text style={[styles.sheetTitle, { color: colors.foreground, textAlign: "center", marginBottom: 8 }]}>
                 ¡Tu grupo está listo!
@@ -426,7 +428,8 @@ export default function CrearGrupoScreen() {
               </View>
 
               {/* Share button */}
-              <Pressable onPress={handleShare} style={[styles.sheetNext, { backgroundColor: colors.primary, marginTop: 16 }]}>
+              <Pressable onPress={handleShare} style={[styles.sheetNext, { overflow: "hidden", marginTop: 16 }]}>
+                <GoldGradientFill />
                 <Feather name="share-2" size={17} color="#070E09" />
                 <Text style={[styles.sheetNextText, { color: "#070E09" }]}>Compartir enlace</Text>
               </Pressable>
@@ -488,7 +491,7 @@ const styles = StyleSheet.create({
   galleryItem: { borderRadius: 10, overflow: "hidden", position: "relative" },
   galleryItemSelected: { borderWidth: 2.5, borderColor: "#D4AF37", borderRadius: 10 },
   galleryImg: { width: 68, height: 68 },
-  galleryCheck: { position: "absolute", bottom: 4, right: 4, backgroundColor: "#D4AF37", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
+  galleryCheck: { position: "absolute", bottom: 4, right: 4, overflow: "hidden", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
 
   // Success
   successIcon: { alignSelf: "center", marginBottom: 16, borderRadius: 30, overflow: "hidden" },

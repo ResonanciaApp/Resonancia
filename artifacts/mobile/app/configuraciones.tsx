@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import * as Haptics from "expo-haptics";
@@ -334,11 +335,13 @@ export default function ConfiguracionesScreen() {
                       style={[
                         styles.chip,
                         {
-                          backgroundColor: active ? colors.primary : "transparent",
+                          backgroundColor: active ? undefined : "transparent",
+                          overflow: "hidden",
                           borderColor: active ? colors.primary : "rgba(61,14,22,0.50)",
                         },
                       ]}
                     >
+                      {active && <GoldGradientFill />}
                       <Text style={[styles.chipText, { color: active ? "#080F0A" : colors.foreground }]}>
                         {formatTime(t.h, t.m)}
                       </Text>
@@ -391,7 +394,8 @@ export default function ConfiguracionesScreen() {
                     style={[
                       styles.chip,
                       {
-                        backgroundColor: active ? colors.primary : "transparent",
+                        backgroundColor: active ? undefined : "transparent",
+                        overflow: "hidden",
                         borderColor: active ? colors.primary : "rgba(61,14,22,0.50)",
                         flexDirection: "row",
                         alignItems: "center",
@@ -399,6 +403,7 @@ export default function ConfiguracionesScreen() {
                       },
                     ]}
                   >
+                    {active && <GoldGradientFill />}
                     {locked && (
                       <Feather name="lock" size={11} color={colors.mutedForeground} />
                     )}

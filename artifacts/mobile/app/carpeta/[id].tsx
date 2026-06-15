@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React, { useState } from "react";
 import {
   Alert,
@@ -338,6 +339,7 @@ function NamingModal({
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
+            <GoldGradientFill />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -509,7 +511,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   nameCreateBtn: {
-    backgroundColor: GOLD,
+    overflow: "hidden",
     borderRadius: 30,
     paddingHorizontal: 48,
     paddingVertical: 14,

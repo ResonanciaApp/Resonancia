@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Audio } from "expo-av";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import { useAmbientPlayer } from "@/context/AmbientPlayerContext";
@@ -105,18 +106,13 @@ const QUESTIONS: Question[] = [
 function Dots({ total, current }: { total: number; current: number }) {
   return (
     <View style={styles.dots}>
-      {Array.from({ length: total }).map((_, i) => (
-        <View
-          key={i}
-          style={[
-            styles.dot,
-            {
-              backgroundColor: i === current ? GOLD : "rgba(212,175,55,0.30)",
-              width: i === current ? 20 : 7,
-            },
-          ]}
-        />
-      ))}
+      {Array.from({ length: total }).map((_, i) =>
+        i === current ? (
+          <GoldGradient key={i} style={[styles.dot, { width: 20 }]} />
+        ) : (
+          <View key={i} style={[styles.dot, { backgroundColor: "rgba(212,175,55,0.30)", width: 7 }]} />
+        )
+      )}
     </View>
   );
 }
@@ -157,6 +153,7 @@ function OptionCard({
         <Text style={[styles.optionLabel, selected && { color: GOLD_LT }]}>{label}</Text>
         {selected && (
           <View style={styles.checkBadge}>
+            <GoldGradientFill />
             <Text style={styles.checkText}>✓</Text>
           </View>
         )}
@@ -330,6 +327,7 @@ export default function Onboarding() {
             Te haremos unas preguntas para personalizar tu experiencia
           </Text>
           <Pressable onPress={goNext} style={styles.primaryBtn}>
+            <GoldGradientFill />
             <Text style={styles.primaryBtnText}>Comenzar   →</Text>
           </Pressable>
           <Pressable onPress={finish} style={styles.skipBtn}>
@@ -391,6 +389,7 @@ export default function Onboarding() {
             }}
             style={styles.primaryBtn}
           >
+            <GoldGradientFill />
             <Text style={styles.primaryBtnText}>Crear cuenta gratis   →</Text>
           </Pressable>
           <Pressable onPress={finish} style={styles.skipBtn}>
@@ -416,7 +415,7 @@ export default function Onboarding() {
 
       {/* Progress bar */}
       <View style={styles.progressBar}>
-        <View
+        <GoldGradient
           style={[
             styles.progressFill,
             { width: `${((step + 1) / QUESTIONS.length) * 100}%` },
@@ -479,6 +478,7 @@ export default function Onboarding() {
           disabled={!canContinue}
           style={[styles.primaryBtn, !canContinue && styles.primaryBtnDisabled]}
         >
+          {canContinue && <GoldGradientFill />}
           <Text
             style={[
               styles.primaryBtnText,
@@ -611,7 +611,6 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 2,
-    backgroundColor: GOLD,
     borderRadius: 1,
   },
 
@@ -690,7 +689,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: GOLD,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -708,10 +707,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   primaryBtn: {
-    backgroundColor: GOLD,
     borderRadius: 30,
     paddingVertical: 16,
     alignItems: "center",
+    overflow: "hidden",
   },
   primaryBtnDisabled: { backgroundColor: "rgba(212,175,55,0.2)" },
   skipBtn: {

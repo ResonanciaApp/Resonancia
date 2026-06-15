@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { useClerk } from "@clerk/expo";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -43,7 +44,8 @@ export default function DevReset() {
         Esto cierra tu sesión de Clerk y borra TODO el AsyncStorage (onboarding, perfil local, favoritos, etc.). Solo
         para probar el flujo desde cero.
       </Text>
-      <Pressable onPress={reset} disabled={working} style={[styles.btn, working && { opacity: 0.5 }]}>
+      <Pressable onPress={reset} disabled={working} style={[styles.btn, { overflow: "hidden" }, working && { opacity: 0.5 }]}>
+        <GoldGradientFill />
         {working ? <ActivityIndicator color="#080F0A" /> : <Text style={styles.btnText}>Borrar todo y reiniciar</Text>}
       </Pressable>
       <Text style={styles.status}>{status}</Text>
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#070E09", padding: 28, justifyContent: "center", gap: 16 },
   title: { color: "#FFFFFF", fontSize: 24, fontFamily: "PlayfairDisplay_700Bold" },
   body: { color: "rgba(237,225,211,0.65)", fontSize: 14, lineHeight: 20 },
-  btn: { backgroundColor: "#D4AF37", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
+  btn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 12 },
   btnText: { color: "#080F0A", fontFamily: "Inter_700Bold", fontSize: 15, letterSpacing: 0.3 },
   status: { color: "rgba(212,175,55,0.7)", fontSize: 12, textAlign: "center" },
 });

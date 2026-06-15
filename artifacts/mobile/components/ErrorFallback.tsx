@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { reloadAppAsync } from "expo";
 import React, { useState } from "react";
 import {
@@ -82,12 +83,13 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
           style={({ pressed }) => [
             styles.button,
             {
-              backgroundColor: colors.primary,
+              overflow: "hidden",
               opacity: pressed ? 0.9 : 1,
               transform: [{ scale: pressed ? 0.98 : 1 }],
             },
           ]}
         >
+          <GoldGradientFill />
           <Text
             style={[
               styles.buttonText,

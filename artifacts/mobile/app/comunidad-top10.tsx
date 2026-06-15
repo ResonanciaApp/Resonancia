@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { Platform, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
@@ -66,7 +67,8 @@ export default function ComunidadTop10Screen() {
 
         {top10.map((s, idx) => (
           <View key={s.id} style={styles.row}>
-            <View style={[styles.rank, { backgroundColor: idx < 3 ? colors.primary : colors.card, borderColor: colors.border }]}>
+            <View style={[styles.rank, { backgroundColor: idx < 3 ? undefined : colors.card, borderColor: colors.border }]}>
+              {idx < 3 && <GoldGradientFill />}
               <Text style={[styles.rankText, { color: idx < 3 ? "#080F0A" : colors.foreground }]}>
                 {idx + 1}
               </Text>
@@ -105,6 +107,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
+    overflow: "hidden",
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",

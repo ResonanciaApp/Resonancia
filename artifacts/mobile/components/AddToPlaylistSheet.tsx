@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -197,11 +198,12 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
               style={({ pressed }) => [
                 styles.createBtn,
                 {
-                  backgroundColor: newName.trim() ? colors.primary : "rgba(212,175,55,0.30)",
+                  backgroundColor: newName.trim() ? undefined : "rgba(212,175,55,0.30)",
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
             >
+              {newName.trim() ? <GoldGradientFill /> : null}
               <Text style={[styles.createBtnLabel, { color: "#1B060F" }]}>
                 Crear Playlist
               </Text>
@@ -334,6 +336,7 @@ const styles = StyleSheet.create({
   createBtn: {
     borderRadius: 14,
     paddingVertical: 16,
+    overflow: "hidden",
     alignItems: "center",
   },
   createBtnLabel: {

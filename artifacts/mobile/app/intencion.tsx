@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
@@ -115,9 +116,10 @@ export default function IntencionScreen() {
                 onPress={handleSave}
                 style={({ pressed }) => [
                   styles.saveBtn,
-                  { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
+                  { overflow: "hidden", opacity: pressed ? 0.8 : 1 },
                 ]}
               >
+                <GoldGradientFill />
                 <Text style={styles.saveBtnText}>Guardar</Text>
               </Pressable>
             )}
@@ -131,7 +133,7 @@ export default function IntencionScreen() {
               <Text style={[styles.tabLabel, { color: tab === t ? colors.primary : colors.mutedForeground }]}>
                 {TAB_LABELS[t]}
               </Text>
-              {tab === t && <View style={[styles.tabUnderline, { backgroundColor: colors.primary }]} />}
+              {tab === t && <GoldGradient style={styles.tabUnderline} />}
             </Pressable>
           ))}
         </View>

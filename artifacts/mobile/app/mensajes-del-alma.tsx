@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
@@ -182,11 +183,13 @@ export default function MensajesDelAlmaScreen() {
                   style={({ pressed }) => [
                     styles.sendBtn,
                     {
-                      backgroundColor: text.trim() ? colors.primary : "rgba(212,175,55,0.20)",
+                      backgroundColor: text.trim() ? undefined : "rgba(212,175,55,0.20)",
+                      overflow: "hidden",
                       opacity: pressed ? 0.8 : 1,
                     },
                   ]}
                 >
+                  {text.trim() && <GoldGradientFill />}
                   {isSubmitting ? (
                     <ActivityIndicator size="small" color="#1B060F" />
                   ) : (

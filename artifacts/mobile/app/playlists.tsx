@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React from "react";
 import {
   Platform,
@@ -101,9 +102,10 @@ export default function PlaylistsScreen() {
               {pl.sessionIds.length > 0 && (
                 <Pressable
                   onPress={() => router.push(`/playlist/${pl.id}` as never)}
-                  style={[styles.playBtn, { backgroundColor: colors.primary }]}
+                  style={[styles.playBtn, { overflow: "hidden" }]}
                   hitSlop={8}
                 >
+                  <GoldGradientFill />
                   <Feather name="play" size={14} color="#1B060F" />
                 </Pressable>
               )}

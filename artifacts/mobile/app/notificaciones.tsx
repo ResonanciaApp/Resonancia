@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradient } from "@/components/GoldGradient";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -221,12 +222,12 @@ export default function NotificacionesScreen() {
                   </Text>
                 </View>
                 {isGroupedDm && (
-                  <View style={[styles.countBadge, { backgroundColor: colors.primary }]}>
+                  <GoldGradient style={styles.countBadge}>
                     <Text style={styles.countText}>{n.groupCount > 9 ? "9+" : n.groupCount}</Text>
-                  </View>
+                  </GoldGradient>
                 )}
                 {n.groupHasUnread && (
-                  <View style={[styles.dot, { backgroundColor: colors.primary }]} />
+                  <GoldGradient style={styles.dot} />
                 )}
               </Pressable>
             );

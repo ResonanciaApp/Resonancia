@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -324,11 +325,13 @@ export default function GrupoPostScreen() {
               style={[
                 styles.sendBtn,
                 {
-                  backgroundColor: commentText.trim() ? colors.primary : colors.card,
+                  backgroundColor: commentText.trim() ? undefined : colors.card,
+                  overflow: "hidden",
                   borderColor: colors.border,
                 },
               ]}
             >
+              {commentText.trim() && <GoldGradientFill />}
               <Feather
                 name="send"
                 size={18}

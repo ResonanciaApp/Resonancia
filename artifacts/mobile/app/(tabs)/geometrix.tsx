@@ -3,6 +3,7 @@
  * El usuario activa geometrías por capas para componer un fondo en vivo.
  */
 import { Feather } from "@expo/vector-icons";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
@@ -4753,6 +4754,7 @@ export default function GeometrixScreen() {
                 }}
                 accessibilityRole="button"
               >
+                <GoldGradientFill />
                 <Text style={styles.savedBtnPrimaryText}>Ver mis creaciones</Text>
               </Pressable>
             </View>
@@ -4800,6 +4802,7 @@ export default function GeometrixScreen() {
                 }}
                 accessibilityRole="button"
               >
+                <GoldGradientFill />
                 <Text style={styles.savedBtnPrimaryText}>Ver mis creaciones</Text>
               </Pressable>
             </View>
@@ -4834,6 +4837,7 @@ export default function GeometrixScreen() {
                 onPress={() => setShowEmptyAlert(false)}
                 accessibilityRole="button"
               >
+                <GoldGradientFill />
                 <Text style={styles.savedBtnPrimaryText}>Entendido</Text>
               </Pressable>
             </View>
@@ -6902,7 +6906,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: colors.primary,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
