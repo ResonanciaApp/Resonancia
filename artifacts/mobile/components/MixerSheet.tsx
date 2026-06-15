@@ -531,7 +531,7 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel="Cerrar editor de mezcla"
             >
-              <Feather name="chevron-down" size={24} color={palette.fg} />
+              <Feather name="chevron-down" size={24} color={activeBgPreset.image ? "#FFFFFF" : palette.fg} />
             </Pressable>
             <Text style={[styles.title, { color: activeBgPreset.image ? "#FFFFFF" : palette.fg, flex: 1 }]} numberOfLines={1}>
               {originPreset?.name ?? "Tu mezcla"}
@@ -556,7 +556,7 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel="Terminar mezcla"
             >
-              <Text style={[styles.clearPill, { color: palette.fg }]}>Cerrar</Text>
+              <Text style={[styles.clearPill, { color: activeBgPreset.image ? "#FFFFFF" : palette.fg }]}>Cerrar</Text>
             </Pressable>
           </View>
 
@@ -575,7 +575,7 @@ export function MixerSheet() {
                 <TrackThumb sound={sound} />
 
                 <View style={styles.trackInfo}>
-                  <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
+                  <Text style={[styles.trackName, { color: activeBgPreset.image ? "#FFFFFF" : palette.fg }]} numberOfLines={1}>
                     {sound.name}
                   </Text>
                   <VolumeSlider
