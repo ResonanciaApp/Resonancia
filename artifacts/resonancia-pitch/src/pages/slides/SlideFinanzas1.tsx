@@ -21,7 +21,7 @@ export default function SlideFinanzas1() {
           ANEXO FINANCIERO · HOJA 1 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Flujo de caja <span style={{ color: "#D4AF37" }}>año 1.</span>
+          Flujo de caja <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>año 1.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", marginTop: "1vh" }}>
           En millones de pesos chilenos (CLP) · TC referencial $900/USD · escenario base
@@ -39,7 +39,7 @@ export default function SlideFinanzas1() {
           marginBottom: "0.5vh",
         }}>
           {["Período", "Suscriptores", "Ingresos netos", "Fijo + mkt", "Contenido", "Resultado mes"].map((h) => (
-            <div key={h} style={{ fontSize: "1.15vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.06em" }}>{h}</div>
+            <div key={h} style={{ fontSize: "1.15vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.06em" }}>{h}</div>
           ))}
         </div>
 
@@ -74,7 +74,7 @@ export default function SlideFinanzas1() {
           backgroundColor: "#27070E",
           borderRadius: "0.6vw",
         }}>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#D4AF37" }}>AÑO 1 TOTAL</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4DAD5" }}>5.000 al cierre</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4DAD5" }}>~$121M</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>~$46M</div>

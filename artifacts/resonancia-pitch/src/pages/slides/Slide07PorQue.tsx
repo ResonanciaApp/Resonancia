@@ -10,7 +10,7 @@ export default function Slide07PorQue() {
           06 · POR QUÉ RESONANCIA
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Nuestra ventaja <span style={{ color: "#D4AF37" }}>defendible.</span>
+          Nuestra ventaja <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>defendible.</span>
         </div>
       </div>
 
@@ -18,27 +18,27 @@ export default function Slide07PorQue() {
       <div style={{ display: "flex", gap: "5vw" }}>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "3vh" }}>
           <div>
-            <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "0.8vh" }}>Foco en el idioma</div>
+            <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "0.8vh" }}>Foco en el idioma</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}>
               Español neutro nativo en cada detalle, no una traducción de una app en inglés.
             </div>
           </div>
           <div>
-            <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "0.8vh" }}>Biblioteca sonora propia</div>
+            <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "0.8vh" }}>Biblioteca sonora propia</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}>
-              Tienda propia de cuencos tibetanos y gongs: <span style={{ color: "#D4AF37", fontWeight: 700 }}>+30 horas de audio propio</span> en alta calidad, de un amplio rango de frecuencias y notas, imposible de replicar. A esto se suman artistas y voces guía certificados.
+              Tienda propia de cuencos tibetanos y gongs: <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>+30 horas de audio propio</span> en alta calidad, de un amplio rango de frecuencias y notas, imposible de replicar. A esto se suman artistas y voces guía certificados.
             </div>
           </div>
         </div>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "3vh" }}>
           <div>
-            <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "0.8vh" }}>Identidad cálida</div>
+            <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "0.8vh" }}>Identidad cálida</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}>
               Una estética y un tono que se sienten cercanos a la cultura hispanohablante.
             </div>
           </div>
           <div>
-            <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "0.8vh" }}>Producto listo</div>
+            <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "0.8vh" }}>Producto listo</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}>
               La app ya está construida: la inversión acelera lanzamiento y crecimiento, no la base.
             </div>

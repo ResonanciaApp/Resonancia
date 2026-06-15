@@ -45,7 +45,7 @@ export default function SlideFinanzas3() {
           ANEXO FINANCIERO · HOJA 3 DE 3
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Desglose de <span style={{ color: "#D4AF37" }}>costos mensuales.</span>
+          Desglose de <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>costos mensuales.</span>
         </div>
       </div>
 
@@ -60,11 +60,11 @@ export default function SlideFinanzas3() {
         gap: "1.5vw",
         flexShrink: 0,
       }}>
-        <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", flexShrink: 0 }}>IVA 19% (Chile)</div>
+        <div style={{ fontSize: "1.0vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", flexShrink: 0 }}>IVA 19% (Chile)</div>
         <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.3 }}>
           Precio usuario <strong style={{ color: "#F4DAD5" }}>incluye IVA</strong> (Ley 21.210, servicios digitales desde 2020).
           Apple/Google retienen y remiten al SII. Empresa recibe: <strong style={{ color: "#F4DAD5" }}>precio excl. IVA × 70%</strong> (comisión tienda 30%).
-          <span style={{ color: "#D4AF37", fontWeight: 700 }}> → $6.900 = $4.059/mes neto</span>
+          <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}> → $6.900 = $4.059/mes neto</span>
         </div>
       </div>
 
@@ -79,7 +79,7 @@ export default function SlideFinanzas3() {
         gap: "1.8vw",
         flexShrink: 0,
       }}>
-        <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", flexShrink: 0 }}>MEZCLA DE PLANES</div>
+        <div style={{ fontSize: "0.95vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", flexShrink: 0 }}>MEZCLA DE PLANES</div>
 
         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
           <div style={{ fontSize: "0.82vw", color: "rgba(242,231,228,0.50)" }}>Mensual · ~60% de usuarios</div>
@@ -107,7 +107,7 @@ export default function SlideFinanzas3() {
           flexShrink: 0,
         }}>
           <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.50)" }}>ARPU NETO BLENDED</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1 }}>$3.300/mes</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>$3.300/mes</div>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function SlideFinanzas3() {
 
         {/* Left: fixed + content costs */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS FIJOS / MES</div>
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS FIJOS / MES</div>
           <CostRow label="Gerente general" sub="Dirección estratégica y comercial" value="$1.300.000" />
           <CostRow label="Coordinador general" sub="Gestión operativa y de artistas" value="$700.000" />
           <CostRow label="Asesoría TI" sub="Soporte técnico y mantenimiento" value="$200.000" />
@@ -125,11 +125,11 @@ export default function SlideFinanzas3() {
           <CostRow label="Otros" sub="Imprevistos, contingencias, varios" value="$350.000" />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0.6vh 0 0", borderTop: "1px solid rgba(212,175,55,0.3)", marginTop: "0.3vh" }}>
             <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4DAD5" }}>Total fijos</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#D4AF37" }}>$3.050.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>$3.050.000</div>
           </div>
 
           <div style={{ marginTop: "0.8vh" }}>
-            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS CONTENIDO / MES</div>
+            <div style={{ fontSize: "0.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS CONTENIDO / MES</div>
             <div style={{
               backgroundColor: "rgba(212,175,55,0.06)",
               border: "1px solid rgba(212,175,55,0.2)",
@@ -145,7 +145,7 @@ export default function SlideFinanzas3() {
                 <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.50)" }}>$70.000 promedio/sesión</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "#D4AF37" }}>$2.000.000</div>
+                <div style={{ fontSize: "1.45vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>$2.000.000</div>
                 <div style={{ fontSize: "0.8vw", color: "#3D4F62" }}>$0 en Mes 1–2</div>
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function SlideFinanzas3() {
 
         {/* Right: marketing + phase totals */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>MARKETING: RAMP-UP MENSUAL</div>
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>MARKETING: RAMP-UP MENSUAL</div>
           <div style={{ backgroundColor: "#27070E", border: "1px solid rgba(212,175,55,0.15)", borderRadius: "0.7vw", padding: "0.8vh 1.1vw", marginBottom: "1.2vh" }}>
             {[
               { rango: "Mes 1–2",   desc: "Cubierto por campaña de lanzamiento (US$4.440 upfront)",  valor: "$0" },
@@ -176,7 +176,7 @@ export default function SlideFinanzas3() {
             ))}
           </div>
 
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTO TOTAL MENSUAL POR FASE</div>
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTO TOTAL MENSUAL POR FASE</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.7vw", flex: 1 }}>
             {phases.map((p, i) => (
               <div
@@ -200,7 +200,7 @@ export default function SlideFinanzas3() {
                 })}
                 <div style={{ borderTop: "1px solid rgba(212,175,55,0.2)", paddingTop: "0.4vh", marginTop: "0.3vh", display: "flex", justifyContent: "space-between" }}>
                   <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "#F4DAD5" }}>Total</div>
-                  <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "#D4AF37" }}>{p.total}</div>
+                  <div style={{ fontSize: "0.85vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{p.total}</div>
                 </div>
                 <div style={{ fontSize: "0.75vw", color: "#3D4F62", marginTop: "0.3vh", whiteSpace: "pre-line", lineHeight: 1.2 }}>{p.note}</div>
               </div>

@@ -10,13 +10,13 @@ export default function SlideAudiencia() {
           09 · NUESTRA AUDIENCIA
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          No partimos de cero: ya tenemos <span style={{ color: "#D4AF37" }}>una comunidad.</span>
+          No partimos de cero: ya tenemos <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>una comunidad.</span>
         </div>
       </div>
 
       {/* Hero number */}
       <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-        <div style={{ fontSize: "10vw", fontWeight: 700, color: "#D4AF37", lineHeight: 0.9, letterSpacing: "-0.04em" }}>
+        <div style={{ fontSize: "10vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 0.9, letterSpacing: "-0.04em" }}>
           +1.000.000
         </div>
         <div style={{ fontSize: "2vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.3, maxWidth: "26vw" }}>
@@ -27,19 +27,19 @@ export default function SlideAudiencia() {
       {/* Three advantage cards */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "1.2vh" }}>Canal propio</div>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.2vh" }}>Canal propio</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Un canal de lanzamiento propio: llegamos a cientos de miles de personas sin depender de la publicidad pagada.
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "1.2vh" }}>Costo de adquisición bajo</div>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.2vh" }}>Costo de adquisición bajo</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             La audiencia ya existe y confía en la marca: cada nueva descarga cuesta una fracción de lo que paga la competencia.
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "1.2vh" }}>Marca validada</div>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.2vh" }}>Marca validada</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Una comunidad fiel que valida la propuesta de bienestar y nos da retroalimentación real antes de escalar.
           </div>

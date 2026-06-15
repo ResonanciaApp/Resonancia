@@ -10,35 +10,35 @@ export default function Slide10HojaDeRuta() {
           11 · HOJA DE RUTA AL LANZAMIENTO
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          El camino a <span style={{ color: "#D4AF37" }}>las tiendas.</span>
+          El camino a <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>las tiendas.</span>
         </div>
       </div>
 
       {/* Four steps */}
       <div style={{ display: "flex", gap: "2vw" }}>
         <div style={{ flex: 1, borderTop: "2px solid #D4AF37", paddingTop: "2.5vh" }}>
-          <div style={{ fontSize: "2.6vw", fontWeight: 700, color: "#D4AF37", marginBottom: "1vh" }}>01</div>
+          <div style={{ fontSize: "2.6vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1vh" }}>01</div>
           <div style={{ fontSize: "1.8vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "1vh" }}>Cobros</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.45 }}>
             Activar suscripciones con RevenueCat y definir precios por región.
           </div>
         </div>
         <div style={{ flex: 1, borderTop: "2px solid #D4AF37", paddingTop: "2.5vh" }}>
-          <div style={{ fontSize: "2.6vw", fontWeight: 700, color: "#D4AF37", marginBottom: "1vh" }}>02</div>
+          <div style={{ fontSize: "2.6vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1vh" }}>02</div>
           <div style={{ fontSize: "1.8vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "1vh" }}>Publicación</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.45 }}>
             Builds con EAS y aprobación en App Store y Google Play.
           </div>
         </div>
         <div style={{ flex: 1, borderTop: "2px solid #D4AF37", paddingTop: "2.5vh" }}>
-          <div style={{ fontSize: "2.6vw", fontWeight: 700, color: "#D4AF37", marginBottom: "1vh" }}>03</div>
+          <div style={{ fontSize: "2.6vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1vh" }}>03</div>
           <div style={{ fontSize: "1.8vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "1vh" }}>Lanzamiento</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.45 }}>
             Salida inicial en Latinoamérica y España con prueba gratis de 7 días.
           </div>
         </div>
         <div style={{ flex: 1, borderTop: "2px solid #D4AF37", paddingTop: "2.5vh" }}>
-          <div style={{ fontSize: "2.6vw", fontWeight: 700, color: "#D4AF37", marginBottom: "1vh" }}>04</div>
+          <div style={{ fontSize: "2.6vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1vh" }}>04</div>
           <div style={{ fontSize: "1.8vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "1vh" }}>Crecimiento</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.45 }}>
             Marketing, alianzas con artistas y expansión del catálogo.

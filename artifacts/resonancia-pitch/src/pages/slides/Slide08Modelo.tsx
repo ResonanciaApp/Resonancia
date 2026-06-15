@@ -10,7 +10,7 @@ export default function Slide08Modelo() {
           07 · MODELO DE NEGOCIO
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Suscripción <span style={{ color: "#D4AF37" }}>freemium.</span>
+          Suscripción <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>freemium.</span>
         </div>
       </div>
 
@@ -23,7 +23,7 @@ export default function Slide08Modelo() {
           </div>
         </div>
         <div style={{ flex: 1, border: "1.5px solid #D4AF37", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2.2vw", fontWeight: 700, color: "#D4AF37", marginBottom: "2.2vh" }}>Premium</div>
+          <div style={{ fontSize: "2.2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.2vh" }}>Premium</div>
           <div style={{ fontSize: "1.6vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.7 }}>
             Catálogo completo · Descargas offline · Diario y favoritos ilimitados · Temporizador hasta 8 hs · Estadísticas y personalización avanzada
           </div>
@@ -62,7 +62,7 @@ export default function Slide08Modelo() {
         </div>
         <div style={{ flex: 1, textAlign: "right" }}>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)" }}>Precios sugeridos</div>
-          <div style={{ fontSize: "2vw", fontWeight: 700, color: "#D4AF37" }}>[mensual] · [anual]</div>
+          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>[mensual] · [anual]</div>
         </div>
       </div>
     </div>

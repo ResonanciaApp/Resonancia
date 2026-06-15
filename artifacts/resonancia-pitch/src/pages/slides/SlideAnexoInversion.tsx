@@ -75,7 +75,7 @@ export default function SlideAnexoInversion() {
           ANEXO · VALORACIÓN ESTIMADA
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          ¿Cuánto vale esta empresa <span style={{ color: "#D4AF37" }}>en 12 meses?</span>
+          ¿Cuánto vale esta empresa <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>en 12 meses?</span>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ export default function SlideAnexoInversion() {
 
         {/* Left: Hoy */}
         <div style={{ flex: 0.9, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN HOY (PRE-INVERSIÓN)</div>
+          <div style={{ fontSize: "0.95vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN HOY (PRE-INVERSIÓN)</div>
 
           <div style={{
             backgroundColor: "#27070E",
@@ -96,7 +96,7 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1, marginBottom: "0.4vh" }}>US$ 570.000</div>
+            <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1, marginBottom: "0.4vh" }}>US$ 570.000</div>
             <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", marginBottom: "1.4vh" }}>≈ $513M CLP · TC $900</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
@@ -109,7 +109,7 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(212,175,55,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.5vh" }}>
-                US$30.000 ÷ post-money US$600K ≈ <span style={{ color: "#D4AF37", fontWeight: 700 }}>5,0%</span>
+                US$30.000 ÷ post-money US$600K ≈ <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>5,0%</span>
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(212,175,55,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
@@ -119,7 +119,7 @@ export default function SlideAnexoInversion() {
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(212,175,55,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "#3D4F62" }}>Equity</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#D4AF37" }}>5,0%</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>5,0%</div>
                   <div style={{ fontSize: "0.78vw", color: "#3D4F62" }}>fijo</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(212,175,55,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
@@ -141,7 +141,7 @@ export default function SlideAnexoInversion() {
 
         {/* Right: M12 scenarios */}
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12</div>
+          <div style={{ fontSize: "0.95vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
             <ScenarioCard
               label="Base"

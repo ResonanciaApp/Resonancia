@@ -37,7 +37,7 @@ function ScenarioCard({
       </div>
       <div>
         <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INGRESO NETO AÑO 1</div>
-        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1 }}>{revenue}</div>
+        <div style={{ fontSize: "2.4vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>{revenue}</div>
         <div style={{ fontSize: "1.25vw", color: "rgba(242,231,228,0.50)", marginTop: "0.4vh" }}>{revenueUSD}</div>
       </div>
     </div>
@@ -56,7 +56,7 @@ export default function SlideProyeccion() {
           10 · PROYECCIÓN A 12 MESES
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Un primer año <span style={{ color: "#D4AF37" }}>realista.</span>
+          Un primer año <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>realista.</span>
         </div>
       </div>
 

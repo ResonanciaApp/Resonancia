@@ -10,14 +10,14 @@ export default function Slide09Estado() {
           08 · ESTADO ACTUAL
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          El producto <span style={{ color: "#D4AF37" }}>ya existe.</span>
+          El producto <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>ya existe.</span>
         </div>
       </div>
 
       {/* Two columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "2.2vh", display: "flex", alignItems: "center", gap: "0.7vw" }}>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.2vh", display: "flex", alignItems: "center", gap: "0.7vw" }}>
             Construido
             <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "1.8vw", height: "1.8vw", flexShrink: 0 }}>
               <polyline points="20 6 9 17 4 12"/>
@@ -28,7 +28,7 @@ export default function Slide09Estado() {
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", marginBottom: "2.2vh" }}>En camino</div>
+          <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.2vh" }}>En camino</div>
           <div style={{ fontSize: "1.6vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.7 }}>
             Cobros con RevenueCat · Publicación en App Store y Google Play · Notificaciones push · Migración de video a CDN · Crecimiento del catálogo
           </div>

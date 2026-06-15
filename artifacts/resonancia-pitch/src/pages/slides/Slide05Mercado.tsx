@@ -10,26 +10,26 @@ export default function Slide05Mercado() {
           04 · EL MERCADO
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Un mercado grande y <span style={{ color: "#D4AF37" }}>en plena expansión.</span>
+          Un mercado grande y <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>en plena expansión.</span>
         </div>
       </div>
 
       {/* Big stats */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "4vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "5.5vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1 }}>US$ 7.000M</div>
+          <div style={{ fontSize: "5.5vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>US$ 7.000M</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.4, marginTop: "1.5vh" }}>
             Mercado global de apps de meditación proyectado a 2033 (desde ~US$ 2.200M en 2025).
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "4vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "5.5vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1 }}>~14,7%</div>
+          <div style={{ fontSize: "5.5vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>~14,7%</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.4, marginTop: "1.5vh" }}>
             Crecimiento anual (CAGR) del mercado global de meditación.
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "4vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "5.5vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1 }}>US$ 1.060M</div>
+          <div style={{ fontSize: "5.5vw", fontWeight: 700, background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>US$ 1.060M</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.4, marginTop: "1.5vh" }}>
             Mercado de salud mental digital en Latinoamérica a 2030 (CAGR ~14,6%).
           </div>

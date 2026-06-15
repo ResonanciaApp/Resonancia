@@ -19,7 +19,7 @@ export default function SlideFinanzas2() {
   const maxSubs = 5000;
 
   const scenarios = [
-    { label: "Base",        subs12: "5.000",  ing12: "$16,5M/mes", ingAnual: "~$121M", color: "#D4AF37", highlight: true },
+    { label: "Base",        subs12: "5.000",  ing12: "$16,5M/mes", ingAnual: "~$121M", background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", highlight: true },
     { label: "Optimista",   subs12: "8.000",  ing12: "$26,4M/mes", ingAnual: "~$193M", color: "#6EC49A" },
     { label: "Agresivo",    subs12: "10.000", ing12: "$33,0M/mes", ingAnual: "~$241M", color: "#6EC49A" },
   ];
@@ -35,7 +35,7 @@ export default function SlideFinanzas2() {
           ANEXO FINANCIERO · HOJA 2 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Curva de crecimiento y <span style={{ color: "#D4AF37" }}>escenarios.</span>
+          Curva de crecimiento y <span style={{ background: "linear-gradient(90deg, #FF6B3D, #FF9E4D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>escenarios.</span>
         </div>
       </div>
 
@@ -126,7 +126,7 @@ export default function SlideFinanzas2() {
             }}
           >
             <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>{k.label.toUpperCase()}</div>
-            <div style={{ fontSize: "1.9vw", fontWeight: 700, color: "#D4AF37", lineHeight: 1 }}>{k.value}</div>
+            <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>{k.value}</div>
             <div style={{ fontSize: "1.05vw", color: "#3D4F62", marginTop: "0.5vh" }}>{k.sub}</div>
           </div>
         ))}
