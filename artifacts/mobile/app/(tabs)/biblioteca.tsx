@@ -652,7 +652,6 @@ export default function BibliotecaScreen() {
           {/* ── Mis playlists (siempre al tope en vista general) ── */}
           {sortedPlaylists.length > 0 && (
             <>
-              <Text style={[styles.generalSectionLabel, { marginBottom: 7 }]}>Mis playlists</Text>
               {viewMode === "grid" ? (
                 <View style={styles.gridWrap}>
                   {sortedPlaylists.map((pl) => (
@@ -689,7 +688,6 @@ export default function BibliotecaScreen() {
           {/* ── Escuchadas recientemente ── */}
           {listenedRecently.length > 0 && (
             <>
-              <Text style={[styles.generalSectionLabel, { marginTop: sortedPlaylists.length > 0 ? 24 : 0, marginBottom: 7 }]}>Recientes</Text>
               {viewMode === "grid" ? (
                 <View style={styles.gridWrap}>
                   {visibleRecent.map((s) => (
@@ -1391,8 +1389,8 @@ const styles = StyleSheet.create({
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
-    width: 52,
-    height: 52,
+    width: 56,
+    height: 56,
     borderRadius: 8,
     backgroundColor: "rgba(212,175,55,0.08)",
     alignItems: "center",
