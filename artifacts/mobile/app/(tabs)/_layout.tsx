@@ -145,8 +145,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        <View style={[styles.barBorder, { borderTopColor: BAR_BORDER }]} />
-
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
