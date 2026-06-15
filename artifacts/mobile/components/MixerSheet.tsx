@@ -537,8 +537,8 @@ export function MixerSheet() {
             />
           )}
 
-          {/* ── Cabecera con fondo propio ── */}
-          <View style={[styles.headerBg, { marginTop: -(insets.top + 8), paddingTop: insets.top + 8 }]}>
+          {/* ── Cabecera con fondo propio — solo visible en tema sin imagen ── */}
+          <View style={[styles.headerBg, { marginTop: -(insets.top + 8), paddingTop: insets.top + 8, backgroundColor: activeBgPreset.image ? "transparent" : "#3d304e" }]}>
             {/* Handle con PanResponder para arrastrar y cerrar */}
             <View style={styles.handleZone} {...panResponder.panHandlers}>
               <View style={[styles.handle, { backgroundColor: "rgba(255,255,255,0.25)" }]} />
