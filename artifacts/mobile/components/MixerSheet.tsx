@@ -583,6 +583,7 @@ export function MixerSheet() {
             style={styles.trackScroll}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
+            nestedScrollEnabled
           >
             {activeMix.map(({ active, sound }, index) => (
               <View
@@ -887,7 +888,6 @@ const styles = StyleSheet.create({
   sheet: {
     height: Dimensions.get("window").height,
     paddingHorizontal: 20,
-    overflow: "hidden",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
