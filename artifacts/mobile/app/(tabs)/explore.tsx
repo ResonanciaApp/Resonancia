@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   // Recomendado para ti
   recoSection: {
     paddingHorizontal: H_PAD,
-    marginBottom: 24,
+    marginBottom: 33,
   },
   recoSub: {
     fontSize: 12,
