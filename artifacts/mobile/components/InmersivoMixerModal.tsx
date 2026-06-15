@@ -187,10 +187,6 @@ export function InmersivoContent() {
           <View style={[StyleSheet.absoluteFill, { backgroundColor: bgPreset.imageOverlay }]} pointerEvents="none" />
         )}
 
-        {!bgPreset.image && bgPreset.isLight && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.40)" }]} pointerEvents="none" />
-        )}
-
         {/* Hint intro — 2s visible luego desvanece */}
         <Animated.View style={[styles.introHint, { opacity: introOpacity }]} pointerEvents="none">
           <Text style={styles.introHintText}>
