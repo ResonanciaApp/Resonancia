@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   catCardTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "700",
     color: "#FFFFFF",
     letterSpacing: 0.2,
