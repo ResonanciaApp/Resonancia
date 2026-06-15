@@ -67,4 +67,4 @@
 - [Drawer animation glitches](drawer-animation.md) — drawer SIEMPRE montado (sin gate rendered) + animar imperativo con stopAnimation antes de cada transición + sombra solo si isOpen; no regresar
 - [biblioteca chip animation](biblioteca-chip-animation.md) — AnimatedChipRow: un progress 0/1 ida-y-vuelta; displayTab posiciona (se conserva al volver), colorTab da oro/gris al instante del tap
 - [Mixer settings sheet](mixer-settings-sheet.md) — engranaje del Mezclador abre Ajustes (filtro ánimo/etiquetas + paleta de fondo); estado local persistido; validar claves persistidas o el filtro crashea
-- [BPM gapless rhythmic loop](bpm-gapless-loop.md) — drums: loop nativo, crossfade y per-player listener-wrap FALLAN; un ÚNICO reloj maestro (setTimeout alineado) hace seekTo(0) de todas las capas BPM a la vez = gapless + phase-lock; cola de silencio en el archivo
+- [BPM gapless loop engine](bpm-gapless-loop.md) — loops "bpm" del Mezclador en react-native-audio-api (resto en expo-audio); expo dueño único de AVAudioSession; loopEnd musical; play() async cancelable; necesita rebuild del dev client; historial de enfoques expo-audio que fallaron
