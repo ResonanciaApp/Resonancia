@@ -36,7 +36,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     if (reopenOnHome.current && isTabsRoute && prev !== pathname) {
       reopenOnHome.current = false;
       const t = setTimeout(() => {
-        setInstant(false);
+        setInstant(true);
         setIsOpen(true);
       }, 80);
       return () => clearTimeout(t);
