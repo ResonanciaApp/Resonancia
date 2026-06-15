@@ -122,7 +122,6 @@ function TrackThumb({ sound }: { sound: MixSound }) {
 export function MixerSheet() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const isLight = false;
 
   // ── Fondo personalizable ──────────────────────────────────────────────────
   const [bgPresetId,    setBgPresetId]    = useState<string>(DEFAULT_BG_PRESET_ID);
@@ -135,6 +134,7 @@ export function MixerSheet() {
     GRADIENT_PRESETS.find((p) => p.id === bgPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const sheetGradient = activeBgPreset.colors;
+  const isLight = activeBgPreset.isLight ?? false;
 
   // Cargar preset y overlay guardados
   useEffect(() => {
@@ -191,7 +191,7 @@ export function MixerSheet() {
     fg:             isLight ? "#1A1E2B"             : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
     inputBg:        isLight ? "rgba(0,0,0,0.04)"   : "rgba(74,12,12,0.08)",
-    footerCircleBg: isLight ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.95)",
+    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"       : "rgba(255,255,255,0.95)",
     footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(244,218,213,0.45)",
   };
   const { isPremium } = usePremium();

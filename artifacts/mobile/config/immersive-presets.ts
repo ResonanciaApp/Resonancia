@@ -9,9 +9,19 @@ export type GradientPreset = {
   image?: ImageSourcePropType;
   /** Color de overlay oscuro encima de la imagen para legibilidad (rgba) */
   imageOverlay?: string;
+  /** Si true, el contenido del MixerSheet usa paleta clara (texto oscuro) */
+  isLight?: boolean;
 };
 
 export const GRADIENT_PRESETS: GradientPreset[] = [
+  // ── Tema claro (default) ───────────────────────────────────────────────────
+  {
+    id: "blanco",
+    name: "Claro",
+    colors: ["#F5F0F0", "#EDE8EE", "#FAF6FA"],
+    emoji: "☁️",
+    isLight: true,
+  },
   // ── Imágenes de naturaleza ─────────────────────────────────────────────────
   {
     id: "bosque",
@@ -70,7 +80,7 @@ export const GRADIENT_PRESETS: GradientPreset[] = [
   { id: "fuego",    name: "Fuego Sagrado",      colors: ["#200800", "#380E00", "#100400"], emoji: "🔥" },
 ];
 
-export const DEFAULT_BG_PRESET_ID = "borgona";
+export const DEFAULT_BG_PRESET_ID = "blanco";
 export const MIXER_BG_KEY = "@resonance_mixer_bg";
 export const MIXER_OVERLAY_KEY = "@resonance_mixer_overlay";
 export const DEFAULT_OVERLAY = 0.65;
