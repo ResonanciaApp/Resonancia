@@ -16,6 +16,7 @@ export type Folder = {
   playlistIds: string[];   // playlists agrupadas (flujo carpeta Spotify-style)
   subFolderIds: string[];  // subcarpetas anidadas
   createdAt: string;
+  pinned?: boolean;
 };
 
 export type Playlist = {
@@ -28,6 +29,7 @@ export type Playlist = {
   coverGeometryId?: string;
   coverCreationId?: string;
   createdAt: string;
+  pinned?: boolean;
 };
 
 interface FoldersPlaylistsCtx {
@@ -55,6 +57,8 @@ interface FoldersPlaylistsCtx {
   removeFromPlaylist: (playlistId: string, sessionId: string) => void;
   deletePlaylist: (playlistId: string) => void;
   isInPlaylist: (playlistId: string, sessionId: string) => boolean;
+  togglePinPlaylist: (playlistId: string) => void;
+  togglePinFolder: (folderId: string) => void;
 }
 
 // ─── Storage keys ─────────────────────────────────────────────────────────────
@@ -267,6 +271,18 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     [playlists]
   );
 
+  const togglePinPlaylist = useCallback((playlistId: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) => p.id === playlistId ? { ...p, pinned: !(p.pinned ?? false) } : p)
+    );
+  }, [updatePlaylists]);
+
+  const togglePinFolder = useCallback((folderId: string) => {
+    updateFolders((prev) =>
+      prev.map((f) => f.id === folderId ? { ...f, pinned: !(f.pinned ?? false) } : f)
+    );
+  }, [updateFolders]);
+
   return (
     <Ctx.Provider
       value={{
@@ -292,6 +308,8 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         removeFromPlaylist,
         deletePlaylist,
         isInPlaylist,
+        togglePinPlaylist,
+        togglePinFolder,
       }}
     >
       {children}

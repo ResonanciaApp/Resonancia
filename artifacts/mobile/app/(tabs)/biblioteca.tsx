@@ -39,6 +39,7 @@ import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as User
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
+import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -287,15 +288,18 @@ function PlaylistGrid({ pl, onPress }: { pl: Playlist; onPress: () => void }) {
 }
 
 // ── Fila de carpeta del usuario ───────────────────────────────────────────────
-function FolderRow({ folder, onPress }: { folder: UserFolder; onPress: () => void }) {
+function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPress: () => void; onLongPress?: () => void }) {
   const count = (folder.playlistIds ?? []).length;
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
-        <Feather name="folder" size={22} color={GOLD} />
+        <Feather name="folder" size={22} color={folder.pinned ? GOLD : GOLD} />
       </View>
       <View style={styles.rowInfo}>
-        <Text style={styles.rowTitle} numberOfLines={1}>{folder.name}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          <Text style={styles.rowTitle} numberOfLines={1}>{folder.name}</Text>
+          {folder.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
+        </View>
         <Text style={styles.rowSub} numberOfLines={1}>
           Carpeta · {count === 0 ? "Vacía" : `${count} playlist${count !== 1 ? "s" : ""}`}
         </Text>
@@ -305,9 +309,9 @@ function FolderRow({ folder, onPress }: { folder: UserFolder; onPress: () => voi
 }
 
 // ── Fila de playlist del usuario ─────────────────────────────────────────────
-function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => void }) {
+function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPress: () => void; onLongPress?: () => void }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
@@ -320,7 +324,10 @@ function UserPlaylistRow({ pl, onPress }: { pl: UserPlaylist; onPress: () => voi
         )}
       </View>
       <View style={styles.rowInfo}>
-        <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
+          {pl.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
+        </View>
         <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
       </View>
     </Pressable>
@@ -719,6 +726,8 @@ export default function BibliotecaScreen() {
   const [createVisible, setCreateVisible] = useState(false);
   const [nombreVisible, setNombreVisible] = useState(false);
   const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
+  const [actionsItemId, setActionsItemId] = useState<string | null>(null);
+  const [actionsItemKind, setActionsItemKind] = useState<"playlist" | "folder" | null>(null);
   const { playlists: userPlaylists, folders: userFolders } = useFoldersPlaylists();
 
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
@@ -775,9 +784,10 @@ export default function BibliotecaScreen() {
       const visibleRecent = sortedRecent.slice(0, recentLimit);
       const hasMoreRecent = sortedRecent.length > recentLimit;
 
-      const sortedPlaylists = [...userPlaylists].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
+      const sortedPlaylists = [...userPlaylists].sort((a, b) => {
+        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
 
       return (
         <>
@@ -810,7 +820,12 @@ export default function BibliotecaScreen() {
               ) : (
                 <View style={{ gap: 9 }}>
                   {sortedPlaylists.map((pl) => (
-                    <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
+                    <UserPlaylistRow
+                      key={pl.id}
+                      pl={pl}
+                      onPress={() => router.push(`/playlist/${pl.id}` as never)}
+                      onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
+                    />
                   ))}
                 </View>
               )}
@@ -903,16 +918,28 @@ export default function BibliotecaScreen() {
           </View>
         );
       }
-      const sortedFolders = [...userFolders].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+      const sortedFolders = [...userFolders].sort((a, b) => {
+        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      const pinnedFirstPl = [...displayPl].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
       return (
         <View style={{ gap: 9 }}>
           {sortedFolders.map((folder) => (
-            <FolderRow key={folder.id} folder={folder} onPress={() => router.push(`/carpeta/${folder.id}` as never)} />
+            <FolderRow
+              key={folder.id}
+              folder={folder}
+              onPress={() => router.push(`/carpeta/${folder.id}` as never)}
+              onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
+            />
           ))}
-          {sortedUserPl.map((pl) => (
-            <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
+          {pinnedFirstPl.map((pl) => (
+            <UserPlaylistRow
+              key={pl.id}
+              pl={pl}
+              onPress={() => router.push(`/playlist/${pl.id}` as never)}
+              onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
+            />
           ))}
           {PLAYLISTS.map((pl) => (
             <PlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
@@ -1231,6 +1258,12 @@ export default function BibliotecaScreen() {
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
+      <PlaylistActionsSheet
+        itemId={actionsItemId}
+        itemKind={actionsItemKind}
+        visible={actionsItemId !== null}
+        onClose={() => { setActionsItemId(null); setActionsItemKind(null); }}
+      />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
 
       {/* ── Modal Agregar Resonador ── */}
