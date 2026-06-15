@@ -895,7 +895,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(61,14,22,0.40)" },
-  headerDivider: { height: 1, marginTop: 4, marginBottom: 29, marginHorizontal: -2 },
+  headerDivider: { height: 1, marginTop: 4, marginBottom: 4, marginHorizontal: -2 },
   thumb: { width: 42, height: 42, borderRadius: 9, overflow: "hidden", borderWidth: 1, borderColor: "rgba(244,218,213,0.50)" },
   thumbRadius: { borderRadius: 8 },
   trackInfo: { flex: 1, justifyContent: "center" },
