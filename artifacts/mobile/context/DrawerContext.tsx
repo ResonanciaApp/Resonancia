@@ -8,7 +8,6 @@ export const DRAWER_PUSH = DRAWER_W + 50;
 
 type DrawerCtx = {
   isOpen: boolean;
-  instant: boolean;
   open: () => void;
   close: () => void;
   drawerAnim: Animated.Value;
@@ -18,13 +17,44 @@ const Ctx = createContext<DrawerCtx | null>(null);
 
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [instant, setInstant] = useState(false);
   const reopenOnHome = useRef(false);
   const drawerAnim = useRef(new Animated.Value(0)).current;
 
   const pathname = usePathname();
   const prevPath = useRef(pathname);
 
+  // Animación imperativa: cancela cualquier animación en vuelo antes de empezar,
+  // así un cierre a medio camino no compite con una apertura (evita parpadeos).
+  const animate = useCallback(
+    (toOpen: boolean, instant: boolean) => {
+      drawerAnim.stopAnimation();
+      if (instant) {
+        drawerAnim.setValue(toOpen ? 1 : 0);
+        return;
+      }
+      Animated.timing(drawerAnim, {
+        toValue: toOpen ? 1 : 0,
+        duration: toOpen ? 260 : 220,
+        easing: toOpen ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
+    },
+    [drawerAnim],
+  );
+
+  const open = useCallback(() => {
+    setIsOpen(true);
+    animate(true, false);
+  }, [animate]);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+    animate(false, false);
+  }, [animate]);
+
+  // Reapertura al volver a una ruta de tabs (p. ej. tras navegar a "Amigos" y
+  // retroceder). Aparece instantáneo, sin animación que compita con la transición
+  // de pantalla.
   useEffect(() => {
     const prev = prevPath.current;
     prevPath.current = pathname;
@@ -36,50 +66,16 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     if (reopenOnHome.current && isTabsRoute && prev !== pathname) {
       reopenOnHome.current = false;
       const t = setTimeout(() => {
-        setInstant(true);
         setIsOpen(true);
+        animate(true, true);
       }, 80);
       return () => clearTimeout(t);
     }
-  }, [pathname]);
-
-  useEffect(() => {
-    if (isOpen) {
-      if (instant) {
-        drawerAnim.setValue(1);
-        return;
-      }
-      // Apertura: timing con ease-out cúbico — arranque rápido, llega suave
-      Animated.timing(drawerAnim, {
-        toValue: 1,
-        duration: 260,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }).start();
-    } else {
-      // Cierre: timing con ease-in cúbico — sale suave, termina decisivo
-      Animated.timing(drawerAnim, {
-        toValue: 0,
-        duration: 220,
-        easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [isOpen, instant, drawerAnim]);
-
-  const open = useCallback(() => {
-    setInstant(false);
-    setIsOpen(true);
-  }, []);
-
-  const close = useCallback(() => {
-    setIsOpen(false);
-    setInstant(false);
-  }, []);
+  }, [pathname, animate]);
 
   const value = React.useMemo(
-    () => ({ isOpen, instant, open, close, drawerAnim }),
-    [isOpen, instant, open, close, drawerAnim],
+    () => ({ isOpen, open, close, drawerAnim }),
+    [isOpen, open, close, drawerAnim],
   );
 
   return (

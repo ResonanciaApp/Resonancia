@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Animated,
   Platform,
@@ -61,20 +61,11 @@ export function DrawerMenu() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  // Mount/unmount: mount immediately on open, unmount after close animation finishes
-  const [rendered, setRendered] = useState(visible);
-  useEffect(() => {
-    if (visible) {
-      setRendered(true);
-    } else {
-      // 240ms = cierre 220ms + 20ms de margen para que no se corte antes
-      const t = setTimeout(() => setRendered(false), 240);
-      return () => clearTimeout(t);
-    }
-  }, [visible]);
-
-  if (!rendered) return null;
-
+  // Panel siempre montado y sincronizado con el contenido (drawerAnim), así no
+  // hay desfase ni "salto" al abrir. El rango coincide con el empuje del contenido
+  // para que el borde del panel y el contenido queden alineados durante todo el arco.
+  // La sombra (que se filtraría en el borde de la pantalla cuando está cerrado) solo
+  // se aplica mientras el drawer está abierto/visible.
   const translateX = drawerAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [-DRAWER_PUSH, 0],
@@ -101,7 +92,7 @@ export function DrawerMenu() {
         />
       )}
 
-      <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
+      <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }] }]}>
         <View
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#27070E" }]}
         >
@@ -203,6 +194,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: DRAWER_PUSH,
+  },
+  drawerShadow: {
     shadowColor: "#000",
     shadowOffset: { width: 6, height: 0 },
     shadowOpacity: 0.35,
