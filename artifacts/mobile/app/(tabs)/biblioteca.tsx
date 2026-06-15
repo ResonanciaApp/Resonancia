@@ -775,7 +775,7 @@ export default function BibliotecaScreen() {
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       return (
-        <>
+        <View style={{ gap: 9 }}>
           {sortedFolders.map((folder) => (
             <FolderRow key={folder.id} folder={folder} onPress={() => router.push(`/carpeta/${folder.id}` as never)} />
           ))}
@@ -785,7 +785,7 @@ export default function BibliotecaScreen() {
           {PLAYLISTS.map((pl) => (
             <PlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
           ))}
-        </>
+        </View>
       );
     }
 
@@ -829,14 +829,16 @@ export default function BibliotecaScreen() {
       }
       return (
         <>
-          {visibleMixes.map((mix) => (
-            <MixRow
-              key={mix.id}
-              mix={mix}
-              isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-              onPress={() => loadMix(mix)}
-            />
-          ))}
+          <View style={{ gap: 9 }}>
+            {visibleMixes.map((mix) => (
+              <MixRow
+                key={mix.id}
+                mix={mix}
+                isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
+                onPress={() => loadMix(mix)}
+              />
+            ))}
+          </View>
           {hasMixesMore && (
             <Pressable style={styles.loadMoreBtn} onPress={() => setMixesLimit((n) => n + 12)}>
               <Text style={styles.loadMoreText}>Cargar más</Text>
@@ -907,18 +909,20 @@ export default function BibliotecaScreen() {
       }
       return (
         <>
-          {visibleGeo.map((c) => (
-            <GeometrixRow
-              key={c.id}
-              creation={c}
-              onPress={() =>
-                router.navigate({
-                  pathname: "/(tabs)/geometrix",
-                  params: { load: c.id },
-                } as never)
-              }
-            />
-          ))}
+          <View style={{ gap: 9 }}>
+            {visibleGeo.map((c) => (
+              <GeometrixRow
+                key={c.id}
+                creation={c}
+                onPress={() =>
+                  router.navigate({
+                    pathname: "/(tabs)/geometrix",
+                    params: { load: c.id },
+                  } as never)
+                }
+              />
+            ))}
+          </View>
           {hasGeoMore && (
             <Pressable style={styles.loadMoreBtn} onPress={() => setGeoLimit((n) => n + 8)}>
               <Text style={styles.loadMoreText}>Cargar más</Text>
@@ -951,7 +955,7 @@ export default function BibliotecaScreen() {
         );
       }
       return (
-        <View style={{ paddingHorizontal: H_PAD }}>
+        <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
           {favSessions.map((s) => (
             <SessionCard
               key={s.id}
@@ -992,15 +996,19 @@ export default function BibliotecaScreen() {
           </View>
         );
       }
-      return resonadores.map((r) => (
-        <ResonadorRow
-          key={r.id}
-          name={r.name}
-          photo={r.photo}
-          tags={r.tags}
-          onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
-        />
-      ));
+      return (
+        <View style={{ gap: 9 }}>
+          {resonadores.map((r) => (
+            <ResonadorRow
+              key={r.id}
+              name={r.name}
+              photo={r.photo}
+              tags={r.tags}
+              onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+            />
+          ))}
+        </View>
+      );
     }
 
     return null;
