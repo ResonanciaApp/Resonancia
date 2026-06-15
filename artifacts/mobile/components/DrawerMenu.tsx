@@ -15,7 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
-import { useDrawer, markDrawerReopenOnHome, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
+import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
 
@@ -78,7 +78,6 @@ export function DrawerMenu() {
 
   const navigate = (route: string) => {
     onClose();
-    markDrawerReopenOnHome();
     router.push(route as never);
   };
 
