@@ -235,16 +235,19 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                   onPress={() => setPreviewScene(scene)}
                   style={styles.cardWrap}
                 >
-                  <View style={[styles.card, active && styles.cardActive]}>
+                  <View style={styles.card}>
                     <Image
                       source={scene.image}
                       style={StyleSheet.absoluteFill}
                       contentFit="cover"
                     />
                     {active && (
-                      <View style={styles.activeOverlay}>
-                        <Feather name="check-circle" size={28} color="#FFF" />
-                      </View>
+                      <>
+                        <View style={styles.activeOverlay}>
+                          <Feather name="check-circle" size={28} color="#FFF" />
+                        </View>
+                        <View style={styles.activeBorder} pointerEvents="none" />
+                      </>
                     )}
                     {!scene.image && (
                       <View style={[StyleSheet.absoluteFill, styles.gradientFallback, { backgroundColor: scene.colors[0] }]} />
@@ -425,7 +428,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#222",
   },
-  cardActive: {
+  cardActive: {},
+  activeBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 16,
     borderWidth: 3,
     borderColor: "#D4AF37",
   },
