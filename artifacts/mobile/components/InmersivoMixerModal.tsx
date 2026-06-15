@@ -98,7 +98,7 @@ export function InmersivoContent() {
     Animated.timing(msgOpacity, { toValue: 1, duration: MSG_FADE_MS, useNativeDriver: true }).start();
   }, [packId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const controlsOpacity = useRef(new Animated.Value(1)).current;
+  const controlsOpacity = useRef(new Animated.Value(0)).current;
   const hideTimer        = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showControls = useCallback(() => {
@@ -114,9 +114,16 @@ export function InmersivoContent() {
     }, CONTROLS_TIMEOUT);
   }, [controlsOpacity]);
 
+  // Hint intro: visible 2 s, luego desvanece
+  const introOpacity = useRef(new Animated.Value(1)).current;
   useEffect(() => {
-    showControls();
-    return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
+    const t = setTimeout(() => {
+      Animated.timing(introOpacity, { toValue: 0, duration: 600, useNativeDriver: true }).start();
+    }, 2000);
+    return () => {
+      clearTimeout(t);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [timerPanelOpen, setTimerPanelOpen] = useState(false);
@@ -179,6 +186,13 @@ export function InmersivoContent() {
         {bgPreset.image && bgPreset.imageOverlay && (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: bgPreset.imageOverlay }]} pointerEvents="none" />
         )}
+
+        {/* Hint intro — 2s visible luego desvanece */}
+        <Animated.View style={[styles.introHint, { opacity: introOpacity }]} pointerEvents="none">
+          <Text style={styles.introHintText}>
+            Para una mejor experiencia reproduce con audífonos o parlantes
+          </Text>
+        </Animated.View>
 
         <LinearGradient
           colors={["transparent", "rgba(0,0,0,0.20)", "transparent"]}
@@ -322,6 +336,20 @@ export function InmersivoMixerModal() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#1B060F" },
+  introHint: {
+    position: "absolute",
+    bottom: "18%",
+    left: 32,
+    right: 32,
+    alignItems: "center",
+  },
+  introHintText: {
+    color: "rgba(255,255,255,0.70)",
+    fontSize: 14,
+    textAlign: "center",
+    lineHeight: 22,
+    letterSpacing: 0.2,
+  },
   controlsLayer: { ...StyleSheet.absoluteFillObject, justifyContent: "space-between" },
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20 },
   iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.22)", borderRadius: 22 },
