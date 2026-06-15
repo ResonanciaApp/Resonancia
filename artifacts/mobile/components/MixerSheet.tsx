@@ -229,8 +229,9 @@ export function MixerSheet() {
   const { notifySaved } = useSaveEvent();
 
   // Valores animados: entrada (slideIn) + fade al guardar
-  const sheetOpacity = useRef(new Animated.Value(1)).current;
-  const sheetEnterY  = useRef(new Animated.Value(Dimensions.get("window").height)).current;
+  const sheetOpacity   = useRef(new Animated.Value(1)).current;
+  const sheetEnterY    = useRef(new Animated.Value(Dimensions.get("window").height)).current;
+  const immersivoFade  = useRef(new Animated.Value(0)).current;
   const saveOverlayOpacity = useRef(new Animated.Value(0)).current;
 
   // PanResponder para arrastrar hacia abajo y cerrar
@@ -266,10 +267,18 @@ export function MixerSheet() {
     if (isSheetOpen) {
       sheetOpacity.setValue(1);
       sheetEnterY.setValue(Dimensions.get("window").height);
+      immersivoFade.setValue(0);
       Animated.spring(sheetEnterY, {
         toValue: 0,
         tension: 65,
         friction: 14,
+        useNativeDriver: true,
+      }).start();
+      Animated.timing(immersivoFade, {
+        toValue: 1,
+        duration: 480,
+        delay: 350,
+        easing: Easing.out(Easing.ease),
         useNativeDriver: true,
       }).start();
       setOriginId(loadedPresetId);
@@ -608,19 +617,31 @@ export function MixerSheet() {
           </ScrollView>
 
           {/* Modo Inmersivo */}
-          <Pressable
-            onPress={() => {
-              closeSheet();
-              router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}` as never);
-            }}
-            style={styles.immersivoBtn}
-            accessibilityRole="button"
-            accessibilityLabel="Entrar en Modo Inmersivo"
-          >
-            <MaterialCommunityIcons name="image-filter-center-focus" size={17} color="rgba(212,175,55,0.75)" />
-            <Text style={styles.immersivoBtnText}>Modo Inmersivo</Text>
-            <MaterialCommunityIcons name="chevron-right" size={16} color="rgba(212,175,55,0.45)" />
-          </Pressable>
+          <Animated.View style={{ opacity: immersivoFade, alignSelf: "center", marginBottom: 20, marginTop: 6 }}>
+            <Pressable
+              onPress={() => {
+                closeSheet();
+                router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}` as never);
+              }}
+              style={[styles.immersivoBtn, activeBgPreset.image && styles.immersivoBtnImage]}
+              accessibilityRole="button"
+              accessibilityLabel="Entrar en Modo Inmersivo"
+            >
+              {/* Ícono: ojo dentro de fullscreen */}
+              <View style={styles.immersivoIconWrap}>
+                <MaterialCommunityIcons name="fullscreen" size={30} color={activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"} />
+                <MaterialCommunityIcons
+                  name="eye"
+                  size={13}
+                  color={activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"}
+                  style={styles.immersivoIconEye}
+                />
+              </View>
+              <Text style={[styles.immersivoBtnText, activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
+                Modo Inmersivo
+              </Text>
+            </Pressable>
+          </Animated.View>
 
           {/* Separador sonidos / tab — oculto */}
 
@@ -1052,23 +1073,32 @@ const styles = StyleSheet.create({
   immersivoBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    marginHorizontal: 4,
-    marginTop: 4,
-    marginBottom: 2,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    borderRadius: 12,
-    backgroundColor: "rgba(212,175,55,0.05)",
+    gap: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 50,
+    backgroundColor: "rgba(212,175,55,0.08)",
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.12)",
+    borderColor: "rgba(212,175,55,0.22)",
+  },
+  immersivoBtnImage: {
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderColor: "rgba(255,255,255,0.22)",
+  },
+  immersivoIconWrap: {
+    width: 30,
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  immersivoIconEye: {
+    position: "absolute",
   },
   immersivoBtnText: {
-    flex: 1,
     fontSize: 13,
     fontWeight: "600",
-    color: "rgba(212,175,55,0.80)",
-    letterSpacing: 0.3,
+    color: "rgba(212,175,55,0.85)",
+    letterSpacing: 0.5,
   },
 
   // ── Picker de fondo ────────────────────────────────────────────────────────
