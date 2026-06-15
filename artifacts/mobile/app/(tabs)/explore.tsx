@@ -305,7 +305,7 @@ export default function ExploreScreen() {
         ) : (
           <>
             {/* ── Explorar todo (TEMAS 6×2) ── */}
-            <View style={styles.section}>
+            <View style={[styles.section, { marginBottom: 33 }]}>
               <View style={styles.sectionRow}>
                 <Text style={styles.sectionTitle}>Explorar todo</Text>
               </View>
