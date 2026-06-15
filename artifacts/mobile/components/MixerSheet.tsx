@@ -570,7 +570,7 @@ export function MixerSheet() {
             {activeMix.map(({ active, sound }, index) => (
               <View
                 key={sound.id}
-                style={styles.trackRow}
+                style={[styles.trackRow, { backgroundColor: palette.inputBg }]}
               >
                 <TrackThumb sound={sound} />
 
@@ -889,7 +889,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     marginBottom: 8,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    elevation: 2,
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(61,14,22,0.40)" },
   headerDivider: { height: 1, marginTop: 4, marginBottom: 29, marginHorizontal: -2 },
