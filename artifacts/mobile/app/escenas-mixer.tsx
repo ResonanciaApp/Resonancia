@@ -65,6 +65,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [previewScene, setPreviewScene] = useState<(typeof IMAGE_SCENES)[0] | null>(null);
   const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
+  const [timerOpen, setTimerOpen] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(MIXER_BG_KEY).then((bg) => {
@@ -159,29 +160,41 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
             <View style={styles.divider} />
 
             {/* Timer de reproducción */}
-            <View style={styles.controlRow}>
+            <Pressable style={styles.controlRow} onPress={() => setTimerOpen((v) => !v)}>
               <MaterialCommunityIcons name="timer-outline" size={20} color="#555" style={styles.controlIcon} />
               <View style={styles.controlText}>
                 <Text style={styles.controlLabel}>Apagar después de…</Text>
                 <Text style={styles.controlSub}>La mezcla se detiene automáticamente</Text>
               </View>
-            </View>
-            <View style={styles.chipRow}>
-              {TIMER_OPTIONS.map((opt) => {
-                const active = timerMinutes === opt.value;
-                return (
-                  <Pressable
-                    key={String(opt.value)}
-                    onPress={() => handleTimerSelect(opt.value)}
-                    style={[styles.chip, active && styles.chipActive]}
-                  >
-                    <Text style={[styles.chipText, active && styles.chipTextActive]}>
-                      {opt.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
+              <View style={styles.timerTrigger}>
+                <Text style={styles.timerTriggerLabel}>
+                  {TIMER_OPTIONS.find((o) => o.value === timerMinutes)?.label ?? "Sin límite"}
+                </Text>
+                <MaterialCommunityIcons
+                  name={timerOpen ? "chevron-up" : "chevron-down"}
+                  size={16}
+                  color="#555"
+                />
+              </View>
+            </Pressable>
+            {timerOpen && (
+              <View style={styles.timerDropdown}>
+                {TIMER_OPTIONS.map((opt) => {
+                  const active = timerMinutes === opt.value;
+                  return (
+                    <Pressable
+                      key={String(opt.value)}
+                      onPress={() => { handleTimerSelect(opt.value); setTimerOpen(false); }}
+                      style={[styles.timerDropItem, active && styles.timerDropItemActive]}
+                    >
+                      <Text style={[styles.timerDropItemText, active && styles.timerDropItemTextActive]}>
+                        {opt.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
 
             <View style={styles.divider} />
 
@@ -354,27 +367,41 @@ const styles = StyleSheet.create({
   statusBadgeText: { fontSize: 11, fontWeight: "600", color: "#FFF" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.08)", marginHorizontal: -18 },
 
-  chipRow: {
+  timerTrigger: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    paddingBottom: 14,
-    paddingHorizontal: 4,
+    alignItems: "center",
+    gap: 4,
   },
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.06)",
-    borderWidth: 1,
-    borderColor: "transparent",
+  timerTriggerLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#1A1A22",
+    letterSpacing: 0.2,
   },
-  chipActive: {
+  timerDropdown: {
+    backgroundColor: "rgba(0,0,0,0.055)",
+    borderRadius: 14,
+    overflow: "hidden",
+    marginBottom: 12,
+    marginHorizontal: -4,
+  },
+  timerDropItem: {
+    paddingVertical: 13,
+    paddingHorizontal: 18,
+    alignItems: "center",
+  },
+  timerDropItemActive: {
     backgroundColor: "#1A1A22",
-    borderColor: "#1A1A22",
   },
-  chipText: { fontSize: 13, fontWeight: "500", color: "#444" },
-  chipTextActive: { color: "#FFF", fontWeight: "700" },
+  timerDropItemText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#333",
+  },
+  timerDropItemTextActive: {
+    color: "#FFF",
+    fontWeight: "700",
+  },
 
   sectionTitle: {
     fontSize: 16,
