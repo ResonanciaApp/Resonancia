@@ -25,13 +25,13 @@
       border-radius: 14px;
       padding: 22px 28px;
       width: 100%;
-      max-width: 500px;
+      max-width: 520px;
       margin-bottom: 28px;
     }
     .track-info h2 { color: #D4AF37; font-size: 0.78rem; letter-spacing: 0.18em; margin-bottom: 14px; opacity: 0.8; }
     .layer { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 0.82rem; color: rgba(244,218,213,0.75); }
     .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .progress-container { width: 100%; max-width: 500px; margin-bottom: 22px; }
+    .progress-container { width: 100%; max-width: 520px; margin-bottom: 22px; }
     .progress-bar { width: 100%; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, #D4AF37, #E9C46A); border-radius: 2px; width: 0%; transition: width 0.8s linear; }
     .time-display { display: flex; justify-content: space-between; font-size: 0.78rem; color: rgba(244,218,213,0.4); }
@@ -52,11 +52,12 @@
     button:disabled { opacity: 0.35; cursor: default; }
     button.primary { background: #D4AF37; color: #1B060F; font-weight: bold; border-color: #D4AF37; }
     button.primary:hover:not(:disabled) { background: #E9C46A; border-color: #E9C46A; }
-    .status { font-size: 0.80rem; color: rgba(244,218,213,0.45); letter-spacing: 0.04em; margin-top: 6px; min-height: 1.4em; text-align: center; max-width: 500px; }
+    .status { font-size: 0.80rem; color: rgba(244,218,213,0.45); letter-spacing: 0.04em; margin-top: 6px; min-height: 1.4em; text-align: center; max-width: 520px; }
     .spin { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(212,175,55,0.25); border-top-color: #D4AF37; border-radius: 50%; animation: spin 0.9s linear infinite; margin-right: 7px; vertical-align: middle; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    canvas { width: 100%; max-width: 500px; height: 56px; margin-bottom: 22px; opacity: 0.7; }
-    .note { font-size: 0.74rem; color: rgba(244,218,213,0.3); margin-top: 20px; max-width: 500px; text-align: center; line-height: 1.6; }
+    canvas { width: 100%; max-width: 520px; height: 56px; margin-bottom: 22px; opacity: 0.7; }
+    .note { font-size: 0.74rem; color: rgba(244,218,213,0.3); margin-top: 20px; max-width: 520px; text-align: center; line-height: 1.6; }
+    .badge { display: inline-block; background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.3); border-radius: 4px; padding: 2px 7px; font-size: 0.70rem; color: rgba(212,175,55,0.8); margin-left: 6px; vertical-align: middle; letter-spacing: 0.06em; }
     a { color: rgba(212,175,55,0.7); }
   </style>
 </head>
@@ -66,11 +67,11 @@
 
   <div class="track-info">
     <h2>CAPAS DE LA COMPOSICIÓN</h2>
-    <div class="layer"><span class="dot" style="background:#9b6eff"></span>Pad sintetizador profundo — armónicos que aparecen y desaparecen</div>
-    <div class="layer"><span class="dot" style="background:#4fc3f7"></span>Cuencos tibetanos — cada 10-15 segundos (5 cuencos alternados)</div>
-    <div class="layer"><span class="dot" style="background:#1a4aaa"></span>Cuencos profundos — mismos cuencos 2 octavas abajo (0.25x)</div>
-    <div class="layer"><span class="dot" style="background:#a5d6a7"></span>Aves de otros planetas — síntesis FM etérea</div>
-    <div class="layer"><span class="dot" style="background:#f8bbd0"></span>Voz femenina — armónicos de La/Mi, vibrato, 3 secciones</div>
+    <div class="layer"><span class="dot" style="background:#6b3aee"></span>Pad sub-bajo profundo — Mi + La (27–220 Hz), respiración lenta</div>
+    <div class="layer"><span class="dot" style="background:#4fc3f7"></span>Cuencos tibetanos — alternados cada 11–14 s (5 cuencos)</div>
+    <div class="layer"><span class="dot" style="background:#1a4aaa"></span>Cuencos profundos — 2 octavas abajo (rate 0.25×)</div>
+    <div class="layer"><span class="dot" style="background:#a5d6a7"></span>Aves de otros planetas <span class="badge">ElevenLabs</span></div>
+    <div class="layer"><span class="dot" style="background:#f8bbd0"></span>Voz femenina sagrada <span class="badge">ElevenLabs</span></div>
   </div>
 
   <canvas id="waveCanvas"></canvas>
@@ -88,7 +89,7 @@
     <button id="stopBtn" disabled>■ Detener</button>
     <button id="recordBtn" disabled>⏺ Grabar y descargar</button>
   </div>
-  <p class="status" id="statusMsg"><span class="spin"></span>Cargando cuencos sagrados…</p>
+  <p class="status" id="statusMsg"><span class="spin"></span>Cargando cuencos y voces sagradas…</p>
 
   <p class="note">
     La grabación genera un archivo <strong>.webm</strong>.<br>
@@ -99,6 +100,7 @@
     // ─── CONFIGURACIÓN ────────────────────────────────────────────────
     const DURATION = 420; // 7 minutos en segundos
 
+    // Cuencos tibetanos reales
     const BOWL_FILES = [
       'audio/Mi_326hz_1781497662746.WAV',
       'audio/Mi_328_hz_1781497662748.WAV',
@@ -107,9 +109,25 @@
       'audio/MI_648HZ_1781497697669.WAV',
     ];
 
+    // Clips ElevenLabs — pájaros alienígenas
+    const BIRD_FILES = [
+      'audio/bird-alien-1.mp3',
+      'audio/bird-alien-2.mp3',
+      'audio/bird-alien-3.mp3',
+    ];
+
+    // Clips ElevenLabs — voz femenina sagrada
+    const VOICE_FILES = [
+      'audio/voice-woman-1.mp3',
+      'audio/voice-woman-2.mp3',
+      'audio/voice-woman-3.mp3',
+    ];
+
     // ─── ESTADO ───────────────────────────────────────────────────────
     let ctx, masterGain, reverbNode, delayNode;
-    let buffers = [];
+    let bowlBuffers = [];
+    let birdBuffers = [];
+    let voiceBuffers = [];
     let isPlaying = false;
     let startTime = 0;
     let animFrame = null;
@@ -120,27 +138,33 @@
       ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 44100 });
 
       masterGain = ctx.createGain();
-      masterGain.gain.value = 0.82;
+      masterGain.gain.value = 0.80;
       masterGain.connect(ctx.destination);
 
-      // Reverb etéreo (impulso sintético)
-      reverbNode = createReverb(7, 2.2);
+      // Reverb etéreo — 8 seg, decay suave
+      reverbNode = createReverb(8, 1.8);
       reverbNode.connect(masterGain);
 
       // Delay cósmico
-      delayNode = ctx.createDelay(0.6);
-      delayNode.delayTime.value = 0.42;
-      const delayFB = ctx.createGain(); delayFB.gain.value = 0.38;
-      const delayWet = ctx.createGain(); delayWet.gain.value = 0.28;
+      delayNode = ctx.createDelay(0.7);
+      delayNode.delayTime.value = 0.46;
+      const delayFB = ctx.createGain(); delayFB.gain.value = 0.32;
+      const delayWet = ctx.createGain(); delayWet.gain.value = 0.24;
       delayNode.connect(delayFB);
       delayFB.connect(delayNode);
       delayNode.connect(delayWet);
       delayWet.connect(masterGain);
 
       try {
-        buffers = await Promise.all(BOWL_FILES.map(loadBuffer));
+        setStatus('<span class="spin"></span>Cargando cuencos…');
+        bowlBuffers = await Promise.all(BOWL_FILES.map(loadBuffer));
+
+        setStatus('<span class="spin"></span>Cargando voces ElevenLabs…');
+        birdBuffers  = await Promise.all(BIRD_FILES.map(loadBuffer));
+        voiceBuffers = await Promise.all(VOICE_FILES.map(loadBuffer));
+
         setStatus('Listo — pulsa Reproducir para comenzar');
-        document.getElementById('playBtn').disabled = false;
+        document.getElementById('playBtn').disabled   = false;
         document.getElementById('recordBtn').disabled = false;
       } catch (e) {
         setStatus('Error cargando audios: ' + e.message);
@@ -149,14 +173,12 @@
 
     function createReverb(durSec, decay) {
       const len = Math.floor(ctx.sampleRate * durSec);
-      const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+      const ir  = ctx.createBuffer(2, len, ctx.sampleRate);
       for (let c = 0; c < 2; c++) {
         const d = ir.getChannelData(c);
         for (let i = 0; i < len; i++) {
           const t = i / ctx.sampleRate;
-          // Exponential decay + diffusion
           d[i] = (Math.random() * 2 - 1) * Math.exp(-decay * t);
-          // Reduce early reflections slightly
           if (t < 0.04) d[i] *= t / 0.04;
         }
       }
@@ -168,19 +190,19 @@
     async function loadBuffer(url) {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${url}`);
-      const ab = await res.arrayBuffer();
+      const ab  = await res.arrayBuffer();
       return ctx.decodeAudioData(ab);
     }
 
-    // ─── CUENCOS ──────────────────────────────────────────────────────
+    // ─── CUENCOS TIBETANOS ────────────────────────────────────────────
     function playBowl(bufIdx, time, rate, vol) {
-      const buf = buffers[bufIdx % buffers.length];
+      const buf = bowlBuffers[bufIdx % bowlBuffers.length];
       const src = ctx.createBufferSource();
       src.buffer = buf;
       src.playbackRate.value = rate;
 
       const dur = buf.duration / rate;
-      const g = ctx.createGain();
+      const g   = ctx.createGain();
       g.gain.setValueAtTime(0, time);
       g.gain.linearRampToValueAtTime(vol, time + 0.12);
       g.gain.setValueAtTime(vol, time + Math.min(dur * 0.55, 5));
@@ -194,60 +216,66 @@
       scheduledNodes.push(src, g);
     }
 
-    // ─── PAD DE SINTETIZADOR ──────────────────────────────────────────
-    // Armónicos de La (432 Hz) + Mi: 108, 162, 216, 270, 324, 432, 540, 648, 864
+    // ─── PAD SUB-BAJO PROFUNDO ────────────────────────────────────────
+    // Armónicos profundos de Mi (E) y La (A) — baja octava, todas sine
+    // E:  41.2 Hz · 82.4 Hz · 164.8 Hz · 329.6 Hz
+    // A:  55 Hz   · 110 Hz  · 220 Hz
+    // Sub-raíz: 27.5 Hz (La0)
     const PAD_LAYERS = [
-      { freq: 108,  baseVol: 0.50, period: 80, phase: 0.0,  type: 'sine' },
-      { freq: 162,  baseVol: 0.38, period: 65, phase: 1.3,  type: 'sine' },
-      { freq: 216,  baseVol: 0.45, period: 55, phase: 2.7,  type: 'triangle' },
-      { freq: 270,  baseVol: 0.22, period: 70, phase: 0.9,  type: 'triangle' },
-      { freq: 324,  baseVol: 0.40, period: 45, phase: 1.8,  type: 'triangle' },
-      { freq: 432,  baseVol: 0.48, period: 60, phase: 3.1,  type: 'triangle' },
-      { freq: 540,  baseVol: 0.18, period: 50, phase: 0.4,  type: 'sine' },
-      { freq: 648,  baseVol: 0.30, period: 42, phase: 2.2,  type: 'sine' },
-      { freq: 864,  baseVol: 0.16, period: 38, phase: 1.1,  type: 'sine' },
+      { freq: 27.5,  baseVol: 0.28, period: 130, phase: 0.0  },  // La0 — sub-rumble
+      { freq: 41.2,  baseVol: 0.38, period: 110, phase: 1.1  },  // Mi1
+      { freq: 55.0,  baseVol: 0.44, period: 95,  phase: 2.3  },  // La1
+      { freq: 82.4,  baseVol: 0.50, period: 82,  phase: 0.7  },  // Mi2
+      { freq: 110.0, baseVol: 0.48, period: 72,  phase: 3.0  },  // La2
+      { freq: 164.8, baseVol: 0.42, period: 62,  phase: 1.6  },  // Mi3
+      { freq: 220.0, baseVol: 0.30, period: 52,  phase: 2.8  },  // La3
+      { freq: 329.6, baseVol: 0.14, period: 44,  phase: 0.5  },  // Mi4 — tenue
     ];
 
     function buildPad(t0) {
-      // Filtro paso-bajo general con LFO
+      // Filtro paso-bajo muy oscuro — corte en ~480 Hz, LFO sutil
       const lpf = ctx.createBiquadFilter();
       lpf.type = 'lowpass';
-      lpf.frequency.value = 1100;
-      lpf.Q.value = 0.7;
+      lpf.frequency.value = 480;
+      lpf.Q.value = 0.6;
 
-      const lfoOsc = ctx.createOscillator();
+      const lfoOsc  = ctx.createOscillator();
       const lfoGain = ctx.createGain();
-      lfoOsc.frequency.value = 0.06;
-      lfoGain.gain.value = 380;
+      lfoOsc.frequency.value = 0.04;   // respiración muy lenta
+      lfoGain.gain.value     = 90;     // rango angosto (390–570 Hz) — no sube a agudos
       lfoOsc.connect(lfoGain);
       lfoGain.connect(lpf.frequency);
       lfoOsc.start(t0); lfoOsc.stop(t0 + DURATION);
       lpf.connect(reverbNode);
       scheduledNodes.push(lpf, lfoOsc, lfoGain);
 
-      PAD_LAYERS.forEach(({ freq, baseVol, period, phase, type }) => {
+      PAD_LAYERS.forEach(({ freq, baseVol, period, phase }) => {
         const osc = ctx.createOscillator();
-        osc.type = type;
+        osc.type  = 'sine';
         osc.frequency.value = freq;
+
+        // Micro-detune ±0.3 % para ensanchamiento natural
+        const detune = (Math.random() - 0.5) * 6;
+        osc.detune.value = detune;
 
         const env = ctx.createGain();
 
-        // Fade in suave al inicio
-        const fadeIn = 10 + phase * 2.5;
+        // Fade in largo y suave
+        const fadeIn = 14 + phase * 3;
         env.gain.setValueAtTime(0, t0);
-        env.gain.linearRampToValueAtTime(baseVol * 0.35, t0 + fadeIn);
+        env.gain.linearRampToValueAtTime(baseVol * 0.28, t0 + fadeIn);
 
-        // Ciclos de respiración únicos por armónico
-        let t = t0 + fadeIn;
-        let toggle = true;
-        while (t < t0 + DURATION - 4) {
-          const segDur = period * (0.35 + Math.abs(Math.sin(phase + t * 0.001)) * 0.3);
-          const targetVol = toggle
-            ? baseVol * (0.85 + Math.abs(Math.cos(phase)) * 0.15)
-            : baseVol * (0.12 + Math.abs(Math.sin(phase * 2)) * 0.15);
-          env.gain.linearRampToValueAtTime(targetVol, t + segDur);
-          t += segDur;
-          toggle = !toggle;
+        // Ciclos de respiración únicos por capa
+        let t   = t0 + fadeIn;
+        let up  = true;
+        while (t < t0 + DURATION - 6) {
+          const seg = period * (0.38 + Math.abs(Math.sin(phase + t * 0.0008)) * 0.28);
+          const vol = up
+            ? baseVol * (0.82 + Math.abs(Math.cos(phase)) * 0.18)
+            : baseVol * (0.10 + Math.abs(Math.sin(phase * 2.1)) * 0.12);
+          env.gain.linearRampToValueAtTime(vol, t + seg);
+          t  += seg;
+          up  = !up;
         }
         env.gain.linearRampToValueAtTime(0, t0 + DURATION);
 
@@ -258,136 +286,124 @@
       });
     }
 
-    // ─── AVES DE OTROS PLANETAS (síntesis FM) ─────────────────────────
+    // ─── PÁJAROS ElevenLabs ───────────────────────────────────────────
+    // Momentos de aparición (segundos desde inicio)
+    const BIRD_EVENTS = [14, 58, 118, 183, 248, 318, 382];
+
     function scheduleBirds(t0) {
-      // Grupos de pájaros en momentos dispersos
-      const birdEvents = [14, 58, 118, 183, 248, 318, 382];
-      birdEvents.forEach(tOff => {
-        const numBirds = 2 + Math.floor(Math.random() * 2);
+      if (!birdBuffers.length) return;
+
+      BIRD_EVENTS.forEach((tOff, gi) => {
+        const numBirds = 1 + (gi % 3 === 0 ? 1 : 0);  // a veces 2 pájaros juntos
         for (let b = 0; b < numBirds; b++) {
-          const delay = tOff + b * (0.18 + seededRand(b + tOff) * 0.4);
-          const cf = 320 + seededRand(b * 7 + tOff) * 600;
-          const mf = 55 + seededRand(b * 13 + tOff) * 90;
-          const idx = 9 + seededRand(b * 3 + tOff) * 12;
-          const dur = 0.35 + seededRand(b * 5 + tOff) * 0.7;
-          spawnBird(t0 + delay, cf, mf, idx, dur);
+          const jitter  = b * (0.3 + seededRand(b * 7 + tOff) * 0.6);
+          const time    = t0 + tOff + jitter;
+          const bufIdx  = Math.floor(seededRand(gi * 5 + b) * birdBuffers.length);
+          const pitchShift = 0.88 + seededRand(gi + b * 3) * 0.26; // ±semitono
+          playClip(birdBuffers[bufIdx], time, pitchShift, 0.28 + seededRand(tOff + b) * 0.14, true);
         }
       });
     }
 
-    function spawnBird(time, cf, mf, idx, dur) {
-      const carrier  = ctx.createOscillator();
-      const modOsc   = ctx.createOscillator();
-      const modGain  = ctx.createGain();
-      const ampEnv   = ctx.createGain();
-      const bpf      = ctx.createBiquadFilter();
+    // ─── VOZ FEMENINA ElevenLabs ──────────────────────────────────────
+    // Tres secciones, cada una reproduce los clips en secuencia cruzada
+    const VOICE_SECTIONS = [
+      { start: 58,  dur: 122 },   // 0:58 → 2:60
+      { start: 238, dur:  75 },   // 3:58 → 5:13
+      { start: 358, dur:  60 },   // 5:58 → 6:58
+    ];
 
-      carrier.type = 'sine';
-      modOsc.type  = 'sine';
-      carrier.frequency.setValueAtTime(cf, time);
-      carrier.frequency.linearRampToValueAtTime(cf * (1.04 + seededRand(cf) * 0.12), time + dur);
-      modOsc.frequency.value = mf;
-      modGain.gain.value = mf * idx;
+    function scheduleVoice(t0) {
+      if (!voiceBuffers.length) return;
 
-      bpf.type = 'bandpass';
-      bpf.frequency.value = cf * 1.1;
-      bpf.Q.value = 2.5;
+      VOICE_SECTIONS.forEach(({ start, dur }, si) => {
+        const sectionStart = t0 + start;
+        let cursor = sectionStart;
+        let clipIdx = si % voiceBuffers.length;
 
-      const vol = 0.11 + seededRand(cf + mf) * 0.07;
-      ampEnv.gain.setValueAtTime(0, time);
-      ampEnv.gain.linearRampToValueAtTime(vol, time + 0.07);
-      ampEnv.gain.setValueAtTime(vol * 0.65, time + dur * 0.55);
-      ampEnv.gain.exponentialRampToValueAtTime(0.001, time + dur + 0.35);
+        // Llenar la sección con clips consecutivos con crossfade
+        while (cursor < sectionStart + dur - 2) {
+          const buf      = voiceBuffers[clipIdx % voiceBuffers.length];
+          const clipDur  = buf.duration;
+          const remaining = (sectionStart + dur) - cursor;
+          const fadeIn   = cursor === sectionStart ? 6 : 2;
+          const fadeOut  = Math.min(4, clipDur * 0.3);
+          const vol      = 0.55;
 
-      modOsc.connect(modGain);
-      modGain.connect(carrier.frequency);
-      carrier.connect(bpf);
-      bpf.connect(ampEnv);
-      ampEnv.connect(reverbNode);
-      ampEnv.connect(delayNode);
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(0, cursor);
+          g.gain.linearRampToValueAtTime(vol, cursor + fadeIn);
+          if (remaining < clipDur + 3) {
+            // Último clip de la sección — fade out hasta el final
+            const endT = sectionStart + dur;
+            g.gain.linearRampToValueAtTime(vol, endT - fadeOut * 1.5);
+            g.gain.linearRampToValueAtTime(0, endT);
+          } else {
+            g.gain.setValueAtTime(vol, cursor + clipDur - fadeOut);
+            g.gain.linearRampToValueAtTime(0, cursor + clipDur);
+          }
 
-      const end = time + dur + 0.5;
-      modOsc.start(time);  modOsc.stop(end);
-      carrier.start(time); carrier.stop(end);
-      scheduledNodes.push(carrier, modOsc, modGain, ampEnv, bpf);
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(g);
+          g.connect(reverbNode);
+          g.connect(delayNode);
+          src.start(cursor);
+          src.stop(cursor + Math.min(clipDur, remaining + 1));
+          scheduledNodes.push(src, g);
+
+          cursor  += clipDur * 0.92;  // leve solapamiento entre clips
+          clipIdx += 1;
+          if (cursor >= sectionStart + dur) break;
+        }
+      });
     }
 
-    // Pseudo-random determinista (sin Math.random para reproducibilidad)
+    // Reproduce un clip (buffer) con pitch shift y reverb opcional
+    function playClip(buf, time, rate, vol, withReverb) {
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.playbackRate.value = rate;
+
+      const dur = buf.duration / rate;
+      const g   = ctx.createGain();
+      g.gain.setValueAtTime(0, time);
+      g.gain.linearRampToValueAtTime(vol, time + 0.15);
+      g.gain.setValueAtTime(vol * 0.75, time + dur * 0.5);
+      g.gain.exponentialRampToValueAtTime(0.001, time + dur + 0.5);
+
+      src.connect(g);
+      if (withReverb) g.connect(reverbNode);
+      g.connect(delayNode);
+      g.connect(masterGain);
+      src.start(time);
+      src.stop(time + dur + 0.6);
+      scheduledNodes.push(src, g);
+    }
+
+    // Pseudo-random determinista
     function seededRand(seed) {
       const x = Math.sin(seed + 1) * 43758.5453123;
       return x - Math.floor(x);
     }
 
-    // ─── VOZ FEMENINA (síntesis aditiva con vibrato) ───────────────────
-    // Armónicos de La y Mi — tres secciones que entran y salen
-    const VOICE_HARMONICS = [
-      { freq: 216,  vol: 0.17, formant: 800 },
-      { freq: 324,  vol: 0.20, formant: 1100 },
-      { freq: 432,  vol: 0.25, formant: 900 },
-      { freq: 648,  vol: 0.18, formant: 2600 },
-      { freq: 864,  vol: 0.12, formant: 3100 },
-    ];
-
-    function buildVoiceSection(t0, dur) {
-      const fadeT = Math.min(12, dur * 0.18);
-      VOICE_HARMONICS.forEach(({ freq, vol, formant }, i) => {
-        const osc       = ctx.createOscillator();
-        const vibLFO    = ctx.createOscillator();
-        const vibGain   = ctx.createGain();
-        const formantF  = ctx.createBiquadFilter();
-        const env       = ctx.createGain();
-
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-
-        // Vibrato sutil (4.8 Hz, ±4 Hz)
-        vibLFO.frequency.value = 4.8 + i * 0.12;
-        vibGain.gain.value = 3.5 + i * 0.5;
-        vibLFO.connect(vibGain);
-        vibGain.connect(osc.frequency);
-
-        // Filtro formante (color de vocal)
-        formantF.type = 'bandpass';
-        formantF.frequency.value = formant;
-        formantF.Q.value = 7;
-
-        // Envolvente fade in / out suave
-        env.gain.setValueAtTime(0, t0);
-        env.gain.linearRampToValueAtTime(vol, t0 + fadeT);
-        env.gain.setValueAtTime(vol, t0 + dur - fadeT);
-        env.gain.linearRampToValueAtTime(0, t0 + dur);
-
-        osc.connect(formantF);
-        formantF.connect(env);
-        env.connect(reverbNode);
-        env.connect(delayNode);
-
-        vibLFO.start(t0); vibLFO.stop(t0 + dur);
-        osc.start(t0);    osc.stop(t0 + dur);
-        scheduledNodes.push(osc, vibLFO, vibGain, formantF, env);
-      });
-    }
-
     // ─── TIMELINE COMPLETO (420 s) ────────────────────────────────────
     function scheduleAll(t0) {
-      // PAD continuo
       buildPad(t0);
 
       // Cuencos normales (rate 1.0) — cada ~11-14 s
       const bowlNormal = [0,11,23,36,49,62,75,89,102,115,128,141,154,167,180,193,206,219,232,245,258,271,284,297,310,323,336,349,362,375,388,401,414];
-      bowlNormal.forEach((t, i) => playBowl(i % 5, t0 + t, 1.0, 0.58 + (i % 4) * 0.04));
+      bowlNormal.forEach((t, i) => playBowl(i % 5, t0 + t, 1.0, 0.56 + (i % 4) * 0.04));
 
-      // Cuencos profundos (2 octavas abajo = rate 0.25) — desfasados ~5 s
+      // Cuencos profundos (2 octavas = rate 0.25) — desfasados ~5 s
       const bowlDeep = [5,17,30,44,57,70,83,97,110,123,136,150,163,176,189,202,215,228,241,254,267,280,293,306,319,332,345,358,371,384,397,410];
-      bowlDeep.forEach((t, i) => playBowl((i + 2) % 5, t0 + t, 0.25, 0.46));
+      bowlDeep.forEach((t, i) => playBowl((i + 2) % 5, t0 + t, 0.25, 0.44));
 
-      // Aves etéreas
+      // Pájaros ElevenLabs
       scheduleBirds(t0);
 
-      // Voz femenina — 3 secciones
-      buildVoiceSection(t0 + 58,  122);   // 0:58 → 2:60
-      buildVoiceSection(t0 + 238,  75);   // 3:58 → 5:13
-      buildVoiceSection(t0 + 358,  60);   // 5:58 → 6:58
+      // Voz femenina ElevenLabs
+      scheduleVoice(t0);
     }
 
     // ─── REPRODUCCIÓN ─────────────────────────────────────────────────
@@ -398,8 +414,8 @@
       scheduledNodes = [];
       startTime = ctx.currentTime;
       scheduleAll(startTime + 0.15);
-      document.getElementById('playBtn').disabled = true;
-      document.getElementById('stopBtn').disabled = false;
+      document.getElementById('playBtn').disabled  = true;
+      document.getElementById('stopBtn').disabled  = false;
       setStatus('Reproduciendo…');
       tickProgress();
     }
@@ -410,18 +426,17 @@
       scheduledNodes.forEach(n => { try { n.stop ? n.stop(0) : n.disconnect(); } catch(_) {} });
       scheduledNodes = [];
       cancelAnimationFrame(animFrame);
-      document.getElementById('playBtn').disabled = false;
-      document.getElementById('stopBtn').disabled = true;
+      document.getElementById('playBtn').disabled  = false;
+      document.getElementById('stopBtn').disabled  = true;
       document.getElementById('progressFill').style.width = '0%';
-      document.getElementById('timeElapsed').textContent = '0:00';
+      document.getElementById('timeElapsed').textContent  = '0:00';
       setStatus('Detenido — pulsa Reproducir para comenzar de nuevo');
     }
 
     function tickProgress() {
       if (!isPlaying) return;
       const elapsed = Math.min(ctx.currentTime - startTime, DURATION);
-      const pct = (elapsed / DURATION) * 100;
-      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressFill').style.width = (elapsed / DURATION * 100) + '%';
       const m = Math.floor(elapsed / 60);
       const s = Math.floor(elapsed % 60);
       document.getElementById('timeElapsed').textContent = `${m}:${s.toString().padStart(2, '0')}`;
@@ -430,7 +445,7 @@
       animFrame = requestAnimationFrame(tickProgress);
     }
 
-    // ─── GRABACIÓN ─────────────────────────────────────────────────────
+    // ─── GRABACIÓN ────────────────────────────────────────────────────
     async function record() {
       if (isPlaying) stop();
       if (ctx.state === 'suspended') ctx.resume();
@@ -441,16 +456,14 @@
       const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
         ? 'audio/webm;codecs=opus'
         : 'audio/webm';
-      const rec = new MediaRecorder(dest.stream, { mimeType });
+      const rec    = new MediaRecorder(dest.stream, { mimeType });
       const chunks = [];
       rec.ondataavailable = e => chunks.push(e.data);
       rec.onstop = () => {
         const blob = new Blob(chunks, { type: mimeType });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
-        a.href = url;
-        a.download = 'resonancia-relajacion-7min.webm';
-        a.click();
+        a.href = url; a.download = 'resonancia-relajacion-7min.webm'; a.click();
         URL.revokeObjectURL(url);
         masterGain.disconnect(dest);
         document.getElementById('recordBtn').disabled = false;
@@ -467,10 +480,7 @@
       scheduleAll(startTime + 0.15);
       tickProgress();
 
-      setTimeout(() => {
-        rec.stop();
-        stop();
-      }, (DURATION + 3) * 1000);
+      setTimeout(() => { rec.stop(); stop(); }, (DURATION + 3) * 1000);
     }
 
     // ─── VISUALIZADOR ─────────────────────────────────────────────────
@@ -478,40 +488,38 @@
     const wCtx   = canvas.getContext('2d');
 
     function drawWaveform(t) {
-      canvas.width  = canvas.offsetWidth  || 480;
+      canvas.width  = canvas.offsetWidth  || 500;
       canvas.height = canvas.offsetHeight || 56;
       const W = canvas.width, H = canvas.height;
       wCtx.clearRect(0, 0, W, H);
 
-      // Lissajous-like composite wave from composition state
+      // Onda baja y profunda — dominada por sub-bajos
       wCtx.beginPath();
       for (let i = 0; i < W; i++) {
         const x = i / W;
-        // Mix of pad frequencies and time-based modulation
-        let y = Math.sin(x * 14 + t * 0.9) * 0.28
-              + Math.sin(x * 8  + t * 0.55) * 0.20
-              + Math.sin(x * 22 + t * 1.3)  * 0.10
-              + Math.sin(x * 5  + t * 0.3)  * 0.25;
-        // Breath modulation
-        y *= 0.55 + 0.45 * Math.sin(t * 0.11 + 0.5);
-        const py = H / 2 + y * H * 0.42;
+        let y = Math.sin(x * 5  + t * 0.35) * 0.35
+              + Math.sin(x * 9  + t * 0.55) * 0.18
+              + Math.sin(x * 3  + t * 0.18) * 0.28
+              + Math.sin(x * 14 + t * 0.85) * 0.09;
+        y *= 0.52 + 0.48 * Math.sin(t * 0.08 + 0.3);
+        const py = H / 2 + y * H * 0.44;
         i === 0 ? wCtx.moveTo(i, py) : wCtx.lineTo(i, py);
       }
       wCtx.strokeStyle = 'rgba(212,175,55,0.55)';
       wCtx.lineWidth = 1.5;
       wCtx.stroke();
 
-      // Second subtle layer
+      // Segunda capa sutil
       wCtx.beginPath();
       for (let i = 0; i < W; i++) {
         const x = i / W;
-        let y = Math.sin(x * 6 + t * 0.4) * 0.18
-              + Math.sin(x * 18 + t * 1.1) * 0.08;
-        y *= 0.4 + 0.6 * Math.cos(t * 0.07);
-        const py = H / 2 + y * H * 0.38;
+        let y = Math.sin(x * 7  + t * 0.42) * 0.14
+              + Math.sin(x * 2  + t * 0.12) * 0.22;
+        y *= 0.38 + 0.62 * Math.cos(t * 0.06);
+        const py = H / 2 + y * H * 0.35;
         i === 0 ? wCtx.moveTo(i, py) : wCtx.lineTo(i, py);
       }
-      wCtx.strokeStyle = 'rgba(233,196,106,0.25)';
+      wCtx.strokeStyle = 'rgba(233,196,106,0.22)';
       wCtx.lineWidth = 1;
       wCtx.stroke();
     }
