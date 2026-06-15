@@ -493,6 +493,30 @@ export default function GeometrixPage() {
   const totalVisible = rows.filter((r) => r.visible).length;
 
   return (
+    <div data-gx-theme className="-m-6 p-6 min-h-screen" style={{ background: "linear-gradient(160deg, #1A1030 0%, #0D0820 55%, #06070F 100%)" }}>
+    <style>{`
+      [data-gx-theme] {
+        --background: 270 50% 8%;
+        --foreground: 270 20% 92%;
+        --card: 264 60% 11%;
+        --card-foreground: 270 20% 92%;
+        --popover: 264 60% 11%;
+        --popover-foreground: 270 20% 92%;
+        --primary: 43 60% 52%;
+        --primary-foreground: 0 0% 8%;
+        --secondary: 268 55% 18%;
+        --secondary-foreground: 270 20% 88%;
+        --muted: 268 50% 15%;
+        --muted-foreground: 270 20% 62%;
+        --accent: 268 55% 22%;
+        --accent-foreground: 270 20% 92%;
+        --border: 270 38% 22%;
+        --input: 270 38% 22%;
+        --ring: 43 60% 52%;
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 0 0% 98%;
+      }
+    `}</style>
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -602,6 +626,7 @@ export default function GeometrixPage() {
           </Button>
         </div>
       )}
+    </div>
     </div>
   );
 }
