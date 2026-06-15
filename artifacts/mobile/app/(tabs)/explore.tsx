@@ -47,8 +47,8 @@ const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
 const TEMA_COL_W = (width - H_PAD * 2 - GAP) / 2;
 
 const CAT_CARD_GAP = 12;
-const CAT_CARD_W = Math.round((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2);
-const CAT_CARD_H = Math.round(CAT_CARD_W * 1.25);
+const CAT_CARD_W = Math.round((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2) - 30;
+const CAT_CARD_IMG_H = Math.round(CAT_CARD_W * 1.15);
 
 const CATEGORY_CARDS = [
   {
@@ -224,17 +224,14 @@ export default function ExploreScreen() {
                 onPress={() => router.push(cat.route as never)}
                 style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.85 : 1 }]}
               >
-                <Image
-                  source={cat.image}
-                  style={StyleSheet.absoluteFill}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                />
-                <LinearGradient
-                  colors={["transparent", cat.overlay]}
-                  locations={[0.35, 1]}
-                  style={StyleSheet.absoluteFill}
-                />
+                <View style={styles.catCardImage}>
+                  <Image
+                    source={cat.image}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                </View>
                 <View style={styles.catCardText}>
                   <Text style={styles.catCardTitle}>{cat.title}</Text>
                   <Text style={styles.catCardSubtitle} numberOfLines={2}>{cat.subtitle}</Text>
@@ -359,31 +356,30 @@ const styles = StyleSheet.create({
   // Carrusel de categorías
   catCard: {
     width: CAT_CARD_W,
-    height: CAT_CARD_H,
     borderRadius: 16,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
   },
+  catCardImage: {
+    width: CAT_CARD_W,
+    height: CAT_CARD_IMG_H,
+  },
   catCardText: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 14,
-    paddingBottom: 14,
-    paddingTop: 8,
+    paddingHorizontal: 11,
+    paddingTop: 10,
+    paddingBottom: 12,
   },
   catCardTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "800",
     color: "#FFFFFF",
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
     marginBottom: 3,
   },
   catCardSubtitle: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.75)",
-    lineHeight: 16,
+    fontSize: 11,
+    color: "rgba(244,218,213,0.65)",
+    lineHeight: 15,
     fontWeight: "400",
   },
 
