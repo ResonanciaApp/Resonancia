@@ -418,9 +418,12 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   catCardText: {
-    paddingHorizontal: 4,
-    paddingTop: 8,
-    paddingBottom: 4,
+    marginTop: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    backgroundColor: "rgba(255,255,255,0.50)",
+    borderRadius: 10,
+    alignItems: "center",
   },
   catCardTitle: {
     fontSize: 14,
