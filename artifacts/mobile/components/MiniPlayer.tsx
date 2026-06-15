@@ -24,7 +24,7 @@ const STACK_SHIFT = 15;
 const MAX_STACK = 3;
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
-const MIX_BG = "#383041";
+const MIX_BG = "#3d304e";
 const BORDER_R = 12;
 
 function formatElapsed(sec: number): string {
