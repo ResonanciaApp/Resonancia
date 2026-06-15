@@ -3741,33 +3741,50 @@ export default function GeometrixScreen() {
     // al cambiar de objetivo, la reacción se dispare aunque angle/has/active
     // no hayan cambiado (ej: dos geometrías distintas ambas a 0°). Así la
     // píldora siempre se reconcilia con el nuevo objetivo.
-    () => ({ active: rotActive.value, angle: liveRot.value, has: rotHasTargetSV.value, guard: rotCardGuard.value }),
-    ({ active, angle, has }) => {
+    // holdActive/holdDelta añadidos para que la reacción se dispare también
+    // frame a frame durante la rotación en hold mode.
+    () => ({
+      active: rotActive.value,
+      angle: liveRot.value,
+      has: rotHasTargetSV.value,
+      guard: rotCardGuard.value,
+      holdActive: holdRotActive.value,
+      holdDelta: holdRotDeltaDeg.value,
+    }),
+    ({ active, angle, has, holdActive, holdDelta }) => {
       "worklet";
       let isCard = 0;
+      // En hold mode, el ángulo efectivo es la base (liveRot) + el delta en curso.
+      const isHold = holdActive > 0;
+      const effectiveAngle = isHold ? angle + holdDelta : angle;
+      const effectiveActive = active + holdActive;
       // Solo activar el cardinal si el usuario REALMENTE rotó en este objetivo
-      // (rotDidRotate se pone a 1 en onStart del gesto). Sin este gate, la
-      // píldora viraría a morado al seleccionar cualquier geometría a 0°
-      // (ángulo por defecto) sin haberla girado nunca.
-      if (has > 0 && rotDidRotate.value > 0) {
-        const nearest90 = Math.round(angle / 90) * 90;
-        // Umbral fijo 0.5°: la píldora solo vira a azul cuando el ángulo está
-        // prácticamente en el cardinal exacto (0/90/180/270°).
+      // (rotDidRotate se pone a 1 en onStart del gesto normal) o si está en
+      // hold mode (siempre que haya un objetivo activo).
+      if (has > 0 && (rotDidRotate.value > 0 || isHold)) {
+        const nearest90 = Math.round(effectiveAngle / 90) * 90;
+        // Umbral fijo 0.5°: la píldora solo vira al llegar al cardinal exacto.
         const thresh = 0.5;
-        isCard = Math.abs(angle - nearest90) < thresh ? 1 : 0;
+        isCard = Math.abs(effectiveAngle - nearest90) < thresh ? 1 : 0;
       }
       if (isCard !== rotCardGuard.value) {
         rotCardGuard.value = isCard;
-        pillCardinalSV.value = withTiming(isCard, { duration: active > 0 ? 160 : 350 });
+        pillCardinalSV.value = withTiming(isCard, { duration: effectiveActive > 0 ? 160 : 350 });
       }
     },
   );
 
   // Texto del badge (ángulo en vivo) sin re-render: animatedProps escribe el
-  // texto del TextInput directamente en el UI thread leyendo liveRot.
-  const rotBadgeAngleProps = useAnimatedProps(
-    () => ({ text: `${Math.round(((liveRot.value % 360) + 360) % 360)}°` }) as any,
-  );
+  // texto del TextInput directamente en el UI thread. En hold mode lee
+  // liveRot + holdRotDeltaDeg para reflejar el delta en curso frame a frame;
+  // en rotación normal usa solo liveRot.
+  const rotBadgeAngleProps = useAnimatedProps(() => {
+    const angle =
+      holdRotActive.value > 0
+        ? liveRot.value + holdRotDeltaDeg.value
+        : liveRot.value;
+    return { text: `${Math.round(((angle % 360) + 360) % 360)}°` } as any;
+  });
 
   // Líneas guía de snap: posición + visibilidad en el UI thread (shared values),
   // sin estado React por frame. canvasSide/2 + offset convierte offset de capa a
@@ -3794,7 +3811,7 @@ export default function GeometrixScreen() {
   // El fondo y el borde viran a azul/dorado al llegar a un ángulo cardinal
   // (misma regla que la píldora, pero visible durante el giro). UI thread.
   const rotBadgeStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(rotActive.value, { duration: 120 }),
+    opacity: withTiming(Math.max(rotActive.value, holdRotActive.value), { duration: 120 }),
     backgroundColor: interpolateColor(
       pillCardinalSV.value,
       [0, 1],
@@ -3817,28 +3834,6 @@ export default function GeometrixScreen() {
       pillCardinalSV.value,
       [0, 1],
       [CARD_BORDER, "#3B2080"],
-    ),
-  }));
-
-  // Display de ángulo en el pill de hold mode. El contenedor y el texto viran
-  // de blanco a dorado cuando el ángulo llega a un ángulo clave (0/90/180/270°).
-  const holdAnglePillAnim = useAnimatedStyle(() => ({
-    borderColor: interpolateColor(
-      pillCardinalSV.value,
-      [0, 1],
-      ["rgba(255,255,255,0.12)", "rgba(212,175,55,0.55)"],
-    ),
-    backgroundColor: interpolateColor(
-      pillCardinalSV.value,
-      [0, 1],
-      ["rgba(0,0,0,0.32)", "rgba(212,175,55,0.10)"],
-    ),
-  }));
-  const holdAngleTextAnim = useAnimatedStyle(() => ({
-    color: interpolateColor(
-      pillCardinalSV.value,
-      [0, 1],
-      ["rgba(255,255,255,0.72)", "#D4AF37"],
     ),
   }));
 
@@ -4310,27 +4305,6 @@ export default function GeometrixScreen() {
             </View>
             {/* Derecha: herramientas en fade + ojo + hold (columna) */}
             <View style={styles.actionBarRight}>
-              {/* Ángulo en hold mode: visible cuando la manito está activa.
-                  Muestra el ángulo actual del objetivo y vira a dorado al
-                  alcanzar un ángulo clave (0 / 90 / 180 / 270°). */}
-              {holdMode && (
-                <Animated.View
-                  entering={FadeIn.duration(200)}
-                  exiting={FadeOut.duration(160)}
-                  style={[styles.holdAnglePill, holdAnglePillAnim]}
-                  pointerEvents="none"
-                >
-                  <Animated.Text style={[styles.holdAngleIcon, holdAngleTextAnim]}>↻</Animated.Text>
-                  <AnimatedTextInput
-                    editable={false}
-                    caretHidden
-                    pointerEvents="none"
-                    underlineColorAndroid="transparent"
-                    style={[styles.holdAngleText, holdAngleTextAnim]}
-                    animatedProps={rotBadgeAngleProps}
-                  />
-                </Animated.View>
-              )}
               <Animated.View pointerEvents={pillOpen ? "auto" : "none"} style={[styles.actionBarFadeGroup, pillStyle]}>
                 {pillActions.map((a) => (
                   <Pressable
@@ -4669,25 +4643,7 @@ export default function GeometrixScreen() {
             </View>
 
             {/* Barra horizontal (fullscreen): misma lógica de fade, sin contenedor */}
-            <View pointerEvents="box-none" style={{ position: "absolute", bottom: insets.bottom + 100, right: 16, zIndex: 6, flexDirection: "row", alignItems: "center", gap: 6 }}>
-              {holdMode && (
-                <Animated.View
-                  entering={FadeIn.duration(200)}
-                  exiting={FadeOut.duration(160)}
-                  style={[styles.holdAnglePill, holdAnglePillAnim]}
-                  pointerEvents="none"
-                >
-                  <Animated.Text style={[styles.holdAngleIcon, holdAngleTextAnim]}>↻</Animated.Text>
-                  <AnimatedTextInput
-                    editable={false}
-                    caretHidden
-                    pointerEvents="none"
-                    underlineColorAndroid="transparent"
-                    style={[styles.holdAngleText, holdAngleTextAnim]}
-                    animatedProps={rotBadgeAngleProps}
-                  />
-                </Animated.View>
-              )}
+            <View pointerEvents="box-none" style={{ position: "absolute", bottom: insets.bottom + 100, right: 16, zIndex: 6, flexDirection: "row", alignItems: "center" }}>
               <Animated.View
                 pointerEvents={pillOpen ? "auto" : "none"}
                 style={[styles.actionBarFadeGroup, pillStyle]}
@@ -7153,29 +7109,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     padding: 0,
     width: 38,
-    textAlign: "left",
-    includeFontPadding: false,
-  },
-  holdAnglePill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    borderRadius: 10,
-    borderWidth: 1,
-    paddingHorizontal: 7,
-    paddingVertical: 4,
-  },
-  holdAngleIcon: {
-    fontSize: 12,
-    lineHeight: 14,
-    includeFontPadding: false,
-  },
-  holdAngleText: {
-    fontSize: 11,
-    fontWeight: "600" as const,
-    letterSpacing: 0.2,
-    padding: 0,
-    width: 33,
     textAlign: "left",
     includeFontPadding: false,
   },
