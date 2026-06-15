@@ -291,9 +291,10 @@ export default function MezcladorScreen() {
     }
   }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Resetear al salir del Mezclador
+  // Al volver al Mezclador → "Todos"; al salir → resetear color del menú
   useFocusEffect(
     React.useCallback(() => {
+      setMainTab("popular");
       return () => { setTabBarColors(null); };
     }, [setTabBarColors]),
   );
