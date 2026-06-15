@@ -643,11 +643,53 @@ export default function BibliotecaScreen() {
       const visibleRecent = sortedRecent.slice(0, recentLimit);
       const hasMoreRecent = sortedRecent.length > recentLimit;
 
+      const sortedPlaylists = [...userPlaylists].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+
       return (
         <>
+          {/* ── Mis playlists (siempre al tope en vista general) ── */}
+          {sortedPlaylists.length > 0 && (
+            <>
+              <Text style={[styles.generalSectionLabel, { marginBottom: 7 }]}>Mis playlists</Text>
+              {viewMode === "grid" ? (
+                <View style={styles.gridWrap}>
+                  {sortedPlaylists.map((pl) => (
+                    <Pressable
+                      key={pl.id}
+                      style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                      onPress={() => router.push(`/playlist/${pl.id}` as never)}
+                    >
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center" }]}>
+                        {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW * 0.55} strokeWidth={1.6} opacity={1} />
+                        ) : pl.coverType === "creation" && pl.coverCreationId ? (
+                          <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
+                        ) : pl.coverUri ? (
+                          <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                        ) : (
+                          <Feather name="list" size={cellW * 0.32} color={GOLD} />
+                        )}
+                      </View>
+                      <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              ) : (
+                <View style={{ paddingHorizontal: H_PAD, gap: 7 }}>
+                  {sortedPlaylists.map((pl) => (
+                    <UserPlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/playlist/${pl.id}` as never)} />
+                  ))}
+                </View>
+              )}
+            </>
+          )}
+
           {/* ── Escuchadas recientemente ── */}
           {listenedRecently.length > 0 && (
             <>
+              <Text style={[styles.generalSectionLabel, { marginTop: sortedPlaylists.length > 0 ? 24 : 0, marginBottom: 7 }]}>Recientes</Text>
               {viewMode === "grid" ? (
                 <View style={styles.gridWrap}>
                   {visibleRecent.map((s) => (
