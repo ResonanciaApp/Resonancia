@@ -239,8 +239,8 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   miniPlayerFloat: {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: 12,
+    right: 12,
   },
   headerTop: { marginBottom: 14 },
   backBtn: {

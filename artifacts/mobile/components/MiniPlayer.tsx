@@ -262,7 +262,6 @@ export function MiniPlayer() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginHorizontal: 10,
     borderRadius: BORDER_R,
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,

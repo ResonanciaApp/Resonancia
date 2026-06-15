@@ -317,5 +317,5 @@ const styles = StyleSheet.create({
   },
 
   // Mini player
-  miniPlayerFloat: { position: "absolute", left: 0, right: 0 },
+  miniPlayerFloat: { position: "absolute", left: 12, right: 12 },
 });

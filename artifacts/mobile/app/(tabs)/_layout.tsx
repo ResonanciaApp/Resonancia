@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   },
   miniPlayerFloat: {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: 12,
+    right: 12,
   },
 });
