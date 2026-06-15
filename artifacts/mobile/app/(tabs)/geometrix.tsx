@@ -3807,6 +3807,28 @@ export default function GeometrixScreen() {
     ),
   }));
 
+  // Display de ángulo en el pill de hold mode. El contenedor y el texto viran
+  // de blanco a dorado cuando el ángulo llega a un ángulo clave (0/90/180/270°).
+  const holdAnglePillAnim = useAnimatedStyle(() => ({
+    borderColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(255,255,255,0.12)", "rgba(212,175,55,0.55)"],
+    ),
+    backgroundColor: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(0,0,0,0.32)", "rgba(212,175,55,0.10)"],
+    ),
+  }));
+  const holdAngleTextAnim = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      pillCardinalSV.value,
+      [0, 1],
+      ["rgba(255,255,255,0.72)", "#D4AF37"],
+    ),
+  }));
+
   // Glow blanco del icono de audio: sombra difusa que respira cuando suena.
   const themeGlowStyle = useAnimatedStyle(() => ({
     shadowColor: "#FFFFFF",
@@ -4266,6 +4288,27 @@ export default function GeometrixScreen() {
             </View>
             {/* Derecha: herramientas en fade + ojo + hold (columna) */}
             <View style={styles.actionBarRight}>
+              {/* Ángulo en hold mode: visible cuando la manito está activa.
+                  Muestra el ángulo actual del objetivo y vira a dorado al
+                  alcanzar un ángulo clave (0 / 90 / 180 / 270°). */}
+              {holdMode && (
+                <Animated.View
+                  entering={FadeIn.duration(200)}
+                  exiting={FadeOut.duration(160)}
+                  style={[styles.holdAnglePill, holdAnglePillAnim]}
+                  pointerEvents="none"
+                >
+                  <Animated.Text style={[styles.holdAngleIcon, holdAngleTextAnim]}>↻</Animated.Text>
+                  <AnimatedTextInput
+                    editable={false}
+                    caretHidden
+                    pointerEvents="none"
+                    underlineColorAndroid="transparent"
+                    style={[styles.holdAngleText, holdAngleTextAnim]}
+                    animatedProps={rotBadgeAngleProps}
+                  />
+                </Animated.View>
+              )}
               <Animated.View pointerEvents={pillOpen ? "auto" : "none"} style={[styles.actionBarFadeGroup, pillStyle]}>
                 {pillActions.map((a) => (
                   <Pressable
@@ -4604,7 +4647,25 @@ export default function GeometrixScreen() {
             </View>
 
             {/* Barra horizontal (fullscreen): misma lógica de fade, sin contenedor */}
-            <View pointerEvents="box-none" style={{ position: "absolute", bottom: insets.bottom + 100, right: 16, zIndex: 6, flexDirection: "row", alignItems: "center" }}>
+            <View pointerEvents="box-none" style={{ position: "absolute", bottom: insets.bottom + 100, right: 16, zIndex: 6, flexDirection: "row", alignItems: "center", gap: 6 }}>
+              {holdMode && (
+                <Animated.View
+                  entering={FadeIn.duration(200)}
+                  exiting={FadeOut.duration(160)}
+                  style={[styles.holdAnglePill, holdAnglePillAnim]}
+                  pointerEvents="none"
+                >
+                  <Animated.Text style={[styles.holdAngleIcon, holdAngleTextAnim]}>↻</Animated.Text>
+                  <AnimatedTextInput
+                    editable={false}
+                    caretHidden
+                    pointerEvents="none"
+                    underlineColorAndroid="transparent"
+                    style={[styles.holdAngleText, holdAngleTextAnim]}
+                    animatedProps={rotBadgeAngleProps}
+                  />
+                </Animated.View>
+              )}
               <Animated.View
                 pointerEvents={pillOpen ? "auto" : "none"}
                 style={[styles.actionBarFadeGroup, pillStyle]}
@@ -7070,6 +7131,29 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     padding: 0,
     width: 38,
+    textAlign: "left",
+    includeFontPadding: false,
+  },
+  holdAnglePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+  },
+  holdAngleIcon: {
+    fontSize: 12,
+    lineHeight: 14,
+    includeFontPadding: false,
+  },
+  holdAngleText: {
+    fontSize: 11,
+    fontWeight: "600" as const,
+    letterSpacing: 0.2,
+    padding: 0,
+    width: 33,
     textAlign: "left",
     includeFontPadding: false,
   },
