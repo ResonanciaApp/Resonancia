@@ -186,8 +186,8 @@ export function MixerSheet() {
 
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
-    sliderThumb:    isLight ? "#8C1A2B"              : WARM.sliderThumb,
-    sliderTrack:    isLight ? "rgba(0,0,0,0.10)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
+    sliderThumb:    isLight ? "#3B1B6E"                   : WARM.sliderThumb,
+    sliderTrack:    isLight ? "rgba(59,27,110,0.15)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
     addText:        isLight ? "rgba(0,0,0,0.32)"    : "rgba(255,255,255,0.80)",
     separator:      isLight ? "rgba(0,0,0,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.18)" : WARM.separator,
     iconColor:      isLight ? "#1A1E2B"             : "rgba(255,255,255,0.90)",
