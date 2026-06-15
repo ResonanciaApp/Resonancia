@@ -209,6 +209,10 @@ export default function ExploreScreen() {
 
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
+          <>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12 }]}>
+            Explora por categoría
+          </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -238,6 +242,7 @@ export default function ExploreScreen() {
               </Pressable>
             ))}
           </ScrollView>
+          </>
         )}
 
         {/* ── Search results ── */}
