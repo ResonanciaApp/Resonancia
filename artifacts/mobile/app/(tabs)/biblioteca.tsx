@@ -1369,7 +1369,7 @@ const styles = StyleSheet.create({
   },
   nameCard: {
     width: "100%",
-    backgroundColor: "#14192B",
+    backgroundColor: NAVY,
     borderRadius: 20,
     paddingHorizontal: 24,
     paddingTop: 20,
