@@ -22,6 +22,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useMixer } from "@/context/MixerContext";
+import { setReopenMixer } from "@/utils/immersivo-flags";
 import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
 import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
@@ -56,7 +57,7 @@ function InmersivoContent() {
   const {
     activeSounds, isPlaying, togglePlay,
     sleepTimerRemaining, setSleepTimer,
-    inmersivoPresetId, closeImmersivo,
+    inmersivoPresetId, openSheet, closeSheet, closeImmersivo,
   } = useMixer();
 
   const bgPreset =
@@ -155,8 +156,10 @@ function InmersivoContent() {
     .slice(0, 5);
 
   const handleBack = useCallback(() => {
+    setReopenMixer(true);
+    openSheet();
     closeImmersivo();
-  }, [closeImmersivo]);
+  }, [openSheet, closeImmersivo]);
 
   return (
     <TouchableWithoutFeedback onPress={() => { if (timerPanelOpen) closeTimerPanel(); else showControls(); }}>
@@ -312,9 +315,9 @@ function InmersivoContent() {
 }
 
 export function InmersivoMixerModal() {
-  const { inmersivoOpen } = useMixer();
+  const { inmersivoOpen, closeSheet } = useMixer();
   return (
-    <Modal visible={inmersivoOpen} animationType="none" statusBarTranslucent transparent={false}>
+    <Modal visible={inmersivoOpen} animationType="none" statusBarTranslucent transparent={false} onShow={closeSheet}>
       <InmersivoContent />
     </Modal>
   );
