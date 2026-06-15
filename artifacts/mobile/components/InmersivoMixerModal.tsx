@@ -175,7 +175,7 @@ export function InmersivoContent() {
             <Image source={bgPreset.image} style={StyleSheet.absoluteFill} contentFit="cover" transition={600} />
           ) : (
             <LinearGradient
-              colors={[...bgPreset.colors]}
+              colors={bgPreset.isLight ? ["#533d5e", "#362a46", "#533d5e"] : [...bgPreset.colors]}
               start={{ x: 0.3, y: 0 }}
               end={{ x: 0.7, y: 1 }}
               style={StyleSheet.absoluteFill}
