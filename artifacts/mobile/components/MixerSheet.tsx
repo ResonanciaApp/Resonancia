@@ -505,6 +505,19 @@ export function MixerSheet() {
               />
             )}
           </Animated.View>
+
+          {/* Overlay de contraste para escenas con imagen: se suma al overlay
+              animado para garantizar legibilidad del contenido sobre paisajes */}
+          {activeBgPreset.image && (
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                styles.imageSceneOverlay,
+              ]}
+              pointerEvents="none"
+            />
+          )}
+
           {/* Handle con PanResponder para arrastrar y cerrar */}
           <View style={styles.handleZone} {...panResponder.panHandlers}>
             <View style={[styles.handle, { backgroundColor: palette.handle }]} />
@@ -832,6 +845,11 @@ const styles = StyleSheet.create({
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
+  },
+  imageSceneOverlay: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.32)",
   },
   handleZone: {
     alignSelf: "stretch",
