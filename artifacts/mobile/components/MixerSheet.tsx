@@ -622,8 +622,7 @@ export function MixerSheet() {
             <MaterialCommunityIcons name="chevron-right" size={16} color="rgba(212,175,55,0.45)" />
           </Pressable>
 
-          {/* Separador sonidos / tab */}
-          <View style={styles.warmSeparator} />
+          {/* Separador sonidos / tab — oculto */}
 
           {/* Footer: Timer | Play | Guardar + Actualizar */}
           <View style={styles.footerRow}>
