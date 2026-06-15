@@ -533,7 +533,7 @@ export function MixerSheet() {
             >
               <Feather name="chevron-down" size={24} color={palette.fg} />
             </Pressable>
-            <Text style={[styles.title, { color: palette.fg, flex: 1 }]} numberOfLines={1}>
+            <Text style={[styles.title, { color: activeBgPreset.image ? "#FFFFFF" : palette.fg, flex: 1 }]} numberOfLines={1}>
               {originPreset?.name ?? "Tu mezcla"}
             </Text>
             <Pressable
