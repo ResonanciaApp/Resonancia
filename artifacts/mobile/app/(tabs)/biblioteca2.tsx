@@ -6,6 +6,7 @@ import React, { useRef, useState, useCallback, useMemo, useEffect } from "react"
 import {
   Animated,
   Dimensions,
+  Easing,
   FlatList,
   Keyboard,
   Modal,
@@ -127,6 +128,132 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
       )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
+  );
+}
+
+// ── Fila de chips animada ─────────────────────────────────────────────────────
+// Al filtrar: el chip elegido se desliza (lento) al margen izquierdo mientras los
+// demás hacen fade out. Al quitar el filtro: vuelve a su lugar a la misma
+// velocidad y los demás reaparecen con fade in.
+const CHIP_ANIM_DURATION = 600;
+const CLOSE_SLOT = 38; // ancho de la X (30) + gap (8)
+
+function AnimatedChipRow({
+  tabs,
+  activeTab,
+  onSelect,
+  onClear,
+}: {
+  tabs: { id: LibTab; label: string }[];
+  activeTab: LibTab | null;
+  onSelect: (id: LibTab) => void;
+  onClear: () => void;
+}) {
+  const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
+  const offsetsRef = useRef<Record<string, number>>({});
+  const scrollXRef = useRef(0);
+  // Chip que se está mostrando como seleccionado (se conserva durante el
+  // regreso para que pueda volver a su lugar antes de desmontarse).
+  const [displayTab, setDisplayTab] = useState<LibTab | null>(activeTab);
+  // Desplazamiento (px) hacia el margen del chip seleccionado.
+  const [targetTranslate, setTargetTranslate] = useState(0);
+
+  const filtered = displayTab !== null;
+
+  const animate = (toValue: number, onDone?: () => void) => {
+    Animated.timing(progress, {
+      toValue,
+      duration: CHIP_ANIM_DURATION,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) onDone?.();
+    });
+  };
+
+  const handleSelect = (id: LibTab) => {
+    const off = offsetsRef.current[id] ?? 0;
+    const visualLeft = off - scrollXRef.current;
+    setTargetTranslate(CLOSE_SLOT - visualLeft); // negativo: lo lleva al margen
+    setDisplayTab(id);
+    onSelect(id);
+    animate(1);
+  };
+
+  const handleClear = () => {
+    onClear();
+    animate(0, () => setDisplayTab(null));
+  };
+
+  // Cleanup: detener la animación si el componente se desmonta a mitad de
+  // transición (evita callbacks tardíos sobre estado ya desmontado).
+  useEffect(() => () => progress.stopAnimation(), [progress]);
+
+  return (
+    <View style={styles.animChipWrap}>
+      {/* Botón X (cierra el filtro) — aparece con fade in en el margen */}
+      <Animated.View
+        pointerEvents={filtered ? "auto" : "none"}
+        style={[styles.animCloseBtn, { opacity: progress }]}
+      >
+        <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}>
+          <Feather name="x" size={15} color={MUTED} />
+        </Pressable>
+      </Animated.View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={!filtered}
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          scrollXRef.current = e.nativeEvent.contentOffset.x;
+        }}
+        style={styles.chipRow}
+        contentContainerStyle={styles.chipRowContent}
+      >
+        {tabs.map((t) => {
+          const isSelected = displayTab === t.id;
+          const chipStyle = isSelected
+            ? {
+                opacity: 1,
+                zIndex: 2,
+                transform: [
+                  {
+                    translateX: progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, targetTranslate],
+                    }),
+                  },
+                ],
+              }
+            : {
+                // Los demás se desvanecen mientras el seleccionado se desplaza.
+                opacity: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 0],
+                }),
+              };
+
+          return (
+            <Animated.View
+              key={t.id}
+              pointerEvents={filtered && !isSelected ? "none" : "auto"}
+              onLayout={(e) => {
+                offsetsRef.current[t.id] = e.nativeEvent.layout.x;
+              }}
+              style={chipStyle}
+            >
+              <LibChip
+                label={t.label}
+                sel={isSelected}
+                onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
+              />
+            </Animated.View>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -1048,34 +1175,13 @@ export default function Biblioteca2Screen() {
           </View>
         </View>
 
-        {/* Fila 2: chips de tab */}
-        {activeTab === null ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.chipRow}
-            contentContainerStyle={styles.chipRowContent}
-          >
-            {LIB_TABS.map((t) => (
-              <LibChip key={t.id} label={t.label} sel={false} onPress={() => setActiveTab(t.id)} />
-            ))}
-          </ScrollView>
-        ) : (
-          <View style={styles.chipRowFiltered}>
-            {/* X para volver al modo general */}
-            <Pressable
-              onPress={() => setActiveTab(null)}
-              hitSlop={10}
-              style={styles.chipCloseBtn}
-            >
-              <Feather name="x" size={15} color={MUTED} />
-            </Pressable>
-            {/* Solo el tab activo */}
-            {LIB_TABS.filter((t) => t.id === activeTab).map((t) => (
-              <LibChip key={t.id} label={t.label} sel={true} onPress={() => setActiveTab(null)} />
-            ))}
-          </View>
-        )}
+        {/* Fila 2: chips de tab (animados) */}
+        <AnimatedChipRow
+          tabs={LIB_TABS}
+          activeTab={activeTab}
+          onSelect={(id) => setActiveTab(id)}
+          onClear={() => setActiveTab(null)}
+        />
 
       </View>
 
@@ -1203,7 +1309,9 @@ const styles = StyleSheet.create({
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
 
-  chipRow: { flexGrow: 0, marginBottom: 10 },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
+  animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
+  chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   chipRowFiltered: {
     flexDirection: "row",
