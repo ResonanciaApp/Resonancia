@@ -18,7 +18,7 @@ import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { useColors } from "@/hooks/useColors";
 
-const MAX_PLAYER_WIDTH = 430;
+const MAX_PLAYER_WIDTH = 434;
 const STACK_SIZE = 38;
 const STACK_SHIFT = 15;
 const MAX_STACK = 3;
