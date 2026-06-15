@@ -5,182 +5,256 @@
  *
  * Salida: artifacts/mobile/assets/audio/mixer/bpm/*.mp3
  * Cada archivo = 2 compases en 4/4 al BPM indicado.
+ *
+ * Síntesis:
+ *   Kick    — sine con pitch sweep exponencial (80→30 Hz) + click de ataque
+ *   Snare   — ruido + tono 185 Hz + filtro HP para cuerpo y "crujido"
+ *   Hi-Hat  — ruido de alta frecuencia (>8 kHz), muy breve
+ *   Shaker  — ruido de banda media-alta con micro-burst
+ *   Clap    — capas de ruido en cascada simulando palmada
+ *   Rimshot — 700 Hz + ruido con ataque duro y cola corta
+ *   Tambor  — sine grave 65 Hz con pitch micro-drop + capa de ruido suave
  */
 
-import { execSync, spawnSync } from "child_process";
-import { mkdirSync, existsSync, unlinkSync } from "fs";
+import { spawnSync, execSync } from "child_process";
+import { mkdirSync } from "fs";
 import { join } from "path";
 
 const OUT_DIR = "artifacts/mobile/assets/audio/mixer/bpm";
-const TMP_DIR = "/tmp/resonancia_bpm_hits";
-
+const TMP = "/tmp/resonancia_bpm_hits";
 mkdirSync(OUT_DIR, { recursive: true });
-mkdirSync(TMP_DIR, { recursive: true });
+mkdirSync(TMP, { recursive: true });
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
+// ─── helpers ────────────────────────────────────────────────────────────────
 
 function ffmpeg(args, label) {
-  const result = spawnSync(
-    "ffmpeg",
-    ["-y", ...args],
-    { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 }
-  );
-  if (result.status !== 0) {
-    console.error(`❌ Error generando ${label}:`);
-    console.error(result.stderr?.slice(-600));
+  const r = spawnSync("ffmpeg", ["-y", ...args], {
+    encoding: "utf8",
+    maxBuffer: 20 * 1024 * 1024,
+  });
+  if (r.status !== 0) {
+    console.error(`❌ ${label}:\n${r.stderr?.slice(-800)}`);
     process.exit(1);
   }
 }
 
-function hit(filename, expr, duration, filters = "") {
-  const out = join(TMP_DIR, filename);
-  const af = filters
-    ? `${filters},aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo`
-    : "aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo";
+/**
+ * Genera un hit individual como WAV estéreo 44100 Hz.
+ * @param {string} name  — nombre de archivo sin extensión
+ * @param {string} expr  — expresión aevalsrc (monoaural; se convierte a estéreo)
+ * @param {number} dur   — duración en segundos
+ * @param {string[]} af  — filtros de audio adicionales (cada uno = -af arg)
+ */
+function hit(name, expr, dur, af = []) {
+  const out = join(TMP, `${name}.wav`);
+  const filters = [
+    ...af,
+    "aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo",
+  ].join(",");
   ffmpeg(
-    ["-f", "lavfi",
-     "-i", `aevalsrc=${expr}:s=44100:d=${duration}:c=stereo`,
-     "-af", af,
-     out],
-    filename
+    [
+      "-f", "lavfi",
+      "-i", `aevalsrc=${expr}:s=44100:d=${dur}:c=stereo`,
+      "-af", filters,
+      out,
+    ],
+    name
   );
   return out;
 }
 
 /**
- * Ensambla un loop de 2 compases colocando el hit en cada posición de beat.
- * @param {string} hitFile  — archivo WAV del hit individual
- * @param {number} bpm
- * @param {number[]} beatPositions — posiciones en beats (0-indexed, 2 bars = beats 0..7)
- * @param {string} outputName — sin extensión
+ * Ensambla un loop de 2 compases (8 beats a 4/4) colocando el hit
+ * en cada posición indicada y exportando a MP3.
+ *
+ * @param {string}   hitWav    — path al hit WAV
+ * @param {number}   bpm
+ * @param {number[]} positions — posiciones en beats (0-indexed, 0..7, puede ser fraccionario)
+ * @param {string}   outName   — nombre final sin extensión
+ * @param {number}   [gain=1]  — volumen relativo del loop (0-1)
  */
-function assembleLoop(hitFile, bpm, beatPositions, outputName) {
-  const beatMs = (60000 / bpm);
-  const totalBeats = 8; // 2 bars × 4/4
-  const totalSec = (60 / bpm) * totalBeats;
+function loop(hitWav, bpm, positions, outName, gain = 1) {
+  const beatMs = 60_000 / bpm;
+  const totalSec = (60 / bpm) * 8; // 2 bars × 4/4
 
-  // Construir filter_complex
-  const delays = beatPositions
+  const inputs = positions.flatMap(() => ["-i", hitWav]);
+
+  const delays = positions
     .map((b, i) => {
       const ms = Math.round(b * beatMs);
       return `[${i}]adelay=${ms}|${ms}[d${i}]`;
     })
     .join(";");
 
-  const mixInputs = beatPositions.map((_, i) => `[d${i}]`).join("");
-  const n = beatPositions.length;
+  const mixIn = positions.map((_, i) => `[d${i}]`).join("");
+  const n = positions.length;
 
-  const filterComplex =
-    `${delays};${mixInputs}amix=inputs=${n}:normalize=0,` +
-    `atrim=0:${totalSec.toFixed(6)},apad=whole_dur=${totalSec.toFixed(6)}`;
+  const fc =
+    `${delays};` +
+    `${mixIn}amix=inputs=${n}:normalize=0,` +
+    `atrim=0:${totalSec.toFixed(6)},` +
+    `apad=whole_dur=${totalSec.toFixed(6)},` +
+    `volume=${gain}`;
 
-  // Repetir el hitFile como input N veces
-  const inputs = beatPositions.flatMap(() => ["-i", hitFile]);
-  const outPath = join(OUT_DIR, `${outputName}.mp3`);
-
+  const out = join(OUT_DIR, `${outName}.mp3`);
   ffmpeg(
-    [...inputs,
-     "-filter_complex", filterComplex,
-     "-ar", "44100", "-ac", "2",
-     "-codec:a", "libmp3lame", "-q:a", "4",
-     outPath],
-    outputName
+    [
+      ...inputs,
+      "-filter_complex", fc,
+      "-ar", "44100", "-ac", "2",
+      "-codec:a", "libmp3lame", "-q:a", "3",
+      out,
+    ],
+    outName
   );
-  console.log(`  ✓ ${outputName}.mp3`);
+  console.log(`  ✓ ${outName}.mp3`);
 }
 
-// ─── 1. Sintetizar hits individuales ───────────────────────────────────────
-console.log("Sintetizando hits...");
+// ─── 1. Hits individuales ────────────────────────────────────────────────────
+console.log("Sintetizando hits...\n");
 
-// Kick: sine con pitch drop rápido (80→30 Hz) + click de ataque
-const kick = hit("kick.wav",
-  "sin(2*PI*(80*exp(-t*12)+30)*t)*exp(-t*5)*0.9+sin(2*PI*3500*t)*exp(-t*90)*0.15",
+// KICK: barrido de pitch 90→25 Hz (decaimiento exponencial acelerado) +
+//       click de ataque en ~3 kHz para presencia, todo con decay suave.
+const kickWav = hit(
+  "kick",
+  // freq instantánea: f(t) = 90·exp(-14t) + 25  →  fase = integral de 2π·f
+  // Simplificamos la fase acumulada: usamos chirp implícito vía multiplicación de freq y t
+  // Capa 1: cuerpo grave (sweep)
+  // Capa 2: click de ataque (3 kHz, muy breve)
+  "(sin(2*PI*(90*exp(-14*t)+25)*t)*exp(-t*5)*0.85 + sin(2*PI*3200*t)*exp(-t*110)*0.18)",
   0.65,
-  "volume=10dB,alimiter=level_in=10dB:level_out=0.95:limit=0.95:attack=2:release=80"
+  ["volume=11dB", "alimiter=level_in=11dB:level_out=0.96:limit=0.96:attack=1:release=60"]
 );
 
-// Snare: ruido + 200 Hz, decay medio
-const snare = hit("snare.wav",
-  "sin(random(0)*2*PI)*0.55+sin(2*PI*200*t)*0.45",
-  0.35,
-  "afade=t=out:st=0.05:d=0.3,volume=7dB,alimiter=level_out=0.9"
+// SNARE: ruido ancho + resonancia 185 Hz (cuerpo de tarola) +
+//        ligero HP para el "crack" inicial.
+const snareWav = hit(
+  "snare",
+  // ruido × decay (parte "wire") + tono (parte "head")
+  "(sin(random(0)*2*PI)*0.60 + sin(2*PI*185*t)*0.40) * exp(-t*9)",
+  0.38,
+  [
+    "highpass=f=200",
+    "volume=8dB",
+    "alimiter=level_out=0.9:attack=1:release=50",
+  ]
 );
 
-// Hi-Hat cerrado: ruido de alta frecuencia, muy corto
-const hihatC = hit("hihat_c.wav",
-  "sin(random(1)*2*PI)",
-  0.09,
-  "highpass=f=7000,afade=t=out:st=0.01:d=0.08,volume=5dB,alimiter=level_out=0.7"
+// HI-HAT CERRADO: ruido altísimo (>8 kHz), ataque instantáneo, decay ~55 ms.
+const hihatCWav = hit(
+  "hihat_c",
+  "sin(random(1)*2*PI) * exp(-t*55)",
+  0.10,
+  [
+    "highpass=f=8000",
+    "volume=5dB",
+    "alimiter=level_out=0.72",
+  ]
 );
 
-// Hi-Hat abierto: ruido alto, decay más largo
-const hihatO = hit("hihat_o.wav",
-  "sin(random(2)*2*PI)*exp(-t*5)",
-  0.35,
-  "highpass=f=6000,volume=4dB,alimiter=level_out=0.65"
+// HI-HAT ABIERTO: igual pero decay más lento (~6x), da sensación de abierto.
+const hihatOWav = hit(
+  "hihat_o",
+  "sin(random(2)*2*PI) * exp(-t*9)",
+  0.40,
+  [
+    "highpass=f=7000",
+    "volume=4dB",
+    "alimiter=level_out=0.65",
+  ]
 );
 
-// Shaker: ruido de banda media-alta, muy corto
-const shaker = hit("shaker.wav",
-  "sin(random(3)*2*PI)*exp(-t*30)",
-  0.13,
-  "bandpass=f=5000:width_type=o:w=2.5,volume=5dB,alimiter=level_out=0.6"
+// SHAKER: ruido de banda media-alta (3-7 kHz), micro-burst muy corto.
+const shakerWav = hit(
+  "shaker",
+  "sin(random(3)*2*PI) * exp(-t*35)",
+  0.14,
+  [
+    "bandpass=f=4500:width_type=o:w=2.2",
+    "volume=6dB",
+    "alimiter=level_out=0.60",
+  ]
 );
 
-// Clap: ruido de banda media, con pequeño cola
-const clap = hit("clap.wav",
-  "sin(random(4)*2*PI)*exp(-t*10)",
-  0.22,
-  "bandpass=f=2500:width_type=o:w=1.8,volume=6dB,alimiter=level_out=0.82"
+// CLAP: 3 capas de ruido en cascada con micro-delays entre sí para dar
+//       sensación de "múltiples manos". Se crea con amix de tres capas.
+// — Simplificado: un solo burst de ruido con ataque duro y cola media
+const clapWav = hit(
+  "clap",
+  // ruido con decay medio (simula reverb de sala)
+  "sin(random(4)*2*PI) * exp(-t*11)",
+  0.28,
+  [
+    "bandpass=f=2000:width_type=o:w=1.6",
+    "volume=7dB",
+    "alimiter=level_out=0.85",
+  ]
 );
 
-// Rimshot: 600 Hz + ruido, muy corto y cortante
-const rimshot = hit("rimshot.wav",
-  "(sin(2*PI*600*t)*0.65+sin(random(5)*2*PI)*0.35)*exp(-t*22)",
-  0.16,
-  "volume=6dB,alimiter=level_out=0.85"
+// RIMSHOT: tono 700 Hz (aro metálico) + ruido blanco, ataque duro, cola muy corta.
+const rimshotWav = hit(
+  "rimshot",
+  "(sin(2*PI*700*t)*0.60 + sin(random(5)*2*PI)*0.40) * exp(-t*28)",
+  0.18,
+  [
+    "volume=7dB",
+    "alimiter=level_out=0.88",
+  ]
 );
 
-// Tambor: sine grave (75 Hz), decay largo y profundo
-const tambor = hit("tambor.wav",
-  "sin(2*PI*75*t)*exp(-t*3.5)+sin(random(6)*2*PI)*exp(-t*8)*0.18",
-  0.9,
-  "volume=8dB,alimiter=level_out=0.92"
+// TAMBOR: sine grave 65 Hz con micro-pitch-drop (cuerpo profundo) +
+//         capa de ruido suave para la "piel".
+const tamborWav = hit(
+  "tambor",
+  "(sin(2*PI*(65*exp(-t*2)+40)*t)*0.82 + sin(random(6)*2*PI)*exp(-t*7)*0.18) * exp(-t*3.2)",
+  0.90,
+  [
+    "volume=9dB",
+    "alimiter=level_out=0.93:attack=2:release=80",
+  ]
 );
 
 console.log("Hits OK.\n");
 
-// ─── 2. Ensamblar loops ───────────────────────────────────────────────────
-// Patrones (posiciones en beats, 2 bars = 8 beats totales):
-//   Kick:         1 y 3 de cada bar → beats 0, 2, 4, 6
-//   Snare:        2 y 4 de cada bar → beats 1, 3, 5, 7
-//   HiHat:        cada beat → 0,1,2,3,4,5,6,7
-//   Shaker:       cada beat
-//   Tambor:       beat 1 de cada bar → 0, 4
-//   Rimshot:      contratiempos → 0.5, 2.5, 4.5, 6.5
-//   Clap:         beats 2 y 4 → 1, 3, 5, 7
+// ─── 2. Patrones ────────────────────────────────────────────────────────────
+// Todos los patrones son 2 compases = 8 beats (0-indexed: 0..7).
+//   Kick:    beats 1 y 3 de cada compás = 0, 2, 4, 6
+//   Snare:   beats 2 y 4 = 1, 3, 5, 7
+//   Hi-Hat:  cada beat = 0,1,2,3,4,5,6,7
+//   Shaker:  cada beat
+//   Rimshot: contratiempos (& de cada beat) = 0.5, 2.5, 4.5, 6.5
+//   Clap:    2 y 4 = 1, 3, 5, 7
+//   Tambor:  beat 1 de cada compás = 0, 4
+
+const KICK    = [0, 2, 4, 6];
+const SNARE   = [1, 3, 5, 7];
+const HIHAT   = [0, 1, 2, 3, 4, 5, 6, 7];
+const SHAKER  = [0, 1, 2, 3, 4, 5, 6, 7];
+const OFFBEAT = [0.5, 2.5, 4.5, 6.5];
+const CLAP    = [1, 3, 5, 7];
+const TAMBOR  = [0, 4];
 
 console.log("⟳ 90 BPM...");
-assembleLoop(kick,    90, [0, 2, 4, 6],             "kick_90");
-assembleLoop(snare,   90, [1, 3, 5, 7],             "snare_90");
-assembleLoop(hihatC,  90, [0, 1, 2, 3, 4, 5, 6, 7], "hihat_90");
-assembleLoop(shaker,  90, [0, 1, 2, 3, 4, 5, 6, 7], "shaker_90");
-assembleLoop(tambor,  90, [0, 4],                   "tambor_90");
+loop(kickWav,   90, KICK,   "kick_90");
+loop(snareWav,  90, SNARE,  "snare_90");
+loop(hihatCWav, 90, HIHAT,  "hihat_90");
+loop(shakerWav, 90, SHAKER, "shaker_90");
+loop(tamborWav, 90, TAMBOR, "tambor_90");
 
 console.log("⟳ 100 BPM...");
-assembleLoop(kick,    100, [0, 2, 4, 6],              "kick_100");
-assembleLoop(snare,   100, [1, 3, 5, 7],              "snare_100");
-assembleLoop(hihatC,  100, [0, 1, 2, 3, 4, 5, 6, 7],  "hihat_100");
-assembleLoop(rimshot, 100, [0.5, 2.5, 4.5, 6.5],      "rimshot_100");
-assembleLoop(shaker,  100, [0, 1, 2, 3, 4, 5, 6, 7],  "shaker_100");
+loop(kickWav,    100, KICK,    "kick_100");
+loop(snareWav,   100, SNARE,   "snare_100");
+loop(hihatCWav,  100, HIHAT,   "hihat_100");
+loop(rimshotWav, 100, OFFBEAT, "rimshot_100");
+loop(shakerWav,  100, SHAKER,  "shaker_100");
 
 console.log("⟳ 120 BPM...");
-assembleLoop(kick,    120, [0, 2, 4, 6],              "kick_120");
-assembleLoop(snare,   120, [1, 3, 5, 7],              "snare_120");
-assembleLoop(hihatC,  120, [0, 1, 2, 3, 4, 5, 6, 7],  "hihat_cerrado_120");
-assembleLoop(hihatO,  120, [1, 3, 5, 7],              "hihat_abierto_120");
-assembleLoop(clap,    120, [1, 3, 5, 7],              "clap_120");
-assembleLoop(tambor,  120, [0, 4],                    "tambor_120");
+loop(kickWav,    120, KICK,   "kick_120");
+loop(snareWav,   120, SNARE,   "snare_120");
+loop(hihatCWav,  120, HIHAT,   "hihat_cerrado_120");
+loop(hihatOWav,  120, CLAP,    "hihat_abierto_120");
+loop(clapWav,    120, CLAP,    "clap_120");
+loop(tamborWav,  120, TAMBOR,  "tambor_120");
 
-console.log(`\n✅ 16 loops generados en ${OUT_DIR}`);
+console.log(`\n✅ 16 loops en ${OUT_DIR}`);
 execSync(`ls -lh ${OUT_DIR}/*.mp3`, { stdio: "inherit" });

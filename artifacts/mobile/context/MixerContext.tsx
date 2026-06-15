@@ -483,6 +483,37 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     try {
       baseVolumesRef.current.set(id, volume);
 
+      // ── Loops BPM: ganancia constante, sin crossfade ──────────────────────
+      // El crossfade usa gain=|sin(π·pos/dur)|, que vale 0 en pos=0. Para
+      // loops de drum (4-5 s), eso silencia el primer beat de CADA vuelta.
+      // Solución: los BPM loops usan solo la capa A a ganancia fija 1.
+      // La capa B se crea pero no reproduce (la interfaz SoundPlayers la exige).
+      const isBpmLoop = !!(getSoundById(id)?.bpm);
+      if (isBpmLoop) {
+        const a = createAudioPlayer(null, { updateInterval: 200 });
+        a.loop = true;
+        a.replace(file);
+        a.volume = volume * masterVolumeRef.current;
+        const b = createAudioPlayer(null, { updateInterval: 200 });
+        b.loop = false;
+        b.volume = 0;
+        const pair: SoundPlayers = { a, b };
+        playersRef.current.set(id, pair);
+        // Listener mínimo: solo actualiza el volumen si cambia el master
+        const sub = a.addListener("playbackStatusUpdate", () => {
+          const cur = playersRef.current.get(id);
+          if (!cur || cur.a !== a) return;
+          const base = baseVolumesRef.current.get(id) ?? volume;
+          const target = base * masterVolumeRef.current;
+          if (Math.abs(a.volume - target) > 0.004) {
+            try { a.volume = target; } catch { /* ignore */ }
+          }
+        });
+        loopSubsRef.current.set(id, [sub]);
+        a.play();
+        return pair;
+      }
+
       // ── Crossfade del loop con DOS capas ─────────────────────────────────
       // Un solo audio no puede solaparse consigo mismo, así que el corte del
       // loop nativo siempre se nota (aunque se le haga un dip de volumen).
