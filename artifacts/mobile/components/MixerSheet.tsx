@@ -42,6 +42,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
+import { setReopenMixer } from "@/utils/immersivo-flags";
 import {
   DEFAULT_BG_PRESET_ID,
   DEFAULT_OVERLAY,
@@ -620,7 +621,8 @@ export function MixerSheet() {
           <Animated.View style={{ opacity: immersivoFade, alignSelf: "center", marginBottom: 20, marginTop: 6 }}>
             <Pressable
               onPress={() => {
-                router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}&returnMixer=1` as never);
+                setReopenMixer(true);
+                router.push(`/inmersivo-mixer?bgPresetId=${bgPresetId}` as never);
               }}
               style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, activeBgPreset.image && styles.immersivoBtnImage]}
               accessibilityRole="button"

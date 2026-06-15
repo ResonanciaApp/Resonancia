@@ -13,7 +13,7 @@ import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
-import { router, Stack, useSegments } from "expo-router";
+import { router, Stack, usePathname, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { Animated, StyleSheet, View } from "react-native";
@@ -41,6 +41,8 @@ import { PlayerProvider } from "@/context/PlayerContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
+import { consumeReopenMixer } from "@/utils/immersivo-flags";
+import { useMixer } from "@/context/MixerContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
@@ -86,6 +88,18 @@ function AuthGate() {
 
 function PushBridge() {
   usePushNotifications();
+  return null;
+}
+
+/** Reabre el MixerSheet al volver desde la pantalla inmersivo-mixer. */
+function MixerReopenBridge() {
+  const pathname = usePathname();
+  const { openSheet } = useMixer();
+  useEffect(() => {
+    if (!pathname.includes("inmersivo-mixer") && consumeReopenMixer()) {
+      openSheet();
+    }
+  }, [pathname, openSheet]);
   return null;
 }
 
@@ -256,6 +270,7 @@ function RootLayoutNav() {
       </Stack>
       </PushWrapper>
       <DrawerMenu />
+      <MixerReopenBridge />
       <MixerSheet />
     </DrawerProvider>
   );
