@@ -267,11 +267,6 @@ export function InmersivoContent() {
             <Animated.Text style={[styles.msgText, { opacity: msgOpacity }]}>
               {activePack.messages[msgIdx]}
             </Animated.Text>
-            <Animated.View style={[styles.msgDots, { opacity: msgOpacity }]}>
-              {activePack.messages.map((_, i) => (
-                <View key={i} style={[styles.msgDot, i === msgIdx && styles.msgDotActive]} />
-              ))}
-            </Animated.View>
           </View>
         )}
 
