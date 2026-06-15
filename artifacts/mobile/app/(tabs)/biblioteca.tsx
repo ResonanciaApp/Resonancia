@@ -60,8 +60,8 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
 ];
 
 // ── Stack de imágenes de sonidos ─────────────────────────────────────────────
-const THUMB = 56;
-const SHIFT = 30;
+const THUMB = 62;
+const SHIFT = 32;
 const MAX_STACK = 3;
 function SoundStack({ sounds }: { sounds: { id: string }[] }) {
   const visible = sounds.slice(0, MAX_STACK);
@@ -1385,8 +1385,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   geoThumb: {
-    width: 56,
-    height: 56,
+    width: 62,
+    height: 62,
     borderRadius: 10,
     overflow: "hidden",
     alignItems: "center",
