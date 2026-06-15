@@ -537,40 +537,43 @@ export function MixerSheet() {
             />
           )}
 
-          {/* Handle con PanResponder para arrastrar y cerrar */}
-          <View style={styles.handleZone} {...panResponder.panHandlers}>
-            <View style={[styles.handle, { backgroundColor: palette.handle }]} />
-          </View>
+          {/* ── Cabecera con fondo propio ── */}
+          <View style={styles.headerBg}>
+            {/* Handle con PanResponder para arrastrar y cerrar */}
+            <View style={styles.handleZone} {...panResponder.panHandlers}>
+              <View style={[styles.handle, { backgroundColor: "rgba(255,255,255,0.25)" }]} />
+            </View>
 
-          <View style={styles.headerRow}>
-            <Pressable
-              onPress={closeSheet}
-              hitSlop={10}
-              style={styles.headerBtn}
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar editor de mezcla"
-            >
-              <Feather name="chevron-down" size={24} color={activeBgPreset.image ? "#FFFFFF" : palette.fg} />
-            </Pressable>
-            <Text style={[styles.title, { color: activeBgPreset.image ? "#FFFFFF" : palette.fg, flex: 1 }]} numberOfLines={1}>
-              {originPreset?.name ?? "Tu mezcla"}
-            </Text>
-            <Pressable
-              onPress={() => setEscenasOpen(true)}
-              hitSlop={10}
-              style={styles.ajustesPill}
-              accessibilityRole="button"
-              accessibilityLabel="Escenas y ajustes de fondo"
-            >
-              <MaterialCommunityIcons
-                name="tune-variant"
-                size={15}
-                color={activeBgPreset.image ? "rgba(255,255,255,0.85)" : palette.fg}
-              />
-              <Text style={[styles.ajustesPillText, { color: activeBgPreset.image ? "rgba(255,255,255,0.85)" : palette.fg }]}>
-                Ajustes generales
+            <View style={styles.headerRow}>
+              <Pressable
+                onPress={closeSheet}
+                hitSlop={10}
+                style={styles.headerBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar editor de mezcla"
+              >
+                <Feather name="chevron-down" size={24} color="#FFFFFF" />
+              </Pressable>
+              <Text style={[styles.title, { color: "#FFFFFF", flex: 1 }]} numberOfLines={1}>
+                {originPreset?.name ?? "Tu mezcla"}
               </Text>
-            </Pressable>
+              <Pressable
+                onPress={() => setEscenasOpen(true)}
+                hitSlop={10}
+                style={styles.ajustesPill}
+                accessibilityRole="button"
+                accessibilityLabel="Escenas y ajustes de fondo"
+              >
+                <MaterialCommunityIcons
+                  name="tune-variant"
+                  size={15}
+                  color="#FFFFFF"
+                />
+                <Text style={[styles.ajustesPillText, { color: "#FFFFFF" }]}>
+                  Ajustes generales
+                </Text>
+              </Pressable>
+            </View>
           </View>
 
           <View style={[styles.headerDivider, { backgroundColor: palette.separator }]} />
@@ -903,6 +906,9 @@ const styles = StyleSheet.create({
     width: 36,
     height: 3,
     borderRadius: 2,
+  },
+  headerBg: {
+    backgroundColor: "#3d304e",
   },
   headerRow: {
     flexDirection: "row",
