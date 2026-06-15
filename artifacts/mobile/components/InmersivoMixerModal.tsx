@@ -26,7 +26,7 @@ import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
 import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
 
-const CONTROLS_TIMEOUT = 3500;
+const CONTROLS_TIMEOUT = 2000;
 const MSG_DISPLAY_MS   = 14000;
 const MSG_FADE_MS      = 900;
 
