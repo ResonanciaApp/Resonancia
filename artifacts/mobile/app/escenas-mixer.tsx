@@ -43,7 +43,7 @@ const H_PAD = 16;
 const CARD_GAP = 12;
 // ~2.2 tarjetas visibles → indica que hay más para deslizar
 const CARD_W = Math.floor(SCREEN_W / 2.2 - CARD_GAP);
-const CARD_H = Math.floor(CARD_W * 4 / 3);
+const CARD_H = Math.floor(CARD_W * 4 / 3) + 150;
 
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
 
