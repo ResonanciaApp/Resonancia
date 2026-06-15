@@ -56,7 +56,7 @@ const CATEGORY_CARDS = [
     title: "Ancestral",
     subtitle: "Cuencos, gongs y sonidos sagrados",
     route: "/category/sonidos-ancestrales",
-    image: require("../../assets/images/categories/sonidos-ancestrales.png"),
+    image: require("../../assets/images/categories/cat-ancestral.png"),
     overlay: "rgba(12,4,8,0.45)",
   },
   {
@@ -64,7 +64,7 @@ const CATEGORY_CARDS = [
     title: "Meditaciones",
     subtitle: "Guías de voz para calmar la mente",
     route: "/category/meditaciones-guiadas",
-    image: require("../../assets/images/categories/meditaciones-guiadas.png"),
+    image: require("../../assets/images/categories/cat-meditaciones.png"),
     overlay: "rgba(4,8,16,0.42)",
   },
   {
@@ -72,7 +72,7 @@ const CATEGORY_CARDS = [
     title: "Música",
     subtitle: "Ambient, naturaleza y paisajes sonoros",
     route: "/category/musica-sonidos",
-    image: require("../../assets/images/categories/musica-sonidos.png"),
+    image: require("../../assets/images/categories/cat-musica.png"),
     overlay: "rgba(4,14,8,0.42)",
   },
 ] as const;

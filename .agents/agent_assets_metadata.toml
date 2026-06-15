@@ -714,6 +714,24 @@ uri = "file://artifacts/mobile/assets/images/immersive/estrellas.png"
 type = "image"
 title = "milky way stars indigo mountain"
 
+[[generated]]
+id = "TpSznxzXKN4akV3zw4GEL"
+uri = "file://artifacts/mobile/assets/images/categories/cat-ancestral.png"
+type = "image"
+title = "ancestral singing bowls dark cinematic"
+
+[[generated]]
+id = "M6Ov8tKsee6YcxKMfL8P7"
+uri = "file://artifacts/mobile/assets/images/categories/cat-meditaciones.png"
+type = "image"
+title = "meditation silhouette aurora night"
+
+[[generated]]
+id = "6pbJtOOlb-tzIpm-iHmq2"
+uri = "file://artifacts/mobile/assets/images/categories/cat-musica.png"
+type = "image"
+title = "bioluminescent forest ambient music"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
