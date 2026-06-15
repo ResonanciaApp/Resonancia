@@ -193,8 +193,8 @@ export function MixerSheet() {
     fg:             isLight ? "#1A1E2B"             : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
     inputBg:        isLight ? "rgba(74,12,12,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(74,12,12,0.08)",
-    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"       : "rgba(0,0,0,0.30)",
-    footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : "rgba(244,218,213,0.45)",
+    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"  : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.30)",
+    footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(244,218,213,0.45)",
   };
   const { isPremium } = usePremium();
   const {
@@ -1137,7 +1137,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(140,26,43,0.22)",
   },
   immersivoBtnImage: {
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(255,255,255,0.10)",
     borderColor: "rgba(255,255,255,0.22)",
   },
   immersivoIconWrap: {
