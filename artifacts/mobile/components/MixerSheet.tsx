@@ -789,13 +789,25 @@ export function MixerSheet() {
             onPress={(e) => e.stopPropagation()}
           >
             <View style={styles.bgPickerHandle} />
-            <Text style={styles.bgPickerTitle}>Elige tu fondo</Text>
+            <View style={styles.bgPickerTitleRow}>
+              <Text style={styles.bgPickerTitle}>Elige tu fondo</Text>
+              {bgPresetId !== DEFAULT_BG_PRESET_ID && (
+                <Pressable
+                  onPress={() => selectBgPreset(DEFAULT_BG_PRESET_ID)}
+                  style={styles.restablecerBtn}
+                  hitSlop={8}
+                >
+                  <Feather name="rotate-ccw" size={11} color="rgba(212,175,55,0.85)" />
+                  <Text style={styles.restablecerText}>Restablecer</Text>
+                </Pressable>
+              )}
+            </View>
 
             <ScrollView
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.bgPickerGrid}
             >
-              {GRADIENT_PRESETS.map((preset) => {
+              {GRADIENT_PRESETS.filter((p) => p.id !== DEFAULT_BG_PRESET_ID).map((preset) => {
                 const sel = preset.id === bgPresetId;
                 return (
                   <Pressable
@@ -1155,12 +1167,34 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 16,
   },
+  bgPickerTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
   bgPickerTitle: {
     color: "#F4DAD5",
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,
-    marginBottom: 16,
+  },
+  restablecerBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.25)",
+    backgroundColor: "rgba(212,175,55,0.07)",
+  },
+  restablecerText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "rgba(212,175,55,0.85)",
+    letterSpacing: 0.2,
   },
   bgPickerGrid: {
     flexDirection: "row",
