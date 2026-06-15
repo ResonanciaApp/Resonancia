@@ -48,7 +48,7 @@ const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP * 2) / 3);
 
 const CAT_CARD_GAP = 12;
-const CAT_CARD_W = Math.round((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2) - 30;
+const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.25);
 const CAT_CARD_IMG_H = Math.round(CAT_CARD_W * 1.15);
 
 const CATEGORY_CARDS = [
