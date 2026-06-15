@@ -485,12 +485,11 @@ export function MixerSheet() {
         <Animated.View
           style={{ transform: [{ translateY: sheetEnterY }] }}
         >
-        <Pressable
+        <View
           style={[
             styles.sheet,
             { backgroundColor: sheetGradient[2], paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 },
           ]}
-          onPress={(e) => e.stopPropagation()}
         >
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: bgBreath }]} pointerEvents="none">
             {activeBgPreset.image ? (
@@ -700,7 +699,7 @@ export function MixerSheet() {
 
           </View>
 
-        </Pressable>
+        </View>
         </Animated.View>
       </Pressable>
 
