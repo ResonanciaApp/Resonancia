@@ -75,7 +75,7 @@ export function InmersivoContent() {
     return () => anim.stop();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [packId, setPackId] = useState(DEFAULT_MESSAGE_PACK_ID);
+  const [packId, setPackId] = useState<string | "none">("none");
   const [msgIdx, setMsgIdx] = useState(0);
   const msgOpacity = useRef(new Animated.Value(1)).current;
   const activePack = MESSAGE_PACKS.find((p) => p.id === packId) ?? MESSAGE_PACKS[0]!;
@@ -225,7 +225,24 @@ export function InmersivoContent() {
           </View>
 
           <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
+            <Pressable onPress={togglePlay} style={styles.playBtn} hitSlop={12}>
+              <MaterialCommunityIcons
+                name={isPlaying ? "pause" : "play"}
+                size={42}
+                color="rgba(255,255,255,0.90)"
+              />
+            </Pressable>
+
             <View style={styles.packRow}>
+              {/* Sin afirmaciones — opción por defecto */}
+              <Pressable
+                onPress={() => { showControls(); setPackId("none"); }}
+                style={[styles.packPill, packId === "none" && styles.packPillSel]}
+              >
+                <Text style={[styles.packLabel, packId !== "none" && styles.packLabelOff]}>
+                  Sin afirmaciones
+                </Text>
+              </Pressable>
               {MESSAGE_PACKS.map((pack) => {
                 const sel = pack.id === packId;
                 return (
@@ -234,8 +251,9 @@ export function InmersivoContent() {
                     onPress={() => { showControls(); setPackId(pack.id); }}
                     style={[styles.packPill, sel && styles.packPillSel]}
                   >
-                    <Text style={styles.packEmoji}>{pack.emoji}</Text>
-                    {sel && <Text style={styles.packLabel}>{pack.label}</Text>}
+                    <Text style={[styles.packLabel, !sel && styles.packLabelOff]}>
+                      {pack.label}
+                    </Text>
                   </Pressable>
                 );
               })}
@@ -250,27 +268,21 @@ export function InmersivoContent() {
                 ))}
               </View>
             )}
-
-            <Pressable onPress={togglePlay} style={styles.playBtn} hitSlop={12}>
-              <MaterialCommunityIcons
-                name={isPlaying ? "pause" : "play"}
-                size={42}
-                color="rgba(255,255,255,0.90)"
-              />
-            </Pressable>
           </View>
         </Animated.View>
 
-        <View style={styles.msgCenter} pointerEvents="none">
-          <Animated.Text style={[styles.msgText, { opacity: msgOpacity }]}>
-            {activePack.messages[msgIdx]}
-          </Animated.Text>
-          <Animated.View style={[styles.msgDots, { opacity: msgOpacity }]}>
-            {activePack.messages.map((_, i) => (
-              <View key={i} style={[styles.msgDot, i === msgIdx && styles.msgDotActive]} />
-            ))}
-          </Animated.View>
-        </View>
+        {packId !== "none" && (
+          <View style={styles.msgCenter} pointerEvents="none">
+            <Animated.Text style={[styles.msgText, { opacity: msgOpacity }]}>
+              {activePack.messages[msgIdx]}
+            </Animated.Text>
+            <Animated.View style={[styles.msgDots, { opacity: msgOpacity }]}>
+              {activePack.messages.map((_, i) => (
+                <View key={i} style={[styles.msgDot, i === msgIdx && styles.msgDotActive]} />
+              ))}
+            </Animated.View>
+          </View>
+        )}
 
         {timerPanelOpen && (
           <Pressable style={StyleSheet.absoluteFill} onPress={closeTimerPanel}>
@@ -363,6 +375,7 @@ const styles = StyleSheet.create({
   packPillSel: { backgroundColor: "rgba(212,175,55,0.18)", borderColor: "rgba(212,175,55,0.40)" },
   packEmoji: { fontSize: 14 },
   packLabel: { fontSize: 11, fontWeight: "700", color: "#E9C46A", letterSpacing: 0.2 },
+  packLabelOff: { color: "rgba(255,255,255,0.70)", fontWeight: "600" },
   soundsRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "center" },
   soundPill: { backgroundColor: "rgba(255,255,255,0.08)", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" },
   soundPillText: { color: "rgba(255,255,255,0.60)", fontSize: 10, fontWeight: "500" },
