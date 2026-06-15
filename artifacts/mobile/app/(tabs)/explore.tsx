@@ -358,8 +358,7 @@ export default function ExploreScreen() {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={{ marginHorizontal: -H_PAD }}
-                contentContainerStyle={{ paddingHorizontal: H_PAD, gap: CAT_CARD_GAP, paddingBottom: 4 }}
+                contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 4 }}
                 decelerationRate="fast"
               >
                 {TAG_CARDS.map((t) => (
