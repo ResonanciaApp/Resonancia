@@ -665,8 +665,8 @@ export default function BibliotecaScreen() {
           )}
 
           {/* ── Resonadores ── */}
-          <Text style={[styles.generalSectionLabel, { marginTop: 24 }]}>Resonadores</Text>
-          {resonadores.slice(0, 3).map((r) => (
+          <Text style={[styles.generalSectionLabel, { marginTop: 24, marginBottom: 6 }]}>Resonadores</Text>
+          {resonadores.slice(0, 2).map((r) => (
             <ResonadorRow
               key={r.id}
               name={r.name}
