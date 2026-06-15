@@ -558,24 +558,18 @@ export function MixerSheet() {
             <Pressable
               onPress={() => setEscenasOpen(true)}
               hitSlop={10}
-              style={styles.headerBtn}
+              style={styles.ajustesPill}
               accessibilityRole="button"
               accessibilityLabel="Escenas y ajustes de fondo"
             >
               <MaterialCommunityIcons
                 name="tune-variant"
-                size={22}
-                color={activeBgPreset.image ? "#FFFFFF" : palette.fg}
+                size={15}
+                color={activeBgPreset.image ? "rgba(255,255,255,0.85)" : palette.fg}
               />
-            </Pressable>
-            <Pressable
-              onPress={handleClear}
-              hitSlop={8}
-              style={styles.headerBtn}
-              accessibilityRole="button"
-              accessibilityLabel="Terminar mezcla"
-            >
-              <Text style={[styles.clearPill, { color: activeBgPreset.image ? "#FFFFFF" : palette.fg }]}>Cerrar</Text>
+              <Text style={[styles.ajustesPillText, { color: activeBgPreset.image ? "rgba(255,255,255,0.85)" : palette.fg }]}>
+                Ajustes generales
+              </Text>
             </Pressable>
           </View>
 
@@ -914,6 +908,22 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     letterSpacing: 0.3,
     color: "#FFFFFF",
+  },
+  ajustesPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.25)",
+    backgroundColor: "rgba(212,175,55,0.07)",
+  },
+  ajustesPillText: {
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 0.2,
   },
 
   trackScroll: { flex: 1 },
