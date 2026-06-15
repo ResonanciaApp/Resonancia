@@ -27,7 +27,7 @@ import { useColors } from "@/hooks/useColors";
 
 
 const GOLD = "#D4AF37";
-const STACK_THUMB = 30;
+const STACK_THUMB = 62;
 
 const MAX_VISIBLE = 8;
 
