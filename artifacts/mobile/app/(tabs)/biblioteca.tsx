@@ -1549,9 +1549,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   addResonadorIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 62,
+    height: 62,
+    borderRadius: 31,
     backgroundColor: "rgba(255,255,255,0.06)",
     alignItems: "center",
     justifyContent: "center",
