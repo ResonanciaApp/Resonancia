@@ -205,7 +205,7 @@ export function MiniPlayer() {
             onPress={(e) => { e.stopPropagation(); togglePlay(); }}
             style={styles.playPauseBtn}
           >
-            <Feather name={mixPlaying ? "pause" : "play"} size={20} color={colors.foreground} />
+            <Feather name={mixPlaying ? "pause" : "play"} size={35} color={colors.foreground} />
           </Pressable>
         </View>
       </View>,
@@ -246,7 +246,7 @@ export function MiniPlayer() {
             onPress={(e) => { e.stopPropagation(); pauseResume(); }}
             style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)" }]}
           >
-            <Feather name={isPlaying ? "pause" : "play"} size={18} color="#FFFFFF" />
+            <Feather name={isPlaying ? "pause" : "play"} size={33} color="#FFFFFF" />
           </Pressable>
         </View>
       </View>
@@ -301,9 +301,9 @@ const styles = StyleSheet.create({
   },
   sub: { fontSize: 11 },
   btn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 53,
+    height: 53,
+    borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -349,8 +349,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   playPauseBtn: {
-    width: 32,
-    height: 32,
+    width: 47,
+    height: 47,
     alignItems: "center",
     justifyContent: "center",
   },

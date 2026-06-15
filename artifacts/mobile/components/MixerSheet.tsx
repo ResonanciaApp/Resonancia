@@ -556,7 +556,7 @@ export function MixerSheet() {
               accessibilityRole="button"
               accessibilityLabel="Terminar mezcla"
             >
-              <Text style={styles.clearPill}>Cerrar</Text>
+              <Text style={[styles.clearPill, { color: palette.fg }]}>Cerrar</Text>
             </Pressable>
           </View>
 
