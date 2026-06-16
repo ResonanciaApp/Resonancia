@@ -76,7 +76,7 @@ const PRESETS_KEY = "@resonance_mixer_presets";
 const DEFAULT_VOLUME = 0.7;
 
 /** Las dos capas del mismo sonido que se crossfadean entre sí (ver MixerContext). */
-type SoundPlayers = { a: AudioPlayer; b: AudioPlayer; resetFade?: () => void };
+type SoundPlayers = { a: AudioPlayer; b: AudioPlayer; resetFade?: () => void; clearBFade?: () => void };
 
 export type ActiveSound = { id: string; volume: number };
 export type MixPreset = {
@@ -692,7 +692,20 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       };
       const a = makeLayer();
       const b = makeLayer();
-      const pair: SoundPlayers = { a, b, resetFade: () => { fadeState.audibleStart = 0; } };
+      const pair: SoundPlayers = {
+        a,
+        b,
+        resetFade: () => {
+          fadeState.audibleStart = 0;
+          // Al reanudar, B ya está en posición → bEntryFrac=1 inmediato
+          // (el fade de reanudación lo maneja startup, no bEntry).
+          bEntryFrac = 1;
+          if (bFadeTimer) { clearInterval(bFadeTimer); bFadeTimer = null; }
+        },
+        clearBFade: () => {
+          if (bFadeTimer) { clearInterval(bFadeTimer); bFadeTimer = null; }
+        },
+      };
 
       // ── Crossfade simétrico (robusto) ────────────────────────────────────
       // AMBAS capas usan SIEMPRE el gain = |sin(pi*pos/dur)|. En el borde del
@@ -719,8 +732,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       let offsetConfirmed = false; // true al confirmar que el seed de B aterrizó
       let bSeeded = false; // B confirmó su salto al pico
       let bSeedTarget = -1; // posición objetivo del último seed (para confirmarlo)
-      let bEntryStart = 0; // timestamp cuando B se habilitó → fade de entrada
-      const B_ENTRY_FADE_MS = 120; // ramp de B al aparecer (evita el "tac" de habilitación)
+      let bEntryFrac = 0; // 0→1 a 60 fps cuando B se habilita (evita el "tac" de habilitación)
+      let bFadeTimer: ReturnType<typeof setInterval> | null = null;
+      const B_ENTRY_FADE_MS = 180; // duración del fade de entrada de B (ms)
       const fadeState = { audibleStart: 0 }; // mutable: se resetea en resumePlayer
       const STARTUP_FADE_MS = 350;
       // Recentrado de drift a largo plazo (sesiones de horas): dos loops nativos
@@ -766,7 +780,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
               if (serr < 0.3) {
                 bSeeded = true;
                 offsetConfirmed = true;
-                bEntryStart = Date.now(); // ancla del fade de entrada de B
+                // Fade de entrada a 60 fps, independiente de los ticks de audio
+                // (en iOS los ticks llegan cada ~200 ms → bEntry calculado inline
+                // ya vale 1 al primer tick siguiente → el fade nunca corría).
+                bEntryFrac = 0;
+                if (bFadeTimer) clearInterval(bFadeTimer);
+                const bFadeStart = Date.now();
+                bFadeTimer = setInterval(() => {
+                  bEntryFrac = Math.min(1, (Date.now() - bFadeStart) / B_ENTRY_FADE_MS);
+                  if (bEntryFrac >= 1) {
+                    clearInterval(bFadeTimer!);
+                    bFadeTimer = null;
+                  }
+                }, 16);
               }
             }
             if (!bSeeded) {
@@ -789,12 +815,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             fadeState.audibleStart === 0 ? 0 : Math.min(1, (Date.now() - fadeState.audibleStart) / STARTUP_FADE_MS);
           // B muteada hasta confirmar su salto al pico (así no se oye ningún
           // transitorio del seed); A siempre suena (su borde de loop es inaudible).
-          // Al confirmar, B aparece con gain≈1 → fade adicional 120 ms para evitar el "tac".
-          const bEntry = isSecondary && bSeeded && bEntryStart > 0
-            ? Math.min(1, (Date.now() - bEntryStart) / B_ENTRY_FADE_MS)
-            : 1;
+          // bEntryFrac se actualiza a 60 fps por setInterval (no por este tick lento).
           const volTarget = isSecondary
-            ? (bSeeded ? base * gain * bEntry : 0)
+            ? (bSeeded ? base * gain * bEntryFrac : 0)
             : base * gain;
           setVol(p, volTarget * startup * masterVolumeRef.current);
 
@@ -850,6 +873,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     playersRef.current.delete(id);
     idlePlayersRef.current.delete(id);
     if (!pair) return;
+    pair.clearBFade?.();
     [pair.a, pair.b].forEach((p) => {
       try {
         p.pause();
