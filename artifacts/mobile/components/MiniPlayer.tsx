@@ -29,6 +29,64 @@ const MIX_BG      = "#3d304e";
 const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
 
+// ── Sub-componente: thumbnail en carrusel abierto ──────────────────────────
+function CarouselThumbItem({
+  soundId,
+  image,
+  onCollapse,
+  onRemove,
+  thumbStyle,
+  fallbackColor,
+}: {
+  soundId: string;
+  image: ReturnType<typeof getSoundImage>;
+  onCollapse: () => void;
+  onRemove: (id: string) => void;
+  thumbStyle: object;
+  fallbackColor: string;
+}) {
+  const scale   = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  const handleLongPress = () => {
+    Animated.parallel([
+      Animated.sequence([
+        Animated.spring(scale,   { toValue: 1.35, useNativeDriver: true, damping: 6, stiffness: 350 }),
+        Animated.timing(scale,   { toValue: 0,    useNativeDriver: true, duration: 180 }),
+      ]),
+      Animated.sequence([
+        Animated.delay(60),
+        Animated.timing(opacity, { toValue: 0, useNativeDriver: true, duration: 220 }),
+      ]),
+    ]).start(() => onRemove(soundId));
+  };
+
+  return (
+    <Pressable
+      onPress={onCollapse}
+      onLongPress={handleLongPress}
+      delayLongPress={400}
+      style={thumbStyle}
+      accessibilityLabel="Presionar para colapsar, mantener para quitar"
+    >
+      <Animated.View style={{ transform: [{ scale }], opacity }}>
+        {image ? (
+          <Image
+            source={image}
+            style={{ width: STACK_SIZE, height: STACK_SIZE, borderRadius: 6 }}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={{ width: STACK_SIZE, height: STACK_SIZE, borderRadius: 6,
+            backgroundColor: "rgba(74,12,12,0.35)", alignItems: "center", justifyContent: "center" }}>
+            <Feather name="music" size={14} color={fallbackColor} />
+          </View>
+        )}
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 export function MiniPlayer() {
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
@@ -183,31 +241,17 @@ export function MiniPlayer() {
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.carouselContent}
                 >
-                  {activeSounds.map((s) => {
-                    const image = getSoundImage(s.id);
-                    return (
-                      <Pressable
-                        key={s.id}
-                        onPress={toggleStack}
-                        onLongPress={() => removeSound(s.id)}
-                        delayLongPress={400}
-                        style={styles.carouselThumb}
-                        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
-                      >
-                        {image ? (
-                          <Image
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
-                      </Pressable>
-                    );
-                  })}
+                  {activeSounds.map((s) => (
+                    <CarouselThumbItem
+                      key={s.id}
+                      soundId={s.id}
+                      image={getSoundImage(s.id)}
+                      onCollapse={toggleStack}
+                      onRemove={removeSound}
+                      thumbStyle={styles.carouselThumb}
+                      fallbackColor={colors.primary}
+                    />
+                  ))}
                 </ScrollView>
               ) : (
                 /* CERRADO: thumbnails apilados + área de tap transparente */
