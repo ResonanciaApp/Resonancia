@@ -463,6 +463,7 @@ const styles = StyleSheet.create({
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
+    width: 44,
     alignItems: "center",
     justifyContent: "center",
   },
