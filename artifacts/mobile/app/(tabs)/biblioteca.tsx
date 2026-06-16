@@ -29,8 +29,9 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useMixer, type MixPreset } from "@/context/MixerContext";
-import { getSoundImage } from "@/config/sound-images";
 import { useLoadMix } from "@/hooks/useLoadMix";
+import { MixActionsSheet } from "@/components/MixActionsSheet";
+import { MixCover } from "@/app/mi-mezcla/[id]";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { PLAYLISTS, type Playlist } from "@/data/playlists";
 import { ARTISTS, type Artist } from "@/data/artists";
@@ -61,43 +62,27 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "resonadores", label: "Resonadores" },
 ];
 
-// ── Stack de imágenes de sonidos ─────────────────────────────────────────────
-const THUMB = 62;
-const SHIFT = 32;
-const MAX_STACK = 3;
-function SoundStack({ sounds }: { sounds: { id: string }[] }) {
-  const visible = sounds.slice(0, MAX_STACK);
-  const stackW = THUMB + Math.max(0, visible.length - 1) * SHIFT;
-  return (
-    <View style={{ width: stackW, height: THUMB, position: "relative" }}>
-      {visible.map((s, i) => {
-        const img = getSoundImage(s.id);
-        return (
-          <View
-            key={s.id}
-            style={[
-              styles.stackThumb,
-              { left: i * SHIFT, zIndex: i, backgroundColor: "rgba(212,175,55,0.12)" },
-            ]}
-          >
-            {img ? (
-              <Image source={img as number} style={styles.stackThumbImg} contentFit="cover" />
-            ) : (
-              <Feather name="music" size={14} color={GOLD} />
-            )}
-          </View>
-        );
-      })}
-    </View>
-  );
-}
-
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
-function MixRow({ mix, isPlayingThis, onPress }: { mix: MixPreset; isPlayingThis: boolean; onPress: () => void }) {
+const MIX_THUMB = 56;
+function MixRow({
+  mix,
+  isPlayingThis,
+  onPress,
+  onPressThumb,
+  onPressMenu,
+}: {
+  mix: MixPreset;
+  isPlayingThis: boolean;
+  onPress: () => void;
+  onPressThumb: () => void;
+  onPressMenu: () => void;
+}) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <SoundStack sounds={mix.sounds} />
-      <View style={styles.rowInfo}>
+    <View style={styles.row}>
+      <Pressable onPress={onPressThumb} style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}>
+        <MixCover mix={mix} size={MIX_THUMB} radius={10} />
+      </Pressable>
+      <Pressable onPress={onPress} style={({ pressed }) => [styles.rowInfo, { opacity: pressed ? 0.8 : 1 }]}>
         <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
         {isPlayingThis ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -109,9 +94,11 @@ function MixRow({ mix, isPlayingThis, onPress }: { mix: MixPreset; isPlayingThis
             {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
           </Text>
         )}
-      </View>
-      {isPlayingThis && <Feather name="bar-chart-2" size={18} color={GOLD} />}
-    </Pressable>
+      </Pressable>
+      <Pressable onPress={onPressMenu} hitSlop={10} style={styles.mixMenuBtn}>
+        <Feather name="more-vertical" size={18} color={MUTED} />
+      </Pressable>
+    </View>
   );
 }
 
@@ -741,8 +728,9 @@ export default function BibliotecaScreen() {
 
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
-  const { presets, loadedPresetId, isPlaying: mixerPlaying } = useMixer();
+  const { presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset } = useMixer();
   const loadMix = useLoadMix();
+  const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
 
   const { history, favorites } = usePlayer();
   const { isPremium } = usePremium();
@@ -969,17 +957,32 @@ export default function BibliotecaScreen() {
         return (
           <>
             <View style={styles.gridWrap}>
-              {visibleMixes.map((mix) => (
-                <Pressable key={mix.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]} onPress={() => loadMix(mix)}>
-                  <View style={[styles.gridThumb, { width: cellW, height: cellW, alignItems: "center", justifyContent: "center" }]}>
-                    <MaterialCommunityIcons name="tune-variant" size={28} color={loadedPresetId === mix.id && mixerPlaying ? GOLD : MUTED} />
+              {visibleMixes.map((mix) => {
+                const isPlaying = loadedPresetId === mix.id && mixerPlaying;
+                return (
+                  <View key={mix.id} style={{ width: cellW }}>
+                    <Pressable
+                      style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
+                      onPress={() => router.push(`/mi-mezcla/${mix.id}` as never)}
+                    >
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
+                        <MixCover mix={mix} size={cellW} radius={8} />
+                        {isPlaying && (
+                          <View style={{ position: "absolute", bottom: 6, right: 6 }}>
+                            <Feather name="bar-chart-2" size={14} color={GOLD} />
+                          </View>
+                        )}
+                      </View>
+                    </Pressable>
+                    <Pressable onPress={() => loadMix(mix)}>
+                      <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
+                    </Pressable>
+                    <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
+                      {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+                    </Text>
                   </View>
-                  <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
-                  <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
-                    {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-                  </Text>
-                </Pressable>
-              ))}
+                );
+              })}
             </View>
             {hasMixesMore && (
               <Pressable style={styles.loadMoreBtn} onPress={() => setMixesLimit((n) => n + 12)}>
@@ -998,6 +1001,8 @@ export default function BibliotecaScreen() {
                 mix={mix}
                 isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
                 onPress={() => loadMix(mix)}
+                onPressThumb={() => router.push(`/mi-mezcla/${mix.id}` as never)}
+                onPressMenu={() => setMixMenuPreset(mix)}
               />
             ))}
           </View>
@@ -1268,6 +1273,14 @@ export default function BibliotecaScreen() {
         visible={actionsItemId !== null}
         onClose={() => { setActionsItemId(null); setActionsItemKind(null); }}
       />
+      <MixActionsSheet
+        mix={mixMenuPreset}
+        visible={mixMenuPreset !== null}
+        onClose={() => setMixMenuPreset(null)}
+        onEdit={(mix) => router.push(`/mi-mezcla/${mix.id}` as never)}
+        onDuplicate={(mix) => { setMixMenuPreset(null); duplicatePreset(mix.id); }}
+        onDelete={(mix) => deletePreset(mix.id)}
+      />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
 
       {/* ── Modal Agregar Resonador ── */}
@@ -1422,17 +1435,12 @@ const styles = StyleSheet.create({
   rowInfo: { flex: 1, gap: 3 },
   rowTitle: { fontSize: 15, fontWeight: "600", color: TEXT },
   rowSub:   { fontSize: 12, color: MUTED },
-  stackThumb: {
-    position: "absolute",
-    width: THUMB, height: THUMB,
-    borderRadius: 8,
-    overflow: "hidden",
+  mixMenuBtn: {
+    width: 32,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1.5,
-    borderColor: "#080B1A",
   },
-  stackThumbImg: { width: "100%", height: "100%" },
 
   // ── Grilla ──────────────────────────────────────────────────────────────────
   gridWrap: {

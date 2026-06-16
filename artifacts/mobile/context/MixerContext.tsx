@@ -85,6 +85,12 @@ export type MixPreset = {
   description?: string;
   /** Key de la galería de imágenes (config/mix-images.ts), ej: "lluvia". */
   image?: string;
+  /** URI de foto del carrete (mayor prioridad que image). */
+  coverUri?: string;
+  /** ID de geometría de la biblioteca Geometrix. */
+  coverGeometryId?: string;
+  /** ID de creación del usuario (Geometrix). Máxima prioridad visual. */
+  coverCreationId?: string;
   category: MixCategory;
   sounds: ActiveSound[];
   createdAt: string;
@@ -98,8 +104,13 @@ export type SaveMixInput = {
   name: string;
   description?: string;
   image?: string;
+  coverUri?: string;
+  coverGeometryId?: string;
+  coverCreationId?: string;
   category: MixCategory;
 };
+
+export type MixMetaUpdate = Partial<Pick<MixPreset, "name" | "description" | "image" | "coverUri" | "coverGeometryId" | "coverCreationId">>;
 
 type MixerContextType = {
   activeSounds: ActiveSound[];
@@ -118,6 +129,8 @@ type MixerContextType = {
   savePreset: (input: SaveMixInput) => void;
   /** Sobrescribe un preset existente con la mezcla activa + metadatos. */
   updatePreset: (id: string, input: SaveMixInput) => void;
+  /** Actualiza solo los metadatos (nombre/descripción/portada) sin cambiar los sonidos. */
+  updatePresetMeta: (id: string, meta: MixMetaUpdate) => void;
   /** Clona un preset existente con un nuevo id y nombre "(copia)". */
   duplicatePreset: (id: string) => void;
   loadPreset: (preset: MixPreset) => void;
@@ -1267,6 +1280,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
                 name: input.name.trim() || p.name,
                 description: input.description?.trim() || undefined,
                 image: input.image,
+                coverUri: input.coverUri,
+                coverGeometryId: input.coverGeometryId,
+                coverCreationId: input.coverCreationId,
                 category: input.category,
                 sounds: activeSoundsRef.current.map((s) => ({ ...s })),
               }
@@ -1276,6 +1292,29 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // La mezcla activa vuelve a estar "ligada" al preset recién actualizado.
       setLoadedPresetId(id);
       loadedPresetIdRef.current = id;
+    },
+    [persistPresets],
+  );
+
+  const updatePresetMeta = useCallback(
+    (id: string, meta: MixMetaUpdate) => {
+      const exists = presetsRef.current.some((p) => p.id === id);
+      if (!exists) return;
+      persistPresets(
+        presetsRef.current.map((p) =>
+          p.id === id
+            ? {
+                ...p,
+                ...(meta.name !== undefined ? { name: meta.name.trim() || p.name } : {}),
+                ...(meta.description !== undefined ? { description: meta.description?.trim() || undefined } : {}),
+                ...(meta.image !== undefined ? { image: meta.image } : {}),
+                ...(meta.coverUri !== undefined ? { coverUri: meta.coverUri } : {}),
+                ...(meta.coverGeometryId !== undefined ? { coverGeometryId: meta.coverGeometryId } : {}),
+                ...(meta.coverCreationId !== undefined ? { coverCreationId: meta.coverCreationId } : {}),
+              }
+            : p,
+        ),
+      );
     },
     [persistPresets],
   );
@@ -1580,6 +1619,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         presets,
         savePreset,
         updatePreset,
+        updatePresetMeta,
         duplicatePreset,
         loadPreset,
         deletePreset,

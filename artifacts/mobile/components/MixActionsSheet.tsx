@@ -38,6 +38,7 @@ type Props = {
   onClose: () => void;
   onDuplicate: (mix: MixPreset) => void;
   onDelete: (mix: MixPreset) => void;
+  onEdit?: (mix: MixPreset) => void;
 };
 
 const THUMB = 40;
@@ -65,7 +66,7 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
   );
 }
 
-export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }: Props) {
+export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, onEdit }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { togglePresetFavorite, sleepTimerRemaining, setSleepTimer } = useMixer();
@@ -225,6 +226,14 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete }
 
         <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
+        {onEdit && (
+          <ActionRow
+            icon="edit-2"
+            label="Ver / editar detalles"
+            onPress={() => { onClose(); onEdit(mix); }}
+            colors={colors}
+          />
+        )}
         <ActionRow
           icon="users"
           label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
