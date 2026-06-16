@@ -184,34 +184,38 @@ export function MiniPlayer() {
                   outputRange: [i * STACK_SHIFT, i * (STACK_SIZE + CAROUSEL_THUMB_GAP)],
                 });
                 return (
+                  // Capa exterior: posición (JS driver — no puede mezclar con native)
                   <Animated.View
                     key={s.id}
-                    style={[
-                      styles.stackThumb,
-                      { left: leftAnim, zIndex: i,
-                        transform: [{ scale: entryAnim }],
-                        opacity: entryAnim },
-                    ]}
+                    style={[styles.stackPos, { left: leftAnim, zIndex: i }]}
                   >
-                    <Pressable
-                      onPress={toggleStack}
-                      onLongPress={() => removeSound(s.id)}
-                      delayLongPress={400}
-                      style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                      accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
+                    {/* Capa interior: scale/opacity de entrada (native driver) */}
+                    <Animated.View
+                      style={[styles.stackThumb, {
+                        transform: [{ scale: entryAnim }],
+                        opacity: entryAnim,
+                      }]}
                     >
-                      {image ? (
-                        <Image
-                          source={image}
-                          style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <View style={styles.stackFallback}>
-                          <Feather name="music" size={14} color={colors.primary} />
-                        </View>
-                      )}
-                    </Pressable>
+                      <Pressable
+                        onPress={toggleStack}
+                        onLongPress={() => removeSound(s.id)}
+                        delayLongPress={400}
+                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
+                      >
+                        {image ? (
+                          <Image
+                            source={image}
+                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.stackFallback}>
+                            <Feather name="music" size={14} color={colors.primary} />
+                          </View>
+                        )}
+                      </Pressable>
+                    </Animated.View>
                   </Animated.View>
                 );
               })}
@@ -354,8 +358,14 @@ const styles = StyleSheet.create({
     height: STACK_SIZE,
     overflow: "hidden",  // clip cuando el ancho crece/achica
   },
-  stackThumb: {
+  // Capa exterior: solo posición absolute (JS driver para left animado)
+  stackPos: {
     position: "absolute",
+    width: STACK_SIZE,
+    height: STACK_SIZE,
+  },
+  // Capa interior: apariencia + entrada (native driver para scale/opacity)
+  stackThumb: {
     width: STACK_SIZE,
     height: STACK_SIZE,
     borderRadius: 9,

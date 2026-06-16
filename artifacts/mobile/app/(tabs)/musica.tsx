@@ -623,7 +623,8 @@ export default function MezcladorScreen() {
     const activeTags = Array.from(new Set([...moodTags, ...tagFilters]));
     if (activeTags.length === 0) return base;
 
-    return base.filter((s) => (s.tags ?? []).some((t) => activeTags.includes(t)));
+    // Solo filtrar sonidos que TIENEN tags definidos; los que no tienen tags pasan siempre.
+    return base.filter((s) => !s.tags?.length || s.tags.some((t) => activeTags.includes(t)));
   }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
 
   return (
@@ -665,6 +666,9 @@ export default function MezcladorScreen() {
                     accessibilityLabel="Ajustes del Mezclador"
                   >
                     <MaterialCommunityIcons name="cog-outline" size={20} color="#F4DAD5" />
+                    {(moodFilter !== null || tagFilters.length > 0) && (
+                      <View style={styles.filterBadge} />
+                    )}
                   </Pressable>
                 </View>
               </View>
@@ -849,6 +853,11 @@ const styles = StyleSheet.create({
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
+  },
+  filterBadge: {
+    position: "absolute", top: 6, right: 6,
+    width: 7, height: 7, borderRadius: 4,
+    backgroundColor: "#E9C46A",
   },
 
   pillRow:        { flexGrow: 0, marginTop: -3, marginBottom: -5, backgroundColor: "transparent" },
