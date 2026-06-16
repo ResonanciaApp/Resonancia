@@ -1,9 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
+  LayoutChangeEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -19,12 +20,14 @@ import { useColors } from "@/hooks/useColors";
 
 const MAX_PLAYER_WIDTH = 438;
 const STACK_SIZE  = 38;
-const STACK_SHIFT = 15;        // offset apilado (cerrado)
-const SHIFT_OPEN  = 48;        // offset desplegado (se adapta si hay muchos sonidos)
+const STACK_SHIFT = 15;   // offset apilado (cerrado)
+const SHIFT_OPEN  = 48;   // offset desplegado (se adapta si hay muchos sonidos)
+// El texto desaparece cuando su área disponible cae por debajo de este umbral
+const TEXT_MIN_WIDTH = 52;
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "#3d304e";
-const PILL_BORDER = "rgba(110,80,200,0.5)"; // violeta noche
+const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
 
 export function MiniPlayer() {
@@ -33,6 +36,7 @@ export function MiniPlayer() {
     activeSounds,
     isPlaying: mixPlaying,
     togglePlay,
+    presets,
     loadedPresetId,
     openSheet,
   } = useMixer();
@@ -104,16 +108,46 @@ export function MiniPlayer() {
     return animsRef.current.get(id)!;
   }
 
+  // ── Visibilidad del texto: se oculta cuando el stack lo alcanza ─
+  // Detectado por onLayout sobre el contenedor de texto: si su ancho
+  // cae por debajo de TEXT_MIN_WIDTH → fade out; si sube → fade in.
+  const textOpacity = useRef(new Animated.Value(1)).current;
+  const onTextLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      const w = e.nativeEvent.layout.width;
+      Animated.timing(textOpacity, {
+        toValue: w >= TEXT_MIN_WIDTH ? 1 : 0,
+        duration: 160,
+        useNativeDriver: true,
+      }).start();
+    },
+    [textOpacity],
+  );
+
   if (!currentSession && !mixActive) return null;
 
   // ── Modo mezcla ───────────────────────────────────────────────
   if (mixActive) {
     const n = activeSounds.length;
 
+    // Nombre del preset cargado (si existe) o "Tu mezcla"
+    const presetName = loadedPresetId
+      ? presets.find((p) => p.id === loadedPresetId)?.name
+      : null;
+    const title = presetName || "Tu mezcla";
+
     // Offset adaptativo al desplegar
     const shiftOpen = n > 1
       ? Math.min(SHIFT_OPEN, Math.floor((260 - STACK_SIZE) / (n - 1)))
       : 0;
+
+    // Ancho del stack según estado (apilado / desplegado)
+    const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+    const stackWidthOpen    = STACK_SIZE + Math.max(0, n - 1) * shiftOpen;
+    const animatedStackWidth = stackOpenAnim.interpolate({
+      inputRange:  [0, 1],
+      outputRange: [stackWidthStacked, stackWidthOpen],
+    });
 
     const handleOpen = () =>
       loadedPresetId?.startsWith("community-")
@@ -121,12 +155,15 @@ export function MiniPlayer() {
         : openSheet();
 
     return (
-      // Contenedor externo: pildora arriba + card abajo
       <View style={styles.mixOuter}>
-
         {/* ── Píldora "Abrir" — SOBRE la card ── */}
         <View style={styles.pillRow}>
-          <Pressable onPress={handleOpen} style={styles.openPill} accessibilityRole="button" accessibilityLabel="Abrir Tu Mezcla">
+          <Pressable
+            onPress={handleOpen}
+            style={styles.openPill}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir Tu Mezcla"
+          >
             <Text style={styles.openPillText}>Abrir</Text>
             <Feather name="chevron-up" size={13} color="#FFFFFF" />
           </Pressable>
@@ -137,26 +174,26 @@ export function MiniPlayer() {
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
           <View style={styles.mixRow}>
-            {/* Stack de thumbnails
-                Usamos un View como contenedor (no Pressable) para que los hijos
-                position:absolute rendericen correctamente, y ponemos un Pressable
-                absoluteFill encima como área de toque. */}
-            <View style={styles.stackArea}>
+            {/* Stack: Animated.View con ancho dinámico.
+                Los thumbs son position:absolute → necesitamos un View
+                real (no Pressable) como contenedor; el toque se maneja
+                con un Pressable absoluteFill encima. */}
+            <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
               {activeSounds.map((s, i) => {
-                // Capa exterior: left animado (useNativeDriver: false)
                 const leftAnim = stackOpenAnim.interpolate({
                   inputRange:  [0, 1],
                   outputRange: [i * STACK_SHIFT, i * shiftOpen],
                 });
-                // Capa interior: scale + opacity de entrada (useNativeDriver: true)
                 const entryAnim = getAnim(s.id);
                 const image = getSoundImage(s.id);
 
                 return (
+                  // Capa exterior: left animado (useNativeDriver:false)
                   <Animated.View
                     key={s.id}
                     style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
                   >
+                    {/* Capa interior: scale/opacity entrada (useNativeDriver:true) */}
                     <Animated.View
                       style={{
                         width: STACK_SIZE,
@@ -183,7 +220,7 @@ export function MiniPlayer() {
                 );
               })}
 
-              {/* Overlay táctil encima de los thumbnails — de-stackea al tocar */}
+              {/* Overlay táctil — de-stackea sin abrir la hoja */}
               <Pressable
                 onPress={toggleStack}
                 style={StyleSheet.absoluteFill}
@@ -191,7 +228,20 @@ export function MiniPlayer() {
                 accessibilityRole="button"
                 accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
               />
-            </View>
+            </Animated.View>
+
+            {/* Texto: "Tu mezcla" + cantidad de sonidos.
+                Usa onLayout para detectar cuándo el stack lo alcanza y
+                desvanecerlo automáticamente. */}
+            <Animated.View
+              style={[styles.textBlock, { opacity: textOpacity }]}
+              onLayout={onTextLayout}
+            >
+              <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
+              <Text style={styles.mixSub} numberOfLines={1}>
+                {n} {n === 1 ? "sonido" : "sonidos"}
+              </Text>
+            </Animated.View>
 
             {/* Botón play/pause */}
             <View style={styles.waveWrap}>
@@ -209,7 +259,6 @@ export function MiniPlayer() {
             </View>
           </View>
         </View>
-
       </View>
     );
   }
@@ -256,7 +305,7 @@ export function MiniPlayer() {
 }
 
 const styles = StyleSheet.create({
-  // ── Contenedor raíz de mezcla (pildora + card) ────────────────
+  // ── Contenedor raíz de mezcla ─────────────────────────────────
   mixOuter: {
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
@@ -287,7 +336,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  // ── Card compartida ───────────────────────────────────────────
+  // ── Card ──────────────────────────────────────────────────────
   wrapper: {
     borderRadius: BORDER_R,
     overflow: "hidden",
@@ -295,7 +344,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
-  // ── Layout de la fila de mezcla ───────────────────────────────
+  // ── Fila de mezcla ────────────────────────────────────────────
   mixRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -305,11 +354,11 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // ── Área del stack: View (no Pressable) para que los hijos
-  //    position:absolute rendericen correctamente ────────────────
+  // ── Stack de thumbnails ───────────────────────────────────────
+  // Ancho controlado por animatedStackWidth (Animated.View, no Pressable)
   stackArea: {
-    flex: 1,
     height: STACK_SIZE,
+    // Sin overflow:hidden para que el de-stack pueda salir del área
   },
   stackThumb: {
     position: "absolute",
@@ -330,6 +379,26 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.18)",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  // ── Texto dinámico (Tu mezcla + cantidad) ─────────────────────
+  // flex:1 → ocupa el espacio sobrante entre stack y play.
+  // Cuando el stack crece y lo "empuja", onLayout detecta que el
+  // ancho cayó por debajo de TEXT_MIN_WIDTH y textOpacity → 0.
+  textBlock: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: "center",
+  },
+  mixTitle: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginBottom: 1,
+  },
+  mixSub: {
+    fontSize: 11,
+    color: "rgba(255,255,255,0.55)",
   },
 
   // ── Play/Pause ────────────────────────────────────────────────
