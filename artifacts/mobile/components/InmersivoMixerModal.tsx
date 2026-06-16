@@ -114,14 +114,18 @@ export function InmersivoContent() {
     }, CONTROLS_TIMEOUT);
   }, [controlsOpacity]);
 
-  // Hint intro: visible 2 s, luego desvanece
-  const introOpacity = useRef(new Animated.Value(1)).current;
+  // Hint intro: entra a los 700 ms, visible 2 s, luego desvanece
+  const introOpacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    const t = setTimeout(() => {
+    const tIn = setTimeout(() => {
+      Animated.timing(introOpacity, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+    }, 700);
+    const tOut = setTimeout(() => {
       Animated.timing(introOpacity, { toValue: 0, duration: 600, useNativeDriver: true }).start();
-    }, 2000);
+    }, 700 + 2000);
     return () => {
-      clearTimeout(t);
+      clearTimeout(tIn);
+      clearTimeout(tOut);
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -343,6 +347,7 @@ const styles = StyleSheet.create({
   introHintText: {
     color: "rgba(255,255,255,0.70)",
     fontSize: 18,
+    fontWeight: "700",
     textAlign: "center",
     lineHeight: 28,
     letterSpacing: 0.2,
