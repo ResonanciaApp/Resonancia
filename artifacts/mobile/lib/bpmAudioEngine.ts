@@ -46,6 +46,12 @@ type PlayOptions = {
   loopBars: number;
   /** Volumen base 0-1 elegido por el usuario para este sonido. */
   volume: number;
+  /**
+   * Fracción 0-1 del loop donde el buffer empieza a sonar.
+   * 0 = compás 1, 0.25 = compás 2, 0.5 = compás 3, 0.75 = compás 4.
+   * Default 0.
+   */
+  phaseOffset?: number;
 };
 
 type Voice = {
@@ -188,12 +194,15 @@ class BpmAudioEngine {
     if (this.voices.has(id)) this.stopImmediate(id);
 
     const loopSec = loopSeconds(opts.bpm, opts.loopBars);
+    const userOffsetSec = (opts.phaseOffset ?? 0) * loopSec;
     const now = ctx.currentTime;
-    let offset = 0;
+    let offset = userOffsetSec;
     if (this.transportStart === null) {
       this.transportStart = now;
     } else {
-      offset = (((now - this.transportStart) % loopSec) + loopSec) % loopSec;
+      // Alinear en fase con el transporte + aplicar el offset de compás del usuario.
+      const currentPhase = ((now - this.transportStart) % loopSec + loopSec) % loopSec;
+      offset = (currentPhase + userOffsetSec) % loopSec;
     }
 
     const source = ctx.createBufferSource({ pitchCorrection: false });
