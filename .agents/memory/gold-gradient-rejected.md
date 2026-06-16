@@ -1,17 +1,26 @@
 ---
-name: Gold-gradient sweep — CONFIRMED, proceed without asking
-description: User confirmed on 2026-06-16 to run the #D4AF37→#E9C46A gradient sweep and said NOT to ask again. Execute immediately when the plan appears.
+name: Gold-gradient sweep — COMPLETADO, no volver a preguntar
+description: Sweep #D4AF37→#E9C46A completado al 2026-06-16. Usuario confirmó ejecutar sin preguntar. Todos los botones/badges/dots usan GoldGradient o GoldGradientFill. Íconos y texto siguen sólidos (#D4AF37).
 ---
 
-# Gold-gradient sweep — APROBADO, no volver a preguntar
+# Gold-gradient sweep — COMPLETADO
 
-El usuario confirmó explícitamente el 2026-06-16 que quiere el sweep completo
-`#D4AF37 → #E9C46A` en todos los archivos mobile, y dijo "Hazlo ahora y que no
-me vuelvas a preguntar".
+El usuario confirmó el 2026-06-16 ejecutar el sweep `#D4AF37 → #E9C46A` y pidió
+**no volver a preguntar**.
 
-**Decision:** ejecutar el sweep cuando aparezca el plan. No pedir confirmación.
+## Estado
 
-**Why:** el usuario cambió de opinión y lo confirmó de forma explícita e inequívoca.
+Sweep ejecutado y typecheck limpio. Componente central: `components/GoldGradient.tsx`
+con `GOLD_GRAD = ["#D4AF37", "#E9C46A"]`.
 
-**How to apply:** al ver el Session Plan de GoldGradient, ejecutarlo directamente
-sin preguntar. La nota anterior de rechazo queda obsoleta.
+## Regla permanente
+
+- **Fondos de botones/badges/dots/indicadores** → `GoldGradient` o `GoldGradientFill`
+- **Colores de texto e iconos** → `#D4AF37` sólido (los íconos no soportan degradado)
+- **Tintes translúcidos** (`colors.primary + "20"`, `rgba(212,175,55,0.12)`, etc.) → se quedan como están
+
+## How to apply
+
+Al agregar un nuevo CTA button dorado, usar `GoldGradientFill` dentro de un
+`Pressable` con `overflow: "hidden"`, o `GoldGradient` como reemplazo de un View.
+No pedir confirmación al usuario — ya está aprobado.
