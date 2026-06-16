@@ -321,8 +321,6 @@ const styles = StyleSheet.create({
 
   // ── Card ──────────────────────────────────────────────────────
   wrapper: {
-    borderTopLeftRadius: BORDER_R,
-    borderTopRightRadius: BORDER_R,
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
