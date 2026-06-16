@@ -24,7 +24,7 @@ const STACK_SIZE          = 38;
 const STACK_SHIFT         = 15;   // offset apilado (cerrado)
 const SHIFT_OPEN          = 48;   // offset desplegado (se adapta si hay muchos sonidos)
 const TEXT_MIN_WIDTH      = 52;   // umbral para ocultar texto
-const CAROUSEL_THRESHOLD  = 6;    // a partir de 7 sonidos → modo carrusel deslizable
+const CAROUSEL_THRESHOLD  = 4;    // a partir de 5 sonidos → modo carrusel deslizable
 const CAROUSEL_THUMB_GAP  = 6;    // separación entre thumbnails en el carrusel
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
@@ -75,7 +75,22 @@ export function MiniPlayer() {
   const [stackOpen, setStackOpen] = useState(false);
   const stackOpenAnim = useRef(new Animated.Value(0)).current;
 
+  // Evita que el Pressable padre interprete el touchEnd de un scroll
+  // en el carrusel como un tap (que colapsaría el carrusel).
+  const scrollingRef  = useRef(false);
+  const scrollTimer   = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const onCarouselScrollStart = () => {
+    if (scrollTimer.current) clearTimeout(scrollTimer.current);
+    scrollingRef.current = true;
+  };
+  const onCarouselScrollEnd = () => {
+    // Resetear con delay para que el onPress del Pressable ya haya evaluado
+    scrollTimer.current = setTimeout(() => { scrollingRef.current = false; }, 250);
+  };
+
   const toggleStack = () => {
+    if (scrollingRef.current) return;   // ignorar press tras scroll
     const next = !stackOpen;
     setStackOpen(next);
     Animated.spring(stackOpenAnim, {
@@ -121,9 +136,18 @@ export function MiniPlayer() {
     (rowW: number, n: number, isOpen: boolean) => {
       if (rowW === 0 || n === 0) return;
       const isCarousel = n > CAROUSEL_THRESHOLD;
-      const stackW = isCarousel && isOpen
-        ? Math.max(80, rowW - 86)
-        : STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+      let stackW: number;
+      if (isCarousel && isOpen) {
+        // carrusel abierto: ocupa casi todo el ancho
+        stackW = Math.max(80, rowW - 86);
+      } else if (!isCarousel && isOpen && n > 1) {
+        // spread abierto: usar shiftOpen real (mismo cálculo que el JSX)
+        const shiftOpen = Math.min(SHIFT_OPEN, Math.floor((260 - STACK_SIZE) / (n - 1)));
+        stackW = STACK_SIZE + (n - 1) * shiftOpen;
+      } else {
+        // apilado (cerrado) — cualquier modo
+        stackW = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+      }
       const available = rowW - stackW - 86;
       Animated.timing(textOpacity, {
         toValue: available >= TEXT_MIN_WIDTH ? 1 : 0,
@@ -224,6 +248,9 @@ export function MiniPlayer() {
                     showsHorizontalScrollIndicator={false}
                     style={styles.carouselScroll}
                     contentContainerStyle={styles.carouselContent}
+                    onScrollBeginDrag={onCarouselScrollStart}
+                    onScrollEndDrag={onCarouselScrollEnd}
+                    onMomentumScrollEnd={onCarouselScrollEnd}
                   >
                     {activeSounds.map((s) => {
                       const image = getSoundImage(s.id);
