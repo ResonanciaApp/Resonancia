@@ -134,12 +134,18 @@ export default function ExploreScreen() {
   const { open: openDrawer } = useDrawer();
   const [query, setQuery] = useState("");
   const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
+  const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
 
   const durationSessions = useMemo(() => {
     if (!selectedDur) return [];
     const slot = DURATION_SLOTS.find((s) => s.label === selectedDur)!;
-    return SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
-  }, [selectedDur]);
+    const list = SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
+    if (durSort === "recientes") {
+      return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
+    }
+    // "Más escuchadas": sesiones más antiguas primero (más establecidas)
+    return [...list].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+  }, [selectedDur, durSort]);
 
   const { isPremium } = usePremium();
 
@@ -338,6 +344,20 @@ export default function ExploreScreen() {
 
             {selectedDur && (
               <View style={styles.durResults}>
+                {/* Filtro de orden */}
+                <View style={styles.durSortRow}>
+                  <Pressable onPress={() => setDurSort("recientes")}>
+                    <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
+                      Recientes
+                    </Text>
+                  </Pressable>
+                  <Text style={styles.durSortSep}>·</Text>
+                  <Pressable onPress={() => setDurSort("populares")}>
+                    <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
+                      Más escuchadas
+                    </Text>
+                  </Pressable>
+                </View>
                 {durationSessions.length === 0 ? (
                   <Text style={[styles.durEmpty, { color: colors.mutedForeground }]}>
                     Sin sesiones para este rango
@@ -576,8 +596,30 @@ const styles = StyleSheet.create({
   },
   durResults: {
     marginTop: 16,
-    paddingHorizontal: H_PAD,
+    marginHorizontal: H_PAD,
     gap: 6,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderRadius: 16,
+    padding: 12,
+  },
+  durSortRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 10,
+  },
+  durSortOption: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "rgba(244,218,213,0.50)",
+  },
+  durSortActive: {
+    color: "#D4AF37",
+    fontWeight: "700",
+  },
+  durSortSep: {
+    fontSize: 13,
+    color: "rgba(244,218,213,0.25)",
   },
   durEmpty: {
     fontSize: 13,
