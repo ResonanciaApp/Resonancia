@@ -9,6 +9,7 @@
 - [MixerSheet save-popup fade](mixer-sheet-fade.md) — un popup que es <Modal> aparte NO puede desvanecer sincronizado con el contenido detrás (su backdrop lo aclara); ponerlo in-tree dentro del mismo Animated.View de opacidad
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
 - [Mixer loop + lock-screen mirror](mixer-loop-and-lockscreen.md) — seamless crossfade loop, idle-player cache for instant re-tap, lock-screen owner mirror; no full-volume warmup
+- [Crossfade B-entry click fix](crossfade-b-entry-click.md) — fade de entrada de B requiere setInterval a 16ms, NO Date.now() inline en el listener (iOS ticks cada ~200ms → bEntry ya vale 1 en el primer tick siguiente)
 - [Codegen clean breaks Metro](codegen-metro-resolve.md) — Orval clean:true deletes generated/ mid-run; Metro caches "Unable to resolve ./generated/api" → restart expo after codegen
 - [iOS 26 Hermes PAC crash](ios26-hermes-pac-crash.md) — EXC_BAD_ACCESS on JS thread on physical iOS 26 devices; prebuilt Hermes fails PAC → fix = buildReactNativeFromSource (Xcode 26)
 - [expo-av launch SIGABRT](expo-av-launch-crash.md) — expo-av audio-session call at launch under SDK54 New Arch = uncatchable NSException→SIGABRT; keep expo-av off launch path, expo-audio owns session
