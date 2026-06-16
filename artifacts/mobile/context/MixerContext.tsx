@@ -76,7 +76,7 @@ const PRESETS_KEY = "@resonance_mixer_presets";
 const DEFAULT_VOLUME = 0.7;
 
 /** Las dos capas del mismo sonido que se crossfadean entre sí (ver MixerContext). */
-type SoundPlayers = { a: AudioPlayer; b: AudioPlayer };
+type SoundPlayers = { a: AudioPlayer; b: AudioPlayer; resetFade?: () => void };
 
 export type ActiveSound = { id: string; volume: number };
 export type MixPreset = {
@@ -635,7 +635,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         const a = createAudioPlayer(null, { updateInterval: 200 });
         a.loop = false; // el loop lo maneja el reloj maestro, NO el nativo
         a.replace(file);
-        a.volume = volume * masterVolumeRef.current;
+        a.volume = 0; // arranca mudo; se rampa abajo para evitar el click de arranque
         const b = createAudioPlayer(null, { updateInterval: 200 });
         b.loop = false;
         b.volume = 0;
@@ -653,6 +653,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         });
         loopSubsRef.current.set(id, [sub]);
         a.play();
+        // Fade-in de 80 ms para el BPM expo-fallback (evita el "tac" de arranque).
+        const _bpmTarget = volume * masterVolumeRef.current;
+        let _bpmStep = 0;
+        const _bpmRamp = setInterval(() => {
+          _bpmStep++;
+          const cur = playersRef.current.get(id);
+          if (!cur || cur.a !== a || _bpmStep >= 8) {
+            clearInterval(_bpmRamp);
+            if (cur?.a === a) { try { a.volume = _bpmTarget; } catch { /* ignore */ } }
+            return;
+          }
+          try { a.volume = (_bpmStep / 8) * _bpmTarget; } catch { /* ignore */ }
+        }, 10); // 8 pasos × 10 ms = 80 ms
         return pair;
       }
 
@@ -679,7 +692,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       };
       const a = makeLayer();
       const b = makeLayer();
-      const pair: SoundPlayers = { a, b };
+      const pair: SoundPlayers = { a, b, resetFade: () => { fadeState.audibleStart = 0; } };
 
       // ── Crossfade simétrico (robusto) ────────────────────────────────────
       // AMBAS capas usan SIEMPRE el gain = |sin(pi*pos/dur)|. En el borde del
@@ -706,7 +719,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       let offsetConfirmed = false; // true al confirmar que el seed de B aterrizó
       let bSeeded = false; // B confirmó su salto al pico
       let bSeedTarget = -1; // posición objetivo del último seed (para confirmarlo)
-      let audibleStart = 0; // primer tick con dur válida → ancla del fade-in
+      const fadeState = { audibleStart: 0 }; // mutable: se resetea en resumePlayer
       const STARTUP_FADE_MS = 350;
       // Recentrado de drift a largo plazo (sesiones de horas): dos loops nativos
       // se desincronizan de a poco; si se rompe el desfase de 180° sin²+cos²
@@ -739,7 +752,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           const pos = status.currentTime ?? 0;
 
           // Primer tick con duración válida = primer audio real → ancla del fade-in.
-          if (dur > 0 && audibleStart === 0) audibleStart = Date.now();
+          if (dur > 0 && fadeState.audibleStart === 0) fadeState.audibleStart = Date.now();
 
           // Sembrar la capa B en el pico (aPos+dur/2) y CONFIRMAR que el seek
           // aterrizó antes de darlo por bueno. Mientras no confirme, se reintenta
@@ -770,7 +783,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           // inicial de B al pico. Solo afecta el arranque (mucho antes de cualquier
           // borde de loop), así que sigue siendo seam-safe.
           const startup =
-            audibleStart === 0 ? 0 : Math.min(1, (Date.now() - audibleStart) / STARTUP_FADE_MS);
+            fadeState.audibleStart === 0 ? 0 : Math.min(1, (Date.now() - fadeState.audibleStart) / STARTUP_FADE_MS);
           // B muteada hasta confirmar su salto al pico (así no se oye ningún
           // transitorio del seed); A siempre suena (su borde de loop es inaudible).
           setVol(p, (isSecondary && !bSeeded ? 0 : base * gain) * startup * masterVolumeRef.current);
@@ -891,6 +904,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     baseVolumesRef.current.set(id, vol);
     // Volver a registrar ANTES de play() (el guard del listener compara identidad).
     playersRef.current.set(id, pair);
+    // Resetear el fade-in: si no se hace, audibleStart del closure tiene el valor
+    // original → startup = 1 en el primer tick → salto brusco de volumen → click.
+    pair.resetFade?.();
     try {
       pair.a.play();
     } catch {
