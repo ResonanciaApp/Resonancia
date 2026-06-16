@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -110,33 +110,44 @@ export function MiniPlayer() {
     return animsRef.current.get(id)!;
   }
 
-  // ── Visibilidad del texto: se oculta cuando el stack lo alcanza ─
-  // rowWidthRef se mide una sola vez en onRowLayout. Cada vez que
-  // cambia activeSounds.length (n), el efecto recalcula si el texto
-  // cabe y dispara el fade inmediatamente (sin esperar a onLayout).
-  const textOpacity  = useRef(new Animated.Value(1)).current;
-  const rowWidthRef  = useRef(0);
-  const onRowLayout = (e: LayoutChangeEvent) => {
-    rowWidthRef.current = e.nativeEvent.layout.width;
-  };
+  // ── Visibilidad del texto ─────────────────────────────────────
+  // Bug original: al montar con el 1er sonido rowWidthRef=0 → available<0 →
+  // texto oculto. Fix: función compartida que tanto onRowLayout como el
+  // useEffect llaman; si rowWidth=0 (layout aún no medido) no hace nada.
+  const textOpacity = useRef(new Animated.Value(1)).current;
+  const rowWidthRef = useRef(0);
 
-  // Dispara inmediatamente cuando cambia n o cuando el carrusel se abre/cierra.
-  // paddingLeft(12) + paddingRight(10) + gap*2(20) + playBtn(44) = 86px fijos.
+  const updateTextOpacity = useCallback(
+    (rowW: number, n: number, isOpen: boolean) => {
+      if (rowW === 0 || n === 0) return;
+      const isCarousel = n > CAROUSEL_THRESHOLD;
+      const stackW = isCarousel && isOpen
+        ? Math.max(80, rowW - 86)
+        : STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+      const available = rowW - stackW - 86;
+      Animated.timing(textOpacity, {
+        toValue: available >= TEXT_MIN_WIDTH ? 1 : 0,
+        duration: 120,
+        useNativeDriver: true,
+      }).start();
+    },
+    [textOpacity],
+  );
+
+  // onRowLayout dispara en el primer render → llama updateTextOpacity con el
+  // ancho real, corrigiendo el estado incorrecto que dejó el efecto inicial.
+  const onRowLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      const w = e.nativeEvent.layout.width;
+      rowWidthRef.current = w;
+      updateTextOpacity(w, activeSounds.length, stackOpen);
+    },
+    [activeSounds.length, stackOpen, updateTextOpacity],
+  );
+
   useEffect(() => {
-    const n = activeSounds.length;
-    if (n === 0) return;
-    // En modo carrusel abierto el stack ocupa casi todo el ancho → texto oculto.
-    const isCarousel = n > CAROUSEL_THRESHOLD;
-    const stackW = (isCarousel && stackOpen)
-      ? Math.max(80, rowWidthRef.current - 86)
-      : STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-    const available = rowWidthRef.current - stackW - 86;
-    Animated.timing(textOpacity, {
-      toValue: available >= TEXT_MIN_WIDTH ? 1 : 0,
-      duration: 120,
-      useNativeDriver: true,
-    }).start();
-  }, [activeSounds.length, stackOpen, textOpacity]);
+    updateTextOpacity(rowWidthRef.current, activeSounds.length, stackOpen);
+  }, [activeSounds.length, stackOpen, updateTextOpacity]);
 
   if (!currentSession && !mixActive) return null;
 
