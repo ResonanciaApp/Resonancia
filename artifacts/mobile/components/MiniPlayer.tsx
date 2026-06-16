@@ -185,8 +185,7 @@ export function MiniPlayer() {
             accessibilityRole="button"
             accessibilityLabel="Abrir Tu Mezcla"
           >
-            <Text style={styles.openPillText}>Abrir</Text>
-            <Feather name="chevron-up" size={13} color="#FFFFFF" />
+            <Feather name="chevron-up" size={15} color="#FFFFFF" />
           </Pressable>
         </View>
 
