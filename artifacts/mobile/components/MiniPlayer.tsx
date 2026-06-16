@@ -226,15 +226,7 @@ export function MiniPlayer() {
             </View>
           </>
         ) : (
-          <>
-            <View style={{ flex: 1 }} />
-            <Pressable
-              onPress={(e) => { e.stopPropagation(); stopAll(); everPlayedRef.current = false; }}
-              style={[styles.terminarBtn, { marginRight: 10 }]}
-            >
-              <Text style={styles.terminarText}>TERMINAR</Text>
-            </Pressable>
-          </>
+          <View style={{ flex: 1 }} />
         )}
 
         <View style={styles.waveWrap}>

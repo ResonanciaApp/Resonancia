@@ -582,6 +582,15 @@ export function MixerSheet() {
                   Ajustes generales
                 </Text>
               </Pressable>
+              <Pressable
+                onPress={closeSheet}
+                hitSlop={10}
+                style={styles.headerBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar"
+              >
+                <Feather name="x" size={22} color="#FFFFFF" />
+              </Pressable>
             </View>
 
             {/* Línea divisora — solo en tema sin imagen */}
