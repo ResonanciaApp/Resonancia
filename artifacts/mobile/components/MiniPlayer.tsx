@@ -219,18 +219,6 @@ export function MiniPlayer() {
                   </Animated.View>
                 );
               })}
-              {/* Overlay transparente solo en estado cerrado para capturar tap en área apilada */}
-              <Animated.View
-                pointerEvents={stackOpen ? "none" : "box-only"}
-                style={[StyleSheet.absoluteFill, { zIndex: 999 }]}
-              >
-                <Pressable
-                  style={StyleSheet.absoluteFill}
-                  onPress={toggleStack}
-                  accessibilityRole="button"
-                  accessibilityLabel="Desplegar sonidos"
-                />
-              </Animated.View>
             </Animated.View>
 
             {/* Texto: flex:1, se empuja cuando el stack crece */}
