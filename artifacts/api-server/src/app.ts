@@ -1,5 +1,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
+import fs from "fs";
+import path from "path";
 import pinoHttp from "pino-http";
 import { clerkMiddleware } from "@clerk/express";
 import { publishableKeyFromHost } from "@clerk/shared/keys";
@@ -51,10 +53,8 @@ app.use(
 app.use("/api", router);
 
 // TEMP: descarga de app.json para build iOS
-import fs from "fs";
-import path from "path";
 app.get("/api/dl/app-json", (_req, res) => {
-  const file = path.resolve(__dirname, "../../../mobile/app.json");
+  const file = "/home/runner/workspace/artifacts/mobile/app.json";
   res.setHeader("Content-Disposition", 'attachment; filename="app.json"');
   res.setHeader("Content-Type", "application/json");
   res.send(fs.readFileSync(file, "utf-8"));
