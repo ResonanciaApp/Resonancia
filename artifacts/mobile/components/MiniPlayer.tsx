@@ -6,6 +6,7 @@ import {
   Image,
   LayoutChangeEvent,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -18,12 +19,13 @@ import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { useColors } from "@/hooks/useColors";
 
-const MAX_PLAYER_WIDTH = 438;
-const STACK_SIZE  = 38;
-const STACK_SHIFT = 15;   // offset apilado (cerrado)
-const SHIFT_OPEN  = 48;   // offset desplegado (se adapta si hay muchos sonidos)
-// El texto desaparece cuando su área disponible cae por debajo de este umbral
-const TEXT_MIN_WIDTH = 52;
+const MAX_PLAYER_WIDTH    = 438;
+const STACK_SIZE          = 38;
+const STACK_SHIFT         = 15;   // offset apilado (cerrado)
+const SHIFT_OPEN          = 48;   // offset desplegado (se adapta si hay muchos sonidos)
+const TEXT_MIN_WIDTH      = 52;   // umbral para ocultar texto
+const CAROUSEL_THRESHOLD  = 6;    // a partir de 7 sonidos → modo carrusel deslizable
+const CAROUSEL_THUMB_GAP  = 6;    // separación entre thumbnails en el carrusel
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "#3d304e";
@@ -118,19 +120,23 @@ export function MiniPlayer() {
     rowWidthRef.current = e.nativeEvent.layout.width;
   };
 
-  // Dispara inmediatamente cuando cambia el número de sonidos.
+  // Dispara inmediatamente cuando cambia n o cuando el carrusel se abre/cierra.
   // paddingLeft(12) + paddingRight(10) + gap*2(20) + playBtn(44) = 86px fijos.
   useEffect(() => {
     const n = activeSounds.length;
     if (n === 0) return;
-    const stackW    = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+    // En modo carrusel abierto el stack ocupa casi todo el ancho → texto oculto.
+    const isCarousel = n > CAROUSEL_THRESHOLD;
+    const stackW = (isCarousel && stackOpen)
+      ? Math.max(80, rowWidthRef.current - 86)
+      : STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
     const available = rowWidthRef.current - stackW - 86;
     Animated.timing(textOpacity, {
       toValue: available >= TEXT_MIN_WIDTH ? 1 : 0,
       duration: 120,
       useNativeDriver: true,
     }).start();
-  }, [activeSounds.length, textOpacity]);
+  }, [activeSounds.length, stackOpen, textOpacity]);
 
   if (!currentSession && !mixActive) return null;
 
@@ -144,14 +150,21 @@ export function MiniPlayer() {
       : null;
     const title = presetName || "Tu mezcla";
 
-    // Offset adaptativo al desplegar
-    const shiftOpen = n > 1
+    // ¿Modo carrusel deslizable? (más de CAROUSEL_THRESHOLD sonidos)
+    const isCarouselMode = n > CAROUSEL_THRESHOLD;
+    // Ancho disponible para el carrusel = fila total − padding − gap − botón play
+    const carouselOpenWidth = Math.max(80, rowWidthRef.current - 86);
+
+    // Offset adaptativo al desplegar (solo en modo spread)
+    const shiftOpen = (!isCarouselMode && n > 1)
       ? Math.min(SHIFT_OPEN, Math.floor((260 - STACK_SIZE) / (n - 1)))
       : 0;
 
-    // Ancho del stack según estado (apilado / desplegado)
+    // Ancho del stack según modo y estado (apilado / desplegado)
     const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-    const stackWidthOpen    = STACK_SIZE + Math.max(0, n - 1) * shiftOpen;
+    const stackWidthOpen    = isCarouselMode
+      ? carouselOpenWidth
+      : STACK_SIZE + Math.max(0, n - 1) * shiftOpen;
     const animatedStackWidth = stackOpenAnim.interpolate({
       inputRange:  [0, 1],
       outputRange: [stackWidthStacked, stackWidthOpen],
@@ -193,46 +206,75 @@ export function MiniPlayer() {
               accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
             >
               <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
-                {activeSounds.map((s, i) => {
-                  const leftAnim = stackOpenAnim.interpolate({
-                    inputRange:  [0, 1],
-                    outputRange: [i * STACK_SHIFT, i * shiftOpen],
-                  });
-                  const entryAnim = getAnim(s.id);
-                  const image = getSoundImage(s.id);
 
-                  return (
-                    // Capa exterior: left animado (useNativeDriver:false)
-                    <Animated.View
-                      key={s.id}
-                      style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
-                    >
-                      {/* Capa interior: scale/opacity entrada (useNativeDriver:true) */}
+                {/* ── Modo carrusel: scroll horizontal (>6 sonidos, abierto) ── */}
+                {isCarouselMode && stackOpen ? (
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.carouselScroll}
+                    contentContainerStyle={styles.carouselContent}
+                  >
+                    {activeSounds.map((s) => {
+                      const image = getSoundImage(s.id);
+                      return (
+                        <View key={s.id} style={styles.carouselThumb}>
+                          {image ? (
+                            <Image
+                              source={image}
+                              style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                              resizeMode="cover"
+                            />
+                          ) : (
+                            <View style={styles.stackFallback}>
+                              <Feather name="music" size={14} color={colors.primary} />
+                            </View>
+                          )}
+                        </View>
+                      );
+                    })}
+                  </ScrollView>
+                ) : (
+                  /* ── Modo spread: posición animada (≤6 sonidos) ── */
+                  activeSounds.map((s, i) => {
+                    const leftAnim = stackOpenAnim.interpolate({
+                      inputRange:  [0, 1],
+                      outputRange: [i * STACK_SHIFT, i * shiftOpen],
+                    });
+                    const entryAnim = getAnim(s.id);
+                    const image = getSoundImage(s.id);
+                    return (
                       <Animated.View
-                        style={{
-                          width: STACK_SIZE,
-                          height: STACK_SIZE,
-                          borderRadius: 9,
-                          overflow: "hidden",
-                          transform: [{ scale: entryAnim }],
-                          opacity: entryAnim,
-                        }}
+                        key={s.id}
+                        style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
                       >
-                        {image ? (
-                          <Image
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
+                        <Animated.View
+                          style={{
+                            width: STACK_SIZE,
+                            height: STACK_SIZE,
+                            borderRadius: 9,
+                            overflow: "hidden",
+                            transform: [{ scale: entryAnim }],
+                            opacity: entryAnim,
+                          }}
+                        >
+                          {image ? (
+                            <Image
+                              source={image}
+                              style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                              resizeMode="cover"
+                            />
+                          ) : (
+                            <View style={styles.stackFallback}>
+                              <Feather name="music" size={14} color={colors.primary} />
+                            </View>
+                          )}
+                        </Animated.View>
                       </Animated.View>
-                    </Animated.View>
-                  );
-                })}
+                    );
+                  })
+                )}
+
               </Animated.View>
             </Pressable>
 
@@ -384,6 +426,29 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.18)",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  // ── Carrusel deslizable (>6 sonidos, abierto) ─────────────────
+  carouselScroll: {
+    width: "100%",
+    height: STACK_SIZE,
+  },
+  carouselContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: CAROUSEL_THUMB_GAP,
+    paddingRight: 4,
+  },
+  carouselThumb: {
+    width: STACK_SIZE,
+    height: STACK_SIZE,
+    borderRadius: 9,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.35,
+    shadowRadius: 3,
+    elevation: 3,
   },
 
   // ── Texto dinámico (Tu mezcla + cantidad) ─────────────────────
