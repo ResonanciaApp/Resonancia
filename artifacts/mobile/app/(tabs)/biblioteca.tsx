@@ -1166,7 +1166,7 @@ export default function BibliotecaScreen() {
               >
                 <Image source={r.photo} style={[styles.gridThumb, { width: cellW, height: cellW, borderRadius: cellW / 2 }]} resizeMode="cover" />
                 <Text style={styles.gridTitle} numberOfLines={2}>{r.name}</Text>
-                <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{r.role}</Text>
+                <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{r.tags[0]}</Text>
               </Pressable>
             ))}
           </View>

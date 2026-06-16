@@ -57,7 +57,7 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
   const count = visible.length;
 
   const isOpen = useSharedValue(false);
-  const collapseTimer = useRef<ReturnType<typeof setTimeout>>();
+  const collapseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => { if (collapseTimer.current) clearTimeout(collapseTimer.current); }, []);
 

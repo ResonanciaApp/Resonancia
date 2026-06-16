@@ -21,6 +21,7 @@ import { useColors } from "@/hooks/useColors";
 const MAX_PLAYER_WIDTH = 438;
 const STACK_SIZE = 38;
 const STACK_SHIFT = 15;
+const STACK_SHIFT_OPEN = 48;
 const MAX_STACK = 3;
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];

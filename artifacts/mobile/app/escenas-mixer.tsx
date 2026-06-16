@@ -62,7 +62,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   const {
     masterVolume,
     setMasterVolume,
-    bgPresetId: contextBgPresetId,
+    loadedPresetId: contextBgPresetId,
     sleepTimerRemaining,
     setSleepTimer,
   } = useMixer();

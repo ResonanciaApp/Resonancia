@@ -295,4 +295,8 @@ export const CATEGORY_META: Record<
     desc: "Mandalas, estrellas y espirales que revelan el orden matemático",
     count: 25,
   },
+  chakras: {
+    desc: "Los siete centros energéticos del cuerpo según la tradición védica",
+    count: 7,
+  },
 };

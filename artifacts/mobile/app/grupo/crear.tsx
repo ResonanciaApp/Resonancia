@@ -247,9 +247,10 @@ export default function CrearGrupoScreen() {
         <View style={[styles.stepFooter, { paddingBottom: bottomPad + 12 }]}>
           <Pressable
             onPress={() => canNext1 && setStep(2)}
-            style={[styles.nextBtn, { backgroundColor: canNext1 ? "#DFC76A" : colors.card }]}
+            style={[styles.nextBtn, { backgroundColor: canNext1 ? undefined : colors.card }]}
             disabled={!canNext1}
           >
+            {canNext1 && <GoldGradientFill />}
             <Text style={[styles.nextBtnText, { color: canNext1 ? "#070E09" : colors.mutedForeground }]}>
               Terminar
             </Text>
@@ -314,8 +315,9 @@ export default function CrearGrupoScreen() {
               />
               <Pressable
                 onPress={() => setStep(3)}
-                style={[styles.sheetNext, { backgroundColor: "#DFC76A" }]}
+                style={styles.sheetNext}
               >
+                <GoldGradientFill />
                 <Text style={[styles.sheetNextText, { color: "#070E09" }]}>Siguiente</Text>
               </Pressable>
               <View style={{ height: bottomPad + 8 }} />
@@ -356,8 +358,9 @@ export default function CrearGrupoScreen() {
                 </Pressable>
                 <Pressable
                   onPress={() => setStep(4)}
-                  style={[styles.sheetNext, { flex: 1, backgroundColor: "#DFC76A" }]}
+                  style={[styles.sheetNext, { flex: 1 }]}
                 >
+                  <GoldGradientFill />
                   <Text style={[styles.sheetNextText, { color: "#070E09" }]}>Siguiente</Text>
                 </Pressable>
               </View>
@@ -395,8 +398,9 @@ export default function CrearGrupoScreen() {
                 </Pressable>
                 <Pressable
                   onPress={() => setStep(5)}
-                  style={[styles.sheetNext, { flex: 1, backgroundColor: "#DFC76A" }]}
+                  style={[styles.sheetNext, { flex: 1 }]}
                 >
+                  <GoldGradientFill />
                   <Text style={[styles.sheetNextText, { color: "#070E09" }]}>Siguiente</Text>
                 </Pressable>
               </View>
@@ -467,7 +471,7 @@ const styles = StyleSheet.create({
   nameInput: { flex: 1, fontSize: 16 },
   nameCounter: { fontSize: 13, fontWeight: "600", marginLeft: 8 },
   stepFooter: { paddingHorizontal: 20 },
-  nextBtn: { borderRadius: 16, paddingVertical: 16, alignItems: "center" },
+  nextBtn: { borderRadius: 16, paddingVertical: 16, alignItems: "center", overflow: "hidden" },
   nextBtnText: { fontSize: 16, fontWeight: "700" },
 
   // Shared sheet styles
@@ -483,7 +487,7 @@ const styles = StyleSheet.create({
   sheetNavRow: { flexDirection: "row", gap: 12, marginTop: 14, alignItems: "center" },
   prevBtn: { paddingVertical: 16, paddingHorizontal: 4 },
   prevBtnText: { fontSize: 15, fontWeight: "600" },
-  sheetNext: { borderRadius: 16, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 },
+  sheetNext: { borderRadius: 16, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8, overflow: "hidden" },
   sheetNextText: { fontSize: 16, fontWeight: "700" },
 
   // Gallery
