@@ -39,6 +39,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { useUser } from "@clerk/expo";
+import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -327,9 +328,14 @@ export default function HomeScreen2() {
 
 
   const { open: openDrawer } = useDrawer();
-  const { photoUri } = useUserProfile();
+  const { photoUri, username } = useUserProfile();
   const { user: clerkUser } = useUser();
+  const { isRegistered, isSignedIn } = useAuth();
+  const headerLoggedIn = isRegistered || isSignedIn;
   const headerPhoto = photoUri || clerkUser?.imageUrl || null;
+  const headerInitial = (
+    clerkUser?.firstName || clerkUser?.username || username || ""
+  ).charAt(0).toUpperCase() || null;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -348,13 +354,17 @@ export default function HomeScreen2() {
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
-          <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
+          <Pressable
+            onPress={() => openDrawer()}
+            hitSlop={8}
+            style={[styles.avatarBtn, headerLoggedIn && styles.avatarBtnLoggedIn]}
+          >
             {headerPhoto ? (
-              <Image
-                source={{ uri: headerPhoto }}
-                style={styles.avatarSmall}
-                resizeMode="cover"
-              />
+              <Image source={{ uri: headerPhoto }} style={styles.avatarSmall} resizeMode="cover" />
+            ) : headerLoggedIn && headerInitial ? (
+              <View style={styles.avatarInitial}>
+                <Text style={styles.avatarInitialText}>{headerInitial}</Text>
+              </View>
             ) : (
               <View style={styles.avatarFallback}>
                 <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
@@ -814,6 +824,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
   },
+  avatarBtnLoggedIn: {
+    borderWidth: 1.5,
+    borderColor: "#D4AF37",
+  },
   avatarSmall: {
     width: 32,
     height: 32,
@@ -828,6 +842,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.25)",
+  },
+  avatarInitial: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(212,175,55,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarInitialText: {
+    color: "#D4AF37",
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: 0.3,
   },
   headerTabs: {
     flex: 1,

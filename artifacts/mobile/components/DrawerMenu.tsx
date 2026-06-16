@@ -73,8 +73,9 @@ export function DrawerMenu() {
 
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
-  const fullName = hasLocalName ? localFullName : (clerkName || "Explorador");
+  const fullName = hasLocalName ? localFullName : (clerkName || "");
   const displayPhoto = photoUri || clerkPhoto;
+  const initial = (fullName || clerkName || "").charAt(0).toUpperCase() || null;
 
   const navigate = (route: string) => {
     markInstantNav();
@@ -96,37 +97,45 @@ export function DrawerMenu() {
         <View
           style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#27070E" }]}
         >
-          {/* Perfil del usuario (si está logueado) — con X a la derecha */}
-          {loggedIn ? (
-            <View style={styles.profileSection}>
-              {displayPhoto ? (
-                <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
-              ) : (
-                <View style={styles.profilePhotoFallback}>
-                  <Feather name="user" size={22} color="#D4AF37" />
-                </View>
-              )}
-              <View style={styles.profileInfo}>
-                <Text style={styles.profileName} numberOfLines={1}>{fullName || "Explorador"}</Text>
-                <Pressable
-                  onPress={() => navigate("/(tabs)/profile")}
-                  style={styles.verPerfilBtn}
-                >
-                  <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                  <Feather name="chevron-right" size={11} color="#D4AF37" />
-                </Pressable>
+          {/* Sección de perfil — siempre visible; cambia según estado de sesión */}
+          <View style={styles.profileSection}>
+            {/* Avatar: foto → inicial → ícono genérico */}
+            {displayPhoto ? (
+              <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
+            ) : loggedIn && initial ? (
+              <View style={styles.profilePhotoFallback}>
+                <Text style={styles.profileInitial}>{initial}</Text>
               </View>
-              <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#D4AF37" />
-              </Pressable>
+            ) : (
+              <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
+                <Feather name="user" size={22} color={loggedIn ? "#D4AF37" : "rgba(242,231,228,0.45)"} />
+              </View>
+            )}
+
+            <View style={styles.profileInfo}>
+              {loggedIn ? (
+                <>
+                  <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
+                  <Pressable onPress={() => navigate("/(tabs)/profile")} style={styles.verPerfilBtn}>
+                    <Text style={styles.verPerfilText}>Ver Perfil</Text>
+                    <Feather name="chevron-right" size={11} color="#D4AF37" />
+                  </Pressable>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.profileNameMuted}>No conectado</Text>
+                  <Pressable onPress={() => navigate("/(auth)/sign-in")} style={styles.verPerfilBtn}>
+                    <Text style={styles.verPerfilText}>Iniciar sesión</Text>
+                    <Feather name="chevron-right" size={11} color="#D4AF37" />
+                  </Pressable>
+                </>
+              )}
             </View>
-          ) : (
-            <View style={styles.closeBtnRow}>
-              <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#D4AF37" />
-              </Pressable>
-            </View>
-          )}
+
+            <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
+              <Feather name="x" size={20} color="#D4AF37" />
+            </Pressable>
+          </View>
 
           {/* Items principales + secundarios — scrollable */}
           <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
@@ -258,6 +267,22 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
+  },
+  profileNameMuted: {
+    color: "rgba(242,231,228,0.45)",
+    fontSize: 14,
+    fontWeight: "500",
+    letterSpacing: 0.2,
+  },
+  profileInitial: {
+    color: "#D4AF37",
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  profilePhotoGuest: {
+    borderColor: "rgba(242,231,228,0.18)",
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
   verPerfilBtn: {
     flexDirection: "row",
