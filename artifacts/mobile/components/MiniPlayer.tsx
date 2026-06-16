@@ -301,7 +301,8 @@ const styles = StyleSheet.create({
   // ── Píldora "Abrir" ───────────────────────────────────────────
   pillRow: {
     alignItems: "flex-end",
-    paddingRight: 4,
+    paddingRight: 13,
+    paddingTop: 2,
   },
   openPill: {
     flexDirection: "row",
