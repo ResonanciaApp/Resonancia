@@ -383,12 +383,13 @@ function MixContextMenu({
 
 // ── Estilos ────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  section: { paddingHorizontal: 20 },
+  section: { paddingHorizontal: 20, paddingTop: 25 },
   panel: {
     backgroundColor: "transparent",
     borderRadius: 0,
     paddingHorizontal: 35,
-    paddingVertical: 4,
+    paddingTop: 4,
+    paddingBottom: 25,
     marginHorizontal: -35,
   },
 
