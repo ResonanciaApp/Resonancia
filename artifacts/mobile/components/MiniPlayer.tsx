@@ -133,6 +133,7 @@ export function MiniPlayer() {
   // naturalmente cuando el área crece. Sin botón separado de colapso.
 
   const n = activeSounds.length;
+  const prevNRef = useRef(n);
   const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
   const stackWidthAnim = useRef(new Animated.Value(stackWidthStacked)).current;
 
@@ -155,9 +156,19 @@ export function MiniPlayer() {
 
   // Sincroniza el ancho cuando cambia n: cerrado → stacked, abierto → carousel
   useEffect(() => {
+    const removed = n < prevNRef.current;
+    prevNRef.current = n;
     if (!stackOpen) {
       stackWidthAnim.setValue(stackWidthStacked);
+    } else if (removed) {
+      // Sonido borrado → retracción inmediata
+      Animated.timing(stackWidthAnim, {
+        toValue: carouselOpenW,
+        duration: 150,
+        useNativeDriver: false,
+      }).start();
     } else {
+      // Sonido añadido → expansión suave
       Animated.spring(stackWidthAnim, {
         toValue: carouselOpenW,
         useNativeDriver: false,
