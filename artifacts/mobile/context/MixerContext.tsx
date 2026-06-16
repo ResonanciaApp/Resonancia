@@ -81,11 +81,6 @@ type SoundPlayers = { a: AudioPlayer; b: AudioPlayer; resetFade?: () => void; cl
 export type ActiveSound = {
   id: string;
   volume: number;
-  /**
-   * Fracción 0-1 del loop donde empieza a sonar (solo sonidos BPM).
-   * 0=compás 1, 0.25=compás 2, 0.5=compás 3, 0.75=compás 4. Default 0.
-   */
-  phaseOffset?: number;
 };
 export type MixPreset = {
   id: string;
@@ -127,8 +122,6 @@ type MixerContextType = {
   /** Activa/desactiva un sonido. Devuelve false si se alcanzó el máximo. */
   toggleSound: (id: string) => boolean;
   setVolume: (id: string, volume: number) => void;
-  /** Cambia el compás de entrada de un sonido BPM (fracción 0-1 del loop). */
-  setPhaseOffset: (id: string, offset: number) => void;
   removeSound: (id: string) => void;
   /** Reordena la mezcla activa (cosmético: el orden no afecta el audio). */
   moveSound: (id: string, direction: "up" | "down") => void;
@@ -322,17 +315,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   // última versión (cierra sobre los refs, que siempre están al día).
   bpmTickFnRef.current = () => {
     // Borde de compás: rebobinar TODOS los players BPM a su posición de fase.
-    // phaseOffset=0 → seekTo(0); phaseOffset=0.25 → seekTo(0.25 * loopSec), etc.
     const bpm = bpmValueRef.current;
     const loopSec = bpm !== null ? (60 / bpm) * 8 : 0;
     playersRef.current.forEach((pair, id) => {
       if (getSoundById(id)?.bpm === undefined) return;
-      const phaseOffset =
-        activeSoundsRef.current.find((s) => s.id === id)?.phaseOffset ?? 0;
-      // LAG: en el borde de compás (fase maestra 0) el buffer arranca atrasado
-      // phaseOffset*loopSec → el downbeat entra ese retraso después. offset 0 → 0.
       try {
-        void pair.a.seekTo((loopSec - phaseOffset * loopSec) % loopSec);
+        void pair.a.seekTo(0);
       } catch {
         /* ignore */
       }
@@ -394,13 +382,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           const loopSec = loopMs / 1000;
           playersRef.current.forEach((pair, id) => {
             if (getSoundById(id)?.bpm === undefined) return;
-            const phaseOffset =
-              activeSoundsRef.current.find((s) => s.id === id)?.phaseOffset ?? 0;
-            // LAG: el downbeat entra phaseOffset*loopSec después de la fase maestra.
-            const seekPos =
-              (((phase / 1000) - phaseOffset * loopSec) % loopSec + loopSec) % loopSec;
             try {
-              void pair.a.seekTo(seekPos);
+              void pair.a.seekTo(((phase / 1000) % loopSec + loopSec) % loopSec);
             } catch {
               /* ignore */
             }
@@ -1057,7 +1040,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             bpm: soundBpm,
             loopBars: soundDef?.loopBars ?? 2,
             volume: DEFAULT_VOLUME,
-            phaseOffset: activeSoundsRef.current.find((s) => s.id === id)?.phaseOffset ?? 0,
           });
           if (bpmValueRef.current === null) {
             bpmValueRef.current = soundBpm;
@@ -1143,32 +1125,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setActiveSounds((prev) => prev.map((s) => (s.id === id ? { ...s, volume } : s)));
   }, []);
 
-  const setPhaseOffset = useCallback((id: string, offset: number) => {
-    const soundDef = getSoundById(id);
-    if (soundDef?.bpm === undefined) return; // solo BPM
-    // Actualizar estado local
-    setActiveSounds((prev) => prev.map((s) => (s.id === id ? { ...s, phaseOffset: offset } : s)));
-    // Reiniciar el sonido en el engine con el nuevo offset para que se escuche inmediatamente
-    if (bpmSystemRef.current === "engine") {
-      const vol = baseVolumesRef.current.get(id) ?? DEFAULT_VOLUME;
-      void bpmAudioEngine.play(id, {
-        bpm: soundDef.bpm,
-        loopBars: soundDef.loopBars ?? 2,
-        volume: vol,
-        phaseOffset: offset,
-      });
-    } else if (bpmSystemRef.current === "expo") {
-      // Fallback expo: reposicionar con LAG (downbeat retrasado offset*loopSec).
-      const player = playersRef.current.get(id);
-      if (player && bpmClockRef.current !== null && soundDef.bpm) {
-        const loopMs = (60 / soundDef.bpm) * 8 * 1000;
-        const currentPhase = ((Date.now() - bpmClockRef.current) % loopMs) / 1000;
-        const loopSec = loopMs / 1000;
-        const newPos = ((currentPhase - offset * loopSec) % loopSec + loopSec) % loopSec;
-        try { void player.a.seekTo(newPos); } catch { /* ignore */ }
-      }
-    }
-  }, []);
 
   const moveSound = useCallback((id: string, direction: "up" | "down") => {
     setActiveSounds((prev) => {
@@ -1712,7 +1668,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         getVolume,
         toggleSound,
         setVolume,
-        setPhaseOffset,
         removeSound,
         moveSound,
         isPlaying,

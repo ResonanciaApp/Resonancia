@@ -202,7 +202,6 @@ export function MixerSheet() {
   const {
     activeSounds,
     setVolume,
-    setPhaseOffset,
     removeSound,
     moveSound,
     isPlaying,
@@ -623,31 +622,6 @@ export function MixerSheet() {
                     color={palette.sliderThumb}
                     trackColor={palette.sliderTrack}
                   />
-                  {sound.category === "bpm" && (
-                    <View style={styles.beatRow}>
-                      {([0, 0.125, 0.25, 0.375] as const).map((offset, i) => {
-                        const isActive = (active.phaseOffset ?? 0) === offset;
-                        return (
-                          <Pressable
-                            key={offset}
-                            onPress={() => setPhaseOffset(sound.id, offset)}
-                            style={[
-                              styles.beatBtn,
-                              isActive && styles.beatBtnActive,
-                            ]}
-                            accessibilityRole="button"
-                            accessibilityLabel={`Tiempo ${i + 1}`}
-                          >
-                            {isActive && <GoldGradientFill />}
-                            <Text style={[styles.beatBtnText, isActive && styles.beatBtnTextActive]}>
-                              {i + 1}
-                            </Text>
-                          </Pressable>
-                        );
-                      })}
-                      <Text style={[styles.beatLabel, { color: palette.muted }]}>tiempo</Text>
-                    </View>
-                  )}
                 </View>
 
                 <Pressable
@@ -1028,40 +1002,6 @@ const styles = StyleSheet.create({
   reorderBtn: { width: 34, height: 36, alignItems: "center", justifyContent: "center" },
   reorderDivider: { width: StyleSheet.hairlineWidth, height: 22 },
   removeBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
-  beatRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    marginTop: 6,
-  },
-  beatBtn: {
-    width: 28,
-    height: 24,
-    borderRadius: 6,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.30)",
-    backgroundColor: "transparent",
-  },
-  beatBtnActive: {
-    borderColor: "transparent",
-  },
-  beatBtnText: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "rgba(244,218,213,0.45)",
-  },
-  beatBtnTextActive: {
-    color: "#1B060F",
-  },
-  beatLabel: {
-    fontSize: 10,
-    marginLeft: 2,
-    opacity: 0.6,
-  },
-
   addBtn: {
     flexDirection: "row",
     alignItems: "center",

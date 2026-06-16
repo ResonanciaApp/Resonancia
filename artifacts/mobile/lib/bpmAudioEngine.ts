@@ -13,8 +13,8 @@
  *     del 0.5 s de silencio que traen los WAV → el silencio nunca se escucha y
  *     el empalme cae justo en el borde del compás.
  *   - Capas que entran tarde arrancan con `source.start(now, offset)` donde
- *     `offset = (now - transportStart) % loopSec` → quedan en fase con las que
- *     ya sonaban (groove instantáneo, sin esperar al próximo compás).
+ *     `source.start(now, 0)` arranca cada loop desde el comienzo del buffer,
+ *     sin sincronía de fase entre capas (el desfase natural crea variación).
  *   - Pausar/reanudar = `ctx.suspend()/resume()`: el reloj del contexto se
  *     congela, así que la fase se conserva sola al reanudar.
  *
@@ -36,7 +36,6 @@ import type {
   AudioBuffer as AudioBufferType,
   AudioBufferSourceNode as SourceNodeType,
   GainNode as GainNodeType,
-  WaveShaperNode as WaveShaperNodeType,
 } from "react-native-audio-api";
 
 type RNAudioModule = typeof import("react-native-audio-api");
@@ -47,13 +46,6 @@ type PlayOptions = {
   loopBars: number;
   /** Volumen base 0-1 elegido por el usuario para este sonido. */
   volume: number;
-  /**
-   * Retraso (lag) del downbeat de este loop respecto al transporte compartido,
-   * como fracción 0-1 del loop. "Tiempo N" = (N-1) beats de retraso. Loop de 2
-   * compases (8 beats): 0.125 = 1 beat, 0.25 = 2 beats, 0.375 = 3 beats.
-   * Default 0 (en fase con el transporte).
-   */
-  phaseOffset?: number;
 };
 
 type Voice = {
@@ -63,14 +55,7 @@ type Voice = {
 };
 
 const FADE_OUT_SEC = 0.25;
-/**
- * Crossfade corto al REEMPLAZAR una voz que ya suena (cambio de tiempo/offset o
- * re-tap). Cortar en seco + arrancar a mitad de onda produce un click audible
- * (lo que el usuario percibe como "distorsión", distinto en cada posición porque
- * cada offset cae en un punto distinto de la onda). Empalme lineal: como la voz
- * vieja y la nueva son EL MISMO loop, la suma nunca sobrepasa el volumen objetivo
- * → sin recorte/clipping. ~20 ms basta para quitar el click sin "flam" audible.
- */
+/** Crossfade corto al reemplazar una voz que ya suena: evita el click de empalme. */
 const XFADE_SEC = 0.02;
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
@@ -81,44 +66,10 @@ function loopSeconds(bpm: number, loopBars: number): number {
   return (60 / bpm) * 4 * loopBars;
 }
 
-/**
- * Codo del limitador soft-clip: por debajo de |x|=KNEE la curva es LINEAL
- * (transparente, no toca 1-2 capas), por encima satura suave hacia el techo.
- * 0.8 deja casi intacto un sonido a fondo de escala y solo doma los picos que
- * aparecen al sumar 3+ capas.
- */
-const SOFT_CLIP_KNEE = 0.8;
-
-/**
- * Curva de transferencia para el WaveShaper del bus master. El WaveShaper mapea
- * su entrada [-1,1] por esta curva; entradas >1 (varias capas sumadas) se fijan
- * al último valor → techo ~0.95 con codo suave en vez de recorte áspero a 1.0.
- */
-function makeSoftClipCurve(samples = 2048, knee = SOFT_CLIP_KNEE): Float32Array {
-  const curve = new Float32Array(samples);
-  for (let i = 0; i < samples; i++) {
-    const x = (i / (samples - 1)) * 2 - 1; // -1 … 1
-    const a = Math.abs(x);
-    const y = a <= knee ? a : knee + (1 - knee) * Math.tanh((a - knee) / (1 - knee));
-    curve[i] = Math.sign(x) * y;
-  }
-  return curve;
-}
-
-/** Construida una sola vez (no depende del estado del motor). */
-const SOFT_CLIP_CURVE = makeSoftClipCurve();
-
 class BpmAudioEngine {
   private rn: RNAudioModule | null = null;
   private ctx: AudioContextType | null = null;
   private masterGain: GainNodeType | null = null;
-  /**
-   * Limitador soft-clip en el bus master (WaveShaper). Al sumar varias capas
-   * BPM la mezcla puede pasar de 0 dBFS y el destino RECORTA en duro (la
-   * "distorsión" que aparece al agregar el 3.º+ sonido). El limitador satura
-   * suave los picos en vez de recortar. null si la lib no expone WaveShaper.
-   */
-  private limiter: WaveShaperNodeType | null = null;
   /** null = sin probar; true/false = resultado de la probada. */
   private available: boolean | null = null;
   private ready = false;
@@ -139,13 +90,6 @@ class BpmAudioEngine {
    */
   private wanted = new Map<string, number>();
   private playSeq = 0;
-
-  /**
-   * `ctx.currentTime` cuando arrancó el PRIMER loop BPM de la familia actual.
-   * Ancla de fase para que las capas que entran después queden bloqueadas en
-   * sincronía. Se libera cuando no queda ninguna voz.
-   */
-  private transportStart: number | null = null;
 
   /** ¿El motor está listo para reproducir (módulo nativo presente)? */
   isReady(): boolean {
@@ -174,26 +118,10 @@ class BpmAudioEngine {
       const ctx = new mod.AudioContext();
       const masterGain = ctx.createGain();
       masterGain.gain.value = clamp01(this.masterVolume);
-      // Limitador soft-clip ANTES del destino: al sumar varias capas BPM el bus
-      // master puede pasar de 0 dBFS y el destino recorta en duro (distorsión
-      // áspera, peor cuantos más sonidos). El WaveShaper satura suave los picos
-      // por encima del codo → limita sin clipping. La lib NO trae compresor.
-      let limiter: WaveShaperNodeType | null = null;
-      try {
-        limiter = ctx.createWaveShaper();
-        limiter.curve = SOFT_CLIP_CURVE;
-        limiter.oversample = "2x";
-        masterGain.connect(limiter);
-        limiter.connect(ctx.destination);
-      } catch {
-        // Si WaveShaper no estuviera disponible: directo (comportamiento previo).
-        limiter = null;
-        masterGain.connect(ctx.destination);
-      }
+      masterGain.connect(ctx.destination);
       this.rn = mod;
       this.ctx = ctx;
       this.masterGain = masterGain;
-      this.limiter = limiter;
       this.available = true;
       this.ready = true;
       return true;
@@ -203,7 +131,6 @@ class BpmAudioEngine {
       this.ready = false;
       this.ctx = null;
       this.masterGain = null;
-      this.limiter = null;
       this.rn = null;
       return false;
     }
@@ -252,23 +179,12 @@ class BpmAudioEngine {
     // pudo cancelarse (stop/stopAll/re-tap) mientras decodificaba el buffer.
     if (!buffer || !ctx || !masterGain || this.wanted.get(id) !== token) return;
 
-    // Si este sonido ya está sonando (re-tap o cambio de tiempo/offset) NO cortar
-    // en seco: se hace un crossfade corto contra la voz nueva (ver XFADE_SEC) para
-    // evitar el click de empalme. La voz vieja se libera al terminar su fade-out.
+    // Si este sonido ya está sonando NO cortar en seco: crossfade corto para
+    // evitar el click de empalme. La voz vieja se libera al terminar su fade.
     const prev = this.voices.get(id) ?? null;
 
     const loopSec = loopSeconds(opts.bpm, opts.loopBars);
-    const userOffsetSec = (opts.phaseOffset ?? 0) * loopSec;
     const now = ctx.currentTime;
-    if (this.transportStart === null) {
-      this.transportStart = now;
-    }
-    // Fase actual del transporte compartido (0 para el primer loop de la familia).
-    const currentPhase = ((now - this.transportStart) % loopSec + loopSec) % loopSec;
-    // LAG: "entrar en el tiempo N" RETRASA el downbeat del loop por userOffsetSec
-    // respecto al transporte (lo natural para "que entre en el tiempo N"). Con
-    // offset 0 queda idéntico al comportamiento previo (en fase con el transporte).
-    const offset = ((currentPhase - userOffsetSec) % loopSec + loopSec) % loopSec;
 
     const source = ctx.createBufferSource({ pitchCorrection: false });
     source.buffer = buffer;
@@ -278,7 +194,6 @@ class BpmAudioEngine {
     const target = clamp01(opts.volume);
     const gain = ctx.createGain();
     if (prev) {
-      // Empalme: la voz nueva entra desde 0 hasta su volumen en XFADE_SEC.
       try {
         gain.gain.setValueAtTime(0, now);
         gain.gain.linearRampToValueAtTime(target, now + XFADE_SEC);
@@ -291,7 +206,7 @@ class BpmAudioEngine {
     source.connect(gain);
     gain.connect(masterGain);
     try {
-      source.start(now, offset);
+      source.start(now, 0);
     } catch {
       /* ignore */
     }
@@ -397,15 +312,13 @@ class BpmAudioEngine {
         }
       };
     }
-    if (this.voices.size === 0) this.transportStart = null;
   }
 
-  /** Apaga TODOS los loops BPM y libera el ancla de fase. */
+  /** Apaga TODOS los loops BPM. */
   stopAll(): void {
     // Cancelar todo play() en vuelo (ids que aún no son voces por estar decodificando).
     this.wanted.clear();
     for (const id of [...this.voices.keys()]) this.stop(id);
-    this.transportStart = null;
   }
 
   /** Ajusta el volumen base (0-1) de un loop en curso. */
@@ -461,7 +374,6 @@ class BpmAudioEngine {
     this.wanted.clear();
     for (const id of [...this.voices.keys()]) this.stopImmediate(id);
     this.voices.clear();
-    this.transportStart = null;
     // Los buffers se decodificaron contra ESTE contexto: descartarlos para que
     // un remount re-decodifique contra el contexto nuevo (evita usarlos cruzados).
     this.buffers.clear();
@@ -469,7 +381,6 @@ class BpmAudioEngine {
     const ctx = this.ctx;
     this.ctx = null;
     this.masterGain = null;
-    this.limiter = null;
     this.ready = false;
     // Permitir reinicializar si el provider se remonta en el mismo runtime:
     // init() corta temprano salvo que `available` vuelva a estado sin probar.
