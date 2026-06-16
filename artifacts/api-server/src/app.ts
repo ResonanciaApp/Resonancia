@@ -10,6 +10,8 @@ import {
 } from "./middlewares/clerkProxyMiddleware";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import fs from "fs";
+import path from "path";
 
 const app: Express = express();
 
@@ -49,5 +51,17 @@ app.use(
 );
 
 app.use("/api", router);
+
+app.get("/api/tmp-download/mobile-eas", (_req, res) => {
+  const zipPath = "/tmp/mobile-eas-standalone.zip";
+  if (!fs.existsSync(zipPath)) {
+    res.status(404).json({ error: "Zip not ready" });
+    return;
+  }
+  res.setHeader("Content-Disposition", "attachment; filename=mobile-eas-standalone.zip");
+  res.setHeader("Content-Type", "application/zip");
+  res.setHeader("Content-Length", fs.statSync(zipPath).size);
+  fs.createReadStream(zipPath).pipe(res);
+});
 
 export default app;
