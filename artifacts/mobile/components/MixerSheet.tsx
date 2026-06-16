@@ -583,11 +583,11 @@ export function MixerSheet() {
                 </Text>
               </Pressable>
               <Pressable
-                onPress={closeSheet}
+                onPress={() => { stopAll(); closeSheet(); }}
                 hitSlop={10}
                 style={styles.headerBtn}
                 accessibilityRole="button"
-                accessibilityLabel="Cerrar"
+                accessibilityLabel="Cerrar mezcla"
               >
                 <Feather name="x" size={22} color="#FFFFFF" />
               </Pressable>
