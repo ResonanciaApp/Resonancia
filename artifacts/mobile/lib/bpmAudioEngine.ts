@@ -62,6 +62,15 @@ type Voice = {
 };
 
 const FADE_OUT_SEC = 0.25;
+/**
+ * Crossfade corto al REEMPLAZAR una voz que ya suena (cambio de tiempo/offset o
+ * re-tap). Cortar en seco + arrancar a mitad de onda produce un click audible
+ * (lo que el usuario percibe como "distorsión", distinto en cada posición porque
+ * cada offset cae en un punto distinto de la onda). Empalme lineal: como la voz
+ * vieja y la nueva son EL MISMO loop, la suma nunca sobrepasa el volumen objetivo
+ * → sin recorte/clipping. ~20 ms basta para quitar el click sin "flam" audible.
+ */
+const XFADE_SEC = 0.02;
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
@@ -191,8 +200,10 @@ class BpmAudioEngine {
     // pudo cancelarse (stop/stopAll/re-tap) mientras decodificaba el buffer.
     if (!buffer || !ctx || !masterGain || this.wanted.get(id) !== token) return;
 
-    // Doble tap del mismo sonido: cortar la voz vieja antes de crear la nueva.
-    if (this.voices.has(id)) this.stopImmediate(id);
+    // Si este sonido ya está sonando (re-tap o cambio de tiempo/offset) NO cortar
+    // en seco: se hace un crossfade corto contra la voz nueva (ver XFADE_SEC) para
+    // evitar el click de empalme. La voz vieja se libera al terminar su fade-out.
+    const prev = this.voices.get(id) ?? null;
 
     const loopSec = loopSeconds(opts.bpm, opts.loopBars);
     const userOffsetSec = (opts.phaseOffset ?? 0) * loopSec;
@@ -212,8 +223,19 @@ class BpmAudioEngine {
     source.loop = true;
     source.loopStart = 0;
     source.loopEnd = loopSec; // antes del silencio → empalme exacto, sin hueco
+    const target = clamp01(opts.volume);
     const gain = ctx.createGain();
-    gain.gain.value = clamp01(opts.volume);
+    if (prev) {
+      // Empalme: la voz nueva entra desde 0 hasta su volumen en XFADE_SEC.
+      try {
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(target, now + XFADE_SEC);
+      } catch {
+        gain.gain.value = target;
+      }
+    } else {
+      gain.gain.value = target;
+    }
     source.connect(gain);
     gain.connect(masterGain);
     try {
@@ -221,6 +243,8 @@ class BpmAudioEngine {
     } catch {
       /* ignore */
     }
+    // Apagar la voz vieja con el fade-out complementario (mismo instante).
+    if (prev) this.fadeOutAndStop(prev, now, XFADE_SEC);
     this.voices.set(id, { source, gain, base: opts.volume });
 
     // Agregar un sonido implica que la mezcla está sonando: asegurar el contexto
@@ -254,6 +278,37 @@ class BpmAudioEngine {
     } catch {
       /* ignore */
     }
+  }
+
+  /**
+   * Fade-out lineal de una voz a partir de `startAt` durante `dur` y liberación
+   * de sus nodos al terminar. Uso interno: la mitad "vieja" de un crossfade.
+   */
+  private fadeOutAndStop(v: Voice, startAt: number, dur: number): void {
+    const { source, gain } = v;
+    try {
+      gain.gain.setValueAtTime(gain.gain.value, startAt);
+      gain.gain.linearRampToValueAtTime(0, startAt + dur);
+    } catch {
+      /* ignore */
+    }
+    try {
+      source.stop(startAt + dur + 0.02);
+    } catch {
+      /* ignore */
+    }
+    source.onEnded = () => {
+      try {
+        source.disconnect();
+      } catch {
+        /* ignore */
+      }
+      try {
+        gain.disconnect();
+      } catch {
+        /* ignore */
+      }
+    };
   }
 
   /** Apaga un loop con un fade-out corto y libera sus nodos. */

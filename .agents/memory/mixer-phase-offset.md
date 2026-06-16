@@ -30,3 +30,23 @@ reference, so phase shifts are inaudible except as a one-time jump on tap.
 (it shifts one against another). `phaseOffset` is runtime-only — NOT persisted in
 presets — so no migration needed when the value set changes. If you change the
 button values, update the lag formula in all 4 paths in lockstep or layers desync.
+
+## Declick when repositioning a looping source
+
+You CANNOT reposition a playing Web Audio / react-native-audio-api source — to
+change a loop's phase you must create a NEW source and `source.start(now, offset)`
+it. A hard cut of the old voice + a new start mid-waveform CLICKS, and the click
+differs per offset (each lands at a different point in the wave) — the user heard
+this as "se distorciona, no suena igual en todas". Fix: a short (~20 ms) **linear**
+crossfade between old and new voice (`bpmAudioEngine.play()` crossfades when a
+voice for the same id already exists; `fadeOutAndStop` handles the old half).
+
+**Why linear, not equal-power:** old and new are the SAME loop (just phase-shifted),
+so a linear crossfade's summed amplitude never overshoots the target → no clipping.
+Equal-power would bump ~+3 dB on correlated signals. A single isolated loop sounds
+identical at any phase in steady state, so the click WAS the only artifact.
+
+**Note (not a bug):** sparse/periodic loops (4-on-the-floor kick, steady hi-hat)
+are unchanged by a 1–3 beat shift because their own period divides the offset; the
+offset is only audible on patterns with a longer period (snare/tambor) or against
+other layers. Don't "fix" this — it's inherent to the loop content.
