@@ -180,51 +180,52 @@ export function MiniPlayer() {
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
           <View style={styles.mixRow} onLayout={onRowLayout}>
-            {/* Stack: Pressable envuelve el Animated.View para que el
-                área táctil coincida exactamente con el ancho animado.
-                Los thumbs son position:absolute dentro del Animated.View
-                (no del Pressable) para que rendericen correctamente. */}
-            <Pressable
-              onPress={toggleStack}
-              hitSlop={6}
-              accessibilityRole="button"
-              accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
-            >
-              <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
+            {/* Stack: el Animated.View es un View plano (sin Pressable externo).
+                - Cerrado: thumbnails apilados + Pressable absoluteFill encima que
+                  abre el carrusel. No hay Pressable externo que bloquee el scroll.
+                - Abierto: ScrollView horizontal libre; cada thumbnail es un
+                  Pressable que llama toggleStack (con guard de scrollingRef). */}
+            <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
 
-                {stackOpen ? (
-                  /* ── Abierto: ScrollView horizontal con gap fijo ── */
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.carouselScroll}
-                    contentContainerStyle={styles.carouselContent}
-                    onScrollBeginDrag={onCarouselScrollStart}
-                    onScrollEndDrag={onCarouselScrollEnd}
-                    onMomentumScrollEnd={onCarouselScrollEnd}
-                  >
-                    {activeSounds.map((s) => {
-                      const image = getSoundImage(s.id);
-                      return (
-                        <View key={s.id} style={styles.carouselThumb}>
-                          {image ? (
-                            <Image
-                              source={image}
-                              style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                              resizeMode="cover"
-                            />
-                          ) : (
-                            <View style={styles.stackFallback}>
-                              <Feather name="music" size={14} color={colors.primary} />
-                            </View>
-                          )}
-                        </View>
-                      );
-                    })}
-                  </ScrollView>
-                ) : (
-                  /* ── Cerrado: thumbnails apilados con posición absoluta ── */
-                  activeSounds.map((s, i) => {
+              {stackOpen ? (
+                /* ── Abierto: ScrollView libre de interferencias ── */
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.carouselScroll}
+                  contentContainerStyle={styles.carouselContent}
+                  onScrollBeginDrag={onCarouselScrollStart}
+                  onScrollEndDrag={onCarouselScrollEnd}
+                  onMomentumScrollEnd={onCarouselScrollEnd}
+                >
+                  {activeSounds.map((s) => {
+                    const image = getSoundImage(s.id);
+                    return (
+                      <Pressable
+                        key={s.id}
+                        style={styles.carouselThumb}
+                        onPress={toggleStack}
+                        accessibilityLabel="Colapsar"
+                      >
+                        {image ? (
+                          <Image
+                            source={image}
+                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.stackFallback}>
+                            <Feather name="music" size={14} color={colors.primary} />
+                          </View>
+                        )}
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              ) : (
+                /* ── Cerrado: thumbnails apilados + overlay táctil ── */
+                <>
+                  {activeSounds.map((s, i) => {
                     const entryAnim = getAnim(s.id);
                     const image = getSoundImage(s.id);
                     return (
@@ -250,11 +251,17 @@ export function MiniPlayer() {
                         )}
                       </Animated.View>
                     );
-                  })
-                )}
+                  })}
+                  <Pressable
+                    style={StyleSheet.absoluteFill}
+                    onPress={toggleStack}
+                    accessibilityRole="button"
+                    accessibilityLabel="Desplegar sonidos"
+                  />
+                </>
+              )}
 
-              </Animated.View>
-            </Pressable>
+            </Animated.View>
 
             {/* Texto: empujado/recogido por el stack naturalmente (flex:1) */}
             <View style={styles.textBlock}>
