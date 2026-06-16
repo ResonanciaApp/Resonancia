@@ -38,6 +38,7 @@ import { SessionRow } from "@/components/SessionRow";
 import { VideoCard } from "@/components/VideoCard";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
+import { useUser } from "@clerk/expo";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -327,6 +328,8 @@ export default function HomeScreen2() {
 
   const { open: openDrawer } = useDrawer();
   const { photoUri } = useUserProfile();
+  const { user: clerkUser } = useUser();
+  const headerPhoto = photoUri || clerkUser?.imageUrl || null;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -346,9 +349,9 @@ export default function HomeScreen2() {
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
           <Pressable onPress={() => openDrawer()} hitSlop={8} style={styles.avatarBtn}>
-            {photoUri ? (
+            {headerPhoto ? (
               <Image
-                source={{ uri: photoUri }}
+                source={{ uri: headerPhoto }}
                 style={styles.avatarSmall}
                 resizeMode="cover"
               />
