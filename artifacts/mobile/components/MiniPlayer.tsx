@@ -68,32 +68,19 @@ export function MiniPlayer() {
   const mixActive = !currentSession && activeSounds.length > 0;
 
   // ── De-stack de thumbnails ─────────────────────────────────────
-  // El carrusel aparece como fila separada DEBAJO del row principal.
-  // El row principal (stack apilado + texto + play) NUNCA cambia de tamaño,
-  // así el textBlock siempre tiene espacio para recibir el tap de colapso.
-  const CAROUSEL_ROW_H = STACK_SIZE + 20; // altura de la fila de carrusel abierta
+  // Abierto: el row muestra [colapso btn] + [ScrollView flex:1] + [play]
+  // Cerrado: el row muestra [stack apilado] + [texto flex:1] + [play]
 
   const [stackOpen, setStackOpen] = useState(false);
-  const carouselHeightAnim = useRef(new Animated.Value(0)).current;
 
-  const toggleStack = () => {
-    const next = !stackOpen;
-    setStackOpen(next);
-    Animated.spring(carouselHeightAnim, {
-      toValue: next ? CAROUSEL_ROW_H : 0,
-      useNativeDriver: false,
-      damping: 18,
-      stiffness: 240,
-    }).start();
-  };
+  const toggleStack = () => setStackOpen((v) => !v);
 
   useEffect(() => {
     if (!mixActive) {
       animsRef.current.clear();
       setStackOpen(false);
-      carouselHeightAnim.setValue(0);
     }
-  }, [mixActive, carouselHeightAnim]);
+  }, [mixActive]);
 
   // ── Animaciones de entrada por sonido ─────────────────────────
   const animsRef = useRef<Map<string, Animated.Value>>(new Map());
@@ -148,57 +135,96 @@ export function MiniPlayer() {
         <View style={styles.wrapper}>
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
-          {/* ── Row principal: tamaño FIJO siempre ── */}
+          {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Stack apilado (fijo). Pressable abre el carrusel. */}
-            <Pressable
-              onPress={toggleStack}
-              style={[styles.stackArea, { width: stackWidthStacked }]}
-              accessibilityRole="button"
-              accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
-            >
-              {activeSounds.map((s, i) => {
-                const entryAnim = getAnim(s.id);
-                const image = getSoundImage(s.id);
-                return (
-                  <Animated.View
-                    key={s.id}
-                    style={[
-                      styles.stackThumb,
-                      { left: i * STACK_SHIFT, zIndex: i,
-                        transform: [{ scale: entryAnim }],
-                        opacity: entryAnim },
-                    ]}
-                  >
-                    {image ? (
-                      <Image
-                        source={image}
-                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View style={styles.stackFallback}>
-                        <Feather name="music" size={14} color={colors.primary} />
+            {stackOpen ? (
+              /* ── ABIERTO: [btn colapso] + [ScrollView] ── */
+              <>
+                <Pressable
+                  onPress={toggleStack}
+                  style={styles.collapseBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Colapsar"
+                  hitSlop={8}
+                >
+                  <Feather name="chevron-left" size={18} color="rgba(255,255,255,0.7)" />
+                </Pressable>
+
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.carouselContent}
+                  style={styles.carouselScroll}
+                >
+                  {activeSounds.map((s) => {
+                    const image = getSoundImage(s.id);
+                    return (
+                      <View key={s.id} style={styles.carouselThumb}>
+                        {image ? (
+                          <Image
+                            source={image}
+                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.stackFallback}>
+                            <Feather name="music" size={14} color={colors.primary} />
+                          </View>
+                        )}
                       </View>
-                    )}
-                  </Animated.View>
-                );
-              })}
-            </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              </>
+            ) : (
+              /* ── CERRADO: [stack apilado] + [texto] ── */
+              <>
+                <Pressable
+                  onPress={toggleStack}
+                  style={[styles.stackArea, { width: stackWidthStacked }]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Desplegar sonidos"
+                >
+                  {activeSounds.map((s, i) => {
+                    const entryAnim = getAnim(s.id);
+                    const image = getSoundImage(s.id);
+                    return (
+                      <Animated.View
+                        key={s.id}
+                        style={[
+                          styles.stackThumb,
+                          { left: i * STACK_SHIFT, zIndex: i,
+                            transform: [{ scale: entryAnim }],
+                            opacity: entryAnim },
+                        ]}
+                      >
+                        {image ? (
+                          <Image
+                            source={image}
+                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.stackFallback}>
+                            <Feather name="music" size={14} color={colors.primary} />
+                          </View>
+                        )}
+                      </Animated.View>
+                    );
+                  })}
+                </Pressable>
 
-            {/* Texto: flex:1, siempre visible, tap para colapsar cuando abierto */}
-            <Pressable
-              style={styles.textBlock}
-              onPress={stackOpen ? toggleStack : undefined}
-            >
-              <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
-              <Text style={styles.mixSub} numberOfLines={1}>
-                {n} {n === 1 ? "sonido" : "sonidos"}
-              </Text>
-            </Pressable>
+                <View style={styles.textBlock}>
+                  <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
+                  <Text style={styles.mixSub} numberOfLines={1}>
+                    {n} {n === 1 ? "sonido" : "sonidos"}
+                  </Text>
+                </View>
+              </>
+            )}
 
-            {/* Botón play/pause */}
+            {/* Botón play/pause — siempre visible */}
             <View style={styles.waveWrap}>
               {[wave1, wave2].map((w, idx) => (
                 <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
@@ -213,35 +239,6 @@ export function MiniPlayer() {
               </Pressable>
             </View>
           </View>
-
-          {/* ── Carrusel: fila animada debajo del row principal ── */}
-          <Animated.View style={[styles.carouselRow, { height: carouselHeightAnim }]}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.carouselContent}
-              style={{ flex: 1 }}
-            >
-              {activeSounds.map((s) => {
-                const image = getSoundImage(s.id);
-                return (
-                  <View key={s.id} style={styles.carouselThumb}>
-                    {image ? (
-                      <Image
-                        source={image}
-                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View style={styles.stackFallback}>
-                        <Feather name="music" size={14} color={colors.primary} />
-                      </View>
-                    )}
-                  </View>
-                );
-              })}
-            </ScrollView>
-          </Animated.View>
 
         </View>
       </View>
@@ -367,16 +364,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ── Carrusel: fila separada debajo del row principal ──────────
-  carouselRow: {
-    overflow: "hidden",        // clipea cuando la altura anima hacia 0
-    paddingHorizontal: 12,
+  // ── Carrusel en-row (estado abierto) ─────────────────────────
+  collapseBtn: {
+    width: 28,
+    height: STACK_SIZE,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  carouselScroll: {
+    flex: 1,
   },
   carouselContent: {
     flexDirection: "row",
     alignItems: "center",
     gap: CAROUSEL_THUMB_GAP,
-    paddingBottom: 10,
   },
   carouselThumb: {
     width: STACK_SIZE,
