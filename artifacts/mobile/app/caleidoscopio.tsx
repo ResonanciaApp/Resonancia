@@ -25,6 +25,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient as ExpoGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import Svg, { Circle, ClipPath, Defs, G, LinearGradient, Path, Stop } from "react-native-svg";
 
 // ── Paletas ───────────────────────────────────────────────────────────────────
@@ -544,7 +545,11 @@ export default function Caleidoscopio() {
                 <View style={styles.trackWrap}>
                   {[0.1, 0.35, 0.6, 0.85, 1.0].map((v) => {
                     const on = Math.abs(speed - v) < 0.13;
-                    return <TouchableOpacity key={v} onPress={() => setSpeed(v)} style={[styles.speedDot, on && styles.speedDotOn]} hitSlop={8} />;
+                    return (
+                    <TouchableOpacity key={v} onPress={() => setSpeed(v)} style={[styles.speedDot, on && styles.speedDotOn]} hitSlop={8}>
+                      {on && <GoldGradientFill />}
+                    </TouchableOpacity>
+                  );
                   })}
                 </View>
               </View>
@@ -596,8 +601,8 @@ const styles = StyleSheet.create({
   speedRow:         { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 7 },
   speedVal:         { color: "#D4AF37", fontSize: 10 },
   trackWrap:        { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 4 },
-  speedDot:         { width: 11, height: 11, borderRadius: 6, backgroundColor: "rgba(74,12,12,0.35)" },
-  speedDotOn:       { backgroundColor: "#D4AF37", transform: [{ scale: 1.3 }] },
+  speedDot:         { width: 11, height: 11, borderRadius: 6, backgroundColor: "rgba(74,12,12,0.35)", overflow: "hidden" },
+  speedDotOn:       { transform: [{ scale: 1.3 }] },
   saveBtn:          { height: 42, borderRadius: 12, backgroundColor: "rgba(212,175,55,0.10)", borderWidth: 1, borderColor: "rgba(212,175,55,0.35)", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
   saveBtnText:      { color: "#D4AF37", fontSize: 13, fontWeight: "600" },
   tapHint:          { position: "absolute", alignSelf: "center", zIndex: 10 },

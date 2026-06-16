@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { GoldGradient } from "@/components/GoldGradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -66,7 +67,7 @@ export function AmbientWidget() {
             style={styles.thumbnailImg}
             contentFit="cover"
           />
-          {isActive && <View style={styles.activeDot} />}
+          {isActive && <GoldGradient style={styles.activeDot} />}
         </Pressable>
 
         {/* Volume toggle */}
@@ -171,9 +172,9 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: "#D4AF37",
     borderWidth: 1.5,
     borderColor: "#1B060F",
+    overflow: "hidden",
   },
   volBtn: {
     width: 24,

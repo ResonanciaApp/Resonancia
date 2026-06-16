@@ -97,7 +97,8 @@
         }
       ],
       "expo-video",
-      "react-native-audio-api"
+      "react-native-audio-api",
+      "./plugins/with-modular-headers"
     ],
     "experiments": {
       "typedRoutes": true,

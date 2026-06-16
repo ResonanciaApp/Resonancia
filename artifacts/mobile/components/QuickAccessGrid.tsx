@@ -3,6 +3,7 @@
  */
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GoldGradient } from "@/components/GoldGradient";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -199,7 +200,7 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
 
       {/* Línea de inserción */}
       {insertLine && (
-        <View
+        <GoldGradient
           pointerEvents="none"
           style={[styles.insertLine, { left: insertLine.x, top: insertLine.y }]}
         />
@@ -243,7 +244,6 @@ const styles = StyleSheet.create({
     width:           2.5,
     height:          BLOCK_H,
     borderRadius:    2,
-    backgroundColor: "#D4AF37",
   },
   block: {
     height:          BLOCK_H,
