@@ -5,6 +5,7 @@ import {
   Animated,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -82,6 +83,7 @@ export function MiniPlayer() {
   const OPEN_DELTA = STACK_SIZE + CAROUSEL_THUMB_GAP - STACK_SHIFT; // 38+8-15 = 31
 
   const [stackOpen, setStackOpen] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
 
   // Ancho real del contenido del carrusel (sin scroll si cabe, con scroll si excede)
   const carouselContentW = n * STACK_SIZE + Math.max(0, n - 1) * CAROUSEL_THUMB_GAP + 12;
@@ -89,6 +91,10 @@ export function MiniPlayer() {
 
   const toggleStack = () => {
     const next = !stackOpen;
+    // Al colapsar, devolver el scroll a 0 (sin animar) para que los thumbnails
+    // apilados queden visibles de inmediato; si quedó scrolleado a la derecha,
+    // el offset persistiría y mostraría espacio vacío.
+    if (!next) scrollRef.current?.scrollTo({ x: 0, animated: false });
     setStackOpen(next);
     // stackWidthAnim usa JS driver (layout property); openProgress usa native driver (transform)
     Animated.spring(stackWidthAnim, {
@@ -103,6 +109,9 @@ export function MiniPlayer() {
 
   // Sincroniza el ancho cuando cambia n: cerrado → stacked, abierto → carousel
   useEffect(() => {
+    // Si al quitar un sonido el carrusel quedó scrolleado más allá del nuevo
+    // contenido, el offset persistiría mostrando espacio vacío → reset a 0.
+    scrollRef.current?.scrollTo({ x: 0, animated: false });
     if (!stackOpen) {
       stackWidthAnim.setValue(stackWidthStacked);
     } else {
@@ -164,44 +173,55 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Stack / carrusel — ancho con JS driver, slide con driver nativo */}
+            {/* Stack / carrusel — frame con ancho animado (JS driver) que clipea;
+                cuando está abierto, un ScrollView horizontal permite deslizar
+                entre los thumbnails si no caben todos en el ancho visible. */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
-              {activeSounds.map((s, i) => {
-                const image      = getSoundImage(s.id);
-                // `left` ESTÁTICO + translateX por DRIVER NATIVO. Animar `left`
-                // (layout prop) con JS driver no se renderiza fiable bajo
-                // Fabric/New Arch — por eso el ancho animaba pero el slide no.
-                const translateX = openProgress.interpolate({
-                  inputRange:  [0, 1],
-                  outputRange: [0, i * OPEN_DELTA],
-                });
-                return (
-                  <Animated.View
-                    key={s.id}
-                    style={[styles.stackThumb, { position: 'absolute', left: i * STACK_SHIFT, zIndex: i, transform: [{ translateX }] }]}
-                  >
-                    <Pressable
-                      onPress={toggleStack}
-                      onLongPress={() => removeSound(s.id)}
-                      delayLongPress={400}
-                      style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                      accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
+              <ScrollView
+                ref={scrollRef}
+                horizontal
+                scrollEnabled={stackOpen}
+                showsHorizontalScrollIndicator={false}
+                style={styles.stackScroll}
+                contentContainerStyle={{ width: carouselContentW, height: STACK_SIZE }}
+              >
+                {activeSounds.map((s, i) => {
+                  const image      = getSoundImage(s.id);
+                  // `left` ESTÁTICO + translateX por DRIVER NATIVO. Animar `left`
+                  // (layout prop) con JS driver no se renderiza fiable bajo
+                  // Fabric/New Arch — por eso el ancho animaba pero el slide no.
+                  const translateX = openProgress.interpolate({
+                    inputRange:  [0, 1],
+                    outputRange: [0, i * OPEN_DELTA],
+                  });
+                  return (
+                    <Animated.View
+                      key={s.id}
+                      style={[styles.stackThumb, { position: 'absolute', left: i * STACK_SHIFT, zIndex: i, transform: [{ translateX }] }]}
                     >
-                      {image ? (
-                        <Image
-                          source={image}
-                          style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <View style={styles.stackFallback}>
-                          <Feather name="music" size={14} color={colors.primary} />
-                        </View>
-                      )}
-                    </Pressable>
-                  </Animated.View>
-                );
-              })}
+                      <Pressable
+                        onPress={toggleStack}
+                        onLongPress={() => removeSound(s.id)}
+                        delayLongPress={400}
+                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
+                      >
+                        {image ? (
+                          <Image
+                            source={image}
+                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.stackFallback}>
+                            <Feather name="music" size={14} color={colors.primary} />
+                          </View>
+                        )}
+                      </Pressable>
+                    </Animated.View>
+                  );
+                })}
+              </ScrollView>
             </Animated.View>
 
             {/* Texto: flex:1, se empuja cuando el stack crece */}
@@ -328,6 +348,10 @@ const styles = StyleSheet.create({
   stackArea: {
     height: STACK_SIZE,
     overflow: "hidden",  // clip cuando el ancho crece/achica
+  },
+  stackScroll: {
+    width: "100%",
+    height: STACK_SIZE,
   },
   stackThumb: {
     width: STACK_SIZE,
