@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Dimensions,
   Platform,
@@ -50,6 +50,15 @@ const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP * 2) / 3);
 const CAT_CARD_GAP = 12;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.25);
 const CAT_CARD_IMG_H = Math.round(CAT_CARD_W * 1.15);
+
+const DURATION_SLOTS = [
+  { label: "5 min",   min: 0,  max: 5  },
+  { label: "10 min",  min: 6,  max: 10 },
+  { label: "20 min",  min: 11, max: 25 },
+  { label: "30 min",  min: 26, max: 35 },
+  { label: "45+ min", min: 36, max: Infinity },
+] as const;
+type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 
 const CATEGORY_CARDS = [
   {
@@ -116,6 +125,14 @@ export default function ExploreScreen() {
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const [query, setQuery] = useState("");
+  const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
+
+  const durationSessions = useMemo(() => {
+    if (!selectedDur) return [];
+    const slot = DURATION_SLOTS.find((s) => s.label === selectedDur)!;
+    return SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
+  }, [selectedDur]);
+
   const { isPremium } = usePremium();
 
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
@@ -270,6 +287,64 @@ export default function ExploreScreen() {
             ))}
           </ScrollView>
           </>
+        )}
+
+        {/* ── ¿Cuánto tiempo tienes? ── */}
+        {query.length === 0 && (
+          <View style={styles.durSection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12 }]}>
+              ¿Cuánto tiempo tienes?
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durPillRow}
+            >
+              {DURATION_SLOTS.map((slot) => {
+                const sel = selectedDur === slot.label;
+                return (
+                  <Pressable
+                    key={slot.label}
+                    onPress={() => setSelectedDur(sel ? null : slot.label)}
+                    style={({ pressed }) => [
+                      styles.durPill,
+                      sel && styles.durPillActive,
+                      { opacity: pressed ? 0.75 : 1 },
+                    ]}
+                  >
+                    {sel && (
+                      <LinearGradient
+                        colors={["#D6AD5F", "#B47344"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    )}
+                    <Text style={[styles.durPillText, sel && styles.durPillTextActive]}>
+                      {slot.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+
+            {selectedDur && (
+              <View style={styles.durResults}>
+                {durationSessions.length === 0 ? (
+                  <Text style={[styles.durEmpty, { color: colors.mutedForeground }]}>
+                    Sin sesiones para este rango
+                  </Text>
+                ) : (
+                  durationSessions.map((s, i) => (
+                    <React.Fragment key={s.id}>
+                      {i > 0 && <View style={styles.recoDivider} />}
+                      <SessionCard session={s} horizontal />
+                    </React.Fragment>
+                  ))
+                )}
+              </View>
+            )}
+          </View>
         )}
 
         {/* ── Recomendado para ti ── */}
@@ -447,6 +522,47 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.07)",
     marginHorizontal: 4,
+  },
+
+  // ¿Cuánto tiempo tienes?
+  durSection: {
+    marginBottom: 33,
+  },
+  durPillRow: {
+    paddingHorizontal: H_PAD,
+    gap: 8,
+    paddingBottom: 2,
+  },
+  durPill: {
+    overflow: "hidden",
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.30)",
+    backgroundColor: "rgba(74,12,12,0.08)",
+  },
+  durPillActive: {
+    borderColor: "transparent",
+  },
+  durPillText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "rgba(244,218,213,0.70)",
+    letterSpacing: 0.2,
+  },
+  durPillTextActive: {
+    color: "#FFFFFF",
+  },
+  durResults: {
+    marginTop: 16,
+    paddingHorizontal: H_PAD,
+    gap: 6,
+  },
+  durEmpty: {
+    fontSize: 13,
+    textAlign: "center",
+    paddingVertical: 16,
   },
 
   // Carrusel de categorías
