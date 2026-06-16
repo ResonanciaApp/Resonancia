@@ -76,7 +76,10 @@ export function MiniPlayer() {
   const n = activeSounds.length;
   const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
   const stackWidthAnim = useRef(new Animated.Value(stackWidthStacked)).current;
+  // openProgress: 0 = apilado, 1 = abierto — native driver para translateX suave
   const openProgress   = useRef(new Animated.Value(0)).current;
+  // Cada thumb mueve (STACK_SIZE + gap - STACK_SHIFT) px por índice al abrirse
+  const OPEN_DELTA = STACK_SIZE + CAROUSEL_THUMB_GAP - STACK_SHIFT; // 38+8-15 = 31
 
   const [stackOpen, setStackOpen] = useState(false);
 
@@ -87,11 +90,15 @@ export function MiniPlayer() {
   const toggleStack = () => {
     const next = !stackOpen;
     setStackOpen(next);
-    const springCfg = { useNativeDriver: false, damping: 18, stiffness: 200 } as const;
-    Animated.parallel([
-      Animated.spring(stackWidthAnim, { toValue: next ? carouselOpenW : stackWidthStacked, ...springCfg }),
-      Animated.spring(openProgress,   { toValue: next ? 1 : 0, ...springCfg }),
-    ]).start();
+    // stackWidthAnim usa JS driver (layout property); openProgress usa native driver (transform)
+    Animated.spring(stackWidthAnim, {
+      toValue: next ? carouselOpenW : stackWidthStacked,
+      useNativeDriver: false, damping: 18, stiffness: 200,
+    }).start();
+    Animated.spring(openProgress, {
+      toValue: next ? 1 : 0,
+      useNativeDriver: true, damping: 18, stiffness: 200,
+    }).start();
   };
 
   // Sincroniza el ancho cuando cambia n: cerrado → stacked, abierto → carousel
@@ -177,22 +184,19 @@ export function MiniPlayer() {
             {/* Stack / carrusel: estructura única siempre montada, left animado */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
               {activeSounds.map((s, i) => {
-                const entryAnim = getAnim(s.id);
-                const image     = getSoundImage(s.id);
-                const leftAnim  = openProgress.interpolate({
+                const entryAnim  = getAnim(s.id);
+                const image      = getSoundImage(s.id);
+                const translateX = openProgress.interpolate({
                   inputRange:  [0, 1],
-                  outputRange: [i * STACK_SHIFT, i * (STACK_SIZE + CAROUSEL_THUMB_GAP)],
+                  outputRange: [0, i * OPEN_DELTA],
                 });
                 return (
-                  // Capa exterior: posición (JS driver — no puede mezclar con native)
-                  <Animated.View
-                    key={s.id}
-                    style={[styles.stackPos, { left: leftAnim, zIndex: i }]}
-                  >
-                    {/* Capa interior: scale/opacity de entrada (native driver) */}
+                  // View estático: position+left (nativo no soporta left en Animated.View)
+                  <View key={s.id} style={[styles.stackPos, { left: i * STACK_SHIFT, zIndex: i }]}>
+                    {/* Animated.View: solo native-driver props (translateX, scale, opacity) */}
                     <Animated.View
                       style={[styles.stackThumb, {
-                        transform: [{ scale: entryAnim }],
+                        transform: [{ translateX }, { scale: entryAnim }],
                         opacity: entryAnim,
                       }]}
                     >
@@ -216,7 +220,7 @@ export function MiniPlayer() {
                         )}
                       </Pressable>
                     </Animated.View>
-                  </Animated.View>
+                  </View>
                 );
               })}
             </Animated.View>
@@ -346,13 +350,13 @@ const styles = StyleSheet.create({
     height: STACK_SIZE,
     overflow: "hidden",  // clip cuando el ancho crece/achica
   },
-  // Capa exterior: solo posición absolute (JS driver para left animado)
+  // Wrapper estático: fija la posición (left); el nativo no soporta left en Animated.View
   stackPos: {
     position: "absolute",
     width: STACK_SIZE,
     height: STACK_SIZE,
   },
-  // Capa interior: apariencia + entrada (native driver para scale/opacity)
+  // Animated.View interno: solo transform/opacity (native driver)
   stackThumb: {
     width: STACK_SIZE,
     height: STACK_SIZE,
