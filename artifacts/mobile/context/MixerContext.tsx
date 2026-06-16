@@ -794,21 +794,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
                 const bFadeStart = Date.now();
                 bFadeTimer = setInterval(() => {
                   bEntryFrac = Math.min(1, (Date.now() - bFadeStart) / B_ENTRY_FADE_MS);
-                  // Aplicar volumen directamente a 60 fps: el listener de audio
-                  // llega cada ~200 ms en iOS → para cuando dispara, bEntryFrac
-                  // ya es 1 y el fade nunca se oye. Aquí lo aplicamos nosotros.
-                  //
-                  // NO usar p.currentTime/duration: en expo-audio no se actualizan
-                  // en vivo entre status callbacks (devuelven 0) → g=|sin(0)|=0 →
-                  // el fade aplica 0 en cada tick → TAC igual al primer tick real.
-                  // B está sembrado en su pico (gain≈1), así que omitir el gain
-                  // aquí es correcto; el listener toma el control cuando bEntryFrac=1.
                   const base2 = baseVolumesRef.current.get(id) ?? volume;
                   const st = fadeState.audibleStart === 0
                     ? 0
                     : Math.min(1, (Date.now() - fadeState.audibleStart) / STARTUP_FADE_MS);
+                  // Aplicar a 60 fps sin gain (B está en su pico ≈1 tras el seed).
+                  // El intervalo NO para hasta que AMBOS fades estén completos:
+                  // si para cuando startup<1, el primer tick del listener aplica
+                  // base×gain×startup_nuevo con un escalón de 120ms → TAC.
                   setVol(p, base2 * bEntryFrac * st * masterVolumeRef.current);
-                  if (bEntryFrac >= 1) {
+                  if (bEntryFrac >= 1 && st >= 1) {
                     clearInterval(bFadeTimer!);
                     bFadeTimer = null;
                   }
@@ -836,10 +831,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           // B muteada hasta confirmar su salto al pico (así no se oye ningún
           // transitorio del seed); A siempre suena (su borde de loop es inaudible).
           // bEntryFrac se actualiza a 60 fps por setInterval (no por este tick lento).
-          const volTarget = isSecondary
-            ? (bSeeded ? base * gain * bEntryFrac : 0)
-            : base * gain;
-          setVol(p, volTarget * startup * masterVolumeRef.current);
+          // Mientras bFadeTimer está activo, el intervalo es el único que escribe
+          // el volumen de B: si el listener también lo escribe con un escalón de
+          // 120 ms produce exactamente el TAC que queremos evitar.
+          if (isSecondary && bFadeTimer !== null) {
+            // El intervalo ya está manejando el volumen de B → no interferir.
+          } else {
+            const volTarget = isSecondary
+              ? (bSeeded ? base * gain * bEntryFrac : 0)
+              : base * gain;
+            setVol(p, volTarget * startup * masterVolumeRef.current);
+          }
 
           // Recentrado de drift de la capa B contra A: mantener el desfase dur/2,
           // corrigiendo SOLO en el valle de B (gain bajo → seek inaudible).
