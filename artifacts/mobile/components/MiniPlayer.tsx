@@ -38,6 +38,7 @@ export function MiniPlayer() {
     presets,
     loadedPresetId,
     openSheet,
+    removeSound,
   } = useMixer();
 
   const colors = useColors();
@@ -94,9 +95,18 @@ export function MiniPlayer() {
     }).start();
   };
 
-  // Sincroniza el ancho cuando se agregan/quitan sonidos estando cerrado
+  // Sincroniza el ancho cuando cambia n: cerrado → stacked, abierto → carousel
   useEffect(() => {
-    if (!stackOpen) stackWidthAnim.setValue(stackWidthStacked);
+    if (!stackOpen) {
+      stackWidthAnim.setValue(stackWidthStacked);
+    } else {
+      Animated.spring(stackWidthAnim, {
+        toValue: carouselOpenW,
+        useNativeDriver: false,
+        damping: 18,
+        stiffness: 200,
+      }).start();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [n]);
 
@@ -178,9 +188,9 @@ export function MiniPlayer() {
                     return (
                       <Pressable
                         key={s.id}
-                        onPress={toggleStack}
+                        onPress={() => removeSound(s.id)}
                         style={styles.carouselThumb}
-                        accessibilityLabel="Colapsar"
+                        accessibilityLabel="Quitar sonido"
                       >
                         {image ? (
                           <Image
