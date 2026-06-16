@@ -16,8 +16,5 @@
   "dependencies": {
     "@replit/revenuecat-sdk": "^4.2.0",
     "docx": "^9.7.1"
-  },
-  "pnpm": {
-    "neverBuiltDependencies": ["esbuild"]
   }
 }
