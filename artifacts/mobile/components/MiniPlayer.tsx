@@ -224,7 +224,7 @@ export function MiniPlayer() {
                     );
                   })}
                   <Pressable
-                    style={StyleSheet.absoluteFill}
+                    style={[StyleSheet.absoluteFill, { zIndex: 999 }]}
                     onPress={toggleStack}
                     accessibilityRole="button"
                     accessibilityLabel="Desplegar sonidos"
