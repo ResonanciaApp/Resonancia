@@ -797,14 +797,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
                   // Aplicar volumen directamente a 60 fps: el listener de audio
                   // llega cada ~200 ms en iOS → para cuando dispara, bEntryFrac
                   // ya es 1 y el fade nunca se oye. Aquí lo aplicamos nosotros.
-                  const d = p.duration ?? 0;
-                  const pos2 = p.currentTime ?? 0;
-                  const g = d > 0 ? Math.abs(Math.sin(Math.PI * (pos2 / d))) : 1;
+                  //
+                  // NO usar p.currentTime/duration: en expo-audio no se actualizan
+                  // en vivo entre status callbacks (devuelven 0) → g=|sin(0)|=0 →
+                  // el fade aplica 0 en cada tick → TAC igual al primer tick real.
+                  // B está sembrado en su pico (gain≈1), así que omitir el gain
+                  // aquí es correcto; el listener toma el control cuando bEntryFrac=1.
                   const base2 = baseVolumesRef.current.get(id) ?? volume;
                   const st = fadeState.audibleStart === 0
                     ? 0
                     : Math.min(1, (Date.now() - fadeState.audibleStart) / STARTUP_FADE_MS);
-                  setVol(p, base2 * g * bEntryFrac * st * masterVolumeRef.current);
+                  setVol(p, base2 * bEntryFrac * st * masterVolumeRef.current);
                   if (bEntryFrac >= 1) {
                     clearInterval(bFadeTimer!);
                     bFadeTimer = null;
