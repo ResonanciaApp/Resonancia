@@ -451,7 +451,7 @@ export function GeometrixHorizontal() {
             <SacredGlyph id="merkaba" color={GOLD} size={28} strokeWidth={1} />
           </button>
           <button style={{ width: 36, height: 36, borderRadius: "50%", border: "none", background: "rgba(255,255,255,0.04)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth={2}><circle cx={18} cy={5} r={3}/><circle cx={6} cy={12} r={3}/><circle cx={18} cy={19} r={3}/><line x1={8.59} y1={13.51} x2={15.42} y2={17.49"/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49"/></svg>
+            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth={2}><circle cx={18} cy={5} r={3}/><circle cx={6} cy={12} r={3}/><circle cx={18} cy={19} r={3}/><line x1={8.59} y1={13.51} x2={15.42} y2={17.49}/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49}/></svg>
           </button>
           <button style={{ width: 36, height: 36, borderRadius: "50%", border: "none", background: "rgba(255,255,255,0.04)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth={2}><circle cx={12} cy={12} r={1}/><circle cx={19} cy={12} r={1}/><circle cx={5} cy={12} r={1}/></svg>

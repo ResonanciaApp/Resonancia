@@ -627,5 +627,6 @@ export default function GeometrixPage() {
         </div>
       )}
     </div>
+    </div>
   );
 }

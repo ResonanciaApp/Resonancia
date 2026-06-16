@@ -321,11 +321,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   // El tick vive en un ref para que el setTimeout recursivo siempre llame a la
   // última versión (cierra sobre los refs, que siempre están al día).
   bpmTickFnRef.current = () => {
-    // Borde de compás: rebobinar TODOS los players BPM a 0 a la vez.
+    // Borde de compás: rebobinar TODOS los players BPM a su posición de fase.
+    // phaseOffset=0 → seekTo(0); phaseOffset=0.25 → seekTo(0.25 * loopSec), etc.
+    const bpm = bpmValueRef.current;
+    const loopSec = bpm !== null ? (60 / bpm) * 8 : 0;
     playersRef.current.forEach((pair, id) => {
       if (getSoundById(id)?.bpm === undefined) return;
+      const phaseOffset =
+        activeSoundsRef.current.find((s) => s.id === id)?.phaseOffset ?? 0;
       try {
-        void pair.a.seekTo(0);
+        void pair.a.seekTo(phaseOffset > 0 ? phaseOffset * loopSec : 0);
       } catch {
         /* ignore */
       }
@@ -384,10 +389,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         if (bpmPausePhaseRef.current !== null) {
           const phase = bpmPausePhaseRef.current;
           bpmClockRef.current = Date.now() - phase;
+          const loopSec = loopMs / 1000;
           playersRef.current.forEach((pair, id) => {
             if (getSoundById(id)?.bpm === undefined) return;
+            const phaseOffset =
+              activeSoundsRef.current.find((s) => s.id === id)?.phaseOffset ?? 0;
+            const seekPos = ((phase / 1000) + phaseOffset * loopSec) % loopSec;
             try {
-              void pair.a.seekTo(phase / 1000);
+              void pair.a.seekTo(seekPos);
             } catch {
               /* ignore */
             }

@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -114,11 +115,12 @@ export default function ActividadesScreen() {
               style={[
                 styles.filterChip,
                 {
-                  backgroundColor: cityFilter === c ? colors.primary : colors.card,
                   borderColor: cityFilter === c ? colors.primary : colors.border,
+                  backgroundColor: cityFilter === c ? "transparent" : colors.card,
                 },
               ]}
             >
+              {cityFilter === c && <GoldGradientFill />}
               <Text style={[styles.filterText, { color: cityFilter === c ? "#080F0A" : colors.mutedForeground }]}>
                 {c}
               </Text>
@@ -188,6 +190,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
+    overflow: "hidden",
   },
   filterText: { fontSize: 13, fontWeight: "600" },
   list: { gap: 14 },

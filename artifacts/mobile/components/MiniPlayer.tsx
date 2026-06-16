@@ -97,7 +97,7 @@ export function MiniPlayer() {
     }).start();
     Animated.spring(openProgress, {
       toValue: next ? 1 : 0,
-      useNativeDriver: true, damping: 18, stiffness: 200,
+      useNativeDriver: false, damping: 18, stiffness: 200,
     }).start();
   };
 
@@ -133,7 +133,7 @@ export function MiniPlayer() {
       animsRef.current.set(id, anim);
       Animated.spring(anim, {
         toValue: 1,
-        useNativeDriver: true,
+        useNativeDriver: false,
         damping: 14,
         stiffness: 220,
       }).start();
