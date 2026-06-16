@@ -1,4 +1,5 @@
 import React from "react";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import {
   Modal,
   Pressable,
@@ -187,6 +188,7 @@ export function MixerSettingsSheet({
               { opacity: pressed ? 0.85 : 1 },
             ]}
           >
+            {hasFilters && <GoldGradientFill />}
             <Text
               style={[
                 styles.clearBtnText,
@@ -334,7 +336,7 @@ const styles = StyleSheet.create({
   },
   clearBtn: {
     marginTop: 16,
-    backgroundColor: PRIMARY,
+    overflow: "hidden",
     borderRadius: 40,
     paddingVertical: 14,
     alignItems: "center",

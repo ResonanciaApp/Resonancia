@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import React, { useState } from "react";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import {
   Modal,
   Pressable,
@@ -85,6 +86,7 @@ export function MoodPickerSheet({ visible, onClose }: Props) {
             { opacity: pressed ? 0.85 : 1 },
           ]}
         >
+          {selected && <GoldGradientFill />}
           <Text style={[styles.continueBtnText, !selected && styles.continueBtnTextDisabled]}>
             Continuar
           </Text>
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   continueBtn: {
-    backgroundColor: PRIMARY,
+    overflow: "hidden",
     borderRadius: 40,
     paddingVertical: 15,
     alignItems: "center",

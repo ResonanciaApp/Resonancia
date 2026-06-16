@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -109,20 +109,28 @@ export function MiniPlayer() {
   }
 
   // ── Visibilidad del texto: se oculta cuando el stack lo alcanza ─
-  // Detectado por onLayout sobre el contenedor de texto: si su ancho
-  // cae por debajo de TEXT_MIN_WIDTH → fade out; si sube → fade in.
-  const textOpacity = useRef(new Animated.Value(1)).current;
-  const onTextLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      const w = e.nativeEvent.layout.width;
-      Animated.timing(textOpacity, {
-        toValue: w >= TEXT_MIN_WIDTH ? 1 : 0,
-        duration: 160,
-        useNativeDriver: true,
-      }).start();
-    },
-    [textOpacity],
-  );
+  // rowWidthRef se mide una sola vez en onRowLayout. Cada vez que
+  // cambia activeSounds.length (n), el efecto recalcula si el texto
+  // cabe y dispara el fade inmediatamente (sin esperar a onLayout).
+  const textOpacity  = useRef(new Animated.Value(1)).current;
+  const rowWidthRef  = useRef(0);
+  const onRowLayout = (e: LayoutChangeEvent) => {
+    rowWidthRef.current = e.nativeEvent.layout.width;
+  };
+
+  // Dispara inmediatamente cuando cambia el número de sonidos.
+  // paddingLeft(12) + paddingRight(10) + gap*2(20) + playBtn(44) = 86px fijos.
+  useEffect(() => {
+    const n = activeSounds.length;
+    if (n === 0) return;
+    const stackW    = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+    const available = rowWidthRef.current - stackW - 86;
+    Animated.timing(textOpacity, {
+      toValue: available >= TEXT_MIN_WIDTH ? 1 : 0,
+      duration: 120,
+      useNativeDriver: true,
+    }).start();
+  }, [activeSounds.length, textOpacity]);
 
   if (!currentSession && !mixActive) return null;
 
@@ -173,7 +181,7 @@ export function MiniPlayer() {
         <View style={styles.wrapper}>
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
-          <View style={styles.mixRow}>
+          <View style={styles.mixRow} onLayout={onRowLayout}>
             {/* Stack: Pressable envuelve el Animated.View para que el
                 área táctil coincida exactamente con el ancho animado.
                 Los thumbs son position:absolute dentro del Animated.View
@@ -229,11 +237,10 @@ export function MiniPlayer() {
             </Pressable>
 
             {/* Texto: "Tu mezcla" + cantidad de sonidos.
-                Usa onLayout para detectar cuándo el stack lo alcanza y
-                desvanecerlo automáticamente. */}
+                La opacidad se actualiza en el useEffect de activeSounds.length,
+                sin esperar al ciclo de layout. */}
             <Animated.View
               style={[styles.textBlock, { opacity: textOpacity }]}
-              onLayout={onTextLayout}
             >
               <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.mixSub} numberOfLines={1}>
