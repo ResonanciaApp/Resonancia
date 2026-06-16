@@ -39,6 +39,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { useUser } from "@clerk/expo";
+import { Image as ExpoImage } from "expo-image";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -336,6 +337,8 @@ export default function HomeScreen2() {
   const headerInitial = (
     clerkUser?.firstName || clerkUser?.username || username || ""
   ).charAt(0).toUpperCase() || null;
+  const [headerPhotoError, setHeaderPhotoError] = useState(false);
+  useEffect(() => { setHeaderPhotoError(false); }, [headerPhoto]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -359,8 +362,13 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={[styles.avatarBtn, headerLoggedIn && styles.avatarBtnLoggedIn]}
           >
-            {headerPhoto ? (
-              <Image source={{ uri: headerPhoto }} style={styles.avatarSmall} resizeMode="cover" />
+            {headerPhoto && !headerPhotoError ? (
+              <ExpoImage
+                source={{ uri: headerPhoto }}
+                style={styles.avatarSmall}
+                contentFit="cover"
+                onError={() => setHeaderPhotoError(true)}
+              />
             ) : headerLoggedIn && headerInitial ? (
               <View style={styles.avatarInitial}>
                 <Text style={styles.avatarInitialText}>{headerInitial}</Text>
