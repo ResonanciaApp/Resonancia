@@ -81,13 +81,39 @@ so every teardown site (destroyPlayer, stopAll, loadPreset, unmount) must iterat
 Two independent native loop players wrap at slightly different instants; over hours the
 180° offset erodes and the constant-power condition breaks → volume wobble reappears.
 Fix: in B's listener, periodically recenter B toward `(aPos + dur/2) mod dur`, but ONLY
-when B's gain is in its valley (`gain < 0.12`, i.e. B is near-silent at its own
-boundary) so the corrective `seekTo` is inaudible, throttled to once per ~2s and only if
-circular error > ~60ms.
+when B's gain is in its DEEP valley (`gain < 0.06`) so the corrective `seekTo` is
+inaudible, throttled to once per ~2s and only if circular error > ~60ms. The valley alone
+is not enough: a `seekTo` is a waveform discontinuity that clicks even at low gain, so
+ALSO force B's volume to 0 across the jump via a short time-bounded mute window
+(`recenterMuteUntil`, ~`min(260, dur*35)` ms — scaled down for short loops so it stays
+inside the valley) and let the next tick restore the (still-low) gain.
 
-**Why:** without re-sync the masking degrades silently after a long time.
-**How to apply:** keep the resync gated on the low-gain valley — a seek at audible gain
-would click.
+**Why:** without re-sync the masking degrades silently after a long time; a bare seek even
+in the valley still ticks.
+**How to apply:** keep the resync gated on the DEEP valley AND muted across the seek — gain
+gate alone is insufficient.
+
+## First-play "TAC" = the B-seed seekTo happening while audio is already audible
+Symptom: a single click/"tac" near ~1s on the FIRST play of a sound, GONE after
+deselect+reselect. Root cause: the B-seed `seekTo(aPos+dur/2)` (the retry-until-confirmed
+alignment above) lands a position jump WHILE the layers have already started ramping
+audible → audible discontinuity. Resume has no seed seek (`offsetConfirmed` already true
+in the closure) → no click, which is exactly why it only happened the first time.
+Fix/invariant: do NOT start the global fade-in (`audibleStart`) as soon as audio is
+audible — keep BOTH layers silent until B's seed CONFIRMS (`offsetConfirmed`), set
+`audibleStart` inside the seed-confirm block, with a fallback timer (~1.5s) so it can't
+stay muted forever if the seed never confirms. So first play becomes "silent seed → ramp",
+identical to a resume.
+**Resume gotcha (regression risk):** `resetFade()` zeroes `audibleStart`, but on a fast
+re-tap the seed-confirm block does NOT run again (already confirmed), and the seed
+fallback is anchored to the ORIGINAL load time → it fires immediately, but ONLY if you
+also short-circuit at the top of the listener: `if (offsetConfirmed && audibleStart===0)
+audibleStart = now`. Without that, a resume within the fallback window starts both layers
+at volume 0 and stays SILENT for up to the fallback (~1.5s) — breaks instant re-tap.
+**Why:** the equal-power masking only hides the loop SEAM; a mid-stream seek is a separate
+discontinuity that must happen in silence. **How to apply:** never re-enable
+"audibleStart on first audio tick"; any new resume/seed path must enable the fade
+immediately once `offsetConfirmed`, never wait on the fallback.
 
 ## setVolume must NOT write player.volume directly
 The crossfade gain owns each layer's `volume` every tick. `setVolume` only updates

@@ -205,6 +205,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const idlePlayersRef = useRef<Map<string, SoundPlayers>>(new Map());
   /** Subscripciones de status (fade) por sonido: una por capa. */
   const loopSubsRef = useRef<Map<string, { remove: () => void }[]>>(new Map());
+  /** Fades de apagado en curso por sonido (para cancelarlos al reanudar). */
+  const parkFadeRef = useRef<Map<string, ReturnType<typeof setInterval>>>(new Map());
   /**
    * Volumen "objetivo" elegido por el usuario para cada sonido. El volumen REAL
    * del player se modula con un fade en los bordes del loop (ver createPlayerFor),
@@ -748,6 +750,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // deja de dar 1 y reaparece la ondulación. Recentramos B hacia A+dur/2
       // solo en su valle de gain (seek inaudible), con throttle de 2 s.
       let lastResync = 0;
+      // Ancla del fallback de seed (por si B nunca confirma su salto al pico) y
+      // ventana de mute tras un seek de recentrado (mantener B en 0 en el salto).
+      let firstLoadedAt = 0;
+      const SEED_FALLBACK_MS = 1500;
+      let recenterMuteUntil = 0;
 
       const setVol = (p: AudioPlayer, target: number) => {
         if (Math.abs(p.volume - target) > 0.004) {
@@ -773,8 +780,28 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           const dur = status.duration ?? 0;
           const pos = status.currentTime ?? 0;
 
-          // Primer tick con duración válida = primer audio real → ancla del fade-in.
-          if (dur > 0 && fadeState.audibleStart === 0) fadeState.audibleStart = Date.now();
+          // El fade-in (audibleStart) NO arranca apenas hay audio: espera a que la
+          // capa B esté SEMBRADA y alineada (offsetConfirmed, abajo). Así el seekTo
+          // del seed de B ocurre con AMBAS capas en silencio total y la PRIMERA
+          // reproducción se comporta igual que una reanudación (sin ningún seek
+          // audible = sin "tac"). Acá solo anclamos el reloj del fallback por si el
+          // seed nunca confirma (no dejar el sonido mudo para siempre).
+          if (dur > 0 && firstLoadedAt === 0) firstLoadedAt = Date.now();
+          // Reanudación: si el offset YA está confirmado en este closure (el seed
+          // seek ocurrió hace rato), habilitar el fade-in de INMEDIATO — sin esperar
+          // el fallback — para que el re-tap rápido suene al instante. En la 1ª
+          // reproducción offsetConfirmed todavía es false acá, así que esto NO
+          // adelanta el fade antes del seed (ambas capas siguen en silencio).
+          if (offsetConfirmed && fadeState.audibleStart === 0) {
+            fadeState.audibleStart = Date.now();
+          }
+          if (
+            fadeState.audibleStart === 0 &&
+            firstLoadedAt > 0 &&
+            Date.now() - firstLoadedAt > SEED_FALLBACK_MS
+          ) {
+            fadeState.audibleStart = Date.now();
+          }
 
           // Sembrar la capa B en el pico (aPos+dur/2) y CONFIRMAR que el seek
           // aterrizó antes de darlo por bueno. Mientras no confirme, se reintenta
@@ -793,6 +820,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
                 // recentrado 2 s salta ese primer valle; el drift real (lento) se
                 // corrige en valles posteriores, ya muteados.
                 lastResync = Date.now();
+                // Recién ahora (B alineada) habilitamos el fade-in global: el seek
+                // del seed ya ocurrió en silencio, así que la 1ª reproducción no
+                // tiene ningún seek audible → sin "tac".
+                if (fadeState.audibleStart === 0) fadeState.audibleStart = Date.now();
                 // Fade de entrada a 60 fps, independiente de los ticks de audio
                 // (en iOS los ticks llegan cada ~200 ms → bEntry calculado inline
                 // ya vale 1 al primer tick siguiente → el fade nunca corría).
@@ -844,15 +875,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           if (isSecondary && bFadeTimer !== null) {
             // El intervalo ya está manejando el volumen de B → no interferir.
           } else {
-            const volTarget = isSecondary
+            let volTarget = isSecondary
               ? (bSeeded ? base * gain * bEntryFrac : 0)
               : base * gain;
+            // Ventana de mute tras un seek de recentrado: mantener B en 0 mientras
+            // dura el salto de posición (si no, el siguiente tick restauraría el
+            // gain justo sobre la discontinuidad de onda → "tac").
+            if (isSecondary && Date.now() < recenterMuteUntil) volTarget = 0;
             setVol(p, volTarget * startup * masterVolumeRef.current);
           }
 
           // Recentrado de drift de la capa B contra A: mantener el desfase dur/2,
           // corrigiendo SOLO en el valle de B (gain bajo → seek inaudible).
-          if (isSecondary && dur > 0 && offsetConfirmed && gain < 0.12) {
+          if (isSecondary && dur > 0 && offsetConfirmed && gain < 0.06) {
             const aPos = cur.a.currentTime ?? 0;
             const desired = (((aPos + dur / 2) % dur) + dur) % dur;
             let err = Math.abs(pos - desired);
@@ -860,13 +895,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             const now = Date.now();
             if (err > 0.06 && now - lastResync > 2000) {
               lastResync = now;
-              // El seekTo de recentrado produce un "tac" audible aunque el gain
-              // sea bajo (<0.12 ≈ 8% de volumen): el salto de posición es una
-              // discontinuidad en la onda y suena proporcional al volumen actual.
-              // Muteamos B a 0 ANTES del seek → el corte ocurre en silencio; el
-              // siguiente tick restaura el gain (bajo, sigue en el valle) → el
-              // pinchazo queda inaudible. (En reanudación NO hay seek porque el
-              // offset ya está fino → por eso el TAC solo aparecía la 1ª vez.)
+              // El seekTo de recentrado es una discontinuidad de onda → "tac"
+              // audible aunque el gain sea bajo. Ya solo recentramos en el valle
+              // PROFUNDO (gain<0.06) y, además, mantenemos B en 0 durante el salto
+              // y un instante después (recenterMuteUntil): el corte ocurre en
+              // silencio real y el volumen se restaura recién cuando B sigue en su
+              // valle → el pinchazo queda inaudible. (En reanudación NO hay seek
+              // porque el offset ya está fino → por eso el TAC solo aparecía la 1ª.)
+              // Mute acotado al valle: en loops cortos 260 ms se pasarían del valle
+              // (un leve dip de nivel); escalar con la duración y techar en 260 ms.
+              recenterMuteUntil = now + Math.min(260, Math.round(dur * 35));
               try { p.volume = 0; } catch { /* ignore */ }
               try {
                 void p.seekTo(desired);
@@ -894,6 +932,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   /** Destruye de verdad un sonido (libera el player). Busca en activos e idle. */
   const destroyPlayer = useCallback((id: string) => {
+    const pf = parkFadeRef.current.get(id);
+    if (pf) { clearInterval(pf); parkFadeRef.current.delete(id); }
     const subs = loopSubsRef.current.get(id);
     if (subs) {
       subs.forEach((s) => {
@@ -938,22 +978,34 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         if (idlePlayersRef.current.has(id)) return;
         return;
       }
-      [pair.a, pair.b].forEach((p) => {
-        try {
-          p.volume = 0; // muteado mientras está estacionado
-        } catch {
-          // ignore
-        }
-        try {
-          p.pause();
-        } catch {
-          // ignore
-        }
-      });
+      // Mover a idle YA (para que un re-tap inmediato lo reanude), pero apagar con
+      // un fade-out corto (~120 ms) en vez de cortar a 0 de golpe → sin "tac" al
+      // detener. Una vez fuera de playersRef el listener del crossfade se inhibe
+      // (su guard no encuentra el par), así que solo este intervalo toca el volumen.
       playersRef.current.delete(id);
-      // Reinsertar al final para que cuente como "el más reciente" (LRU).
       idlePlayersRef.current.delete(id);
       idlePlayersRef.current.set(id, pair);
+      pair.clearBFade?.();
+      const prevFade = parkFadeRef.current.get(id);
+      if (prevFade) clearInterval(prevFade);
+      let v0a = 0;
+      let v0b = 0;
+      try { v0a = pair.a.volume; } catch { /* ignore */ }
+      try { v0b = pair.b.volume; } catch { /* ignore */ }
+      const FADE_MS = 120;
+      const t0 = Date.now();
+      const iv = setInterval(() => {
+        const k = Math.max(0, 1 - (Date.now() - t0) / FADE_MS);
+        try { pair.a.volume = v0a * k; } catch { /* ignore */ }
+        try { pair.b.volume = v0b * k; } catch { /* ignore */ }
+        if (k <= 0) {
+          clearInterval(iv);
+          parkFadeRef.current.delete(id);
+          try { pair.a.pause(); } catch { /* ignore */ }
+          try { pair.b.pause(); } catch { /* ignore */ }
+        }
+      }, 16);
+      parkFadeRef.current.set(id, iv);
       while (idlePlayersRef.current.size > IDLE_CACHE_MAX) {
         const oldest = idlePlayersRef.current.keys().next().value as string | undefined;
         if (oldest === undefined) break;
@@ -972,6 +1024,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     const pair = idlePlayersRef.current.get(id);
     if (!pair) return null;
     idlePlayersRef.current.delete(id);
+    // Cancelar un fade-out de apagado en curso (re-tap rápido) y arrancar desde
+    // silencio: resetFade reinicia el fade-in, que rampa de 0 al volumen objetivo.
+    const pf = parkFadeRef.current.get(id);
+    if (pf) { clearInterval(pf); parkFadeRef.current.delete(id); }
+    try { pair.a.volume = 0; } catch { /* ignore */ }
+    try { pair.b.volume = 0; } catch { /* ignore */ }
     baseVolumesRef.current.set(id, vol);
     // Volver a registrar ANTES de play() (el guard del listener compara identidad).
     playersRef.current.set(id, pair);
@@ -1264,6 +1322,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     playersRef.current.clear();
     idlePlayersRef.current.clear();
     baseVolumesRef.current.clear();
+    // Cortar cualquier fade-out de apagado en curso: stopAll hace su propio fade.
+    parkFadeRef.current.forEach((iv) => clearInterval(iv));
+    parkFadeRef.current.clear();
 
     // La UI reacciona AHORA (mismo tick): las cards se deseleccionan y animan su
     // giro/escala junto con el fade de la hoja, sin demora ni salto. El audio se
@@ -1472,6 +1533,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       });
       idlePlayersRef.current.clear();
       baseVolumesRef.current.clear();
+      parkFadeRef.current.forEach((iv) => clearInterval(iv));
+      parkFadeRef.current.clear();
 
       void ensureAudioMode();
       const playable = preset.sounds
@@ -1676,6 +1739,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         });
       });
       idlePlayersRef.current.clear();
+      parkFadeRef.current.forEach((iv) => clearInterval(iv));
+      parkFadeRef.current.clear();
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
       // Cerrar el contexto del motor BPM y liberar sus nodos.
       void bpmAudioEngine.dispose();
