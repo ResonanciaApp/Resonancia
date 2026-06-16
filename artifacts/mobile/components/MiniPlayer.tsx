@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -20,19 +19,12 @@ import { useColors } from "@/hooks/useColors";
 
 const MAX_PLAYER_WIDTH = 438;
 const STACK_SIZE = 38;
-const STACK_SHIFT = 15;       // offset apilado
+const STACK_SHIFT      = 15;  // offset apilado
 const STACK_SHIFT_OPEN = 48;  // offset desplegado (se adapta si hay muchos sonidos)
-const MAX_OPEN_WIDTH = 230;   // ancho máximo del stack desplegado
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
-const MIX_BG = "#3d304e";
+const MIX_BG  = "#3d304e";
 const BORDER_R = 12;
-
-function formatElapsed(sec: number): string {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
 
 export function MiniPlayer() {
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
@@ -40,13 +32,10 @@ export function MiniPlayer() {
     activeSounds,
     isPlaying: mixPlaying,
     togglePlay,
-    stopAll,
-    presets,
     loadedPresetId,
     openSheet,
   } = useMixer();
-  const everPlayedRef = useRef(false);
-  if (mixPlaying) everPlayedRef.current = true;
+
   const colors = useColors();
 
   // ── Ondas sutiles ──────────────────────────────────────────────
@@ -60,7 +49,7 @@ export function MiniPlayer() {
         Animated.sequence([
           Animated.delay(delay),
           Animated.timing(val, { toValue: 1, duration: 1800, useNativeDriver: true }),
-          Animated.timing(val, { toValue: 0, duration: 0, useNativeDriver: true }),
+          Animated.timing(val, { toValue: 0, duration: 0,    useNativeDriver: true }),
         ])
       );
     if (activeIsPlaying) {
@@ -74,10 +63,6 @@ export function MiniPlayer() {
   }, [activeIsPlaying, wave1, wave2]);
 
   const mixActive = !currentSession && activeSounds.length > 0;
-
-  // ── Timer de reproducción (solo mezcla) ──────────────────────
-  const [elapsed, setElapsed] = useState(0);
-  const elapsedRef = useRef(0);
 
   // ── De-stack de thumbnails ─────────────────────────────────────
   const [stackOpen, setStackOpen] = useState(false);
@@ -95,18 +80,7 @@ export function MiniPlayer() {
   };
 
   useEffect(() => {
-    if (!mixPlaying) return;
-    const id = setInterval(() => {
-      elapsedRef.current += 1;
-      setElapsed(elapsedRef.current);
-    }, 1000);
-    return () => clearInterval(id);
-  }, [mixPlaying]);
-
-  useEffect(() => {
     if (!mixActive) {
-      elapsedRef.current = 0;
-      setElapsed(0);
       animsRef.current.clear();
       setStackOpen(false);
       stackOpenAnim.setValue(0);
@@ -115,114 +89,67 @@ export function MiniPlayer() {
 
   // ── Animaciones de entrada por sonido ─────────────────────────
   const animsRef = useRef<Map<string, Animated.Value>>(new Map());
-
   function getAnim(id: string): Animated.Value {
     if (!animsRef.current.has(id)) {
       const anim = new Animated.Value(0);
       animsRef.current.set(id, anim);
-      Animated.spring(anim, {
-        toValue: 1,
-        useNativeDriver: true,
-        damping: 14,
-        stiffness: 220,
-      }).start();
+      Animated.spring(anim, { toValue: 1, useNativeDriver: true, damping: 14, stiffness: 220 }).start();
     }
     return animsRef.current.get(id)!;
   }
 
   if (!currentSession && !mixActive) return null;
 
-  // Shell visual — para mezcla es un View simple (no Pressable):
-  // la única navegación en mix mode es tocar la flecha.
-  const mixShell = (children: React.ReactNode) => (
-    <View style={styles.wrapper}>
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
-      {children}
-    </View>
-  );
-
-  const sessionShell = (children: React.ReactNode) => (
-    <Pressable onPress={() => router.push("/player" as never)} style={styles.wrapper}>
-      <LinearGradient
-        colors={GRAD_COLORS}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
-      {children}
-    </Pressable>
-  );
-
   // ── Modo mezcla ───────────────────────────────────────────────
   if (mixActive) {
     const n = activeSounds.length;
 
-    // Offset desplegado adaptativo: nunca supera MAX_OPEN_WIDTH
+    // Offset adaptativo al desplegar: nunca supera el ancho disponible
+    // (~250 px para el stack: 320 total − 44 play − 12 gap − 24 padding)
     const shiftOpen = n > 1
-      ? Math.min(STACK_SHIFT_OPEN, Math.floor((MAX_OPEN_WIDTH - STACK_SIZE) / (n - 1)))
+      ? Math.min(STACK_SHIFT_OPEN, Math.floor((250 - STACK_SIZE) / (n - 1)))
       : 0;
 
-    const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-    const stackWidthOpen    = STACK_SIZE + Math.max(0, n - 1) * shiftOpen;
-    const animatedStackWidth = stackOpenAnim.interpolate({
-      inputRange:  [0, 1],
-      outputRange: [stackWidthStacked, stackWidthOpen],
-    });
+    const handleOpen = () =>
+      loadedPresetId?.startsWith("community-")
+        ? router.push("/(tabs)/musica" as never)
+        : openSheet();
 
-    return mixShell(
-      <View style={styles.row}>
+    return (
+      <View style={styles.wrapper}>
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
-        {/* ── Flecha — ÚNICA forma de abrir Tu Mezcla ── */}
-        <Pressable
-          onPress={() => {
-            if (loadedPresetId?.startsWith("community-")) {
-              router.push("/(tabs)/musica" as never);
-            } else {
-              openSheet();
-            }
-          }}
-          hitSlop={8}
-          style={styles.upArrow}
-          accessibilityRole="button"
-          accessibilityLabel="Abrir Tu Mezcla"
-        >
-          <Feather name="chevron-up" size={20} color={colors.mutedForeground} />
-        </Pressable>
-
-        {/* ── Stack interactivo: tap → de-stackear ── */}
-        <Pressable
-          onPress={toggleStack}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel={stackOpen ? "Colapsar imágenes" : "Ver imágenes de sonidos"}
-        >
-          <Animated.View style={[styles.stackWrap, { width: animatedStackWidth }]}>
+        <View style={styles.mixRow}>
+          {/* Stack — tap → de-stackear; nunca abre la hoja */}
+          <Pressable
+            onPress={toggleStack}
+            hitSlop={6}
+            style={styles.stackArea}
+            accessibilityRole="button"
+            accessibilityLabel={stackOpen ? "Colapsar imágenes" : "Ver imágenes de sonidos"}
+          >
+            {/* Los thumbnails son position:absolute, por eso el área de click
+                necesita tener height explícito */}
             {activeSounds.map((s, i) => {
               const entryAnim = getAnim(s.id);
-              const image = getSoundImage(s.id);
-              const leftAnim = stackOpenAnim.interpolate({
+              const image     = getSoundImage(s.id);
+              const leftAnim  = stackOpenAnim.interpolate({
                 inputRange:  [0, 1],
                 outputRange: [i * STACK_SHIFT, i * shiftOpen],
               });
               return (
-                // Capa exterior: maneja `left` animado (useNativeDriver: false)
                 <Animated.View
                   key={s.id}
                   style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
                 >
-                  {/* Capa interior: maneja scale/opacity de entrada (useNativeDriver: true) */}
-                  <Animated.View
-                    style={{
-                      width: STACK_SIZE,
-                      height: STACK_SIZE,
-                      transform: [{ scale: entryAnim }],
-                      opacity: entryAnim,
-                    }}
-                  >
+                  <Animated.View style={[styles.stackThumbInner, {
+                    transform: [{ scale: entryAnim }],
+                    opacity: entryAnim,
+                  }]}>
                     {image ? (
-                      <Image source={image} style={styles.stackThumbInner} resizeMode="cover" />
+                      <Image source={image} style={StyleSheet.absoluteFill} resizeMode="cover" />
                     ) : (
-                      <View style={[styles.stackThumbInner, styles.stackFallback]}>
+                      <View style={[StyleSheet.absoluteFill, styles.stackFallback]}>
                         <Feather name="music" size={14} color={colors.primary} />
                       </View>
                     )}
@@ -230,41 +157,50 @@ export function MiniPlayer() {
                 </Animated.View>
               );
             })}
-          </Animated.View>
-        </Pressable>
-
-        <View style={{ flex: 1 }} />
-
-        {/* ── Botón play/pause ── */}
-        <View style={styles.waveWrap}>
-          {[wave1, wave2].map((w, i) => (
-            <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveMix, {
-              opacity: w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.60, 0] }),
-              transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }],
-            }]} />
-          ))}
-          <Pressable
-            onPress={togglePlay}
-            style={styles.playPauseBtn}
-          >
-            <View style={mixPlaying ? undefined : styles.playIconNudge}>
-              <Feather
-                name={mixPlaying ? "pause" : "play"}
-                size={22}
-                color="#FFFFFF"
-              />
-            </View>
           </Pressable>
-        </View>
 
+          {/* Columna derecha: flecha ↑ + play apilados verticalmente */}
+          <View style={styles.rightCol}>
+            {/* Flecha — única forma de abrir Tu Mezcla */}
+            <Pressable
+              onPress={handleOpen}
+              hitSlop={8}
+              style={styles.openArrow}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Tu Mezcla"
+            >
+              <Feather name="chevron-up" size={17} color={colors.mutedForeground} />
+            </Pressable>
+
+            {/* Play / Pause */}
+            <View style={styles.waveWrap}>
+              {[wave1, wave2].map((w, idx) => (
+                <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
+                  opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.60, 0] }),
+                  transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }],
+                }]} />
+              ))}
+              <Pressable onPress={togglePlay} style={styles.playPauseBtn}>
+                <View style={mixPlaying ? undefined : styles.playIconNudge}>
+                  <Feather name={mixPlaying ? "pause" : "play"} size={22} color="#FFFFFF" />
+                </View>
+              </Pressable>
+            </View>
+          </View>
+        </View>
       </View>
     );
   }
 
   // ── Modo sesión ───────────────────────────────────────────────
-  return sessionShell(
-    <>
-      {/* Fila principal */}
+  return (
+    <Pressable onPress={() => router.push("/player" as never)} style={styles.wrapper}>
+      <LinearGradient
+        colors={GRAD_COLORS}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <View style={styles.row}>
         <Image source={currentSession!.image} style={styles.art} resizeMode="cover" />
         <View style={styles.info}>
@@ -275,11 +211,10 @@ export function MiniPlayer() {
             {currentSession!.categoryLabel} · {currentSession!.durationLabel}
           </Text>
         </View>
-        {/* Solo botón Play/Pause */}
         <View style={styles.waveWrap}>
-          {[wave1, wave2].map((w, i) => (
-            <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveSession, {
-              opacity: w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.22, 0] }),
+          {[wave1, wave2].map((w, idx) => (
+            <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveSession, {
+              opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.22, 0] }),
               transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 1.8] }) }],
             }]} />
           ))}
@@ -291,12 +226,10 @@ export function MiniPlayer() {
           </Pressable>
         </View>
       </View>
-
-      {/* Barra de progreso — ABAJO */}
       <View style={styles.progressBar}>
         <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
       </View>
-    </>
+    </Pressable>
   );
 }
 
@@ -309,55 +242,20 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 
-  // ── Sesión ────────────────────────────────────────────────────
-  progressBar: {
-    height: 2,
-    backgroundColor: "rgba(61,14,22,0.40)",
-  },
-  progressFill: {
-    height: 2,
-    backgroundColor: "#D6AD5F",
-    borderRadius: 1,
-  },
-
-  // ── Fila compartida ───────────────────────────────────────────
-  row: {
+  // ── Mezcla — layout ───────────────────────────────────────────
+  mixRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 13,
+    paddingLeft: 12,
+    paddingRight: 10,
+    paddingVertical: 10,
     gap: 10,
   },
-  art: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-  },
-  info: { flex: 1 },
-  title: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 2,
-  },
-  sub: { fontSize: 11 },
-  btn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // ── Mezcla ────────────────────────────────────────────────────
-  upArrow: {
-    width: 28,
-    height: 28,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stackWrap: {
+  // Área del stack: flex:1, altura fija = thumbnails. Los thumbs son
+  // position:absolute dentro de este contenedor.
+  stackArea: {
+    flex: 1,
     height: STACK_SIZE,
-    position: "relative",
   },
   stackThumb: {
     position: "absolute",
@@ -381,15 +279,23 @@ const styles = StyleSheet.create({
   },
   stackFallback: {
     backgroundColor: "rgba(212,175,55,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  // ── Columna derecha: flecha + play ────────────────────────────
+  rightCol: {
+    alignItems: "center",
+    gap: 5,
+  },
+  openArrow: {
+    width: 44,
+    height: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   // ── Play/Pause ────────────────────────────────────────────────
-  timerText: {
-    fontSize: 14,
-    fontWeight: "700",
-    fontVariant: ["tabular-nums"],
-    letterSpacing: 0.5,
-  },
   playPauseBtn: {
     width: 44,
     height: 44,
@@ -398,9 +304,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.5)",
   },
-  playIconNudge: {
-    marginLeft: 2,
-  },
+  playIconNudge: { marginLeft: 2 },
   waveWrap: {
     alignItems: "center",
     justifyContent: "center",
@@ -412,19 +316,33 @@ const styles = StyleSheet.create({
   },
   waveSession: { width: 38, height: 38 },
   waveMix:    { width: 44, height: 44 },
-  terminarBtn: {
+
+  // ── Sesión — layout ───────────────────────────────────────────
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 13,
+    gap: 10,
+  },
+  art: { width: 44, height: 44, borderRadius: 8 },
+  info: { flex: 1 },
+  title: { fontSize: 14, fontWeight: "600", marginBottom: 2 },
+  sub:   { fontSize: 11 },
+  btn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
   },
-  terminarText: {
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 0.8,
-    color: "#1B060F",
-    backgroundColor: "#FFFFFF",
-    overflow: "hidden",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 3,
+  progressBar: {
+    height: 2,
+    backgroundColor: "rgba(61,14,22,0.40)",
+  },
+  progressFill: {
+    height: 2,
+    backgroundColor: "#D6AD5F",
+    borderRadius: 1,
   },
 });
