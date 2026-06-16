@@ -188,9 +188,11 @@ export function MiniPlayer() {
                     return (
                       <Pressable
                         key={s.id}
-                        onPress={() => removeSound(s.id)}
+                        onPress={toggleStack}
+                        onLongPress={() => removeSound(s.id)}
+                        delayLongPress={400}
                         style={styles.carouselThumb}
-                        accessibilityLabel="Quitar sonido"
+                        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
                       >
                         {image ? (
                           <Image
