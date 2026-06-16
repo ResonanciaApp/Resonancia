@@ -625,7 +625,7 @@ export function MixerSheet() {
                   />
                   {sound.category === "bpm" && (
                     <View style={styles.beatRow}>
-                      {([0, 0.25, 0.5, 0.75] as const).map((offset, i) => {
+                      {([0, 0.125, 0.25, 0.375] as const).map((offset, i) => {
                         const isActive = (active.phaseOffset ?? 0) === offset;
                         return (
                           <Pressable
@@ -636,16 +636,16 @@ export function MixerSheet() {
                               isActive && styles.beatBtnActive,
                             ]}
                             accessibilityRole="button"
-                            accessibilityLabel={`Compás ${i + 1}`}
+                            accessibilityLabel={`Tiempo ${i + 1}`}
                           >
-                            {isActive && <GoldGradientFill borderRadius={6} />}
+                            {isActive && <GoldGradientFill />}
                             <Text style={[styles.beatBtnText, isActive && styles.beatBtnTextActive]}>
                               {i + 1}
                             </Text>
                           </Pressable>
                         );
                       })}
-                      <Text style={[styles.beatLabel, { color: palette.muted }]}>compás</Text>
+                      <Text style={[styles.beatLabel, { color: palette.muted }]}>tiempo</Text>
                     </View>
                   )}
                 </View>

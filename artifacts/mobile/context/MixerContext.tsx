@@ -329,8 +329,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       if (getSoundById(id)?.bpm === undefined) return;
       const phaseOffset =
         activeSoundsRef.current.find((s) => s.id === id)?.phaseOffset ?? 0;
+      // LAG: en el borde de compás (fase maestra 0) el buffer arranca atrasado
+      // phaseOffset*loopSec → el downbeat entra ese retraso después. offset 0 → 0.
       try {
-        void pair.a.seekTo(phaseOffset > 0 ? phaseOffset * loopSec : 0);
+        void pair.a.seekTo((loopSec - phaseOffset * loopSec) % loopSec);
       } catch {
         /* ignore */
       }
@@ -394,7 +396,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             if (getSoundById(id)?.bpm === undefined) return;
             const phaseOffset =
               activeSoundsRef.current.find((s) => s.id === id)?.phaseOffset ?? 0;
-            const seekPos = ((phase / 1000) + phaseOffset * loopSec) % loopSec;
+            // LAG: el downbeat entra phaseOffset*loopSec después de la fase maestra.
+            const seekPos =
+              (((phase / 1000) - phaseOffset * loopSec) % loopSec + loopSec) % loopSec;
             try {
               void pair.a.seekTo(seekPos);
             } catch {
@@ -1154,13 +1158,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         phaseOffset: offset,
       });
     } else if (bpmSystemRef.current === "expo") {
-      // Fallback expo: reposicionar en la fase correspondiente
+      // Fallback expo: reposicionar con LAG (downbeat retrasado offset*loopSec).
       const player = playersRef.current.get(id);
       if (player && bpmClockRef.current !== null && soundDef.bpm) {
         const loopMs = (60 / soundDef.bpm) * 8 * 1000;
         const currentPhase = ((Date.now() - bpmClockRef.current) % loopMs) / 1000;
         const loopSec = loopMs / 1000;
-        const newPos = (currentPhase + offset * loopSec) % loopSec;
+        const newPos = ((currentPhase - offset * loopSec) % loopSec + loopSec) % loopSec;
         try { void player.a.seekTo(newPos); } catch { /* ignore */ }
       }
     }

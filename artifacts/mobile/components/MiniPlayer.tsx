@@ -76,7 +76,7 @@ export function MiniPlayer() {
   const n = activeSounds.length;
   const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
   const stackWidthAnim = useRef(new Animated.Value(stackWidthStacked)).current;
-  // openProgress: 0 = apilado, 1 = abierto — JS driver (left animado)
+  // openProgress: 0 = apilado, 1 = abierto — driver NATIVO (slide por translateX)
   const openProgress   = useRef(new Animated.Value(0)).current;
   // Cada thumb mueve (STACK_SIZE + gap - STACK_SHIFT) px por índice al abrirse
   const OPEN_DELTA = STACK_SIZE + CAROUSEL_THUMB_GAP - STACK_SHIFT; // 38+8-15 = 31
@@ -97,7 +97,7 @@ export function MiniPlayer() {
     }).start();
     Animated.spring(openProgress, {
       toValue: next ? 1 : 0,
-      useNativeDriver: false, damping: 18, stiffness: 200,
+      useNativeDriver: true, damping: 18, stiffness: 200,
     }).start();
   };
 
@@ -164,18 +164,21 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Stack / carrusel — left animado con JS driver */}
+            {/* Stack / carrusel — ancho con JS driver, slide con driver nativo */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
               {activeSounds.map((s, i) => {
-                const image    = getSoundImage(s.id);
-                const animLeft = openProgress.interpolate({
+                const image      = getSoundImage(s.id);
+                // `left` ESTÁTICO + translateX por DRIVER NATIVO. Animar `left`
+                // (layout prop) con JS driver no se renderiza fiable bajo
+                // Fabric/New Arch — por eso el ancho animaba pero el slide no.
+                const translateX = openProgress.interpolate({
                   inputRange:  [0, 1],
-                  outputRange: [i * STACK_SHIFT, i * (STACK_SIZE + CAROUSEL_THUMB_GAP)],
+                  outputRange: [0, i * OPEN_DELTA],
                 });
                 return (
                   <Animated.View
                     key={s.id}
-                    style={[styles.stackThumb, { position: 'absolute', left: animLeft, zIndex: i }]}
+                    style={[styles.stackThumb, { position: 'absolute', left: i * STACK_SHIFT, zIndex: i, transform: [{ translateX }] }]}
                   >
                     <Pressable
                       onPress={toggleStack}

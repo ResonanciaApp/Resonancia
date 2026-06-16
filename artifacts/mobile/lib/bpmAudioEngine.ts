@@ -47,9 +47,10 @@ type PlayOptions = {
   /** Volumen base 0-1 elegido por el usuario para este sonido. */
   volume: number;
   /**
-   * Fracción 0-1 del loop donde el buffer empieza a sonar.
-   * 0 = compás 1, 0.25 = compás 2, 0.5 = compás 3, 0.75 = compás 4.
-   * Default 0.
+   * Retraso (lag) del downbeat de este loop respecto al transporte compartido,
+   * como fracción 0-1 del loop. "Tiempo N" = (N-1) beats de retraso. Loop de 2
+   * compases (8 beats): 0.125 = 1 beat, 0.25 = 2 beats, 0.375 = 3 beats.
+   * Default 0 (en fase con el transporte).
    */
   phaseOffset?: number;
 };
@@ -196,14 +197,15 @@ class BpmAudioEngine {
     const loopSec = loopSeconds(opts.bpm, opts.loopBars);
     const userOffsetSec = (opts.phaseOffset ?? 0) * loopSec;
     const now = ctx.currentTime;
-    let offset = userOffsetSec;
     if (this.transportStart === null) {
       this.transportStart = now;
-    } else {
-      // Alinear en fase con el transporte + aplicar el offset de compás del usuario.
-      const currentPhase = ((now - this.transportStart) % loopSec + loopSec) % loopSec;
-      offset = (currentPhase + userOffsetSec) % loopSec;
     }
+    // Fase actual del transporte compartido (0 para el primer loop de la familia).
+    const currentPhase = ((now - this.transportStart) % loopSec + loopSec) % loopSec;
+    // LAG: "entrar en el tiempo N" RETRASA el downbeat del loop por userOffsetSec
+    // respecto al transporte (lo natural para "que entre en el tiempo N"). Con
+    // offset 0 queda idéntico al comportamiento previo (en fase con el transporte).
+    const offset = ((currentPhase - userOffsetSec) % loopSec + loopSec) % loopSec;
 
     const source = ctx.createBufferSource({ pitchCorrection: false });
     source.buffer = buffer;
