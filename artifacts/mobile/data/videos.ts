@@ -3,17 +3,31 @@ import type { ImageSourcePropType } from "react-native";
 /**
  * Sección de videos pregrabados.
  *
- * Los archivos de video viven en Object Storage (no se bundlean en assets
- * porque pesan demasiado). Se suben vía presigned URL y se sirven desde
- * `GET /api/storage/objects/<path>` (ese endpoint soporta range requests, lo
- * que permite buscar/seekear y hacer streaming progresivo del video).
+ * ## Sistema de reproducción
  *
- * Para agregar un video nuevo:
- *  1. Subir el archivo a Object Storage → guardar el `objectPath` que devuelve
- *     (ej: "/objects/uploads/<uuid>").
- *  2. Copiar el thumbnail a `assets/images/videos/` (o reutilizar un placeholder).
- *  3. Agregar el objeto a `VIDEOS` con el próximo ID disponible.
- *  4. Marcar `isPremium: true` si el video es solo para premium.
+ * ### Bunny.net Stream (recomendado, producción)
+ * Cada video tiene un `bunnyVideoId` (el GUID que asigna Bunny al subirlo).
+ * Bunny sirve HLS adaptativo (`playlist.m3u8`) desde su CDN global → carga
+ * rápida en Latam/España y costo ~10-20× menor que Object Storage genérico.
+ *
+ * Variables de entorno requeridas (Replit Secrets):
+ *   EXPO_PUBLIC_BUNNY_CDN_HOSTNAME  — ej: "vz-xxxxxxxx.b-cdn.net"
+ *
+ * Para agregar un video nuevo con Bunny:
+ *   1. Subir el archivo en el panel de Bunny Stream → copiar el GUID.
+ *   2. Copiar el thumbnail a `assets/images/videos/`.
+ *   3. Agregar el objeto a `VIDEOS` con `bunnyVideoId: "<guid>"`.
+ *   4. Marcar `isPremium: true` si aplica.
+ *
+ * ### Object Storage (legado / fallback)
+ * Videos viejos usan `objectPath` y se sirven desde
+ * `GET /api/storage/objects/<path>` (soporta range → seek/streaming).
+ * Seguirán funcionando mientras no se migre el archivo a Bunny.
+ *
+ * Para agregar un video nuevo con Object Storage (legacy):
+ *   1. Subir vía presigned URL → guardar el `objectPath`.
+ *   2. Copiar thumbnail.
+ *   3. Agregar con `objectPath: "/objects/uploads/<uuid>"`.
  */
 export type VideoItem = {
   id: string;
@@ -22,8 +36,18 @@ export type VideoItem = {
   description: string;
   durationLabel: string;
   thumbnail: ImageSourcePropType;
-  /** objectPath de Object Storage ("/objects/...") o una URL absoluta. */
-  objectPath: string;
+  /**
+   * GUID del video en Bunny.net Stream (ej: "abc123-...").
+   * Si está presente y EXPO_PUBLIC_BUNNY_CDN_HOSTNAME está configurado,
+   * tiene prioridad sobre `objectPath`.
+   */
+  bunnyVideoId?: string;
+  /**
+   * objectPath de Object Storage ("/objects/...") o URL absoluta.
+   * Modo legado: se usa cuando `bunnyVideoId` no está o el CDN no está
+   * configurado. Al menos uno de bunnyVideoId/objectPath debe estar presente.
+   */
+  objectPath?: string;
   isPremium?: boolean;
   isNew?: boolean;
   /** Nombre del usuario o cuenta que subió el video. */
@@ -71,13 +95,21 @@ export function getVideoById(id: string): VideoItem | undefined {
 }
 
 /**
- * Construye la URI absoluta para reproducir un video.
- * - Si `objectPath` ya es una URL absoluta (http/https), se devuelve tal cual.
- * - Si es un objectPath de storage ("/objects/..."), se mapea a la ruta de
- *   serving del API ("/api/storage/objects/...") usando EXPO_PUBLIC_API_URL.
+ * Construye la URI de reproducción para un video.
+ *
+ * Prioridad:
+ * 1. Bunny.net HLS — si `bunnyVideoId` + `EXPO_PUBLIC_BUNNY_CDN_HOSTNAME` configurados.
+ *    Formato: `https://<cdn-host>/<guid>/playlist.m3u8`
+ *    expo-video reproduce HLS nativo (AVPlayer en iOS, ExoPlayer en Android).
+ * 2. Object Storage legacy — `objectPath` mapeado a la ruta del API con range requests.
  */
 export function getVideoSourceUri(video: VideoItem): string {
-  const path = video.objectPath;
+  const cdnHost = process.env.EXPO_PUBLIC_BUNNY_CDN_HOSTNAME;
+  if (video.bunnyVideoId && cdnHost) {
+    return `https://${cdnHost}/${video.bunnyVideoId}/playlist.m3u8`;
+  }
+
+  const path = video.objectPath ?? "";
   if (/^https?:\/\//i.test(path)) return path;
 
   const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");

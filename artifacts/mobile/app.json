@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "RESONANCE",
-    "slug": "mobile",
+    "name": "Resonancia",
+    "slug": "resonancia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "scheme": "resonancia",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.resonancia.casadelcuenco",
+      "bundleIdentifier": "com.resonancia.app",
       "infoPlist": {
         "UIBackgroundModes": [
           "audio"
@@ -28,7 +28,7 @@
       }
     },
     "android": {
-      "package": "com.resonancia.casadelcuenco",
+      "package": "com.resonancia.app",
       "backgroundColor": "#18110C",
       "softwareKeyboardLayoutMode": "pan",
       "permissions": [
@@ -75,8 +75,14 @@
           },
           "ios": {
             "extraPods": [
-              { "name": "GoogleUtilities", "modular_headers": true },
-              { "name": "RecaptchaInterop", "modular_headers": true }
+              {
+                "name": "GoogleUtilities",
+                "modular_headers": true
+              },
+              {
+                "name": "RecaptchaInterop",
+                "modular_headers": true
+              }
             ]
           }
         }
