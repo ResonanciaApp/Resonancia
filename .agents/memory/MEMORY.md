@@ -68,3 +68,4 @@
 - [biblioteca chip animation](biblioteca-chip-animation.md) — AnimatedChipRow: un progress 0/1 ida-y-vuelta; displayTab posiciona (se conserva al volver), colorTab da oro/gris al instante del tap
 - [Mixer settings sheet](mixer-settings-sheet.md) — engranaje del Mezclador abre Ajustes (filtro ánimo/etiquetas + paleta de fondo); estado local persistido; validar claves persistidas o el filtro crashea
 - [BPM gapless loop engine](bpm-gapless-loop.md) — loops "bpm" del Mezclador en react-native-audio-api (resto en expo-audio); expo dueño único de AVAudioSession; loopEnd musical; play() async cancelable; necesita rebuild del dev client; historial de enfoques expo-audio que fallaron
+- [EAS iOS CocoaPods modular headers](eas-ios-modular-headers.md) — AppCheckCore (RevenueCat/Clerk) exige modular_headers en GoogleUtilities+RecaptchaInterop; fix = expo-build-properties ios.extraPods con modular_headers:true (NO plugin custom: falla silencioso)
