@@ -179,7 +179,7 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
         style={[StyleSheet.absoluteFill, styles.centered, rippleStyle]}
         pointerEvents="none"
       >
-        <View style={styles.rippleCore} />
+        <View style={styles.rippleCore}><GoldGradientFill /></View>
       </Animated.View>
       <Animated.View style={[styles.addCircle, circleStyle]}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.centered, plusStyle]}>
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#D4AF37",
+    overflow: "hidden",
   },
 
   // Empty

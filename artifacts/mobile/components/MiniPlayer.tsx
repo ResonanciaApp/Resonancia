@@ -197,15 +197,15 @@ export function MiniPlayer() {
         <View style={styles.waveWrap}>
           {[wave1, wave2].map((w, i) => (
             <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveMix, {
-              opacity: w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.20, 0] }),
-              transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 1.8] }) }],
+              opacity: w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.60, 0] }),
+              transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }],
             }]} />
           ))}
           <Pressable
             onPress={(e) => { e.stopPropagation(); togglePlay(); }}
             style={styles.playPauseBtn}
           >
-            <Feather name={mixPlaying ? "pause" : "play"} size={20} color={colors.foreground} />
+            <Feather name={mixPlaying ? "pause" : "play"} size={22} color="#1B060F" />
           </Pressable>
         </View>
       </View>,
@@ -349,10 +349,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   playPauseBtn: {
-    width: 32,
-    height: 32,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.6)",
   },
   waveWrap: {
     alignItems: "center",
@@ -364,7 +366,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.18)",
   },
   waveSession: { width: 38, height: 38 },
-  waveMix:    { width: 32, height: 32 },
+  waveMix:    { width: 44, height: 44 },
   terminarBtn: {
     alignItems: "center",
     justifyContent: "center",
