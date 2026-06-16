@@ -6,7 +6,6 @@ import {
   Image,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -21,9 +20,9 @@ import { useColors } from "@/hooks/useColors";
 
 const MAX_PLAYER_WIDTH = 438;
 const STACK_SIZE = 38;
-const STACK_SHIFT = 15;
-const STACK_SHIFT_OPEN = 48;
-const SLIDER_THRESHOLD = 4; // 4+ sonidos → modo slider
+const STACK_SHIFT = 15;       // offset apilado
+const STACK_SHIFT_OPEN = 48;  // offset desplegado (se adapta si hay muchos sonidos)
+const MAX_OPEN_WIDTH = 230;   // ancho máximo del stack desplegado
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG = "#3d304e";
@@ -133,118 +132,110 @@ export function MiniPlayer() {
 
   if (!currentSession && !mixActive) return null;
 
-  const shell = (children: React.ReactNode, onPress: () => void, mixMode = false) => (
-    <Pressable onPress={onPress} style={styles.wrapper}>
-      {mixMode ? (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
-      ) : (
-        <LinearGradient
-          colors={GRAD_COLORS}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
+  // Shell visual — para mezcla es un View simple (no Pressable):
+  // la única navegación en mix mode es tocar la flecha.
+  const mixShell = (children: React.ReactNode) => (
+    <View style={styles.wrapper}>
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
+      {children}
+    </View>
+  );
+
+  const sessionShell = (children: React.ReactNode) => (
+    <Pressable onPress={() => router.push("/player" as never)} style={styles.wrapper}>
+      <LinearGradient
+        colors={GRAD_COLORS}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       {children}
     </Pressable>
   );
 
   // ── Modo mezcla ───────────────────────────────────────────────
   if (mixActive) {
-    const useSlider = activeSounds.length >= SLIDER_THRESHOLD;
+    const n = activeSounds.length;
 
-    // Cálculo de ancho animado para el modo stack (< SLIDER_THRESHOLD)
-    const stackWidthStacked = STACK_SIZE + Math.max(0, activeSounds.length - 1) * STACK_SHIFT;
-    const stackWidthOpen   = STACK_SIZE + Math.max(0, activeSounds.length - 1) * STACK_SHIFT_OPEN;
+    // Offset desplegado adaptativo: nunca supera MAX_OPEN_WIDTH
+    const shiftOpen = n > 1
+      ? Math.min(STACK_SHIFT_OPEN, Math.floor((MAX_OPEN_WIDTH - STACK_SIZE) / (n - 1)))
+      : 0;
+
+    const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+    const stackWidthOpen    = STACK_SIZE + Math.max(0, n - 1) * shiftOpen;
     const animatedStackWidth = stackOpenAnim.interpolate({
       inputRange:  [0, 1],
       outputRange: [stackWidthStacked, stackWidthOpen],
     });
 
-    return shell(
+    return mixShell(
       <View style={styles.row}>
-        <View style={styles.upArrow}>
-          <Feather name="chevron-up" size={20} color={colors.mutedForeground} />
-        </View>
 
-        {useSlider ? (
-          // ── Modo slider: scroll horizontal cuando hay 4+ sonidos ──
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.sliderWrap}
-            contentContainerStyle={styles.sliderContent}
-          >
-            {activeSounds.map((s) => {
+        {/* ── Flecha — ÚNICA forma de abrir Tu Mezcla ── */}
+        <Pressable
+          onPress={() => {
+            if (loadedPresetId?.startsWith("community-")) {
+              router.push("/(tabs)/musica" as never);
+            } else {
+              openSheet();
+            }
+          }}
+          hitSlop={8}
+          style={styles.upArrow}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir Tu Mezcla"
+        >
+          <Feather name="chevron-up" size={20} color={colors.mutedForeground} />
+        </Pressable>
+
+        {/* ── Stack interactivo: tap → de-stackear ── */}
+        <Pressable
+          onPress={toggleStack}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={stackOpen ? "Colapsar imágenes" : "Ver imágenes de sonidos"}
+        >
+          <Animated.View style={[styles.stackWrap, { width: animatedStackWidth }]}>
+            {activeSounds.map((s, i) => {
               const entryAnim = getAnim(s.id);
               const image = getSoundImage(s.id);
+              const leftAnim = stackOpenAnim.interpolate({
+                inputRange:  [0, 1],
+                outputRange: [i * STACK_SHIFT, i * shiftOpen],
+              });
               return (
+                // Capa exterior: maneja `left` animado (useNativeDriver: false)
                 <Animated.View
                   key={s.id}
-                  style={[
-                    styles.sliderThumb,
-                    { transform: [{ scale: entryAnim }], opacity: entryAnim },
-                  ]}
+                  style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
                 >
-                  {image ? (
-                    <Image source={image} style={styles.sliderThumbInner} resizeMode="cover" />
-                  ) : (
-                    <View style={[styles.sliderThumbInner, styles.stackFallback]}>
-                      <Feather name="music" size={14} color={colors.primary} />
-                    </View>
-                  )}
+                  {/* Capa interior: maneja scale/opacity de entrada (useNativeDriver: true) */}
+                  <Animated.View
+                    style={{
+                      width: STACK_SIZE,
+                      height: STACK_SIZE,
+                      transform: [{ scale: entryAnim }],
+                      opacity: entryAnim,
+                    }}
+                  >
+                    {image ? (
+                      <Image source={image} style={styles.stackThumbInner} resizeMode="cover" />
+                    ) : (
+                      <View style={[styles.stackThumbInner, styles.stackFallback]}>
+                        <Feather name="music" size={14} color={colors.primary} />
+                      </View>
+                    )}
+                  </Animated.View>
                 </Animated.View>
               );
             })}
-          </ScrollView>
-        ) : (
-          // ── Modo stack: de-stack animado cuando hay < 4 sonidos ──
-          <>
-            <Pressable
-              onPress={(e) => { e.stopPropagation(); toggleStack(); }}
-              hitSlop={8}
-              accessibilityRole="button"
-              accessibilityLabel={stackOpen ? "Colapsar imágenes" : "Ver imágenes de sonidos"}
-            >
-              <Animated.View style={[styles.stackWrap, { width: animatedStackWidth }]}>
-                {activeSounds.map((s, i) => {
-                  const entryAnim = getAnim(s.id);
-                  const image = getSoundImage(s.id);
-                  const leftAnim = stackOpenAnim.interpolate({
-                    inputRange:  [0, 1],
-                    outputRange: [i * STACK_SHIFT, i * STACK_SHIFT_OPEN],
-                  });
-                  return (
-                    <Animated.View
-                      key={s.id}
-                      style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
-                    >
-                      <Animated.View
-                        style={{
-                          width: STACK_SIZE,
-                          height: STACK_SIZE,
-                          transform: [{ scale: entryAnim }],
-                          opacity: entryAnim,
-                        }}
-                      >
-                        {image ? (
-                          <Image source={image} style={styles.stackThumbInner} resizeMode="cover" />
-                        ) : (
-                          <View style={[styles.stackThumbInner, styles.stackFallback]}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
-                      </Animated.View>
-                    </Animated.View>
-                  );
-                })}
-              </Animated.View>
-            </Pressable>
-            <View style={{ flex: 1 }} />
-          </>
-        )}
+          </Animated.View>
+        </Pressable>
 
-        {/* Botón play/pause */}
+        <View style={{ flex: 1 }} />
+
+        {/* ── Botón play/pause ── */}
         <View style={styles.waveWrap}>
           {[wave1, wave2].map((w, i) => (
             <Animated.View key={i} pointerEvents="none" style={[styles.wave, styles.waveMix, {
@@ -253,10 +244,9 @@ export function MiniPlayer() {
             }]} />
           ))}
           <Pressable
-            onPress={(e) => { e.stopPropagation(); togglePlay(); }}
+            onPress={togglePlay}
             style={styles.playPauseBtn}
           >
-            {/* marginLeft: 2 compensa el offset visual del glifo "play" (el triángulo tiene más espacio a la izquierda) */}
             <View style={mixPlaying ? undefined : styles.playIconNudge}>
               <Feather
                 name={mixPlaying ? "pause" : "play"}
@@ -266,20 +256,13 @@ export function MiniPlayer() {
             </View>
           </Pressable>
         </View>
-      </View>,
-      () => {
-        if (loadedPresetId?.startsWith("community-")) {
-          router.push("/(tabs)/musica" as never);
-        } else {
-          openSheet();
-        }
-      },
-      true,
+
+      </View>
     );
   }
 
   // ── Modo sesión ───────────────────────────────────────────────
-  return shell(
+  return sessionShell(
     <>
       {/* Fila principal */}
       <View style={styles.row}>
@@ -313,8 +296,7 @@ export function MiniPlayer() {
       <View style={styles.progressBar}>
         <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
       </View>
-    </>,
-    () => router.push("/player" as never),
+    </>
   );
 }
 
@@ -366,7 +348,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ── Mezcla — stack ────────────────────────────────────────────
+  // ── Mezcla ────────────────────────────────────────────────────
   upArrow: {
     width: 28,
     height: 28,
@@ -399,35 +381,6 @@ const styles = StyleSheet.create({
   },
   stackFallback: {
     backgroundColor: "rgba(212,175,55,0.18)",
-  },
-
-  // ── Mezcla — slider ───────────────────────────────────────────
-  sliderWrap: {
-    flex: 1,
-  },
-  sliderContent: {
-    alignItems: "center",
-    gap: 6,
-    paddingRight: 2,
-  },
-  sliderThumb: {
-    width: STACK_SIZE,
-    height: STACK_SIZE,
-    borderRadius: 9,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.30,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  sliderThumbInner: {
-    width: STACK_SIZE,
-    height: STACK_SIZE,
-    borderRadius: 9,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   // ── Play/Pause ────────────────────────────────────────────────
