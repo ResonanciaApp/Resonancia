@@ -1,5 +1,6 @@
 import { useSignIn } from "@clerk/expo";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -124,6 +125,7 @@ export default function SignInScreen() {
               onPress={handleSubmit}
               disabled={loading || !emailAddress || !password}
             >
+              <GoldGradientFill />
               {loading ? (
                 <ActivityIndicator color={COLORS.bg} />
               ) : (
@@ -190,7 +192,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   primaryBtn: {
-    backgroundColor: COLORS.primary,
+    overflow: "hidden",
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: "center",

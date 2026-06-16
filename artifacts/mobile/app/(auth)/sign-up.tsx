@@ -1,5 +1,6 @@
 import { useSignUp } from "@clerk/expo";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -146,6 +147,7 @@ export default function SignUpScreen() {
                 onPress={handleSubmit}
                 disabled={loading || !emailAddress || !password}
               >
+                <GoldGradientFill />
                 {loading ? (
                   <ActivityIndicator color={COLORS.bg} />
                 ) : (
@@ -196,6 +198,7 @@ export default function SignUpScreen() {
                 onPress={handleVerify}
                 disabled={loading || code.length < 6}
               >
+                <GoldGradientFill />
                 {loading ? (
                   <ActivityIndicator color={COLORS.bg} />
                 ) : (
@@ -270,7 +273,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_600SemiBold",
   },
   primaryBtn: {
-    backgroundColor: COLORS.primary,
+    overflow: "hidden",
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: "center",
