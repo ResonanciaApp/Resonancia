@@ -201,12 +201,7 @@ export function MiniPlayer() {
                   {activeSounds.map((s) => {
                     const image = getSoundImage(s.id);
                     return (
-                      <Pressable
-                        key={s.id}
-                        style={styles.carouselThumb}
-                        onPress={toggleStack}
-                        accessibilityLabel="Colapsar"
-                      >
+                      <View key={s.id} style={styles.carouselThumb}>
                         {image ? (
                           <Image
                             source={image}
@@ -218,7 +213,7 @@ export function MiniPlayer() {
                             <Feather name="music" size={14} color={colors.primary} />
                           </View>
                         )}
-                      </Pressable>
+                      </View>
                     );
                   })}
                 </ScrollView>
@@ -263,13 +258,18 @@ export function MiniPlayer() {
 
             </Animated.View>
 
-            {/* Texto: empujado/recogido por el stack naturalmente (flex:1) */}
-            <View style={styles.textBlock}>
+            {/* Texto: cuando el carrusel está abierto, tap aquí para colapsar.
+                Fuera del ScrollView → onPress siempre dispara. */}
+            <Pressable
+              style={styles.textBlock}
+              onPress={stackOpen ? toggleStack : undefined}
+              accessibilityLabel={stackOpen ? "Colapsar" : undefined}
+            >
               <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.mixSub} numberOfLines={1}>
                 {n} {n === 1 ? "sonido" : "sonidos"}
               </Text>
-            </View>
+            </Pressable>
 
             {/* Botón play/pause */}
             <View style={styles.waveWrap}>
