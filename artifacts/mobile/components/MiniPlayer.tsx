@@ -174,61 +174,59 @@ export function MiniPlayer() {
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
           <View style={styles.mixRow}>
-            {/* Stack: Animated.View con ancho dinámico.
-                Los thumbs son position:absolute → necesitamos un View
-                real (no Pressable) como contenedor; el toque se maneja
-                con un Pressable absoluteFill encima. */}
-            <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
-              {activeSounds.map((s, i) => {
-                const leftAnim = stackOpenAnim.interpolate({
-                  inputRange:  [0, 1],
-                  outputRange: [i * STACK_SHIFT, i * shiftOpen],
-                });
-                const entryAnim = getAnim(s.id);
-                const image = getSoundImage(s.id);
+            {/* Stack: Pressable envuelve el Animated.View para que el
+                área táctil coincida exactamente con el ancho animado.
+                Los thumbs son position:absolute dentro del Animated.View
+                (no del Pressable) para que rendericen correctamente. */}
+            <Pressable
+              onPress={toggleStack}
+              hitSlop={6}
+              accessibilityRole="button"
+              accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
+            >
+              <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
+                {activeSounds.map((s, i) => {
+                  const leftAnim = stackOpenAnim.interpolate({
+                    inputRange:  [0, 1],
+                    outputRange: [i * STACK_SHIFT, i * shiftOpen],
+                  });
+                  const entryAnim = getAnim(s.id);
+                  const image = getSoundImage(s.id);
 
-                return (
-                  // Capa exterior: left animado (useNativeDriver:false)
-                  <Animated.View
-                    key={s.id}
-                    style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
-                  >
-                    {/* Capa interior: scale/opacity entrada (useNativeDriver:true) */}
+                  return (
+                    // Capa exterior: left animado (useNativeDriver:false)
                     <Animated.View
-                      style={{
-                        width: STACK_SIZE,
-                        height: STACK_SIZE,
-                        borderRadius: 9,
-                        overflow: "hidden",
-                        transform: [{ scale: entryAnim }],
-                        opacity: entryAnim,
-                      }}
+                      key={s.id}
+                      style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
                     >
-                      {image ? (
-                        <Image
-                          source={image}
-                          style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <View style={styles.stackFallback}>
-                          <Feather name="music" size={14} color={colors.primary} />
-                        </View>
-                      )}
+                      {/* Capa interior: scale/opacity entrada (useNativeDriver:true) */}
+                      <Animated.View
+                        style={{
+                          width: STACK_SIZE,
+                          height: STACK_SIZE,
+                          borderRadius: 9,
+                          overflow: "hidden",
+                          transform: [{ scale: entryAnim }],
+                          opacity: entryAnim,
+                        }}
+                      >
+                        {image ? (
+                          <Image
+                            source={image}
+                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.stackFallback}>
+                            <Feather name="music" size={14} color={colors.primary} />
+                          </View>
+                        )}
+                      </Animated.View>
                     </Animated.View>
-                  </Animated.View>
-                );
-              })}
-
-              {/* Overlay táctil — de-stackea sin abrir la hoja */}
-              <Pressable
-                onPress={toggleStack}
-                style={StyleSheet.absoluteFill}
-                hitSlop={6}
-                accessibilityRole="button"
-                accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
-              />
-            </Animated.View>
+                  );
+                })}
+              </Animated.View>
+            </Pressable>
 
             {/* Texto: "Tu mezcla" + cantidad de sonidos.
                 Usa onLayout para detectar cuándo el stack lo alcanza y
