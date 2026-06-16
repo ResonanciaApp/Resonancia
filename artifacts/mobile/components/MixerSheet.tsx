@@ -240,6 +240,9 @@ export function MixerSheet() {
   const sheetEnterY    = useRef(new Animated.Value(Dimensions.get("window").height)).current;
   const immersivoFade  = useRef(new Animated.Value(0)).current;
   const saveOverlayOpacity = useRef(new Animated.Value(0)).current;
+  // Dim del fondo: arranca en 0 y se desvanece HACIA dentro junto con el slide,
+  // así no aparece de golpe (era el "overlay negro" que flasheaba en tema claro).
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
 
   // PanResponder para arrastrar hacia abajo y cerrar
   const panResponder = useRef(
@@ -284,12 +287,20 @@ export function MixerSheet() {
       immersivoFade.setValue(0);
       if (consumeReopenMixer()) {
         sheetEnterY.setValue(0);
+        backdropOpacity.setValue(1);
       } else {
         sheetEnterY.setValue(Dimensions.get("window").height);
+        backdropOpacity.setValue(0);
         Animated.spring(sheetEnterY, {
           toValue: 0,
           tension: 65,
           friction: 14,
+          useNativeDriver: true,
+        }).start();
+        Animated.timing(backdropOpacity, {
+          toValue: 1,
+          duration: 280,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }).start();
       }
@@ -302,6 +313,12 @@ export function MixerSheet() {
       }).start();
       setOriginId(loadedPresetId);
       setSnapshotSounds(activeSounds.map((s) => ({ id: s.id, volume: s.volume })));
+    } else {
+      // Reset a estado "cerrado": el PRÓXIMO montaje del Modal pinta su primer
+      // frame ya fuera de pantalla y sin dim (mata el flash de la escena/overlay
+      // negro que aparecía arriba por el translateY=0 residual + dim instantáneo).
+      sheetEnterY.setValue(Dimensions.get("window").height);
+      backdropOpacity.setValue(0);
     }
   }, [isSheetOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -491,6 +508,10 @@ export function MixerSheet() {
           el fade cubra el MixerPanel subyacente sin flashes */}
       <Animated.View style={{ flex: 1, opacity: sheetOpacity }}>
       <Pressable style={styles.backdrop} onPress={closeSheet}>
+        <Animated.View
+          style={[styles.backdropDim, { opacity: backdropOpacity }]}
+          pointerEvents="none"
+        />
         <Animated.View
           style={{ transform: [{ translateY: sheetEnterY }] }}
         >
@@ -905,6 +926,10 @@ export function MixerSheet() {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
+    backgroundColor: "transparent",
+  },
+  backdropDim: {
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.6)",
   },
   sheet: {
