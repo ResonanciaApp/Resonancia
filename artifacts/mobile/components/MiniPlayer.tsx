@@ -5,7 +5,6 @@ import {
   Animated,
   Image,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -77,6 +76,7 @@ export function MiniPlayer() {
   const n = activeSounds.length;
   const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
   const stackWidthAnim = useRef(new Animated.Value(stackWidthStacked)).current;
+  const openProgress   = useRef(new Animated.Value(0)).current;
 
   const [stackOpen, setStackOpen] = useState(false);
 
@@ -87,12 +87,11 @@ export function MiniPlayer() {
   const toggleStack = () => {
     const next = !stackOpen;
     setStackOpen(next);
-    Animated.spring(stackWidthAnim, {
-      toValue: next ? carouselOpenW : stackWidthStacked,
-      useNativeDriver: false,
-      damping: 18,
-      stiffness: 200,
-    }).start();
+    const springCfg = { useNativeDriver: false, damping: 18, stiffness: 200 } as const;
+    Animated.parallel([
+      Animated.spring(stackWidthAnim, { toValue: next ? carouselOpenW : stackWidthStacked, ...springCfg }),
+      Animated.spring(openProgress,   { toValue: next ? 1 : 0, ...springCfg }),
+    ]).start();
   };
 
   // Sincroniza el ancho cuando cambia n: cerrado → stacked, abierto → carousel
@@ -115,8 +114,9 @@ export function MiniPlayer() {
       animsRef.current.clear();
       setStackOpen(false);
       stackWidthAnim.setValue(0);
+      openProgress.setValue(0);
     }
-  }, [mixActive]);
+  }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Animaciones de entrada por sonido ─────────────────────────
   const animsRef = useRef<Map<string, Animated.Value>>(new Map());
@@ -174,79 +174,59 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Stack / carrusel: mismo Animated.View, ancho animado */}
+            {/* Stack / carrusel: estructura única siempre montada, left animado */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
-              {stackOpen ? (
-                /* ABIERTO: ScrollView con thumbs Pressable → tap colapsa */
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.carouselContent}
-                >
-                  {activeSounds.map((s) => {
-                    const image = getSoundImage(s.id);
-                    return (
-                      <Pressable
-                        key={s.id}
-                        onPress={toggleStack}
-                        onLongPress={() => removeSound(s.id)}
-                        delayLongPress={400}
-                        style={styles.carouselThumb}
-                        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
-                      >
-                        {image ? (
-                          <Image
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
-                      </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              ) : (
-                /* CERRADO: thumbnails apilados + área de tap transparente */
-                <>
-                  {activeSounds.map((s, i) => {
-                    const entryAnim = getAnim(s.id);
-                    const image = getSoundImage(s.id);
-                    return (
-                      <Animated.View
-                        key={s.id}
-                        style={[
-                          styles.stackThumb,
-                          { left: i * STACK_SHIFT, zIndex: i,
-                            transform: [{ scale: entryAnim }],
-                            opacity: entryAnim },
-                        ]}
-                      >
-                        {image ? (
-                          <Image
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
-                      </Animated.View>
-                    );
-                  })}
-                  <Pressable
-                    style={[StyleSheet.absoluteFill, { zIndex: 999 }]}
-                    onPress={toggleStack}
-                    accessibilityRole="button"
-                    accessibilityLabel="Desplegar sonidos"
-                  />
-                </>
-              )}
+              {activeSounds.map((s, i) => {
+                const entryAnim = getAnim(s.id);
+                const image     = getSoundImage(s.id);
+                const leftAnim  = openProgress.interpolate({
+                  inputRange:  [0, 1],
+                  outputRange: [i * STACK_SHIFT, i * (STACK_SIZE + CAROUSEL_THUMB_GAP)],
+                });
+                return (
+                  <Animated.View
+                    key={s.id}
+                    style={[
+                      styles.stackThumb,
+                      { left: leftAnim, zIndex: i,
+                        transform: [{ scale: entryAnim }],
+                        opacity: entryAnim },
+                    ]}
+                  >
+                    <Pressable
+                      onPress={toggleStack}
+                      onLongPress={() => removeSound(s.id)}
+                      delayLongPress={400}
+                      style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                      accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
+                    >
+                      {image ? (
+                        <Image
+                          source={image}
+                          style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View style={styles.stackFallback}>
+                          <Feather name="music" size={14} color={colors.primary} />
+                        </View>
+                      )}
+                    </Pressable>
+                  </Animated.View>
+                );
+              })}
+              {/* Overlay transparente solo en estado cerrado para capturar tap en área apilada */}
+              <Animated.View
+                pointerEvents={stackOpen ? "none" : "box-only"}
+                style={[StyleSheet.absoluteFill, { zIndex: 999 }]}
+              >
+                <Pressable
+                  style={StyleSheet.absoluteFill}
+                  onPress={toggleStack}
+                  accessibilityRole="button"
+                  accessibilityLabel="Desplegar sonidos"
+                />
+              </Animated.View>
             </Animated.View>
 
             {/* Texto: flex:1, se empuja cuando el stack crece */}
@@ -393,24 +373,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.18)",
     alignItems: "center",
     justifyContent: "center",
-  },
-
-  // ── Carrusel en-row (estado abierto) ─────────────────────────
-  carouselContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: CAROUSEL_THUMB_GAP,
-  },
-  carouselThumb: {
-    width: STACK_SIZE,
-    height: STACK_SIZE,
-    borderRadius: 9,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.35,
-    shadowRadius: 3,
-    elevation: 3,
   },
 
   // ── Texto dinámico (Tu mezcla + cantidad) ─────────────────────
