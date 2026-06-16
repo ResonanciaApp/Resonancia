@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
-  LayoutChangeEvent,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -69,32 +68,22 @@ export function MiniPlayer() {
   const mixActive = !currentSession && activeSounds.length > 0;
 
   // ── De-stack de thumbnails ─────────────────────────────────────
+  // El carrusel aparece como fila separada DEBAJO del row principal.
+  // El row principal (stack apilado + texto + play) NUNCA cambia de tamaño,
+  // así el textBlock siempre tiene espacio para recibir el tap de colapso.
+  const CAROUSEL_ROW_H = STACK_SIZE + 20; // altura de la fila de carrusel abierta
+
   const [stackOpen, setStackOpen] = useState(false);
-  const stackOpenAnim = useRef(new Animated.Value(0)).current;
-
-  // Evita que el Pressable padre interprete el touchEnd de un scroll
-  // en el carrusel como un tap (que colapsaría el carrusel).
-  const scrollingRef  = useRef(false);
-  const scrollTimer   = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const onCarouselScrollStart = () => {
-    if (scrollTimer.current) clearTimeout(scrollTimer.current);
-    scrollingRef.current = true;
-  };
-  const onCarouselScrollEnd = () => {
-    // Resetear con delay para que el onPress del Pressable ya haya evaluado
-    scrollTimer.current = setTimeout(() => { scrollingRef.current = false; }, 250);
-  };
+  const carouselHeightAnim = useRef(new Animated.Value(0)).current;
 
   const toggleStack = () => {
-    if (scrollingRef.current) return;   // ignorar press tras scroll
     const next = !stackOpen;
     setStackOpen(next);
-    Animated.spring(stackOpenAnim, {
-      toValue: next ? 1 : 0,
+    Animated.spring(carouselHeightAnim, {
+      toValue: next ? CAROUSEL_ROW_H : 0,
       useNativeDriver: false,
-      damping: 16,
-      stiffness: 220,
+      damping: 18,
+      stiffness: 240,
     }).start();
   };
 
@@ -102,9 +91,9 @@ export function MiniPlayer() {
     if (!mixActive) {
       animsRef.current.clear();
       setStackOpen(false);
-      stackOpenAnim.setValue(0);
+      carouselHeightAnim.setValue(0);
     }
-  }, [mixActive, stackOpenAnim]);
+  }, [mixActive, carouselHeightAnim]);
 
   // ── Animaciones de entrada por sonido ─────────────────────────
   const animsRef = useRef<Map<string, Animated.Value>>(new Map());
@@ -122,39 +111,19 @@ export function MiniPlayer() {
     return animsRef.current.get(id)!;
   }
 
-  // ── Ancho de la fila (para calcular stackWidthOpen) ──────────
-  // El textBlock es flex:1 y se mueve naturalmente con el stack.
-  // No hay animación de opacidad — el texto simplemente se empuja.
-  const rowWidthRef = useRef(0);
-  const onRowLayout = (e: LayoutChangeEvent) => {
-    rowWidthRef.current = e.nativeEvent.layout.width;
-  };
-
   if (!currentSession && !mixActive) return null;
 
   // ── Modo mezcla ───────────────────────────────────────────────
   if (mixActive) {
     const n = activeSounds.length;
 
-    // Nombre del preset cargado (si existe) o "Tu mezcla"
     const presetName = loadedPresetId
       ? presets.find((p) => p.id === loadedPresetId)?.name
       : null;
     const title = presetName || "Tu mezcla";
 
-    // Ancho del stack apilado (cerrado)
+    // Ancho fijo del stack apilado en el row principal (nunca cambia)
     const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-
-    // Ancho del carrusel abierto: contenido real o espacio disponible (lo que sea menor).
-    // El ScrollView scrollea si el contenido supera el espacio visible.
-    const scrollContentWidth = n * STACK_SIZE + Math.max(0, n - 1) * CAROUSEL_THUMB_GAP;
-    const availableForStack  = Math.max(STACK_SIZE, rowWidthRef.current - 86);
-    const stackWidthOpen     = Math.min(scrollContentWidth, availableForStack);
-
-    const animatedStackWidth = stackOpenAnim.interpolate({
-      inputRange:  [0, 1],
-      outputRange: [stackWidthStacked, stackWidthOpen],
-    });
 
     const handleOpen = () =>
       loadedPresetId?.startsWith("community-")
@@ -179,91 +148,49 @@ export function MiniPlayer() {
         <View style={styles.wrapper}>
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
-          <View style={styles.mixRow} onLayout={onRowLayout}>
-            {/* Stack: el Animated.View es un View plano (sin Pressable externo).
-                - Cerrado: thumbnails apilados + Pressable absoluteFill encima que
-                  abre el carrusel. No hay Pressable externo que bloquee el scroll.
-                - Abierto: ScrollView horizontal libre; cada thumbnail es un
-                  Pressable que llama toggleStack (con guard de scrollingRef). */}
-            <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
+          {/* ── Row principal: tamaño FIJO siempre ── */}
+          <View style={styles.mixRow}>
 
-              {stackOpen ? (
-                /* ── Abierto: ScrollView libre de interferencias ── */
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  style={styles.carouselScroll}
-                  contentContainerStyle={styles.carouselContent}
-                  onScrollBeginDrag={onCarouselScrollStart}
-                  onScrollEndDrag={onCarouselScrollEnd}
-                  onMomentumScrollEnd={onCarouselScrollEnd}
-                >
-                  {activeSounds.map((s) => {
-                    const image = getSoundImage(s.id);
-                    return (
-                      <View key={s.id} style={styles.carouselThumb}>
-                        {image ? (
-                          <Image
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
+            {/* Stack apilado (fijo). Pressable abre el carrusel. */}
+            <Pressable
+              onPress={toggleStack}
+              style={[styles.stackArea, { width: stackWidthStacked }]}
+              accessibilityRole="button"
+              accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
+            >
+              {activeSounds.map((s, i) => {
+                const entryAnim = getAnim(s.id);
+                const image = getSoundImage(s.id);
+                return (
+                  <Animated.View
+                    key={s.id}
+                    style={[
+                      styles.stackThumb,
+                      { left: i * STACK_SHIFT, zIndex: i,
+                        transform: [{ scale: entryAnim }],
+                        opacity: entryAnim },
+                    ]}
+                  >
+                    {image ? (
+                      <Image
+                        source={image}
+                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View style={styles.stackFallback}>
+                        <Feather name="music" size={14} color={colors.primary} />
                       </View>
-                    );
-                  })}
-                </ScrollView>
-              ) : (
-                /* ── Cerrado: thumbnails apilados + overlay táctil ── */
-                <>
-                  {activeSounds.map((s, i) => {
-                    const entryAnim = getAnim(s.id);
-                    const image = getSoundImage(s.id);
-                    return (
-                      <Animated.View
-                        key={s.id}
-                        style={[
-                          styles.stackThumb,
-                          { left: i * STACK_SHIFT, zIndex: i,
-                            transform: [{ scale: entryAnim }],
-                            opacity: entryAnim },
-                        ]}
-                      >
-                        {image ? (
-                          <Image
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
-                      </Animated.View>
-                    );
-                  })}
-                  <Pressable
-                    style={StyleSheet.absoluteFill}
-                    onPress={toggleStack}
-                    accessibilityRole="button"
-                    accessibilityLabel="Desplegar sonidos"
-                  />
-                </>
-              )}
+                    )}
+                  </Animated.View>
+                );
+              })}
+            </Pressable>
 
-            </Animated.View>
-
-            {/* Texto: cuando el carrusel está abierto, tap aquí para colapsar.
-                Fuera del ScrollView → onPress siempre dispara. */}
+            {/* Texto: flex:1, siempre visible, tap para colapsar cuando abierto */}
             <Pressable
               style={styles.textBlock}
               onPress={stackOpen ? toggleStack : undefined}
-              accessibilityLabel={stackOpen ? "Colapsar" : undefined}
             >
               <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.mixSub} numberOfLines={1}>
@@ -286,6 +213,36 @@ export function MiniPlayer() {
               </Pressable>
             </View>
           </View>
+
+          {/* ── Carrusel: fila animada debajo del row principal ── */}
+          <Animated.View style={[styles.carouselRow, { height: carouselHeightAnim }]}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.carouselContent}
+              style={{ flex: 1 }}
+            >
+              {activeSounds.map((s) => {
+                const image = getSoundImage(s.id);
+                return (
+                  <View key={s.id} style={styles.carouselThumb}>
+                    {image ? (
+                      <Image
+                        source={image}
+                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View style={styles.stackFallback}>
+                        <Feather name="music" size={14} color={colors.primary} />
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </Animated.View>
+
         </View>
       </View>
     );
@@ -383,10 +340,9 @@ const styles = StyleSheet.create({
   },
 
   // ── Stack de thumbnails ───────────────────────────────────────
-  // Ancho controlado por animatedStackWidth (Animated.View, no Pressable)
+  // Pressable de ancho fijo (stackWidthStacked); los thumbs son position:absolute.
   stackArea: {
     height: STACK_SIZE,
-    // Sin overflow:hidden para que el de-stack pueda salir del área
   },
   stackThumb: {
     position: "absolute",
@@ -409,16 +365,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ── Carrusel deslizable (>6 sonidos, abierto) ─────────────────
-  carouselScroll: {
-    width: "100%",
-    height: STACK_SIZE,
+  // ── Carrusel: fila separada debajo del row principal ──────────
+  carouselRow: {
+    overflow: "hidden",        // clipea cuando la altura anima hacia 0
+    paddingHorizontal: 12,
   },
   carouselContent: {
     flexDirection: "row",
     alignItems: "center",
     gap: CAROUSEL_THUMB_GAP,
-    paddingRight: 4,
+    paddingBottom: 10,
   },
   carouselThumb: {
     width: STACK_SIZE,
@@ -433,9 +389,6 @@ const styles = StyleSheet.create({
   },
 
   // ── Texto dinámico (Tu mezcla + cantidad) ─────────────────────
-  // flex:1 → ocupa el espacio sobrante entre stack y play.
-  // Cuando el stack crece y lo "empuja", onLayout detecta que el
-  // ancho cayó por debajo de TEXT_MIN_WIDTH y textOpacity → 0.
   textBlock: {
     flex: 1,
     minWidth: 0,
