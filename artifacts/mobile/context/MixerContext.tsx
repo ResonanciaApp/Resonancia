@@ -786,6 +786,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
               if (serr < 0.3) {
                 bSeeded = true;
                 offsetConfirmed = true;
+                // Arrancar el throttle del recentrado AHORA: el seed aterriza con
+                // hasta 0.3 s de error (tolerancia de confirmación). Ese error NO
+                // es drift, pero dispararía un seekTo de recentrado en el primer
+                // valle de B (~1 s en loops cortos) → "tac". Posponer el primer
+                // recentrado 2 s salta ese primer valle; el drift real (lento) se
+                // corrige en valles posteriores, ya muteados.
+                lastResync = Date.now();
                 // Fade de entrada a 60 fps, independiente de los ticks de audio
                 // (en iOS los ticks llegan cada ~200 ms → bEntry calculado inline
                 // ya vale 1 al primer tick siguiente → el fade nunca corría).
@@ -853,6 +860,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             const now = Date.now();
             if (err > 0.06 && now - lastResync > 2000) {
               lastResync = now;
+              // El seekTo de recentrado produce un "tac" audible aunque el gain
+              // sea bajo (<0.12 ≈ 8% de volumen): el salto de posición es una
+              // discontinuidad en la onda y suena proporcional al volumen actual.
+              // Muteamos B a 0 ANTES del seek → el corte ocurre en silencio; el
+              // siguiente tick restaura el gain (bajo, sigue en el valle) → el
+              // pinchazo queda inaudible. (En reanudación NO hay seek porque el
+              // offset ya está fino → por eso el TAC solo aparecía la 1ª vez.)
+              try { p.volume = 0; } catch { /* ignore */ }
               try {
                 void p.seekTo(desired);
               } catch {
