@@ -18,13 +18,14 @@ import { getSoundImage } from "@/config/sound-images";
 import { useColors } from "@/hooks/useColors";
 
 const MAX_PLAYER_WIDTH = 438;
-const STACK_SIZE = 38;
-const STACK_SHIFT      = 15;  // offset apilado
-const STACK_SHIFT_OPEN = 48;  // offset desplegado (se adapta si hay muchos sonidos)
+const STACK_SIZE  = 38;
+const STACK_SHIFT = 15;        // offset apilado (cerrado)
+const SHIFT_OPEN  = 48;        // offset desplegado (se adapta si hay muchos sonidos)
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
-const MIX_BG  = "#3d304e";
-const BORDER_R = 12;
+const MIX_BG      = "#3d304e";
+const PILL_BORDER = "rgba(110,80,200,0.5)"; // violeta noche
+const BORDER_R    = 12;
 
 export function MiniPlayer() {
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
@@ -93,7 +94,12 @@ export function MiniPlayer() {
     if (!animsRef.current.has(id)) {
       const anim = new Animated.Value(0);
       animsRef.current.set(id, anim);
-      Animated.spring(anim, { toValue: 1, useNativeDriver: true, damping: 14, stiffness: 220 }).start();
+      Animated.spring(anim, {
+        toValue: 1,
+        useNativeDriver: true,
+        damping: 14,
+        stiffness: 220,
+      }).start();
     }
     return animsRef.current.get(id)!;
   }
@@ -104,10 +110,9 @@ export function MiniPlayer() {
   if (mixActive) {
     const n = activeSounds.length;
 
-    // Offset adaptativo al desplegar: nunca supera el ancho disponible
-    // (~250 px para el stack: 320 total − 44 play − 12 gap − 24 padding)
+    // Offset adaptativo al desplegar
     const shiftOpen = n > 1
-      ? Math.min(STACK_SHIFT_OPEN, Math.floor((250 - STACK_SIZE) / (n - 1)))
+      ? Math.min(SHIFT_OPEN, Math.floor((260 - STACK_SIZE) / (n - 1)))
       : 0;
 
     const handleOpen = () =>
@@ -116,63 +121,79 @@ export function MiniPlayer() {
         : openSheet();
 
     return (
-      <View style={styles.wrapper}>
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
+      // Contenedor externo: pildora arriba + card abajo
+      <View style={styles.mixOuter}>
 
-        <View style={styles.mixRow}>
-          {/* Stack — tap → de-stackear; nunca abre la hoja */}
-          <Pressable
-            onPress={toggleStack}
-            hitSlop={6}
-            style={styles.stackArea}
-            accessibilityRole="button"
-            accessibilityLabel={stackOpen ? "Colapsar imágenes" : "Ver imágenes de sonidos"}
-          >
-            {/* Los thumbnails son position:absolute, por eso el área de click
-                necesita tener height explícito */}
-            {activeSounds.map((s, i) => {
-              const entryAnim = getAnim(s.id);
-              const image     = getSoundImage(s.id);
-              const leftAnim  = stackOpenAnim.interpolate({
-                inputRange:  [0, 1],
-                outputRange: [i * STACK_SHIFT, i * shiftOpen],
-              });
-              return (
-                <Animated.View
-                  key={s.id}
-                  style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
-                >
-                  <Animated.View style={[styles.stackThumbInner, {
-                    transform: [{ scale: entryAnim }],
-                    opacity: entryAnim,
-                  }]}>
-                    {image ? (
-                      <Image source={image} style={StyleSheet.absoluteFill} resizeMode="cover" />
-                    ) : (
-                      <View style={[StyleSheet.absoluteFill, styles.stackFallback]}>
-                        <Feather name="music" size={14} color={colors.primary} />
-                      </View>
-                    )}
-                  </Animated.View>
-                </Animated.View>
-              );
-            })}
+        {/* ── Píldora "Abrir" — SOBRE la card ── */}
+        <View style={styles.pillRow}>
+          <Pressable onPress={handleOpen} style={styles.openPill} accessibilityRole="button" accessibilityLabel="Abrir Tu Mezcla">
+            <Text style={styles.openPillText}>Abrir</Text>
+            <Feather name="chevron-up" size={13} color="#FFFFFF" />
           </Pressable>
+        </View>
 
-          {/* Columna derecha: flecha ↑ + play apilados verticalmente */}
-          <View style={styles.rightCol}>
-            {/* Flecha — única forma de abrir Tu Mezcla */}
-            <Pressable
-              onPress={handleOpen}
-              hitSlop={8}
-              style={styles.openArrow}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Tu Mezcla"
-            >
-              <Feather name="chevron-up" size={17} color={colors.mutedForeground} />
-            </Pressable>
+        {/* ── Card del miniplayer ── */}
+        <View style={styles.wrapper}>
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
-            {/* Play / Pause */}
+          <View style={styles.mixRow}>
+            {/* Stack de thumbnails
+                Usamos un View como contenedor (no Pressable) para que los hijos
+                position:absolute rendericen correctamente, y ponemos un Pressable
+                absoluteFill encima como área de toque. */}
+            <View style={styles.stackArea}>
+              {activeSounds.map((s, i) => {
+                // Capa exterior: left animado (useNativeDriver: false)
+                const leftAnim = stackOpenAnim.interpolate({
+                  inputRange:  [0, 1],
+                  outputRange: [i * STACK_SHIFT, i * shiftOpen],
+                });
+                // Capa interior: scale + opacity de entrada (useNativeDriver: true)
+                const entryAnim = getAnim(s.id);
+                const image = getSoundImage(s.id);
+
+                return (
+                  <Animated.View
+                    key={s.id}
+                    style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
+                  >
+                    <Animated.View
+                      style={{
+                        width: STACK_SIZE,
+                        height: STACK_SIZE,
+                        borderRadius: 9,
+                        overflow: "hidden",
+                        transform: [{ scale: entryAnim }],
+                        opacity: entryAnim,
+                      }}
+                    >
+                      {image ? (
+                        <Image
+                          source={image}
+                          style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View style={styles.stackFallback}>
+                          <Feather name="music" size={14} color={colors.primary} />
+                        </View>
+                      )}
+                    </Animated.View>
+                  </Animated.View>
+                );
+              })}
+
+              {/* Overlay táctil encima de los thumbnails — de-stackea al tocar */}
+              <Pressable
+                onPress={toggleStack}
+                style={StyleSheet.absoluteFill}
+                hitSlop={6}
+                accessibilityRole="button"
+                accessibilityLabel={stackOpen ? "Colapsar" : "Desplegar sonidos"}
+              />
+            </View>
+
+            {/* Botón play/pause */}
             <View style={styles.waveWrap}>
               {[wave1, wave2].map((w, idx) => (
                 <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
@@ -188,6 +209,7 @@ export function MiniPlayer() {
             </View>
           </View>
         </View>
+
       </View>
     );
   }
@@ -234,15 +256,46 @@ export function MiniPlayer() {
 }
 
 const styles = StyleSheet.create({
+  // ── Contenedor raíz de mezcla (pildora + card) ────────────────
+  mixOuter: {
+    maxWidth: MAX_PLAYER_WIDTH,
+    width: "100%",
+    alignSelf: "center",
+    gap: 6,
+  },
+
+  // ── Píldora "Abrir" ───────────────────────────────────────────
+  pillRow: {
+    alignItems: "flex-end",
+    paddingRight: 4,
+  },
+  openPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 20,
+    backgroundColor: MIX_BG,
+    borderWidth: 1,
+    borderColor: PILL_BORDER,
+  },
+  openPillText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
+
+  // ── Card compartida ───────────────────────────────────────────
   wrapper: {
     borderRadius: BORDER_R,
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
-    alignSelf: "center",
   },
 
-  // ── Mezcla — layout ───────────────────────────────────────────
+  // ── Layout de la fila de mezcla ───────────────────────────────
   mixRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -251,8 +304,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
   },
-  // Área del stack: flex:1, altura fija = thumbnails. Los thumbs son
-  // position:absolute dentro de este contenedor.
+
+  // ── Área del stack: View (no Pressable) para que los hijos
+  //    position:absolute rendericen correctamente ────────────────
   stackArea: {
     flex: 1,
     height: STACK_SIZE,
@@ -269,28 +323,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
   },
-  stackThumbInner: {
+  stackFallback: {
     width: STACK_SIZE,
     height: STACK_SIZE,
     borderRadius: 9,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stackFallback: {
     backgroundColor: "rgba(212,175,55,0.18)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // ── Columna derecha: flecha + play ────────────────────────────
-  rightCol: {
-    alignItems: "center",
-    gap: 5,
-  },
-  openArrow: {
-    width: 44,
-    height: 20,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -317,7 +354,7 @@ const styles = StyleSheet.create({
   waveSession: { width: 38, height: 38 },
   waveMix:    { width: 44, height: 44 },
 
-  // ── Sesión — layout ───────────────────────────────────────────
+  // ── Sesión ────────────────────────────────────────────────────
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -325,7 +362,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     gap: 10,
   },
-  art: { width: 44, height: 44, borderRadius: 8 },
+  art:  { width: 44, height: 44, borderRadius: 8 },
   info: { flex: 1 },
   title: { fontSize: 14, fontWeight: "600", marginBottom: 2 },
   sub:   { fontSize: 11 },
