@@ -273,6 +273,13 @@ export function MixerSheet() {
   // useLayoutEffect → corre antes del primer paint, evita el frame con opacity=0
   useLayoutEffect(() => {
     if (isSheetOpen) {
+      // Limpiar estado residual de sub-paneles: si el sheet se cerró abruptamente
+      // (tap en backdrop) mientras el bgPicker o Escenas estaban abiertos, su
+      // estado queda en true aunque el modal no sea visible. Al reabrir, el panel
+      // aparecería inmediatamente visible y "chocaría" con la animación de entrada.
+      setBgPickerOpen(false);
+      bgPickerY.setValue(700);
+      setEscenasOpen(false);
       sheetOpacity.setValue(1);
       immersivoFade.setValue(0);
       if (consumeReopenMixer()) {
