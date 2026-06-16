@@ -85,6 +85,14 @@ const CATEGORY_CARDS = [
     image: require("../../assets/images/categories/cat-musica.png"),
     overlay: "rgba(4,14,8,0.42)",
   },
+  {
+    id: "reflexiones",
+    title: "Reflexiones",
+    subtitle: "Contemplación y sabiduría interior",
+    route: "/category/reflexiones",
+    image: require("../../assets/images/categories/cat-meditaciones.png"),
+    overlay: "rgba(30,16,36,0.52)",
+  },
 ] as const;
 
 type Session = (typeof SESSIONS)[number];

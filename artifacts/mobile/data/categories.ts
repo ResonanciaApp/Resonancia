@@ -73,7 +73,17 @@ export const CATEGORIES: Category[] = [
     gradient: ["#1A4A42", "#0C2420"],
     primary: true,
   },
-
+  {
+    id: "reflexiones",
+    title: "Reflexiones",
+    subtitle: "Contemplaciones y sabiduría para el alma",
+    icon: "thought-bubble-outline",
+    iconFamily: "MaterialCommunityIcons",
+    sessionCount: 0,
+    color: "#C4A4D4",
+    gradient: ["#3A2248", "#1E1024"],
+    primary: true,
+  },
 ];
 
 export const getPrimaryCategories = () => CATEGORIES.filter((c) => c.primary);

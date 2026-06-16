@@ -1,0 +1,27 @@
+Tengo un mezclador de sonidos en mi app. Cuando el usuario selecciona un sonido y se reproduce por primera vez, a veces se escucha un “TAC” o click al inicio de la reproducción, o incluso cerca del segundo 1. Si deselecciono el sonido y lo vuelvo a seleccionar, el TAC ya no aparece.
+
+Necesito corregir esto desde la lógica de audio.
+
+Posibles causas a revisar:
+1. El audio está comenzando con el volumen instantáneamente alto.
+2. El archivo puede estar partiendo en una muestra que no cruza por cero, generando click.
+3. El sonido se reproduce antes de estar completamente cargado o decodificado.
+4. Puede haber un desfase entre play(), currentTime, loop o sincronización con BPM.
+5. Puede haber doble trigger accidental al activar el sonido.
+6. El loop puede estar haciendo un salto brusco en el punto de inicio o en el punto de repetición.
+
+Solución requerida:
+- Precargar y decodificar completamente cada audio antes de permitir su reproducción.
+- Al iniciar cualquier sonido, aplicar un fade-in muy corto de 10 a 30 ms desde volumen 0 hasta el volumen objetivo.
+- Al detener o deseleccionar un sonido, aplicar fade-out corto de 10 a 30 ms antes de pausar o detener.
+- Evitar llamar play() dos veces sobre el mismo sonido si ya está activo.
+- Si se usa Web Audio API, usar GainNode y programar el volumen con rampas suaves:
+  gain.setValueAtTime(0, audioContext.currentTime)
+  gain.linearRampToValueAtTime(targetVolume, audioContext.currentTime + 0.02)
+- Si se usa HTMLAudioElement, partir con volume = 0 y subir progresivamente en pocos milisegundos.
+- Revisar que currentTime no se resetee de forma brusca mientras el sonido está reproduciéndose.
+- Revisar que el loop no tenga clicks en el punto de unión; si es necesario, agregar micro crossfade en el loop.
+- Agregar logs para detectar si el mismo sonido está recibiendo dos eventos de reproducción al seleccionarlo.
+
+Objetivo:
+Que ningún sonido del mezclador produzca TAC, click, pop o acople al comenzar, detenerse o sincronizarse. La reproducción debe entrar suavemente, incluso si el usuario toca varios sonidos rápidamente.
