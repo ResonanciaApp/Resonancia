@@ -239,7 +239,7 @@ function TabLayoutInner() {
   const showMiniPlayer = currentSession || mixActive;
   // Cuando el menú está oculto (Geometrix), el mini player baja para no quedar
   // flotando sobre el espacio vacío que dejó la tab bar.
-  const miniPlayerBottom = hidden ? bottomPb : tabBarHeight + 3;
+  const miniPlayerBottom = hidden ? bottomPb : tabBarHeight;
 
   return (
     <View style={{ flex: 1 }}>
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   },
   miniPlayerFloat: {
     position: "absolute",
-    left: 12,
-    right: 12,
+    left: 0,
+    right: 0,
   },
 });
