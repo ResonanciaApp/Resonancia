@@ -719,6 +719,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       let offsetConfirmed = false; // true al confirmar que el seed de B aterrizó
       let bSeeded = false; // B confirmó su salto al pico
       let bSeedTarget = -1; // posición objetivo del último seed (para confirmarlo)
+      let bEntryStart = 0; // timestamp cuando B se habilitó → fade de entrada
+      const B_ENTRY_FADE_MS = 120; // ramp de B al aparecer (evita el "tac" de habilitación)
       const fadeState = { audibleStart: 0 }; // mutable: se resetea en resumePlayer
       const STARTUP_FADE_MS = 350;
       // Recentrado de drift a largo plazo (sesiones de horas): dos loops nativos
@@ -764,6 +766,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
               if (serr < 0.3) {
                 bSeeded = true;
                 offsetConfirmed = true;
+                bEntryStart = Date.now(); // ancla del fade de entrada de B
               }
             }
             if (!bSeeded) {
@@ -786,7 +789,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             fadeState.audibleStart === 0 ? 0 : Math.min(1, (Date.now() - fadeState.audibleStart) / STARTUP_FADE_MS);
           // B muteada hasta confirmar su salto al pico (así no se oye ningún
           // transitorio del seed); A siempre suena (su borde de loop es inaudible).
-          setVol(p, (isSecondary && !bSeeded ? 0 : base * gain) * startup * masterVolumeRef.current);
+          // Al confirmar, B aparece con gain≈1 → fade adicional 120 ms para evitar el "tac".
+          const bEntry = isSecondary && bSeeded && bEntryStart > 0
+            ? Math.min(1, (Date.now() - bEntryStart) / B_ENTRY_FADE_MS)
+            : 1;
+          const volTarget = isSecondary
+            ? (bSeeded ? base * gain * bEntry : 0)
+            : base * gain;
+          setVol(p, volTarget * startup * masterVolumeRef.current);
 
           // Recentrado de drift de la capa B contra A: mantener el desfase dur/2,
           // corrigiendo SOLO en el valle de B (gain bajo → seek inaudible).
