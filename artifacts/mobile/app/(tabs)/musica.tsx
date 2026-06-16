@@ -618,7 +618,11 @@ export default function MezcladorScreen() {
             (mainTab !== "bpm" || effectiveBpm === null || s.bpm === effectiveBpm),
         );
 
-    // Etiquetas activas: del ánimo elegido + las seleccionadas a mano
+    // Filtros de ánimo/etiqueta solo aplican en "Todos" (popular). En los tabs
+    // de categoría el usuario quiere ver TODOS los sonidos de esa categoría sin
+    // que un filtro del engranaje oculte cosas inesperadamente.
+    if (mainTab !== "popular") return base;
+
     const moodTags = moodFilter ? MOOD_SOUND_TAGS[moodFilter] ?? [] : [];
     const activeTags = Array.from(new Set([...moodTags, ...tagFilters]));
     if (activeTags.length === 0) return base;
