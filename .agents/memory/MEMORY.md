@@ -35,6 +35,7 @@
 - [Tab bar overlay padding](tab-bar-overlay-padding.md) — la tab bar de (tabs) es overlay absoluto; pantallas con contenido al fondo deben reservar tabBarHeight (recalcular fórmula de _layout.tsx)
 - [Tab bar hide on Geometrix](tab-bar-hide-geometrix.md) — menú inferior se esconde en Geometrix vía contexto compartido + pestañita para recuperarlo (es la única navegación entre tabs: no atrapar al usuario)
 - [Session sort/filter](session-sort-filter.md) — filtro de orden dinámico en pantallas de categoría; "más escuchadas"=GET /catalog/popular (no historial local deduplicado), "mejores puntuadas"=ratings locales (no promedio global)
+- [MiniPlayer carousel scrollable](miniplayer-carousel-scroll.md) — thumbnails apilados del mezclador: ScrollView horizontal con scrollEnabled=stackOpen; contentContainerStyle necesita width explícito cuando hijos son position:absolute; reset scroll animated:false en collapse y en n changes
 - [Tab-screen audio focus cleanup](tab-screen-audio-focus-cleanup.md) — audio propio de una tab debe pararse con useFocusEffect (las tabs quedan montadas; el cleanup de unmount no corre al cambiar de tab)
 - [Geometrix intro audio](geometrix-intro-audio.md) — sonido de carga única: precargar en root layout (tabs montan lazy → preload en la tab llega tarde) + flag de módulo = one-shot por lanzamiento
 - [Geometrix Mis creaciones](geometrix-creations.md) — composición = receta (datos, no imagen); degradados/brillo en módulo data compartido (previews fieles); param ruta `load` se limpia a "" no undefined
