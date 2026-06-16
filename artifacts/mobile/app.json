@@ -102,8 +102,7 @@
           "color": "#C69B4F"
         }
       ],
-      "expo-video",
-      "react-native-audio-api"
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,

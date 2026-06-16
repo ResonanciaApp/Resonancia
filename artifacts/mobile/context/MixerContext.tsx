@@ -12,7 +12,6 @@ import React, {
 
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
-import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
 import { getSoundById } from "@/data/sounds";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
@@ -183,8 +182,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const setMasterVolume = useCallback((v: number) => {
     const clamped = Math.max(0, Math.min(1, v));
     masterVolumeRef.current = clamped;
-    // Espejar el master en el motor BPM (tiene su propio nodo de ganancia).
-    bpmAudioEngine.setMasterVolume(clamped);
     setMasterVolumeSt(clamped);
   }, []);
 
@@ -236,13 +233,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const bpmPausePhaseRef = useRef<number | null>(null);
   /** Función del tick (ref estable para la recursión del setTimeout). */
   const bpmTickFnRef = useRef<() => void>(() => {});
-  /**
-   * Sistema que reproduce la familia BPM actual. Se fija con el PRIMER sonido
-   * BPM y se mantiene hasta que se quitan todos (así todas las capas comparten
-   * reloj y quedan en fase). "engine" = react-native-audio-api (gapless nativo);
-   * "expo" = reloj maestro + expo-audio (fallback si el motor no está listo).
-   */
-  const bpmSystemRef = useRef<"engine" | "expo" | null>(null);
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
   activeSoundsRef.current = activeSounds;
@@ -361,16 +351,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // ignore
       }
     });
-
-    // ── Motor BPM (react-native-audio-api): pausar/reanudar en fase ────────
-    // suspend()/resume() congela el reloj del contexto → los loops retoman desde
-    // la fase exacta. No-op si el motor no está activo. (Solo aplica cuando la
-    // familia BPM corre en el motor; con el camino expo el bloque de abajo maneja
-    // la fase con el reloj maestro.)
-    if (bpmSystemRef.current === "engine") {
-      if (next) void bpmAudioEngine.resume();
-      else void bpmAudioEngine.suspend();
-    }
 
     // ── Reloj maestro BPM: pausar/reanudar manteniendo la fase ─────────────
     if (bpmValueRef.current !== null && bpmClockRef.current !== null) {
@@ -600,14 +580,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   // el primer sonido sale en SILENCIO. Configurándola acá (mucho antes de que
   // el usuario toque un sonido) la sesión ya está lista en el primer tap.
   useEffect(() => {
-    void (async () => {
-      // Primero expo-audio configura/posee la AVAudioSession; recién después
-      // inicializamos el motor BPM (que NO toca la sesión). Si el módulo nativo
-      // no existe (build previo a reconstruir, web), init() falla en silencio y
-      // los loops BPM caen al camino expo. Nunca corre en el arranque crudo.
-      await ensureAudioMode();
-      await bpmAudioEngine.init();
-    })();
+    void ensureAudioMode();
   }, [ensureAudioMode]);
 
   const createPlayerFor = useCallback((id: string, volume: number): SoundPlayers | null => {
@@ -1066,12 +1039,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       if (exists) {
         const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
         if (removingOwner) clearLockScreen();
-        // Estacionar (no destruir) para que reactivarlo sea instantáneo. Si el
-        // sonido corre en el motor BPM, apagarlo ahí (parkPlayer es no-op para
-        // sonidos que nunca tuvieron player expo).
-        if (getSoundById(id)?.bpm !== undefined && bpmSystemRef.current === "engine") {
-          bpmAudioEngine.stop(id);
-        }
+        // Estacionar (no destruir) para que reactivarlo sea instantáneo.
         parkPlayer(id);
         const next = prev.filter((s) => s.id !== id);
         setActiveSounds(next);
@@ -1084,7 +1052,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           bpmClockRef.current = null;
           bpmValueRef.current = null;
           bpmPausePhaseRef.current = null;
-          bpmSystemRef.current = null;
           setActiveBpm(null);
         }
 
@@ -1115,38 +1082,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       stopSessionPlayback();
       void ensureAudioMode();
 
-      // ── Sonido BPM por el MOTOR (react-native-audio-api) ──────────────────
-      // El sistema de la familia BPM se fija con el PRIMER sonido rítmico y se
-      // mantiene hasta quitarlos todos (todas las capas comparten reloj → fase).
-      // Motor listo → loops gapless nativos; si no (build previo a reconstruir,
-      // web) → camino expo de siempre, más abajo.
-      if (soundBpm !== undefined) {
-        if (bpmValueRef.current === null) {
-          bpmSystemRef.current = bpmAudioEngine.isReady() ? "engine" : "expo";
-        }
-        if (bpmSystemRef.current === "engine") {
-          void bpmAudioEngine.play(id, {
-            bpm: soundBpm,
-            loopBars: soundDef?.loopBars ?? 2,
-            volume: DEFAULT_VOLUME,
-          });
-          if (bpmValueRef.current === null) {
-            bpmValueRef.current = soundBpm;
-            bpmPausePhaseRef.current = null;
-            setActiveBpm(soundBpm);
-          }
-          // Si la mezcla estaba pausada, reanudar (resume del contexto + estado).
-          if (!isPlayingRef.current) applyPlaying(true);
-          setActiveSounds([...prev, { id, volume: DEFAULT_VOLUME }]);
-          setLoadedPresetId(null);
-          // Lock screen: lo posee el primer player expo. En una mezcla solo-BPM
-          // no hay owner (regresión menor aceptada); syncLockScreen lo resuelve.
-          syncLockScreen();
-          return true;
-        }
-      }
-
-      // ── Camino expo-audio (sonidos no-BPM, o BPM en fallback) ─────────────
+      // ── Camino expo-audio ──────────────────────────────────────────────────
       // Si está estacionado (apagado hace poco), retomarlo al instante; si no,
       // crear el player desde cero (decodifica el mp3).
       const player = resumePlayer(id, DEFAULT_VOLUME) ?? createPlayerFor(id, DEFAULT_VOLUME);
@@ -1205,11 +1141,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     // gain de cada capa en el próximo tick (~120 ms). NO setear player.volume
     // directo acá: pisaría el gain del fade y daría un salto de volumen en el
     // empalme del loop.
-    // Excepción: loops BPM en el motor no tienen capas a/b ni listener de
-    // crossfade, así que su volumen se aplica directo acá.
-    if (getSoundById(id)?.bpm !== undefined && bpmSystemRef.current === "engine") {
-      bpmAudioEngine.setVolume(id, volume);
-    }
     baseVolumesRef.current.set(id, volume);
     setActiveSounds((prev) => prev.map((s) => (s.id === id ? { ...s, volume } : s)));
   }, []);
@@ -1232,10 +1163,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     (id: string) => {
       const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
       if (removingOwner) clearLockScreen();
-      // Si el sonido corre en el motor BPM, apagarlo ahí (parkPlayer es no-op).
-      if (getSoundById(id)?.bpm !== undefined && bpmSystemRef.current === "engine") {
-        bpmAudioEngine.stop(id);
-      }
       // Estacionar (no destruir): si lo vuelven a agregar, arranca al instante.
       parkPlayer(id);
       const next = activeSoundsRef.current.filter((s) => s.id !== id);
@@ -1248,7 +1175,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         bpmClockRef.current = null;
         bpmValueRef.current = null;
         bpmPausePhaseRef.current = null;
-        bpmSystemRef.current = null;
         setActiveBpm(null);
       }
       if (next.length === 0) {
@@ -1280,10 +1206,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     bpmClockRef.current = null;
     bpmValueRef.current = null;
     bpmPausePhaseRef.current = null;
-    bpmSystemRef.current = null;
     setActiveBpm(null);
-    // Apagar todos los loops del motor BPM (libera su ancla de fase).
-    bpmAudioEngine.stopAll();
 
     // Cancelar cualquier fade-out de audio en curso (re-entradas rápidas) y
     // apagar de inmediato sus players: ya están desacoplados de los refs, así
@@ -1545,42 +1468,21 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       bpmClockRef.current = null;
       bpmValueRef.current = null;
       bpmPausePhaseRef.current = null;
-      // Liberar también el motor BPM y re-decidir el sistema para esta mezcla.
-      bpmAudioEngine.stopAll();
-      bpmSystemRef.current = null;
-      const hasBpm = playable.some((s) => getSoundById(s.id)?.bpm !== undefined);
-      if (hasBpm) {
-        bpmSystemRef.current = bpmAudioEngine.isReady() ? "engine" : "expo";
-      }
 
       const created: ActiveSound[] = [];
       playable.forEach((s) => {
-        const def = getSoundById(s.id);
-        if (def?.bpm !== undefined && bpmSystemRef.current === "engine") {
-          // Loop BPM por el motor (gapless nativo): sin player expo.
-          void bpmAudioEngine.play(s.id, {
-            bpm: def.bpm,
-            loopBars: def.loopBars ?? 2,
-            volume: s.volume,
-          });
-          created.push({ id: s.id, volume: s.volume });
-        } else {
-          const p = createPlayerFor(s.id, s.volume);
-          if (p) created.push({ id: s.id, volume: s.volume });
-        }
+        const p = createPlayerFor(s.id, s.volume);
+        if (p) created.push({ id: s.id, volume: s.volume });
       });
-      // Si el preset trae algún sonido rítmico, fijar el BPM activo. El reloj
-      // maestro + scheduler son SOLO del camino expo; el motor maneja su fase.
+      // Si el preset trae algún sonido rítmico, fijar el BPM activo y arrancar el scheduler.
       const firstBpm = created
         .map((s) => getSoundById(s.id)?.bpm)
         .find((bpm) => bpm !== undefined);
       if (firstBpm !== undefined) {
         bpmValueRef.current = firstBpm;
         setActiveBpm(firstBpm);
-        if (bpmSystemRef.current === "expo") {
-          bpmClockRef.current = Date.now();
-          startBpmScheduler();
-        }
+        bpmClockRef.current = Date.now();
+        startBpmScheduler();
       } else {
         setActiveBpm(null);
       }
@@ -1742,8 +1644,6 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       parkFadeRef.current.forEach((iv) => clearInterval(iv));
       parkFadeRef.current.clear();
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
-      // Cerrar el contexto del motor BPM y liberar sus nodos.
-      void bpmAudioEngine.dispose();
     };
   }, [clearLockScreen, stopBpmScheduler]);
 
