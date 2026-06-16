@@ -420,13 +420,8 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Mezclas de la comunidad ── */}
-            <View style={{ marginBottom: 23 }}>
-              <CommunityMixesCarousel />
-            </View>
-
             {/* ── Otras temáticas ── */}
-            <View style={[styles.section, { marginBottom: 33 }]}>
+            <View style={[styles.section, { marginBottom: 23 }]}>
               <View style={styles.sectionRow}>
                 <Text style={styles.sectionTitle}>Otras temáticas</Text>
               </View>
@@ -458,6 +453,11 @@ export default function ExploreScreen() {
                   </Pressable>
                 ))}
               </ScrollView>
+            </View>
+
+            {/* ── Mezclas de la comunidad ── */}
+            <View style={{ marginBottom: 33 }}>
+              <CommunityMixesCarousel />
             </View>
           </>
         )}
