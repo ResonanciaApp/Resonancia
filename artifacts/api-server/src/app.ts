@@ -50,4 +50,14 @@ app.use(
 
 app.use("/api", router);
 
+// TEMP: descarga de app.json para build iOS
+import fs from "fs";
+import path from "path";
+app.get("/dl/app-json", (_req, res) => {
+  const file = path.resolve(__dirname, "../../../mobile/app.json");
+  res.setHeader("Content-Disposition", 'attachment; filename="app.json"');
+  res.setHeader("Content-Type", "application/json");
+  res.send(fs.readFileSync(file, "utf-8"));
+});
+
 export default app;
