@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -22,10 +22,7 @@ import { useColors } from "@/hooks/useColors";
 const MAX_PLAYER_WIDTH    = 438;
 const STACK_SIZE          = 38;
 const STACK_SHIFT         = 15;   // offset apilado (cerrado)
-const SHIFT_OPEN          = 48;   // offset desplegado (se adapta si hay muchos sonidos)
-const TEXT_MIN_WIDTH      = 52;   // umbral para ocultar texto
-const CAROUSEL_THRESHOLD  = 4;    // a partir de 5 sonidos → modo carrusel deslizable
-const CAROUSEL_THUMB_GAP  = 6;    // separación entre thumbnails en el carrusel
+const CAROUSEL_THUMB_GAP  = 8;    // separación fija entre thumbnails en el carrusel
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "#3d304e";
@@ -125,53 +122,13 @@ export function MiniPlayer() {
     return animsRef.current.get(id)!;
   }
 
-  // ── Visibilidad del texto ─────────────────────────────────────
-  // Bug original: al montar con el 1er sonido rowWidthRef=0 → available<0 →
-  // texto oculto. Fix: función compartida que tanto onRowLayout como el
-  // useEffect llaman; si rowWidth=0 (layout aún no medido) no hace nada.
-  const textOpacity = useRef(new Animated.Value(1)).current;
+  // ── Ancho de la fila (para calcular stackWidthOpen) ──────────
+  // El textBlock es flex:1 y se mueve naturalmente con el stack.
+  // No hay animación de opacidad — el texto simplemente se empuja.
   const rowWidthRef = useRef(0);
-
-  const updateTextOpacity = useCallback(
-    (rowW: number, n: number, isOpen: boolean) => {
-      if (rowW === 0 || n === 0) return;
-      const isCarousel = n > CAROUSEL_THRESHOLD;
-      let stackW: number;
-      if (isCarousel && isOpen) {
-        // carrusel abierto: ocupa casi todo el ancho
-        stackW = Math.max(80, rowW - 86);
-      } else if (!isCarousel && isOpen && n > 1) {
-        // spread abierto: usar shiftOpen real (mismo cálculo que el JSX)
-        const shiftOpen = Math.min(SHIFT_OPEN, Math.floor((260 - STACK_SIZE) / (n - 1)));
-        stackW = STACK_SIZE + (n - 1) * shiftOpen;
-      } else {
-        // apilado (cerrado) — cualquier modo
-        stackW = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-      }
-      const available = rowW - stackW - 86;
-      Animated.timing(textOpacity, {
-        toValue: available >= TEXT_MIN_WIDTH ? 1 : 0,
-        duration: 120,
-        useNativeDriver: true,
-      }).start();
-    },
-    [textOpacity],
-  );
-
-  // onRowLayout dispara en el primer render → llama updateTextOpacity con el
-  // ancho real, corrigiendo el estado incorrecto que dejó el efecto inicial.
-  const onRowLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      const w = e.nativeEvent.layout.width;
-      rowWidthRef.current = w;
-      updateTextOpacity(w, activeSounds.length, stackOpen);
-    },
-    [activeSounds.length, stackOpen, updateTextOpacity],
-  );
-
-  useEffect(() => {
-    updateTextOpacity(rowWidthRef.current, activeSounds.length, stackOpen);
-  }, [activeSounds.length, stackOpen, updateTextOpacity]);
+  const onRowLayout = (e: LayoutChangeEvent) => {
+    rowWidthRef.current = e.nativeEvent.layout.width;
+  };
 
   if (!currentSession && !mixActive) return null;
 
@@ -185,21 +142,15 @@ export function MiniPlayer() {
       : null;
     const title = presetName || "Tu mezcla";
 
-    // ¿Modo carrusel deslizable? (más de CAROUSEL_THRESHOLD sonidos)
-    const isCarouselMode = n > CAROUSEL_THRESHOLD;
-    // Ancho disponible para el carrusel = fila total − padding − gap − botón play
-    const carouselOpenWidth = Math.max(80, rowWidthRef.current - 86);
-
-    // Offset adaptativo al desplegar (solo en modo spread)
-    const shiftOpen = (!isCarouselMode && n > 1)
-      ? Math.min(SHIFT_OPEN, Math.floor((260 - STACK_SIZE) / (n - 1)))
-      : 0;
-
-    // Ancho del stack según modo y estado (apilado / desplegado)
+    // Ancho del stack apilado (cerrado)
     const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-    const stackWidthOpen    = isCarouselMode
-      ? carouselOpenWidth
-      : STACK_SIZE + Math.max(0, n - 1) * shiftOpen;
+
+    // Ancho del carrusel abierto: contenido real o espacio disponible (lo que sea menor).
+    // El ScrollView scrollea si el contenido supera el espacio visible.
+    const scrollContentWidth = n * STACK_SIZE + Math.max(0, n - 1) * CAROUSEL_THUMB_GAP;
+    const availableForStack  = Math.max(STACK_SIZE, rowWidthRef.current - 86);
+    const stackWidthOpen     = Math.min(scrollContentWidth, availableForStack);
+
     const animatedStackWidth = stackOpenAnim.interpolate({
       inputRange:  [0, 1],
       outputRange: [stackWidthStacked, stackWidthOpen],
@@ -241,8 +192,8 @@ export function MiniPlayer() {
             >
               <Animated.View style={[styles.stackArea, { width: animatedStackWidth }]}>
 
-                {/* ── Modo carrusel: scroll horizontal (>6 sonidos, abierto) ── */}
-                {isCarouselMode && stackOpen ? (
+                {stackOpen ? (
+                  /* ── Abierto: ScrollView horizontal con gap fijo ── */
                   <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -272,41 +223,31 @@ export function MiniPlayer() {
                     })}
                   </ScrollView>
                 ) : (
-                  /* ── Modo spread: posición animada (≤6 sonidos) ── */
+                  /* ── Cerrado: thumbnails apilados con posición absoluta ── */
                   activeSounds.map((s, i) => {
-                    const leftAnim = stackOpenAnim.interpolate({
-                      inputRange:  [0, 1],
-                      outputRange: [i * STACK_SHIFT, i * shiftOpen],
-                    });
                     const entryAnim = getAnim(s.id);
                     const image = getSoundImage(s.id);
                     return (
                       <Animated.View
                         key={s.id}
-                        style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
-                      >
-                        <Animated.View
-                          style={{
-                            width: STACK_SIZE,
-                            height: STACK_SIZE,
-                            borderRadius: 9,
-                            overflow: "hidden",
+                        style={[
+                          styles.stackThumb,
+                          { left: i * STACK_SHIFT, zIndex: i,
                             transform: [{ scale: entryAnim }],
-                            opacity: entryAnim,
-                          }}
-                        >
-                          {image ? (
-                            <Image
-                              source={image}
-                              style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                              resizeMode="cover"
-                            />
-                          ) : (
-                            <View style={styles.stackFallback}>
-                              <Feather name="music" size={14} color={colors.primary} />
-                            </View>
-                          )}
-                        </Animated.View>
+                            opacity: entryAnim },
+                        ]}
+                      >
+                        {image ? (
+                          <Image
+                            source={image}
+                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.stackFallback}>
+                            <Feather name="music" size={14} color={colors.primary} />
+                          </View>
+                        )}
                       </Animated.View>
                     );
                   })
@@ -315,17 +256,13 @@ export function MiniPlayer() {
               </Animated.View>
             </Pressable>
 
-            {/* Texto: "Tu mezcla" + cantidad de sonidos.
-                La opacidad se actualiza en el useEffect de activeSounds.length,
-                sin esperar al ciclo de layout. */}
-            <Animated.View
-              style={[styles.textBlock, { opacity: textOpacity }]}
-            >
+            {/* Texto: empujado/recogido por el stack naturalmente (flex:1) */}
+            <View style={styles.textBlock}>
               <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.mixSub} numberOfLines={1}>
                 {n} {n === 1 ? "sonido" : "sonidos"}
               </Text>
-            </Animated.View>
+            </View>
 
             {/* Botón play/pause */}
             <View style={styles.waveWrap}>
