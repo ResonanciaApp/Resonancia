@@ -33,5 +33,7 @@ export function getMixImage(key?: string): ImageSourcePropType | undefined {
   return SOUND_IMAGE_MAP[key] as ImageSourcePropType | undefined;
 }
 
-/** Imagen por defecto cuando una mezcla no tiene portada asignada. */
-export const DEFAULT_MIX_IMAGE_KEY = "noche";
+/** Imagen por defecto cuando una mezcla no tiene portada asignada.
+ *  String vacío → getMixImage("") devuelve undefined → MixCover muestra
+ *  el fallback (fondo dorado sutil + ícono de mezclador). */
+export const DEFAULT_MIX_IMAGE_KEY = "";
