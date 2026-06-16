@@ -68,6 +68,7 @@
 - [Drawer animation glitches](drawer-animation.md) — drawer SIEMPRE montado (sin gate rendered) + animar imperativo con stopAnimation antes de cada transición + sombra solo si isOpen; no regresar
 - [biblioteca chip animation](biblioteca-chip-animation.md) — AnimatedChipRow: un progress 0/1 ida-y-vuelta; displayTab posiciona (se conserva al volver), colorTab da oro/gris al instante del tap
 - [Mixer settings sheet](mixer-settings-sheet.md) — engranaje del Mezclador abre Ajustes (filtro ánimo/etiquetas + paleta de fondo); estado local persistido; validar claves persistidas o el filtro crashea
+- [BPM mix-bus limiter](bpm-mixbus-limiter.md) — apilar 3+ loops satura el master (clipping); fix = WaveShaper soft-clip (la lib NO trae compresor); createWaveShaper() = 0 args, curva/oversample por propiedad
 - [Animated layout-prop slide fails under Fabric](animated-left-fabric.md) — animar `left`/posición con JS driver no renderiza en New Arch; usar `translateX` nativo con left estático (width JS + transform nativo conviven)
 - [Mixer "tiempo" phase offset](mixer-phase-offset.md) — offset de loop BPM = LAG por beats `[0,.125,.25,.375]` (no cuartos); solo audible al combinar ≥2 capas; runtime-only (no se persiste); offset 0 = no-op; tocar las 4 rutas en lockstep
 - [BPM gapless loop engine](bpm-gapless-loop.md) — loops "bpm" del Mezclador en react-native-audio-api (resto en expo-audio); expo dueño único de AVAudioSession; loopEnd musical; play() async cancelable; necesita rebuild del dev client; historial de enfoques expo-audio que fallaron

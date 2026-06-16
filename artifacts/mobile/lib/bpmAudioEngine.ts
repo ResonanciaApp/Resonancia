@@ -36,6 +36,7 @@ import type {
   AudioBuffer as AudioBufferType,
   AudioBufferSourceNode as SourceNodeType,
   GainNode as GainNodeType,
+  WaveShaperNode as WaveShaperNodeType,
 } from "react-native-audio-api";
 
 type RNAudioModule = typeof import("react-native-audio-api");
@@ -80,10 +81,44 @@ function loopSeconds(bpm: number, loopBars: number): number {
   return (60 / bpm) * 4 * loopBars;
 }
 
+/**
+ * Codo del limitador soft-clip: por debajo de |x|=KNEE la curva es LINEAL
+ * (transparente, no toca 1-2 capas), por encima satura suave hacia el techo.
+ * 0.8 deja casi intacto un sonido a fondo de escala y solo doma los picos que
+ * aparecen al sumar 3+ capas.
+ */
+const SOFT_CLIP_KNEE = 0.8;
+
+/**
+ * Curva de transferencia para el WaveShaper del bus master. El WaveShaper mapea
+ * su entrada [-1,1] por esta curva; entradas >1 (varias capas sumadas) se fijan
+ * al último valor → techo ~0.95 con codo suave en vez de recorte áspero a 1.0.
+ */
+function makeSoftClipCurve(samples = 2048, knee = SOFT_CLIP_KNEE): Float32Array {
+  const curve = new Float32Array(samples);
+  for (let i = 0; i < samples; i++) {
+    const x = (i / (samples - 1)) * 2 - 1; // -1 … 1
+    const a = Math.abs(x);
+    const y = a <= knee ? a : knee + (1 - knee) * Math.tanh((a - knee) / (1 - knee));
+    curve[i] = Math.sign(x) * y;
+  }
+  return curve;
+}
+
+/** Construida una sola vez (no depende del estado del motor). */
+const SOFT_CLIP_CURVE = makeSoftClipCurve();
+
 class BpmAudioEngine {
   private rn: RNAudioModule | null = null;
   private ctx: AudioContextType | null = null;
   private masterGain: GainNodeType | null = null;
+  /**
+   * Limitador soft-clip en el bus master (WaveShaper). Al sumar varias capas
+   * BPM la mezcla puede pasar de 0 dBFS y el destino RECORTA en duro (la
+   * "distorsión" que aparece al agregar el 3.º+ sonido). El limitador satura
+   * suave los picos en vez de recortar. null si la lib no expone WaveShaper.
+   */
+  private limiter: WaveShaperNodeType | null = null;
   /** null = sin probar; true/false = resultado de la probada. */
   private available: boolean | null = null;
   private ready = false;
@@ -139,10 +174,26 @@ class BpmAudioEngine {
       const ctx = new mod.AudioContext();
       const masterGain = ctx.createGain();
       masterGain.gain.value = clamp01(this.masterVolume);
-      masterGain.connect(ctx.destination);
+      // Limitador soft-clip ANTES del destino: al sumar varias capas BPM el bus
+      // master puede pasar de 0 dBFS y el destino recorta en duro (distorsión
+      // áspera, peor cuantos más sonidos). El WaveShaper satura suave los picos
+      // por encima del codo → limita sin clipping. La lib NO trae compresor.
+      let limiter: WaveShaperNodeType | null = null;
+      try {
+        limiter = ctx.createWaveShaper();
+        limiter.curve = SOFT_CLIP_CURVE;
+        limiter.oversample = "2x";
+        masterGain.connect(limiter);
+        limiter.connect(ctx.destination);
+      } catch {
+        // Si WaveShaper no estuviera disponible: directo (comportamiento previo).
+        limiter = null;
+        masterGain.connect(ctx.destination);
+      }
       this.rn = mod;
       this.ctx = ctx;
       this.masterGain = masterGain;
+      this.limiter = limiter;
       this.available = true;
       this.ready = true;
       return true;
@@ -152,6 +203,7 @@ class BpmAudioEngine {
       this.ready = false;
       this.ctx = null;
       this.masterGain = null;
+      this.limiter = null;
       this.rn = null;
       return false;
     }
@@ -417,6 +469,7 @@ class BpmAudioEngine {
     const ctx = this.ctx;
     this.ctx = null;
     this.masterGain = null;
+    this.limiter = null;
     this.ready = false;
     // Permitir reinicializar si el provider se remonta en el mismo runtime:
     // init() corta temprano salvo que `available` vuelva a estado sin probar.
