@@ -104,7 +104,7 @@ export function MixCover({
   }
   return (
     <View style={containerStyle}>
-      <MaterialCommunityIcons name="tune-variant" size={size * 0.4} color={GOLD} />
+      <MaterialCommunityIcons name="tune-variant" size={size * 0.4} color={MUTED} />
     </View>
   );
 }
