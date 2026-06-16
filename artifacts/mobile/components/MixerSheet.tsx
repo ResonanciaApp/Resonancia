@@ -522,11 +522,13 @@ export function MixerSheet() {
           ]}
           onPress={(e) => e.stopPropagation()}
         >
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: bgBreath }]} pointerEvents="none">
+          <Animated.View style={[StyleSheet.absoluteFill, styles.bgLayerClip, { opacity: bgBreath }]} pointerEvents="none">
             {activeBgPreset.image ? (
               <>
-                {/* Extendemos 40px en cada dirección para que cover recorte también
-                    verticalmente → elimina cualquier strip blanco/negro en bordes */}
+                {/* La imagen sobresale 300px en cada dirección para que `cover` recorte
+                    sin dejar strip blanco/negro; el contenedor tiene overflow:hidden
+                    (styles.bgLayerClip) para que ese sobrante NO se asome arriba de la
+                    hoja durante el slide (era la franja que flasheaba al abrir). */}
                 <Image
                   source={activeBgPreset.image}
                   style={{
@@ -931,6 +933,11 @@ const styles = StyleSheet.create({
   backdropDim: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  bgLayerClip: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden",
   },
   sheet: {
     height: Dimensions.get("window").height,
