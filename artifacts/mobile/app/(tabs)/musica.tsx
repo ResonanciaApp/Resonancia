@@ -932,7 +932,7 @@ const styles = StyleSheet.create({
   soundCard: { width: "28%" },
   cardImageWrap: {
     width: "79%", aspectRatio: 1, alignSelf: "center",
-    borderRadius: 16, borderWidth: 3, borderColor: "transparent",
+    borderRadius: 16, borderWidth: 5, borderColor: "transparent",
   },
   cardClipInner: {
     flex: 1, borderRadius: 14, overflow: "hidden",
