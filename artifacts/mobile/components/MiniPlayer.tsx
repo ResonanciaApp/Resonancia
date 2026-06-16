@@ -79,6 +79,21 @@ export function MiniPlayer() {
   const [elapsed, setElapsed] = useState(0);
   const elapsedRef = useRef(0);
 
+  // ── De-stack de thumbnails ─────────────────────────────────────
+  const [stackOpen, setStackOpen] = useState(false);
+  const stackOpenAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleStack = () => {
+    const next = !stackOpen;
+    setStackOpen(next);
+    Animated.spring(stackOpenAnim, {
+      toValue: next ? 1 : 0,
+      useNativeDriver: false,
+      damping: 16,
+      stiffness: 220,
+    }).start();
+  };
+
   useEffect(() => {
     if (!mixPlaying) return;
     const id = setInterval(() => {
@@ -93,8 +108,10 @@ export function MiniPlayer() {
       elapsedRef.current = 0;
       setElapsed(0);
       animsRef.current.clear();
+      setStackOpen(false);
+      stackOpenAnim.setValue(0);
     }
-  }, [mixActive]);
+  }, [mixActive, stackOpenAnim]);
 
   // ── Animaciones de entrada por sonido ─────────────────────────
   const animsRef = useRef<Map<string, Animated.Value>>(new Map());
@@ -139,7 +156,13 @@ export function MiniPlayer() {
     const title = presetName || "Mi mezcla";
     const count = activeSounds.length;
     const visible = activeSounds.slice(-MAX_STACK);
-    const stackWidth = STACK_SIZE + Math.max(0, visible.length - 1) * STACK_SHIFT;
+
+    const stackWidthStacked = STACK_SIZE + Math.max(0, visible.length - 1) * STACK_SHIFT;
+    const stackWidthOpen   = STACK_SIZE + Math.max(0, visible.length - 1) * STACK_SHIFT_OPEN;
+    const animatedStackWidth = stackOpenAnim.interpolate({
+      inputRange:  [0, 1],
+      outputRange: [stackWidthStacked, stackWidthOpen],
+    });
 
     return shell(
       <View style={styles.row}>
@@ -147,30 +170,49 @@ export function MiniPlayer() {
           <Feather name="chevron-up" size={20} color={colors.mutedForeground} />
         </View>
 
-        <View style={[styles.stackWrap, { width: stackWidth }]}>
-          {visible.map((s, i) => {
-            const anim = getAnim(s.id);
-            const image = getSoundImage(s.id);
-            return (
-              <Animated.View
-                key={s.id}
-                style={[
-                  styles.stackThumb,
-                  { left: i * STACK_SHIFT, zIndex: i },
-                  { transform: [{ scale: anim }], opacity: anim },
-                ]}
-              >
-                {image ? (
-                  <Image source={image} style={styles.stackThumbInner} resizeMode="cover" />
-                ) : (
-                  <View style={[styles.stackThumbInner, styles.stackFallback]}>
-                    <Feather name="music" size={14} color={colors.primary} />
-                  </View>
-                )}
-              </Animated.View>
-            );
-          })}
-        </View>
+        {/* Stack interactivo: tap → de-stackear */}
+        <Pressable
+          onPress={(e) => { e.stopPropagation(); toggleStack(); }}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={stackOpen ? "Colapsar imágenes" : "Ver imágenes de sonidos"}
+        >
+          <Animated.View style={[styles.stackWrap, { width: animatedStackWidth }]}>
+            {visible.map((s, i) => {
+              const entryAnim = getAnim(s.id);
+              const image = getSoundImage(s.id);
+              const leftAnim = stackOpenAnim.interpolate({
+                inputRange:  [0, 1],
+                outputRange: [i * STACK_SHIFT, i * STACK_SHIFT_OPEN],
+              });
+              return (
+                // Capa exterior: maneja `left` animado (useNativeDriver: false)
+                <Animated.View
+                  key={s.id}
+                  style={[styles.stackThumb, { left: leftAnim, zIndex: i }]}
+                >
+                  {/* Capa interior: maneja scale/opacity de entrada (useNativeDriver: true) */}
+                  <Animated.View
+                    style={{
+                      width: STACK_SIZE,
+                      height: STACK_SIZE,
+                      transform: [{ scale: entryAnim }],
+                      opacity: entryAnim,
+                    }}
+                  >
+                    {image ? (
+                      <Image source={image} style={styles.stackThumbInner} resizeMode="cover" />
+                    ) : (
+                      <View style={[styles.stackThumbInner, styles.stackFallback]}>
+                        <Feather name="music" size={14} color={colors.primary} />
+                      </View>
+                    )}
+                  </Animated.View>
+                </Animated.View>
+              );
+            })}
+          </Animated.View>
+        </Pressable>
 
         {mixPlaying ? (
           <>

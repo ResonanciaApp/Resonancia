@@ -35,29 +35,58 @@ type TabId = (typeof TABS)[number]["id"];
 
 const TAB_INDICATOR_COLOR = "#D4AF37";
 
-// ── Mini-stack de imágenes de sonidos ────────────────────────────
+// ── Mini-stack de imágenes de sonidos (interactivo) ──────────────
 const THUMB = 38;
 const SHIFT = 22;
+const SHIFT_OPEN = 50;
 const MAX_STACK = 4;
 
 function SoundStack({ sounds }: { sounds: { id: string }[] }) {
+  const [open, setOpen] = useState(false);
+  const openAnim = useRef(new Animated.Value(0)).current;
+
+  const toggle = () => {
+    const next = !open;
+    setOpen(next);
+    Animated.spring(openAnim, {
+      toValue: next ? 1 : 0,
+      useNativeDriver: false,
+      damping: 16,
+      stiffness: 220,
+    }).start();
+  };
+
   const visible = sounds.slice(0, MAX_STACK);
-  const stackWidth = THUMB + Math.max(0, visible.length - 1) * SHIFT;
+  const wStacked = THUMB + Math.max(0, visible.length - 1) * SHIFT;
+  const wOpen    = THUMB + Math.max(0, visible.length - 1) * SHIFT_OPEN;
+  const animWidth = openAnim.interpolate({ inputRange: [0, 1], outputRange: [wStacked, wOpen] });
+
   return (
-    <View style={{ width: stackWidth, height: THUMB, position: "relative" }}>
-      {visible.map((s, i) => {
-        const img = getSoundImage(s.id);
-        return (
-          <View key={s.id} style={[mixStyles.thumb, { left: i * SHIFT, zIndex: i }]}>
-            {img ? (
-              <Image source={img} style={mixStyles.thumbImg} resizeMode="cover" />
-            ) : (
-              <View style={[mixStyles.thumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]} />
-            )}
-          </View>
-        );
-      })}
-    </View>
+    <Pressable
+      onPress={(e) => { e.stopPropagation(); toggle(); }}
+      hitSlop={6}
+      accessibilityRole="button"
+      accessibilityLabel={open ? "Colapsar sonidos" : "Ver sonidos"}
+    >
+      <Animated.View style={{ width: animWidth, height: THUMB, position: "relative" }}>
+        {visible.map((s, i) => {
+          const img = getSoundImage(s.id);
+          const leftAnim = openAnim.interpolate({
+            inputRange:  [0, 1],
+            outputRange: [i * SHIFT, i * SHIFT_OPEN],
+          });
+          return (
+            <Animated.View key={s.id} style={[mixStyles.thumb, { left: leftAnim, zIndex: i }]}>
+              {img ? (
+                <Image source={img} style={mixStyles.thumbImg} resizeMode="cover" />
+              ) : (
+                <View style={[mixStyles.thumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]} />
+              )}
+            </Animated.View>
+          );
+        })}
+      </Animated.View>
+    </Pressable>
   );
 }
 
