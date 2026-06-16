@@ -22,7 +22,7 @@ const MAX_PLAYER_WIDTH    = 438;
 const STACK_SIZE          = 38;
 const STACK_SHIFT         = 15;   // offset apilado (cerrado)
 const CAROUSEL_THUMB_GAP  = 8;    // separación fija entre thumbnails en el carrusel
-const CAROUSEL_OPEN_W     = 260;  // ancho al que expande el área del stack al abrirse
+const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "#3d304e";
@@ -79,11 +79,15 @@ export function MiniPlayer() {
 
   const [stackOpen, setStackOpen] = useState(false);
 
+  // Ancho real del contenido del carrusel (sin scroll si cabe, con scroll si excede)
+  const carouselContentW = n * STACK_SIZE + Math.max(0, n - 1) * CAROUSEL_THUMB_GAP + 12;
+  const carouselOpenW    = Math.min(carouselContentW, CAROUSEL_MAX_OPEN_W);
+
   const toggleStack = () => {
     const next = !stackOpen;
     setStackOpen(next);
     Animated.spring(stackWidthAnim, {
-      toValue: next ? CAROUSEL_OPEN_W : stackWidthStacked,
+      toValue: next ? carouselOpenW : stackWidthStacked,
       useNativeDriver: false,
       damping: 18,
       stiffness: 200,
