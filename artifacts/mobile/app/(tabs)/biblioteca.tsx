@@ -68,12 +68,14 @@ function MixRow({
   mix,
   isPlayingThis,
   onPress,
+  onLongPress,
   onPressThumb,
   onPressMenu,
 }: {
   mix: MixPreset;
   isPlayingThis: boolean;
   onPress: () => void;
+  onLongPress?: () => void;
   onPressThumb: () => void;
   onPressMenu: () => void;
 }) {
@@ -82,7 +84,12 @@ function MixRow({
       <Pressable onPress={onPressThumb} style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}>
         <MixCover mix={mix} size={MIX_THUMB} radius={10} />
       </Pressable>
-      <Pressable onPress={onPress} style={({ pressed }) => [styles.rowInfo, { opacity: pressed ? 0.8 : 1 }]}>
+      <Pressable
+        onPress={onPress}
+        onLongPress={onLongPress}
+        delayLongPress={600}
+        style={({ pressed }) => [styles.rowInfo, { opacity: pressed ? 0.8 : 1 }]}
+      >
         <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
         {isPlayingThis ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -1001,6 +1008,7 @@ export default function BibliotecaScreen() {
                 mix={mix}
                 isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
                 onPress={() => loadMix(mix)}
+                onLongPress={() => setMixMenuPreset(mix)}
                 onPressThumb={() => router.push(`/mi-mezcla/${mix.id}` as never)}
                 onPressMenu={() => setMixMenuPreset(mix)}
               />
