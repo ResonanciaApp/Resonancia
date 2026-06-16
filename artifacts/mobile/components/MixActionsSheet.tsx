@@ -23,6 +23,11 @@ import {
   Text,
   View,
 } from "react-native";
+import RAnimated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -42,27 +47,67 @@ type Props = {
 };
 
 const THUMB = 40;
-const SHIFT = 24;
+const SHIFT_CLOSED = 24;
+const SHIFT_OPEN = 58;
 const MAX_STACK = 4;
+const SPRING_CFG = { damping: 16, stiffness: 200 } as const;
 
 function MiniStack({ sounds }: { sounds: { id: string }[] }) {
   const visible = sounds.slice(0, MAX_STACK);
-  const stackWidth = THUMB + Math.max(0, visible.length - 1) * SHIFT;
+  const count = visible.length;
+
+  const isOpen = useSharedValue(false);
+  const collapseTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => () => { if (collapseTimer.current) clearTimeout(collapseTimer.current); }, []);
+
+  // Un animated style por slot (máx 4). Hooks no pueden estar en loops.
+  const a0 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 0 * SHIFT_OPEN : 0 * SHIFT_CLOSED, SPRING_CFG) }));
+  const a1 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 1 * SHIFT_OPEN : 1 * SHIFT_CLOSED, SPRING_CFG) }));
+  const a2 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 2 * SHIFT_OPEN : 2 * SHIFT_CLOSED, SPRING_CFG) }));
+  const a3 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 3 * SHIFT_OPEN : 3 * SHIFT_CLOSED, SPRING_CFG) }));
+  const slotStyles = [a0, a1, a2, a3];
+
+  // El contenedor crece junto con el spread para no recortar los thumbs
+  const containerStyle = useAnimatedStyle(() => {
+    const naturalW = THUMB + Math.max(0, count - 1) * SHIFT_CLOSED;
+    const openW    = THUMB + Math.max(0, count - 1) * SHIFT_OPEN;
+    return { width: withSpring(isOpen.value ? openW : naturalW, SPRING_CFG) };
+  });
+
+  const expand = () => {
+    isOpen.value = true;
+    if (collapseTimer.current) clearTimeout(collapseTimer.current);
+    // Auto-colapso tras 4 s si el usuario no toca nada
+    collapseTimer.current = setTimeout(() => { isOpen.value = false; }, 4000);
+  };
+
+  const collapse = () => {
+    isOpen.value = false;
+    if (collapseTimer.current) clearTimeout(collapseTimer.current);
+  };
+
   return (
-    <View style={{ width: stackWidth, height: THUMB, position: "relative" }}>
-      {visible.map((s, i) => {
-        const img = getSoundImage(s.id);
-        return (
-          <View key={s.id} style={[styles.stackThumb, { left: i * SHIFT, zIndex: i }]}>
-            {img ? (
-              <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
-            ) : (
-              <View style={[styles.stackThumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]} />
-            )}
-          </View>
-        );
-      })}
-    </View>
+    <Pressable
+      onLongPress={expand}
+      onPress={() => { if (isOpen.value) collapse(); }}
+      delayLongPress={450}
+    >
+      <RAnimated.View style={[{ height: THUMB, position: "relative" }, containerStyle]}>
+        {visible.map((s, i) => {
+          const img = getSoundImage(s.id);
+          return (
+            <RAnimated.View key={s.id} style={[styles.stackThumb, { zIndex: i }, slotStyles[i]]}>
+              {img ? (
+                <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
+              ) : (
+                <View style={[styles.stackThumbImg, { backgroundColor: "rgba(212,175,55,0.15)" }]} />
+              )}
+            </RAnimated.View>
+          );
+        })}
+      </RAnimated.View>
+    </Pressable>
   );
 }
 
