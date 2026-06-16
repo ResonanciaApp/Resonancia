@@ -76,7 +76,7 @@ export function MiniPlayer() {
   const n = activeSounds.length;
   const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
   const stackWidthAnim = useRef(new Animated.Value(stackWidthStacked)).current;
-  // openProgress: 0 = apilado, 1 = abierto — native driver para translateX suave
+  // openProgress: 0 = apilado, 1 = abierto — JS driver (left animado)
   const openProgress   = useRef(new Animated.Value(0)).current;
   // Cada thumb mueve (STACK_SIZE + gap - STACK_SHIFT) px por índice al abrirse
   const OPEN_DELTA = STACK_SIZE + CAROUSEL_THUMB_GAP - STACK_SHIFT; // 38+8-15 = 31
@@ -118,28 +118,11 @@ export function MiniPlayer() {
 
   useEffect(() => {
     if (!mixActive) {
-      animsRef.current.clear();
       setStackOpen(false);
       stackWidthAnim.setValue(0);
       openProgress.setValue(0);
     }
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ── Animaciones de entrada por sonido ─────────────────────────
-  const animsRef = useRef<Map<string, Animated.Value>>(new Map());
-  function getAnim(id: string): Animated.Value {
-    if (!animsRef.current.has(id)) {
-      const anim = new Animated.Value(0);
-      animsRef.current.set(id, anim);
-      Animated.spring(anim, {
-        toValue: 1,
-        useNativeDriver: false,
-        damping: 14,
-        stiffness: 220,
-      }).start();
-    }
-    return animsRef.current.get(id)!;
-  }
 
   if (!currentSession && !mixActive) return null;
 
@@ -181,46 +164,39 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Stack / carrusel: estructura única siempre montada, left animado */}
+            {/* Stack / carrusel — left animado con JS driver */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
               {activeSounds.map((s, i) => {
-                const entryAnim  = getAnim(s.id);
-                const image      = getSoundImage(s.id);
-                const translateX = openProgress.interpolate({
+                const image    = getSoundImage(s.id);
+                const animLeft = openProgress.interpolate({
                   inputRange:  [0, 1],
-                  outputRange: [0, i * OPEN_DELTA],
+                  outputRange: [i * STACK_SHIFT, i * (STACK_SIZE + CAROUSEL_THUMB_GAP)],
                 });
                 return (
-                  // View estático: position+left (nativo no soporta left en Animated.View)
-                  <View key={s.id} style={[styles.stackPos, { left: i * STACK_SHIFT, zIndex: i }]}>
-                    {/* Animated.View: solo native-driver props (translateX, scale, opacity) */}
-                    <Animated.View
-                      style={[styles.stackThumb, {
-                        transform: [{ translateX }, { scale: entryAnim }],
-                        opacity: entryAnim,
-                      }]}
+                  <Animated.View
+                    key={s.id}
+                    style={[styles.stackThumb, { position: 'absolute', left: animLeft, zIndex: i }]}
+                  >
+                    <Pressable
+                      onPress={toggleStack}
+                      onLongPress={() => removeSound(s.id)}
+                      delayLongPress={400}
+                      style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                      accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
                     >
-                      <Pressable
-                        onPress={toggleStack}
-                        onLongPress={() => removeSound(s.id)}
-                        delayLongPress={400}
-                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
-                      >
-                        {image ? (
-                          <Image
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
-                      </Pressable>
-                    </Animated.View>
-                  </View>
+                      {image ? (
+                        <Image
+                          source={image}
+                          style={{ width: STACK_SIZE, height: STACK_SIZE }}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View style={styles.stackFallback}>
+                          <Feather name="music" size={14} color={colors.primary} />
+                        </View>
+                      )}
+                    </Pressable>
+                  </Animated.View>
                 );
               })}
             </Animated.View>
@@ -350,13 +326,6 @@ const styles = StyleSheet.create({
     height: STACK_SIZE,
     overflow: "hidden",  // clip cuando el ancho crece/achica
   },
-  // Wrapper estático: fija la posición (left); el nativo no soporta left en Animated.View
-  stackPos: {
-    position: "absolute",
-    width: STACK_SIZE,
-    height: STACK_SIZE,
-  },
-  // Animated.View interno: solo transform/opacity (native driver)
   stackThumb: {
     width: STACK_SIZE,
     height: STACK_SIZE,
