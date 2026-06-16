@@ -22,6 +22,7 @@ const MAX_PLAYER_WIDTH    = 438;
 const STACK_SIZE          = 38;
 const STACK_SHIFT         = 15;   // offset apilado (cerrado)
 const CAROUSEL_THUMB_GAP  = 8;    // separación fija entre thumbnails en el carrusel
+const CAROUSEL_OPEN_W     = 260;  // ancho al que expande el área del stack al abrirse
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "#3d304e";
@@ -67,18 +68,39 @@ export function MiniPlayer() {
 
   const mixActive = !currentSession && activeSounds.length > 0;
 
-  // ── De-stack de thumbnails ─────────────────────────────────────
-  // Abierto: el row muestra [colapso btn] + [ScrollView flex:1] + [play]
-  // Cerrado: el row muestra [stack apilado] + [texto flex:1] + [play]
+  // ── De-stack / carrusel ────────────────────────────────────────
+  // El área del stack anima su ANCHO: cerrado = stackWidthStacked,
+  // abierto = CAROUSEL_OPEN_W. El textBlock (flex:1) se empuja
+  // naturalmente cuando el área crece. Sin botón separado de colapso.
+
+  const n = activeSounds.length;
+  const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+  const stackWidthAnim = useRef(new Animated.Value(stackWidthStacked)).current;
 
   const [stackOpen, setStackOpen] = useState(false);
 
-  const toggleStack = () => setStackOpen((v) => !v);
+  const toggleStack = () => {
+    const next = !stackOpen;
+    setStackOpen(next);
+    Animated.spring(stackWidthAnim, {
+      toValue: next ? CAROUSEL_OPEN_W : stackWidthStacked,
+      useNativeDriver: false,
+      damping: 18,
+      stiffness: 200,
+    }).start();
+  };
+
+  // Sincroniza el ancho cuando se agregan/quitan sonidos estando cerrado
+  useEffect(() => {
+    if (!stackOpen) stackWidthAnim.setValue(stackWidthStacked);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [n]);
 
   useEffect(() => {
     if (!mixActive) {
       animsRef.current.clear();
       setStackOpen(false);
+      stackWidthAnim.setValue(0);
     }
   }, [mixActive]);
 
@@ -138,29 +160,24 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {stackOpen ? (
-              /* ── ABIERTO: [btn colapso] + [ScrollView] ── */
-              <>
-                <Pressable
-                  onPress={toggleStack}
-                  style={styles.collapseBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Colapsar"
-                  hitSlop={8}
-                >
-                  <Feather name="chevron-left" size={18} color="rgba(255,255,255,0.7)" />
-                </Pressable>
-
+            {/* Stack / carrusel: mismo Animated.View, ancho animado */}
+            <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
+              {stackOpen ? (
+                /* ABIERTO: ScrollView con thumbs Pressable → tap colapsa */
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.carouselContent}
-                  style={styles.carouselScroll}
                 >
                   {activeSounds.map((s) => {
                     const image = getSoundImage(s.id);
                     return (
-                      <View key={s.id} style={styles.carouselThumb}>
+                      <Pressable
+                        key={s.id}
+                        onPress={toggleStack}
+                        style={styles.carouselThumb}
+                        accessibilityLabel="Colapsar"
+                      >
                         {image ? (
                           <Image
                             source={image}
@@ -172,20 +189,13 @@ export function MiniPlayer() {
                             <Feather name="music" size={14} color={colors.primary} />
                           </View>
                         )}
-                      </View>
+                      </Pressable>
                     );
                   })}
                 </ScrollView>
-              </>
-            ) : (
-              /* ── CERRADO: [stack apilado] + [texto] ── */
-              <>
-                <Pressable
-                  onPress={toggleStack}
-                  style={[styles.stackArea, { width: stackWidthStacked }]}
-                  accessibilityRole="button"
-                  accessibilityLabel="Desplegar sonidos"
-                >
+              ) : (
+                /* CERRADO: thumbnails apilados + área de tap transparente */
+                <>
                   {activeSounds.map((s, i) => {
                     const entryAnim = getAnim(s.id);
                     const image = getSoundImage(s.id);
@@ -213,16 +223,23 @@ export function MiniPlayer() {
                       </Animated.View>
                     );
                   })}
-                </Pressable>
+                  <Pressable
+                    style={StyleSheet.absoluteFill}
+                    onPress={toggleStack}
+                    accessibilityRole="button"
+                    accessibilityLabel="Desplegar sonidos"
+                  />
+                </>
+              )}
+            </Animated.View>
 
-                <View style={styles.textBlock}>
-                  <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
-                  <Text style={styles.mixSub} numberOfLines={1}>
-                    {n} {n === 1 ? "sonido" : "sonidos"}
-                  </Text>
-                </View>
-              </>
-            )}
+            {/* Texto: flex:1, se empuja cuando el stack crece */}
+            <View style={styles.textBlock}>
+              <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
+              <Text style={styles.mixSub} numberOfLines={1}>
+                {n} {n === 1 ? "sonido" : "sonidos"}
+              </Text>
+            </View>
 
             {/* Botón play/pause — siempre visible */}
             <View style={styles.waveWrap}>
@@ -336,10 +353,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // ── Stack de thumbnails ───────────────────────────────────────
-  // Pressable de ancho fijo (stackWidthStacked); los thumbs son position:absolute.
+  // ── Stack / carrusel: misma Animated.View, ancho animado ─────
   stackArea: {
     height: STACK_SIZE,
+    overflow: "hidden",  // clip cuando el ancho crece/achica
   },
   stackThumb: {
     position: "absolute",
@@ -363,15 +380,6 @@ const styles = StyleSheet.create({
   },
 
   // ── Carrusel en-row (estado abierto) ─────────────────────────
-  collapseBtn: {
-    width: 28,
-    height: STACK_SIZE,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  carouselScroll: {
-    flex: 1,
-  },
   carouselContent: {
     flexDirection: "row",
     alignItems: "center",
@@ -393,6 +401,7 @@ const styles = StyleSheet.create({
   textBlock: {
     flex: 1,
     minWidth: 0,
+    overflow: "hidden",
     justifyContent: "center",
   },
   mixTitle: {
