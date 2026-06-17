@@ -476,21 +476,21 @@ export default function Ancestrales2Screen() {
         </View>
       </View>
 
+      {/* ── CHIPS STICKY (entre hero y scroll) ─────────────────────────── */}
+      <View style={styles.chipsArea}>
+        <AnimatedChipRow
+          activeTab={activeTab}
+          onSelect={(id) => setActiveTab(id)}
+          onClear={() => setActiveTab(null)}
+        />
+      </View>
+
       {/* ── CONTENIDO ───────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 0 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Chips al inicio del contenido, sin fondo propio */}
-        <View style={styles.chipsArea}>
-          <AnimatedChipRow
-            activeTab={activeTab}
-            onSelect={(id) => setActiveTab(id)}
-            onClear={() => setActiveTab(null)}
-          />
-        </View>
-
         <AnimatedTabContent animKey={activeTab ?? "all"}>
           {/* Barra de control: ordenar + toggle vista */}
           <View style={styles.controlRow}>
