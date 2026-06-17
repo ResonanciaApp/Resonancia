@@ -203,9 +203,14 @@ function CategoryCard({
   isPreviewPlaying?: boolean; previewProgress?: Animated.Value; onPreviewTap?: ()=>void;
 }) {
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const locked   = !!session.isPremium && !isPremium;
   const hasAudio = !!AUDIO_MAP[session.id];
-  const handlePress = () => { if (locked) router.push("/membresia" as never); else router.push(`/session/${session.id}` as never); };
+  const handlePress = () => {
+    if (locked) { router.push("/membresia" as never); return; }
+    if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
+    router.push(`/session/${session.id}` as never);
+  };
   const author = session.guideId ? getGuide(session.guideId).name : getArtist(session.artistId).name;
 
   if (horizontal) {

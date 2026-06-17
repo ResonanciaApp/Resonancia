@@ -26,6 +26,7 @@ import { getGuide } from "@/data/guides";
 import { TEMAS } from "@/data/temas";
 import { TAG_CARDS } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -149,6 +150,7 @@ export default function ExploreScreen() {
   }, [selectedDur, durSort]);
 
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
 
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
@@ -170,7 +172,9 @@ export default function ExploreScreen() {
 
   function handleSessionPress(s: Session) {
     const locked = s.isPremium && !isPremium;
-    router.push((locked ? "/membresia" : `/session/${s.id}`) as never);
+    if (locked) { router.push("/membresia" as never); return; }
+    if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+    router.push(`/session/${s.id}` as never);
   }
 
   function renderCarousel(title: string, sessions: Session[], categoryRoute: string) {

@@ -55,6 +55,7 @@ export type Session = {
   isFeatured?: boolean;
   isNew?: boolean;
   isPremium?: boolean;
+  skipDetail?: boolean;
   frequency?: string;
   soundTag?: SoundTag;
   meditationTag?: MeditationTag;
@@ -612,6 +613,7 @@ export type CatalogSessionSnapshot = {
   isFeatured: boolean;
   isNew: boolean;
   isPremium: boolean;
+  skipDetail?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -669,6 +671,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.isFeatured = r.isFeatured;
     local.isNew = r.isNew;
     local.isPremium = r.isPremium;
+    local.skipDetail = r.skipDetail ?? false;
     local.frequency = r.frequency ?? undefined;
     local.soundTag = (r.soundTag ?? undefined) as SoundTag | undefined;
     local.meditationTag = (r.meditationTag ?? undefined) as MeditationTag | undefined;
@@ -725,6 +728,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       isFeatured: r.isFeatured,
       isNew: r.isNew,
       isPremium: r.isPremium,
+      skipDetail: r.skipDetail ?? false,
       frequency: r.frequency ?? undefined,
       soundTag: (r.soundTag ?? undefined) as SoundTag | undefined,
       meditationTag: (r.meditationTag ?? undefined) as MeditationTag | undefined,

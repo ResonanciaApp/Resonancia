@@ -30,6 +30,7 @@ import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { getNatureSounds } from "@/config/nature-base-map";
 import { useMixer } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS, type Session, type SonidosTag } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { hasSoundFile } from "@/data/sounds";
@@ -67,6 +68,7 @@ const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 export default function SonidosScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const insets = useSafeAreaInsets();
   const { version } = useCatalog();
 
@@ -305,7 +307,8 @@ export default function SonidosScreen() {
                         setPendingSession(session);
                         return;
                       }
-                      router.push(`/session/${session.id}` as never);
+                      if (session.skipDetail) { playSession(session); router.push("/player" as never); }
+                      else router.push(`/session/${session.id}` as never);
                     }}
                     onLongPress={() => setActionsSession(session)}
                   >

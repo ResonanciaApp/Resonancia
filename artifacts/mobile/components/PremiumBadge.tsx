@@ -4,14 +4,17 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { type Session } from "@/data/sessions";
 
 export function useSessionGate(session: Session) {
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const locked = !!session.isPremium && !isPremium;
   const openSession = () => {
-    if (locked) router.push("/membresia" as never);
-    else router.push(`/session/${session.id}` as never);
+    if (locked) { router.push("/membresia" as never); return; }
+    if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
+    router.push(`/session/${session.id}` as never);
   };
   return { locked, openSession };
 }

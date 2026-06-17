@@ -11,6 +11,7 @@ import { getGuideById } from "@/data/guides";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 
 type Props = {
   session: Session;
@@ -23,6 +24,7 @@ type Props = {
 export function SessionRow({ session, rating, style, onActionsPress, onPress }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const locked = !!session.isPremium && !isPremium;
   const voiceLabel = getVoiceLabel(session);
   const guide = (session as Session & { guideId?: string }).guideId
@@ -31,7 +33,11 @@ export function SessionRow({ session, rating, style, onActionsPress, onPress }: 
   const author = guide?.name ?? "Casa del Cuenco";
   const displayRating = rating ?? 4.7;
 
-  const defaultPress = () => router.push((locked ? "/membresia" : `/session/${session.id}`) as never);
+  const defaultPress = () => {
+    if (locked) { router.push("/membresia" as never); return; }
+    if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
+    router.push(`/session/${session.id}` as never);
+  };
 
   return (
     <View style={[styles.sessionRow, style]}>

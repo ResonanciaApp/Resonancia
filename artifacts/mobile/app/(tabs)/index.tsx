@@ -505,7 +505,10 @@ export default function HomeScreen2() {
             </Text>
             <Pressable
               style={styles.heroCard}
-              onPress={() => router.push(`/session/${filteredFeatured.id}` as never)}
+              onPress={() => {
+                if (filteredFeatured.skipDetail) { playSession(filteredFeatured); router.push("/player" as never); }
+                else router.push(`/session/${filteredFeatured.id}` as never);
+              }}
             >
               <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
               {(() => {

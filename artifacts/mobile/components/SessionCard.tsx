@@ -14,6 +14,7 @@ import { type Session } from "@/data/sessions";
 import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 
 type Props = {
@@ -42,10 +43,12 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
-    if (locked) router.push("/membresia" as never);
-    else router.push(`/session/${session.id}` as never);
+    if (locked) { router.push("/membresia" as never); return; }
+    if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
+    router.push(`/session/${session.id}` as never);
   };
 
   if (horizontal) {
