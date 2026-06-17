@@ -158,7 +158,7 @@ function useUpload() {
 }
 
 function storageUrl(objectPath: string) {
-  return `/api/storage/objects/${objectPath}`;
+  return `/api/storage/${objectPath}`;
 }
 
 // ── Componente principal ──────────────────────────────────────────────────────
@@ -704,8 +704,8 @@ export default function SonidosPage() {
           <p className="text-sm mt-1">Creá el primer sonido con el botón de arriba.</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-card border border-border rounded-2xl overflow-x-auto">
+          <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="border-b border-border">
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium w-10"></th>
