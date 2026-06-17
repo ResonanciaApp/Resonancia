@@ -174,12 +174,12 @@ export const SOUNDS: MixSound[] = [
   { id: "onda_beta", name: "Beta · Enfoque", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural"] },
   { id: "onda_gamma", name: "Gamma · Claridad", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural", "psicodelicas"] },
 
-  // ── Binaurales ──────────────────────────────────────────────
-  { id: "binaural_1", name: "1", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
-  { id: "binaural_2", name: "2", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
-  { id: "binaural_3", name: "3", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
-  { id: "binaural_4", name: "4", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
-  { id: "binaural_5", name: "5", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
+  // ── Binaurales BPM (19.2 s · 90 BPM · 8 bars) ───────────────
+  { id: "binaural_1", name: "Binaural 1", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
+  { id: "binaural_2", name: "Binaural 2", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
+  { id: "binaural_3", name: "Binaural 3", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
+  { id: "binaural_4", name: "Binaural 4", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
+  { id: "binaural_5", name: "Binaural 5", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
 
   // ── BPM 90 — Groove lento / meditación activa ────────────────
   // Loops perfectamente cortados en 2 compases · 4/4 · 5.333 s exactos

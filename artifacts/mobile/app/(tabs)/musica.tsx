@@ -98,7 +98,7 @@ const MAIN_TABS: {
   { id: "voces",          label: "Voces",      icon: "microphone",        color: "#9060A0", categories: ["mantras"] },
   { id: "asmr",           label: "ASMR",       icon: "headphones",        color: "#408070", categories: ["asmr"] },
   { id: "ruidos",         label: "Ruidos",     icon: "radio",             color: "#607080", categories: ["ruidos"] },
-  { id: "bpm",            label: "BPM",        icon: "metronome",         color: "#A04040", categories: ["bpm", "binaural"] },
+  { id: "bpm",            label: "BPM",        icon: "metronome",         color: "#A04040", categories: ["bpm"] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
