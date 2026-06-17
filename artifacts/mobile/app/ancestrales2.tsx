@@ -352,7 +352,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
             contentContainerStyle={{ padding: H_PAD, gap: 9 }}
           >
             {results.map((s) => (
-              <SessionCard key={s.id} session={s} horizontal />
+              <AncestralCard key={s.id} session={s} horizontal />
             ))}
           </ScrollView>
         )}
