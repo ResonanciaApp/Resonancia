@@ -947,6 +947,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 12,
     paddingBottom: 8,
+    backgroundColor: "#27070E",
+    zIndex: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    elevation: 6,
   },
 
   // ── Chips ────────────────────────────────────────────────────────────────────
