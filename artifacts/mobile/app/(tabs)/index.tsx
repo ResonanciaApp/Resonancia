@@ -313,6 +313,12 @@ export default function HomeScreen2() {
     return moreLikeSessions.filter((s) => activeFilter.includes(s.categoryId));
   }, [moreLikeSessions, activeFilter]);
 
+  const filteredPopular = React.useMemo(() => {
+    const list = popularSessions.slice(0, 10);
+    if (!activeFilter) return list;
+    return list.filter((s) => activeFilter.includes(s.categoryId));
+  }, [popularSessions, activeFilter]);
+
   const filteredFeatured = React.useMemo(() => {
     if (!activeFilter) return featuredSession;
     const pool = SESSIONS.filter((s) => activeFilter.includes(s.categoryId));
@@ -647,6 +653,17 @@ export default function HomeScreen2() {
         <SessionCarousel
           title="Recientes"
           sessions={filteredRecent}
+          isPremium={isPremium}
+          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+          style={{ marginBottom: 33 }}
+          titleOffset={10}
+          cardWidth={RECENT_CARD_W}
+        />
+
+        {/* ── LAS MÁS ESCUCHADAS ── */}
+        <SessionCarousel
+          title="Las más escuchadas"
+          sessions={filteredPopular}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
           style={{ marginBottom: 33 }}
