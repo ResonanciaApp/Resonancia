@@ -102,8 +102,9 @@ export interface MixSound {
    * BPM del loop. Solo sonidos de category "bpm".
    * Los sonidos del mismo BPM se pueden mezclar entre sí; no se pueden mezclar
    * sonidos de BPM distintos (el mixer lo rechaza automáticamente).
+   * Puede ser un array si el sonido aplica a varios BPM (ej. binaurales).
    */
-  bpm?: 90 | 100 | 120;
+  bpm?: 90 | 100 | 120 | readonly (90 | 100 | 120)[];
   /**
    * Número de compases del loop (4/4). Default asumido: 2.
    * Sirve para calcular la cuantización exacta al entrar al siguiente compás.
@@ -175,11 +176,11 @@ export const SOUNDS: MixSound[] = [
   { id: "onda_gamma", name: "Gamma · Claridad", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural", "psicodelicas"] },
 
   // ── Binaurales BPM (19.2 s · 90 BPM · 8 bars) ───────────────
-  { id: "binaural_1", name: "Binaural 1", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
-  { id: "binaural_2", name: "Binaural 2", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
-  { id: "binaural_3", name: "Binaural 3", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
-  { id: "binaural_4", name: "Binaural 4", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
-  { id: "binaural_5", name: "Binaural 5", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: 90, loopBars: 8 },
+  { id: "binaural_1", name: "Binaural 1", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
+  { id: "binaural_2", name: "Binaural 2", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
+  { id: "binaural_3", name: "Binaural 3", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
+  { id: "binaural_4", name: "Binaural 4", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
+  { id: "binaural_5", name: "Binaural 5", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
 
   // ── BPM 90 — Groove lento / meditación activa ────────────────
   // Loops perfectamente cortados en 2 compases · 4/4 · 5.333 s exactos
@@ -209,6 +210,25 @@ export const SOUNDS: MixSound[] = [
 
 export function getSoundById(id: string): MixSound | undefined {
   return SOUNDS.find((s) => s.id === id);
+}
+
+/** True si el sonido es compatible con el BPM dado (soporta bpm array). */
+export function soundMatchesBpm(sound: MixSound, bpm: number): boolean {
+  if (sound.bpm === undefined) return false;
+  if (Array.isArray(sound.bpm)) return (sound.bpm as readonly number[]).includes(bpm);
+  return sound.bpm === bpm;
+}
+
+/**
+ * Resuelve el BPM escalar de un sonido. Si bpm es array, elige el que coincide
+ * con currentBpm; si no hay coincidencia o currentBpm es null, usa el primero.
+ */
+export function resolveSoundBpm(sound: MixSound, currentBpm: number | null): 90 | 100 | 120 | undefined {
+  if (sound.bpm === undefined) return undefined;
+  if (!Array.isArray(sound.bpm)) return sound.bpm as 90 | 100 | 120;
+  const arr = sound.bpm as readonly (90 | 100 | 120)[];
+  if (currentBpm !== null && arr.some((b) => b === currentBpm)) return arr.find((b) => b === currentBpm)!;
+  return arr[0];
 }
 
 /** True si el sonido ya tiene un archivo de audio cargado en SOUND_MAP */

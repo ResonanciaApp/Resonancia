@@ -13,7 +13,7 @@ import React, {
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
-import { getSoundById } from "@/data/sounds";
+import { getSoundById, soundMatchesBpm, resolveSoundBpm } from "@/data/sounds";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
 import {
@@ -1162,7 +1162,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // nuevo sonido es distinto al que ya está fijado en la mezcla.
       const soundDef = getSoundById(id);
       const soundBpm = soundDef?.bpm;
-      if (soundBpm !== undefined && bpmValueRef.current !== null && bpmValueRef.current !== soundBpm) {
+      const effectiveSoundBpm = soundDef ? resolveSoundBpm(soundDef, bpmValueRef.current) : undefined;
+      if (soundBpm !== undefined && bpmValueRef.current !== null && !soundMatchesBpm(soundDef!, bpmValueRef.current)) {
         return false;
       }
 
@@ -1171,20 +1172,20 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       void ensureAudioMode();
 
       // ── Sonido BPM por el MOTOR (react-native-audio-api) ──────────────────
-      if (soundBpm !== undefined) {
+      if (effectiveSoundBpm !== undefined) {
         if (bpmValueRef.current === null) {
           bpmSystemRef.current = bpmAudioEngine.isReady() ? "engine" : "expo";
         }
         if (bpmSystemRef.current === "engine") {
           void bpmAudioEngine.play(id, {
-            bpm: soundBpm,
+            bpm: effectiveSoundBpm,
             loopBars: soundDef?.loopBars ?? 2,
             volume: DEFAULT_VOLUME,
           });
           if (bpmValueRef.current === null) {
-            bpmValueRef.current = soundBpm;
+            bpmValueRef.current = effectiveSoundBpm;
             bpmPausePhaseRef.current = null;
-            setActiveBpm(soundBpm);
+            setActiveBpm(effectiveSoundBpm);
           }
           if (!isPlayingRef.current) applyPlaying(true);
           setActiveSounds([...prev, { id, volume: DEFAULT_VOLUME }]);
@@ -1224,16 +1225,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           // hasta el primer borde del scheduler.
           try { void player.a.seekTo(0); } catch { /* ignore */ }
           bpmClockRef.current = Date.now();
-          bpmValueRef.current = soundBpm;
+          bpmValueRef.current = effectiveSoundBpm ?? null;
           bpmPausePhaseRef.current = null;
-          setActiveBpm(soundBpm);
+          setActiveBpm(effectiveSoundBpm ?? null);
           startBpmScheduler();
         } else if (isPlayingRef.current && bpmClockRef.current !== null) {
           // Sonido BPM adicional con la mezcla sonando: alinearlo de inmediato a
           // la fase actual del loop maestro (entra "en el groove") en vez de
           // cuantizar al beat (eso desfasaba el patrón → desincronización
           // irregular). El scheduler lo mantiene bloqueado en los próximos bordes.
-          const loopMs = (60 / soundBpm) * 8 * 1000;
+          const loopMs = (60 / (effectiveSoundBpm ?? 90)) * 8 * 1000;
           const phase = ((Date.now() - bpmClockRef.current) % loopMs) / 1000;
           try { void player.a.seekTo(phase); } catch { /* ignore */ }
         }
@@ -1623,7 +1624,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         const def = getSoundById(s.id);
         if (def?.bpm !== undefined && bpmSystemRef.current === "engine") {
           void bpmAudioEngine.play(s.id, {
-            bpm: def.bpm,
+            bpm: resolveSoundBpm(def, bpmValueRef.current) ?? (Array.isArray(def.bpm) ? def.bpm[0] : def.bpm),
             loopBars: def.loopBars ?? 2,
             volume: s.volume,
           });
@@ -1639,7 +1640,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       });
       // Si el preset trae algún sonido rítmico, fijar el BPM activo.
       const firstBpm = created
-        .map((s) => getSoundById(s.id)?.bpm)
+        .map((s) => { const def = getSoundById(s.id); return def ? resolveSoundBpm(def, null) : undefined; })
         .find((bpm) => bpm !== undefined);
       if (firstBpm !== undefined) {
         bpmValueRef.current = firstBpm;

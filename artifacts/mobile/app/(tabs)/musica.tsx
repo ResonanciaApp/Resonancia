@@ -37,6 +37,7 @@ import {
   SOUND_CATEGORIES,
   SOUND_TAGS,
   hasSoundFile,
+  soundMatchesBpm,
 } from "@/data/sounds";
 import { MOOD_SOUND_TAGS, type MoodId } from "@/data/moods";
 import {
@@ -580,7 +581,7 @@ export default function MezcladorScreen() {
     if (!isActive(sound.id)) {
       // Detectar BPM incompatible antes de llamar a toggleSound (devuelve false
       // por dos motivos distintos: límite de sonidos Y BPM incompatible).
-      if (sound.bpm !== undefined && activeBpm !== null && activeBpm !== sound.bpm) {
+      if (sound.bpm !== undefined && activeBpm !== null && !soundMatchesBpm(sound, activeBpm)) {
         Alert.alert(
           `BPM incompatible`,
           `Ya hay ritmos a ${activeBpm} BPM en tu mezcla. Quitá todos los sonidos rítmicos para cambiar el tempo.`,
@@ -619,7 +620,7 @@ export default function MezcladorScreen() {
       : SOUNDS.filter(
           (s) =>
             (subTab ? [subTab] : subTabCategories).includes(s.category as SoundCategoryId) &&
-            (mainTab !== "bpm" || effectiveBpm === null || s.bpm === effectiveBpm),
+            (mainTab !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
         );
 
     // Filtros de ánimo/etiqueta solo aplican en "Todos" (popular). En los tabs
