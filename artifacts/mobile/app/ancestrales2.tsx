@@ -839,6 +839,13 @@ export default function Ancestrales2Screen() {
         />
       </View>
 
+      {/* ── SOMBRA bajo chips ───────────────────────────────────────────── */}
+      <LinearGradient
+        colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0)"]}
+        style={{ height: 18, zIndex: 9 }}
+        pointerEvents="none"
+      />
+
       {/* ── CONTENIDO ───────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
