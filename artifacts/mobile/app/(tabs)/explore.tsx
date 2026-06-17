@@ -115,7 +115,8 @@ function getDailyRecommendations(count = 5): Session[] {
   const pool = SESSIONS.filter((s) =>
     s.categoryId === "sonidos-ancestrales" ||
     s.categoryId === "meditaciones-guiadas" ||
-    s.categoryId === "musica-sonidos",
+    s.categoryId === "musica-sonidos" ||
+    s.categoryId === "reflexiones",
   );
   const rng = seededRandom(dateSeed());
   const shuffled = [...pool].sort(() => rng() - 0.5);

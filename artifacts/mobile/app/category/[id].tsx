@@ -70,12 +70,6 @@ export default function CategoryScreen() {
                 <ZenStonesIcon color={category.color} size={28} />
               ) : category.id === "musica-sonidos" ? (
                 <Image source={require("../../assets/images/cat-musica.png")} style={{ width: 28, height: 28 }} resizeMode="contain" />
-              ) : category.id === "mananas" ? (
-                <Image source={require("../../assets/images/cat-mananas.png")} style={{ width: 28, height: 28 }} resizeMode="contain" />
-              ) : category.id === "noches" ? (
-                <Image source={require("../../assets/images/cat-noches.png")} style={{ width: 26, height: 26 }} resizeMode="contain" />
-              ) : category.id === "podcast" ? (
-                <Image source={require("../../assets/images/cat-sonidos.png")} style={{ width: 28, height: 28 }} resizeMode="contain" />
               ) : category.iconFamily === "MaterialCommunityIcons" ? (
                 <MaterialCommunityIcons
                   name={category.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}

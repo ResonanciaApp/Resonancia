@@ -66,7 +66,7 @@ const { width } = Dimensions.get("window");
 
 const NAV_TABS = [
   { id: "todas",    label: "Todas",    cats: [] as string[] },
-  { id: "sesiones", label: "Sesiones", cats: ["sonidos-ancestrales", "meditaciones-guiadas"] },
+  { id: "sesiones", label: "Sesiones", cats: ["sonidos-ancestrales", "meditaciones-guiadas", "reflexiones"] },
   { id: "musica",   label: "Música",   cats: ["musica-sonidos"] },
 ];
 const GRID_GAP = 12;

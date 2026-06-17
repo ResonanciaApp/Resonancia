@@ -80,7 +80,7 @@ export default function SessionDetailScreen() {
   const isMusica = session.categoryId === "musica-sonidos";
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
-  const isPodcast = session.categoryId === "podcast";
+  const isPodcast = session.categoryId === "reflexiones";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;

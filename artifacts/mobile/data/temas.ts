@@ -88,22 +88,6 @@ export const TEMAS: TemaItem[] = [
     image: require("@/assets/images/tema-familia.png"),
   },
   {
-    id: "mananas",
-    label: "Mañanas",
-    icon: "weather-sunny",
-    color: "#f4c993",
-    description: "Rituales para comenzar el día con energía.",
-    route: "/category/mananas",
-  },
-  {
-    id: "noches",
-    label: "Noches",
-    icon: "weather-night",
-    color: "#C87BB5",
-    description: "Prepara tu cuerpo y mente para el descanso.",
-    route: "/category/noches",
-  },
-  {
     id: "angustia-acompanamiento",
     label: "Angustia",
     icon: "emoticon-sad-outline",
