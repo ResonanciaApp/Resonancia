@@ -950,10 +950,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#27070E",
     zIndex: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.65,
+    shadowRadius: 12,
+    elevation: 14,
   },
 
   // ── Chips ────────────────────────────────────────────────────────────────────
