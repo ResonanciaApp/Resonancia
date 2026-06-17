@@ -34,7 +34,7 @@ const TEXT  = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
 const HERO_HEIGHT = 160;
 const GRID_GAP    = 10;
-const cellW = (width - H_PAD * 2 - GRID_GAP) / 2;
+const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 
 const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
 
@@ -630,13 +630,13 @@ export default function Ancestrales2Screen() {
     }
 
     if (viewMode === "grid") {
-      const pairs: (typeof sessions)[] = [];
-      for (let i = 0; i < sessions.length; i += 2) pairs.push(sessions.slice(i, i + 2));
+      const triples: (typeof sessions)[] = [];
+      for (let i = 0; i < sessions.length; i += 3) triples.push(sessions.slice(i, i + 3));
       return (
         <View style={styles.gridOuter}>
-          {pairs.map((pair, ri) => (
+          {triples.map((triple, ri) => (
             <View key={ri} style={styles.gridRow}>
-              {pair.map((s) => (
+              {triple.map((s) => (
                 <AncestralCard
                   key={s.id}
                   session={s}
