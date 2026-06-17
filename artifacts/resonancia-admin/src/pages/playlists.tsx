@@ -239,7 +239,7 @@ function CoverUpload({
         body: file,
         headers: { "Content-Type": file.type },
       });
-      const servingUrl = `/api/storage/objects/${objectPath}`;
+      const servingUrl = `/api/storage/${objectPath}`;
       onChange(servingUrl);
       toast.success("Imagen subida");
     } catch {
