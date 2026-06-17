@@ -58,7 +58,7 @@ export const MOODS: Mood[] = [
     emoji: "😟",
     label: "Insegur@",
     themeTags: ["Crecimiento personal", "Foco y concentración"],
-    categoryIds: ["meditaciones-guiadas", "podcast"],
+    categoryIds: ["meditaciones-guiadas", "reflexiones"],
   },
 ];
 

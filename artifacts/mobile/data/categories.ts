@@ -54,17 +54,6 @@ export const CATEGORIES: Category[] = [
     primary: true,
   },
   {
-    id: "podcast",
-    title: "Sonidos",
-    subtitle: "Frecuencias, naturaleza y atmósferas para transformar tu estado",
-    icon: "waveform",
-    iconFamily: "MaterialCommunityIcons",
-    sessionCount: 0,
-    color: "#8AAAD4",
-    gradient: ["#243350", "#101A28"],
-    primary: false,
-  },
-  {
     id: "mananas",
     title: "Mañanas",
     subtitle: "Rituales para comenzar el día con energía",
