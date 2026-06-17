@@ -759,43 +759,6 @@ export default function MezcladorScreen() {
           </LinearGradient>
         </View>
 
-        {/* ── Chips de filtros activos ── */}
-        {(tagFilters.length > 0 || moodFilter !== null) && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.activeFilterRow}
-            contentContainerStyle={styles.activeFilterRowContent}
-          >
-            {moodFilter !== null && (() => {
-              const mood = MOODS.find((m) => m.id === moodFilter);
-              return mood ? (
-                <Pressable
-                  key="mood"
-                  onPress={() => setMoodFilter(null)}
-                  style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Text style={styles.activeChipText}>{mood.emoji} {mood.label}</Text>
-                  <Text style={styles.activeChipX}>✕</Text>
-                </Pressable>
-              ) : null;
-            })()}
-            {tagFilters.map((tagId) => {
-              const tag = SOUND_TAGS.find((t) => t.id === tagId);
-              return tag ? (
-                <Pressable
-                  key={tagId}
-                  onPress={() => toggleTagFilter(tagId)}
-                  style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Text style={styles.activeChipText}>{tag.label}</Text>
-                  <Text style={styles.activeChipX}>✕</Text>
-                </Pressable>
-              ) : null;
-            })}
-          </ScrollView>
-        )}
-
         {/* ── Scroll principal ── */}
         <View style={styles.scrollBg}>
           <LinearGradient
@@ -810,6 +773,42 @@ export default function MezcladorScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ContentSlide key={contentAnimKey} dir={contentDir}>
+            {/* ── Chips de filtros activos ── */}
+            {(tagFilters.length > 0 || moodFilter !== null) && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.activeFilterRow}
+                contentContainerStyle={styles.activeFilterRowContent}
+              >
+                {moodFilter !== null && (() => {
+                  const mood = MOODS.find((m) => m.id === moodFilter);
+                  return mood ? (
+                    <Pressable
+                      key="mood"
+                      onPress={() => setMoodFilter(null)}
+                      style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
+                    >
+                      <Text style={styles.activeChipText}>{mood.emoji} {mood.label}</Text>
+                      <Text style={styles.activeChipX}>✕</Text>
+                    </Pressable>
+                  ) : null;
+                })()}
+                {tagFilters.map((tagId) => {
+                  const tag = SOUND_TAGS.find((t) => t.id === tagId);
+                  return tag ? (
+                    <Pressable
+                      key={tagId}
+                      onPress={() => toggleTagFilter(tagId)}
+                      style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
+                    >
+                      <Text style={styles.activeChipText}>{tag.label}</Text>
+                      <Text style={styles.activeChipX}>✕</Text>
+                    </Pressable>
+                  ) : null;
+                })}
+              </ScrollView>
+            )}
             {mainTab === "bpm" && (
               <BpmSelector
                 selected={selectedBpm}
@@ -925,10 +924,10 @@ const styles = StyleSheet.create({
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
-  activeFilterRow: { flexGrow: 0, backgroundColor: "#1B060F" },
+  activeFilterRow: { flexGrow: 0 },
   activeFilterRowContent: {
     flexDirection: "row", gap: 8,
-    paddingHorizontal: 14, paddingVertical: 8,
+    paddingHorizontal: 2, paddingBottom: 12,
   },
   activeChip: {
     flexDirection: "row", alignItems: "center", gap: 6,
