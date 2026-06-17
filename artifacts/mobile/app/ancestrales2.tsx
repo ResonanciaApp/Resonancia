@@ -400,10 +400,14 @@ export default function Ancestrales2Screen() {
     }
 
     if (viewMode === "grid") {
+      const pairs: (typeof sessions)[] = [];
+      for (let i = 0; i < sessions.length; i += 2) pairs.push(sessions.slice(i, i + 2));
       return (
-        <View style={styles.gridWrap}>
-          {sessions.map((s) => (
-            <SessionCard key={s.id} session={s} width={cellW} />
+        <View style={styles.gridOuter}>
+          {pairs.map((pair, ri) => (
+            <View key={ri} style={styles.gridRow}>
+              {pair.map((s) => <SessionCard key={s.id} session={s} width={cellW} />)}
+            </View>
           ))}
         </View>
       );
@@ -619,6 +623,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
+  gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
+  gridRow:   { flexDirection: "row", gap: GRID_GAP },
 
   // ── Estado vacío ─────────────────────────────────────────────────────────────
   emptyState: {
