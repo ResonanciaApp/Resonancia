@@ -65,6 +65,13 @@ export const SOUND_MAP: Record<string, ReturnType<typeof require> | undefined> =
   ruido_marron: require("@/assets/audio/mixer/ruido_marron.mp3"),
   ruido_azul:   require("@/assets/audio/mixer/ruido_azul.mp3"),
 
+  // ── Binaurales ──────────────────────────────────────────────
+  binaural_1: require("@/assets/audio/mixer/binaural_1.m4a"),
+  binaural_2: require("@/assets/audio/mixer/binaural_2.m4a"),
+  binaural_3: require("@/assets/audio/mixer/binaural_3.m4a"),
+  binaural_4: require("@/assets/audio/mixer/binaural_4.m4a"),
+  binaural_5: require("@/assets/audio/mixer/binaural_5.m4a"),
+
   // ── Frecuencias (ondas cerebrales isocrónicas) ──────────────
   onda_delta: require("@/assets/audio/mixer/onda_delta.mp3"),
   onda_theta: require("@/assets/audio/mixer/onda_theta.mp3"),

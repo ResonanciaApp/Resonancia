@@ -732,6 +732,36 @@ uri = "file://artifacts/mobile/assets/images/categories/cat-musica.png"
 type = "image"
 title = "bioluminescent forest ambient music"
 
+[[generated]]
+id = "L4zbsjVU1bqKZuHgWshkR"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_1.png"
+type = "image"
+title = "binaural melody calm 1"
+
+[[generated]]
+id = "-EPqtWaYyskE5LjbWCWsa"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_2.png"
+type = "image"
+title = "binaural melody calm 2"
+
+[[generated]]
+id = "zMIr9_-C4fdf6iQKuRRR5"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_3.png"
+type = "image"
+title = "binaural drone calm"
+
+[[generated]]
+id = "oMVcqDCmJQrthHx5L0oxj"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_4.png"
+type = "image"
+title = "binaural beat calm"
+
+[[generated]]
+id = "c9AhipHTa7hyEzUC9-TkN"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_5.png"
+type = "image"
+title = "binaural arpeggio calm"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -1295,3 +1325,33 @@ id = "JW5ot7pC7esHhSeyfSI7e"
 uri = "file://mobile-build.tar.gz"
 type = "unspecified"
 title = "Proyecto mobile (sin node_modules)"
+
+[[outputs]]
+id = "bSxrW5WxqddvRwTEO5-Mr"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_1.png"
+type = "image"
+title = "Thumbnail 1 — Melodía Calma"
+
+[[outputs]]
+id = "ij794wkObVDwGlzneflI0"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_2.png"
+type = "image"
+title = "Thumbnail 2 — Melodía Calma 2"
+
+[[outputs]]
+id = "C4EZMK92Kq_eglg7k799A"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_3.png"
+type = "image"
+title = "Thumbnail 3 — Drone C"
+
+[[outputs]]
+id = "vMtkGLl-eXpWS7UVmhomV"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_4.png"
+type = "image"
+title = "Thumbnail 4 — Beat Calma"
+
+[[outputs]]
+id = "lkV80nLe1qcmLwB1lnR_f"
+uri = "file://artifacts/mobile/assets/images/mixer/binaural_5.png"
+type = "image"
+title = "Thumbnail 5 — Arpegio Calma"

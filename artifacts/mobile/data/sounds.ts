@@ -32,7 +32,8 @@ export type SoundCategoryId =
   | "ruidos"
   | "frecuencias"
   | "asmr"
-  | "bpm";
+  | "bpm"
+  | "binaural";
 
 export interface SoundCategory {
   id: SoundCategoryId;
@@ -83,6 +84,7 @@ export const SOUND_CATEGORIES: SoundCategory[] = [
   { id: "frecuencias", label: "Frecuencias" },
   { id: "asmr", label: "ASMR" },
   { id: "bpm", label: "BPM" },
+  { id: "binaural", label: "Binaurales" },
 ];
 
 export interface MixSound {
@@ -171,6 +173,13 @@ export const SOUNDS: MixSound[] = [
   { id: "onda_alpha", name: "Alpha · Calma", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural"] },
   { id: "onda_beta", name: "Beta · Enfoque", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural"] },
   { id: "onda_gamma", name: "Gamma · Claridad", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural", "psicodelicas"] },
+
+  // ── Binaurales ──────────────────────────────────────────────
+  { id: "binaural_1", name: "1", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
+  { id: "binaural_2", name: "2", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
+  { id: "binaural_3", name: "3", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
+  { id: "binaural_4", name: "4", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
+  { id: "binaural_5", name: "5", icon: "activity", iconSet: "feather", category: "binaural", tags: ["binaural"] },
 
   // ── BPM 90 — Groove lento / meditación activa ────────────────
   // Loops perfectamente cortados en 2 compases · 4/4 · 5.333 s exactos
