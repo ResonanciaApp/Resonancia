@@ -23,6 +23,7 @@ type Props = {
   tint?: "terracotta";
   cardBg?: string;
   noBorder?: boolean;
+  onLongPress?: () => void;
 };
 
 function LockStar() {
@@ -36,7 +37,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -51,6 +52,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
     return (
       <Pressable
         onPress={handlePress}
+        onLongPress={onLongPress}
         style={({ pressed }) => [
           styles.hRow,
           {
@@ -87,6 +89,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   return (
     <Pressable
       onPress={handlePress}
+      onLongPress={onLongPress}
       style={({ pressed }) => [
         styles.card,
         { width, opacity: pressed ? 0.85 : 1 },

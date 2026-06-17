@@ -19,8 +19,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { SessionCard } from "@/components/SessionCard";
-import { SESSIONS } from "@/data/sessions";
+import { usePlayer } from "@/context/PlayerContext";
+import { SESSIONS, type Session } from "@/data/sessions";
 
 // ── Constantes ─────────────────────────────────────────────────────────────────
 const { width } = Dimensions.get("window");
@@ -359,17 +361,107 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
   );
 }
 
+// ── Sheet de acciones rápidas de sesión ───────────────────────────────────────
+function SessionQuickSheet({
+  session,
+  onClose,
+  onPlaylist,
+}: {
+  session: Session | null;
+  onClose: () => void;
+  onPlaylist: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  const { isFavorite, toggleFavorite } = usePlayer();
+  const slideAnim = useRef(new Animated.Value(300)).current;
+
+  useEffect(() => {
+    if (session) {
+      Animated.spring(slideAnim, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
+    } else {
+      slideAnim.setValue(300);
+    }
+  }, [session, slideAnim]);
+
+  if (!session) return null;
+
+  const favorited = isFavorite(session.id);
+
+  const handleFavorite = () => {
+    toggleFavorite(session.id);
+    onClose();
+  };
+
+  return (
+    <Modal visible={!!session} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+      <Pressable style={styles.qsBackdrop} onPress={onClose} />
+      <Animated.View
+        style={[styles.qsSheet, { paddingBottom: Math.max(insets.bottom, 24), transform: [{ translateY: slideAnim }] }]}
+      >
+        <View style={styles.qsHandle} />
+
+        {/* Cabecera: thumb + info + X */}
+        <View style={styles.qsHeader}>
+          <Image
+            source={session.image as never}
+            style={styles.qsThumb}
+            contentFit="cover"
+          />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.qsTitle} numberOfLines={2}>{session.title}</Text>
+            <Text style={styles.qsSub}>{session.categoryLabel} · {session.durationLabel}</Text>
+          </View>
+          <Pressable onPress={onClose} hitSlop={10} style={styles.qsClose}>
+            <Feather name="x" size={20} color={MUTED} />
+          </Pressable>
+        </View>
+
+        <View style={styles.qsDivider} />
+
+        {/* Opción: Playlist */}
+        <Pressable
+          onPress={onPlaylist}
+          style={({ pressed }) => [styles.qsRow, styles.qsRowBorder, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Feather name="list" size={20} color={TEXT} style={styles.qsIcon} />
+          <Text style={styles.qsLabel}>Agregar a una Playlist</Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+
+        {/* Opción: Favorito */}
+        <Pressable
+          onPress={handleFavorite}
+          style={({ pressed }) => [styles.qsRow, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Feather
+            name="heart"
+            size={20}
+            color={favorited ? "#E05C5C" : TEXT}
+            style={styles.qsIcon}
+          />
+          <Text style={[styles.qsLabel, favorited && { color: "#E05C5C" }]}>
+            {favorited ? "Quitar de favoritos" : "Agregar a favoritos"}
+          </Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+      </Animated.View>
+    </Modal>
+  );
+}
+
 // ── Pantalla principal ─────────────────────────────────────────────────────────
 export default function Ancestrales2Screen() {
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab,     setActiveTab]     = useState<AncestralTab | null>(null);
-  const [sort,          setSort]          = useState<SortMode>("recientes");
-  const [sortVisible,   setSortVisible]   = useState(false);
-  const [viewMode,      setViewMode]      = useState<ViewMode>("list");
-  const [searchVisible, setSearchVisible] = useState(false);
+  const [activeTab,       setActiveTab]       = useState<AncestralTab | null>(null);
+  const [sort,            setSort]            = useState<SortMode>("recientes");
+  const [sortVisible,     setSortVisible]     = useState(false);
+  const [viewMode,        setViewMode]        = useState<ViewMode>("list");
+  const [searchVisible,   setSearchVisible]   = useState(false);
+  const [selectedSession,  setSelectedSession]  = useState<Session | null>(null);
+  const [playlistSessionId, setPlaylistSessionId] = useState<string | null>(null);
 
   const toggleView = useCallback(() => setViewMode((v) => (v === "list" ? "grid" : "list")), []);
 
@@ -406,7 +498,14 @@ export default function Ancestrales2Screen() {
         <View style={styles.gridOuter}>
           {pairs.map((pair, ri) => (
             <View key={ri} style={styles.gridRow}>
-              {pair.map((s) => <SessionCard key={s.id} session={s} width={cellW} />)}
+              {pair.map((s) => (
+                <SessionCard
+                  key={s.id}
+                  session={s}
+                  width={cellW}
+                  onLongPress={() => setSelectedSession(s)}
+                />
+              ))}
             </View>
           ))}
         </View>
@@ -417,7 +516,12 @@ export default function Ancestrales2Screen() {
     return (
       <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
         {sessions.map((s) => (
-          <SessionCard key={s.id} session={s} horizontal />
+          <SessionCard
+            key={s.id}
+            session={s}
+            horizontal
+            onLongPress={() => setSelectedSession(s)}
+          />
         ))}
       </View>
     );
@@ -519,6 +623,21 @@ export default function Ancestrales2Screen() {
         current={sort}
         onSelect={setSort}
         onClose={() => setSortVisible(false)}
+      />
+
+      {/* ── Sheets de sesión ───────────────────────────────────────────── */}
+      <SessionQuickSheet
+        session={selectedSession}
+        onClose={() => setSelectedSession(null)}
+        onPlaylist={() => {
+          setPlaylistSessionId(selectedSession!.id);
+          setSelectedSession(null);
+        }}
+      />
+      <AddToPlaylistSheet
+        visible={playlistSessionId !== null}
+        sessionId={playlistSessionId ?? ""}
+        onClose={() => setPlaylistSessionId(null)}
       />
     </View>
   );
@@ -661,6 +780,58 @@ const styles = StyleSheet.create({
   },
   sortSheetLabel:       { color: MUTED, fontSize: 15, flex: 1 },
   sortSheetLabelActive: { color: TEXT, fontWeight: "600" },
+
+  // ── SessionQuickSheet ────────────────────────────────────────────────────────
+  qsBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  qsSheet: {
+    position: "absolute",
+    bottom: 0, left: 0, right: 0,
+    backgroundColor: "#1B060F",
+    borderTopLeftRadius: 22, borderTopRightRadius: 22,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: "#3D0E16",
+  },
+  qsHandle: {
+    alignSelf: "center", width: 36, height: 4,
+    borderRadius: 2, backgroundColor: "rgba(212,175,55,0.25)", marginBottom: 14,
+  },
+  qsHeader: {
+    flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14,
+  },
+  qsThumb: {
+    width: 54, height: 54, borderRadius: 10,
+  },
+  qsTitle: {
+    fontSize: 15, fontWeight: "700", color: TEXT, marginBottom: 2,
+  },
+  qsSub: {
+    fontSize: 12, color: MUTED,
+  },
+  qsClose: {
+    padding: 4,
+  },
+  qsDivider: {
+    height: StyleSheet.hairlineWidth, backgroundColor: "#3D0E16", marginBottom: 6,
+  },
+  qsRow: {
+    flexDirection: "row", alignItems: "center",
+    paddingVertical: 16, gap: 14,
+  },
+  qsRowBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#3D0E16",
+  },
+  qsIcon: {
+    width: 22,
+  },
+  qsLabel: {
+    flex: 1, fontSize: 15, color: TEXT,
+  },
 
   // ── Búsqueda ─────────────────────────────────────────────────────────────────
   searchModalRoot:  { flex: 1, backgroundColor: "#4A0C0C" },
