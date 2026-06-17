@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -41,6 +42,7 @@ import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
 const { width } = Dimensions.get("window");
 const ART_SIZE = width * 0.72;
+const RATINGS_KEY = "@resonance_ratings";
 
 /** Darken a hex color toward black. `amount` is 0..1 (1 = black). */
 function darkenHex(hex: string, amount: number): string {
@@ -137,7 +139,28 @@ export default function PlayerScreen() {
   const progressShared = useSharedValue(0);
   const progressBarWidthShared = useSharedValue(0);
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
+  const [rating, setRating] = useState(0);
 
+  useEffect(() => {
+    const sid = currentSession?.id;
+    if (!sid) return;
+    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
+      if (!val) { setRating(0); return; }
+      const map: Record<string, number> = JSON.parse(val);
+      setRating(map[sid] ?? 0);
+    });
+  }, [currentSession?.id]);
+
+  const handleRate = useCallback(async (stars: number) => {
+    const sid = currentSession?.id;
+    if (!sid) return;
+    setRating(stars);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const val = await AsyncStorage.getItem(RATINGS_KEY);
+    const map: Record<string, number> = val ? JSON.parse(val) : {};
+    map[sid] = stars;
+    await AsyncStorage.setItem(RATINGS_KEY, JSON.stringify(map));
+  }, [currentSession?.id]);
 
   const handleVoiceGrant = useCallback(
     (e: GestureResponderEvent) => {
@@ -404,6 +427,18 @@ export default function PlayerScreen() {
               </Text>
             </View>
           )}
+          {/* Rating stars */}
+          <View style={styles.ratingRow}>
+            {[1,2,3,4,5].map((star) => (
+              <Pressable key={star} onPress={() => handleRate(star)} hitSlop={6} style={styles.starBtn}>
+                <Feather
+                  name="star"
+                  size={18}
+                  color={star <= rating ? "#D4AF37" : "rgba(212,175,55,0.25)"}
+                />
+              </Pressable>
+            ))}
+          </View>
         </View>
 
         {/* Progress */}
@@ -755,6 +790,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.12)",
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.25)",
+  },
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    gap: 4,
+  },
+  starBtn: {
+    padding: 4,
   },
   durationChipText: {
     color: "#F4DAD5",
