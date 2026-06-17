@@ -31,6 +31,10 @@ export const catalogPlaylistsTable = pgTable("catalog_playlists", {
   playlistType: text("playlist_type").notNull().default("sessions"),
   sortOrder: integer("sort_order").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
+  /** Si true, esta playlist aparece en el home de la app (máx 4). */
+  showOnHome: boolean("show_on_home").notNull().default(false),
+  /** Posición en el home: 1–4. Null si showOnHome=false. */
+  homePosition: integer("home_position"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

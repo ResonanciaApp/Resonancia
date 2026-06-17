@@ -505,6 +505,8 @@ function serializePlaylist(p: CatalogPlaylist) {
     playlistType: p.playlistType,
     sortOrder: p.sortOrder,
     isActive: p.isActive,
+    showOnHome: p.showOnHome,
+    homePosition: p.homePosition ?? null,
   };
 }
 

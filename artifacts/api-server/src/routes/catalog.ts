@@ -201,10 +201,12 @@ function serializePlaylist(p: CatalogPlaylist) {
     playlistType: p.playlistType,
     sortOrder: p.sortOrder,
     isActive: p.isActive,
+    showOnHome: p.showOnHome,
+    homePosition: p.homePosition ?? null,
   };
 }
 
-// GET /catalog — catálogo público (solo sesiones publicadas + playlists activas).
+// GET /catalog — catálogo público (solo sesiones publicadas + playlists del home, máx 4).
 router.get("/catalog", async (req, res) => {
   const [categories, sessions, playlists] = await Promise.all([
     db.select().from(catalogCategoriesTable)
@@ -213,8 +215,9 @@ router.get("/catalog", async (req, res) => {
       .where(eq(catalogSessionsTable.status, "published"))
       .orderBy(asc(catalogSessionsTable.sortOrder), asc(catalogSessionsTable.id)),
     db.select().from(catalogPlaylistsTable)
-      .where(eq(catalogPlaylistsTable.isActive, true))
-      .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id)),
+      .where(and(eq(catalogPlaylistsTable.isActive, true), eq(catalogPlaylistsTable.showOnHome, true)))
+      .orderBy(asc(catalogPlaylistsTable.homePosition), asc(catalogPlaylistsTable.id))
+      .limit(4),
   ]);
 
   const sessionIds = sessions.map((s) => s.id);

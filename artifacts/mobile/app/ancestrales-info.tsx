@@ -124,7 +124,9 @@ export default function AncestralInfoScreen() {
     <View style={styles.root}>
       {/* ── Barra de progreso (arriba horizontal) ───────────────────────── */}
       <View style={[styles.progressTrack, { top: insets.top + 8 }]}>
-        <Animated.View style={[styles.progressFill, { width: progressW }]} />
+        <Animated.View style={[styles.progressFill, { width: progressW, overflow: "hidden" }]}>
+          <GoldGradientFill />
+        </Animated.View>
       </View>
 
       {/* ── Botón X (cierre) ─────────────────────────────────────────────── */}
@@ -357,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.15)", borderRadius: 1, zIndex: 10,
   },
   progressFill: {
-    height: 2, backgroundColor: GOLD, borderRadius: 1,
+    height: 2, borderRadius: 1,
   },
   closeBtn: {
     position: "absolute", right: 18, zIndex: 20,

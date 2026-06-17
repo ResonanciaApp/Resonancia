@@ -1103,7 +1103,9 @@ export const GetCatalogResponse = zod.object({
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
   "sortOrder": zod.number(),
-  "isActive": zod.boolean()
+  "isActive": zod.boolean(),
+  "showOnHome": zod.boolean(),
+  "homePosition": zod.number().nullish()
 })).optional()
 })
 
@@ -1888,7 +1890,9 @@ export const ListAdminPlaylistsResponseItem = zod.object({
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
   "sortOrder": zod.number(),
-  "isActive": zod.boolean()
+  "isActive": zod.boolean(),
+  "showOnHome": zod.boolean(),
+  "homePosition": zod.number().nullish()
 })
 export const ListAdminPlaylistsResponse = zod.array(ListAdminPlaylistsResponseItem)
 
@@ -1906,6 +1910,8 @@ export const createAdminPlaylistBodyDescriptionMax = 500;
 
 export const createAdminPlaylistBodyDurationLabelMax = 30;
 
+export const createAdminPlaylistBodyHomePositionMax = 4;
+
 
 
 export const CreateAdminPlaylistBody = zod.object({
@@ -1918,7 +1924,9 @@ export const CreateAdminPlaylistBody = zod.object({
   "sessionIds": zod.array(zod.string()).optional(),
   "playlistType": zod.enum(['sessions', 'music']),
   "sortOrder": zod.number().optional(),
-  "isActive": zod.boolean().optional()
+  "isActive": zod.boolean().optional(),
+  "showOnHome": zod.boolean().optional(),
+  "homePosition": zod.number().min(1).max(createAdminPlaylistBodyHomePositionMax).nullish()
 })
 
 
@@ -1939,6 +1947,8 @@ export const updateAdminPlaylistBodyDescriptionMax = 500;
 
 export const updateAdminPlaylistBodyDurationLabelMax = 30;
 
+export const updateAdminPlaylistBodyHomePositionMax = 4;
+
 
 
 export const UpdateAdminPlaylistBody = zod.object({
@@ -1951,7 +1961,9 @@ export const UpdateAdminPlaylistBody = zod.object({
   "sessionIds": zod.array(zod.string()).optional(),
   "playlistType": zod.enum(['sessions', 'music']).optional(),
   "sortOrder": zod.number().optional(),
-  "isActive": zod.boolean().optional()
+  "isActive": zod.boolean().optional(),
+  "showOnHome": zod.boolean().optional(),
+  "homePosition": zod.number().min(1).max(updateAdminPlaylistBodyHomePositionMax).nullish()
 })
 
 export const UpdateAdminPlaylistResponse = zod.object({
@@ -1965,7 +1977,9 @@ export const UpdateAdminPlaylistResponse = zod.object({
   "sessionIds": zod.array(zod.string()),
   "playlistType": zod.string(),
   "sortOrder": zod.number(),
-  "isActive": zod.boolean()
+  "isActive": zod.boolean(),
+  "showOnHome": zod.boolean(),
+  "homePosition": zod.number().nullish()
 })
 
 

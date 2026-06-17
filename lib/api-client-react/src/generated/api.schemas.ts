@@ -692,6 +692,8 @@ export interface CatalogPlaylist {
   playlistType: string;
   sortOrder: number;
   isActive: boolean;
+  showOnHome: boolean;
+  homePosition?: number | null;
 }
 
 export type AdminPlaylistInputPlaylistType = typeof AdminPlaylistInputPlaylistType[keyof typeof AdminPlaylistInputPlaylistType];
@@ -724,6 +726,12 @@ export interface AdminPlaylistInput {
   playlistType: AdminPlaylistInputPlaylistType;
   sortOrder?: number;
   isActive?: boolean;
+  showOnHome?: boolean;
+  /**
+     * @minimum 1
+     * @maximum 4
+     */
+  homePosition?: number | null;
 }
 
 export type AdminPlaylistUpdatePlaylistType = typeof AdminPlaylistUpdatePlaylistType[keyof typeof AdminPlaylistUpdatePlaylistType];
@@ -756,6 +764,12 @@ export interface AdminPlaylistUpdate {
   playlistType?: AdminPlaylistUpdatePlaylistType;
   sortOrder?: number;
   isActive?: boolean;
+  showOnHome?: boolean;
+  /**
+     * @minimum 1
+     * @maximum 4
+     */
+  homePosition?: number | null;
 }
 
 export interface CatalogResponse {

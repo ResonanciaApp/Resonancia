@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef } from "react";
 import { Animated, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width: W, height: H } = Dimensions.get("window");
@@ -66,7 +67,9 @@ export default function MeditacionesInfoScreen() {
   return (
     <View style={{ flex:1, backgroundColor: BG }}>
       <View style={[info.progressTrack, { top: insets.top + 8 }]}>
-        <Animated.View style={[info.progressFill, { width: barW }]} />
+        <Animated.View style={[info.progressFill, { width: barW, overflow: "hidden" }]}>
+          <GoldGradientFill />
+        </Animated.View>
       </View>
       <Pressable onPress={()=>router.back()} hitSlop={10}
         style={[info.closeBtn, { top: insets.top + 4 }]}>
@@ -115,7 +118,7 @@ export default function MeditacionesInfoScreen() {
             { t:"3 Min Sabiduría", d:"Prácticas breves para integrar en cualquier momento del día." },
           ].map((g)=>(
             <View key={g.t} style={info.genreRow}>
-              <View style={info.genreDot} />
+              <GoldGradient style={info.genreDot} />
               <View style={{ flex:1 }}>
                 <Text style={info.genreTitle}>{g.t}</Text>
                 <Text style={info.genreSub}>{g.d}</Text>
@@ -147,7 +150,7 @@ export default function MeditacionesInfoScreen() {
 
 const info = StyleSheet.create({
   progressTrack:{ position:"absolute", left:20, right:20, height:2, backgroundColor:"rgba(255,255,255,0.15)", borderRadius:1, zIndex:10 },
-  progressFill: { height:2, backgroundColor:GOLD, borderRadius:1 },
+  progressFill: { height:2, borderRadius:1 },
   closeBtn:     { position:"absolute", right:16, zIndex:11, width:36, height:36, borderRadius:18, backgroundColor:"rgba(0,0,0,0.45)", alignItems:"center", justifyContent:"center" },
   heroContent:  { position:"absolute", bottom:0, left:0, right:0, paddingHorizontal:24 },
   heroCat:      { fontSize:11, fontWeight:"700", letterSpacing:2, color:GOLD, marginBottom:10 },
@@ -159,7 +162,7 @@ const info = StyleSheet.create({
   sectionBody:  { fontSize:15, color:MUTED, lineHeight:24, marginBottom:20 },
   sectionImg:   { width:"100%", height:200, borderRadius:16, marginTop:8 },
   genreRow:     { flexDirection:"row", alignItems:"flex-start", gap:14, marginBottom:20 },
-  genreDot:     { width:8, height:8, borderRadius:4, backgroundColor:GOLD, marginTop:6 },
+  genreDot:     { width:8, height:8, borderRadius:4, marginTop:6 },
   genreTitle:   { fontSize:16, fontWeight:"700", color:TEXT, marginBottom:4 },
   genreSub:     { fontSize:13, color:MUTED, lineHeight:20 },
   benefitCard:  { flexDirection:"row", alignItems:"flex-start", gap:16, marginBottom:24, backgroundColor:"rgba(74,12,12,0.18)", borderRadius:14, padding:16 },

@@ -48,6 +48,8 @@ type PlaylistForm = {
   playlistType: "sessions" | "music";
   sortOrder: number;
   isActive: boolean;
+  showOnHome: boolean;
+  homePosition: number | null;
 };
 
 const EMPTY_FORM: PlaylistForm = {
@@ -61,6 +63,8 @@ const EMPTY_FORM: PlaylistForm = {
   playlistType: "sessions",
   sortOrder: 0,
   isActive: true,
+  showOnHome: false,
+  homePosition: null,
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -339,6 +343,10 @@ function PlaylistForm({
     if (!form.slug.trim()) { toast.error("El slug es obligatorio"); return; }
     if (form.sessionIds.length === 0) { toast.error("Agrega al menos una sesión"); return; }
 
+    if (form.showOnHome && !form.homePosition) {
+      toast.error("Selecciona la posición en el inicio (1–4)"); return;
+    }
+
     setSaving(true);
     try {
       const payload = {
@@ -352,6 +360,8 @@ function PlaylistForm({
         playlistType: form.playlistType,
         sortOrder: form.sortOrder,
         isActive: form.isActive,
+        showOnHome: form.showOnHome,
+        homePosition: form.showOnHome ? form.homePosition : null,
       };
 
       if (isEdit) {
@@ -468,6 +478,48 @@ function PlaylistForm({
         </div>
       </div>
 
+      {/* Sección "Inicio" */}
+      <div className="border border-border rounded-lg p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-medium text-sm text-foreground">Mostrar en inicio</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Máx. 4 playlists se muestran en el home de la app
+            </p>
+          </div>
+          <Switch
+            id="showOnHome"
+            checked={form.showOnHome}
+            onCheckedChange={(v) => {
+              set("showOnHome", v);
+              if (!v) set("homePosition", null);
+            }}
+          />
+        </div>
+        {form.showOnHome && (
+          <div className="space-y-1.5">
+            <Label>Posición en el inicio *</Label>
+            <Select
+              value={form.homePosition ? String(form.homePosition) : ""}
+              onValueChange={(v) => set("homePosition", parseInt(v))}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Elige posición…" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Posición 1</SelectItem>
+                <SelectItem value="2">Posición 2</SelectItem>
+                <SelectItem value="3">Posición 3</SelectItem>
+                <SelectItem value="4">Posición 4</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Si otra playlist ya ocupa esa posición, esta la reemplazará.
+            </p>
+          </div>
+        )}
+      </div>
+
       <CoverUpload
         coverUrl={form.coverUrl}
         onChange={(url) => set("coverUrl", url)}
@@ -524,6 +576,8 @@ export default function PlaylistsPage() {
       playlistType: p.playlistType as "sessions" | "music",
       sortOrder: p.sortOrder,
       isActive: p.isActive,
+      showOnHome: p.showOnHome ?? false,
+      homePosition: p.homePosition ?? null,
     });
     setDialogOpen(true);
   };
@@ -581,6 +635,7 @@ export default function PlaylistsPage() {
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Tipo</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Sesiones</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Orden</th>
+                <th className="text-left px-4 py-3 text-muted-foreground font-medium">En inicio</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Estado</th>
                 <th className="w-20 px-4 py-3" />
               </tr>
@@ -613,6 +668,15 @@ export default function PlaylistsPage() {
                     {p.durationLabel ? ` · ${p.durationLabel}` : ""}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{p.sortOrder}</td>
+                  <td className="px-4 py-3">
+                    {p.showOnHome ? (
+                      <Badge variant="default" className="text-xs gap-1">
+                        Pos. {p.homePosition}
+                      </Badge>
+                    ) : (
+                      <span className="text-muted-foreground text-xs">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <Badge
                       variant={p.isActive ? "default" : "secondary"}
