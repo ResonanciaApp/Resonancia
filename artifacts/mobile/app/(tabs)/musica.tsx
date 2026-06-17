@@ -39,7 +39,7 @@ import {
   hasSoundFile,
   soundMatchesBpm,
 } from "@/data/sounds";
-import { MOOD_SOUND_TAGS, type MoodId } from "@/data/moods";
+import { MOODS, MOOD_SOUND_TAGS, type MoodId } from "@/data/moods";
 import {
   DEFAULT_MIXER_BG_PALETTE,
   getMixerBgPalette,
@@ -624,11 +624,6 @@ export default function MezcladorScreen() {
             (mainTab !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
         );
 
-    // Filtros de ánimo/etiqueta solo aplican en "Todos" (popular). En los tabs
-    // de categoría el usuario quiere ver TODOS los sonidos de esa categoría sin
-    // que un filtro del engranaje oculte cosas inesperadamente.
-    if (mainTab !== "popular") return base;
-
     const moodTags = moodFilter ? MOOD_SOUND_TAGS[moodFilter] ?? [] : [];
     const activeTags = Array.from(new Set([...moodTags, ...tagFilters]));
     if (activeTags.length === 0) return base;
@@ -764,6 +759,43 @@ export default function MezcladorScreen() {
           </LinearGradient>
         </View>
 
+        {/* ── Chips de filtros activos ── */}
+        {(tagFilters.length > 0 || moodFilter !== null) && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.activeFilterRow}
+            contentContainerStyle={styles.activeFilterRowContent}
+          >
+            {moodFilter !== null && (() => {
+              const mood = MOODS.find((m) => m.id === moodFilter);
+              return mood ? (
+                <Pressable
+                  key="mood"
+                  onPress={() => setMoodFilter(null)}
+                  style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Text style={styles.activeChipText}>{mood.emoji} {mood.label}</Text>
+                  <Text style={styles.activeChipX}>✕</Text>
+                </Pressable>
+              ) : null;
+            })()}
+            {tagFilters.map((tagId) => {
+              const tag = SOUND_TAGS.find((t) => t.id === tagId);
+              return tag ? (
+                <Pressable
+                  key={tagId}
+                  onPress={() => toggleTagFilter(tagId)}
+                  style={({ pressed }) => [styles.activeChip, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Text style={styles.activeChipText}>{tag.label}</Text>
+                  <Text style={styles.activeChipX}>✕</Text>
+                </Pressable>
+              ) : null;
+            })}
+          </ScrollView>
+        )}
+
         {/* ── Scroll principal ── */}
         <View style={styles.scrollBg}>
           <LinearGradient
@@ -892,6 +924,21 @@ const styles = StyleSheet.create({
   pillTabLabel: { fontSize: 12, letterSpacing: 0.1, fontWeight: "700" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
+
+  activeFilterRow: { flexGrow: 0, backgroundColor: "#1B060F" },
+  activeFilterRowContent: {
+    flexDirection: "row", gap: 8,
+    paddingHorizontal: 14, paddingVertical: 8,
+  },
+  activeChip: {
+    flexDirection: "row", alignItems: "center", gap: 6,
+    paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: "rgba(212,175,55,0.14)",
+    borderWidth: 1, borderColor: "rgba(212,175,55,0.45)",
+  },
+  activeChipText: { fontSize: 12, fontWeight: "600", color: "#D4AF37" },
+  activeChipX:    { fontSize: 11, fontWeight: "700", color: "rgba(212,175,55,0.65)" },
 
   scrollBg:      { flex: 1 },
   scroll:        { flex: 1, backgroundColor: "transparent" },
