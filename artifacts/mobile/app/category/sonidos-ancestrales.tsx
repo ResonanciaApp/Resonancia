@@ -411,7 +411,7 @@ export default function SonidosAncestalesScreen() {
       <View style={styles.chipsArea}>
         <ChipRow activeTab={activeTab} onSelect={(id)=>setActiveTab(id)} onClear={()=>setActiveTab(null)} />
         <LinearGradient
-          colors={["rgba(0,0,0,0.55)", "rgba(0,0,0,0)"]}
+          colors={["rgba(0,0,0,0.27)", "rgba(0,0,0,0)"]}
           style={styles.chipsShadow}
           pointerEvents="none"
         />
