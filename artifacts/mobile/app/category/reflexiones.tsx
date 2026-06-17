@@ -377,6 +377,7 @@ export default function ReflexionesScreen() {
 
   return (
     <View style={styles.root}>
+      <LinearGradient colors={["#0A0F20","#060A14"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
       <View style={[styles.header,{height:HERO_HEIGHT+topPad}]}>
         <Image source={HERO_IMG} style={[StyleSheet.absoluteFill,{width:"100%",height:"100%"}]} contentFit="cover" contentPosition="center" />
         <View style={[StyleSheet.absoluteFill,{backgroundColor:"rgba(20,5,10,0.50)"}]} pointerEvents="none" />
@@ -424,8 +425,8 @@ export default function ReflexionesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:{flex:1,backgroundColor:"#27070E"},
-  header:{overflow:"hidden",backgroundColor:"#27070E"},
+  root:{flex:1,backgroundColor:"#060A14"},
+  header:{overflow:"hidden",backgroundColor:"#060A14"},
   headerTopRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingHorizontal:H_PAD,paddingTop:8},
   backBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
   headerIconBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},

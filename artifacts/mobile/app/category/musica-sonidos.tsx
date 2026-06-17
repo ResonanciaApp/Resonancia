@@ -390,6 +390,7 @@ export default function MusicaSonidosScreen() {
 
   return (
     <View style={styles.root}>
+      <LinearGradient colors={["#0D1F12","#061009"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
       <View style={[styles.header,{height:HERO_HEIGHT+topPad}]}>
         <Image source={HERO_IMG} style={[StyleSheet.absoluteFill,{width:"100%",height:"100%"}]} contentFit="cover" contentPosition="center" />
         <View style={[StyleSheet.absoluteFill,{backgroundColor:"rgba(0,0,0,0.35)"}]} pointerEvents="none" />
@@ -437,8 +438,8 @@ export default function MusicaSonidosScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:{flex:1,backgroundColor:"#27070E"},
-  header:{overflow:"hidden",backgroundColor:"#27070E"},
+  root:{flex:1,backgroundColor:"#061009"},
+  header:{overflow:"hidden",backgroundColor:"#061009"},
   headerTopRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingHorizontal:H_PAD,paddingTop:8},
   backBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
   headerIconBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
