@@ -372,7 +372,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 }
 
 // ── Card personalizada para Ancestrales 2 ─────────────────────────────────────
-const PREVIEW_SECS = 12;
+const PREVIEW_SECS = 19;
 
 function AncestralCard({
   session,
@@ -426,7 +426,7 @@ function AncestralCard({
           {/* Botón preview */}
           {hasAudio && (
             <Pressable onPress={onPreviewTap} hitSlop={6} style={acStyles.hPlayBtn}>
-              <Feather name={isPreviewPlaying ? "pause" : "play"} size={12} color="#fff" />
+              <Feather name={isPreviewPlaying ? "pause" : "play"} size={15} color="#fff" />
             </Pressable>
           )}
           {/* Barra de progreso inferior */}
