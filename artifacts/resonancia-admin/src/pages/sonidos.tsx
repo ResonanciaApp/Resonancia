@@ -115,6 +115,7 @@ const SOUND_TAGS = [
 const BPM_OPTIONS = [44, 50, 68, 72] as const;
 
 interface FormState {
+  soundType: "ambiental" | "bpm" | "";
   id: string;
   name: string;
   categoryId: CategoryId | "";
@@ -130,6 +131,7 @@ interface FormState {
 }
 
 const emptyForm = (): FormState => ({
+  soundType: "",
   id: "",
   name: "",
   categoryId: "",
@@ -143,6 +145,8 @@ const emptyForm = (): FormState => ({
   loopBars: "",
   sortOrder: "0",
 });
+
+const AMBIENTAL_GROUPS = CATEGORY_GROUPS.filter((g) => g.tab !== "BPM");
 
 // ── Upload helper ─────────────────────────────────────────────────────────────
 
@@ -203,7 +207,7 @@ export default function SonidosPage() {
 
   const sounds = data?.sounds ?? [];
   const filtered = filterCat === "all" ? sounds : sounds.filter((s) => s.categoryId === filterCat);
-  const isBpmCategory = form.categoryId === "bpm";
+  const isBpmCategory = form.soundType === "bpm";
 
   function openCreate() {
     setEditingId(null);
@@ -217,6 +221,7 @@ export default function SonidosPage() {
   function openEdit(s: (typeof sounds)[number]) {
     setEditingId(s.id);
     setForm({
+      soundType: s.categoryId === "bpm" ? "bpm" : "ambiental",
       id: s.id,
       name: s.name,
       categoryId: s.categoryId as CategoryId,
@@ -246,6 +251,16 @@ export default function SonidosPage() {
 
   function field(key: keyof FormState, val: string | boolean | string[]) {
     setForm((f) => ({ ...f, [key]: val }));
+  }
+
+  function setSoundType(type: "ambiental" | "bpm") {
+    setForm((f) => ({
+      ...f,
+      soundType: type,
+      categoryId: type === "bpm" ? "bpm" : (f.categoryId === "bpm" ? "" : f.categoryId),
+      bpm: type === "ambiental" ? "" : f.bpm,
+      loopBars: type === "ambiental" ? "" : f.loopBars,
+    }));
   }
 
   function toggleTag(tagId: string) {
@@ -388,82 +403,97 @@ export default function SonidosPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* ID */}
-            <div className="space-y-1">
-              <Label>ID (slug único)</Label>
-              <Input
-                value={form.id}
-                onChange={(e) => field("id", e.target.value)}
-                placeholder="ej. viento_nuevo"
-                disabled={!!editingId}
-                required
-              />
-              {!editingId && <p className="text-xs text-muted-foreground">Solo letras minúsculas, números y guiones</p>}
+
+            {/* ── Tipo de sonido ── */}
+            <div className="col-span-full space-y-2">
+              <Label>Tipo de sonido</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSoundType("ambiental")}
+                  className={`p-4 rounded-xl border-2 text-left transition-all ${
+                    form.soundType === "ambiental"
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-muted-foreground"
+                  }`}
+                >
+                  <div className="font-semibold text-sm">🌿 Ambiental</div>
+                  <div className="text-xs text-muted-foreground mt-1">Textura de fondo, loop continuo</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSoundType("bpm")}
+                  className={`p-4 rounded-xl border-2 text-left transition-all ${
+                    form.soundType === "bpm"
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-muted-foreground"
+                  }`}
+                >
+                  <div className="font-semibold text-sm">🥁 BPM / Rítmico</div>
+                  <div className="text-xs text-muted-foreground mt-1">Loop con tempo sincronizado</div>
+                </button>
+              </div>
             </div>
+
+            {/* ID */}
+            {form.soundType !== "" && (
+              <div className="space-y-1">
+                <Label>ID (slug único)</Label>
+                <Input
+                  value={form.id}
+                  onChange={(e) => field("id", e.target.value)}
+                  placeholder="ej. viento_nuevo"
+                  disabled={!!editingId}
+                  required
+                />
+                {!editingId && <p className="text-xs text-muted-foreground">Solo letras minúsculas, números y guiones</p>}
+              </div>
+            )}
 
             {/* Nombre */}
-            <div className="space-y-1">
-              <Label>Nombre</Label>
-              <Input
-                value={form.name}
-                onChange={(e) => field("name", e.target.value)}
-                placeholder="ej. Viento suave"
-                required
-              />
-            </div>
-
-            {/* Categoría */}
-            <div className="space-y-1">
-              <Label>Categoría</Label>
-              <Select value={form.categoryId} onValueChange={(v) => field("categoryId", v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORY_GROUPS.map((g) => (
-                    <SelectGroup key={g.tab}>
-                      <SelectLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
-                        {g.tab}
-                      </SelectLabel>
-                      {g.items.map((c) => (
-                        <SelectItem key={c.id} value={c.id} className="pl-5">
-                          {c.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Ícono */}
-            <div className="space-y-1">
-              <Label>Ícono</Label>
-              <div className="flex gap-2">
+            {form.soundType !== "" && (
+              <div className="space-y-1">
+                <Label>Nombre</Label>
                 <Input
-                  value={form.iconName}
-                  onChange={(e) => field("iconName", e.target.value)}
-                  placeholder="ej. wind"
-                  className="flex-1"
+                  value={form.name}
+                  onChange={(e) => field("name", e.target.value)}
+                  placeholder="ej. Viento suave"
+                  required
                 />
-                <Select value={form.iconSet} onValueChange={(v) => field("iconSet", v)}>
-                  <SelectTrigger className="w-36">
-                    <SelectValue />
+              </div>
+            )}
+
+            {/* Subcategoría (solo Ambiental) */}
+            {form.soundType === "ambiental" && (
+              <div className="space-y-1">
+                <Label>Subcategoría</Label>
+                <Select value={form.categoryId} onValueChange={(v) => field("categoryId", v)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar categoría" />
                   </SelectTrigger>
                   <SelectContent>
-                    {ICON_SETS.map((s) => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    {AMBIENTAL_GROUPS.map((g) => (
+                      <SelectGroup key={g.tab}>
+                        <SelectLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
+                          {g.tab}
+                        </SelectLabel>
+                        {g.items.map((c) => (
+                          <SelectItem key={c.id} value={c.id} className="pl-5">
+                            {c.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+            )}
 
-            {/* BPM + loopBars (solo si categoría = bpm) */}
-            {isBpmCategory && (
+            {/* BPM + Compases (solo BPM) */}
+            {form.soundType === "bpm" && (
               <>
                 <div className="space-y-1">
-                  <Label>BPM</Label>
+                  <Label>Tempo</Label>
                   <Select value={form.bpm} onValueChange={(v) => field("bpm", v)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccionar BPM" />
@@ -493,43 +523,75 @@ export default function SonidosPage() {
               </>
             )}
 
+            {/* Ícono */}
+            {form.soundType !== "" && (
+              <div className="space-y-1">
+                <Label>Ícono</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={form.iconName}
+                    onChange={(e) => field("iconName", e.target.value)}
+                    placeholder="ej. wind"
+                    className="flex-1"
+                  />
+                  <Select value={form.iconSet} onValueChange={(v) => field("iconSet", v)}>
+                    <SelectTrigger className="w-36">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ICON_SETS.map((s) => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
             {/* Orden */}
-            <div className="space-y-1">
-              <Label>Orden</Label>
-              <Input
-                type="number"
-                value={form.sortOrder}
-                onChange={(e) => field("sortOrder", e.target.value)}
-                min={0}
-              />
-            </div>
+            {form.soundType !== "" && (
+              <div className="space-y-1">
+                <Label>Orden</Label>
+                <Input
+                  type="number"
+                  value={form.sortOrder}
+                  onChange={(e) => field("sortOrder", e.target.value)}
+                  min={0}
+                />
+              </div>
+            )}
 
             {/* Premium */}
-            <div className="space-y-1">
-              <Label>Premium</Label>
-              <div className="flex items-center gap-3 h-9">
-                <Switch checked={form.isPremium} onCheckedChange={(v) => field("isPremium", v)} />
-                <span className="text-sm text-muted-foreground">{form.isPremium ? "Sí" : "No"}</span>
+            {form.soundType !== "" && (
+              <div className="space-y-1">
+                <Label>Premium</Label>
+                <div className="flex items-center gap-3 h-9">
+                  <Switch checked={form.isPremium} onCheckedChange={(v) => field("isPremium", v)} />
+                  <span className="text-sm text-muted-foreground">{form.isPremium ? "Sí" : "No"}</span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Etiquetas */}
-            <div className="space-y-2 md:col-span-2">
-              <Label>Etiquetas</Label>
-              <div className="flex flex-wrap gap-3">
-                {SOUND_TAGS.map((tag) => (
-                  <label key={tag.id} className="flex items-center gap-2 cursor-pointer select-none">
-                    <Checkbox
-                      checked={form.tags.includes(tag.id)}
-                      onCheckedChange={() => toggleTag(tag.id)}
-                    />
-                    <span className="text-sm text-foreground">{tag.label}</span>
-                  </label>
-                ))}
+            {form.soundType !== "" && (
+              <div className="space-y-2 md:col-span-2">
+                <Label>Etiquetas</Label>
+                <div className="flex flex-wrap gap-3">
+                  {SOUND_TAGS.map((tag) => (
+                    <label key={tag.id} className="flex items-center gap-2 cursor-pointer select-none">
+                      <Checkbox
+                        checked={form.tags.includes(tag.id)}
+                        onCheckedChange={() => toggleTag(tag.id)}
+                      />
+                      <span className="text-sm text-foreground">{tag.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Audio loop */}
+            {form.soundType !== "" && (
             <div className="space-y-1">
               <Label>Audio loop (.m4a / .mp3)</Label>
               <div
@@ -566,8 +628,10 @@ export default function SonidosPage() {
                 )}
               </div>
             </div>
+            )}
 
             {/* Thumbnail */}
+            {form.soundType !== "" && (
             <div className="space-y-1">
               <Label>Thumbnail (imagen)</Label>
               <div
@@ -602,6 +666,7 @@ export default function SonidosPage() {
                 )}
               </div>
             </div>
+            )}
 
             {/* Acciones */}
             <div className="md:col-span-2 flex justify-end gap-3 pt-2">
