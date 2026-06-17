@@ -19,7 +19,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
+
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
+import { AUDIO_MAP } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
@@ -369,19 +372,28 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 }
 
 // ── Card personalizada para Ancestrales 2 ─────────────────────────────────────
+const PREVIEW_SECS = 12;
+
 function AncestralCard({
   session,
   width: cardWidth = 200,
   horizontal = false,
   onLongPress,
+  isPreviewPlaying = false,
+  previewProgress,
+  onPreviewTap,
 }: {
   session: Session;
   width?: number;
   horizontal?: boolean;
   onLongPress?: () => void;
+  isPreviewPlaying?: boolean;
+  previewProgress?: Animated.Value;
+  onPreviewTap?: () => void;
 }) {
   const { isPremium } = usePremium();
   const locked = !!session.isPremium && !isPremium;
+  const hasAudio = !!AUDIO_MAP[session.id];
 
   const handlePress = () => {
     if (locked) router.push("/membresia" as never);
@@ -395,6 +407,9 @@ function AncestralCard({
   })();
 
   if (horizontal) {
+    const barW = previewProgress?.interpolate({
+      inputRange: [0, 1], outputRange: [0, 70], extrapolate: "clamp",
+    });
     return (
       <Pressable
         onPress={handlePress}
@@ -408,6 +423,16 @@ function AncestralCard({
               <Feather name="lock" size={9} color="#fff" />
             </View>
           )}
+          {/* Botón preview */}
+          {hasAudio && (
+            <Pressable onPress={onPreviewTap} hitSlop={6} style={acStyles.hPlayBtn}>
+              <Feather name={isPreviewPlaying ? "pause" : "play"} size={12} color="#fff" />
+            </Pressable>
+          )}
+          {/* Barra de progreso inferior */}
+          {isPreviewPlaying && barW && (
+            <Animated.View style={[acStyles.progressBar, { width: barW }]} />
+          )}
         </View>
         <View style={acStyles.hContent}>
           <Text style={acStyles.hDuration}>{session.durationLabel}</Text>
@@ -417,6 +442,10 @@ function AncestralCard({
       </Pressable>
     );
   }
+
+  const barW = previewProgress?.interpolate({
+    inputRange: [0, 1], outputRange: [0, cardWidth], extrapolate: "clamp",
+  });
 
   return (
     <Pressable
@@ -434,6 +463,22 @@ function AncestralCard({
         <View style={acStyles.durationBadge}>
           <Text style={acStyles.durationBadgeText}>{session.durationLabel}</Text>
         </View>
+        {/* Botón preview centrado */}
+        {hasAudio && (
+          <Pressable onPress={onPreviewTap} hitSlop={8} style={acStyles.gridPlayOverlay}>
+            <View style={[acStyles.gridPlayBtn, isPreviewPlaying && acStyles.gridPlayBtnActive]}>
+              <Feather
+                name={isPreviewPlaying ? "pause" : "play"}
+                size={14}
+                color={isPreviewPlaying ? "#1B060F" : "#fff"}
+              />
+            </View>
+          </Pressable>
+        )}
+        {/* Barra de progreso inferior */}
+        {isPreviewPlaying && barW && (
+          <Animated.View style={[acStyles.progressBar, { width: barW }]} />
+        )}
       </View>
       <Text style={acStyles.cardTitle} numberOfLines={2}>{session.title}</Text>
       {!!author && <Text style={acStyles.cardAuthor} numberOfLines={1}>{author}</Text>}
@@ -485,6 +530,31 @@ const acStyles = StyleSheet.create({
     width: 20, height: 20, borderRadius: 10,
     backgroundColor: "rgba(0,0,0,0.55)",
     alignItems: "center", justifyContent: "center",
+  },
+  // ── Preview ─────────────────────────────────────────────────────────────────
+  progressBar: {
+    position: "absolute", bottom: 0, left: 0,
+    height: 3, backgroundColor: GOLD,
+  },
+  // Horizontal card
+  hPlayBtn: {
+    position: "absolute",
+    top: 0, left: 0, right: 0, bottom: 0,
+    alignItems: "center", justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.38)",
+  },
+  // Grid card
+  gridPlayOverlay: {
+    position: "absolute",
+    bottom: 10, right: 8,
+  },
+  gridPlayBtn: {
+    width: 30, height: 30, borderRadius: 15,
+    backgroundColor: "rgba(27,6,15,0.65)",
+    alignItems: "center", justifyContent: "center",
+  },
+  gridPlayBtnActive: {
+    backgroundColor: GOLD,
   },
 });
 
@@ -595,6 +665,50 @@ export default function Ancestrales2Screen() {
   const [selectedSession,   setSelectedSession]   = useState<Session | null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string | null>(null);
 
+  // ── Preview de 12 s ───────────────────────────────────────────────────────
+  const [previewingId,  setPreviewingId]  = useState<string | null>(null);
+  const previewProgress = useRef(new Animated.Value(0)).current;
+  const previewPlayer   = useRef<AudioPlayer | null>(null);
+  const previewAnim     = useRef<Animated.CompositeAnimation | null>(null);
+  const previewTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const stopPreview = useCallback(() => {
+    if (previewTimer.current) clearTimeout(previewTimer.current);
+    previewAnim.current?.stop();
+    previewProgress.setValue(0);
+    previewPlayer.current?.pause();
+    setPreviewingId(null);
+  }, [previewProgress]);
+
+  const togglePreview = useCallback((session: Session) => {
+    if (previewingId === session.id) { stopPreview(); return; }
+    stopPreview();
+    const src = AUDIO_MAP[session.id];
+    if (!src) return;
+
+    setPreviewingId(session.id);
+    previewProgress.setValue(0);
+
+    if (!previewPlayer.current) {
+      previewPlayer.current = createAudioPlayer(src);
+    } else {
+      previewPlayer.current.replace(src);
+    }
+    previewPlayer.current.play();
+
+    previewAnim.current = Animated.timing(previewProgress, {
+      toValue: 1,
+      duration: PREVIEW_SECS * 1000,
+      useNativeDriver: false,
+      easing: Easing.linear,
+    });
+    previewAnim.current.start(({ finished }) => { if (finished) stopPreview(); });
+    previewTimer.current = setTimeout(stopPreview, PREVIEW_SECS * 1000 + 300);
+  }, [previewingId, stopPreview, previewProgress]);
+
+  // Limpieza al desmontar
+  useEffect(() => () => { stopPreview(); }, []);
+
   const toggleView = useCallback(() => setViewMode((v) => (v === "list" ? "grid" : "list")), []);
 
   const playCounts = useMemo(() => {
@@ -642,6 +756,9 @@ export default function Ancestrales2Screen() {
                   session={s}
                   width={cellW}
                   onLongPress={() => setSelectedSession(s)}
+                  isPreviewPlaying={previewingId === s.id}
+                  previewProgress={previewProgress}
+                  onPreviewTap={() => togglePreview(s)}
                 />
               ))}
             </View>
@@ -659,6 +776,9 @@ export default function Ancestrales2Screen() {
             session={s}
             horizontal
             onLongPress={() => setSelectedSession(s)}
+            isPreviewPlaying={previewingId === s.id}
+            previewProgress={previewProgress}
+            onPreviewTap={() => togglePreview(s)}
           />
         ))}
       </View>
