@@ -313,6 +313,15 @@ export default function Ancestrales2Screen() {
   const GRID_GAP = 12;
   const cellW = (width - H_PAD * 2 - GRID_GAP) / 2;
 
+  // Sesiones en pares para grilla de 2 columnas
+  const sessionPairs = useMemo(() => {
+    const pairs: (typeof sessions)[] = [];
+    for (let i = 0; i < sessions.length; i += 2) {
+      pairs.push(sessions.slice(i, i + 2));
+    }
+    return pairs;
+  }, [sessions]);
+
   const renderContent = () => {
     if (sessions.length === 0) {
       const labels: Record<AncestralTab | "null", string> = {
@@ -336,9 +345,13 @@ export default function Ancestrales2Screen() {
     }
 
     return (
-      <View style={styles.gridWrap}>
-        {sessions.map((s) => (
-          <SessionCard key={s.id} session={s} width={cellW} />
+      <View style={styles.gridOuter}>
+        {sessionPairs.map((pair, ri) => (
+          <View key={ri} style={styles.gridRow}>
+            {pair.map((s) => (
+              <SessionCard key={s.id} session={s} width={cellW} />
+            ))}
+          </View>
         ))}
       </View>
     );
@@ -543,11 +556,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 4,
   },
-  gridWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
+  gridOuter: {
     paddingHorizontal: H_PAD,
+    gap: 12,
+  },
+  gridRow: {
+    flexDirection: "row",
+    gap: 12,
   },
 
   // ── Estado vacío ─────────────────────────────────────────────────────────────
