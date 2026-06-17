@@ -23,12 +23,13 @@ const MUTED  = "rgba(242,231,228,0.5)";
 const BG     = "#1B060F";
 const BG_MID = "#27070E";
 
-// Offsets aproximados donde cada sección entra en pantalla
-const S2 = H;
-const S3 = H + 420;
-const S4 = H + 900;
-const S5 = H + 1420;
-const S6 = H + 1860;
+// Scroll offset donde cada sección entra al viewport = contentY - H
+// (cuando el borde inferior del viewport toca el tope de la sección)
+const R2 = 0;      // sec2 a contentY=H  → entra al desplazo 0
+const R3 = 420;    // sec3 a contentY=H+420
+const R4 = 900;    // sec4 a contentY=H+900
+const R5 = 1420;   // sec5 a contentY=H+1420
+const R6 = 1860;   // sec6 a contentY=H+1860
 const TOTAL_SCROLL = H + 2180;
 
 const HERO_IMG  = require("@/assets/images/ancestrales-hero.jpg");
@@ -103,19 +104,20 @@ export default function AncestralInfoScreen() {
   }, [bounce]);
 
   // ── Reveals por sección ────────────────────────────────────────────────────
-  const intro    = mkReveal(scrollY, S2 - 80, 160);
-  const introImg = mkReveal(scrollY, S2 - 40, 200, 60);
+  // Cada trigger = R(n) + cuántos px dentro de la sección está el elemento
+  const intro    = mkReveal(scrollY, R2 + 10,  220);
+  const introImg = mkReveal(scrollY, R2 + 120, 260, 60);
 
-  const benTitle = mkReveal(scrollY, S3 - 80, 160);
-  const ben = BENEFITS.map((_, i) => mkReveal(scrollY, S3 + 20 + i * 50, 160));
+  const benTitle = mkReveal(scrollY, R3 - 20,  200);
+  const ben = BENEFITS.map((_, i) => mkReveal(scrollY, R3 + 60 + i * 55, 200));
 
-  const instTitle = mkReveal(scrollY, S4 - 80, 160);
-  const inst = INSTRUMENTS.map((_, i) => mkReveal(scrollY, S4 + 40 + i * 60, 180, 50));
+  const instTitle = mkReveal(scrollY, R4 - 20,  200);
+  const inst = INSTRUMENTS.map((_, i) => mkReveal(scrollY, R4 + 60 + i * 65, 200, 50));
 
-  const sciTitle  = mkReveal(scrollY, S5 - 80, 160);
-  const sci = FREQS.map((_, i) => mkReveal(scrollY, S5 + 20 + i * 60, 160));
+  const sciTitle  = mkReveal(scrollY, R5 - 20,  200);
+  const sci = FREQS.map((_, i) => mkReveal(scrollY, R5 + 60 + i * 65, 200));
 
-  const cta = mkReveal(scrollY, S6 - 60, 200);
+  const cta = mkReveal(scrollY, R6 + 20, 250);
 
   return (
     <View style={styles.root}>
