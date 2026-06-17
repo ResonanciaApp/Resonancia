@@ -390,7 +390,7 @@ export default function MusicaSonidosScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#0D1F12","#061009"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#081409","#030806"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
       <View style={[styles.header,{height:HERO_HEIGHT+topPad}]}>
         <Image source={HERO_IMG} style={[StyleSheet.absoluteFill,{width:"100%",height:"100%"}]} contentFit="cover" contentPosition="center" />
         <View style={[StyleSheet.absoluteFill,{backgroundColor:"rgba(0,0,0,0.35)"}]} pointerEvents="none" />
