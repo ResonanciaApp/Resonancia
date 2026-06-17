@@ -668,6 +668,64 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         return pair;
       }
 
+      // ── Sonidos con ESTRUCTURA (binaurales): loop nativo de UNA sola capa ──
+      // El crossfade de dos capas desfasadas dur/2 (más abajo) es INAUDIBLE para
+      // texturas continuas (lluvia, bosque, tonos puros): potencia constante. Pero
+      // para contenido con estructura audible —el PULSO de un binaural, una melodía
+      // o un ritmo— las dos copias suenan desalineadas en el tiempo y se percibe un
+      // ECO (el mismo sonido repetido en otra "pista"). Para estos sonidos usamos
+      // UNA sola capa en loop nativo: sin segunda capa no hay con qué solaparse, así
+      // que no hay eco. El empalme del loop nativo puede dejar un micro-corte cada
+      // vuelta, pero es mucho menos molesto que el eco y los binaurales están
+      // pensados para repetirse de forma continua mientras estén activos.
+      const isSingleLoop = getSoundById(id)?.category === "binaural";
+      if (isSingleLoop) {
+        const STARTUP_FADE_MS = 350;
+        const a = createAudioPlayer(null, { updateInterval: 200 });
+        a.loop = true; // loop nativo: una sola capa, sin crossfade
+        a.replace(file);
+        a.volume = 0; // arranca mudo; el fade-in lo sube (evita el click de arranque)
+        const b = createAudioPlayer(null, { updateInterval: 1000 }); // dummy: nunca suena
+        b.loop = false;
+        b.volume = 0;
+        const pair: SoundPlayers = { a, b };
+        // Fade-in suave a 60 fps, reutilizado en el arranque y en la reanudación
+        // (resumePlayer llama resetFade). El listener no toca el volumen mientras
+        // este intervalo corre (evita que un tick lento pise el fade → "tac").
+        let fadeIv: ReturnType<typeof setInterval> | null = null;
+        const startFadeIn = () => {
+          if (fadeIv) clearInterval(fadeIv);
+          const t0 = Date.now();
+          fadeIv = setInterval(() => {
+            const cur = playersRef.current.get(id);
+            if (!cur || cur.a !== a) { if (fadeIv) clearInterval(fadeIv); fadeIv = null; return; }
+            const k = Math.min(1, (Date.now() - t0) / STARTUP_FADE_MS);
+            const base = baseVolumesRef.current.get(id) ?? volume;
+            try { a.volume = base * k * masterVolumeRef.current; } catch { /* ignore */ }
+            if (k >= 1) { if (fadeIv) clearInterval(fadeIv); fadeIv = null; }
+          }, 16);
+        };
+        pair.resetFade = () => { startFadeIn(); };
+        pair.clearBFade = () => { if (fadeIv) { clearInterval(fadeIv); fadeIv = null; } };
+        // Registrar ANTES de play() (el guard del listener compara identidad).
+        playersRef.current.set(id, pair);
+        const sub = a.addListener("playbackStatusUpdate", () => {
+          const cur = playersRef.current.get(id);
+          if (!cur || cur.a !== a) return; // player viejo o estacionado
+          if (fadeIv !== null) return; // el fade-in es el único que escribe el volumen mientras corre
+          // Mantener el volumen objetivo (sigue cambios de master / del slider).
+          const base = baseVolumesRef.current.get(id) ?? volume;
+          const target = base * masterVolumeRef.current;
+          if (Math.abs(a.volume - target) > 0.004) {
+            try { a.volume = target; } catch { /* ignore */ }
+          }
+        });
+        loopSubsRef.current.set(id, [sub]);
+        a.play();
+        startFadeIn();
+        return pair;
+      }
+
       // ── Crossfade del loop con DOS capas ─────────────────────────────────
       // Un solo audio no puede solaparse consigo mismo, así que el corte del
       // loop nativo siempre se nota (aunque se le haga un dip de volumen).

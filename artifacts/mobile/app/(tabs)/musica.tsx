@@ -45,6 +45,7 @@ import {
   type MixerBgPaletteId,
 } from "@/data/mixer-bg-palettes";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
+import { GoldGradient } from "@/components/GoldGradient";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const GOLD  = "#D4AF37";
@@ -671,7 +672,7 @@ export default function MezcladorScreen() {
                   >
                     <MaterialCommunityIcons name="cog-outline" size={20} color="#F4DAD5" />
                     {(moodFilter !== null || tagFilters.length > 0) && (
-                      <View style={styles.filterBadge} />
+                      <GoldGradient style={styles.filterBadge} />
                     )}
                   </Pressable>
                 </View>
@@ -861,7 +862,6 @@ const styles = StyleSheet.create({
   filterBadge: {
     position: "absolute", top: 6, right: 6,
     width: 7, height: 7, borderRadius: 4,
-    backgroundColor: "#E9C46A",
   },
 
   pillRow:        { flexGrow: 0, marginTop: -3, marginBottom: -5, backgroundColor: "transparent" },
