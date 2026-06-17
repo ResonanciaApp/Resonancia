@@ -86,6 +86,13 @@ function toSlug(text: string) {
 
 // ── Session Picker ─────────────────────────────────────────────────────────
 
+const SESSION_CATEGORY_TABS = [
+  { id: "todas", label: "Todas" },
+  { id: "meditaciones-guiadas", label: "Meditaciones" },
+  { id: "sonidos-ancestrales", label: "Ancestrales" },
+  { id: "reflexiones", label: "Reflexiones" },
+] as const;
+
 function SessionPicker({
   selected,
   onChange,
@@ -98,19 +105,21 @@ function SessionPicker({
   const { data: catalog } = useGetCatalog();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(true);
+  const [tab, setTab] = useState<string>("todas");
 
   const sessions = (catalog?.sessions ?? []).filter((s) => {
     const isMusic = isMusicCategory(s.categoryId);
     return playlistType === "music" ? isMusic : !isMusic;
   });
 
-  const filtered = search.trim()
-    ? sessions.filter(
-        (s) =>
-          s.title.toLowerCase().includes(search.toLowerCase()) ||
-          s.categoryLabel.toLowerCase().includes(search.toLowerCase()),
-      )
-    : sessions;
+  const filtered = sessions.filter((s) => {
+    const matchesTab = playlistType !== "sessions" || tab === "todas" || s.categoryId === tab;
+    const matchesSearch =
+      !search.trim() ||
+      s.title.toLowerCase().includes(search.toLowerCase()) ||
+      s.categoryLabel.toLowerCase().includes(search.toLowerCase());
+    return matchesTab && matchesSearch;
+  });
 
   const toggle = (id: string) => {
     onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
@@ -142,6 +151,24 @@ function SessionPicker({
               className="h-8 text-sm"
             />
           </div>
+          {playlistType === "sessions" && (
+            <div className="flex gap-1 px-3 py-2 border-b border-border overflow-x-auto scrollbar-none">
+              {SESSION_CATEGORY_TABS.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setTab(t.id)}
+                  className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                    tab === t.id
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="max-h-56 overflow-y-auto divide-y divide-border">
             {filtered.length === 0 && (
               <p className="text-center text-muted-foreground text-sm py-6">
