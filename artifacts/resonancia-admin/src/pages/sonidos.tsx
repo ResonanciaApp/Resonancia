@@ -112,7 +112,7 @@ const SOUND_TAGS = [
   { id: "binaural",     label: "Binaural" },
 ] as const;
 
-const BPM_OPTIONS = [90, 100, 120] as const;
+const BPM_OPTIONS = [44, 50, 68, 72] as const;
 
 interface FormState {
   id: string;

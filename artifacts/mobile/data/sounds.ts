@@ -104,7 +104,7 @@ export interface MixSound {
    * sonidos de BPM distintos (el mixer lo rechaza automáticamente).
    * Puede ser un array si el sonido aplica a varios BPM (ej. binaurales).
    */
-  bpm?: 90 | 100 | 120 | readonly (90 | 100 | 120)[];
+  bpm?: 44 | 50 | 68 | 72 | readonly (44 | 50 | 68 | 72)[];
   /**
    * Número de compases del loop (4/4). Default asumido: 2.
    * Sirve para calcular la cuantización exacta al entrar al siguiente compás.
@@ -175,37 +175,6 @@ export const SOUNDS: MixSound[] = [
   { id: "onda_beta", name: "Beta · Enfoque", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural"] },
   { id: "onda_gamma", name: "Gamma · Claridad", icon: "activity", iconSet: "feather", category: "frecuencias", tags: ["binaural", "psicodelicas"] },
 
-  // ── Binaurales BPM (19.2 s · 90 BPM · 8 bars) ───────────────
-  { id: "binaural_1", name: "Binaural 1", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
-  { id: "binaural_2", name: "Binaural 2", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
-  { id: "binaural_3", name: "Binaural 3", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
-  { id: "binaural_4", name: "Binaural 4", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
-  { id: "binaural_5", name: "Binaural 5", icon: "activity", iconSet: "feather", category: "bpm", tags: ["binaural"], bpm: [90, 100] as const, loopBars: 8 },
-
-  // ── BPM 90 — Groove lento / meditación activa ────────────────
-  // Loops perfectamente cortados en 2 compases · 4/4 · 5.333 s exactos
-  { id: "kick_90",       name: "Kick",        icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
-  { id: "snare_90",      name: "Snare",       icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
-  { id: "hihat_90",      name: "Hi-Hat",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
-  { id: "shaker_90",     name: "Shaker",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2 },
-  { id: "tambor_90",     name: "Tambor",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 90,  loopBars: 2, isPremium: true },
-
-  // ── BPM 100 — Tempo medio / flow ────────────────────────────
-  // Loops perfectamente cortados en 2 compases · 4/4 · 4.800 s exactos
-  { id: "kick_100",      name: "Kick",        icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
-  { id: "snare_100",     name: "Snare",       icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
-  { id: "hihat_100",     name: "Hi-Hat",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
-  { id: "rimshot_100",   name: "Rimshot",     icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2 },
-  { id: "shaker_100",    name: "Shaker",      icon: "disc",      iconSet: "feather", category: "bpm", bpm: 100, loopBars: 2, isPremium: true },
-
-  // ── BPM 120 — Energía / techno meditativo ────────────────────
-  // Loops perfectamente cortados en 2 compases · 4/4 · 4.000 s exactos
-  { id: "kick_120",          name: "Kick",           icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
-  { id: "snare_120",         name: "Snare",          icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
-  { id: "hihat_cerrado_120", name: "Hi-Hat Cerrado", icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
-  { id: "hihat_abierto_120", name: "Hi-Hat Abierto", icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
-  { id: "clap_120",          name: "Clap",           icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2 },
-  { id: "tambor_120",        name: "Tambor",         icon: "disc",  iconSet: "feather", category: "bpm", bpm: 120, loopBars: 2, isPremium: true },
 ];
 
 export function getSoundById(id: string): MixSound | undefined {
@@ -223,10 +192,10 @@ export function soundMatchesBpm(sound: MixSound, bpm: number): boolean {
  * Resuelve el BPM escalar de un sonido. Si bpm es array, elige el que coincide
  * con currentBpm; si no hay coincidencia o currentBpm es null, usa el primero.
  */
-export function resolveSoundBpm(sound: MixSound, currentBpm: number | null): 90 | 100 | 120 | undefined {
+export function resolveSoundBpm(sound: MixSound, currentBpm: number | null): 44 | 50 | 68 | 72 | undefined {
   if (sound.bpm === undefined) return undefined;
-  if (!Array.isArray(sound.bpm)) return sound.bpm as 90 | 100 | 120;
-  const arr = sound.bpm as readonly (90 | 100 | 120)[];
+  if (!Array.isArray(sound.bpm)) return sound.bpm as 44 | 50 | 68 | 72;
+  const arr = sound.bpm as readonly (44 | 50 | 68 | 72)[];
   if (currentBpm !== null && arr.some((b) => b === currentBpm)) return arr.find((b) => b === currentBpm)!;
   return arr[0];
 }

@@ -263,12 +263,12 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
 });
 
 // ── BpmSelector ───────────────────────────────────────────────────────────────
-const BPM_OPTIONS: Array<90 | 100 | 120> = [90, 100, 120];
+const BPM_OPTIONS: Array<44 | 50 | 68 | 72> = [44, 50, 68, 72];
 
 type BpmSelectorProps = {
-  selected: 90 | 100 | 120 | null;
-  locked: 90 | 100 | 120 | null;
-  onSelect: (bpm: 90 | 100 | 120 | null) => void;
+  selected: 44 | 50 | 68 | 72 | null;
+  locked: 44 | 50 | 68 | 72 | null;
+  onSelect: (bpm: 44 | 50 | 68 | 72 | null) => void;
 };
 
 const BpmSelector = memo(function BpmSelector({ selected, locked, onSelect }: BpmSelectorProps) {
@@ -454,7 +454,7 @@ export default function MezcladorScreen() {
 
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
-  const [selectedBpm,    setSelectedBpm]    = useState<90 | 100 | 120 | null>(null);
+  const [selectedBpm,    setSelectedBpm]    = useState<44 | 50 | 68 | 72 | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
   const [contentAnimKey, setContentAnimKey] = useState(0);
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
@@ -781,7 +781,7 @@ export default function MezcladorScreen() {
             {mainTab === "bpm" && (
               <BpmSelector
                 selected={selectedBpm}
-                locked={activeBpm as (90 | 100 | 120 | null)}
+                locked={activeBpm as (44 | 50 | 68 | 72 | null)}
                 onSelect={setSelectedBpm}
               />
             )}
