@@ -87,14 +87,6 @@ export const TEMAS: TemaItem[] = [
     description: "Momentos de paz y presencia plena para compartir con quienes más queremos.",
     image: require("@/assets/images/tema-familia.png"),
   },
-  {
-    id: "angustia-acompanamiento",
-    label: "Angustia",
-    icon: "emoticon-sad-outline",
-    color: "#9B72CF",
-    description: "Acompañamiento sonoro y guiado para atravesar momentos difíciles con serenidad.",
-    themeTagMatch: "Para la ansiedad",
-  },
 ];
 
 export function getTemaById(id: string): TemaItem | undefined {
