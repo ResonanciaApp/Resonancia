@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { toast } from "sonner";
-import { Upload, Loader2, Plus, Trash2, Pencil, X, Check, Music2 } from "lucide-react";
+import { Upload, Loader2, Plus, Trash2, Pencil, X, Check, Music2, Image } from "lucide-react";
 import {
   useGetAdminSounds,
   useCreateAdminSound,
@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -26,24 +27,40 @@ import {
 // ── Constantes ────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { id: "animales",         label: "Animales" },
-  { id: "bosque",           label: "Bosque" },
-  { id: "mar",              label: "Mar" },
-  { id: "fuego",            label: "Fuego" },
-  { id: "desierto",         label: "Desierto" },
+  { id: "animales",          label: "Animales" },
+  { id: "bosque",            label: "Bosque" },
+  { id: "mar",               label: "Mar" },
+  { id: "fuego",             label: "Fuego" },
+  { id: "desierto",          label: "Desierto" },
   { id: "cuencos_tibetanos", label: "Cuencos Tibetanos" },
-  { id: "cuencos_cuarzo",   label: "Cuencos de Cuarzo" },
-  { id: "gongs",            label: "Gongs" },
-  { id: "campanas_viento",  label: "Campanas de Viento" },
-  { id: "mantras",          label: "Mantras" },
-  { id: "solfeggio",        label: "Solfeggio" },
-  { id: "ruidos",           label: "Ruidos" },
-  { id: "frecuencias",      label: "Frecuencias" },
+  { id: "cuencos_cuarzo",    label: "Cuencos de Cuarzo" },
+  { id: "gongs",             label: "Gongs" },
+  { id: "campanas_viento",   label: "Campanas de Viento" },
+  { id: "vientos",           label: "Vientos" },
+  { id: "cantos",            label: "Cantos" },
+  { id: "percusion",         label: "Percusión" },
+  { id: "mantras",           label: "Mantras" },
+  { id: "solfeggio",         label: "Solfeggio" },
+  { id: "ruidos",            label: "Ruidos" },
+  { id: "frecuencias",       label: "Frecuencias" },
+  { id: "asmr",              label: "ASMR" },
+  { id: "bpm",               label: "BPM" },
+  { id: "binaural",          label: "Binaurales" },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
 const ICON_SETS = ["feather", "ionicons"] as const;
+
+const SOUND_TAGS = [
+  { id: "armonicos",    label: "Armónicos" },
+  { id: "psicodelicas", label: "Atmósferas psicodélicas" },
+  { id: "solfeggio",    label: "Solfeggio" },
+  { id: "naturaleza",   label: "Naturaleza" },
+  { id: "binaural",     label: "Binaural" },
+] as const;
+
+const BPM_OPTIONS = [90, 100, 120] as const;
 
 interface FormState {
   id: string;
@@ -53,6 +70,10 @@ interface FormState {
   iconSet: "feather" | "ionicons";
   isPremium: boolean;
   objectPath: string;
+  thumbnailObjectPath: string;
+  tags: string[];
+  bpm: string;
+  loopBars: string;
   sortOrder: string;
 }
 
@@ -64,6 +85,10 @@ const emptyForm = (): FormState => ({
   iconSet: "feather",
   isPremium: false,
   objectPath: "",
+  thumbnailObjectPath: "",
+  tags: [],
+  bpm: "",
+  loopBars: "",
   sortOrder: "0",
 });
 
@@ -96,6 +121,10 @@ function useUpload() {
   return { upload, progress };
 }
 
+function storageUrl(objectPath: string) {
+  return `/api/storage/objects/${objectPath}`;
+}
+
 // ── Componente principal ──────────────────────────────────────────────────────
 
 export default function SonidosPage() {
@@ -106,23 +135,30 @@ export default function SonidosPage() {
   const { mutateAsync: createSound } = useCreateAdminSound();
   const { mutateAsync: updateSound } = useUpdateAdminSound();
   const { mutateAsync: deleteSound } = useDeleteAdminSound();
-  const { upload, progress: uploadProgress } = useUpload();
+  const { upload: uploadAudio, progress: audioProgress } = useUpload();
+  const { upload: uploadThumb, progress: thumbProgress } = useUpload();
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm());
   const [saving, setSaving] = useState(false);
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [filterCat, setFilterCat] = useState<string>("all");
-  const fileRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLInputElement>(null);
+  const thumbRef = useRef<HTMLInputElement>(null);
 
   const sounds = data?.sounds ?? [];
   const filtered = filterCat === "all" ? sounds : sounds.filter((s) => s.categoryId === filterCat);
+  const isBpmCategory = form.categoryId === "bpm";
 
   function openCreate() {
     setEditingId(null);
     setForm(emptyForm());
     setAudioFile(null);
+    setThumbFile(null);
+    setThumbPreview(null);
     setShowForm(true);
   }
 
@@ -136,9 +172,15 @@ export default function SonidosPage() {
       iconSet: s.iconSet as "feather" | "ionicons",
       isPremium: s.isPremium,
       objectPath: s.objectPath ?? "",
+      thumbnailObjectPath: s.thumbnailObjectPath ?? "",
+      tags: s.tags ?? [],
+      bpm: s.bpm != null ? String(s.bpm) : "",
+      loopBars: s.loopBars != null ? String(s.loopBars) : "",
       sortOrder: String(s.sortOrder),
     });
     setAudioFile(null);
+    setThumbFile(null);
+    setThumbPreview(s.thumbnailObjectPath ? storageUrl(s.thumbnailObjectPath) : null);
     setShowForm(true);
   }
 
@@ -146,10 +188,28 @@ export default function SonidosPage() {
     setShowForm(false);
     setEditingId(null);
     setAudioFile(null);
+    setThumbFile(null);
+    setThumbPreview(null);
   }
 
-  function field(key: keyof FormState, val: string | boolean) {
+  function field(key: keyof FormState, val: string | boolean | string[]) {
     setForm((f) => ({ ...f, [key]: val }));
+  }
+
+  function toggleTag(tagId: string) {
+    setForm((f) => ({
+      ...f,
+      tags: f.tags.includes(tagId) ? f.tags.filter((t) => t !== tagId) : [...f.tags, tagId],
+    }));
+  }
+
+  function onThumbChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setThumbFile(file);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setThumbPreview(url);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -159,9 +219,15 @@ export default function SonidosPage() {
     setSaving(true);
     try {
       let objectPath = form.objectPath || null;
-      if (audioFile) {
-        objectPath = await upload(audioFile);
-      }
+      if (audioFile) objectPath = await uploadAudio(audioFile);
+
+      let thumbnailObjectPath = form.thumbnailObjectPath || null;
+      if (thumbFile) thumbnailObjectPath = await uploadThumb(thumbFile);
+
+      const bpmVal = isBpmCategory && form.bpm ? parseInt(form.bpm) : null;
+      const loopBarsVal = isBpmCategory && form.loopBars ? parseInt(form.loopBars) : null;
+      const tagsVal = form.tags.length > 0 ? form.tags : null;
+
       if (editingId) {
         await updateSound({
           id: editingId,
@@ -173,6 +239,10 @@ export default function SonidosPage() {
             isPremium: form.isPremium,
             isActive: true,
             objectPath,
+            thumbnailObjectPath,
+            tags: tagsVal,
+            bpm: bpmVal,
+            loopBars: loopBarsVal,
             sortOrder: parseInt(form.sortOrder) || 0,
           },
         });
@@ -187,6 +257,10 @@ export default function SonidosPage() {
             iconSet: form.iconSet,
             isPremium: form.isPremium,
             objectPath,
+            thumbnailObjectPath,
+            tags: tagsVal,
+            bpm: bpmVal,
+            loopBars: loopBarsVal,
             sortOrder: parseInt(form.sortOrder) || 0,
           },
         });
@@ -268,7 +342,7 @@ export default function SonidosPage() {
               <Input
                 value={form.id}
                 onChange={(e) => field("id", e.target.value)}
-                placeholder="ej. viento"
+                placeholder="ej. viento_nuevo"
                 disabled={!!editingId}
                 required
               />
@@ -281,7 +355,7 @@ export default function SonidosPage() {
               <Input
                 value={form.name}
                 onChange={(e) => field("name", e.target.value)}
-                placeholder="ej. Viento"
+                placeholder="ej. Viento suave"
                 required
               />
             </div>
@@ -301,7 +375,7 @@ export default function SonidosPage() {
               </Select>
             </div>
 
-            {/* Icono */}
+            {/* Ícono */}
             <div className="space-y-1">
               <Label>Ícono</Label>
               <div className="flex gap-2">
@@ -324,6 +398,40 @@ export default function SonidosPage() {
               </div>
             </div>
 
+            {/* BPM + loopBars (solo si categoría = bpm) */}
+            {isBpmCategory && (
+              <>
+                <div className="space-y-1">
+                  <Label>BPM</Label>
+                  <Select value={form.bpm} onValueChange={(v) => field("bpm", v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar BPM" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BPM_OPTIONS.map((b) => (
+                        <SelectItem key={b} value={String(b)}>{b} BPM</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <Label>Compases del loop</Label>
+                  <Input
+                    type="number"
+                    value={form.loopBars}
+                    onChange={(e) => field("loopBars", e.target.value)}
+                    placeholder="ej. 8"
+                    min={1}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {form.bpm && form.loopBars
+                      ? `Loop = ${((60 / Number(form.bpm)) * 4 * Number(form.loopBars)).toFixed(2)} s`
+                      : "Número de compases (4/4) del loop"}
+                  </p>
+                </div>
+              </>
+            )}
+
             {/* Orden */}
             <div className="space-y-1">
               <Label>Orden</Label>
@@ -344,17 +452,33 @@ export default function SonidosPage() {
               </div>
             </div>
 
-            {/* Audio MP3 */}
-            <div className="space-y-1 md:col-span-2">
-              <Label>Audio MP3 (loop)</Label>
+            {/* Etiquetas */}
+            <div className="space-y-2 md:col-span-2">
+              <Label>Etiquetas</Label>
+              <div className="flex flex-wrap gap-3">
+                {SOUND_TAGS.map((tag) => (
+                  <label key={tag.id} className="flex items-center gap-2 cursor-pointer select-none">
+                    <Checkbox
+                      checked={form.tags.includes(tag.id)}
+                      onCheckedChange={() => toggleTag(tag.id)}
+                    />
+                    <span className="text-sm text-foreground">{tag.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Audio loop */}
+            <div className="space-y-1">
+              <Label>Audio loop (.m4a / .mp3)</Label>
               <div
                 className="border border-dashed border-border rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors"
-                onClick={() => fileRef.current?.click()}
+                onClick={() => audioRef.current?.click()}
               >
                 <input
-                  ref={fileRef}
+                  ref={audioRef}
                   type="file"
-                  accept="audio/mpeg,audio/mp3,audio/*"
+                  accept="audio/*,.m4a,.mp3,.aac"
                   className="hidden"
                   onChange={(e) => setAudioFile(e.target.files?.[0] ?? null)}
                 />
@@ -366,26 +490,56 @@ export default function SonidosPage() {
                 ) : form.objectPath ? (
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <Check className="w-4 h-4 text-green-500" />
-                    Audio ya cargado — clic para reemplazar
+                    Audio cargado — clic para reemplazar
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <Upload className="w-4 h-4" />
-                    Clic para seleccionar un MP3
+                    Clic para seleccionar audio
                   </div>
                 )}
-                {uploadProgress !== null && (
+                {audioProgress !== null && (
                   <div className="mt-2 h-1 bg-secondary rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${uploadProgress}%` }}
-                    />
+                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${audioProgress}%` }} />
                   </div>
                 )}
               </div>
-              {form.objectPath && !audioFile && (
-                <p className="text-xs text-muted-foreground break-all">Path: {form.objectPath}</p>
-              )}
+            </div>
+
+            {/* Thumbnail */}
+            <div className="space-y-1">
+              <Label>Thumbnail (imagen)</Label>
+              <div
+                className="border border-dashed border-border rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors relative overflow-hidden"
+                style={{ minHeight: 88 }}
+                onClick={() => thumbRef.current?.click()}
+              >
+                <input
+                  ref={thumbRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={onThumbChange}
+                />
+                {thumbPreview ? (
+                  <div className="flex items-center gap-3">
+                    <img src={thumbPreview} alt="preview" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />
+                    <span className="text-xs text-muted-foreground">
+                      {thumbFile ? thumbFile.name : "Imagen guardada"} — clic para reemplazar
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                    <Image className="w-4 h-4" />
+                    Clic para seleccionar imagen
+                  </div>
+                )}
+                {thumbProgress !== null && (
+                  <div className="mt-2 h-1 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${thumbProgress}%` }} />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Acciones */}
@@ -448,9 +602,11 @@ export default function SonidosPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-muted-foreground font-medium w-10"></th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Nombre</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Categoría</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Ícono</th>
+                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Etiquetas</th>
+                <th className="text-left px-4 py-3 text-muted-foreground font-medium">BPM</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Audio</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Premium</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Activo</th>
@@ -463,16 +619,47 @@ export default function SonidosPage() {
                   key={s.id}
                   className={`border-b border-border last:border-0 ${i % 2 === 0 ? "" : "bg-secondary/20"}`}
                 >
+                  {/* Thumbnail */}
+                  <td className="px-4 py-2">
+                    {s.thumbnailObjectPath ? (
+                      <img
+                        src={storageUrl(s.thumbnailObjectPath)}
+                        alt=""
+                        className="w-9 h-9 rounded-md object-cover"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-md bg-secondary flex items-center justify-center">
+                        <Music2 className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </td>
+                  {/* Nombre + ID */}
                   <td className="px-4 py-3">
                     <div className="font-medium text-foreground">{s.name}</div>
                     <div className="text-xs text-muted-foreground">{s.id}</div>
                   </td>
+                  {/* Categoría */}
                   <td className="px-4 py-3">
                     <Badge variant="outline" className="text-xs">{catLabel(s.categoryId)}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {s.iconName} <span className="opacity-60">({s.iconSet})</span>
+                  {/* Etiquetas */}
+                  <td className="px-4 py-3">
+                    <div className="flex flex-wrap gap-1">
+                      {(s.tags ?? []).map((t) => (
+                        <Badge key={t} variant="secondary" className="text-xs px-1.5 py-0">{t}</Badge>
+                      ))}
+                    </div>
                   </td>
+                  {/* BPM */}
+                  <td className="px-4 py-3 text-xs text-muted-foreground">
+                    {s.bpm != null ? (
+                      <span className="text-foreground font-medium">{s.bpm} BPM</span>
+                    ) : "—"}
+                    {s.loopBars != null && (
+                      <span className="ml-1 opacity-60">/ {s.loopBars} bars</span>
+                    )}
+                  </td>
+                  {/* Audio */}
                   <td className="px-4 py-3">
                     {s.objectPath ? (
                       <span className="text-green-500 text-xs">✓ Cargado</span>
@@ -480,18 +667,15 @@ export default function SonidosPage() {
                       <span className="text-muted-foreground text-xs">Sin audio</span>
                     )}
                   </td>
+                  {/* Premium */}
                   <td className="px-4 py-3">
-                    <Switch
-                      checked={s.isPremium}
-                      onCheckedChange={() => togglePremium(s)}
-                    />
+                    <Switch checked={s.isPremium} onCheckedChange={() => togglePremium(s)} />
                   </td>
+                  {/* Activo */}
                   <td className="px-4 py-3">
-                    <Switch
-                      checked={s.isActive}
-                      onCheckedChange={() => toggleActive(s)}
-                    />
+                    <Switch checked={s.isActive} onCheckedChange={() => toggleActive(s)} />
                   </td>
+                  {/* Acciones */}
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1 justify-end">
                       <button

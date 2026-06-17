@@ -26,6 +26,21 @@ const SoundsContext = createContext<SoundsContextValue>({
   refresh: () => {},
 });
 
+interface ApiSound {
+  id: string;
+  name: string;
+  categoryId: string;
+  iconName: string;
+  iconSet: string;
+  isPremium: boolean;
+  isActive: boolean;
+  objectPath: string | null;
+  thumbnailObjectPath: string | null;
+  tags: string[] | null;
+  bpm: number | null;
+  loopBars: number | null;
+}
+
 export function SoundsProvider({ children }: { children: React.ReactNode }) {
   const [sounds, setSounds] = useState<MixSound[]>(LOCAL_SOUNDS);
   const [loaded, setLoaded] = useState(false);
@@ -34,18 +49,7 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
     try {
       const res = await fetch("/api/sounds");
       if (!res.ok) return;
-      const data = (await res.json()) as {
-        sounds: {
-          id: string;
-          name: string;
-          categoryId: string;
-          iconName: string;
-          iconSet: string;
-          isPremium: boolean;
-          isActive: boolean;
-          objectPath: string | null;
-        }[];
-      };
+      const data = (await res.json()) as { sounds: ApiSound[] };
 
       // Popula el mapa de sonidos remotos (usado por MixerContext).
       applyRemoteSounds(data.sounds);
@@ -64,18 +68,25 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
             : "feather") as "feather" | "ionicons",
           category: s.categoryId as MixSound["category"],
           isPremium: s.isPremium,
+          ...(s.tags && s.tags.length > 0 ? { tags: s.tags as MixSound["tags"] } : {}),
+          ...(s.bpm != null ? { bpm: s.bpm as MixSound["bpm"] } : {}),
+          ...(s.loopBars != null ? { loopBars: s.loopBars } : {}),
         }));
 
-      // Actualiza isPremium para los locales que cambiaron en la DB.
-      const premiumOverrides = new Map(
-        data.sounds.map((s) => [s.id, s.isPremium])
-      );
+      // Actualiza isPremium y campos remotizables para los locales.
+      const remoteMap = new Map(data.sounds.map((s) => [s.id, s]));
       const merged: MixSound[] = [
-        ...LOCAL_SOUNDS.map((s) =>
-          premiumOverrides.has(s.id)
-            ? { ...s, isPremium: premiumOverrides.get(s.id)! }
-            : s
-        ),
+        ...LOCAL_SOUNDS.map((s) => {
+          const remote = remoteMap.get(s.id);
+          if (!remote) return s;
+          return {
+            ...s,
+            isPremium: remote.isPremium,
+            ...(remote.bpm != null ? { bpm: remote.bpm as MixSound["bpm"] } : {}),
+            ...(remote.loopBars != null ? { loopBars: remote.loopBars } : {}),
+            ...(remote.tags && remote.tags.length > 0 ? { tags: remote.tags as MixSound["tags"] } : {}),
+          };
+        }),
         ...extra,
       ];
 

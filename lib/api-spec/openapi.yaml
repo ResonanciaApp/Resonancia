@@ -3529,7 +3529,7 @@ components:
           format: date-time
     MixerSoundItem:
       type: object
-      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath]
+      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath, thumbnailObjectPath, tags, bpm, loopBars]
       properties:
         id:
           type: string
@@ -3550,9 +3550,23 @@ components:
         objectPath:
           type: string
           nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        bpm:
+          type: integer
+          nullable: true
+        loopBars:
+          type: integer
+          nullable: true
     AdminMixerSoundItem:
       type: object
-      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath, createdAt]
+      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath, thumbnailObjectPath, tags, bpm, loopBars, createdAt]
       properties:
         id:
           type: string
@@ -3572,6 +3586,20 @@ components:
           type: integer
         objectPath:
           type: string
+          nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        bpm:
+          type: integer
+          nullable: true
+        loopBars:
+          type: integer
           nullable: true
         createdAt:
           type: string
@@ -3588,7 +3616,7 @@ components:
           minLength: 1
         categoryId:
           type: string
-          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, mantras, solfeggio, ruidos, frecuencias]
+          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, vientos, cantos, percusion, mantras, solfeggio, ruidos, frecuencias, asmr, bpm, binaural]
         iconName:
           type: string
           minLength: 1
@@ -3600,6 +3628,20 @@ components:
         objectPath:
           type: string
           nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        bpm:
+          type: integer
+          nullable: true
+        loopBars:
+          type: integer
+          nullable: true
         sortOrder:
           type: integer
     UpdateMixerSoundBody:
@@ -3610,7 +3652,7 @@ components:
           minLength: 1
         categoryId:
           type: string
-          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, mantras, solfeggio, ruidos, frecuencias]
+          enum: [animales, bosque, mar, fuego, desierto, cuencos_tibetanos, cuencos_cuarzo, gongs, campanas_viento, vientos, cantos, percusion, mantras, solfeggio, ruidos, frecuencias, asmr, bpm, binaural]
         iconName:
           type: string
           minLength: 1
@@ -3623,6 +3665,20 @@ components:
           type: boolean
         objectPath:
           type: string
+          nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        bpm:
+          type: integer
+          nullable: true
+        loopBars:
+          type: integer
           nullable: true
         sortOrder:
           type: integer

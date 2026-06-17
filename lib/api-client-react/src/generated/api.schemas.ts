@@ -1060,6 +1060,10 @@ export interface MixerSoundItem {
   isActive: boolean;
   sortOrder: number;
   objectPath: string | null;
+  thumbnailObjectPath: string | null;
+  tags: string[] | null;
+  bpm: number | null;
+  loopBars: number | null;
 }
 
 export interface AdminMixerSoundItem {
@@ -1072,6 +1076,10 @@ export interface AdminMixerSoundItem {
   isActive: boolean;
   sortOrder: number;
   objectPath: string | null;
+  thumbnailObjectPath: string | null;
+  tags: string[] | null;
+  bpm: number | null;
+  loopBars: number | null;
   createdAt: string;
 }
 
@@ -1088,10 +1096,16 @@ export const CreateMixerSoundBodyCategoryId = {
   cuencos_cuarzo: 'cuencos_cuarzo',
   gongs: 'gongs',
   campanas_viento: 'campanas_viento',
+  vientos: 'vientos',
+  cantos: 'cantos',
+  percusion: 'percusion',
   mantras: 'mantras',
   solfeggio: 'solfeggio',
   ruidos: 'ruidos',
   frecuencias: 'frecuencias',
+  asmr: 'asmr',
+  bpm: 'bpm',
+  binaural: 'binaural',
 } as const;
 
 export type CreateMixerSoundBodyIconSet = typeof CreateMixerSoundBodyIconSet[keyof typeof CreateMixerSoundBodyIconSet];
@@ -1113,6 +1127,10 @@ export interface CreateMixerSoundBody {
   iconSet: CreateMixerSoundBodyIconSet;
   isPremium?: boolean;
   objectPath?: string | null;
+  thumbnailObjectPath?: string | null;
+  tags?: string[] | null;
+  bpm?: number | null;
+  loopBars?: number | null;
   sortOrder?: number;
 }
 
@@ -1129,10 +1147,16 @@ export const UpdateMixerSoundBodyCategoryId = {
   cuencos_cuarzo: 'cuencos_cuarzo',
   gongs: 'gongs',
   campanas_viento: 'campanas_viento',
+  vientos: 'vientos',
+  cantos: 'cantos',
+  percusion: 'percusion',
   mantras: 'mantras',
   solfeggio: 'solfeggio',
   ruidos: 'ruidos',
   frecuencias: 'frecuencias',
+  asmr: 'asmr',
+  bpm: 'bpm',
+  binaural: 'binaural',
 } as const;
 
 export type UpdateMixerSoundBodyIconSet = typeof UpdateMixerSoundBodyIconSet[keyof typeof UpdateMixerSoundBodyIconSet];
@@ -1153,6 +1177,10 @@ export interface UpdateMixerSoundBody {
   isPremium?: boolean;
   isActive?: boolean;
   objectPath?: string | null;
+  thumbnailObjectPath?: string | null;
+  tags?: string[] | null;
+  bpm?: number | null;
+  loopBars?: number | null;
   sortOrder?: number;
 }
 

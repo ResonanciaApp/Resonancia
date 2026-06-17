@@ -15,6 +15,10 @@ function serializeSound(s: MixerSound) {
     isActive: s.isActive,
     sortOrder: s.sortOrder,
     objectPath: s.objectPath ?? null,
+    thumbnailObjectPath: s.thumbnailObjectPath ?? null,
+    tags: (s.tags as string[] | null) ?? null,
+    bpm: s.bpm ?? null,
+    loopBars: s.loopBars ?? null,
   };
 }
 

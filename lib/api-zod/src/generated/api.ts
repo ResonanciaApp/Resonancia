@@ -1932,7 +1932,11 @@ export const GetMixerSoundsResponse = zod.object({
   "isPremium": zod.boolean(),
   "isActive": zod.boolean(),
   "sortOrder": zod.number(),
-  "objectPath": zod.string().nullable()
+  "objectPath": zod.string().nullable(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "tags": zod.array(zod.string()).nullable(),
+  "bpm": zod.number().nullable(),
+  "loopBars": zod.number().nullable()
 }))
 })
 
@@ -1951,6 +1955,10 @@ export const GetAdminSoundsResponse = zod.object({
   "isActive": zod.boolean(),
   "sortOrder": zod.number(),
   "objectPath": zod.string().nullable(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "tags": zod.array(zod.string()).nullable(),
+  "bpm": zod.number().nullable(),
+  "loopBars": zod.number().nullable(),
   "createdAt": zod.coerce.date()
 }))
 })
@@ -1967,11 +1975,15 @@ export const GetAdminSoundsResponse = zod.object({
 export const CreateAdminSoundBody = zod.object({
   "id": zod.string().min(1),
   "name": zod.string().min(1),
-  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'mantras', 'solfeggio', 'ruidos', 'frecuencias']),
+  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'vientos', 'cantos', 'percusion', 'mantras', 'solfeggio', 'ruidos', 'frecuencias', 'asmr', 'bpm', 'binaural']),
   "iconName": zod.string().min(1),
   "iconSet": zod.enum(['feather', 'ionicons']),
   "isPremium": zod.boolean().optional(),
   "objectPath": zod.string().nullish(),
+  "thumbnailObjectPath": zod.string().nullish(),
+  "tags": zod.array(zod.string()).nullish(),
+  "bpm": zod.number().nullish(),
+  "loopBars": zod.number().nullish(),
   "sortOrder": zod.number().optional()
 })
 
@@ -1989,12 +2001,16 @@ export const UpdateAdminSoundParams = zod.object({
 
 export const UpdateAdminSoundBody = zod.object({
   "name": zod.string().min(1).optional(),
-  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'mantras', 'solfeggio', 'ruidos', 'frecuencias']).optional(),
+  "categoryId": zod.enum(['animales', 'bosque', 'mar', 'fuego', 'desierto', 'cuencos_tibetanos', 'cuencos_cuarzo', 'gongs', 'campanas_viento', 'vientos', 'cantos', 'percusion', 'mantras', 'solfeggio', 'ruidos', 'frecuencias', 'asmr', 'bpm', 'binaural']).optional(),
   "iconName": zod.string().min(1).optional(),
   "iconSet": zod.enum(['feather', 'ionicons']).optional(),
   "isPremium": zod.boolean().optional(),
   "isActive": zod.boolean().optional(),
   "objectPath": zod.string().nullish(),
+  "thumbnailObjectPath": zod.string().nullish(),
+  "tags": zod.array(zod.string()).nullish(),
+  "bpm": zod.number().nullish(),
+  "loopBars": zod.number().nullish(),
   "sortOrder": zod.number().optional()
 })
 
@@ -2008,6 +2024,10 @@ export const UpdateAdminSoundResponse = zod.object({
   "isActive": zod.boolean(),
   "sortOrder": zod.number(),
   "objectPath": zod.string().nullable(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "tags": zod.array(zod.string()).nullable(),
+  "bpm": zod.number().nullable(),
+  "loopBars": zod.number().nullable(),
   "createdAt": zod.coerce.date()
 })
 
