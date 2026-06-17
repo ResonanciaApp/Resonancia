@@ -25,6 +25,7 @@
 - [Creator approval flow](creator-approval-flow.md) — catálogo DB pending→published/rejected; admin solo vía ADMIN_CLERK_USER_IDS; no hay UI para nombrar creadores; valida metadata en server; Orval query option exige queryKey
 - [Cloud sync activity](cloud-sync-activity.md) — historial derivable de eventos (no entidad); firstSync solo se marca si recovered (lecturas OK) o local vacío pisa la nube; merge post-await con update funcional
 - [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only
+- [Playlists feature](playlists-feature.md) — tabla catalog_playlists; admin CRUD /admin/playlists; mobile applyPlaylistsSnapshot; coverUrl upload usa `uploadURL` (no uploadUrl) + objectPath
 - [Shared mix category enum](shared-mix-category-enum.md) — el set de categorías de mezclas compartidas vive en 5 lugares (DB zod, OpenAPI x3, route const, frontend cast); sincronizar o compartir/filtrar falla
 - [Catalog DB migration](catalog-db-migration.md) — catálogo en DB (GET /catalog, solo published) hidratado in-place sobre SESSIONS/CATEGORIES; assets siguen bundleados (resueltos por id), nunca se sobreescriben
 - [DB-only sessions in mobile](db-only-sessions.md) — applyCatalogSnapshot fase 2 inserta sesiones nuevas (admin-uploaded) en SESSIONS; CatalogAudioFile usa campo `url` (no objectPath); PlayerContext usa audioUri/voiceUri como fallback cuando AUDIO_MAP no tiene entrada

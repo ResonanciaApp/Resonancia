@@ -1809,6 +1809,146 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/playlists:
+    get:
+      operationId: listAdminPlaylists
+      tags: [admin]
+      summary: Listar todas las playlists de Resonancia (admin)
+      responses:
+        "200":
+          description: Lista de playlists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CatalogPlaylist"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminPlaylist
+      tags: [admin]
+      summary: Crear una playlist de Resonancia (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPlaylistInput"
+      responses:
+        "201":
+          description: Playlist creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogPlaylist"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/playlists/{id}:
+    patch:
+      operationId: updateAdminPlaylist
+      tags: [admin]
+      summary: Editar una playlist de Resonancia (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPlaylistUpdate"
+      responses:
+        "200":
+          description: Playlist actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogPlaylist"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminPlaylist
+      tags: [admin]
+      summary: Eliminar una playlist de Resonancia (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Eliminada
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/categories:
     post:
       operationId: createAdminCategory
@@ -3031,6 +3171,104 @@ components:
             $ref: "#/components/schemas/CatalogAudioFile"
       required:
         [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isNew, isPremium, status, sortOrder, audioFiles]
+    CatalogPlaylist:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        coverUrl:
+          type: string
+          nullable: true
+        durationLabel:
+          type: string
+        savedCount:
+          type: integer
+        sessionIds:
+          type: array
+          items:
+            type: string
+        playlistType:
+          type: string
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean
+      required: [id, slug, title, description, durationLabel, savedCount, sessionIds, playlistType, sortOrder, isActive]
+    AdminPlaylistInput:
+      type: object
+      properties:
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z0-9-]+$"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 500
+        coverUrl:
+          type: string
+          nullable: true
+        durationLabel:
+          type: string
+          maxLength: 30
+        savedCount:
+          type: integer
+        sessionIds:
+          type: array
+          items:
+            type: string
+        playlistType:
+          type: string
+          enum: [sessions, music]
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean
+      required: [slug, title, playlistType]
+    AdminPlaylistUpdate:
+      type: object
+      properties:
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z0-9-]+$"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 500
+        coverUrl:
+          type: string
+          nullable: true
+        durationLabel:
+          type: string
+          maxLength: 30
+        savedCount:
+          type: integer
+        sessionIds:
+          type: array
+          items:
+            type: string
+        playlistType:
+          type: string
+          enum: [sessions, music]
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean
     CatalogResponse:
       type: object
       properties:
@@ -3042,6 +3280,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CatalogSession"
+        playlists:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogPlaylist"
       required: [categories, sessions]
     PopularSessionsResponse:
       type: object

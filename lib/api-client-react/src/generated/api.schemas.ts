@@ -680,9 +680,88 @@ export interface CatalogSession {
   audioFiles: CatalogAudioFile[];
 }
 
+export interface CatalogPlaylist {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  coverUrl?: string | null;
+  durationLabel: string;
+  savedCount: number;
+  sessionIds: string[];
+  playlistType: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export type AdminPlaylistInputPlaylistType = typeof AdminPlaylistInputPlaylistType[keyof typeof AdminPlaylistInputPlaylistType];
+
+
+export const AdminPlaylistInputPlaylistType = {
+  sessions: 'sessions',
+  music: 'music',
+} as const;
+
+export interface AdminPlaylistInput {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     * @pattern ^[a-z0-9-]+$
+     */
+  slug: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  title: string;
+  /** @maxLength 500 */
+  description?: string;
+  coverUrl?: string | null;
+  /** @maxLength 30 */
+  durationLabel?: string;
+  savedCount?: number;
+  sessionIds?: string[];
+  playlistType: AdminPlaylistInputPlaylistType;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
+export type AdminPlaylistUpdatePlaylistType = typeof AdminPlaylistUpdatePlaylistType[keyof typeof AdminPlaylistUpdatePlaylistType];
+
+
+export const AdminPlaylistUpdatePlaylistType = {
+  sessions: 'sessions',
+  music: 'music',
+} as const;
+
+export interface AdminPlaylistUpdate {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     * @pattern ^[a-z0-9-]+$
+     */
+  slug?: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  title?: string;
+  /** @maxLength 500 */
+  description?: string;
+  coverUrl?: string | null;
+  /** @maxLength 30 */
+  durationLabel?: string;
+  savedCount?: number;
+  sessionIds?: string[];
+  playlistType?: AdminPlaylistUpdatePlaylistType;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
 export interface CatalogResponse {
   categories: CatalogCategory[];
   sessions: CatalogSession[];
+  playlists?: CatalogPlaylist[];
 }
 
 export interface PopularSessionsResponse {

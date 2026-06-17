@@ -1091,7 +1091,20 @@ export const GetCatalogResponse = zod.object({
   "isLoop": zod.boolean(),
   "createdAt": zod.coerce.date()
 }))
-}))
+})),
+  "playlists": zod.array(zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string(),
+  "savedCount": zod.number(),
+  "sessionIds": zod.array(zod.string()),
+  "playlistType": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean()
+})).optional()
 })
 
 
@@ -1857,6 +1870,109 @@ export const SetAdminMixHiddenResponse = zod.object({
  * @summary Eliminar una mezcla definitivamente (admin)
  */
 export const DeleteAdminMixParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
+ * @summary Listar todas las playlists de Resonancia (admin)
+ */
+export const ListAdminPlaylistsResponseItem = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string(),
+  "savedCount": zod.number(),
+  "sessionIds": zod.array(zod.string()),
+  "playlistType": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean()
+})
+export const ListAdminPlaylistsResponse = zod.array(ListAdminPlaylistsResponseItem)
+
+
+/**
+ * @summary Crear una playlist de Resonancia (admin)
+ */
+export const createAdminPlaylistBodySlugMax = 80;
+
+
+export const createAdminPlaylistBodySlugRegExp = new RegExp('^[a-z0-9-]+$');
+export const createAdminPlaylistBodyTitleMax = 120;
+
+export const createAdminPlaylistBodyDescriptionMax = 500;
+
+export const createAdminPlaylistBodyDurationLabelMax = 30;
+
+
+
+export const CreateAdminPlaylistBody = zod.object({
+  "slug": zod.string().min(1).max(createAdminPlaylistBodySlugMax).regex(createAdminPlaylistBodySlugRegExp),
+  "title": zod.string().min(1).max(createAdminPlaylistBodyTitleMax),
+  "description": zod.string().max(createAdminPlaylistBodyDescriptionMax).optional(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string().max(createAdminPlaylistBodyDurationLabelMax).optional(),
+  "savedCount": zod.number().optional(),
+  "sessionIds": zod.array(zod.string()).optional(),
+  "playlistType": zod.enum(['sessions', 'music']),
+  "sortOrder": zod.number().optional(),
+  "isActive": zod.boolean().optional()
+})
+
+
+/**
+ * @summary Editar una playlist de Resonancia (admin)
+ */
+export const UpdateAdminPlaylistParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const updateAdminPlaylistBodySlugMax = 80;
+
+
+export const updateAdminPlaylistBodySlugRegExp = new RegExp('^[a-z0-9-]+$');
+export const updateAdminPlaylistBodyTitleMax = 120;
+
+export const updateAdminPlaylistBodyDescriptionMax = 500;
+
+export const updateAdminPlaylistBodyDurationLabelMax = 30;
+
+
+
+export const UpdateAdminPlaylistBody = zod.object({
+  "slug": zod.string().min(1).max(updateAdminPlaylistBodySlugMax).regex(updateAdminPlaylistBodySlugRegExp).optional(),
+  "title": zod.string().min(1).max(updateAdminPlaylistBodyTitleMax).optional(),
+  "description": zod.string().max(updateAdminPlaylistBodyDescriptionMax).optional(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string().max(updateAdminPlaylistBodyDurationLabelMax).optional(),
+  "savedCount": zod.number().optional(),
+  "sessionIds": zod.array(zod.string()).optional(),
+  "playlistType": zod.enum(['sessions', 'music']).optional(),
+  "sortOrder": zod.number().optional(),
+  "isActive": zod.boolean().optional()
+})
+
+export const UpdateAdminPlaylistResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string(),
+  "savedCount": zod.number(),
+  "sessionIds": zod.array(zod.string()),
+  "playlistType": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean()
+})
+
+
+/**
+ * @summary Eliminar una playlist de Resonancia (admin)
+ */
+export const DeleteAdminPlaylistParams = zod.object({
   "id": zod.coerce.number()
 })
 

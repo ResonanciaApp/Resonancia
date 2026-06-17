@@ -35,6 +35,10 @@ import {
   applyCategoriesSnapshot,
   type CatalogCategorySnapshot,
 } from "@/data/categories";
+import {
+  applyPlaylistsSnapshot,
+  type PlaylistSnapshot,
+} from "@/data/playlists";
 
 const CACHE_KEY = "cdc_catalog_snapshot_v1";
 
@@ -55,9 +59,13 @@ const CatalogContext = createContext<CatalogContextValue>({
 function hydrate(snapshot: {
   categories: CatalogCategorySnapshot[];
   sessions: CatalogSessionSnapshot[];
+  playlists?: PlaylistSnapshot[];
 }): void {
   applyCategoriesSnapshot(snapshot.categories);
   applyCatalogSnapshot(snapshot.sessions);
+  if (snapshot.playlists) {
+    applyPlaylistsSnapshot(snapshot.playlists);
+  }
 }
 
 export function CatalogProvider({ children }: { children: ReactNode }) {

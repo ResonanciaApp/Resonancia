@@ -5,13 +5,17 @@ import {
   usersTable,
   catalogCategoriesTable,
   catalogSessionsTable,
+  catalogPlaylistsTable,
   playbackHistoryTable,
   sharedMixesTable,
   sharedMixReportsTable,
   mixerSoundsTable,
   insertMixerSoundSchema,
   updateMixerSoundSchema,
+  insertCatalogPlaylistSchema,
+  updateCatalogPlaylistSchema,
   type CatalogCategory,
+  type CatalogPlaylist,
   type SharedMix,
   type User,
   type MixerSound,
@@ -483,6 +487,117 @@ router.delete("/admin/sounds/:id", requireAuth, requireRole("admin"), async (req
   } catch (err) {
     req.log.error({ err }, "error deleting mixer sound");
     res.status(500).json({ error: "Error al eliminar el sonido" });
+  }
+});
+
+// ── Admin Playlists ────────────────────────────────────────────────────────
+
+function serializePlaylist(p: CatalogPlaylist) {
+  return {
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    coverUrl: p.coverUrl ?? null,
+    durationLabel: p.durationLabel,
+    savedCount: p.savedCount,
+    sessionIds: p.sessionIds ?? [],
+    playlistType: p.playlistType,
+    sortOrder: p.sortOrder,
+    isActive: p.isActive,
+  };
+}
+
+// GET /admin/playlists — listar todas las playlists (admin).
+router.get("/admin/playlists", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    const rows = await db
+      .select()
+      .from(catalogPlaylistsTable)
+      .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id));
+    res.json(rows.map(serializePlaylist));
+  } catch (err) {
+    req.log.error({ err }, "error listing playlists");
+    res.status(500).json({ error: "Error al cargar las playlists" });
+  }
+});
+
+// POST /admin/playlists — crear una playlist.
+router.post("/admin/playlists", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = insertCatalogPlaylistSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  try {
+    const [created] = await db
+      .insert(catalogPlaylistsTable)
+      .values(parsed.data)
+      .returning();
+    req.log.info({ playlistId: created.id, slug: created.slug }, "admin playlist created");
+    res.status(201).json(serializePlaylist(created));
+  } catch (err: unknown) {
+    const e = err as { code?: string };
+    if (e?.code === "23505") {
+      res.status(409).json({ error: "Ya existe una playlist con ese slug" });
+      return;
+    }
+    req.log.error({ err }, "error creating playlist");
+    res.status(500).json({ error: "Error al crear la playlist" });
+  }
+});
+
+// PATCH /admin/playlists/:id — editar una playlist.
+router.patch("/admin/playlists/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (!Number.isInteger(id)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+  const parsed = updateCatalogPlaylistSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  try {
+    const [updated] = await db
+      .update(catalogPlaylistsTable)
+      .set({ ...parsed.data, updatedAt: new Date() })
+      .where(eq(catalogPlaylistsTable.id, id))
+      .returning();
+    if (!updated) {
+      res.status(404).json({ error: "Playlist no encontrada" });
+      return;
+    }
+    req.log.info({ playlistId: id }, "admin playlist updated");
+    res.json(serializePlaylist(updated));
+  } catch (err) {
+    req.log.error({ err }, "error updating playlist");
+    res.status(500).json({ error: "Error al actualizar la playlist" });
+  }
+});
+
+// DELETE /admin/playlists/:id — eliminar una playlist.
+router.delete("/admin/playlists/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (!Number.isInteger(id)) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+  try {
+    const [deleted] = await db
+      .delete(catalogPlaylistsTable)
+      .where(eq(catalogPlaylistsTable.id, id))
+      .returning();
+    if (!deleted) {
+      res.status(404).json({ error: "Playlist no encontrada" });
+      return;
+    }
+    req.log.info({ playlistId: id }, "admin playlist deleted");
+    res.status(204).end();
+  } catch (err) {
+    req.log.error({ err }, "error deleting playlist");
+    res.status(500).json({ error: "Error al eliminar la playlist" });
   }
 });
 

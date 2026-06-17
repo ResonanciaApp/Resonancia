@@ -26,9 +26,12 @@ import type {
   AdminMixHideResponse,
   AdminMixerSoundItem,
   AdminMixesPage,
+  AdminPlaylistInput,
+  AdminPlaylistUpdate,
   AdminStats,
   AdminUsersPage,
   CatalogCategory,
+  CatalogPlaylist,
   CatalogResponse,
   CommunityMessage,
   Conversation,
@@ -5182,6 +5185,296 @@ export const useDeleteAdminMix = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeleteAdminMixMutationOptions(options));
+    }
+
+export const getListAdminPlaylistsUrl = () => {
+
+
+
+
+  return `/api/admin/playlists`
+}
+
+/**
+ * @summary Listar todas las playlists de Resonancia (admin)
+ */
+export const listAdminPlaylists = async ( options?: RequestInit): Promise<CatalogPlaylist[]> => {
+
+  return customFetch<CatalogPlaylist[]>(getListAdminPlaylistsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminPlaylistsQueryKey = () => {
+    return [
+    `/api/admin/playlists`
+    ] as const;
+    }
+
+
+export const getListAdminPlaylistsQueryOptions = <TData = Awaited<ReturnType<typeof listAdminPlaylists>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminPlaylists>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminPlaylistsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminPlaylists>>> = ({ signal }) => listAdminPlaylists({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminPlaylists>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminPlaylistsQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminPlaylists>>>
+export type ListAdminPlaylistsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar todas las playlists de Resonancia (admin)
+ */
+
+export function useListAdminPlaylists<TData = Awaited<ReturnType<typeof listAdminPlaylists>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminPlaylists>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminPlaylistsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminPlaylistUrl = () => {
+
+
+
+
+  return `/api/admin/playlists`
+}
+
+/**
+ * @summary Crear una playlist de Resonancia (admin)
+ */
+export const createAdminPlaylist = async (adminPlaylistInput: AdminPlaylistInput, options?: RequestInit): Promise<CatalogPlaylist> => {
+
+  return customFetch<CatalogPlaylist>(getCreateAdminPlaylistUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminPlaylistInput,)
+  }
+);}
+
+
+
+
+export const getCreateAdminPlaylistMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminPlaylist>>, TError,{data: BodyType<AdminPlaylistInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminPlaylist>>, TError,{data: BodyType<AdminPlaylistInput>}, TContext> => {
+
+const mutationKey = ['createAdminPlaylist'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminPlaylist>>, {data: BodyType<AdminPlaylistInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminPlaylist(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminPlaylistMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminPlaylist>>>
+    export type CreateAdminPlaylistMutationBody = BodyType<AdminPlaylistInput>
+    export type CreateAdminPlaylistMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear una playlist de Resonancia (admin)
+ */
+export const useCreateAdminPlaylist = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminPlaylist>>, TError,{data: BodyType<AdminPlaylistInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminPlaylist>>,
+        TError,
+        {data: BodyType<AdminPlaylistInput>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminPlaylistMutationOptions(options));
+    }
+
+export const getUpdateAdminPlaylistUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/playlists/${id}`
+}
+
+/**
+ * @summary Editar una playlist de Resonancia (admin)
+ */
+export const updateAdminPlaylist = async (id: number,
+    adminPlaylistUpdate: AdminPlaylistUpdate, options?: RequestInit): Promise<CatalogPlaylist> => {
+
+  return customFetch<CatalogPlaylist>(getUpdateAdminPlaylistUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminPlaylistUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminPlaylistMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPlaylist>>, TError,{id: number;data: BodyType<AdminPlaylistUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminPlaylist>>, TError,{id: number;data: BodyType<AdminPlaylistUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminPlaylist'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminPlaylist>>, {id: number;data: BodyType<AdminPlaylistUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminPlaylist(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminPlaylistMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminPlaylist>>>
+    export type UpdateAdminPlaylistMutationBody = BodyType<AdminPlaylistUpdate>
+    export type UpdateAdminPlaylistMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Editar una playlist de Resonancia (admin)
+ */
+export const useUpdateAdminPlaylist = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPlaylist>>, TError,{id: number;data: BodyType<AdminPlaylistUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminPlaylist>>,
+        TError,
+        {id: number;data: BodyType<AdminPlaylistUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminPlaylistMutationOptions(options));
+    }
+
+export const getDeleteAdminPlaylistUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/playlists/${id}`
+}
+
+/**
+ * @summary Eliminar una playlist de Resonancia (admin)
+ */
+export const deleteAdminPlaylist = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminPlaylistUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminPlaylistMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPlaylist>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPlaylist>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteAdminPlaylist'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminPlaylist>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminPlaylist(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminPlaylistMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminPlaylist>>>
+
+    export type DeleteAdminPlaylistMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar una playlist de Resonancia (admin)
+ */
+export const useDeleteAdminPlaylist = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPlaylist>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminPlaylist>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminPlaylistMutationOptions(options));
     }
 
 export const getCreateAdminCategoryUrl = () => {

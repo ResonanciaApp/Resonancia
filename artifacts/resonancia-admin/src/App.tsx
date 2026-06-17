@@ -23,6 +23,7 @@ import {
   Music2,
   Music,
   Hexagon,
+  Library,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -37,6 +38,7 @@ import SesionesPage from "@/pages/sesiones";
 import CancionesPage from "@/pages/canciones";
 import SonidosPage from "@/pages/sonidos";
 import GeometrixPage from "@/pages/geometrix";
+import PlaylistsPage from "@/pages/playlists";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -154,6 +156,7 @@ const NAV = [
   { href: "/moderacion", label: "Moderación", icon: ShieldCheck },
   { href: "/mezclas", label: "Mezclas", icon: ListMusic },
   { href: "/categorias", label: "Categorías", icon: FolderTree },
+  { href: "/playlists", label: "Playlists", icon: Library },
   { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
   { href: "/canciones/nueva", label: "Nueva canción", icon: Music },
   { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
@@ -272,6 +275,7 @@ function AdminGate() {
         <Route path="/categorias" component={CategoriasPage} />
         <Route path="/sesiones/nueva" component={SesionesPage} />
         <Route path="/canciones/nueva" component={CancionesPage} />
+        <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />
         <Route component={NotFound} />

@@ -6,12 +6,14 @@ import {
   catalogCategoriesTable,
   catalogSessionsTable,
   catalogAudioFilesTable,
+  catalogPlaylistsTable,
   playbackHistoryTable,
   notificationsTable,
   usersTable,
   type CatalogCategory,
   type CatalogSession,
   type CatalogAudioFile,
+  type CatalogPlaylist,
   type User,
 } from "@workspace/db";
 import {
@@ -186,18 +188,34 @@ async function serializeSubmissionList(sessions: CatalogSession[]) {
   );
 }
 
-// GET /catalog — catálogo público (solo sesiones publicadas).
-router.get("/catalog", async (req, res) => {
-  const categories = await db
-    .select()
-    .from(catalogCategoriesTable)
-    .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id));
+function serializePlaylist(p: CatalogPlaylist) {
+  return {
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    coverUrl: p.coverUrl ?? null,
+    durationLabel: p.durationLabel,
+    savedCount: p.savedCount,
+    sessionIds: p.sessionIds ?? [],
+    playlistType: p.playlistType,
+    sortOrder: p.sortOrder,
+    isActive: p.isActive,
+  };
+}
 
-  const sessions = await db
-    .select()
-    .from(catalogSessionsTable)
-    .where(eq(catalogSessionsTable.status, "published"))
-    .orderBy(asc(catalogSessionsTable.sortOrder), asc(catalogSessionsTable.id));
+// GET /catalog — catálogo público (solo sesiones publicadas + playlists activas).
+router.get("/catalog", async (req, res) => {
+  const [categories, sessions, playlists] = await Promise.all([
+    db.select().from(catalogCategoriesTable)
+      .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id)),
+    db.select().from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.status, "published"))
+      .orderBy(asc(catalogSessionsTable.sortOrder), asc(catalogSessionsTable.id)),
+    db.select().from(catalogPlaylistsTable)
+      .where(eq(catalogPlaylistsTable.isActive, true))
+      .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id)),
+  ]);
 
   const sessionIds = sessions.map((s) => s.id);
   const audioFiles =
@@ -218,13 +236,14 @@ router.get("/catalog", async (req, res) => {
   }
 
   req.log.info(
-    { categories: categories.length, sessions: sessions.length, audioFiles: audioFiles.length },
+    { categories: categories.length, sessions: sessions.length, playlists: playlists.length, audioFiles: audioFiles.length },
     "served catalog",
   );
 
   res.json({
     categories: categories.map(serializeCategory),
     sessions: sessions.map((s) => serializeSession(s, audioBySession.get(s.id) ?? [])),
+    playlists: playlists.map(serializePlaylist),
   });
 });
 

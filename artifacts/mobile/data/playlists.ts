@@ -3,9 +3,12 @@ export type Playlist = {
   title: string;
   description: string;
   cover: ReturnType<typeof require>;
+  /** URL de portada remota (admin-uploaded). Si está presente, tiene prioridad sobre `cover`. */
+  coverUrl?: string | null;
   savedCount: number;
   durationLabel: string;
   sessionIds: string[];
+  playlistType?: "sessions" | "music";
 };
 
 export const PLAYLISTS: Playlist[] = [
@@ -49,4 +52,64 @@ export const PLAYLISTS: Playlist[] = [
 
 export function getPlaylistById(id: string): Playlist | undefined {
   return PLAYLISTS.find((p) => p.id === id);
+}
+
+// ── Snapshot remoto ────────────────────────────────────────────────────────
+
+export type PlaylistSnapshot = {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  coverUrl: string | null;
+  durationLabel: string;
+  savedCount: number;
+  sessionIds: string[];
+  playlistType: string;
+  sortOrder: number;
+  isActive: boolean;
+};
+
+/** Fallback cover para playlists sin imagen bundleada y sin coverUrl remota. */
+const FALLBACK_COVER = require("../assets/images/sessions/session-2.png");
+
+/**
+ * Hidrata PLAYLISTS in-place con los datos del servidor.
+ * - Entradas existentes (por slug): actualiza campos editables, conserva el
+ *   cover bundleado si el servidor no envía coverUrl.
+ * - Entradas nuevas (solo en DB): inserta al final con cover de fallback.
+ * - Las entradas bundleadas que ya no estén activas en el servidor quedan tal
+ *   cual (no se eliminan) para evitar romper referencias en código legacy.
+ */
+export function applyPlaylistsSnapshot(snapshots: PlaylistSnapshot[]): void {
+  const active = snapshots.filter((s) => s.isActive);
+  const bySlug = new Map(active.map((s) => [s.slug, s]));
+
+  for (const p of PLAYLISTS) {
+    const snap = bySlug.get(p.id);
+    if (!snap) continue;
+    p.title = snap.title;
+    p.description = snap.description;
+    p.durationLabel = snap.durationLabel;
+    p.savedCount = snap.savedCount;
+    p.sessionIds = snap.sessionIds;
+    p.playlistType = snap.playlistType as "sessions" | "music";
+    if (snap.coverUrl) p.coverUrl = snap.coverUrl;
+  }
+
+  const existingSlugs = new Set(PLAYLISTS.map((p) => p.id));
+  for (const snap of active) {
+    if (existingSlugs.has(snap.slug)) continue;
+    PLAYLISTS.push({
+      id: snap.slug,
+      title: snap.title,
+      description: snap.description,
+      cover: FALLBACK_COVER,
+      coverUrl: snap.coverUrl ?? null,
+      durationLabel: snap.durationLabel,
+      savedCount: snap.savedCount,
+      sessionIds: snap.sessionIds,
+      playlistType: snap.playlistType as "sessions" | "music",
+    });
+  }
 }

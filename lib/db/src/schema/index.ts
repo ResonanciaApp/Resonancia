@@ -39,3 +39,4 @@ export * from "./mixer-sounds";
 export * from "./shared-glyphs";
 export * from "./shared-glyph-likes";
 export * from "./geometrix-settings";
+export * from "./catalog-playlists";
