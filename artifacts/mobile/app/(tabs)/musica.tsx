@@ -84,7 +84,7 @@ const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
   ruidos:            "volume-vibrate",
 };
 
-type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "binaurales" | "voces" | "asmr" | "ruidos" | "bpm";
+type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "voces" | "bpm";
 
 const MAIN_TABS: {
   id: MainTabId;
@@ -97,10 +97,7 @@ const MAIN_TABS: {
   { id: "naturaleza",     label: "Naturales",  icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
   { id: "ancestrales",    label: "Sagrados",   icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
   { id: "sintetizadores", label: "Digital",    icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
-  { id: "binaurales",     label: "Binaurales", icon: "sine-wave",         color: "#4A60C0", categories: ["frecuencias", "binaural"] },
   { id: "voces",          label: "Voces",      icon: "microphone",        color: "#9060A0", categories: ["mantras"] },
-  { id: "asmr",           label: "ASMR",       icon: "headphones",        color: "#408070", categories: ["asmr"] },
-  { id: "ruidos",         label: "Ruidos",     icon: "radio",             color: "#607080", categories: ["ruidos"] },
   { id: "bpm",            label: "BPM",        icon: "metronome",         color: "#A04040", categories: ["bpm"] },
 ];
 
@@ -121,10 +118,7 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   naturaleza:     ["#0E2416", "#0B1A10", "#1B060F"],
   ancestrales:    ["#2A1A06", "#1E1204", "#1B060F"],
   sintetizadores: ["#061A2E", "#041220", "#1B060F"],
-  binaurales:     ["#130825", "#0D0619", "#1B060F"],
   voces:          ["#250810", "#1A060C", "#1B060F"],
-  asmr:           ["#062018", "#041510", "#1B060F"],
-  ruidos:         ["#081620", "#060F18", "#1B060F"],
   bpm:            ["#201A04", "#161302", "#1B060F"],
 };
 
@@ -133,10 +127,7 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   naturaleza:     ["#3B4933", "#303E27"],
   ancestrales:    ["#A3631F", "#A3631F"],
   sintetizadores: ["#2C62AB", "#2C62AB"],
-  binaurales:     ["#824EB7", "#824EB7"],
   voces:          ["#FF6B6B", "#C9184A"],
-  asmr:           ["#0D9488", "#065F4A"],
-  ruidos:         ["#0EA5E9", "#0369A1"],
   bpm:            ["#FFD166", "#B8860B"],
 };
 
