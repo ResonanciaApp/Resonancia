@@ -71,7 +71,7 @@ export type PlaylistSnapshot = {
 };
 
 /** Fallback cover para playlists sin imagen bundleada y sin coverUrl remota. */
-const FALLBACK_COVER = require("../assets/images/sessions/session-2.png");
+const FALLBACK_COVER = require("../assets/images/sessions/session-2.jpg");
 
 /**
  * Hidrata PLAYLISTS in-place con los datos del servidor.
