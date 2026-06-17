@@ -721,26 +721,12 @@ export default function MezcladorScreen() {
                               end={{ x: 0, y: 1 }}
                               style={[styles.subTabPill, { borderWidth: 0 }]}
                             >
-                              {SUB_TAB_ICONS[catId] && (
-                                <MaterialCommunityIcons
-                                  name={SUB_TAB_ICONS[catId] as any}
-                                  size={15} color="#FFFFFF"
-                                  style={{ marginRight: 5 }}
-                                />
-                              )}
                               <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: "700" }]}>
                                 {SUB_TAB_LABELS[catId] ?? cat.label}
                               </Text>
                             </LinearGradient>
                           ) : (
                             <View style={[styles.subTabPill, { backgroundColor: "#F7F7F7", borderColor: "#E8E8E8" }]}>
-                              {SUB_TAB_ICONS[catId] && (
-                                <MaterialCommunityIcons
-                                  name={SUB_TAB_ICONS[catId] as any}
-                                  size={15} color="rgba(0,0,0,0.6)"
-                                  style={{ marginRight: 5 }}
-                                />
-                              )}
                               <Text style={[styles.subTabText, { color: "rgba(0,0,0,0.6)" }]}>
                                 {SUB_TAB_LABELS[catId] ?? cat.label}
                               </Text>
