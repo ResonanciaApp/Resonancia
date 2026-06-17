@@ -30,7 +30,7 @@ const H_PAD = 15;
 const GOLD  = "#D4AF37";
 const TEXT  = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
-const HERO_HEIGHT = 230;
+const HERO_HEIGHT = 160;
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP) / 2;
 
