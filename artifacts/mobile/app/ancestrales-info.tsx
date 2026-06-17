@@ -87,9 +87,9 @@ export default function AncestralInfoScreen() {
   });
 
   // ── Barra de progreso ──────────────────────────────────────────────────────
-  const progressH = scrollY.interpolate({
+  const progressW = scrollY.interpolate({
     inputRange: [0, TOTAL_SCROLL - H],
-    outputRange: [0, H - insets.top - insets.bottom - 40],
+    outputRange: [0, W],
     extrapolate: "clamp",
   });
 
@@ -122,11 +122,9 @@ export default function AncestralInfoScreen() {
 
   return (
     <View style={styles.root}>
-      {/* ── Barra de progreso (derecha) ──────────────────────────────────── */}
-      <View style={[styles.progressTrack, { top: insets.top + 20 }]}>
-        <Animated.View style={[styles.progressFill, { height: progressH }]}>
-          <GoldGradientFill />
-        </Animated.View>
+      {/* ── Barra de progreso (arriba horizontal) ───────────────────────── */}
+      <View style={[styles.progressTrack, { top: insets.top + 8 }]}>
+        <Animated.View style={[styles.progressFill, { width: progressW }]} />
       </View>
 
       {/* ── Botón X (cierre) ─────────────────────────────────────────────── */}
@@ -355,13 +353,11 @@ const styles = StyleSheet.create({
 
   // ── Progreso + cierre ──────────────────────────────────────────────────────
   progressTrack: {
-    position: "absolute", right: 10, width: 2,
-    height: "100%", zIndex: 10,
-    backgroundColor: "rgba(212,175,55,0.15)",
-    borderRadius: 1,
+    position: "absolute", left: 0, right: 0, height: 2,
+    backgroundColor: "rgba(212,175,55,0.15)", borderRadius: 1, zIndex: 10,
   },
   progressFill: {
-    width: 2, borderRadius: 1, overflow: "hidden",
+    height: 2, backgroundColor: GOLD, borderRadius: 1,
   },
   closeBtn: {
     position: "absolute", right: 18, zIndex: 20,
