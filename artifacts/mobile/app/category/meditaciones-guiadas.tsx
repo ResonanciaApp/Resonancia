@@ -433,8 +433,8 @@ export default function MeditacionesGuiadasScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:{flex:1,backgroundColor:"#27070E"},
-  header:{overflow:"hidden",backgroundColor:"#27070E"},
+  root:{flex:1,backgroundColor:"#0D0A1A"},
+  header:{overflow:"hidden",backgroundColor:"#0D0A1A"},
   headerTopRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingHorizontal:H_PAD,paddingTop:8},
   backBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
   headerIconBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
