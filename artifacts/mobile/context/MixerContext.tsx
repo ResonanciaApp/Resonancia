@@ -684,7 +684,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // que no hay eco. El empalme del loop nativo puede dejar un micro-corte cada
       // vuelta, pero es mucho menos molesto que el eco y los binaurales están
       // pensados para repetirse de forma continua mientras estén activos.
-      const isSingleLoop = getSoundById(id)?.category === "binaural";
+      // Los sonidos DB-only (no bundleados) usan single-loop por defecto: no
+      // conocemos su estructura interna y el crossfade de dos capas desfasadas
+      // genera ECO audible en audio con estructura (pulsos, melodías, ritmos).
+      const isSingleLoop =
+        getSoundById(id)?.category === "binaural" ||
+        (!SOUND_MAP[id] && !!REMOTE_SOUND_MAP[id]);
       if (isSingleLoop) {
         const STARTUP_FADE_MS = 350;
         const a = createAudioPlayer(null, { updateInterval: 200 });
