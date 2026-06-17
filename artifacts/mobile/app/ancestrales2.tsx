@@ -20,8 +20,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
-import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 
 // ── Constantes ─────────────────────────────────────────────────────────────────
@@ -361,6 +361,124 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
   );
 }
 
+// ── Card personalizada para Ancestrales 2 ─────────────────────────────────────
+function AncestralCard({
+  session,
+  width: cardWidth = 200,
+  horizontal = false,
+  onLongPress,
+}: {
+  session: Session;
+  width?: number;
+  horizontal?: boolean;
+  onLongPress?: () => void;
+}) {
+  const { isPremium } = usePremium();
+  const locked = !!session.isPremium && !isPremium;
+
+  const handlePress = () => {
+    if (locked) router.push("/membresia" as never);
+    else router.push(`/session/${session.id}` as never);
+  };
+
+  const author = session.subtitle ?? "";
+
+  if (horizontal) {
+    return (
+      <Pressable
+        onPress={handlePress}
+        onLongPress={onLongPress}
+        style={({ pressed }) => [acStyles.hRow, { opacity: pressed ? 0.8 : 1 }]}
+      >
+        <View style={acStyles.hImgWrap}>
+          <Image source={session.image} style={acStyles.hImage} contentFit="cover" />
+          {locked && (
+            <View style={acStyles.lockDot}>
+              <Feather name="lock" size={9} color="#fff" />
+            </View>
+          )}
+        </View>
+        <View style={acStyles.hContent}>
+          <Text style={acStyles.hDuration}>{session.durationLabel}</Text>
+          <Text style={acStyles.hTitle} numberOfLines={2}>{session.title}</Text>
+          {!!author && <Text style={acStyles.hAuthor} numberOfLines={1}>{author}</Text>}
+        </View>
+      </Pressable>
+    );
+  }
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      onLongPress={onLongPress}
+      style={({ pressed }) => [acStyles.card, { width: cardWidth, opacity: pressed ? 0.85 : 1 }]}
+    >
+      <View style={acStyles.imgContainer}>
+        <Image source={session.image} style={acStyles.cardImage} contentFit="cover" />
+        {locked && (
+          <View style={acStyles.lockDot}>
+            <Feather name="lock" size={9} color="#fff" />
+          </View>
+        )}
+        <View style={acStyles.durationBadge}>
+          <Text style={acStyles.durationBadgeText}>{session.durationLabel}</Text>
+        </View>
+      </View>
+      <Text style={acStyles.cardTitle} numberOfLines={2}>{session.title}</Text>
+      {!!author && <Text style={acStyles.cardAuthor} numberOfLines={1}>{author}</Text>}
+    </Pressable>
+  );
+}
+
+const acStyles = StyleSheet.create({
+  // ── Horizontal ──────────────────────────────────────────────────────────────
+  hRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 6,
+  },
+  hImgWrap: { width: 70, height: 62, borderRadius: 8, overflow: "hidden" },
+  hImage:   { width: 70, height: 62 },
+  hContent: { flex: 1, justifyContent: "center", gap: 2 },
+  hDuration: {
+    fontSize: 10,
+    fontWeight: "600",
+    letterSpacing: 0.4,
+    color: GOLD,
+    textTransform: "uppercase",
+  },
+  hTitle: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: TEXT,
+    lineHeight: 17,
+  },
+  hAuthor: {
+    fontSize: 11,
+    color: MUTED,
+    marginTop: 1,
+  },
+  // ── Grid ────────────────────────────────────────────────────────────────────
+  card:       { gap: 6 },
+  imgContainer: { width: "100%", aspectRatio: 1, borderRadius: 10, overflow: "hidden" },
+  cardImage:  { width: "100%", height: "100%" },
+  cardTitle:  { fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 17 },
+  cardAuthor: { fontSize: 11, color: MUTED },
+  durationBadge: {
+    position: "absolute", bottom: 8, left: 8,
+    backgroundColor: "rgba(27,6,15,0.72)",
+    borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3,
+  },
+  durationBadgeText: { fontSize: 11, fontWeight: "600", color: "#fff" },
+  lockDot: {
+    position: "absolute", top: 6, right: 6,
+    width: 20, height: 20, borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center", justifyContent: "center",
+  },
+});
+
 // ── Sheet de acciones rápidas de sesión ───────────────────────────────────────
 function SessionQuickSheet({
   session,
@@ -504,7 +622,7 @@ export default function Ancestrales2Screen() {
           {pairs.map((pair, ri) => (
             <View key={ri} style={styles.gridRow}>
               {pair.map((s) => (
-                <SessionCard
+                <AncestralCard
                   key={s.id}
                   session={s}
                   width={cellW}
@@ -517,11 +635,11 @@ export default function Ancestrales2Screen() {
       );
     }
 
-    // list mode — horizontal cards (igual que Biblioteca)
+    // list mode
     return (
-      <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
+      <View style={{ paddingHorizontal: H_PAD }}>
         {sessions.map((s) => (
-          <SessionCard
+          <AncestralCard
             key={s.id}
             session={s}
             horizontal
