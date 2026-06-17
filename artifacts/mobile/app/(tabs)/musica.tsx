@@ -93,7 +93,7 @@ const MAIN_TABS: {
   { id: "naturaleza",     label: "Naturales",  icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
   { id: "ancestrales",    label: "Sagrados",   icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
   { id: "sintetizadores", label: "Digital",    icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
-  { id: "binaurales",     label: "Binaurales", icon: "sine-wave",         color: "#4A60C0", categories: ["frecuencias"] },
+  { id: "binaurales",     label: "Binaurales", icon: "sine-wave",         color: "#4A60C0", categories: ["frecuencias", "binaural"] },
   { id: "voces",          label: "Voces",      icon: "microphone",        color: "#9060A0", categories: ["mantras"] },
   { id: "asmr",           label: "ASMR",       icon: "headphones",        color: "#408070", categories: ["asmr"] },
   { id: "ruidos",         label: "Ruidos",     icon: "radio",             color: "#607080", categories: ["ruidos"] },
