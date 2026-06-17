@@ -543,7 +543,8 @@ export default function Ancestrales2Screen() {
           contentFit="cover"
           contentPosition="top"
         />
-        {/* Sin degradados — foto cortada limpiamente */}
+        {/* Overlay oscuro sutil para mejorar contraste */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} pointerEvents="none" />
 
         {/* Safe area spacer */}
         <View style={{ height: topPad }} />
