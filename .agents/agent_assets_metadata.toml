@@ -762,6 +762,24 @@ uri = "file://artifacts/mobile/assets/images/mixer/binaural_5.png"
 type = "image"
 title = "binaural arpeggio calm"
 
+[[generated]]
+id = "mgrC5UxDCd1JMk3UdtOK9"
+uri = "file://artifacts/mobile/assets/images/cat-musica-hero.png"
+type = "image"
+title = "hands piano keyboard dark hero"
+
+[[generated]]
+id = "81e8M9aCdDvpytCfLJmaP"
+uri = "file://artifacts/mobile/assets/images/cat-meditacion-hero.png"
+type = "image"
+title = "person meditating dark golden light"
+
+[[generated]]
+id = "2lt2F2ElhHQ3VvED4aJjq"
+uri = "file://artifacts/mobile/assets/images/cat-reflexiones-hero.png"
+type = "image"
+title = "person writing journal dark cozy"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

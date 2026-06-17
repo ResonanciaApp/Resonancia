@@ -26,7 +26,7 @@ const MUTED = "rgba(242,231,228,0.45)";
 const HERO_HEIGHT = 160;
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-const HERO_IMG = require("@/assets/images/cat-meditacion.png");
+const HERO_IMG = require("@/assets/images/cat-meditacion-hero.png");
 
 type CatTab   = "noduales" | "visual" | "mantras" | "escaneo" | "manifest" | "tres";
 type SortMode = "recientes" | "nuevas" | "populares";

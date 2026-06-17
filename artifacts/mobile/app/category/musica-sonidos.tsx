@@ -26,7 +26,7 @@ const MUTED = "rgba(242,231,228,0.45)";
 const HERO_HEIGHT = 160;
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-const HERO_IMG = require("@/assets/images/cat-musica.png");
+const HERO_IMG = require("@/assets/images/cat-musica-hero.png");
 
 type CatTab   = "ambient" | "enteo" | "tribal" | "etnica";
 type SortMode = "recientes" | "nuevas" | "populares";
