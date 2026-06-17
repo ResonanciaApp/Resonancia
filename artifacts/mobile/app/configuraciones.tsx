@@ -589,14 +589,6 @@ export default function ConfiguracionesScreen() {
                 <Text style={[styles.rowLabel, { color: "#D08B7A" }]}>Limpiar carpetas y playlists</Text>
                 <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
               </Pressable>
-              <Pressable
-                onPress={() => router.push("/ancestrales2" as never)}
-                style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
-              >
-                <RowIcon icon="layers" colors={colors} />
-                <Text style={[styles.rowLabel, { color: colors.primary }]}>Ancestrales 2 (prototipo)</Text>
-                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
-              </Pressable>
             </View>
           </>
         )}
