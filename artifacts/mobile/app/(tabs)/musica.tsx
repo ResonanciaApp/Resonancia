@@ -933,7 +933,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 6,
     paddingHorizontal: 12, paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.1)",
     borderWidth: 1, borderColor: "#827b7a",
   },
   activeChipText: { fontSize: 12, fontWeight: "600", color: "#827b7a" },
