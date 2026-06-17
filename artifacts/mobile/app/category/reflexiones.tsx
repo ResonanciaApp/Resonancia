@@ -39,6 +39,7 @@ type TabDef = {
 };
 
 const TABS: TabDef[] = [
+  { label: "Todas",     value: "Todas",     icon: "layers-outline",        tags: [] },
   { label: "Gratitud",  value: "Gratitud",  icon: "heart-outline",         tags: ["Gratitud"] },
   { label: "Propósito", value: "Propósito", icon: "star-outline",          tags: ["Propósito"] },
   { label: "Presencia", value: "Presencia", icon: "eye-outline",           tags: ["Presencia", "Mindfulness"] },
