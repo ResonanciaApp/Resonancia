@@ -57,29 +57,23 @@ export function MixerSettingsSheet({
   return (
     <Modal
       visible={visible}
-      transparent
+      transparent={false}
       animationType="slide"
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <View style={styles.container}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose}>
-          <View style={[StyleSheet.absoluteFill, styles.backdrop]} />
-        </Pressable>
-
         <LinearGradient
           colors={sheetGradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
-          style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}
+          style={[styles.sheet, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 }]}
         >
-          <View style={styles.handle} />
 
-          <Pressable onPress={onClose} style={styles.closeBtn} hitSlop={8}>
+          <Pressable onPress={onClose} style={[styles.closeBtn, { top: insets.top + 10 }]} hitSlop={8}>
             <Text style={styles.closeX}>✕</Text>
           </Pressable>
 
-          <Text style={styles.title}>Ajustes del Mezclador</Text>
+          <Text style={[styles.title, { marginTop: insets.top + 36 }]}>Ajustes del Mezclador</Text>
 
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -199,7 +193,6 @@ export function MixerSettingsSheet({
             </Text>
           </Pressable>
         </LinearGradient>
-      </View>
     </Modal>
   );
 }
@@ -212,27 +205,9 @@ const CHIP_BORDER = "rgba(0,0,0,0.08)";
 const CHIP_SEL_BG = "rgba(190,150,80,0.16)";
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  backdrop: {
-    backgroundColor: "rgba(0,0,0,0.65)",
-  },
   sheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 14,
-    maxHeight: "86%",
-  },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(0,0,0,0.12)",
-    alignSelf: "center",
-    marginBottom: 12,
   },
   closeBtn: {
     position: "absolute",
