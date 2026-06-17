@@ -119,8 +119,11 @@ type MixerContextType = {
   activeSounds: ActiveSound[];
   isActive: (id: string) => boolean;
   getVolume: (id: string) => number;
-  /** Activa/desactiva un sonido. Devuelve false si se alcanzó el máximo. */
-  toggleSound: (id: string) => boolean;
+  /** Activa/desactiva un sonido. Devuelve false si se alcanzó el máximo.
+   *  @param hintBpm  BPM preferido cuando la mezcla aún no tiene ritmo activo
+   *                  (p. ej. el tab seleccionado en el mixer). Si hay un BPM
+   *                  ya fijado en la mezcla, este parámetro se ignora. */
+  toggleSound: (id: string, hintBpm?: number | null) => boolean;
   setVolume: (id: string, volume: number) => void;
   removeSound: (id: string) => void;
   /** Reordena la mezcla activa (cosmético: el orden no afecta el audio). */
@@ -1111,7 +1114,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleSound = useCallback(
-    (id: string): boolean => {
+    (id: string, hintBpm?: number | null): boolean => {
       const prev = activeSoundsRef.current;
       const exists = prev.some((s) => s.id === id);
 
@@ -1162,7 +1165,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // nuevo sonido es distinto al que ya está fijado en la mezcla.
       const soundDef = getSoundById(id);
       const soundBpm = soundDef?.bpm;
-      const effectiveSoundBpm = soundDef ? resolveSoundBpm(soundDef, bpmValueRef.current) : undefined;
+      const effectiveSoundBpm = soundDef ? resolveSoundBpm(soundDef, bpmValueRef.current ?? hintBpm ?? null) : undefined;
       if (soundBpm !== undefined && bpmValueRef.current !== null && !soundMatchesBpm(soundDef!, bpmValueRef.current)) {
         return false;
       }

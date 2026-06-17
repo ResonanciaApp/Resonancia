@@ -588,7 +588,7 @@ export default function MezcladorScreen() {
         );
         return;
       }
-      const ok = toggleSound(sound.id);
+      const ok = toggleSound(sound.id, selectedBpm);
       if (!ok) {
         Alert.alert("Límite alcanzado", `Podés mezclar hasta ${MAX_ACTIVE_SOUNDS} sonidos a la vez. Quitá uno para agregar otro.`);
       } else {
