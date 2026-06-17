@@ -687,7 +687,7 @@ export default function Ancestrales2Screen() {
           <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color="#fff" />
           </Pressable>
-          <Pressable hitSlop={10} style={styles.headerIconBtn}>
+          <Pressable hitSlop={10} style={styles.headerIconBtn} onPress={() => router.push("/ancestrales-info" as never)}>
             <Feather name="plus" size={24} color="#fff" />
           </Pressable>
         </View>
