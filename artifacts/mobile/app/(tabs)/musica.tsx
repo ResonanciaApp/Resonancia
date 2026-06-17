@@ -964,7 +964,7 @@ const styles = StyleSheet.create({
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
   subTabPill: {
     flexDirection: "row", alignItems: "center",
-    paddingHorizontal: 14, paddingVertical: 8,
+    paddingHorizontal: 14, paddingVertical: 5,
     borderRadius: 999, borderWidth: 1,
   },
   subTabText: { fontSize: 12, fontWeight: "600" },
