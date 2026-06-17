@@ -574,7 +574,7 @@ export default function MezcladorScreen() {
   };
 
   const handleSoundPress = (sound: MixSound) => {
-    if (!hasSoundFile(sound.id)) return;
+    if (!hasSoundFile(sound.id) && !REMOTE_SOUND_MAP[sound.id]) return;
     if (sound.isPremium && !isPremium) {
       router.push("/membresia" as never);
       return;

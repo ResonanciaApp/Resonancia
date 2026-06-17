@@ -47,7 +47,8 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
 
   const fetchAndMerge = useCallback(async () => {
     try {
-      const res = await fetch("/api/sounds");
+      const apiBase = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
+      const res = await fetch(`${apiBase}/api/sounds`);
       if (!res.ok) return;
       const data = (await res.json()) as { sounds: ApiSound[] };
 
