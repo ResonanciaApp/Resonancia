@@ -543,22 +543,7 @@ export default function Ancestrales2Screen() {
           contentFit="cover"
           contentPosition="top"
         />
-        {/* Overlay oscuro sutil para mejorar contraste */}
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} pointerEvents="none" />
-        {/* Degradado inferior hacia el fondo del contenido */}
-        <LinearGradient
-          colors={["transparent", "rgba(39,7,14,0.7)", "#27070E"]}
-          locations={[0.3, 0.72, 1]}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-        {/* Degradado superior para barra */}
-        <LinearGradient
-          colors={["rgba(0,0,0,0.40)", "transparent"]}
-          locations={[0, 1]}
-          style={[StyleSheet.absoluteFill, { height: 90 + topPad }]}
-          pointerEvents="none"
-        />
+        {/* Sin degradados — foto cortada limpiamente */}
 
         {/* Safe area spacer */}
         <View style={{ height: topPad }} />
