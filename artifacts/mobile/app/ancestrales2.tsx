@@ -1,12 +1,13 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import {
   Animated,
   Dimensions,
   Easing,
+  Keyboard,
   Modal,
   Platform,
   Pressable,
@@ -15,7 +16,6 @@ import {
   Text,
   TextInput,
   View,
-  Keyboard,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -26,15 +26,19 @@ import { SESSIONS } from "@/data/sessions";
 // ── Constantes ─────────────────────────────────────────────────────────────────
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#D4AF37";
-const TEXT = "#F4DAD5";
+const GOLD  = "#D4AF37";
+const TEXT  = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
 const HERO_HEIGHT = 230;
+const GRID_GAP    = 10;
+const cellW = (width - H_PAD * 2 - GRID_GAP) / 2;
 
 const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
 
 // ── Tipos ──────────────────────────────────────────────────────────────────────
 type AncestralTab = "cuencos" | "gongs" | "campanas" | "mix";
+type SortMode     = "recientes" | "agregado" | "alfabetico";
+type ViewMode     = "list" | "grid";
 
 const TABS: { id: AncestralTab; label: string }[] = [
   { id: "cuencos",  label: "Cuencos" },
@@ -43,27 +47,27 @@ const TABS: { id: AncestralTab; label: string }[] = [
   { id: "mix",      label: "Mix Sonoterapia" },
 ];
 
-// ── Filtro de sesiones por tab ─────────────────────────────────────────────────
+const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
+  { id: "recientes",  label: "Recientes",              icon: "clock" },
+  { id: "agregado",   label: "Agregado recientemente", icon: "plus-circle" },
+  { id: "alfabetico", label: "Alfabéticamente",         icon: "type" },
+];
+
+// ── Filtro de sesiones ─────────────────────────────────────────────────────────
 function getSessionsForTab(tab: AncestralTab | null) {
-  const ancestrales = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
-  if (!tab) return ancestrales;
+  const all = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
+  if (!tab) return all;
   switch (tab) {
     case "cuencos":
-      return ancestrales.filter(
-        (s) => s.ancestralTag?.toLowerCase().includes("cuenco"),
-      );
+      return all.filter((s) => s.ancestralTag?.toLowerCase().includes("cuenco"));
     case "gongs":
-      return ancestrales.filter(
-        (s) =>
-          s.ancestralTag?.toLowerCase().includes("gong") ||
-          s.ancestralTag === "Gongs",
+      return all.filter(
+        (s) => s.ancestralTag?.toLowerCase().includes("gong") || s.ancestralTag === "Gongs",
       );
     case "campanas":
-      return ancestrales.filter(
-        (s) => s.ancestralTag?.toLowerCase().includes("campana"),
-      );
+      return all.filter((s) => s.ancestralTag?.toLowerCase().includes("campana"));
     case "mix":
-      return ancestrales.filter((s) => {
+      return all.filter((s) => {
         const t = s.ancestralTag;
         return (
           t === "Full Instrumentos" ||
@@ -77,7 +81,69 @@ function getSessionsForTab(tab: AncestralTab | null) {
   }
 }
 
-// ── Chip ───────────────────────────────────────────────────────────────────────
+function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode) {
+  if (sort === "alfabetico") return [...arr].sort((a, b) => a.title.localeCompare(b.title, "es"));
+  if (sort === "agregado")   return [...arr].sort((a, b) => parseInt(b.id) - parseInt(a.id));
+  return arr; // recientes = orden natural
+}
+
+// ── SortSheet ─────────────────────────────────────────────────────────────────
+function SortSheet({
+  visible,
+  current,
+  onSelect,
+  onClose,
+}: {
+  visible: boolean;
+  current: SortMode;
+  onSelect: (s: SortMode) => void;
+  onClose: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
+      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      <View style={[styles.sortSheet, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+        <View style={styles.sortSheetHandle} />
+        <Text style={styles.sortSheetTitle}>Ordenar por</Text>
+        {SORT_OPTIONS.map((opt) => {
+          const active = opt.id === current;
+          return (
+            <Pressable
+              key={opt.id}
+              style={({ pressed }) => [styles.sortSheetRow, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={() => { onSelect(opt.id); onClose(); }}
+            >
+              <Feather name={opt.icon as never} size={17} color={active ? GOLD : MUTED} />
+              <Text style={[styles.sortSheetLabel, active && styles.sortSheetLabelActive]}>
+                {opt.label}
+              </Text>
+              {active && <Feather name="check" size={17} color={GOLD} style={{ marginLeft: "auto" }} />}
+            </Pressable>
+          );
+        })}
+      </View>
+    </Modal>
+  );
+}
+
+// ── AnimatedTabContent ─────────────────────────────────────────────────────────
+function AnimatedTabContent({
+  animKey,
+  children,
+}: {
+  animKey: string;
+  children: React.ReactNode;
+}) {
+  const opacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    opacity.setValue(0);
+    Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true }).start();
+  }, [animKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <Animated.View style={{ opacity }}>{children}</Animated.View>;
+}
+
+// ── Chip individual ────────────────────────────────────────────────────────────
 function AncestralChip({
   label,
   sel,
@@ -118,13 +184,12 @@ function AnimatedChipRow({
   onSelect: (id: AncestralTab) => void;
   onClear: () => void;
 }) {
-  const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
-  const offsetsRef = useRef<Record<string, number>>({});
-  const scrollXRef = useRef(0);
-  const [displayTab, setDisplayTab] = useState<AncestralTab | null>(activeTab);
-  const [colorTab, setColorTab] = useState<AncestralTab | null>(activeTab);
+  const progress      = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
+  const offsetsRef    = useRef<Record<string, number>>({});
+  const scrollXRef    = useRef(0);
+  const [displayTab,  setDisplayTab]  = useState<AncestralTab | null>(activeTab);
+  const [colorTab,    setColorTab]    = useState<AncestralTab | null>(activeTab);
   const [targetTranslate, setTargetTranslate] = useState(0);
-
   const filtered = displayTab !== null;
 
   const animate = (toValue: number, onDone?: () => void) => {
@@ -218,13 +283,13 @@ function AnimatedChipRow({
 
 // ── Modal de búsqueda ──────────────────────────────────────────────────────────
 function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
-  const [q, setQ] = useState("");
-  const inputRef = useRef<TextInput>(null);
-  const [kbHeight, setKbHeight] = useState(0);
-  const [kbReady, setKbReady] = useState(false);
+  const [q, setQ]           = useState("");
+  const inputRef            = useRef<TextInput>(null);
+  const [kbHeight, setKbHeight]   = useState(0);
+  const [kbReady,  setKbReady]    = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const sessions = useMemo(
+  const results = useMemo(
     () =>
       q.length >= 2
         ? SESSIONS.filter(
@@ -280,17 +345,13 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
             <Text style={styles.searchEmptySub}>Cuencos, gongs, campanas y más.</Text>
           </Animated.View>
         )}
-        {sessions.length > 0 && (
+        {results.length > 0 && (
           <ScrollView
             style={{ flex: 1, backgroundColor: "#1B060F" }}
             contentContainerStyle={{ padding: H_PAD, gap: 9 }}
           >
-            {sessions.map((s) => (
-              <SessionCard
-                key={s.id}
-                session={s}
-                horizontal
-              />
+            {results.map((s) => (
+              <SessionCard key={s.id} session={s} horizontal />
             ))}
           </ScrollView>
         )}
@@ -301,41 +362,36 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 
 // ── Pantalla principal ─────────────────────────────────────────────────────────
 export default function Ancestrales2Screen() {
-  const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? 0 : insets.top;
+  const insets    = useSafeAreaInsets();
+  const topPad    = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab, setActiveTab] = useState<AncestralTab | null>(null);
+  const [activeTab,     setActiveTab]     = useState<AncestralTab | null>(null);
+  const [sort,          setSort]          = useState<SortMode>("recientes");
+  const [sortVisible,   setSortVisible]   = useState(false);
+  const [viewMode,      setViewMode]      = useState<ViewMode>("list");
   const [searchVisible, setSearchVisible] = useState(false);
 
-  const sessions = useMemo(() => getSessionsForTab(activeTab), [activeTab]);
+  const toggleView = useCallback(() => setViewMode((v) => (v === "list" ? "grid" : "list")), []);
 
-  const GRID_GAP = 12;
-  const cellW = (width - H_PAD * 2 - GRID_GAP) / 2;
+  const sessions = useMemo(
+    () => applySort(getSessionsForTab(activeTab), sort),
+    [activeTab, sort],
+  );
 
-  // Sesiones en pares para grilla de 2 columnas
-  const sessionPairs = useMemo(() => {
-    const pairs: (typeof sessions)[] = [];
-    for (let i = 0; i < sessions.length; i += 2) {
-      pairs.push(sessions.slice(i, i + 2));
-    }
-    return pairs;
-  }, [sessions]);
+  const sortLabel =
+    sort === "recientes"  ? "Recientes"
+    : sort === "agregado" ? "Agregado recientemente"
+    : "Alfabéticamente";
 
   const renderContent = () => {
     if (sessions.length === 0) {
-      const labels: Record<AncestralTab | "null", string> = {
-        null: "Ancestrales",
-        cuencos: "Cuencos",
-        gongs: "Gongs",
-        campanas: "Campanas",
-        mix: "Mix Sonoterapia",
-      };
       return (
         <View style={styles.emptyState}>
           <Feather name="music" size={48} color={GOLD} style={{ marginBottom: 16 }} />
           <Text style={styles.emptyTitle}>
-            Próximamente en {labels[activeTab ?? "null"]}
+            Próximamente en{" "}
+            {activeTab ? TABS.find((t) => t.id === activeTab)?.label : "Ancestrales"}
           </Text>
           <Text style={styles.emptySub}>
             Estamos preparando este espacio con las mejores sesiones sonoras.
@@ -344,14 +400,21 @@ export default function Ancestrales2Screen() {
       );
     }
 
+    if (viewMode === "grid") {
+      return (
+        <View style={styles.gridWrap}>
+          {sessions.map((s) => (
+            <SessionCard key={s.id} session={s} width={cellW} />
+          ))}
+        </View>
+      );
+    }
+
+    // list mode — horizontal cards (igual que Biblioteca)
     return (
-      <View style={styles.gridOuter}>
-        {sessionPairs.map((pair, ri) => (
-          <View key={ri} style={styles.gridRow}>
-            {pair.map((s) => (
-              <SessionCard key={s.id} session={s} width={cellW} />
-            ))}
-          </View>
+      <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
+        {sessions.map((s) => (
+          <SessionCard key={s.id} session={s} horizontal />
         ))}
       </View>
     );
@@ -362,52 +425,36 @@ export default function Ancestrales2Screen() {
       <SacredBackground variant="solid" />
 
       {/* ── HEADER CON HERO ─────────────────────────────────────────────── */}
-      <View style={styles.header}>
-        {/* Imagen de fondo */}
+      <View style={[styles.header, { height: HERO_HEIGHT + topPad }]}>
         <Image
           source={HERO_IMG}
           style={[StyleSheet.absoluteFill, { width: "100%", height: "100%" }]}
           contentFit="cover"
           contentPosition="top"
         />
-
-        {/* Degradado inferior para legibilidad */}
         <LinearGradient
           colors={["transparent", "rgba(27,6,15,0.55)", "#1B060F"]}
           locations={[0.35, 0.72, 1]}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
-
-        {/* Degradado superior para los iconos */}
         <LinearGradient
           colors={["rgba(0,0,0,0.45)", "transparent"]}
           locations={[0, 1]}
-          style={[StyleSheet.absoluteFill, { height: 90 }]}
+          style={[StyleSheet.absoluteFill, { height: 90 + topPad }]}
           pointerEvents="none"
         />
 
-        {/* Barra de estado padding */}
+        {/* Safe area spacer */}
         <View style={{ height: topPad }} />
 
-        {/* Fila superior: título + iconos */}
+        {/* Barra superior */}
         <View style={styles.headerTopRow}>
-          {/* Botón volver */}
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={10}
-            style={styles.backBtn}
-          >
+          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color="#fff" />
           </Pressable>
-
-          {/* Iconos derecha */}
           <View style={styles.headerIcons}>
-            <Pressable
-              hitSlop={10}
-              onPress={() => setSearchVisible(true)}
-              style={styles.headerIconBtn}
-            >
+            <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
               <Feather name="search" size={21} color="#fff" />
             </Pressable>
             <Pressable hitSlop={10} style={styles.headerIconBtn}>
@@ -420,11 +467,13 @@ export default function Ancestrales2Screen() {
         <View style={styles.heroTitleArea}>
           <Text style={styles.heroTitle}>Ancestrales</Text>
           <Text style={styles.heroSubtitle}>
-            Sonidos para sanar · {sessions.length > 0 ? `${sessions.length} sesiones` : "Cuencos · Gongs · Campanas"}
+            {sessions.length > 0
+              ? `${sessions.length} sesione${sessions.length !== 1 ? "s" : ""}`
+              : "Cuencos · Gongs · Campanas"}
           </Text>
         </View>
 
-        {/* Chips de subcategoría — sobre fondo del header */}
+        {/* Chips sobre franja oscura */}
         <View style={styles.chipsArea}>
           <AnimatedChipRow
             activeTab={activeTab}
@@ -437,24 +486,35 @@ export default function Ancestrales2Screen() {
       {/* ── CONTENIDO ───────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{
-          paddingBottom: 140 + bottomPad,
-          paddingTop: 12,
-        }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 4 }}
         showsVerticalScrollIndicator={false}
       >
-        {activeTab && (
-          <Text style={styles.tabLabel}>
-            {TABS.find((t) => t.id === activeTab)?.label.toUpperCase()}
-          </Text>
-        )}
-        {renderContent()}
+        <AnimatedTabContent animKey={activeTab ?? "all"}>
+          {/* Barra de control: ordenar + toggle vista */}
+          <View style={styles.controlRow}>
+            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
+              <Feather name="chevrons-down" size={14} color={MUTED} />
+              <Text style={styles.sortText}>{sortLabel}</Text>
+            </Pressable>
+            <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
+              {viewMode === "list"
+                ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
+                : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
+              }
+            </Pressable>
+          </View>
+
+          {renderContent()}
+        </AnimatedTabContent>
       </ScrollView>
 
-      {/* Overlay */}
-      <SearchOverlay
-        visible={searchVisible}
-        onClose={() => setSearchVisible(false)}
+      {/* Overlays */}
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
+      <SortSheet
+        visible={sortVisible}
+        current={sort}
+        onSelect={setSort}
+        onClose={() => setSortVisible(false)}
       />
     </View>
   );
@@ -464,12 +524,8 @@ export default function Ancestrales2Screen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
 
-  // ── Header / Hero ────────────────────────────────────────────────────────────
-  header: {
-    height: HERO_HEIGHT,
-    overflow: "hidden",
-    backgroundColor: "#1B060F",
-  },
+  // ── Hero ─────────────────────────────────────────────────────────────────────
+  header: { overflow: "hidden", backgroundColor: "#1B060F" },
   headerTopRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -477,12 +533,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 8,
   },
-  backBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  backBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
 
@@ -505,7 +556,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "rgba(255,255,255,0.72)",
     marginTop: 3,
-    fontWeight: "400",
   },
 
   chipsArea: {
@@ -518,26 +568,18 @@ const styles = StyleSheet.create({
   // ── Chips ────────────────────────────────────────────────────────────────────
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
-    zIndex: 3,
+    position: "absolute", left: 0, top: 0, bottom: 0,
+    justifyContent: "center", zIndex: 3,
   },
   chipCloseBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 30, height: 30, borderRadius: 15,
     backgroundColor: "rgba(74,12,12,0.08)",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center", justifyContent: "center",
   },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.08)",
     overflow: "hidden",
@@ -545,24 +587,26 @@ const styles = StyleSheet.create({
   chipText: { fontSize: 13, fontWeight: "500", color: TEXT },
   chipTextSel: { color: "#1B060F", fontWeight: "700" },
 
-  // ── Contenido ────────────────────────────────────────────────────────────────
+  // ── Control Row ──────────────────────────────────────────────────────────────
   scroll: { flex: 1 },
-  tabLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: MUTED,
-    letterSpacing: 1,
-    paddingHorizontal: H_PAD,
-    marginBottom: 12,
-    marginTop: 4,
-  },
-  gridOuter: {
-    paddingHorizontal: H_PAD,
-    gap: 12,
-  },
-  gridRow: {
+  controlRow: {
     flexDirection: "row",
-    gap: 12,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    paddingVertical: 10,
+  },
+  sortBtn:      { flexDirection: "row", alignItems: "center", gap: 4 },
+  sortText:     { fontSize: 13, color: MUTED, fontWeight: "500" },
+  viewToggleBtn: { padding: 2 },
+
+  // ── Grilla ───────────────────────────────────────────────────────────────────
+  gridWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: GRID_GAP,
+    paddingHorizontal: H_PAD,
+    paddingTop: 4,
   },
 
   // ── Estado vacío ─────────────────────────────────────────────────────────────
@@ -572,61 +616,57 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   emptyTitle: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: TEXT,
-    textAlign: "center",
-    marginBottom: 8,
+    fontSize: 17, fontWeight: "700", color: TEXT,
+    textAlign: "center", marginBottom: 8,
   },
   emptySub: {
-    fontSize: 13,
-    color: MUTED,
-    textAlign: "center",
-    lineHeight: 20,
+    fontSize: 13, color: MUTED,
+    textAlign: "center", lineHeight: 20,
   },
 
+  // ── SortSheet ────────────────────────────────────────────────────────────────
+  sortSheet: {
+    position: "absolute", bottom: 0, left: 0, right: 0,
+    backgroundColor: "#0E1326",
+    borderTopLeftRadius: 22, borderTopRightRadius: 22,
+    paddingTop: 10, paddingHorizontal: 20,
+  },
+  sortSheetHandle: {
+    alignSelf: "center", width: 36, height: 4,
+    borderRadius: 2, backgroundColor: "rgba(74,12,12,0.35)", marginBottom: 16,
+  },
+  sortSheetTitle: { color: TEXT, fontSize: 15, fontWeight: "700", marginBottom: 12 },
+  sortSheetRow: {
+    flexDirection: "row", alignItems: "center", gap: 14,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(61,14,22,0.40)",
+  },
+  sortSheetLabel:       { color: MUTED, fontSize: 15, flex: 1 },
+  sortSheetLabelActive: { color: TEXT, fontWeight: "600" },
+
   // ── Búsqueda ─────────────────────────────────────────────────────────────────
-  searchModalRoot: { flex: 1, backgroundColor: "#4A0C0C" },
+  searchModalRoot:  { flex: 1, backgroundColor: "#4A0C0C" },
   searchOverlay: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row", alignItems: "center",
     backgroundColor: "#4A0C0C",
     paddingTop: Platform.OS === "ios" ? 56 : 36,
-    paddingHorizontal: H_PAD,
-    paddingBottom: 14,
-    gap: 10,
+    paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10,
   },
   searchBar: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    flex: 1, flexDirection: "row", alignItems: "center", gap: 8,
+    backgroundColor: "#FFFFFF", borderRadius: 10,
+    paddingHorizontal: 12, paddingVertical: 12,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#111" },
-  cancelBtn: { paddingVertical: 6 },
-  cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
+  searchInput:  { flex: 1, fontSize: 14, color: "#111" },
+  cancelBtn:    { paddingVertical: 6 },
+  cancelText:   { color: GOLD, fontSize: 14, fontWeight: "600" },
   searchEmpty: {
-    flex: 1,
-    backgroundColor: "#4A0C0C",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 32,
+    flex: 1, backgroundColor: "#4A0C0C",
+    alignItems: "center", justifyContent: "center", paddingHorizontal: 32,
   },
   searchEmptyTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: TEXT,
-    textAlign: "center",
-    marginBottom: 10,
+    fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10,
   },
-  searchEmptySub: {
-    fontSize: 14,
-    color: MUTED,
-    textAlign: "center",
-    lineHeight: 20,
-  },
+  searchEmptySub: { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
 });
