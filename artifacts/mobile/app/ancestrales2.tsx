@@ -366,13 +366,16 @@ function SessionQuickSheet({
   session,
   onClose,
   onPlaylist,
+  isFavorite,
+  onToggleFavorite,
 }: {
   session: Session | null;
   onClose: () => void;
   onPlaylist: () => void;
+  isFavorite: (id: string) => boolean;
+  onToggleFavorite: (id: string) => void;
 }) {
   const insets = useSafeAreaInsets();
-  const { isFavorite, toggleFavorite } = usePlayer();
   const slideAnim = useRef(new Animated.Value(300)).current;
 
   useEffect(() => {
@@ -388,7 +391,7 @@ function SessionQuickSheet({
   const favorited = isFavorite(session.id);
 
   const handleFavorite = () => {
-    toggleFavorite(session.id);
+    onToggleFavorite(session.id);
     onClose();
   };
 
@@ -455,12 +458,14 @@ export default function Ancestrales2Screen() {
   const topPad    = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab,       setActiveTab]       = useState<AncestralTab | null>(null);
-  const [sort,            setSort]            = useState<SortMode>("recientes");
-  const [sortVisible,     setSortVisible]     = useState(false);
-  const [viewMode,        setViewMode]        = useState<ViewMode>("list");
-  const [searchVisible,   setSearchVisible]   = useState(false);
-  const [selectedSession,  setSelectedSession]  = useState<Session | null>(null);
+  const { isFavorite, toggleFavorite } = usePlayer();
+
+  const [activeTab,         setActiveTab]         = useState<AncestralTab | null>(null);
+  const [sort,              setSort]              = useState<SortMode>("recientes");
+  const [sortVisible,       setSortVisible]       = useState(false);
+  const [viewMode,          setViewMode]          = useState<ViewMode>("list");
+  const [searchVisible,     setSearchVisible]     = useState(false);
+  const [selectedSession,   setSelectedSession]   = useState<Session | null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string | null>(null);
 
   const toggleView = useCallback(() => setViewMode((v) => (v === "list" ? "grid" : "list")), []);
@@ -630,9 +635,11 @@ export default function Ancestrales2Screen() {
         session={selectedSession}
         onClose={() => setSelectedSession(null)}
         onPlaylist={() => {
-          setPlaylistSessionId(selectedSession!.id);
+          if (selectedSession) setPlaylistSessionId(selectedSession.id);
           setSelectedSession(null);
         }}
+        isFavorite={isFavorite}
+        onToggleFavorite={toggleFavorite}
       />
       <AddToPlaylistSheet
         visible={playlistSessionId !== null}
