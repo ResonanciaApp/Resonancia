@@ -386,6 +386,7 @@ export default function MeditacionesGuiadasScreen() {
 
   return (
     <View style={styles.root}>
+      <LinearGradient colors={["#1A0F2E","#0D0A1A"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
       <View style={[styles.header,{height:HERO_HEIGHT+topPad}]}>
         <Image source={HERO_IMG} style={[StyleSheet.absoluteFill,{width:"100%",height:"100%"}]} contentFit="cover" contentPosition="center" />
         <View style={[StyleSheet.absoluteFill,{backgroundColor:"rgba(0,0,0,0.40)"}]} pointerEvents="none" />
