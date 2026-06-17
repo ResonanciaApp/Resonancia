@@ -22,23 +22,11 @@ import {
 
 // ── Constantes de taxonomía ────────────────────────────────────────────────
 
-const CATS = [
-  { id: "sonidos-ancestrales", label: "Ancestrales",  categoryLabel: "Ancestrales", color: "#D4AF37" },
-  { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
-  { id: "reflexiones",           label: "Reflexiones",  categoryLabel: "Reflexiones",  color: "#C4A0D4" },
-] as const;
-
-type CatId = typeof CATS[number]["id"];
-
-const ANCESTRAL_TAGS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Mix de Cuencos","Gongs","Cuencos y Gongs","Full Instrumentos"];
-const MEDITATION_TAGS = ["No Duales","Visualizaciones","Mantras","Escaneo Corporal","Manifestación","3 Minutos de Sabiduría"];
-const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica"];
-const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosféricos"];
-const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
-const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
-const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
-const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
-const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
+const SOUND_TAGS = ["Música Ambient", "Música Enteógena", "Música Étnica", "Música Tribal"];
+const SLEEP_TAGS = ["Sonidos Binaurales", "Sonidos Ancestrales", "ASMR Expansivos"];
+const THEME_TAGS = ["Yoga", "Respiración", "Ansiedad", "Rituales", "Crecimiento", "ASMR", "Estrés", "Spa", "Familia"];
+const OTHER_THEME_TAGS = ["Para la ansiedad", "Energiza tus mañanas", "Foco y concentración", "Suelto la Rabia", "Crecimiento personal", "Armonía familiar", "Respiración consciente", "Meditaciones Activas", "Astrología"];
+const AUDIO_ROLES = ["main", "voice", "ambient", "base", "sound"] as const;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -65,9 +53,8 @@ const emptyAudioSlot = (): AudioSlot => ({
 
 // ── Componente principal ───────────────────────────────────────────────────
 
-export default function SesionesPage() {
+export default function CancionesPage() {
   // ── Estado del formulario ──
-  const [categoryId, setCategoryId] = useState<CatId | "">("");
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [description, setDescription] = useState("");
@@ -76,16 +63,11 @@ export default function SesionesPage() {
   const [frequency, setFrequency] = useState("");
   const [voiceTag, setVoiceTag] = useState("");
 
-  // Tags por categoría
-  const [ancestralTag, setAncestralTag] = useState("");
-  const [meditationTag, setMeditationTag] = useState("");
-  const [sonidosTag, setSonidosTag] = useState("");
-  const [podcastTag, setPodcastTag] = useState("");
-  const [podcastMode, setPodcastMode] = useState<"sonidos"|"podcast">("sonidos");
+  // Tags
+  const [soundTag, setSoundTag] = useState("");
   const [sleepTag, setSleepTag] = useState("");
   const [themeTag, setThemeTag] = useState<string[]>([]);
-  const [otherTagInput, setOtherTagInput] = useState("");
-  const [guideId, setGuideId] = useState("");
+  const [artistId, setArtistId] = useState("");
 
   // Arrays
   const [benefitInput, setBenefitInput] = useState("");
@@ -107,7 +89,7 @@ export default function SesionesPage() {
 
   // Secciones expandidas
   const [openSections, setOpenSections] = useState({
-    basicos: true, categoria: true, subcategoria: true, tags: true,
+    basicos: true, subcategoria: true, tags: true,
     audios: true, imagen: false, extras: false,
   });
 
@@ -151,7 +133,7 @@ export default function SesionesPage() {
       const audio = new Audio(url);
       audio.onloadedmetadata = () => {
         URL.revokeObjectURL(url);
-        resolve(Math.round(audio.duration / 60)); // en minutos
+        resolve(Math.round(audio.duration / 60));
       };
       audio.onerror = () => { URL.revokeObjectURL(url); resolve(0); };
     });
@@ -195,12 +177,12 @@ export default function SesionesPage() {
 
   // ── Validación rápida ──
   const validate = (): string | null => {
-    if (!categoryId) return "Seleccioná una categoría";
     if (!title.trim()) return "El título es requerido";
     if (!subtitle.trim()) return "El subtítulo es requerido";
     if (!description.trim()) return "La descripción es requerida";
     const d = Number(duration);
     if (!d || d < 1 || d > 600) return "La duración debe ser entre 1 y 600 minutos";
+    if (!soundTag) return "Seleccioná una subcategoría musical";
     if (!audio1.file) return "Agregá al menos un archivo de audio";
     if (!audio1.name.trim()) return "Poné un nombre al audio 1";
     if (showAudio2 && audio2.file && !audio2.name.trim()) return "Poné un nombre al audio 2";
@@ -215,7 +197,6 @@ export default function SesionesPage() {
     setSubmitting(true);
     setUploadProgress({ label: "Preparando subida…", pct: 0 });
     try {
-      // 1. Upload archivos
       const a1 = await uploadFile(audio1.file!, "Subiendo audio principal");
       let a2: UploadedFile | null = null;
       if (showAudio2 && audio2.file) {
@@ -228,16 +209,15 @@ export default function SesionesPage() {
         setUploadedImage(imgUploaded);
       }
 
-      setUploadProgress({ label: "Guardando sesión…", pct: 100 });
+      setUploadProgress({ label: "Guardando canción…", pct: 100 });
 
-      // 2. Crear submission
       const audioFiles: Parameters<typeof createSubmission>[0]["data"]["audioFiles"] = [
         {
           objectPath: a1.objectPath,
           name: audio1.name.trim(),
           contentType: a1.contentType,
           sizeBytes: a1.sizeBytes,
-          role: audio1.role as "main"|"voice"|"ambient"|"base"|"sound",
+          role: audio1.role as "main" | "voice" | "ambient" | "base" | "sound",
           durationSeconds: audio1.durationSeconds ? Number(audio1.durationSeconds) : undefined,
           isLoop: audio1.isLoop,
         },
@@ -248,20 +228,18 @@ export default function SesionesPage() {
           name: audio2.name.trim(),
           contentType: a2.contentType,
           sizeBytes: a2.sizeBytes,
-          role: audio2.role as "main"|"voice"|"ambient"|"base"|"sound",
+          role: audio2.role as "main" | "voice" | "ambient" | "base" | "sound",
           durationSeconds: audio2.durationSeconds ? Number(audio2.durationSeconds) : undefined,
           isLoop: audio2.isLoop,
         });
       }
 
-      const cat = CATS.find((c) => c.id === categoryId)!;
-
       const body: Parameters<typeof createSubmission>[0]["data"] = {
         title: title.trim(),
         subtitle: subtitle.trim(),
         description: description.trim(),
-        categoryId: cat.id,
-        categoryLabel: cat.categoryLabel,
+        categoryId: "musica-sonidos",
+        categoryLabel: "Música",
         duration: Number(duration),
         isPremium,
         frequency: frequency.trim() || null,
@@ -270,11 +248,8 @@ export default function SesionesPage() {
         instruments: instruments.length ? instruments : undefined,
         themeTag: themeTag.length ? (themeTag as Parameters<typeof createSubmission>[0]["data"]["themeTag"]) : undefined,
         sleepTag: sleepTag as Parameters<typeof createSubmission>[0]["data"]["sleepTag"] || undefined,
-        ancestralTag: ancestralTag as Parameters<typeof createSubmission>[0]["data"]["ancestralTag"] || undefined,
-        meditationTag: meditationTag as Parameters<typeof createSubmission>[0]["data"]["meditationTag"] || undefined,
-        sonidosTag: sonidosTag as Parameters<typeof createSubmission>[0]["data"]["sonidosTag"] || undefined,
-        podcastTag: podcastTag as Parameters<typeof createSubmission>[0]["data"]["podcastTag"] || undefined,
-        guideId: guideId.trim() || null,
+        soundTag: soundTag as Parameters<typeof createSubmission>[0]["data"]["soundTag"] || undefined,
+        artistId: artistId.trim() || null,
         imageObjectPath: imgUploaded?.objectPath ?? null,
         imageContentType: imgUploaded?.contentType ?? null,
         imageSizeBytes: imgUploaded?.sizeBytes ?? null,
@@ -283,17 +258,16 @@ export default function SesionesPage() {
 
       const submission = await createSubmission({ data: body });
 
-      // 3. Publicar directamente si se pidió
       if (publishDirectly) {
         await approveSubmission({ id: submission.id });
-        toast.success("Sesión publicada correctamente");
+        toast.success("Canción publicada correctamente");
       } else {
-        toast.success("Sesión enviada — pendiente de revisión");
+        toast.success("Canción enviada — pendiente de revisión");
       }
 
       setDone(true);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Error al crear la sesión";
+      const msg = e instanceof Error ? e.message : "Error al crear la canción";
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -303,11 +277,10 @@ export default function SesionesPage() {
 
   const handleReset = () => {
     setDone(false);
-    setCategoryId(""); setTitle(""); setSubtitle(""); setDescription("");
+    setTitle(""); setSubtitle(""); setDescription("");
     setDuration(""); setIsPremium(false); setFrequency(""); setVoiceTag("");
-    setAncestralTag(""); setMeditationTag("");
-    setSonidosTag(""); setPodcastTag(""); setSleepTag(""); setThemeTag([]);
-    setGuideId("");
+    setSoundTag(""); setSleepTag(""); setThemeTag([]);
+    setArtistId("");
     setBenefits([]); setInstruments([]);
     setAudio1(emptyAudioSlot()); setAudio2(emptyAudioSlot()); setShowAudio2(false);
     setImageFile(null); setUploadedImage(null);
@@ -320,81 +293,30 @@ export default function SesionesPage() {
         <CheckCircle2 className="w-16 h-16 text-primary" />
         <div>
           <h2 className="text-2xl font-bold mb-2">
-            {publishDirectly ? "Sesión publicada" : "Sesión enviada a revisión"}
+            {publishDirectly ? "Canción publicada" : "Canción enviada a revisión"}
           </h2>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground">
             {publishDirectly
-              ? "Ya está visible en la app."
-              : "Podés aprobarla desde la cola de Moderación."}
+              ? "Ya está visible en la app bajo Música."
+              : "Quedó pendiente en Moderación para su aprobación."}
           </p>
         </div>
-        <Button onClick={handleReset}>Subir otra sesión</Button>
+        <Button onClick={handleReset} variant="outline">
+          Subir otra canción
+        </Button>
       </div>
     );
   }
 
-  const catInfo = CATS.find((c) => c.id === categoryId);
-
   return (
-    <div className="max-w-2xl mx-auto space-y-4 pb-20">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Nueva sesión</h1>
+    <div className="space-y-5 max-w-2xl">
+      {/* Encabezado */}
+      <div className="mb-2">
+        <h1 className="text-2xl font-bold">Nueva canción</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Cargá los datos y archivos de la sesión para publicarla en la app.
+          Música · Ambient, Enteógena o Étnica
         </p>
       </div>
-
-      {/* ── SECCIÓN: Categoría ── */}
-      <Section
-        title="Categoría"
-        open={openSections.categoria}
-        onToggle={() => toggleSection("categoria")}
-      >
-        <div className="grid grid-cols-2 gap-3">
-          {CATS.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => {
-                setCategoryId(cat.id);
-                // reset tags al cambiar categoría
-                setAncestralTag(""); setMeditationTag("");
-                setSonidosTag(""); setPodcastTag(""); setGuideId("");
-                // auto-mostrar audio2 con rol correcto según categoría
-                if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas") {
-                  setShowAudio2(true);
-                  setAudio2((a) => ({ ...a, role: "voice" }));
-                } else if (cat.id === "reflexiones") {
-                  setShowAudio2(true);
-                  setAudio2((a) => ({ ...a, role: "ambient" }));
-                } else {
-                  setShowAudio2(false);
-                  setAudio2(emptyAudioSlot());
-                }
-              }}
-              className={`relative flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all ${
-                categoryId === cat.id
-                  ? "border-primary bg-primary/8"
-                  : "border-border bg-card hover:border-border/80 hover:bg-secondary"
-              }`}
-            >
-              <span className="font-semibold text-sm">{cat.label}</span>
-              <span className="text-xs text-muted-foreground">{cat.id}</span>
-              {categoryId === cat.id && (
-                <span
-                  className="absolute top-2 right-2 w-2 h-2 rounded-full"
-                  style={{ backgroundColor: cat.color }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-        {catInfo && (
-          <p className="text-xs text-muted-foreground mt-1">
-            categoryLabel que se guarda: <strong className="text-foreground">"{catInfo.categoryLabel}"</strong>
-          </p>
-        )}
-      </Section>
 
       {/* ── SECCIÓN: Datos básicos ── */}
       <Section
@@ -404,16 +326,16 @@ export default function SesionesPage() {
       >
         <div className="space-y-4">
           <Field label="Título *">
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ej: Cuencos del Alba" maxLength={120} />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ej: Selva Enteógena" maxLength={120} />
           </Field>
           <Field label="Subtítulo *">
-            <Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="Ej: Música Étnica" maxLength={120} />
+            <Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="Ej: Música Enteógena" maxLength={120} />
           </Field>
           <Field label="Descripción *">
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describí la sesión..."
+              placeholder="Describí la canción..."
               rows={4}
               maxLength={2000}
               className="resize-none"
@@ -421,12 +343,10 @@ export default function SesionesPage() {
             <span className="text-xs text-muted-foreground">{description.length}/2000</span>
           </Field>
 
-          {categoryId === "meditaciones-guiadas" && (
-            <Field label="ID del guiador *">
-              <Input value={guideId} onChange={(e) => setGuideId(e.target.value)} placeholder="sofia-ramirez" />
-              <span className="text-xs text-muted-foreground">Slug del guiador en data/guides.ts · default: casa-cuenco</span>
-            </Field>
-          )}
+          <Field label="ID del artista (opcional)">
+            <Input value={artistId} onChange={(e) => setArtistId(e.target.value)} placeholder="lumen-sonora" />
+            <span className="text-xs text-muted-foreground">Slug del artista en data/artists.ts · si se omite → "resonancia"</span>
+          </Field>
 
           <div className="grid grid-cols-2 gap-4">
             <Field label={`Duración (minutos)${duration ? "" : " *"}`}>
@@ -464,7 +384,7 @@ export default function SesionesPage() {
           <div className="flex items-center gap-3">
             <Switch id="premium" checked={isPremium} onCheckedChange={setIsPremium} />
             <Label htmlFor="premium" className="cursor-pointer">
-              Sesión Premium
+              Canción Premium
               <span className="ml-2 text-xs text-muted-foreground">(muestra estrellita dorada en la app)</span>
             </Label>
           </div>
@@ -472,144 +392,92 @@ export default function SesionesPage() {
       </Section>
 
       {/* ── SECCIÓN: Subcategoría ── */}
-      {categoryId && (
-        <Section
-          title="Subcategoría"
-          open={openSections.subcategoria}
-          onToggle={() => toggleSection("subcategoria")}
-        >
-          <div className="space-y-4">
-            {categoryId === "sonidos-ancestrales" && (
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Subcategoría *</Label>
-                <div className="flex flex-wrap gap-2">
-                  {ANCESTRAL_TAGS.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => setAncestralTag(tag)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                        ancestralTag === tag
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:border-foreground"
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {categoryId === "meditaciones-guiadas" && (
-              <>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Subcategoría *</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {MEDITATION_TAGS.map((tag) => (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => setMeditationTag(tag)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                          meditationTag === tag
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border text-muted-foreground hover:border-foreground"
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {categoryId === "reflexiones" && (
-              <>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => { setPodcastMode("sonidos"); setPodcastTag(""); }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${podcastMode === "sonidos" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-foreground"}`}
-                  >
-                    Sonidos
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setPodcastMode("podcast"); setSonidosTag(""); }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${podcastMode === "podcast" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-foreground"}`}
-                  >
-                    Charla / Reflexión
-                  </button>
-                </div>
-                {podcastMode === "sonidos" ? (
-                  <Field label="Subcategoría *">
-                    <SelectField value={sonidosTag} onChange={setSonidosTag} placeholder="Elegí la subcategoría" options={SONIDOS_TAGS} />
-                  </Field>
-                ) : (
-                  <Field label="Subcategoría *">
-                    <SelectField value={podcastTag} onChange={setPodcastTag} placeholder="Elegí la subcategoría" options={PODCAST_TAGS} />
-                  </Field>
-                )}
-              </>
-            )}
+      <Section
+        title="Subcategoría *"
+        open={openSections.subcategoria}
+        onToggle={() => toggleSection("subcategoria")}
+      >
+        <div className="space-y-2">
+          <div className="flex flex-wrap gap-2">
+            {SOUND_TAGS.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => setSoundTag(tag)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                  soundTag === tag
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-foreground"
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
           </div>
-        </Section>
-      )}
+          {soundTag && (
+            <p className="text-xs text-muted-foreground">Subcategoría seleccionada: <strong className="text-foreground">"{soundTag}"</strong></p>
+          )}
+        </div>
+      </Section>
 
       {/* ── SECCIÓN: Etiquetas ── */}
-      {categoryId && (
-        <Section
-          title="Etiquetas"
-          open={openSections.tags}
-          onToggle={() => toggleSection("tags")}
-        >
-          <div className="space-y-4">
-            {/* Etiquetas Nivel 1 */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Etiquetas Nivel 1 (opcional)</Label>
-              <div className="flex flex-wrap gap-2">
-                {THEME_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTheme(tag)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                      themeTag.includes(tag)
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-muted-foreground hover:border-foreground"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
+      <Section
+        title="Etiquetas"
+        open={openSections.tags}
+        onToggle={() => toggleSection("tags")}
+      >
+        <div className="space-y-4">
+          <Field label="Etiqueta de sueño (opcional)">
+            <SelectField
+              value={sleepTag}
+              onChange={setSleepTag}
+              placeholder="Sin etiqueta"
+              options={SLEEP_TAGS}
+              clearable
+            />
+          </Field>
 
-            {/* Otras temáticas */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Otras temáticas (opcional)</Label>
-              <div className="flex flex-wrap gap-2">
-                {OTHER_THEME_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTheme(tag)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                      themeTag.includes(tag)
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-muted-foreground hover:border-foreground"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Temáticas (opcional)</Label>
+            <div className="flex flex-wrap gap-2">
+              {THEME_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => toggleTheme(tag)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                    themeTag.includes(tag)
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:border-foreground"
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
             </div>
           </div>
-        </Section>
-      )}
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Otras temáticas (opcional)</Label>
+            <div className="flex flex-wrap gap-2">
+              {OTHER_THEME_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => toggleTheme(tag)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                    themeTag.includes(tag)
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:border-foreground"
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
 
       {/* ── SECCIÓN: Audios ── */}
       <Section
@@ -617,40 +485,32 @@ export default function SesionesPage() {
         open={openSections.audios}
         onToggle={() => toggleSection("audios")}
       >
-        {(() => {
-          const isAncestralOrMed = categoryId === "sonidos-ancestrales" || categoryId === "meditaciones-guiadas";
-          const isPodcast = categoryId === "reflexiones";
-          const audio1Label = isPodcast ? "Sonido base *" : "Audio base *";
-          const audio2Label = isPodcast ? "Sonido ambiente (opcional)" : "Voz guía (opcional)";
-          return (
-            <div className="space-y-6">
-              <AudioUploadSlot
-                label={audio1Label}
-                slot={audio1}
-                onChange={handleAudio1Change}
-                inputRef={audio1Ref}
-              />
+        <div className="space-y-6">
+          <AudioUploadSlot
+            label="Audio principal *"
+            slot={audio1}
+            onChange={handleAudio1Change}
+            inputRef={audio1Ref}
+          />
 
-              {showAudio2 ? (
-                <AudioUploadSlot
-                  label={audio2Label}
-                  slot={audio2}
-                  onChange={setAudio2}
-                  inputRef={audio2Ref}
-                  onRemove={() => { setShowAudio2(false); setAudio2(emptyAudioSlot()); }}
-                />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowAudio2(true)}
-                  className="text-sm text-primary hover:underline"
-                >
-                  + {audio2Label}
-                </button>
-              )}
-            </div>
-          );
-        })()}
+          {showAudio2 ? (
+            <AudioUploadSlot
+              label="Audio ambiente (opcional)"
+              slot={audio2}
+              onChange={setAudio2}
+              inputRef={audio2Ref}
+              onRemove={() => { setShowAudio2(false); setAudio2(emptyAudioSlot()); }}
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => { setShowAudio2(true); setAudio2((a) => ({ ...a, role: "ambient" })); }}
+              className="text-sm text-primary hover:underline"
+            >
+              + Audio ambiente (opcional)
+            </button>
+          )}
+        </div>
       </Section>
 
       {/* ── SECCIÓN: Imagen ── */}
@@ -710,14 +570,13 @@ export default function SesionesPage() {
         onToggle={() => toggleSection("extras")}
       >
         <div className="space-y-5">
-          {/* Benefits */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Beneficios (máx 8)</Label>
             <div className="flex gap-2">
               <Input
                 value={benefitInput}
                 onChange={(e) => setBenefitInput(e.target.value)}
-                placeholder="Ej: Relajación profunda"
+                placeholder="Ej: Calma profunda"
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addBenefit())}
               />
               <Button type="button" variant="outline" onClick={addBenefit} disabled={benefits.length >= 8}>
@@ -736,14 +595,13 @@ export default function SesionesPage() {
             </div>
           </div>
 
-          {/* Instruments */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Instrumentos (máx 12)</Label>
             <div className="flex gap-2">
               <Input
                 value={instrumentInput}
                 onChange={(e) => setInstrumentInput(e.target.value)}
-                placeholder="Ej: Cuencos tibetanos"
+                placeholder="Ej: Sintetizadores ambient"
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addInstrument())}
               />
               <Button type="button" variant="outline" onClick={addInstrument} disabled={instruments.length >= 12}>
@@ -808,7 +666,7 @@ export default function SesionesPage() {
               Procesando...
             </>
           ) : publishDirectly ? (
-            "Publicar sesión"
+            "Publicar canción"
           ) : (
             "Guardar como borrador"
           )}
@@ -948,7 +806,7 @@ function AudioUploadSlot({
           <Input
             value={slot.name}
             onChange={(e) => onChange({ ...slot, name: e.target.value })}
-            placeholder="Ej: Cuencos del alba"
+            placeholder="Ej: Selva Enteógena"
             maxLength={200}
           />
         </Field>
