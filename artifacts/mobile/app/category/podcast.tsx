@@ -23,6 +23,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { GOLD_GRAD, GOLD_GRAD_START, GOLD_GRAD_END } from "@/components/GoldGradient";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
@@ -396,7 +397,7 @@ export default function SonidosScreen() {
                             style={({ pressed }) => [
                               styles.durationBtn,
                               {
-                                backgroundColor: pressed ? colors.primary : "rgba(212,175,55,0.10)",
+                                overflow: "hidden",
                                 borderColor: pressed ? colors.primary : "rgba(212,175,55,0.28)",
                               },
                             ]}
@@ -404,6 +405,13 @@ export default function SonidosScreen() {
                           >
                             {({ pressed }) => (
                               <>
+                                <LinearGradient
+                                  colors={GOLD_GRAD}
+                                  start={GOLD_GRAD_START}
+                                  end={GOLD_GRAD_END}
+                                  style={[StyleSheet.absoluteFillObject, { opacity: pressed ? 1 : 0.10 }]}
+                                  pointerEvents="none"
+                                />
                                 <Text
                                   style={[
                                     styles.durationNum,
