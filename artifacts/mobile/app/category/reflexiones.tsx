@@ -396,6 +396,7 @@ export default function ReflexionesScreen() {
 
       <View style={styles.chipsArea}>
         <ChipRow activeTab={activeTab} onSelect={(id)=>setActiveTab(id)} onClear={()=>setActiveTab(null)} />
+        <LinearGradient colors={["rgba(0,0,0,0.27)","rgba(0,0,0,0)"]} style={styles.chipsShadow} pointerEvents="none" />
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={{paddingBottom:140+bottomPad}} showsVerticalScrollIndicator={false}>
@@ -434,12 +435,13 @@ const styles = StyleSheet.create({
   heroTitle:{fontSize:32,fontWeight:"800",color:"#fff",letterSpacing:0.5,textShadowColor:"rgba(0,0,0,0.6)",textShadowOffset:{width:0,height:1},textShadowRadius:6,flex:1},
   heroSearchBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
   heroSubtitle:{fontSize:13,color:"rgba(255,255,255,0.72)",marginTop:3},
-  chipsArea:{paddingHorizontal:H_PAD,paddingTop:12,paddingBottom:8},
+  chipsArea:{paddingTop:10,paddingBottom:8,overflow:"visible"},
+  chipsShadow:{position:"absolute",left:0,right:0,bottom:-14,height:14},
   animChipWrap:{flexDirection:"row",alignItems:"center"},
   animCloseBtn:{position:"absolute",left:0,top:0,bottom:0,justifyContent:"center",zIndex:3},
   chipCloseBtn:{width:30,height:30,borderRadius:15,backgroundColor:"rgba(74,12,12,0.08)",alignItems:"center",justifyContent:"center"},
   chipRow:{flexGrow:0},
-  chipRowContent:{flexDirection:"row",gap:8,paddingVertical:2},
+  chipRowContent:{flexDirection:"row",gap:8,paddingVertical:2,paddingHorizontal:H_PAD},
   chip:{paddingHorizontal:14,paddingVertical:8,borderRadius:999,backgroundColor:"rgba(255,255,255,0.08)",overflow:"hidden"},
   chipText:{fontSize:13,fontWeight:"600",color:TEXT},
   chipTextSel:{color:"#1B060F"},
