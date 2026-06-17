@@ -24,7 +24,7 @@ export type PlaylistSnapshot = {
   slug: string;
   title: string;
   description: string;
-  coverUrl: string | null;
+  coverUrl?: string | null;
   durationLabel: string;
   savedCount: number;
   sessionIds: string[];
