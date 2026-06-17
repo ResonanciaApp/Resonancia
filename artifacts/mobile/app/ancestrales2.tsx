@@ -949,8 +949,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     backgroundColor: "#27070E",
     zIndex: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.10)",
+    borderBottomWidth: 1.5,
+    borderBottomColor: "#5A1020",
   },
 
   // ── Chips ────────────────────────────────────────────────────────────────────
