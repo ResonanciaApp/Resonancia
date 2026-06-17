@@ -47,6 +47,7 @@ import {
 } from "@/data/mixer-bg-palettes";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
 import { useSounds } from "@/context/SoundsContext";
+import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { GoldGradient } from "@/components/GoldGradient";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
@@ -431,7 +432,7 @@ const bpmStyles = StyleSheet.create({
 export default function MezcladorScreen() {
   const insets      = useSafeAreaInsets();
   const { isPremium }    = usePremium();
-  const { refresh: refreshSounds } = useSounds();
+  const { sounds: allSounds, refresh: refreshSounds } = useSounds();
   const { open: openDrawer } = useDrawer();
   const { isActive, toggleSound, activeBpm } = useMixer();
   const { lastSavedAt } = useSaveEvent();
@@ -600,11 +601,11 @@ export default function MezcladorScreen() {
   };
 
   const popularSounds = useMemo(() =>
-    SOUNDS.filter((s) => hasSoundFile(s.id))
+    allSounds.filter((s) => hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id])
       .slice()
       .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
       .slice(0, 50),
-    [playCounts],
+    [allSounds, playCounts],
   );
 
   const currentTabDef    = MAIN_TABS.find((t) => t.id === mainTab);
@@ -617,7 +618,7 @@ export default function MezcladorScreen() {
   const displayedSounds = useMemo(() => {
     const base = !subTabCategories
       ? popularSounds
-      : SOUNDS.filter(
+      : allSounds.filter(
           (s) =>
             (subTab ? [subTab] : subTabCategories).includes(s.category as SoundCategoryId) &&
             (mainTab !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
