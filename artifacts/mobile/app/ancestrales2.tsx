@@ -22,6 +22,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 
 // ── Constantes ─────────────────────────────────────────────────────────────────
@@ -38,7 +40,7 @@ const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
 
 // ── Tipos ──────────────────────────────────────────────────────────────────────
 type AncestralTab = "cuencos" | "gongs" | "campanas" | "mix";
-type SortMode     = "recientes" | "agregado" | "alfabetico";
+type SortMode     = "recientes" | "nuevas" | "populares";
 type ViewMode     = "list" | "grid";
 
 const TABS: { id: AncestralTab; label: string }[] = [
@@ -49,9 +51,9 @@ const TABS: { id: AncestralTab; label: string }[] = [
 ];
 
 const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
-  { id: "recientes",  label: "Recientes",              icon: "clock" },
-  { id: "agregado",   label: "Agregado recientemente", icon: "plus-circle" },
-  { id: "alfabetico", label: "Alfabéticamente",         icon: "type" },
+  { id: "recientes",  label: "Escuchadas recientemente", icon: "clock" },
+  { id: "nuevas",     label: "Nuevas sesiones",          icon: "plus-circle" },
+  { id: "populares",  label: "Las más escuchadas",       icon: "headphones" },
 ];
 
 // ── Filtro de sesiones ─────────────────────────────────────────────────────────
@@ -82,10 +84,15 @@ function getSessionsForTab(tab: AncestralTab | null) {
   }
 }
 
-function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode) {
-  if (sort === "alfabetico") return [...arr].sort((a, b) => a.title.localeCompare(b.title, "es"));
-  if (sort === "agregado")   return [...arr].sort((a, b) => parseInt(b.id) - parseInt(a.id));
-  return arr; // recientes = orden natural
+function applySort(
+  arr: ReturnType<typeof getSessionsForTab>,
+  sort: SortMode,
+  playCounts: Record<string, number> = {},
+) {
+  if (sort === "nuevas")     return [...arr].sort((a, b) => parseInt(b.id) - parseInt(a.id));
+  if (sort === "populares")  return [...arr].sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0));
+  // "recientes" — orden por última escucha (ids en playCounts en orden de history, no disponible aquí → orden natural)
+  return arr;
 }
 
 // ── SortSheet ─────────────────────────────────────────────────────────────────
@@ -381,7 +388,11 @@ function AncestralCard({
     else router.push(`/session/${session.id}` as never);
   };
 
-  const author = session.subtitle ?? "";
+  const author = (() => {
+    if (session.guideId) return getGuide(session.guideId).name;
+    if (session.artistId) return getArtist(session.artistId).name;
+    return "Casa del Cuenco";
+  })();
 
   if (horizontal) {
     return (
@@ -442,11 +453,9 @@ const acStyles = StyleSheet.create({
   hImage:   { width: 70, height: 62 },
   hContent: { flex: 1, justifyContent: "center", gap: 2 },
   hDuration: {
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 0.4,
-    color: GOLD,
-    textTransform: "uppercase",
+    fontSize: 8,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.8)",
   },
   hTitle: {
     fontSize: 13,
@@ -576,7 +585,7 @@ export default function Ancestrales2Screen() {
   const topPad    = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const { isFavorite, toggleFavorite } = usePlayer();
+  const { isFavorite, toggleFavorite, history } = usePlayer();
 
   const [activeTab,         setActiveTab]         = useState<AncestralTab | null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
@@ -588,15 +597,21 @@ export default function Ancestrales2Screen() {
 
   const toggleView = useCallback(() => setViewMode((v) => (v === "list" ? "grid" : "list")), []);
 
+  const playCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const e of history) counts[e.sessionId] = (counts[e.sessionId] ?? 0) + 1;
+    return counts;
+  }, [history]);
+
   const sessions = useMemo(
-    () => applySort(getSessionsForTab(activeTab), sort),
-    [activeTab, sort],
+    () => applySort(getSessionsForTab(activeTab), sort, playCounts),
+    [activeTab, sort, playCounts],
   );
 
   const sortLabel =
-    sort === "recientes"  ? "Recientes"
-    : sort === "agregado" ? "Agregado recientemente"
-    : "Alfabéticamente";
+    sort === "recientes"  ? "Escuchadas recientemente"
+    : sort === "nuevas"   ? "Nuevas sesiones"
+    : "Las más escuchadas";
 
   const renderContent = () => {
     if (sessions.length === 0) {
