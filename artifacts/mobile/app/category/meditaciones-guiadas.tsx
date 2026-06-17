@@ -1,354 +1,493 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { ZenStonesIcon } from "@/components/ZenStonesIcon";
 import { router } from "expo-router";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import {
-  Animated,
-  Platform,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  useWindowDimensions,
-  View,
+  Animated, Dimensions, Easing, Keyboard, Modal, Platform,
+  Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
+import { GoldGradientFill } from "@/components/GoldGradient";
+import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
+import { AUDIO_MAP } from "@/config/audio-map";
+import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
+import { SESSIONS, type Session } from "@/data/sessions";
 
-import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
-import { SessionActionsSheet } from "@/components/SessionActionsSheet";
-import { SessionRow } from "@/components/SessionRow";
-import { SessionSortHeader } from "@/components/SessionSortHeader";
-import { useSessionSort } from "@/hooks/useSessionSort";
-import { useCatalog } from "@/context/CatalogContext";
-import { SESSIONS } from "@/data/sessions";
-import type { Session } from "@/data/sessions";
-import { useColors } from "@/hooks/useColors";
+const { width } = Dimensions.get("window");
+const H_PAD = 15;
+const GOLD  = "#D4AF37";
+const TEXT  = "#F4DAD5";
+const MUTED = "rgba(242,231,228,0.45)";
+const HERO_HEIGHT = 160;
+const GRID_GAP    = 10;
+const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+const HERO_IMG = require("@/assets/images/cat-meditacion.png");
 
-const H_PAD = 20;
-const ICON_COLOR = "#A87ED4";
-const RATINGS_KEY = "@resonance_ratings";
+type CatTab   = "noduales" | "visual" | "mantras" | "escaneo" | "manifest" | "tres";
+type SortMode = "recientes" | "nuevas" | "populares";
+type ViewMode = "list" | "grid";
 
-type TabDef = {
-  label: string;
-  value: string;
-  icon: string;
-  tags: string[];
-};
-
-const TABS: TabDef[] = [
-  { label: "Observo",    value: "Observo",    icon: "eye-outline",          tags: ["No Duales"] },
-  { label: "Entiendo",   value: "Entiendo",   icon: "lightbulb-on-outline", tags: ["3 Minutos de Sabiduría"] },
-  { label: "Visualizo",  value: "Visualizo",  icon: "creation",             tags: ["Visualizaciones"] },
-  { label: "Escaneo",    value: "Escaneo",    icon: "human",                tags: ["Escaneo Corporal"] },
+const TABS: { id: CatTab; label: string }[] = [
+  { id: "noduales", label: "No Duales" },
+  { id: "visual",   label: "Visualizaciones" },
+  { id: "mantras",  label: "Mantras" },
+  { id: "escaneo",  label: "Escaneo" },
+  { id: "manifest", label: "Manifestación" },
+  { id: "tres",     label: "3 Min" },
 ];
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
+  { id: "recientes", label: "Escuchadas recientemente", icon: "clock" },
+  { id: "nuevas",    label: "Nuevas sesiones",          icon: "plus-circle" },
+  { id: "populares", label: "Las más escuchadas",       icon: "headphones" },
+];
 
-export default function MeditacionesGuiadasScreen() {
-  const colors = useColors();
+function getSessionsForTab(tab: CatTab | null) {
+  const all = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
+  if (!tab) return all;
+  switch (tab) {
+    case "noduales": return all.filter((s) => s.meditationTag === "No Duales");
+    case "visual":   return all.filter((s) => s.meditationTag === "Visualizaciones");
+    case "mantras":  return all.filter((s) => s.meditationTag === "Mantras");
+    case "escaneo":  return all.filter((s) => s.meditationTag === "Escaneo Corporal");
+    case "manifest": return all.filter((s) => s.meditationTag === "Manifestación");
+    case "tres":     return all.filter((s) => s.meditationTag === "3 Minutos de Sabiduría");
+  }
+}
+
+function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode, playCounts: Record<string,number> = {}) {
+  if (sort === "nuevas")    return [...arr].sort((a,b) => parseInt(b.id) - parseInt(a.id));
+  if (sort === "populares") return [...arr].sort((a,b) => (playCounts[b.id]??0) - (playCounts[a.id]??0));
+  return arr;
+}
+
+function SortSheet({ visible, current, onSelect, onClose }: { visible: boolean; current: SortMode; onSelect:(s:SortMode)=>void; onClose:()=>void }) {
   const insets = useSafeAreaInsets();
-  const { version } = useCatalog();
-  const { sortKey, setSortKey, sortLabel, sortSessions } = useSessionSort();
-  const { width } = useWindowDimensions();
-
-  const tabW = (width - H_PAD * 2 - 8 * 3) / 3.3;
-
-  const [activeTab, setActiveTab] = useState<string>(TABS[0].value);
-  const [query, setQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [ratings, setRatings] = useState<Record<string, number>>({});
-  const [actionsSession, setActionsSession] = useState<Session | null>(null);
-
-  const searchAnim = useRef(new Animated.Value(0)).current;
-  const searchInputRef = useRef<TextInput>(null);
-  const inputMaxWidth = width - H_PAD * 2 - 40 - 40 - 16;
-
-  useEffect(() => {
-    Animated.timing(searchAnim, {
-      toValue: searchOpen ? 1 : 0,
-      duration: 220,
-      useNativeDriver: false,
-    }).start(() => {
-      if (searchOpen) searchInputRef.current?.focus();
-    });
-    if (!searchOpen) setQuery("");
-  }, [searchOpen]);
-
-  useEffect(() => {
-    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
-      if (val) setRatings(JSON.parse(val));
-    });
-  }, []);
-
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-
-  const allSessions = useMemo(
-    () => SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas"),
-    [version],
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
+      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      <View style={[styles.sortSheet,{paddingBottom:Math.max(insets.bottom,16)}]}>
+        <View style={styles.sortSheetHandle} />
+        <Text style={styles.sortSheetTitle}>Ordenar por</Text>
+        {SORT_OPTIONS.map((opt)=>{
+          const active = opt.id===current;
+          return (
+            <Pressable key={opt.id} style={({pressed})=>[styles.sortSheetRow,{opacity:pressed?0.7:1}]} onPress={()=>{ onSelect(opt.id); onClose(); }}>
+              <Feather name={opt.icon as never} size={17} color={active?GOLD:MUTED} />
+              <Text style={[styles.sortSheetLabel,active&&styles.sortSheetLabelActive]}>{opt.label}</Text>
+              {active&&<Feather name="check" size={17} color={GOLD} style={{marginLeft:"auto"}} />}
+            </Pressable>
+          );
+        })}
+      </View>
+    </Modal>
   );
+}
 
-  const tabSessions = useMemo(() => {
-    const tab = TABS.find((t) => t.value === activeTab);
-    const tags = tab?.tags ?? [];
-    return allSessions.filter((s) => {
-      const mt = (s as Session & { meditationTag?: string }).meditationTag;
-      return mt != null && tags.includes(mt);
-    });
-  }, [allSessions, activeTab]);
+function AnimatedTabContent({ animKey, children }: { animKey: string; children: React.ReactNode }) {
+  const opacity = useRef(new Animated.Value(0)).current;
+  useEffect(()=>{ opacity.setValue(0); Animated.timing(opacity,{toValue:1,duration:220,useNativeDriver:true}).start(); },[animKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <Animated.View style={{opacity}}>{children}</Animated.View>;
+}
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return q ? tabSessions.filter((s) => s.title.toLowerCase().includes(q)) : tabSessions;
-  }, [tabSessions, query]);
-
-  const sorted = useMemo(
-    () => sortSessions(filtered, ratings),
-    [filtered, sortSessions, ratings],
+function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress:()=>void }) {
+  return (
+    <Pressable onPress={onPress} style={({pressed})=>[styles.chip,{opacity:pressed?0.7:1}]}>
+      {sel&&<LinearGradient colors={["#D6AD5F","#B47344"]} start={{x:0,y:0}} end={{x:1,y:0}} style={StyleSheet.absoluteFill} />}
+      <Text style={[styles.chipText,sel&&styles.chipTextSel]}>{label}</Text>
+    </Pressable>
   );
+}
+
+const CHIP_DUR = 600;
+const CLOSE_SLOT = 38;
+
+function ChipRow({ activeTab, onSelect, onClear }: { activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void }) {
+  const progress  = useRef(new Animated.Value(activeTab?1:0)).current;
+  const offsetsRef= useRef<Record<string,number>>({});
+  const scrollX   = useRef(0);
+  const [displayTab,setDisplayTab] = useState<CatTab|null>(activeTab);
+  const [colorTab,  setColorTab]   = useState<CatTab|null>(activeTab);
+  const [targetTx,  setTargetTx]   = useState(0);
+  const filtered = displayTab!==null;
+
+  const animate = (to:number,done?:()=>void) =>
+    Animated.timing(progress,{toValue:to,duration:CHIP_DUR,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})
+      .start(({finished})=>{ if (finished) done?.(); });
+
+  const handleSelect = (id:CatTab) => {
+    setTargetTx(CLOSE_SLOT-((offsetsRef.current[id]??0)-scrollX.current));
+    setDisplayTab(id); setColorTab(id); onSelect(id); animate(1);
+  };
+  const handleClear = () => { setColorTab(null); onClear(); animate(0,()=>setDisplayTab(null)); };
+  useEffect(()=>()=>progress.stopAnimation(),[progress]);
 
   return (
-        <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
-      <StatusBar barStyle="light-content" />
-
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 40 + bottomPad }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Header */}
-        <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-          {/* Fila superior: atrás ← [input animado →] lupa */}
-          <View style={styles.topRow}>
-            <Pressable onPress={() => router.back()} style={styles.backBtn}>
-              <Feather name="arrow-left" size={22} color="#FFFFFF" />
-            </Pressable>
-            <Animated.View
-              style={{
-                width: searchAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, inputMaxWidth],
-                }),
-                opacity: searchAnim.interpolate({
-                  inputRange: [0, 0.4, 1],
-                  outputRange: [0, 0, 1],
-                }),
-                overflow: "hidden",
-              }}
-            >
-              <View style={styles.searchBar}>
-                <TextInput
-                  ref={searchInputRef}
-                  style={[styles.searchInput, { color: colors.foreground }]}
-                  placeholder="Buscar en Meditaciones…"
-                  placeholderTextColor={colors.mutedForeground}
-                  value={query}
-                  onChangeText={setQuery}
-                  returnKeyType="search"
-                />
-              </View>
+    <View style={styles.animChipWrap}>
+      <Animated.View pointerEvents={filtered?"auto":"none"} style={[styles.animCloseBtn,{opacity:progress}]}>
+        <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}><Feather name="x" size={15} color={MUTED} /></Pressable>
+      </Animated.View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEnabled={!filtered}
+        scrollEventThrottle={16} onScroll={(e)=>{ scrollX.current=e.nativeEvent.contentOffset.x; }}
+        style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
+        {TABS.map((t)=>{
+          const isSel = displayTab===t.id;
+          const chipStyle = isSel
+            ? {opacity:1,zIndex:2,transform:[{translateX:progress.interpolate({inputRange:[0,1],outputRange:[0,targetTx]})}]}
+            : {opacity:progress.interpolate({inputRange:[0,1],outputRange:[1,0]})};
+          return (
+            <Animated.View key={t.id} pointerEvents={filtered&&!isSel?"none":"auto"}
+              onLayout={(e)=>{ offsetsRef.current[t.id]=e.nativeEvent.layout.x; }} style={chipStyle}>
+              <Chip label={t.label} sel={colorTab===t.id} onPress={()=>(isSel?handleClear():handleSelect(t.id))} />
             </Animated.View>
-            <Pressable
-              onPress={() => setSearchOpen((v) => !v)}
-              style={styles.searchBtn}
-            >
-              <Feather name="search" size={19} color="#FFFFFF" />
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+}
+
+function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:()=>void }) {
+  const [q,setQ] = useState("");
+  const inputRef = useRef<TextInput>(null);
+  const [kbH,setKbH]   = useState(0);
+  const [kbOk,setKbOk] = useState(false);
+  const fade = useRef(new Animated.Value(0)).current;
+  const results = useMemo(()=>q.length>=2?SESSIONS.filter((s)=>s.categoryId==="meditaciones-guiadas"&&s.title.toLowerCase().includes(q.toLowerCase())):[],[q]);
+  useEffect(()=>{
+    if (!visible) { setKbOk(false); setKbH(0); fade.setValue(0); return; }
+    const show = Keyboard.addListener("keyboardDidShow",(e)=>{ setKbH(e.endCoordinates.height); setKbOk(true); Animated.timing(fade,{toValue:1,duration:180,useNativeDriver:true}).start(); });
+    const hide = Keyboard.addListener("keyboardDidHide",()=>{ setKbOk(false); fade.setValue(0); });
+    return ()=>{ show.remove(); hide.remove(); };
+  },[visible,fade]);
+  return (
+    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={()=>inputRef.current?.focus()}>
+      <View style={[styles.searchModalRoot,{paddingBottom:kbH}]}>
+        <View style={styles.searchOverlay}>
+          <View style={styles.searchBar}>
+            <Feather name="search" size={16} color={MUTED} />
+            <TextInput ref={inputRef} style={styles.searchInput} placeholder="Buscar en Meditaciones..." placeholderTextColor={MUTED} value={q} onChangeText={setQ} returnKeyType="search" />
+          </View>
+          <Pressable onPress={onClose} style={styles.cancelBtn}><Text style={styles.cancelText}>Cancelar</Text></Pressable>
+        </View>
+        {q.length===0&&kbOk&&(
+          <Animated.View style={[styles.searchEmpty,{opacity:fade}]}>
+            <Feather name="moon" size={48} color={GOLD} style={{marginBottom:16}} />
+            <Text style={styles.searchEmptyTitle}>Busca en Meditaciones</Text>
+            <Text style={styles.searchEmptySub}>Visualizaciones, mantras, escaneo y más.</Text>
+          </Animated.View>
+        )}
+        {results.length>0&&(
+          <ScrollView style={{flex:1,backgroundColor:"#1B060F"}} contentContainerStyle={{padding:H_PAD,gap:9}}>
+            {results.map((s)=><CategoryCard key={s.id} session={s} horizontal />)}
+          </ScrollView>
+        )}
+      </View>
+    </Modal>
+  );
+}
+
+const PREVIEW_SECS = 19;
+
+function CategoryCard({
+  session, width: cardWidth=200, horizontal=false, onLongPress,
+  isPreviewPlaying=false, previewProgress, onPreviewTap,
+}: {
+  session: Session; width?: number; horizontal?: boolean; onLongPress?: ()=>void;
+  isPreviewPlaying?: boolean; previewProgress?: Animated.Value; onPreviewTap?: ()=>void;
+}) {
+  const { isPremium } = usePremium();
+  const locked   = !!session.isPremium && !isPremium;
+  const hasAudio = !!AUDIO_MAP[session.id];
+  const handlePress = () => { if (locked) router.push("/membresia" as never); else router.push(`/session/${session.id}` as never); };
+  const author = session.guideId ? getGuide(session.guideId).name : getArtist(session.artistId).name;
+
+  if (horizontal) {
+    const barW = previewProgress?.interpolate({inputRange:[0,1],outputRange:[0,70],extrapolate:"clamp"});
+    return (
+      <Pressable onPress={handlePress} onLongPress={onLongPress} style={({pressed})=>[ac.hRow,{opacity:pressed?0.8:1}]}>
+        <View style={ac.hImgWrap}>
+          <Image source={session.image} style={ac.hImage} contentFit="cover" />
+          {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
+          {hasAudio&&<Pressable onPress={onPreviewTap} hitSlop={6} style={ac.hPlayBtn}><Feather name={isPreviewPlaying?"pause":"play"} size={15} color="#fff" /></Pressable>}
+          {isPreviewPlaying&&barW&&<Animated.View style={[ac.progressBar,{width:barW}]}><GoldGradientFill /></Animated.View>}
+        </View>
+        <View style={ac.hContent}>
+          <Text style={ac.hDuration}>{session.durationLabel}</Text>
+          <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
+          {!!author&&<Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>}
+        </View>
+      </Pressable>
+    );
+  }
+  const barW = previewProgress?.interpolate({inputRange:[0,1],outputRange:[0,cardWidth],extrapolate:"clamp"});
+  return (
+    <Pressable onPress={handlePress} onLongPress={onLongPress} style={({pressed})=>[ac.card,{width:cardWidth,opacity:pressed?0.85:1}]}>
+      <View style={ac.imgContainer}>
+        <Image source={session.image} style={ac.cardImage} contentFit="cover" />
+        {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
+        <View style={ac.durationBadge}><Text style={ac.durationBadgeText}>{session.durationLabel}</Text></View>
+        {hasAudio&&(
+          <Pressable onPress={onPreviewTap} hitSlop={8} style={ac.gridPlayOverlay}>
+            <View style={ac.gridPlayBtn}>
+              {isPreviewPlaying&&<GoldGradientFill />}
+              <Feather name={isPreviewPlaying?"pause":"play"} size={14} color={isPreviewPlaying?"#1B060F":"#fff"} />
+            </View>
+          </Pressable>
+        )}
+        {isPreviewPlaying&&barW&&<Animated.View style={[ac.progressBar,{width:barW}]}><GoldGradientFill /></Animated.View>}
+      </View>
+      <Text style={ac.cardTitle} numberOfLines={2}>{session.title}</Text>
+      {!!author&&<Text style={ac.cardAuthor} numberOfLines={1}>{author}</Text>}
+    </Pressable>
+  );
+}
+
+const ac = StyleSheet.create({
+  hRow:{flexDirection:"row",alignItems:"center",gap:12,paddingVertical:6},
+  hImgWrap:{width:70,height:62,borderRadius:8,overflow:"hidden"},
+  hImage:{width:70,height:62},
+  hContent:{flex:1,justifyContent:"center",gap:2},
+  hDuration:{fontSize:9,fontWeight:"500",color:"rgba(255,255,255,0.8)"},
+  hTitle:{fontSize:13,fontWeight:"600",color:TEXT,lineHeight:17},
+  hAuthor:{fontSize:11,color:MUTED,marginTop:1},
+  card:{gap:6},
+  imgContainer:{width:"100%",aspectRatio:1,borderRadius:10,overflow:"hidden"},
+  cardImage:{width:"100%",height:"100%"},
+  cardTitle:{fontSize:13,fontWeight:"600",color:TEXT,lineHeight:17},
+  cardAuthor:{fontSize:11,color:MUTED},
+  durationBadge:{position:"absolute",bottom:8,left:8,backgroundColor:"rgba(27,6,15,0.72)",borderRadius:8,paddingHorizontal:8,paddingVertical:3},
+  durationBadgeText:{fontSize:11,fontWeight:"600",color:"#fff"},
+  lockDot:{position:"absolute",top:6,right:6,width:20,height:20,borderRadius:10,backgroundColor:"rgba(0,0,0,0.55)",alignItems:"center",justifyContent:"center"},
+  progressBar:{position:"absolute",bottom:0,left:0,height:3,overflow:"hidden"},
+  hPlayBtn:{position:"absolute",top:0,left:0,right:0,bottom:0,alignItems:"center",justifyContent:"center",backgroundColor:"rgba(0,0,0,0.38)"},
+  gridPlayOverlay:{position:"absolute",bottom:10,right:8},
+  gridPlayBtn:{width:30,height:30,borderRadius:15,backgroundColor:"rgba(27,6,15,0.65)",alignItems:"center",justifyContent:"center",overflow:"hidden"},
+});
+
+function SessionQuickSheet({ session, onClose, onPlaylist, isFavorite, onToggleFavorite }: { session: Session|null; onClose:()=>void; onPlaylist:()=>void; isFavorite:(id:string)=>boolean; onToggleFavorite:(id:string)=>void }) {
+  const insets = useSafeAreaInsets();
+  const slide  = useRef(new Animated.Value(300)).current;
+  useEffect(()=>{ if (session) Animated.spring(slide,{toValue:0,useNativeDriver:true,bounciness:0}).start(); else slide.setValue(300); },[session,slide]);
+  if (!session) return null;
+  const fav = isFavorite(session.id);
+  return (
+    <Modal visible={!!session} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+      <Pressable style={styles.qsBackdrop} onPress={onClose} />
+      <Animated.View style={[styles.qsSheet,{paddingBottom:Math.max(insets.bottom,24),transform:[{translateY:slide}]}]}>
+        <View style={styles.qsHandle} />
+        <View style={styles.qsHeader}>
+          <Image source={session.image as never} style={styles.qsThumb} contentFit="cover" />
+          <View style={{flex:1}}>
+            <Text style={styles.qsTitle} numberOfLines={2}>{session.title}</Text>
+            <Text style={styles.qsSub}>{session.categoryLabel} · {session.durationLabel}</Text>
+          </View>
+          <Pressable onPress={onClose} hitSlop={10} style={styles.qsClose}><Feather name="x" size={20} color={MUTED} /></Pressable>
+        </View>
+        <View style={styles.qsDivider} />
+        <Pressable onPress={onPlaylist} style={({pressed})=>[styles.qsRow,styles.qsRowBorder,{opacity:pressed?0.7:1}]}>
+          <Feather name="list" size={20} color={TEXT} style={styles.qsIcon} />
+          <Text style={styles.qsLabel}>Agregar a una Playlist</Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+        <Pressable onPress={()=>{ onToggleFavorite(session.id); onClose(); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+          <Feather name="heart" size={20} color={fav?"#E05C5C":TEXT} style={styles.qsIcon} />
+          <Text style={[styles.qsLabel,fav&&{color:"#E05C5C"}]}>{fav?"Quitar de favoritos":"Agregar a favoritos"}</Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+      </Animated.View>
+    </Modal>
+  );
+}
+
+export default function MeditacionesGuiadasScreen() {
+  const insets    = useSafeAreaInsets();
+  const topPad    = Platform.OS==="web" ? 0 : insets.top;
+  const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
+  const { isFavorite, toggleFavorite, history } = usePlayer();
+
+  const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
+  const [sort,              setSort]              = useState<SortMode>("recientes");
+  const [sortVisible,       setSortVisible]       = useState(false);
+  const [viewMode,          setViewMode]          = useState<ViewMode>("list");
+  const [searchVisible,     setSearchVisible]     = useState(false);
+  const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
+  const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
+
+  const [previewingId, setPreviewingId] = useState<string|null>(null);
+  const previewProgress = useRef(new Animated.Value(0)).current;
+  const previewPlayer   = useRef<AudioPlayer|null>(null);
+  const previewAnim     = useRef<Animated.CompositeAnimation|null>(null);
+  const previewTimer    = useRef<ReturnType<typeof setTimeout>|null>(null);
+
+  const stopPreview = useCallback(()=>{
+    if (previewTimer.current) clearTimeout(previewTimer.current);
+    previewAnim.current?.stop(); previewProgress.setValue(0); previewPlayer.current?.pause(); setPreviewingId(null);
+  },[previewProgress]);
+
+  const togglePreview = useCallback((session:Session)=>{
+    if (previewingId===session.id) { stopPreview(); return; }
+    stopPreview();
+    const src = AUDIO_MAP[session.id]; if (!src) return;
+    setPreviewingId(session.id); previewProgress.setValue(0);
+    if (!previewPlayer.current) previewPlayer.current = createAudioPlayer(src);
+    else previewPlayer.current.replace(src);
+    previewPlayer.current.play();
+    previewAnim.current = Animated.timing(previewProgress,{toValue:1,duration:PREVIEW_SECS*1000,useNativeDriver:false,easing:Easing.linear});
+    previewAnim.current.start(({finished})=>{ if (finished) stopPreview(); });
+    previewTimer.current = setTimeout(stopPreview,PREVIEW_SECS*1000+300);
+  },[previewingId,stopPreview,previewProgress]);
+
+  useEffect(()=>()=>{ stopPreview(); },[]);
+  const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
+
+  const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
+  const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts]);
+  const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
+
+  const renderContent = () => {
+    if (sessions.length===0) return (
+      <View style={styles.emptyState}>
+        <Feather name="moon" size={48} color={GOLD} style={{marginBottom:16}} />
+        <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Meditaciones"}</Text>
+        <Text style={styles.emptySub}>Estamos preparando guías de voz para este espacio.</Text>
+      </View>
+    );
+    if (viewMode==="grid") {
+      const triples:(typeof sessions)[] = [];
+      for (let i=0;i<sessions.length;i+=3) triples.push(sessions.slice(i,i+3));
+      return (
+        <View style={styles.gridOuter}>
+          {triples.map((triple,ri)=>(
+            <View key={ri} style={styles.gridRow}>
+              {triple.map((s)=>(
+                <CategoryCard key={s.id} session={s} width={cellW} onLongPress={()=>setSelectedSession(s)}
+                  isPreviewPlaying={previewingId===s.id} previewProgress={previewProgress} onPreviewTap={()=>togglePreview(s)} />
+              ))}
+            </View>
+          ))}
+        </View>
+      );
+    }
+    return (
+      <View style={{paddingHorizontal:H_PAD}}>
+        {sessions.map((s)=>(
+          <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)}
+            isPreviewPlaying={previewingId===s.id} previewProgress={previewProgress} onPreviewTap={()=>togglePreview(s)} />
+        ))}
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.root}>
+      <View style={[styles.header,{height:HERO_HEIGHT+topPad}]}>
+        <Image source={HERO_IMG} style={[StyleSheet.absoluteFill,{width:"100%",height:"100%"}]} contentFit="cover" contentPosition="center" />
+        <View style={[StyleSheet.absoluteFill,{backgroundColor:"rgba(0,0,0,0.40)"}]} pointerEvents="none" />
+        <View style={{height:topPad}} />
+        <View style={styles.headerTopRow}>
+          <Pressable onPress={()=>router.back()} hitSlop={10} style={styles.backBtn}><Feather name="arrow-left" size={22} color="#fff" /></Pressable>
+          <Pressable hitSlop={10} style={styles.headerIconBtn} onPress={()=>router.push("/meditaciones-info" as never)}><Feather name="plus" size={24} color="#fff" /></Pressable>
+        </View>
+        <View style={styles.heroTitleArea}>
+          <View style={styles.heroTitleRow}>
+            <Text style={styles.heroTitle}>Meditaciones</Text>
+            <Pressable hitSlop={10} onPress={()=>setSearchVisible(true)} style={styles.heroSearchBtn}><Feather name="search" size={21} color="rgba(255,255,255,0.85)" /></Pressable>
+          </View>
+          <Text style={styles.heroSubtitle}>{`${sessions.length} sesione${sessions.length!==1?"s":""}`}</Text>
+        </View>
+      </View>
+
+      <View style={styles.chipsArea}>
+        <ChipRow activeTab={activeTab} onSelect={(id)=>setActiveTab(id)} onClear={()=>setActiveTab(null)} />
+      </View>
+
+      <ScrollView style={styles.scroll} contentContainerStyle={{paddingBottom:140+bottomPad}} showsVerticalScrollIndicator={false}>
+        <AnimatedTabContent animKey={activeTab??"all"}>
+          <View style={styles.controlRow}>
+            <Pressable onPress={()=>setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
+              <Feather name="chevrons-down" size={14} color={MUTED} />
+              <Text style={styles.sortText}>{sortLabel}</Text>
+            </Pressable>
+            <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
+              {viewMode==="list" ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} /> : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />}
             </Pressable>
           </View>
-          <View style={styles.catIconCircle}>
-            <ZenStonesIcon color={ICON_COLOR} size={71} />
-          </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Meditaciones</Text>
-          <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
-            Déjate llevar por la voz y el sonido
-          </Text>
-        </View>
-
-        {/* Tabs — deslizables, 3.3 visibles */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.tabScroll}
-          contentContainerStyle={[styles.tabRow, { paddingHorizontal: H_PAD }]}
-        >
-          {TABS.map(({ label, value, icon }) => {
-            const sel = activeTab === value;
-            return (
-              <Pressable
-                key={value}
-                onPress={() => setActiveTab(value)}
-                style={[styles.tabBlock, { width: tabW }, sel && styles.tabBlockActive]}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: sel }}
-              >
-                <MaterialCommunityIcons
-                  name={icon as never}
-                  size={24}
-                  color={sel ? ICON_COLOR : colors.mutedForeground}
-                />
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    {
-                      color: "#FFFFFF",
-                      fontWeight: sel ? "700" : "400",
-                    },
-                  ]}
-                >
-                  {label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {/* Línea divisora */}
-        <View style={[styles.divider, { marginHorizontal: H_PAD }]} />
-
-        {/* Contenido */}
-        {filtered.length === 0 ? (
-          <View style={styles.emptyWrap}>
-            <Feather
-              name={query.trim() ? "search" : "eye"}
-              size={32}
-              color={colors.mutedForeground}
-              style={{ marginBottom: 12 }}
-            />
-            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-              {query.trim() ? "Sin resultados" : "Próximamente"}
-            </Text>
-          </View>
-        ) : (
-          <View style={{ paddingTop: 24 }}>
-            <SessionSortHeader
-              title={sortLabel}
-              sortKey={sortKey}
-              onChange={setSortKey}
-              accentColor={ICON_COLOR}
-              style={{ paddingHorizontal: H_PAD, marginBottom: 12 }}
-            />
-            {sorted.map((s) => (
-              <SessionRow
-                key={s.id}
-                session={s}
-                rating={ratings[s.id]}
-                style={{ marginHorizontal: H_PAD }}
-                onActionsPress={() => setActionsSession(s)}
-              />
-            ))}
-          </View>
-        )}
-
-        <CategoryInfoPanel
-          accentColor={"#8B82BE"}
-          heading="¿Qué es la meditación guiada?"
-          items={[
-            {
-              icon: "mic",
-              title: "Una voz te acompaña",
-              body: "No estás solo/a. Cada sesión tiene una guía de audio que conduce tu atención paso a paso, sin necesidad de experiencia previa.",
-            },
-            {
-              icon: "activity",
-              title: "Entrena tu mente",
-              body: "La práctica regular reduce el estrés, mejora el foco y calma el sistema nervioso. Con cada sesión, el silencio interior se hace más accesible.",
-            },
-            {
-              icon: "clock",
-              title: "Para cualquier momento",
-              body: "Desde 5 minutos hasta una hora, hay sesiones para integrar en cualquier rutina del día.",
-            },
-          ]}
-          quote="La meditación no es vaciar la mente, es aprender a observarla sin juzgarla."
-          whyItems={[
-            { icon: "heart", text: "Porque todos merecemos un espacio de silencio interior." },
-            { icon: "sun", text: "Porque la paz no viene de afuera — se cultiva desde adentro." },
-          ]}
-        />
+          {renderContent()}
+        </AnimatedTabContent>
       </ScrollView>
 
-      <SessionActionsSheet
-        session={actionsSession}
-        visible={actionsSession !== null}
-        onClose={() => setActionsSession(null)}
-      />
-    </LinearGradient>
+      <SearchOverlay visible={searchVisible} onClose={()=>setSearchVisible(false)} />
+      <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={()=>setSortVisible(false)} />
+      <SessionQuickSheet session={selectedSession} onClose={()=>setSelectedSession(null)}
+        onPlaylist={()=>{ if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }}
+        isFavorite={isFavorite} onToggleFavorite={toggleFavorite} />
+      <AddToPlaylistSheet visible={playlistSessionId!==null} sessionId={playlistSessionId??""} onClose={()=>setPlaylistSessionId(null)} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
-  scroll: { flex: 1 },
-
-  header: { alignItems: "center", marginBottom: 25, paddingTop: 4 },
-  topRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    alignSelf: "stretch",
-    marginBottom: 16,
-  },
-  backBtn: {
-    width: 40, height: 40,
-    alignItems: "center", justifyContent: "center",
-  },
-  searchBtn: {
-    width: 40, height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(74,12,12,0.08)",
-    alignItems: "center", justifyContent: "center",
-  },
-  catIconCircle: {
-    width: 60, height: 60,
-    borderRadius: 30,
-    alignItems: "center", justifyContent: "center",
-    marginBottom: 12,
-  },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
-  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
-  searchBar: {
-    flexDirection: "row", alignItems: "center", gap: 10,
-    backgroundColor: "rgba(74,12,12,0.08)",
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: Platform.OS === "ios" ? 10 : 7,
-    height: 40,
-  },
-  searchInput: { flex: 1, fontSize: 14, padding: 0 },
-
-  tabScroll: { flexGrow: 0 },
-  tabRow: { flexDirection: "row", gap: 8, paddingVertical: 2 },
-  tabBlock: {
-    aspectRatio: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingHorizontal: 4,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "transparent",
-    backgroundColor: "rgba(74,12,12,0.08)",
-  },
-  tabBlockActive: { backgroundColor: "rgba(212,175,55,0.14)" },
-  tabLabel: { fontSize: 12, letterSpacing: 0.1, textAlign: "center" },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(74,12,12,0.08)",
-    marginTop: 16,
-  },
-
-  emptyWrap: { alignItems: "center", paddingVertical: 60 },
-  emptyText: { fontSize: 16, textAlign: "center" },
+  root:{flex:1,backgroundColor:"#27070E"},
+  header:{overflow:"hidden",backgroundColor:"#27070E"},
+  headerTopRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingHorizontal:H_PAD,paddingTop:8},
+  backBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
+  headerIconBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
+  heroTitleArea:{flex:1,justifyContent:"flex-end",paddingHorizontal:H_PAD,paddingBottom:12},
+  heroTitleRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between"},
+  heroTitle:{fontSize:32,fontWeight:"800",color:"#fff",letterSpacing:0.5,textShadowColor:"rgba(0,0,0,0.6)",textShadowOffset:{width:0,height:1},textShadowRadius:6,flex:1},
+  heroSearchBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
+  heroSubtitle:{fontSize:13,color:"rgba(255,255,255,0.72)",marginTop:3},
+  chipsArea:{paddingHorizontal:H_PAD,paddingTop:12,paddingBottom:8},
+  animChipWrap:{flexDirection:"row",alignItems:"center"},
+  animCloseBtn:{position:"absolute",left:0,top:0,bottom:0,justifyContent:"center",zIndex:3},
+  chipCloseBtn:{width:30,height:30,borderRadius:15,backgroundColor:"rgba(74,12,12,0.08)",alignItems:"center",justifyContent:"center"},
+  chipRow:{flexGrow:0},
+  chipRowContent:{flexDirection:"row",gap:8,paddingVertical:2},
+  chip:{paddingHorizontal:14,paddingVertical:8,borderRadius:999,backgroundColor:"rgba(255,255,255,0.08)",overflow:"hidden"},
+  chipText:{fontSize:13,fontWeight:"500",color:TEXT},
+  chipTextSel:{color:"#1B060F",fontWeight:"700"},
+  scroll:{flex:1},
+  controlRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingHorizontal:H_PAD,paddingVertical:10},
+  sortBtn:{flexDirection:"row",alignItems:"center",gap:4},
+  sortText:{fontSize:13,color:MUTED,fontWeight:"500"},
+  viewToggleBtn:{padding:2},
+  gridOuter:{paddingHorizontal:H_PAD,gap:GRID_GAP},
+  gridRow:{flexDirection:"row",gap:GRID_GAP},
+  emptyState:{alignItems:"center",paddingTop:80,paddingHorizontal:H_PAD},
+  emptyTitle:{fontSize:17,fontWeight:"700",color:TEXT,textAlign:"center",marginBottom:8},
+  emptySub:{fontSize:13,color:MUTED,textAlign:"center",lineHeight:20},
+  sortSheet:{position:"absolute",bottom:0,left:0,right:0,backgroundColor:"#1B060F",borderTopLeftRadius:22,borderTopRightRadius:22,paddingTop:10,paddingHorizontal:20},
+  sortSheetHandle:{alignSelf:"center",width:36,height:4,borderRadius:2,backgroundColor:"rgba(74,12,12,0.35)",marginBottom:16},
+  sortSheetTitle:{color:TEXT,fontSize:15,fontWeight:"700",marginBottom:12},
+  sortSheetRow:{flexDirection:"row",alignItems:"center",gap:14,paddingVertical:14,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"rgba(61,14,22,0.40)"},
+  sortSheetLabel:{color:MUTED,fontSize:15,flex:1},
+  sortSheetLabelActive:{color:TEXT,fontWeight:"600"},
+  qsBackdrop:{...StyleSheet.absoluteFillObject,backgroundColor:"rgba(0,0,0,0.55)"},
+  qsSheet:{position:"absolute",bottom:0,left:0,right:0,backgroundColor:"#1B060F",borderTopLeftRadius:22,borderTopRightRadius:22,paddingTop:10,paddingHorizontal:20,borderTopWidth:StyleSheet.hairlineWidth,borderColor:"#3D0E16"},
+  qsHandle:{alignSelf:"center",width:36,height:4,borderRadius:2,backgroundColor:"rgba(212,175,55,0.25)",marginBottom:14},
+  qsHeader:{flexDirection:"row",alignItems:"center",gap:12,marginBottom:14},
+  qsThumb:{width:54,height:54,borderRadius:10},
+  qsTitle:{fontSize:15,fontWeight:"700",color:TEXT,marginBottom:2},
+  qsSub:{fontSize:12,color:MUTED},
+  qsClose:{padding:4},
+  qsDivider:{height:StyleSheet.hairlineWidth,backgroundColor:"#3D0E16",marginBottom:6},
+  qsRow:{flexDirection:"row",alignItems:"center",paddingVertical:16,gap:14},
+  qsRowBorder:{borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"#3D0E16"},
+  qsIcon:{width:22},
+  qsLabel:{flex:1,fontSize:15,color:TEXT},
+  searchModalRoot:{flex:1,backgroundColor:"#4A0C0C"},
+  searchOverlay:{flexDirection:"row",alignItems:"center",backgroundColor:"#4A0C0C",paddingTop:Platform.OS==="ios"?56:36,paddingHorizontal:H_PAD,paddingBottom:14,gap:10},
+  searchBar:{flex:1,flexDirection:"row",alignItems:"center",gap:8,backgroundColor:"#FFFFFF",borderRadius:10,paddingHorizontal:12,paddingVertical:12},
+  searchInput:{flex:1,fontSize:14,color:"#111"},
+  cancelBtn:{paddingVertical:6},
+  cancelText:{color:GOLD,fontSize:14,fontWeight:"600"},
+  searchEmpty:{flex:1,backgroundColor:"#4A0C0C",alignItems:"center",justifyContent:"center",paddingHorizontal:32},
+  searchEmptyTitle:{fontSize:18,fontWeight:"700",color:TEXT,textAlign:"center",marginBottom:10},
+  searchEmptySub:{fontSize:14,color:MUTED,textAlign:"center",lineHeight:20},
 });
