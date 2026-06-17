@@ -19,7 +19,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS } from "@/data/sessions";
 
@@ -422,7 +421,6 @@ export default function Ancestrales2Screen() {
 
   return (
     <View style={styles.root}>
-      <SacredBackground variant="solid" />
 
       {/* ── HEADER CON HERO ─────────────────────────────────────────────── */}
       <View style={[styles.header, { height: HERO_HEIGHT + topPad }]}>
@@ -432,14 +430,18 @@ export default function Ancestrales2Screen() {
           contentFit="cover"
           contentPosition="top"
         />
+        {/* Overlay oscuro sutil para mejorar contraste */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} pointerEvents="none" />
+        {/* Degradado inferior hacia el fondo del contenido */}
         <LinearGradient
-          colors={["transparent", "rgba(27,6,15,0.55)", "#1B060F"]}
-          locations={[0.35, 0.72, 1]}
+          colors={["transparent", "rgba(39,7,14,0.7)", "#27070E"]}
+          locations={[0.3, 0.72, 1]}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
+        {/* Degradado superior para barra */}
         <LinearGradient
-          colors={["rgba(0,0,0,0.45)", "transparent"]}
+          colors={["rgba(0,0,0,0.40)", "transparent"]}
           locations={[0, 1]}
           style={[StyleSheet.absoluteFill, { height: 90 + topPad }]}
           pointerEvents="none"
@@ -448,32 +450,39 @@ export default function Ancestrales2Screen() {
         {/* Safe area spacer */}
         <View style={{ height: topPad }} />
 
-        {/* Barra superior */}
+        {/* Barra superior: ← (izq) y + (der) */}
         <View style={styles.headerTopRow}>
           <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
             <Feather name="arrow-left" size={22} color="#fff" />
           </Pressable>
-          <View style={styles.headerIcons}>
-            <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="search" size={21} color="#fff" />
-            </Pressable>
-            <Pressable hitSlop={10} style={styles.headerIconBtn}>
-              <Feather name="plus" size={24} color="#fff" />
-            </Pressable>
-          </View>
+          <Pressable hitSlop={10} style={styles.headerIconBtn}>
+            <Feather name="plus" size={24} color="#fff" />
+          </Pressable>
         </View>
 
-        {/* Título al pie del hero */}
+        {/* Título + búsqueda al pie del hero */}
         <View style={styles.heroTitleArea}>
-          <Text style={styles.heroTitle}>Ancestrales</Text>
+          <View style={styles.heroTitleRow}>
+            <Text style={styles.heroTitle}>Ancestrales</Text>
+            <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.heroSearchBtn}>
+              <Feather name="search" size={21} color="rgba(255,255,255,0.85)" />
+            </Pressable>
+          </View>
           <Text style={styles.heroSubtitle}>
             {sessions.length > 0
               ? `${sessions.length} sesione${sessions.length !== 1 ? "s" : ""}`
               : "Cuencos · Gongs · Campanas"}
           </Text>
         </View>
+      </View>
 
-        {/* Chips sobre franja oscura */}
+      {/* ── CONTENIDO ───────────────────────────────────────────────────── */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 0 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Chips al inicio del contenido, sin fondo propio */}
         <View style={styles.chipsArea}>
           <AnimatedChipRow
             activeTab={activeTab}
@@ -481,14 +490,7 @@ export default function Ancestrales2Screen() {
             onClear={() => setActiveTab(null)}
           />
         </View>
-      </View>
 
-      {/* ── CONTENIDO ───────────────────────────────────────────────────── */}
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 4 }}
-        showsVerticalScrollIndicator={false}
-      >
         <AnimatedTabContent animKey={activeTab ?? "all"}>
           {/* Barra de control: ordenar + toggle vista */}
           <View style={styles.controlRow}>
@@ -522,10 +524,10 @@ export default function Ancestrales2Screen() {
 
 // ── Estilos ────────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root: { flex: 1, backgroundColor: "#27070E" },
 
   // ── Hero ─────────────────────────────────────────────────────────────────────
-  header: { overflow: "hidden", backgroundColor: "#1B060F" },
+  header: { overflow: "hidden", backgroundColor: "#27070E" },
   headerTopRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -541,7 +543,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     paddingHorizontal: H_PAD,
-    paddingBottom: 10,
+    paddingBottom: 12,
+  },
+  heroTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   heroTitle: {
     fontSize: 32,
@@ -551,6 +558,13 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.6)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,
+    flex: 1,
+  },
+  heroSearchBtn: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
   },
   heroSubtitle: {
     fontSize: 13,
@@ -559,9 +573,8 @@ const styles = StyleSheet.create({
   },
 
   chipsArea: {
-    backgroundColor: "rgba(27,6,15,0.92)",
     paddingHorizontal: H_PAD,
-    paddingTop: 10,
+    paddingTop: 12,
     paddingBottom: 8,
   },
 
