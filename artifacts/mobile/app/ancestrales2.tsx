@@ -469,9 +469,7 @@ export default function Ancestrales2Screen() {
             </Pressable>
           </View>
           <Text style={styles.heroSubtitle}>
-            {sessions.length > 0
-              ? `${sessions.length} sesione${sessions.length !== 1 ? "s" : ""}`
-              : "Cuencos · Gongs · Campanas"}
+            {`${sessions.length} sesione${sessions.length !== 1 ? "s" : ""}`}
           </Text>
         </View>
       </View>
