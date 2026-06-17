@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
@@ -123,7 +124,9 @@ export default function AncestralInfoScreen() {
     <View style={styles.root}>
       {/* ── Barra de progreso (derecha) ──────────────────────────────────── */}
       <View style={[styles.progressTrack, { top: insets.top + 20 }]}>
-        <Animated.View style={[styles.progressFill, { height: progressH }]} />
+        <Animated.View style={[styles.progressFill, { height: progressH }]}>
+          <GoldGradientFill />
+        </Animated.View>
       </View>
 
       {/* ── Botón X (cierre) ─────────────────────────────────────────────── */}
@@ -188,7 +191,7 @@ export default function AncestralInfoScreen() {
         ══════════════════════════════════════════════════════════════════ */}
         <View style={[styles.section, { backgroundColor: BG }]}>
           <Animated.View style={{ opacity: intro.opacity, transform: [{ translateY: intro.translateY }] }}>
-            <View style={styles.goldAccent} />
+            <GoldGradient style={styles.goldAccent} />
             <Text style={styles.sectionTag}>ORIGEN</Text>
             <Text style={styles.sectionTitle}>¿Qué son los{"\n"}Sonidos Ancestrales?</Text>
             <Text style={styles.sectionBody}>
@@ -358,8 +361,7 @@ const styles = StyleSheet.create({
     borderRadius: 1,
   },
   progressFill: {
-    width: 2, borderRadius: 1,
-    backgroundColor: GOLD,
+    width: 2, borderRadius: 1, overflow: "hidden",
   },
   closeBtn: {
     position: "absolute", right: 18, zIndex: 20,
@@ -399,7 +401,7 @@ const styles = StyleSheet.create({
   section: { paddingHorizontal: 24, paddingTop: 52, paddingBottom: 20 },
   goldAccent: {
     width: 36, height: 3, borderRadius: 2,
-    backgroundColor: GOLD, marginBottom: 14,
+    marginBottom: 14,
   },
   sectionTag: {
     fontSize: 10, fontWeight: "700", letterSpacing: 2,

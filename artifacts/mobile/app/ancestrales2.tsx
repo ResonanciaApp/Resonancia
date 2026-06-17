@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { GoldGradientFill } from "@/components/GoldGradient";
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import {
   Animated,
@@ -431,7 +432,9 @@ function AncestralCard({
           )}
           {/* Barra de progreso inferior */}
           {isPreviewPlaying && barW && (
-            <Animated.View style={[acStyles.progressBar, { width: barW }]} />
+            <Animated.View style={[acStyles.progressBar, { width: barW }]}>
+              <GoldGradientFill />
+            </Animated.View>
           )}
         </View>
         <View style={acStyles.hContent}>
@@ -466,7 +469,8 @@ function AncestralCard({
         {/* Botón preview centrado */}
         {hasAudio && (
           <Pressable onPress={onPreviewTap} hitSlop={8} style={acStyles.gridPlayOverlay}>
-            <View style={[acStyles.gridPlayBtn, isPreviewPlaying && acStyles.gridPlayBtnActive]}>
+            <View style={[acStyles.gridPlayBtn, isPreviewPlaying && { overflow: "hidden" }]}>
+              {isPreviewPlaying && <GoldGradientFill />}
               <Feather
                 name={isPreviewPlaying ? "pause" : "play"}
                 size={14}
@@ -477,7 +481,9 @@ function AncestralCard({
         )}
         {/* Barra de progreso inferior */}
         {isPreviewPlaying && barW && (
-          <Animated.View style={[acStyles.progressBar, { width: barW }]} />
+          <Animated.View style={[acStyles.progressBar, { width: barW }]}>
+            <GoldGradientFill />
+          </Animated.View>
         )}
       </View>
       <Text style={acStyles.cardTitle} numberOfLines={2}>{session.title}</Text>
@@ -534,7 +540,7 @@ const acStyles = StyleSheet.create({
   // ── Preview ─────────────────────────────────────────────────────────────────
   progressBar: {
     position: "absolute", bottom: 0, left: 0,
-    height: 3, backgroundColor: GOLD,
+    height: 3, overflow: "hidden",
   },
   // Horizontal card
   hPlayBtn: {
@@ -553,9 +559,7 @@ const acStyles = StyleSheet.create({
     backgroundColor: "rgba(27,6,15,0.65)",
     alignItems: "center", justifyContent: "center",
   },
-  gridPlayBtnActive: {
-    backgroundColor: GOLD,
-  },
+  gridPlayBtnActive: {},
 });
 
 // ── Sheet de acciones rápidas de sesión ───────────────────────────────────────

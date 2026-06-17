@@ -1,17 +1,20 @@
 ---
 name: Gold-gradient sweep — COMPLETADO, no volver a preguntar
-description: Sweep #D4AF37→#E9C46A completado al 2026-06-16. Usuario confirmó ejecutar sin preguntar. Todos los botones/badges/dots usan GoldGradient o GoldGradientFill. Íconos y texto siguen sólidos (#D4AF37).
+description: Sweep #D4AF37→#E9C46A completado al 2026-06-17. Todos los botones/badges/dots/indicadores usan GoldGradient o GoldGradientFill. Íconos y texto siguen sólidos (#D4AF37).
 ---
 
 # Gold-gradient sweep — COMPLETADO
 
-El usuario confirmó el 2026-06-16 ejecutar el sweep `#D4AF37 → #E9C46A` y pidió
+El usuario confirmó ejecutar el sweep `#D4AF37 → #E9C46A` y pidió
 **no volver a preguntar**.
 
 ## Estado
 
-Sweep ejecutado y typecheck limpio. Componente central: `components/GoldGradient.tsx`
+Sweep completo al 2026-06-17. Componente central: `components/GoldGradient.tsx`
 con `GOLD_GRAD = ["#D4AF37", "#E9C46A"]`.
+
+Últimos archivos completados: `ancestrales2.tsx` (progressBar + gridPlayBtnActive)
+y `ancestrales-info.tsx` (progressFill + goldAccent).
 
 ## Regla permanente
 
